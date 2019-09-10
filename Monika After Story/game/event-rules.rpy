@@ -14,6 +14,7 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
+    EV_RULE_UNDO_ACTION = "undo_action"
 
 
     # special constants for numerical repeat rules
@@ -693,3 +694,174 @@ init -1 python:
             return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
 
 
+    class MASUndoActionRule(object):
+        """
+        Static class used to undo ev actions when outside their date ranges
+        """
+
+        @staticmethod
+        def create_rule(ev_label, start_date, end_date):
+            """
+            Creates the undoactionrule
+
+            IN:
+                - ev_label: eventlabel of the event we wish to add the rule to
+                - start_date: start date of the event
+                - end_date: end date of the event
+            """
+            #Step 1, verify that our start/end dates are datetime.datetimes or datetime.dates
+            if type(start_date) is not datetime.datetime and type(start_date) is not datetime.date:
+                raise Exception(
+                    "{0} is not a valid start_date".format(start_date)
+                )
+
+            if type(end_date) is not datetime.datetime and type(start_date) is not datetime.date:
+                raise Exception(
+                    "{0} is not a valid end_date".format(end_date)
+                )
+
+            #Step 2, we need to turn datetime.date into datetime.datetime
+            if type(start_date) is datetime.date:
+                start_date = datetime.datetime.combine(start_date, datetime.time())
+
+            if type(end_date) is datetime.date:
+                end_date = datetime.datetime.combine(end_date, datetime.time())
+
+            #Step 3, we need to add this to a persistent dict because these dates will change upon
+            #EV action being executed
+            #However, we do not want to overwrite this on every load
+            if not MASUndoActionRule.has_rule(ev_label):
+                persistent._mas_undo_action_rules[ev_label] = (start_date, end_date)
+
+        @staticmethod
+        def has_rule(ev_label):
+            """
+            Checks if the evlabel has an undo action rule associated with it
+
+            IN:
+                - ev_label: eventlabel to check
+            """
+            return ev_label in persistent._mas_undo_action_rules
+
+        @staticmethod
+        def adjust_rule(ev_label, start_date, end_date):
+            """
+            Adjusts the start/end dates stored
+            """
+            if MASUndoActionRule.has_rule(ev_label):
+                persistent._mas_undo_action_rules[ev_label] = (start_date, end_date)
+
+        @staticmethod
+        def remove_rule(ev_label):
+            """
+            Removes the rule from the persistent dict
+            """
+            if MASUndoActionRule.has_rule(ev_label):
+                persistent._mas_undo_action_rules.pop(ev_label)
+
+        @staticmethod
+        def evaluate_rule(ev_label):
+            """
+            Evaluates to see if we need to undo the actions based on the ev dates stored in our persistent dict
+
+            IN:
+                - ev_label: eventlabel of the event we want to check
+
+            OUT:
+                True if we are past the stored end date and we need to
+            """
+            #NOTE: This should be used AFTER init 7
+            dates = persistent._mas_undo_action_rules.get(ev_label)
+            ev = mas_getEV(ev_label)
+            if not ev or not dates:
+                #This ev doesn't exist and/or it doesn't exist in the rules dict, so no point checking this
+                return False
+
+            #Since these exist, let's unpack for easy usage
+            _start_date, _end_date = dates
+
+            #Need to turn
+            _now = datetime.datetime.now()
+
+            #If we're before the start date, we should ensure that if someone time-travelled, this isn't still here
+            #Dates shouldn't need to change in our stored values, though
+            if _start_date > _now:
+                return True
+
+            #If we've passed the stored end date, then this isn't correct and we should reset to the actual ev dates
+            if _end_date < _now:
+                _start_date = ev.start_date
+                _end_date = ev.end_date
+                MASUndoActionRule.adjust_rule(ev_label, _start_date, _end_date)
+                #We're now past the dates and need to undo the action
+                return True
+            #We're still not at the date or we're within the dates, so we cannot go
+            return False
+
+    class MASStripDatesRule(object):
+        """
+        Static class for the strip ev dates rule.
+        This rule will strip the event dates when out of the date range
+        """
+
+        @staticmethod
+        def create_rule(ev_label, end_date):
+            """
+            Creates the strip event dates rule
+
+            IN:
+                - ev_label: eventlabel of the event we wish to add the rule to
+                - end_date: end date of the event
+            """
+            #Step 1, verify that our end date is a datetime.datetime or datetime.date
+            if type(end_date) is not datetime.datetime:
+                raise Exception(
+                    "{0} is not a valid end_date".format(end_date)
+                )
+
+            #Step 2, we need to turn datetime.date into datetime.datetime
+            if type(end_date) is datetime.date:
+                end_date = datetime.datetime.combine(end_date, datetime.time())
+
+            #Step 3, add to persist dict
+            #However, we do not want to overwrite this on every load
+            if ev_label not in persistent._mas_strip_dates_rules:
+                persistent._mas_strip_dates_rules[ev_label] = end_date
+
+        @staticmethod
+        def remove_rule(ev_label):
+            """
+            Removes the rule from the persistent dict
+            """
+            if ev_label in persistent._mas_strip_dates_rules:
+                persistent._mas_strip_dates_rules.pop(ev_label)
+
+        @staticmethod
+        def evaluate_rule(ev_label):
+            """
+            Evaluates to see if we need to strip the ev dates based on the stored end date in the persistent
+            dict
+
+            IN:
+                - ev_label: eventlabel of the event we want to check
+
+            OUT:
+                True if we are past the stored end date and we need to strip dates
+            """
+            #NOTE: This should be used AFTER init 7
+            end_date = persistent._mas_strip_dates_rules.get(ev_label)
+            ev = mas_getEV(ev_label)
+            if not ev or not end_date:
+                #This ev doesn't exist and/or it doesn't exist in the rules dict, so no point checking this
+                return False
+
+            #If we've passed the stored end date, we need to axe the dates
+            if end_date < datetime.datetime.now():
+                #If this has an undo action rule associated with it, we need to remove it
+                MASUndoActionRule.remove_rule(ev_label)
+                #And now we need to self-remove too
+                MASStripDatesRule.remove_rule(ev_label)
+                return True
+
+            #We're still not at the date or we're within the dates, no strip
+            return False

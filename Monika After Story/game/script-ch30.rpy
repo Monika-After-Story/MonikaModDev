@@ -1686,9 +1686,9 @@ label ch30_hour:
 label ch30_day:
     python:
         #Undo ev actions if needed
-        #mas_undoEVActions()
+        Event.checkUndoActionRules()
         #And also strip dates
-        #mas_stripEVDates()
+        Event.checkStripDatesRules()
 
         #Reset the gift aff gain/reset date
         #NOTE: if we got here, it has to be a new day
@@ -1982,9 +1982,9 @@ label ch30_reset:
                 persistent.event_list.pop(index)
 
     #Now we undo actions for evs which need them undone
-    #$ mas_undoEVActions()
+    $ Event.checkUndoActionRules()
     #And also strip dates
-    #$ mas_stripEVDates()
+    $ Event.checkStripDatesRules()
 
     #Let's see if someone did a time travel
     if persistent._mas_filereacts_last_aff_gained_reset_date > today:

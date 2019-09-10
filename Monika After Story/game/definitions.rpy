@@ -39,35 +39,7 @@ python early:
         EV_ACT_POOL
     ]
 
-#    def mas_undoEVActions():
-#        """
-#        Iterates thru events, those with the rule "undo action" will have their actions reversed
-#        if their actions are unlock or random.
-#        """
-#        for ev in store.mas_all_ev_db.itervalues():
-#            #NOTE: this needs to explicitly be False.
-#            if "undo action" in ev.rules and ev.isWithinRange() == False:
-#                act = ev.action
-#
-#                #Now we undo these actions
-#                if act == EV_ACT_UNLOCK:
-#                    ev.unlocked=False
-#                elif act == EV_ACT_RANDOM:
-#                    ev.random=False
-#                    #And just pull this out of the event list if it's in there at all
-#                    mas_rmallEVL(ev.eventlabel)
-#
-#                #NOTE: we don't add the rest since there's no reason to undo those.
 
-#    def mas_stripEVDates():
-#        """
-#        Iterates thru events, those with rule "strip dates" will have their start/end dates stripped
-#        """
-#        for ev in store.mas_all_ev_db.itervalues():
-#            #NOTE: explicit false
-#            if "strip dates" in ev.rules and ev.isWithinRange() == False:
-#                ev.start_date=None
-#                ev.end_date=None
 
     # custom event exceptions
     class EventException(Exception):
@@ -1506,6 +1478,54 @@ python early:
             if ev.action in Event.ACTION_MAP:
                 Event._performAction(ev, **kwargs)
 
+        @staticmethod
+        def checkUndoActionRules():
+            """
+            Checks the undo action rules of the events in the undo action rule dict
+            """
+
+            for ev_label in persistent._mas_undo_action_rules.iterkeys():
+                if MASUndoActionRule.evaluate_rule(ev_label):
+                    Event._undoEVAction(ev_label)
+
+        @staticmethod
+        def _undoEVAction(ev_label):
+            """
+            Undoes the ev_action
+            """
+            ev = mas_getEV(ev_label)
+
+            #If there's no ev, no point in being here
+            if ev:
+                #Otherwise, we undo these actions
+                if ev.action == EV_ACT_UNLOCK:
+                    ev.unlocked=False
+                elif ev.action == EV_ACT_RANDOM:
+                    ev.random=False
+                    #And just pull this out of the event list if it's in there at all
+                    mas_rmallEVL(ev.eventlabel)
+                #NOTE: we don't add the rest since there's no reason to undo those.
+
+
+        @staticmethod
+        def checkStripDatesRules():
+            """
+            Checks the undo action rules of the events in the undo action rule dict
+            """
+
+            for ev_label in persistent._mas_strip_dates_rules.iterkeys():
+                if MASStripDatesRule.evaluate_rule(ev_label):
+                    Event._stripEVDates(ev_label)
+
+        @staticmethod
+        def _stripEVDates(ev_label):
+            """
+            Iterates thru events, those with rule "strip dates" will have their start/end dates stripped
+            """
+            ev = mas_getEV(ev_label)
+            if ev:
+                ev.start_date=None
+                ev.end_date=None
 
 # init -1 python:
     # this should be in the EARLY block
@@ -5576,6 +5596,8 @@ default persistent.event_database = dict()
 default persistent.farewell_database = dict()
 default persistent.greeting_database = dict()
 default persistent._mas_apology_database = dict()
+default persistent._mas_undo_action_rules = dict()
+default persistent._mas_strip_dates_rules = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False

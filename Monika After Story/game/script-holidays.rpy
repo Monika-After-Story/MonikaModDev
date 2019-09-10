@@ -1700,12 +1700,18 @@ init 5 python:
             conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_d25c_start,
             end_date=mas_d25p,
-            rules={"undo action": None},
             action=EV_ACT_RANDOM,
             aff_range=(mas_aff.NORMAL, None),
             years=[]
         ),
         skipCalendar=True
+    )
+
+    #Undo Action Rule
+    MASUndoActionRule.create_rule(
+       "mas_d25_monika_carolling",
+       mas_d25c_start,
+       mas_d25p,
     )
 
 default persistent._mas_pm_likes_singing_d25_carols = None
@@ -1783,7 +1789,6 @@ init 5 python:
             conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_d25c_start,
             end_date=mas_d25p,
-            rules={"undo action": None},
             action=EV_ACT_RANDOM,
             aff_range=(mas_aff.AFFECTIONATE, None),
             years=[]
@@ -1791,6 +1796,11 @@ init 5 python:
         skipCalendar=True
     )
 
+    MASUndoActionRule.create_rule(
+       "mas_d25_monika_mistletoe",
+       mas_d25c_start,
+       mas_d25p,
+    )
 label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
     m 1eub "You've heard about the mistletoe tradition, right?"
@@ -4037,10 +4047,16 @@ init 5 python:
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
-            rules={"undo action": None, "force repeat": None},
+            rules={"force repeat": None},
             years=[]
         ),
         skipCalendar=True
+    )
+
+    MASUndoActionRule.create_rule(
+       "mas_pf14_monika_lovey_dovey",
+       mas_f14 - datetime.timedelta(days=3),
+       mas_f14,
     )
 
 label mas_pf14_monika_lovey_dovey:
@@ -4156,10 +4172,15 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
-            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
+    )
+
+    MASUndoActionRule.create_rule(
+       "mas_f14_monika_vday_colors",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_colors:
@@ -4196,10 +4217,15 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
-            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
+    )
+
+    MASUndoActionRule.create_rule(
+       "mas_f14_monika_vday_cliches",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_cliches:
@@ -4229,10 +4255,15 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
-            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
+    )
+
+    MASUndoActionRule.create_rule(
+       "mas_f14_monika_vday_chocolates",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_chocolates:
@@ -4265,10 +4296,15 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
-            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
+    )
+
+    MASUndoActionRule.create_rule(
+       "mas_f14_monika_vday_origins",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_origins:
@@ -4839,6 +4875,8 @@ init -1 python:
         #TODO: ME
         #SINCE RULES NO LONGER WORK AS A RESULT OF THE FIX TO EV DATES, WE NEED TO CLEAN UP MANUALLY
         #UNTIL I CAN MAKE PROPER RULES FOR THIS
+        mas_lockEVL("mas_bday_pool_happy_bday", "CMP")
+        #mas_lockEVL("mas_bday_")
         return
 
     def mas_mbdayCapGainAff(amount):
@@ -4876,10 +4914,17 @@ init 5 python:
             end_date=mas_monika_birthday - datetime.timedelta(days=1),
             years=[],
             action=EV_ACT_RANDOM,
-            rules={"undo action": None, "force repeat": None},
+            rules={"force repeat": None},
             aff_range=(mas_aff.DISTRESSED,None)
         ),
         skipCalendar=True
+    )
+
+    #Create the undo action rule
+    MASUndoActionRule.create_rule(
+        "mas_bday_surprise_party_hint",
+        mas_monika_birthday - datetime.timedelta(days=7),
+        mas_monika_birthday - datetime.timedelta(days=1)
     )
 
 #If random hasn't shown this topic yet, we need to push this to make sure people get this
@@ -4971,13 +5016,20 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_bday",
             prompt="Happy birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":0, "undo action": None},
+            rules={"no unlock":0},
             start_date=mas_monika_birthday,
             end_date=mas_monika_birthday + datetime.timedelta(1),
             years=[]
         ),
         code="CMP",
         skipCalendar=True
+    )
+
+    #Create the undo action rule
+    MASUndoActionRule.create_rule(
+        "mas_bday_pool_happy_bday",
+        mas_monika_birthday,
+        mas_monika_birthday + datetime.timedelta(1)
     )
 
 label mas_bday_pool_happy_bday:
@@ -5019,7 +5071,7 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_belated_bday",
             prompt="Happy belated birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":0, "undo action": None, "strip dates": None},
+            rules={"no unlock":0},
             years=[]
         ),
         code="CMP",
@@ -5252,6 +5304,19 @@ label mas_gone_over_bday_check:
                 belated_ev.start_date = datetime.date.today()
                 belated_ev.end_date = datetime.date.today() + datetime.timedelta(days=1)
                 mas_unlockEVL("mas_bday_pool_happy_belated_bday", "CMP")
+
+                #Prepare the undo action
+                MASUndoActionRule.create_rule(
+                    "mas_bday_pool_happy_belated_bday",
+                    belated_ev.start_date,
+                    belated_ev.end_date
+                )
+
+                #Prepare the date strip
+                MASStripDatesRule.create_rule(
+                    "mas_bday_pool_happy_belated_bday",
+                    belated_ev.end_date
+                )
     return
 
 ############## [HOL060] NO TIME SPENT
