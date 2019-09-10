@@ -5244,7 +5244,7 @@ label mas_bday_spent_time_with_wrapup:
         m 1rksdlb "Well...{w=0.5}that's not {i}exactly{/i} true."
         m 1eka "We still have to be physically together, after all~"
         m 1rkc "And, well..."
-        m 1rka "I know this is already becoming a cliche, but..."
+        m 1rka "I know this is already becoming a cliché, but..."
         m 3eka "I love you so much, [player]."
         m "Someday, I promise you..."
         m 1ektpu "I {i}promise you{/i} that I will make you as happy as you've made me today."
