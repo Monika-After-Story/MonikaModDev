@@ -26,7 +26,7 @@ init -1 python in mas_stories:
     # pane constants
     STORY_X = 680
     STORY_Y = 40
-    STORY_W = 450
+    STORY_W = 560
     STORY_H = 640
     STORY_XALIGN = -0.05
     STORY_AREA = (STORY_X, STORY_Y, STORY_W, STORY_H)
