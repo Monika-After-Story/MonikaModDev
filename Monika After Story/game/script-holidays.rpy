@@ -4841,43 +4841,34 @@ init -1 python:
         """
         Checks if the player has confirmed the party
         """
-        #If this is confirmed already, then we just return true, since confirmed
-        if persistent._mas_bday_confirmed_party:
-            return True
-
-        #Otherwise, we need to check if the file exists (we're going to make this as foolproof as possible)
-        #Step 1, get the characters folder contents
-        char_dir_files = store.mas_docking_station.getPackageList()
-
-        #Step 2, We need to remove the extensions
-        for file in char_dir_files:
-            temp_filename = file[:file.index('.')] if "." in file else file
-
-            #Step 3, check if the filename is present
-            if "oki doki" == temp_filename:
-                #If we got here: Step 4, file exists so flag and delete. Also get rid of note
-                persistent._mas_bday_confirmed_party = True
-                store.mas_docking_station.destroyPackage(file)
-
-                if persistent._mas_bday_hint_filename:
-                    store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
-
-                #Step 5a, return true since party is confirmed
+        #Must be within a week of the party (including party day)
+        if mas_monika_birthday - datetime.timedelta(days=7) <= today <= mas_monika_birthday:
+            #If this is confirmed already, then we just return true, since confirmed
+            if persistent._mas_bday_confirmed_party:
                 return True
+
+            #Otherwise, we need to check if the file exists (we're going to make this as foolproof as possible)
+            #Step 1, get the characters folder contents
+            char_dir_files = store.mas_docking_station.getPackageList()
+
+            #Step 2, We need to remove the extensions
+            for file in char_dir_files:
+                temp_filename = file[:file.index('.')] if "." in file else file
+
+                #Step 3, check if the filename is present
+                if "oki doki" == temp_filename:
+                    #If we got here: Step 4, file exists so flag and delete. Also get rid of note
+                    persistent._mas_bday_confirmed_party = True
+                    store.mas_docking_station.destroyPackage(file)
+
+                    if persistent._mas_bday_hint_filename:
+                        store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
+
+                    #Step 5a, return true since party is confirmed
+                    return True
 
         #Otherwise, Step 5b, no previous confirm and file doesn't exist, so party is not confirmed. return false
         return False
-
-    def mas_bdayTopicCleanup():
-        """
-        Hides the topics we don't need/want to see
-        """
-        #TODO: ME
-        #SINCE RULES NO LONGER WORK AS A RESULT OF THE FIX TO EV DATES, WE NEED TO CLEAN UP MANUALLY
-        #UNTIL I CAN MAKE PROPER RULES FOR THIS
-        mas_lockEVL("mas_bday_pool_happy_bday", "CMP")
-        #mas_lockEVL("mas_bday_")
-        return
 
     def mas_mbdayCapGainAff(amount):
         mas_capGainAff(amount, "_mas_bday_date_affection_gained", 50, 75)
@@ -4889,10 +4880,6 @@ label mas_bday_autoload_check:
         $ persistent._mas_bday_in_bday_mode = False
         #Also make sure we're no longer showing visuals
         $ persistent._mas_bday_visuals = False
-
-    #Otherwise, if we've seen the surprise party reaction and it is Moni's bday, then we do visuals
-    elif persistent._mas_bday_sbp_reacted:
-        $ store.mas_surpriseBdayShowVisuals()
 
     #It's Moni's bday! If we're here that means we're spending time with her, so:
     $ persistent._mas_bday_no_time_spent = False
@@ -5033,13 +5020,6 @@ init 5 python:
     )
 
 label mas_bday_pool_happy_bday:
-    #Flag this for hist
-    $ persistent._mas_bday_no_recognize = False
-    $ persistent._mas_bday_said_happybday = True
-
-    #Lock this
-    $ mas_lockEVL("mas_bday_pool_happy_bday", "CMP")
-
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
         m 3eka "I was waiting for you to say those magic words~"
@@ -5059,6 +5039,13 @@ label mas_bday_pool_happy_bday:
         m 1eua "Oh, and..."
         m 3hub "Happy Birthday to you too, [player]!"
         m 1hua "Ehehe!"
+
+    #Flag this for hist
+    $ persistent._mas_bday_no_recognize = False
+    $ persistent._mas_bday_said_happybday = True
+
+    #Lock this
+    $ mas_lockEVL("mas_bday_pool_happy_bday", "CMP")
     return
 
 # happy belated bday topic for people that took her out before her bday and returned her after
@@ -5552,7 +5539,7 @@ label mas_bday_bd_outro:
     m 3eub "Maybe we could visit the mall, or even the park!"
     m 1eka "But knowing you, you've already got something amazing planned for us~"
     m 1hua "Let's go, [player]!"
-    return "quit"
+    return
 
 
 ########## [HOL060] DOCKSTAT GREETS ##########
@@ -5562,8 +5549,6 @@ label mas_bday_bd_outro:
 label greeting_returned_home_bday:
     #First, reset this flag, we're no longer on a date
     $ persistent._mas_bday_on_date = False
-    #Now we make sure monibday visuals shouldn't show up anymore
-    $ persistent._mas_bday_visuals = False
 
     #Set party if need be
     if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:
@@ -5636,6 +5621,8 @@ label greeting_returned_home_bday:
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
         $ persistent._mas_bday_in_bday_mode = False
+        #Now we make sure monibday visuals shouldn't show up anymore
+        $ persistent._mas_bday_visuals = False
 
         m 1hua "..."
         m 1wud "Oh wow, [player]. We really were out for a while..."

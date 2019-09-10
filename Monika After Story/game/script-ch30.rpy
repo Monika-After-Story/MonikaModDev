@@ -1996,6 +1996,5 @@ label ch30_reset:
         $ persistent._mas_filereacts_last_aff_gained_reset_date = today
 
     #Run a confirmed party check within a week of Moni's bday
-    if mas_monika_birthday - datetime.timedelta(days=7) <= today < mas_monika_birthday:
-        $ mas_confirmedParty()
+    $ mas_confirmedParty()
     return

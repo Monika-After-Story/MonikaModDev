@@ -2164,10 +2164,11 @@ label mas_dockstat_ready_to_go(moni_chksum):
                 mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
                 and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked
             ):
-                jump mas_bday_bd_outro
+                call mas_bday_bd_outro
 
-            #Otherwise we use the standard flow
-            m 1eua "Alright."
+            else:
+                #Otherwise we use the standard flow
+                m 1eua "Alright."
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
@@ -2235,8 +2236,9 @@ label mas_dockstat_empty_desk:
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
 
-    if peristent._mas_bday_visuals:
-        $ store.mas_surpriseBdayShowVisuals()
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
     #NOTE: elif'd so we don't try and show two types of visuals here
     elif persistent._mas_player_bday_decor:
@@ -2264,8 +2266,9 @@ label mas_dockstat_empty_desk_from_empty:
     $ renpy.pause(1.0, hard=True)
 
     # check for surprise visuals
-    if persistent._mas_bday_visuals:
-        $ store.mas_surpriseBdayShowVisuals()
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
     # check for monika
     if promise.done():
