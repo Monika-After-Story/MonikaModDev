@@ -1515,12 +1515,12 @@ python early:
 
             for ev_label in persistent._mas_strip_dates_rules.iterkeys():
                 if MASStripDatesRule.evaluate_rule(ev_label):
-                    Event._stripEVDates(ev_label)
+                    Event._stripEVDate(ev_label)
 
         @staticmethod
-        def _stripEVDates(ev_label):
+        def _stripEVDate(ev_label):
             """
-            Iterates thru events, those with rule "strip dates" will have their start/end dates stripped
+            Strips dates of the event with the ev_label provided
             """
             ev = mas_getEV(ev_label)
             if ev:
