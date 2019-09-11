@@ -4807,9 +4807,6 @@ init -1 python:
         """
         Checks if the user recognized monika's birthday at all.
 
-        TODO: this is one-shot. we need to make this generic to future bdays
-        NOTE: pretty sure this is handled by history. Verify please.
-
         RETURNS:
             True if the user recoginzed monika's birthday, False otherwise
         """
@@ -4818,6 +4815,7 @@ init -1 python:
 
         return (
             mas_generateGiftsReport(_date)[0] > 0
+            or persistent._mas_bday_date_count > 0
             or persistent._mas_bday_sbp_reacted
             or persistent._mas_bday_said_happybday
         )
@@ -4885,6 +4883,12 @@ label mas_bday_autoload_check:
         $ persistent._mas_bday_in_bday_mode = False
         #Also make sure we're no longer showing visuals
         $ persistent._mas_bday_visuals = False
+
+        #And reset outfit if not at the right aff
+        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+            $ monika_chr.reset_clothes(False)
+            $ monika_chr.save()
+            $ renpy.save_persistent()
 
     #It's Moni's bday! If we're here that means we're spending time with her, so:
     $ persistent._mas_bday_no_time_spent = False
@@ -5443,7 +5447,7 @@ init 5 python:
         Event(
             persistent._mas_apology_database,
             eventlabel="mas_apology_missed_bday",
-            prompt="...for missing your birthday",
+            prompt="...for missing your birthday.",
             unlocked=False
         ),
         code="APL"
@@ -5469,7 +5473,7 @@ init 5 python:
         Event(
             persistent._mas_apology_database,
             eventlabel="mas_apology_forgot_bday",
-            prompt="prompt",
+            prompt="...for forgetting your birthday.",
             unlocked=True
         ),
         code="APL"
@@ -5530,8 +5534,8 @@ label bye_922_delegate:
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
     #Let's flag if we need to show visuals
-    if mas_confirmedParty():
-        $ persistent._mas_bday_visuals = True
+#    if mas_confirmedParty():
+#        $ persistent._mas_bday_visuals = True
     jump bye_going_somewhere_iostart
 
 label mas_bday_bd_outro:
@@ -5639,6 +5643,9 @@ label greeting_returned_home_bday:
         $ persistent._mas_bday_in_bday_mode = False
         #Now we make sure monibday visuals shouldn't show up anymore
         $ persistent._mas_bday_visuals = False
+
+        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+            $ queueEvent('mas_change_to_def')
 
         m 1hua "..."
         m 1wud "Oh wow, [player]. We really were out for a while..."
