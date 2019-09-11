@@ -3838,7 +3838,9 @@ label greeting_returned_home_player_bday:
     if left_date < mas_d25 < ret_date:
         $ persistent._mas_d25_spent_d25 = True
 
-    if mas_isMonikaBirthday():
+    if mas_isMonikaBirthday() and mas_confirmedParty():
+        $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+        call monika_zoom_transition_reset(1.0)
         $ mas_gainAffection(25, bypass=True)
         $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
         if time_out < mas_five_minutes:
