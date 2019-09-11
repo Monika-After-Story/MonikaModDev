@@ -5533,9 +5533,6 @@ label bye_922_delegate:
         m 3hua "I actually have an outfit prepared just for this..."
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
-    #Let's flag if we need to show visuals
-#    if mas_confirmedParty():
-#        $ persistent._mas_bday_visuals = True
     jump bye_going_somewhere_iostart
 
 label mas_bday_bd_outro:
