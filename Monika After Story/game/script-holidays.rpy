@@ -5077,7 +5077,7 @@ label mas_bday_pool_happy_belated_bday:
         m 1sua "Thank you so much, [player]!"
         m 3hub "I just knew you took me out on a long trip for my birthday!"
         m 3rka "I wish I could've seen all the amazing places we went..."
-        m 1hua "But knowing we were together, well it makes it the best birthday I could hope for!"
+        m 1hua "But knowing we were together, well it makes it the best birthday I could ever hope for!"
         m 3ekbsa "I love you so much, [player]~"
         return "love"
     else:
@@ -5539,7 +5539,18 @@ label mas_bday_bd_outro:
     m 3eub "Maybe we could visit the mall, or even the park!"
     m 1eka "But knowing you, you've already got something amazing planned for us~"
     m 1hua "Let's go, [player]!"
-    return
+
+    python:
+        # setup check and log this file checkout
+        store.mas_dockstat.checkoutMonika(moni_chksum)
+
+        #Now setup ret greet
+        persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
+            store.mas_greetings.TYPE_GENERIC_RET
+        )
+
+    #And now we quit here
+    jump _quit
 
 
 ########## [HOL060] DOCKSTAT GREETS ##########
