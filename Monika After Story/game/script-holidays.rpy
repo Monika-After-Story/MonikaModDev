@@ -4847,6 +4847,9 @@ init -1 python:
         if mas_monika_birthday - datetime.timedelta(days=7) <= today <= mas_monika_birthday:
             #If this is confirmed already, then we just return true, since confirmed
             if persistent._mas_bday_confirmed_party:
+                #We should also handle if the player confirmed the party pre-note
+                if persistent._mas_bday_hint_filename:
+                        store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
                 return True
 
             #Otherwise, we need to check if the file exists (we're going to make this as foolproof as possible)

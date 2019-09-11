@@ -831,9 +831,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if store.mas_globals.show_vignette:
         show vignette zorder 70
 
-    # monibday stuff (this checks itself)
+    # monibday stuff
     if persistent._mas_bday_visuals:
-        $ store.mas_surpriseBdayShowVisuals()
+        #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
     # d25 seasonal
     if persistent._mas_d25_deco_active:
