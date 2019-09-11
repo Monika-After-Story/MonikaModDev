@@ -3626,11 +3626,11 @@ label mas_player_bday_card:
         else:
             m 6ekbsa "I love you, [player]~"
             call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
-            if mas_isplayer_bday():
+            if mas_isMonikaBirthday():
                 m 6eka "I'm so glad we get to spend our birthday together..."
                 m 6hua "Let's enjoy our special day~"
     else:
-        if mas_isplayer_bday():
+        if mas_isMonikaBirthday():
             m 1ekbfa "I love you, [player]! I'm so glad we get to spend our birthday together..."
             m 3ekbfa "Let's enjoy our special day~"
         else:
@@ -4898,10 +4898,10 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_surprise_party_hint",
             start_date=mas_monika_birthday - datetime.timedelta(days=7),
-            end_date=mas_monika_birthday - datetime.timedelta(days=1),
+            end_date=mas_monika_birthday - datetime.timedelta(days=2),
             years=[],
             action=EV_ACT_RANDOM,
-            rules={"force repeat": None},
+            rules={"force repeat": None, "no rmallEVL": None},
             aff_range=(mas_aff.DISTRESSED,None)
         ),
         skipCalendar=True
@@ -4911,7 +4911,7 @@ init 5 python:
     MASUndoActionRule.create_rule(
         "mas_bday_surprise_party_hint",
         mas_monika_birthday - datetime.timedelta(days=7),
-        mas_monika_birthday - datetime.timedelta(days=1)
+        mas_monika_birthday - datetime.timedelta(days=2)
     )
 
 #If random hasn't shown this topic yet, we need to push this to make sure people get this
@@ -5289,7 +5289,7 @@ label mas_gone_over_bday_check:
             if belated_ev is not None:
                 #Set start and end dates
                 belated_ev.start_date = datetime.date.today()
-                belated_ev.end_date = datetime.date.today() + datetime.timedelta(days=1)
+                belated_ev.end_date = datetime.datetime.now() + datetime.timedelta(days=1)
                 mas_unlockEVL("mas_bday_pool_happy_belated_bday", "CMP")
 
                 #Prepare the undo action

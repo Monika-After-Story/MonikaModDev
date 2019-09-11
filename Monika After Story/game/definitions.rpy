@@ -1502,8 +1502,9 @@ python early:
                     ev.unlocked=False
                 elif ev.action == EV_ACT_RANDOM:
                     ev.random=False
-                    #And just pull this out of the event list if it's in there at all
-                    mas_rmallEVL(ev.eventlabel)
+                    #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
+                    if "no rmallEVL" not in ev.rules:
+                        mas_rmallEVL(ev.eventlabel)
                 #NOTE: we don't add the rest since there's no reason to undo those.
 
 
@@ -1512,8 +1513,8 @@ python early:
             """
             Checks the undo action rules of the events in the undo action rule dict
             """
-
-            for ev_label in persistent._mas_strip_dates_rules.iterkeys():
+            key_list = persistent._mas_strip_dates_rules.keys()
+            for ev_label in key_list:
                 if MASStripDatesRule.evaluate_rule(ev_label):
                     Event._stripEVDate(ev_label)
 
