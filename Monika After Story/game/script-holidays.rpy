@@ -4991,7 +4991,7 @@ P.S: Don't tell her about me.
 
     #Flag this so it doesn't get shown again
     $ persistent._mas_monika_bday_surprise_hint_seen = True
-    return "derandom | no_unlock"
+    return "derandom|no_unlock"
 
 
 ################## [HOL060] HAPPY BDAY TOPICS
