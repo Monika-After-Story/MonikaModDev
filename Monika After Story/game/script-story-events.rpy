@@ -340,7 +340,6 @@ label birthdate_set:
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
-                #TODO update script
                 "and not mas_isMonikaBirthday()"
                 )
             bday_upset_ev.action = EV_ACT_QUEUE
@@ -364,7 +363,6 @@ label birthdate_set:
                 "and not mas_isO31() "
                 "and not mas_isD25() "
                 "and not mas_isF14() "
-                #TODO update script
                 "and not mas_isMonikaBirthday()"
             )
             bday_ret_bday_ev.action = EV_ACT_QUEUE
@@ -384,7 +382,6 @@ label birthdate_set:
                 "and not mas_isO31() "
                 "and not mas_isD25() "
                 "and not mas_isF14() "
-                #TODO update script
                 "and not mas_isMonikaBirthday()"
             )
             bday_no_restart_ev.action = EV_ACT_QUEUE
