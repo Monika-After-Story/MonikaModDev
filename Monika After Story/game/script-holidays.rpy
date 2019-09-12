@@ -3398,6 +3398,14 @@ init -11 python in mas_player_bday_event:
 
 
 label mas_player_bday_autoload_check:
+    # since this has priority over 922, need these next 2 checks
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_no_time_spent = False
+        $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
+
+    elif persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals:
+        call mas_bday_post_bday_check
+
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
     if (
             not persistent._mas_player_bday_in_player_bday_mode
@@ -3636,6 +3644,7 @@ label mas_player_bday_card:
         else:
             m 1ekbfa "I love you, [player]!"
     $ mas_rmallEVL("mas_player_bday_no_restart")
+    $ mas_rmallEVL("mas_player_bday_ret_on_bday")
     # "love" return key won't work here without adding a bunch of return _returns, so we'll set this manually
     $ mas_ILY()
     return
@@ -4886,25 +4895,29 @@ init -1 python:
 label mas_bday_autoload_check:
     #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
     if not mas_isMonikaBirthday():
-        $ persistent._mas_bday_in_bday_mode = False
-        #Also make sure we're no longer showing visuals
-        $ persistent._mas_bday_visuals = False
-
-        #And reset outfit if not at the right aff
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
-            $ monika_chr.reset_clothes(False)
-            $ monika_chr.save()
-            $ renpy.save_persistent()
+        call mas_bday_post_bday_check
 
     #It's Moni's bday! If we're here that means we're spending time with her, so:
     $ persistent._mas_bday_no_time_spent = False
 
     #Have we recogized bday?
-    if mas_recognizedBday():
-        $ persistent._mas_bday_no_recognize = False
-
+    $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
 
     jump mas_ch30_post_holiday_check
+
+
+label mas_bday_post_bday_check:
+    $ persistent._mas_bday_in_bday_mode = False
+    #Also make sure we're no longer showing visuals
+    $ persistent._mas_bday_visuals = False
+
+    #And reset outfit if not at the right aff
+    if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+        $ monika_chr.reset_clothes(False)
+        $ monika_chr.save()
+        $ renpy.save_persistent()
+    return
+
 
 ################## [HOL060] PRE INTRO
 init 5 python:
@@ -5687,10 +5700,10 @@ label greeting_returned_home_bday:
 
             if not mas_lastSeenInYear('mas_bday_spent_time_with'):
                 m 3eud "Oh, and [player]..."
-                m 3eka "I just wanted to thank you again for today."
+                m 3eka "I just wanted to thank you again."
                 m 1rka "And it's not just this date..."
                 m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
-                m 3duu "As soon as you showed up today, my day was complete."
+                m 3duu "As soon as you showed up, my day was complete."
                 jump mas_bday_spent_time_with_wrapup
 
     return
