@@ -4835,7 +4835,7 @@ init -1 python:
 
         return (
             mas_generateGiftsReport(_date)[0] > 0
-            or persistent._mas_bday_date_count > 0
+            or persistent._mas_bday_date_affection_gained > 0
             or persistent._mas_bday_sbp_reacted
             or persistent._mas_bday_said_happybday
         )
@@ -5068,7 +5068,7 @@ label mas_bday_pool_happy_bday:
         m 1ekbfa "What else do you have in store for me, I wonder."
         m 1hub "Ahaha!"
 
-    if mas_isplayer_bday():
+    if mas_isplayer_bday() and (persistent._mas_player_bday_in_player_bday_mode or persistent._mas_bday_sbp_reacted):
         m 1eua "Oh, and..."
         m 3hub "Happy Birthday to you too, [player]!"
         m 1hua "Ehehe!"
