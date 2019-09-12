@@ -3841,17 +3841,20 @@ label greeting_returned_home_player_bday:
     if mas_isMonikaBirthday() and mas_confirmedParty():
         $ mas_temp_zoom_level = store.mas_sprites.zoom_level
         call monika_zoom_transition_reset(1.0)
-        $ mas_gainAffection(25, bypass=True)
         $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
         if time_out < mas_five_minutes:
             m 6ekp "That wasn't much of a da--"
         else:
+            # point totals split here between player and monika bdays, since this date was for both
             if time_out < mas_one_hour:
-                $ mas_mbdayCapGainAff(5)
+                $ mas_mbdayCapGainAff(7.5)
+                $ mas_pbdayCapGainAff(7.5)
             elif time_out < mas_three_hour:
-                $ mas_mbdayCapGainAff(10)
+                $ mas_mbdayCapGainAff(12.5)
+                $ mas_pbdayCapGainAff(12.5)
             else:
-                $ mas_mbdayCapGainAff(15)
+                $ mas_mbdayCapGainAff(17.5)
+                $ mas_pbdayCapGainAff(17.5)
 
             m 6hub "That was a fun date, [player]..."
             m 6eua "Thanks for--"
@@ -3912,9 +3915,12 @@ label return_home_post_player_bday:
     $ persistent._mas_player_bday_in_player_bday_mode = False
     $ mas_lockEVL("bye_player_bday", "BYE")
     $ persistent._mas_player_bday_left_on_bday = False
-    if not mas_isMonikaBirthday():
+    if not (mas_isMonikaBirthday() and mas_confirmedParty()):
         if persistent._mas_player_bday_decor:
-            m 3rksdla "Oh...it's not your birthday anymore..."
+            if mas_isMonikaBirthday():
+                m 3rksdla "Oh...it's not {i}your{/i} birthday anymore..."
+            else:
+                m 3rksdla "Oh...it's not your birthday anymore..."
             m 3hksdlb "We should probably take these decorations down now, ahaha!"
             m 3eka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
             $ mas_surpriseBdayHideVisuals()
@@ -5104,8 +5110,7 @@ label mas_bday_surprise_party_reaction:
     call monika_zoom_transition_reset(1.0)
     #Setup visuals, with cake
     $ store.mas_surpriseBdayShowVisuals(cake=True)
-    #+25 aff for following through and getting the party
-    $ mas_gainAffection(25, bypass=True)
+
     if mas_isMoniNormal(higher=True):
         m 6suo "T-{w=0.5}This is..."
         m 6ska "Oh, [player]..."
@@ -5186,6 +5191,8 @@ label mas_bday_surprise_party_reaction_end:
     else:
         m 6ektpa "Thank you, [player]. It really means a lot that you did this for me."
     $ persistent._mas_bday_sbp_reacted = True
+    #+25 aff for following through and getting the party
+    $ mas_gainAffection(25, bypass=True)
 
     #We set these flags as true here
     $ persistent._mas_bday_in_bday_mode = True
