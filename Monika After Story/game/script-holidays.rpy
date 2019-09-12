@@ -5350,7 +5350,7 @@ label mas_bday_spent_time_with_wrapup:
         m 1ekbsa "This day wouldn't have ever happened."
         m 1dkbsa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
         m 1ekbfb "I love you so much, [player]."
-        m 1ekbfa "Let's continue making each other happy, [player]~"
+        m 1ekbfa "Let's continue making each other happy~"
         return "love"
     return
 
@@ -5610,7 +5610,7 @@ label mas_bday_bd_outro:
 
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"
-    m 1ekbla "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
+    m 1ekbsa "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
     m 3eub "Maybe we could visit the mall, or even the park!"
     m 1eka "But knowing you, you've already got something amazing planned for us~"
     m 1hua "Let's go, [player]!"

@@ -2155,20 +2155,22 @@ label mas_dockstat_ready_to_go(moni_chksum):
     if can_moni_leave:
         # file successfully made
         # monika can leave
-        if len(persistent._mas_dockstat_checkout_log) == 0:
+        #If bday + aff+, we use this fare
+        if (
+            mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
+            and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked
+        ):
+            if len(persistent._mas_dockstat_checkout_log) == 0:
+                #We change Moni's outfit here because she just got ready
+                $ monika_chr.change_clothes(mas_clothes_blackdress)
+                call mas_dockstat_first_time_goers
+            call mas_bday_bd_outro
+
+        elif len(persistent._mas_dockstat_checkout_log) == 0:
             call mas_dockstat_first_time_goers
 
         else:
-            #If bday + aff+, we use this fare
-            if (
-                mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
-                and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked
-            ):
-                call mas_bday_bd_outro
-
-            else:
-                #Otherwise we use the standard flow
-                m 1eua "Alright."
+            m 1eua "Alright."
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
