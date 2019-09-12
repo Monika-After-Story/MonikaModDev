@@ -339,6 +339,10 @@ label v0_10_1(version="v0_10_1"):
             if ev:
                 ev.conditional = conditional
 
+        ret_bday_ev = mas_getEV('mas_player_bday_ret_on_bday')
+        if ret_bday_ev is not None:
+            ret_bday_ev.conditional += "and not mas_isMonikaBirthday() "
+
     return
 
 # 0.10.0

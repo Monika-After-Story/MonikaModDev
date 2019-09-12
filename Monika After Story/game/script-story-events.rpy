@@ -590,11 +590,11 @@ label unlock_hangman:
     if not persistent._mas_sensitive_mode:
         m 1lsc "But, come to think of it..."
         m "The game is actually quite morbid."
-        m 3rssdrc "You guess letters for a word to save someone's life."
+        m 3rssdlc "You guess letters for a word to save someone's life."
         m "Get them all correct and the person doesn't hang."
         m 1lksdlc "But guess them all wrong..."
         m "They die because you didn't guess the right letters."
-        m 1euc "Pretty dark, isn't it?"
+        m 1eksdlc "Pretty dark, isn't it?"
         m 1hksdlb "But don't worry, [player], it's just a game after all!"
         m 1eua "I assure you that no one will be hurt with this game."
 

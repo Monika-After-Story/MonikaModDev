@@ -3554,22 +3554,17 @@ label mas_player_bday_cake:
     # reset zoom here to make sure the cake is actually on the table
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
-    $ renpy.pause(3.0, hard=True)
-    $ renpy.show("mas_bday_cake_player", zorder=store.MAS_MONIKA_Z+1)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-    $ renpy.pause(0.5, hard=True)
+    call mas_monika_gets_cake
+
     if mas_isMonikaBirthday():
         m 6eua "Let me just light the candles..."
     else:
-        m 6eua "Let me just light the candles for you..."
+        m 6eua "Let me just light the candles for youup.{w=0.5}.{w=0.5}.{nw}"
+
     window hide
-    show monika 6dsa
-    pause 1.0
     $ mas_bday_cake_lit = True
-    pause 0.5
+    pause 1.0
+
     m 6sua "Isn't it pretty, [player]?"
     if mas_isMonikaBirthday():
         m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for both of us..."
@@ -3647,6 +3642,16 @@ label mas_player_bday_card:
     $ mas_rmallEVL("mas_player_bday_ret_on_bday")
     # "love" return key won't work here without adding a bunch of return _returns, so we'll set this manually
     $ mas_ILY()
+    return
+
+label mas_monika_gets_cake:
+    show emptydesk at i11 zorder 9
+    hide monika with dissolve
+    $ renpy.pause(3.0, hard=True)
+    $ renpy.show("mas_bday_cake_player", zorder=store.MAS_MONIKA_Z+1)
+    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    $ renpy.pause(0.5, hard=True)
     return
 
 # event for if you went on a date pre-bday and return on bday
@@ -5123,6 +5128,7 @@ label mas_bday_surprise_party_reaction:
     call monika_zoom_transition_reset(1.0)
     #Setup visuals, with cake
     $ store.mas_surpriseBdayShowVisuals(cake=True)
+    $ persistent._mas_bday_visuals = True
 
     if mas_isMoniNormal(higher=True):
         m 6suo "T-{w=0.5}This is..."
@@ -5190,7 +5196,10 @@ label mas_bday_surprise_party_reaction_post_make_wish:
 
     m 6eka "I'll save this cake for later.{w=0.5}.{w=0.5}.{nw}"
 
-    call mas_HideCake('mas_bday_cake_monika')
+    if mas_isplayer_bday():
+        call mas_HideCake('mas_bday_cake_monika',False)
+    else:
+        call mas_HideCake('mas_bday_cake_monika')
 
     pause 0.5
 
@@ -5198,7 +5207,47 @@ label mas_bday_surprise_party_reaction_end:
     if mas_isMoniNormal(higher=True):
         m 6eka "Thank you, [player]. From the bottom of my heart, thank you..."
         if mas_isplayer_bday():
+            m 6eua "..."
+            m 6wuo "..."
+            m 6wub "Oh! I almost forgot, I made you a cake, too!"
+
+            call mas_monika_gets_cake
+
+            m 6eua "Let me just light the candles for you, [player].{w=0.5}.{w=0.5}.{nw}"
+
+            window hide
+            $ mas_bday_cake_lit = True
+            pause 1.0
+
+            m 6sua "Isn't it pretty?"
+            m 6hksdlb "I guess I'll have to blow these candles out as well, since you can't really do it, ahaha!"
+
+            if made_wish:
+                m 6eua "Let's both wish again, [player]! {w=0.5}It'll be twice as likely to come true, right?"
+            else:
+                m 6eua "Let's both make a wish, [player]!"
+
+            m 6hua "But first..."
+            call mas_player_bday_moni_sings
+            m 6hua "Make a wish, [player]!"
+
+            window hide
+            pause 1.5
+            show monika 6hft
+            pause 0.1
+            show monika 6hua
+            $ mas_bday_cake_lit = False
+            pause 1.0
+
+            if not made_wish:
+                m 6hua "Ehehe..."
+                m 6ekbsa "I bet we both wished for the same thing~"
+            m 6hkbsu "..."
+            m 6hksdlb "I'll just save this cake for later too, I guess. Ahaha!"
+
+            call mas_HideCake('mas_bday_cake_player')
             call mas_player_bday_card
+
         else:
             m 6hua "Let's enjoy the rest of the day now, shall we?"
     else:
@@ -5658,8 +5707,6 @@ label greeting_returned_home_bday:
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
         $ persistent._mas_bday_in_bday_mode = False
-        #Now we make sure monibday visuals shouldn't show up anymore
-        $ persistent._mas_bday_visuals = False
 
         if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
             $ queueEvent('mas_change_to_def')
@@ -5669,6 +5716,7 @@ label greeting_returned_home_bday:
 
         if mas_isplayer_bday():
             if persistent._mas_bday_sbp_reacted:
+                $ persistent._mas_bday_visuals = False
                 $ persistent._mas_player_bday_decor = True
                 m 3suo "Oh! It's your birthday now..."
                 m 3hub "I guess we can just leave these decorations up, ahaha!"
@@ -5678,25 +5726,28 @@ label greeting_returned_home_bday:
                 jump mas_player_bday_ret_on_bday
 
         else:
-            if not persistent._mas_bday_sbp_reacted:
-                m 1eua "We should do something like this again soon, even if it's not any special occasion."
-                m 3eub "I really enjoyed myself!"
-                m 1eka "I hope you had as great of a time as I did~"
+            if mas_player_bday_curr() == mas_monika_birthday:
+                $ persistent._mas_player_bday_in_player_bday_mode = False
+                m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
+                m 1ekbsa "I hope I helped to make your day as special as you made mine."
+                if persistent._mas_player_bday_decor or persistent._mas_bday_visuals:
+                    m 3hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
+                    $ mas_surpriseBdayHideVisuals()
+                    $ persistent._mas_player_bday_decor = False
+                    $ persistent._mas_bday_visuals = False
+                    m 3eub "There we go!"
 
-            elif persistent._mas_bday_sbp_reacted and not persistent._mas_player_bday_decor:
+            elif persistent._mas_bday_visuals:
                 m 3rksdla "It's not even my birthday anymore..."
                 m 2hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
                 $ mas_surpriseBdayHideVisuals()
+                $ persistent._mas_bday_visuals = False
                 m 3eub "There we go!"
 
-            elif persistent._mas_player_bday_decor or persistent._mas_bday_sbp_reacted:
-                $ persistent._mas_player_bday_in_player_bday_mode = False
-                $ persistent._mas_player_bday_decor = False
-                m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
-                m 1ekbsa "I hope I helped to make your day as special as you made mine."
-                m 3hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
-                $ mas_surpriseBdayHideVisuals()
-                m 3eub "There we go!"
+            else:
+                m 1eua "We should do something like this again soon, even if it's not any special occasion."
+                m 3eub "I really enjoyed myself!"
+                m 1eka "I hope you had as great of a time as I did~"
 
             if not mas_lastSeenInYear('mas_bday_spent_time_with'):
                 m 3eud "Oh, and [player]..."
@@ -5760,7 +5811,7 @@ label mas_monika_cake_on_player_bday:
     m 3hub "This is an amazing birthday!"
     return
 
-label mas_HideCake(cake_type):
+label mas_HideCake(cake_type,reset_zoom=True):
     show emptydesk at i11 zorder 9
     hide monika with dissolve
     $ renpy.hide(cake_type)
@@ -5769,5 +5820,6 @@ label mas_HideCake(cake_type):
     show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
     $ renpy.pause(1.0, hard=True)
-    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    if reset_zoom:
+        call monika_zoom_transition(mas_temp_zoom_level,1.0)
     return

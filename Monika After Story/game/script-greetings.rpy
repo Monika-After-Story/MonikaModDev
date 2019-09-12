@@ -1370,7 +1370,7 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_progbrokepy")
 
 label monikaroom_greeting_ear_progbrokepy:
-    m "What the-!{w} NoneType has no attribute length?"
+    m "What the-?!{w} NoneType has no attribute {i}length{/i}..."
     if renpy.seen_label("monikaroom_greeting_ear_progreadpy"):
         m "Oh, I see what went wrong!{w} That should fix it!"
     else:
