@@ -1708,7 +1708,7 @@ init 5 python:
     )
 
     #Undo Action Rule
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
        "mas_d25_monika_carolling",
        mas_d25c_start,
        mas_d25p,
@@ -1796,7 +1796,7 @@ init 5 python:
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
        "mas_d25_monika_mistletoe",
        mas_d25c_start,
        mas_d25p,
@@ -4070,7 +4070,7 @@ init 5 python:
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
        "mas_pf14_monika_lovey_dovey",
        mas_f14 - datetime.timedelta(days=3),
        mas_f14,
@@ -4194,7 +4194,7 @@ init 5 python:
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
        "mas_f14_monika_vday_colors",
        mas_f14,
        mas_f14 + datetime.timedelta(days=1),
@@ -4239,7 +4239,7 @@ init 5 python:
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
        "mas_f14_monika_vday_cliches",
        mas_f14,
        mas_f14 + datetime.timedelta(days=1),
@@ -4277,7 +4277,7 @@ init 5 python:
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
        "mas_f14_monika_vday_chocolates",
        mas_f14,
        mas_f14 + datetime.timedelta(days=1),
@@ -4318,7 +4318,7 @@ init 5 python:
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
        "mas_f14_monika_vday_origins",
        mas_f14,
        mas_f14 + datetime.timedelta(days=1),
@@ -4936,7 +4936,7 @@ init 5 python:
     )
 
     #Create the undo action rule
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
         "mas_bday_surprise_party_hint",
         mas_monika_birthday - datetime.timedelta(days=7),
         mas_monika_birthday - datetime.timedelta(days=2)
@@ -5041,7 +5041,7 @@ init 5 python:
     )
 
     #Create the undo action rule
-    MASUndoActionRule.create_rule(
+    MASUndoActionRule.create_rule_EVL(
         "mas_bday_pool_happy_bday",
         mas_monika_birthday,
         mas_monika_birthday + datetime.timedelta(1)
@@ -5363,20 +5363,14 @@ label mas_gone_over_bday_check:
                 #Set start and end dates
                 belated_ev.start_date = datetime.date.today()
                 belated_ev.end_date = datetime.datetime.now() + datetime.timedelta(days=1)
-                mas_unlockEVL("mas_bday_pool_happy_belated_bday", "CMP")
+                belated_ev.unlocked = True
 
                 #Prepare the undo action
-                MASUndoActionRule.create_rule(
-                    "mas_bday_pool_happy_belated_bday",
-                    belated_ev.start_date,
-                    belated_ev.end_date
-                )
+                MASUndoActionRule.create_rule(belated_ev)
 
                 #Prepare the date strip
-                MASStripDatesRule.create_rule(
-                    "mas_bday_pool_happy_belated_bday",
-                    belated_ev.end_date
-                )
+                MASStripDatesRule.create_rule(belated_ev)
+
     return
 
 ############## [HOL060] NO TIME SPENT

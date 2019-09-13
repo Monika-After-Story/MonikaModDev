@@ -1983,9 +1983,9 @@ label ch30_reset:
                 persistent.event_list.pop(index)
 
     #Now we undo actions for evs which need them undone
-    $ Event.checkUndoActionRules()
+    $ MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
     #And also strip dates
-    $ Event.checkStripDatesRules()
+    $ MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 
     #Let's see if someone did a time travel
     if persistent._mas_filereacts_last_aff_gained_reset_date > today:

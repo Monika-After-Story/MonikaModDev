@@ -528,6 +528,13 @@ python early:
             check_dt = datetime.datetime.now()
             return self.start_date <= check_dt < self.end_date
 
+        def stripDates(self):
+            """
+            Removes date data from the event
+            """
+            ev.start_date = None
+            ev.end_date = None
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -1479,54 +1486,22 @@ python early:
                 Event._performAction(ev, **kwargs)
 
         @staticmethod
-        def checkUndoActionRules():
-            """
-            Checks the undo action rules of the events in the undo action rule dict
-            """
-
-            for ev_label in persistent._mas_undo_action_rules.iterkeys():
-                if MASUndoActionRule.evaluate_rule(ev_label):
-                    Event._undoEVAction(ev_label)
-
-        @staticmethod
-        def _undoEVAction(ev_label):
+        def _undoEVAction(ev):
             """
             Undoes the ev_action
-            """
-            ev = mas_getEV(ev_label)
 
-            #If there's no ev, no point in being here
-            if ev:
-                #Otherwise, we undo these actions
-                if ev.action == EV_ACT_UNLOCK:
-                    ev.unlocked=False
-                elif ev.action == EV_ACT_RANDOM:
-                    ev.random=False
-                    #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
-                    if "no rmallEVL" not in ev.rules:
-                        mas_rmallEVL(ev.eventlabel)
-                #NOTE: we don't add the rest since there's no reason to undo those.
+            IN:
+                ev - event to undo ev action for
+            """
+            if ev.action == EV_ACT_UNLOCK:
+                ev.unlocked = False
+            elif ev.action == EV_ACT_RANDOM:
+                ev.random = False
+                #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
+                if "no rmallEVL" not in ev.rules:
+                    mas_rmallEVL(ev.eventlabel)
+            #NOTE: we don't add the rest since there's no reason to undo those.
 
-
-        @staticmethod
-        def checkStripDatesRules():
-            """
-            Checks the undo action rules of the events in the undo action rule dict
-            """
-            key_list = persistent._mas_strip_dates_rules.keys()
-            for ev_label in key_list:
-                if MASStripDatesRule.evaluate_rule(ev_label):
-                    Event._stripEVDate(ev_label)
-
-        @staticmethod
-        def _stripEVDate(ev_label):
-            """
-            Strips dates of the event with the ev_label provided
-            """
-            ev = mas_getEV(ev_label)
-            if ev:
-                ev.start_date=None
-                ev.end_date=None
 
 # init -1 python:
     # this should be in the EARLY block
