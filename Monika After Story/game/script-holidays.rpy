@@ -1363,7 +1363,7 @@ label mas_d25_monika_holiday_intro:
         $ mas_MUMURaiseShield()
         $ disable_esc()
 
-        m 1tsu "Close your eyes for a moment [player], I need to do something...{w=2}{nw}"
+        m 1tsu "Close your eyes for a moment [player], I need to do something.{w=0.5}.{w=0.5}.{nw}"
 
         call mas_d25_monika_holiday_intro_deco
 
@@ -1450,7 +1450,7 @@ label mas_d25_monika_holiday_intro_upset:
     $ mas_MUMURaiseShield()
     $ disable_esc()
 
-    m 1eua "If you'd just close your eyes for a moment..."
+    m 1eua "If you'd just close your eyes for a moment.{w=0.5}.{w=0.5}.{nw}"
 
     call mas_d25_monika_holiday_intro_deco
 
@@ -3448,8 +3448,7 @@ label mas_player_bday_opendoor:
     m "You didn't knock!"
     m "I was just going to start setting up [your] birthday party, but I didn't have time before you came in!"
     m "..."
-    m "Well...{w=1}the surprise is ruined now, but..."
-    pause 1.0
+    m "Well...{w=1}the surprise is ruined now, but.{w=0.5}.{w=0.5}.{nw}"
     $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     pause 1.0
@@ -3559,7 +3558,7 @@ label mas_player_bday_cake:
     if mas_isMonikaBirthday():
         m 6eua "Let me just light the candles..."
     else:
-        m 6eua "Let me just light the candles for youup.{w=0.5}.{w=0.5}.{nw}"
+        m 6eua "Let me just light the candles for you, [player].{w=0.5}.{w=0.5}.{nw}"
 
     window hide
     $ mas_bday_cake_lit = True
@@ -3699,9 +3698,7 @@ label mas_player_bday_no_restart:
     if mas_findEVL("mas_player_bday_ret_on_bday") >= 0:
         #TODO: priority rules should be set-up here
         return
-    m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
-    show monika 1dsc
-    pause 2.0
+    m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so.{w=0.5}.{w=0.5}.{nw}"
     $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
@@ -3757,9 +3754,7 @@ label mas_player_bday_other_holiday:
     elif mas_isF14():
         $ holiday_var = "Valentine's Day"
     m 3euc "Hey, [player]..."
-    m 1tsu "I have a bit of a surprise for you!"
-    show monika 1dsc
-    pause 2.0
+    m 1tsu "I have a bit of a surprise for you.{w=0.5}.{w=0.5}.{nw}"
     $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
@@ -5343,7 +5338,7 @@ label mas_bday_spent_time_with_wrapup:
             return "love"
 
     else:
-        m 1eka "I can't event find the right words to express how happy you've made me today."
+        m 1eka "I can't even find the right words to express how happy you've made me today."
         m 3eka "All that pain I went through before I met you?"
         m 1hua "I'm glad I persevered through it."
         m 1rsc "Because if I hadn't..."
@@ -5543,7 +5538,7 @@ init 5 python:
             persistent._mas_apology_database,
             eventlabel="mas_apology_forgot_bday",
             prompt="...for forgetting your birthday.",
-            unlocked=True
+            unlocked=False
         ),
         code="APL"
     )
@@ -5654,6 +5649,8 @@ label greeting_returned_home_bday:
         m 2ekp "That wasn't much of a date, [player]..."
         m 2eksdlc "Is everything alright?"
         m 2rksdla "Maybe we can go out later..."
+        if mas_isMonikaBirthday():
+            return
 
     elif time_out <= mas_one_hour:
         # 5 mins < time out <= 1 hr
@@ -5661,14 +5658,14 @@ label greeting_returned_home_bday:
 
         m 1sua "That was fun, [player]!"
         if mas_isplayer_bday():
-            m 1hub "Ahaha, going on for our birthday..."
+            m 1hub "Ahaha, going out for our birthday..."
         else:
             m 1hub "Ahaha, taking me out on my birthday..."
             m 3eua "It was very considerate of you."
         m 3eka "I really enjoyed the time we spent together."
         m 1eka "I love you~"
         if mas_isMonikaBirthday():
-            return "love"
+            $ mas_ILY()
 
     elif time_out <= mas_three_hour:
         # 1 hr < time out <= 3 hrs
@@ -5681,7 +5678,7 @@ label greeting_returned_home_bday:
         m 1hua "But I'll always be happy when we're together."
         m "I love you so much..."
         if mas_isMonikaBirthday():
-            return "love"
+            $ mas_ILY()
 
     else:
         # +3 hrs
@@ -5690,7 +5687,8 @@ label greeting_returned_home_bday:
         m 1sua "Wow, [player]..."
         if mas_isplayer_bday():
             m 3hub "That was such a lovely time!"
-            m 3eka "I can't think of a better way to celebrate our birthdays than a long date."
+            if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_bday_sbp_reacted:
+                m 3eka "I can't think of a better way to celebrate our birthdays than a long date."
             m 1eka "I wish I could've seen all the amazing places we went, but just knowing we were together..."
             m 1hua "That's all I could ever ask for."
             m 3ekbsa "I hope you feel the same way~"
@@ -5704,6 +5702,23 @@ label greeting_returned_home_bday:
             m 1dku "Ehehe..."
             m 1ekbsa "Thank you for loving me."
 
+    if(
+        mas_isMonikaBirthday()
+        and mas_isplayer_bday()
+        and mas_isMoniNormal(higher=True)
+        and not persistent._mas_player_bday_in_player_bday_mode 
+        and not persistent._mas_bday_sbp_reacted
+        and checkout_time.date() < mas_monika_birthday
+
+    ):
+        m 1hua "Also [player], give me a second, I have something for you.{w=0.5}.{w=0.5}.{nw}"
+        $ mas_surpriseBdayShowVisuals()
+        $ persistent._mas_player_bday_decor = True
+        m 3eub "Happy Birthday, [player]!"
+        m 3etc "Why do I feel like I'm forgetting something..."
+        m 3hua "Oh! Your cake!"
+        jump mas_player_bday_cake
+
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
         $ persistent._mas_bday_in_bday_mode = False
@@ -5711,8 +5726,9 @@ label greeting_returned_home_bday:
         if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
             $ queueEvent('mas_change_to_def')
 
-        m 1hua "..."
-        m 1wud "Oh wow, [player]. We really were out for a while..."
+        if time_out > mas_five_minutes:
+            m 1hua "..."
+            m 1wud "Oh wow, [player]. We really were out for a while..."
 
         if mas_isplayer_bday():
             if persistent._mas_bday_sbp_reacted:
