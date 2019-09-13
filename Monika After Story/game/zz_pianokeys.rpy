@@ -399,7 +399,7 @@ init -3 python in mas_piano_keys:
     # menu constants
     MENU_X = 680
     MENU_Y = 40
-    MENU_W = 450
+    MENU_W = 560
     MENU_H = 640
     MENU_XALIGN = -0.05
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
