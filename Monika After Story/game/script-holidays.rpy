@@ -5561,6 +5561,9 @@ label bye_922_delegate:
     $ persistent._mas_bday_date_count += 1
 
     if persistent._mas_bday_date_count == 1:
+        # bday date counts as bday mode even with no party
+        $ persistent._mas_bday_in_bday_mode = True
+
         m 1hua "Ehehe. It's a bit romantic, isn't it?"
 
         if mas_isMoniHappy(lower=True):
