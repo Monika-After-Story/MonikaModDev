@@ -729,7 +729,7 @@ python early:
                     new_end = add_yr_fun(_end, diff)
 
                 # now return the new start and the modified end
-                return (add_yr_fun(_start, diff), new_end, diff > 0)
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
 
             # otherwise, we have a list of years, and shoudl determine next
             if force:
@@ -760,7 +760,7 @@ python early:
 
             if force:
                 # force means we should just use this diff right away
-                return (add_yr_fun(_start, diff), new_end, diff > 0)
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
 
             if new_end <= _now:
                 if len(new_years) <= 1:
@@ -771,7 +771,7 @@ python early:
                 diff = _now.year - new_years[1]
                 new_end = add_yr_fun(_end, diff)
 
-            return (add_yr_fun(_start, diff), new_end, diff > 0)
+            return (add_yr_fun(_start, diff), new_end, diff != 0)
 
 
         @staticmethod
