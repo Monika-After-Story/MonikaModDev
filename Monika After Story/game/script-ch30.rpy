@@ -1696,6 +1696,9 @@ label ch30_day:
         persistent._mas_filereacts_gift_aff_gained = 0
         persistent._mas_filereacts_last_aff_gained_reset_date = datetime.date.today()
 
+        #So we can't just single-sesh a long absence ret
+        mas_ret_long_absence = False
+
         #Run delayed actions
         mas_runDelayedActions(MAS_FC_IDLE_DAY)
     return

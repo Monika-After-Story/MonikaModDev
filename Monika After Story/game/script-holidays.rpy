@@ -5256,7 +5256,7 @@ label mas_bday_surprise_party_reaction_end:
     #+25 aff for following through and getting the party
     $ mas_gainAffection(25, bypass=True)
 
-    #We set these flags as true here
+    #We set these flags here
     $ persistent._mas_bday_in_bday_mode = True
     $ persistent._mas_bday_no_recognize = False
     return
@@ -5408,7 +5408,6 @@ label mas_bday_postbday_notimespent:
 
     if mas_ret_long_absence:
         #Was away on a long absence
-        $ persistent._mas_bday_no_time_spent = True
         $ mas_loseAffection(ev_label="mas_apology_missed_bday")
 
         m 1rksdlc "Hey, [player]..."
@@ -5457,9 +5456,6 @@ label mas_bday_postbday_notimespent:
             m 6ckc "..."
 
     else:
-        # did not spend any time with monika
-        $ persistent._mas_bday_no_time_spent = True
-
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(50, ev_label="mas_apology_missed_bday")
             m 1euc "Hey, [player]..."
