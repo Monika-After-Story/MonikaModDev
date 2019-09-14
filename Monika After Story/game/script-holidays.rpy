@@ -5386,7 +5386,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_postbday_notimespent",
             conditional=(
-                "not mas_recognizedBday()"
+                "not mas_recognizedBday() "
+                "and not persistent._mas_bday_gone_over_bday"
             ),
             action=EV_ACT_QUEUE,
             start_date=mas_monika_birthday+datetime.timedelta(1),
