@@ -2077,6 +2077,8 @@ init 5 python:
 
 label greeting_long_absence:
     $ persistent._mas_long_absence = False
+    $ mas_ret_long_absence = True
+
     if persistent._mas_absence_time >= datetime.timedelta(weeks=5):
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(70)

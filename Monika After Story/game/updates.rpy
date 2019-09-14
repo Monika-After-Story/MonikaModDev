@@ -325,10 +325,11 @@ label v0_10_1(version="v0_10_1"):
             #F14
             ("mas_pf14_monika_lovey_dovey", None),
             ("mas_f14_monika_valentines_intro", None),
+            ("mas_f14_no_time_spent", "not persistent._mas_f14_spent_f14")
 
             #922
             ("mas_bday_spent_time_with", "mas_recognizedBday()"),
-            ("mas_bday_postbday_notimespent", "(not persistent._mas_long_absence or not persistent._mas_bday_gone_over_bday) and not mas_recognizedBday()"),
+            ("mas_bday_postbday_notimespent", "not mas_recognizedBday()"),
             ("mas_bday_surprise_party_hint", None),
             ("mas_bday_pool_happy_bday", None),
         ]
