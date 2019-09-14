@@ -325,7 +325,7 @@ label v0_10_1(version="v0_10_1"):
             #F14
             ("mas_pf14_monika_lovey_dovey", None),
             ("mas_f14_monika_valentines_intro", None),
-            ("mas_f14_no_time_spent", "not persistent._mas_f14_spent_f14")
+            ("mas_f14_no_time_spent", "not persistent._mas_f14_spent_f14"),
 
             #922
             ("mas_bday_spent_time_with", "mas_recognizedBday()"),
