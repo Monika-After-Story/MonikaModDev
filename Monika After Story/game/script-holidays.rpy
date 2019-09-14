@@ -3401,6 +3401,7 @@ label mas_player_bday_autoload_check:
     # since this has priority over 922, need these next 2 checks
     if mas_isMonikaBirthday():
         $ persistent._mas_bday_no_time_spent = False
+        $ persistent._mas_bday_opened_game = True
         $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
 
     elif persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals:
@@ -3848,6 +3849,7 @@ label greeting_returned_home_player_bday:
         $ persistent._mas_d25_spent_d25 = True
 
     if mas_isMonikaBirthday() and mas_confirmedParty():
+        $ persistent._mas_bday_opened_game = True
         $ mas_temp_zoom_level = store.mas_sprites.zoom_level
         call monika_zoom_transition_reset(1.0)
         $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
@@ -3927,6 +3929,7 @@ label return_home_post_player_bday:
     if not (mas_isMonikaBirthday() and mas_confirmedParty()):
         if persistent._mas_player_bday_decor:
             if mas_isMonikaBirthday():
+                $ persistent._mas_bday_opened_game = True
                 m 3rksdla "Oh...it's not {i}your{/i} birthday anymore..."
             else:
                 m 3rksdla "Oh...it's not your birthday anymore..."
@@ -4905,6 +4908,7 @@ label mas_bday_autoload_check:
     #It's Moni's bday! If we're here that means we're spending time with her, so:
     $ persistent._mas_bday_no_time_spent = False
 
+    $ persistent._mas_bday_opened_game = True
     #Have we recogized bday?
     $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
 
@@ -5400,9 +5404,7 @@ init 5 python:
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
     if (mas_getFirstSesh().date() > mas_monika_birthday):
-        python:
-            nts_ev = mas_getEV('mas_bday_postbday_notimespent')
-            nts_ev.shown_count -= 1
+        $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
         return
 
 
@@ -5417,6 +5419,7 @@ label mas_bday_postbday_notimespent:
         m 1eka "I'd really appreciate if you could do that for me, [player]."
 
     elif persistent._mas_bday_opened_game:
+        #Opened game but didn't do any bday things
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
             m 2rksdla "Hey, [player]..."
@@ -5649,6 +5652,8 @@ label mas_bday_bd_outro:
 label greeting_returned_home_bday:
     #First, reset this flag, we're no longer on a date
     $ persistent._mas_bday_on_date = False
+    #We've opened the game
+    $ persistent._mas_bday_opened_game = True
 
     #Set party if need be
     if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:

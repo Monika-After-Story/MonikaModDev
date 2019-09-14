@@ -340,6 +340,11 @@ label v0_10_1(version="v0_10_1"):
             if ev:
                 ev.conditional = conditional
 
+
+        #Make sure this ev has an action if it was removed
+        mas_getEV("mas_bday_postbday_notimespent").action=EV_ACT_QUEUE
+
+        #Fix conditionals for pbday
         cond_str = "and not mas_isMonikaBirthday()"
 
         ev_list_1 = [

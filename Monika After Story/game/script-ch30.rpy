@@ -10,8 +10,6 @@ define mas_in_intro_flow = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
-# affection hotfix for dates
-default persistent._mas_bday_date_affection_fix = False
 
 init -890 python in mas_globals:
     import datetime
@@ -80,34 +78,6 @@ init 970 python:
             store.mas_o31_event.isTTGreeting()
         )
 
-
-    postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
-
-    if (
-            postbday_ev is not None
-            and persistent._mas_long_absence
-            and postbday_ev.conditional is not None
-            and eval(postbday_ev.conditional)
-        ):
-        # reset the post bday event if users did long absence to skip the
-        # event
-        postbday_ev.conditional = None
-        postbday_ev.action = None
-
-    if postbday_ev is not None:
-        del postbday_ev
-
-    if mas_isMonikaBirthday():
-        persistent._mas_bday_opened_game = True
-
-    # quick fix for dates
-    # NOTE: remove this in 089
-#    if (
-#            persistent._mas_bday_date_affection_gained >= 50 and
-#            not persistent._mas_bday_date_affection_fix
-#        ):
-#        mas_gainAffection(50, bypass=True)
-#        persistent._mas_bday_date_affection_fix = True
 
     # o31 costumes flag
     # we only enable costumes if you are not playing for the first time today.
@@ -1887,25 +1857,6 @@ label ch30_reset:
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
-
-    ## should we reset birthday
-#    python:
-#        if (
-#                persistent._mas_bday_need_to_reset_bday
-#                and not mas_isMonikaBirthday()
-#            ):
-#            bday_ev = mas_getEV("mas_bday_pool_happy_bday")
-#            if bday_ev:
-#                bday_ev.conditional="mas_isMonikaBirthday()"
-#                bday_ev.action=EV_ACT_UNLOCK
-#                persistent._mas_bday_need_to_reset_bday = False
-
-#            bday_spent_ev = mas_getEV("mas_bday_spent_time_with")
-#            if bday_spent_ev:
-#                bday_spent_ev.action = EV_ACT_QUEUE
-#                bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
-#                bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
-
 
     ## o31 content
     python:
