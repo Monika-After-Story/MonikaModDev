@@ -1778,7 +1778,7 @@ label mas_reaction_gift_roses:
             m "Ahaha..."
 
         #We can only have this on poses which use the new sprite set
-        if monika_chr.clothes != mas_clothes_marisa and monika_chr.clothes != mas_clothes_rin and monika_chr.clothes != mas_clothes_santa:
+        if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
             m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
             $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
@@ -1805,7 +1805,7 @@ label mas_reaction_gift_roses:
 
             #Random chance (unless f14) for her to do the ear rose thing
             if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
-                if monika_chr.clothes != mas_clothes_marisa and monika_chr.clothes != mas_clothes_rin and monika_chr.clothes != mas_clothes_santa:
+                if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
                     m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
                     $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
