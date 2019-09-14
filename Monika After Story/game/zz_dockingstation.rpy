@@ -2215,9 +2215,9 @@ label mas_dockstat_abort_gen:
         $ persistent._mas_f14_on_date = False
         $ persistent._mas_f14_date -= 1
 
-    if persistent._mas_monika_bday_on_date:
-        $ persistent._mas_monika_bday_on_date = False
-        $ persistent._mas_monika_bday_date -= 1
+    if persistent._mas_bday_on_date:
+        $ persistent._mas_bday_on_date = False
+        $ persistent._mas_bday_date_count -= 1
     return
 
 

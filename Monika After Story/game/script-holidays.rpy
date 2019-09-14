@@ -4492,9 +4492,7 @@ init 5 python:
             start_date=mas_f14+datetime.timedelta(1),
             end_date=mas_f14+datetime.timedelta(8),
             conditional=(
-                "not persistent._mas_long_absence "
-                "and not persistent._mas_f14_spent_f14 "
-                "and not persistent._mas_f14_nts_seen"
+                "not persistent._mas_f14_spent_f14"
             ),
             years=[]
         ),
@@ -4502,15 +4500,22 @@ init 5 python:
     )
 
 label mas_f14_no_time_spent:
-    #sanity checks:
-    if persistent._mas_f14_spent_f14:
-        return
 
     #need to make sure people who just started post f14 don't lose aff
     if mas_getFirstSesh().date() > mas_f14:
         return
 
-    if mas_isMoniAff(higher=True):
+    if mas_ret_long_absence:
+        #Was away on a long absence
+        $ mas_loseAffection(ev_label="mas_apology_missed_vday")
+
+        m 1rksdlc "Hey, [player]..."
+        m 2eksdld "I know you told me you were going to be away...but I really missed you on Valentines Day."
+        m 2eksdla "Next time, do you think you could take me with you if you can't be here?"
+        m 3eub "At least then we'll still be with each other and we can even celebrate together!"
+        m 1eka "I'd really appreciate if you could do that for me, [player]."
+
+    elif mas_isMoniAff(higher=True):
         $ mas_loseAffection(15, ev_label="mas_apology_missed_vday")
         m 1rkc "[player]?"
         m "Where were you on Valentine's Day?"
@@ -5380,8 +5385,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_postbday_notimespent",
             conditional=(
-                "(not persistent._mas_long_absence or not persistent._mas_bday_gone_over_bday) "
-                "and not mas_recognizedBday()"
+                "not mas_recognizedBday()"
             ),
             action=EV_ACT_QUEUE,
             start_date=mas_monika_birthday+datetime.timedelta(1),
@@ -5392,7 +5396,26 @@ init 5 python:
     )
 
 label mas_bday_postbday_notimespent:
-    if persistent._mas_bday_opened_game:
+    #Make sure that people who have first sesh's post monibday don't get this
+    if (mas_getFirstSesh().date() > mas_monika_birthday):
+        python:
+            nts_ev = mas_getEV('mas_bday_postbday_notimespent')
+            nts_ev.shown_count -= 1
+        return
+
+
+    if mas_ret_long_absence:
+        #Was away on a long absence
+        $ persistent._mas_bday_no_time_spent = True
+        $ mas_loseAffection(ev_label="mas_apology_missed_bday")
+
+        m 1rksdlc "Hey, [player]..."
+        m 2eksdld "I know you told me you were going to be away...but I really missed you on my birthday."
+        m 2eksdla "Next time, do you think you could take me with you if you can't be here?"
+        m 3eub "At least then we'll still be with each other and we can even celebrate together!"
+        m 1eka "I'd really appreciate if you could do that for me, [player]."
+
+    elif persistent._mas_bday_opened_game:
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
             m 2rksdla "Hey, [player]..."
@@ -5561,6 +5584,9 @@ label bye_922_delegate:
     $ persistent._mas_bday_date_count += 1
 
     if persistent._mas_bday_date_count == 1:
+        # bday date counts as bday mode even with no party
+        $ persistent._mas_bday_in_bday_mode = True
+
         m 1hua "Ehehe. It's a bit romantic, isn't it?"
 
         if mas_isMoniHappy(lower=True):
@@ -5679,7 +5705,7 @@ label greeting_returned_home_bday:
         $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
 
         m 1sua "Wow, [player]..."
-        if mas_isplayer_bday():
+        if mas_player_bday_curr == mas_monika_birthday:
             m 3hub "That was such a lovely time!"
             if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_bday_sbp_reacted:
                 m 3eka "I can't think of a better way to celebrate our birthdays than a long date."

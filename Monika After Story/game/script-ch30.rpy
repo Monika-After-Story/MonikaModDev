@@ -1687,9 +1687,9 @@ label ch30_hour:
 label ch30_day:
     python:
         #Undo ev actions if needed
-        Event.checkUndoActionRules()
+        MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
         #And also strip dates
-        Event.checkStripDatesRules()
+        MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 
         #Reset the gift aff gain/reset date
         #NOTE: if we got here, it has to be a new day

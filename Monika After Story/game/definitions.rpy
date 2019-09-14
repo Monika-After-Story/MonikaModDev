@@ -5594,6 +5594,9 @@ default persistent._mas_first_calendar_check = False
 #Var for daily checks in the ch30 loop
 default persistent._mas_last_daily_check_date = datetime.date.today()
 
+#Var to see if we were on a long absence (post flag reset)
+default mas_ret_long_absence = False
+
 # rain
 define mas_is_raining = False
 
