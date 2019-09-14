@@ -5358,6 +5358,7 @@ label mas_bday_spent_time_with_wrapup:
 label mas_gone_over_bday_check:
     if mas_checkOverDate(mas_monika_birthday):
         $ persistent._mas_bday_gone_over_bday = True
+        $ persistent._mas_bday_no_time_spent = False
         $ mas_rmallEVL("mas_bday_postbday_notimespent")
 
         #Now we want to handle the belated bday unlock

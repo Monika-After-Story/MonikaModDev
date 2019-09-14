@@ -3742,12 +3742,15 @@ label monika_birthday:
             m 3hksdlb "Today!"
             if mas_isplayer_bday():
                 m "Just like yours!"
-            if mas_getEV("monika_birthday").shown_count == 0 and mas_HistVerify("922.actions.no_recognize",True)[0]:
+            if mas_getEV("monika_birthday").shown_count == 0 and not mas_HistVerify("922.actions.no_recognize",False)[1]:
                 m 3eksdla "It's okay if you don't have anything planned, seeing as you just found out..."
                 m 1ekbsa "Just spending the day together is more than enough for me~"
             else:
+                $ prev_year = mas_monika_birthday.year-1
                 m 3eksdld "I guess you must have forgotten..."
-                m 1eksdla "But that's okay, [player]..."
+                if mas_HistVerify("922.actions.no_time_spent",True,prev_year)[0] or mas_HistVerify("922.actions.no_recognize",True,prev_year)[0]:
+                    m 2rksdlc "Again."
+                m 3eksdla "But that's okay, [player]..."
                 m 1eka "At least we're here, together~"
 
     elif mas_HistVerify("922.actions.no_recognize",False)[0]:
@@ -3772,8 +3775,9 @@ label monika_birthday:
         m 1rksdla "Did you forget, [player]?"
         m 3eksdla "My birthday is September, 22nd..."
         if mas_player_bday_curr() == mas_monika_birthday:
-            m 3rksdla "You'd think you'd remember that seeing as it's the same day as yours, silly..."
-        m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
+            m 3hksdlb "You'd think you'd remember that seeing as it's the same day as yours, silly..."
+        else:
+            m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
 
     if persistent._mas_player_bday is None:
         m 3eua "Actually, speaking of birthdays, [player]..."
