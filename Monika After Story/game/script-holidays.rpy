@@ -5456,6 +5456,7 @@ label mas_bday_postbday_notimespent:
             m 6ckc "..."
 
     else:
+        #Didn't spend any time with Monika
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(50, ev_label="mas_apology_missed_bday")
             m 1euc "Hey, [player]..."
