@@ -721,7 +721,7 @@ init python:
             if end_date is None:
                 end_date = ev.end_date
 
-            MASUndoActionRule.create_rule_EVL(ev, start_date, end_date)
+            MASUndoActionRule.create_rule_EVL(ev.eventlabel, start_date, end_date)
 
         @staticmethod
         def create_rule_EVL(evl, start_date, end_date):
@@ -729,7 +729,7 @@ init python:
             Creates undo action rule from EVL:
 
             IN:
-                ev - event label to add rule for
+                evl - event label to add rule for
                 start_date - start date to use
                 end_date - end date to use
             """
