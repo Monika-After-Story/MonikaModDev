@@ -693,7 +693,7 @@ label mas_reaction_gift_starter_generic:
 label mas_reaction_gift_starter_bday:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=0.5}This is..."
-    if len(persistent._mas_filereacts_historic[datetime.date.today().year,9,22]) == 0:
+    if not persistent._mas_filereacts_historic.get(mas_monika_birthday):
         m "A gift? For me?"
         m 1hka "I..."
         m 1hua "I've often thought about getting presents from you on my birthday..."

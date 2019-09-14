@@ -474,7 +474,8 @@ label birthdate_set:
         m 1tsu "I guess we really are meant to be together, ehehe..."
         if mas_isMonikaBirthday():
             m 3hua "That just makes today that much more special~"
-            # TODO: once we have all coding done, figure out where to go from here, if anywhere
+            m 1eub "Sing with me, [player]!"
+            call mas_player_bday_moni_sings
         else:
             m 3hua "We'll have to make that an extra special day~"
 
