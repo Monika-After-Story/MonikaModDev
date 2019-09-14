@@ -393,7 +393,7 @@ init -2 python in mas_sprites:
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
-        _clothes_baked_entry()    
+        _clothes_baked_entry()
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
@@ -455,10 +455,6 @@ init -2 python in mas_sprites:
             p5=None,
             p6=None
         )
-
-        # NOTE: revaluate if this looks bad on santa
-        # remove ear rose
-        _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
 
     def _clothes_santa_exit(_moni_chr, **kwargs):

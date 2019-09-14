@@ -5705,7 +5705,7 @@ label greeting_returned_home_bday:
         $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
 
         m 1sua "Wow, [player]..."
-        if mas_isplayer_bday():
+        if mas_player_bday_curr == mas_monika_birthday:
             m 3hub "That was such a lovely time!"
             if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_bday_sbp_reacted:
                 m 3eka "I can't think of a better way to celebrate our birthdays than a long date."
