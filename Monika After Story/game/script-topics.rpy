@@ -3753,7 +3753,7 @@ label monika_birthday:
                 m 3eksdla "But that's okay, [player]..."
                 m 1eka "At least we're here, together~"
 
-    elif mas_HistVerify("922.actions.no_recognize",False)[0]:
+    elif mas_HistVerify("922.actions.no_recognize",False)[0] or mas_recognizedBday():
         m 1hua "Ehehe..."
         m 3hub "You've already celebrated my birthday with me before, [player]!"
         m 3eka "Did you forget?"
