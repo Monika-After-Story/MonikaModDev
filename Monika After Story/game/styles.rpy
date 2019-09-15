@@ -454,7 +454,7 @@ style main_menu_frame_dark:
     xsize 310
     yfill True
 
-    background "menu_nav_d"
+    background "menu_nav"
 
 style slider_def:
     ysize 18
