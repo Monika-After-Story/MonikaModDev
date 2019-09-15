@@ -2821,6 +2821,8 @@ label monika_clothes_select:
                 #Get the outfit selector and add it
                 outfit_to_add = mas_selspr.get_sel_clothes(mas_sprites.get_sprite(2, clothes_to_add))
                 gifted_clothes.append(outfit_to_add)
+                #Sort list
+                gifted_clothes.sort(key=lambda x: x.display_name)
 
         # below Love, only gifted clothes (and def) are available
         call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)

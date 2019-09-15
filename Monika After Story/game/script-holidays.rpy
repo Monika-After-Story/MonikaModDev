@@ -3557,7 +3557,7 @@ label mas_player_bday_cake:
     call mas_monika_gets_cake
 
     if mas_isMonikaBirthday():
-        m 6eua "Let me just light the candles..."
+        m 6eua "Let me just light the candles.{w=0.5}.{w=0.5}.{nw}"
     else:
         m 6eua "Let me just light the candles for you, [player].{w=0.5}.{w=0.5}.{nw}"
 
