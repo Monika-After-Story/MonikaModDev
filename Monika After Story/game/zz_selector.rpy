@@ -435,6 +435,8 @@ init -20 python:
 
 
 init -10 python in mas_selspr:
+    import datetime
+    import store
 
     # mailbox constants
     MB_DISP = "disp_text"
@@ -1260,12 +1262,10 @@ init -10 python in mas_selspr:
             clothes - MASClothes object to unlock
             add_to_holiday_map - add to the holiday map if we want this for happy+ for the day
         """
-        import datetime
-
         _unlock_item(clothes, SELECT_CLOTH)
 
         if add_to_holiday_map:
-            renpy.game.persistent._mas_event_clothes_map[datetime.date.today()] = clothes.name
+            store.persistent._mas_event_clothes_map[datetime.date.today()] = clothes.name
 
 
     def unlock_hair(hair):
@@ -1441,17 +1441,19 @@ init -1 python:
     import random
 
     # better more user-friendly sel functions
-    def mas_SELisUnlocked(_sprite_item, select_type):
+    def mas_SELisUnlocked(_sprite_item):
         """
         Checks if the given sprite item is unlocked
 
         IN:
             _sprite_item - sprite object to check
-            select_type - type of this sprite object
 
         RETURNS: True if the given sprite item is unlocked, false otherwise
         """
-        _sel_item = store.mas_selspr._get_sel(_sprite_item, select_type)
+        _sel_item = store.mas_selspr._get_sel(
+            _sprite_item,
+            _sprite_item.gettype()
+        )
         if _sel_item is not None:
             return _sel_item.unlocked
 
@@ -2819,10 +2821,12 @@ label monika_clothes_select:
             #If there's something for today, then we'll add it to be unlocked
             if clothes_to_add:
                 #Get the outfit selector and add it
-                outfit_to_add = mas_selspr.get_sel_clothes(mas_sprites.get_sprite(2, clothes_to_add))
-                gifted_clothes.append(outfit_to_add)
-                #Sort list
-                gifted_clothes.sort(key=lambda x: x.display_name)
+                gifted_clothes.append(mas_selspr.get_sel_clothes(
+                    mas_sprites.get_sprite(
+                        mas_sprites.SP_CLOTHES,
+                        clothes_to_add
+                    )
+                ))
 
         # below Love, only gifted clothes (and def) are available
         call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)
