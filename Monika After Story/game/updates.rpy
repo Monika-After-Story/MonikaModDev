@@ -345,19 +345,19 @@ label v0_10_1(version="v0_10_1"):
         mas_getEV("mas_bday_postbday_notimespent").action=EV_ACT_QUEUE
 
         #Fix conditionals for pbday
-        cond_str = "and not mas_isMonikaBirthday()"
+        cond_str = " and not mas_isMonikaBirthday() "
 
         ev_list_1 = [
-            ("mas_player_bday_upset_minus", " " + cond_str + " "),
-            ('mas_player_bday_ret_on_bday', cond_str + " "),
-            ('mas_player_bday_no_restart', cond_str + " ")
+            ("mas_player_bday_upset_minus", cond_str),
+            ('mas_player_bday_ret_on_bday', cond_str),
+            ('mas_player_bday_no_restart', cond_str)
         ]
 
         for ev_label, conditional in ev_list_1:
             ev = mas_getEV(ev_label)
 
             if ev and ev.conditional:
-                ev.conditional += renpy.substitute(conditional)
+                ev.conditional += conditional
 
     return
 
