@@ -2827,6 +2827,8 @@ label monika_clothes_select:
                         clothes_to_add
                     )
                 ))
+                gifted_clothes.sort(key=mas_selspr.selectable_key)
+
 
         # below Love, only gifted clothes (and def) are available
         call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)
