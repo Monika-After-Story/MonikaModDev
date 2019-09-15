@@ -2158,7 +2158,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
-            and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked
+            and not mas_SELisUnlocked(mas_clothes_blackdress)
         ):
             if len(persistent._mas_dockstat_checkout_log) == 0:
                 #We change Moni's outfit here because she just got ready
