@@ -51,15 +51,15 @@ init -1 python:
         """
 
         #If player bday cap isn't provided, we just use the one cap
-        if not pbday_cap:
-            cap = normal_cap
+        if persistent._mas_player_bday_in_player_bday_mode and pbday_cap:
+            cap = pbday_cap
         else:
-            #Otherwise we need to see what cap we're using
-            cap = pbday_cap if persistent._mas_player_bday_in_player_bday_mode else normal_cap
+            cap = normal_cap
 
         if persistent.__dict__[aff_gained_var] < cap:
             persistent.__dict__[aff_gained_var] += amount
             mas_gainAffection(amount, bypass=True)
+
         return
 
 ############################### O31 ###########################################
