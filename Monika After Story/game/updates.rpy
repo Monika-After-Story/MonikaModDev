@@ -348,9 +348,9 @@ label v0_10_1(version="v0_10_1"):
         cond_str = "and not mas_isMonikaBirthday()"
 
         ev_list_1 = [
-            ("mas_player_bday_upset_minus", " [cond_str] "),
-            ('mas_player_bday_ret_on_bday', "[cond_str] "),
-            ('mas_player_bday_no_restart', "[cond_str] ")
+            ("mas_player_bday_upset_minus", " " + cond_str + " "),
+            ('mas_player_bday_ret_on_bday', cond_str + " "),
+            ('mas_player_bday_no_restart', cond_str + " ")
         ]
 
         for ev_label, conditional in ev_list_1:

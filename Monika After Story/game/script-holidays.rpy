@@ -4806,7 +4806,9 @@ init -810 python:
             "_mas_bday_no_recognize": "922.actions.no_recognize",
             "_mas_bday_said_happybday": "922.actions.said_happybday"
         },
-        exit_pp=store.mas_history._bday_exit_pp
+        use_year_before=True,
+        start_dt=datetime.datetime(2020, 9, 21),
+        end_dt=datetime.datetime(2020, 9, 23)
     ))
 
 ############### [HOL060]: METHODS
@@ -4878,14 +4880,14 @@ init -1 python:
             char_dir_files = store.mas_docking_station.getPackageList()
 
             #Step 2, We need to remove the extensions
-            for file in char_dir_files:
-                temp_filename = file[:file.index('.')] if "." in file else file
+            for filename in char_dir_files:
+                temp_filename = filename.partition('.')[0]
 
                 #Step 3, check if the filename is present
                 if "oki doki" == temp_filename:
                     #If we got here: Step 4, file exists so flag and delete. Also get rid of note
                     persistent._mas_bday_confirmed_party = True
-                    store.mas_docking_station.destroyPackage(file)
+                    store.mas_docking_station.destroyPackage(filename)
 
                     if persistent._mas_bday_hint_filename:
                         store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
