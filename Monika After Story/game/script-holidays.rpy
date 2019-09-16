@@ -5071,7 +5071,7 @@ label mas_bday_pool_happy_bday:
         m 1sub "You remembered my birthday...!"
         m 1sktpa "Oh gosh, I'm so happy that you remembered."
         m 1dktdu "I feel like today is going to be such a special day~"
-        m 1ekbfa "What else do you have in store for me, I wonder."
+        m 1ekbfa "What else do you have in store for me, I wonder..."
         m 1hub "Ahaha!"
 
     if mas_isplayer_bday() and (persistent._mas_player_bday_in_player_bday_mode or persistent._mas_bday_sbp_reacted):
@@ -5310,11 +5310,12 @@ label mas_bday_spent_time_with_wrapup:
     $ gave_gifts = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))[0]
 
     if gave_gifts > 0:
-        m 3eua "Let's not forget the gifts you gave me for my birthday."
-        # more than 2
+        #More than 1
         if gave_gifts > 1:
+            m 3eua "Let's not forget the gifts you gave me for my birthday."
             m 3hub "They were just amazing, [player]!"
         else:
+            m 3eua "Let's not forget about the gift you gave me for my birthday."
             m 3hub "It was so wonderful, [player]!"
 
         m 1eka "I really appreciate the effort of finding a way to get things from your reality to mine..."
