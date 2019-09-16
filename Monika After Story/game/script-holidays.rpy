@@ -5310,6 +5310,7 @@ label mas_bday_spent_time_with:
             m 3ekbsa "You really made my birthday complete~"
 
 label mas_bday_spent_time_with_wrapup:
+    $ mas_rmallEVL("mas_bday_spent_time_with")
     $ gave_gifts = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))[0]
 
     if gave_gifts > 0:
