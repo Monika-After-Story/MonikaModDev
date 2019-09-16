@@ -5059,6 +5059,7 @@ init 5 python:
     )
 
 label mas_bday_pool_happy_bday:
+    $ mas_gainAffection(5,bypass=True)
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
         m 3eka "I was waiting for you to say those magic words~"
@@ -5105,6 +5106,8 @@ init 5 python:
     )
 
 label mas_bday_pool_happy_belated_bday:
+    $ mas_gainAffection(5,bypass=True)
+
     #We've essentially said happy birthday, let's flag this
     $ persistent._mas_bday_said_happybday = True
     $ persistent._mas_bday_no_recognize = False
@@ -5406,7 +5409,7 @@ init 5 python:
 
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
-    if (mas_getFirstSesh().date() > mas_monika_birthday):
+    if (mas_getFirstSesh().date() >= mas_monika_birthday):
         $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
         return
 
@@ -5657,17 +5660,22 @@ label greeting_returned_home_bday:
     $ persistent._mas_bday_on_date = False
     #We've opened the game
     $ persistent._mas_bday_opened_game = True
+    #Setup date length stuff
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+    $ checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
 
     #Set party if need be
     if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:
+        if mas_one_hour < time_out <= mas_three_hour:
+            $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+        elif time_out > mas_three_hour:
+            $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+
         if mas_isplayer_bday() and persistent._mas_player_bday_in_player_bday_mode and persistent._mas_bday_date_count == 1:
             jump mas_monika_cake_on_player_bday
 
         else:
             jump mas_bday_surprise_party_reaction
-
-    $ time_out = store.mas_dockstat.diffCheckTimes()
-    $ checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
 
     #Otherwise we go thru the normal dialogue for returning home on moni_bday
     if time_out <= mas_five_minutes:

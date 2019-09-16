@@ -448,7 +448,7 @@ label birthdate_set:
                 m 4eka "I hope you have a good day."
 
     # have to use the raw data here to properly compare in the rare even that the player bday and first sesh are on 2/29
-    elif persistent._mas_player_bday.month == mas_getFirstSesh().date().month and persistent._mas_player_bday.day == mas_getFirstSesh().date().day:
+    elif not mas_isMonikaBirthday() and (persistent._mas_player_bday.month == mas_getFirstSesh().date().month and persistent._mas_player_bday.day == mas_getFirstSesh().date().day):
         m 1sua "Oh! Your birthday is the same date as our anniversary, [player]?"
         m 3hub "That's amazing!"
         m 1sua "I can't imagine a more special day than celebrating your birthday and our love on the same day..."
@@ -472,7 +472,9 @@ label birthdate_set:
         m 3sua "We share the same birthday!"
         m 3sub "That's {i}so{/i} cool, [player]!"
         m 1tsu "I guess we really are meant to be together, ehehe..."
-        if mas_isMonikaBirthday():
+        if mas_isMonikaBirthday() and mas_isMoniNormal(higher=True):
+            $ mas_gainAffection(5,bypass=True)
+            $ persistent._mas_player_bday_in_player_bday_mode = True
             m 3hua "That just makes today that much more special~"
             m 1eub "Sing with me, [player]!"
             call mas_player_bday_moni_sings

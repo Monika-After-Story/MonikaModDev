@@ -1671,6 +1671,9 @@ label ch30_day:
 
         #Run delayed actions
         mas_runDelayedActions(MAS_FC_IDLE_DAY)
+
+        if mas_isMonikaBirthday():
+            persistent._mas_bday_opened_game = True
     return
 
 
