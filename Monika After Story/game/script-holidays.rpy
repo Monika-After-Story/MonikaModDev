@@ -5672,7 +5672,7 @@ label greeting_returned_home_bday:
         elif time_out > mas_three_hour:
             $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
 
-        if mas_isplayer_bday() and persistent._mas_player_bday_in_player_bday_mode and persistent._mas_bday_date_count == 1:
+        if mas_isplayer_bday() and persistent._mas_player_bday_decor and persistent._mas_bday_date_count == 1:
             jump mas_monika_cake_on_player_bday
 
         else:
