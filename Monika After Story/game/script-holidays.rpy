@@ -3766,8 +3766,11 @@ label mas_player_bday_other_holiday:
     call mas_player_bday_cake
     return
 
+# when did moni last sign happy birthday
+default persistent._mas_player_bday_last_sung_hbd = None
 # moni singing happy birthday
 label mas_player_bday_moni_sings:
+    $ persistent._mas_player_bday_last_sung_hbd = datetime.date.today()
     if mas_isMonikaBirthday():
         $ you = "us"
     else:
@@ -5215,10 +5218,10 @@ label mas_bday_surprise_party_reaction_post_make_wish:
 label mas_bday_surprise_party_reaction_end:
     if mas_isMoniNormal(higher=True):
         m 6eka "Thank you, [player]. From the bottom of my heart, thank you..."
-        if mas_isplayer_bday():
+        if mas_isplayer_bday() and persistent._mas_player_bday_last_sung_hbd != datetime.date.today():
             m 6eua "..."
             m 6wuo "..."
-            m 6wub "Oh! I almost forgot, I made you a cake, too!"
+            m 6wub "Oh! I almost forgot. {w=0.5}I made you a cake, too!"
 
             call mas_monika_gets_cake
 
