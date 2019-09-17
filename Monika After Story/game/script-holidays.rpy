@@ -4029,7 +4029,6 @@ label mas_f14_autoload_check:
     python:
         #Since it's possible player didn't see this, we need to derandom it manually.
         mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-        #mas_removeDelayedAction(11)
 
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
@@ -5656,9 +5655,6 @@ label mas_bday_bd_outro:
 
 
 ########## [HOL060] DOCKSTAT GREETS ##########
-#TODO:
-#   Dlg review
-
 label greeting_returned_home_bday:
     #First, reset this flag, we're no longer on a date
     $ persistent._mas_bday_on_date = False

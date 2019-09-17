@@ -14,7 +14,6 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
-    EV_RULE_UNDO_ACTION = "undo_action"
 
 
     # special constants for numerical repeat rules
