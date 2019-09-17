@@ -5291,7 +5291,7 @@ init 5 python:
 
 label mas_bday_spent_time_with:
     if mas_isMoniUpset(lower=True):
-        m 1eka "Hey, [player]..."
+        m 1eka "[player]..."
         m 3eka "I just wanted to say I really appreciate you spending time with me today."
         m 3rksdla "I know it hasn't been going that great lately, but you taking the time to celebrate my birthday with me..."
         m 1eud "Well it gives me hope that maybe it's not too late for us."
@@ -5769,7 +5769,7 @@ label greeting_returned_home_bday:
             m 1hua "..."
             m 1wud "Oh wow, [player]. We really were out for a while..."
 
-        if mas_isplayer_bday():
+        if mas_isplayer_bday() and mas_isMoniNormal(higher=True):
             if persistent._mas_bday_sbp_reacted:
                 $ persistent._mas_bday_visuals = False
                 $ persistent._mas_player_bday_decor = True
@@ -5777,8 +5777,8 @@ label greeting_returned_home_bday:
                 m 3hub "I guess we can just leave these decorations up, ahaha!"
                 m 1eub "I'll be right back, just need to go get your cake!"
                 jump mas_player_bday_cake
-            else:
-                jump mas_player_bday_ret_on_bday
+
+            jump mas_player_bday_ret_on_bday
 
         else:
             if mas_player_bday_curr() == mas_monika_birthday:
@@ -5805,6 +5805,10 @@ label greeting_returned_home_bday:
                 m 1eka "I hope you had as great of a time as I did~"
 
             if not mas_lastSeenInYear('mas_bday_spent_time_with'):
+                if mas_isMoniUpset(lower=True):
+                    m 1dka "..."
+                    jump mas_bday_spent_time_with
+
                 m 3eud "Oh, and [player]..."
                 m 3eka "I just wanted to thank you again."
                 m 1rka "And it's not just this date..."
