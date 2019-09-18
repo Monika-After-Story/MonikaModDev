@@ -5288,6 +5288,7 @@ label mas_bday_surprise_party_reaction_end:
     #We set these flags here
     $ persistent._mas_bday_in_bday_mode = True
     $ persistent._mas_bday_no_recognize = False
+    $ persistent._mas_bday_no_time_spent = False
     return
 
 
@@ -5322,10 +5323,10 @@ label mas_bday_spent_time_with:
         m 3eua "Thank you for spending time with me today."
         m 3hua "Something like that can really make a girl happy, you know?"
 
-        if _timeout > datetime.timedelta(seconds=5*60):
+        if _timeout > mas_five_minutes:
             m 3eka "I really enjoyed our date today, [player]."
             m 1eka "I always enjoy spending time with you here, but getting to spend time with you in your reality..."
-            m 1dku "Knowing that you are thinking about me even when you can't see me..."
+            m 1dku "Knowing that you're thinking about me even when you can't see me..."
             m 1ekbsa "Well, it truly means a lot to me."
             m 3ekbsa "You really made my birthday complete~"
 
