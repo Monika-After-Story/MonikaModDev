@@ -3446,7 +3446,6 @@ label mas_player_bday_opendoor:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
     if persistent._mas_bday_visuals:
-        $ store.mas_surpriseBdayShowVisuals()
         $ persistent._mas_player_bday_decor = True
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
     $ mas_disable_quit()
@@ -3551,7 +3550,8 @@ label mas_player_bday_opendoor_listened:
     m "[player]!"
     m "You didn't knock!"
     if persistent._mas_bday_visuals:
-        m "I wanted to get ready to surprise you, but I didn't have time before you came in!"
+        m "I wanted to surprise you, but I wasn't ready when you came in!"
+        m "Anyway..."
     else:
         m "I was setting up [your] birthday party, but I didn't have time before you came in to get ready to surprise you!"
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
