@@ -1696,9 +1696,6 @@ label mas_reaction_new_ribbon:
 
     $ mas_giftCapGainAff(3)
     if persistent._mas_current_gifted_ribbons == 0:
-
-
-
         m 1suo "A new ribbon!"
         m 3hub "...And it's [_mas_new_ribbon_color]!"
 
@@ -1728,7 +1725,6 @@ label mas_reaction_new_ribbon:
         m 3hua "Thanks again~"
 
     else:
-
         m 1suo "Another ribbon!"
         m 3hub "...And this time it's [_mas_new_ribbon_color]!"
 

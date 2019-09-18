@@ -5624,7 +5624,7 @@ label bye_922_delegate:
         m 1ekbfa "You're the best partner I could ever hope for~"
 
     #BD Intro
-    if mas_isMoniAff(higher=True) and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked:
+    if mas_isMoniAff(higher=True) and not mas_SELisUnlocked(mas_clothes_blackdress):
         m 3hua "I actually have an outfit prepared just for this..."
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
