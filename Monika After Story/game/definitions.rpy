@@ -532,8 +532,8 @@ python early:
             """
             Removes date data from the event
             """
-            ev.start_date = None
-            ev.end_date = None
+            self.start_date = None
+            self.end_date = None
 
         @staticmethod
         def getSortPrompt(ev):
