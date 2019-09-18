@@ -2342,7 +2342,6 @@ label mas_dockstat_different_monika:
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
     $ renpy.hide("mas_roses")
-    show monika 6eua zorder MAS_MONIKA_Z at t11 with dissolve
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
     hide emptydesk

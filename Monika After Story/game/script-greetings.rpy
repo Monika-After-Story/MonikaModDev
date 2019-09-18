@@ -3009,7 +3009,7 @@ label greeting_returned_home:
 
     # NOTE: this ordering is key, greeting_returned_home_player_bday handles the case
     # if we left before f14 on your bday and return after f14
-    if persistent._mas_player_bday_left_on_bday:
+    if persistent._mas_player_bday_left_on_bday or (persistent._mas_player_bday_decor and not mas_isplayer_bday() and mas_isMonikaBirthday() and mas_confirmedParty()):
         jump greeting_returned_home_player_bday
 
     if persistent._mas_f14_gone_over_f14:

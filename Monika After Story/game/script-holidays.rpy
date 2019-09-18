@@ -3404,9 +3404,6 @@ label mas_player_bday_autoload_check:
         $ persistent._mas_bday_opened_game = True
         $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
 
-    elif persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals:
-        call mas_bday_post_bday_check
-
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
     if (
             not persistent._mas_player_bday_in_player_bday_mode
@@ -3430,6 +3427,9 @@ label mas_player_bday_autoload_check:
         $ persistent._mas_player_bday_in_player_bday_mode = False
         $ mas_lockEVL("bye_player_bday", "BYE")
 
+    if not mas_isMonikaBirthday() and (persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals):
+        call mas_bday_post_bday_check
+
     if mas_isO31():
         return
     else:
@@ -3439,6 +3439,9 @@ label mas_player_bday_autoload_check:
 label mas_player_bday_opendoor:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
+    if persistent._mas_bday_visuals:
+        $ store.mas_surpriseBdayShowVisuals()
+        $ persistent._mas_player_bday_decor = True
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
     $ mas_disable_quit()
     if mas_isMonikaBirthday():
@@ -3447,7 +3450,8 @@ label mas_player_bday_opendoor:
         $ your = "your"
     m "[player]!"
     m "You didn't knock!"
-    m "I was just going to start setting up [your] birthday party, but I didn't have time before you came in!"
+    if not persistent._mas_bday_visuals:
+        m "I was just going to start setting up [your] birthday party, but I didn't have time before you came in!"
     m "..."
     m "Well...{w=1}the surprise is ruined now, but.{w=0.5}.{w=0.5}.{nw}"
     $ store.mas_surpriseBdayShowVisuals()
@@ -3507,11 +3511,14 @@ label mas_player_bday_surprise:
 
 # closed door greet option for opening door for listening
 label mas_player_bday_listen:
-    m "...I'll just put this here..."
-    m "...hmm that looks pretty good...{w=1}but something's missing..."
-    m "Oh!{w=0.5} Of course!"
-    m "There!{w=0.5} Perfect!"
-    window hide
+    if persistent._mas_bday_visuals:
+        pause 5.0
+    else:
+        m "...I'll just put this here..."
+        m "...hmm that looks pretty good...{w=1}but something's missing..."
+        m "Oh!{w=0.5} Of course!"
+        m "There!{w=0.5} Perfect!"
+        window hide
     jump monikaroom_greeting_choice
 
 # closed door greet option for knocking after listening
@@ -3537,7 +3544,10 @@ label mas_player_bday_opendoor_listened:
         $ your = "your"
     m "[player]!"
     m "You didn't knock!"
-    m "I was setting up [your] birthday party, but I didn't have time before you came in to get ready to surprise you!"
+    if persistent._mas_bday_visuals:
+        m "I wanted to get ready to surprise you, but I didn't have time before you came in!"
+    else:
+        m "I was setting up [your] birthday party, but I didn't have time before you came in to get ready to surprise you!"
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     m 4hub "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
@@ -3550,6 +3560,9 @@ label mas_player_bday_cake:
     #If it's Monika's birthday too, we'll just use those delegates instead of this one
     if not mas_isMonikaBirthday():
         $ mas_unlockEVL("bye_player_bday", "BYE")
+        if persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals:
+            # since we need the visuals var in the special greet, we wait until here to run this
+            call mas_bday_post_bday_check
 
     # reset zoom here to make sure the cake is actually on the table
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
@@ -3862,13 +3875,16 @@ label greeting_returned_home_player_bday:
             # point totals split here between player and monika bdays, since this date was for both
             if time_out < mas_one_hour:
                 $ mas_mbdayCapGainAff(7.5)
-                $ mas_pbdayCapGainAff(7.5)
+                if persistent._mas_player_bday_left_on_bday:
+                    $ mas_pbdayCapGainAff(7.5)
             elif time_out < mas_three_hour:
                 $ mas_mbdayCapGainAff(12.5)
-                $ mas_pbdayCapGainAff(12.5)
+                if persistent._mas_player_bday_left_on_bday:
+                    $ mas_pbdayCapGainAff(12.5)
             else:
                 $ mas_mbdayCapGainAff(17.5)
-                $ mas_pbdayCapGainAff(17.5)
+                if persistent._mas_player_bday_left_on_bday:
+                    $ mas_pbdayCapGainAff(17.5)
 
             m 6hub "That was a fun date, [player]..."
             m 6eua "Thanks for--"
@@ -5135,11 +5151,11 @@ label mas_bday_pool_happy_belated_bday:
 
 ################## [HOL060] PARTY REACTION
 label mas_bday_surprise_party_reaction:
+    $ store.mas_surpriseBdayShowVisuals()
+    $ persistent._mas_bday_visuals = True
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
-    #Setup visuals, with cake
-    $ store.mas_surpriseBdayShowVisuals(cake=True)
-    $ persistent._mas_bday_visuals = True
+    $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
 
     if mas_isMoniNormal(higher=True):
         m 6suo "T-{w=0.5}This is..."
