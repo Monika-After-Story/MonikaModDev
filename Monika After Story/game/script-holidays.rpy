@@ -3567,7 +3567,7 @@ label mas_player_bday_cake:
     if not mas_isMonikaBirthday():
         $ mas_unlockEVL("bye_player_bday", "BYE")
         if persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals:
-            # since we need the visuals var in the special greet, we wait until here to run this
+            # since we need the visuals var in the special greet, we wait until here to set these
             $ persistent._mas_bday_in_bday_mode = False
             $ persistent._mas_bday_visuals = False
 
@@ -5651,6 +5651,9 @@ label bye_922_delegate:
 label mas_bday_bd_outro:
     $ monika_chr.change_clothes(mas_clothes_blackdress)
     $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress, True)
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    show monika 1eua
+    call monika_zoom_transition_reset(1.0)
 
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"
@@ -5658,6 +5661,7 @@ label mas_bday_bd_outro:
     m 3eub "Maybe we could visit the mall, or even the park!"
     m 1eka "But knowing you, you've already got something amazing planned for us~"
     m 1hua "Let's go, [player]!"
+    $ persistent._mas_zoom_zoom_level = mas_temp_zoom_level
 
     python:
         # setup check and log this file checkout
