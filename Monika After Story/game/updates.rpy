@@ -304,6 +304,62 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.1
+label v0_10_1(version="v0_10_1"):
+    #Fix 922 time spent vars if we're not post 922 (so these vars aren't set when they shouldn't be)
+    if datetime.date.today() < mas_monika_birthday:
+       $ persistent._mas_bday_no_time_spent = True
+       $ persistent._mas_bday_no_recognize = True
+
+    #Fix all of the topics which are now having actions undone (conditional updates)
+    python:
+        ev_label_list = [
+            #D25
+            ("mas_d25_monika_holiday_intro", "not persistent._mas_d25_started_upset"),
+            ("mas_d25_monika_holiday_intro_upset", "persistent._mas_d25_started_upset"),
+            ("mas_d25_monika_christmas", "persistent._mas_d25_in_d25_mode"),
+            ("mas_d25_monika_carolling", "persistent._mas_d25_in_d25_mode"),
+            ("mas_d25_monika_mistletoe", "persistent._mas_d25_in_d25_mode"),
+            ("monika_aiwfc", "persistent._mas_d25_in_d25_mode"),
+
+            #F14
+            ("mas_pf14_monika_lovey_dovey", None),
+            ("mas_f14_monika_valentines_intro", None),
+            ("mas_f14_no_time_spent", "not persistent._mas_f14_spent_f14"),
+
+            #922
+            ("mas_bday_spent_time_with", "mas_recognizedBday()"),
+            ("mas_bday_postbday_notimespent", "not mas_recognizedBday() and not persistent._mas_bday_gone_over_bday"),
+            ("mas_bday_surprise_party_hint", None),
+            ("mas_bday_pool_happy_bday", None),
+        ]
+
+        for ev_label, conditional in ev_label_list:
+            ev = mas_getEV(ev_label)
+
+            if ev:
+                ev.conditional = conditional
+
+
+        #Make sure this ev has an action if it was removed
+        mas_getEV("mas_bday_postbday_notimespent").action=EV_ACT_QUEUE
+
+        #Fix conditionals for pbday
+        cond_str = " and not mas_isMonikaBirthday() "
+
+        ev_list_1 = [
+            ("mas_player_bday_upset_minus", cond_str),
+            ('mas_player_bday_ret_on_bday', cond_str),
+            ('mas_player_bday_no_restart', cond_str)
+        ]
+
+        for ev_label, conditional in ev_list_1:
+            ev = mas_getEV(ev_label)
+
+            if ev and ev.conditional:
+                ev.conditional += conditional
+
+    return
 
 # 0.10.0
 label v0_10_0(version="v0_10_0"):
