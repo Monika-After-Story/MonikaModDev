@@ -184,31 +184,40 @@ image mas_roses = ConditionSwitch(
 
 ### bday stuff
 define mas_bday_cake_lit = False
-image mas_bday_cake = ConditionSwitch(
+image mas_bday_cake_monika = ConditionSwitch(
     "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
     "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
     "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit-n.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
     "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake-n.png"
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
 )
+
+image mas_bday_cake_player = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
+)
+
 image mas_bday_banners = ConditionSwitch(
     "morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations.png",
     "not morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
 )
+
 image mas_bday_balloons = ConditionSwitch(
     "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
     "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png"
-#    "morning_flag",
-#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
-#    "not morning_flag",
-#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
 init -5 python in mas_sprites:
@@ -2083,7 +2092,6 @@ init -5 python in mas_sprites:
             lean=None,
             eyebags=None,
             sweat=None,
-            blush=None,
             tears=None,
             emote=None
         ):
@@ -2104,8 +2112,6 @@ init -5 python in mas_sprites:
             eyebags - type of eyebags
                 (Default: None)
             sweat - type of sweat drop
-                (Default: None)
-            blush - type of blush
                 (Default: None)
             tears - type of tears
                 (Default: None)
@@ -2135,8 +2141,8 @@ init -5 python in mas_sprites:
         if sweat:
             _ms_sweat(sprite_list, loc_str, sweat, n_suffix, f_prefix)
 
-        if blush:
-            _ms_blush(sprite_list, loc_str, blush, n_suffix, f_prefix)
+#        if blush:
+#            _ms_blush(sprite_list, loc_str, blush, n_suffix, f_prefix)
 
         if tears:
             _ms_tears(sprite_list, loc_str, tears, n_suffix, f_prefix)
@@ -2146,6 +2152,23 @@ init -5 python in mas_sprites:
 
         # finally the last paren
 #        sprite_list.append(")")
+
+    
+    def _ms_face_pre(sprite_list, loc_str, n_suffix, lean=None, blush=None):
+        """
+        Adds face strings that go before hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            n_suffix - night siffux to use
+            lean - type of lean
+            blush - type of blush
+        """
+        f_prefix = face_lean_mode(lean)
+
+        if blush:
+            _ms_blush(sprite_list, loc_str, blush, n_suffix, f_prefix)
 
 
     def _ms_hair(sprite_list, loc_str, hair, n_suffix, front_split, lean):
@@ -2500,14 +2523,15 @@ init -5 python in mas_sprites:
         #   14. bse-acs - between base and body-1
         #   15. body-1 - the front part of body (boobs)
         #   16. bfh-acs - acs between Body and Front Hair
-        #   17. front-hair - front portion of hair (split mode)
-        #   18. afh-acs - acs betweem Arms and Front Hair
-        #   19. face - facial expressions
-        #   20. mid-acs - acs between face and front arms
-        #   21. arms-base-1 - the base front part of arms
-        #   22. ase-acs-1 - between base arms and clothes, front part
-        #   23. arms-1 - front arms
-        #   24. pst-acs - acs after everything
+        #   17. face-pre - pre front hair facial expressions
+        #   18. front-hair - front portion of hair (split mode)
+        #   19. afh-acs - acs betweem Arms and Front Hair
+        #   20. face - facial expressions
+        #   21. mid-acs - acs between face and front arms
+        #   22. arms-base-1 - the base front part of arms
+        #   23. ase-acs-1 - between base arms and clothes, front part
+        #   24. arms-1 - front arms
+        #   25. pst-acs - acs after everything
 
         # NOTE: render order (baked)
         #   1. pre-acs - every acs that should render before anything
@@ -2516,10 +2540,10 @@ init -5 python in mas_sprites:
         #   3. bbh-acs - acs between Body and Back hair
         #   16. bfh-acs - acs between body and front hair
         #   18. afh-acs - acs between front hair and arms
-        #   19. face - facial expressions
-        #   20. mid-acs - acs between face and front arms
-        #   *21. arms-nh - baked arms
-        #   24. pst-acs - acs after everything
+        #   20. face - facial expressions
+        #   21. mid-acs - acs between face and front arms
+        #   *22. arms-nh - baked arms
+        #   25. pst-acs - acs after everything
     
         # NOTE: the ASE_ACS layer:
         #   This layer is unique in that it actually is split into 2 zones:
@@ -2592,7 +2616,7 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 19. face
+            # 20. face
             _ms_face(
                 sprite_str_list,
                 loc_build_str,
@@ -2604,12 +2628,11 @@ init -5 python in mas_sprites:
                 lean=lean,
                 eyebags=eyebags,
                 sweat=sweat,
-                blush=blush,
                 tears=tears,
                 emote=emote
             )
 
-            # 20. between body and arms acs
+            # 21. between body and arms acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -2620,7 +2643,7 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # *21. arms
+            # *22. arms
             _ms_arms_nh(
                 sprite_str_list,
                 loc_build_str,
@@ -2739,7 +2762,16 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 17. front-hair
+            # 17. pre front hair expressions
+            _ms_face_pre(
+                sprite_str_list,
+                loc_build_str,
+                n_suffix,
+                lean=lean,
+                blush=blush
+            )
+
+            # 18. front-hair
             _ms_hair(
                 sprite_str_list,
                 loc_build_str,
@@ -2749,7 +2781,7 @@ init -5 python in mas_sprites:
                 lean
             )
 
-            # 18. post-front hair acs
+            # 19. post-front hair acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -2760,7 +2792,7 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 19. face
+            # 20. face
             _ms_face(
                 sprite_str_list,
                 loc_build_str,
@@ -2772,12 +2804,11 @@ init -5 python in mas_sprites:
                 lean=lean,
                 eyebags=eyebags,
                 sweat=sweat,
-                blush=blush,
                 tears=tears,
                 emote=emote
             )
 
-            # 20. between body and arms acs
+            # 21. between body and arms acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -2788,9 +2819,9 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 21. arms-base-1 
-            # 22. between arms-base and arms acs
-            # 23. arms-1
+            # 22. arms-base-1 
+            # 23. between arms-base and arms acs
+            # 24. arms-1
             _ms_arms_nh_wbase(
                 sprite_str_list,
                 base_pose,
@@ -2804,7 +2835,7 @@ init -5 python in mas_sprites:
                 "1"
             )
 
-        # 24. after arms acs
+        # 25. after arms acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,

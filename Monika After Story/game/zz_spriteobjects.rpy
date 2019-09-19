@@ -338,7 +338,7 @@ init -2 python in mas_sprites:
         if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
             store.mas_filterUnlockGroup(SP_ACS, "ribbon")
         else:
-            store.mas_lockEVL("mas_ribbon_select", "EVE")
+            store.mas_lockEVL("monika_ribbon_select", "EVE")
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -393,7 +393,7 @@ init -2 python in mas_sprites:
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
-        _clothes_baked_entry()    
+        _clothes_baked_entry()
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
@@ -438,7 +438,7 @@ init -2 python in mas_sprites:
         if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
             store.mas_filterUnlockGroup(SP_ACS, "ribbon")
         else:
-            store.mas_lockEVL("monika_hair_select", "EVE")
+            store.mas_lockEVL("monika_ribbon_select", "EVE")
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
@@ -455,10 +455,6 @@ init -2 python in mas_sprites:
             p5=None,
             p6=None
         )
-
-        # NOTE: revaluate if this looks bad on santa
-        # remove ear rose
-        _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
 
     def _clothes_santa_exit(_moni_chr, **kwargs):
@@ -783,6 +779,32 @@ init -1 python:
     )
     store.mas_selspr.unlock_clothes(mas_clothes_def)
 
+    
+    ### BLACK DRESS (OUR TIME)
+    ## blackdress
+    # Blackdress from Our Time Mod
+    # thanks SovietSpartan/JMO/Orca/Velius94/Orca
+    mas_clothes_blackdress = MASClothes(
+        "blackdress",
+        "blackdress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blackdress)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blackdress,
+        "Black Dress",
+        "blackdress",
+        "clothes",
+        visible_when_locked=False,
+        select_dlg=[
+            "Are we going somewhere special, [player]?"
+        ]
+    )
+
 
     ### BLAZERLESS SCHOOL UNIFORM
     ## blazerless
@@ -943,9 +965,6 @@ init -1 python:
             p7="restleftpointright"
         ),
         fallback=True,
-        hair_map={
-            "bun": "def"
-        },
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_santa_entry,
         exit_pp=store.mas_sprites._clothes_santa_exit,

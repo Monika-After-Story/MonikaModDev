@@ -6,6 +6,7 @@ init -1 python in mas_dev_unit_tests:
     import store.mas_ev_data_ver as medv
 
     unit_tests = [
+#        ("Event - yearAdjust", "dev_unit_test_event_yearadjust", False, False),
         ("JSON - MASPoseMap", "dev_unit_test_json_masposemap", False, False),
         ("JSON - MASPoseArms", "dev_unit_test_json_masposearms", False, False),
         (
@@ -434,6 +435,77 @@ label dev_unit_tests:
 
 
 ## unit tests
+
+label dev_unit_test_event_yearadjust:
+    m "Running Tests..."
+    python:
+        def add_years(in_dt, diff):
+            return store.mas_utils.add_years(in_dt, diff)
+
+        eya_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+        eya_tester.prepareTest("is current")
+        now_dt = datetime.datetime.now()
+        start_dt = now_dt - datetime.timedelta(days=1)
+        end_dt = now_dt + datetime.timedelta(days=1)
+        expected = (start_dt, end_dt, False)
+        actual = Event._yearAdjust(start_dt, end_dt, [])
+        eya_tester.assertEqual(expected, actual)
+
+        eya_tester.prepareTest("is current, same as start")
+        now_dt = datetime.datetime.now()
+        start_dt = now_dt
+        end_dt = now_dt + datetime.timedelta(days=1)
+        expected = (start_dt, end_dt, False)
+        actual = Event._yearAdjust(start_dt, end_dt, [])
+        eya_tester.assertEqual(expected, actual)
+
+        eya_tester.prepareTest("is current, no years, forced")
+        now_dt = datetime.datetime.now()
+        start_dt = now_dt - datetime.timedelta(days=1)
+        end_dt = now_dt + datetime.timedelta(days=1)
+        expected = (add_years(start_dt, 1), add_years(end_dt, 1), True)
+        actual = Event._yearAdjust(start_dt, end_dt, [], force=True)
+        eya_tester.assertEqual(expected, actual)
+
+        eya_tester.prepareTest("before now, same year")
+        now_dt = datetime.datetime.now()
+        start_dt = now_dt - datetime.timedelta(days=10)
+        end_dt = now_dt - datetime.timedelta(days=5)
+        expected = (add_years(start_dt, 1), add_years(end_dt, 1), True)
+        actual = Event._yearAdjust(start_dt, end_dt, [])
+        eya_tester.assertEqual(expected, actual)
+
+        eya_tester.prepareTest("before now, diff year")
+        now_dt = datetime.datetime.now()
+        start_dt = now_dt - datetime.timedelta(days=400)
+        end_dt = now_dt - datetime.timedelta(days=380)
+        expected = (add_years(start_dt, 2), add_years(end_dt, 2), True)
+        actual = Event._yearAdjust(start_dt, end_dt, [])
+        eya_tester.assertEqual(expected, actual)       
+
+        eya_tester.prepareTest("ahead now, same year")
+        now_dt = datetime.datetime.now()
+        start_dt = now_dt + datetime.timedelta(days=5)
+        end_dt = now_dt + datetime.timedelta(days=10)
+        expected = (start_dt, end_dt, False)
+        actual = Event._yearAdjust(start_dt, end_dt, [])
+        eya_tester.assertEqual(expected, actual)              
+
+        eya_tester.prepareTest("ahead now, diff year")
+        now_dt = datetime.datetime.now()
+        start_dt = now_dt + datetime.timedelta(days=380)
+        end_dt = now_dt + datetime.timedelta(days=400)
+        expected = (add_years(start_dt, -1), add_years(end_dt, -1), True)
+        actual = Event._yearAdjust(start_dt, end_dt, [])
+        eya_tester.assertEqual(expected, actual)
+
+        # TODO: finish these tests. for now im tired and this function hasnt
+        #   been changed enough that we actual need this.
+
+
+
+    return
 
 label dev_unit_test_json_masposemap:
     m "Running Tests..."

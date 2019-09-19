@@ -39,6 +39,8 @@ python early:
         EV_ACT_POOL
     ]
 
+
+
     # custom event exceptions
     class EventException(Exception):
         def __init__(self, _msg):
@@ -501,11 +503,37 @@ python early:
             new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
 
             if was_changed:
+                if self.isWithinRange():
+                    store.evhand.addYearsetBlacklist(
+                        self.eventlabel,
+                        self.end_date
+                    )
                 self.start_date = new_start
                 self.end_date = new_end
 
             return True
 
+        def isWithinRange(self, check_dt=None):
+            """
+            Checks if the given dt is within range of this events start/end
+
+            IN:
+                check_dt - datetime to check, if None passed, we use .now()
+
+            RETURNS: True if within range, False if not within range, None
+                if no dts to compare
+            """
+            if self.start_date is None or self.end_date is None:
+                return None
+            check_dt = datetime.datetime.now()
+            return self.start_date <= check_dt < self.end_date
+
+        def stripDates(self):
+            """
+            Removes date data from the event
+            """
+            self.start_date = None
+            self.end_date = None
 
         @staticmethod
         def getSortPrompt(ev):
@@ -597,11 +625,15 @@ python early:
 
             IN:
                 ev - event object to verify and set
+
+            RETURNS: was_changed
             """
             new_start, new_end, was_changed = Event._verifyDatesEV(ev)
             if was_changed:
                 ev.start_date = new_start
                 ev.end_date = new_end
+
+            return was_changed
 
 
         @staticmethod
@@ -704,7 +736,7 @@ python early:
                     new_end = add_yr_fun(_end, diff)
 
                 # now return the new start and the modified end
-                return (add_yr_fun(_start, diff), new_end, True)
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
 
             # otherwise, we have a list of years, and shoudl determine next
             if force:
@@ -735,7 +767,7 @@ python early:
 
             if force:
                 # force means we should just use this diff right away
-                return (add_yr_fun(_start, diff), new_end, True)
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
 
             if new_end <= _now:
                 if len(new_years) <= 1:
@@ -746,7 +778,7 @@ python early:
                 diff = _now.year - new_years[1]
                 new_end = add_yr_fun(_end, diff)
 
-            return (add_yr_fun(_start, diff), new_end, True)
+            return (add_yr_fun(_start, diff), new_end, diff != 0)
 
 
         @staticmethod
@@ -1452,6 +1484,23 @@ python early:
             """
             if ev.action in Event.ACTION_MAP:
                 Event._performAction(ev, **kwargs)
+
+        @staticmethod
+        def _undoEVAction(ev):
+            """
+            Undoes the ev_action
+
+            IN:
+                ev - event to undo ev action for
+            """
+            if ev.action == EV_ACT_UNLOCK:
+                ev.unlocked = False
+            elif ev.action == EV_ACT_RANDOM:
+                ev.random = False
+                #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
+                if "no rmallEVL" not in ev.rules:
+                    mas_rmallEVL(ev.eventlabel)
+            #NOTE: we don't add the rest since there's no reason to undo those.
 
 
 # init -1 python:
@@ -3704,8 +3753,6 @@ init -1 python:
         )
 
 
-    def mas_isMonikaBirthday():
-        return datetime.date.today() == mas_monika_birthday
 
 
     def mas_isSpecialDay():
@@ -3724,37 +3771,6 @@ init -1 python:
             or mas_isNYE()
             or mas_isF14()
         )
-
-    def mas_getNextMonikaBirthday():
-        today = datetime.date.today()
-        if mas_monika_birthday < today:
-            return datetime.date(
-                today.year + 1,
-                mas_monika_birthday.month,
-                mas_monika_birthday.day
-            )
-        return mas_monika_birthday
-
-
-    def mas_recognizedBday(_date=None):
-        """
-        Checks if the user recognized monika's birthday at all.
-
-        TODO: this is one-shot. we need to make this generic to future bdays
-
-        RETURNS:
-            True if the user recoginzed monika's birthday, False otherwise
-        """
-        if _date is None:
-            _date = mas_monika_birthday
-
-        return (
-            mas_generateGiftsReport(_date)[0] > 0
-            or persistent._mas_bday_date_count > 0
-            or persistent._mas_bday_sbp_reacted
-            or persistent._mas_bday_said_happybday
-        )
-
 
     def mas_maxPlaytime():
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
@@ -5556,6 +5572,8 @@ default persistent.event_database = dict()
 default persistent.farewell_database = dict()
 default persistent.greeting_database = dict()
 default persistent._mas_apology_database = dict()
+default persistent._mas_undo_action_rules = dict()
+default persistent._mas_strip_dates_rules = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
@@ -5572,6 +5590,9 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
+
+#Var to see if we were on a long absence (post flag reset)
+default mas_ret_long_absence = False
 
 # rain
 define mas_is_raining = False
@@ -5631,7 +5652,6 @@ define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define mas_monika_twitter_handle = "lilmonix3"
-define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False

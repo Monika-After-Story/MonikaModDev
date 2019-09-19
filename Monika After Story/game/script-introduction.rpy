@@ -1,6 +1,9 @@
 init -1 python:
     import store.mas_affection as mas_aff
 label introduction:
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_opened_game = True
+
     $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
@@ -184,6 +187,11 @@ label intro_end:
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
         show monika 1esa with dissolve
+
+    if mas_isMonikaBirthday():
+        # This is at the beginning and end of intro to cover an intro
+        # that spans 2 days
+        $ persistent._mas_bday_opened_game = True
     return
 
 label intro_ily_timedout:

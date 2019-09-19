@@ -318,7 +318,7 @@ init -21 python in mas_sprites_json:
     SP_LOADING = "loading {0} sprite object '{1}'..."
     SP_SUCCESS = "{0} sprite object '{1}' loaded successfully!"
     SP_SUCCESS_DRY = "{0} sprite object '{1}' loaded successfully! DRY RUN"
-    VER_NOT_FOUND = "sp_version not found"
+    VER_NOT_FOUND = "version not found"
     VER_BAD = "version mismatch. expected '{0}', found '{1}'"
 
     BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
