@@ -184,31 +184,40 @@ image mas_roses = ConditionSwitch(
 
 ### bday stuff
 define mas_bday_cake_lit = False
-image mas_bday_cake = ConditionSwitch(
+image mas_bday_cake_monika = ConditionSwitch(
     "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
     "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
     "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit-n.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
     "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake-n.png"
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
 )
+
+image mas_bday_cake_player = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
+)
+
 image mas_bday_banners = ConditionSwitch(
     "morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations.png",
     "not morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
 )
+
 image mas_bday_balloons = ConditionSwitch(
     "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
     "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png"
-#    "morning_flag",
-#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
-#    "not morning_flag",
-#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
 init -5 python in mas_sprites:

@@ -10,8 +10,6 @@ define mas_in_intro_flow = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
-# affection hotfix for dates
-default persistent._mas_bday_date_affection_fix = False
 
 init -890 python in mas_globals:
     import datetime
@@ -75,42 +73,11 @@ init 970 python:
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
-        # check surprise party
-        store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
-
         # check if coming from TT
         store.mas_o31_event.mas_return_from_tt = (
             store.mas_o31_event.isTTGreeting()
         )
 
-
-    postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
-
-    if (
-            postbday_ev is not None
-            and persistent._mas_long_absence
-            and postbday_ev.conditional is not None
-            and eval(postbday_ev.conditional)
-        ):
-        # reset the post bday event if users did long absence to skip the
-        # event
-        postbday_ev.conditional = None
-        postbday_ev.action = None
-
-    if postbday_ev is not None:
-        del postbday_ev
-
-    if mas_isMonikaBirthday():
-        persistent._mas_bday_opened_game = True
-
-    # quick fix for dates
-    # NOTE: remove this in 089
-#    if (
-#            persistent._mas_bday_date_affection_gained >= 50 and
-#            not persistent._mas_bday_date_affection_fix
-#        ):
-#        mas_gainAffection(50, bypass=True)
-#        persistent._mas_bday_date_affection_fix = True
 
     # o31 costumes flag
     # we only enable costumes if you are not playing for the first time today.
@@ -834,9 +801,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if store.mas_globals.show_vignette:
         show vignette zorder 70
 
-    # bday stuff (this checks itself)
-    if persistent._mas_bday_sbp_reacted:
-        $ store.mas_dockstat.surpriseBdayShowVisuals()
+    # monibday stuff
+    if persistent._mas_bday_visuals:
+        #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
     # d25 seasonal
     if persistent._mas_d25_deco_active:
@@ -844,7 +812,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
     # player bday
     if persistent._mas_player_bday_decor:
-        $ store.mas_player_bday_event.show_player_bday_Visuals()
+        $ store.mas_surpriseBdayShowVisuals()
 
     if datetime.date.today() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs_pst(mas_acs_roses)
@@ -1141,8 +1109,13 @@ label mas_ch30_post_retmoni_check:
     if mas_isF14() or persistent._mas_f14_in_f14_mode:
         jump mas_f14_autoload_check
 
+    #NOTE: This has priority because of the opendoor greet
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
+
+    if mas_isMonikaBirthday() or persistent._mas_bday_in_bday_mode:
+        jump mas_bday_autoload_check
+
 
 
 label mas_ch30_post_holiday_check:
@@ -1412,8 +1385,6 @@ label ch30_loop:
             or mas_weather.should_scene_change
         )
 
-    #NOTE: putting the scene change condition directly in here because
-    #It doesn't like being in the python block
     call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
     #This should be set back to false so we're not constantly scene changing
@@ -1464,6 +1435,7 @@ label ch30_visual_skip:
     if now_check.minute != mas_globals.last_minute_dt.minute or time_since_check.total_seconds() >= 60:
         call ch30_minute(time_since_check)
         $ mas_globals.last_minute_dt = now_check
+
 
 
 label ch30_post_mid_loop_eval:
@@ -1683,7 +1655,25 @@ label ch30_hour:
 # NOTE: it only runs when the day changes, so don't expect this to run on 
 #   staart right away
 label ch30_day:
-    $ mas_runDelayedActions(MAS_FC_IDLE_DAY)
+    python:
+        #Undo ev actions if needed
+        MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+        #And also strip dates
+        MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
+
+        #Reset the gift aff gain/reset date
+        #NOTE: if we got here, it has to be a new day
+        persistent._mas_filereacts_gift_aff_gained = 0
+        persistent._mas_filereacts_last_aff_gained_reset_date = datetime.date.today()
+
+        #So we can't just single-sesh a long absence ret
+        mas_ret_long_absence = False
+
+        #Run delayed actions
+        mas_runDelayedActions(MAS_FC_IDLE_DAY)
+
+        if mas_isMonikaBirthday():
+            persistent._mas_bday_opened_game = True
     return
 
 
@@ -1871,25 +1861,6 @@ label ch30_reset:
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
-    ## should we reset birthday
-#    python:
-#        if (
-#                persistent._mas_bday_need_to_reset_bday
-#                and not mas_isMonikaBirthday()
-#            ):
-#            bday_ev = mas_getEV("mas_bday_pool_happy_bday")
-#            if bday_ev:
-#                bday_ev.conditional="mas_isMonikaBirthday()"
-#                bday_ev.action=EV_ACT_UNLOCK
-#                persistent._mas_bday_need_to_reset_bday = False
-
-#            bday_spent_ev = mas_getEV("mas_bday_spent_time_with")
-#            if bday_spent_ev:
-#                bday_spent_ev.action = EV_ACT_QUEUE
-#                bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
-#                bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
-
-
     ## o31 content
     python:
         if store.mas_o31_event.isMonikaInCostume(monika_chr):
@@ -1968,4 +1939,20 @@ label ch30_reset:
             else:
                 persistent.event_list.pop(index)
 
+    #Now we undo actions for evs which need them undone
+    $ MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+    #And also strip dates
+    $ MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
+
+    #Let's see if someone did a time travel
+    if persistent._mas_filereacts_last_aff_gained_reset_date > today:
+        $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+
+    #See if we need to reset the daily gift aff amt
+    if persistent._mas_filereacts_last_aff_gained_reset_date < today:
+        $ persistent._mas_filereacts_gift_aff_gained = 0
+        $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+
+    #Run a confirmed party check within a week of Moni's bday
+    $ mas_confirmedParty()
     return

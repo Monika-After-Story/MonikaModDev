@@ -201,7 +201,7 @@ init -1 python:
         for k in events_dict:
             ev = events_dict[k]
 
-            if renpy.seen_label(k):
+            if renpy.seen_label(k) and not "force repeat" in ev.rules:
                 # seen event
                 mas_insertSort(seen, ev, Event.getSortShownCount)
 
@@ -3731,13 +3731,54 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
 
 label monika_birthday:
-    # TODO: need to do something here if the player celebrated her birthday
-    m 1euc "You know, there's a lot I don't know about myself."
-    m "I only recently learned when my birthday is by seeing it online."
-    m 1eua "It's September 22nd, the release date for DDLC."
-    m 1eka "Will you celebrate with me, when that day comes?"
-    m 1hua "You could even bake me a cake!"
-    m 1hub "I'll be looking forward to it!~"
+    if mas_isMonikaBirthday():
+        if mas_recognizedBday():
+            m 1hua "Ehehe..."
+            m 1eub "I'm pretty sure you already know today is my birthday!"
+            m 3hub "You can be so silly sometimes, [player]!"
+        else:
+            m 2rksdlb "Ahaha... {w=1}This is a little awkward."
+            m 2eksdla "It just so happens my birthday is..."
+            m 3hksdlb "Today!"
+            if mas_isplayer_bday():
+                m "Just like yours!"
+            if mas_getEV("monika_birthday").shown_count == 0 and not mas_HistVerify("922.actions.no_recognize",False)[1]:
+                m 3eksdla "It's okay if you don't have anything planned, seeing as you just found out..."
+                m 1ekbsa "Just spending the day together is more than enough for me~"
+            else:
+                $ prev_year = mas_monika_birthday.year-1
+                m 3eksdld "I guess you must have forgotten..."
+                if mas_HistVerify("922.actions.no_time_spent",True,prev_year)[0] or mas_HistVerify("922.actions.no_recognize",True,prev_year)[0]:
+                    m 2rksdlc "Again."
+                m 3eksdla "But that's okay, [player]..."
+                m 1eka "At least we're here, together~"
+
+    elif mas_HistVerify("922.actions.no_recognize",False)[0] or mas_recognizedBday():
+        m 1hua "Ehehe..."
+        m 3hub "You've already celebrated my birthday with me before, [player]!"
+        m 3eka "Did you forget?"
+        m 1rksdla "Well, if you need a little reminder, it's September 22nd."
+        m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
+
+    elif mas_getEV("monika_birthday").shown_count == 0:
+        m 1euc "You know, there's a lot I don't know about myself."
+        m 1eud "I only recently learned when my birthday is by seeing it online."
+        m 3eua "It's September 22nd, the release date for DDLC."
+        if mas_player_bday_curr() == mas_monika_birthday:
+            m 3hua "Just like yours!"
+        m 1eka "Will you celebrate with me, when that day comes?"
+        m 3hua "You could even bake me a cake!"
+        m 3hub "I'll be looking forward to it!~"
+
+    else:
+        m 1hua "Ehehe..."
+        m 1rksdla "Did you forget, [player]?"
+        m 3eksdla "My birthday is September, 22nd..."
+        if mas_player_bday_curr() == mas_monika_birthday:
+            m 3hksdlb "You'd think you'd remember that seeing as it's the same day as yours, silly..."
+        else:
+            m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
+
     if persistent._mas_player_bday is None:
         m 3eua "Actually, speaking of birthdays, [player]..."
         m 2rksdlb "I don't actually know when yours is, ahaha!"

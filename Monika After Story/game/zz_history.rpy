@@ -1074,33 +1074,6 @@ init -810 python:
         dont_reset=True
     ))
 
-    # BDAY
-    # NOTE: kind of wish I put all the bday variables together. Since they are
-    #   not together, they will be here.
-    store.mas_history.addMHS(MASHistorySaver(
-        "922",
-        #datetime.datetime(2018, 9, 30),
-        datetime.datetime(2020, 1, 6), 
-        {
-            "_mas_bday_opened_game": "922.actions.opened_game",
-            "_mas_bday_no_time_spent": "922.actions.no_time_spent",
-            "_mas_bday_no_recognize": "922.actions.no_recognize",
-            "_mas_bday_said_happybday": "922.actions.said_happybday",
-            "_mas_bday_date_count": "922.actions.date.count",
-            "_mas_bday_date_affection_lost": "922.actions.date.aff_lost",
-            "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
-            "_mas_bday_sbp_aff_given": "922.actions.surprise.aff_given",
-            "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
-            "_mas_bday_sbp_found_cake": "922.actions.surprise.found_cake",
-            "_mas_bday_sbp_found_banners": "922.actions.surprise.found_banners",
-            "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons"
-        },
-        use_year_before=True,
-        exit_pp=store.mas_history._bday_exit_pp,
-        start_dt=datetime.datetime(2019, 9, 22),
-        end_dt=datetime.datetime(2019, 9, 24)
-    ))
-
     # AFFection
     store.mas_history.addMHS(MASHistorySaver(
         "aff",

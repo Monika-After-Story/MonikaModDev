@@ -966,14 +966,6 @@ label bye_going_somewhere:
 
 label bye_going_somewhere_post_aff_check:
 
-    # event based
-    if mas_isMonikaBirthday():
-        m 1hua "Ehehe. It's a bit romantic, isn't it?"
-        m 1eua "Maybe you'd even want to call it a da-{nw}"
-        $ _history_list.pop()
-        $ _history_list.pop()
-        m 1hua "Oh! Sorry, did I say something?"
-
     if mas_isO31():
         m 1wub "Oh! Are we going trick or treating, [player]?{nw}"
         $ _history_list.pop()
@@ -1049,6 +1041,7 @@ label bye_going_somewhere_rtg:
                 store.mas_greetings.TYPE_GENERIC_RET
             )
 
+        #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
 
@@ -1098,6 +1091,9 @@ label bye_going_somewhere_normalplus_flow:
 
     if mas_isF14() and persistent._mas_f14_in_f14_mode:
         jump bye_f14
+
+    if mas_isMonikaBirthday():
+        jump bye_922_delegate
 
 label bye_going_somewhere_normalplus_flow_aff_check:
 
