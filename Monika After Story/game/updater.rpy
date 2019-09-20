@@ -527,9 +527,15 @@ init -1 python:
                 thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
                 return
 
+            # parse version
+            parsed_version = "v" + latest_version.replace(".", "_")
+
             # okay we have a latest version, compare to the current version
-            if latest_version == config.version:
-                # same version
+            if (
+                    latest_version == config.version
+                    or parsed_version in store.updates.version_updates
+            ):
+                # same version (or version on server is older)
                 thread_result.append(MASUpdaterDisplayable.STATE_UPDATED)
 
             else:
