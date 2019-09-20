@@ -45,18 +45,15 @@ init -1 python:
 
         updates.topics.clear()
         updates.topics = None
-        updates.version_updates.clear()
-        updates.version_updates = None
+        #updates.version_updates.clear()
+        #updates.version_updates = None
         # TODO
         # is there a way to delete a renpy storemodule?
 
 
 # runs before updates.rpy
 init 9 python:
-
-    if persistent.version_number != config.version:
-        renpy.call_in_new_context("vv_updates_topics")
-
+    renpy.call_in_new_context("vv_updates_topics")
 
 # init label for updats_topics
 label vv_updates_topics:
