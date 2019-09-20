@@ -527,14 +527,30 @@ init -1 python:
                 thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
                 return
 
-            # parse version
-            parsed_version = "v" + latest_version.replace(".", "_")
+            # old version check
+            if persistent._mas_unstable_mode:
+                # rpartion the ., the last item should be build number
+                lv_build_number = store.mas_utils.tryparseint(
+                    latest_version.rpartition(".")[2],
+                    default=None
+                )
+                build_number = store.mas_utils.tryparseint(
+                    config.version.rpartition(".")[2],
+                    default=None
+                )
+                if lv_build_number is None or build_number is None:
+                    thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
+                    return
+
+                lv_is_old = lv_build_number <= build_number
+
+            else:
+                # just replcae dots with underscores, prefix v
+                parsed_version = "v" + latest_version.replace(".", "_") 
+                lv_is_old = parsed_version in store.updates.version_updates
 
             # okay we have a latest version, compare to the current version
-            if (
-                    latest_version == config.version
-                    or parsed_version in store.updates.version_updates
-            ):
+            if latest_version == config.version or lv_is_old:
                 # same version (or version on server is older)
                 thread_result.append(MASUpdaterDisplayable.STATE_UPDATED)
 
