@@ -1097,23 +1097,6 @@ label mas_reaction_promisering:
     return
 
 init 5 python:
-    addReaction("mas_reaction_plush", "plushie", is_good=True)
-
-label mas_reaction_plush:
-    m 1wud "What's this, [player]?"
-    m "Are you trying to give me a plushie?"
-    m 1rksdlb "I appreciate the thought, but..."
-    m 1ekd "For some reason, I can't seem to bring it here."
-    m 1rkc "I wish I could..."
-    m 1hua "But don't worry, [player]!"
-    m 1hub "Ehehe~"
-    m 1hua "Thank you for trying!"
-    $ mas_receivedGift("mas_reaction_plush") # while unsuccessful counts
-    $ gift_ev = mas_getEV("mas_reaction_plush")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
-
-init 5 python:
     addReaction("mas_reaction_bday_cake", "birthdaycake")
 
 label mas_reaction_bday_cake:
