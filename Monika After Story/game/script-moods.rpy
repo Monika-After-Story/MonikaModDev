@@ -293,7 +293,7 @@ label mas_mood_tired:
         m "You're still here?"
         m 4lksdlc "You should really be in bed right now."
         m 2dsc "At this point, I'm not even sure if you would call this late or early..."
-        m 2eksdld "...and that just worries me even more, [player]..."
+        m 2eksdld "...and that just worries me even more, [player]."
         m "You should {i}really{/i} get to bed before it's time to start the day."
         m 1eka "I wouldn't want you falling asleep at a bad time."
         m "So please, sleep so we can be together in your dreams."
