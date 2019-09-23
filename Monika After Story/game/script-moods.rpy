@@ -292,8 +292,8 @@ label mas_mood_tired:
         m 2ekc "[player]!?"
         m "You're still here?"
         m 4lksdlc "You should really be in bed right now."
-        m 2dsc "At this point, I'm not even sure if you would call this late or early,"
-        m 2ekc "and that just worries me even more, [player]..."
+        m 2dsc "At this point, I'm not even sure if you would call this late or early..."
+        m 2eksdld "...and that just worries me even more, [player]..."
         m "You should {i}really{/i} get to bed before it's time to start the day."
         m 1eka "I wouldn't want you falling asleep at a bad time."
         m "So please, sleep so we can be together in your dreams."
@@ -303,7 +303,7 @@ label mas_mood_tired:
     elif 5 <= current_hour < 10:
         m 1eka "Still a bit tired, [player]?"
         m "It's still early in the morning, so you could go back and rest a little more."
-        m 1hua "Nothing wrong hitting snooze after waking up early."
+        m 1hua "Nothing wrong with hitting snooze after waking up early."
         m 1hksdlb "Except for the fact that I can't be there to cuddle up to you, ahaha~"
         m "I {i}guess{/i} I could wait for you a little longer."
         return
