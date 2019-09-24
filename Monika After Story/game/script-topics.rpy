@@ -7614,13 +7614,13 @@ label show_poem:
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 1eua "So, who is the writer?"
     menu:
-        m 1eua "So, who is the writer?{fast}"
+        m "So, who is the writer?{fast}"
 
         "Yuri":
             m 1hua "All right."
             m 1eua "And which poem?"
             menu:
-                m 1eue "And which poem?{fast}"
+                m "And which poem?{fast}"
                 "{i}Ghost under the light, pt.1{/i}":
                     m 1duc "Hold on..."
                     call showpoem(poem=poem_y1,music=False) from _call_showpoem_7 #yuri1
@@ -7640,7 +7640,7 @@ label show_poem:
             m 1hua "Oh, all right."
             m 1eua "And which poem?"
             menu:
-                m 1eue "And which poem?{fast}"
+                m "And which poem?{fast}"
                 "{i}Dear sunshine{/i}":
                     m 1duc "Hold on..."
                     call showpoem(poem=poem_s1,music=False) from _call_showpoem_7 #sayo1
@@ -7663,7 +7663,7 @@ label show_poem:
             m 1hksdlb "Ahah, cuteness is back."
             m 1eua "And which poem?"
             menu:
-                m 1eue "And which poem?{fast}"
+                m "And which poem?{fast}"
                 "{i}Eagle can fly{/i}":
                     m 1duc "Hold on..."
                     call showpoem(poem=poem_n1,music=False) from _call_showpoem_7 #nat1
@@ -7685,7 +7685,7 @@ label show_poem:
             m 1ttu "I know, my poems are the best..."
             m 1hua "So, which poem?"
             menu:
-                 m 1eue "So, which poem?{fast}"
+                 m "So, which poem?{fast}"
                  "{i}Hole in wall{/i}":
                      m 1duc "Hold on..."
                      call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #mon1
