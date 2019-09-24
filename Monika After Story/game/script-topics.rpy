@@ -3885,7 +3885,7 @@ label monika_playerswriting:
     m 1eka "I hope I didn't bore you with that. I just love talking with you."
     m 1eua "After all, the two of us are members of a literature club."
     m 1esa "The only members."
-    m 1hua "And if you do write something, just know that I'll support you in anyway I can, [player]!"
+    m 1hua "And if you do write something, just know that I'll support you in any way I can, [player]!"
     return
 
 init 5 python:
