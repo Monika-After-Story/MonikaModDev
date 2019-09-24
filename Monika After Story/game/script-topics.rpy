@@ -7690,7 +7690,7 @@ label show_poem:
                      m 1duc "Hold on..."
                      call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #mon1
                     
-                 "{i}Hole in wall, pt.2{/i}"
+                 "{i}Hole in wall, pt.2{/i}":
                      m 1duc "Hold on..."
                      call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #mon1
                 
