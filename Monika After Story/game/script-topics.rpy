@@ -7686,7 +7686,7 @@ label show_poem
             m 1hua "So, which poem?"
             menu:
                  m 1eue "So, which poem?{fast}"
-                "{i}Hole in wall{/i}":
+                 "{i}Hole in wall{/i}":
                     m 1duc "Hold on..."
                     call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #mon1
                     
