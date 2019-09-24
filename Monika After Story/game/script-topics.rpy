@@ -7687,24 +7687,24 @@ label show_poem
             menu:
                  m 1eue "So, which poem?{fast}"
                  "{i}Hole in wall{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #mon1
+                     m 1duc "Hold on..."
+                     call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #mon1
                     
-                "{i}Hole in wall, pt.2{/i}"
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #mon1
+                 "{i}Hole in wall, pt.2{/i}"
+                     m 1duc "Hold on..."
+                     call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #mon1
                 
-                "{i}Save me{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_m2,music=False) from _call_showpoem_7 #mon2
+                 "{i}Save me{/i}":
+                     m 1duc "Hold on..."
+                     call showpoem(poem=poem_m2,music=False) from _call_showpoem_7 #mon2
                     
-                "{i}The Lady who Knows Everything{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #mon3
+                 "{i}The Lady who Knows Everything{/i}":
+                     m 1duc "Hold on..."
+                     call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #mon3
                     
-                "{i}Happy end{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #mon4
+                 "{i}Happy end{/i}":
+                     m 1duc "Hold on..."
+                     call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #mon4
                     
     m 1hua "Hope you enjoyed it ~"
     return
