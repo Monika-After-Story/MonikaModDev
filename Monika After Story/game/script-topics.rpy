@@ -7591,6 +7591,127 @@ label monika_cartravel:
     m 1hua "Just the idea of travelling around the world makes me so excited!"
     m 1eka "I really can't wait, [player]~"
     return
+    
+    ###poems archives
+    
+    default persistent._mas_pm_ask_poems = None #first time player asks
+    
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="show_poem",category=['Ddlc'],prompt="Can you show me poem?",random=False))
+    
+label show_poem
+    m 1eud "You want to see a poem from the game?"
+    if persistent._mas_pm_ask_poems:
+        m 1hua "All right, let me search the file..."
+    else:
+        m 1eka "Well, I hoped that you wouldn't ask such a thing..."
+        m 1rkc "In fact, even if it is over yet, these poems remind me what I've been throught to be with you..."
+        m 1ekc "They might be just simple pieces of paper, but they mean a lot for me."
+        m 1eka "But don't take what I said too seriously."
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "You know, I can share a little bit, but don't forget that you picked me, hehe ~."
+        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1eua "So, who is the writer?"
+    menu:
+        m 1eua "So, who is the writer?{fast}"
+
+        "Yuri":
+            m 1hua "All right."
+            m 1eua "And which poem?"
+            menu:
+                m 1eue "And which poem?{fast}"
+                "{i}Ghost under the light, pt.1{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_y1,music=False) from _call_showpoem_7 #yuri1
+                
+                "{i}Ghost under the light, pt.2{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_y3b,music=False) from _call_showpoem_7 #yuri1bis
+                    
+                "{i}The racoon{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_y2,music=False) from _call_showpoem_7 #yuri2
+                    
+                "{i}Beach{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_y3,music=False) from _call_showpoem_7 #yuri3
+        "Sayori":
+            m 1hua "Oh, all right."
+            m 1eua "And which poem?"
+            menu:
+                m 1eue "And which poem?{fast}"
+                "{i}Dear sunshine{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_s1,music=False) from _call_showpoem_7 #sayo1
+                
+                "{i}Bottles{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_s2,music=False) from _call_showpoem_7 #sayo2
+                    
+                "{i}Get out{/i}":
+                    m 1ekc "Oh...{w} Well, it's as you want."
+                    m 1dkc "Hold on..."
+                    call showpoem(poem=poem_s3,music=False) from _call_showpoem_7 #sayo3
+                    m 1ekc "I really don't like this one."
+                    m 1rkc "I mean, it was the last poem before her..."
+                    m 1dkc "You know what I mean."
+                    m 1eua "But whatever."
+                    
+
+        "Natsuki":
+            m 1hksdlb "Ahah, cuteness is back."
+            m 1eua "And which poem?"
+            menu:
+                m 1eue "And which poem?{fast}"
+                "{i}Eagle can fly{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_n1,music=False) from _call_showpoem_7 #nat1
+                
+                "{i}Amy like spiders{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_n2,music=False) from _call_showpoem_7 #nat2
+                    
+                "{i}I'll be your beach{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_n3,music=False) from _call_showpoem_7 #nat3
+                    
+                "{i}Because you{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_n3b,music=False) from _call_showpoem_7 #nat3b
+                    
+        "Monika":
+            m 1hub "Yeah, you picked me!"
+            m 1ttu "I know, my poems are the best..."
+            m 1hua "So, which poem?"
+            menu:
+                 m 1eue "So, which poem?{fast}"
+                "{i}Hole in wall{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #mon1
+                    
+                "{i}Hole in wall, pt.2{/i}"
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #mon1
+                
+                "{i}Save me{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_m2,music=False) from _call_showpoem_7 #mon2
+                    
+                "{i}The Lady who Knows Everything{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #mon3
+                    
+                "{i}Happy end{/i}":
+                    m 1duc "Hold on..."
+                    call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #mon4
+                    
+    m 1hua "Hope you enjoyed it ~"
+    return
+           
+                
+
+    
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_100k",category=['mod'],prompt="100k Downloads",random=True))
