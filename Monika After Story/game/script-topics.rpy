@@ -7600,7 +7600,7 @@ label monika_cartravel:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="show_poem",category=['Ddlc'],prompt="Can you show me poem?",random=False))
     
-label show_poem
+label show_poem:
     m 1eud "You want to see a poem from the game?"
     if persistent._mas_pm_ask_poems:
         m 1hua "All right, let me search the file..."
