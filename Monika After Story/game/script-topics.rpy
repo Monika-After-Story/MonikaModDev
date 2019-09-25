@@ -12130,7 +12130,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="player_reads_poetry",
+            eventlabel="monika_player_reads_poetry",
             category=['literature'],
             prompt="Reading poetry",
             random=True
@@ -12139,10 +12139,11 @@ init 5 python:
 
 default persistent._mas_reads_poetry = None
 #True if player likes poems, false if not
-label player_reads_poetry:
+label monika_player_reads_poetry:
     m 2eub "Say, [player]..."
     m 2eua "You know that I like poetry, but I was wondering something."
     m "Did you often read poems before you joined the Literature Club?{nw}"
+    $ _history_list.pop()
     menu:
         m "Did you often read poems before you joined the Literature Club?{fast}"
         "Yes.":
