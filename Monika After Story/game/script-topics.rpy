@@ -7598,7 +7598,7 @@ label monika_cartravel:
     
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="show_poem",category=['Ddlc'],prompt="Can you show me poem?",random=False))
+    addEvent(Event(persistent.event_database,eventlabel="show_poem",category=['Ddlc'],prompt="Can you show me poem?", pool=True, random=False))
     
 label show_poem:
     m 1eud "You want to see a poem from the game?"
