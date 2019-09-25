@@ -7603,18 +7603,18 @@ init 5 python:
 label show_poem:
     m 1eud "You want to see a poem from the game?"
     if persistent._mas_pm_ask_poems:
-        m 1hua "All right, let me search the file..."
+        m 1hua "All right, let me search..."
     else:
         m 1eka "Well, I hoped that you wouldn't ask such a thing..."
-        m 1rkc "In fact, even if it is over yet, these poems remind me what I've been throught to be with you..."
-        m 1ekc "They might be just simple pieces of paper, but they mean a lot for me."
+        m 1rkc "In fact, even if it is over yet, these poems remind me what I've been through to be with you..."
+        m 1ekc "They might be just simple pieces of paper, but they mean a lot to me."
         m 1eka "But don't take what I said too seriously."
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "You know, I can share a little bit, but don't forget that you picked me, hehe ~."
+        m 5hua "You know, I can share a little bit, but don't forget that you picked me, ehehe~."
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1eua "So, who is the writer?"
+    m 1eua "So, whose poem is it?"
     menu:
-        m "So, who is the writer?{fast}"
+        m "So, whose poem is it?{fast}"
 
         "Yuri":
             m 1hua "All right."
@@ -7660,7 +7660,7 @@ label show_poem:
                     
 
         "Natsuki":
-            m 1hksdlb "Ahah, cuteness is back."
+            m 1hksdlb "All right."
             m 1eua "And which poem?"
             menu:
                 m "And which poem?{fast}"
@@ -7681,7 +7681,7 @@ label show_poem:
                     call showpoem(poem=poem_n3b,music=False) from _call_showpoem_7 #nat3b
                     
         "Monika":
-            m 1hub "Yeah, you picked me!"
+            m 1hub "Yay, you picked me!"
             m 1ttu "I know, my poems are the best..."
             m 1hua "So, which poem?"
             menu:
