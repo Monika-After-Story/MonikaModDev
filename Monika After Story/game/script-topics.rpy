@@ -7594,17 +7594,12 @@ label monika_cartravel:
     
     ###poems archives
     
-    default persistent._mas_pm_ask_poems = None #first time player asks
-    
-    
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="show_poem",category=['Ddlc'],prompt="Can you show me poem?", pool=True, random=False))
+    addEvent(Event(persistent.event_database,eventlabel="monika_show_poem",category=['ddlc'],prompt="Can you show me poem?", pool=True, random=False))
     
-label show_poem:
+label monika_show_poem:
     m 1eud "You want to see a poem from the game?"
-    if persistent._mas_pm_ask_poems:
-        m 1hua "All right, let me search..."
-    else:
+    if mas_getEV("show_poem").shown_count == 0:
         m 1eka "Well, I hoped that you wouldn't ask such a thing..."
         m 1rkc "In fact, even if it is over yet, these poems remind me what I've been through to be with you..."
         m 1ekc "They might be just simple pieces of paper, but they mean a lot to me."
@@ -7612,13 +7607,17 @@ label show_poem:
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "You know, I can share a little bit, but don't forget that you picked me, ehehe~."
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1eua "So, whose poem is it?"
+    else:
+        m 1hua "All right, let me search..."
+    m 1eua "So, whose poem is it{nw}?"
+    $ _history_list.pop()
     menu:
         m "So, whose poem is it?{fast}"
 
         "Yuri":
             m 1hua "All right."
-            m 1eua "And which poem?"
+            m 1eua "And which poem?{nw}"
+            $ _history_list.pop()
             menu:
                 m "And which poem?{fast}"
                 "{i}Ghost under the light, pt.1{/i}":
@@ -7638,7 +7637,8 @@ label show_poem:
                     call showpoem(poem=poem_y3,music=False) from _call_showpoem_7 #yuri3
         "Sayori":
             m 1hua "Oh, all right."
-            m 1eua "And which poem?"
+            m 1eua "And which poem?{nw}"
+            $ _history_list.pop()
             menu:
                 m "And which poem?{fast}"
                 "{i}Dear sunshine{/i}":
@@ -7661,7 +7661,8 @@ label show_poem:
 
         "Natsuki":
             m 1hksdlb "All right."
-            m 1eua "And which poem?"
+            m 1eua "And which poem?{nw}"
+            $ _history_list.pop()
             menu:
                 m "And which poem?{fast}"
                 "{i}Eagle can fly{/i}":
@@ -7683,7 +7684,8 @@ label show_poem:
         "Monika":
             m 1hub "Yay, you picked me!"
             m 1ttu "I know, my poems are the best..."
-            m 1hua "So, which poem?"
+            m 1hua "So, which poem?{nw}"
+            $ _history_list.pop()
             menu:
                  m "So, which poem?{fast}"
                  "{i}Hole in wall{/i}":
@@ -7709,10 +7711,7 @@ label show_poem:
     m 1hua "Hope you enjoyed it ~"
     return
            
-                
-
-    
-
+  
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_100k",category=['mod'],prompt="100k Downloads",random=True))
 
