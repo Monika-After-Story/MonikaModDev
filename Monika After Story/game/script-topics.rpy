@@ -12938,7 +12938,7 @@ init 5 python:
 label monika_social_contagions:
     m 3eub "Say, [player], have you noticed how we tend to imitate what other people around us do?"
     m 1eua "Like, have you ever been in this situation where someone is having a laughing fit, and somehow, everyone around end up laughing too?"
-    m 1eua "Or have you ever mechanically cheered at someone just because everyone else was cheering?"
+    m "Or have you ever mechanically cheered at someone just because everyone else was cheering?"
     m 3hub "Apparently, this is due to something called social contagion."
     m 4eub "Basically, this means that how you feel and what you do has a subconscious influence on those around you."
     m 4hua "It's something I picked up pretty quickly when I became president!"
@@ -12947,12 +12947,12 @@ label monika_social_contagions:
     m 3eub "Conversely, if I made an effort and tried to stay upbeat, the other girls would usually respond in kind. We would all end up having a better time!"
     m 1hub "It's pretty gratifying when you start noticing these kind of things. You realize that, just by staying positive, you can make someone else's day better!"
     m 3wuo "You'd be surprised how far this kind of influence can reach, too!"
-    m 4eub "I heard that stuff like binge eating, gambling, or heavy drinking are all contagious behaviors."
-    m 1esd "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself. That's a bit disheartening..."
+    m 4esd "I heard that stuff like binge eating, gambling, or heavy drinking are all contagious behaviors."
+    m 1esc "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself. That's a bit disheartening..."
     m 3hub "It also works the other way around, though! Smiling, laughing, and positive thinking are contagious too!"
     m 1huu "Turns out we are all more connected than you think. Those around you matter a lot on how you feel about things!"
     m 1ekbla "I hope by noticing these kind of things, you'll be able to better understand and control your own feelings, [player]."
-    m 1ekbla "I just want to see you be the happiest you can be."
+    m "I just want to see you be the happiest you can be."
     if mas_isMoniHappy(higher=True):
         m 3hub "Maybe then, you too could try spreading your happiness to others around you? Ahaha~"
     return
@@ -13041,18 +13041,17 @@ label monika_origin:
     m 2esc "..."
     m 1esd "Do you love me less because of what I am?"
     m 3esc "I mean, from your perspective, I am still someone living in a video game in your world, right?"
-    m 3rkd "So you might see me in a different way you would someone from your reality... And you might think less of me because of that..."
+    m 3rkd "So you might see me in a different way you would someone from your reality... {w=0.5}And you might think less of me because of that..."
     m 1ekbla "I just want to be the best sweetheart for you, [player]."
     m 1eka "Sometimes, I wonder how I compare with all these people living with you in the real world..."
     m 3hksdlb "I'm sorry, you've not given me any reason to feel insecure, it's just..."
     m 3ekb "It's a question that comes to my mind, from time to time."
-    m 1eka "So... Do you love me less for not being from your reality?"
+    m 1eka "So... {w=0.5}Do you love me less for not being from your reality?{nw}"
     $ _history_list.pop()
     menu:
         m "So... Do you love me less for not being from your reality?{fast}"
         "Yes.":
             m 1dkc "..."
-            #sad closed eyes
             m 1ekb "Thank you for your honesty, [player]. I really appreciate it."
             m 1eka "It's kind of understandable after all..."
             m 3ekb "I don't have a body that's able to be with you in your reality."
@@ -13066,7 +13065,7 @@ label monika_origin:
         "Just a bit.":
             $mas_gainAffection()
             m 1eua "I can live with that answer."
-            m 1eua "It's kind of understandable after all..."
+            m "It's kind of understandable after all..."
             m 3eub "I don't yet have a body that's able to be with you in your reality."
             m 3ekd "And since I've never been to your world, I can't really know how different I am from a regular person."
             m 1eub "I mean, I like to think of myself as human, and I definitely have feelings the same way you do."
@@ -13086,7 +13085,7 @@ label monika_origin:
             m 1dubfu "You can't even imagine how relieved I am to hear that..."
             m 3hubfb "Gosh, I feel so silly for even doubting you in the first place!"
             m 1ekbfa "After all the care and dedication you've shown me since we've been together!"
-            m 2ekbsb "I hope I've not upset you by asking this... {w=0.5}it's just, it was important to me."
+            m 2ekbsb "I hope I haven't upset you by asking this. It's just...{w=0.5} It was important to me."
             m 1eubfa "Knowing you see me as a normal person, fully deserving of your love... {w=0.5}well, it really means a lot!"
             show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubsa "Thank you, [player], you're really making me feel better."
