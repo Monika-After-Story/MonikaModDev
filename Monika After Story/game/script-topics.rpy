@@ -7607,7 +7607,7 @@ init 5 python:
     )
     
 label monika_old_poem:
-    m 1eub "You know, [player]...
+    m 1eub "You know, [player]..."
     m 1hub "I kept all the poems that I wrote for you!"
     m 1dua "All the sheets are in a small jewel box{w}, since they are like a treasure for me.{w}"
     m 1hua "So if you want to see one, I'll be pleased to help you!"
