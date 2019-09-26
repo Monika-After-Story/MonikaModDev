@@ -7642,11 +7642,13 @@ label monika_show_poem:
     elif mas_getEV("monika_show_poem").shown_count == 10:
         m 1wub "Wow, you asked me so many times!"
         m 1tuu "I know, my poems are the best..."
+        show monika 2hua at t11 zorder MAS_MONIKA_Z with dissolve
         m 2hua "Anyway, I'm really happy that you like my poems that much..."
+        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
     else:
         m 1eua "You want to see a poem?"
         m 1hua "Sure!"
-        m 1eua "So, which poem?{nw}"
+    m 1eua "So, which poem?{nw}"
     $ _history_list.pop()
     menu:
         m "So, which poem?{fast}"
