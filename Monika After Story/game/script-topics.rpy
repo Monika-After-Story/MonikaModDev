@@ -7941,15 +7941,15 @@ label monika_asks_family:
                     m 1eka "I hope I can fill that void in your heart."
                     m "I really care about you, and I'd do anything for you."
                     m 1hua "Someday, we'll be able to make our own family together!"
-                "I don't want to talk about this.":
-                    $ persistent._mas_pm_no_talk_fam = True
-                    m 1dsc "I understand, [player]."
-                    m 1eka "We can talk about it when you feel ready."
-                    m 1lsc "Then again..."
-                    m 1lksdlc "It might be something that's too painful for you to talk about."
-                    m 1eka "You can tell me about your family when you're ready, [player]."
-                    m 1hubfa "I love you very much!"
-                    return "derandom|love"
+        "I don't want to talk about this.":
+            $ persistent._mas_pm_no_talk_fam = True
+            m 1dsc "I understand, [player]."
+            m 1eka "We can talk about it when you feel ready."
+            m 1lsc "Then again..."
+            m 1lksdlc "It might be something that's too painful for you to talk about."
+            m 1eka "You can tell me about your family when you're ready, [player]."
+            m 1hubfa "I love you very much!"
+            return "derandom|love"
 
     return "derandom"
 
