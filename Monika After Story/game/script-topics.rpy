@@ -77,7 +77,7 @@ init -1 python:
         # OUT:
         #   pool - list of unseen labels (may be empty)
         for index in range(len(pool)-1, -1, -1):
-            if renpy.seen_label(pool[index]):
+            $ renpy.seen_label(pool[index]):
                 pool.pop(index)
 
 
@@ -7632,14 +7632,14 @@ label monika_show_poem:
         m 1rusdlb "Oh, I'm sorry [player]...{w} I don't have access to them right now."
         m 1hua "Maybe tomorrow!"
         return
-    else if mas_getEV("monika_show_poem").shown_count == 0:
+    elif mas_getEV("monika_show_poem").shown_count == 0:
         m 1hub "I'm glad that you asked me!"
         m 1dua "All my poems are really important for me."
         show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eubla "And they are part of our history, since its beginning..."
         m 5dubla "So I'm really happy to share them with you."
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
-    else if mas_getEV("monika_trick").shown_count == 10:
+    elif mas_getEV("monika_show_poem").shown_count == 10:
         m 1wub "Wow, you asked me so many times!"
         m 1tuu "I know, my poems are the best..."
         m 2hua "Anyway, I'm really happy that you like my poems that much..."
