@@ -77,7 +77,7 @@ init -1 python:
         # OUT:
         #   pool - list of unseen labels (may be empty)
         for index in range(len(pool)-1, -1, -1):
-            $ renpy.seen_label(pool[index]):
+            if renpy.seen_label(pool[index]):
                 pool.pop(index)
 
 
