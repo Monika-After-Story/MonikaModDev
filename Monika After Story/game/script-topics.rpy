@@ -7595,119 +7595,81 @@ label monika_cartravel:
     ###poems archives
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_show_poem",category=['ddlc'],prompt="Can you show me poem?", pool=True, random=False))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_old_poem",
+            category=['literature'],
+            prompt="Old poems",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        )
+    )
     
+label monika_old_poem:
+    m 1eub "You know, [player]...
+    m 1hub "I kept all the poems that I wrote for you!"
+    m 1dua "All the sheets are in a small jewel box{w}, since they are like a treasure for me.{w}"
+    m 1hua "So if you want to see one, I'll be pleased to help you!"
+    $ mas_unlockEVL("monika_show_poem","EVE")
+    return "derandom"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_show_poem",
+            category=['literature'],
+            prompt="Can I see a poem?",
+            pool=True,
+            unlocked=True, #Unlocked for test
+            rules={"no unlock": None}
+        )
+    )
 label monika_show_poem:
-    m 1eud "You want to see a poem from the game?"
-    if mas_getEV("show_poem").shown_count == 0:
-        m 1eka "Well, I hoped that you wouldn't ask such a thing..."
-        m 1rkc "In fact, even if it is over yet, these poems remind me what I've been through to be with you..."
-        m 1ekc "They might be just simple pieces of paper, but they mean a lot to me."
-        m 1eka "But don't take what I said too seriously."
-        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "You know, I can share a little bit, but don't forget that you picked me, ehehe~."
+    if mas_aff.UPSET or mas.aff.DISTRESSED or mas.aff.BROKEN:
+        m 1euc "You wanna see a poem?"
+        m 1rusdlb "Oh, I'm sorry [player]...{w} I don't have access to them right now."
+        m 1hua "Maybe tomorrow!"
+        return
+    else if mas_getEV("monika_show_poem").shown_count == 0:
+        m 1hub "I'm glad that you asked me!"
+        m 1dua "All my poems are really important for me."
+        show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubla "And they are part of our history, since its beginning..."
+        m 5dubla "So I'm really happy to share them with you."
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    else if mas_getEV("monika_trick").shown_count == 10:
+        m 1wub "Wow, you asked me so many times!"
+        m 1tuu "I know, my poems are the best..."
+        m 2hua "Anyway, I'm really happy that you like my poems that much..."
     else:
-        m 1hua "All right, let me search..."
-    m 1eua "So, whose poem is it{nw}?"
+        m 1eua "You want to see a poem?"
+        m 1hua "Sure!"
+        m 1eua "So, which poem?{nw}"
     $ _history_list.pop()
     menu:
-        m "So, whose poem is it?{fast}"
-
-        "Yuri":
-            m 1hua "All right."
-            m 1eua "And which poem?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "And which poem?{fast}"
-                "{i}Ghost under the light, pt.1{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_y1,music=False) from _call_showpoem_7 #yuri1
+        m "So, which poem?{fast}"
+        "{i}Hole in wall{/i}":
+            m 1duc "Hold on..."
+            call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #base1
+                    
+        "{i}Hole in wall, pt.2{/i}":
+            m 1duc "Hold on..."
+            call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #base21
                 
-                "{i}Ghost under the light, pt.2{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_y3b,music=False) from _call_showpoem_7 #yuri1bis
+        "{i}Save me{/i}":
+            m 1duc "Hold on..."
+            call showpoem(poem=poem_m2,music=False) from _call_showpoem_7 #bas2
                     
-                "{i}The racoon{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_y2,music=False) from _call_showpoem_7 #yuri2
+        "{i}The Lady who Knows Everything{/i}":
+            m 1duc "Hold on..."
+            call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #base3
                     
-                "{i}Beach{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_y3,music=False) from _call_showpoem_7 #yuri3
-        "Sayori":
-            m 1hua "Oh, all right."
-            m 1eua "And which poem?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "And which poem?{fast}"
-                "{i}Dear sunshine{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_s1,music=False) from _call_showpoem_7 #sayo1
-                
-                "{i}Bottles{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_s2,music=False) from _call_showpoem_7 #sayo2
-                    
-                "{i}Get out{/i}":
-                    m 1ekc "Oh...{w} Well, it's as you want."
-                    m 1dkc "Hold on..."
-                    call showpoem(poem=poem_s3,music=False) from _call_showpoem_7 #sayo3
-                    m 1ekc "I really don't like this one."
-                    m 1rkc "I mean, it was the last poem before her..."
-                    m 1dkc "You know what I mean."
-                    m 1eua "But whatever."
-                    
-
-        "Natsuki":
-            m 1hksdlb "All right."
-            m 1eua "And which poem?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "And which poem?{fast}"
-                "{i}Eagle can fly{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_n1,music=False) from _call_showpoem_7 #nat1
-                
-                "{i}Amy like spiders{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_n2,music=False) from _call_showpoem_7 #nat2
-                    
-                "{i}I'll be your beach{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_n3,music=False) from _call_showpoem_7 #nat3
-                    
-                "{i}Because you{/i}":
-                    m 1duc "Hold on..."
-                    call showpoem(poem=poem_n3b,music=False) from _call_showpoem_7 #nat3b
-                    
-        "Monika":
-            m 1hub "Yay, you picked me!"
-            m 1ttu "I know, my poems are the best..."
-            m 1hua "So, which poem?{nw}"
-            $ _history_list.pop()
-            menu:
-                 m "So, which poem?{fast}"
-                 "{i}Hole in wall{/i}":
-                     m 1duc "Hold on..."
-                     call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #mon1
-                    
-                 "{i}Hole in wall, pt.2{/i}":
-                     m 1duc "Hold on..."
-                     call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #mon1
-                
-                 "{i}Save me{/i}":
-                     m 1duc "Hold on..."
-                     call showpoem(poem=poem_m2,music=False) from _call_showpoem_7 #mon2
-                    
-                 "{i}The Lady who Knows Everything{/i}":
-                     m 1duc "Hold on..."
-                     call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #mon3
-                    
-                 "{i}Happy end{/i}":
-                     m 1duc "Hold on..."
-                     call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #mon4
-                    
+        "{i}Happy end{/i}":
+            m 1duc "Hold on..."
+            call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #base4
+                        
     m 1hua "Hope you enjoyed it ~"
     return
            
