@@ -7622,17 +7622,13 @@ init 5 python:
             category=['literature'],
             prompt="Can I see a poem?",
             pool=True,
-            unlocked=True, #Unlocked for test
+            unlocked=False, #Unlocked for test
             rules={"no unlock": None}
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 label monika_show_poem:
-    if mas_isMoniUpset(lower=True):
-        m 1euc "You wanna see a poem?"
-        m 1rusdlb "Oh, I'm sorry [player]...{w} I don't have access to them right now."
-        m 1hua "Maybe tomorrow!"
-        return
-    elif mas_getEV("monika_show_poem").shown_count == 0:
+    if mas_getEV("monika_show_poem").shown_count == 0:
         m 1hub "I'm glad that you asked me!"
         m 1dua "All my poems are really important for me."
         show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
