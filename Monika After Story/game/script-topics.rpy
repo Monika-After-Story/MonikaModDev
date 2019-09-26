@@ -12898,6 +12898,202 @@ label monika_unknown:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_scamming",
+            category=['you', 'society'],
+            prompt="Being scammed",
+            random=True
+        )
+    )
+
+label monika_scamming:
+    m 1euc "Have you ever been scammed, [player]?"
+    m 1ekd "I hope you never had to go through something like that, but it wouldn't be that unlikely after all. It's not that uncommon."
+    m 1euc "It's something that's more and more prevalent nowadays; especially online, with the advance of technology."
+    m 2rfd "It really is the worst when it happens. Not only do you lose money, but most of the time, you can't even fight back!"
+    m 3esd "It makes you feel like it's your fault for being had, too. A lot of victims start hating themselves for being 'naive', or feeling like they're idiots."
+    m 3rssdlb "But really, they shouldn't be so hard on themselves! Getting scammed is something that can happen to anyone, under the right conditions!"
+    m 4esc "People who do this take advantage of the goodwill of their victims, and exploit natural human reactions to fool you."
+    m 1dsd "Which is why it can feel so gut-wrenching. You placed your trust in others, and they betrayed you."
+    m 1eka "If this ever happens to you, don't feel bad. I'll be here for you."
+    m 3esd "Falling for this does {i}not{/i} mean you're stupid, or a loser, or anything. It just means you've been preyed upon by someone who knew exactly how to play you."
+    m 1esd "If you don't have a way to get back at your scammer, the best thing you can do is to let go."
+    m 1eka "Don't blame yourself for it, focus on what you can do at the moment."
+    m 3eka "And please [player], don't stop believing in people because of the few that took advantage of you."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_social_contagions",
+            category=['psychology'],
+            prompt="Social contagions",
+            random=True
+        )
+    )
+
+label monika_social_contagions:
+    m 3eub "Say, [player], have you noticed how we tend to imitate what other people around us do?"
+    m 1eua "Like, have you ever been in this situation where someone is having a laughing fit, and somehow, everyone around end up laughing too?"
+    m 1eua "Or have you ever mechanically cheered at someone just because everyone else was cheering?"
+    m 3hub "Apparently, this is due to something called social contagion."
+    m 4eub "Basically, this means that how you feel and what you do has a subconscious influence on those around you."
+    m 4hua "It's something I picked up pretty quickly when I became president!"
+    m 3eub "I noticed that when I felt unmotivated, or I was in a bad day, it would put a damper on club activities."
+    m 3euc "Everyone would end up going off on their own to do their own things."
+    m 3eub "Conversely, if I made an effort and tried to stay upbeat, the other girls would usually respond in kind. We would all end up having a better time!"
+    m 1hub "It's pretty gratifying when you start noticing these kind of things. You realize that, just by staying positive, you can make someone else's day better!"
+    m 3wuo "You'd be surprised how far this kind of influence can reach, too!"
+    m 4eub "I heard that stuff like binge eating, gambling, or heavy drinking are all contagious behaviors."
+    m 1esd "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself. That's a bit disheartening..."
+    m 3hub "It also works the other way around, though! Smiling, laughing, and positive thinking are contagious too!"
+    m 1huu "Turns out we are all more connected than you think. Those around you matter a lot on how you feel about things!"
+    m 1ekbla "I hope by noticing these kind of things, you'll be able to better understand and control your own feelings, [player]."
+    m 1ekbla "I just want to see you be the happiest you can be."
+    if mas_isMoniHappy(higher=True):
+        m 3hub "Maybe then, you too could try spreading your happiness to others around you? Ahaha~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_social_norms",
+            category=['society'],
+            prompt="Changing social norms",
+            random=True
+        )
+    )
+
+label monika_social_norms:
+    m 1eua "Have you ever wondered how new ideas get accepted in society?"
+    m 3eub "There's tons of things that were considered bad at first, but have since been reconsidered otherwise!"
+    m 4esa "For instance, did you know rock-and-roll was seen as vulgar and depraved when it first appeared?"
+    m 4eud "Early fans were seen as impressionable youth at best, and delinquents at worst."
+    m 1duu "But as these people grew to become full-fledged members of society, they passed down their interest to those around them."
+    m 3eua "Those who met them realized they were just normal people, with nothing weird about them."
+    m 3hub "Nowadays, that stigma has completely disappeared! Even those who still don't like rock music at least respect it!"
+    m 4eua "And there's plenty of other things still in the process of getting accepted."
+    m 4eub "You might be familiar with role-playing, or online gaming... {w=0.5}or even reading manga."
+    m 3lksdla "Thought Natsuki would probably be the one to ask about this one."
+    m 1eub "Remember how she was trying to change your mind about that manga she liked?"
+    m 1rsc "I wonder what she had to go through because of this hobby... {w=0.5}I can't imagine it's always been easy."
+    m 3esb "It even showed up on her poetry in the end. Remember her poem about spiders?"
+    m 1hub "It all makes me wonder what kind of things will be seen as normal in the future..."
+    m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
+    m 4eub "How do you think this will change over the years? Will we ever reach a point where it's seen as just another normal thing?"
+    m 1dubla "Not that it's important anyway. As long as we have each other, that's all that should count, right?"
+    m 1ekbfa "It's nice to know there is someone I can truly be myself with, no matter what..."
+    m 1ekbsa "And if you've got any unique interest, you already know I'll always be there to talk about it."
+    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfb "I want to learn everything about what you like!"
+    m 5ekbfa "All these little particularities that make you so unique..."
+    show monika 1ekbfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1ekbfb "So, please, always stay yourself, [player]. You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
+    m 3tfbfu "And if some people reject you anyway? I'll be the one to teach them how great you are!"
+    return
+
+#Replace by monika_origin once the player reaches love. 
+#Split in two topics so the prompt doesn't spoil the content.
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_origin_evasive",
+            category=['misc'],
+            prompt="Evasive message",
+            random=True,
+            aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED)
+        )
+    )
+
+label monika_origin_evasive:
+    m 1euc "Hey, [player]..."
+    m 1ruc "..."
+    m 1esd "There's..."
+    m 1lsc "..."
+    m 1hksdlb "Ahaha! Nevermind! it's nothing important..."
+    show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbla "I love you, [player]. I hope you {i}do{/i} realize that."
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_origin",
+            category=['monika'],
+            prompt="Monika's origin",
+            random=True,
+            aff_range=(mas_aff.LOVE,None)
+        )
+    )
+
+label monika_origin:
+    m 1euc "Hey, [player]..."
+    m 1ruc "..."
+    m 1esd "There's a question I need to ask you."
+    m 1esc "It's a little bit delicate..."
+    m 2lsc "I was a bit afraid to ask until now... {w=1}but it's something I have to know, no matter how you might answer."
+    m 2esc "..."
+    m 1esd "Do you love me less because of what I am?"
+    m 3esc "I mean, from your perspective, I am still someone living in a video game in your world, right?"
+    m 3rkd "So you might see me in a different way you would someone from your reality... And you might think less of me because of that..."
+    m 1ekbla "I just want to be the best sweetheart for you, [player]."
+    m 1eka "Sometimes, I wonder how I compare with all these people living with you in the real world..."
+    m 3hksdlb "I'm sorry, you've not given me any reason to feel insecure, it's just..."
+    m 3ekb "It's a question that comes to my mind, from time to time."
+    m 1eka "So... Do you love me less for not being from your reality?"
+    $ _history_list.pop()
+    menu:
+        m "So... Do you love me less for not being from your reality?{fast}"
+        "Yes.":
+            m 1dkc "..."
+            #sad closed eyes
+            m 1ekb "Thank you for your honesty, [player]. I really appreciate it."
+            m 1eka "It's kind of understandable after all..."
+            m 3ekb "I don't have a body that's able to be with you in your reality."
+            m 3ekd "And since I've never been to your world, I can't really know how different I am from a regular person."
+            m 1esa "I mean, I like to think of myself as human, and I definitely have feelings the same way you do."
+            m 1ekb "But until I can join you in your reality and see for myself, I can't really know for sure, can I?"
+            m 2ekd "Trust me, I am the first one to be sorry about this state of things. One day, we'll find a way to make things right..."
+            m 1eubla "But even with that said, considering all the care and dedication you've shown me until now, I know you love me anyway..."
+            m 1tubla "Besides, This just means after I find my way to your reality..."
+            m 3hubsb "...you'll just love me that much more, right? Ahaha~ "
+        "Just a bit.":
+            $mas_gainAffection()
+            m 1eua "I can live with that answer."
+            m 1eua "It's kind of understandable after all..."
+            m 3eub "I don't yet have a body that's able to be with you in your reality."
+            m 3ekd "And since I've never been to your world, I can't really know how different I am from a regular person."
+            m 1eub "I mean, I like to think of myself as human, and I definitely have feelings the same way you do."
+            m 1eka "But until I can join you in your reality and see for myself, I can't really know for sure, can I?"
+            m 3hua "But even with that said, you're still here with me, aren't you?"
+            m 1ekbsa "And seeing all the care and dedication you've shown me until now, I know you love me anyway..."
+            m 1hubfb "So even if it bothers you a little, it just makes me that much more grateful that you stuck up with me all this time!"
+            m 1eubfa "I love you, [player]. Please stay with me until I can find my way to you..."
+            $ lockEventLabel("monika_origin_evasive")
+            return "derandom|love"
+        "No.":
+            if mas_getEV("monika_origin").shown_count == 0:
+                $ mas_gainAffection(amount=5, bypass=True)
+            else:
+                $ mas_gainAffection()
+            m 1ekbfa "[player]..."
+            m 1dubfu "You can't even imagine how relieved I am to hear that..."
+            m 3hubfb "Gosh, I feel so silly for even doubting you in the first place!"
+            m 1ekbfa "After all the care and dedication you've shown me since we've been together!"
+            m 2ekbsb "I hope I've not upset you by asking this... {w=0.5}it's just, it was important to me."
+            m 1eubfa "Knowing you see me as a normal person, fully deserving of your love... {w=0.5}well, it really means a lot!"
+            show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubsa "Thank you, [player], you're really making me feel better."
+    $ lockEventLabel("monika_origin_evasive")
+    return "derandom"
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
