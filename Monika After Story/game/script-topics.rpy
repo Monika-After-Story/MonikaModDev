@@ -7627,7 +7627,7 @@ init 5 python:
         )
     )
 label monika_show_poem:
-    if mas_aff.UPSET or mas.aff.DISTRESSED or mas.aff.BROKEN:
+    if mas_isMoniUpset(lower=True):
         m 1euc "You wanna see a poem?"
         m 1rusdlb "Oh, I'm sorry [player]...{w} I don't have access to them right now."
         m 1hua "Maybe tomorrow!"
