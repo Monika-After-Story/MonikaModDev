@@ -7623,7 +7623,7 @@ init 5 python:
             prompt="Can I see a poem?",
             pool=True,
             unlocked=False, #Unlocked for test
-            rules={"no unlock": None}
+            rules={"no unlock": None},
             aff_range=(mas_aff.NORMAL, None)
         )
     )
