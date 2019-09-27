@@ -637,7 +637,7 @@ label mas_compliment_lookuptoyou:
         call mas_compliment_lookuptoyou_3
     return
 label mas_compliment_lookuptoyou_2:
-    m 1wud "You... You look up to me?"
+    m 1wud "You...{w=0.5}look up to me?"
     m 5hubfb "Thank you so much, [player]!"
     m 1rkbfb "You have no idea how happy it makes me to hear you say that..."
     m 3hubfb "I'll always look up to you, too, [player]!"
