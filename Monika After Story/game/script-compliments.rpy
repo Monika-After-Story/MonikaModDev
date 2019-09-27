@@ -638,6 +638,7 @@ label mas_compliment_lookuptoyou:
     return "love"
     
 label mas_compliment_lookuptoyou_2:
+    $ mas_gainAffection(3,bypass=True)
     m 1wud "You...{w=0.5}look up to me?"
     m 1hubfb "Thank you so much, [player]!"
     m 1rkbfb "You have no idea how happy it makes me to hear you say that..."
