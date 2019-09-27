@@ -13050,7 +13050,7 @@ label mas_show_unseen:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="installed_python",category=['miscellaneous'],prompt="I installed Python.",pool=True))
 
-label installed_python:
+label monika_installed_python:
     m 1sub "You did?"
     m 1hub "That's great, [player]!"
     m 1eub "What did you download it for?{nw}"
