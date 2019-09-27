@@ -650,7 +650,7 @@ label mas_compliment_lookuptoyou_3:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
     m 1hubfb "[thanks_quip]"
-    m 1rkbfb "I'm always so happy to hear you say that..."
+    m 3hubfa "Hearing you say that never fails to make me happy!"
     m 3hubfb "I'll always look up to you too, [player]!"
     m 1ekbfa "I love you~"
     return "love"
