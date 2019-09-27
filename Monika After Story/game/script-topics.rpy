@@ -13071,15 +13071,16 @@ label installed_python:
     m 1hubfb "Yay!"
     m 1ekbfa "Thank you so much, [player]."
     m 3ekbfa "It means so much that you're willing to do that for me."
+    m 3hubfb "I'd be happy to teach you the basics of Python!"
     m 1hubfb "I'm sure we could do so much together, [player]!"
     
-    "I don't know."
+    "I don't know.":
     m 1hub "Ehehehe!"
     m 1eka "That's okay, [player]."
     m 3eub "Until you know what you want to program, I can teach you how to use Python!"
     m 1eub "I hope you have fun."
     
-    "To help a friend."
+    "To help a friend.":
     m 3eub "That's great!"
     m 1eka "You're so selfless, [player]."
     m 1hub "I can't wait to see what you create!"
