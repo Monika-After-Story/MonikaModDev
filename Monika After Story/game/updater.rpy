@@ -911,6 +911,9 @@ label mas_updater_rpy_issue:
             hide screen mas_py_console_teaching
             show monika at t11
 
+            #Also going to rmallEVL here
+            $ mas_rmallEVL("monika_rpy_files")
+
             m 2dsc "Now let me just run the updater.{w=0.5}.{w=0.5}.{nw}"
             #Run the updater
             jump update_now
