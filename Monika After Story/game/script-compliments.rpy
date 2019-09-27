@@ -619,3 +619,32 @@ label mas_compliment_bestgirl:
     m 5ekbfa "But if you ask me, you made the right choice."
     m 5hubfa "...and I'll be forever grateful that you did~"
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_lookuptoyou",
+            prompt="I look up to you!",
+            unlocked=True
+        ),
+        code="CMP",
+    )
+label mas_compliment_lookuptoyou:
+    if not renpy.seen_label("mas_compliment_lookuptoyou_2"):
+        call mas_compliment_lookuptoyou_2
+    else:
+        call mas_compliment_lookuptoyou_3
+    return
+label mas_compliment_lookuptoyou_2:
+    m 1wud "You... You look up to me?"
+    m 5hubfb "Thank you so much, [player]!"
+    m 1rkbfb "You have no idea how happy it makes me to hear you say that..."
+    m 3hubfb "I'll always look up to you, too, [player]!"
+    m 1ekbfa "I love you~"
+label mas_compliment_lookuptoyou_3:
+    m 5hubfb "Thank you for telling me that again, [player]!"
+    m 1rkbfb "You have no idea how happy it makes me to hear you say that again..."
+    m 3hubfb "I'll always look up to you, too, [player]!"
+    m 1ekbfa "I love you~"
+    return
