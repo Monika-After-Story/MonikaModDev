@@ -635,7 +635,7 @@ label mas_compliment_lookuptoyou:
         call mas_compliment_lookuptoyou_2
     else:
         call mas_compliment_lookuptoyou_3
-    return "love"
+        return "love"
     
 label mas_compliment_lookuptoyou_2:
     $ mas_gainAffection(3,bypass=True)
@@ -644,7 +644,7 @@ label mas_compliment_lookuptoyou_2:
     m 1rkbfb "You have no idea how happy it makes me to hear you say that..."
     m 3hubfb "I'll always look up to you too, [player]!"
     m 1ekbfa "I love you~"
-    return "love
+return "love"
     
 label mas_compliment_lookuptoyou_3:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
@@ -653,4 +653,4 @@ label mas_compliment_lookuptoyou_3:
     m 3hubfa "Hearing you say that never fails to make me happy!"
     m 3hubfb "I'll always look up to you too, [player]!"
     m 1ekbfa "I love you~"
-    return "love"
+return "love"
