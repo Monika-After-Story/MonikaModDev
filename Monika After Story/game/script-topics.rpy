@@ -7669,7 +7669,19 @@ label monika_show_poem:
             
         "{i}Happy birthday{/i}" if renpy.seen_label("poem_pbday"):
             m 1duc "Hold on..."
-            call showpoem(poem=poem_pbday,music=False) from _call_showpoem_7 #Birthday
+            call showpoem(poem_pbday, music=False) from _call_showpoem_7 #Birthday
+            
+        "{i}Valentine day, one{/i}" if renpy.seen_label("poem_vday"):
+            m 1duc "Hold on..."
+            call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg") from _call_showpoem_7 #Valentine1
+            
+        "{i}Valentine day, two{/i}" if renpy.seen_label("poem_vday2"):
+            m 1duc "Hold on..."
+            call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg") from _call_showpoem_7 #Valentine2
+            
+        "{i}Merry Christmas {/i}" if renpy.seen_label("poem_d25"):
+            m 1duc "Hold on..."
+            call showpoem(poem_d25, music=False,paper="mod_assets/poem_assets/poem_d25.png") from _call_showpoem_7 #Christmas
                         
     m 1hua "Hope you enjoyed it ~"
     return
