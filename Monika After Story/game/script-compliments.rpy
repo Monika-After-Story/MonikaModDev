@@ -635,7 +635,7 @@ label mas_compliment_lookuptoyou:
         call mas_compliment_lookuptoyou_2
     else:
         call mas_compliment_lookuptoyou_3
-        return "love"
+    return "love"
     
 label mas_compliment_lookuptoyou_2:
     $ mas_gainAffection(3,bypass=True)
