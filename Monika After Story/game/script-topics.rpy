@@ -13048,7 +13048,16 @@ label mas_show_unseen:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="installed_python",category=['miscellaneous'],prompt="I installed Python.",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_installed_python",
+            category=['misc'],
+            prompt="I installed Python",
+            pool=True,
+            unlocked=True
+        )
+    )
 
 label monika_installed_python:
     m 1sub "You did?"
