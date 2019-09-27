@@ -647,6 +647,6 @@ label mas_compliment_lookuptoyou_2:
 label mas_compliment_lookuptoyou_3:
     m 1hubfb "Thank you for telling me that again, [player]!"
     m 1rkbfb "You have no idea how happy it makes me to hear you say that again..."
-    m 3hubfb "I'll always look up to you, too, [player]!"
+    m 3hubfb "I'll always look up to you too, [player]!"
     m 1ekbfa "I love you~"
     return
