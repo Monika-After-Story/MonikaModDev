@@ -650,4 +650,4 @@ label mas_compliment_lookuptoyou_3:
     m 1rkbfb "I'm always so happy to hear you say that..."
     m 3hubfb "I'll always look up to you too, [player]!"
     m 1ekbfa "I love you~"
-    return
+    return "love"
