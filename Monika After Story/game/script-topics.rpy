@@ -13046,3 +13046,13 @@ label mas_show_unseen:
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="installed_python",category=['python tips'],prompt="I installed Python.",pool=True))
+
+label installed_python:
+    m 1sub "You did?"
+    m 1hub "That's great, [player]!"
+    m 1eub "I'll teach you as much as I can!"
+    m 3hua "Just ask me if you ever need help with anything!"
+    return
