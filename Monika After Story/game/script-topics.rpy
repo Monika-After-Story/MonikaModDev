@@ -13058,6 +13058,7 @@ label installed_python:
     menu:
         m 1eub "What did you download it for?{fast}"
         "A personal project.":
+    m 1hub "How fun!"
     m 3hub "Good luck with whatever you're programming!"
     m 3ekbfa "Maybe you could help me out with a few things?"
     m 1eub "I'll teach you as much as I can!"
@@ -13069,6 +13070,7 @@ label installed_python:
     m 1sub "Really?"
     m 1hubfb "Yay!"
     m 1ekbfa "Thank you so much, [player]."
+    m 3ekbfa "It means so much that you're willing to do that for me."
     m 1hubfb "I'm sure we could do so much together, [player]!"
     
     "I don't know."
