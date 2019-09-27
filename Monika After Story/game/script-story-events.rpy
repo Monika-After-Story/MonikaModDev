@@ -1643,25 +1643,11 @@ label monika_rpy_files:
 
                 "Yes, please.":
                     m "Sure thing, [player]."
-                    python:
-                        store.mas_ptod.rst_cn()
-                        local_ctx = {
-                            "basedir": renpy.config.basedir
-                        }
 
-                    show monika at t22
-                    show screen mas_py_console_teaching
-
-                    call mas_wx_cmd_noxwait("import os", local_ctx)
-                    
-                    python:
-                        for rpy_filename in listRpy:
-                            path = '/game/'+rpy_filename
-                            store.mas_ptod.wx_cmd("os.remove(os.path.normcase(basedir+'"+path+"'))", local_ctx)
-                            renpy.pause(0.3)
+                    call mas_rpy_file_delete
 
                     m 2hua "There we go!"
-                    m 2esa "Be sure next time to install a version without the source code. You can get it from here: {a=http://www.monikaafterstory.com/releases.html}{i}{u}http://www.monikaafterstory.com/releases.html{/u}{/i}{/a}"
+                    m 2esa "Be sure next time to install a version without the source code. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
                     $ listRpy = None
                     $ persistent._mas_pm_has_rpy = False
                     hide screen mas_py_console_teaching
@@ -1672,6 +1658,27 @@ label monika_rpy_files:
                     m 2eka "Please be careful."
                     $ persistent._mas_pm_has_rpy = True
     return
+
+label mas_rpy_file_delete:
+    python:
+        store.mas_ptod.rst_cn()
+        local_ctx = {
+            "basedir": renpy.config.basedir
+        }
+
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    call mas_wx_cmd_noxwait("import os", local_ctx)
+
+    python:
+        rpy_list = mas_getRPYFiles()
+        for rpy_filename in rpy_list:
+            path = '/game/'+rpy_filename
+            store.mas_ptod.wx_cmd("os.remove(os.path.normcase(basedir+'"+path+"'))", local_ctx)
+            renpy.pause(0.1)
+    return
+
 
 #init 5 python:
 #    addEvent(

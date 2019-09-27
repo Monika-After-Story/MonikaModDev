@@ -1697,22 +1697,16 @@ label ch30_reset:
             # I think we'll deal with this better once we hve a sleeping sprite
             random_seen_limit = 1000
 
-    if not persistent._mas_pm_has_rpy:
-        # setup the docking station to handle the detection
-        $ rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+        if not persistent._mas_pm_has_rpy:
+            if not mas_hasRPYFiles() or persistent.current_monikatopic == "monika_rpy_files":
+                if not mas_hasRPYFiles() and persistent.current_monikatopic == "monika_rpy_files":
+                    persistent.current_monikatopic = 0
 
-        $ listRpy = rpyCheckStation.getPackageList(".rpy")
+                mas_rmallEVL("monika_rpy_files")
 
-        if len(listRpy) == 0 or persistent.current_monikatopic == "monika_rpy_files":
-            if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
-                $ persistent.current_monikatopic = 0
+            elif mas_hasRPYFiles() and not mas_inEVL("monika_rpy_files"):
+                queueEvent("monika_rpy_files")
 
-            $ mas_rmallEVL("monika_rpy_files")
-
-        elif len(listRpy) != 0 and not mas_inEVL("monika_rpy_files"):
-            $ queueEvent("monika_rpy_files")
-
-        $ del rpyCheckStation
 
     python:
         import datetime
