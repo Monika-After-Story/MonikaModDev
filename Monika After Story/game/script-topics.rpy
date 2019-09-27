@@ -13084,3 +13084,4 @@ label installed_python:
         m 3eub "That's great!"
         m 1eka "You're so selfless, [player]."
         m 1hub "I can't wait to see what you create!"
+        return
