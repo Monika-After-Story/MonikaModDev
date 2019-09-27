@@ -7666,6 +7666,10 @@ label monika_show_poem:
         "{i}Happy end{/i}":
             m 1duc "Hold on..."
             call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #base4
+            
+         "{i}Happy birthday{/i}" if renpy.seen_label("poem_pbday"):
+            m 1duc "Hold on..."
+            call showpoem(poem=poem_pbday,music=False) from _call_showpoem_7 #Birthday
                         
     m 1hua "Hope you enjoyed it ~"
     return
