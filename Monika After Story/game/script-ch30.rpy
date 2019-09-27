@@ -1698,15 +1698,14 @@ label ch30_reset:
             random_seen_limit = 1000
 
         if not persistent._mas_pm_has_rpy:
-            if not mas_hasRPYFiles() or persistent.current_monikatopic == "monika_rpy_files":
-                if not mas_hasRPYFiles() and persistent.current_monikatopic == "monika_rpy_files":
+            if mas_hasRPYFiles():
+                if not mas_inEVL("monika_rpy_files"):
+                    queueEvent("monika_rpy_files")
+
+            else:
+                if persistent.current_monikatopic == "monika_rpy_files":
                     persistent.current_monikatopic = 0
-
                 mas_rmallEVL("monika_rpy_files")
-
-            elif mas_hasRPYFiles() and not mas_inEVL("monika_rpy_files"):
-                queueEvent("monika_rpy_files")
-
 
     python:
         import datetime
