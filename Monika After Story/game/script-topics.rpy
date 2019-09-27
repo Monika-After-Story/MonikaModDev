@@ -7602,7 +7602,7 @@ init 5 python:
             category=['literature'],
             prompt="Old poems",
             random=True,
-            aff_range=(mas_aff.AFFECTIONATE,None)
+            aff_range=(mas_aff.NORMAL,None)
         )
     )
     
@@ -7622,9 +7622,8 @@ init 5 python:
             category=['literature'],
             prompt="Can I see a poem?",
             pool=True,
-            unlocked=False, #Unlocked for test
+            unlocked=False,
             rules={"no unlock": None},
-            aff_range=(mas_aff.NORMAL, None)
         )
     )
 label monika_show_poem:
