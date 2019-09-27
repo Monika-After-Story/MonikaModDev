@@ -13048,11 +13048,36 @@ label mas_show_unseen:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="installed_python",category=['python tips'],prompt="I installed Python.",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="installed_python",category=['miscellaneous'],prompt="I installed Python.",pool=True))
 
 label installed_python:
     m 1sub "You did?"
     m 1hub "That's great, [player]!"
+    m 1eub "What did you download it for?{nw}"
+    $ _history_list.pop()
+    menu:
+        m 1eub "What did you download it for?{fast}"
+        "A personal project.":
+    m 3hub "Good luck with whatever you're programming!"
+    m 3ekbfa "Maybe you could help me out with a few things?"
     m 1eub "I'll teach you as much as I can!"
+    m 1hub "Maybe you could even teach me a few things!"
+    m 1eub "Ehehehe!"
     m 3hua "Just ask me if you ever need help with anything!"
-    return
+    
+    "To help you come closer to our reality.":
+    m 1sub "Really?"
+    m 1hubfb "Yay!"
+    m 1ekbfa "Thank you so much, [player]."
+    m 1hubfb "I'm sure we could do so much together, [player]!"
+    
+    "I don't know."
+    m 1hub "Ehehehe!"
+    m 1eka "That's okay, [player]."
+    m 3eub "Until you know what you want to program, I can teach you how to use Python!"
+    m 1eub "I hope you have fun."
+    
+    "To help a friend."
+    m 3eub "That's great!"
+    m 1eka "You're so selfless, [player]."
+    m 1hub "I can't wait to see what you create!"
