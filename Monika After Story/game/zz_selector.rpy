@@ -2990,7 +2990,7 @@ label monika_ribbon_select:
         m 1eka "Oh, alright."
 
     # set appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type("ribbon"):
+    if monika_chr.is_wearing_ribbon():
 #        $ ribbon_prompt_key = "change"
         $ ribbon_dlg = "If you want me to change my ribbon, just ask, okay?"
 
