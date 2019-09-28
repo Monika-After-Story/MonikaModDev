@@ -12860,7 +12860,7 @@ label monika_brave_new_world:
     m 4eub "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
     m 1esb "Your future role in society would be decided beforehand, and you would be given a body and mind fitting of your predetermined purpose."
     m 3esd "You would also be indoctrinated from birth to be satisfied with your lot in life, and not to seek anything different."
-    m 3esd "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
+    m "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
     m 1esc "They would be made to associate books to negative stimuli; so when they become adults, they would naturally tend to avoid reading."
     m 4esd "They would also be taught to respect and submit to people from castes above theirs, and to look down on those of castes below."
     m 2eua "It's a pretty interesting case as a dystopia, as most of them show you a crushed and oppressed people..."
@@ -12879,18 +12879,19 @@ label monika_brave_new_world:
     m 1esc "This really makes you think about the nature of happiness, and society..."
     if mas_isMoniDis(lower=True):
         m 2dsc "..."
-        m 2ekc "Sometimes, I wish I could fit in a world like that."
-        m 2dkc "That I did not have to go through my epiphany..."
-        m 2dktdc "That I did not have to feel this pain..."
+        m 2rkc"Sometimes, I wish I could live happily in a world like that."
+        m 2dkc"Maybe it was a bad thing I had my epiphany..."
+        m 2dktdc "Then I could have kept on living without ever realizing the truth..."
+        m "And I would not have to feel this pain..."
     else:
         m 1eua "Though I certainly can't see myself living happily in a world like that..."
         m 1dsc "An unchallenging world, so limited in humanity and emotions..."
         if mas_isMoniHappy(higher=True):
-            m 1hubfa "Not now that I've discovered you, and how wonderful loving you could be~"
+            m 1hubfa "Especially not now that I've discovered you, and how wonderful loving you could be~"
             m 1eubfu "Ehehe~"
         else:
             m 1rsc "..."
-            m 1rfd "No, I just can't go back to a world like that..."
+            m 1rfd "No, I just can't go back to such a sad, empty world, like the one you found me in..."
             m 1rfc "Not now that I've seen what else is out there..."
     return
 
