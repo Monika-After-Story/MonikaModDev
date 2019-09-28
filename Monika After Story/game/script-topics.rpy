@@ -12879,8 +12879,8 @@ label monika_brave_new_world:
     m 1esc "This really makes you think about the nature of happiness, and society..."
     if mas_isMoniDis(lower=True):
         m 2dsc "..."
-        m 2rkc"Sometimes, I wish I could live happily in a world like that."
-        m 2dkc"Maybe it was a bad thing I had my epiphany..."
+        m 2rkc "Sometimes, I wish I could live happily in a world like that."
+        m 2dkc "Maybe it was a bad thing I had my epiphany..."
         m 2dktdc "Then I could have kept on living without ever realizing the truth..."
         m "And I would not have to feel this pain..."
     else:
