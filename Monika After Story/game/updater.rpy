@@ -891,7 +891,11 @@ label mas_updater_steam_issue:
 label mas_updater_rpy_issue:
     show monika at t11
     m 2eksdla "[player]...I see you have some rpy files in your game directory."
-    m 2rksdlc "I'm sure you remember when I mentioned that those files can cause problems when you update..."
+    if renpy.seen_label("monika_rpy_files"):
+        m 2rksdlc "I'm sure you remember when I mentioned that those files can cause problems when you update..."
+    else:
+        m 2rksdlc "Those files can cause some problems when you update..."
+
     m 3rksdlb "So I can't run the updater while those are in there."
     m 1eua "I can delete those for you and run the updater if you want though!"
 
