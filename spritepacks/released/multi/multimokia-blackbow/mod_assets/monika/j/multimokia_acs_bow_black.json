@@ -1,9 +1,9 @@
 {
-    "__author": "JMO",
+    "__author": "multimokia",
     "version": 2,
     "type": 0,
-    "name": "jmo_bow_black",
-    "img_sit": "jmo_bow_black",
+    "name": "multimokia_bow_black",
+    "img_sit": "multimokia_bow_black",
     "pose_map": {
         "default": "0",
         "l_default": "5"
@@ -21,7 +21,7 @@
     },
     "select_info": {
         "display_name": "Bow (Black)",
-        "thumb": "jmo_bow_black",
+        "thumb": "multimokia_bow_black",
         "group": "ribbon",
         "select_dlg": [
             "BOW"
