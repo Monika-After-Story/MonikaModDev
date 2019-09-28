@@ -1602,7 +1602,6 @@ label mas_steam_install_detected:
 
 default persistent._mas_pm_has_rpy = None
 init 5 python:
-
     addEvent(
         Event(
             persistent.event_database,
@@ -1612,51 +1611,74 @@ init 5 python:
 
 
 label monika_rpy_files:
-    m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
-    m 1ekc "I noticed some \".rpy\" files in there."
-    m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
-    m 3wud "And even prevent you from visiting me altogether!"
-    m 2etc "Unless..."
-    m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
-    m 2eka "But in case you didn't, I figured I'd ask..."
- 
-    m "Are you sure you installed the right version, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Are you sure you installed the right version, [player]?{fast}"
+    if mas_getEV("monika_rpy_files").shown_count == 0:
+        m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
+        m 1ekc "I noticed some \".rpy\" files in there."
+        m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
+        m 3wud "And even prevent you from visiting me altogether!"
+        m 2etc "Unless..."
+        m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
+        m 2eka "But in case you didn't, I figured I'd ask..."
+    
+        m "Are you sure you installed the right version, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Are you sure you installed the right version, [player]?{fast}"
 
-        "Yes.":
-            m 1sua "Really? Thank you so much for helping me come closer to your reality!"
-            m 1hua "I love you, [player]~"
-            $ persistent._mas_pm_has_rpy = True
-            return "love"
+            "Yes.":
+                m 1sua "Really? Thank you so much for helping me come closer to your reality!"
+                m 1hua "I love you, [player]~"
+                $ persistent._mas_pm_has_rpy = True
+                return "love"
 
-        "No.":
-            m "I see."
-            m 2rksdla "Maybe you should get rid of those, just to be safe."
-            m 4eua "Actually, maybe I can delete them for you."
+            "No.":
+                m "I see."
+                m 2rksdla "Maybe you should get rid of those, just to be safe."
+                m 4eua "Actually, maybe I can delete them for you."
 
-            m "Do you want me to delete them for you, [player]?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Do you want me to delete them for you, [player]?{fast}"
+                m "Do you want me to delete them for you, [player]?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Do you want me to delete them for you, [player]?{fast}"
 
-                "Yes, please.":
-                    m "Sure thing, [player]."
+                    "Yes, please.":
+                        m "Sure thing, [player]."
 
-                    call mas_rpy_file_delete
+                        call mas_rpy_file_delete
 
-                    m 2hua "There we go!"
-                    m 2esa "Be sure next time to install a version without the source code. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
-                    $ listRpy = None
-                    $ persistent._mas_pm_has_rpy = False
-                    hide screen mas_py_console_teaching
-                    show monika at t11
+                        m 2hua "There we go!"
+                        m 2esa "Be sure next time to install a version without the source code. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
+                        $ persistent._mas_pm_has_rpy = False
+                        hide screen mas_py_console_teaching
+                        show monika at t11
 
-                "No, thanks.":
-                    m 2rksdlc "Alright, [player]. I hope you know what you're doing."
-                    m 2eka "Please be careful."
-                    $ persistent._mas_pm_has_rpy = True
+                    "No, thanks.":
+                        m 2rksdlc "Alright, [player]. I hope you know what you're doing."
+                        m 2eka "Please be careful."
+                        $ persistent._mas_pm_has_rpy = True
+
+    else:
+        m 2efc "[player], you have rpy files in the game directory again!"
+
+        m 2rsc "Are you {i}sure{/i} you installed the right version?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Are you {i}sure{/i} you installed the right version?{fast}"
+
+            "Yes.":
+                m 1eka "Alright [player]."
+                m 3eua "I trust you know what you're doing."
+                $ persistent._mas_pm_has_rpy = True
+
+            "No.":
+                m 3eua "Alright, I'll just delete them for you again.{w=0.5}.{w=0.5}.{nw}"
+
+                call mas_rpy_file_delete
+
+                m 1hua "There we go!"
+                m 3eua "Remember, you can always get the right version from {a=http://www.monikaafterstory.com/releases.html}{i}{u}here{/u}{/i}{/a}."
+                hide screen mas_py_console_teaching
+                show monika at t11
     return
 
 label mas_rpy_file_delete:
