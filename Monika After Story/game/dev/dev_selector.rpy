@@ -1,5 +1,18 @@
 # selector testing
 
+init -100 python:
+    
+    def dev_mas_unlock_all_sprites():
+        for sel_obj in store.mas_selspr.ACS_SEL_SL:
+            sel_obj.unlocked = True
+
+        for sel_obj in store.mas_selspr.HAIR_SEL_SL:
+            sel_obj.unlocked = True
+
+        for sel_obj in store.mas_selspr.CLOTH_SEL_SL:
+            sel_obj.unlocked = True
+
+
 init 5 python:
     addEvent(
         Event(

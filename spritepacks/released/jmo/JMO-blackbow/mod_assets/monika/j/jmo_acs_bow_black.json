@@ -1,0 +1,30 @@
+{
+    "__author": "JMO",
+    "version": 2,
+    "type": 0,
+    "name": "jmo_bow_black",
+    "img_sit": "jmo_bow_black",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "bow",
+    "mux_type": [
+        "ribbon",
+        "bow"
+    ],
+    "stay_on_start": true,
+    "giftname": "blackbow",
+    "ex_props": {
+        "ribbon-like": true
+    },
+    "select_info": {
+        "display_name": "Bow (Black)",
+        "thumb": "jmo_bow_black",
+        "group": "ribbon",
+        "select_dlg": [
+            "BOW"
+        ]
+    }
+}

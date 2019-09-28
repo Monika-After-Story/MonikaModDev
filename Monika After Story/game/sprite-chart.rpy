@@ -739,7 +739,7 @@ init -5 python in mas_sprites:
         return PREFIX_FACE
 
 
-    def create_remover(acs_type, group):
+    def create_remover(acs_type, group, mux_types):
         """
         Creates a remover ACS
 
@@ -747,6 +747,7 @@ init -5 python in mas_sprites:
             acs_type - acs type for the remover. This is also used in mux_type
             group - group of selectables this ACS remover should be linked to
                 This is used in the naming of the ACS.
+            mux_types - list of types to use for mux_type
 
         RETURNS: remover ACS object
         """
@@ -759,7 +760,7 @@ init -5 python in mas_sprites:
             ),
             stay_on_start=False,
             acs_type=acs_type,
-            mux_type=[acs_type]
+            mux_type=mux_types
         )
         init_acs(remover_acs)
         return remover_acs
@@ -1173,20 +1174,23 @@ init -5 python in mas_sprites:
             elif new_hair.hasprop("ribbon-off"):
                 # take ribbon off for this hairstyle
                 _acs_ribbon_save_and_remove(moni_chr)
+                _acs_ribbon_like_save_and_remove(_moni_chr)
 
             if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
                 # unlock selector for ribbons if you have more than one
                 store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
             # also change name of the ribbon select prompt
-            if moni_chr.is_wearing_acs_type("ribbon"):
+            if moni_chr.is_wearing_ribbon():
                 store.mas_selspr.set_prompt("ribbon", "change")
+
             else:
                 store.mas_selspr.set_prompt("ribbon", "wear")
 
         else:
             # new hair not enabled for ribbon
             _acs_ribbon_save_and_remove(moni_chr)
+            _acs_ribbon_like_save_and_remove(moni_chr)
 
 
     # sprite maker functions
@@ -3815,6 +3819,19 @@ init -2 python:
             RETURNS: True if wearing hair with the exprop, False if not
             """
             return self.hair.hasprop(exprop)
+
+
+        def is_wearing_ribbon(self):
+            """
+            Checks if we are currently wearing a ribbon or ribbon-like ACS
+
+            RETURNS: True if wearing ACS with ribbon type or ACS with
+                ribbon-like ex prop
+            """
+            return (
+                self.is_wearing_acs_type("ribbon") 
+                or self.is_wearing_acs_with_exprop("ribbon-like")
+            )
 
 
         def load(self, startup=False):

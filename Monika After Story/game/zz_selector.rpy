@@ -568,7 +568,11 @@ init -10 python in mas_selspr:
 
         RETURNS: remover ACS selectable
         """
-        remover_acs = store.mas_sprites.create_remover(acs_type, group)
+        remover_acs = store.mas_sprites.create_remover(
+            acs_type,
+            group,
+            store.mas_sprites.get_mux_from_type(acs_type)
+        )
         init_selectable_acs(
             remover_acs,
             "Remove",
