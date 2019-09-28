@@ -7,7 +7,6 @@
 #   [SPR010] - Hair programming points
 #   [SPR020] - Clothes programming points
 #   [SPR030] - ACS programming points
-#   [SPR100] - special base objects
 #   [SPR110] - Hair sprite objects
 #   [SPR120] - Clothes sprite objects
 #   [SPR130] - ACS sprite objects
@@ -567,18 +566,6 @@ init -2 python in mas_sprites:
         """
         if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
             _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
-
-
-init -2 python in mas_sprites:
-    # Base objects (SPR100)
-    # special objects
-
-    import store
-
-    base_pose_map = store.MASPoseMap(
-        mpm_type=store.MASPoseMap.MPM_TYPE_PA
-        # TODO
-    )
 
 
 init -1 python:
