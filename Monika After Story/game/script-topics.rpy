@@ -12856,7 +12856,11 @@ label monika_enjoyingspring:
     m 2tkc "You can't really enjoy too much time outside because of it..."
     if mas_isMoniHappy(higher=True):
         m 2eka "But I guess April showers bring May flowers, so it's not all bad."
-        m 3eub "And personally, I think that rain can also be fun too!"
+        if persistent._mas_pm_live_south_hemisphere:
+            m 2rksdlb "Well, maybe not in your case, ahaha..."
+            m 3eub "But personally, I think that rain can also be fun too!"
+        else:
+            m 3eub "And personally, I think that rain can also be fun too!"
         show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eubla "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two."
         m 5ekbfa "Although, nothing beats listening to the sound of rain at home while holding the one you love."
