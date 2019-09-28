@@ -880,7 +880,7 @@ init -894 python:
 
 
 label mas_updater_steam_issue:
-#    show monika at t11
+    show monika at t11
     m 1eub "[player]!{w} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
@@ -888,6 +888,44 @@ label mas_updater_steam_issue:
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 
+label mas_updater_rpy_issue:
+    show monika at t11
+    m 2eksdla "[player]...I see you have some rpy files in your game directory."
+    if renpy.seen_label("monika_rpy_files"):
+        m 2rksdlc "I'm sure you remember when I mentioned that those files can cause problems when you update..."
+    else:
+        m 2rksdlc "Those files can cause some problems when you update..."
+
+    m 3rksdlb "So I can't run the updater while those are in there."
+    m 1eua "I can delete those for you and run the updater if you want though!"
+
+    m 1eua "Would you like me to delete them?{nw}"
+    #NOTE: no history_list.pop() here because for some reason this doesn't end up in history
+    menu:
+        m "Would you like me to delete them?{fast}"
+
+        "Yes please.":
+            m 1hua "Sure!"
+
+            #Delete files
+            call mas_rpy_file_delete
+
+            m 3hub "There we go!"
+            #Hide screen
+            hide screen mas_py_console_teaching
+            show monika at t11
+
+            #Also going to rmallEVL here
+            $ mas_rmallEVL("monika_rpy_files")
+
+            m 2dsc "Now let me just run the updater.{w=0.5}.{w=0.5}.{nw}"
+            #Run the updater
+            jump update_now
+
+        "No thanks.":
+            m 3eka "Alright [player]. If you delete them and then try to update again, I'll run the updater for you."
+
+    return
 
 label forced_update_now:
     $ mas_updater.force = True
@@ -908,7 +946,23 @@ label forced_update_now:
         else:
             # otherwise, reenable core interactions
             $ mas_DropShield_core()
+        return
 
+    #Rpy file check
+    elif mas_hasRPYFiles():
+        $ mas_RaiseShield_core()
+
+        call mas_updater_rpy_issue
+
+        if store.mas_globals.dlg_workflow:
+            # current in dialogue workflow, we should only enable the escape
+            # and music stuff
+            $ enable_esc()
+            $ mas_MUMUDropShield()
+
+        else:
+            # otherwise, reenable core interactions
+            $ mas_DropShield_core()
         return
 
 #This file goes through the actions for updating Monika After story

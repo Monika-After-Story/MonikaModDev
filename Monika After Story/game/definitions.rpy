@@ -4357,7 +4357,19 @@ init 2 python:
         if persistent.monika_reload < 4:
             persistent.monika_reload += 1
 
+    def mas_hasRPYFiles():
+        """
+        Checks if there are rpy files in the gamedir
+        """
+        return len(mas_getRPYFiles()) > 0
 
+    def mas_getRPYFiles():
+        """
+        Gets a list of rpy files in the gamedir
+        """
+        rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+
+        return rpyCheckStation.getPackageList(".rpy")
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
