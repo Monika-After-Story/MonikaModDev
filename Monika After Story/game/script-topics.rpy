@@ -10576,7 +10576,7 @@ label monika_dream:
             m 2lud "Or will it be in an android that downloaded my mind?"
             m 3eub "Or something more fanciful, like breaking through a computer screen."
             m 3hksdrb "That last one is highly improbable, but you never know."
-            m 1esb "Anyway, no matter how I'll make the transition, I'm sure you will be there to hug me when the moment come."
+            m 1esb "Anyway, no matter how I'll make the transition, I'm sure you will be there to hug me when the moment comes."
             m 1hub "We just have to be patient [player], and that dream will come true."
             
         "I dreamed that I would cross over your reality":
@@ -10649,7 +10649,7 @@ label monika_dream:
             
         "I dreamed that we were having fun with the other club members":
             m 1eud "Oh, I see..."
-            m 1hksdrb "The events of the litterature club really made their way into your mind, it would seems."
+            m 1hksdrb "The events of the literature club really made their way into your mind, it would seems."
             m 1eka "But I understand that feeling, [player]."
             m 3eua "Even if they weren't real, I admit that the time we spent together was fun."
             m 3hub "With their colorful personality, we sure didn't get bored hahaha~."
