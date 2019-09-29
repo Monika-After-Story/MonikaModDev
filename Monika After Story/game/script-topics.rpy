@@ -12137,8 +12137,9 @@ init 5 python:
         )
     )
 
-default persistent._mas_reads_poetry = None
+default persistent._mas_pm_reads_poetry = None
 #True if player likes poems, false if not
+
 label monika_player_reads_poetry:
     m 2eub "Say, [player]..."
     m 2eua "You know that I like poetry, but I was wondering something."
@@ -12147,13 +12148,13 @@ label monika_player_reads_poetry:
     menu:
         m "Did you often read poems before you joined the Literature Club?{fast}"
         "Yes.":
-            $ persistent._mas_read_poetry = True
+            $ persistent._mas_pm_reads_poetry = True
             $ mas_gainAffection()
             m 2sub "Really?"
             m 2hub "That makes me so happy!"
             m 2hua "And really, I mean it. Not a lot of people nowadays read poetry, you know."
         "No.":
-            $ persistent._mas_reads_poetry = False
+            $ persistent._mas_pm_reads_poetry = False
             m 2eka "Oh, that's too bad..."
             m 2eua "I just hope I made you appreciate poetry a little more."
             m 2hua "You know, not a lot of people these days seem to read poems, or even like them, so that's fine."
@@ -12166,7 +12167,7 @@ label monika_player_reads_poetry:
     m 2eka "Love, grief, anger, passion, all these feelings bring the words to life."
     m 2hua "And because of that, even a simple text can become a meaningful poem!"
     m "That's why I love poetry."
-    if persistent._mas_reads_poetry:
+    if persistent._mas_pm_reads_poetry:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "Gosh, just knowing that you read poems too..."
         m 5hua "It shows how we are alike, which makes my love for you grow even more."
