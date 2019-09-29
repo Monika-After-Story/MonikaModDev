@@ -13139,6 +13139,7 @@ label monika_installed_python:
                 "option two":
                     m 1hub "Great!"
                     m 1eub "That's the version of Python I use."
+                    m 3rksdlb "Also, [player]?"
     
         "To help a friend.":
             m 3eub "That's great!"
