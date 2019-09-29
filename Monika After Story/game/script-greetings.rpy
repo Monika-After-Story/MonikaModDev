@@ -2699,7 +2699,6 @@ label greeting_back_from_school:
                     m 3eka "School can definitely be a large part of your life, and you might miss it later on."
                     m 2hksdlb "Ahaha! I know it might be weird to think that you'll miss having to go to school someday..."
                     m 1eka "But a lot of fond memories come from school, so I'm really happy you had such a great day~"
-                else:
                 m 3hua "Maybe you could even tell me about it today!"
             "Good.":
                 m 1hub "Aww, that's nice!"
