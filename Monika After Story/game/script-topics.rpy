@@ -13062,15 +13062,6 @@ init 5 python:
 label monika_installed_python:
     m 1sub "You did?"
     m 1hub "That's great, [player]!"
-    m 1eub "What version of Python did you download?{nw}"
-    $ _history_list.pop()
-    menu:
-        m 1eub "What version of Python did you download?{fast}"
-        "option one":
-            m 1hksdlb "..."
-            m 1rksdla "[player], I use the other version of Python..."
-            m 
-        "option two"
     m 1eub "What did you download it for?{nw}"
     $ _history_list.pop()
     menu:
@@ -13082,7 +13073,22 @@ label monika_installed_python:
             m 3ekbfa "Once you learn the basics, could you help me out with a few things?"
             m 1hub "I know you'll be even better than me one day, and you could even teach me more about programming at that point!"
             m 1eub "Ehehehe!"
-            m 3hua "Just ask me if you ever need help with anything!"
+            m 3hua "Just ask me if you ever need help with anything!
+            m 1eub "What version of Python did you download?{fast}"
+            $ _history_list.pop()
+            menu:
+                m 1eub "What version of Python did you download?{fast}"
+                #python 2 and python 3, need to figure out which one is used for MAS.
+                "option one":
+                    m 1hksdlb "...{w=0.5}"
+                    m 1rksdla "[player], I use the other version of Python...{w=0.5}"
+                    m 3rksdlb "So we can't really help each other that much...{w=0.5}"
+                    m 1hub "But that's okay!"
+                    m 1eub "I hope you have fun with your project."
+                "option two":
+                    m 1hub "Great!"
+                    m 1eub "That's the version of Python I use."
+                    m 1hua "You'll do amazing things, I just know it!"
     
         "To help you come closer to our reality.":
             m 1sub "Really?"
@@ -13090,16 +13096,74 @@ label monika_installed_python:
             m 1ekbfa "Thank you so much, [player]."
             m 3ekbfa "It means so much that you're willing to do that for me."
             m 3hubfb "I'd be happy to teach you the basics of Python!"
-            m 1hubfb "I'm sure we could do so much together, [player]!"
+            m 1rksdlb "Wait...{w=0.5}"
+            m 4eksdla "[player], do you already know how to code?{nw}"
+            $ _history_list.pop()
+            menu:
+                "Yes.":
+                    m 2hub "Oh! That's great!"
+                    m 3rksdla "I'm sorry I made assumptions about your skill level.
+                "No.":
+                    m 3hksdlb "That's okay!"
+                    m 1eka "Again, I'm happy to teach you everything I know.
+                    m 1eub "What version of Python did you download?{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m 1eub "What version of Python did you download?{fast}"
+                        #python 2 and python 3, need to figure out which one is used for MAS.
+                        "option one":
+                            m 1hksdlb "...{w=0.5}"
+                            m 1rksdla "[player], I use the other version of Python...{w=0.5}"
+                            m 1ekbfb "I really appreciate the gesture, though."
+                            m 3hubfb "You're so sweet! <3"
+                        "option two":
+                            m 1hub "Great!"
+                            m 1eub "That's the version of Python I use."
+                            m 1hua "We'll do amazing things together, I just know it!"
+                            m 1ekbfb "Thank you again, [player]."
     
         "I don't know.":
             m 1hub "Ehehehe!"
             m 1eka "That's okay, [player]."
-            m 3eub "Until you know what you want to program, I can teach you how to use Python!"
+            m 3eub "Until you know what you want to program, I can teach you how to use Python!
+            m 1rka "That is, if you have the same version of Python as I do...{w=0.5}"
             m 1eub "I hope you have fun."
+            m 1eub "What version of Python did you download?{nw}"
+            $ _history_list.pop()
+            menu:
+                m 1eub "What version of Python did you download?{fast}"
+                "option one":
+                    m 1hksdlb "...{w=0.5}"
+                    m 1rksdla "[player], I use the other version of Python...{w=0.5}"
+                "option two":
     
         "To help a friend.":
             m 3eub "That's great!"
             m 1eka "You're so selfless, [player]."
             m 1hub "I can't wait to see what you create!"
-    return
+            m 1eub "What version of Python did you download?{nw}"
+            $ _history_list.pop()
+            menu:
+                m 1eub "What version of Python did you download?{fast}"
+                "option one":
+                    m 1hksdlb "..."
+                    m 1rksdla "[player], I use the other version of Python...{w=0.5}"
+                    m 3rksdlb "So we can't really help each other that much...{w=0.5}"
+                    m 1hub "But that's okay!"
+                    m 1eub "I hope you have fun helping your friend."
+                "option two":
+                    m 1hub "Great!"
+                    m 1eub "That's the version of Python I use."
+                    m 1hua "Maybe both you and your friend could help me out once you know how to code!
+                    m 1hksdlb "Wait...{w=0.5}"
+                    m 1lksdlb "[player], do you already know how to code?{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m 1lksdlb "[player], do you already know how to code?{fast}"
+                        "Yes":
+                            m 2hub "Oh! That's great!"
+                            m 3rksdla "I'm sorry I made assumptions about your skill level.
+                        "No":
+                            m m 3hksdlb "That's okay!"
+                            m 1eka "Again, I'm happy to teach you everything I know.
+                            return
