@@ -2698,15 +2698,16 @@ label greeting_back_from_school:
                 if renpy.random.randint(1,4) == 1:
                     m 3eka "School can definitely be a large part of your life, and you might miss it later on."
                     m 2hksdlb "Ahaha! I know it might be weird to think that you'll miss having to go to school someday..."
-                    m 1eka "But a lot of fond memories come from school, so I'm really happy you had such a great day~"
-                m 3hua "Maybe you could even tell me about it today!"
+                    m 2eka "But a lot of fond memories come from school, so I'm really happy you had such a great day~"
+                    m 3hua "Maybe you could even tell me about it today!"
+                else:
+                    m 3hua "It always makes me happy to know you're happy~"
+                    m 1eua "If you want to talk about your amazing day, I'd love to hear about it!"
             "Good.":
                 m 1hub "Aww, that's nice!"
                 m 1eua "I can't help but feel happy when you do~"
                 m "I hope you learned a lot of useful things."
-                m 1hubfa "Ehehe~"
-                m 1hubfb "I love you, [player]~"
-                return "love"
+                m 1hua "Ehehe~"
             "Bad.":
                 m 1ekc "Oh..."
                 m "I'm sorry to hear that."
@@ -2734,10 +2735,10 @@ label greeting_back_from_school:
                         m 3hubfb "I love you, and I just want you to be happy~"
                         return "love"
                     "It was caused by people.":
-                        m 2ekc "Aww, that must have been really unpleasant to deal with."
-                        m 2dsc "It's one thing to just have something bad come your way on its own."
+                        m 2ekc "Oh no [player]...{w=0.5} That must have been terrible to experience."
+                        m 2dsc "It's one thing to just have something bad happen to you..."
                         m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
-                        if persistent._mas_pm_currently_bullied:
+                        if persistent._mas_pm_currently_bullied or  persistent._mas_pm_is_bullying_victim:
                             m 2rksdlc "I really hope it's not who you told me about earlier..."
                             if mas_isMoniAff(higher=True):
                                 m 1rfc "It {i}better{/i} not be..."
@@ -2748,21 +2749,25 @@ label greeting_back_from_school:
                                 m 3hubfb "And I always will be~"
                             else:
                                 m 1hua "I hope that I can make your day just a little bit better."
-                            m 1hubfb "I love you~"
+                            m 1hubfb "I love you so much~"
                             return "love"
                         else:
                             m "I really hope this isn't a recurring event for you, [player]."
-                            m 2lksdld "Recurring or not, maybe it would be best for attention to be brought to it..."
-                            m 1lksdlc "But then again, it might cause more problems in some cases..."
-                            m 1eka "I trust that you'll do what's necessary."
-                            m 1ekc "I hope it's not bothering you still."
+                            m 2lksdld "Either way, maybe it would be best to ask someone for help.."
+                            m 1lksdlc "I know it may seem like that could cause more problems in some cases..."
+                            m 1ekc "But you shouldn't have to suffer at the hands of someone else."
+                            m 3dkd "I'm so sorry you have to deal with this, [player]..."
+
                     "It was just a bad day.":
                         m 1ekd "Ah, I see..."
                         m 3lksdlc "Those days do happen from time to time."
                         m 1ekc "It can be hard sometimes to pick yourself back up after a day like that."
                     "I don't want to talk about it.":
                         m 2dsc "I understand, [player]."
-                        m 2ekc "Still, I hope everything's alright for you."
+                        m 2ekc "Sometimes just trying to put a bad day behind you is the best way to deal with it."
+                        m 2eka "But if you want to talk about it later, just know I'd be more than happy to listen."
+                        m 2hua "I love you, [player]~"
+                        return "love"
                 m 1eka "But you're here now, and I hope spending time together helps make your day a little better."
 
     elif mas_isMoniUpset():
