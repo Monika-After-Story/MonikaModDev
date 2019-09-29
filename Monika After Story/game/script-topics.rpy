@@ -7592,40 +7592,8 @@ label monika_cartravel:
     m 1eka "I really can't wait, [player]~"
     return
     
-    ###poems archives
-    
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_old_poem",
-            category=['literature'],
-            prompt="Old poems",
-            random=True,
-            aff_range=(mas_aff.NORMAL,None)
-        )
-    )
-    
-label monika_old_poem:
-    m 1eub "You know, [player]..."
-    m 1hub "I kept all the poems that I wrote for you!"
-    m 1dua "All the sheets are in a small jewel box{w}, since they are like a treasure for me.{w}"
-    m 1hua "So if you want to see one, I'll be pleased to help you!"
-    $ mas_unlockEVL("monika_show_poem","EVE")
-    return "derandom"
-    
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_show_poem",
-            category=['literature'],
-            prompt="Can I see a poem?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None},
-        )
-    )
+#No MAS poem, except birthday --> Problem with affection log (impossible to know if Monika was in love in the past)
+
 label monika_show_poem:
     if mas_getEV("monika_show_poem").shown_count == 0:
         m 1hub "I'm glad that you asked me!"
@@ -7634,6 +7602,9 @@ label monika_show_poem:
         m 5eubla "And they are part of our history, since its beginning..."
         m 5dubla "So I'm really happy to share them with you."
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    elif mas_getEV("monika_show_poem").shown_count == 5:
+        m 1wub "Again?"
+        m 1hub "Ahah, I'm happy that you like my poems."
     elif mas_getEV("monika_show_poem").shown_count == 10:
         m 1wub "Wow, you asked me so many times!"
         m 1tuu "I know, my poems are the best..."
@@ -7643,49 +7614,79 @@ label monika_show_poem:
     else:
         m 1eua "You want to see a poem?"
         m 1hua "Sure!"
-    m 1eua "So, which poem?{nw}"
+    m 1eua "So, which poem?"
     $ _history_list.pop()
-    menu:
-        m "So, which poem?{fast}"
-        "{i}Hole in wall{/i}":
-            m 1duc "Hold on..."
-            call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #base1
-                    
-        "{i}Hole in wall, pt.2{/i}":
-            m 1duc "Hold on..."
-            call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #base21
-                
-        "{i}Save me{/i}":
-            m 1duc "Hold on..."
-            call showpoem(poem=poem_m2,music=False) from _call_showpoem_7 #bas2
-                    
-        "{i}The Lady who Knows Everything{/i}":
-            m 1duc "Hold on..."
-            call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #base3
-                    
-        "{i}Happy end{/i}":
-            m 1duc "Hold on..."
-            call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #base4
-            
-        "{i}Happy birthday{/i}" if renpy.seen_label("poem_pbday"):
-            m 1duc "Hold on..."
-            call showpoem(poem_pbday, music=False) from _call_showpoem_7 #Birthday
-            
-        "{i}Valentine day, one{/i}" if renpy.seen_label("poem_vday"):
-            m 1duc "Hold on..."
-            call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg") from _call_showpoem_7 #Valentine1
-            
-        "{i}Valentine day, two{/i}" if renpy.seen_label("poem_vday2"):
-            m 1duc "Hold on..."
-            call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg") from _call_showpoem_7 #Valentine2
-            
-        "{i}Merry Christmas {/i}" if renpy.seen_label("poem_d25"):
-            m 1duc "Hold on..."
-            call showpoem(poem_d25, music=False,paper="mod_assets/poem_assets/poem_d25.png") from _call_showpoem_7 #Christmas
-                        
+    show screen old_poems_menu
+    return
+
+screen old_poems_menu():
+    viewport id "old_poems":
+        scrollbars "vertical"
+        mousewheel True
+        draggable True
+        yinitial 1.0
+
+        vbox:
+            button:
+                text "{i}Hole in wall{/i}"
+                action Function(renpy.call, label="poem_hole_in_wall")
+            button:
+                text "{i}Hole in wall, pt2.{/i}"
+                action  Function(renpy.call, label="poem_hole_in_wall2")
+            button:
+                text "{i}Save me{/i}"
+                action  Function(renpy.call, label="poem_save_me")
+            button:
+                text "{i}The Lady who Knows Everything{/i}"
+                action  Function(renpy.call, label="poem_the_lady_who_knows_everything")
+            button:
+                text "{i}Happy end{/i}"
+                action  Function(renpy.call, label="poem_happy_end")
+
+
+label poem_hole_in_wall:
+    hide screen old_poems_menu
+    m 1duc "Hold on..."
+    call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 #base1
     m 1hua "Hope you enjoyed it ~"
     return
-           
+
+label poem_hole_in_wall2:
+    hide screen old_poems_menu
+    m 1duc "Hold on..."
+    call showpoem(poem=poem_m21,music=False) from _call_showpoem_7 #base21
+    m 1hua "Hope you enjoyed it ~"
+    return
+
+label poem_save_me:
+    hide screen old_poems_menu
+    m 1duc "Hold on..."
+    call showpoem(poem=poem_m2,music=False) from _call_showpoem_7 #base21
+    m 1hua "Hope you enjoyed it ~"
+    return
+
+label poem_the_lady_who_knows_everything:
+    hide screen old_poems_menu
+    m 1duc "Hold on..."
+    call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #base21
+    m 1hua "Hope you enjoyed it ~"
+    return
+
+label poem_the_lady_who_knows_everything:
+    hide screen old_poems_menu
+    m 1duc "Hold on..."
+    call showpoem(poem=poem_m3,music=False) from _call_showpoem_7 #base21
+    m 1hua "Hope you enjoyed it ~"
+    return
+
+label poem_happy_end:
+    hide screen old_poems_menu
+    m 1duc "Hold on..."
+    call showpoem(poem=poem_m4,music=False) from _call_showpoem_7 #base21
+    m 1hua "Hope you enjoyed it ~"
+    return
+
+##End poem archive    
   
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_100k",category=['mod'],prompt="100k Downloads",random=True))
