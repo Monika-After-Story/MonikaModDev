@@ -32,6 +32,7 @@ init -1 python in songs:
     SAYO_NARA_SENS = "Sayonara"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
+    MONIKA_LULLABY = "Monika's Lullaby"
     NO_SONG = "No Music"
 
     # SONG FILEPATHS
@@ -48,6 +49,8 @@ init -1 python in songs:
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
     FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
     FP_YR_EUROBEAT = "<loop 1.414>mod_assets/bgm/eurobeatreality.ogg"
+    FP_MONIKA_LULLABY = "<loop 0.01>mod_assets/bgm/Monika's Lullaby.ogg"
+    FP_THIRTY_MIN_OF_SILENCE = "<silence 1800.0>"
     FP_NO_SONG = None
 
 
@@ -158,7 +161,9 @@ init -1 python in songs:
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
-            
+
+            # NOTE: this is locked until we can set this up later.
+#            music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
 
         # sayori only allows this
         if store.persistent._mas_sensitive_mode:
@@ -990,23 +995,34 @@ init python:
             renpy.music.set_volume(songs.music_volume, channel="music")
 
 
-    def play_song(song, fadein=0.0):
+    def play_song(song, fadein=0.0, loop=True, set_per=False):
         #
         # literally just plays a song onto the music channel
+        # Also sets the currentt track
         #
         # IN:
         #   song - song to play. If None, the channel is stopped
         #   fadein - number of seconds to fade in the song
+        #   loop - True if we should loop the song if possible, False to not
+        #       loop.
+        #   set_per - True if we should set persistent track, False if not
         if song is None:
+            song = songs.FP_NO_SONG
             renpy.music.stop(channel="music")
         else:
             renpy.music.play(
                 song,
                 channel="music",
-                loop=True,
+                loop=loop,
                 synchro_start=True,
                 fadein=fadein
             )
+
+        songs.current_track = song
+        songs.selected_track = song
+
+        if set_per:
+            persistent.current_track = song
 
 
     def mas_startup_song():
@@ -1033,15 +1049,17 @@ init python:
 
             # workaround to handle new context
             if selected_track != songs.current_track:
-                play_song(selected_track)
-                songs.current_track = selected_track
-                persistent.current_track = selected_track
+                play_song(selected_track, set_per=True)
 
             # unwanted interactions are no longer unwanted
             if store.mas_globals.dlg_workflow:
                 # the dialogue workflow means we should only enable
                 # music menu interactions
                 mas_MUMUDropShield()
+
+            elif store.mas_globals.in_idle_mode:
+                # to idle
+                mas_mumuToIdleShield() 
 
             else:
                 # otherwise we can enable interactions normally

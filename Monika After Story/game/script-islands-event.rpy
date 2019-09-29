@@ -11,7 +11,7 @@ init -10 python:
     #
     #   if for some reason we fail to convert the files into images
     #   then we must backout of showing the event.
-    # 
+    #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
     mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
@@ -142,7 +142,7 @@ label mas_monika_upsidedownisland:
     m "Well...I was about to fix it until I took another good look at it."
     m "It looks surreal, doesn't it?"
     m "I just feel like there's something special about it."
-    m "It's just… mesmerizing."
+    m "It's just...mesmerizing."
     return
 
 label mas_monika_glitchedmess:
@@ -173,24 +173,26 @@ label mas_monika_cherry_blossom1:
     m "It's a beautiful tree, isn't it?"
     m "It's called a Cherry Blossom tree."
     m "They're native to Japan."
-    m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picknick underneath the trees."
+    m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picnic underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
-    m "Just staring at the falling petals is just awe-inspiring."
+    m "Just staring at the falling petals is awe-inspiring."
     return
 
 label mas_monika_cherry_blossom2:
-    m "Did you know you can eat the flower petals of a  Cherry Blossom tree?"
-    m "I don't know the taste myself, but I'm sure it'd be as sweet as you."
+    m "Did you know you can eat the flower petals of a Cherry Blossom tree?"
+    m "I don't know the taste myself, but I'm sure it can't be as sweet as you."
     m "Ehehe~"
     return
 
 label mas_monika_cherry_blossom3:
     m "You know, the tree is symbolic like life itself."
-    m "Beautiful, but shortlived."
+    m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
+    # manually handle the "love" return key
+    $ mas_ILY()
     return
 
 label mas_monika_cherry_blossom4:
@@ -251,7 +253,7 @@ label mas_monika_day3:
     return
 
 label mas_monika_night1:
-    m "You're probably wondering what happened to that orange comet that occassionaly passes by."
+    m "You're probably wondering what happened to that orange comet that occasionally passes by."
     m "Don't worry, I've dealt with it."
     m "I wouldn't want you to get hurt~"
     return
@@ -260,7 +262,7 @@ label mas_monika_night2:
     m "Have you ever gone stargazing, [player]?"
     m "Taking some time out of your evening to look at the night sky and to just stare at the beauty of the sky above..."
     m "It's surprisingly relaxing, you know?"
-    m "I’ve found that it can really relieve stress and clear your head..."
+    m "I've found that it can really relieve stress and clear your head..."
     m "And seeing all kinds of constellations in the sky just fills your mind with wonder."
     m "Of course, it really makes you realize just how small we are in the universe."
     m "Ahaha..."
@@ -295,10 +297,10 @@ label mas_monika_daynight2:
     m "{i}It is ticking, falling down{/i}"
 
     # aurora borealis
-    m "{i}Love forever, love has freely{/i}"
+    m "{i}Love forever, love is free{/i}"
 
     # a-aurora borealis
-    m "{i}Turned forever you and me{/i}"
+    m "{i}Let's turn forever, you and me{/i}"
 
     # in this part of the country? Yes
     m "{i}Windmill, windmill for the land{/i}"
@@ -327,7 +329,7 @@ label mas_island_bookshelf:
 
 label mas_island_bookshelf1:
     m "Some of my favorite books are in there."
-    m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i} and a few others."
+    m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i}, and a few others."
     m "Maybe we can read them together sometime~"
     return
 
@@ -340,16 +342,20 @@ label mas_island_bookshelf2:
     return
 
 screen mas_islands_background:
-    if morning_flag:
-        if _mas_island_window_open:
-            add "mod_assets/location/special/without_frame.png"
-        else:
-            add "mod_assets/location/special/with_frame.png"
-    else:
-        if _mas_island_window_open:
-            add "mod_assets/location/special/night_without_frame.png"
-        else:
-            add "mod_assets/location/special/night_with_frame.png"
+
+    # NOTE: we will ALWAYS show the islands firs time without any weather options
+    add mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+
+#    if morning_flag:
+#        if _mas_island_window_open:
+#            add "mod_assets/location/special/without_frame.png"
+#        else:
+#            add "mod_assets/location/special/with_frame.png"
+#    else:
+#        if _mas_island_window_open:
+#            add "mod_assets/location/special/night_without_frame.png"
+#        else:
+#            add "mod_assets/location/special/night_with_frame.png"
 
     if _mas_island_shimeji:
         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
@@ -360,16 +366,24 @@ screen mas_islands_background:
 screen mas_show_islands():
     style_prefix "island"
     imagemap:
-        if morning_flag:
-            if _mas_island_window_open:
-                ground "mod_assets/location/special/without_frame.png"
-            else:
-                ground "mod_assets/location/special/with_frame.png"
-        else:
-            if _mas_island_window_open:
-                ground "mod_assets/location/special/night_without_frame.png"
-            else:
-                ground "mod_assets/location/special/night_with_frame.png"
+
+        ground mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+
+#        if mas_is_raining:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/rain_without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/rain_with_frame.png"
+#        elif morning_flag:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/with_frame.png"
+#        else:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/night_without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/night_with_frame.png"
 
 
         hotspot (11, 13, 314, 270) action Return("mas_monika_upsidedownisland") # island upside down
@@ -405,8 +419,8 @@ define gui.island_button_tile = False
 define gui.island_button_text_font = gui.default_font
 define gui.island_button_text_size = gui.text_size
 define gui.island_button_text_xalign = 0.5
-define gui.island_button_text_idle_color = "#000"
-define gui.island_button_text_hover_color = "#fa9"
+define gui.island_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.island_button_text_hover_color = mas_ui.light_button_text_hover_color
 define gui.island_button_text_kerning = 0.2
 
 style island_button is button

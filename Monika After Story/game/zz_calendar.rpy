@@ -195,9 +195,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
         # Year thresholds
         MIN_GLITCH_YEAR = 1700
-        MIN_SELECTABLE_YEAR = 200
+        MIN_VIEWABLE_YEAR = 200
+        MIN_SELECTABLE_YEAR = 1900
         MAX_GLITCH_YEAR = 2300
-        MAX_SELECTABLE_YEAR = 7000
+        MAX_VIEWABLE_YEAR = 7000
         MID_POINT_YEAR = 2000
 
         # pane constants
@@ -222,7 +223,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             super(renpy.Displayable, self).__init__()
 
             # The calendar background
-            self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png")
+            self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")
 
             # Can we select dates?
             self.can_select_date = select_date
@@ -260,25 +261,25 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # button backgrounds
             button_close = Image(
-                "mod_assets/calendar/calendar_close.png"
+                ("mod_assets/calendar/calendar_close.png" if morning_flag else "mod_assets/calendar/calendar_close-n.png")
             )
             button_close_hover = Image(
-                "mod_assets/calendar/calendar_close_hover.png"
+                ("mod_assets/calendar/calendar_close_hover.png" if morning_flag else "mod_assets/calendar/calendar_close_hover-n.png")
             )
             button_day_name = Image(
-                "mod_assets/calendar/calendar_day_name_bg.png"
+                ("mod_assets/calendar/calendar_day_name_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_name_bg-n.png")
             )
             button_left_arrow = Image(
-                "mod_assets/calendar/calendar_left_arrow.png"
+                ("mod_assets/calendar/calendar_left_arrow.png" if morning_flag else "mod_assets/calendar/calendar_left_arrow-n.png")
             )
             button_right_arrow = Image(
-                "mod_assets/calendar/calendar_right_arrow.png"
+                ("mod_assets/calendar/calendar_right_arrow.png" if morning_flag else "mod_assets/calendar/calendar_right_arrow-n.png")
             )
             button_left_arrow_hover = Image(
-                "mod_assets/calendar/calendar_left_arrow_hover.png"
+                ("mod_assets/calendar/calendar_left_arrow_hover.png" if morning_flag else "mod_assets/calendar/calendar_left_arrow_hover-n.png")
             )
             button_right_arrow_hover = Image(
-                "mod_assets/calendar/calendar_right_arrow_hover.png"
+                ("mod_assets/calendar/calendar_right_arrow_hover.png" if morning_flag else "mod_assets/calendar/calendar_right_arrow_hover-n.png")
             )
 
             # Change title depending on flag
@@ -288,7 +289,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "Select a Date",
                     font=gui.default_font,
                     size=33,
-                    color="#ffffff",
+                    color=("#ffffff" if morning_flag else "#000000"),
                     outlines=[]
                 )
             else:
@@ -297,7 +298,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "Calendar",
                     font=gui.default_font,
                     size=33,
-                    color="#ffffff",
+                    color=("#ffffff" if morning_flag else "#000000"),
                     outlines=[]
                 )
 
@@ -467,11 +468,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # button backgrounds
             button_day_bg = Image(
-                "mod_assets/calendar/calendar_day_bg.png"
+                ("mod_assets/calendar/calendar_day_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_bg-n.png")
             )
 
             button_day_bg_disabled = Image(
-                "mod_assets/calendar/calendar_day_disabled_bg.png"
+                ("mod_assets/calendar/calendar_day_disabled_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_disabled_bg-n.png")
             )
 
             button_day_bg_hover = Image(
@@ -687,11 +688,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             it will force it back
             """
             # so people don't break it
-            if self.selected_year < self.MIN_SELECTABLE_YEAR:
-                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
+            if self.selected_year < self.MIN_VIEWABLE_YEAR:
+                self.selected_year = self.MIN_VIEWABLE_YEAR + 5
 
-            if self.selected_year > self.MAX_SELECTABLE_YEAR:
-                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+            if self.selected_year > self.MAX_VIEWABLE_YEAR:
+                self.selected_year = self.MAX_VIEWABLE_YEAR - 5
 
 
 
@@ -798,10 +799,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # the lower the distance is, the lower the glitching is
             # the opposite also applies
             if self.selected_year > self.MID_POINT_YEAR:
-                max_dist = self.MID_POINT_YEAR - self.MIN_SELECTABLE_YEAR
+                max_dist = self.MID_POINT_YEAR - self.MIN_VIEWABLE_YEAR
 
             else:
-                max_dist = self.MAX_SELECTABLE_YEAR - (self.MID_POINT_YEAR * 2)
+                max_dist = self.MAX_VIEWABLE_YEAR - (self.MID_POINT_YEAR * 2)
 
             percentage = dist / float(max_dist)
 
@@ -908,7 +909,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         return ""
 
                     #if we have a datetime
-                    if isinstance(sel_action, datetime.datetime):
+                    # and if its larger than valid selectable
+                    if (
+                            isinstance(sel_action, datetime.datetime)
+                            and sel_action.year >= self.MIN_SELECTABLE_YEAR
+                        ):
 
                         # return it
                         return sel_action
@@ -1126,7 +1131,7 @@ init -1 python in mas_calendar:
         Generates a display date using the given date
 
         This is considered "formal", in that it's not really realisitc when
-        used in normal conversation. For example, if today is august 24, you 
+        used in normal conversation. For example, if today is august 24, you
         don't say 'this happened august 24th, 2016', you normally would say
         'this happened x years ago today'.
 
@@ -1717,6 +1722,7 @@ init -1 python in mas_calendar:
         removeRepeatable_d(identifier, _datetime.date())
 
 
+
 # add repeatable events
 init python:
 
@@ -1725,7 +1731,7 @@ init python:
 
     calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
-    calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
+    #calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
     calendar.addRepeatable("April Fools","Day I Become an AI",month=4,day=1,year_param=list())
     calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
     calendar.addRepeatable("Halloween","Halloween",month=10,day=31,year_param=list())
@@ -1758,6 +1764,67 @@ init python:
             []
         )
 
+    # add first kiss
+    if (
+            persistent._mas_first_kiss is not None
+            and type(persistent._mas_first_kiss) == datetime.datetime
+        ):
+        calendar.addRepeatable_dt(
+            "first-kiss",
+            "Our First Kiss",
+            persistent._mas_first_kiss,
+            [persistent._mas_first_kiss.year]
+        )
+
+# Using init 2 so we can have access to the season dates
+init 2 python in mas_calendar:
+    import store
+
+    def addSeasonEvents():
+        """
+        Adds season change events to the calendar.
+        If the changed param is True it changes the old events.
+        IN:
+            changed - flag to specify that we need to change the
+                old events from the calendar
+        """
+        WINTER = "Winter"
+        SPRING = "Spring"
+        SUMMER = "Summer"
+        AUTUMN = "Autumn"
+
+        # Season changes:
+        if renpy.game.persistent._mas_pm_live_south_hemisphere:
+            _season_names = [SUMMER,AUTUMN,WINTER,SPRING]
+        else:
+            _season_names = [WINTER,SPRING,SUMMER,AUTUMN]
+
+        addRepeatable_d(
+            WINTER,
+            _season_names[0],
+            store.mas_winter_solstice,
+            []
+        )
+        addRepeatable_d(
+            SPRING,
+            _season_names[1],
+            store.mas_spring_equinox,
+            []
+        )
+        addRepeatable_d(
+            SUMMER,
+            _season_names[2],
+            store.mas_summer_solstice,
+            []
+        )
+        addRepeatable_d(
+            AUTUMN,
+            _season_names[3],
+            store.mas_fall_equinox,
+            []
+        )
+
+    addSeasonEvents()
 
 
 init 100 python:
@@ -1846,8 +1913,8 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #   mask - hex color that will be used for the mask that will cover the screen
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
-screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame="mod_assets/calendar/calendar_bg.png"):
-        style_prefix "scrollable_menu"
+screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")):
+        style_prefix ("scrollable_menu" if not mas_globals.dark_mode else "scrollable_menu_dark")
 
         zorder 51
 
@@ -1918,11 +1985,24 @@ label _first_time_calendar_use:
     m 1eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    show monika idle
+    show monika idle with dissolve
 
-    $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
-    $ mas_calDropOverlayShield()
+
+    if store.mas_globals.in_idle_mode:
+        # IDLe only enables talk extra and music
+        $ store.hkb_button.talk_enabled = True
+        $ store.hkb_button.extra_enabled = True
+        $ store.hkb_button.music_enabled = True
+
+    # push calendar birthdate for users without any birthdate
+    elif persistent._mas_player_bday is None:
+        $ pushEvent("calendar_birthdate",True)
+        $ mas_MUMUDropShield()
+
+    else:
+        $ mas_HKBDropShield()
+        $ mas_calDropOverlayShield()
     return
 
 label _mas_start_calendar(select_date=True):
@@ -1966,7 +2046,7 @@ screen calendar_overlay():
     #
     if store.mas_calendar.enabled:
         imagebutton:
-            idle "mod_assets/calendar/calendar_button_normal.png"
+            idle ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"
             hover_sound gui.hover_sound
             activate_sound gui.activate_sound
@@ -1974,7 +2054,7 @@ screen calendar_overlay():
             xpos 360
             ypos 260
     else:
-        image "mod_assets/calendar/calendar_button_normal.png" xpos 360 ypos 260
+        image ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
 
 init python:
 

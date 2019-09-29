@@ -78,6 +78,7 @@ image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYO
 
 # frame
 image hm_frame = "mod_assets/hangman/hm_frame.png"
+image hm_frame_dark = "mod_assets/hangman/hm_frame_d.png"
 
 # TRANSFORMS
 transform hangman_board:
@@ -393,9 +394,10 @@ label game_hangman:
 
 
 label mas_hangman_game_select_diff:
-
+    m "Choose a difficulty.{nw}"
+    $ _history_list.pop()
     menu:
-        m "Choose a difficulty."
+        m "Choose a difficulty.{fast}"
         "Easy.":
             $ hangman_mode = mas_hmg.EASY_MODE
         "Normal.":
@@ -407,7 +409,10 @@ label mas_hangman_game_preloop:
 
     # setup positions
     show monika at hangman_monika
-    show hm_frame at hangman_board zorder 13
+    if store.mas_globals.dark_mode:
+        show hm_frame_dark at hangman_board zorder 13
+    else:
+        show hm_frame at hangman_board zorder 13
 
     python:
         # setup constant displayabels
@@ -434,8 +439,7 @@ label mas_hangman_game_preloop:
 
 # looping location for the hangman game
 label mas_hangman_game_loop:
-    m 1eua "I'll think of a word..."
-    pause 0.7
+    m 1eua "I'll think of a word.{w=0.5}.{w=0.5}.{nw}"
 
     python:
         player_word = False
@@ -579,10 +583,7 @@ label mas_hangman_game_loop:
                 hide window_sayori
                 hide hm_s
                 show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
-                if config.developer:
-                    $ style.say_dialogue = style.normal
-                else:
-                    $ style.say_dialogue = style.default_monika
+                $ mas_resetTextSpeed()
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc
@@ -602,7 +603,7 @@ label mas_hangman_game_loop:
         if chances == 0:
             $ done = True
             if player_word:
-                m 1eka "[player],..."
+                m 1eka "[player]..."
                 m "You couldn't guess your own name?"
             m 1hua "Better luck next time~"
         elif "_" not in display_word:
@@ -695,8 +696,10 @@ label mas_hangman_game_loop:
         #TODO: grant a really tiny amount of affection?
 
     # try again?
+    m "Would you like to play again?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Would you like to play again?"
+        m "Would you like to play again?{fast}"
         "Yes.":
             jump mas_hangman_game_loop
         "No.":
@@ -712,6 +715,7 @@ label mas_hangman_game_end:
     hide hmg_dis_text
     hide hmg_mis_text
     hide hm_frame
+    hide hm_frame_dark
     show monika at t32
     if is_window_sayori_visible:
         show hm_s_win_leave as window_sayori at hangman_sayori_lh

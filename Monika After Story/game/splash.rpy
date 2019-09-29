@@ -246,6 +246,12 @@ label splashscreen:
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
     $ config.allow_skipping = False
+
+    python:
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(morning_flag)
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
     return
 
 label warningscreen:
@@ -340,6 +346,9 @@ label quit:
 
         # save current hair / clothes / acs
         monika_chr.save()
+
+        # save weather options
+        store.mas_weather.saveMWData()
 
         # remove special images
         store.mas_island_event.removeImages()
