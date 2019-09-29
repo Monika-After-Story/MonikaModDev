@@ -2692,6 +2692,7 @@ label greeting_back_from_school:
         $ _history_list.pop()
         menu:
             m "How was your day at school?{fast}"
+
             "Amazing.":
                 m 2sub "Really?!"
                 m 2hub "That's wonderful to hear, [player]!"
@@ -2703,17 +2704,20 @@ label greeting_back_from_school:
                 else:
                     m 3hua "It always makes me happy to know you're happy~"
                     m 1eua "If you want to talk about your amazing day, I'd love to hear about it!"
+
             "Good.":
                 m 1hub "Aww, that's nice!"
                 m 1eua "I can't help but feel happy when you do~"
-                m "I hope you learned a lot of useful things."
+                m "I hope you learned something useful."
                 m 1hua "Ehehe~"
+
             "Bad.":
                 m 1ekc "Oh..."
                 m "I'm sorry to hear that."
                 m 1eka "Just remember that no matter what happens, I'll be here for you."
                 m 1ekbfa "I love you so, so much."
                 return "love"
+
             "Really bad...":
                 m 1ekc "Oh..."
                 m 2ekd "I'm really sorry you had such a bad day today..."
@@ -2722,7 +2726,8 @@ label greeting_back_from_school:
                 $ _history_list.pop()
                 menu:
                     m "If you don't mind me asking, was there something in particular that happened?{fast}"
-                    "It was schoolwork related.":
+
+                    "It was class related.":
                         m 2dsc "I see..."
                         m 3esd "People probably tell you all the time that school is important..."
                         m 3esc "And that you always have to push on and work hard..."
@@ -2734,12 +2739,13 @@ label greeting_back_from_school:
                         m 1hubsa "Don't forget to take breaks if you're feeling overwhelmed, and that everyone has different talents."
                         m 3hubfb "I love you, and I just want you to be happy~"
                         return "love"
+
                     "It was caused by people.":
                         m 2ekc "Oh no [player]...{w=0.5} That must have been terrible to experience."
                         m 2dsc "It's one thing to just have something bad happen to you..."
                         m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
-                        if persistent._mas_pm_currently_bullied or  persistent._mas_pm_is_bullying_victim:
-                            m 2rksdlc "I really hope it's not who you told me about earlier..."
+                        if persistent._mas_pm_currently_bullied or persistent._mas_pm_is_bullying_victim:
+                            m 2rksdlc "I really hope it's not who you told me about before..."
                             if mas_isMoniAff(higher=True):
                                 m 1rfc "It {i}better{/i} not be..."
                                 m 1rfd "Bothering my sweetheart like that again."
@@ -2747,10 +2753,10 @@ label greeting_back_from_school:
                             m 2eka "But I'm here if you need me."
                             if mas_isMoniLove():
                                 m 3hubfb "And I always will be~"
-                            else:
-                                m 1hua "I hope that I can make your day just a little bit better."
+                            m 1hua "I hope that I can make your day just a little bit better."
                             m 1hubfb "I love you so much~"
                             return "love"
+
                         else:
                             m "I really hope this isn't a recurring event for you, [player]."
                             m 2lksdld "Either way, maybe it would be best to ask someone for help.."
@@ -2759,15 +2765,17 @@ label greeting_back_from_school:
                             m 3dkd "I'm so sorry you have to deal with this, [player]..."
 
                     "It was just a bad day.":
-                        m 1ekd "Ah, I see..."
+                        m 1ekc "I see..."
                         m 3lksdlc "Those days do happen from time to time."
                         m 1ekc "It can be hard sometimes to pick yourself back up after a day like that."
+
                     "I don't want to talk about it.":
                         m 2dsc "I understand, [player]."
                         m 2ekc "Sometimes just trying to put a bad day behind you is the best way to deal with it."
                         m 2eka "But if you want to talk about it later, just know I'd be more than happy to listen."
                         m 2hua "I love you, [player]~"
                         return "love"
+
                 m 1eka "But you're here now, and I hope spending time together helps make your day a little better."
 
     elif mas_isMoniUpset():
@@ -2780,6 +2788,7 @@ label greeting_back_from_school:
             "Good.":
                 m 2dfc "That's nice."
                 m 2efc "I hope you actually learned {i}something{/i} today."
+
             "Bad.":
                 m "That's too bad..."
                 m 2tfc "But maybe now you have a better sense of how I've been feeling, [player]."
@@ -2794,6 +2803,7 @@ label greeting_back_from_school:
             "Good.":
                 m 6lkc "That's...{w=1}nice to hear."
                 m 6dkc "I-I just hope it wasn't the...{w=2} 'being away from me' part that made it a good day."
+
             "Bad.":
                 m 6rkc "Oh..."
                 m 6ekc "That's too bad, [player], I'm sorry to hear that."
