@@ -2699,8 +2699,8 @@ label greeting_back_from_school:
                 if renpy.random.randint(1,4) == 1:
                     m 3eka "School can definitely be a large part of your life, and you might miss it later on."
                     m 2hksdlb "Ahaha! I know it might be weird to think that you'll miss having to go to school someday..."
-                    m 2eka "But a lot of fond memories come from school, so I'm really happy you had such a great day~"
-                    m 3hua "Maybe you could even tell me about it today!"
+                    m 2eub "But a lot of fond memories come from school!"
+                    m 3hua "Maybe you could tell me about them sometime."
                 else:
                     m 3hua "It always makes me happy to know you're happy~"
                     m 1eua "If you want to talk about your amazing day, I'd love to hear about it!"
@@ -2759,7 +2759,7 @@ label greeting_back_from_school:
 
                         else:
                             m "I really hope this isn't a recurring event for you, [player]."
-                            m 2lksdld "Either way, maybe it would be best to ask someone for help.."
+                            m 2lksdld "Either way, maybe it would be best to ask someone for help..."
                             m 1lksdlc "I know it may seem like that could cause more problems in some cases..."
                             m 1ekc "But you shouldn't have to suffer at the hands of someone else."
                             m 3dkd "I'm so sorry you have to deal with this, [player]..."
