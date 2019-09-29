@@ -13127,7 +13127,6 @@ label monika_installed_python:
             m 1eka "That's okay, [player]."
             m 3eub "Until you know what you want to program, I can teach you how to use Python!
             m 1rka "That is, if you have the same version of Python as I do...{w=0.5}"
-            m 1eub "I hope you have fun."
             m 1eub "What version of Python did you download?{nw}"
             $ _history_list.pop()
             menu:
@@ -13135,7 +13134,11 @@ label monika_installed_python:
                 "option one":
                     m 1hksdlb "...{w=0.5}"
                     m 1rksdla "[player], I use the other version of Python...{w=0.5}"
+                    m 1lksdlb "Well, that's okay...{w=0.5}"
+                    m 1eka "I hope you have fun, anyway."
                 "option two":
+                    m 1hub "Great!"
+                    m 1eub "That's the version of Python I use."
     
         "To help a friend.":
             m 3eub "That's great!"
