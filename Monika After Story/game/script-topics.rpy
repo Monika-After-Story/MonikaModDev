@@ -13136,10 +13136,14 @@ label monika_installed_python:
                     m 1rksdla "[player], I use the other version of Python...{w=0.5}"
                     m 1lksdlb "Well, that's okay...{w=0.5}"
                     m 1eka "I hope you have fun, anyway."
+                    m "...{w=0.5}"
+                    m "Hey, [player]?"
+                    m "Have I been underestimating your coding skills?"
                 "option two":
                     m 1hub "Great!"
                     m 1eub "That's the version of Python I use."
                     m 3rksdlb "Also, [player]?"
+                    m "Have I been underestimating your coding skills?"
     
         "To help a friend.":
             m 3eub "That's great!"
