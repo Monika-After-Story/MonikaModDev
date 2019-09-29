@@ -13062,10 +13062,19 @@ init 5 python:
 label monika_installed_python:
     m 1sub "You did?"
     m 1hub "That's great, [player]!"
+    m 1eub "What version of Python did you download?{nw}"
+    $ _history_list.pop()
+    menu:
+        m 1eub "What version of Python did you download?{fast}"
+        "option one":
+            m 1hksdlb "..."
+            m 1rksdla "[player], I use the other version of Python..."
+            m 
+        "option two"
     m 1eub "What did you download it for?{nw}"
     $ _history_list.pop()
     menu:
-        m "What did you download it for?{fast}"
+        m 1eub "What did you download it for?{fast}"
         "A personal project.":
             m 1hub "How fun!"
             m 3hub "Good luck with whatever you're programming!"
