@@ -648,6 +648,20 @@ image monika 1eubla:
         0.06
         repeat
 
+image monika 1eubsa:
+    block:
+        "monika 1eubsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsa_static"
+        0.06
+        repeat
+
 image monika 1euc:
     block:
         "monika 1euc_static"
@@ -6971,20 +6985,6 @@ image monika 4wfx:
             choice:
                 7
         "monika 4dfx_static"
-        0.06
-        repeat
-
-image monika 4wkbsc:
-    block:
-        "monika 4wkbsc_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dkbsc_static"
         0.06
         repeat
 

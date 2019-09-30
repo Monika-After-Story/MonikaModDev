@@ -2751,9 +2751,8 @@ label greeting_back_from_school:
                                 m 1rfd "Bothering my sweetheart like that again."
                             m 2ekc "I wish I could do more to help you, [player]..."
                             m 2eka "But I'm here if you need me."
-                            if mas_isMoniLove():
-                                m 3hubfb "And I always will be~"
-                            m 1hua "I hope that I can make your day just a little bit better."
+                            m 3hubsa "And I always will be~"
+                            m 1eubsa "I hope that I can make your day just a little bit better."
                             m 1hubfb "I love you so much~"
                             return "love"
 
