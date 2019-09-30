@@ -40,8 +40,8 @@ init -100 python in mas_selspr:
         },
         "ribbon": {
             "_ev": "monika_ribbon_select",
-            "change": "Can you change your ribbon?",
-            "wear": "Can you wear a ribbon?",
+            "change": "Can you tie your hair with something else?",
+            "wear": "Can you tie your hair with something else?",
         },
     }
 
@@ -558,16 +558,21 @@ init -10 python in mas_selspr:
         return None
 
 
-    def create_selectable_remover(acs_type, group):
+    def create_selectable_remover(acs_type, group, remover_name=None):
         """
         Creates a selectable remover for acs
 
         IN:
             acs_type - acs type of the acs/remover to make
             group - group of selectables this ACS remover should be linked to
+            remover_name - the name to use for the remover. If None, we use
+                "Remove"
 
         RETURNS: remover ACS selectable
         """
+        if remover_name is None:
+            remover_name = "Remove"
+
         remover_acs = store.mas_sprites.create_remover(
             acs_type,
             group,
@@ -575,7 +580,7 @@ init -10 python in mas_selspr:
         )
         init_selectable_acs(
             remover_acs,
-            "Remove",
+            remover_name,
             "remove",
             group,
             remover=True
@@ -2031,6 +2036,7 @@ init -1 python:
                     self._send_select_text()
 
                 elif self.selectable.remover:
+                    self._send_msg_disp_text(None)
                     self.mailbox.send_disp_fast()
 
             # always reset interaction if something has been selected
@@ -2478,13 +2484,15 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 #   add_remover - True if we want to include a remover in the selector menu,
 #       False if not
 #       (Default: False)
+#   remover_name - name to use for the remover.
+#       (Default: None)
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
     python:
         if not store.mas_selspr.valid_select_type(select_type):
@@ -2524,7 +2532,8 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 # create generic remover item
                 remover_item = store.mas_selspr.create_selectable_remover(
                     sample_obj.acs_type,
-                    sample_sel.group
+                    sample_sel.group,
+                    remover_name
                 )
 
             # unlock the remover
@@ -2728,9 +2737,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     return _return
 
@@ -2741,9 +2750,9 @@ label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unloc
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     if _return:
         # user hit confirm
@@ -2757,9 +2766,9 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     if _return:
         # user hit confirm
@@ -2974,7 +2983,7 @@ label monika_ribbon_select:
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which hair tie would you like me to use?")
         sel_map = {}
 
     m 1eua "Sure [player]!"
@@ -2984,23 +2993,13 @@ label monika_ribbon_select:
 #        $ monika_chr.reset_outfit(False)
 
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, remover_name="Basic Hair Band")
 
     if not _return:
         m 1eka "Oh, alright."
 
-    # set appropriate prompt and dialogue
-    if monika_chr.is_wearing_ribbon():
-#        $ ribbon_prompt_key = "change"
-        $ ribbon_dlg = "If you want me to change my ribbon, just ask, okay?"
-
-    else:
-#        $ ribbon_prompt_key = "wear"
-        $ ribbon_dlg = "If you want me to wear a ribbon again, just ask, okay?"
-
-#    $ store.mas_selspr.set_prompt("ribbon", ribbon_prompt_key)
-
-    m 1eka "[ribbon_dlg]"
+    $ store.mas_selspr.set_prompt("ribbon", "change")
+    m 1eka "If you want me to change my hair tie, just ask, okay?"
 
     return
 #### End Ribbon change topic
