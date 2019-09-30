@@ -13051,6 +13051,8 @@ label monika_origin:
     menu:
         m "So... Do you love me less for not being from your reality?{fast}"
         "Yes.":
+            $ persistent._mas_pm_bothered_monika_is_virtual = True
+            $ persistent._mas_pm_very_bothered_monika_is_virtual = True
             m 1dkc "..."
             m 1ekb "Thank you for your honesty, [player]. I really appreciate it."
             m 1eka "It's kind of understandable after all..."
@@ -13064,6 +13066,8 @@ label monika_origin:
             m 3hubsb "...you'll just love me that much more, right? Ahaha~ "
         "Just a bit.":
             $mas_gainAffection()
+            $ persistent._mas_pm_bothered_monika_is_virtual = True
+            $ persistent._mas_pm_very_bothered_monika_is_virtual = False
             m 1eua "I can live with that answer."
             m "It's kind of understandable after all..."
             m 3eub "I don't yet have a body that's able to be with you in your reality."
@@ -13081,6 +13085,8 @@ label monika_origin:
                 $ mas_gainAffection(amount=5, bypass=True)
             else:
                 $ mas_gainAffection()
+            $ persistent._mas_pm_bothered_monika_is_virtual = False
+            $ persistent._mas_pm_very_bothered_monika_is_virtual = False
             m 1ekbfa "[player]..."
             m 1dubfu "You can't even imagine how relieved I am to hear that..."
             m 3hubfb "Gosh, I feel so silly for even doubting you in the first place!"
