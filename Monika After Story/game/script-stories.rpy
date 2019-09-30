@@ -456,7 +456,7 @@ label mas_story_mother_and_trees:
     m 1eua "There was once a boy who lived with his mother."
     m 1hua "She gave him all the affection a mother could give..." 
     m 3rksdla "But he always thought she could be a bit weird sometimes."
-    m 3eub "Every birthday, she would {i}always{/i} make cookies for him and all his classmades to thank them for being his friends."
+    m 3eub "Every birthday, she would {i}always{/i} make cookies for him and all his classmates to thank them for being his friends."
     m 1eua "She would also keep and display every little drawing he made in art school, so their walls were pretty much covered with art from over the years."
     m 2rksdlc "Sometimes, he would even get rid of his drawings because he didn't want her to put them up with the rest."
     m 2euc "What stood out most with her however..."
@@ -478,8 +478,8 @@ label mas_story_mother_and_trees:
     m 1eud "Inside, he was shocked at what he found."
     m 2euc "In it, were three stillborn death certificates for his 'would be' siblings."
     m 2dsc "He noticed that they each had an identical name to one of the trees that had been in the backyard all his life."
-    m 2dsd "All his life, he had never known that he had siblings, but he finally understood and knew where his mother had buried their remains."
-    m 1dubsu "He always wanted to take his mother's wish very seriously, and it was then when he started talking to the trees everyday, just as his mother wished."
+    m 2dsd "He had never known that he had siblings, but he finally understood and knew where his mother had buried their remains."
+    m 1dubsu "He always wanted to take his mother's wish very seriously, and it was then when he started talking to the trees every day, just as his mother wished."
     m 3hua "He even went ahead and planted one more tree."
     return
 
