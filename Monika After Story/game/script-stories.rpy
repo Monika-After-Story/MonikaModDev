@@ -448,6 +448,42 @@ label mas_story_immortal_love:
     return
 
 init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_mother_and_trees",
+        prompt="A mother and her trees",unlocked=False),code="STY")
+
+label mas_story_mother_and_trees:
+    call mas_story_begin
+    m 1eua "There was once a boy who lived with his mother."
+    m 1hua "She gave him all the affection a mother could give..." 
+    m 3rksdla "But he always thought she could be a bit weird sometimes."
+    m 3eub "Every birthday, she would {i}always{/i} make cookies for him and all his classmades to thank them for being his friends."
+    m 1eua "She would also keep and display every little drawing he made in art school, so their walls were pretty much covered with art from over the years."
+    m 2rksdlc "Sometimes, he would even get rid of his drawings because he didn't want her to put them up with the rest."
+    m 2euc "What stood out most with her however..."
+    m 3eud "Was that she often talked to their trees."
+    m 1eua "They had three trees in their backyard and she would talk to them every day."
+    m 3hksdlb "She even had names for each of them!"
+    m 1wuo "Sometimes, she would even ask him to dress up and pose by the trees so she could take pictures together with the trees."
+    m 1eka "One day, he saw her talking to the trees as usual, and he asked her why she always talked to the trees so much."
+    m 3hub "His mother replied 'Well, because they need to feel loved!'"
+    m 1eka "He still didn't really understand, and as soon as he left, she just continued right where she had left off in her conversation."
+    m 2ekc "Of course, time passed and he eventually had to move out and start his own life."
+    m 2eka "His mother told him not to worry about leaving her because she had her trees to always keep her company."
+    m 1eua "He was busy with his life, but he still made time to keep in touch with his mother."
+    m 2ekc "Until one day...{w} he got the call."
+    m 2rksdlc "His mother had died and was found lying next to one of the trees."
+    m 2ekd "In her will, she only had one request of him, and that was to keep taking care of and talking to the trees every day."
+    m 1eka "He took good care of the trees of course, but he still couldn't bring himself to talk to them."
+    m 3euc "Some time later, while he was looking through and cleaning up his mother's old belongings, he found an envelope."
+    m 1eud "Inside, he was shocked at what he found."
+    m 2euc "In it, were three stillborn death certificates for his 'would be' siblings."
+    m 2dsc "He noticed that they each had an identical name to one of the trees that had been in the backyard all his life."
+    m 2dsd "All his life, he had never known that he had siblings, but he finally understood and knew where his mother had buried their remains."
+    m 1dubsu "He always wanted to take his mother's wish very seriously, and it was then when he started talking to the trees everyday, just as his mother wished."
+    m 3hua "He even went ahead and planted one more tree."
+    return
+
+init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
         prompt="The tale of O-Tei",unlocked=False),code="STY")
 
