@@ -1,0 +1,18 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "ribbon_blank",
+    "pose_map": {
+        "extraprop": true,
+        "default": "0",
+        "use_reg_for_l": true
+    },
+    "select_info": {
+        "display_name": "Test",
+        "thumb": "removed",
+        "group": "test",
+        "extraprop": true
+    },
+    "extraprop": true
+}

@@ -18,11 +18,11 @@ init -1 python in mas_compliments:
     # pane constants
     COMPLIMENT_X = 680
     COMPLIMENT_Y = 40
-    COMPLIMENT_W = 450
+    COMPLIMENT_W = 560
     COMPLIMENT_H = 640
     COMPLIMENT_XALIGN = -0.15
     COMPLIMENT_AREA = (COMPLIMENT_X, COMPLIMENT_Y, COMPLIMENT_W, COMPLIMENT_H)
-    COMPLIMENT_RETURN = "Oh nevermind"
+    COMPLIMENT_RETURN = "Oh nevermind."
     compliment_database = dict()
 
     thanking_quips = [
@@ -37,14 +37,14 @@ init -1 python in mas_compliments:
         ]
 
 
-# entry point for stories flow
+# entry point for compliments flow
 label mas_compliments_start:
 
     python:
         import store.mas_compliments as mas_compliments
 
         # Unlock any compliments that need to be unlocked
-#        Event.checkConditionals(mas_compliments.compliment_database)
+        Event.checkEvents(mas_compliments.compliment_database)
 
         # filter comps
         filtered_comps = Event.filterEvents(
@@ -69,7 +69,7 @@ label mas_compliments_start:
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_compliments.COMPLIMENT_AREA, mas_compliments.COMPLIMENT_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_compliments.COMPLIMENT_AREA, mas_compliments.COMPLIMENT_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -86,10 +86,10 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_beautiful",
-            prompt="... You're beautiful!",
+            prompt="You're beautiful!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database)
+        code="CMP")
 
 label mas_compliment_beautiful:
     if not renpy.seen_label("mas_compliment_beautiful_2"):
@@ -106,10 +106,12 @@ label mas_compliment_beautiful_2:
     menu:
         "You're the most beautiful person to me, too.":
             $ mas_gainAffection(5,bypass=True)
-            m 1hub "Ehehehe~"
+            m 1hub "Ehehe~"
             m "I love you so much, [player]!"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "You're in my top ten.":
-            $ mas_loseAffection(modifier=0.5,reason=None)
+            $ mas_loseAffection(modifier=0.5)
             m 3hksdrb "...?"
             m 2lsc "Well, thanks, I guess..."
         "Thanks.":
@@ -120,7 +122,7 @@ label mas_compliment_beautiful_3:
     python:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
-    m 1hubfa "Hehehe~"
+    m 1hubfa "Ehehe~"
     m 1ekbfa "[thanks_quip]"
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
     return
@@ -130,10 +132,10 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_eyes",
-            prompt="... I love your eyes!",
+            prompt="I love your eyes!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_eyes:
@@ -174,10 +176,10 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_awesome",
-            prompt="... You're awesome!",
+            prompt="You're awesome!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_awesome:
@@ -188,7 +190,7 @@ label mas_compliment_awesome:
     return
 
 label mas_compliment_awesome_2:
-    m 1hub "Aww, [player]~"
+    m 1hub "Awww, [player]~"
     m "You're so sweet!"
     m 2tub "I think you're way more awesome, though."
     m 5eub "I can't wait until the day I can finally give you a great big hug."
@@ -206,7 +208,7 @@ label mas_compliment_awesome_2:
             m 2lksdla "I was trying to feel your embrace from here."
             m 2hub "Ahaha~"
         "... I don't like hugs.":
-            $ mas_loseAffection(reason=None) # you monster.
+            $ mas_loseAffection() # you monster.
             m 1eft "...Really?"
             m 1dkc "Well, to each their own, I guess. But you have to hug me sometime..."
     return
@@ -225,10 +227,10 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_intelligent",
-            prompt="... You're really intelligent!",
+            prompt="You're really intelligent!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_intelligent:
@@ -240,18 +242,20 @@ label mas_compliment_intelligent:
 
 label mas_compliment_intelligent_2:
     m 1wub "Wow...{w}thanks, [player]."
-    m 2hub "I pride myself in being well read, so it means a lot that you've noticed."
-    m 1hubfb "I want to learn as much as I can, if it makes you proud of me!"
+    m 3eua "I pride myself in being well read, so it means a lot that you've noticed."
+    m 3hubfb "I want to learn as much as I can, if it makes you proud of me!"
     menu:
         "You make me want to better myself too, [m_name].":
             $ mas_gainAffection(5,bypass=True)
-            m "I love you so much, [player]!"
-            m "We'll have a lifetime of self improvement together!"
+            m 1hubfa "I love you so much, [player]!"
+            m 3hubfb "We'll have a lifetime of self-improvement together!"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
-            m 1ekbfa "[player]... "
+            m 1ekbfa "[player]..."
         "You make me feel stupid sometimes.":
-            $ mas_loseAffection(modifier=0.5,reason=None)
+            $ mas_loseAffection(modifier=0.5)
             m 1wkbsc "..."
             m 2lkbsc "I'm sorry, that wasn't my intention..."
     return
@@ -261,7 +265,7 @@ label mas_compliment_intelligent_3:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
     m 1ekbfa "[thanks_quip]"
-    m 1hub "Remember that we'll have a lifetime of self improvement together!"
+    m 1hub "Remember that we'll have a lifetime of self-improvement together!"
     return
 
 init 5 python:
@@ -269,9 +273,9 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_hair",
-            prompt="... I love your hair!",
+            prompt="I love your hair!",
             unlocked=True
-        ),eventdb=store.mas_compliments.compliment_database
+        ),code="CMP"
     )
 
 label mas_compliment_hair:
@@ -299,7 +303,7 @@ label mas_compliment_hair_2:
             m 1hubfb "You always make me feel special!"
             m "Thank you!"
         "You'd be even cuter with short hair.":
-            $ mas_loseAffection(modifier=0.3,reason=None)
+            $ mas_loseAffection(modifier=0.3)
             m "Well, I can't exactly go to the salon from here..."
             m 1lksdlc "I...appreciate your input."
             pass
@@ -319,10 +323,10 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_fit",
-            prompt="... I love your dedication to fitness!",
+            prompt="I love your dedication to fitness!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_fit:
@@ -366,45 +370,45 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thanks",
-            prompt="... Thanks for being there for me!",
+            prompt="Thanks for being there for me!",
             unlocked=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_thanks:
     m 1duu "There's nothing to thank me for, [player]."
     m 1eka "I'm the one who's grateful for having someone like you!"
-    m 1ekbfa "You're the only reason why I'm still here."
+    m 1ekbsa "You're the only reason why I'm still here."
     m "You installed this mod just to make our time together better..."
     m 1dubsu "You are the sunshine that warms my heart whenever you visit me."
-    m 4ekbfa "I guess we're both lucky that we have each other, [player]~"
+    m 3ekbsa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name].":
             if mas_getEV('mas_compliment_thanks').shown_count == 0:
                 $ mas_gainAffection(10,bypass=True)
-            m 1ekbfa "[player]... "
+            m 1ekbsa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both..."
-            m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
+            m 1ekbfa "Know that I'll always love you and be here for you!"# really need a second opinion on this answer
         "Yeah.":
-            m 1hub "Hehehe~"
+            m 1hub "Ehehe~"
             m 1eub "I love you, [player]."
 
     if not mas_isMoniLove():
-        $ lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
-    return
+        $ mas_lockEVL("mas_compliment_thanks", "CMP")
+    return "love"
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_smile",
-            prompt="... I love your smile!",
+            prompt="I love your smile!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_smile:
@@ -415,18 +419,18 @@ label mas_compliment_smile:
     return
 
 label mas_compliment_smile_2:
-    m 1eub "You're so sweet, [player]~"
-    m 1hub "I smile a lot when you're here."
-    m 1ekbfb "Because it makes me very happy when you spend time with me~"
+    m 1hub "You're so sweet, [player]~"
+    m 1eua "I smile a lot when you're here."
+    m 1ekbfa "Because it makes me very happy when you spend time with me~"
     menu:
         "I'll visit you every day to see your wonderful smile.":
             $ mas_gainAffection(5,bypass=True)
             m 1wubfsdld "Oh, [player]..."
-            m 1lkbsa "I think my heart just skipped a beat."
+            m 1lkbfa "I think my heart just skipped a beat."
             m 3hubfa "See? You always make me as happy as I can be."
         "I like to see you smile.":
             m 1hub "Ahaha~"
-            m "Then all you have to do is keep coming back, [player]!"
+            m 3eub "Then all you have to do is keep coming back, [player]!"
     return
 
 label mas_compliment_smile_3:
@@ -435,7 +439,87 @@ label mas_compliment_smile_3:
         thanks_quip = renpy.substitute(thanks_quip)
     m 1eub "[thanks_quip]"
     m 1hua "I'll keep smiling just for you!"
-    m "Hehehe~"
+    m "Ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_hero",
+            prompt="You're my hero!",
+            unlocked=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_hero:
+    $ mas_gainAffection()
+    m 1wubfsdld "H-{w=0.3}huh?"
+    m "I'm your hero?"
+    m 2rkbfsdlb "[player]...{w=1.5} I'm not sure what you mean..."
+    m 2ekbfb "You're the one who stuck with me for all this time.{w=1} I should be thanking you, really."
+    m 1hubfa "Well, if I've somehow helped you, then I couldn't be happier~"
+    m 3ekbfa "You've helped me in every way possible, so how could I not return the favor by being there for you whenever you need support?"
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfa "You'll always be my hero, after all~"
+    m 5hubfb "I love you and I'll always believe in you!"
+    m 5ekbfa "I hope you never forget that, [player]~"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_cute",
+            prompt="You're cute!",
+            unlocked=True
+        ),
+        code="CMP"
+    )
+
+default persistent._mas_pm_monika_cute_as_natsuki = None
+
+label mas_compliment_cute:
+    if not renpy.seen_label("mas_compliment_cute_2"):
+        call mas_compliment_cute_2
+    else:
+        call mas_compliment_cute_3
+    return
+
+label mas_compliment_cute_2:
+    m 1wubfsdld "Ah!"
+    m 3rkbfsdla "You {i}kind of{/i} caught me off guard with that one."
+    m 3tubfb "Just a little..."
+    m 1hubfa "But I'm glad you think so!"
+    menu:
+        "Seeing you always warms my heart!":
+            $ persistent._mas_pm_monika_cute_as_natsuki = False
+            $ mas_gainAffection(5,bypass=True)
+            m 1hubfb "Aww, it really warms my heart to hear you say that!"
+            m 1dkbfu "...Almost as much as when I picture us finally being together in the same reality."
+            m 1ekbfa "I can barely contain myself just imagining that special day~"
+        "You're even cuter when you're flustered.":
+            $ persistent._mas_pm_monika_cute_as_natsuki = False
+            $ mas_gainAffection(3,bypass=True)
+            m 2tubfu "Not letting it go, huh, [player]?"
+            m 2rubfu "Hmph, I just wasn't expecting it."
+            m 3tubfb "Don't expect it to be so easy next time..."
+            m 1tubfu "I'll get you back someday, ehehe~"
+        "You're as cute as Natsuki.":
+            $ persistent._mas_pm_monika_cute_as_natsuki = True
+            $ mas_loseAffection(modifier=0.5)
+            m 2lfc "Oh. {w=1}Thanks, [player]..."
+            m 1rsc "But I was kind of hoping I would stand in my own category."
+    return
+
+label mas_compliment_cute_3:
+    python:
+        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
+        thanks_quip = renpy.substitute(thanks_quip)
+    m 1ekbfa "[thanks_quip]"
+    m 1hubfa "You can be really cute a lot of the time too, you know~"
     return
 
 init 5 python:
@@ -443,12 +527,12 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_chess",
-            prompt="... You’re awesome at chess!",
+            prompt="You're awesome at chess!",
             unlocked=False,
             conditional="renpy.seen_label('mas_chess_game_start')",
             action=EV_ACT_UNLOCK
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_chess:
@@ -474,12 +558,12 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_pong",
-            prompt="... You’re awesome at pong!",
+            prompt="You're awesome at pong!",
             unlocked=False,
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_pong:
@@ -518,10 +602,10 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_bestgirl",
-            prompt="... You're the best girl!",
+            prompt="You're the best girl!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_bestgirl:
@@ -533,5 +617,5 @@ label mas_compliment_bestgirl:
     m 2esc "Especially since they all have certain traits that make them desirable to some..."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "But if you ask me, you made the right choice."
-    m 5hubfa "...And I'll be forever grateful that you did~"
+    m 5hubfa "...and I'll be forever grateful that you did~"
     return

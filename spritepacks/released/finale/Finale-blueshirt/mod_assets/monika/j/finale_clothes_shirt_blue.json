@@ -1,0 +1,83 @@
+{
+    "__author": "Finale",
+    "version": 2,
+    "type": 2,
+    "name": "finale_shirt_blue",
+    "img_sit": "finale_shirt_blue",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": false,
+        "use_reg_for_l": true,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Shirt (Blue)",
+        "thumb": "finale_shirt_blue",
+        "group": "clothes",
+        "select_dlg": [
+            "Great choice, [player]! This is so comfortable~"
+        ]
+    },
+    "giftname": "blueshirt",
+    "pose_arms": {
+        "default": null,
+        "use_reg_for_l": true,
+        "p1": {
+            "both": "steepling",
+            "bback": false,
+            "bfront": true
+        },
+        "p2": {
+            "both": "crossed",
+            "bback": true,
+            "bfront": true
+        },
+        "p3": {
+            "left": "rest",
+            "lback": false,
+            "lfront": true,
+            "right": "restpoint",
+            "rback": false,
+            "rfront": true
+        },
+        "p4": {
+            "left": "down",
+            "lback": true,
+            "lfront": false,
+            "right": "point",
+            "rback": true,
+            "rfront": false
+        },
+        "p5": {
+            "left": "def",
+            "lback": false,
+            "lfront": true,
+            "right": "def",
+            "rback": true,
+            "rfront": true
+        },
+        "p6": {
+            "left": "down",
+            "lback": true,
+            "lfront": false,
+            "right": "down",
+            "rback": true,
+            "rfront": false
+        },
+        "p7": {
+            "left": "down",
+            "lback": true,
+            "lfront": false,
+            "right": "restpoint",
+            "rback": false,
+            "rfront": true
+        }
+    }
+}
