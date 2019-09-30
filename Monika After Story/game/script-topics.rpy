@@ -13138,12 +13138,29 @@ label monika_installed_python:
                     m 1eka "I hope you have fun, anyway."
                     m "...{w=0.5}"
                     m "Hey, [player]?"
-                    m "Have I been underestimating your coding skills?"
+                    m "Have I been underestimating your coding skills?{nw}"
+                    $ history_list.pop()
+                    menu:
+                        m "Ahaha, I'm sorry, [player]!"
+                        m "I didn't mean to- I just never thought to ask."
+                    "No":
+                        m "Okay, good."
+                        m "I just wanted to make sure I wasn't assuming your skill level."
+                        
                 "option two":
                     m 1hub "Great!"
                     m 1eub "That's the version of Python I use."
                     m 3rksdlb "Also, [player]?"
-                    m "Have I been underestimating your coding skills?"
+                    m "Have I been underestimating your coding skills?{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m "Have I been underestimating your coding skills?{fast}"
+                        "Yes":
+                            m "Ahaha, I'm sorry, [player]!"
+                            m "I didn't mean to- I just never thought to ask."
+                        "No":
+                            m "Okay, good."
+                            m "I just wanted to make sure I wasn't assuming your skill level.
     
         "To help a friend.":
             m 3eub "That's great!"
