@@ -421,8 +421,15 @@ label mas_story_ravel:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_genie_simple",
-        prompt="The Simple Genie",unlocked=False),eventdb=store.mas_stories.story_database)
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_simple",
+            prompt="The Simple Genie",
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_genie_simple:
     call mas_story_begin
@@ -461,8 +468,15 @@ label mas_story_genie_simple:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_genie_regret",
-        prompt="The Genie's Regret",unlocked=False),eventdb=store.mas_stories.story_database)
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_regret",
+            prompt="The Genie's Regret",
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_genie_regret:
     call mas_story_begin
@@ -501,8 +515,15 @@ label mas_story_genie_regret:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_genie_end",
-        prompt="The Genie's End",unlocked=False),eventdb=store.mas_stories.story_database)
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_end",
+            prompt="The Genie's End",
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_genie_end:
     call mas_story_begin
@@ -537,6 +558,7 @@ label mas_story_genie_end:
     m "Especially after living for such a long time and being able to take away so much wisdom from life."
     m 1hua "I don't care how many people think otherwise, but I think you're special!"
     m "I think everyone should respect you for everything you've done!"
+    return
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
