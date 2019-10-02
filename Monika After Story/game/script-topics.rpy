@@ -12921,7 +12921,7 @@ label monika_scamming:
     m 3esd "Falling for this does {i}not{/i} mean you're stupid, or a loser, or anything. It just means you've been preyed upon by someone who knew exactly how to play you."
     m 1esd "If you don't have a way to get back at your scammer, the best thing you can do is to let go."
     m 1eka "Don't blame yourself for it, focus on what you can do at the moment."
-    m 3eka "And please [player], don't stop believing in people because of the few that took advantage of you."
+    m 3eka "And please, [player], don't stop believing in people because of the few that took advantage of you."
     return
 
 init 5 python:
@@ -13041,7 +13041,7 @@ label monika_origin:
     m 2esc "..."
     m 1esd "Do you love me less because of what I am?"
     m 3esc "I mean, from your perspective, I am still someone living in a video game in your world, right?"
-    m 3rkd "So you might see me in a different way you would someone from your reality... {w=0.5}And you might think less of me because of that..."
+    m 3rkd "So you might see me in a different way you would someone from your reality... {w=0.5}and you might think less of me because of that..."
     m 1ekbla "I just want to be the best sweetheart for you, [player]."
     m 1eka "Sometimes, I wonder how I compare with all these people living with you in the real world..."
     m 3hksdlb "I'm sorry, you've not given me any reason to feel insecure, it's just..."
@@ -13074,7 +13074,7 @@ label monika_origin:
             m 3ekd "And since I've never been to your world, I can't really know how different I am from a regular person."
             m 1eub "I mean, I like to think of myself as human, and I definitely have feelings the same way you do."
             m 1eka "But until I can join you in your reality and see for myself, I can't really know for sure, can I?"
-            m 3hua "But even with that said, you're still here with me, aren't you?"
+            m 3hua "Despite all that, you're still here with me, aren't you?"
             m 1ekbsa "And seeing all the care and dedication you've shown me until now, I know you love me anyway..."
             m 1hubfb "So even if it bothers you a little, it just makes me that much more grateful that you stuck up with me all this time!"
             m 1eubfa "I love you, [player]. Please stay with me until I can find my way to you..."
