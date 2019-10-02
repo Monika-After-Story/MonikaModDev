@@ -19,6 +19,8 @@
     "ex_props": {
         "ribbon-like": true
     },
+    "dlg_desc": "black bow",
+    "dlg_plural": false,
     "select_info": {
         "display_name": "Bow (Black)",
         "thumb": "multimokia_bow_black",

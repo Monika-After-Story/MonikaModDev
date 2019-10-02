@@ -336,6 +336,8 @@ init -21 python in mas_sprites_json:
     )
     NO_GIFT = "without 'giftname', this cannot be natively unlocked"
 
+    NO_DLG_DESC = "'dlg_desc' not found, ignoring 'dlg_plural'"
+
     ## MASPoseMap
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
     MPM_SUCCESS = "MASPoseMap '{0}' loaded successfully!"
@@ -480,6 +482,8 @@ init -21 python in mas_sprites_json:
 
         "priority": (int, _verify_int),
         "acs_type": (str, _verify_str),
+        "dlg_desc": (str, _verify_str),
+        "dlg_plural": (str, _verify_bool),
     }
     OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
@@ -1078,10 +1082,12 @@ init 189 python in mas_sprites_json:
             - rec_layer
             - priority
             - acs_type
+            - dlg_desc
+            - dlg_plural
             - mux_type
             - pose_map
             - giftname
-            - arm_spli
+            - arm_split
 
         IN:
             jobj - json object to pasrse
@@ -1098,6 +1104,8 @@ init 189 python in mas_sprites_json:
         # validate ez to validate props
         # priority
         # acs_type
+        # dlg_desc
+        # dlg_plural
         if not _validate_params(
             jobj,
             save_obj,
@@ -1107,6 +1115,24 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return False
+
+        # combine dlg_desc and dlg_plur
+        if "dlg_desc" in save_obj:
+            dlg_desc = save_obj.pop("dlg_desc")
+
+            # if dlg_plur not exist, we use False
+            if "dlg_plural" in save_obj:
+                dlg_plur = save_obj.pop("dlg_plural")
+            else:
+                dlg_plur = False
+
+            # combine the data and set
+            save_obj["dlg_data"] = (dlg_desc, dlg_plur)
+
+        elif "dlg_plural" in save_obj:
+            # dlg_desc was not found, just pop out dlg_plur
+            msg_log.append((MSG_WARN_T, indent_lvl, NO_DLG_DESC))
+            save_obj.pop("dlg_plural")
 
         # now for rec_layer
         if "rec_layer" in jobj:

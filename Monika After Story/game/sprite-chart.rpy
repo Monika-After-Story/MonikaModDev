@@ -5614,6 +5614,11 @@ init -2 python:
                     "" - sprite does not have any arm version for this pose
                     "*" - sprite has both "-0" and "-1" version, and both
                         should be used for this pose
+            dlg_desc - user friendly way to describe this accessory in dialogue
+                Think "black bow" or "silver earrings"
+            dlg_plur - True if the dlg_desc should be used in the plural 
+                sense, like "these silver earrings", False if not, like:
+                "this black bow"
 
         SEE MASSpriteBase for inherited properties
         """
@@ -5633,6 +5638,7 @@ init -2 python:
                 mux_type=None,
                 ex_props={},
                 arm_split=None,
+                dlg_data=None,
             ):
             """
             MASAccessory constructor
@@ -5676,6 +5682,9 @@ init -2 python:
                     (Default: empty dict)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
 
             """
             super(MASAccessory, self).__init__(
@@ -5694,6 +5703,12 @@ init -2 python:
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.arm_split = arm_split
+            
+            if dlg_data is not None and len(dlg_data) == 2:
+                self.dlg_desc, self.dlg_plur = dlg_data
+            else:
+                self.dlg_desc = None
+                self.dlg_plur = None
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
