@@ -337,6 +337,7 @@ init -21 python in mas_sprites_json:
     NO_GIFT = "without 'giftname', this cannot be natively unlocked"
 
     NO_DLG_DESC = "'dlg_desc' not found, ignoring 'dlg_plural'"
+    NO_DLG_PLUR = "'dlg_plural' not found, ignoring 'dlg_desc'"
 
     ## MASPoseMap
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
@@ -1120,14 +1121,15 @@ init 189 python in mas_sprites_json:
         if "dlg_desc" in save_obj:
             dlg_desc = save_obj.pop("dlg_desc")
 
-            # if dlg_plur not exist, we use None, both fields are required to use specific dlg
+            # both fields are required
             if "dlg_plural" in save_obj:
-                dlg_plur = save_obj.pop("dlg_plural")
-            else:
-                dlg_plur = None
 
-            # combine the data and set
-            save_obj["dlg_data"] = (dlg_desc, dlg_plur)
+                # combine data
+                save_obj["dlg_data"] = (dlg_desc, save_obj.pop("dlg_plural"))
+
+            else:
+                # dlg_plural not found, show a warn
+                msg_log.append((MSG_WARN_T, indent_lvl, NO_DLG_PLUR))
 
         elif "dlg_plural" in save_obj:
             # dlg_desc was not found, just pop out dlg_plur
