@@ -817,6 +817,15 @@ label mas_reaction_gift_generic_sprite_json:
             m 1hubfa "Ehehe!"
 
         else:
+            python:
+                acs_quips = [
+                    "I really appreciate it!",
+                    "it's amazing!",
+                    "I just love it!",
+                    "it's wonderful!"
+                ]
+                acs_quip = renpy.random.choice(acs_quips)
+
             # we have a complete description, so use it here
             if spr_obj.dlg_plur:
                 $ sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
@@ -825,7 +834,7 @@ label mas_reaction_gift_generic_sprite_json:
                 $ sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
                 $ item_ref = "it"
 
-            m 1hua "Thanks for [sprite_str]"
+            m 1hua "Thanks for [sprite_str], [acs_quip]"
             m 3hub "I can't wait to try [item_ref] on!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
