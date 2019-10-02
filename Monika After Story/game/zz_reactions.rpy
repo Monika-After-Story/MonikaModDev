@@ -809,7 +809,7 @@ label mas_reaction_gift_generic_sprite_json:
 
         $ mas_giftCapGainAff(1)
         m "Aww, [player]!"
-        if spr_obj is None or spr_obj.dlg_desc is None or spr_obj.dlg_plur is None:
+        if spr_obj is None or spr_obj.dlg_desc is None:
             # if we don't have all required description data, go generic
             m 1hua "You're so sweet!"
             m 1eua "Thanks for this gift!"
