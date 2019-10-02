@@ -13136,11 +13136,13 @@ label monika_installed_python:
                     m 1rksdla "[player], I use the other version of Python...{w=0.5}"
                     m 1lksdlb "Well, that's okay...{w=0.5}"
                     m 1eka "I hope you have fun, anyway."
-                    m "...{w=0.5}"
-                    m "Hey, [player]?"
-                    m "Have I been underestimating your coding skills?{nw}"
+                    m 1rsc "...{w=0.5}"
+                    m 1esd "Hey, [player]?"
+                    m 3etd "Have I been underestimating your coding skills?{nw}"
                     $ history_list.pop()
                     menu:
+                    m 3etd "Have I been underestimating your coding skills?{fast}"
+                    "Yes":
                         m "Ahaha, I'm sorry, [player]!"
                         m "I didn't mean to- I just never thought to ask."
                     "No":
