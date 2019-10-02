@@ -26,7 +26,9 @@
         "thumb": "multimokia_bow_black",
         "group": "ribbon",
         "select_dlg": [
-            "BOW"
+            "Great choice, [player]!",
+            "Very formal!",
+            "Are we going somewhere special?"
         ]
     }
 }
