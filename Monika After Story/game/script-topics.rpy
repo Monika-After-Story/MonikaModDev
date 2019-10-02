@@ -12937,21 +12937,21 @@ init 5 python:
 
 label monika_social_contagions:
     m 3eub "Say, [player], have you noticed how we tend to imitate what other people around us do?"
-    m 1eua "Like, have you ever been in this situation where someone is having a laughing fit, and somehow, everyone around end up laughing too?"
+    m 1eua "Like, have you ever been in this situation where someone is having a laughing fit, and somehow, everyone around ends up laughing too?"
     m "Or have you ever mechanically cheered at someone just because everyone else was cheering?"
-    m 3hub "Apparently, this is due to something called social contagion."
+    m 3hub "Apparently, this is due to something called 'social contagion'."
     m 4eub "Basically, this means that how you feel and what you do has a subconscious influence on those around you."
     m 4hua "It's something I picked up pretty quickly when I became president!"
     m 3eub "I noticed that when I felt unmotivated, or I was in a bad day, it would put a damper on club activities."
     m 3euc "Everyone would end up going off on their own to do their own things."
     m 3eub "Conversely, if I made an effort and tried to stay upbeat, the other girls would usually respond in kind. We would all end up having a better time!"
-    m 1hub "It's pretty gratifying when you start noticing these kind of things. You realize that, just by staying positive, you can make someone else's day better!"
+    m 1hub "It's pretty gratifying when you start noticing these kinds of things. You realize that, just by staying positive, you can make someone else's day better!"
     m 3wuo "You'd be surprised how far this kind of influence can reach, too!"
     m 4esd "I heard that stuff like binge eating, gambling, or heavy drinking are all contagious behaviors."
     m 1esc "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself. That's a bit disheartening..."
     m 3hub "It also works the other way around, though! Smiling, laughing, and positive thinking are contagious too!"
     m 1huu "Turns out we are all more connected than you think. Those around you matter a lot on how you feel about things!"
-    m 1ekbla "I hope by noticing these kind of things, you'll be able to better understand and control your own feelings, [player]."
+    m 1ekbla "I hope by noticing these kinds of things, you'll be able to better understand and control your own feelings, [player]."
     m "I just want to see you be the happiest you can be."
     if mas_isMoniHappy(higher=True):
         m 3hub "Maybe then, you too could try spreading your happiness to others around you? Ahaha~"
@@ -12970,15 +12970,15 @@ init 5 python:
 
 label monika_social_norms:
     m 1eua "Have you ever wondered how new ideas get accepted in society?"
-    m 3eub "There's tons of things that were considered bad at first, but have since been reconsidered otherwise!"
-    m 4esa "For instance, did you know rock-and-roll was seen as vulgar and depraved when it first appeared?"
+    m 3eub "There's tons of things that were considered bad at first, but have since been reconsidered!"
+    m 4esa "For instance, did you know rock and roll was seen as vulgar and depraved when it first appeared?"
     m 4eud "Early fans were seen as impressionable youth at best, and delinquents at worst."
     m 1duu "But as these people grew to become full-fledged members of society, they passed down their interest to those around them."
     m 3eua "Those who met them realized they were just normal people, with nothing weird about them."
     m 3hub "Nowadays, that stigma has completely disappeared! Even those who still don't like rock music at least respect it!"
     m 4eua "And there's plenty of other things still in the process of getting accepted."
     m 4eub "You might be familiar with role-playing, or online gaming... {w=0.5}or even reading manga."
-    m 3lksdla "Thought Natsuki would probably be the one to ask about this one."
+    m 3lksdla "Thought Natsuki would probably be the one to ask about this..."
     m 1eub "Remember how she was trying to change your mind about that manga she liked?"
     m 1rsc "I wonder what she had to go through because of this hobby... {w=0.5}I can't imagine it's always been easy."
     m 3esb "It even showed up on her poetry in the end. Remember her poem about spiders?"
@@ -12987,12 +12987,12 @@ label monika_social_norms:
     m 4eub "How do you think this will change over the years? Will we ever reach a point where it's seen as just another normal thing?"
     m 1dubla "Not that it's important anyway. As long as we have each other, that's all that should count, right?"
     m 1ekbfa "It's nice to know there is someone I can truly be myself with, no matter what..."
-    m 1ekbsa "And if you've got any unique interest, you already know I'll always be there to talk about it."
+    m 1ekbsa "And if you've got any unique interests, you already know I'll always be there to talk about it."
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "I want to learn everything about what you like!"
     m 5ekbfa "All these little particularities that make you so unique..."
     show monika 1ekbfb at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1ekbfb "So, please, always stay yourself, [player]. You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
+    m 1ekbfb "So, please, always be yourself, [player]. You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
     m 3tfbfu "And if some people reject you anyway? I'll be the one to teach them how great you are!"
     return
 
@@ -13015,7 +13015,7 @@ label monika_origin_evasive:
     m 1ruc "..."
     m 1esd "There's..."
     m 1lsc "..."
-    m 1hksdlb "Ahaha! Nevermind! it's nothing important..."
+    m 1hksdlb "Ahaha! Nevermind! It's nothing important..."
     show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbla "I love you, [player]. I hope you {i}do{/i} realize that."
     return "love"
