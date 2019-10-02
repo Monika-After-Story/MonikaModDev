@@ -822,12 +822,14 @@ label mas_reaction_gift_generic_sprite_json:
         elif spr_obj.dlg_desc is not None:
             # try to use dlg friendly text if we can
             if spr_obj.dlg_plur:
-                $ sprite_str = "these " + spr_obj.dlg_desc
+                $ sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
+                $ item_ref = "them"
             else:
-                $ sprite_str = "this " + spr_obj.dlg_desc
+                $ sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
+                $ item_ref = "it"
 
-        m 1hua "Thanks for [sprite_str], [player]!"
-        m 3hub "I can't wait to try it on!"
+        m 1hua "Thanks for [sprite_str]"
+        m 3hub "I can't wait to try [item_ref] on!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
