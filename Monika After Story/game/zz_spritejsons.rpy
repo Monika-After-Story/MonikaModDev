@@ -1120,11 +1120,11 @@ init 189 python in mas_sprites_json:
         if "dlg_desc" in save_obj:
             dlg_desc = save_obj.pop("dlg_desc")
 
-            # if dlg_plur not exist, we use False
+            # if dlg_plur not exist, we use None, both fields are required to use specific dlg
             if "dlg_plural" in save_obj:
                 dlg_plur = save_obj.pop("dlg_plural")
             else:
-                dlg_plur = False
+                dlg_plur = None
 
             # combine the data and set
             save_obj["dlg_data"] = (dlg_desc, dlg_plur)
