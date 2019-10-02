@@ -12978,7 +12978,7 @@ label monika_social_norms:
     m 3hub "Nowadays, that stigma has completely disappeared! Even those who still don't like rock music at least respect it!"
     m 4eua "And there's plenty of other things still in the process of getting accepted."
     m 4eub "You might be familiar with role-playing, or online gaming... {w=0.5}or even reading manga."
-    m 3lksdla "Thought Natsuki would probably be the one to ask about this..."
+    m 3lksdla "Though Natsuki would probably be the one to ask about this..."
     m 1eub "Remember how she was trying to change your mind about that manga she liked?"
     m 1rsc "I wonder what she had to go through because of this hobby... {w=0.5}I can't imagine it's always been easy."
     m 3esb "It even showed up on her poetry in the end. Remember her poem about spiders?"
