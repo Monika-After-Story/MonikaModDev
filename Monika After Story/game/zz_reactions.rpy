@@ -804,23 +804,20 @@ label mas_reaction_gift_generic_sprite_json:
         call mas_reaction_gift_generic_clothes_json
 
     else:
-        # otherwise, it has to be an ACS. 
+        # otherwise, it has to be an ACS.
         $ spr_obj = store.mas_sprites.get_sprite(sprite_type, sprite_name)
 
         $ mas_giftCapGainAff(1)
         m "Aww, [player]!"
-        if spr_obj is None:
-            if giftname is not None:
-                m 1hua "You're so sweet!"
-                m 1eua "Thanks for giving me this [giftname]!"
-                m 1ekbsa "You really love to spoil me, don't you."
-                m 1hubfa "Ehehe!"
+        if spr_obj is None or spr_obj.dlg_desc is None or spr_obj.dlg_plur is None:
+            # if we don't have all required description data, go generic
+            m 1hua "You're so sweet!"
+            m 1eua "Thanks for this gift!"
+            m 3ekbsa "You really love to spoil me, don't you."
+            m 1hubfa "Ehehe!"
 
-            else:
-                m 3eub "Thanks for this!"
-
-        elif spr_obj.dlg_desc is not None:
-            # try to use dlg friendly text if we can
+        else:
+            # we have a complete description, so use it here
             if spr_obj.dlg_plur:
                 $ sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
                 $ item_ref = "them"
@@ -828,8 +825,8 @@ label mas_reaction_gift_generic_sprite_json:
                 $ sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
                 $ item_ref = "it"
 
-        m 1hua "Thanks for [sprite_str]"
-        m 3hub "I can't wait to try [item_ref] on!"
+            m 1hua "Thanks for [sprite_str]"
+            m 3hub "I can't wait to try [item_ref] on!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
