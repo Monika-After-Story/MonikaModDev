@@ -351,9 +351,7 @@ init -2 python in mas_sprites:
 
         #Unlock the selector for ribbons since you now have more than one
         if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
-        else:
-            store.mas_lockEVL("monika_ribbon_select", "EVE")
+            store.mas_filterUnlockGroup(SP_ACS, "ribbon", allow_lock=True)
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -449,9 +447,7 @@ init -2 python in mas_sprites:
         # (if you only had def before)
         # and only if your hair allows ribbon
         if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
-        else:
-            store.mas_lockEVL("monika_ribbon_select", "EVE")
+            store.mas_filterUnlockGroup(SP_ACS, "ribbon", allow_lock=True)
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
