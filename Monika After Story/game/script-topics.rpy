@@ -13100,6 +13100,7 @@ label monika_installed_python:
             m 4eksdla "[player], do you already know how to code?{nw}"
             $ _history_list.pop()
             menu:
+            m 4eksdla "[player], do you already know how to code?{fast}"
                 "Yes.":
                     m 2hub "Oh! That's great!"
                     m 3rksdla "I'm sorry I made assumptions about your skill level.
