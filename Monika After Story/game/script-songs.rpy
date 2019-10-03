@@ -42,12 +42,12 @@ init python in mas_songs:
         """
         Gets a list of all random songs
 
-        OUT: list of all random songs
+        OUT: list of all random songs within aff_range
         """
         return [
             ev_label
             for ev_label, ev in song_db.iteritems()
-            if ev.random and TYPE_SHORT in ev.category
+            if ev.random and TYPE_SHORT in ev.category and ev.checkAffection(store.mas_curr_affection)
         ]
 
     def hasUnlockedSongs():
@@ -115,8 +115,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_sing_song_random",
             random=True,
-            unlocked=False,
-            aff_range=(mas_aff.NORMAL,None)
+            unlocked=False
         )
     )
 
@@ -147,7 +146,8 @@ init 5 python:
             eventlabel="mas_song_lover_boy",
             prompt="Old Fashioned Lover Boy",
             category=[store.mas_songs.TYPE_SHORT],
-            random=True
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
@@ -168,7 +168,8 @@ init 5 python:
             eventlabel="mas_song_need_you",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="I Need You",
-            random=True
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
@@ -190,7 +191,8 @@ init 5 python:
             eventlabel="mas_song_i_will",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="I Will",
-            random=True
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
@@ -211,7 +213,8 @@ init 5 python:
             eventlabel="mas_song_belong_together",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="We Belong Together",
-            random=True
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
@@ -235,7 +238,8 @@ init 5 python:
             eventlabel="mas_song_your_song",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Your Song",
-            random=True
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
@@ -261,7 +265,8 @@ init 5 python:
             eventlabel="mas_song_with_you",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Happy Just To Dance With You",
-            random=True
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
@@ -282,7 +287,8 @@ init 5 python:
             eventlabel="mas_song_dream",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="All I Have To Do Is Dream",
-            random=True
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
