@@ -2013,15 +2013,13 @@ label mas_d25_spent_time_monika:
     return "love"
 
 
-#NOTE, if you're running with config.developer being True, timing WILL be off on the song
-#no idea why, but it just is, even though we're explicitly setting the cps value, and not
-#using a multiplier.
+#NOTE: kept in the event database because of the start/end date + cond/act logic
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_aiwfc",
-            category=["songs"],
+            category=[store.mas_songs.TYPE_LONG],
             prompt="All I Want For Christmas",
             conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_d25c_start,
@@ -2030,7 +2028,8 @@ init 5 python:
             aff_range=(mas_aff.NORMAL, None),
             years=[]
         ),
-        skipCalendar=True
+        skipCalendar=True,
+        code="SNG"
     )
 
 label monika_aiwfc:
