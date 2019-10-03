@@ -1073,7 +1073,11 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
-        pass
+        if prev_cloth.hasprop("baked outfit"):
+            # a baked outfit causes selector issues. we need to re-evaluate
+            # certain cases.
+            _hair_unlock_select_if_needed()
+            store.mas_selspr._validate_group_topics()
 
 
     def clothes_entry_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
