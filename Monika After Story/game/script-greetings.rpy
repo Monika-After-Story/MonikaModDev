@@ -1914,7 +1914,7 @@ init 5 python:
 label greeting_hai_domo:
     m 1hub "{=jpn_text}はいどうもー!{/=jpn_text}"
     m "Virtual Girlfriend, Monika Here!"
-    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
+    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual YouTuber lately."
     m 1eua "I have to say, she's rather charming..."
     return
 

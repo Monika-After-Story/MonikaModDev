@@ -6465,7 +6465,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_promisering",
             category=['romance'],
-            prompt="Promise Ring",
+            prompt="Promise ring",
             random=True,
             aff_range=(mas_aff.ENAMORED, None)
         )
@@ -7704,7 +7704,7 @@ init 5 python:
     addEvent(
         Event(persistent.event_database,
             eventlabel='monika_kizuna',
-            prompt="Virtual Youtuber?",
+            prompt="Virtual YouTuber?",
             category=['misc'],
             random=False,
             unlocked=False,
@@ -7729,7 +7729,7 @@ label monika_kizuna:
     m 2lsc "But when I learned of her gimmick, it made me feel..."
     m 1lksdla "Like I just had to know how Ai-chan would react!"
     m 1eka "Even if it's just a character she plays, I think she'll understand my situation..."
-    m 3eua "At least more than your average Youtuber."
+    m 3eua "At least more than your average YouTuber."
     m 5hub "I can't wait to finish the series..."
     return
 
@@ -10536,7 +10536,7 @@ label monika_poweroutage:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water Conservation",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water conservation",random=True))
 
 label monika_savingwater:
     m 1euc "[player], have you ever thought about how much water people use every day?"
@@ -12179,7 +12179,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_cares_about_dokis",
             category=["monika", "club members"],
-            prompt="Insensitive Comments",
+            prompt="Insensitive comments",
             random=True
         )
     )
@@ -12690,7 +12690,7 @@ label monika_perspective:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot Body",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot body",random=True))
 
 label monika_robotbody:
     m 2euc "Hey [player], I've been thinking a lot about how I would be able to cross over into your reality..."
