@@ -1302,11 +1302,6 @@ python early:
                 ):
                 return True
 
-            if MASSelectiveRepeatRule.evaluate_hourrule(
-                    check_time, ev, defval=defval
-                ):
-                return True
-
             # check if the event contains a MASNumericalRepeatRule and
             # evaluate it
             if MASNumericalRepeatRule.evaluate_rule(

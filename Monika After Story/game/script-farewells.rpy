@@ -305,7 +305,7 @@ label bye_take_care:
 
 init 5 python:
     rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_hourrule(None,range(0,1),range(20,24)))
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -733,7 +733,7 @@ label bye_goodevening:
 
 init 5 python:
     rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_hourrule(None,range(0,1),range(20,24)))
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
     addEvent(
         Event(
             persistent.farewell_database,

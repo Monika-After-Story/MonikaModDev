@@ -9,7 +9,6 @@ init -1 python:
 
     # special constants for rule type identifiers for the rule dict on Event class
     EV_RULE_RP_SELECTIVE = "rp_selective"
-    EV_RULE_RP_SELECTIVE_HOURS = "rp_selective_hours"
     EV_RULE_RP_NUMERICAL = "rp_numerical"
     EV_RULE_GREET_RANDOM = "greet_random"
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
@@ -366,69 +365,6 @@ init -1 python:
             # since we passed all checks we return true to indicate that we comply
             # to that rule
             return True
-
-        @staticmethod
-        def create_hourrule(ev=None,*args):
-            """
-            A rule specifically for hours that is able to check over multiple hour ranges
-
-            IN:
-                ev - Event to store this rule in, if not None
-                    Default: None)
-                args - lists of hours this rule will match to
-
-            RETURNS:
-                a dict containing the specified rules
-            """
-            hour_list = []
-            for hours in args:
-                if any([(h < 0 or h > 23) for h in hours]):
-                    raise Exception("hours are out of a valid range")
-                else:
-                    hour_list.append(hours)
-
-            rule = {EV_RULE_RP_SELECTIVE_HOURS : (hour_list)}
-
-            if ev:
-                ev.rules.update(rule)
-
-            return rule
-
-        @staticmethod
-        def evaluate_hourrule(check_time, ev=None, rule=None, defval=True):
-            """
-            Checks if the current_time is valid for the rule
-
-            IN:
-                check_time - The time to check against the rule
-                ev - Event to check
-                    NOTE: this takes prioriy over the rule param
-                    (Default: None)
-                rule - MASSelectiveRepeatRule to check
-                    (Default: None)
-                defval - value to return if this event doesn't have a rule
-                    to check
-                    (Default: True)
-
-            RETURNS:
-                A boolean value indicating if the time is in the defined interval
-            """
-            # check if we have an event that contains the rule we need
-            # event rule takes priority so it's checked here
-            if ev and EV_RULE_RP_SELECTIVE_HOURS in ev.rules:
-                rule = ev.rules[EV_RULE_RP_SELECTIVE_HOURS]
-
-            # sanity check if we don't have a rule return default
-            if rule is None:
-                return defval
-
-            hour_list = rule
-
-            for hours in hour_list:
-                if check_time.hour in hours:
-                    return True
-
-            return False
 
     class MASGreetingRule(object):
         """
