@@ -1686,6 +1686,10 @@ label ch30_reset:
             store.mas_globals.show_s_light = True
 
     python:
+        # apply sprite object mux types
+        store.mas_sprites.apply_mux_map()
+
+    python:
         # start by building event lists if they have not been built already
         if not mas_events_built:
             mas_rebuildEventLists()
@@ -1907,7 +1911,7 @@ label ch30_reset:
         if not monika_chr.is_wearing_acs_type("left-hair-flower"):
             store.mas_selspr.set_prompt("left-hair-flower", "wear")
 
-        if not monika_chr.is_wearing_acs_type("ribbon"):
+        if not monika_chr.is_wearing_ribbon():
             store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out

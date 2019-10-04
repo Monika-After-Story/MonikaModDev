@@ -14,36 +14,78 @@ default persistent._mas_selspr_acs_db = {}
 default persistent._mas_selspr_hair_db = {}
 default persistent._mas_selspr_clothes_db = {}
 
-init -100 python in mas_selspr:
+init -150 python in mas_selspr:
     import store
     import store.mas_utils as mas_utils
+
+    ## selector rules
+    # selector rules are functions that should be checked prior to unlocking 
+    # a selector.
+    # NOTE: all selector rules are assumed to be ran at runtime
+
+    def _rule_ribbon():
+        """
+        Ribbon selector should only be unocked if:
+            1 - outfit is not baked
+            2 - hair supports ribbon
+        """
+        return (
+            not store.monika_chr.is_wearing_clothes_with_exprop("baked outfit")
+            and store.monika_chr.is_wearing_hair_with_exprop("ribbon")
+        )
+
+
+init -100 python in mas_selspr:
 
     # prompt constants go here
     PROMPT_MAP = {
         "clothes": {
             "_ev": "monika_clothes_select",
             "change": "Can you change your clothes?",
+            # TODO: min-items
         },
         "hair": {
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
+            # TODO: min-items
         },
         "left-hair-clip": {
             "_ev": "monika_hairclip_select",
+            "_min-items": 1,
             "change": "Can you change your hairclip?",
             "wear": "Can you wear a hairclip?",
         },
         "left-hair-flower": {
             "_ev": "monika_hairflower_select",
+            "_min-items": 1,
             "change": "Can you change the flower in your hair?",
             "wear": "Can you wear a flower in your hair?",
         },
         "ribbon": {
             "_ev": "monika_ribbon_select",
-            "change": "Can you change your ribbon?",
-            "wear": "Can you wear a ribbon?",
+            "_min-items": 1,
+            "_rule": _rule_ribbon,
+            "change": "Can you tie your hair with something else?",
+            "wear": "Can you tie your hair with something else?",
         },
     }
+
+
+    def check_prompt(key):
+        """
+        Checks if the prompt's rule passes.
+
+        IN:
+            key - select key
+
+        RETURNS: True if prompt's rule passes (or doesnt exist), False if not.
+        """
+        prompt_rule = PROMPT_MAP.get(key, {}).get("_rule", None)
+
+        if prompt_rule is None:
+            return True
+
+        return prompt_rule()
 
 
     def get_prompt(key, prompt_key="change"):
@@ -56,10 +98,23 @@ init -100 python in mas_selspr:
 
         RETURNS: prompt. "" if invalid
         """
-        if prompt_key == "_ev":
+        if prompt_key.startswith("_"):
             return ""
 
         return PROMPT_MAP.get(key, {}).get(prompt_key, "")
+
+
+    def get_minitems(key, defval=1):
+        """
+        Gets minimum number of items required to unlock this selector.
+
+        IN:
+            key - select key
+            defval - default value to return
+
+        RETURNS: minimum number of items to unlock the selector.
+        """
+        return PROMPT_MAP.get(key, {}).get("_min-items", defval)
 
 
     def in_prompt_map(key):
@@ -72,6 +127,18 @@ init -100 python in mas_selspr:
         RETURNS: True if in the map, FAlse if not
         """
         return key in PROMPT_MAP
+
+
+    def lock_prompt(key):
+        """
+        Locks ev with the given key
+
+        IN:
+            key - select key
+        """
+        evl = PROMPT_MAP.get(key, {}).get("_ev", None)
+        if evl is not None:
+            store.mas_lockEVL(evl, "EVE")
 
 
     def set_prompt(key, prompt_key="change"):
@@ -93,6 +160,18 @@ init -100 python in mas_selspr:
 
         if ev is not None and prompt is not None:
             ev.prompt = prompt
+
+
+    def unlock_prompt(key):
+        """
+        Unlocks ev with the given key
+
+        IN:
+            key - select key
+        """
+        evl = PROMPT_MAP.get(key, {}).get("_ev", None)
+        if evl is not None:
+            store.mas_unlockEVL(evl, "EVE")
 
 
 init -20 python:
@@ -474,16 +553,11 @@ init -10 python in mas_selspr:
     HAIR_SEL_SL = []
     CLOTH_SEL_SL = []
 
-    # selector group - topic map
-    # key: group
-    # value: tuple of following format:
-    #   [0] - topic label
-    #   [2] - number of items before unlocking
-    GRP_TOPIC_MAP = {
-        "ribbon": ("monika_ribbon_select", 1),
-        "left-hair-clip": ("monika_hairclip_select", 1),
-        "left-hair-flower": ("monika_hairflower_select", 1),
-    }
+    GRP_TOPIC_LIST = [
+        "left-hair-clip",
+        "left-hair-flower",
+        "ribbon",
+    ]
 
 
     def selectable_key(selectable):
@@ -503,15 +577,18 @@ init -10 python in mas_selspr:
         Locks selector topics if there are no unlocked selectables with the
         appropriate group.
         Unlocks selector topics if they are unlocked selectables.
+        NOTE: also checks the prompt rule
         """
         #ACS
-        for group in GRP_TOPIC_MAP:
-            topic_label, min_items = GRP_TOPIC_MAP[group]
-            if len(filter_acs(True, group=group)) >= min_items:
-                store.mas_unlockEVL(topic_label, "EVE")
-
+        for group in GRP_TOPIC_LIST:
+            min_items = get_minitems(group, 1)
+            if (
+                    check_prompt(group)
+                    and len(filter_acs(True, group=group)) >= min_items
+            ):
+                unlock_prompt(group)
             else:
-                store.mas_lockEVL(topic_label, "EVE")
+                lock_prompt(group)
 
 
     def _has_remover(group):
@@ -558,20 +635,29 @@ init -10 python in mas_selspr:
         return None
 
 
-    def create_selectable_remover(acs_type, group):
+    def create_selectable_remover(acs_type, group, remover_name=None):
         """
         Creates a selectable remover for acs
 
         IN:
             acs_type - acs type of the acs/remover to make
             group - group of selectables this ACS remover should be linked to
+            remover_name - the name to use for the remover. If None, we use
+                "Remove"
 
         RETURNS: remover ACS selectable
         """
-        remover_acs = store.mas_sprites.create_remover(acs_type, group)
+        if remover_name is None:
+            remover_name = "Remove"
+
+        remover_acs = store.mas_sprites.create_remover(
+            acs_type,
+            group,
+            store.mas_sprites.get_mux_from_type(acs_type)
+        )
         init_selectable_acs(
             remover_acs,
-            "Remove",
+            remover_name,
             "remove",
             group,
             remover=True
@@ -1279,23 +1365,21 @@ init -10 python in mas_selspr:
 
 
     def unlock_selector(group):
-        """RUNTIME ONLY
+        """DEPRECATED - Use unlock_prompt instead
         Unlocks the selector of the given group.
 
         IN:
             group - group to unlock selector topic.
         """
-        selector_label = GRP_TOPIC_MAP.get(group, None)
-        if selector_label is None:
-            return
-
-        store.mas_unlockEVL(selector_label[0], "EVE")
+        unlock_prompt(group)
 
 
     def json_sprite_unlock(sp_obj, unlock_label=True):
         """RUNTIME ONLY
         Unlocks selectable for the given sprite, as ewll as the selector
         topic for that sprite.
+
+        NOTE: checks if the prompt's rules passes before unlocking.
 
         IN:
             sp_obj - sprite object to unlock selectbale+
@@ -1310,7 +1394,8 @@ init -10 python in mas_selspr:
         # retrieve selectable and unlock the group's selector
         if unlock_label:
             sel_obj = _get_sel(sp_obj, sp_type)
-            unlock_selector(sel_obj.group)
+            if check_prompt(sel_obj.group):
+                unlock_prompt(sel_obj.group)
 
 
     # extension of mailbox
@@ -1460,7 +1545,12 @@ init -1 python:
         return False
 
 
-    def mas_filterUnlockGroup(sp_type, group, unlock_min=None):
+    def mas_filterUnlockGroup(
+            sp_type,
+            group,
+            unlock_min=None,
+            allow_lock=False
+    ):
         """
         Unlock selector topic for the given group if appropriate number of
         selector objects are unlocked.
@@ -1470,23 +1560,29 @@ init -1 python:
             group - group to use for filtering selectors
             unlock_min - minimum number that has to be unlocked for us to
                 unock the selector topic.
-                IF None, then we use the amount provided by the GRP_TOPIC_MAP
+                IF None, then we use the amount provided by the PROMPT_MAP
                 (Default: None)
+            allow_lock - True will lock the selector topic if it fails to be
+                unlocked.
+                (Default: False)
         """
         # type sanity check
         if sp_type not in store.mas_selspr.SELECT_CONSTS:
             return
 
         # check if we even have a label to unlock
-        grp_topic = store.mas_selspr.GRP_TOPIC_MAP.get(group, None)
-        if grp_topic is None:
+        if not store.mas_selspr.in_prompt_map(group):
             return
 
+        # check if the selector's rule passes as that takes priority.
+        if not store.mas_selspr.check_prompt(group):
+            return
+
+        # set default unlock min
         if unlock_min is None:
-            unlock_min = grp_topic[1]
+            unlock_min = store.mas_selspr.get_minitems(group, defval=1)
 
-        grp_topic = grp_topic[0]
-
+        # get the number of unlocked itms
         if sp_type == store.mas_selspr.SELECT_ACS:
             sel_list = store.mas_selspr.filter_acs(True, group=group)
 
@@ -1497,7 +1593,11 @@ init -1 python:
             sel_list = store.mas_selspr.filter_clothes(True, group=group)
 
         if len(sel_list) >= unlock_min:
-            mas_unlockEVL(grp_topic, "EVE")
+            store.mas_selspr.unlock_prompt(group)
+
+        elif allow_lock:
+            store.mas_selspr.lock_prompt(group)
+            
 
 
     ## custom displayable
@@ -2027,6 +2127,7 @@ init -1 python:
                     self._send_select_text()
 
                 elif self.selectable.remover:
+                    self._send_msg_disp_text(None)
                     self.mailbox.send_disp_fast()
 
             # always reset interaction if something has been selected
@@ -2474,13 +2575,15 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 #   add_remover - True if we want to include a remover in the selector menu,
 #       False if not
 #       (Default: False)
+#   remover_name - name to use for the remover.
+#       (Default: None)
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
     python:
         if not store.mas_selspr.valid_select_type(select_type):
@@ -2520,7 +2623,8 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 # create generic remover item
                 remover_item = store.mas_selspr.create_selectable_remover(
                     sample_obj.acs_type,
-                    sample_sel.group
+                    sample_sel.group,
+                    remover_name
                 )
 
             # unlock the remover
@@ -2724,9 +2828,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     return _return
 
@@ -2737,9 +2841,9 @@ label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unloc
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     if _return:
         # user hit confirm
@@ -2753,9 +2857,9 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False):
+label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     if _return:
         # user hit confirm
@@ -2970,7 +3074,7 @@ label monika_ribbon_select:
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which hair tie would you like me to use?")
         sel_map = {}
 
     m 1eua "Sure [player]!"
@@ -2980,23 +3084,13 @@ label monika_ribbon_select:
 #        $ monika_chr.reset_outfit(False)
 
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, remover_name="Basic Hair Band")
 
     if not _return:
         m 1eka "Oh, alright."
 
-    # set appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type("ribbon"):
-#        $ ribbon_prompt_key = "change"
-        $ ribbon_dlg = "If you want me to change my ribbon, just ask, okay?"
-
-    else:
-#        $ ribbon_prompt_key = "wear"
-        $ ribbon_dlg = "If you want me to wear a ribbon again, just ask, okay?"
-
-#    $ store.mas_selspr.set_prompt("ribbon", ribbon_prompt_key)
-
-    m 1eka "[ribbon_dlg]"
+    $ store.mas_selspr.set_prompt("ribbon", "change")
+    m 1eka "If you want me to change my hair tie, just ask, okay?"
 
     return
 #### End Ribbon change topic
