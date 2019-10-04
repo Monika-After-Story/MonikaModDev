@@ -1045,6 +1045,8 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
+
+        # if clothes had a desired ribbon, restore to previous
         desired_ribbon = prev_cloth.getprop("desired-ribbon")
         if (
                 desired_ribbon is not None
@@ -1090,9 +1092,13 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
+        outfit_mode = temp_space.get("outfit_mode", False)
+
+        # if clothes has a desired ribbon, change to it if outfit mode
         desired_ribbon = new_cloth.getprop("desired-ribbon")
         if (
-                desired_ribbon is not None
+                outfit_mode
+                and desired_ribbon is not None
                 and desired_ribbon in ACS_MAP
                 and moni_chr.is_wearing_hair_with_exprop("ribbon")
         ):
@@ -3484,7 +3490,13 @@ init -2 python:
                 return allow_none
             return val in MASMonika.SPL_LAYERS
 
-        def change_clothes(self, new_cloth, by_user=None, startup=False):
+        def change_clothes(
+                self,
+                new_cloth,
+                by_user=None,
+                startup=False,
+                outfit_mode=False
+        ):
             """
             Changes clothes to the given cloth. also sets the persistent
             force clothes var to by_user, if its not None
@@ -3497,6 +3509,11 @@ init -2 python:
                 startup - True if we are loading on startup, False if not
                     When True, we dont respect locking
                     (Default: False)
+                outfit_mode - True means we should change hair/acs if it 
+                    completes the outfit. False means we should not.
+                    NOTE: this does NOT affect hair/acs that must change for
+                        consistency purposes.
+                    (Default: False)
             """
             if self.lock_clothes and not startup:
                 return
@@ -3505,6 +3522,7 @@ init -2 python:
             temp_space = {
                 "by_user": by_user,
                 "startup": startup,
+                "outfit_mode": outfit_mode
             }
 
             prev_cloth = self.clothes
@@ -3518,7 +3536,11 @@ init -2 python:
             )
 
             # exit point
-            self.clothes.exit(self, new_clothes=new_cloth)
+            self.clothes.exit(
+                self,
+                new_clothes=new_cloth,
+                outfit_mode=outfit_mode
+            )
 
             # post exit, pre change
             store.mas_sprites.clothes_exit_pst_change(
@@ -3540,7 +3562,11 @@ init -2 python:
             )
 
             # entry point
-            self.clothes.entry(self, prev_clothes=prev_cloth)
+            self.clothes.entry(
+                self,
+                prev_clothes=prev_cloth,
+                outfit_mode=outfit_mode
+            )
 
             # post entry point
             store.mas_sprites.clothes_entry_pst_change(

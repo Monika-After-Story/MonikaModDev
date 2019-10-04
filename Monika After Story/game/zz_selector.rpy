@@ -522,6 +522,8 @@ init -10 python in mas_selspr:
     MB_DISP_DEF = "def_disp_text"
     MB_CONF = "conf_enable"
     MB_DISP_FAST = "disp_fast"
+    MB_OCB_VISIBLE = "ocb_visible"
+    MB_OCB_CHECKED = "ocb_checked"
 
     ## screen constants
     SB_VIEWPORT_BOUNDS = (1075, 5, 200, 625, 5)
@@ -846,7 +848,8 @@ init -10 python in mas_selspr:
             old_map,
             new_map,
             select_type,
-            use_old=False
+            use_old=False,
+            outfit_mode=False
         ):
         """
         Adjusts an aspect of monika based on the select type
@@ -862,6 +865,9 @@ init -10 python in mas_selspr:
                 monika to adjust
             use_old - True means we are reverting back to the old map,
                 False meanse use the old map
+                (Default: False)
+            outfit_mode - True means we are in outfit mode, False if not
+                This is used in the clothing changes
                 (Default: False)
         """
         if select_type == SELECT_ACS:
@@ -938,7 +944,10 @@ init -10 python in mas_selspr:
                         return
 
                     try:
-                        moni_chr.change_clothes(new_cloth)
+                        moni_chr.change_clothes(
+                            new_cloth,
+                            outfit_mode=outfit_mode
+                        )
 
                     except Exception as e:
                         mas_utils.writelog("BAD CLOTHES: " + repr(e))
@@ -1408,7 +1417,6 @@ init -10 python in mas_selspr:
 
         See MASMailbox for properties.
         """
-
         def __init__(self, def_disp_text=DEF_DISP):
             """
             Constructor for the selectable sprite mailbox
@@ -1416,7 +1424,6 @@ init -10 python in mas_selspr:
             super(MASSelectableSpriteMailbox, self).__init__()
             self.send_def_disp_text(def_disp_text)
             self.send_conf_enable(False)
-
 
         def _get(self, headline):
             """
@@ -1426,7 +1433,6 @@ init -10 python in mas_selspr:
             """
             return super(MASSelectableSpriteMailbox, self).get(headline)
 
-
         def _read(self, headline):
             """
             Calls the super class read
@@ -1435,7 +1441,6 @@ init -10 python in mas_selspr:
             """
             return super(MASSelectableSpriteMailbox, self).read(headline)
 
-
         def _send(self, headline, msg):
             """
             Calls the super classs's send
@@ -1443,7 +1448,6 @@ init -10 python in mas_selspr:
             This is just for ease of use.
             """
             super(MASSelectableSpriteMailbox, self).send(headline, msg)
-
 
         def read_conf_enable(self):
             """
@@ -1455,7 +1459,6 @@ init -10 python in mas_selspr:
             """
             return self._read(MB_CONF)
 
-
         def read_def_disp_text(self):
             """
             Returns the default display text message
@@ -1466,6 +1469,23 @@ init -10 python in mas_selspr:
             """
             return self._read(MB_DISP_DEF)
 
+        def read_outfit_checkbox_checked(self):
+            """
+            Returns the value of the outfit checkbox checked message
+
+            RETURNS:
+                True if the outfit checkbox is checked, False otherwise
+            """
+            return self._read(MB_OCB_CHECKED)
+
+        def read_outfit_checkbox_visible(self):
+            """
+            Returns the value of the outfit checkbox visible message
+
+            RETURNS:
+                True if the outfit checkbox should be visible, False otherwise    
+            """
+            return self._read(MB_OCB_VISIBLE)
 
         def get_disp_fast(self):
             """
@@ -1475,7 +1495,6 @@ init -10 python in mas_selspr:
             """
             return self._get(MB_DISP_FAST)
 
-
         def get_disp_text(self):
             """
             Removes and returns the display text message
@@ -1483,7 +1502,6 @@ init -10 python in mas_selspr:
             RETURNS: display text
             """
             return self._get(MB_DISP)
-
 
         def send_conf_enable(self, enable):
             """
@@ -1494,7 +1512,6 @@ init -10 python in mas_selspr:
             """
             self._send(MB_CONF, enable)
 
-
         def send_def_disp_text(self, txt):
             """
             Sends default display message
@@ -1504,13 +1521,11 @@ init -10 python in mas_selspr:
             """
             self._send(MB_DISP_DEF, txt)
 
-
         def send_disp_fast(self):
             """
             Sends default fast flag
             """
             self._send(MB_DISP_FAST, True)
-
 
         def send_disp_text(self, txt):
             """
@@ -1520,6 +1535,25 @@ init -10 python in mas_selspr:
                 txt - txt to display
             """
             self._send(MB_DISP, txt)
+
+        def send_outfit_checkbox_checked(self, checked):
+            """
+            Sends ocb checked message
+
+            IN:
+                checked - True means checkbox checked, False means not checked
+            """
+            self._send(MB_OCB_CHECKED, checked)
+
+        def send_outfit_checkbox_visible(self, visible):
+            """
+            Sends ocb visible message
+
+            IN:
+                visible - True means to show the outfit checkbox, False means
+                    hide
+            """
+            self._send(MB_OCB_VISIBLE, visible)
 
 
 init -1 python:
@@ -2494,7 +2528,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 #    modal True
 
     frame:
-        area (1075, 5, 200, 625)
+        area (1075, 5, 200, 595)
         background Frame(mas_getTimeFile("mod_assets/frames/black70_pinkborder100_5px.png"), left=6, top=6, tile=True)
 
         vbox:
@@ -2522,6 +2556,18 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
                     null height 1
 
             null height 10
+
+            if mailbox.read_outfit_checkbox_visible():
+                textbutton _("Outfit Mode"):
+                    style "check_button"
+                    action [
+                        ToggleField(persistent, "_mas_setting_ocbs"),
+                        Function(
+                            mailbox.send_outfit_checkbox_checked,
+                            persistent._mas_setting_ocbs
+                        )
+                    ]
+                    selected mailbox.read_outfit_checkbox_checked()
 
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
@@ -2727,7 +2773,8 @@ label mas_selector_sidebar_select_loop:
                 monika_chr,
                 old_select_map,
                 select_map,
-                select_type
+                select_type,
+                outfit_mode=mailbox.read_outfit_checkbox_checked()
             )
 
         # force this to execute in this python block (no prediction)
@@ -2885,12 +2932,17 @@ init 5 python:
         )
     )
 
+default persistent._mas_setting_ocb = False
+# Outfit CheckBox setting
+
 label monika_clothes_select:
     # setup
     python:
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
+        mailbox.send_outfit_checkbox_visible(True)
+        mailbox.send_outfit_checkbox_checked(persistent._mas_setting_ocb)
         sel_map = {}
 
     # initial dialogue

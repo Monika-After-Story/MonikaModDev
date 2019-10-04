@@ -459,16 +459,19 @@ init -2 python in mas_sprites:
         """
         Entry programming point for sundress white
         """
-        _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
-        _moni_chr.wear_acs(store.mas_acs_musicnote_necklace_gold)
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
+            _moni_chr.wear_acs(store.mas_acs_musicnote_necklace_gold)
 
 
     def _clothes_sundress_white_exit(_moni_chr, **kwargs):
         """
         Exit programming point for sundress white
         """
-        # TODO: dont remve the bracelet.
-        #   non-bare arms clothes should remove the bracelet
+        # TODO: add selectors for these items so they dont have to be
+        #   removed
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
         _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
 
