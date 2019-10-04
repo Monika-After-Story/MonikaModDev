@@ -13059,15 +13059,16 @@ init 5 python:
         )
     )
 label monika_assume_code_level:
-    m "Have I been underestimating your coding skills?{nw}"
+    m 1etc "Have I been underestimating your coding skills?{nw}"
+    $ history_list.pop()
     menu:
-        m "Have I been underestimating your coding skills?{fast}"
+        m 1etc "Have I been underestimating your coding skills?{fast}"
         "Yes":
-            m "Ahaha, I'm sorry, [player]!"
-            m "I didn't mean to- I just never thought to ask."
+            m 1hksdlb "Ahaha, I'm sorry, [player]!"
+            m 3rka "I didn't mean to- I just never thought to ask."
         "No":
-            m "Okay, good."
-            m "I just wanted to make sure I wasn't assuming your skill level.
+            m 1ekb "Okay, good."
+            m 3eka "I just wanted to make sure I wasn't assuming your skill level.
             
 label monika_installed_python:
     m 1sub "You did?"
@@ -13149,31 +13150,14 @@ label monika_installed_python:
                     m 1eka "I hope you have fun, anyway."
                     m 1rsc "...{w=0.5}"
                     m 1esd "Hey, [player]?"
-                    m 3etd "Have I been underestimating your coding skills?{nw}"
-                    $ history_list.pop()
-                    menu:
-                    m 3etd "Have I been underestimating your coding skills?{fast}"
-                    "Yes":
-                        m "Ahaha, I'm sorry, [player]!"
-                        m "I didn't mean to- I just never thought to ask."
-                    "No":
-                        m "Okay, good."
-                        m "I just wanted to make sure I wasn't assuming your skill level."
+                    call monika_assume_code_level
+
                         
                 "option two":
                     m 1hub "Great!"
                     m 1eub "That's the version of Python I use."
                     m 3rksdlb "Also, [player]?"
-                    m "Have I been underestimating your coding skills?{nw}"
-                    $ _history_list.pop()
-                    menu:
-                        m "Have I been underestimating your coding skills?{fast}"
-                        "Yes":
-                            m "Ahaha, I'm sorry, [player]!"
-                            m "I didn't mean to- I just never thought to ask."
-                        "No":
-                            m "Okay, good."
-                            m "I just wanted to make sure I wasn't assuming your skill level.
+                    call monika_assume_code_level
     
         "To help a friend.":
             m 3eub "That's great!"
