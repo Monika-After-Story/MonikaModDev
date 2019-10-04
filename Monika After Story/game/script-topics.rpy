@@ -13116,7 +13116,7 @@ label monika_installed_python:
                     m 3rksdla "I'm sorry I made assumptions about your skill level.
                 "No.":
                     m 3hksdlb "That's okay!"
-                    m 1eka "Again, I'm happy to teach you everything I know.
+                    m 1eka "Again, I'm happy to teach you everything I know."
                     m 1eub "What version of Python did you download?{nw}"
                     $ _history_list.pop()
                     menu:
