@@ -183,7 +183,7 @@ label mas_mood_sad:
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
                             m 1ekbfa "I love you, [player], and I always will~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
@@ -206,6 +206,7 @@ label mas_mood_proud:
             m 3hub "It'll be reality someday..."
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfb "But until then, just know that I'm very proud of you, my love!"
+            return
         "Minor.":
             m 2hua "Ahaha!~"
             m 2hub "That's wonderful!"
@@ -216,7 +217,7 @@ label mas_mood_proud:
             m 4hub "So keep hitting those small goals, [player]!"
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfb "And remember, I love you, and I'm always cheering you on!"
-return
+            return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
@@ -225,7 +226,7 @@ label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
     m "Know that you can always come up to me and I'll cheer you up, [player]."
     m 3eka "I love you and I'll always be here for you, so don't ever forget that~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="...sick.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
@@ -448,7 +449,7 @@ label mas_mood_inadequate:
     m 1hua "Finding meaning in the people who matter."
     m 1eka "Please don't forget that, okay?"
     m 1ekbfa "I love you, [player]~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")

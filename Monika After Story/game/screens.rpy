@@ -314,7 +314,7 @@ screen say(who, what):
     # If there's a side image, display it above the text. Do not display
     # on the phone variant - there's no room.
     if not renpy.variant("small"):
-        add SideImage() xalign 0.0 yalign 1.0
+        add SideImage() xalign (0.0 if not mas_globals.dark_mode else 2.5) yalign (1.0 if not mas_globals.dark_mode else 2.5)
 
     use quick_menu
 
@@ -426,7 +426,7 @@ style input:
 ## http://www.renpy.org/doc/html/screen_special.html#choice
 
 screen choice(items):
-    style_prefix "choice"
+    style_prefix ("choice" if not mas_globals.dark_mode else "choice_dark")
 
     vbox:
         for i in items:
@@ -467,7 +467,7 @@ init python:
             renpy.display.draw.set_mouse_pos((currentpos[0] * 9 + targetpos[0]) / 10.0, (currentpos[1] * 9 + targetpos[1]) / 10.0)
 
 screen rigged_choice(items):
-    style_prefix "choice"
+    style_prefix ("choice" if not mas_globals.dark_mode else "choice_dark")
 
     vbox:
         for i in items:
@@ -484,7 +484,7 @@ style talk_choice_button_text is choice_button_text
 
 ## This screen is used for the talk menu
 screen talk_choice(items):
-    style_prefix "talk_choice"
+    style_prefix ("talk_choice" if not mas_globals.dark_mode else "talk_choice_dark")
 
     vbox:
         for i in items:
@@ -531,7 +531,7 @@ screen quick_menu():
 
         # Add an in-game quick menu.
         hbox:
-            style_prefix "quick"
+            style_prefix ("quick" if not mas_globals.dark_mode else "quick_dark")
 
             xalign 0.5
             yalign 0.995
@@ -592,9 +592,8 @@ init python:
         renpy.jump_out_of_context("start")
 
 screen navigation():
-
     vbox:
-        style_prefix "navigation"
+        style_prefix ("navigation" if not mas_globals.dark_mode else "navigation_dark")
 
         xpos gui.navigation_xpos
         yalign 0.8
@@ -635,6 +634,7 @@ screen navigation():
 
             ## The quit button is banned on iOS and unnecessary on Android.
             textbutton _("Quit") action Quit(confirm=_confirm_quit)
+
 
 
 style navigation_button is gui_button
@@ -829,7 +829,7 @@ screen game_menu(title, scroll=None):
     #     on "show" action Show("game_menu_m")
 
     textbutton _("Return"):
-        style "return_button"
+        style ("return_button" if not mas_globals.dark_mode else "return_dark_button")
 
         action Return()
 
@@ -1104,7 +1104,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix "radio"
+                        style_prefix ("radio" if not mas_globals.dark_mode else "radio_dark")
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1118,14 +1118,22 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix "check"
+                    style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
                     label _("Graphics")
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
+                    #Handle buttons
+                    textbutton _("Dark UI"):
+                        action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
+                        selected persistent._mas_dark_mode_enabled
+                    textbutton _("Day/Night UI"):
+                        action [Function(mas_darkMode, morning_flag), Function(mas_settings._auto_mode_toggle)]
+                        selected persistent._mas_auto_mode_enabled
+
 
                 vbox:
-                    style_prefix "check"
+                    style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
                     label _("Gameplay")
                     if persistent._mas_unstable_mode:
                         textbutton _("Unstable"):
@@ -1145,7 +1153,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix "check"
+                    style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
                     label _(" ")
                     textbutton _("Sensitive Mode"):
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
@@ -1313,25 +1321,25 @@ screen preferences():
             hbox:
                 textbutton _("Update Version"):
                     action Function(renpy.call_in_new_context, 'forced_update_now')
-                    style "navigation_button"
+                    style ("navigation_button" if not mas_globals.dark_mode else "navigation_dark_button")
 
                 textbutton _("Import DDLC Save Data"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
-                    style "navigation_button"
+                    style ("navigation_button" if not mas_globals.dark_mode else "navigation_dark_button")
 
 
     text tooltip.value:
         xalign 0.0 yalign 1.0
         xoffset 300 yoffset -10
-        style "main_menu_version"
+        style ("main_menu_version_def" if not mas_globals.dark_mode else "main_menu_version_dark")
 #        layout "greedy"
 #        text_align 0.5
 #        xmaximum 650
 
     text "v[config.version]":
         xalign 1.0 yalign 0.0
-        xoffset -10 
-        style "main_menu_version"
+        xoffset -10
+        style ("main_menu_version_def" if not mas_globals.dark_mode else "main_menu_version_dark")
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text
@@ -1709,19 +1717,17 @@ style history_label_text:
 ## http://www.renpy.org/doc/html/screen_special.html#confirm
 
 screen name_input(message, ok_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
-    add "gui/overlay/confirm.png"
     key "K_RETURN" action [Play("sound", gui.activate_sound), ok_action]
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1740,18 +1746,15 @@ screen name_input(message, ok_action):
                 textbutton _("OK") action ok_action
 
 screen dialog(message, ok_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
-
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1768,18 +1771,15 @@ screen dialog(message, ok_action):
                 textbutton _("OK") action ok_action
 
 screen quit_dialog(message, ok_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
-
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1803,18 +1803,15 @@ image confirm_glitch:
     repeat
 
 screen confirm(message, yes_action, no_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
-
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1843,8 +1840,6 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
-
-
 style confirm_frame is gui_frame
 style confirm_prompt is gui_prompt
 style confirm_prompt_text is gui_prompt_text
@@ -1871,8 +1866,8 @@ style confirm_button:
 style confirm_button_text is navigation_button_text:
     properties gui.button_text_properties("confirm_button")
 
-##Updating screen
 
+##Updating screen
 screen update_check(ok_action,cancel_action,mode):
 
     ## Ensure other screens do not get input while this screen is displayed.
@@ -1881,8 +1876,7 @@ screen update_check(ok_action,cancel_action,mode):
     zorder 200
 
     style_prefix "update_check"
-
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
 
@@ -1936,22 +1930,18 @@ style update_check_button_text is confirm_button_text
 ## This is the screen called when the game needs to update versions
 ##
 screen updater:
-
     modal True
 
     style_prefix "updater"
 
     frame:
-
         has side "t c b":
             spacing gui._scale(10)
 
         label _("Updater")
 
         fixed:
-
             vbox:
-
                 if u.state == u.ERROR:
                     text _("An error has occured:")
                 elif u.state == u.CHECKING:
@@ -1982,10 +1972,9 @@ screen updater:
 
                 if u.progress is not None:
                     null height gui._scale(10)
-                    bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff") thumb None
+                    bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff" if not mas_globals.dark_mode else "#13060d") thumb None
 
         hbox:
-
             spacing gui._scale(25)
 
             if u.can_proceed:
@@ -2135,8 +2124,8 @@ define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
 define gui.scrollable_menu_button_text_font = gui.default_font
 define gui.scrollable_menu_button_text_size = gui.text_size
 define gui.scrollable_menu_button_text_xalign = 0.0
-define gui.scrollable_menu_button_text_idle_color = "#000"
-define gui.scrollable_menu_button_text_hover_color = "#fa9"
+define gui.scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
 
 # twopane_scrollabe is now a prefix
 define gui.twopane_scrollable_menu_button_width = 250
@@ -2147,8 +2136,8 @@ define gui.twopane_scrollable_menu_button_borders = Borders(25, 5, 25, 5)
 define gui.twopane_scrollable_menu_button_text_font = gui.default_font
 define gui.twopane_scrollable_menu_button_text_size = gui.text_size
 define gui.twopane_scrollable_menu_button_text_xalign = 0.0
-define gui.twopane_scrollable_menu_button_text_idle_color = "#000"
-define gui.twopane_scrollable_menu_button_text_hover_color = "#fa9"
+define gui.twopane_scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.twopane_scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
 
 #Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
 # The line properties gui.button_properties("scrollable_menu_button") assigns all
@@ -2208,104 +2197,100 @@ style twopane_scrollable_menu_special_button is twopane_scrollable_menu_button
 style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_button_text:
     bold True
 
+
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
-
 screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
-        style_prefix "twopane_scrollable_menu"
+    style_prefix ("twopane_scrollable_menu" if not mas_globals.dark_mode else "twopane_scrollable_menu_dark")
 
+    fixed:
+        area left_area
+
+        bar adjustment prev_adj style "vscrollbar" xalign left_align
+
+        viewport:
+            yadjustment prev_adj
+            mousewheel True
+            arrowkeys True
+
+            vbox:
+
+                for i_caption,i_label in prev_items:
+                    textbutton i_caption:
+                        if renpy.has_label(i_label) and not seen_event(i_label):
+                            style ("twopane_scrollable_menu_new_button" if not mas_globals.dark_mode else "twopane_scrollable_menu_dark_new_button")
+                        if not renpy.has_label(i_label):
+                            style ("twopane_scrollable_menu_special_button" if not mas_globals.dark_mode else "twopane_scrollable_menu_dark_special_button")
+
+                        action Return(i_label)
+
+                null height 20
+
+                if cat_length == 0:
+                    textbutton _("That's enough for now.") action Return(False)
+                elif cat_length > 1:
+                    textbutton _("Go Back") action Return(-1)
+
+
+    if main_items:
         fixed:
-            area left_area
+            area right_area
 
-            bar adjustment prev_adj style "vscrollbar" xalign left_align
+            bar adjustment main_adj style "vscrollbar" xalign right_align
 
             viewport:
-                yadjustment prev_adj
+                yadjustment main_adj
                 mousewheel True
                 arrowkeys True
 
                 vbox:
-
-                    for i_caption,i_label in prev_items:
+                    for i_caption,i_label in main_items:
                         textbutton i_caption:
                             if renpy.has_label(i_label) and not seen_event(i_label):
-                                style "twopane_scrollable_menu_new_button"
+                                style ("twopane_scrollable_menu_new_button" if not mas_globals.dark_mode else "twopane_scrollable_menu_dark_new_button")
                             if not renpy.has_label(i_label):
-                                style "twopane_scrollable_menu_special_button"
+                                style ("twopane_scrollable_menu_special_button" if not mas_globals.dark_mode else "twopane_scrollable_menu_dark_special_button")
 
                             action Return(i_label)
 
-
-
                     null height 20
 
-                    if cat_length == 0:
-                        textbutton _("That's enough for now.") action Return(False)
-                    elif cat_length > 1:
-                        textbutton _("Go Back") action Return(-1)
-
-
-        if main_items:
-
-            fixed:
-                area right_area
-
-                bar adjustment main_adj style "vscrollbar" xalign right_align
-
-                viewport:
-                    yadjustment main_adj
-                    mousewheel True
-                    arrowkeys True
-
-                    vbox:
-
-                        for i_caption,i_label in main_items:
-                            textbutton i_caption:
-                                if renpy.has_label(i_label) and not seen_event(i_label):
-                                    style "twopane_scrollable_menu_new_button"
-                                if not renpy.has_label(i_label):
-                                    style "twopane_scrollable_menu_special_button"
-
-                                action Return(i_label)
-
-                        null height 20
-
-                        textbutton _("That's enough for now.") action Return(False)
+                    textbutton _("That's enough for now.") action Return(False)
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
-        style_prefix "scrollable_menu"
+    style_prefix ("scrollable_menu" if not mas_globals.dark_mode else "scrollable_menu_dark")
 
-        fixed:
-            area display_area
+    fixed:
+        area display_area
 
-            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+        bar adjustment prev_adj style "vscrollbar" xalign scroll_align
 
-            viewport:
-                yadjustment prev_adj
-                mousewheel True
+        viewport:
+            yadjustment prev_adj
+            mousewheel True
 
-                vbox:
+            vbox:
 #                    xpos x
 #                    ypos y
 
-                    for i_caption,i_label in items:
-                        textbutton i_caption:
-                            if renpy.has_label(i_label) and not seen_event(i_label):
-                                style "scrollable_menu_new_button"
-                            if not renpy.has_label(i_label):
-                                style "scrollable_menu_special_button"
-                            action Return(i_label)
+                for i_caption,i_label in items:
+                    textbutton i_caption:
+                        if renpy.has_label(i_label) and not seen_event(i_label):
+                            style ("scrollable_menu_new_button" if not mas_globals.dark_mode else "scrollable_menu_dark_new_button")
+                        if not renpy.has_label(i_label):
+                            style ("scrollable_menu_special_button" if not mas_globals.dark_mode else "scrollable_menu_dark_special_button")
+                        action Return(i_label)
 
 
 
-                    null height 20
+                null height 20
 
-                    if remove:
-                        # in case we want the option to hide this menu
-                        textbutton _(remove[0]) action Return(remove[1])
+                if remove:
+                    # in case we want the option to hide this menu
+                    textbutton _(remove[0]) action Return(remove[1])
 
-                    textbutton _(nvm_text) action Return(False)
+                textbutton _(nvm_text) action Return(False)
 
 # more general scrollable menu. This one takes the following params:
 # IN:
@@ -2332,43 +2317,43 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
 #               NOTE: must be >= 0
 #       (Default: None)
 screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
-        style_prefix "scrollable_menu"
+    style_prefix ("scrollable_menu" if not mas_globals.dark_mode else "scrollable_menu_dark")
 
-        fixed:
-            area display_area
+    fixed:
+        area display_area
 
-            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+        bar adjustment prev_adj style "vscrollbar" xalign scroll_align
 
-            viewport:
-                yadjustment prev_adj
-                mousewheel True
+        viewport:
+            yadjustment prev_adj
+            mousewheel True
 
-                vbox:
+            vbox:
 #                    xpos x
 #                    ypos y
 
-                    for item_prompt,item_value,is_italic,is_bold in items:
-                        textbutton item_prompt:
-                            if is_italic and is_bold:
-                                style "scrollable_menu_crazy_button"
-                            elif is_italic:
-                                style "scrollable_menu_new_button"
-                            elif is_bold:
-                                style "scrollable_menu_special_button"
-                            action Return(item_value)
+                for item_prompt,item_value,is_italic,is_bold in items:
+                    textbutton item_prompt:
+                        if is_italic and is_bold:
+                            style ("scrollable_menu_crazy_button" if not mas_globals.dark_mode else "scrollable_menu_dark_crazy_button")
+                        elif is_italic:
+                            style ("scrollable_menu_new_button" if not mas_globals.dark_mode else "scrollable_menu_dark_new_button")
+                        elif is_bold:
+                            style ("scrollable_menu_special_button" if not mas_globals.dark_mode else "scrollable_menu_dark_special_button")
+                        action Return(item_value)
 
-                    for final_items in args:
-                        if final_items[4] > 0:
-                            null height final_items[4]
+                for final_items in args:
+                    if final_items[4] > 0:
+                        null height final_items[4]
 
-                        textbutton _(final_items[0]):
-                            if final_items[2] and final_items[3]:
-                                style "scrollable_menu_crazy_button"
-                            elif final_items[2]:
-                                style "scrollable_menu_new_button"
-                            elif final_items[3]:
-                                style "scrollable_menu_special_button"
-                            action Return(final_items[1])
+                    textbutton _(final_items[0]):
+                        if final_items[2] and final_items[3]:
+                            style ("scrollable_menu_crazy_button" if not mas_globals.dark_mode else "scrollable_menu_dark_crazy_button")
+                        elif final_items[2]:
+                            style ("scrollable_menu_new_button" if not mas_globals.dark_mode else "scrollable_menu_dark_new_button")
+                        elif final_items[3]:
+                            style ("scrollable_menu_special_button" if not mas_globals.dark_mode else "scrollable_menu_dark_special_button")
+                        action Return(final_items[1])
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
@@ -2390,8 +2375,7 @@ screen mas_generic_restart:
     zorder 200
 
     style_prefix "confirm"
-
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
 

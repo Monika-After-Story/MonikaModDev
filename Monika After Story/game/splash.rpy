@@ -246,6 +246,12 @@ label splashscreen:
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
     $ config.allow_skipping = False
+
+    python:
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(morning_flag)
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
     return
 
 label warningscreen:
@@ -359,4 +365,3 @@ label quit:
             store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
     return
-

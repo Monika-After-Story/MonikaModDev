@@ -332,7 +332,7 @@ label mas_piano_hb_prac:
         m 1eksdla "Ehehe, trying the Birthday Song on your birthday, [player]?"
         m 3hua "Keep trying, I know you can do it!"
     else:
-        m 1eua "You're practing the Birthday Song?"
+        m 1eua "You're practicing the Birthday Song?"
         m 3hua "I know you can do it, [player]!"
     return
 
@@ -399,7 +399,7 @@ init -3 python in mas_piano_keys:
     # menu constants
     MENU_X = 680
     MENU_Y = 40
-    MENU_W = 450
+    MENU_W = 560
     MENU_H = 640
     MENU_XALIGN = -0.05
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
@@ -2346,93 +2346,93 @@ init 810 python:
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
             # button shit
-            button_idle = Image("mod_assets/hkb_idle_background.png")
-            button_hover = Image("mod_assets/hkb_hover_background.png")
-            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
+            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
+            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
 
             # button text
             button_done_text_idle = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_done_text_hover = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_cancel_text_idle = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_cancel_text_hover = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_reset_text_idle = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_reset_text_hover = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_resetall_text_idle = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_resetall_text_hover = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_config_text_idle = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_config_text_hover = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_quit_text_idle = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_quit_text_hover = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 

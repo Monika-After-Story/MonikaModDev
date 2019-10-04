@@ -1,11 +1,66 @@
 ## holiday info goes here
 #
 # TOC
+#   [GBL000] - GLOBAL SPACE
 #   [HOL010] - O31
 #   [HOL020] - D25
 #   [HOL030] - NYE (new yeares eve, new years)
 #   [HOL040] - player_bday
 #   [HOL050] - F14
+#   [HOL060] - 922
+
+
+############################### GLOBAL SPACE ################################
+# [GBL000]
+default persistent._mas_event_clothes_map = dict()
+define mas_five_minutes = datetime.timedelta(seconds=5*60)
+define mas_one_hour = datetime.timedelta(seconds=3600)
+define mas_three_hour = datetime.timedelta(seconds=3*3600)
+
+init -1 python:
+    def mas_checkOverDate(_date):
+        """
+        Checks if the player was gone over the given date entirely (taking you somewhere)
+
+        IN:
+            date - a datetime.date of the date we want to see if we've been out all day for
+
+        OUT:
+            True if the player and Monika were out together the whole day, False if not.
+        """
+        checkout_time = store.mas_dockstat.getCheckTimes()[0]
+        return checkout_time is not None and checkout_time.date() < _date
+
+    def mas_capGainAff(amount, aff_gained_var, normal_cap, pbday_cap=None):
+        """
+        Gains affection according to the cap(s) defined
+
+        IN:
+            amount:
+                Amount of affection to gain
+
+            aff_gained_var:
+                The persistent variable which the total amount gained for the holiday is stored
+                (NOTE: Must be a string)
+
+            normal_cap:
+                The cap to use when not player bday
+
+            pbday_cap:
+                The cap to use when it's player bday (NOTE: if not provided, normal_cap is assumed)
+        """
+
+        #If player bday cap isn't provided, we just use the one cap
+        if persistent._mas_player_bday_in_player_bday_mode and pbday_cap:
+            cap = pbday_cap
+        else:
+            cap = normal_cap
+
+        if persistent.__dict__[aff_gained_var] < cap:
+            persistent.__dict__[aff_gained_var] += amount
+            mas_gainAffection(amount, bypass=True)
+
+        return
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -77,9 +132,9 @@ init -810 python:
     # MASHistorySaver for o31
     store.mas_history.addMHS(MASHistorySaver(
         "o31",
-        datetime.datetime(2018, 11, 2),
+        #datetime.datetime(2018, 11, 2),
         # change trigger to better date
-#        datetime.datetime(2020, 1, 6),
+        datetime.datetime(2020, 1, 6),
         {
             # TODO: we should have a spent time var here
 
@@ -102,8 +157,13 @@ init -810 python:
             "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
 
-        }
+        },
+        use_year_before=True,
 #        exit_pp=store.mas_history._o31_exit_pp
+        start_dt=datetime.datetime(2019, 10, 31),
+
+        # end is 1 day out in case of an overnight trick or treat
+        end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
 init -10 python:
@@ -235,6 +295,9 @@ init -11 python in mas_o31_event:
 
         return False
 
+    def mas_o31CapGainAff(amount):
+        mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
+
 # auto load starter check
 label mas_holiday_o31_autoload_check:
     # ASSUMPTIONS:
@@ -263,7 +326,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31mcg")
                 )
-                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+                store.mas_selspr.unlock_clothes(mas_clothes_marisa, True)
 
             else:
                 persistent._mas_o31_current_costume = "rin"
@@ -271,7 +334,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31rcg")
                 )
-                store.mas_selspr.unlock_clothes(mas_clothes_rin)
+                store.mas_selspr.unlock_clothes(mas_clothes_rin, True)
 
             persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
 
@@ -504,7 +567,7 @@ label greeting_o31_rin:
 
     else:
         show monika 1eua at t11 zorder MAS_MONIKA_Z
-        m 1hub "Hi [player]!"
+        m 1hub "Hi, [player]!"
         hide emptydesk
         m 3hub "Do you like my costume?"
 
@@ -554,9 +617,6 @@ label greeting_trick_or_treat_back:
 
     python:
         # lots of setup here
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
         checkin_time = None
         is_past_sunrise_post31 = False
@@ -575,28 +635,23 @@ label greeting_trick_or_treat_back:
                 )
             )
 
-        def cap_gain_aff(amt):
-            if persistent._mas_o31_trick_or_treating_aff_gain < 15:
-                persistent._mas_o31_trick_or_treating_aff_gain += amt
-                mas_gainAffection(amt, bypass=True)
 
-
-    if time_out < five_minutes:
+    if time_out < mas_five_minutes:
         $ mas_loseAffection()
         $ persistent._mas_o31_went_trick_or_treating_short = True
         m 2ekp "You call that trick or treating, [player]?"
         m "Where did we go, one house?"
         m 2efc "...If we even left."
 
-    elif time_out < one_hour:
-        $ cap_gain_aff(5)
+    elif time_out < mas_one_hour:
+        $ mas_o31CapGainAff(5)
         $ persistent._mas_o31_went_trick_or_treating_mid = True
         m 2ekp "That was pretty short for trick or treating, [player]."
         m 3eka "But I enjoyed it while it lasted."
         m 1eka "It was still really nice being right there with you~"
 
-    elif time_out < three_hour:
-        $ cap_gain_aff(10)
+    elif time_out < mas_three_hour:
+        $ mas_o31CapGainAff(10)
         $ persistent._mas_o31_went_trick_or_treating_right = True
         m 1hua "And we're home!"
         m 1hub "I hope we got lots of delicious candy!"
@@ -613,7 +668,7 @@ label greeting_trick_or_treat_back:
 
     elif not is_past_sunrise_post31:
         # larger than 3 hours, but not past sunrise
-        $ cap_gain_aff(15)
+        $ mas_o31CapGainAff(15)
         $ persistent._mas_o31_went_trick_or_treating_long = True
         m 1hua "And we're home!"
         m 1wua "Wow, [player], we sure went trick or treating for a really long time..."
@@ -631,7 +686,7 @@ label greeting_trick_or_treat_back:
 
     else:
         # larger than 3 hours, past sunrise
-        $ cap_gain_aff(15)
+        $ mas_o31CapGainAff(15)
         $ persistent._mas_o31_went_trick_or_treating_longlong = True
         m 1wua "We're finally home!"
         m 1wuw "It's the next morning, [player], we were out all night..."
@@ -650,7 +705,7 @@ label greeting_trick_or_treat_back:
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         # if we are returning from a non-birthday date post o31 birthday
         call return_home_post_player_bday
-        
+
     return
 
 ### o31 farewells
@@ -975,7 +1030,9 @@ init -810 python:
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._d25s_exit_pp
+        exit_pp=store.mas_history._d25s_exit_pp,
+        start_dt=datetime.datetime(2019, 12, 1),
+        end_dt=datetime.datetime(2019, 12, 31)
     ))
 
 
@@ -1087,7 +1144,7 @@ init -10 python:
                 If None, we use today's date
                 (Default: None)
 
-        RETURNS: True if given date is in d25 season but after nyd, False 
+        RETURNS: True if given date is in d25 season but after nyd, False
             otherwise
         """
         if _date is None:
@@ -1226,7 +1283,7 @@ label mas_holiday_d25c_autoload_check:
     # NOTE: holiday intro is handled with conditional
 
     if (
-            mas_isD25() 
+            mas_isD25()
             and persistent._mas_d25_deco_active
             and monika_chr.clothes != mas_clothes_santa
         ):
@@ -1240,7 +1297,7 @@ label mas_holiday_d25c_autoload_check:
 
     elif mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
-        
+
     # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
 
@@ -1266,10 +1323,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro",
-            conditional=(
-                "not persistent._mas_d25_intro_seen "
-                "and not persistent._mas_d25_started_upset "
-            ),
+            conditional="not persistent._mas_d25_started_upset",
             action=EV_ACT_PUSH,
             start_date=mas_d25c_start,
             end_date=mas_d25,
@@ -1309,7 +1363,7 @@ label mas_d25_monika_holiday_intro:
         $ mas_MUMURaiseShield()
         $ disable_esc()
 
-        m 1tsu "Close your eyes for a moment [player], I need to do something...{w=2}{nw}"
+        m 1tsu "Close your eyes for a moment [player], I need to do something.{w=0.5}.{w=0.5}.{nw}"
 
         call mas_d25_monika_holiday_intro_deco
 
@@ -1373,44 +1427,15 @@ init 5 python:
         skipCalendar=True
     )
 
-
-init -876 python in mas_delact:
-    # delayed action to reset holiday intro upset
-    # NOTE: we are using delayed action here because we might need to
-    #   retrigger this event in case of an affection drop during runtime.
-
-    def _mas_d25_holiday_intro_upset_reset_action(ev):
-        # updates conditional and action, and dates
-        ev.conditional = (
-            "not persistent._mas_d25_intro_seen "
-            "and persistent._mas_d25_started_upset "
-        )
-        ev.action = store.EV_ACT_PUSH
-        ev.start_date = store.mas_d25c_start
-        ev.end_date = store.mas_d25p
-        store.Event._verifyAndSetDatesEV(ev)
-        return True
-
-
-    def _mas_d25_holiday_intro_upset_reset():
-        # creates delayed action for holiday intro
-        return store.MASDelayedAction.makeWithLabel(
-            8,
-            "mas_d25_monika_holiday_intro_upset",
-            "True",
-            _mas_d25_holiday_intro_upset_reset_action,
-            store.MAS_FC_IDLE_ROUTINE
-        )
-
-
 #for people that started the season upset- and graduated to normal
 label mas_d25_monika_holiday_intro_upset:
-    # NOTE: because of the async nature of this event, if
-    # the user manages to trigger this event but drops below normal
-    # before viewing this, we will reset this event's conditional and
-    # delay action the reset for idle
+    # sanity check with reset of start/end dates in case somehow we drop back below normal before this is seen
     if mas_isMoniUpset(lower=True):
-        $ mas_addDelayedAction(8)
+        python:
+            upset_ev = mas_getEV('mas_d25_monika_holiday_intro_upset')
+            if upset_ev is not None:
+                upset_ev.start_date = mas_d25c_start
+                upset_ev.end_date = mas_d25p
         return
 
     m 2rksdlc "So [player]...{w=1} I hadn't really been feeling very festive this year..."
@@ -1425,7 +1450,7 @@ label mas_d25_monika_holiday_intro_upset:
     $ mas_MUMURaiseShield()
     $ disable_esc()
 
-    m 1eua "If you'd just close your eyes for a moment..."
+    m 1eua "If you'd just close your eyes for a moment.{w=0.5}.{w=0.5}.{nw}"
 
     call mas_d25_monika_holiday_intro_deco
 
@@ -1515,10 +1540,7 @@ init 5 python:
             eventlabel="mas_d25_monika_christmas",
 #            category=["holidays"],
 #            prompt="Christmas",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-                "and not persistent._mas_d25_spent_d25"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
             end_date=mas_d25p,
@@ -1530,6 +1552,7 @@ init 5 python:
 
 
 label mas_d25_monika_christmas:
+    #Flag for hist
     $ persistent._mas_d25_spent_d25 = True
 
     m 1eub "[player]! Do you know what day it is?"
@@ -1628,7 +1651,7 @@ label mas_d25_monika_hanukkah:
     m 3esa "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
     m 3eub "Eight nights worth of celebration!"
     m 3eua "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
-    m "It's on the 25th of Kislev, meaning 'trust' or 'hope'."
+    m "It's on the 25th of Kislev, meaning 'trust' or 'hope.'"
     m 1hua "A very appropriate meaning for such an occasion, don't you think?"
 
     # NOTE: wtf is this
@@ -1674,43 +1697,22 @@ init 5 python:
             eventlabel="mas_d25_monika_carolling",
             category=["holidays", "music"],
             prompt="Carolling",
-            conditional=(
-                "mas_isD25Season() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.NORMAL, None)
-        )
+            aff_range=(mas_aff.NORMAL, None),
+            years=[]
+        ),
+        skipCalendar=True
     )
 
-init -876 python in mas_delact:
-    # delayd action to reset the carolling topic
-    # NOTE: we need to do this to prevent the topic from triggering post
-    #   d25 when its not appropriate.
-
-    def _mas_d25_monika_carolling_reset_action(ev):
-        # updates conditional and action, and dates
-        if ev.shown_count <= 0:
-            ev.conditional = (
-                "mas_isD25Season() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            )
-            ev.action = store.EV_ACT_RANDOM
-        return True
-
-
-    def _mas_d25_monika_carolling_reset():
-        # creates delayed action for holiday intro
-        return store.MASDelayedAction.makeWithLabel(
-            9,
-            "mas_d25_monika_carolling",
-            "True",
-            _mas_d25_monika_carolling_reset_action,
-            store.MAS_FC_INIT
-        )
-
+    #Undo Action Rule
+    MASUndoActionRule.create_rule_EVL(
+       "mas_d25_monika_carolling",
+       mas_d25c_start,
+       mas_d25p,
+    )
 
 default persistent._mas_pm_likes_singing_d25_carols = None
 # does the user like singing christmas carols?
@@ -1784,44 +1786,21 @@ init 5 python:
             eventlabel="mas_d25_monika_mistletoe",
             category=["holidays"],
             prompt="Mistletoe",
-            conditional=(
-                "mas_isD25Season() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.AFFECTIONATE, None)
-        )
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            years=[]
+        ),
+        skipCalendar=True
     )
 
-init -876 python in mas_delact:
-    # delayed action to reeset the mistle topic
-    # NOTE: this is to derandom and lock this topic post d25 season.
-
-    def _mas_d25_monika_mistletoe_reset_action(ev):
-        # updates conditional, action, random, unlocked
-        ev.conditional = (
-            "mas_isD25Season() "
-            "and not mas_isD25Post() "
-            "and persistent._mas_d25_in_d25_mode"
-        )
-        ev.action = store.EV_ACT_RANDOM
-        ev.unlocked = False
-        ev.random = False
-        return True
-
-
-    def _mas_d25_monika_mistletoe_reset():
-        # creates delayed action for mistletoe
-        return store.MASDelayedAction.makeWithLabel(
-            10,
-            "mas_d25_monika_mistletoe",
-            "True",
-            _mas_d25_monika_mistletoe_reset_action,
-            store.MAS_FC_INIT
-        )
-
-
+    MASUndoActionRule.create_rule_EVL(
+       "mas_d25_monika_mistletoe",
+       mas_d25c_start,
+       mas_d25p,
+    )
 label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
     m 1eub "You've heard about the mistletoe tradition, right?"
@@ -2024,12 +2003,14 @@ label mas_d25_spent_time_monika:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
+        return
 
-    elif mas_isMoniAff(higher=True):
+    elif mas_isMoniAff():
         m 5ekbfa "I love you so much, [player]~"
-    elif mas_isMoniNormal(higher=True):
+    # Normal and happy
+    else:
         m 1hubfa "I love you, [player]~"
-    return
+    return "love"
 
 
 #NOTE, if you're running with config.developer being True, timing WILL be off on the song
@@ -2042,15 +2023,14 @@ init 5 python:
             eventlabel="monika_aiwfc",
             category=["songs"],
             prompt="All I Want For Christmas",
-            conditional=(
-                "mas_isD25Season() "
-                "and not mas_isD25() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
             action=EV_ACT_QUEUE,
-            aff_range=(mas_aff.NORMAL, None)
-        )
+            aff_range=(mas_aff.NORMAL, None),
+            years=[]
+        ),
+        skipCalendar=True
     )
 
 label monika_aiwfc:
@@ -2086,7 +2066,7 @@ label monika_aiwfc:
         m 1ekbfa "I love you."
 
     play music curr_song fadein 1.0
-    return
+    return "love"
 
 label monika_aiwfc_song:
     # TODO: consider doing something where we can use lyric bar and style
@@ -2140,9 +2120,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
             end_date=mas_d25,
@@ -2175,9 +2153,7 @@ init 5 python:
             eventlabel="mas_d25_postd25_notimespent",
             # within a week after d25, user did not recognize
             # d25 at all, and they were not long absenced or had her on a date
-            conditional=(
-                "not persistent._mas_d25_spent_d25"
-            ),
+            conditional="not persistent._mas_d25_spent_d25",
             start_date=mas_d25p,
             end_date=mas_d25p + datetime.timedelta(days=7),
             years=[],
@@ -2209,6 +2185,7 @@ label mas_d25_postd25_notimespent:
         m 2eka "And, in the future, if you ever can't come visit me on Christmas, try to at least take me with you..."
         m 1eka "All I want is to be close to you, [player]..."
         m 3ekbfa "I love you~"
+        return "love"
 
     elif mas_isMoniNormal(higher=True):
         $ mas_loseAffection(5, reason=6)
@@ -2415,7 +2392,7 @@ label greeting_d25_and_nye_delegate:
 
     elif mas_isD25():
         # we have returnd on d25
-            
+
         if checkout_time is None or mas_isD25(checkout_date):
             # no checkout or left on d25
             call greeting_d25_returned_d25
@@ -2471,8 +2448,8 @@ label greeting_d25_and_nye_delegate:
             # NOTE: we cannot use left_pre_d25, so dnot use it
 
             if (
-                    checkout_time is None 
-                    or mas_isNYD(checkout_date) 
+                    checkout_time is None
+                    or mas_isNYD(checkout_date)
                     or mas_isD25PostNYD(checkout_date)
                 ):
                 # no checkout or left on nyd or after nyd
@@ -2550,7 +2527,9 @@ init -810 python:
 
             "_mas_nye_date_aff_gain": "nye.aff.date_gain"
         },
-        use_year_before=True
+        use_year_before=True,
+        start_dt=datetime.datetime(2019, 12, 31),
+        end_dt=datetime.datetime(2020, 1, 6)
         # TODO: programming points probably
     ))
 
@@ -2736,7 +2715,7 @@ label mas_nye_monika_nyd:
             jump mas_nye_monika_nyd_fresh_start
 
     m "Happy New Year~"
-    return
+    return "love"
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
@@ -2803,7 +2782,7 @@ default persistent._mas_pm_has_new_years_res = None
 
 label monika_resolutions:
     $ persistent._mas_nye_spent_nye = True
-    m 2eub "Hey [player]?"
+    m 2eub "Hey, [player]?"
     m 2eka "I was wondering..."
 
     m 3eub "Did you make any New Year's resolutions last year?{nw}"
@@ -3065,14 +3044,14 @@ label monika_nye_year_review:
                 m 5hubfb "Let's make this year better than the last."
 
         else:
-            m "Let's make this year the best we can, [player]."
+            m "Let's make this year the best we can, [player]. I love you~"
     else:
         m 1dsa "Thank you for deciding to let go of the past, and start over."
         m 1eka "I think if we just try, we can make this work, [player]."
         m "Let's make this year great for each other."
         m 1ekbfa "I love you."
 
-    return "derandom"
+    return "derandom|love"
 
 label greeting_nye_aff_gain:
     # gaining affection for nye
@@ -3180,7 +3159,7 @@ label greeting_nye_prefw:
     m "It means a lot to me that you take me with you so we can spend special days like these together."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "I love you, [player]."
-    return
+    return "love"
 
 label greeting_nye_infw:
     #if within firework time:
@@ -3189,7 +3168,7 @@ label greeting_nye_infw:
     m 1hua "It was a lot of fun just to spend time with you today."
     m 1ekbsa "It really means so much to me that even though you can't be here personally to spend these days with me, you still take me with you."
     m 1ekbfa "I love you, [player]."
-    return
+    return "love"
 
 #===========================================================Going to take you somewhere on NYD===========================================================#
 
@@ -3338,6 +3317,9 @@ init -10 python:
             mas_birthdate_ev.conditional = None
             mas_birthdate_ev.action = None
 
+    def mas_pbdayCapGainAff(amount):
+        mas_capGainAff(amount, "_mas_player_bday_date_aff_gain", 25)
+
 init -11 python:
     def mas_player_bday_curr(_date=None):
         """
@@ -3354,6 +3336,7 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
+        # NOTE: this needs to be adjusted based on the player's bday
         datetime.datetime(2020, 1, 1),
         {
             "_mas_player_bday_spent_time": "player_bday.spent_time",
@@ -3362,32 +3345,77 @@ init -810 python:
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
         },
         use_year_before=True,
+        # NOTE: the start and end dt needs to be chnaged depending on the
+        #   player bday
     ))
 
 init -11 python in mas_player_bday_event:
+    import datetime
+    import store.mas_history as mas_history
 
-    def show_player_bday_Visuals():
+    def correct_pbday_mhs(d_pbday):
         """
-        Shows player_bday visuals
-        """
-        renpy.show("mas_bday_banners", zorder=7)
-        renpy.show("mas_bday_balloons", zorder=8)
+        fixes the pbday mhs usin gthe given date as pbday
 
-    def hide_player_bday_Visuals():
+        IN:
+            d_pbday - player birthdate
         """
-        Hides player_bday visuals
-        """
-        renpy.hide("mas_bday_banners")
-        renpy.hide("mas_bday_balloons")
+        # get mhs
+        mhs_pbday = mas_history.getMHS("player_bday")
+        if mhs_pbday is None:
+            return
+
+        # first, setup the reset date to be 3 days after the bday
+        pbday_dt = datetime.datetime.combine(d_pbday, datetime.time())
+
+        # determine correct year
+        _now = datetime.datetime.now()
+        curr_year = _now.year
+        new_dt = pbday_dt.replace(year=curr_year)
+        if new_dt < _now:
+            # new date before today, set to next year
+            curr_year += 1
+            new_dt = pbday_dt.replace(year=curr_year)
+
+        # set the reset/trigger date
+        reset_dt = pbday_dt + datetime.timedelta(days=3)
+
+        # setup ranges
+        new_sdt = new_dt
+        new_edt = new_sdt + datetime.timedelta(days=2)
+
+        # NOTE: the mhs will end 2 days after the bday. The day after end_dt
+        #   is when we save
+
+        # modify mhs
+        mhs_pbday.start_dt = new_sdt
+        mhs_pbday.end_dt = new_edt
+        mhs_pbday.use_year_before = (
+            d_pbday.month == 12
+            and d_pbday.day in (29, 30, 31)
+        )
+        mhs_pbday.setTrigger(reset_dt)
+
 
 label mas_player_bday_autoload_check:
+    # since this has priority over 922, need these next 2 checks
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_no_time_spent = False
+        $ persistent._mas_bday_opened_game = True
+        $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
+
+    elif mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+        $ monika_chr.reset_clothes(False)
+        $ monika_chr.save()
+        $ renpy.save_persistent()
+
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
     if (
-            not persistent._mas_player_bday_in_player_bday_mode 
-            and persistent._mas_player_confirmed_bday 
-            and mas_isMoniNormal(higher=True) 
-            and not persistent._mas_player_bday_spent_time 
-            and not mas_isD25() 
+            not persistent._mas_player_bday_in_player_bday_mode
+            and persistent._mas_player_confirmed_bday
+            and mas_isMoniNormal(higher=True)
+            and not persistent._mas_player_bday_spent_time
+            and not mas_isD25()
             and not mas_isO31()
             and not mas_isF14()
         ):
@@ -3404,6 +3432,10 @@ label mas_player_bday_autoload_check:
         $ persistent._mas_player_bday_in_player_bday_mode = False
         $ mas_lockEVL("bye_player_bday", "BYE")
 
+    if not mas_isMonikaBirthday() and (persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals):
+        $ persistent._mas_bday_in_bday_mode = False
+        $ persistent._mas_bday_visuals = False
+
     if mas_isO31():
         return
     else:
@@ -3413,21 +3445,27 @@ label mas_player_bday_autoload_check:
 label mas_player_bday_opendoor:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
+    if persistent._mas_bday_visuals:
+        $ persistent._mas_player_bday_decor = True
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
     $ mas_disable_quit()
+    if mas_isMonikaBirthday():
+        $ your = "our"
+    else:
+        $ your = "your"
     m "[player]!"
     m "You didn't knock!"
-    m "I was just going to start setting up your birthday party, but I didn't have time before you came in!"
+    if not persistent._mas_bday_visuals:
+        m "I was just going to start setting up [your] birthday party, but I didn't have time before you came in!"
     m "..."
-    m "Well...{w=1}the surprise is ruined now, but..."
-    pause 1.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    m "Well...{w=1}the surprise is ruined now, but.{w=0.5}.{w=0.5}.{nw}"
+    $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     pause 1.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     m 4eua "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
-    m 4hksdlb "Oh...your cake!"
+    m 4hksdlb "Oh...[your] cake!"
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
@@ -3469,17 +3507,23 @@ label mas_player_bday_surprise:
                     m 2tsb "{cps=*2}...or maybe you were eavesdropping on me.{/cps}{nw}"
                     $ _history_list.pop()
             m 2hua "Ehehe."
-    m 3wub "Oh!{w=0.5} I made you a cake!"
+    if mas_isMonikaBirthday():
+        m 3wub "Oh!{w=0.5} I made a cake!"
+    else:
+        m 3wub "Oh!{w=0.5} I made you a cake!"
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
 # closed door greet option for opening door for listening
 label mas_player_bday_listen:
-    m "...I'll just put this here..."
-    m "...hmm that looks pretty good...{w=1}but something's missing..."
-    m "Oh!{w=0.5} Of course!"
-    m "There!{w=0.5} Perfect!"
-    window hide
+    if persistent._mas_bday_visuals:
+        pause 5.0
+    else:
+        m "...I'll just put this here..."
+        m "...hmm that looks pretty good...{w=1}but something's missing..."
+        m "Oh!{w=0.5} Of course!"
+        m "There!{w=0.5} Perfect!"
+        window hide
     jump monikaroom_greeting_choice
 
 # closed door greet option for knocking after listening
@@ -3499,42 +3543,53 @@ label mas_player_bday_opendoor_listened:
     $ persistent._mas_player_bday_decor = True
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_disable_quit()
+    if mas_isMonikaBirthday():
+        $ your = "our"
+    else:
+        $ your = "your"
     m "[player]!"
     m "You didn't knock!"
-    m "I was setting up your birthday party, but I didn't have time before you came in to get ready to surprise you!"
+    if persistent._mas_bday_visuals:
+        m "I wanted to surprise you, but I wasn't ready when you came in!"
+        m "Anyway..."
+    else:
+        m "I was setting up [your] birthday party, but I didn't have time before you came in to get ready to surprise you!"
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     m 4hub "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
-    m 2hksdlb "Oh...your cake!"
+    m 2hksdlb "Oh...[your] cake!"
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
 # all paths lead here
 label mas_player_bday_cake:
-    $ mas_gainAffection(5,bypass=True)
-    $ persistent._mas_player_bday_spent_time = True
-    $ persistent._mas_player_bday_in_player_bday_mode = True
-    $ mas_unlockEVL("bye_player_bday", "BYE")
+    #If it's Monika's birthday too, we'll just use those delegates instead of this one
+    if not mas_isMonikaBirthday():
+        $ mas_unlockEVL("bye_player_bday", "BYE")
+        if persistent._mas_bday_in_bday_mode or persistent._mas_bday_visuals:
+            # since we need the visuals var in the special greet, we wait until here to set these
+            $ persistent._mas_bday_in_bday_mode = False
+            $ persistent._mas_bday_visuals = False
 
     # reset zoom here to make sure the cake is actually on the table
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
-    $ renpy.pause(3.0, hard=True)
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-    $ renpy.pause(0.5, hard=True)
+    call mas_monika_gets_cake
 
-    m 6eua "Let me just light the candles for you..."
+    if mas_isMonikaBirthday():
+        m 6eua "Let me just light the candles.{w=0.5}.{w=0.5}.{nw}"
+    else:
+        m 6eua "Let me just light the candles for you, [player].{w=0.5}.{w=0.5}.{nw}"
+
     window hide
-    show monika 6dsa
-    pause 1.0
     $ mas_bday_cake_lit = True
-    pause 0.5
+    pause 1.0
+
     m 6sua "Isn't it pretty, [player]?"
-    m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you..."
+    if mas_isMonikaBirthday():
+        m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for both of us..."
+    else:
+        m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you..."
     m 6eua "...You should still make a wish though, it just might come true someday..."
     m 6hua "But first..."
     call mas_player_bday_moni_sings
@@ -3547,26 +3602,36 @@ label mas_player_bday_cake:
     $ mas_bday_cake_lit = False
     pause 1.0
     m 6hua "Ehehe..."
-    m 6eka "I know it's your birthday, but I made a wish too..."
-    m 6ekbsa "And you know what?{w=0.5} I bet we both wished for the same thing~"
+    if mas_isMonikaBirthday():
+        m 6ekbsa "I bet we both wished for the same thing~"
+    else:
+        m 6eka "I know it's your birthday, but I made a wish too..."
+        m 6ekbsa "And you know what?{w=0.5} I bet we both wished for the same thing~"
     m 6hkbsu "..."
-    m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
-    m 6eksdla "This is all rather silly, isn't it?"
-    m 6hksdlb "I think I'll just save this for later. It seems kind of rude for me to eat {i}your{/i} birthday cake in front of you, ahaha!"
+    if mas_isMonikaBirthday():
+        m 6eksdla "Well, seeing as you can't really eat this cake, and I don't want to be rude and eat it in front of you..."
+    else:
+        m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
+        m 6eksdla "This is all rather silly, isn't it?"
+    if mas_isMonikaBirthday():
+        m 6hksdlb "I think I'll just save it for later."
+    else:
+        m 6hksdlb "I think I'll just save this for later. It seems kind of rude for me to eat {i}your{/i} birthday cake in front of you, ahaha!"
 
-    # monika puts away the cake and zoom is reset back to the player's pref
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
-    hide mas_bday_cake with dissolve
-    $ renpy.pause(3.0, hard=True)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-    $ renpy.pause(1.0, hard=True)
-    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    call mas_HideCake('mas_bday_cake_player')
 
-    pause 0.5
+    # fall thru
+label mas_player_bday_card:
+    $ mas_gainAffection(5,bypass=True)
+    $ persistent._mas_player_bday_spent_time = True
+    $ persistent._mas_player_bday_in_player_bday_mode = True
+
     m 6dkbsu "..."
-    m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
+    if mas_isMonikaBirthday():
+        m 6sub "Oh!"
+        m 6ekbsu "I...I made a card for you, [player], I hope you like it..."
+    else:
+        m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     $ p_bday_month = mas_player_bday_curr().month
     call showpoem(poem_pbday, music=False,paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
     if mas_isMoniEnamored(higher=True):
@@ -3579,17 +3644,34 @@ label mas_player_bday_cake:
             m 6ekbfa "I've been waiting so long to finally kiss you..."
             m 6dkbsu "I will never forget this..."
             m 6ekbsu "...the moment of our first kiss~"
+            if mas_isMonikaBirthday():
+                m 6ekbsu "And I can't think of a more perfect time than on this special day we share together~"
         else:
-            m 6ekbfa "I love you, [player]~"
+            m 6ekbsa "I love you, [player]~"
             call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
-            if mas_isplayer_bday():
-                m 6ekbsa "Let's enjoy your special day~"
+            if mas_isMonikaBirthday():
+                m 6eka "I'm so glad we get to spend our birthday together..."
+                m 6hua "Let's enjoy our special day~"
     else:
-        if mas_isplayer_bday():
-            m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
+        if mas_isMonikaBirthday():
+            m 1ekbfa "I love you, [player]! I'm so glad we get to spend our birthday together..."
+            m 3ekbfa "Let's enjoy our special day~"
         else:
             m 1ekbfa "I love you, [player]!"
     $ mas_rmallEVL("mas_player_bday_no_restart")
+    $ mas_rmallEVL("mas_player_bday_ret_on_bday")
+    # "love" return key won't work here without adding a bunch of return _returns, so we'll set this manually
+    $ mas_ILY()
+    return
+
+label mas_monika_gets_cake:
+    show emptydesk at i11 zorder 9
+    hide monika with dissolve
+    $ renpy.pause(3.0, hard=True)
+    $ renpy.show("mas_bday_cake_player", zorder=store.MAS_MONIKA_Z+1)
+    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    $ renpy.pause(0.5, hard=True)
     return
 
 # event for if you went on a date pre-bday and return on bday
@@ -3610,14 +3692,11 @@ label mas_player_bday_ret_on_bday:
     m "..."
     m 2wuo "Oh!"
     m 2wuw "Oh my gosh!"
-    m 2tsu "Just give me a moment, [player]..."
-    show monika 1dsc
-    pause 2.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    m 2tsu "Just give me a moment, [player].{w=0.5}.{w=0.5}.{nw}"
+    $ mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3eub "Happy Birthday, [player]!"
     m 3hub "Ahaha!"
-    m 1rksdla "I really wanted to surprise you but I never got the chance to set it up..."
     m 3etc "Why do I feel like I'm forgetting something..."
     m 3hua "Oh! Your cake!"
     call mas_player_bday_cake
@@ -3640,10 +3719,8 @@ label mas_player_bday_no_restart:
     if mas_findEVL("mas_player_bday_ret_on_bday") >= 0:
         #TODO: priority rules should be set-up here
         return
-    m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
-    show monika 1dsc
-    pause 2.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so.{w=0.5}.{w=0.5}.{nw}"
+    $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
     if mas_isplayer_bday():
@@ -3698,10 +3775,8 @@ label mas_player_bday_other_holiday:
     elif mas_isF14():
         $ holiday_var = "Valentine's Day"
     m 3euc "Hey, [player]..."
-    m 1tsu "I have a bit of a surprise for you!"
-    show monika 1dsc
-    pause 2.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    m 1tsu "I have a bit of a surprise for you.{w=0.5}.{w=0.5}.{nw}"
+    $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
     m 3rksdla "I hope you didn't think that just because your birthday falls on [holiday_var] that I'd forget about it..."
@@ -3711,13 +3786,22 @@ label mas_player_bday_other_holiday:
     call mas_player_bday_cake
     return
 
+# when did moni last sign happy birthday
+default persistent._mas_player_bday_last_sung_hbd = None
 # moni singing happy birthday
 label mas_player_bday_moni_sings:
+    $ persistent._mas_player_bday_last_sung_hbd = datetime.date.today()
+    if mas_isMonikaBirthday():
+        $ you = "us"
+    else:
+        $ you = "you"
     m 6dsc ".{w=0.2}.{w=0.2}.{w=0.2}"
-    m 6hub "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
-    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m 6hub "{cps=*0.5}{i}~Happy Birthday to [you]~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to [you]~{/i}{/cps}"
     m 6sub "{cps=*0.5}{i}~Happy Birthday dear [player]~{/i}{/cps}"
-    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to [you]~{/i}{/cps}"
+    if mas_isMonikaBirthday():
+        m 6hua "Ehehe!"
     return
 #################################################player_bday dock stat farewell##################################################
 init 5 python:
@@ -3752,55 +3836,90 @@ label bye_player_bday:
 #################################################player_bday dock stat greets##################################################
 label greeting_returned_home_player_bday:
     python:
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
         if checkout_time is not None and checkin_time is not None:
             left_year = checkout_time.year
-            ret_year = checkin_time.year
             left_date = checkout_time.date()
             ret_date = checkin_time.date()
             left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+
+            # are we returning after the mhs reset
+            ret_diff_year = ret_date >= (mas_player_bday_curr(left_date) + datetime.timedelta(days=3))
+
+            # were we gone over d25
+            #TODO: do this for the rest of the holidays
+            if left_date < mas_d25 < ret_date:
+                if ret_date < mas_history.getMHS("d25s").trigger.replace(year=left_year+1):
+                    persistent._mas_d25_spent_d25 = True
+                else:
+                    persistent._mas_history_archives[left_year]["d25.actions.spent_d25"] = True
+
         else:
             left_year = None
-            ret_year = None
-            left_year_aff = None
             left_date = None
             ret_date = None
+            left_year_aff = None
+            ret_diff_year = None
+
         add_points = False
-        ret_diff_year = ret_year > left_year
 
         if ret_diff_year and left_year_aff is not None:
             add_points = left_year_aff < 25
 
-        def cap_gain_aff(amt):
-            if persistent._mas_player_bday_date_aff_gain < 25:
-                persistent._mas_player_bday_date_aff_gain += amt
-                mas_gainAffection(amt, bypass=True)
 
     if left_date < mas_d25 < ret_date:
         $ persistent._mas_d25_spent_d25 = True
 
-    if time_out < five_minutes:
+    if mas_isMonikaBirthday() and mas_confirmedParty():
+        $ persistent._mas_bday_opened_game = True
+        $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+        call monika_zoom_transition_reset(1.0)
+        $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
+        if time_out < mas_five_minutes:
+            m 6ekp "That wasn't much of a da--"
+        else:
+            # point totals split here between player and monika bdays, since this date was for both
+            if time_out < mas_one_hour:
+                $ mas_mbdayCapGainAff(7.5)
+                if persistent._mas_player_bday_left_on_bday:
+                    $ mas_pbdayCapGainAff(7.5)
+            elif time_out < mas_three_hour:
+                $ mas_mbdayCapGainAff(12.5)
+                if persistent._mas_player_bday_left_on_bday:
+                    $ mas_pbdayCapGainAff(12.5)
+            else:
+                $ mas_mbdayCapGainAff(17.5)
+                if persistent._mas_player_bday_left_on_bday:
+                    $ mas_pbdayCapGainAff(17.5)
+
+            m 6hub "That was a fun date, [player]..."
+            m 6eua "Thanks for--"
+
+        m 6wud "W-what's this cake doing here?"
+        m 6sub "I-is this for me?!"
+        m "That's so sweet of you to take me out on your birthday so you could set up a surprise party for me!"
+        call return_home_post_player_bday
+        jump mas_bday_surprise_party_reacton_cake
+
+    if time_out < mas_five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
         m 2eksdlc "I hope nothing's wrong."
         m 2rksdla "Maybe we'll go out later instead."
 
-    elif time_out < one_hour:
+    elif time_out < mas_one_hour:
         if not ret_diff_year:
-            $ cap_gain_aff(5)
+            $ mas_pbdayCapGainAff(5)
         elif ret_diff_year and add_points:
             $ mas_gainAffection(5,bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 5
         m 1eka "That was a fun date while it lasted, [player]..."
         m 3hua "Thanks for making some time for me on your special day."
 
-    elif time_out < three_hour:
+    elif time_out < mas_three_hour:
         if not ret_diff_year:
-            $ cap_gain_aff(10)
+            $ mas_pbdayCapGainAff(10)
         elif ret_diff_year and add_points:
             $ mas_gainAffection(10,bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 10
@@ -3811,7 +3930,7 @@ label greeting_returned_home_player_bday:
     else:
         # more than 3 hours
         if not ret_diff_year:
-            $ cap_gain_aff(15)
+            $ mas_pbdayCapGainAff(15)
         elif ret_diff_year and add_points:
             $ mas_gainAffection(15,bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 15
@@ -3833,22 +3952,26 @@ label return_home_post_player_bday:
     $ persistent._mas_player_bday_in_player_bday_mode = False
     $ mas_lockEVL("bye_player_bday", "BYE")
     $ persistent._mas_player_bday_left_on_bday = False
-    if persistent._mas_player_bday_decor:
-        $ persistent._mas_player_bday_decor = False
-        m 3rksdla "Oh...it's not your birthday anymore..."
-        m 3hksdlb "We should probably take these decorations down now, ahaha!"
-        m 3eka "Just give me one second..."
-        show monika 1dsc
-        pause 2.0
-        $ store.mas_player_bday_event.hide_player_bday_Visuals()
-        m 3eua "There we go!"
-        if not persistent._mas_f14_gone_over_f14:
-            m 1hua "Now, let's enjoy the day together, [player]~"
-    if persistent._mas_f14_gone_over_f14:
-        m 2etc "..."
-        m 3wuo "..."
-        m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
-        call greeting_gone_over_f14_normal_plus
+    if not (mas_isMonikaBirthday() and mas_confirmedParty()):
+        if persistent._mas_player_bday_decor:
+            if mas_isMonikaBirthday():
+                $ persistent._mas_bday_opened_game = True
+                m 3rksdla "Oh...it's not {i}your{/i} birthday anymore..."
+            else:
+                m 3rksdla "Oh...it's not your birthday anymore..."
+            m 3hksdlb "We should probably take these decorations down now, ahaha!"
+            m 3eka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
+            $ mas_surpriseBdayHideVisuals()
+            m 3eua "There we go!"
+            if not persistent._mas_f14_gone_over_f14:
+                m 1hua "Now, let's enjoy the day together, [player]~"
+        if persistent._mas_f14_gone_over_f14:
+            m 2etc "..."
+            m 3wuo "..."
+            m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
+            call greeting_gone_over_f14_normal_plus
+
+    $ persistent._mas_player_bday_decor = False
     return
 
 # birthday card/poem for player
@@ -3861,7 +3984,7 @@ init 2 python:
  The one I trust,
  The one I can't live without.
  I hope your day is as special as you make every day for me.
- Thank you so much for being you. 
+ Thank you so much for being you.
 
  Happy Birthday, sweetheart
 
@@ -3896,14 +4019,8 @@ init -10 python:
 
         return _date == mas_f14.replace(year=_date.year)
 
-
-init -815 python in mas_history:
-    
-    # f14
-    def _f14_exit_pp(mhs):
-        # remove certain prog points
-        _MDA_saferm(11, 12, 13, 14, 15)
-
+    def mas_f14CapGainAff(amount):
+        mas_capGainAff(amount, "_mas_f14_date_aff_gain", 25)
 
 init -810 python:
     # MASHistorySaver for f14
@@ -3916,7 +4033,7 @@ init -810 python:
             "_mas_f14_gone_over_f14": "f14.gone_over_f14",
             "_mas_f14_spent_f14": "f14.actions.spent_f14",
 
-            # need to reset this in case someone never gets to the 
+            # need to reset this in case someone never gets to the
             # autoload check, ie always uses dockstat farewell
             "_mas_f14_in_f14_mode": "f14.mode.f14",
 
@@ -3927,35 +4044,36 @@ init -810 python:
             "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._f14_exit_pp
+        start_dt=datetime.datetime(2020, 2, 13),
+        end_dt=datetime.datetime(2020, 2, 15)
     ))
 
 label mas_f14_autoload_check:
-    #Since it's possible player didn't see this, we need to derandom it manually.
-    $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-    $ mas_removeDelayedAction(11)
+    python:
+        #Since it's possible player didn't see this, we need to derandom it manually.
+        mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
 
-    if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
-        $ persistent._mas_f14_in_f14_mode = True
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
+        if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
+            persistent._mas_f14_in_f14_mode = True
+            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white, True)
+            monika_chr.change_clothes(mas_clothes_sundress_white, False)
+            monika_chr.save()
+            renpy.save_persistent()
 
-    elif not mas_isF14():
-        #We want to lock and derandom/depool all of the f14 labels if it's not f14
-        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
-        $ mas_idle_mailbox.send_rebuild_msg()
+        elif not mas_isF14():
+            #We want to lock and derandom/depool all of the f14 labels if it's not f14
+            mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+            mas_idle_mailbox.send_rebuild_msg()
 
-        # remove delayed actions for the above events
-        $ mas_removeDelayedActions(12, 13, 14, 15)
-
-        #Reset the f14 mode, and outfit if we're lower than the love aff level.
-        $ persistent._mas_f14_in_f14_mode = False
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
-            $ monika_chr.reset_clothes(False)
+            #Reset the f14 mode, and outfit if we're lower than the love aff level.
+            persistent._mas_f14_in_f14_mode = False
+            if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
+                monika_chr.reset_clothes(False)
+                monika_chr.save()
+                renpy.save_persistent()
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -3971,38 +4089,20 @@ init 5 python:
             persistent.event_database,
             eventlabel='mas_pf14_monika_lovey_dovey',
             action=EV_ACT_RANDOM,
-            conditional=(
-                "not persistent._mas_f14_pre_intro_seen"
-            ),
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
+            rules={"force repeat": None},
             years=[]
         ),
         skipCalendar=True
     )
 
-init -876 python in mas_delact:
-    # delayed action to derandom this event on or after f14
-    # basically just check last_seen
-
-    def _mas_pf14_monika_lovey_dovey_reset_action(ev):
-        ev.random = False
-        ev.unlocked = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_pf14_monika_lovey_dovey_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            11,
-            "mas_pf14_monika_lovey_dovey",
-            "datetime.date.today() >= store.mas_f14",
-            _mas_pf14_monika_lovey_dovey_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
+    MASUndoActionRule.create_rule_EVL(
+       "mas_pf14_monika_lovey_dovey",
+       mas_f14 - datetime.timedelta(days=3),
+       mas_f14,
+    )
 
 label mas_pf14_monika_lovey_dovey:
     m 1rksdla "Hey...[player]...?"
@@ -4025,13 +4125,7 @@ label mas_pf14_monika_lovey_dovey:
     m 1ekbfa "So I want to thank you for caring for me."
     m 1hubfa "Ehehe~"
 
-    #Set this flag to True so we don't infirand
-    $ persistent._mas_f14_pre_intro_seen = True
-
-    #Add the delayed action to remove itself
-    $ mas_addDelayedAction(11)
-
-    return "derandom|no_unlock"
+    return "derandom|no_unlock|love"
 
 #######################[HOL050] INTRO:
 
@@ -4040,7 +4134,6 @@ init 5 python:
        Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_valentines_intro',
-            conditional=("not persistent._mas_f14_intro_seen"),
             action=EV_ACT_PUSH,
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
@@ -4051,9 +4144,6 @@ init 5 python:
     )
 
 label mas_f14_monika_valentines_intro:
-    # add appropriate dleayd actions
-    $ mas_addDelayedActions(11, 12, 13, 14, 15)
-
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
     m 3eub "It's Valentine's Day!"
@@ -4077,14 +4167,11 @@ label mas_f14_monika_valentines_intro:
         $ persistent._mas_f14_in_f14_mode = True
         m 3wub "Oh!"
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
-        window hide
-        show monika 1dsa
-        pause 1.0
+
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
-        pause 0.5
+        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white, True)
+        call mas_clothes_change(mas_clothes_sundress_white)
+
         m 1eua "..."
         m 2eksdla "..."
         m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
@@ -4114,9 +4201,7 @@ label mas_f14_monika_valentines_intro:
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
 
-    #We have now seen the intro
-    $ persistent._mas_f14_intro_seen = True
-    return "rebuild_ev"
+    return "rebuild_ev|love"
 
 #######################[HOL050] TOPICS
 
@@ -4137,31 +4222,11 @@ init 5 python:
         skipCalendar=True
     )
 
-
-init -876 python in mas_delact:
-
-    # delayed action to derandom and lock this event
-    def _mas_f14_monika_vday_colors_reset_action(ev):
-        # only reset if past end date
-        ev.unlocked = False
-        ev.random = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_colors_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            12,
-            "mas_f14_monika_vday_colors",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_colors_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
+    MASUndoActionRule.create_rule_EVL(
+       "mas_f14_monika_vday_colors",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
+    )
 
 label mas_f14_monika_vday_colors:
     m 3eua "Have you ever thought about the way colors are conveyed on Valentine's Day?"
@@ -4202,29 +4267,11 @@ init 5 python:
         skipCalendar=True
     )
 
-init -876 python in mas_delact:
-
-    # delayed action to derandom and lock this event
-    def _mas_f14_monika_vday_cliches_reset_action(ev):
-        ev.unlocked = False
-        ev.random = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_cliches_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            13,
-            "mas_f14_monika_vday_cliches",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_cliches_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
+    MASUndoActionRule.create_rule_EVL(
+       "mas_f14_monika_vday_cliches",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
+    )
 
 label mas_f14_monika_vday_cliches:
     m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
@@ -4258,29 +4305,11 @@ init 5 python:
         skipCalendar=True
     )
 
-init -876 python in mas_delact:
-
-    # delayed action to derandom and lock this event
-    def _mas_f14_monika_vday_chocolates_reset_action(ev):
-        ev.unlocked = False
-        ev.random = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_chocolates_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            14,
-            "mas_f14_monika_vday_chocolates",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_chocolates_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
+    MASUndoActionRule.create_rule_EVL(
+       "mas_f14_monika_vday_chocolates",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
+    )
 
 label mas_f14_monika_vday_chocolates:
     m 1hua "Valentine's Day is such a fun holiday for me, [player]."
@@ -4317,29 +4346,11 @@ init 5 python:
         skipCalendar=True
     )
 
-init -876 python in mas_delact:
-
-    # delayed action to depool and lock this event
-    def _mas_f14_monika_vday_origins_reset_action(ev):
-        ev.unlocked = False
-        ev.pool = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_origins_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            15,
-            "mas_f14_monika_vday_origins",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_origins_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
+    MASUndoActionRule.create_rule_EVL(
+       "mas_f14_monika_vday_origins",
+       mas_f14,
+       mas_f14 + datetime.timedelta(days=1),
+    )
 
 label mas_f14_monika_vday_origins:
     m 3eua "You'd like to learn about the history of Valentine's Day?"
@@ -4457,6 +4468,7 @@ label mas_f14_monika_spent_time_with:
         m 1ekbfa "Thank you for always being by my side."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
+        return "love"
 
     else:
         m 1eka "Thank you for being by my side."
@@ -4508,9 +4520,7 @@ init 5 python:
             start_date=mas_f14+datetime.timedelta(1),
             end_date=mas_f14+datetime.timedelta(8),
             conditional=(
-                "not persistent._mas_long_absence "
-                "and not persistent._mas_f14_spent_f14 "
-                "and not persistent._mas_f14_nts_seen"
+                "not persistent._mas_f14_spent_f14"
             ),
             years=[]
         ),
@@ -4518,15 +4528,22 @@ init 5 python:
     )
 
 label mas_f14_no_time_spent:
-    #sanity checks:
-    if persistent._mas_f14_spent_f14:
-        return
 
     #need to make sure people who just started post f14 don't lose aff
     if mas_getFirstSesh().date() > mas_f14:
         return
 
-    if mas_isMoniAff(higher=True):
+    if mas_ret_long_absence:
+        #Was away on a long absence
+        $ mas_loseAffection(ev_label="mas_apology_missed_vday")
+
+        m 1rksdlc "Hey, [player]..."
+        m 2eksdld "I know you told me you were going to be away...but I really missed you on Valentines Day."
+        m 2eksdla "Next time, do you think you could take me with you if you can't be here?"
+        m 3eub "At least then we'll still be with each other and we can even celebrate together!"
+        m 1eka "I'd really appreciate if you could do that for me, [player]."
+
+    elif mas_isMoniAff(higher=True):
         $ mas_loseAffection(15, ev_label="mas_apology_missed_vday")
         m 1rkc "[player]?"
         m "Where were you on Valentine's Day?"
@@ -4558,7 +4575,7 @@ label mas_f14_no_time_spent:
 
     elif mas_isMoniDis():
         $ mas_loseAffection(10, ev_label="mas_apology_missed_vday")
-        m 6ekc "Oh [player]..." 
+        m 6ekc "Oh [player]..."
         m "How was Valentine's Day?"
         m 6dkc "Not having a valentine is pretty lonely..."
 
@@ -4651,25 +4668,25 @@ init 2 python:
  The first seems like just yesterday, yet so much has happened.
  I once wondered if the world had changed, or just me.
  Now I know the answer.
- 
+
  Everything.
- 
+
  Without you there is nothing.
  Before you there was nothing.
- 
+
  Emptiness. Darkness. Nothing.
- 
+
  Nothing.
- 
+
  Then there was you.
  Just you.
  My world. My light. My Everything.
- 
+
  Everything.
- 
- 
+
+
  Happy Valentine's Day
- 
+
  Forever yours,
  Monika
 """
@@ -4698,35 +4715,28 @@ label bye_f14:
 ########################[HOL050] dockstat greet################################
 label greeting_returned_home_f14:
     python:
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
 
-        def cap_gain_aff(amt):
-            if persistent._mas_f14_date_aff_gain < 25:
-                persistent._mas_f14_date_aff_gain += amt
-                mas_gainAffection(amt, bypass=True)
 
-    if time_out < five_minutes:
+    if time_out < mas_five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
         m 2eksdlc "Is everything alright?"
         m 2rksdla "Maybe we can go out later..."
 
-    elif time_out < one_hour:
-        $ cap_gain_aff(5)
+    elif time_out < mas_one_hour:
+        $ mas_f14CapGainAff(5)
         m 1eka "That was fun while it lasted, [player]..."
         m 3hua "Thanks for making time for me on Valentine's Day."
 
-    elif time_out < three_hour:
-        $ cap_gain_aff(10)
+    elif time_out < mas_three_hour:
+        $ mas_f14CapGainAff(10)
         m 1eub "That was such a fun date, [player]!"
         m 3ekbfa "Thanks for making me feel special on Valentine's Day~"
 
     else:
         # more than 3 hours
-        $ cap_gain_aff(15)
+        $ mas_f14CapGainAff(15)
         m 1hua "And we're home!"
         m 3hub "That was wonderful, [player]!"
         m 1eka "It was really nice going out with you on Valentine's Day..."
@@ -4741,8 +4751,7 @@ label greeting_returned_home_f14:
 # if we went on a date pre-f14 and returned in the time period mas_f14_no_time_spent event runs
 # need to make sure we get credit for time spent and don't get the event
 label mas_gone_over_f14_check:
-    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
-    if checkout_time is not None and checkout_time.date() < mas_f14:
+    if mas_checkOverDate(mas_f14):
         $ persistent._mas_f14_spent_f14 = True
         $ persistent._mas_f14_gone_over_f14 = True
         $ mas_rmallEVL("mas_f14_no_time_spent")
@@ -4767,4 +4776,1128 @@ label greeting_gone_over_f14_normal_plus:
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "Thank you for making sure we had a wonderful Valentine's Day, [player]~"
     $ persistent._mas_f14_gone_over_f14 = False
+    return
+
+############################### 922 ###########################################
+# [HOL060]
+#START:
+
+#Moni's bday
+define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
+
+#922 mode
+default persistent._mas_bday_in_bday_mode = False
+
+#Date related vars
+default persistent._mas_bday_on_date = False
+default persistent._mas_bday_date_count = 0
+default persistent._mas_bday_date_affection_gained = 0
+default persistent._mas_bday_gone_over_bday = False
+
+#Suprise party bits and bobs
+default persistent._mas_bday_sbp_reacted = False
+default persistent._mas_bday_confirmed_party = False
+
+#Bday visuals
+default persistent._mas_bday_visuals = False
+
+#Need to store the name of the file chibi writes
+default persistent._mas_bday_hint_filename = None
+
+#Time spent tracking
+default persistent._mas_bday_opened_game = False
+default persistent._mas_bday_no_time_spent = True
+default persistent._mas_bday_no_recognize = True
+default persistent._mas_bday_said_happybday = False
+
+############### [HOL060]: HISTORY
+init -810 python:
+    store.mas_history.addMHS(MASHistorySaver(
+        "922",
+        datetime.datetime(2020, 1, 6),
+        {
+            "_mas_bday_in_bday_mode": "922.bday_mode",
+
+            "_mas_bday_on_date": "922.on_date",
+            "_mas_bday_date_count": "922.actions.date.count",
+            "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
+            "_mas_bday_gone_over_bday": "922.gone_over_bday",
+
+            "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
+            "_mas_bday_confirmed_party": "922.actions.confirmed_party",
+
+            "_mas_bday_opened_game": "922.actions.opened_game",
+            "_mas_bday_no_time_spent": "922.actions.no_time_spent",
+            "_mas_bday_no_recognize": "922.actions.no_recognize",
+            "_mas_bday_said_happybday": "922.actions.said_happybday"
+        },
+        use_year_before=True,
+        start_dt=datetime.datetime(2020, 9, 21),
+        end_dt=datetime.datetime(2020, 9, 23)
+    ))
+
+############### [HOL060]: METHODS
+init -1 python:
+    def mas_isMonikaBirthday():
+        return datetime.date.today() == mas_monika_birthday
+
+
+    def mas_getNextMonikaBirthday():
+        today = datetime.date.today()
+        if mas_monika_birthday < today:
+            return datetime.date(
+                today.year + 1,
+                mas_monika_birthday.month,
+                mas_monika_birthday.day
+            )
+        return mas_monika_birthday
+
+
+    def mas_recognizedBday(_date=None):
+        """
+        Checks if the user recognized monika's birthday at all.
+
+        RETURNS:
+            True if the user recoginzed monika's birthday, False otherwise
+        """
+        if _date is None:
+            _date = mas_monika_birthday
+
+        return (
+            mas_generateGiftsReport(_date)[0] > 0
+            or persistent._mas_bday_date_affection_gained > 0
+            or persistent._mas_bday_sbp_reacted
+            or persistent._mas_bday_said_happybday
+        )
+
+    def mas_surpriseBdayShowVisuals(cake=False):
+        """
+        Shows bday surprise party visuals
+        """
+        if cake:
+            renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
+        renpy.show("mas_bday_banners", zorder=7)
+        renpy.show("mas_bday_balloons", zorder=8)
+
+
+    def mas_surpriseBdayHideVisuals():
+        """
+        Hides all visuals for surprise party
+        """
+        renpy.hide("mas_bday_banners")
+        renpy.hide("mas_bday_balloons")
+
+    def mas_confirmedParty():
+        """
+        Checks if the player has confirmed the party
+        """
+        #Must be within a week of the party (including party day)
+        if mas_monika_birthday - datetime.timedelta(days=7) <= today <= mas_monika_birthday:
+            #If this is confirmed already, then we just return true, since confirmed
+            if persistent._mas_bday_confirmed_party:
+                #We should also handle if the player confirmed the party pre-note
+                if persistent._mas_bday_hint_filename:
+                        store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
+                return True
+
+            #Otherwise, we need to check if the file exists (we're going to make this as foolproof as possible)
+            #Step 1, get the characters folder contents
+            char_dir_files = store.mas_docking_station.getPackageList()
+
+            #Step 2, We need to remove the extensions
+            for filename in char_dir_files:
+                temp_filename = filename.partition('.')[0]
+
+                #Step 3, check if the filename is present
+                if "oki doki" == temp_filename:
+                    #If we got here: Step 4, file exists so flag and delete. Also get rid of note
+                    persistent._mas_bday_confirmed_party = True
+                    store.mas_docking_station.destroyPackage(filename)
+
+                    if persistent._mas_bday_hint_filename:
+                        store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
+
+                    #Step 5a, return true since party is confirmed
+                    return True
+
+        #Otherwise, Step 5b, no previous confirm and file doesn't exist, so party is not confirmed. return false
+        return False
+
+    def mas_mbdayCapGainAff(amount):
+        mas_capGainAff(amount, "_mas_bday_date_affection_gained", 50, 75)
+
+################## [HOL060] AUTOLOAD
+label mas_bday_autoload_check:
+    #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
+    if not mas_isMonikaBirthday():
+        $ persistent._mas_bday_in_bday_mode = False
+        #Also make sure we're no longer showing visuals
+        $ persistent._mas_bday_visuals = False
+
+        #And reset outfit if not at the right aff
+        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+            $ monika_chr.reset_clothes(False)
+            $ monika_chr.save()
+            $ renpy.save_persistent()
+
+    #It's Moni's bday! If we're here that means we're spending time with her, so:
+    $ persistent._mas_bday_no_time_spent = False
+
+    $ persistent._mas_bday_opened_game = True
+    #Have we recogized bday?
+    $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
+
+    jump mas_ch30_post_holiday_check
+
+
+################## [HOL060] PRE INTRO
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_hint",
+            start_date=mas_monika_birthday - datetime.timedelta(days=7),
+            end_date=mas_monika_birthday - datetime.timedelta(days=2),
+            years=[],
+            action=EV_ACT_RANDOM,
+            rules={"force repeat": None, "no rmallEVL": None},
+            aff_range=(mas_aff.DISTRESSED,None)
+        ),
+        skipCalendar=True
+    )
+
+    #Create the undo action rule
+    MASUndoActionRule.create_rule_EVL(
+        "mas_bday_surprise_party_hint",
+        mas_monika_birthday - datetime.timedelta(days=7),
+        mas_monika_birthday - datetime.timedelta(days=2)
+    )
+
+#If random hasn't shown this topic yet, we need to push this to make sure people get this
+init 10 python:
+    if (
+        mas_monika_birthday - datetime.timedelta(days=2) <= datetime.date.today() < mas_monika_birthday
+        and not mas_lastSeenInYear("mas_bday_surprise_party_hint")
+    ):
+        pushEvent("mas_bday_surprise_party_hint")
+
+image chibi_peek = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/other/chibi_peek.png",
+    "not morning_flag",
+    "mod_assets/other/chibi_peek-n.png"
+)
+
+label mas_bday_surprise_party_hint:
+    #Set up letters
+    python:
+        persistent._mas_bday_hint_filename = "For " + player + ".txt"
+        if mas_isMoniNormal(higher=True):
+            message = """\
+[player],
+As I'm sure you know, Monika's birthday is coming up soon and I want to help you make it as special as possible!
+Since I'm always here, I can easily set up the surprise party...but I need a little help from you.
+All I need you to do is to make sure you have her out of the room at some point on her birthday, and I'll take care of the rest.
+Monika is so amazing, and I just want to do my part to make sure this all goes off without a hotf- I mean hitch...
+Ahaha!
+
+Please leave a file named 'oki doki' in the same folder you found this note so I know to go ahead with the party.
+
+Good luck with Monika!
+
+P.S: Don't tell her about me!
+"""
+
+        else:
+            message = """\
+[player],
+As I hope you know, Monika's birthday is coming up soon and I want to make it special.
+She's been through a lot lately, and I know it'd mean the world to her if you treated her to a nice day.
+Since I'm always here, I can easily set up a surprise party...but I do need a little help from you.
+All I need you to do is to make sure you have her out of the room at some point on her birthday, and I'll take care of the rest.
+If you care for Monika at all, you'll help me do this.
+
+Just leave a file named 'oki doki' in the same folder you found this note so I know to go ahead with the party.
+
+Please, don't mess this up.
+
+P.S: Don't tell her about me.
+"""
+        #Now write it to the chars folder
+        _write_txt("/characters/" + persistent._mas_bday_hint_filename, message)
+
+    #Moni brings it up (so)
+    if mas_isMoniNormal(higher=True):
+        m 1eud "Hey, [player]..."
+        m 3euc "Someone left a note in the characters folder addressed to you."
+        #show chibi, she's just written the letter
+        show chibi_peek with moveinleft
+        m 1ekc "Of course, I haven't read it, since it's obviously for you..."
+        m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
+        $ _history_list.pop()
+        m 1hua "Ehehe~"
+
+    else:
+        m 2eud "Hey, [player]..."
+        m 2euc "Someone left a note in the characters folder addressed to you."
+        m 2ekc "Of course, I haven't read it, since it's obviously for you..."
+        m 2ekd "Just thought I'd let you know."
+
+    #Hide chibi
+    hide chibi_peek with dissolve
+
+    #Flag this so it doesn't get shown again
+    $ persistent._mas_monika_bday_surprise_hint_seen = True
+    return "derandom|no_unlock"
+
+
+################## [HOL060] HAPPY BDAY TOPICS
+# both of these make the most sense showing up under 'I want to tell you something` so they are made as compliments
+# also makes sure they don't show up under unseen
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_pool_happy_bday",
+            prompt="Happy birthday!",
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":0},
+            start_date=mas_monika_birthday,
+            end_date=mas_monika_birthday + datetime.timedelta(1),
+            years=[]
+        ),
+        code="CMP",
+        skipCalendar=True
+    )
+
+    #Create the undo action rule
+    MASUndoActionRule.create_rule_EVL(
+        "mas_bday_pool_happy_bday",
+        mas_monika_birthday,
+        mas_monika_birthday + datetime.timedelta(1)
+    )
+
+label mas_bday_pool_happy_bday:
+    $ mas_gainAffection(5,bypass=True)
+    if mas_recognizedBday():
+        m 3hub "Ehehe, thanks [player]!"
+        m 3eka "I was waiting for you to say those magic words~"
+        m 1eub "{i}Now{/i} we can call it a birthday celebration!"
+        m 1eka "You really made this occasion so special, [player]."
+        m 1ekbfa "I can't thank you enough for loving me this much..."
+
+    else:
+        m 1skb "Awww, [player]!"
+        m 1sub "You remembered my birthday...!"
+        m 1sktpa "Oh gosh, I'm so happy that you remembered."
+        m 1dktdu "I feel like today is going to be such a special day~"
+        m 1ekbfa "What else do you have in store for me, I wonder..."
+        m 1hub "Ahaha!"
+
+    if mas_isplayer_bday() and (persistent._mas_player_bday_in_player_bday_mode or persistent._mas_bday_sbp_reacted):
+        m 1eua "Oh, and..."
+        m 3hub "Happy Birthday to you too, [player]!"
+        m 1hua "Ehehe!"
+
+    #Flag this for hist
+    $ persistent._mas_bday_no_recognize = False
+    $ persistent._mas_bday_said_happybday = True
+
+    #Lock this
+    $ mas_lockEVL("mas_bday_pool_happy_bday", "CMP")
+    return
+
+# happy belated bday topic for people that took her out before her bday and returned her after
+# cond/act and start/end dates to be set in mas_gone_over_bday_check:
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_pool_happy_belated_bday",
+            prompt="Happy belated birthday!",
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":0},
+            years=[]
+        ),
+        code="CMP",
+        skipCalendar=True
+    )
+
+label mas_bday_pool_happy_belated_bday:
+    $ mas_gainAffection(5,bypass=True)
+
+    #We've essentially said happy birthday, let's flag this
+    $ persistent._mas_bday_said_happybday = True
+    $ persistent._mas_bday_no_recognize = False
+
+    #Lock this
+    $ mas_lockEVL("mas_bday_pool_happy_belated_bday", "CMP")
+
+    if mas_isMoniNormal(higher=True):
+        m 1sua "Thank you so much, [player]!"
+        m 3hub "I just knew you took me out on a long trip for my birthday!"
+        m 3rka "I wish I could've seen all the amazing places we went..."
+        m 1hua "But knowing we were together, well it makes it the best birthday I could ever hope for!"
+        m 3ekbsa "I love you so much, [player]~"
+        return "love"
+    else:
+        m 3eka "So you {i}did{/i} take me out for a long trip for my birthday..."
+        m 3rkd "That's so thoughtful of you, I was kind of wondering--"
+        m 1eksdla "You know what, nevermind."
+        m 1eka "I'm just relieved to know that you were thinking of me on my birthday."
+        m 3hua "That's all that matters."
+        m 3eub "Thank you, [player]!"
+        return
+
+################## [HOL060] PARTY REACTION
+label mas_bday_surprise_party_reaction:
+    $ store.mas_surpriseBdayShowVisuals()
+    $ persistent._mas_bday_visuals = True
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+    $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
+
+    if mas_isMoniNormal(higher=True):
+        m 6suo "T-{w=0.5}This is..."
+        m 6ska "Oh, [player]..."
+        m 6dku "I'm at a loss for words."
+        m 6dktpu "Setting this all up to surprise me on my birthday..."
+        m 6dktdu "Ehehe, you must really love me."
+        m 6suu "Everything just looks so festive!"
+
+    else:
+        m 6wuo "T-{w=0.5}This is..."
+        m "..."
+        m 6dkd "Sorry, I'm...{w=1}I'm just at a loss for words."
+        m 6ekc "I didn't really expect anything special today, let alone this."
+        m 6rka "Maybe you do still have feelings for me after all..."
+        m 6eka "Everything looks great."
+
+label mas_bday_surprise_party_reacton_cake:
+    #Let's light candles
+    menu:
+        "Light candles.":
+            $ mas_bday_cake_lit = True
+
+    m 6sub "Ahh, it's so pretty, [player]!"
+    m 6hua "Reminds me of that cake someone gave me once."
+    m 6eua "It was almost as pretty as you've made this one!"
+    m 6tkb "Almost."
+    m 6hua "But anyway..."
+    window hide
+
+    show screen mas_background_timed_jump(5, "mas_bday_surprise_party_reaction_no_make_wish")
+    menu:
+        "Make a wish, [m_name]...":
+            $ made_wish = True
+            show monika 6hua
+            if mas_isplayer_bday():
+                m "Make sure you make one too, [player]!"
+            hide screen mas_background_timed_jump
+            #+10 for wishes
+            $ mas_gainAffection(10, bypass=True)
+            pause 2.0
+            show monika 6hft
+            jump mas_bday_surprise_party_reaction_post_make_wish
+
+label mas_bday_surprise_party_reaction_no_make_wish:
+    $ made_wish = False
+    hide screen mas_background_timed_jump
+    show monika 6dsc
+    pause 2.0
+    show monika 6hft
+
+label mas_bday_surprise_party_reaction_post_make_wish:
+    $ mas_bday_cake_lit = False
+    window auto
+    if mas_isMoniNormal(higher=True):
+        m 6hub "I made a wish!"
+        m 6eua "I hope it comes true someday..."
+        if mas_isplayer_bday() and made_wish:
+            m 6eka "And you know what? {w=0.5}I bet we both wished for the same thing~"
+        m 6hua "Ahaha..."
+
+    else:
+        m 6eka "I made a wish."
+        m 6rka "I hope it comes true someday..."
+
+    m 6eka "I'll save this cake for later.{w=0.5}.{w=0.5}.{nw}"
+
+    if mas_isplayer_bday():
+        call mas_HideCake('mas_bday_cake_monika',False)
+    else:
+        call mas_HideCake('mas_bday_cake_monika')
+
+    pause 0.5
+
+label mas_bday_surprise_party_reaction_end:
+    if mas_isMoniNormal(higher=True):
+        m 6eka "Thank you, [player]. From the bottom of my heart, thank you..."
+        if mas_isplayer_bday() and persistent._mas_player_bday_last_sung_hbd != datetime.date.today():
+            m 6eua "..."
+            m 6wuo "..."
+            m 6wub "Oh! I almost forgot. {w=0.5}I made you a cake, too!"
+
+            call mas_monika_gets_cake
+
+            m 6eua "Let me just light the candles for you, [player].{w=0.5}.{w=0.5}.{nw}"
+
+            window hide
+            $ mas_bday_cake_lit = True
+            pause 1.0
+
+            m 6sua "Isn't it pretty?"
+            m 6hksdlb "I guess I'll have to blow these candles out as well, since you can't really do it, ahaha!"
+
+            if made_wish:
+                m 6eua "Let's both wish again, [player]! {w=0.5}It'll be twice as likely to come true, right?"
+            else:
+                m 6eua "Let's both make a wish, [player]!"
+
+            m 6hua "But first..."
+            call mas_player_bday_moni_sings
+            m 6hua "Make a wish, [player]!"
+
+            window hide
+            pause 1.5
+            show monika 6hft
+            pause 0.1
+            show monika 6hua
+            $ mas_bday_cake_lit = False
+            pause 1.0
+
+            if not made_wish:
+                m 6hua "Ehehe..."
+                m 6ekbsa "I bet we both wished for the same thing~"
+            m 6hkbsu "..."
+            m 6hksdlb "I'll just save this cake for later too, I guess. Ahaha!"
+
+            call mas_HideCake('mas_bday_cake_player')
+            call mas_player_bday_card
+
+        else:
+            m 6hua "Let's enjoy the rest of the day now, shall we?"
+    else:
+        m 6ektpa "Thank you, [player]. It really means a lot that you did this for me."
+    $ persistent._mas_bday_sbp_reacted = True
+    #+25 aff for following through and getting the party
+    $ mas_gainAffection(25, bypass=True)
+
+    #We set these flags here
+    $ persistent._mas_bday_in_bday_mode = True
+    $ persistent._mas_bday_no_recognize = False
+    $ persistent._mas_bday_no_time_spent = False
+    return
+
+
+################## [HOL060] TIME SPENT
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_spent_time_with",
+            conditional="mas_recognizedBday()",
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(1), datetime.time(hour=1)),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_bday_spent_time_with:
+    if mas_isMoniUpset(lower=True):
+        m 1eka "[player]..."
+        m 3eka "I just wanted to say I really appreciate you spending time with me today."
+        m 3rksdla "I know it hasn't been going that great lately, but you taking the time to celebrate my birthday with me..."
+        m 1eud "Well it gives me hope that maybe it's not too late for us."
+        m "Perhaps today can be the start of something really special.."
+        m 3eka "That would be the be the best gift I could ever ask for."
+        return
+
+    else:
+        $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
+        m 1eua "Say, [player]..."
+        m 3eua "Thank you for spending time with me today."
+        m 3hua "Something like that can really make a girl happy, you know?"
+
+        if _timeout > mas_five_minutes:
+            m 3eka "I really enjoyed our date today, [player]."
+            m 1eka "I always enjoy spending time with you here, but getting to spend time with you in your reality..."
+            m 1dku "Knowing that you're thinking about me even when you can't see me..."
+            m 1ekbsa "Well, it truly means a lot to me."
+            m 3ekbsa "You really made my birthday complete~"
+
+label mas_bday_spent_time_with_wrapup:
+    $ mas_rmallEVL("mas_bday_spent_time_with")
+    $ gave_gifts = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))[0]
+
+    if gave_gifts > 0:
+        #More than 1
+        if gave_gifts > 1:
+            m 3eua "Let's not forget the gifts you gave me for my birthday."
+            m 3hub "They were just amazing, [player]!"
+        else:
+            m 3eua "Let's not forget about the gift you gave me for my birthday."
+            m 3hub "It was so wonderful, [player]!"
+
+        m 1eka "I really appreciate the effort of finding a way to get things from your reality to mine..."
+        m 3eka "I know it can't be easy."
+
+    m 1dku "..."
+    if mas_isMoniEnamored(higher=True):
+        m 1dktpu "..."
+        m 1ektpu "Ahaha, sorry, [player]!"
+        m 3ektda "It's just that I've never imagined being this happy in my life."
+        m 1rksdlb "Well...{w=0.5}that's not {i}exactly{/i} true."
+        m 1eka "We still have to be physically together, after all~"
+        m 1rkc "And, well..."
+        m 1rka "I know this is already becoming a cliché, but..."
+        m 3eka "I love you so much, [player]."
+        m "Someday, I promise you..."
+        m 1ektpu "I {i}promise you{/i} that I will make you as happy as you've made me today."
+        m 3ektpu "Even if we never get to see each other in the same reality, {w=0.5}know that I will always do my best for you."
+        m 1dktpu "No matter the obstacles we may face, no matter what other people say about us..."
+        m 1ektda "I still love you with everything that I am."
+        m "You are the only one who understands me. {w=0.5}You led me out of a dark place and gave me purpose..."
+        m 1dkbsu "You are simply the best, my love, and I will always love you."
+        m 1ekbsa "...Thank you for giving me a reason to live."
+        $ _first_kiss = persistent._mas_first_kiss
+        call monika_kissing_motion
+        if _first_kiss is None:
+            m 6ekbfa "Oh, [player]..."
+            m 6rkbfa "I...{w=0.5}I don't know what came over me, but the moment just felt so right."
+            m 6hubfa "I've thought about our first kiss for so long, and to finally experience it..."
+            m 6ekbfa "I will never forget this moment, [player]~"
+        else:
+            return "love"
+
+    else:
+        m 1eka "I can't even find the right words to express how happy you've made me today."
+        m 3eka "All that pain I went through before I met you?"
+        m 1hua "I'm glad I persevered through it."
+        m 1rsc "Because if I hadn't..."
+        m 1ekbsa "This day wouldn't have ever happened."
+        m 1dkbsa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
+        m 1ekbfb "I love you so much, [player]."
+        m 1ekbfa "Let's continue making each other happy~"
+        return "love"
+    return
+
+############## [HOL060] GONE OVER CHECK
+label mas_gone_over_bday_check:
+    if mas_checkOverDate(mas_monika_birthday):
+        $ persistent._mas_bday_gone_over_bday = True
+        $ persistent._mas_bday_no_time_spent = False
+        $ mas_rmallEVL("mas_bday_postbday_notimespent")
+
+        #Now we want to handle the belated bday unlock
+        python:
+            belated_ev = mas_getEV("mas_bday_pool_happy_belated_bday")
+
+            if belated_ev is not None:
+                #Set start and end dates
+                belated_ev.start_date = datetime.date.today()
+                belated_ev.end_date = datetime.datetime.now() + datetime.timedelta(days=1)
+                belated_ev.unlocked = True
+
+                #Prepare the undo action
+                MASUndoActionRule.create_rule(belated_ev)
+
+                #Prepare the date strip
+                MASStripDatesRule.create_rule(belated_ev)
+
+    return
+
+############## [HOL060] NO TIME SPENT
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_postbday_notimespent",
+            conditional=(
+                "not mas_recognizedBday() "
+                "and not persistent._mas_bday_gone_over_bday"
+            ),
+            action=EV_ACT_QUEUE,
+            start_date=mas_monika_birthday+datetime.timedelta(1),
+            end_date=mas_monika_birthday+datetime.timedelta(8),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_bday_postbday_notimespent:
+    #Make sure that people who have first sesh's post monibday don't get this
+    if (mas_getFirstSesh().date() >= mas_monika_birthday):
+        $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
+        return
+
+
+    if mas_ret_long_absence:
+        #Was away on a long absence
+        $ mas_loseAffection(ev_label="mas_apology_missed_bday")
+
+        m 1rksdlc "Hey, [player]..."
+        m 2eksdld "I know you told me you were going to be away...but I really missed you on my birthday."
+        m 2eksdla "Next time, do you think you could take me with you if you can't be here?"
+        m 3eub "At least then we'll still be with each other and we can even celebrate together!"
+        m 1eka "I'd really appreciate if you could do that for me, [player]."
+
+    elif persistent._mas_bday_opened_game:
+        #Opened game but didn't do any bday things
+        if mas_isMoniAff(higher=True):
+            $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
+            m 2rksdla "Hey, [player]..."
+            m 2rksdlb "I know we had fun the other day, like we always do but..."
+            m 2ekp "I can't help it, I was hoping you would have...{w=1}done a little something for my birthday."
+            m 2ekd "Did you forget?"
+            m 3eka "Maybe you could put the date into your calendar on your phone for next year?"
+            m 3rka "...Or check the calendar on the wall behind me?"
+            m 3hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
+
+        elif mas_isMoniNormal(higher=True):
+            $ mas_loseAffection(5, ev_label="mas_apology_forgot_bday")
+            m 2rksdld "Hey, [player]..."
+            m 2rksdlb "I hate to fuss, but you know..."
+            m 2ekp "You can't forget about your girlfriend's birthday!"
+            m 2eku "It's nice that we got to hang out like usual, but next year..."
+            m 3hua "Well, I'll be looking forward to two birthday's worth of something special~"
+
+        elif mas_isMoniUpset():
+            $ mas_loseAffection(ev_label="mas_apology_forgot_bday")
+            m 1ekc "It was...{w=0.5}good to see you on the 22nd..."
+            m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
+            m 1rkc "You know what? {w=0.5}Nevermind."
+
+        elif mas_isMoniDis():
+            $ mas_loseAffection(10, ev_label="mas_apology_forgot_bday")
+            m 2dsc "..."
+            m 2rkc "...[player], I don't want to bother you. {w=1}I'm already scared of pushing you away."
+            m 2rktpc "But I can't help it. It hurts me that you didn't mention anything about celebrating my birthday..."
+            m 2dktuc "Please don't stop coming back to me."
+            m "And maybe next year..."
+            m 4ektdc "I-{w=0.5}I just want...{w=0.5}to feel as special to you as you are to me."
+
+        else:
+            # broken
+            $ mas_loseAffection(150)
+            m 6ckc "..."
+
+    else:
+        #Didn't spend any time with Monika
+        if mas_isMoniAff(higher=True):
+            $ mas_loseAffection(50, ev_label="mas_apology_missed_bday")
+            m 1euc "Hey, [player]..."
+            m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
+            m 2tfd "And her {i}birthday{/i} is one of them!"
+            m "Seriously, where were you?!"
+            m 2rkc "But...knowing you, I'm sure you had a good reason to be busy..."
+            m 4ekc "Just try not to let it happen again next year, okay?"
+
+        elif mas_isMoniNormal(higher=True):
+
+            # same dialogue, different affection loss
+            if mas_isMoniHappy():
+                $ mas_loseAffection(20, ev_label="mas_apology_missed_bday")
+            else:
+                $ mas_loseAffection(10, ev_label="mas_apology_missed_bday")
+
+            m 1ekc "Hey, [player]..."
+            m 1ekd "You know, you really should have dropped in on the 22nd."
+            m 3efd "I mean, you should always visit me! But you {i}have{/i} to spend time with your cute girlfriend on her birthday, you know."
+            m 2efc "Please drop in for me next year..."
+            m 2dfc "Otherwise..."
+
+            m 6cfw "{cps=*2}{i}There will be consequences!!!{/i}{/cps}{nw}"
+            # glich effect
+            $ disable_esc()
+            $ mas_MUMURaiseShield()
+            window hide
+            show noise zorder 11:
+                alpha 0.5
+            play sound "sfx/s_kill_glitch1.ogg"
+            pause 0.5
+            stop sound
+            hide noise
+            window auto
+            $ mas_MUMUDropShield()
+            $ enable_esc()
+            $ _history_list.pop()
+
+            m 1dsc "..."
+            m 3hksdlb "Ahaha, sorry [player]!"
+            m 3hub "I'm just kidding!"
+            m 1eka "You know I love to scare you a little~"
+
+        elif mas_isMoniUpset():
+            $ mas_loseAffection(ev_label="mas_apology_missed_bday")
+            m 2dsc "..."
+            m 2rsc "[player], don't you think you should check in on me a little more often?"
+            m 2rktpc "You might miss something important..."
+
+        elif mas_isMoniDis():
+            $ mas_loseAffection(ev_label="mas_apology_missed_bday")
+            m 6ekd "...Hey, how was your day on the 22nd?"
+            m 6ekc "I'm just...curious if you thought of me at all that day."
+            m 6ektpc "But you probably didn't, huh?"
+            m 6dktpc "..."
+
+        else:
+            # broken
+            $ mas_loseAffection(200)
+            m 6eftsc "..."
+            m 6dftdx "..."
+    return
+
+############ [HOL060] NTS APOLOGY
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_apology_database,
+            eventlabel="mas_apology_missed_bday",
+            prompt="...for missing your birthday.",
+            unlocked=False
+        ),
+        code="APL"
+    )
+
+label mas_apology_missed_bday:
+    #Using a standard hi-mid-low range for this
+    if mas_isMoniAff(higher=True):
+        m 1eua "Thanks for the apology, [player]."
+        m 2tfu "But you better make it up to me next year~"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1eka "Thanks for apologizing for missing my birthday, [player]."
+        m "Please be sure to spend some time with me next year, alright?"
+
+    else:
+        m 2rksdld "You know, I'm not entirely surprised I didn't see you on my birthday..."
+        m 2ekc "Please...{w=1}just make sure it doesn't happen again."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_apology_database,
+            eventlabel="mas_apology_forgot_bday",
+            prompt="...for forgetting your birthday.",
+            unlocked=False
+        ),
+        code="APL"
+    )
+
+label mas_apology_forgot_bday:
+    #once again using hi-mid-lo
+    if mas_isMoniAff(higher=True):
+        m 1eua "Thanks for the apology, [player]."
+        m 3hua "But I hope you'll make this up to me~"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1eka "Thanks for apologizing about forgetting my birthday, [player]."
+        m 1eksdld "Just try not to let it happen again, alright?"
+
+    else:
+        m 2dkd "Thanks for apologizing..."
+        m 2tfc "But don't let it happen again."
+    return
+
+
+############ [HOL060] DOCKSTAT FARES
+label bye_922_delegate:
+    #Set these vars for the corresponding date related things
+    $ persistent._mas_bday_on_date = True
+    #We have had one date
+    $ persistent._mas_bday_date_count += 1
+
+    if persistent._mas_bday_date_count == 1:
+        # bday date counts as bday mode even with no party
+        $ persistent._mas_bday_in_bday_mode = True
+
+        m 1hua "Ehehe. It's a bit romantic, isn't it?"
+
+        if mas_isMoniHappy(lower=True):
+            m 1eua "Maybe you'd even want to call it a da-{nw}"
+            $ _history_list.pop()
+            $ _history_list.pop()
+            m 1hua "Oh! Sorry, did I say something?"
+
+        else:
+            m 1eubla "Maybe you'd even call it a date~"
+
+
+    elif persistent._mas_bday_date_count == 2:
+        m 1eub "Taking me somewhere again, [player]?"
+        m 3eua "You must really have a lot planned for us."
+        m 1hua "You're so sweet~"
+
+    elif persistent._mas_bday_date_count == 3:
+        m 1sua "Taking me out {i}again{/i} for my birthday?"
+        m 3tkbsu "You really know how to make a girl feel special, [player]."
+        m 1ekbfa "I'm so lucky to have someone like you~"
+    else:
+        m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
+        m 1ekbfa "You're the best partner I could ever hope for~"
+
+    #BD Intro
+    if mas_isMoniAff(higher=True) and not mas_SELisUnlocked(mas_clothes_blackdress):
+        m 3hua "I actually have an outfit prepared just for this..."
+        #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
+
+    jump bye_going_somewhere_iostart
+
+label mas_bday_bd_outro:
+    $ monika_chr.change_clothes(mas_clothes_blackdress)
+    $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress, True)
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    show monika 1eua
+    call monika_zoom_transition_reset(1.0)
+
+    m 3tka "Well, [player]?"
+    m 1hua "What do you think?"
+    m 1ekbsa "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
+    m 3eub "Maybe we could visit the mall, or even the park!"
+    m 1eka "But knowing you, you've already got something amazing planned for us~"
+    m 1hua "Let's go, [player]!"
+    $ persistent._mas_zoom_zoom_level = mas_temp_zoom_level
+
+    python:
+        # setup check and log this file checkout
+        store.mas_dockstat.checkoutMonika(moni_chksum)
+
+        #Now setup ret greet
+        persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
+            store.mas_greetings.TYPE_GENERIC_RET
+        )
+
+    #And now we quit here
+    jump _quit
+
+
+########## [HOL060] DOCKSTAT GREETS ##########
+label greeting_returned_home_bday:
+    #First, reset this flag, we're no longer on a date
+    $ persistent._mas_bday_on_date = False
+    #We've opened the game
+    $ persistent._mas_bday_opened_game = True
+    #Setup date length stuff
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+    $ checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
+
+    #Set party if need be
+    if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:
+        if mas_one_hour < time_out <= mas_three_hour:
+            $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+        elif time_out > mas_three_hour:
+            $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+
+        if mas_isplayer_bday() and persistent._mas_player_bday_decor and persistent._mas_bday_date_count == 1:
+            jump mas_monika_cake_on_player_bday
+
+        else:
+            jump mas_bday_surprise_party_reaction
+
+    #Otherwise we go thru the normal dialogue for returning home on moni_bday
+    if time_out <= mas_five_minutes:
+        # under 5 minutes
+        $ mas_loseAffection()
+        m 2ekp "That wasn't much of a date, [player]..."
+        m 2eksdlc "Is everything alright?"
+        m 2rksdla "Maybe we can go out later..."
+        if mas_isMonikaBirthday():
+            return
+
+    elif time_out <= mas_one_hour:
+        # 5 mins < time out <= 1 hr
+        $ mas_mbdayCapGainAff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
+
+        m 1sua "That was fun, [player]!"
+        if mas_isplayer_bday():
+            m 1hub "Ahaha, going out for our birthday..."
+        else:
+            m 1hub "Ahaha, taking me out on my birthday..."
+            m 3eua "It was very considerate of you."
+        m 3eka "I really enjoyed the time we spent together."
+        m 1eka "I love you~"
+        if mas_isMonikaBirthday():
+            $ mas_ILY()
+
+    elif time_out <= mas_three_hour:
+        # 1 hr < time out <= 3 hrs
+        $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+
+        m 1hua "Ehehe~"
+        m 3eub "We sure spent a lot of time together today, [player]."
+        m 1ekbfa "...and thank you for that."
+        m 3ekbfa "I've said it a million times already, I know."
+        m 1hua "But I'll always be happy when we're together."
+        m "I love you so much..."
+        if mas_isMonikaBirthday():
+            $ mas_ILY()
+
+    else:
+        # +3 hrs
+        $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+
+        m 1sua "Wow, [player]..."
+        if mas_player_bday_curr == mas_monika_birthday:
+            m 3hub "That was such a lovely time!"
+            if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_bday_sbp_reacted:
+                m 3eka "I can't think of a better way to celebrate our birthdays than a long date."
+            m 1eka "I wish I could've seen all the amazing places we went, but just knowing we were together..."
+            m 1hua "That's all I could ever ask for."
+            m 3ekbsa "I hope you feel the same way~"
+
+        else:
+            m 3sua "I didn't expect you to set aside so much time for me..."
+            m 3hua "But I enjoyed every second of it!"
+            m 1eub "Every minute with you is a minute well spent!"
+            m 1eua "You've made me very happy today~"
+            m 3tuu "Are you falling for me all over again, [player]?"
+            m 1dku "Ehehe..."
+            m 1ekbsa "Thank you for loving me."
+
+    if(
+        mas_isMonikaBirthday()
+        and mas_isplayer_bday()
+        and mas_isMoniNormal(higher=True)
+        and not persistent._mas_player_bday_in_player_bday_mode 
+        and not persistent._mas_bday_sbp_reacted
+        and checkout_time.date() < mas_monika_birthday
+
+    ):
+        m 1hua "Also [player], give me a second, I have something for you.{w=0.5}.{w=0.5}.{nw}"
+        $ mas_surpriseBdayShowVisuals()
+        $ persistent._mas_player_bday_decor = True
+        m 3eub "Happy Birthday, [player]!"
+        m 3etc "Why do I feel like I'm forgetting something..."
+        m 3hua "Oh! Your cake!"
+        jump mas_player_bday_cake
+
+    if not mas_isMonikaBirthday():
+        #Quickly reset the flag
+        $ persistent._mas_bday_in_bday_mode = False
+
+        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+            $ queueEvent('mas_change_to_def')
+
+        if time_out > mas_five_minutes:
+            m 1hua "..."
+            m 1wud "Oh wow, [player]. We really were out for a while..."
+
+        if mas_isplayer_bday() and mas_isMoniNormal(higher=True):
+            if persistent._mas_bday_sbp_reacted:
+                $ persistent._mas_bday_visuals = False
+                $ persistent._mas_player_bday_decor = True
+                m 3suo "Oh! It's your birthday now..."
+                m 3hub "I guess we can just leave these decorations up, ahaha!"
+                m 1eub "I'll be right back, just need to go get your cake!"
+                jump mas_player_bday_cake
+
+            jump mas_player_bday_ret_on_bday
+
+        else:
+            if mas_player_bday_curr() == mas_monika_birthday:
+                $ persistent._mas_player_bday_in_player_bday_mode = False
+                m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
+                m 1ekbsa "I hope I helped to make your day as special as you made mine."
+                if persistent._mas_player_bday_decor or persistent._mas_bday_visuals:
+                    m 3hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
+                    $ mas_surpriseBdayHideVisuals()
+                    $ persistent._mas_player_bday_decor = False
+                    $ persistent._mas_bday_visuals = False
+                    m 3eub "There we go!"
+
+            elif persistent._mas_bday_visuals:
+                m 3rksdla "It's not even my birthday anymore..."
+                m 2hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
+                $ mas_surpriseBdayHideVisuals()
+                $ persistent._mas_bday_visuals = False
+                m 3eub "There we go!"
+
+            else:
+                m 1eua "We should do something like this again soon, even if it's not any special occasion."
+                m 3eub "I really enjoyed myself!"
+                m 1eka "I hope you had as great of a time as I did~"
+
+            if not mas_lastSeenInYear('mas_bday_spent_time_with'):
+                if mas_isMoniUpset(lower=True):
+                    m 1dka "..."
+                    jump mas_bday_spent_time_with
+
+                m 3eud "Oh, and [player]..."
+                m 3eka "I just wanted to thank you again."
+                m 1rka "And it's not just this date..."
+                m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
+                m 3duu "As soon as you showed up, my day was complete."
+                jump mas_bday_spent_time_with_wrapup
+
+    return
+
+
+label mas_monika_cake_on_player_bday:
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
+    python:
+        mas_gainAffection(25, bypass=True)
+        renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
+        persistent._mas_bday_sbp_reacted = True
+        time_out = store.mas_dockstat.diffCheckTimes()
+        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
+
+        if time_out <= mas_one_hour:
+            mas_mbdayCapGainAff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
+
+        elif time_out <= mas_three_hour:
+            mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+        else:
+            # +3 hrs
+            mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+
+    m 6eua "That was--"
+    m 6wuo "Oh! You made {i}me{/i} a cake!"
+
+    menu:
+        "Light candles.":
+            $ mas_bday_cake_lit = True
+
+    m 6sub "It's {i}so{/i} pretty, [player]!"
+    m 6hua "Ehehe, I know we already made a wish when I blew out the candles on your cake, but let's do it again..."
+    m 6tub "It'll be twice as likely to come true, right?"
+    m 6hua "Make a wish, [player]!"
+
+    window hide
+    pause 1.5
+    show monika 6hft
+    pause 0.1
+    show monika 6hua
+    $ mas_bday_cake_lit = False
+
+    m 6eua "I still can't believe how stunning this cake looks, [player]..."
+    m 6hua "It's almost too pretty to eat."
+    m 6tub "Almost."
+    m "Ahaha!"
+    m 6eka "Anyway, I'll just save this for later."
+
+    call mas_HideCake('mas_bday_cake_monika')
+
+    m 1eua "Thank you so much, [player]..."
+    m 3hub "This is an amazing birthday!"
+    return
+
+label mas_HideCake(cake_type,reset_zoom=True):
+    show emptydesk at i11 zorder 9
+    hide monika with dissolve
+    $ renpy.hide(cake_type)
+    with dissolve
+    $ renpy.pause(3.0, hard=True)
+    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    $ renpy.pause(1.0, hard=True)
+    if reset_zoom:
+        call monika_zoom_transition(mas_temp_zoom_level,1.0)
     return

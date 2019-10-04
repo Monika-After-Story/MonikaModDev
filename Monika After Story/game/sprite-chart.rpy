@@ -25,6 +25,7 @@
 #   4 - pointing right (pointright)
 #   5 - leaning (def)
 #   6 - arms down (down)
+#   7 - down left arm, rest point right (downleftpointright)
 #
 # <eyes type> - type of eyes
 #   e - normal eyes (normal)
@@ -38,6 +39,7 @@
 #   d - closed sad eyes (closedsad)
 #   k - left eye wink (winkleft)
 #   n - right eye wink (winkright)
+#   f - soft eyes (soft)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)
@@ -60,8 +62,6 @@
 # <tears type> - type of tears
 #   ts - tears streaming / running (streaming)
 #   td - dried tears (dried)
-#   tl - tears, single stream, left eye (left)
-#   tr - tears, single stream, right eye (right)
 #   tp - like dried tears but with no redness (pooled)
 #   tu - tears, single stream, both eyes (up)
 #
@@ -80,9 +80,10 @@
 #   o - gasp / open mouth (gasp)
 #   u - smug (smug)
 #   w - wide / open mouth (wide)
-#   x - disgust / grit teeth (disgust)
+#   x - angery (angry)
 #   p - tsundere/ puffy cheek (pout)
 #   t - triangle (triangle)
+#   g - disgust/uwah (disgust)
 #
 # For example, the expression code 1sub is:
 #   1 - resting on hands pose
@@ -103,6 +104,10 @@ define is_sitting = True
 # accessories list
 default persistent._mas_acs_pre_list = []
 default persistent._mas_acs_bbh_list = []
+default persistent._mas_acs_bse_list = []
+default persistent._mas_acs_bba_list = []
+default persistent._mas_acs_ase_list = []
+default persistent._mas_acs_bab_list = []
 default persistent._mas_acs_bfh_list = []
 default persistent._mas_acs_afh_list = []
 default persistent._mas_acs_mid_list = []
@@ -179,31 +184,40 @@ image mas_roses = ConditionSwitch(
 
 ### bday stuff
 define mas_bday_cake_lit = False
-image mas_bday_cake = ConditionSwitch(
+image mas_bday_cake_monika = ConditionSwitch(
     "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
     "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
     "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit-n.png",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
     "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake-n.png"
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
 )
+
+image mas_bday_cake_player = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
+)
+
 image mas_bday_banners = ConditionSwitch(
     "morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations.png",
     "not morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
 )
+
 image mas_bday_balloons = ConditionSwitch(
     "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
     "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png"
-#    "morning_flag",
-#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
-#    "not morning_flag",
-#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
 init -5 python in mas_sprites:
@@ -223,12 +237,14 @@ init -5 python in mas_sprites:
     ### other paths:
     # H - hair
     # C - clothing
+    # B - base
     # F - face parts
     # A - accessories
     # S - standing
     # T - table
     H_MAIN = MOD_ART_PATH + "h/"
     C_MAIN = MOD_ART_PATH + "c/"
+    B_MAIN = MOD_ART_PATH + "b/"
     F_MAIN = MOD_ART_PATH + "f/"
     A_MAIN = MOD_ART_PATH + "a/"
     S_MAIN = MOD_ART_PATH + "s/"
@@ -294,6 +310,8 @@ init -5 python in mas_sprites:
     PREFIX_HAIR_LEAN = "hair-leaning" + ART_DLM
     PREFIX_ARMS = "arms" + ART_DLM
     PREFIX_ARMS_LEAN = "arms-leaning" + ART_DLM
+    PREFIX_ARMS_LEFT = "left" + ART_DLM
+    PREFIX_ARMS_RIGHT = "right" + ART_DLM
     PREFIX_FACE = "face" + ART_DLM
     PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
     PREFIX_ACS = "acs" + ART_DLM
@@ -319,36 +337,11 @@ init -5 python in mas_sprites:
     DEF_BODY = "def"
     NEW_BODY_STR = PREFIX_BODY + DEF_BODY
 
-    ## string builder constants
-    BS_ACS = "".join((
-        A_T_MAIN,
-        PREFIX_ACS,
-        "{0}", # acs img sit
-        ART_DLM,
-        "{1}", # poseid
-        "{2}", # n_suffix
-        FILE_EXT,
-    ))
+    # base constants
+    BASE_BODY_STR = PREFIX_BODY + DEF_BODY + ART_DLM
+    BASE_BODY_STR_LEAN = PREFIX_BODY_LEAN + DEF_BODY + ART_DLM
 
-    BS_HAIR_U = "".join((
-        H_MAIN,
-        PREFIX_HAIR,
-        "{0}", # hair img sit
-        "{1}", # hair suffix
-        "{2}", # night suffix
-        FILE_EXT,
-    ))
-
-    BS_HAIR_L = "".join((
-        H_MAIN,
-        PREFIX_HAIR_LEAN,
-        "{0}", # lean
-        ART_DLM,
-        "{1}", # hair img sit
-        "{2}", # hair suffix
-        "{3}", # night suffix
-        FILE_EXT,
-    ))
+    # string builder constants
 
     BS_TORSO = "".join((
         C_MAIN,
@@ -407,6 +400,117 @@ init -5 python in mas_sprites:
         FILE_EXT,
     ))
 
+    # split body strings:
+    # these are not complete, aka, they do not include file ext.
+    #   this is so we can avoid too much repeated code.
+    BS_BODY_BC_U = "".join((
+        C_MAIN,
+        "{0}/", # clothign img sit
+        NEW_BODY_STR,
+    ))
+
+    BS_BODY_BC_L = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_BODY_LEAN,
+        "{1}", # lean
+    ))
+
+    BS_ARMS_B_BC_U = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_ARMS,
+    ))
+
+    BS_ARMS_B_BC_L = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_ARMS_LEAN,
+        "{1}", # lean
+        ART_DLM,
+    ))
+
+    BS_HAIR_U = "".join((
+        H_MAIN,
+        PREFIX_HAIR,
+        "{0}", # hair img sit
+    ))
+
+    BS_HAIR_L = "".join((
+        H_MAIN,
+        PREFIX_HAIR_LEAN,
+        "{0}", # lean
+        ART_DLM,
+        "{1}", # hair img sit
+    ))
+
+    BS_ACS = "".join((
+        A_T_MAIN,
+        PREFIX_ACS,
+        "{0}", # acs img sit
+        ART_DLM,
+        "{1}", # poseid
+    ))
+
+
+    def alt_night(v_list, prefix):
+        """
+        Adds night suffix and no night suffix version of the given prefix to
+        the given list.
+
+        IN:
+            prefix - string to add night suffix to
+
+        OUT:
+            v_list - list to add strings to
+        """
+        v_list.append(prefix + FILE_EXT)
+        v_list.append(prefix + NIGHT_SUFFIX + FILE_EXT)
+
+
+    def alt_bcode(v_list, prefix, inc_night):
+        """
+        Adds bcode 0 and bcode 1 versions of the given prefix to the given
+        list.
+
+        IN:
+            prefix - string to add bcode to
+            inc_night - if True, then we also do night variants of each bcode
+                version, otherwise, just day versions
+
+        OUT:
+            v_list - list to add strings to
+        """
+        if inc_night:
+            alt_night(v_list, prefix + ART_DLM + "0")
+            alt_night(v_list, prefix + ART_DLM + "1")
+
+        else:
+            v_list.append(prefix + ART_DLM + "0" + FILE_EXT)
+            v_list.append(prefix + ART_DLM + "1" + FILE_EXT)
+
+
+    def alt_hsplit(v_list, prefix, inc_night):
+        """
+        Adds backhair/front hair versionsof the given prefix to the given list
+
+        IN:
+            prefix - string to add bhair/front hair to
+            inc_night - if Ture, then we also do night varaints of each bhair
+                fhair version, otherwise just day versions
+
+        OUT:
+            v_list - list to add strings to
+        """
+        if inc_night:
+            alt_night(v_list, prefix + FHAIR_SUFFIX)
+            alt_night(v_list, prefix + BHAIR_SUFFIX)
+
+        else:
+            v_list.append(prefix + FHAIR_SUFFIX + FILE_EXT)
+            v_list.append(prefix + BHAIR_SUFFIX + FILE_EXT)
+
+
     ## BLK010
     # ACCESSORY BLACKLIST
     lean_acs_blacklist = [
@@ -423,6 +527,10 @@ init -5 python in mas_sprites:
     CLOTHES = [
         "def" # school uniform
     ]
+
+    # special mas sprite classes
+
+            
 
     # zoom adjuster
     def adjust_zoom():
@@ -528,14 +636,26 @@ init -5 python in mas_sprites:
         SP_CLOTHES: CLOTH_MAP
     }
 
+    # Numerical pose map
+    NUM_POSE = {
+        1: "steepling",
+        2: "crossed",
+        3: "restleftpointright",
+        4: "pointright",
+        5: "def|def",
+        6: "down",
+        7: "downleftpointright",
+    }
+
     ## Pose list
     # NOTE: do NOT include leans in here.
     POSES = [
-        "steepling",
-        "crossed",
-        "restleftpointright",
-        "pointright",
-        "down"
+        NUM_POSE[1],
+        NUM_POSE[2],
+        NUM_POSE[3],
+        NUM_POSE[4],
+        NUM_POSE[6],
+        NUM_POSE[7],
     ]
 
     ## lean poses
@@ -543,7 +663,7 @@ init -5 python in mas_sprites:
     #   lean|arms
     # NOTE: do NOT include regular poses in here
     L_POSES = [
-        "def|def"
+        NUM_POSE[5],
     ]
 
     # all poses 
@@ -1078,7 +1198,8 @@ init -5 python in mas_sprites:
             acs,
             n_suffix,
             issitting,
-            pose=None,
+            arm_state,
+            leanpose=None,
             lean=None
         ):
         """
@@ -1090,24 +1211,18 @@ init -5 python in mas_sprites:
             acs - MASAccessory object
             n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
-            pose - current pose
+            arm_state - "0" for arms-base-0, "1" for arms-base-1, None for
+                neither
+            leanpose - current pose
                 (Default: None)
             lean - type of lean
                 (Default: None)
         """
         # pose map check
         # Since None means we dont show, we are going to assume that the
-        # accessory should be shown if the pose key is missing.
-        if lean:
-            poseid = acs.pose_map.l_map.get(lean + "|" + pose, None)
-
-            # NOTE: we dont care about leaning as a part of filename
-#            if acs.pose_map.use_reg_for_l:
-                # clear lean if dont want to use it for rendering
-#                lean = None
-
-        else:
-            poseid = acs.pose_map.map.get(pose, None)
+        # accessory should not be shown if the pose key is missing.
+        poseid = acs.pose_map.get(leanpose, None)
+        arm_codes = acs.get_arm_split_code(leanpose)
 
         if poseid is None:
             # a None here means we should shouldnt' even show this acs
@@ -1124,6 +1239,17 @@ init -5 python in mas_sprites:
             # standing string is null or None
             return
 
+        if arm_state is not None:
+            
+            if arm_state in arm_codes:
+                arm_code = ART_DLM + arm_state
+            else:
+                # we should not render
+                return
+
+        else:
+            arm_code = ""
+
         sprite_list.extend((
             ",",
             loc_str, 
@@ -1136,6 +1262,7 @@ init -5 python in mas_sprites:
             acs_str,
             ART_DLM,
             poseid,
+            arm_code,
             n_suffix,
             FILE_EXT,
             '"'
@@ -1148,7 +1275,8 @@ init -5 python in mas_sprites:
             acs_list,
             n_suffix,
             issitting,
-            pose=None,
+            leanpose=None,
+            arm_state=None,
             lean=None
         ):
         """
@@ -1160,7 +1288,9 @@ init -5 python in mas_sprites:
             acs_list - list of MASAccessory object, in order of rendering
             n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
-            pose - arms pose for we are currently rendering
+            arm_state - set to "0" or "1" if we are rendering acs between
+                base arms and arm ouftits
+            leanpose - arms pose for we are currently rendering
                 (Default: None)
             lean - type of lean
                 (Default: None)
@@ -1178,7 +1308,8 @@ init -5 python in mas_sprites:
                 acs,
                 n_suffix,
                 issitting,
-                pose,
+                arm_state,
+                leanpose,
                 lean=lean
             )
 
@@ -1277,6 +1408,102 @@ init -5 python in mas_sprites:
         # add final part
 #        sprite_list.append('")')
 
+    
+    def _ms_arms_nh_wbase(
+            sprite_list,
+            base_pose,
+            arms_pose,
+            loc_str,
+            clothing,
+            acs_ase_list,
+            leanpose,
+            lean,
+            n_suffix,
+            bcode
+        ):
+        """
+        Adds arms string, no hair, with base
+
+        IN:
+            sprite_list - list to add sprite strings to
+            base_pose - MASPoseArms for base
+            arms_pose - MASPoseArms for outfit
+            loc_str - location string
+            clothing - type of clothing
+            acs_ase_list - acs between arms-base-0 and arms-0
+            leanpose - leanpose to pass to accessorylist
+            lean - lean to use
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        if lean:
+            # arms-base-0
+            _ms_arms_nh_leaning_base(
+                sprite_list,
+                base_pose,
+                loc_str,
+                lean,
+                n_suffix,
+                bcode
+            )
+
+            # acs-ase
+            _ms_accessorylist(
+                sprite_list,
+                loc_str,
+                acs_ase_list,
+                n_suffix,
+                True,
+                leanpose,
+                arm_state=bcode,
+                lean=lean
+            )
+
+            if arms_pose is not None:
+                # arms-0
+                _ms_arms_nh_leaning_arms(
+                    sprite_list,
+                    clothing,
+                    arms_pose,
+                    loc_str,
+                    lean,
+                    n_suffix,
+                    bcode
+                )
+
+        else:
+            # arms-base-0
+            _ms_arms_nh_up_base(
+                sprite_list,
+                base_pose,
+                loc_str,
+                n_suffix,
+                bcode
+            )
+
+            # acs-ase
+            _ms_accessorylist(
+                sprite_list,
+                loc_str,
+                acs_ase_list,
+                n_suffix,
+                True,
+                leanpose,
+                arm_state=bcode,
+                lean=lean
+            )
+
+            if arms_pose is not None:
+                # arms-0
+                _ms_arms_nh_up_arms(
+                    sprite_list,
+                    clothing,
+                    arms_pose,
+                    loc_str,
+                    n_suffix,
+                    bcode
+                )
+
 
     def _ms_arms_nh_up(sprite_list, loc_str, clothing, arms, n_suffix):
         """
@@ -1302,6 +1529,144 @@ init -5 python in mas_sprites:
             FILE_EXT,
             '"',
         ))
+
+
+    def _ms_arms_nh_up_arms(
+            sprite_list,
+            clothing,
+            arms_pose,
+            loc_str,
+            n_suffix,
+            bcode
+    ):
+        """
+        Adds arms string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            clothing - clotjhing to use
+            arms_pose - MASPoseArms for arms
+            loc_str - location string
+            n_suffix - night suffix
+            bcode - base code
+        """
+        store.MASPoseArms.build_arms_sp_str(
+            sprite_list,
+            (
+                ",",
+                loc_str,
+                ',"',
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS,
+            ),
+            (
+                ART_DLM,
+                bcode,
+                n_suffix,
+                FILE_EXT,
+                '"',
+            ),
+            bcode == "1",
+            arms_pose
+        )
+
+
+    def _ms_arms_nh_up_base(
+            sprite_list,
+            base_pose,
+            loc_str,
+            n_suffix,
+            bcode
+    ):
+        """
+        Adds arms base string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            base_pose - MASPoseArms for base
+            loc_str - location string
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        base_pose.build_arms(
+            sprite_list,
+            (
+                ",",
+                loc_str,
+                ',"',
+                B_MAIN,
+                PREFIX_ARMS,
+            ),
+            (
+                ART_DLM,
+                bcode,
+                n_suffix,
+                FILE_EXT,
+                '"',
+            ),
+            bcode == "1"
+        )
+
+
+    def _ms_arms_nh_up_new(
+            sprite_list,
+            arms_pose,
+            clothing,
+            loc_str,
+            lean,
+            n_suffix,
+            bcode
+    ):
+        """
+        Adds arms string
+
+        IN:
+            sprite_list - list to add sprite strings to 
+            arms_pose - MASPoseArms for pose
+            clothing - clothign to use
+            loc_str - location string
+            lean - lean to use
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        if lean:
+            prefix_list = (
+                ",",
+                loc_str,
+                ',"',
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS_LEAN,
+                lean,
+                ART_DLM,
+            )
+
+        else:
+            prefix_list = (
+                ",",
+                loc_str,
+                ',"',
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS
+            )
+
+        arms_pose.build_arms(
+            sprite_list,
+            prefix_list,
+            (
+                ART_DLM,
+                bcode,
+                n_suffix,
+                FILE_EXT,
+                '"',
+            ),
+            bcode == "1"
+        )
 
 
     def _ms_arms_nh_leaning(
@@ -1338,6 +1703,93 @@ init -5 python in mas_sprites:
             FILE_EXT,
             '"',
         ))
+
+
+    def _ms_arms_nh_leaning_base(
+            sprite_list,
+            base_pose,
+            loc_str,
+            lean,
+            n_suffix,
+            bcode
+    ):
+        """
+        Adds arms string (leaning base)
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            clothing - type of clothing
+            lean - lean type
+            n_suffix - night suffix
+            bcode - base code
+        """
+        base_pose.build_arms(
+            sprite_list,
+            (
+                ",",
+                loc_str,
+                ',"',
+                B_MAIN,
+                PREFIX_ARMS_LEAN,
+                lean,
+                ART_DLM
+            ),
+            (
+                ART_DLM,
+                bcode,
+                n_suffix,
+                FILE_EXT,
+                '"',
+            ),
+            bcode == "1"
+        )
+
+    
+    def _ms_arms_nh_leaning_arms(
+            sprite_list,
+            clothing,
+            arms_pose,
+            loc_str,
+            lean, 
+            n_suffix,
+            bcode
+    ):
+        """
+        Adds arms string (leaning arms)
+
+        IN:
+            sprite_list - list to add sprite strings to
+            clothing - clothing to use
+            arms_pose - MASPoseArms for arms
+            loc_str - locaiton string to use
+            lean - lean to use
+            n_suffix - night suffix to use
+            bcode - base code
+        """
+        store.MASPoseArms.build_arms_sp_str(
+            sprite_list,
+            (
+                ",",
+                loc_str,
+                ',"',
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS_LEAN,
+                lean,
+                ART_DLM,
+            ),
+            (
+                ART_DLM,
+                bcode,
+                n_suffix,
+                FILE_EXT,
+                '"',
+            ),
+            bcode == "1",
+            arms_pose
+        )
 
 
     def _ms_blush(sprite_list, loc_str, blush, n_suffix, f_prefix):
@@ -1458,6 +1910,80 @@ init -5 python in mas_sprites:
 #        sprite_list.append(")")
 
 
+    def _ms_body_nh_wbase(
+            sprite_list,
+            loc_str,
+            clothing,
+            acs_bse_list,
+            bcode,
+            n_suffix,
+            leanpose,
+            lean=None
+        ):
+        """
+        Adds body string, including base and bse acs, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            clothing - type of clothing
+            acs_bse_list - acs between base-0 and body-0
+            bcode - base code to use
+            leanpose - leanpose to pass to accesorylist
+            n_suffix - night suffix to use
+        """
+        if lean:
+            # base-0
+            _ms_torsoleaning_nh_base(
+                sprite_list,
+                loc_str,
+                lean,
+                n_suffix,
+                bcode
+            )
+
+            # acs_bse
+            _ms_accessorylist(
+                sprite_list,
+                loc_str,
+                acs_bse_list,
+                n_suffix,
+                True,
+                leanpose,
+                arm_state=bcode,
+                lean=lean
+            )
+
+            # body-0
+            _ms_torsoleaning_nh(
+                sprite_list,
+                loc_str,
+                clothing,
+                lean,
+                n_suffix,
+                bcode
+            )
+
+        else:
+            # base-0
+            _ms_torso_nh_base(sprite_list, loc_str, n_suffix, bcode)
+
+            # acs_bse
+            _ms_accessorylist(
+                sprite_list,
+                loc_str,
+                acs_bse_list,
+                n_suffix,
+                True,
+                leanpose,
+                arm_state=bcode,
+                lean=lean
+            )
+
+            # body-0
+            _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix, bcode)
+
+
     def _ms_emote(sprite_list, loc_str, emote, n_suffix, f_prefix):
         """
         Adds emote string
@@ -1566,7 +2092,6 @@ init -5 python in mas_sprites:
             lean=None,
             eyebags=None,
             sweat=None,
-            blush=None,
             tears=None,
             emote=None
         ):
@@ -1587,8 +2112,6 @@ init -5 python in mas_sprites:
             eyebags - type of eyebags
                 (Default: None)
             sweat - type of sweat drop
-                (Default: None)
-            blush - type of blush
                 (Default: None)
             tears - type of tears
                 (Default: None)
@@ -1618,8 +2141,8 @@ init -5 python in mas_sprites:
         if sweat:
             _ms_sweat(sprite_list, loc_str, sweat, n_suffix, f_prefix)
 
-        if blush:
-            _ms_blush(sprite_list, loc_str, blush, n_suffix, f_prefix)
+#        if blush:
+#            _ms_blush(sprite_list, loc_str, blush, n_suffix, f_prefix)
 
         if tears:
             _ms_tears(sprite_list, loc_str, tears, n_suffix, f_prefix)
@@ -1629,6 +2152,23 @@ init -5 python in mas_sprites:
 
         # finally the last paren
 #        sprite_list.append(")")
+
+    
+    def _ms_face_pre(sprite_list, loc_str, n_suffix, lean=None, blush=None):
+        """
+        Adds face strings that go before hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            n_suffix - night siffux to use
+            lean - type of lean
+            blush - type of blush
+        """
+        f_prefix = face_lean_mode(lean)
+
+        if blush:
+            _ms_blush(sprite_list, loc_str, blush, n_suffix, f_prefix)
 
 
     def _ms_hair(sprite_list, loc_str, hair, n_suffix, front_split, lean):
@@ -1871,7 +2411,9 @@ init -5 python in mas_sprites:
     def _ms_sitting(
             clothing,
             hair,
-            hair_split,
+            is_baked,
+            base_pose,
+            arms_pose,
             eyebrows,
             eyes,
             nose,
@@ -1879,10 +2421,15 @@ init -5 python in mas_sprites:
             isnight,
             acs_pre_list,
             acs_bbh_list,
+            acs_bse_list,
+            acs_bba_list,
+            acs_ase_list,
+            acs_bab_list,
             acs_bfh_list,
             acs_afh_list,
             acs_mid_list,
             acs_pst_list,
+            leanpose=None,
             lean=None,
             arms="",
             eyebags=None,
@@ -1898,7 +2445,9 @@ init -5 python in mas_sprites:
         IN:
             clothing - type of clothing
             hair - type of hair
-            hair_split - true if hair is split into 2 layers
+            is_baked - True if this is a baked outfit, False if not
+            base_pose - MASPoseArms for base
+            arms_pose - MASPoseArms for outfit
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
@@ -1907,13 +2456,23 @@ init -5 python in mas_sprites:
             acs_pre_list - sorted list of MASAccessories to draw prior to body
             acs_bbh_list - sroted list of MASAccessories to draw between back
                 hair and body
-            acs_bfh_list - sorted list of MASAccessories to draw between body
+            acs_bse_list - sorted list of MASAccessories to draw between base
+                body and outfit
+            acs_bba_list - sorted list of MASAccessories to draw between 
+                body and back arms
+            acs_ase_list - sorted list of MASAccessories to draw between base
+                arms and outfit
+            acs_bab_list - sorted list of MASAccessories to draw between
+                back arms and boobs
+            acs_bfh_list - sorted list of MASAccessories to draw between boobs
                 and front hair
             acs_afh_list - sorted list of MASAccessories to draw between front
                 hair and face
             acs_mid_list - sorted list of MASAccessories to draw between body
                 and arms
             acs_pst_list - sorted list of MASAccessories to draw after arms
+            leanpose - lean and arms together
+                (Default: None)
             lean - type of lean
                 (Default: None)
             arms - type of arms
@@ -1947,22 +2506,51 @@ init -5 python in mas_sprites:
             LOC_REG,
         ]
 
-        ## NOTE: render order:
-        #   1. pre-acs - every acs that should render before the body
+        # NOTE: render order (new):
+        #   1. pre-acs - every acs that should render before anything
         #   2. back-hair - back portion of hair (split mode)
-        #   3. post-back-hair-acs - acs that should render after back hair, but
-        #       before body (split mode)
-        #   4. body - the actual body (does not include arms in split mode)
-        #   5. table - the table/desk
-        #   6. pre-front-hair-acs - acs that should render after body, but
-        #       before front hair (split mode)
-        #   7. front-hair - front portion of hair (split mode)
-        #   8. front-hair-face acs - acs that should render after front hair
-        #       but before face (split mode)
-        #   9. face - face expressions
-        #   10. mid - acs that render between body and arms
-        #   11. arms - arms (split mode, lean mode)
-        #   12. post-acs - acs that should render after basically everything
+        #   3. bbh-acs - acs between Body and Back Hair
+        #   4. base-0 - the base back part of body
+        #   5. bse-acs - between base and body-0
+        #   6. body-0 - the back part of body (no arms in split mode)
+        #   7. table - the table/desk
+        #   8. bba-acs - acs between Body and Back Arms
+        #   9. arms-base-0 - the base back part of arm
+        #   10. ase-acs-0 - between base arms and clothes, back part
+        #   11. arms-0 - the back part of arms
+        #   12. bab-acs - acs between Back Arms and Body-1
+        #   13. base-1 - the base front part of body
+        #   14. bse-acs - between base and body-1
+        #   15. body-1 - the front part of body (boobs)
+        #   16. bfh-acs - acs between Body and Front Hair
+        #   17. face-pre - pre front hair facial expressions
+        #   18. front-hair - front portion of hair (split mode)
+        #   19. afh-acs - acs betweem Arms and Front Hair
+        #   20. face - facial expressions
+        #   21. mid-acs - acs between face and front arms
+        #   22. arms-base-1 - the base front part of arms
+        #   23. ase-acs-1 - between base arms and clothes, front part
+        #   24. arms-1 - front arms
+        #   25. pst-acs - acs after everything
+
+        # NOTE: render order (baked)
+        #   1. pre-acs - every acs that should render before anything
+        #   *2. body - baked body
+        #   7. table - the table/desk
+        #   3. bbh-acs - acs between Body and Back hair
+        #   16. bfh-acs - acs between body and front hair
+        #   18. afh-acs - acs between front hair and arms
+        #   20. face - facial expressions
+        #   21. mid-acs - acs between face and front arms
+        #   *22. arms-nh - baked arms
+        #   25. pst-acs - acs after everything
+    
+        # NOTE: the ASE_ACS layer:
+        #   This layer is unique in that it actually is split into 2 zones:
+        #   Base arms 0 and base arms 1. ACS that inhabit this layer will be
+        #   rendered in teh correct spot based on the pose using a
+        #   MASPoseMap object, stored in property arm_split.
+        #   For more info, see MASAccessory
 
         # NOTE: acs in split hair locations end up being rendered at mid
         #   if current split is False
@@ -1975,14 +2563,97 @@ init -5 python in mas_sprites:
             acs_pre_list,
             n_suffix,
             True,
-            arms,
+            leanpose,
             lean=lean
         )
 
-        # positoin setup
-        #sprite_str_list.extend(loc_build_tup)
+        if is_baked:
+            
+            # *2. body
+            _ms_body(
+                sprite_str_list,
+                loc_build_str,
+                clothing,
+                hair,
+                n_suffix,
+                lean=lean,
+                arms=leanpose
+            )
 
-        if hair_split:
+            # 7. table
+            _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
+
+            # 3. post back hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bbh_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 16. between body-1 and front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bfh_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 18. post-front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_afh_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 20. face
+            _ms_face(
+                sprite_str_list,
+                loc_build_str,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                n_suffix,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                tears=tears,
+                emote=emote
+            )
+
+            # 21. between body and arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_mid_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # *22. arms
+            _ms_arms_nh(
+                sprite_str_list,
+                loc_build_str,
+                clothing,
+                None,
+                leanpose,
+                n_suffix
+            )
+
+        else:
 
             # 2. back-hair
             _ms_hair(
@@ -2001,43 +2672,106 @@ init -5 python in mas_sprites:
                 acs_bbh_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
             # position setup
             #sprite_str_list.extend(loc_build_tup)
 
-            # 4. body
-            _ms_body_nh(
+            # 4. base-0
+            # 5. between base-0 and body-0 acs
+            # 6. body-0
+            _ms_body_nh_wbase(
                 sprite_str_list,
                 loc_build_str,
                 clothing,
+                acs_bse_list,
+                "0",
                 n_suffix,
+                leanpose,
                 lean=lean
             )
 
             # positon setup
             #sprite_str_list.extend(loc_build_tup)
 
-            # 5. Table
+            # 7. Table
             _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
 
-            # 6. pre-front hair acs
+            # 8. between body and back arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bba_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 9. arms-base-0
+            # 10. between arms-base-0 and arms-0 acs
+            # 11. arms-0
+            _ms_arms_nh_wbase(
+                sprite_str_list,
+                base_pose,
+                arms_pose,
+                loc_build_str,
+                clothing,
+                acs_ase_list,
+                leanpose,
+                lean,
+                n_suffix,
+                "0"
+            )
+
+            # 12: between arms-0 and body-1 acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bab_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 13. base-1
+            # 14. between base-1 and body-1 acs
+            # 15. body-1
+            _ms_body_nh_wbase(
+                sprite_str_list,
+                loc_build_str,
+                clothing,
+                acs_bse_list,
+                "1",
+                n_suffix,
+                arms,
+                lean=lean
+            )
+
+            # 16. between body-1 and front hair acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
                 acs_bfh_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
-            # position setup
-            #sprite_str_list.extend(loc_build_tup)
+            # 17. pre front hair expressions
+            _ms_face_pre(
+                sprite_str_list,
+                loc_build_str,
+                n_suffix,
+                lean=lean,
+                blush=blush
+            )
 
-            # 7. front-hair
+            # 18. front-hair
             _ms_hair(
                 sprite_str_list,
                 loc_build_str,
@@ -2047,21 +2781,18 @@ init -5 python in mas_sprites:
                 lean
             )
 
-            # 8. post-front hair acs
+            # 19. post-front hair acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
                 acs_afh_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
-            # position setup
-            #sprite_str_list.extend(loc_build_tup)
-
-            # 9. face
+            # 20. face
             _ms_face(
                 sprite_str_list,
                 loc_build_str,
@@ -2073,145 +2804,45 @@ init -5 python in mas_sprites:
                 lean=lean,
                 eyebags=eyebags,
                 sweat=sweat,
-                blush=blush,
                 tears=tears,
                 emote=emote
             )
 
-
-            # 10. between body and arms acs
+            # 21. between body and arms acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
                 acs_mid_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
-            #sprite_str_list.extend(loc_build_tup)
-
-            # 11. arms
-            _ms_arms_nh(
+            # 22. arms-base-1 
+            # 23. between arms-base and arms acs
+            # 24. arms-1
+            _ms_arms_nh_wbase(
                 sprite_str_list,
+                base_pose,
+                arms_pose,
                 loc_build_str,
                 clothing,
+                acs_ase_list,
+                leanpose,
                 lean,
-                arms,
-                n_suffix
-            )
-
-        else:
-            # in thise case, 2,6 are skipped.
-
-            # 4. body
-            _ms_body(
-                sprite_str_list,
-                loc_build_str,
-                clothing,
-                hair,
                 n_suffix,
-                lean=lean,
-                arms=arms
+                "1"
             )
 
-            # positon setup
-            #sprite_str_list.extend(loc_build_tup)
-
-            # 5. Table
-            _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
-
-            # 6. post back hair acs gets rendered right after body instead
-            _ms_accessorylist(
-                sprite_str_list,
-                loc_build_str,
-                acs_bbh_list,
-                n_suffix,
-                True,
-                arms,
-                lean=lean
-            )
-
-            # 7. pre-front hair acs gets rendered before arms instead
-            _ms_accessorylist(
-                sprite_str_list,
-                loc_build_str,
-                acs_bfh_list,
-                n_suffix,
-                True,
-                arms,
-                lean=lean
-            )
-
-            # 8. post-front hair acs
-            # NOTE: this is consdiered before face
-            _ms_accessorylist(
-                sprite_str_list,
-                loc_build_str,
-                acs_afh_list,
-                n_suffix,
-                True,
-                arms,
-                lean=lean
-            )
-
-            # position setup
-            #sprite_str_list.extend(loc_build_tup)
-
-            # 9. face
-            _ms_face(
-                sprite_str_list,
-                loc_build_str,
-                eyebrows,
-                eyes,
-                nose,
-                mouth,
-                n_suffix,
-                lean=lean,
-                eyebags=eyebags,
-                sweat=sweat,
-                blush=blush,
-                tears=tears,
-                emote=emote
-            )
-
-            # 10. between body and arms acs
-            _ms_accessorylist(
-                sprite_str_list,
-                loc_build_str,
-                acs_mid_list,
-                n_suffix,
-                True,
-                arms,
-                lean=lean
-            )
-
-            # no lean means ARMS
-            if not lean:
-                # position setup
-                #sprite_str_list.extend(loc_build_tup)
-
-                # 11. arms
-                #   NOTE: force no lean here
-                _ms_arms_nh(
-                    sprite_str_list,
-                    loc_build_str,
-                    clothing,
-                    None,
-                    arms,
-                    n_suffix
-                )
-
-
-        # 12. after arms acs
+        # 25. after arms acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
             acs_pst_list,
             n_suffix,
             True,
-            arms,
+            leanpose,
             lean=lean
         )
 
@@ -2426,7 +3057,7 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix):
+    def _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix, bcode):
         """
         Adds torso string, no hair
 
@@ -2435,6 +3066,7 @@ init -5 python in mas_sprites:
             loc_str - location string
             clothing - type of clothing
             n_suffix - night suffix to use
+            bcode - base code to use
         """
         sprite_list.extend((
             ",",
@@ -2444,6 +3076,31 @@ init -5 python in mas_sprites:
             clothing,
             "/",
             NEW_BODY_STR,
+            ART_DLM,
+            bcode,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
+    def _ms_torso_nh_base(sprite_list, loc_str, n_suffix, bcode):
+        """
+        Adds base torso string, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        sprite_list.extend((
+            ",",
+            loc_str,
+            ',"',
+            B_MAIN,
+            BASE_BODY_STR,
+            bcode,
             n_suffix,
             FILE_EXT,
             '"'
@@ -2479,7 +3136,14 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_torsoleaning_nh(sprite_list, loc_str, clothing, lean, n_suffix):
+    def _ms_torsoleaning_nh(
+            sprite_list,
+            loc_str,
+            clothing,
+            lean,
+            n_suffix,
+            bcode
+        ):
         """
         Adds torso leaning string, no hair
 
@@ -2489,6 +3153,7 @@ init -5 python in mas_sprites:
             clothing - type of clothing
             lean - type of leaning
             n_suffix - night suffix to use
+            bcode - base code to use
         """
         sprite_list.extend((
             ",",
@@ -2499,6 +3164,34 @@ init -5 python in mas_sprites:
             "/",
             PREFIX_BODY_LEAN,
             lean,
+            ART_DLM,
+            bcode,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
+    def _ms_torsoleaning_nh_base(sprite_list, loc_str, lean, n_suffix, bcode):
+        """
+        Adds base torso leaning string, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            lean - type of leaning
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        sprite_list.extend((
+            ",",
+            loc_str,
+            ',"',
+            B_MAIN,
+            PREFIX_BODY_LEAN,
+            lean,
+            ART_DLM,
+            bcode,
             n_suffix,
             FILE_EXT,
             '"'
@@ -2522,11 +3215,15 @@ init -2 python:
 
         # CONSTANTS
         PRE_ACS = 0 # PRE ACCESSORY (before body)
-        MID_ACS = 1 # MID ACCESSORY (right before arms)
-        PST_ACS = 2 # post accessory (after arms)
+        MID_ACS = 1 # MID ACCESSORY (between face and front arms)
+        PST_ACS = 2 # post accessory (after front arms)
         BBH_ACS = 3 # betweeen Body and Back Hair accessory
         BFH_ACS = 4 # between Body and Front Hair accessory
         AFH_ACS = 5 # between face and front hair accessory
+        BBA_ACS = 6 # between body and back arms
+        BAB_ACS = 7 # between back arms and boobs
+        BSE_ACS = 8 # between base and clothes
+        ASE_ACS = 9 # between base arms and clothes
 
         # valid rec layers
         REC_LAYERS = (
@@ -2535,9 +3232,18 @@ init -2 python:
             PST_ACS,
             BBH_ACS,
             BFH_ACS,
-            AFH_ACS
+            AFH_ACS,
+            BBA_ACS,
+            BAB_ACS,
+            BSE_ACS,
+            ASE_ACS,
         )
 
+        # split layers
+        SPL_LAYERS = (
+            BSE_ACS,
+            ASE_ACS,
+        )
 
         def __init__(self):
             """
@@ -2562,13 +3268,25 @@ init -2 python:
             # accessories to be rendered after back hair, before body
             self.acs_bbh = []
 
-            # accessories to be rendered after body, before front hair
+            # accessories to be rendered after base body, before body clothes
+            self.acs_bse = []
+
+            # accessories to be rendered after body, before back arms
+            self.acs_bba = []
+
+            # accessories to be rendered after base arms, before arm clothes
+            self.acs_ase = []
+
+            # accessories to be rendered after back arms before boobs
+            self.acs_bab = []
+
+            # accessories to be rendered after boobs, before front hair
             self.acs_bfh = []
 
-            # accessories to be rendered after fornt hair, before arms
+            # accessories to be rendered after fornt hair, before face
             self.acs_afh = []
 
-            # accessories to be rendreed between body and face expressions
+            # accessories to be rendered after face, before front arms
             self.acs_mid = []
 
             # accessories to be rendered last
@@ -2583,7 +3301,11 @@ init -2 python:
                 self.PST_ACS: self.acs_pst,
                 self.BBH_ACS: self.acs_bbh,
                 self.BFH_ACS: self.acs_bfh,
-                self.AFH_ACS: self.acs_afh
+                self.AFH_ACS: self.acs_afh,
+                self.BBA_ACS: self.acs_bba,
+                self.BAB_ACS: self.acs_bab,
+                self.BSE_ACS: self.acs_bse,
+                self.ASE_ACS: self.acs_ase,
             }
 
             # use this dict to map acs IDs with which acs list they are in.
@@ -2599,6 +3321,9 @@ init -2 python:
 
             # True if we should block any changes to cas
             self.lock_acs = False
+
+            # set to True to allow ACS overriding
+            self._override_rec_layer = False
 
 
         def __get_acs(self, acs_type):
@@ -2619,6 +3344,10 @@ init -2 python:
                 _hair_name,
                 _acs_pre_names,
                 _acs_bbh_names,
+                _acs_bse_names,
+                _acs_bba_names,
+                _acs_ase_names,
+                _acs_bab_names,
                 _acs_bfh_names,
                 _acs_afh_names,
                 _acs_mid_names,
@@ -2635,6 +3364,10 @@ init -2 python:
                 _hair_name - name of hair to load
                 _acs_pre_names - list of pre acs names to load
                 _acs_bbh_names - list of bbh acs names to load
+                _acs_bse_names - list of bse acs names to load
+                _acs_bba_names - list of bba acs names to load
+                _acs_ase_names - list of ase acs names to load
+                _acs_bab_names - list of bab acs names to load
                 _acs_bfh_names - list of bfh acs names to load
                 _acs_afh_names - list of afh acs names to load
                 _acs_mid_names - list of mid acs names to load
@@ -2644,14 +3377,18 @@ init -2 python:
             """
             # clothes and hair
             self.change_outfit(
-                store.mas_sprites.CLOTH_MAP[_clothes_name],
-                store.mas_sprites.HAIR_MAP[_hair_name],
+                store.mas_sprites.CLOTH_MAP.get(_clothes_name, store.mas_clothes_def),
+                store.mas_sprites.HAIR_MAP.get(_hair_name, store.mas_hair_def),
                 startup=startup
             )
 
             # acs
             self._load_acs(_acs_pre_names, self.PRE_ACS)
             self._load_acs(_acs_bbh_names, self.BBH_ACS)
+            self._load_acs(_acs_bse_names, self.BSE_ACS)
+            self._load_acs(_acs_bba_names, self.BBA_ACS)
+            self._load_acs(_acs_ase_names, self.ASE_ACS)
+            self._load_acs(_acs_bab_names, self.BAB_ACS)
             self._load_acs(_acs_bfh_names, self.BFH_ACS)
             self._load_acs(_acs_afh_names, self.AFH_ACS)
             self._load_acs(_acs_mid_names, self.MID_ACS)
@@ -2727,13 +3464,17 @@ init -2 python:
                 if force_acs or acs.stay_on_start
             ]
 
-
         @staticmethod
         def _verify_rec_layer(val, allow_none=True):
             if val is None:
                 return allow_none
             return val in MASMonika.REC_LAYERS
 
+        @staticmethod
+        def _verify_spl_layer(val, allow_none=True):
+            if val is None:
+                return allow_none
+            return val in MASMonika.SPL_LAYERS
 
         def change_clothes(self, new_cloth, by_user=None, startup=False):
             """
@@ -2803,7 +3544,6 @@ init -2 python:
 
             if by_user is not None:
                 persistent._mas_force_clothes = bool(by_user)
-
 
         def change_hair(self, new_hair, by_user=None, startup=False):
             """
@@ -3091,6 +3831,10 @@ init -2 python:
                 store.persistent._mas_monika_hair,
                 store.persistent._mas_acs_pre_list,
                 store.persistent._mas_acs_bbh_list,
+                store.persistent._mas_acs_bse_list,
+                store.persistent._mas_acs_bba_list,
+                store.persistent._mas_acs_ase_list,
+                store.persistent._mas_acs_bab_list,
                 store.persistent._mas_acs_bfh_list,
                 store.persistent._mas_acs_afh_list,
                 store.persistent._mas_acs_mid_list,
@@ -3115,6 +3859,10 @@ init -2 python:
                     [5]: afh acs data
                     [6]: mid acs data
                     [7]: pst acs data
+                    [8]: bba acs data
+                    [9]: bab acs data
+                    [10]: bse acs data
+                    [11]: ase acs data
                 as_prims - True if this data was saved as primitive data types,
                     false if as objects
                     (Default: False)
@@ -3135,6 +3883,10 @@ init -2 python:
             self._load_acs_obj(_data[5], self.AFH_ACS)
             self._load_acs_obj(_data[6], self.MID_ACS)
             self._load_acs_obj(_data[7], self.PST_ACS)
+            self._load_acs_obj(_data[8], self.BBA_ACS)
+            self._load_acs_obj(_data[9], self.BAB_ACS)
+            self._load_acs_obj(_data[10], self.BSE_ACS)
+            self._load_acs_obj(_data[11], self.ASE_ACS)
 
 
         def reset_all(self, by_user=None):
@@ -3246,6 +3998,10 @@ init -2 python:
             """
             self.remove_all_acs_in(self.PRE_ACS)
             self.remove_all_acs_in(self.BBH_ACS)
+            self.remove_all_acs_in(self.BSE_ACS)
+            self.remove_all_acs_in(self.BBA_ACS)
+            self.remove_all_acs_in(self.ASE_ACS)
+            self.remove_all_acs_in(self.BAB_ACS)
             self.remove_all_acs_in(self.BFH_ACS)
             self.remove_all_acs_in(self.AFH_ACS)
             self.remove_all_acs_in(self.MID_ACS)
@@ -3347,6 +4103,22 @@ init -2 python:
                 self.BBH_ACS,
                 force_acs
             )
+            store.persistent._mas_acs_bse_list = self._save_acs(
+                self.BSE_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bba_list = self._save_acs(
+                self.BBA_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_ase_list = self._save_acs(
+                self.ASE_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bab_list = self._save_acs(
+                self.BAB_ACS,
+                force_acs
+            )
             store.persistent._mas_acs_bfh_list = self._save_acs(
                 self.BFH_ACS,
                 force_acs
@@ -3401,6 +4173,10 @@ init -2 python:
                 [5]: afh acs data (Default: [])
                 [6]: mid acs data (Default: [])
                 [7]: pst acs data (Default: [])
+                [8]: bba acs data (Default: [])
+                [9]: bab acs data (Default: [])
+                [10]: bse acs data (Default: [])
+                [11]: ase acs data (Default: [])
             """
             # determine which clothes to save
             if force_clothes or self.clothes.stay_on_start:
@@ -3420,6 +4196,10 @@ init -2 python:
                 hair_data = hair_data.name
                 pre_acs_data = self._save_acs(self.PRE_ACS, force_acs)
                 bbh_acs_data = self._save_acs(self.BBH_ACS, force_acs)
+                bse_acs_data = self._save_acs(self.BSE_ACS, force_acs)
+                bba_acs_data = self._save_acs(self.BBA_ACS, force_acs)
+                ase_acs_data = self._save_acs(self.ASE_ACS, force_acs)
+                bab_acs_data = self._save_acs(self.BAB_ACS, force_acs)
                 bfh_acs_data = self._save_acs(self.BFH_ACS, force_acs)
                 afh_acs_data = self._save_acs(self.AFH_ACS, force_acs)
                 mid_acs_data = self._save_acs(self.MID_ACS, force_acs)
@@ -3428,6 +4208,10 @@ init -2 python:
             else:
                 pre_acs_data = self._save_acs_obj(self.PRE_ACS, force_acs)
                 bbh_acs_data = self._save_acs_obj(self.BBH_ACS, force_acs)
+                bse_acs_data = self._save_acs_obj(self.BSE_ACS, force_acs)
+                bba_acs_data = self._save_acs_obj(self.BBA_ACS, force_acs)
+                ase_acs_data = self._save_acs_obj(self.ASE_ACS, force_acs)
+                bab_acs_data = self._save_acs_obj(self.BAB_ACS, force_acs)
                 bfh_acs_data = self._save_acs_obj(self.BFH_ACS, force_acs)
                 afh_acs_data = self._save_acs_obj(self.AFH_ACS, force_acs)
                 mid_acs_data = self._save_acs_obj(self.MID_ACS, force_acs)
@@ -3442,7 +4226,11 @@ init -2 python:
                 bfh_acs_data,
                 afh_acs_data,
                 mid_acs_data,
-                pst_acs_data
+                pst_acs_data,
+                bba_acs_data,
+                bab_acs_data,
+                bse_acs_data,
+                ase_acs_data,
             )
 
 
@@ -3468,6 +4256,14 @@ init -2 python:
             if self.lock_acs or accessory.name in self.acs_list_map:
                 # we never wear dupes
                 return
+
+            # if the given layer does not match rec layer, force the correct
+            # layer unless override
+            if (
+                    acs_type != accessory.get_rec_layer()
+                    and not self._override_rec_layer
+            ):
+                acs_type = accessory.get_rec_layer()
 
             acs_list = self.__get_acs(acs_type)
             temp_space = {
@@ -3617,6 +4413,468 @@ init -2 python:
 #
 #    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
 
+
+    class MASPoseArms(object):
+        """
+        representation of a pose's arms. This is to simplify pose management
+
+        Each pose is either a both or a left/right combo.
+        Both represntes both arms as a single image, left/right are obviously
+        separate layers for each arm. 
+
+        If both/left/right is set as a tuple with a string item as the first
+        item, the pose is assumed to have an image layer associated with
+        this pose. 
+
+        If both/left/right is set to None, the pose is assumed to NOT have
+        any image layers associated with this pose.
+
+        PROPERTIES:
+            both - string name used if a pose has both arms as a layer
+                set to None to not use this. This also takes priority.
+            both_front - True if both has a front layer (1)
+            both_back - True if both has a back layer (0)
+            left - string name used if pose has a left arm as a layer
+                set to None to not use this. Not used if both is set.
+            left_front - True if left has a front layer (1)
+            left_back - True if left has a back layer (0)
+            right - string name used if pose has a back arm as a layer
+                set to None to not use this. Not used if both is set.
+            right_front - True if right has a front layer (1)
+            right_back - True if right has a back layer (0)
+        """
+        import store.mas_sprites_json as msj
+
+        J_NAME_BOTH = (
+            "both",
+            "bback",
+            "bfront",
+        )
+
+        J_NAME_LEFT = (
+            "left",
+            "lback",
+            "lfront",
+        )
+
+        J_NAME_RIGHT = (
+            "right",
+            "rback",
+            "rfront",
+        )
+
+        def __init__(self, left=None, right=None, both=None):
+            """
+            constructor.
+            Each item below should be a tuple:
+                [0] - string name of the arm/arms
+                [1] - True if has back, False if not
+                [2] - True if has front, False if not
+
+            IN:
+                left - left arm to use
+                    "left-" is prfixed to the arm string
+                right - right arm to use
+                    "right-" is prefixed to the arm string
+                both - both arms to use
+            """
+            self._init_props()
+
+            if both is not None:
+                self.both, self.both_back, self.both_front = both
+
+            else:
+                if left is not None:
+                    self.left, self.left_back, self.left_front = left
+                    self.left = store.mas_sprites.PREFIX_ARMS_LEFT + self.left
+
+                if right is not None:
+                    self.right, self.right_back, self.right_front = right
+                    self.right = (
+                        store.mas_sprites.PREFIX_ARMS_RIGHT + self.right
+                    )
+
+        @staticmethod
+        def _add_if_needed(
+                sprite_list,
+                prefix_list,
+                suffix_list,
+                front,
+                arm_str,
+                arm_front,
+                arm_back
+        ):
+            """
+            Adds an arm string to the sprite list if needed
+
+            IN:
+                sprite_list - list to add sprite strings to
+                prefix_list - list of stirngs to prefix each arm with
+                suffix_list - list of string sto suffix each arm with
+                front - True if rendering front, False if back
+                arm_str - arm string to add
+                arm_front - True if this arm string has a front
+                arm_back - True if this arm string has a back
+            """
+            if front:
+                if arm_front:
+                    sprite_list.extend(prefix_list)
+                    sprite_list.append(arm_str)
+                    sprite_list.extend(suffix_list)
+
+            else:
+                if arm_back:
+                    sprite_list.extend(prefix_list)
+                    sprite_list.append(arm_str)
+                    sprite_list.extend(suffix_list)
+
+        def _build_loadstrs(self, prefix):
+            """
+            Builds list of strings for this pose arms
+
+            IN:
+                prefix - prefix to use for each string
+
+            RETURNS: list of strings
+            """
+            load_list = []
+            art_dlm = store.mas_sprites.ART_DLM
+            if self.both is not None:
+                both_prefix = prefix + self.both + art_dlm
+
+                # do only both string setup
+                if self.both_back:
+                    store.mas_sprites.alt_night(load_list, both_prefix + "0")
+
+                if self.both_front:
+                    store.mas_sprites.alt_night(load_list, both_prefix + "1")
+
+            else:
+                if self.left is not None:
+                    left_prefix = prefix + self.left + art_dlm
+                    
+                    if self.left_back:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            left_prefix + "0"
+                        )
+
+                    if self.left_front:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            left_prefix + "1"
+                        )
+
+                if self.right is not None:
+                    right_prefix = prefix + self.right + art_dlm
+
+                    if self.right_back:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            right_prefix + "0"
+                        )
+
+                    if self.right_front:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            right_prefix + "1"
+                        )
+
+            return load_list
+
+        def _init_props(self):
+            """
+            Initializes props
+            """
+            self.both = None
+            self.both_front = None
+            self.both_back = None
+            self.left = None
+            self.left_front = None
+            self.left_back = None
+            self.right = None
+            self.right_front = None
+            self.right_back = None
+
+        @staticmethod
+        def build_arms_sp_str(
+                sprite_list,
+                prefix_list,
+                suffix_list,
+                front,
+                arms_pose
+        ):
+            """
+            Builds arm sprite string, using base when appropriate.
+
+            IN:
+                sprite_list - list to add sprite strings to
+                prefix_list - list of strings to prefix each arm with
+                suffix_list - list of strings to suffix each arm with
+                front - True if we are rendering front, False if back
+                arms_pose - the MASPoseArms object we are building arm string
+                    for
+            """
+            if arms_pose.both is not None:
+                # we are rendering for both arms
+                MASPoseArms._add_if_needed(
+                    sprite_list,
+                    prefix_list,
+                    suffix_list,
+                    front,
+                    arms_pose.both,
+                    arms_pose.both_front,
+                    arms_pose.both_back
+                )
+
+            else:
+                # we are rendering left and right
+
+                if arms_pose.left is not None:
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix_list,
+                        suffix_list,
+                        front,
+                        arms_pose.left,
+                        arms_pose.left_front,
+                        arms_pose.left_back
+                    )
+
+                if arms_pose.right is not None:
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix_list,
+                        suffix_list,
+                        front,
+                        arms_pose.right,
+                        arms_pose.right_front,
+                        arms_pose.right_back
+                    )
+
+        @staticmethod
+        def _fromJSON_parseJGroup(json_obj, j_group, msg_log, ind_lvl):
+            """
+            Parses a group of parameters for this pose arms
+
+            IN:
+                json_obj - json object to parse
+                j_group - list of arguments to parse
+                ind_lvl - indent level
+
+            OUT:
+                msg_log - list to save messages to
+
+            RETURNS: tuple of arguments ready for MASPoseArms, or None if
+                failed.
+            """
+            prop_name, prop_back, prop_front = j_group
+            is_bad = False
+            
+            if prop_name not in json_obj:
+                # item shouldn't exist
+                if prop_front in json_obj:
+                    json_obj.pop(prop_front)
+                if prop_back in json_obj:
+                    json_obj.pop(prop_back)
+                return None
+
+            name_str = json_obj.pop(prop_name)
+            if name_str is None:
+                # this item was set to not show.
+                if prop_front in json_obj:
+                    json_obj.pop(prop_front)
+                if prop_back in json_obj:
+                    json_obj.pop(prop_back)
+                return None
+
+            # otherwise, we will try to parse everything
+            if not MASPoseArms.msj._verify_str(name_str):
+                # type check is a warning and a fail
+                # NOTE: is not error because possible to work if other
+                #   tuples are set
+                msg_log.append((
+                    MASPoseArms.msj.MSG_WARN_T,
+                    ind_lvl,
+                    MASPoseArms.msj.BAD_TYPE.format(
+                        prop_name,
+                        str,
+                        type(name_str)
+                    )
+                ))
+                is_bad = True
+
+            if prop_back in json_obj:
+                back = json_obj.pop(prop_back)
+                if not MASPoseArms.msj._verify_bool(back, allow_none=True):
+                    # bad back type means return None
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        ind_lvl,
+                        MASPoseArms.msj.BAD_TYPE.format(
+                            prop_back,
+                            bool,
+                            type(back)
+                        )
+                    ))
+                    is_bad = True
+
+            else:
+                back = False
+
+            if prop_front in json_obj:
+                front = json_obj.pop(prop_front)
+                if not MASPoseArms.msj._verify_bool(front, allow_none=True):
+                    # bad front type means return None
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        ind_lvl,
+                        MASPoseArms.msj.BAD_TYPE.format(
+                            prop_front,
+                            bool,
+                            type(front)
+                        )
+                    ))
+                    is_bad = True
+            else:
+                front = False
+
+            if is_bad:
+                return None
+
+            # otherwise, we good, return the tuple
+            return name_str, bool(back), bool(front)
+
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl):
+            """
+            Builds a MASPoseArms object given a JSON format of it
+
+            IN:
+                json_obj - json object to parse
+                ind_lvl - indent level
+
+            OUT:
+                msg_log - list to save messages to
+
+            RETURNS: MASPoseArms object built using the JSON, or 
+                None if failed
+            """
+            # parse all data, then decide what to do
+            both_data = MASPoseArms._fromJSON_parseJGroup(
+                json_obj,
+                MASPoseArms.J_NAME_BOTH,
+                msg_log,
+                ind_lvl
+            )
+            left_data = MASPoseArms._fromJSON_parseJGroup(
+                json_obj,
+                MASPoseArms.J_NAME_LEFT,
+                msg_log,
+                ind_lvl
+            )
+
+            right_data = MASPoseArms._fromJSON_parseJGroup(
+                json_obj,
+                MASPoseArms.J_NAME_RIGHT,
+                msg_log,
+                ind_lvl
+            )
+
+            if both_data is None:
+                # if neither left or right data exists, then we should warn
+                if left_data is None and right_data is None:
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        ind_lvl,
+                        MASPoseArms.msj.MPA_NO_DATA
+                    ))
+
+            else:
+                # otherwise, both-data exists. If left or right exist, warn
+                # that they wont be used
+                if left_data is not None or right_data is not None:
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        ind_lvl,
+                        MASPoseArms.msj.MPA_BOTH_OVER
+                    ))
+
+                left_data = None
+                right_data = None
+
+            # now warn for extra props
+            for ex_prop in json_obj.keys():
+                json_obj.pop(ex_prop)
+                msg_log.append((
+                    MASPoseArms.msj.MSG_WARN_T,
+                    ind_lvl,
+                    MASPoseArms.msj.EXTRA_PROP.format(ex_prop)
+                ))
+
+            # return the MASPoseArms.
+            return MASPoseArms(
+                left=left_data,
+                right=right_data,
+                both=both_data
+            )
+                            
+        def build_arms(
+                self, 
+                sprite_list,
+                prefix_list,
+                suffix_list,
+                front,
+        ):
+            """
+            Builds arm strings and adds to sprite list
+            NOTE: only adds arm parts, not composition
+            NOTE: meant for load testing
+
+            IN:
+                sprite_list - list to add sprite strings to
+                prefix_list - list of strings to prefix each arm with
+                suffix_list - list of stirngs to suffix each arm with
+                front - True if we are rendering front, False if back
+            """
+            if self.both is not None:
+                # we are rendering for both arms
+                MASPoseArms._add_if_needed(
+                    sprite_list,
+                    prefix_list,
+                    suffix_list,
+                    front,
+                    self.both,
+                    self.both_front,
+                    self.both_back
+                )
+
+            else:
+                # we are rendering left and right
+
+                if self.left is not None:
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix_list,
+                        suffix_list,
+                        front,
+                        self.left,
+                        self.left_front,
+                        self.left_back
+                    )
+
+                if self.right is not None:
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix_list,
+                        suffix_list,
+                        front,
+                        self.right,
+                        self.right_front,
+                        self.right_back
+                    )
+
+
     # pose map helps map poses to an image
     class MASPoseMap(renpy.store.object):
         """
@@ -3635,19 +4893,55 @@ init -2 python:
         CONS_PARAM_NAMES = (
             "default", 
             "l_default",
-            "use_reg_for_l",
+#            "use_reg_for_l",
             "p1",
             "p2",
             "p3",
             "p4",
             "p5",
             "p6",
+            "p7",
         )
 
+        MPM_TYPE_ED = 0
+        # enable/disbale mode
+        # each pose should be True/False
+        # True enables the pose, False disables.
+
+        MPM_TYPE_FB = 1
+        # fallback mode
+        # each pose should be a string of the pose to actually use
+        # the strings should be pose names (steepling/crossed/etc...)
+
+        MPM_TYPE_AS = 2
+        # arm split mode
+        # each pose should contain one of the following strings:
+        #   "0", "1", "", "*"
+        # See MASAccessory for more info
+
+        MPM_TYPE_PA = 3
+        # pose arms mode
+        # each pose should contain None or a MASPoseArms object
+
+        MPM_TYPE_IC = 4
+        # image code mode
+        # each pose is a string that determines the code to use
+        # NOTE: somewhat identical to FB mode in data held
+
+        MPM_TYPES = (
+            MPM_TYPE_ED,
+            MPM_TYPE_FB,
+            MPM_TYPE_AS,
+            MPM_TYPE_PA,
+            MPM_TYPE_IC
+        )
+
+        MPM_AS_DATA = ("0", "1", "", "*")
 
         def __init__(self,
                 # NOTE: when updating params, make sure to modify param name
                 #   lists above accordingly.
+                mpm_type=0,
                 default=None,
                 l_default=None,
                 use_reg_for_l=False,
@@ -3656,7 +4950,8 @@ init -2 python:
                 p3=None,
                 p4=None,
                 p5=None,
-                p6=None
+                p6=None,
+                p7=None
             ):
             """
             Constructor
@@ -3664,9 +4959,9 @@ init -2 python:
             If None is passed in for any var, we assume that no image should
             be shown for that pose
 
-            NOTE: all defaults are None
-
             IN:
+                mpm_type - MASPoseMap type of this posemap
+                    Default is 0 (enable/disble mode)
                 default - default pose id to use for poses that are not
                     specified (aka are None).
                 l_default - default pose id to use for lean poses that are not
@@ -3686,13 +4981,16 @@ init -2 python:
                     - LEAN: def|def
                 p6 - pose id to use for pose 6
                     - down
+                p7 - pose id to use for pose 7
+                    - downleftpointright
             """
             self.map = {
                 self.POSES[0]: p1,
                 self.POSES[1]: p2,
                 self.POSES[2]: p3,
                 self.POSES[3]: p4,
-                self.POSES[4]: p6
+                self.POSES[4]: p6,
+                self.POSES[5]: p7,
             }
             self.l_map = {
                 self.L_POSES[0]: p5
@@ -3710,6 +5008,7 @@ init -2 python:
             self.__all_map.update(self.map)
             self.__all_map.update(self.l_map)
 
+            self._mpm_type = mpm_type
 
         def __set_posedefs(self, pose_dict, _def):
             """
@@ -3723,6 +5022,18 @@ init -2 python:
                 if pose_dict[k] is None:
                     pose_dict[k] = _def
 
+        @staticmethod
+        def _verify_mpm_as(value, allow_none=None):
+            """
+            Verifies if the given value is a valid arm split item
+
+            IN:
+                value - value to verify
+                allow_none - ununsed
+
+            RETURNS: True if verified, False if not
+            """
+            return value in MASPoseMap.MPM_AS_DATA
 
         def get(self, pose, defval):
             """
@@ -3738,42 +5049,109 @@ init -2 python:
             """
             return self.__all_map.get(pose, defval)
 
+        def is_fallback(self):
+            """
+            Checks if this posemap is a fallback one via type.
+
+            RETURNS: True if this posemap is a fallback one, False if not
+            """
+            return self._mpm_type == self.MPM_TYPE_FB
 
         @classmethod
-        def fromJSON(cls, json_obj, is_acs, is_fallback, errs, warns):
+        def fromJSON(cls, json_obj, msg_log, ind_lvl, valid_types=None):
             """
             Builds a MASPoseMap given a JSON format of it
 
             IN:
                 json_obj - json object to parse
-                is_acs - True if the MASPoseMap should be built with acs
-                    in mind, False otherwise.
-                is_fallback - True if the MASPoseMap should be built with
-                    fallback mode in mind, False otherwise.
-                    NOTE: if is_acs is True, this is ignored
+                ind_lvl - indent lvl
+                valid_types - tuple/list of MPM types we should consider valid.
+                    NOTE: this should be used by the caller to ensure that
+                    the MPM being loaded is the correct one.
+                    If not passed, then we don't check for valid types
 
             OUT:
-                errs - list to save error message to
-                warns - list to save warning messages to
+                msg_log - list to add messages to
 
             RETURNS: MASPoseMap object built using the JSON, or None if failed
             """
+            mpm_prop = "mpm_type"
+            urfl_prop = "use_reg_for_l"
+            mpm_data = {}
+
+            # verify mpm type
+            if mpm_prop not in json_obj:
+                msg_log.append((
+                    cls.msj.MSG_ERR_T, 
+                    ind_lvl,
+                    cls.msj.REQ_MISS.format(mpm_prop)
+                ))
+                return None
+
+            mpm_type = json_obj.pop(mpm_prop)
+
+            if not cls.msj._verify_int(mpm_type, allow_none=False):
+                msg_log.append((
+                    cls.msj.MSG_ERR_T,
+                    ind_lvl,
+                    cls.msj.BAD_TYPE.format(mpm_prop, int, type(mpm_type))
+                ))
+                return None
+
+            if mpm_type not in cls.MPM_TYPES:
+                msg_log.append((
+                    cls.msj.MSG_ERR_T,
+                    ind_lvl,
+                    cls.msj.MPM_BAD_TYPE.format(mpm_type)
+                ))
+                return None
+
+            if valid_types is not None and mpm_type not in valid_types:
+                msg_log.append((
+                    cls.msj.MSG_ERR_T,
+                    ind_lvl,
+                    cls.msj.MPM_TYPE_MISS.format(valid_types, mpm_type)
+                ))
+                return None
+
+            mpm_data[mpm_prop] = mpm_type
+
+            # verify use_reg_for_l
+            if urfl_prop in json_obj:
+                use_reg_for_l = json_obj.pop(urfl_prop)
+                if not cls.msj._verify_bool(use_reg_for_l, allow_none=False):
+                    msg_log.append((
+                        cls.msj.MSG_ERR_T,
+                        ind_lvl,
+                        cls.msj.BAD_TYPE.format(
+                            urfl_prop,
+                            str, 
+                            type(use_reg_for_l)
+                        )
+                    ))
+                    return None
+
+                mpm_data[urfl_prop] = use_reg_for_l
+
+            else:
+                use_reg_for_l = None
+
+
             isbad = False
-
-            if is_acs:
-                is_fallback = False
-
-            # go through the json object and validate everything
             for prop_name in json_obj.keys():
+                prop_val = json_obj.pop(prop_name)
                 if prop_name in cls.CONS_PARAM_NAMES:
-                    prop_val = json_obj[prop_name]
-            
-                    if is_acs and prop_name != "use_reg_for_l":
 
-                        if not cls.msj._verify_str(prop_val):
-                            # acs mode must be strings
+                    if mpm_type == cls.MPM_TYPE_IC:
+                        # more ACS, means more iamge code usage
+                        if cls.msj._verify_str(prop_val):
+                            mpm_data[prop_name] = prop_val
+
+                        else:
                             isbad = True
-                            errs.append(cls.msj.MSG_ERR_IDD.format(
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                ind_lvl,
                                 cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
                                     prop_name,
                                     str,
@@ -3781,70 +5159,122 @@ init -2 python:
                                 )
                             ))
 
-                    elif is_fallback and prop_name != "use_reg_for_l":
+                    elif mpm_type == cls.MPM_TYPE_AS:
+                        # more ACS, more arm splits
+                        if MASPoseMap._verify_mpm_as(prop_val):
+                            mpm_data[prop_name] = prop_val
 
-                        if not cls.msj._verify_pose(prop_val):
-                            # fallback mode must verify pose
+                        else:
                             isbad = True
-                            errs.append(cls.msj.MSG_ERR_IDD.format(
-                                cls.msj.MPM_BAD_POSE.format(prop_name, prop_val)
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                ind_lvl,
+                                cls.msj.MPM_AS_BAD_TYPE.format(
+                                    prop_name,
+                                    str(MASPoseMap.MPM_AS_DATA),
+                                    prop_val
+                                )
                             ))
 
-                    elif not cls.msj._verify_bool(prop_val):
-                        # otherwise, we in non fallback mode or
-                        # verifying the one boolean
-                        isbad = True
-                        errs.append(cls.msj.MSG_ERR_IDD.format(
-                            cls.msj.BAD_TYPE.format(
-                                prop_name,
-                                bool,
-                                type(prop_val)
-                            )
-                        ))
+                    elif mpm_type == cls.MPM_TYPE_ED:
+                        # enable disable is default for clothing so
+                        if cls.msj._verify_bool(prop_val):
+                            mpm_data[prop_name] = prop_val
 
-                    # else case is a valid param
+                        else:
+                            isbad = True
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                ind_lvl,
+                                cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
+                                    prop_name,
+                                    bool,
+                                    type(prop_val)
+                                )
+                            ))
+
+                    elif mpm_type == cls.MPM_TYPE_FB:
+                        # clothes with fallbacks is pretty common
+                        if cls.msj._verify_pose(prop_val, allow_none=False):
+                            mpm_data[prop_name] = prop_val
+
+                        else:
+                            isbad = True
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                ind_lvl,
+                                cls.msj.MPM_BAD_POSE.format(
+                                    prop_name,
+                                    prop_val
+                                )
+                            ))
+
+                    else: 
+                        # otherwise pose arms
+                        if prop_val is None:
+                            # none is allowed as it means use no layers
+                            mpm_data[prop_name] = None
+
+                        elif cls.msj._verify_dict(prop_val, allow_none=False):
+                            msg_log.append((
+                                cls.msj.MSG_INFO_T,
+                                ind_lvl,
+                                cls.msj.MPA_LOADING.format(prop_name)
+                            ))
+                            mpm_data[prop_name] = MASPoseArms.fromJSON(
+                                prop_val,
+                                msg_log,
+                                ind_lvl + 1
+                            )
+                            msg_log.append((
+                                cls.msj.MSG_INFO_T,
+                                ind_lvl,
+                                cls.msj.MPA_SUCCESS.format(prop_name)
+                            ))
+
+                        else:
+                            isbad = True
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                ind_lvl,
+                                cls.msj.MPM_PA_BAD_TYPE.format(
+                                    prop_name,
+                                    type(prop_val)
+                                )
+                            ))
 
                 else:
                     # prop name NOT part of MASPoseMap. log as warning.
-                    json_obj.pop(prop_name)
-                    warns.append(cls.msj.MSG_WARN_IDD.format(
+                    msg_log.append((
+                        cls.msj.MSG_WARN_T,
+                        ind_lvl,
                         cls.msj.EXTRA_PROP.format(prop_name)
                     ))
-
-            # now for suggestsions based on defaults
-            # I am expecting that we will have more ACS than outfits.
-            if is_acs or is_fallback:
-                _param_default = json_obj.get("default", None)
-                _param_l_default = json_obj.get("l_default", None)
-                _param_urfl = json_obj.get("use_reg_for_l", False)
-                    
-                if _param_default is None:
-                    # we suggest using default when in fallback mode or acs
-                    if is_acs:
-                        warn_msg = cls.msj.MPM_ACS_DEF
-
-                    else:
-                        warn_msg = cls.msj.MPM_FB_DEF
-
-                    warns.append(cls.msj.MSG_WARN_IDD.format(warn_msg))
-
-                if _param_l_default is None and not _param_urfl:
-                    # we suggest using lean default when in fallback mode or 
-                    #   acs
-                    # and not using reg for l
-                    if is_acs:
-                        warn_msg = cls.msj.MPM_ACS_DEF_L
-
-                    else:
-                        warn_msg = cls.msj.MPM_FB_DEF_L
-
-                    warns.append(cls.msj.MSG_WARN_IDD.format(warn_msg))
 
             # finally check for valid params
             if isbad:
                 return None
 
-            return cls(**json_obj)
+            # we should alwyas suggest a default
+            _param_urfl = mpm_data.get("use_reg_for_l", False)
+            if "default" not in mpm_data:
+                msg_log.append((
+                    cls.msj.MSG_WARN_T,
+                    ind_lvl,
+                    cls.msj.MPM_DEF
+                ))
+
+            if "l_default" not in mpm_data and not _param_urfl:
+                # we suggest using lean default when in fallback mode or 
+                #   acs
+                # and not using reg for l
+                msg_log.append((
+                    cls.msj.MSG_WARN_T,
+                    ind_lvl,
+                    cls.msj.MPM_DEF_L
+                ))
+
+            return MASPoseMap(**mpm_data)
 
 
     # base class for MAS sprite things
@@ -4049,9 +5479,7 @@ init -2 python:
         MAS sprites that can use pose maps as fallback maps.
 
         PROPERTIES:
-            fallback - If true, the PoseMap contains fallbacks that poses
-                will revert to. If something is None, then it means to
-                blacklist.
+            None
 
         SEE MASSpriteBase for inherited properties
         """
@@ -4082,9 +5510,7 @@ init -2 python:
                 stay_on_start - True means the item should reappear on startup
                     False means the item should always drop when restarting
                     (Default: False)
-                fallback - True means the MASPoseMap includes fallback codes
-                    for each pose instead of just enable/disable rules.
-                    (Default: False)
+                fallback - Unused
                 entry_pp - programming point to call when wearing this sprite
                     the MASMonika object that is being changed is fed into this
                     function
@@ -4108,8 +5534,6 @@ init -2 python:
                 ex_props
             )
             self.__sp_type = -2
-            self.fallback = fallback
-
 
         def get_fallback(self, pose, lean):
             """
@@ -4162,6 +5586,17 @@ init -2 python:
             mux_type - list of acs types that we shoudl treat
                 as mutally exclusive with this type. Basically if this acs is
                 worn, all acs with a type in this property are removed.
+            arm_split - MASPoseMap determining which arm position the ACS 
+                should be visible in. This only applies to ACS that are
+                intended to be used in a BSE or ASE ACS layer. 
+                This accepts the following values for poses;
+                    "0" - sprite has "-0" version, and should be used for
+                        arms-0 for this pose
+                    "1" - sprite has "-1" version, and should be used for
+                        arms-1 for this pose
+                    "" - sprite does not have any arm version for this pose
+                    "*" - sprite has both "-0" and "-1" version, and both
+                        should be used for this pose
 
         SEE MASSpriteBase for inherited properties
         """
@@ -4179,7 +5614,8 @@ init -2 python:
                 exit_pp=None,
                 acs_type=None,
                 mux_type=None,
-                ex_props={}
+                ex_props={},
+                arm_split=None,
             ):
             """
             MASAccessory constructor
@@ -4221,6 +5657,8 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
+                arm_split - MASPoseMap object for determining arm splits. See
+                    property list above for more info.
 
             """
             super(MASAccessory, self).__init__(
@@ -4238,6 +5676,7 @@ init -2 python:
             self.priority=priority
             self.acs_type = acs_type
             self.mux_type = mux_type
+            self.arm_split = arm_split
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -4252,6 +5691,28 @@ init -2 python:
             """
             return acs.priority
 
+        def get_arm_split_code(self, poseid):
+            """
+            Gets arm split code if needed
+
+            IN:
+                poseid - poseid to get arm split code for
+
+            RETURNS: arms split code as iterable, or empty list 
+            """
+            if self.arm_split is None:
+                return []
+
+            # find arm code
+            arm_code = self.arm_split.get(poseid, None)
+            if not arm_code:
+                return []
+
+            # valid arm code (or not empty string)
+            if arm_code == "*":
+                return ("0", "1")
+
+            return (arm_code, )
 
         def get_rec_layer(self):
             """
@@ -4261,7 +5722,6 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
-
 
         def _build_loadstrs(self):
             """
@@ -4274,19 +5734,35 @@ init -2 python:
 
             # loop over MASPoseMap for pose ids
             for pose in store.mas_sprites.ALL_POSES:
-                poseid = self.pose_map.get(pose, "_ignore")
+                poseid = self.pose_map.get(pose, "")
 
-                # add both day and night versions
-                loadstrs.append(store.mas_sprites.BS_ACS.format(
-                    self.img_sit,
-                    poseid,
-                    ""
-                ))
-                loadstrs.append(store.mas_sprites.BS_ACS.format(
-                    self.img_sit,
-                    poseid,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                if len(poseid) > 0:
+                    prefix = store.mas_sprites.BS_ACS.format(
+                        self.img_sit,
+                        poseid
+                    )
+
+                    arm_codes = self.get_arm_split_code(pose)
+                    if len(arm_codes) < 1:
+
+                        # add both day and night versions
+                        # no arm code
+                        store.mas_sprites.alt_night(loadstrs, prefix)
+
+                    else:
+                        # add all arm versions (max 2)
+                        for arm_code in arm_codes:
+                            arm_prefix = (
+                                prefix
+                                + store.mas_sprites.ART_DLM
+                                + arm_code
+                            )
+
+                            # no arm code
+                            store.mas_sprites.alt_night(
+                                loadstrs,
+                                arm_prefix
+                            )
 
             return loadstrs
 
@@ -4334,9 +5810,7 @@ init -2 python:
                 stay_on_strat - True means the hairstyle should reappear on
                     startup. False means a restart clears the hairstyle
                     (Default: True)
-                fallback - True means the MASPoseMap includes fallback codes
-                    for each pose instead of just enable/disable rules.
-                    (Default: False)
+                fallback - Unused
                 entry_pp - programming point to call when wearing this sprite
                     the MASMonika object that is being changed is fed into this
                     function
@@ -4385,61 +5859,24 @@ init -2 python:
             # are split
             for pose in store.mas_sprites.POSES:
                 if all_split or self.split.get(pose, False):
-                    # need front
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
-
-                    # and back
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
+                    store.mas_sprites.alt_hsplit(
+                        loadstrs,
+                        store.mas_sprites.BS_HAIR_U.format(self.img_sit),
+                        True
+                    )
 
             # and for leaning
             for lpose in store.mas_sprites.L_POSES:
                 lean = lpose.partition("|")[0]
                 if all_split or self.split.get(lpose, False):
-                    # front
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
-
-                    # back
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
+                    store.mas_sprites.alt_hsplit(
+                        loadstrs,
+                        store.mas_sprites.BS_HAIR_L.format(
+                            lean,
+                            self.img_sit
+                        ),
+                        True
+                    )
 
             return loadstrs
 
@@ -4456,6 +5893,8 @@ init -2 python:
                 hair name properties.
                 use "all" to signify a default hair style for all mappings that
                 are not found.
+            pose_arms - MASPoseMap object representing the arm layers used
+                for poses
 
         SEE MASSpriteFallbackBase for inherited properties
         """
@@ -4472,7 +5911,8 @@ init -2 python:
                 hair_map={},
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props={},
+                pose_arms=None
             ):
             """
             MASClothes constructor
@@ -4488,9 +5928,7 @@ init -2 python:
                 stay_on_start - True means the clothes should reappear on
                     startup. False means a restart clears the clothes
                     (Default: False)
-                fallback - True means the MASPoseMap includes fallback codes
-                    for each pose instead of just enable/disable rules
-                    (Default: False)
+                fallback - Unused
                 hair_map - dict of available hair styles and what they map to
                     These should all be strings. To signify a default, add
                     a single item called "all" with the value being the hair
@@ -4508,6 +5946,10 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
+                pose_arms - MASPoseMap object represneting the arm layers
+                    for poses. If None is passed, we assume use the base
+                    layers as a guide
+                    (Default: None)
             """
             super(MASClothes, self).__init__(
                 name,
@@ -4523,6 +5965,7 @@ init -2 python:
             self.__sp_type = store.mas_sprites_json.SP_CLOTHES
 
             self.hair_map = hair_map
+            self.pose_arms = pose_arms
 
             # add defaults if we need them
             if "all" in hair_map:
@@ -4558,81 +6001,69 @@ init -2 python:
 
             RETURNS: list of strings
             """
-            # case 1: (split hair)
-            #   body-<type>.png
-            #   body-<type>-n.png
-            #   body-leaning-<type>.png
-            #   body-leaning-<type>-n.png
-            #   arms-<pose>.png
-            #   arms-<pose>-n.png
-            #   arms-leaning-<type>-<arms>.png
-            #   arms-leaning-<type>-<arms>-n.png
-            #
-            # case 2: (non split hair)
-            #   torso-<hair>.png
-            #   torso-<hair>-n.png
-            #   torso-leaning-<hair>-<lean>.png
-            #   torso-leaning-<hair>-<lean>-n.png
-            #   arms-<pose>.png
-            #   arms-<pose>-n.png
-            #
-            # NOTE: JSONs will NOT support non-split hair.
-            #   aka ONLY CASE 1 IS SUPPORTED
+            # NEW:
+            #   body-<type>-0.png
+            #   body-<type>-0-n.png
+            #   body-<type>-1.png
+            #   body-<type>-1-n.png
+            #   body-leaning-<type>-0.png
+            #   body-leaning-<type>-0-n.png
+            #   body-leaning-<type>-1.png
+            #   body-leaning-<type>-1-n.png
+            #   arms-<both type>-0.png (back)
+            #   arms-<both type>-0-n.png (back)
+            #   arms-<both type>-1.png (Front)
+            #   arms-<both type>-1-n.png (Front)
+            #   arms-left-<left type>-0.png (back)
+            #   arms-left-<left type>-0-n.png (back)
+            #   arms-left-<left type>-1.png (front)
+            #   arms-left-<left type>-1-n.png (front)
+            #   arms-right-<right type>-0.png (back)
+            #   arms-right-<right type>-0-n.png (back)
+            #   arms-right-<right type>-1.png (front)
+            #   arms-right-<right type>-1-n.png (front)
+
             to_verify = []
 
-            # starting with body types
-            to_verify.append(store.mas_sprites.BS_BODY_U.format(
-                self.img_sit,
-                ""
-            ))
-            to_verify.append(store.mas_sprites.BS_BODY_U.format(
-                self.img_sit,
-                store.mas_sprites.NIGHT_SUFFIX
-            ))
+            # body
+            store.mas_sprites.alt_bcode(
+                to_verify,
+                store.mas_sprites.BS_BODY_BC_U.format(self.img_sit),
+                True
+            )
 
-            # body leaning
-            # this needs to iterate over leaning types
+            # leaning
             for lpose in store.mas_sprites.L_POSES:
                 lean = lpose.partition("|")[0]
-                to_verify.append(store.mas_sprites.BS_BODY_L.format(
-                    self.img_sit,
-                    lean,
-                    ""
-                ))
-                to_verify.append(store.mas_sprites.BS_BODY_L.format(
-                    self.img_sit,
-                    lean,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                store.mas_sprites.alt_bcode(
+                    to_verify,
+                    store.mas_sprites.BS_BODY_BC_L.format(self.img_sit, lean),
+                    True
+                )
 
-            # arms
+            # determine which pose arms to use
+            if self.pose_arms is None:
+                pose_arms = store.mas_sprites.base_pose_arms_map
+            else:
+                pose_arms = self.pose_arms
+
+            # arms, upright
+            prefix = store.mas_sprites.BS_ARMS_B_BC_U.format(self.img_sit)
             for pose in store.mas_sprites.POSES:
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_U.format(
-                    self.img_sit,
-                    pose,
-                    ""
-                ))
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_U.format(
-                    self.img_sit,
-                    pose,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                mpa = pose_arms.get(pose, None)
+                if mpa is not None:
+                    to_verify.extend(mpa._build_loadstrs(prefix))
 
-            # arms leaning
+            # arms, leaning
             for lpose in store.mas_sprites.L_POSES:
                 lean, pipe_sep, arms = lpose.partition("|")
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_L.format(
-                    self.img_sit,
-                    lean,
-                    arms,
-                    ""
-                ))
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_L.format(
-                    self.img_sit,
-                    lean,
-                    arms,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                mpa = pose_arms.get(lpose, None)
+                if mpa is not None:
+                    prefix = store.mas_sprites.BS_ARMS_B_BC_L.format(
+                        self.img_sit,
+                        lean
+                    )
+                    to_verify.extend(mpa._build_loadstrs(prefix))
 
             return to_verify
 
@@ -4709,6 +6140,10 @@ init -2 python:
         # gather accessories
         acs_pre_list = character.acs.get(MASMonika.PRE_ACS, [])
         acs_bbh_list = character.acs.get(MASMonika.BBH_ACS, [])
+        acs_bse_list = character.acs.get(MASMonika.BSE_ACS, [])
+        acs_bba_list = character.acs.get(MASMonika.BBA_ACS, [])
+        acs_ase_list = character.acs.get(MASMonika.ASE_ACS, [])
+        acs_bab_list = character.acs.get(MASMonika.BAB_ACS, [])
         acs_bfh_list = character.acs.get(MASMonika.BFH_ACS, [])
         acs_afh_list = character.acs.get(MASMonika.AFH_ACS, [])
         acs_mid_list = character.acs.get(MASMonika.MID_ACS, [])
@@ -4724,10 +6159,10 @@ init -2 python:
                 arms = "steepling"
 
             # fallback adjustments:
-            if character.hair.fallback:
+            if character.hair.pose_map.is_fallback():
                 arms, lean = character.hair.get_fallback(arms, lean)
 
-            if character.clothes.fallback:
+            if character.clothes.pose_map.is_fallback():
                 arms, lean = character.clothes.get_fallback(arms, lean)
 
             # get the mapped hair for the current clothes
@@ -4740,23 +6175,47 @@ init -2 python:
             else:
                 hair = character.hair
 
-            # determine hair split
-            if hair.split is None:
-                hair_split = True
-
-            elif lean:
-                # we assume split if lean not found
-                hair_split = hair.split.get(lean + "|" + arms, True)
-
+            # combined pose with lean for efficiency
+            if lean is not None:
+                leanpose = lean + "|" + arms
             else:
-                # not leaning, still assume true if arms not found
-                hair_split = hair.split.get(arms, True)
+                leanpose = arms
 
+            # determine hair split
+            is_baked = character.clothes.hasprop("baked outfit")
+#            if character.clothes.hasprop("baked outfit"):
+#                hair_split = True
+#
+#            else:
+#                # not leaning, still assume true if arms not found
+#                hair_split = hair.split.get(leanpose, True)
+
+            # MASPoseArms rules:
+            #   1. If the pose_arms property in clothes is None, then we assume
+            #   that the clothes follows the base pose rules.
+            #   2. If the pose_arms property contains a MASPoseMap, and the 
+            #   corresponding pose in that map is None, then we assume that
+            #   the clothes does NOT have layers for this pose.
+            #   3. If a both/left/right str item in a MASPoseArms is None,
+            #   then we assume that that particular piece of a posemap does
+            #   NOT have layers for this pose.
+            # select MASPoseArms for baes and outfit
+            base_pose = store.mas_sprites.base_pose_arms_map.get(
+                leanpose,
+                None
+            )
+            arms_pose = character.clothes.pose_arms
+            if arms_pose is None:
+                arms_pose = base_pose
+            else:
+                arms_pose = arms_pose.get(leanpose, base_pose)
 
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.img_sit,
                 hair.img_sit,
-                hair_split,
+                is_baked,
+                base_pose,
+                arms_pose,
                 eyebrows,
                 eyes,
                 nose,
@@ -4764,10 +6223,15 @@ init -2 python:
                 not morning_flag,
                 acs_pre_list,
                 acs_bbh_list,
+                acs_bse_list,
+                acs_bba_list,
+                acs_ase_list,
+                acs_bab_list,
                 acs_bfh_list,
                 acs_afh_list,
                 acs_mid_list,
                 acs_pst_list,
+                leanpose=leanpose,
                 lean=lean,
                 arms=arms,
                 eyebags=eyebags,
@@ -4794,6 +6258,61 @@ init -2 python:
             # custom standing mode
 
         return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
+
+init -1 python in mas_sprites:
+    # initialization of the base arms poes map
+    base_pose_arms_map = {
+        
+        # steepling
+        POSES[0]: store.MASPoseArms(both=("steepling", False, True)),
+
+        # crossed
+        POSES[1]: store.MASPoseArms(both=("crossed", True, True)),
+
+        # restleftpointright
+        POSES[2]: store.MASPoseArms(
+            left=("rest", False, True),
+            right=("restpoint", False, True)
+        ),
+
+        # point right
+        POSES[3]: store.MASPoseArms(
+            left=("down", True, False),
+            right=("point", True, False)
+        ),
+
+        # leaning def
+        L_POSES[0]: store.MASPoseArms(
+            left=("def", False, True),
+            right=("def", True, True)
+        ),
+
+        # down
+        POSES[4]: store.MASPoseArms(
+            left=("down", True, False),
+            right=("down", True, False)
+        ),
+
+        # downleftpointright
+        POSES[5]: store.MASPoseArms(
+            left=("down", True, False),
+            right=("restpoint", False, True)
+        ),
+    }
+
+    # NOTE: consider allowing spritejsons to do this
+    def use_bpam(posenum):
+        """
+        Returns the MASPoseArms for a pose num
+        
+        IN:
+            posenum - numerical digit for a pose. This corresponds to
+                NUM_POSE.
+
+        RETURNS: base MASPoseARms for this pose, or None if not found
+        """
+        return base_pose_arms_map.get(NUM_POSE.get(posenum, None), None)
+
 
 # Monika
 define monika_chr = MASMonika()
@@ -5211,6 +6730,55 @@ image monika ATL_love:
 
         repeat
 
+# random exps for love_too at normal thru aff
+image monika ATL_love_too_norm_plus:
+    block:
+        choice:
+            "monika 1hua"
+        choice:
+            "monika 1huu"
+        choice:
+            "monika 1ekbsu"
+        choice:
+            "monika 1ekbsa"
+        choice:
+            "monika 1dkbsu"
+        choice:
+            "monika 1dubsu"
+        choice:
+            "monika 1dkbsa"
+        choice:
+            "monika 5ekbsa"
+        choice:
+            "monika 5esu"
+        choice:
+            "monika 5eka"
+
+# random exps for love_too at enam+
+image monika ATL_love_too_enam_plus:
+    block:
+        choice 0.05:
+            "monika 1sua"
+        choice 0.05:
+            "monika 1subsa"
+        choice 0.10:
+            "monika 1hua"
+        choice 0.10:
+            "monika 1huu"
+        choice 0.10:
+            "monika 1ekbsu"
+        choice 0.10:
+            "monika 1ekbsa"
+        choice 0.10:
+            "monika 1dkbsu"
+        choice 0.10:
+            "monika 1dubsu"
+        choice 0.10:
+            "monika 1dkbsa"
+        choice 0.10:
+            "monika 5ekbsa"
+        choice 0.10:
+            "monika 5esu"
 
 ### [IMG050]
 # condition-switched images for old school image selecting
