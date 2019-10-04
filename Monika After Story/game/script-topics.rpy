@@ -13058,7 +13058,17 @@ init 5 python:
             unlocked=True
         )
     )
-
+label monika_assume_code_level:
+    m "Have I been underestimating your coding skills?{nw}"
+    menu:
+        m "Have I been underestimating your coding skills?{fast}"
+        "Yes":
+            m "Ahaha, I'm sorry, [player]!"
+            m "I didn't mean to- I just never thought to ask."
+        "No":
+            m "Okay, good."
+            m "I just wanted to make sure I wasn't assuming your skill level.
+            
 label monika_installed_python:
     m 1sub "You did?"
     m 1hub "That's great, [player]!"
