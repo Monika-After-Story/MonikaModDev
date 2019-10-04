@@ -13070,6 +13070,19 @@ label monika_assume_code_level:
             m 1ekb "Okay, good."
             m 3eka "I just wanted to make sure I wasn't assuming your skill level.
             
+label monika_python_version:
+    m 1eub "What version of Python did you download?{fast}"
+    $ _history_list.pop()
+    menu:
+        m 1eub "What version of Python did you download?{fast}"
+        #python 2 and python 3, need to figure out which one is used for MAS.
+        "option one":
+            m 1hksdlb "...{w=0.5}"
+            m 1rksdla "[player], I use the other version of Python...{w=0.5}"
+        "option two":
+            m 1hub "Great!"
+            m 1eub "That's the version of Python I use."
+            
 label monika_installed_python:
     m 1sub "You did?"
     m 1hub "That's great, [player]!"
@@ -13151,7 +13164,6 @@ label monika_installed_python:
                     m 1rsc "...{w=0.5}"
                     m 1esd "Hey, [player]?"
                     call monika_assume_code_level
-
                         
                 "option two":
                     m 1hub "Great!"
