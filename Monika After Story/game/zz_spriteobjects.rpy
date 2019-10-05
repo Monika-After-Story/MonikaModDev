@@ -893,7 +893,9 @@ init -1 python:
         entry_pp=store.mas_sprites._clothes_orcaramelo_hatsune_miku_entry,
         exit_pp=store.mas_sprites._clothes_orcaramelo_hatsune_miku_exit,
         ex_props={
-            "desired-hair-prop": "twintails"
+            "desired-hair-prop": "twintails",
+            "costume": True,
+            "cosplay": True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_orcaramelo_hatsune_miku)
