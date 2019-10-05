@@ -1056,11 +1056,7 @@ init -5 python in mas_sprites:
                 moni_chr.remove_acs(ACS_MAP[desired_ribbon])
 
             else:
-                _acs_wear_if_wearing_acs(
-                    moni_chr,
-                    ACS_MAP[desired_ribbon],
-                    temp_ribbon
-                )
+                moni_chr.wear_acs(temp_ribbon)
 
 
     def clothes_entry_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -1097,6 +1093,9 @@ init -5 python in mas_sprites:
                 and moni_chr.is_wearing_hair_with_exprop("ribbon")
         ):
             prev_ribbon = moni_chr.get_acs_of_type("ribbon")
+            if prev_ribbon is None:
+                prev_ribbon = moni_chr.get_acs_of_exprop("ribbon-like")
+
             if prev_ribbon != store.mas_acs_ribbon_blank:
                 temp_storage["hair.ribbon"] = prev_ribbon
 
