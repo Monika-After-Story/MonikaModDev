@@ -938,8 +938,12 @@ init -5 python in mas_sprites:
         return sprite_map.get(sprite_name, None)
 
 
-    # special mas monika functions
-
+    # special mas monika functions (hooks)
+    # NOTE: set flag "abort" to True in prechange points to prevent 
+    #   change/add/removal. This is dependent on the specific hook.
+    #   ACS: only wear_mux_pre_change and rm_exit_pre_change
+    #   HAIR: hair_exit_pre_change
+    #   CLOTHES: clothes_exit_pre_change
 
     def acs_rm_exit_pre_change(temp_space, moni_chr, rm_acs, acs_loc):
         """
@@ -978,7 +982,14 @@ init -5 python in mas_sprites:
             new_acs - acs we are adding
             acs_loc - acs location to wear this acs
         """
-        pass
+        # abort if current hair not required hair prop
+        req_hair_prop = new_acs.getprop("required-hair-prop", None)
+        if (
+                req_hair_prop is not None
+                and not moni_chr.is_wearing_hair_with_exprop(req_hair_prop)
+        ):
+            temp_space["abort"] = True
+            return
 
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
@@ -3535,6 +3546,10 @@ init -2 python:
                 new_cloth
             )
 
+            # abort if asked
+            if temp_space.get("abort", False):
+                return
+
             # exit point
             self.clothes.exit(
                 self,
@@ -3611,6 +3626,10 @@ init -2 python:
                 prev_hair,
                 new_hair
             )
+
+            # abort if asked
+            if temp_space.get("abort", False):
+                return
 
             # exit point
             self.hair.exit(self, new_hair=new_hair)
@@ -4016,6 +4035,10 @@ init -2 python:
                     acs_type
                 )
 
+                # abort removal if we were told to abort
+                if temp_space.get("abort", False):
+                    return
+
                 # run programming point
                 accessory.exit(self)
 
@@ -4326,6 +4349,10 @@ init -2 python:
                     accessory,
                     acs_type
                 )
+
+                # abort wearing if we were told to abort
+                if temp_space.get("abort", False):
+                    return
 
                 # run mutual exclusion for acs
                 if accessory.mux_type is not None:

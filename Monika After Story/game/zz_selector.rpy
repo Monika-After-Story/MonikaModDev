@@ -2568,6 +2568,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
             null height 10
 
             if mailbox.read_outfit_checkbox_visible():
+                $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
                     style "check_button"
                     activate_sound gui.activate_sound
@@ -2575,10 +2576,10 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
                         ToggleField(persistent, "_mas_setting_ocbs"),
                         Function(
                             mailbox.send_outfit_checkbox_checked,
-                            persistent._mas_setting_ocbs
+                            not ocb_checked
                         )
                     ]
-                    selected mailbox.read_outfit_checkbox_checked()
+                    selected ocb_checked
 
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
