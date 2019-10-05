@@ -5,6 +5,9 @@ init -10 python in mas_songs:
     song_db = {}
 
     #Song type constants
+    #NOTE: TYPE_SHORT will never be picked in the random delegate, these are filters for that
+    #TYPE_LONG songs should either be unlocked via a 'preview' song of TYPE_SHORT or (for ex.) some story event
+    #TYPE_LONG songs would essentially be songs longer than 10-15 lines
     TYPE_LONG = "long"
     TYPE_SHORT = "short"
 
@@ -17,20 +20,14 @@ init python in mas_songs:
         #Get ev
         rand_delegate_ev = store.mas_getEV("monika_sing_song_random")
 
-        if rand_delegate_ev:
-            #Don't bother doing the rest if it's random already
-            if rand_delegate_ev.random:
-                return
-
-            #If we've got at least one random, then unlock the rand delegate
-            if hasRandomSongs():
-                rand_delegate_ev.random = True
+        if rand_delegate_ev and not rand_delegate_ev.random and hasRandomSongs():
+            rand_delegate_ev.random = True
 
     def getUnlockedSongs():
         """
         Gets a list of all unlocked songs
 
-        OUT: list of all unlocked songs
+        OUT: list of all unlocked songs in tuple format for a scrollable menu
         """
         return [
             (ev.prompt, ev_label, False, False)
@@ -100,7 +97,7 @@ label monika_sing_song_pool:
     $ sel_song = _return
 
     if sel_song:
-        $ pushEvent(sel_song)
+        $ pushEvent(sel_song, skipeval=True)
         m 3hub "Alright!"
 
     else:
@@ -120,21 +117,18 @@ init 5 python:
     )
 
 label monika_sing_song_random:
-    python:
-        #We only want short songs in random. Long songs should be unlocked by default or have another means to unlock
-        #Like a "preview" version of it which unlocks the full song in the pool delegate
-        rand_song_list = mas_songs.getRandomSongs()
-
-    if len(rand_song_list) > 0:
+    #We only want short songs in random. Long songs should be unlocked by default or have another means to unlock
+    #Like a "preview" version of it which unlocks the full song in the pool delegate
+    if mas_songs.hasRandomSongs():
         python:
-            rand_song = renpy.random.choice(rand_song_list)
-            pushEvent(rand_song)
+            rand_song = renpy.random.choice(mas_songs.getRandomSongs())
+            pushEvent(rand_song, skipeval=True)
             mas_unlockEVL(rand_song, "SNG")
 
     #We have no songs! let's pull back the shown count for this and derandom
     else:
         $ mas_getEV("monika_sing_song_random").shown_count -= 1
-        return "derandom"
+        return "derandom|no_unlock"
     return "no_unlock"
 
 
