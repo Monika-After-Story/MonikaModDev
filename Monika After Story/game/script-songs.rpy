@@ -112,7 +112,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_sing_song_random",
             random=True,
-            unlocked=False
+            unlocked=False,
+            rules={"skip alert": None}
         )
     )
 
@@ -122,7 +123,7 @@ label monika_sing_song_random:
     if mas_songs.hasRandomSongs():
         python:
             rand_song = renpy.random.choice(mas_songs.getRandomSongs())
-            pushEvent(rand_song, skipeval=True)
+            pushEvent(rand_song, skipeval=True, notify=True)
             mas_unlockEVL(rand_song, "SNG")
 
     #We have no songs! let's pull back the shown count for this and derandom
