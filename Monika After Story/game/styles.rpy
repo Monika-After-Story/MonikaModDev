@@ -17,8 +17,8 @@ init -1 python in mas_globals:
     button_text_idle_color = None
 
 init -200 python in mas_ui:
-    dark_button_text_hover_color = "#ffcce8"
-    dark_button_text_idle_color = "#e670af"
+    dark_button_text_hover_color = "#FFABD8"
+    dark_button_text_idle_color = "#FD5BA2"
 
     light_button_text_hover_color = "#fa9"
     light_button_text_idle_color = "#000"
@@ -248,27 +248,6 @@ style hkb_dark_button_text is default:
     properties gui.button_text_properties("hkb_dark_button")
     outlines []
 
-style hkbd_dark_vbox is vbox
-style hkbd_dark_button is button_dark
-style hkbd_dark_button_text is button_text_dark
-
-style hkbd_dark_vbox:
-    spacing 0
-
-style hkbd_dark_button is default:
-    properties gui.button_properties("hkb_dark_button")
-    idle_background "mod_assets/hkb_disabled_background_d.png"
-    hover_background "mod_assets/hkb_disabled_background_d.png"
-
-style hkbd_dark_button_text is default:
-#    properties gui.button_text_properties("hkb_button")
-    font gui.default_font
-    size gui.text_size
-    idle_color mas_ui.dark_button_text_idle_color
-    hover_color mas_ui.dark_button_text_hover_color
-    kerning 0.2
-    outlines []
-
 style hkb_dark_text is default:
     xalign 0.5
     size gui.text_size
@@ -276,7 +255,6 @@ style hkb_dark_text is default:
     color mas_ui.dark_button_text_idle_color
     kerning 0.2
     outlines []
-
 
 #START: screens styles
 style window_monika_def is window:
@@ -908,7 +886,7 @@ define gui.quick_dark_button_text_font = gui.default_font
 define gui.quick_dark_button_text_size = 14
 define gui.quick_dark_button_text_xalign = 0.5
 define gui.quick_dark_button_text_yalign = 0.995
-define gui.quick_dark_button_text_idle_color = "#F2A4F1"
-define gui.quick_dark_button_text_selected_color = "#DFDFDF"
-define gui.quick_dark_button_text_hover_color = "#FFDEFE"
+define gui.quick_dark_button_text_idle_color = "#E3AB62"
+define gui.quick_dark_button_text_selected_color = "#FFE2BD"
+define gui.quick_dark_button_text_hover_color = "#FFD59E"
 define gui.quick_dark_button_text_kerning = 0.2
