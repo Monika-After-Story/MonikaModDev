@@ -526,7 +526,12 @@ init -10 python in mas_selspr:
     MB_OCB_CHECKED = "ocb_checked"
 
     ## screen constants
-    SB_VIEWPORT_BOUNDS = (1075, 5, 200, 625, 5)
+    SB_VIEWPORT_BOUNDS_X = 1075
+    SB_VIEWPORT_BOUNDS_Y = 5
+    SB_VIEWPORT_BOUNDS_W = 200
+    SB_VIEWPORT_BOUNDS_H = 625
+    SB_VIEWPORT_BOUNDS_H_O = 590
+    SB_VIEWPORT_BOUNDS_BS = 5
     # keep this in sync with teh screen area
 
     ## string constants
@@ -2526,9 +2531,14 @@ style mas_selector_sidebar_vbar:
 screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
     zorder 50
 #    modal True
+    python:
+        if mailbox.read_outfit_checkbox_visible():
+            sel_frame_vsize = 590
+        else:
+            sel_frame_vsize = 625
 
     frame:
-        area (1075, 5, 200, 595)
+        area (1075, 5, 200, sel_frame_vsize)
         background Frame(mas_getTimeFile("mod_assets/frames/black70_pinkborder100_5px.png"), left=6, top=6, tile=True)
 
         vbox:
@@ -2560,6 +2570,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
             if mailbox.read_outfit_checkbox_visible():
                 textbutton _("Outfit Mode"):
                     style "check_button"
+                    activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocbs"),
                         Function(
@@ -2653,6 +2664,19 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         remover_item = store.mas_selspr._rm_remover(items)
         remover_disp_item = None
 
+        if mailbox.read_outfit_checkbox_visible():
+            viewport_h = store.mas_selspr.SB_VIEWPORT_BOUNDS_H_O
+        else:
+            viewport_h = store.mas_selspr.SB_VIEWPORT_BOUNDS_H
+
+        viewport_bounds = (
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_X,
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_Y,
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_W,
+            viewport_h,
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_BS
+        )
+
     # sanity check to avoid crashes
     if len(items) < 1:
         return False
@@ -2680,7 +2704,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
             remover_disp_item = MASSelectableImageButtonDisplayable(
                 remover_item,
                 select_map,
-                store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                viewport_bounds,
                 mailbox
             )
 
@@ -2690,7 +2714,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 MASSelectableImageButtonDisplayable(
                     item,
                     select_map,
-                    store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                    viewport_bounds,
                     mailbox
                 )
                 for item in items
@@ -2702,7 +2726,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 MASSelectableImageButtonDisplayable(
                     item,
                     select_map,
-                    store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                    viewport_bounds,
                     mailbox
                 )
                 for item in items
