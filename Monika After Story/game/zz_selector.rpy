@@ -662,10 +662,17 @@ init -10 python in mas_selspr:
         if remover_name is None:
             remover_name = "Remove"
 
+        # get default mux for this acs type
+        template = store.mas_sprites.get_ACSTemplate_by_type(acs_type)
+        if template is None:
+            mux_type = None
+        else:
+            mux_type = template.mux_type
+
         remover_acs = store.mas_sprites.create_remover(
             acs_type,
             group,
-            store.mas_sprites.get_mux_from_type(acs_type)
+            mux_type
         )
         init_selectable_acs(
             remover_acs,
@@ -1041,7 +1048,7 @@ init -10 python in mas_selspr:
         """
         item_found = _fill_select_map(moni_chr, select_type, items, select_map)
         if remover_disp_item is not None and not item_found:
-            select_map[remover_item.name] = remover_disp_item
+            select_map[remover_disp_item.selectable.name] = remover_disp_item
             remover_disp_item.selected = True
 
         return item_found
