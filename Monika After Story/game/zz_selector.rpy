@@ -2641,21 +2641,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
     zorder 50
 #    modal True
 
-    python:
-        sel_frame_vsize = mailbox.read_frame_vsize()
-
-        if mas_globals.dark_mode:
-            button_style = "hkb_dark_button"
-            button_text_style = "hkb_dark_text"
-        else:
-            button_style = "hkb_button"
-            button_text_style = "hkb_text"
-
-        button_bg = mas_getTimeFile("mod_assets/hkb_disabled_background.png")
+    $ sel_frame_vsize = mailbox.read_frame_vsize()
 
     frame:
         area (1075, 5, 200, sel_frame_vsize)
-        background Frame(mas_getTimeFile("mod_assets/frames/black70_pinkborder100_5px.png"), left=6, top=6, tile=True)
+        background Frame(store.mas_ui.sel_sb_frame, left=6, top=6, tile=True)
 
         vbox:
             xsize 200
@@ -2699,7 +2689,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
             if mailbox.read_restore_enable():
                 textbutton _("Restore"):
-                    style button_style
+                    style store.mas_ui.hkb_button_style
                     xalign 0.5
                     action Jump(restore)
 
@@ -2709,12 +2699,12 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     xsize 120
                     xalign 0.5
 
-                    background Image(button_bg)
-                    text "Restore" style button_text_style
+                    background Image(store.mas_ui.hkb_disabled_bg)
+                    text "Restore" style store.mas_ui.hkb_text_style
 
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
-                    style button_style
+                    style store.mas_ui.hkb_button_style
                     xalign 0.5
                     action Jump(confirm)
             else:
@@ -2723,11 +2713,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     xsize 120
                     xalign 0.5
 
-                    background Image(button_bg)
-                    text "Confirm" style button_text_style
+                    background Image(store.mas_ui.hkb_disabled_bg)
+                    text "Confirm" style store.mas_ui.hkb_text_style
 
             textbutton _("Cancel"):
-                style button_style
+                style store.mas_ui.hkb_button_style
                 xalign 0.5
                 action Jump(cancel)
 #                action Function(mailbox.mas_send_return, -1)
