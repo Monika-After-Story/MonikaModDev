@@ -739,7 +739,7 @@ init -5 python in mas_sprites:
         return PREFIX_FACE
 
 
-    def create_remover(acs_type, group):
+    def create_remover(acs_type, group, mux_types):
         """
         Creates a remover ACS
 
@@ -747,6 +747,7 @@ init -5 python in mas_sprites:
             acs_type - acs type for the remover. This is also used in mux_type
             group - group of selectables this ACS remover should be linked to
                 This is used in the naming of the ACS.
+            mux_types - list of types to use for mux_type
 
         RETURNS: remover ACS object
         """
@@ -759,7 +760,7 @@ init -5 python in mas_sprites:
             ),
             stay_on_start=False,
             acs_type=acs_type,
-            mux_type=[acs_type]
+            mux_type=mux_types
         )
         init_acs(remover_acs)
         return remover_acs
@@ -1055,11 +1056,7 @@ init -5 python in mas_sprites:
                 moni_chr.remove_acs(ACS_MAP[desired_ribbon])
 
             else:
-                _acs_wear_if_wearing_acs(
-                    moni_chr,
-                    ACS_MAP[desired_ribbon],
-                    temp_ribbon
-                )
+                moni_chr.wear_acs(temp_ribbon)
 
 
     def clothes_entry_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -1072,7 +1069,11 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
-        pass
+        if prev_cloth.hasprop("baked outfit"):
+            # a baked outfit causes selector issues. we need to re-evaluate
+            # certain cases.
+            _hair_unlock_select_if_needed()
+            store.mas_selspr._validate_group_topics()
 
 
     def clothes_entry_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -1092,6 +1093,9 @@ init -5 python in mas_sprites:
                 and moni_chr.is_wearing_hair_with_exprop("ribbon")
         ):
             prev_ribbon = moni_chr.get_acs_of_type("ribbon")
+            if prev_ribbon is None:
+                prev_ribbon = moni_chr.get_acs_of_exprop("ribbon-like")
+
             if prev_ribbon != store.mas_acs_ribbon_blank:
                 temp_storage["hair.ribbon"] = prev_ribbon
 
@@ -1173,20 +1177,23 @@ init -5 python in mas_sprites:
             elif new_hair.hasprop("ribbon-off"):
                 # take ribbon off for this hairstyle
                 _acs_ribbon_save_and_remove(moni_chr)
+                _acs_ribbon_like_save_and_remove(_moni_chr)
 
             if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
                 # unlock selector for ribbons if you have more than one
                 store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
             # also change name of the ribbon select prompt
-            if moni_chr.is_wearing_acs_type("ribbon"):
+            if moni_chr.is_wearing_ribbon():
                 store.mas_selspr.set_prompt("ribbon", "change")
+
             else:
                 store.mas_selspr.set_prompt("ribbon", "wear")
 
         else:
             # new hair not enabled for ribbon
             _acs_ribbon_save_and_remove(moni_chr)
+            _acs_ribbon_like_save_and_remove(moni_chr)
 
 
     # sprite maker functions
@@ -3817,6 +3824,19 @@ init -2 python:
             return self.hair.hasprop(exprop)
 
 
+        def is_wearing_ribbon(self):
+            """
+            Checks if we are currently wearing a ribbon or ribbon-like ACS
+
+            RETURNS: True if wearing ACS with ribbon type or ACS with
+                ribbon-like ex prop
+            """
+            return (
+                self.is_wearing_acs_type("ribbon") 
+                or self.is_wearing_acs_with_exprop("ribbon-like")
+            )
+
+
         def load(self, startup=False):
             """
             Loads hair/clothes/accessories from persistent.
@@ -5597,6 +5617,11 @@ init -2 python:
                     "" - sprite does not have any arm version for this pose
                     "*" - sprite has both "-0" and "-1" version, and both
                         should be used for this pose
+            dlg_desc - user friendly way to describe this accessory in dialogue
+                Think "black bow" or "silver earrings"
+            dlg_plur - True if the dlg_desc should be used in the plural 
+                sense, like "these silver earrings", False if not, like:
+                "this black bow"
 
         SEE MASSpriteBase for inherited properties
         """
@@ -5616,6 +5641,7 @@ init -2 python:
                 mux_type=None,
                 ex_props={},
                 arm_split=None,
+                dlg_data=None,
             ):
             """
             MASAccessory constructor
@@ -5659,6 +5685,9 @@ init -2 python:
                     (Default: empty dict)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
 
             """
             super(MASAccessory, self).__init__(
@@ -5677,6 +5706,12 @@ init -2 python:
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.arm_split = arm_split
+            
+            if dlg_data is not None and len(dlg_data) == 2:
+                self.dlg_desc, self.dlg_plur = dlg_data
+            else:
+                self.dlg_desc = None
+                self.dlg_plur = None
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.

@@ -7,12 +7,12 @@
 #   [SPR010] - Hair programming points
 #   [SPR020] - Clothes programming points
 #   [SPR030] - ACS programming points
-#   [SPR100] - special base objects
 #   [SPR110] - Hair sprite objects
 #   [SPR120] - Clothes sprite objects
 #   [SPR130] - ACS sprite objects
 #   [SPR140] - Table sprite objects
 #   [SPR230] - ACS variables
+#   [SPR300] - ACS type - mux type mapping
 
 init -2 python in mas_sprites:
     # all progrmaming points should go here
@@ -126,6 +126,20 @@ init -2 python in mas_sprites:
         store.mas_lockEVL("monika_ribbon_select", "EVE")
 
 
+    def _acs_ribbon_like_save_and_remove(_moni_chr):
+        """
+        Removes ribbon-like acs and saves them to temp storage, if found
+
+        IN:
+            _moni_chr - MASMonika object
+        """
+        prev_ribbon_like = _moni_chr.get_acs_of_exprop("ribbon-like")
+
+        if prev_ribbon_like is not None:
+            _moni_chr.remove_acs(prev_ribbon_like)
+            temp_storage["hair.ribbon"] = prev_ribbon_like
+
+
     def _acs_save_and_remove_exprop(_moni_chr, exprop, key, lock_topics):
         """
         Removes acs with given exprop, saving them to temp storage with
@@ -168,14 +182,6 @@ init -2 python in mas_sprites:
                 )
                 if prompt_ev is not None:
                     store.mas_lockEVL(prompt_ev, "EVE")
-
-
-    def _clothes_baked_exit():
-        """
-        Unlocks hair selector, unlocks other selectors based on GRP topic rules
-        """
-        _hair_unlock_select_if_needed()
-        store.mas_selspr._validate_group_topics()
 
 
     ######### HAIR [SPR010] ###########
@@ -260,6 +266,7 @@ init -2 python in mas_sprites:
         # wearing rin clothes means we wear custom blank ribbon if we are
         # wearing a ribbon
         _acs_ribbon_save_and_remove(_moni_chr)
+        _acs_ribbon_like_save_and_remove(_moni_chr)
 #        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
 #        if (
 #                prev_ribbon is not None 
@@ -331,15 +338,6 @@ init -2 python in mas_sprites:
             "acs.left-hair-strand-eye-level"
         )
 
-        # unlock selectors
-        _clothes_baked_exit()
-
-        #Unlock the selector for ribbons since you now have more than one
-        if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
-        else:
-            store.mas_lockEVL("monika_ribbon_select", "EVE")
-
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
         """
@@ -365,6 +363,7 @@ init -2 python in mas_sprites:
         # wearing marisa clothes means we wear custom blank ribbon if we are
         # wearing a ribbon
         _acs_ribbon_save_and_remove(_moni_chr)
+        _acs_ribbon_like_save_and_remove(_moni_chr)
 #        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
 #        if (
 #                prev_ribbon is not None 
@@ -376,9 +375,6 @@ init -2 python in mas_sprites:
 
         # lock hair so we dont get ribbon issues
         _moni_chr.lock_hair = True
-
-        # lock ribbon select
-        store.mas_lockEVL("monika_ribbon_select", "EVE")
 
         #### hair acs
         _acs_save_and_remove_exprop(
@@ -429,16 +425,6 @@ init -2 python in mas_sprites:
             _moni_chr,
             "acs.left-hair-strand-eye-level"
         )
-
-        _clothes_baked_exit()
-
-        #Unlock the selector for ribbons since you now have more than one 
-        # (if you only had def before)
-        # and only if your hair allows ribbon
-        if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
-        else:
-            store.mas_lockEVL("monika_ribbon_select", "EVE")
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
@@ -553,18 +539,6 @@ init -2 python in mas_sprites:
         """
         if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
             _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
-
-
-init -2 python in mas_sprites:
-    # Base objects (SPR100)
-    # special objects
-
-    import store
-
-    base_pose_map = store.MASPoseMap(
-        mpm_type=store.MASPoseMap.MPM_TYPE_PA
-        # TODO
-    )
 
 
 init -1 python:
@@ -1332,7 +1306,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_blank)
@@ -1350,7 +1327,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_blue)
@@ -1380,7 +1360,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_darkpurple)
@@ -1410,7 +1393,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_emerald)
@@ -1439,7 +1425,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_def)
@@ -1469,7 +1458,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_gray)
@@ -1499,7 +1491,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_green)
@@ -1529,7 +1524,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_lightpurple)
@@ -1559,7 +1557,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_peach)
@@ -1589,7 +1590,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_pink)
@@ -1961,3 +1965,59 @@ default persistent._mas_acs_enable_quetzalplushie = False
 ### PROMISE RING ###
 default persistent._mas_acs_enable_promisering = False
 # True enables promise ring, False disables promise ring
+
+
+### ACS TYPE + MUX TYPE MAPPING [SPR300] #####################################
+# this contains special acs type mappings
+# basically on startup, we evaluate each acs and add additional mux types
+# to that ACS if needed. this is to streamline adding additional acs types that
+# conflict with current ones.
+
+init -100 python in mas_sprites:
+
+    ACS_MUX_MAP = {
+        "mug": ["mug"],
+        "left-hair-flower": ["left-hair-flower"],
+        "wrist-bracelet": ["wrist-bracelet"],
+        "necklace": ["necklace"],
+#        "ring": ["ring"], # NOTE: ring is not muxed at this time
+        "ribbon": ["ribbon", "bow"],
+        "bow": ["bow", "ribbon"],
+    }
+
+
+    def get_mux_from_type(acs_type):
+        """
+        Returns mux type from the map. Returns empty list if not found.
+        """
+        return ACS_MUX_MAP.get(acs_type, [])
+
+
+    def _add_if_not_found(items_to_add, list_to_add_to):
+        """
+        Adds items from one list to the other if not in the other list
+        """
+        for item in items_to_add:
+            if item not in list_to_add_to:
+                list_to_add_to.append(item)
+
+
+    def apply_mux_map():
+        """
+        Applies mux map to all existing acs. Call this in ch30_reset for best
+        results.
+        NOTE: do not call this prior to init -5.
+        """
+        for acs_name in ACS_MAP:
+            acs_obj = ACS_MAP[acs_name]
+            mux_types = ACS_MUX_MAP.get(acs_obj.acs_type, None)
+            if mux_types is not None:
+
+                # if the ACS has a mux type list, add to it
+                if acs_obj.mux_type:
+                    _add_if_not_found(mux_types, acs_obj.mux_type)
+
+                # otherwise, just set it to ours
+                else:
+                    acs_obj.mux_type = mux_types
+
