@@ -12,7 +12,6 @@
 #   [SPR130] - ACS sprite objects
 #   [SPR140] - Table sprite objects
 #   [SPR230] - ACS variables
-#   [SPR300] - ACS type - mux type mapping
 
 init -2 python in mas_sprites:
     # all progrmaming points should go here
@@ -2052,60 +2051,4 @@ default persistent._mas_acs_enable_quetzalplushie = False
 default persistent._mas_acs_enable_promisering = False
 # True enables promise ring, False disables promise ring
 
-
-### ACS TYPE + MUX TYPE MAPPING [SPR300] #####################################
-# this contains special acs type mappings
-# basically on startup, we evaluate each acs and add additional mux types
-# to that ACS if needed. this is to streamline adding additional acs types that
-# conflict with current ones.
-
-init -100 python in mas_sprites:
-
-    ACS_MUX_MAP = {
-        "mug": ["mug"],
-        "left-hair-flower": ["left-hair-flower"],
-        "wrist-bracelet": ["wrist-bracelet"],
-        "necklace": ["necklace"],
-#        "ring": ["ring"], # NOTE: ring is not muxed at this time
-        "ribbon": ["ribbon", "bow", "twin-ribbons"],
-        "bow": ["bow", "ribbon", "twin-ribbons"],
-        "twin-ribbons": ["twin-ribbons", "ribbon", "bow"],
-        "headset": ["headset", "headphones", "earphones"],
-    }
-
-
-    def get_mux_from_type(acs_type):
-        """
-        Returns mux type from the map. Returns empty list if not found.
-        """
-        return ACS_MUX_MAP.get(acs_type, [])
-
-
-    def _add_if_not_found(items_to_add, list_to_add_to):
-        """
-        Adds items from one list to the other if not in the other list
-        """
-        for item in items_to_add:
-            if item not in list_to_add_to:
-                list_to_add_to.append(item)
-
-
-    def apply_mux_map():
-        """
-        Applies mux map to all existing acs. Call this in ch30_reset for best
-        results.
-        NOTE: do not call this prior to init -5.
-        """
-        for acs_name in ACS_MAP:
-            acs_obj = ACS_MAP[acs_name]
-            mux_types = ACS_MUX_MAP.get(acs_obj.acs_type, None)
-            if mux_types is not None:
-
-                # if the ACS has a mux type list, add to it
-                if acs_obj.mux_type:
-                    _add_if_not_found(mux_types, acs_obj.mux_type)
-
-                # otherwise, just set it to ours
-                else:
-                    acs_obj.mux_type = list(mux_types)
 

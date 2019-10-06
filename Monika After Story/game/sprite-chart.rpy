@@ -220,6 +220,196 @@ image mas_bday_balloons = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
+
+### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
+# this contains special acs type mappings
+# basically on startup, we evaluate each acs and add mux types and other
+# properties.
+
+init -101 python in mas_sprites:
+    
+    class ACSTemplate(renpy.store.object):
+        """
+        ACS template object
+        Establishes guidelines for defauling properties for an ACS
+
+        PROPERTIES:
+            acs_type - the acs type associated with this template
+            mux_type - the default mux type list for this template
+            ex_props - default exprops dict for this template
+        """
+
+        def __init__(self, acs_type, mux_type=None, ex_props=None):
+            """
+            Constructor
+
+            IN:
+                acs_type - acs type this template should be associated with
+                mux_type - the mux_type we want to use as default. Ignored if
+                    None.
+                    (Default: None)
+                ex_props - the ex_props we want to use as default. Ignored if
+                    None.
+                    (Default: None)
+            """
+            self.acs_type = acs_type
+            self.mux_type = mux_type
+            self.ex_props = ex_props
+
+        def _apply_ex_props(self, acs):
+            """
+            Applies ex prop defaults to the given ACS.
+
+            acs_type is NOT checked.
+
+            IN:
+                acs - acs to modify
+            """
+            if self.ex_props is None:
+                return
+
+            if acs.ex_props is None:
+                acs.ex_props = dict(self.ex_props)
+
+            else:
+                acs.ex_props.update(self.ex_props)
+
+        def _apply_mux_type(self, acs):
+            """
+            Applies mux type defaults to the given ACS. 
+            
+            acs_type is NOT checked.
+
+            IN:
+                acs - acs to modify.
+            """
+            if self.mux_type is None:
+                return
+
+            if acs.mux_type is None:
+                acs.mux_type = list(self.mux_type)
+
+            else:
+                for mux_type in self.mux_type:
+                    if mux_type not in acs.mux_type:
+                        acs.mux_type.append(mux_type)
+
+        def apply(self, acs):
+            """
+            Applies the defaults to the given ACS. (NOTE: acs type is checked)
+            """
+            if self.acs_type == acs.acs_type:
+                self._apply_ex_props(acs)
+                self._apply_mux_type(acs)
+
+
+init -100 python in mas_sprites:
+
+    DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons"]
+    # default mux types for ribbon-based items.
+
+    DEF_MUX_HS = ["headset", "headphones", "earphones"]
+    # default mux types for headset-based items
+
+    # maps ACS types to their ACS template
+    ACS_DEFS = {
+        "bow": ACSTemplate(
+            "bow",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                "ribbon-like": True
+            }
+        ),
+        "headset": ACSTemplate(
+            "headset",
+            mux_type=DEF_MUX_HS
+        ),
+        "left-hair-flower": ACSTemplate(
+            "left-hair-flower",
+            mux_type=["left-hair-flower"],
+            ex_props={
+                "left-hair-strand-eye-level": True
+            }
+        ),
+        "mug": ACSTemplate(
+            "mug",
+            mux_type=["mug"],
+        ),
+        "necklace": ACSTemplate(
+            "necklace",
+            mux_type=["necklace"],
+            ex_props={
+                "bare collar": True,
+            }
+        ),
+        # ring
+        "ribbon": ACSTemplate(
+            "ribbon",
+            mux_type=DEF_MUX_RB
+        ),
+        "twin-ribbons": ACSTemplate(
+            "twin-ribbons",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                "twin-ribbon": True,
+                "ribbon-like": True,
+                "required-hair-prop": "twintails",
+            }
+        ),
+        "wrist-bracelet": ACSTemplate(
+            "wrist-bracelet",
+            mux_type=["wrist-bracelet"],
+            ex_props={
+                "bare wrist": True,
+            }
+        ),
+    }
+
+
+    def apply_ACSTemplate(acs):
+        """
+        Applies ACS template to the given ACS
+
+        IN:
+            acs - acs to apply defaults to
+        """
+        template = get_ACSTemplate(acs)
+        if template is not None:
+            template.apply(acs)
+
+
+    def apply_ACSTemplates():
+        """RUNTIME ONLY
+        Applies all templates to the available ACS.
+        """
+        for acs_name in ACS_MAP:
+            apply_ACSTemplate(ACS_MAP[acs_name])
+
+
+    def get_ACSTemplate(acs):
+        """
+        Gets the template for an ACS given the ACS.
+
+        IN:
+            acs - acs to get template for
+
+        RETURNS: ACSTemplate associated with the acs, or None if not found
+        """
+        return get_ACSTemplate_by_type(acs.acs_type)
+
+
+    def get_ACSTemplate_by_type(acs_type):
+        """
+        Gets the template for an ACS given the ACS type
+
+        IN:
+            acs_type - acs type to get template for
+
+        RETURNS: ACSTemplate associated with the acs_type or Nonr if not ound
+        """
+        return ACS_DEFS.get(acs_type, None)
+
+
 init -5 python in mas_sprites:
     # specific image generation functions
     import store
