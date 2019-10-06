@@ -4140,6 +4140,18 @@ init -2 python:
             self.reset_clothes(by_user)
             self.reset_hair(by_user)
 
+        def restore(self, _data, as_prims=False):
+            """
+            Restores monika to a previous state. This will reset outfit and
+            clear ACS before loading.
+
+            IN:
+                _data - see load_state
+                as_prims - see load_state
+            """
+            self.reset_outfit()
+            self.remove_all_acs()
+            self.load_state(_data, as_prims=as_prims)
 
         def save(self, force_hair=False, force_clothes=False, force_acs=False):
             """
