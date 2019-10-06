@@ -395,6 +395,8 @@ init -100 python in mas_sprites:
 
         RETURNS: ACSTemplate associated with the acs, or None if not found
         """
+        if acs is None:
+            return None
         return get_ACSTemplate_by_type(acs.acs_type)
 
 
