@@ -601,6 +601,7 @@ init python:
             sp_data[1],
             giftname,
             gifted_before,
+            sp_obj,
         )
 
 
@@ -853,7 +854,7 @@ label mas_reaction_gift_generic_sprite_json:
     return
 
 # generic reaction for json clothes
-label mas_reaction_gift_generic_clothes_json(sprite_object)
+label mas_reaction_gift_generic_clothes_json(sprite_object):
     python:
         mas_giftCapGainAff(3)
         # expandable
