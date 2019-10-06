@@ -13104,7 +13104,7 @@ label monika_installed_python:
     m 1eub "What did you download it for?{nw}"
     $ _history_list.pop()
     menu:
-        "What did you download it for?{fast}"
+        m "What did you download it for?{fast}"
 
         "A personal project.":
             m 1hub "How fun!"
