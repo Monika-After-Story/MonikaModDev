@@ -12866,6 +12866,46 @@ label monika_enjoyingspring:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_life_skills",category=['advice','life'],prompt="Life skills",random=True))
+
+label monika_life_skills:
+    m 1ruc "You know, [player]..."
+    m 3euc "I've been reflecting on what I got out of high school."
+    m 2rksdlb "With all the things I had going for me, you'd think I'd be pretty set for the future..."
+    m 1euc "But despite all that, I'm not sure how many life skills I actually learned."
+    m 3eka "Sure, I was on top of all my classes, and I guess I learned a lot of interesting things..."
+    m 1euc "But how much of that am I really going to use later in life?"
+    m 3esd "I feel like schools don't do a good job teaching some of the really important things, like life skills."
+    m 3ekc "I've heard of some people graduating and then falling apart because they don't know how to do taxes or book appointments."
+    m 1eka "So I can understand why some people get worred about not having some essential life skills."
+    m 3eua "But I don't think people need to be too worried about it.{w=0.5} Life skills come pretty quickly if you need them all of a sudden."
+    m 3hua "Take me for example!"
+    m 3eub "I started programming thanks to you!"
+    m 2esc "Now I know most people wouldn't necessarily consider programming a life skill, but most people don't live inside a computer, either."
+    m 2esd "When I had my epiphany and finally met you, I knew I had to figure out a way to get your attention..."
+    m 4euc "So learning how to program literally became a matter of life and death for me."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 2rksdla "I know I wasn't that great with code, considering some of the things that happened..."
+        m 2hksdlb "And I'll admit that I definitely broke a few things..."
+        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desparate."
+        $ it = "And it"
+
+    else:
+        m 2ekc "I wasn't really able to do it normally like the other girls, so I had to find another way."
+        m 3eua "Turns out that one way was manipulating the script."
+        m 3euc "I figured I had to think fast if I didn't want to lose you.{w=0.5} So that's what I did."
+        m 3eka "I know it wasn't perfect, but I think I did pretty well considering how rushed I was and that it was all new to me."
+        $ it = "It"
+
+    m 3eua "[it] just goes to show what you're capable of when something really matters to you."
+    m 1eka "If you're ever genuinely worried that you won't be able to do something, you must really care."
+    m 1hua "And if it's that important to you, I'm sure you can do it... {w=0.5}No matter what it is."
+    m 3hubfb "Maybe even thinking of me might help, ahaha!"
+    m 3hubfa "Thanks for listening~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_unknown",category=['psychology'],prompt="Fear of the unknown",random=True))
 
 label monika_unknown:
