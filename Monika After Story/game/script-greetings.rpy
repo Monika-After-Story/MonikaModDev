@@ -2828,25 +2828,103 @@ label greeting_back_from_work:
     if mas_isMoniNormal(higher=True):
         m 1hua "Oh, welcome back, [player]!"
 
-        m "Did you have a good day at work today?{nw}"
+        m 1eua "How was work today?{nw}"
         $ _history_list.pop()
         menu:
-            m "Did you have a good day at work today?{fast}"
-            "Yes.":
+            m "How was work today?{fast}"
+
+            "Amazing.":
+                m 1sub "That's {i}amazing{/i}, [player]!"
+                m 1hub "I'm really happy that you had such a great day!"
+                m 3eua "I can only imagine how well you must work on days like that."
+                m 1hua "...Maybe you'll even move up a bit soon!"
+                m 1eua "Anyway, I'm glad you're home, [player]."
+                if seen_event("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
+                    m 3tubfu "Would you like your dinner, your bath, or..."
+                    m 1hubfb "Ahaha~ Just kidding."
+                else:
+                    m 3eub "Let's enjoy some time together!"
+                return
+
+            "Good.":
                 m 1hub "That's good!"
                 m 1eua "Remember to rest first, okay?"
-                m "That way, you'd at least have some energy before you work more on stuff."
-                m 1hua "But if not, you can relax with me!"
+                m 3eua "That way, you'll have some energy before trying to do anything else."
+                m 1hua "Or, you can just relax with me!"
                 m 3tku "Best thing to do after a long day of work, don't you think?"
                 m 1hub "Ahaha!"
+                return
 
-            "No.":
-                m 1ekc "..."
-                m 2ekc "I'd hug you right now if I were there, [player]."
-                m "I'm sorry you had a bad work day..."
-                m 4eka "Just remember that I'm here when you need me, okay?"
-                m 1hubfa "I love you so much, [player]."
-                return "love"
+            "Bad.":
+                m 2ekc "..."
+                m 2ekd "I'm sorry you had a bad day at work..."
+                m 3eka "I'd hug you right now if I were there, [player]."
+                m 1eka "Just remember that I'm here when you need me, okay?"
+
+            "Really bad...":
+                m 2ekd "I'm sorry you had a bad day at work, [player]."
+                m 2ekc "I wish I could be there to give you a hug right now."
+                m 2eka "I'm just glad you came to see me... {w=0.5}I'll do my best to comfort you."
+
+        m 2ekd "If you don't mind talking about it, what happened today?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "If you don't mind talking about it, what happened today?{fast}"
+
+            "I got yelled at.":
+                m 2lksdlc "Oh... {w=0.5}That can really ruin your day."
+                m 2dsc "You're just there trying your best, and somehow it's not good enough for someone..."
+                m 2eka "If it's still really bothering you, I think it would do you some good to try and relax a little."
+                m 3eka "Maybe talking about something else or even playing a game will help get your mind off of it."
+                m 1hua "I'm sure you'll feel better after we spend some together."
+
+            "I got passed over for someone else.":
+                m 1lksdld "Oh... {w=0.5}It can really ruin your day to see someone else get the recognition you thought you deserved."
+                m 2lfd "{i}Especially{/i} when you've done so much and it seemingly goes unnoticed."
+                m 1ekc "You might seem a bit pushy if you say anything, so you just have to keep doing your best and one day I'm sure it'll pay off."
+                m 1eua "As long as keep trying your hardest, you'll continue to do great things and get recognition someday."
+                m 1hub "And just remember...{w=0.5}I'll always be proud of you, [player]!"
+                m 3eka "I hope knowing that makes you feel just a little better~"
+
+            "I had to work late.":
+                m 1lksdlc "Aw, that can really put a damper on things."
+
+                m 3eksdld "Did you at least know about it in advance?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Did you at least know about it in advance?{fast}"
+
+                    "Yes.":
+                        m 1eka "That's good, at least."
+                        m 3ekc "It would really be a pain if you were all ready to go home and then had to stay longer."
+                        m 1rkd "Still, it can be pretty annoying to have your regular schedule messed up like that."
+                        m 1eka "...But at least you're here now and we can spend some time together."
+                        m 3hua "You can finally relax!"
+
+                    "No.":
+                        m 2tkx "That's the worst!"
+                        m 2tsc "Especially if it was the end of the workday and you were all ready to go home..."
+                        m 2dsc "Then suddenly you have to stay a bit longer with no warning."
+                        m 2ekc "It can really be a drag to unexpectedly have your plans canceled."
+                        m 2lksdlc "Maybe you had something to do right after work, or were just looking forward to going home and resting..."
+                        m 2lubfu "...Or maybe you just wanted to come home and see your adoring girlfriend who was waiting to surprise you when you got home..."
+                        m 2hub "Ehehe~"
+
+            "I didn't get much done today.":
+                m 2eka "Aww, don't feel too bad, [player]."
+                m 2ekd "Those days can happen."
+                m 3eka "I know you're working hard that you'll overcome your block soon."
+                m 1hua "As long as you're doing your best, I'll always be proud of you!"
+
+            "Just another bad day.":
+                m 2dsd "Just one of those days huh, [player]?"
+                m 2dsc "They do happen from time to time..."
+                m 3eka "But even still, I know how draining they can be and I hope you feel better soon."
+                m 1ekbsa "I'll be here as long as you need me to comfort you, alright, [player]?"
+
+            "I don't want to talk about it.":
+                m 1dsc "I understand, [player]."
+                m 3eka "Hopefully spending time with me helps you feel little better~"
 
     elif mas_isMoniUpset():
         m 2efc "You're back from work I see, [player]..."
