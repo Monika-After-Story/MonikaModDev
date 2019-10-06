@@ -1309,7 +1309,6 @@ init -5 python in mas_sprites:
                 temp_storage["hair.ribbon"] = prev_ribbon
 
             moni_chr.wear_acs(ACS_MAP[desired_ribbon])
-
     
     
     def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
@@ -1323,7 +1322,18 @@ init -5 python in mas_sprites:
             prev_hair - current hair
             new_hair - hair we are changing to
         """
-        pass
+        # now clean acs with required-hair-prop that is not found
+        req_hair_acs_list = moni_chr.get_acs_of_exprop(
+            "required-hair-prop",
+            get_all=True
+        )
+        for req_hair_acs in req_hair_acs_list:
+            req_hair_prop = req_hair_acs.getprop("required-hair-prop", None)
+            if (
+                    req_hair_prop is not None
+                    and not new_hair.hasprop(req_hair_prop)
+            ):
+                moni_chr.remove_acs(req_hair_acs)
 
 
     def hair_exit_pst_change(temp_space, moni_chr, prev_hair, new_hair):
