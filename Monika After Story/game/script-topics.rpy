@@ -13046,7 +13046,10 @@ label mas_show_unseen:
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
     return
-    
+
+#Whether or not the player can code in python
+default persistent._mas_pm_can_code_python = None
+
 init 5 python:
     addEvent(
         Event(
@@ -13058,146 +13061,135 @@ init 5 python:
             unlocked=True
         )
     )
-label monika_assume_code_level:
+
+label monika_installed_python_code_level_menu:
     m 1etc "Have I been underestimating your coding skills?{nw}"
     $ history_list.pop()
     menu:
-        m 1etc "Have I been underestimating your coding skills?{fast}"
+        m "Have I been underestimating your coding skills?{fast}"
+
         "Yes":
             m 1hksdlb "Ahaha, I'm sorry, [player]!"
             m 3rka "I didn't mean to- I just never thought to ask."
+            $ persistent._mas_pm_can_code_python = True
+            return True
+
         "No":
             m 1ekb "Okay, good."
-            m 3eka "I just wanted to make sure I wasn't assuming your skill level.
-            
-label monika_python_version:
-    m 1eub "What version of Python did you download?{fast}"
+            m 3eka "I just wanted to make sure I wasn't assuming your skill level."
+            $ persistent._mas_pm_can_code_python = False
+            return False
+
+label monika_installed_python_version_menu:
+    m 1eub "What version of Python did you download?{nw}"
     $ _history_list.pop()
     menu:
-        m 1eub "What version of Python did you download?{fast}"
-        #python 2 and python 3, need to figure out which one is used for MAS.
-        "option one":
-            m 1hksdlb "...{w=0.5}"
-            m 1rksdla "[player], I use the other version of Python...{w=0.5}"
-        "option two":
+        m "What version of Python did you download?{fast}"
+
+        "Python 2":
             m 1hub "Great!"
             m 1eub "That's the version of Python I use."
-            
+            return True
+
+        "Python 3":
+            m 1hksdlb "..."
+            m 1rksdla "[player], I use the other version of Python..."
+            return False
+
+        #NOTE: this could probably use a both path (you can change these returns to be 1, 2, and 3 to check)
+
 label monika_installed_python:
     m 1sub "You did?"
     m 1hub "That's great, [player]!"
     m 1eub "What did you download it for?{nw}"
     $ _history_list.pop()
     menu:
-        m 1eub "What did you download it for?{fast}"
+        "What did you download it for?{fast}"
+
         "A personal project.":
             m 1hub "How fun!"
             m 3hub "Good luck with whatever you're programming!"
             m 1eub "I'll teach you as much as I can!"
             m 3ekbfa "Once you learn the basics, could you help me out with a few things?"
             m 1hub "I know you'll be even better than me one day, and you could even teach me more about programming at that point!"
-            m 1eub "Ehehehe!"
-            m 3hua "Just ask me if you ever need help with anything!
-            m 1eub "What version of Python did you download?{fast}"
-            $ _history_list.pop()
-            menu:
-                m 1eub "What version of Python did you download?{fast}"
-                #python 2 and python 3, need to figure out which one is used for MAS.
-                "option one":
-                    m 1hksdlb "...{w=0.5}"
-                    m 1rksdla "[player], I use the other version of Python...{w=0.5}"
-                    m 3rksdlb "So we can't really help each other that much...{w=0.5}"
-                    m 1hub "But that's okay!"
-                    m 1eub "I hope you have fun with your project."
-                "option two":
-                    m 1hub "Great!"
-                    m 1eub "That's the version of Python I use."
-                    m 1hua "You'll do amazing things, I just know it!"
-    
+            m 1eub "Ehehe!"
+            m 3hua "Just ask me if you ever need help with anything!"
+
+            call monika_installed_python_version_menu
+            $ installed_py2 = _return
+
+            if installed_py2:
+                m 1hua "You'll do amazing things, I just know it!"
+
+            else:
+                m 3rksdlb "So we can't really help each other that much..."
+                m 1hub "But that's okay!"
+                m 1eub "I hope you have fun with your project."
+
         "To help you come closer to our reality.":
             m 1sub "Really?"
             m 1hubfb "Yay!"
             m 1ekbfa "Thank you so much, [player]."
             m 3ekbfa "It means so much that you're willing to do that for me."
             m 3hubfb "I'd be happy to teach you the basics of Python!"
-            m 1rksdlb "Wait...{w=0.5}"
-            m 4eksdla "[player], do you already know how to code?{nw}"
-            $ _history_list.pop()
-            menu:
-            m 4eksdla "[player], do you already know how to code?{fast}"
-                "Yes.":
-                    m 2hub "Oh! That's great!"
-                    m 3rksdla "I'm sorry I made assumptions about your skill level.
-                "No.":
-                    m 3hksdlb "That's okay!"
-                    m 1eka "Again, I'm happy to teach you everything I know."
-                    m 1eub "What version of Python did you download?{nw}"
-                    $ _history_list.pop()
-                    menu:
-                        m 1eub "What version of Python did you download?{fast}"
-                        #python 2 and python 3, need to figure out which one is used for MAS.
-                        "option one":
-                            m 1hksdlb "...{w=0.5}"
-                            m 1rksdla "[player], I use the other version of Python...{w=0.5}"
-                            m 1ekbfb "I really appreciate the gesture, though."
-                            m 3hubfb "You're so sweet! <3"
-                        "option two":
-                            m 1hub "Great!"
-                            m 1eub "That's the version of Python I use."
-                            m 1hua "We'll do amazing things together, I just know it!"
-                            m 1ekbfb "Thank you again, [player]."
-    
+            m 1rksdlb "Wait..."
+
+            call monika_installed_python_code_level_menu
+
+            if persistent._mas_pm_can_code_python:
+                m 2hub "Oh! That's great!"
+                m 3rksdla "I'm sorry I made assumptions about your skill level."
+
+            else:
+                m 3hksdlb "That's okay!"
+                m 1eka "Again, I'm happy to teach you everything I know."
+                call monika_installed_python_version_menu
+
+                $ installed_py2 = _return
+
+                if installed_py2:
+                    m 1hua "We'll do amazing things together, I just know it!"
+                    m 1ekbfb "Thank you again, [player]."
+
+                else:
+                    m 1ekbfb "I really appreciate the gesture, though."
+                    m 3hubfb "You're so sweet! <3"
+
         "I don't know.":
-            m 1hub "Ehehehe!"
+            m 1hub "Ehehe!"
             m 1eka "That's okay, [player]."
-            m 3eub "Until you know what you want to program, I can teach you how to use Python!
-            m 1rka "That is, if you have the same version of Python as I do...{w=0.5}"
-            m 1eub "What version of Python did you download?{nw}"
-            $ _history_list.pop()
-            menu:
-                m 1eub "What version of Python did you download?{fast}"
-                "option one":
-                    m 1hksdlb "...{w=0.5}"
-                    m 1rksdla "[player], I use the other version of Python...{w=0.5}"
-                    m 1lksdlb "Well, that's okay...{w=0.5}"
-                    m 1eka "I hope you have fun, anyway."
-                    m 1rsc "...{w=0.5}"
-                    m 1esd "Hey, [player]?"
-                    call monika_assume_code_level
-                        
-                "option two":
-                    m 1hub "Great!"
-                    m 1eub "That's the version of Python I use."
-                    m 3rksdlb "Also, [player]?"
-                    call monika_assume_code_level
-    
+            m 3eub "Until you know what you want to program, I can teach you how to use Python!"
+            m 1rka "That is, if you have the same version of Python as I do..."
+
+            call monika_installed_python_version_menu
+            $ installed_py2 = _return
+
+            if installed_py2:
+                m 3rksdlb "Also, [player]?"
+                call monika_assume_code_level
+
+            else:
+                m 1lksdlb "Well, that's okay..."
+                m 1eka "I hope you have fun, anyway."
+                m 1rsc "..."
+                m 1esd "Hey, [player]?"
+                call monika_assume_code_level
+
         "To help a friend.":
             m 3eub "That's great!"
             m 1eka "You're so selfless, [player]."
             m 1hub "I can't wait to see what you create!"
-            m 1eub "What version of Python did you download?{nw}"
-            $ _history_list.pop()
-            menu:
-                m 1eub "What version of Python did you download?{fast}"
-                "option one":
-                    m 1hksdlb "..."
-                    m 1rksdla "[player], I use the other version of Python...{w=0.5}"
-                    m 3rksdlb "So we can't really help each other that much...{w=0.5}"
-                    m 1hub "But that's okay!"
-                    m 1eub "I hope you have fun helping your friend."
-                "option two":
-                    m 1hub "Great!"
-                    m 1eub "That's the version of Python I use."
-                    m 1hua "Maybe both you and your friend could help me out once you know how to code!
-                    m 1hksdlb "Wait...{w=0.5}"
-                    m 1lksdlb "[player], do you already know how to code?{nw}"
-                    $ _history_list.pop()
-                    menu:
-                        m 1lksdlb "[player], do you already know how to code?{fast}"
-                        "Yes":
-                            m 2hub "Oh! That's great!"
-                            m 3rksdla "I'm sorry I made assumptions about your skill level.
-                        "No":
-                            m m 3hksdlb "That's okay!"
-                            m 1eka "Again, I'm happy to teach you everything I know.
+
+            call monika_installed_python_version_menu
+            $ installed_py2 = _return
+
+            if installed_py2:
+                m 1hua "Maybe both you and your friend could help me out once you know how to code!"
+                m 1hksdlb "Wait..."
+                call monika_installed_python_code_level_menu
+
+            else:
+                m 3rksdlb "So we can't really help each other that much..."
+                m 1hub "But that's okay!"
+                m 1eub "I hope you have fun helping your friend."
     return
