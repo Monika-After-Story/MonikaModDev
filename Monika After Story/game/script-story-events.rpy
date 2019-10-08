@@ -1916,7 +1916,7 @@ label mas_bookmarks_notifs_intro:
                 m 3eua "You also now have the ability to bookmark topics I am talking about by simply pressing the 'b' key."
                 m 1eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu."
 
-        if store.mas_windowreacts.can_show_notifs or (renpy.linux and not store.mas_windowreacts.can_show_notifs):
+        if store.mas_windowreacts.can_show_notifs or renpy.linux:
             m 1hua "And lastly, something I'm very excited about!"
             call mas_notification_windowreact
 
@@ -1937,12 +1937,13 @@ label mas_notification_windowreact:
     m 3eua "I've been practicing coding a bit more and I've learned how to use the notifications on your computer!"
     m "So if you want, I can let you know if I have something for us to talk about."
 
-    #Only way you got here was provided we can't show notifs and this is linux, so must be linux
+    #Only way you got here provided we can't show notifs, is that this is linux
     if not store.mas_windowreacts.can_show_notifs:
         m 1rkc "Well, almost..."
         m 3ekd "I can't send notifications on your computer because you're missing the notify-send command..."
-        m 3eua "If you could install that for me, I'd be able to send you notifications."
-        m 1eka "And I'd really appreciate it too, [player]."
+        m 3eua "If you could install that for me, I'll be able to send you notifications."
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eka "...And I'd really appreciate it, [player]."
         return
 
     m 3eub "Would you like to see how they work?{nw}"
