@@ -168,7 +168,7 @@ label monika_gtod_tip003:
     m 1esd "Coordinating clauses bridge two words, phrases, or clauses of the same 'rank' together. This just means that they have to be of the same type...words with words, or clauses with clauses."
     m 3euc "Some common examples include:{w=0.5} '{b}and{/b},' '{b}or{/b},' '{b}but{/b},' '{b}so{/b},' and '{b}yet{/b}.'"
     m 3eub "You can connect independent clauses, {i}and{/i} you can avoid comma splices!"
-    m 1esd "Correlative conjuctions are pairs of conjunctions used to connect ideas."
+    m 1esd "Correlative conjunctions are pairs of conjunctions used to connect ideas."
     m 3euc "A few common pairs are:{w=0.5} '{b}either{/b}/{b}or{/b},' '{b}both{/b}/{b}and{/b},' and '{b}whether{/b}/{b}or{/b}.'"
     m 3eub "{i}Whether{/i} you realize it {i}or{/i} not, we use them all the time...like in this sentence!"
     m 1esd "Lastly, subordinating conjunctions bring together independent and dependent clauses."
@@ -242,7 +242,7 @@ label monika_gtod_tip005:
     m 1eua "..."
     m 1tuu "..."
     m 3hub "You!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(
