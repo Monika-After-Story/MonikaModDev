@@ -13159,7 +13159,7 @@ label monika_installed_python:
             m 1hub "Ehehe!"
             m 1eka "That's okay, [player]."
             m 3eub "Until you know what you want to program, I can teach you how to use Python!"
-            m 1rka "That is, if you have the same version of Python as I do..."
+            m 1euc "That is, if you have the same version of Python as I do."
 
             call monika_installed_python_version_menu
             $ installed_py2 = _return
