@@ -13172,7 +13172,7 @@ label monika_installed_python:
                 m 1lksdlb "Well, that's okay..."
                 m 1eka "I hope you have fun, anyway."
                 m 1rsc "..."
-                m 1esd "Hey, [player]?"
+                m 1ekd "Hey, [player]?"
                 call monika_assume_code_level
 
         "To help a friend.":
