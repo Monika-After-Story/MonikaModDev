@@ -13107,7 +13107,7 @@ label monika_installed_python:
         m "What did you download it for?{fast}"
 
         "A personal project.":
-            m 1hub "How fun!"
+            m 1hub "That sounds fun!"
             m 3eua "Good luck with whatever you're working on, [player]."
             m 1hub "I'll try and teach you as much as I can!"
             m 3eua "Once you learn the basics, you could even help me out with a few things."
