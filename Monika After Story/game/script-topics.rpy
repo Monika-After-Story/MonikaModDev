@@ -13070,7 +13070,7 @@ label monika_installed_python_code_level_menu:
 
         "Yes":
             m 1hksdlb "Ahaha, I'm sorry, [player]!"
-            m 3rka "I didn't mean to- I just never thought to ask."
+            m 1ekc "I didn't mean to... I just never thought to ask."
             $ persistent._mas_pm_can_code_python = True
             return True
 
