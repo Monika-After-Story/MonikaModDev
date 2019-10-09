@@ -2045,7 +2045,6 @@ label monika_aiwfc:
 
         m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
     else:
-        m 1hub "Sure [player]!"
         m 1eka "I'm happy to sing for you again!"
 
     $ curr_song = renpy.music.get_playing()
