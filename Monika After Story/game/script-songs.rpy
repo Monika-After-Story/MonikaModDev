@@ -89,7 +89,12 @@ label monika_sing_song_pool:
 
         unlocked_song_list = mas_songs.getUnlockedSongs()
 
-        renpy.say(m, "What song would you like me to sing?", interact=False)
+        if mas_isO31():
+            which = "Witch"
+        else:
+            which = "Which"
+
+        renpy.say(m, "[which] song would you like me to sing?", interact=False)
 
     call screen mas_gen_scrollable_menu(unlocked_song_list, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, ret_back)
     show monika at t11
@@ -101,7 +106,7 @@ label monika_sing_song_pool:
         m 3hub "Alright!"
 
     else:
-        m 1eka "Alright [player]."
+        m 1eka "Alright, [player]."
         m 3eua "If you ever want me to sing to you, just let me know~"
     return
 
