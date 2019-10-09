@@ -13156,7 +13156,6 @@ label monika_installed_python:
                     m 3hubfb "You're so sweet! <3"
 
         "I don't know.":
-            m 1hub "Ehehe!"
             m 1eka "That's okay, [player]."
             m 3eub "Until you know what you want to program, I can teach you how to use Python!"
             m 1euc "That is, if you have the same version of Python as I do."
