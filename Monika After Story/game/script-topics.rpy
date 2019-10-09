@@ -13110,7 +13110,7 @@ label monika_installed_python:
             m 1hub "How fun!"
             m 3hub "Good luck with whatever you're programming!"
             m 1hub "I'll try and teach you as much as I can!"
-            m 3ekbfa "Once you learn the basics, could you help me out with a few things?"
+            m 3eua "Once you learn the basics, you could even help me out with a few things."
             m 1hub "I know you'll be even better than me one day, and you could even teach me more about programming at that point!"
             m 1eub "Ehehe!"
             m 3hua "Just ask me if you ever need help with anything!"
