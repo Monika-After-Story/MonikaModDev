@@ -10021,7 +10021,7 @@ label monika_idle_game:
             "Do your best!"
             ]
         gaming_quip=renpy.random.choice(gaming_quips)
-    m 1hub "[gaming_quip]"
+    m 3hub "[gaming_quip]"
     $ mas_idle_mailbox.send_idle_cb("monika_idle_game_callback")
     $ persistent._mas_idle_data["monika_idle_game"] = True
     return "idle"
