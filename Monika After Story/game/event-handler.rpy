@@ -318,7 +318,8 @@ init 4 python:
         "FLR": store.mas_filereacts.filereact_db,
         "APL": store.mas_apology.apology_db,
         "WRS": store.mas_windowreacts.windowreact_db,
-        "FFF": store.mas_fun_facts.fun_fact_db
+        "FFF": store.mas_fun_facts.fun_fact_db,
+        "SNG": store.mas_songs.song_db
     }
 
 

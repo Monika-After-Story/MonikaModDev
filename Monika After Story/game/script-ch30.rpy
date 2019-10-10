@@ -1957,6 +1957,9 @@ label ch30_reset:
         $ persistent._mas_filereacts_gift_aff_gained = 0
         $ persistent._mas_filereacts_last_aff_gained_reset_date = today
 
+    #Check if we need to unlock the songs rand delegate
+    $ mas_songs.checkRandSongDelegate()
+
     #Run a confirmed party check within a week of Moni's bday
     $ mas_confirmedParty()
     return
