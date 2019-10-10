@@ -306,7 +306,7 @@ python early:
                 end_date,
                 unlock_date,
                 0, # shown_count
-                diary_entry,
+                "", # diary_entry
                 last_seen,
                 years,
                 sensitive,
@@ -356,7 +356,7 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-                    self.diary_entry = diary_entry
+#                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
                     self.sensitive = sensitive
