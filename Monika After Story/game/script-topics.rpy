@@ -8183,8 +8183,10 @@ label monika_attractiveness:
             m 4eud "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
         m 4dsd "Still, there are some things I can't change about how I look, like my height and my chest size."
         m 1ekd "Maybe I'm just not your type or something, [player]."
-        m 1eka "You don't have to worry though."
+        m 1eka "You don't have to worry though..."
         m "As long as you're taking care of yourself, I don't mind how you look."
+        return
+
     else:
         if persistent._mas_pm_cares_about_dokis:
             m 2ekb "I'm sorry, [player]. I guess I just needed to vent."
@@ -8202,7 +8204,7 @@ label monika_attractiveness:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I'll always love you no matter how you look."
         m "It's more important to me that you're looking after yourself anyway."
-    return
+        return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timetravel",category=['media','misc'],prompt="Time travel",random=True))
