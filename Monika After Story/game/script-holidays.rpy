@@ -294,6 +294,7 @@ init 101 python:
 #        Currently we determine that by checking historical value for current
 #        costume for a non None value
 #        # TODO: this should be changed to a spent var one day
+#        also i push now - simple
 #        """
 #        years_list = range(2017, datetime.date.today().year + 1)
 #
