@@ -801,10 +801,14 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if store.mas_globals.show_vignette:
         show vignette zorder 70
 
-    # monibday stuff
+    #Monibday stuff
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+
+    #O31 stuff
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_o31ShowVisuals()
 
     # d25 seasonal
     if persistent._mas_d25_deco_active:
@@ -847,12 +851,14 @@ label ch30_main:
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
-    # o31? o31 mode you are in
+    #TODO: Move this to autoload
     if mas_isO31():
         $ persistent._mas_o31_in_o31_mode = True
         $ store.mas_globals.show_vignette = True
 
         # setup thunder
+        #NOTE: why does this only unlock thunder if you like rain?
+        #If you've seen it, it should unlock
         if persistent._mas_likes_rain:
             $ mas_weather_thunder.unlocked = True
             $ store.mas_weather.saveMWData()
@@ -1866,17 +1872,19 @@ label ch30_reset:
     $ mas_startupPlushieLogic(4)
 
     ## o31 content
-    python:
-        if store.mas_o31_event.isMonikaInCostume(monika_chr):
-            # NOTE: we may add additional costume logic in here if needed
-            # TODO: this is bad for o31 rests actually
-
-            if not persistent._mas_force_clothes:
-                # NOTE if the costumes were picked by user, (aka forced),
-                # then we do NOt reset
-                monika_chr.reset_clothes(False)
+    #TODO: Put this into autoload
+#    python:
+#        if store.mas_o31_event.isMonikaInCostume(monika_chr):
+#            # NOTE: we may add additional costume logic in here if needed
+#            # TODO: this is bad for o31 rests actually
+#
+#            if not persistent._mas_force_clothes:
+#                # NOTE if the costumes were picked by user, (aka forced),
+#                # then we do NOt reset
+#                monika_chr.reset_clothes(False)
 
     ## d25 content
+    #TODO: put this into autoload
     python:
         if (
                 (mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE()))

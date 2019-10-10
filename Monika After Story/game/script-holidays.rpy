@@ -80,6 +80,7 @@ default persistent._mas_o31_costume_greeting_seen = False
 default persistent._mas_o31_costumes_allowed = None
 # true if user gets to see costumes
 # this is set once and never touched again
+#TODO: change this to a method. No reason to store persistent data for a one time thing
 
 default persistent._mas_o31_in_o31_mode = False
 # True if we should be in o31 mode (aka viginette)
@@ -101,6 +102,7 @@ default persistent._mas_o31_went_trick_or_treating_longlong = False
 #   right - under 3 hours
 #   long - over 3 hours
 #   longlong - over 3 hours + sunrise
+#TODO: simplify this
 
 default persistent._mas_o31_went_trick_or_treating_abort = False
 # Set to true if hte user aborted a trick or treating segment at least once
@@ -110,23 +112,20 @@ default persistent._mas_o31_trick_or_treating_start_normal = False
 default persistent._mas_o31_trick_or_treating_start_late = False
 # set these to True if we started trick or treating at an appropriate time
 # NOTE: you must use this with the above to figure out if user actaully went out
+#TODO: simplify this too
 
 default persistent._mas_o31_trick_or_treating_aff_gain = 0
 # this is total affection gained from trick or treating today.
 # the max is 15
 
+default persistent._mas_o31_spent_o31 = False
+#Time spent var
+
+#TODO: swap these outfits
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
 
 define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
-
-#init -814 python in mas_history:
-    # o31 programming point
-#    def _o31_exit_pp(mhs):
-        ## just adds appropriate IDs to delayed action
-        # TODO
-#        return
-
 
 init -810 python:
     # MASHistorySaver for o31
@@ -183,15 +182,32 @@ init -10 python:
 
         return _date == mas_o31.replace(year=_date.year)
 
+    def mas_o31ShowVisuals():
+        """
+        Shows o31 visuals
+        """
+        renpy.show("mas_o31_deco", zorder=7)
+
+    def mas_o31HideVisuals():
+        """
+        Hides o31 visuals
+        """
+        renpy.hide("mas_o31_deco")
+
+    def mas_o31CapGainAff(amount):
+        mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
 
 init 101 python:
-    # o31 setup
+    #O31 setup
+    #NOTE: Is this really needed anymore?
+    #With the new system for O31 costumes, it doesn't seem like there's a reason to have this
     if persistent._mas_o31_seen_costumes is None:
         persistent._mas_o31_seen_costumes = {
             "marisa": False,
             "rin": False
         }
 
+    #TODO: move this to autoload
     if (
             persistent._mas_o31_in_o31_mode
             and not mas_isO31()
@@ -213,90 +229,87 @@ init 101 python:
             )
 
 
-
-init -11 python in mas_o31_event:
-    import store
-    import store.mas_dockstat as mds
-    import store.mas_ics as mis
-    import datetime
-
-    # setup the docking station for o31
-    o31_cg_station = store.MASDockingStation(mis.o31_cg_folder)
-
-    # cg available?
-    o31_cg_decoded = False
-
-    # was monika just returned form a TT event
-    mas_return_from_tt = False
-
-
-    def decodeImage(key):
-        """
-        Attempts to decode a cg image
-
-        IN:
-            key - o31 cg key to decode
-
-        RETURNS True upon success, False otherwise
-        """
-        return mds.decodeImages(o31_cg_station, mis.o31_map, [key])
-
-
-    def removeImages():
-        """
-        Removes decoded images at the end of their lifecycle
-        """
-        mds.removeImages(o31_cg_station, mis.o31_map)
-
-
-    def isMonikaInCostume(_monika_chr):
-        """
-        IN:
-            _monika_chr - MASMonika object to check
-
-        Returns true if monika is in costume
-        """
-        return (
-            _monika_chr.clothes.name == "marisa"
-            or _monika_chr.clothes.name == "rin"
-        )
-
-
-    def isTTGreeting():
-        """
-        RETURNS True if the persistent greeting type is the TT one
-        """
-        return (
-            store.persistent._mas_greeting_type
-            == store.mas_greetings.TYPE_HOL_O31_TT
-        )
-
-
-    def spentO31():
-        """
-        RETURNS True if the user spent o31 with monika.
-        Currently we determine that by checking historical value for current
-        costume for a non None value
-        # TODO: this should be changed to a spent var one day
-        """
-        years_list = range(2017, datetime.date.today().year + 1)
-
-        _data_found = store.mas_HistLookup_otl(
-            "o31.costume.was_worn",
-            years_list
-        )
-
-        for year, data_tuple in _data_found.iteritems():
-            l_const, _data = data_tuple
-
-            # 0 means data found constant
-            if l_const == 0 and _data is not None:
-                return True
-
-        return False
-
-    def mas_o31CapGainAff(amount):
-        mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
+#NOTE: No more CGs so throw this out
+#init -11 python in mas_o31_event:
+#    import store
+#    import store.mas_dockstat as mds
+#    import store.mas_ics as mis
+#    import datetime
+#
+#    # setup the docking station for o31
+#    o31_cg_station = store.MASDockingStation(mis.o31_cg_folder)
+#
+#    # cg available?
+#    o31_cg_decoded = False
+#
+#    # was monika just returned form a TT event
+#    mas_return_from_tt = False
+#
+#
+#    def decodeImage(key):
+#        """
+#        Attempts to decode a cg image
+#
+#        IN:
+#            key - o31 cg key to decode
+#
+#        RETURNS True upon success, False otherwise
+#        """
+#        return mds.decodeImages(o31_cg_station, mis.o31_map, [key])
+#
+#
+#    def removeImages():
+#        """
+#        Removes decoded images at the end of their lifecycle
+#        """
+#        mds.removeImages(o31_cg_station, mis.o31_map)
+#
+#
+#    def isMonikaInCostume(_monika_chr):
+#        """
+#        IN:
+#            _monika_chr - MASMonika object to check
+#
+#        Returns true if monika is in costume
+#        """
+#        return (
+#            _monika_chr.clothes.name == "marisa"
+#            or _monika_chr.clothes.name == "rin"
+#        )
+#
+#
+#    def isTTGreeting():
+#        """
+#        RETURNS True if the persistent greeting type is the TT one
+#        """
+#        return (
+#            store.persistent._mas_greeting_type
+#            == store.mas_greetings.TYPE_HOL_O31_TT
+#        )
+#
+#
+#    def spentO31():
+#        """
+#        RETURNS True if the user spent o31 with monika.
+#        Currently we determine that by checking historical value for current
+#        costume for a non None value
+#        # TODO: this should be changed to a spent var one day
+#        """
+#        years_list = range(2017, datetime.date.today().year + 1)
+#
+#        _data_found = store.mas_HistLookup_otl(
+#            "o31.costume.was_worn",
+#            years_list
+#        )
+#
+#        for year, data_tuple in _data_found.iteritems():
+#            l_const, _data = data_tuple
+#
+#            # 0 means data found constant
+#            if l_const == 0 and _data is not None:
+#                return True
+#
+#        return False
 
 # auto load starter check
 label mas_holiday_o31_autoload_check:

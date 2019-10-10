@@ -220,6 +220,11 @@ image mas_bday_balloons = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
+image mas_o31_deco = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
+    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+)
+
 init -5 python in mas_sprites:
     # specific image generation functions
     import store
