@@ -905,7 +905,9 @@ init -1 python:
         "clothes",
         visible_when_locked=False,
         select_dlg=[
-            "MIKU MIKU NI SHITE AGERU"
+            "The first sound of the future!",
+            "Ready for the stage!",
+            "Only missing a leek..."
         ]
     )
 
