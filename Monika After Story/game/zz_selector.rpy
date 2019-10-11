@@ -995,12 +995,16 @@ init -10 python in mas_selspr:
         found_item = False
         if select_type == SELECT_ACS:
             for item in items:
-                if moni_chr.is_wearing_acs(item.selectable.get_sprobj()):
+                acs_obj = item.selectable.get_sprobj()
+                if moni_chr.is_wearing_acs(acs_obj):
                     select_map[item.selectable.name] = item
                     item.selected = True
                     found_item = True
 
-                    # NOTE: cannot quit early because multiple accessories
+                elif moni_chr.is_wearing_acs_with_mux(acs_obj.acs_type):
+                    found_item = True
+
+                # NOTE: cannot quit early because multiple accessories
 
         elif select_type == SELECT_HAIR:
             for item in items:

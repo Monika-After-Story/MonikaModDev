@@ -4148,6 +4148,24 @@ init -2 python:
 
             return False
 
+        def is_wearing_acs_with_mux(self, acs_type):
+            """
+            Checks if currently wearing any ACS with the given acs_type in its
+            mux type
+
+            IN:
+                acs_type - acceessory type to check
+            """
+            for acs_name in self.acs_list_map:
+                acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if (
+                        acs
+                        and acs.mux_type is not None
+                        and acs_type in acs.mux_type
+                ):
+                    return True
+
+            return False
 
         def is_wearing_acs_in(self, accessory, acs_type):
             """
