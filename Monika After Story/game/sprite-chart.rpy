@@ -3586,13 +3586,14 @@ init -2 python:
             a2_names = [acs.name for acs in a2]
 
             # now do comparison
+            same_count = 0
             for a1_acs in a1:
                 if a1_acs.name in a2_names:
-                    a2_names.remove(a1_acs.name)
+                    same_count += 1
                 else:
                     return False
 
-            return len(a2_names) == 0
+            return len(a2_names) == same_count
 
         def _same_state_acs_prims(self, a1, a2):
             """
@@ -3610,16 +3611,14 @@ init -2 python:
             if len(a1) != len(a2):
                 return False
 
-            # make list copies so we can do removals.
-            a2_copy = list(a2)
-
+            same_count = 0
             for a1_name in a1:
-                if a1_name in a2_copy:
-                    a2_copy.remove(a1_name)
+                if a1_name in a2:
+                    same_count += 1
                 else:
                     return False
 
-            return len(a2_copy) == 0
+            return len(a2) == same_count
 
         def _same_state(self, data):
             """
