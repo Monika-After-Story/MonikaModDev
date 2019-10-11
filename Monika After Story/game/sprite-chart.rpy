@@ -3471,6 +3471,9 @@ init -2 python:
             ASE_ACS,
         )
 
+        # state tuple size
+        STATE_SIZE = 11
+
         def __init__(self):
             """
             Constructor
@@ -3551,7 +3554,6 @@ init -2 python:
             # set to True to allow ACS overriding
             self._override_rec_layer = False
 
-
         def __get_acs(self, acs_type):
             """
             Returns the accessory list associated with the given type
@@ -3564,6 +3566,126 @@ init -2 python:
             """
             return self.acs.get(acs_type, None)
 
+        def _same_state_acs(self, a1, a2):
+            """
+            Compares given acs lists as acs objects
+
+            NOTE: order does not matter
+
+            IN:
+                a1 - list of acs objects to compare
+                a2 - list of acs objects to compare
+
+            RETURNS: True if the same, False if not
+            """
+            # quick chec
+            if len(a1) != len(a2):
+                return False
+
+            # make a list of names for comparison
+            a2_names = [acs.name for acs in a2]
+
+            # now do comparison
+            for a1_acs in a1:
+                if a1_acs.name in a2_names:
+                    a2_names.remove(a1_acs.name)
+                else:
+                    return False
+
+            return len(a2_names) == 0
+
+        def _same_state_acs_prims(self, a1, a2):
+            """
+            Compares given acs lists as primitive data.
+
+            NOTE: order does not matter
+
+            IN:
+                a1 - list of acs names to compare
+                a2 - list of acs names to compare
+
+            RETURNS: True if the same, False if not
+            """
+            # quick check
+            if len(a1) != len(a2):
+                return False
+
+            # make list copies so we can do removals.
+            a2_copy = list(a2)
+
+            for a1_name in a1:
+                if a1_name in a2_copy:
+                    a2_copy.remove(a1_name)
+                else:
+                    return False
+
+            return len(a2_copy) == 0
+
+        def _same_state(self, data):
+            """
+            Compares the given state as objects
+
+            IN:
+                data - previous object state
+
+            RETURNS: True if the same, False if not
+            """
+            # object data is sprite objects, but we compare names
+
+            # get current monikas state
+            curr_state = self.save_state(True, True, True, False)
+
+            # first compare size
+            if len(data) != len(curr_state):
+                return False
+
+            # clothes
+            if data[0].name != curr_state[0].name:
+                return False
+
+            # hair
+            if data[1].name != curr_state[1].name:
+                return False
+
+            # acs lists
+            for index in range(2, len(data)):
+                if not self._same_state_acs(data[index], curr_state[index]):
+                    return False
+
+            return True
+
+        def _same_state_prims(self, data):
+            """
+            Compares the given state as primitives
+
+            IN:
+                data - previous primitive state
+
+            RETURNS: True if the same, False if not
+            """
+            # primtiive data is stored as names
+
+            # get current monika's state
+            curr_state = self.save_state(True, True, True, True)
+
+            # first compare state size
+            if len(data) != len(curr_state):
+                return False
+
+            # clothes
+            if data[0] != curr_state[0]:
+                return False
+
+            # hair
+            if data[1] != curr_state[1]:
+                return False
+
+            # acs lists
+            for index in range(2, len(data)):
+                if not self._same_state_acs_prims(data[index], curr_state[index]):
+                    return False
+
+            return True
 
         def _load(self,
                 _clothes_name,
@@ -4419,6 +4541,21 @@ init -2 python:
                 force_acs
             )
 
+
+        def same_state(self, data, as_prims=False):
+            """
+            compares if the given state is the same as current monika
+
+            IN:
+                data - data to compare
+                as_prims - True if prims, False if not
+
+            RETURNS: True if same state, False if not
+            """
+            if as_prims:
+                return self._same_state_prims(data)
+
+            return self._same_state(data)
 
         def save_state(self,
                 force_hair=False,

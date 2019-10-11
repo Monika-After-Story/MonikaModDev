@@ -2918,7 +2918,8 @@ label mas_selector_sidebar_select_midloop:
 
     python:
         # once select map is cleaned, check if diff
-        has_diff = not store.mas_selspr.is_same(old_view, new_view)
+        #has_diff = not store.mas_selspr.is_same(old_view, new_view)
+        has_diff = not monika_chr.same_state(prev_moni_state)
         mailbox.send_conf_enable(has_diff)
         mailbox.send_restore_enable(has_diff)
 
