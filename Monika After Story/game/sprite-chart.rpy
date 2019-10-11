@@ -6598,7 +6598,7 @@ image monika 6ATL_lookleftright:
 image monika ATL_0_to_upset:
 
     # 1 time this part
-    "monika 1esc"
+    "monika 2esc"
     5.0
 
     # repeat this part
@@ -6606,7 +6606,7 @@ image monika ATL_0_to_upset:
         # select image
         block:
             choice 0.95:
-                "monika 1esc"
+                "monika 2esc"
             choice 0.05:
                 "monika 5tsc"
 

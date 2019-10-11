@@ -113,7 +113,7 @@ init -900 python in mas_affection:
     FORCE_EXP_MAP = {
         BROKEN: "monika 6ckc_static",
         DISTRESSED: "monika 6rkc_static",
-        UPSET: "monika 2efc_static",
+        UPSET: "monika 2esc_static",
         NORMAL: "monika 1eua_static",
         AFFECTIONATE: "monika 1eua_static",
         ENAMORED: "monika 1hua_static",
