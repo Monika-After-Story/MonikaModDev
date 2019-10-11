@@ -2698,6 +2698,20 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     ]
                     selected ocb_checked
 
+            if mailbox.read_conf_enable():
+                textbutton _("Confirm"):
+                    style store.mas_ui.hkb_button_style
+                    xalign 0.5
+                    action Jump(confirm)
+            else:
+                frame:
+                    ypadding 5
+                    xsize 120
+                    xalign 0.5
+
+                    background Image(store.mas_ui.hkb_disabled_bg)
+                    text "Confirm" style store.mas_ui.hkb_text_style
+
             if mailbox.read_restore_enable():
                 textbutton _("Restore"):
                     style store.mas_ui.hkb_button_style
@@ -2712,20 +2726,6 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
                     background Image(store.mas_ui.hkb_disabled_bg)
                     text "Restore" style store.mas_ui.hkb_text_style
-
-            if mailbox.read_conf_enable():
-                textbutton _("Confirm"):
-                    style store.mas_ui.hkb_button_style
-                    xalign 0.5
-                    action Jump(confirm)
-            else:
-                frame:
-                    ypadding 5
-                    xsize 120
-                    xalign 0.5
-
-                    background Image(store.mas_ui.hkb_disabled_bg)
-                    text "Confirm" style store.mas_ui.hkb_text_style
 
             textbutton _("Cancel"):
                 style store.mas_ui.hkb_button_style
