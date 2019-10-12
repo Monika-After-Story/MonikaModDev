@@ -64,38 +64,15 @@ init -1 python:
 
 ############################### O31 ###########################################
 # [HOL010]
+#O31 mode var, handles visuals and sets us up to return to autoload even if not O31 anymore
 default persistent._mas_o31_in_o31_mode = False
-# True if we should be in o31 mode (aka viginette)
-# This should be only True if:
-#   user is NOT returning monika on o31 from a date/trip taken before o31
-#   user's current session started on o31
 
-default persistent._mas_o31_went_trick_or_treating_short = False
-default persistent._mas_o31_went_trick_or_treating_mid = False
-default persistent._mas_o31_went_trick_or_treating_right = False
-default persistent._mas_o31_went_trick_or_treating_long = False
-default persistent._mas_o31_went_trick_or_treating_longlong = False
-# flags to determine how long user went out
-#   short - under 5 minutes
-#   mid - under an hour
-#   right - under 3 hours
-#   long - over 3 hours
-#   longlong - over 3 hours + sunrise
-#TODO: simplify this
+#Number of times we've gone out T/Ting
+default persistent._mas_o31_tt_count = 0
 
-default persistent._mas_o31_went_trick_or_treating_abort = False
-# Set to true if hte user aborted a trick or treating segment at least once
-
-default persistent._mas_o31_trick_or_treating_start_early = False
-default persistent._mas_o31_trick_or_treating_start_normal = False
-default persistent._mas_o31_trick_or_treating_start_late = False
-# set these to True if we started trick or treating at an appropriate time
-# NOTE: you must use this with the above to figure out if user actaully went out
-#TODO: simplify this too
-
+#Aff cap for T/T, softmax 15
 default persistent._mas_o31_trick_or_treating_aff_gain = 0
-# this is total affection gained from trick or treating today.
-# the max is 15
+
 
 define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
 
@@ -109,16 +86,7 @@ init -810 python:
         {
             # this isn't very useful, but we need the reset
             "_mas_o31_in_o31_mode": "o31.mode.o31",
-
-            "_mas_o31_went_trick_or_treating_short": "o31.actions.tt.short",
-            "_mas_o31_went_trick_or_treating_mid": "o31.actions.tt.mid",
-            "_mas_o31_went_trick_or_treating_right": "o31.actions.tt.right",
-            "_mas_o31_went_trick_or_treating_long": "o31.actions.tt.long",
-            "_mas_o31_went_trick_or_treating_longlong": "o31.actions.tt.longlong",
-            "_mas_o31_went_trick_or_treating_abort": "o31.actions.tt.abort",
-            "_mas_o31_trick_or_treating_start_early": "o31.actions.tt.start.early",
-            "_mas_o31_trick_or_treating_start_normal": "o31.actions.tt.start.normal",
-            "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
+            "_mas_o31_tt_count": "o31.tt.count",
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
 
         },
@@ -155,9 +123,12 @@ init -10 python:
 
     def mas_o31HideVisuals():
         """
-        Hides o31 visuals
+        Hides o31 visuals + vignette
         """
         renpy.hide("mas_o31_deco")
+        renpy.hide("vignette")
+        #Also going to stop vignette from showing on subsequent spaceroom calls
+        store.mas_globals.show_vignette = False
 
     def mas_o31CapGainAff(amount):
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
@@ -485,19 +456,7 @@ label greeting_o31_deco:
     m 3tuu "Really creates a creepy vibe, don't you think?"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_trick_or_treat_back",
-            unlocked=True,
-            category=[
-                store.mas_greetings.TYPE_HOL_O31_TT
-            ]
-        ),
-        eventdb=evhand.greeting_database
-    )
-
+#Cleanup for o31 greets
 label greeting_o31_cleanup:
     python:
         # 1 - music hotkeys should be enabled
@@ -512,97 +471,7 @@ label greeting_o31_cleanup:
         mas_startup_song()
     return
 
-label greeting_trick_or_treat_back:
-    # trick/treating returned home greeting
-
-    python:
-        # lots of setup here
-        time_out = store.mas_dockstat.diffCheckTimes()
-        checkin_time = None
-        is_past_sunrise_post31 = False
-
-        if len(persistent._mas_dockstat_checkin_log) > 0:
-            checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
-            sunrise_hour, sunrise_min = mas_cvToHM(persistent._mas_sunrise)
-            is_past_sunrise_post31 = (
-                datetime.datetime.now() > (
-                    datetime.datetime.combine(
-                        mas_o31,
-                        datetime.time(sunrise_hour, sunrise_min)
-                    )
-                    + datetime.timedelta(days=1)
-                )
-            )
-
-
-    if time_out < mas_five_minutes:
-        $ mas_loseAffection()
-        $ persistent._mas_o31_went_trick_or_treating_short = True
-        m 2ekp "You call that trick or treating, [player]?"
-        m "Where did we go, one house?"
-        m 2efc "...If we even left."
-
-    elif time_out < mas_one_hour:
-        $ mas_o31CapGainAff(5)
-        $ persistent._mas_o31_went_trick_or_treating_mid = True
-        m 2ekp "That was pretty short for trick or treating, [player]."
-        m 3eka "But I enjoyed it while it lasted."
-        m 1eka "It was still really nice being right there with you~"
-
-    elif time_out < mas_three_hour:
-        $ mas_o31CapGainAff(10)
-        $ persistent._mas_o31_went_trick_or_treating_right = True
-        m 1hua "And we're home!"
-        m 1hub "I hope we got lots of delicious candy!"
-        m 1eka "I really enjoyed trick or treating with you, [player]..."
-
-        call greeting_trick_or_treat_back_costume
-
-        m 4eub "Let's do this again next year!"
-
-    elif not is_past_sunrise_post31:
-        # larger than 3 hours, but not past sunrise
-        $ mas_o31CapGainAff(15)
-        $ persistent._mas_o31_went_trick_or_treating_long = True
-        m 1hua "And we're home!"
-        m 1wua "Wow, [player], we sure went trick or treating for a really long time..."
-        m 1wub "We must have gotten a ton of candy!"
-        m 3eka "I really enjoyed being there with you..."
-
-        call greeting_trick_or_treat_back_costume
-
-        m 4eub "Let's do this again next year!"
-
-    else:
-        # larger than 3 hours, past sunrise
-        $ mas_o31CapGainAff(15)
-        $ persistent._mas_o31_went_trick_or_treating_longlong = True
-        m 1wua "We're finally home!"
-        m 1wuw "It's the next morning, [player], we were out all night..."
-        m "I guess we had too much fun, ehehe~"
-        m 2eka "But anyway, thanks for taking me along, I really enjoyed it."
-
-        call greeting_trick_or_treat_back_costume
-
-        m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
-
-    if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
-        # if we are returning from a non-birthday date post o31 birthday
-        call return_home_post_player_bday
-
-    return
-
-label greeting_trick_or_treat_back_costume:
-    if monika_chr.is_wearing_clothes_with_exprop("costume"):
-        m 2eka "Even if I couldn't see anything and no one else could see my costume..."
-        m 2eub "Dressing up and going out was still really great!"
-
-    else:
-        m 2eka "Even if I couldn't see anything..."
-        m 2eub "Going out was still really great!"
-    return
-
-### o31 farewells
+#START: O31 DOCKSTAT FARES
 init 5 python:
     if mas_isO31():
         addEvent(
@@ -621,15 +490,9 @@ label bye_trick_or_treat:
         curr_hour = datetime.datetime.now().hour
         too_early_to_go = curr_hour < 17
         too_late_to_go = curr_hour >= 23
-        #already_went = (
-        #    persistent._mas_o31_went_trick_or_treating_short
-        #    or persistent._mas_o31_went_trick_or_treating_mid
-        #    or persistent._mas_o31_went_trick_or_treating_right
-        #    or persistent._mas_o31_went_trick_or_treating_long
-        #    or persistent._mas_o31_went_trick_or_treating_longlong
-        #)
 
-    if mas_lastSeenInYear("bye_trick_or_treat"):
+    #True if > 0
+    if persistent._mas_o31_tt_count:
         m 1eka "Again?"
 
     if too_early_to_go:
@@ -642,11 +505,9 @@ label bye_trick_or_treat:
         menu:
             m "Are you {i}sure{/i} you want to go right now?{fast}"
             "Yes.":
-                $ persistent._mas_o31_trick_or_treating_start_early = True
                 m 2etc "Well...{w=1}okay then, [player]..."
 
             "No.":
-                $ persistent._mas_o31_went_trick_or_treating_abort = True
                 m 2hub "Ahaha!"
                 m "Be a little patient, [player]~"
                 m 4eub "Let's just make the most out of it later this evening, okay?"
@@ -666,16 +527,13 @@ label bye_trick_or_treat:
         menu:
             m "Are you sure you still want to go?{fast}"
             "Yes.":
-                $ persistent._mas_o31_trick_or_treating_start_late = True
                 m 1eka "...Okay."
                 m "Even though it's only an hour..."
                 m 3hub "At least we're going to spend the rest of Halloween together~"
                 m 3wub "Let's go and make the most of it, [player]!"
 
             "Actually, it {i}is{/i} a bit late...":
-                $ persistent._mas_o31_went_trick_or_treating_abort = True
-
-                if already_went:
+                if persistent._mas_o31_tt_count:
                     m 1hua "Ahaha~"
                     m "I told you."
                     m 1eua "We'll have to wait until next year to go again."
@@ -690,7 +548,6 @@ label bye_trick_or_treat:
 
     else:
         # between 5 and 11pm is perfect
-        $ persistent._mas_o31_trick_or_treating_start_normal = True
         m 3wub "Okay, [player]!"
         m 3hub "Sounds like we'll have a blast~"
         m 1eub "I bet we'll get lots of candy!"
@@ -734,7 +591,6 @@ label bye_trick_or_treat_iowait:
         m "What is it?"
         "You're right, it's too early." if too_early_to_go:
             call mas_dockstat_abort_gen
-            $ persistent._mas_o31_went_trick_or_treating_abort = True
 
             m 3hub "Ahaha, I told you!"
             m 1eka "Let's wait 'til evening, okay?"
@@ -742,9 +598,8 @@ label bye_trick_or_treat_iowait:
 
         "You're right, it's too late." if too_late_to_go:
             call mas_dockstat_abort_gen
-            $ persistent._mas_o31_went_trick_or_treating_abort = True
 
-            if already_went:
+            if persistent._mas_o31_tt_count:
                 m 1hua "Ahaha~"
                 m "I told you."
                 m 1eua "We'll have to wait until next year to go again."
@@ -759,11 +614,10 @@ label bye_trick_or_treat_iowait:
 
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
-            $ persistent._mas_o31_went_trick_or_treating_abort = True
 
             m 1euc "Oh, okay then, [player]."
 
-            if already_went:
+            if persistent._mas_o31_tt_count:
                 m 1eua "Let me know if we are going again later, okay?"
 
             else:
@@ -785,20 +639,142 @@ label bye_trick_or_treat_rtg:
     if _return:
         m 1hub "Let's go trick or treating!"
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HOL_O31_TT
+
+        #Increment T/T counter
+        $ persistent._mas_o31_tt_count += 1
         return "quit"
 
     # otherwise, failure in generation
     m 1ekc "Oh no..."
     m 1rksdlb "I wasn't able to turn myself into a file."
 
-    if already_went:
-        m "I think you'll have to go trick or treating without me this time..."
+    if persistent._mas_o31_tt_count:
+        m 1eksdld "I think you'll have to go trick or treating without me this time..."
 
     else:
-        m "I think you'll have to go trick or treating without me..."
+        m 1eksdld "I think you'll have to go trick or treating without me..."
 
     m 1ekc "Sorry, [player]..."
     m 3eka "Make sure to bring lots of candy for the both of us to enjoy, okay?~"
+    return
+
+#START: O31 DOCKSTAT GREETS
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_trick_or_treat_back",
+            unlocked=True,
+            category=[
+                store.mas_greetings.TYPE_HOL_O31_TT
+            ]
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_trick_or_treat_back:
+    # trick/treating returned home greeting
+    python:
+        # lots of setup here
+        time_out = store.mas_dockstat.diffCheckTimes()
+        checkin_time = None
+        is_past_sunrise_post31 = False
+
+        if len(persistent._mas_dockstat_checkin_log) > 0:
+            checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
+            sunrise_hour, sunrise_min = mas_cvToHM(persistent._mas_sunrise)
+            is_past_sunrise_post31 = (
+                datetime.datetime.now() > (
+                    datetime.datetime.combine(
+                        mas_o31,
+                        datetime.time(sunrise_hour, sunrise_min)
+                    )
+                    + datetime.timedelta(days=1)
+                )
+            )
+
+
+    if time_out < mas_five_minutes:
+        $ mas_loseAffection()
+        m 2ekp "You call that trick or treating, [player]?"
+        m "Where did we go, one house?"
+        m 2rsc "...If we even left."
+
+    elif time_out < mas_one_hour:
+        $ mas_o31CapGainAff(5)
+        m 2ekp "That was pretty short for trick or treating, [player]."
+        m 3eka "But I enjoyed it while it lasted."
+        m 1eka "It was still really nice being right there with you~"
+
+    elif time_out < mas_three_hour:
+        $ mas_o31CapGainAff(10)
+        m 1hua "And we're home!"
+        m 1hub "I hope we got lots of delicious candy!"
+        m 1eka "I really enjoyed trick or treating with you, [player]..."
+
+        call greeting_trick_or_treat_back_costume
+
+        m 4eub "Let's do this again next year!"
+
+    elif not is_past_sunrise_post31:
+        # larger than 3 hours, but not past sunrise
+        $ mas_o31CapGainAff(15)
+        m 1hua "And we're home!"
+        m 1wua "Wow, [player], we sure went trick or treating for a really long time..."
+        m 1wub "We must have gotten a ton of candy!"
+        m 3eka "I really enjoyed being there with you..."
+
+        call greeting_trick_or_treat_back_costume
+
+        m 4eub "Let's do this again next year!"
+
+    else:
+        # larger than 3 hours, past sunrise
+        $ mas_o31CapGainAff(15)
+        m 1wua "We're finally home!"
+        m 1wuw "It's the next morning, [player], we were out all night..."
+        m "I guess we had too much fun, ehehe~"
+        m 2eka "But anyway, thanks for taking me along, I really enjoyed it."
+
+        call greeting_trick_or_treat_back_costume
+
+        m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
+
+
+    #If it's not o31, we need to clean room up
+    if not mas_isO31():
+        #Firstly, gotta get back into reasonable clothing, so we queue a change to def
+        if monika_chr.is_wearing_clothes_with_exprop("costume"):
+            $ queueEvent('mas_change_to_def')
+
+        #If we were out over 5 mins then we have this little extra dialogue
+        if time_out > mas_five_minutes:
+            m 1hua "..."
+            m 1wud "Oh wow, [player]. We really were out for a while..."
+
+        else:
+            m 1esc "Anyway..."
+
+        m 3rksdla "I guess it's not even Halloween anymore."
+        m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
+        $ mas_o31HideVisuals()
+        m 3hua "There we go!"
+
+    #Now do player bday things
+    if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
+        # if we are returning from a non-birthday date post o31 birthday
+        call return_home_post_player_bday
+
+    return
+
+label greeting_trick_or_treat_back_costume:
+    if monika_chr.is_wearing_clothes_with_exprop("costume"):
+        m 2eka "Even if I couldn't see anything and no one else could see my costume..."
+        m 2eub "Dressing up and going out was still really great!"
+
+    else:
+        m 2eka "Even if I couldn't see anything..."
+        m 2eub "Going out was still really great!"
     return
 
 #################################### D25 ######################################
