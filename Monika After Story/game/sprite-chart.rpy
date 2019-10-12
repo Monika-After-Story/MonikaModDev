@@ -7019,7 +7019,7 @@ image monika 6ATL_lookleftright:
 image monika ATL_0_to_upset:
 
     # 1 time this part
-    "monika 1esc"
+    "monika 2esc"
     5.0
 
     # repeat this part
@@ -7027,7 +7027,7 @@ image monika ATL_0_to_upset:
         # select image
         block:
             choice 0.95:
-                "monika 1esc"
+                "monika 2esc"
             choice 0.05:
                 "monika 5tsc"
 
@@ -7241,8 +7241,9 @@ image monika ATL_love_too_enam_plus:
 image monika idle = ConditionSwitch(
     "mas_isMoniBroken(lower=True)", "monika 6ckc",
     "mas_isMoniDis()", "monika 6ATL_lookleftright",
-    "mas_isMoniUpset()", "monika 2efc",
-    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+#    "mas_isMoniUpset()", "monika 2efc"
+#    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+    "mas_isBelowZero()", "monika ATL_0_to_upset",
     "mas_isMoniHappy()", "monika 1eua",
     "mas_isMoniAff()", "monika ATL_affectionate",
     "mas_isMoniEnamored()", "monika ATL_enamored",

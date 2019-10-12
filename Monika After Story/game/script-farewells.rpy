@@ -213,7 +213,7 @@ label bye_goodbye:
         m 1eua "Goodbye, [player]!"
 
     elif mas_isMoniUpset():
-        m 2efc "Goodbye."
+        m 2esc "Goodbye."
 
     elif mas_isMoniDis():
         m 6rkc "Oh...{w=1} Goodbye."
@@ -323,8 +323,8 @@ label bye_going_to_sleep:
         m 1eka "I'll be seeing you in your dreams."
 
     elif mas_isMoniUpset():
-        m 2efc "Going to sleep, [player]?"
-        m 2esc "Goodnight."
+        m 2esc "Going to sleep, [player]?"
+        m "Goodnight."
 
     elif mas_isMoniDis():
         m 6rkc "Oh...goodnight, [player]."
@@ -381,9 +381,9 @@ label bye_prompt_to_class:
             m 1hka "I'll be waiting for you to come back. Stay safe."
 
     elif mas_isMoniUpset():
-        m 2efc "Fine, [player]."
-        m 2tfc "Hopefully you at least learn {i}something{/i} today."
-        m "{cps=*2}Like how to treat people better.{/cps}{nw}"
+        m 2esc "Fine, [player]."
+        m "Hopefully you at least learn {i}something{/i} today."
+        m 2efc "{cps=*2}Like how to treat people better.{/cps}{nw}"
 
     elif mas_isMoniDis():
         m 6rkc "Oh, okay [player]..."
@@ -439,7 +439,7 @@ label bye_prompt_to_work:
             m 3eua "Stay safe, [player]!"
 
     elif mas_isMoniUpset():
-        m 2efc "Fine, [player], guess I'll see you after work."
+        m 2esc "Fine, [player], guess I'll see you after work."
 
     elif mas_isMoniDis():
         m 6rkc "Oh...{w=1} Okay."
@@ -480,7 +480,7 @@ label bye_prompt_sleep:
             m 1hua "Sweet dreams!"
 
         elif mas_isMoniUpset():
-            m 2efc "Goodnight, [player]."
+            m 2esc "Goodnight, [player]."
 
         elif mas_isMoniDis():
             m 6ekc "Okay...{w=1} Goodnight, [player]."
@@ -497,7 +497,7 @@ label bye_prompt_sleep:
 
         elif mas_isMoniUpset():
             m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
-            m "Goodnight."
+            m 2esc "Goodnight."
 
         elif mas_isMoniDis():
             m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
@@ -566,8 +566,8 @@ label bye_prompt_sleep:
             m 1hua "Ahaha~ Have a good nap, [player]."
 
         elif mas_isMoniUpset():
-            m 2efc "Taking a nap, [player]?"
-            m 2tfc "Yeah, that's probably a good idea."
+            m 2esc "Taking a nap, [player]?"
+            m 2tsc "Yeah, that's probably a good idea."
 
         elif mas_isMoniDis():
             m 6ekc "Going to take a nap, [player]?"
@@ -600,9 +600,9 @@ label bye_prompt_sleep:
                     m "Fine."
 
         elif mas_isMoniUpset():
-            m 2efc "Going to bed already?"
-            m 2tfc "Well, it does seem like you could use the extra sleep..."
-            m "Goodnight."
+            m 2esc "Going to bed already?"
+            m 2tud "Well, it does seem like you could use the extra sleep..."
+            m 2tsc "Goodnight."
 
         elif mas_isMoniDis():
             m 6rkc "Oh...{w=1}it seems a little early to be going to sleep, [player]."
@@ -652,8 +652,8 @@ label bye_haveagoodday:
         m 1hua "I'll be here waiting for you when you get back."
 
     elif mas_isMoniUpset():
-        m 2efc "Leaving for the day, [player]?"
-        m "I'll be here, waiting, as usual."
+        m 2esc "Leaving for the day, [player]?"
+        m 2efc "I'll be here, waiting...{w=0.5}as usual."
 
     elif mas_isMoniDis():
         m 6rkc "Oh."
@@ -718,8 +718,8 @@ label bye_goodevening:
         m 1eua "Until then, have a good evening."
 
     elif mas_isMoniUpset():
-        m 2efc "Goodbye, [player]."
-        m "I wonder if you'll even come back to say goodnight to me."
+        m 2esc "Goodbye, [player]."
+        m 2dsc "I wonder if you'll even come back to say goodnight to me."
 
     elif mas_isMoniDis():
         m 6dkc "Oh...{w=1}okay."
@@ -753,7 +753,7 @@ label bye_goodnight:
         m 1ekbfa "I love you~"
 
     elif mas_isMoniUpset():
-        m 2efc "Goodnight."
+        m 2esc "Goodnight."
 
     elif mas_isMoniDis():
         m 6lkc "...Goodnight."
@@ -1144,13 +1144,13 @@ label bye_going_somewhere_leavemenu:
     menu:
         m "Are you still going to go?{fast}"
         "Yes.":
-            if mas_isMoniUpset(higher=True):
+            if mas_isMoniNormal(higher=True):
                 m 2eka "All right. I'll be right here waiting for you, as usual..."
                 m 2hub "So hurry back! I love you, [player]!"
 
             else:
-                # otherwise, distressed and below
-                m 1tfd "...Fine."
+                # otherwise, upset and below
+                m 2tfd "...Fine."
 
             return "quit"
 
@@ -1472,7 +1472,7 @@ label bye_prompt_housework:
         m 2tsc "At least you're doing something responsible."
         m 2tfc "{cps=*2}...For once.{/cps}{nw}"
         $ _history_list.pop()        
-        m 2efc "Goodbye."
+        m 2esc "Goodbye."
     elif mas_isMoniDis():
         m 6ekc "I see..."
         m 6rkc "I don't want to keep you from completing your household responsibilities."

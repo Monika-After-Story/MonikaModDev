@@ -113,7 +113,7 @@ init -900 python in mas_affection:
     FORCE_EXP_MAP = {
         BROKEN: "monika 6ckc_static",
         DISTRESSED: "monika 6rkc_static",
-        UPSET: "monika 2efc_static",
+        UPSET: "monika 2esc_static",
         NORMAL: "monika 1eua_static",
         AFFECTIONATE: "monika 1eua_static",
         ENAMORED: "monika 1hua_static",
@@ -861,8 +861,8 @@ init 15 python in mas_affection:
             "What do you want?",
             "What now?",
             "What is it?",
-            "Fine...we can talk.",
-            "Just...whatever, go ahead."
+#            "Fine...we can talk.",
+#            "Just...whatever, go ahead."
         ]
         save_quips(UPSET, quips)
 
@@ -956,8 +956,10 @@ init 15 python in mas_affection:
         ## UPSET quips
         quips = [
             "...Which game?",
-            "Okay...whatever, choose a game.",
-            "Fine, pick a game."
+            "Okay.",
+            "Sure.",
+#            "Okay...whatever, choose a game.",
+#            "Fine, pick a game."
         ]
         save_quips(UPSET, quips)
 
