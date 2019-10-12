@@ -19,7 +19,9 @@
         "thumb": "bellmandi86_hairclip_bat",
         "group": "left-hair-clip",
         "select_dlg": [
-            "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA"
+            "A bat in my hair? That's a lot of people's worst nightmare!",
+            "I hope you don't have chiroptophobia, [player]~",
+            "I hope it doesn't get tangled!"
         ]
     },
     "giftname": "bathairclip"

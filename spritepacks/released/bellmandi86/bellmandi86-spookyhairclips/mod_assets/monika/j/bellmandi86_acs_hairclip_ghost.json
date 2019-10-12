@@ -19,7 +19,11 @@
         "thumb": "bellmandi86_hairclip_ghost",
         "group": "left-hair-clip",
         "select_dlg": [
-            "BOO"
+            "Spoooooooooky!",
+            "BOO!",
+            "Who ya gonna call?",
+            "I ain't afraid of no ghost.",
+            "If there's something strange in your neighborhood..."
         ]
     },
     "giftname": "ghosthairclip"

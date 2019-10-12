@@ -897,8 +897,30 @@ label mas_reaction_gift_acs_jmo_hairclip_musicnote:
     call mas_reaction_gift_hairclip("jmo_hairclip_musicnote")
     return
 
+label mas_reaction_gift_acs_bellmandi86_hairclip_crescentmoon:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_crescentmoon")
+    return
+
+label mas_reaction_gift_acs_bellmandi86_hairclip_ghost:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_ghost","spooky")
+    return
+
+label mas_reaction_gift_acs_bellmandi86_hairclip_pumpkin:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_pumpkin")
+    return
+
+label mas_reaction_gift_acs_bellmandi86_hairclip_bat:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_bat","spooky")
+    return
+
 # hairclip
-label mas_reaction_gift_hairclip(hairclip_name):
+label mas_reaction_gift_hairclip(hairclip_name,desc=None):
+    # Special handler for hairclip gift reactions
+    # Takes in:
+    #    hairclip_name - the 'name' property in string form from the json
+    #    desc - a short string description of the hairclip in question. typically should be one word.
+    #        optional and defaults to None.
+
     # get sprtie data
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, hairclip_name))
     $ sprite_type, sprite_name, giftname, gifted_before, hairclip_acs = sprite_data
@@ -912,15 +934,17 @@ label mas_reaction_gift_hairclip(hairclip_name):
     else:
         #Grant affection
         $ mas_giftCapGainAff(1)
+        if not desc:
+            $ desc = "cute"
 
         if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
             m 1hub "Oh!{w=1} Another hairclip!"
-            m 3hua "Thanks, [player]."
 
         else:
             m 1wuo "Oh!"
             m 1sub "Is that a hairclip?"
-            m 1hub "That's so cute, thanks [player]!"
+
+        m 1hub "It's so [desc]! I love it [player], thanks!"
 
         # must include this check because we cannot for sure know if the acs
         # exists

@@ -19,7 +19,11 @@
         "thumb": "bellmandi86_hairclip_pumpkin",
         "group": "left-hair-clip",
         "select_dlg": [
-            "SPOWOKY OWOKY PUMPEKIN"
+            "What do you get if you divide the circumference of a pumpkin by its diameter? Pumpkin Pi.",
+            "Bibbidi-bobbidi-boo!",
+            "I wonder if this used to be a carriage...",
+            "It's the great pumpkin, [player]!",
+            "That's so cute, my little pumpkin~"
         ]
     },
     "giftname": "pumpkinhairclip"
