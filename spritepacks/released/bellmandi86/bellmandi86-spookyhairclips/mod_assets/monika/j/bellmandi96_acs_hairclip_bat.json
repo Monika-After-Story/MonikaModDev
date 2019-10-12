@@ -5,8 +5,8 @@
     "name": "bellmandi86_hairclip_bat",
     "img_sit": "bellmandi86_hairclip_bat",
     "pose_map": {
-        "default": 0,
-        "l_default": 5
+        "default": "0",
+        "l_default": "5"
     },
     "rec_layer": 5,
     "acs_type": "left-hair-clip",

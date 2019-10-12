@@ -311,6 +311,9 @@ init -100 python in mas_sprites:
     DEF_MUX_HS = ["headset", "headphones", "earphones"]
     # default mux types for headset-based items
 
+    DEF_MUX_LHC = ["left-hair-clip"]
+    # default mux types for left hair clip-based items
+
     # maps ACS types to their ACS template
     ACS_DEFS = {
         "bow": ACSTemplate(
@@ -323,6 +326,13 @@ init -100 python in mas_sprites:
         "headset": ACSTemplate(
             "headset",
             mux_type=DEF_MUX_HS
+        ),
+        "left-hair-clip": ACSTemplate(
+            "left-hair-clip",
+            mux_type=DEF_MUX_LHC,
+            ex_props={
+                "left-hair-strand-eye-level": True
+            }
         ),
         "left-hair-flower": ACSTemplate(
             "left-hair-flower",
