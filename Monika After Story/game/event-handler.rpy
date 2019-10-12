@@ -161,7 +161,7 @@ init -950 python in mas_ev_data_ver:
         10: MASCurriedVerify(_verify_dt, True), # end_date
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
-        13: MASCurriedVerify(_verify_str, True), # diary_entry
+        #13: MASCurriedVerify(_verify_str, True), # diary_entry
         14: MASCurriedVerify(_verify_dt, True), # last_seen
         15: MASCurriedVerify(_verify_tuli, True), # years
         16: MASCurriedVerify(_verify_bool, True), # sensitive
