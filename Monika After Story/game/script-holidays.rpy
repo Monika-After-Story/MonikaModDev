@@ -177,6 +177,8 @@ label mas_o31_autoload_check:
 
                 #Lock the hairdown greeting for today
                 mas_lockEVL("greeting_hairdown", "GRE")
+                #Also lock islands greeting for today
+                mas_lockEVL("greeting_ourreality", "GRE")
 
                 #Disable hotkeys for this
                 store.mas_hotkeys.music_enabled = False
@@ -219,6 +221,9 @@ label mas_o31_autoload_check:
             #True if shown count is 0
             if not mas_getEV("greeting_hairdown").shown_count:
                 mas_unlockEVL("greeting_hairdown", "GRE")
+
+            if not mas_getEV("greeting_ourreality").shown_count:
+                mas_unlockEVL("greeting_ourreality", "GRE")
 
     #Run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
