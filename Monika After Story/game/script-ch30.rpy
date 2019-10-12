@@ -1686,6 +1686,10 @@ label ch30_reset:
             store.mas_globals.show_s_light = True
 
     python:
+        # apply ACS defaults
+        store.mas_sprites.apply_ACSTemplates()
+
+    python:
         # start by building event lists if they have not been built already
         if not mas_events_built:
             mas_rebuildEventLists()
@@ -1697,22 +1701,15 @@ label ch30_reset:
             # I think we'll deal with this better once we hve a sleeping sprite
             random_seen_limit = 1000
 
-    if not persistent._mas_pm_has_rpy:
-        # setup the docking station to handle the detection
-        $ rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+        if not persistent._mas_pm_has_rpy:
+            if mas_hasRPYFiles():
+                if not mas_inEVL("monika_rpy_files"):
+                    queueEvent("monika_rpy_files")
 
-        $ listRpy = rpyCheckStation.getPackageList(".rpy")
-
-        if len(listRpy) == 0 or persistent.current_monikatopic == "monika_rpy_files":
-            if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
-                $ persistent.current_monikatopic = 0
-
-            $ mas_rmallEVL("monika_rpy_files")
-
-        elif len(listRpy) != 0 and not mas_inEVL("monika_rpy_files"):
-            $ queueEvent("monika_rpy_files")
-
-        $ del rpyCheckStation
+            else:
+                if persistent.current_monikatopic == "monika_rpy_files":
+                    persistent.current_monikatopic = 0
+                mas_rmallEVL("monika_rpy_files")
 
     python:
         import datetime
@@ -1907,7 +1904,7 @@ label ch30_reset:
         if not monika_chr.is_wearing_acs_type("left-hair-flower"):
             store.mas_selspr.set_prompt("left-hair-flower", "wear")
 
-        if not monika_chr.is_wearing_acs_type("ribbon"):
+        if not monika_chr.is_wearing_ribbon():
             store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out
@@ -1952,6 +1949,9 @@ label ch30_reset:
     if persistent._mas_filereacts_last_aff_gained_reset_date < today:
         $ persistent._mas_filereacts_gift_aff_gained = 0
         $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+
+    #Check if we need to unlock the songs rand delegate
+    $ mas_songs.checkRandSongDelegate()
 
     #Run a confirmed party check within a week of Moni's bday
     $ mas_confirmedParty()

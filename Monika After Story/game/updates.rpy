@@ -304,6 +304,53 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.2
+label v0_10_2(version="v0_10_2"):
+    #Songs framework changed, need to transfer ev data to new evs
+    python:
+        ev_label_list = [
+            ("monika_song_lover_boy", "mas_song_lover_boy"),
+            ("monika_song_need_you", "mas_song_need_you"),
+            ("monika_song_i_will", "mas_song_i_will"),
+            ("monika_song_belong_together", "mas_song_belong_together"),
+            ("monika_song_your_song", "mas_song_your_song"),
+            ("monika_song_with_you", "mas_song_with_you"),
+            ("monika_song_dream", "mas_song_dream"),
+        ]
+
+        for old_ev_label, new_ev_label in ev_label_list:
+            new_ev = mas_getEV(new_ev_label)
+            #if old ev exists in the evdb, then we need to form it and get it
+            if old_ev_label in persistent.event_database:
+                old_ev = Event(
+                    persistent.event_database,
+                    old_ev_label
+                )
+            else:
+                old_ev = None
+
+            if new_ev is not None and old_ev is not None:
+                #If old ev is unlocked, we want the new one to be too
+                new_ev.unlocked = old_ev.unlocked
+
+                #Match the shown counts
+                new_ev.shown_count += old_ev.shown_count
+
+                #We also want to derandom the new songs if old ones are seen
+                if old_ev.shown_count > 0:
+                    new_ev.random = False
+
+                #For potential unstable users, last seen should be accurate
+                if old_ev.last_seen is not None and (new_ev.last_seen is None or new_ev.last_seen <= old_ev.last_seen):
+                    new_ev.last_seen = old_ev.last_seen
+
+                #Now transfer the seen data
+                mas_transferTopicSeen(old_ev_label, new_ev_label)
+
+                #And erase this topic
+                mas_eraseTopic(old_ev_label, persistent.event_database)
+    return
+
 #0.10.1
 label v0_10_1(version="v0_10_1"):
     #Fix 922 time spent vars if we're not post 922 (so these vars aren't set when they shouldn't be)
