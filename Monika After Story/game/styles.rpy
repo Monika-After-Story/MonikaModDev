@@ -16,12 +16,31 @@ init -1 python in mas_globals:
     button_text_hover_color = None
     button_text_idle_color = None
 
+init -201 python in mas_ui:
+    # img strings and other constants
+
+    # hotkey buttons
+    HKB_DISABLED_BG = "mod_assets/hkb_disabled_background.png"
+
+    # selector
+    SEL_SB_FRAME = "mod_assets/frames/black70_pinkborder100_5px.png"
+
 init -200 python in mas_ui:
+
     dark_button_text_hover_color = "#FFABD8"
     dark_button_text_idle_color = "#FD5BA2"
 
     light_button_text_hover_color = "#fa9"
     light_button_text_idle_color = "#000"
+
+    # hotkey buttons
+    hkb_style_prefix = "hkb"
+    hkb_button_style = "hkb_button"
+    hkb_text_style = "hkb_text"
+    hkb_disabled_bg = HKB_DISABLED_BG
+
+    # selector
+    sel_sb_frame = SEL_SB_FRAME
 
 #START: Helper method(s)
 init python:
@@ -94,6 +113,11 @@ init python:
             mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
             mas_globals.button_text_idle_color = mas_ui.dark_button_text_idle_color
 
+            # ui swaps
+            mas_ui.hkb_style_prefix = "hkb_dark"
+            mas_ui.hkb_button_style = "hkb_dark_button"
+            mas_ui.hkb_text_style = "hkb_dark_text"
+
         else:
             mas_globals.dark_mode = False
 
@@ -128,6 +152,15 @@ init python:
             mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
             mas_globals.button_text_idle_color = mas_ui.light_button_text_idle_color
 
+            # ui swaps
+            mas_ui.hkb_style_prefix = "hkb"
+            mas_ui.hkb_button_style = "hkb_button"
+            mas_ui.hkb_text_style = "hkb_text"
+
+        # timefile changes
+        mas_ui.hkb_disabled_bg = mas_getTimeFile(mas_ui.HKB_DISABLED_BG)
+        mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
+    
         #Reset the global flag
         mas_globals.change_textbox = True
 
@@ -248,6 +281,27 @@ style hkb_dark_button_text is default:
     properties gui.button_text_properties("hkb_dark_button")
     outlines []
 
+style hkbd_dark_vbox is vbox
+style hkbd_dark_button is button_dark
+style hkbd_dark_button_text is button_text_dark
+
+style hkbd_dark_vbox:
+    spacing 0
+
+style hkbd_dark_button is default:
+    properties gui.button_properties("hkb_dark_button")
+    idle_background "mod_assets/hkb_disabled_background_d.png"
+    hover_background "mod_assets/hkb_disabled_background_d.png"
+
+style hkbd_dark_button_text is default:
+#    properties gui.button_text_properties("hkb_button")
+    font gui.default_font
+    size gui.text_size
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
+    kerning 0.2
+    outlines []
+
 style hkb_dark_text is default:
     xalign 0.5
     size gui.text_size
@@ -255,6 +309,7 @@ style hkb_dark_text is default:
     color mas_ui.dark_button_text_idle_color
     kerning 0.2
     outlines []
+
 
 #START: screens styles
 style window_monika_def is window:
