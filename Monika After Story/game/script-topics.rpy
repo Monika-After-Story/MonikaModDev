@@ -12814,7 +12814,7 @@ label monika_life_skills:
     m 1euc "But how much of that am I really going to use later in life?"
     m 3esd "I feel like schools don't do a good job teaching some of the really important things, like life skills."
     m 3ekc "I've heard of some people graduating and then falling apart because they don't know how to do taxes or book appointments."
-    m 1eka "So I can understand why some people get worred about not having some essential life skills."
+    m 1eka "So I can understand why some people get worried about not having some essential life skills."
     m 3eua "But I don't think people need to be too worried about it.{w=0.5} Life skills come pretty quickly if you need them all of a sudden."
     m 3hua "Take me for example!"
     m 3eub "I started programming thanks to you!"
