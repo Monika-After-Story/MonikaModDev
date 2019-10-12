@@ -11,6 +11,8 @@
     "rec_layer": 3,
     "acs_type": "ribbon",
     "stay_on_start": true,
+    "dlg_desc": "blue-and-white-striped ribbon",
+    "dlg_plural": false,
     "ex_props": {
         "ribbon-multicolor": true,
         "striped": true

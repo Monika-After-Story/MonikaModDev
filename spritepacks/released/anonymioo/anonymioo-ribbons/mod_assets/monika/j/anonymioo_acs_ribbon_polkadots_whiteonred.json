@@ -11,6 +11,8 @@
     "rec_layer": 3,
     "acs_type": "ribbon",
     "stay_on_start": true,
+    "dlg_desc": "white and red polka-dot ribbon",
+    "dlg_plural": false,
     "ex_props": {
         "ribbon-multicolor": true,
         "polkadots": true

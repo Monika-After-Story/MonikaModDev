@@ -11,6 +11,8 @@
     "rec_layer": 3,
     "acs_type": "ribbon",
     "stay_on_start": true,
+    "dlg_desc": "night-sky-themed ribbon",
+    "dlg_plural": false,
     "select_info": {
         "display_name": "Ribbon (Starry Red Sky)",
         "thumb": "anonymioo_ribbon_starsky_red",

@@ -11,6 +11,8 @@
     "rec_layer": 3,
     "acs_type": "ribbon",
     "stay_on_start": true,
+    "dlg_desc": "transexual-pride-themed ribbon",
+    "dlg_plural": false,
     "ex_props": {
         "transexualpride": true,
         "ribbon-multicolor": true
