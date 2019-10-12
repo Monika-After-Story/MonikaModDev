@@ -305,13 +305,13 @@ label bye_take_care:
 
 init 5 python:
     rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(21,24)))
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_going_to_sleep",
             unlocked=True,
-            rules=rules
+            rules = rules
         ),
         code="BYE"
     )
@@ -733,13 +733,13 @@ label bye_goodevening:
 
 init 5 python:
     rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(20,24)))
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_goodnight",
             unlocked=True,
-            rules=rules
+            rules = rules
         ),
         code="BYE"
     )
