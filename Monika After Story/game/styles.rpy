@@ -297,8 +297,8 @@ style hkbd_dark_button_text is default:
 #    properties gui.button_text_properties("hkb_button")
     font gui.default_font
     size gui.text_size
-    idle_color mas_ui.dark_button_text_idle_color
-    hover_color mas_ui.dark_button_text_hover_color
+    idle_color "8C8C8C"
+    hover_color "8C8C8C"
     kerning 0.2
     outlines []
 

@@ -168,7 +168,7 @@ style hkb_text is default:
 screen hkb_overlay():
 
     zorder 50
-    style_prefix ("hkb" if not mas_globals.dark_mode else "hkb_dark")
+    style_prefix store.mas_ui.hkb_style_prefix
 
     vbox:
         xpos 0.05
@@ -184,8 +184,8 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-                text "Talk"
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Talk" color "#8C8C8C"
 
 
         if store.hkb_button.extra_enabled:
@@ -195,8 +195,8 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-                text "Extra"
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Extra" color "#8C8C8C"
 
 
         if store.hkb_button.music_enabled:
@@ -206,8 +206,8 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-                text "Music"
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Music" color "#8C8C8C"
 
         if store.hkb_button.play_enabled:
             textbutton _("Play") action Function(pick_game)
@@ -216,8 +216,8 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-                text "Play"
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Play" color "#8C8C8C"
 
 
 screen movie_overlay():
