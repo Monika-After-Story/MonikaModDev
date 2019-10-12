@@ -522,9 +522,21 @@ init -10 python in mas_selspr:
     MB_DISP_DEF = "def_disp_text"
     MB_CONF = "conf_enable"
     MB_DISP_FAST = "disp_fast"
+    MB_OCB_VISIBLE = "ocb_visible"
+    MB_OCB_CHECKED = "ocb_checked"
+    MB_RSTR_ENABLE = "restore_enable"
+    MB_PREV_STATE = "prev_state"
+    MB_FRAME_VSIZE = "frame_vsize"
 
     ## screen constants
-    SB_VIEWPORT_BOUNDS = (1075, 5, 200, 625, 5)
+    SB_VIEWPORT_BOUNDS_X = 1075
+    SB_VIEWPORT_BOUNDS_Y = 5
+    SB_VIEWPORT_BOUNDS_W = 200
+    #SB_VIEWPORT_BOUNDS_H = 625
+    SB_VIEWPORT_BOUNDS_H = 585
+    SB_VIEWPORT_BOUNDS_HS = 40
+    SB_VIEWPORT_BOUNDS_H1 = 545
+    SB_VIEWPORT_BOUNDS_BS = 5
     # keep this in sync with teh screen area
 
     ## string constants
@@ -650,10 +662,17 @@ init -10 python in mas_selspr:
         if remover_name is None:
             remover_name = "Remove"
 
+        # get default mux for this acs type
+        template = store.mas_sprites.get_ACSTemplate_by_type(acs_type)
+        if template is None:
+            mux_type = None
+        else:
+            mux_type = template.mux_type
+
         remover_acs = store.mas_sprites.create_remover(
             acs_type,
             group,
-            store.mas_sprites.get_mux_from_type(acs_type)
+            mux_type
         )
         init_selectable_acs(
             remover_acs,
@@ -846,7 +865,8 @@ init -10 python in mas_selspr:
             old_map,
             new_map,
             select_type,
-            use_old=False
+            use_old=False,
+            outfit_mode=False
         ):
         """
         Adjusts an aspect of monika based on the select type
@@ -862,6 +882,9 @@ init -10 python in mas_selspr:
                 monika to adjust
             use_old - True means we are reverting back to the old map,
                 False meanse use the old map
+                (Default: False)
+            outfit_mode - True means we are in outfit mode, False if not
+                This is used in the clothing changes
                 (Default: False)
         """
         if select_type == SELECT_ACS:
@@ -938,7 +961,10 @@ init -10 python in mas_selspr:
                         return
 
                     try:
-                        moni_chr.change_clothes(new_cloth)
+                        moni_chr.change_clothes(
+                            new_cloth,
+                            outfit_mode=outfit_mode
+                        )
 
                     except Exception as e:
                         mas_utils.writelog("BAD CLOTHES: " + repr(e))
@@ -969,12 +995,16 @@ init -10 python in mas_selspr:
         found_item = False
         if select_type == SELECT_ACS:
             for item in items:
-                if moni_chr.is_wearing_acs(item.selectable.get_sprobj()):
+                acs_obj = item.selectable.get_sprobj()
+                if moni_chr.is_wearing_acs(acs_obj):
                     select_map[item.selectable.name] = item
                     item.selected = True
                     found_item = True
 
-                    # NOTE: cannot quit early because multiple accessories
+                elif moni_chr.is_wearing_acs_with_mux(acs_obj.acs_type):
+                    found_item = True
+
+                # NOTE: cannot quit early because multiple accessories
 
         elif select_type == SELECT_HAIR:
             for item in items:
@@ -996,7 +1026,45 @@ init -10 python in mas_selspr:
         return found_item
 
 
-    def _clean_select_map(select_map, select_type, remove_items, moni_chr):
+    def _fill_select_map_and_set_remover(
+            moni_chr,
+            select_type,
+            items,
+            select_map,
+            remover_disp_item=None
+    ):
+        """
+        Fills select map and sets remover item if passed in.
+        If remover item is not passsed in, this functions exactly the same as
+        fill_select_map
+
+        IN:
+            moni_chr - See _fill_select_map
+            select_type - see _fill_select_map
+            items - see _fill_select_map
+            remover_disp_item - if not None, set this selector if no item is
+                found.
+
+        OUT:
+            select_map - see _fill_select_map
+
+        RETURNS: see _fill_select_map
+        """
+        item_found = _fill_select_map(moni_chr, select_type, items, select_map)
+        if remover_disp_item is not None and not item_found:
+            select_map[remover_disp_item.selectable.name] = remover_disp_item
+            remover_disp_item.selected = True
+
+        return item_found
+
+
+    def _clean_select_map(
+            select_map,
+            select_type,
+            remove_items,
+            moni_chr,
+            force=False
+    ):
         """
         Cleans the select map of non-selected items.
 
@@ -1005,13 +1073,15 @@ init -10 python in mas_selspr:
             select_type - select type, only used if remove_items is True
             remove_items - True means we also remove items from monika chr
             moni_chr - MASMonika object to modify.
+            force - if True, we deselect and remove regardless.
 
         OUT:
             select_map - select map cleaned of non-selectd items
         """
         for item_name in select_map.keys():
-            if not select_map[item_name].selected:
+            if force or not select_map[item_name].selected:
                 item = select_map.pop(item_name)
+                item.selected = False # force deselection
 
                 if remove_items and (select_type == SELECT_ACS):
                     moni_chr.remove_acs(item.selectable.get_sprobj())
@@ -1408,7 +1478,6 @@ init -10 python in mas_selspr:
 
         See MASMailbox for properties.
         """
-
         def __init__(self, def_disp_text=DEF_DISP):
             """
             Constructor for the selectable sprite mailbox
@@ -1416,7 +1485,8 @@ init -10 python in mas_selspr:
             super(MASSelectableSpriteMailbox, self).__init__()
             self.send_def_disp_text(def_disp_text)
             self.send_conf_enable(False)
-
+            self.send_restore_enable(False)
+            self.send_frame_vsize(SB_VIEWPORT_BOUNDS_H)
 
         def _get(self, headline):
             """
@@ -1426,7 +1496,6 @@ init -10 python in mas_selspr:
             """
             return super(MASSelectableSpriteMailbox, self).get(headline)
 
-
         def _read(self, headline):
             """
             Calls the super class read
@@ -1435,7 +1504,6 @@ init -10 python in mas_selspr:
             """
             return super(MASSelectableSpriteMailbox, self).read(headline)
 
-
         def _send(self, headline, msg):
             """
             Calls the super classs's send
@@ -1443,7 +1511,6 @@ init -10 python in mas_selspr:
             This is just for ease of use.
             """
             super(MASSelectableSpriteMailbox, self).send(headline, msg)
-
 
         def read_conf_enable(self):
             """
@@ -1455,7 +1522,6 @@ init -10 python in mas_selspr:
             """
             return self._read(MB_CONF)
 
-
         def read_def_disp_text(self):
             """
             Returns the default display text message
@@ -1466,6 +1532,55 @@ init -10 python in mas_selspr:
             """
             return self._read(MB_DISP_DEF)
 
+        def read_frame_vsize(self):
+            """
+            Returns frame fsize
+            """
+            return self._read(MB_FRAME_VSIZE)
+
+        def read_outfit_checkbox_checked(self):
+            """
+            Returns the value of the outfit checkbox checked message
+
+            RETURNS:
+                True if the outfit checkbox is checked, False otherwise
+            """
+            return self._read(MB_OCB_CHECKED)
+
+        def read_outfit_checkbox_visible(self):
+            """
+            Returns the value of the outfit checkbox visible message
+
+            RETURNS:
+                True if the outfit checkbox should be visible, False otherwise    
+            """
+            return self._read(MB_OCB_VISIBLE)
+
+        def read_prev_state(self):
+            """
+            Returns value of the prev_state message
+
+            RETURNS: previous MASMOnika state.
+            """
+            return self._read(MB_PREV_STATE)
+
+        def read_restore_enable(self):
+            """
+            Returns the value of the restore enable message
+
+            RETURNS: True if the restore button should be enabled, False 
+                otherwise
+            """
+            return self._read(MB_RSTR_ENABLE)
+
+        def read_restore_visible(self):
+            """
+            Returns the value of the restore visible message
+
+            RETURNS: True if the restore button should be visible, false
+                otherwise
+            """
+            return self._read(MB_RSTR_VISIBLE)
 
         def get_disp_fast(self):
             """
@@ -1475,7 +1590,6 @@ init -10 python in mas_selspr:
             """
             return self._get(MB_DISP_FAST)
 
-
         def get_disp_text(self):
             """
             Removes and returns the display text message
@@ -1483,7 +1597,6 @@ init -10 python in mas_selspr:
             RETURNS: display text
             """
             return self._get(MB_DISP)
-
 
         def send_conf_enable(self, enable):
             """
@@ -1494,7 +1607,6 @@ init -10 python in mas_selspr:
             """
             self._send(MB_CONF, enable)
 
-
         def send_def_disp_text(self, txt):
             """
             Sends default display message
@@ -1504,13 +1616,11 @@ init -10 python in mas_selspr:
             """
             self._send(MB_DISP_DEF, txt)
 
-
         def send_disp_fast(self):
             """
             Sends default fast flag
             """
             self._send(MB_DISP_FAST, True)
-
 
         def send_disp_text(self, txt):
             """
@@ -1520,6 +1630,53 @@ init -10 python in mas_selspr:
                 txt - txt to display
             """
             self._send(MB_DISP, txt)
+
+        def send_frame_vsize(self, vsize):
+            """
+            Sends frame vsize message
+
+            IN:
+                vsize - vsize
+            """
+            self._send(MB_FRAME_VSIZE, vsize)
+
+        def send_outfit_checkbox_checked(self, checked):
+            """
+            Sends ocb checked message
+
+            IN:
+                checked - True means checkbox checked, False means not checked
+            """
+            self._send(MB_OCB_CHECKED, checked)
+
+        def send_outfit_checkbox_visible(self, visible):
+            """
+            Sends ocb visible message
+
+            IN:
+                visible - True means to show the outfit checkbox, False means
+                    hide
+            """
+            self._send(MB_OCB_VISIBLE, visible)
+
+        def send_prev_state(self, prev_state):
+            """
+            Sends previous MASMonika state
+
+            IN:
+                prev_state - previous MASMonika state
+            """
+            self._send(MB_PREV_STATE, prev_state)
+
+        def send_restore_enable(self, enable):
+            """
+            sends restore enable messgae
+
+            IN:
+                enable - True means to enable the restore button, False means
+                    disable
+            """
+            self._send(MB_RSTR_ENABLE, enable)
 
 
 init -1 python:
@@ -1887,8 +2044,9 @@ init -1 python:
                 # send out hover dlg
                 if self.selectable.hover_dlg is not None:
                     self._send_hover_text()
+                    self.end_interaction = True
 
-                elif self.selectable.remover:
+                else:
                     self.mailbox.send_disp_fast()
 
                 # always reset on a hover
@@ -2488,14 +2646,17 @@ style mas_selector_sidebar_vbar:
 #   mailbox - MASSelectableSpriteMailbox for messages
 #   confirm - label to jump to when confirming
 #   cancel - label to jump to when canceling
+#   restore - label to jump to when restoring
 #   remover - remover display item, if appropriate. Can be None
-screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
+screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None):
     zorder 50
 #    modal True
 
+    $ sel_frame_vsize = mailbox.read_frame_vsize()
+
     frame:
-        area (1075, 5, 200, 625)
-        background Frame(mas_getTimeFile("mod_assets/frames/black70_pinkborder100_5px.png"), left=6, top=6, tile=True)
+        area (1075, 5, 200, sel_frame_vsize)
+        background Frame(store.mas_ui.sel_sb_frame, left=6, top=6, tile=True)
 
         vbox:
             xsize 200
@@ -2523,9 +2684,23 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 
             null height 10
 
+            if mailbox.read_outfit_checkbox_visible():
+                $ ocb_checked = mailbox.read_outfit_checkbox_checked()
+                textbutton _("Outfit Mode"):
+                    style "check_button"
+                    activate_sound gui.activate_sound
+                    action [
+                        ToggleField(persistent, "_mas_setting_ocb"),
+                        Function(
+                            mailbox.send_outfit_checkbox_checked,
+                            not ocb_checked
+                        )
+                    ]
+                    selected ocb_checked
+
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
-                    style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+                    style store.mas_ui.hkb_button_style
                     xalign 0.5
                     action Jump(confirm)
             else:
@@ -2534,11 +2709,26 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
                     xsize 120
                     xalign 0.5
 
-                    background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-                    text "Confirm" style ("hkb_text" if not mas_globals.dark_mode else "hkb_dark_text")
+                    background Image(store.mas_ui.hkb_disabled_bg)
+                    text "Confirm" style store.mas_ui.hkb_text_style
+
+            if mailbox.read_restore_enable():
+                textbutton _("Restore"):
+                    style store.mas_ui.hkb_button_style
+                    xalign 0.5
+                    action Jump(restore)
+
+            else:
+                frame:
+                    ypadding 5
+                    xsize 120
+                    xalign 0.5
+
+                    background Image(store.mas_ui.hkb_disabled_bg)
+                    text "Restore" style store.mas_ui.hkb_text_style
 
             textbutton _("Cancel"):
-                style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+                style store.mas_ui.hkb_button_style
                 xalign 0.5
                 action Jump(cancel)
 #                action Function(mailbox.mas_send_return, -1)
@@ -2596,16 +2786,39 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 #        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
 #        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
 
-        # save state
-        prev_moni_state = monika_chr.save_state(True, True, True)
-
         # setup the mailbox
         if mailbox is None:
             mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
+        
+        # save state
+        prev_moni_state = monika_chr.save_state(True, True, True)
+        mailbox.send_prev_state(prev_moni_state)
+
+        # initalize vsize
+        if mailbox.read_outfit_checkbox_visible():
+            mailbox.send_frame_vsize(
+                store.mas_selspr.SB_VIEWPORT_BOUNDS_H1
+            )
 
         # pull out the remover selectable for special use, if found
         remover_item = store.mas_selspr._rm_remover(items)
         remover_disp_item = None
+
+        viewport_bounds = (
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_X,
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_Y,
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_W,
+            mailbox.read_frame_vsize(),
+            store.mas_selspr.SB_VIEWPORT_BOUNDS_BS
+        )
+
+        # if in outfit mode, apply the outfit before launching
+        if mailbox.read_outfit_checkbox_checked():
+            monika_chr.change_clothes(
+                monika_chr.clothes,
+                by_user=True,
+                outfit_mode=True
+            )
 
     # sanity check to avoid crashes
     if len(items) < 1:
@@ -2634,7 +2847,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
             remover_disp_item = MASSelectableImageButtonDisplayable(
                 remover_item,
                 select_map,
-                store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                viewport_bounds,
                 mailbox
             )
 
@@ -2644,7 +2857,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 MASSelectableImageButtonDisplayable(
                     item,
                     select_map,
-                    store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                    viewport_bounds,
                     mailbox
                 )
                 for item in items
@@ -2656,25 +2869,20 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 MASSelectableImageButtonDisplayable(
                     item,
                     select_map,
-                    store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                    viewport_bounds,
                     mailbox
                 )
                 for item in items
             ]
 
-
         # fill select map
-        item_found = store.mas_selspr._fill_select_map(
+        item_found = store.mas_selspr._fill_select_map_and_set_remover(
             monika_chr,
             select_type,
             disp_items,
-            select_map
+            select_map,
+            remover_disp_item=remover_disp_item
         )
-
-        # select remover if no item found
-        if not item_found and remover_disp_item is not None:
-            select_map[remover_item.name] = remover_disp_item
-            remover_disp_item.selected = True
 
         # make copy of old select map
         old_select_map = dict(select_map)
@@ -2695,19 +2903,10 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup prev line
         prev_line = ""
 
-    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", remover=remover_disp_item)
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item)
 
 label mas_selector_sidebar_select_loop:
     python:
-        # display text parsing
-        disp_text = mailbox.get_disp_text()
-        disp_fast = mailbox.get_disp_fast()
-
-        if disp_text is None:
-            disp_text = mailbox.read_def_disp_text()
-
-        if disp_fast:
-            disp_text += "{fast}"
 
         # select map parsing
         store.mas_selspr._clean_select_map(
@@ -2717,18 +2916,34 @@ label mas_selector_sidebar_select_loop:
             monika_chr
         )
 
-        # once select map is cleaned, determine the confirm button enable
-        mailbox.send_conf_enable(
-            not store.mas_selspr.is_same(old_view, new_view)
-        )
-
         if preview_selections:
             store.mas_selspr._adjust_monika(
                 monika_chr,
                 old_select_map,
                 select_map,
-                select_type
+                select_type,
+                outfit_mode=mailbox.read_outfit_checkbox_checked()
             )
+
+
+label mas_selector_sidebar_select_midloop:
+
+    python:
+        # once select map is cleaned, check if diff
+        #has_diff = not store.mas_selspr.is_same(old_view, new_view)
+        has_diff = not monika_chr.same_state(prev_moni_state)
+        mailbox.send_conf_enable(has_diff)
+        mailbox.send_restore_enable(has_diff)
+
+        # display text parsing
+        disp_text = mailbox.get_disp_text()
+        disp_fast = mailbox.get_disp_fast()
+
+        if disp_text is None:
+            disp_text = mailbox.read_def_disp_text()
+
+        if disp_fast:
+            disp_text += "{fast}"
 
         # force this to execute in this python block (no prediction)
         renpy.say(m, disp_text)
@@ -2740,6 +2955,42 @@ label mas_selector_sidebar_select_loop:
             prev_line = disp_text
 
     jump mas_selector_sidebar_select_loop
+
+label mas_selector_sidebar_select_restore:
+
+    python:
+        # clean the selections
+        store.mas_selspr._clean_select_map(
+            select_map,
+            select_type,
+            False,
+            monika_chr,
+            force=True
+        )
+    
+        # restore monika back to previous
+        monika_chr.restore(prev_moni_state)
+
+        # refill selections
+        store.mas_selspr._fill_select_map_and_set_remover(
+            monika_chr,
+            select_type,
+            disp_items,
+            select_map,
+            remover_disp_item=remover_disp_item
+        )
+
+        #Clear repeated lines
+        if prev_line != disp_text:
+            _history_list.pop()
+            #Using this to clear relevant entries from history
+            prev_line = disp_text
+
+        # make next display fast
+        mailbox.send_disp_fast()
+
+    # jump back to mid loop
+    jump mas_selector_sidebar_select_midloop
 
 label mas_selector_sidebar_select_confirm:
     hide screen mas_selector_sidebar
@@ -2766,9 +3017,7 @@ label mas_selector_sidebar_select_confirm:
 #            )
 
             # reload state
-            monika_chr.reset_outfit()
-            monika_chr.remove_all_acs()
-            monika_chr.load_state(prev_moni_state)
+            monika_chr.restore(prev_moni_state)
 
         # If monika is wearing a remover ACS, remove it.
         for item_name in select_map.keys():
@@ -2885,12 +3134,17 @@ init 5 python:
         )
     )
 
+default persistent._mas_setting_ocb = False
+# Outfit CheckBox setting
+
 label monika_clothes_select:
     # setup
     python:
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
+        mailbox.send_outfit_checkbox_visible(True)
+        mailbox.send_outfit_checkbox_checked(persistent._mas_setting_ocb)
         sel_map = {}
 
     # initial dialogue

@@ -656,7 +656,7 @@ label greeting_visit4:
     m 1hub "I looove yooou, [player]. Ehehe~"
     m 1hksdlb "Oh, sorry! I was spacing out."
     m 1lksdla "I didn't think I would be able to see you again so soon."
-    return
+    return "love"
 
 init 5 python:
     addEvent(

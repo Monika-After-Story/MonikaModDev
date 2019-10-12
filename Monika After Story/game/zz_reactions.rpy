@@ -569,6 +569,7 @@ init python:
             [1]: sprite name (id) 
             [2]: giftname this sprite is associated with
             [3]: True if this gift has already been given before
+            [4]: sprite object (could be None even if sprite name is populated)
         """
         # given giftname? try and lookup
         if sp_data is not None:
@@ -589,8 +590,19 @@ init python:
         # check if this gift has already been gifted
         gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
 
+        # apply sprite object template if ACS
+        sp_obj = store.mas_sprites.get_sprite(sp_data[0], sp_data[1])
+        if sp_data[0] == store.mas_sprites.SP_ACS:
+            store.mas_sprites.apply_ACSTemplate(sp_obj)
+
         # return results
-        return (sp_data[0], sp_data[1], giftname, gifted_before)
+        return (
+            sp_data[0],
+            sp_data[1],
+            giftname,
+            gifted_before,
+            sp_obj,
+        )
 
 
     def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True):
@@ -602,15 +614,15 @@ init python:
             unlock_sel - True will unlock the selector topic, False will not
                 (Default: True)
         """
-        sp_type, sp_name, giftname, gifted_before = sprite_data
+        sp_type, sp_name, giftname, gifted_before, sp_obj = sprite_data
 
         # sanity check
         # NOTE: gifted_before is not required
+        # NOTE: sp_obj is not required either
         if sp_type is None or sp_name is None or giftname is None:
             return
 
         sp_data = (sp_type, sp_name)
-        sp_obj = store.mas_sprites.get_sprite(sp_type, sp_name)
         
         if sp_data in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop(sp_data)
@@ -792,7 +804,7 @@ label mas_reaction_gift_test2:
 
 label mas_reaction_gift_generic_sprite_json:
     $ sprite_data = mas_getSpriteObjInfo()
-    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+    $ sprite_type, sprite_name, giftname, gifted_before, spr_obj = sprite_data
 
     python:
         sprite_str = store.mas_sprites_json.SP_UF_STR.get(sprite_type, None)
@@ -801,11 +813,10 @@ label mas_reaction_gift_generic_sprite_json:
 
     # we have special react for generic json clothes
     if sprite_type == store.mas_sprites.SP_CLOTHES:
-        call mas_reaction_gift_generic_clothes_json
+        call mas_reaction_gift_generic_clothes_json(spr_obj)
 
     else:
         # otherwise, it has to be an ACS.
-        $ spr_obj = store.mas_sprites.get_sprite(sprite_type, sprite_name)
 
         $ mas_giftCapGainAff(1)
         m "Aww, [player]!"
@@ -843,7 +854,7 @@ label mas_reaction_gift_generic_sprite_json:
     return
 
 # generic reaction for json clothes
-label mas_reaction_gift_generic_clothes_json:
+label mas_reaction_gift_generic_clothes_json(sprite_object):
     python:
         mas_giftCapGainAff(3)
         # expandable
@@ -859,7 +870,7 @@ label mas_reaction_gift_generic_clothes_json:
     m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
 
     # try it on
-    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+    call mas_clothes_change(sprite_object)
 
     m 2eka "Well...{w=0.5} What do you think?"
     m 2eksdla "Do you like it?"
@@ -890,10 +901,7 @@ label mas_reaction_gift_acs_jmo_hairclip_musicnote:
 label mas_reaction_gift_hairclip(hairclip_name):
     # get sprtie data
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, hairclip_name))
-    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
-
-    # get the acs
-    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+    $ sprite_type, sprite_name, giftname, gifted_before, hairclip_acs = sprite_data
 
     # check for incompatibility
     $ is_wearing_baked_outfit = monika_chr.is_wearing_clothes_with_exprop("baked outfit")
@@ -1136,22 +1144,6 @@ label mas_reaction_promisering:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_plush", "plushie", is_good=True)
-
-label mas_reaction_plush:
-    m 1wud "What's this, [player]?"
-    m "Are you trying to give me a plushie?"
-    m 1rksdlb "I appreciate the thought, but..."
-    m 1ekd "For some reason, I can't seem to bring it here."
-    m 1rkc "I wish I could..."
-    m 1hua "But don't worry, [player]!"
-    m 1hub "Ehehe~"
-    m 1hua "Thank you for trying!"
-    $ mas_receivedGift("mas_reaction_plush") # while unsuccessful counts
-    $ gift_ev = mas_getEV("mas_reaction_plush")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
 
 init 5 python:
     addReaction("mas_reaction_cupcake", "cupcake", is_good=True)
@@ -1938,7 +1930,7 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
         sprite_data = mas_getSpriteObjInfo(
             (store.mas_sprites.SP_CLOTHES, "orcaramelo_bikini_shell")
         )
-        sprite_type, sprite_name, giftname, gifted_before = sprite_data
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
 
         mas_giftCapGainAff(3)
 
@@ -1946,7 +1938,7 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
     m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
 
     # try it on
-    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+    call mas_clothes_change(sprite_object)
 
     m 2ekbfa "Well...{w=0.5} What do you think?"
     m 2hubfa "Do I look like a mermaid? Ehehe."
@@ -1983,14 +1975,14 @@ label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
         sprite_data = mas_getSpriteObjInfo(
             (store.mas_sprites.SP_ACS, "orcaramelo_hairflower_pink")
         )
-        sprite_type, sprite_name, giftname, gifted_before = sprite_data
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
 
         mas_giftCapGainAff(1)
 
     m 3sua "Oh!{w=0.5} What a cute little flower!"
     m 1ekbsa "Thanks [player], you're so sweet~"
     m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
-    $ monika_chr.wear_acs(mas_sprites.get_sprite(sprite_type, sprite_name))
+    $ monika_chr.wear_acs(sprite_object)
     m 1hua "Ehehe~"
     m 1hub "Thanks again, [player]!"
 
@@ -2004,7 +1996,7 @@ label mas_reaction_gift_clothes_velius94_shirt_pink:
         sprite_data = mas_getSpriteObjInfo(
             (store.mas_sprites.SP_CLOTHES, "velius94_shirt_pink")
         )
-        sprite_type, sprite_name, giftname, gifted_before = sprite_data
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
 
         mas_giftCapGainAff(3)
 
@@ -2014,7 +2006,7 @@ label mas_reaction_gift_clothes_velius94_shirt_pink:
     m 3eua "Hold on, let me try it on real quick..."
 
     # try it on
-    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+    call mas_clothes_change(sprite_object)
 
     m 2sub "Ahh, it's a perfect fit!"
     m 3hub "I really like the colors, too! Pink and black go so well together."
