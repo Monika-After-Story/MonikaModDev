@@ -831,19 +831,8 @@ label ch30_main:
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
-    #TODO: Move this to autoload
     if mas_isO31():
-        $ persistent._mas_o31_in_o31_mode = True
-        $ store.mas_globals.show_vignette = True
-
-        # setup thunder
-        #NOTE: why does this only unlock thunder if you like rain?
-        #If you've seen it, it should unlock
-        if persistent._mas_likes_rain:
-            $ mas_weather_thunder.unlocked = True
-            $ store.mas_weather.saveMWData()
-            $ mas_unlockEVL("monika_change_weather", "EVE")
-        $ mas_changeWeather(mas_weather_thunder)
+        call mas_o31_autoload_check
 
     # d25 season? d25 season you are in
     if mas_isD25Season():
@@ -1087,7 +1076,7 @@ label ch30_autoload:
 label mas_ch30_post_retmoni_check:
 
     if mas_isO31() or persistent._mas_o31_in_o31_mode:
-        jump mas_holiday_o31_autoload_check
+        jump mas_o31_autoload_check
 
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check

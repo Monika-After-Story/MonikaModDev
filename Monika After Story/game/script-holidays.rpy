@@ -186,15 +186,15 @@ label mas_o31_autoload_check:
                 #Put calendar shields up
                 mas_calRaiseOverlayShield()
 
-                #TODO: uncommend these when outfits are in
+                #TODO: uncomment these when outfits are in
                 if random.randint(1,2) == 1:
                     costume = "miku"
-                    #store.mas_selspr.unlock_clothes(mas_clothes_orcaramelo_hatsune_miku, True)
-                    #monika_chr.change_clothes(mas_clothes_orcaramelo_hatsune_miku, False)
+                    store.mas_selspr.unlock_clothes(mas_clothes_orcaramelo_hatsune_miku, True)
+                    monika_chr.change_clothes(mas_clothes_orcaramelo_hatsune_miku, False, outfit_mode=True)
                 else:
                     costume = "sakuya"
                     #store.mas_selspr.unlock_clothes(mas_clothes_orcaramelo_sakuya, True)
-                    #monika_chr.change_clothes(mas_clothes_orcaramelo_sakuya, False)
+                    #monika_chr.change_clothes(mas_clothes_orcaramelo_sakuya, False, outfit_mode=True)
 
                 #Select greet
                 selected_greeting = "greeting_o31_{0}".format(costume)
@@ -272,26 +272,6 @@ init 5 python:
     )
 
 label greeting_o31_marisa:
-    # starting with no visuals
-
-    # couple of things:
-    # 1 - music hotkeys should be disabled
-    $ store.mas_hotkeys.music_enabled = False
-
-    # 2 - the calendar overlay will become visible, but we should keep it
-    # disabled
-    $ mas_calRaiseOverlayShield()
-
-    # 3 - keymaps not set (default)
-    # 4 - hotkey buttons are hidden (skip visual)
-    # 5 - music is off (skip visual)
-
-    # enable the marisa clothes
-    $ monika_chr.change_clothes(mas_clothes_marisa, False)
-
-    # reset zoom
-    $ store.mas_sprites.reset_zoom()
-
     # decoded CG means that we start with monika offscreen
     if store.mas_o31_event.o31_cg_decoded:
         # ASSUMING:
@@ -351,22 +331,7 @@ label greeting_o31_marisa:
     m 3ekbfa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
 
-    # cleanup
-    # 1 - music hotkeys should be enabled
-    $ store.mas_hotkeys.music_enabled = True
-
-    # 2 - calendarovrelay enabled
-    $ mas_calDropOverlayShield()
-
-    # 3 - set the keymaps
-    $ set_keymaps()
-
-    # 4 - hotkey buttons should be shown
-    $ HKBShowButtons()
-
-    # 5 - restart music
-    $ mas_startup_song()
-
+    call greeting_o31_cleanup
     return
 
 init 5 python:
@@ -380,25 +345,6 @@ init 5 python:
     )
 
 label greeting_o31_rin:
-    # starting with no visuals
-
-    # couple of things:
-    # 1 - music hotkeys should be disabled
-    $ store.mas_hotkeys.music_enabled = False
-
-    # 2 - the calendar overlay will become visible, but we should keep it
-    # disabled
-    $ mas_calRaiseOverlayShield()
-
-    # 3 - keymaps not set (default)
-    # 4 - hotkey buttons are hidden (skip visual)
-    # 5 - music is off (skip visual)
-
-    # enable the rin clothes
-    $ monika_chr.change_clothes(mas_clothes_rin, False)
-
-    # reset zoom
-    $ store.mas_sprites.reset_zoom()
     $ title_cased_hes = hes.capitalize()
 
     # ASSUME vignette
@@ -450,22 +396,7 @@ label greeting_o31_rin:
     m 1hksdlb "Anyway, it was a pain getting my hair done."
     m 1eub "So I hope you like the costume!"
 
-    # cleanup
-    # 1 - music hotkeys should be enabled
-    $ store.mas_hotkeys.music_enabled = True
-
-    # 2 - calendarovrelay enabled
-    $ mas_calDropOverlayShield()
-
-    # 3 - set the keymaps
-    $ set_keymaps()
-
-    # 4 - hotkey buttons should be shown
-    $ HKBShowButtons()
-
-    # 5 - restart music
-    $ mas_startup_song()
-
+    call greeting_o31_cleanup
     return
 
 #Miku intro
@@ -489,7 +420,7 @@ label greeting_o31_miku:
     m "{i}~I still want to be l-{/i}"
     m "Oh!{w=0.5} Seems like someone's heard me."
     #show moni now
-    show monika 3hub at i11 zorder MAS_MONIKA_Z
+    show monika 3hub at i11 zorder MAS_MONIKA_Z with dissolve
     m 3hub "Welcome back, [player]!"
     m 1eua "So...{w=0.5}what do you think?"
     m 1eub "I worked really hard on this costume, but I think it was worth it."
@@ -498,6 +429,7 @@ label greeting_o31_miku:
     m 3tsu "So don't expect me to give you a performance today, [player]!"
     m 1hub "Ahaha~"
     call greeting_o31_deco
+    call greeting_o31_cleanup
     return
 
 #Sakuya intro
@@ -514,14 +446,15 @@ init 5 python:
 label greeting_o31_sakuya:
     call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk at i11 zorder 9
-#moni is off-screen
+    #moni is off-screen
     m "..."
     m "{i}Hm{/i}?"
     m "{i}Ah, there must have been some sort of mistake.{w=0.5} I wasn't warned of any guests...{/i}"
     m "{i}No matter. None shall disturb the m-{/i}"
     m "Oh!{w=0.5} It's you, [player]!"
+
     #show moni now
-    show monika 3hub at i11 zorder MAS_MONIKA_Z
+    show monika 3hub at i11 zorder MAS_MONIKA_Z with dissolve
     m 3hub "Welcome back!"
     m 3eub "What do you think of my costume?"
     m 1rksdlb "It ended up being a lot more work than I expected, so I hope you like it..."
@@ -531,6 +464,7 @@ label greeting_o31_sakuya:
     show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5kua "Though I might make some exceptions, ehehe~"
     call greeting_o31_deco
+    call greeting_o31_cleanup
     return
 
 label greeting_o31_deco:
@@ -556,6 +490,20 @@ init 5 python:
         ),
         eventdb=evhand.greeting_database
     )
+
+label greeting_o31_cleanup:
+    python:
+        # 1 - music hotkeys should be enabled
+        store.mas_hotkeys.music_enabled = True
+        # 2 - calendarovrelay enabled
+        mas_calDropOverlayShield()
+        # 3 - set the keymaps
+        set_keymaps()
+        # 4 - hotkey buttons should be shown
+        HKBShowButtons()
+        # 5 - restart music
+        mas_startup_song()
+    return
 
 label greeting_trick_or_treat_back:
     # trick/treating returned home greeting
@@ -650,6 +598,16 @@ label greeting_trick_or_treat_back:
         # if we are returning from a non-birthday date post o31 birthday
         call return_home_post_player_bday
 
+    return
+
+label greeting_trick_or_treat_back_costume:
+    #TODO: make a better 'if in costume' check
+    #if wearing_costume:
+    #    m 2eka "Even if I couldn't see anything and no one else could see my costume..."
+    #    m 2eub "Dressing up and going out was still really great!"
+    #else:
+    m 2eka "Even if I couldn't see anything..."
+    m 2eub "Going out was still really great!"
     return
 
 ### o31 farewells
