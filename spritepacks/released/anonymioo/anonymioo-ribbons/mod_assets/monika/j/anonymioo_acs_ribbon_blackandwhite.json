@@ -1,0 +1,26 @@
+{
+    "__author": "anonymioo",
+    "version": 2,
+    "type": 0,
+    "name": "anonymioo_ribbon_blackandwhite",
+    "img_sit": "anonymioo_ribbon_blackandwhite",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "stay_on_start": true,
+    "ex_props": {
+        "ribbon-multicolor": true
+    },
+    "select_info": {
+        "display_name": "Ribbon (Black and White)",
+        "thumb": "anonymioo_ribbon_blackandwhite",
+        "group": "ribbon",
+        "select_dlg": [
+            "IF YOU THINKING ABOUT MY BABY IT DONT MATTER IF U BLACK OR WHITE"
+        ]
+    },
+    "giftname": "blackandwhiteribbon"
+}
