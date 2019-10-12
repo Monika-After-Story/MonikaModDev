@@ -64,32 +64,11 @@ init -1 python:
 
 ############################### O31 ###########################################
 # [HOL010]
-
-default persistent._mas_o31_current_costume = None
-# None - no costume
-# "marisa" - witch costume
-# "rin" - neko costume
-
-default persistent._mas_o31_seen_costumes = None
-# dict containing seen costumes for o31
-# NOTE: NOT saved historically since this just tracks what has been seen
-
-default persistent._mas_o31_costume_greeting_seen = False
-# set to true after seeing a costume greeting
-
-default persistent._mas_o31_costumes_allowed = None
-# true if user gets to see costumes
-# this is set once and never touched again
-#TODO: change this to a method. No reason to store persistent data for a one time thing
-
 default persistent._mas_o31_in_o31_mode = False
 # True if we should be in o31 mode (aka viginette)
 # This should be only True if:
 #   user is NOT returning monika on o31 from a date/trip taken before o31
 #   user's current session started on o31
-
-default persistent._mas_o31_dockstat_return = False
-# TRue if monika closes the game so she can set up o31
 
 default persistent._mas_o31_went_trick_or_treating_short = False
 default persistent._mas_o31_went_trick_or_treating_mid = False
@@ -118,13 +97,6 @@ default persistent._mas_o31_trick_or_treating_aff_gain = 0
 # this is total affection gained from trick or treating today.
 # the max is 15
 
-default persistent._mas_o31_spent_o31 = False
-#Time spent var
-
-#TODO: swap these outfits
-define mas_o31_marisa_chance = 90
-define mas_o31_rin_chance = 10
-
 define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
 
 init -810 python:
@@ -135,16 +107,9 @@ init -810 python:
         # change trigger to better date
         datetime.datetime(2020, 1, 6),
         {
-            # TODO: we should have a spent time var here
-
-            "_mas_o31_current_costume": "o31.costume.was_worn",
-            "_mas_o31_costume_greeting_seen": "o31.costume.greeting.seen",
-            "_mas_o31_costumes_allowed": "o31.costume.allowed",
-
             # this isn't very useful, but we need the reset
             "_mas_o31_in_o31_mode": "o31.mode.o31",
 
-            "_mas_o31_dockstat_return": "o31.dockstat.returned_o31",
             "_mas_o31_went_trick_or_treating_short": "o31.actions.tt.short",
             "_mas_o31_went_trick_or_treating_mid": "o31.actions.tt.mid",
             "_mas_o31_went_trick_or_treating_right": "o31.actions.tt.right",
@@ -197,182 +162,70 @@ init -10 python:
     def mas_o31CapGainAff(amount):
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
 
-init 101 python:
-    #O31 setup
-    #NOTE: Is this really needed anymore?
-    #With the new system for O31 costumes, it doesn't seem like there's a reason to have this
-    if persistent._mas_o31_seen_costumes is None:
-        persistent._mas_o31_seen_costumes = {
-            "marisa": False,
-            "rin": False
-        }
-
-    #TODO: move this to autoload
-    if (
-            persistent._mas_o31_in_o31_mode
-            and not mas_isO31()
-            and not store.mas_o31_event.isTTGreeting()
-        ):
-        # disable o31 mode
-        persistent._mas_o31_in_o31_mode = False
-
-        # unlock the special greetings if need be
-        unlockEventLabel(
-            "i_greeting_monikaroom",
-            store.evhand.greeting_database
-        )
-
-        if not persistent._mas_hair_changed:
-            unlockEventLabel(
-                "greeting_hairdown",
-                store.evhand.greeting_database
-            )
-
-
-#NOTE: No more CGs so throw this out
-#init -11 python in mas_o31_event:
-#    import store
-#    import store.mas_dockstat as mds
-#    import store.mas_ics as mis
-#    import datetime
-#
-#    # setup the docking station for o31
-#    o31_cg_station = store.MASDockingStation(mis.o31_cg_folder)
-#
-#    # cg available?
-#    o31_cg_decoded = False
-#
-#    # was monika just returned form a TT event
-#    mas_return_from_tt = False
-#
-#
-#    def decodeImage(key):
-#        """
-#        Attempts to decode a cg image
-#
-#        IN:
-#            key - o31 cg key to decode
-#
-#        RETURNS True upon success, False otherwise
-#        """
-#        return mds.decodeImages(o31_cg_station, mis.o31_map, [key])
-#
-#
-#    def removeImages():
-#        """
-#        Removes decoded images at the end of their lifecycle
-#        """
-#        mds.removeImages(o31_cg_station, mis.o31_map)
-#
-#
-#    def isMonikaInCostume(_monika_chr):
-#        """
-#        IN:
-#            _monika_chr - MASMonika object to check
-#
-#        Returns true if monika is in costume
-#        """
-#        return (
-#            _monika_chr.clothes.name == "marisa"
-#            or _monika_chr.clothes.name == "rin"
-#        )
-#
-#
-#    def isTTGreeting():
-#        """
-#        RETURNS True if the persistent greeting type is the TT one
-#        """
-#        return (
-#            store.persistent._mas_greeting_type
-#            == store.mas_greetings.TYPE_HOL_O31_TT
-#        )
-#
-#
-#    def spentO31():
-#        """
-#        RETURNS True if the user spent o31 with monika.
-#        Currently we determine that by checking historical value for current
-#        costume for a non None value
-#        # TODO: this should be changed to a spent var one day
-#        also i push now - simple
-#        """
-#        years_list = range(2017, datetime.date.today().year + 1)
-#
-#        _data_found = store.mas_HistLookup_otl(
-#            "o31.costume.was_worn",
-#            years_list
-#        )
-#
-#        for year, data_tuple in _data_found.iteritems():
-#            l_const, _data = data_tuple
-#
-#            # 0 means data found constant
-#            if l_const == 0 and _data is not None:
-#                return True
-#
-#        return False
-
-# auto load starter check
-label mas_holiday_o31_autoload_check:
-    # ASSUMPTIONS:
-    #   monika is NOT outside
-    #   monika is NOT returning home
-    #   we are NOT in introduction
-
+#START: O31 AUTOLOAD CHECK
+label mas_o31_autoload_check:
     python:
         import random
 
-        if (
-                persistent._mas_o31_current_costume is None
-                and persistent._mas_o31_costumes_allowed
-            ):
-            # select a costume. Once this has been selected, this is what monika
-            # will wear until day change
-            persistent._mas_o31_in_o31_mode = True
-            mas_skip_visuals = True
+        if mas_isO31():
+            if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
+                #Setup for greet
+                mas_skip_visuals = True
 
-            # reset idle since we will force greetings
-            mas_resetIdleMode()
+                #Reset idle since we will force greetings
+                mas_resetIdleMode()
 
-            if random.randint(1,100) <= mas_o31_marisa_chance:
-                persistent._mas_o31_current_costume = "marisa"
-                selected_greeting = "greeting_o31_marisa"
-                store.mas_o31_event.o31_cg_decoded = (
-                    store.mas_o31_event.decodeImage("o31mcg")
-                )
-                store.mas_selspr.unlock_clothes(mas_clothes_marisa, True)
+                #Lock the hairdown greeting for today
+                mas_lockEVL("greeting_hairdown", "GRE")
 
-            else:
-                persistent._mas_o31_current_costume = "rin"
-                selected_greeting = "greeting_o31_rin"
-                store.mas_o31_event.o31_cg_decoded = (
-                    store.mas_o31_event.decodeImage("o31rcg")
-                )
-                store.mas_selspr.unlock_clothes(mas_clothes_rin, True)
+                #Disable hotkeys for this
+                store.mas_hotkeys.music_enabled = False
 
-            persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
+                #Put calendar shields up
+                mas_calRaiseOverlayShield()
 
-        if persistent._mas_o31_in_o31_mode:
+                #TODO: uncommend these when outfits are in
+                if random.randint(1,2) == 1:
+                    costume = "miku"
+                    #store.mas_selspr.unlock_clothes(mas_clothes_orcaramelo_hatsune_miku, True)
+                    #monika_chr.change_clothes(mas_clothes_orcaramelo_hatsune_miku, False)
+                else:
+                    costume = "sakuya"
+                    #store.mas_selspr.unlock_clothes(mas_clothes_orcaramelo_sakuya, True)
+                    #monika_chr.change_clothes(mas_clothes_orcaramelo_sakuya, False)
+
+                #Select greet
+                selected_greeting = "greeting_o31_{0}".format(costume)
+
+                #Reset zoom
+                store.mas_sprites.reset_zoom()
+
+                #Now that we're here, we're in O31 mode
+                persistent._mas_o31_in_o31_mode = True
+
+            #Vignette on O31
             store.mas_globals.show_vignette = True
 
-            # setup thunder
-            if persistent._mas_likes_rain:
-                mas_weather_thunder.unlocked = True
-                store.mas_weather.saveMWData()
-                mas_unlockEVL("monika_change_weather", "EVE")
-            mas_changeWeather(mas_weather_thunder)
+            #Set by-user to True because we don't want progressive
+            mas_changeWeather(mas_weather_thunder, True)
 
+        else:
+            #NOTE: Since O31 is costumes, we always reset clothes
+            monika_chr.change_clothes(mas_clothes_def)
+
+            #Reset o31_mode flag
+            persistent._mas_o31_in_o31_mode = False
+
+            #True if shown count is 0
+            if not mas_getEV("greeting_hairdown").shown_count:
+                mas_unlockEVL("greeting_hairdown", "GRE")
+
+    #Run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         call mas_player_bday_autoload_check
 
     if mas_skip_visuals:
         jump ch30_post_restartevent_check
-
-    # always disable the opendoro greeting on o31
-    $ lockEventLabel("i_greeting_monikaroom", store.evhand.greeting_database)
-
-    # and the hairdown greeting as well
-    $ lockEventLabel("greeting_hairdown", store.evhand.greeting_database)
 
     # otherwise, jump back to the holiday check point
     jump mas_ch30_post_holiday_check
@@ -389,8 +242,6 @@ label mas_holiday_o31_returned_home_relaunch:
     m 3eua "I'm going to close the game."
     m 1eua "After that you can reopen it."
     m 1hubfa "I have something special in store for you, ehehe~"
-
-    $ persistent._mas_o31_dockstat_return = True
     return "quit"
 
 ### o31 images
@@ -412,7 +263,7 @@ init 5 python:
             eventlabel="greeting_o31_marisa",
             category=[store.mas_greetings.TYPE_HOL_O31]
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_o31_marisa:
@@ -473,8 +324,7 @@ label greeting_o31_marisa:
         window auto
         m "Tadaa!~"
 
-    # post CG dialogue
-    # (CG might still be visible during this state, though)
+    #Post scroll dialogue
     m 1hua "Well..."
     m 1wub "What do you think?"
     m 1wua "Suits me pretty well, right?"
@@ -521,7 +371,7 @@ init 5 python:
             eventlabel="greeting_o31_rin",
             category=[store.mas_greetings.TYPE_HOL_O31]
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_o31_rin:
@@ -634,7 +484,6 @@ label greeting_trick_or_treat_back:
         time_out = store.mas_dockstat.diffCheckTimes()
         checkin_time = None
         is_past_sunrise_post31 = False
-        wearing_costume = store.mas_o31_event.isMonikaInCostume(monika_chr)
 
         if len(persistent._mas_dockstat_checkin_log) > 0:
             checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
@@ -671,12 +520,12 @@ label greeting_trick_or_treat_back:
         m 1hub "I hope we got lots of delicious candy!"
         m 1eka "I really enjoyed trick or treating with you, [player]..."
 
-        if wearing_costume:
-            m 2eka "Even if I couldn't see anything and no one else could see my costume..."
-            m 2eub "Dressing up and going out was still really great!"
-        else:
-            m 2eka "Even if I couldn't see anything..."
-            m 2eub "Going out was still really great!"
+        #if wearing_costume:
+        #    m 2eka "Even if I couldn't see anything and no one else could see my costume..."
+        #    m 2eub "Dressing up and going out was still really great!"
+        #else:
+        m 2eka "Even if I couldn't see anything..."
+        m 2eub "Going out was still really great!"
 
         m 4eub "Let's do this again next year!"
 

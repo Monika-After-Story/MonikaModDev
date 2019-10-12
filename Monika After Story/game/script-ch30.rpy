@@ -73,26 +73,6 @@ init 970 python:
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
-        # check if coming from TT
-        store.mas_o31_event.mas_return_from_tt = (
-            store.mas_o31_event.isTTGreeting()
-        )
-
-
-    # o31 costumes flag
-    # we only enable costumes if you are not playing for the first time today.
-    if persistent._mas_o31_costumes_allowed is None:
-        first_sesh = persistent.sessions.get("first_session", None)
-        if first_sesh is not None:
-            # fresh players will have first session today
-            persistent._mas_o31_costumes_allowed = (
-                first_sesh.date() != mas_o31
-            )
-
-        else:
-            # no first sesh? you are also fresh
-            persistent._mas_o31_costumes_allowed = False
-
 
 init -10 python:
     # create the idle mailbox
@@ -1106,7 +1086,7 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
-    if mas_isO31():
+    if mas_isO31() or persistent._mas_o31_in_o31_mode:
         jump mas_holiday_o31_autoload_check
 
     if mas_isD25Season():
@@ -1870,18 +1850,6 @@ label ch30_reset:
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
-
-    ## o31 content
-    #TODO: Put this into autoload
-#    python:
-#        if store.mas_o31_event.isMonikaInCostume(monika_chr):
-#            # NOTE: we may add additional costume logic in here if needed
-#            # TODO: this is bad for o31 rests actually
-#
-#            if not persistent._mas_force_clothes:
-#                # NOTE if the costumes were picked by user, (aka forced),
-#                # then we do NOt reset
-#                monika_chr.reset_clothes(False)
 
     ## d25 content
     #TODO: put this into autoload
