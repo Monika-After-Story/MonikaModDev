@@ -556,12 +556,7 @@ label greeting_trick_or_treat_back:
         m 1hub "I hope we got lots of delicious candy!"
         m 1eka "I really enjoyed trick or treating with you, [player]..."
 
-        #if wearing_costume:
-        #    m 2eka "Even if I couldn't see anything and no one else could see my costume..."
-        #    m 2eub "Dressing up and going out was still really great!"
-        #else:
-        m 2eka "Even if I couldn't see anything..."
-        m 2eub "Going out was still really great!"
+        call greeting_trick_or_treat_back_costume
 
         m 4eub "Let's do this again next year!"
 
@@ -574,12 +569,7 @@ label greeting_trick_or_treat_back:
         m 1wub "We must have gotten a ton of candy!"
         m 3eka "I really enjoyed being there with you..."
 
-        if wearing_costume:
-            m 2eka "Even if I couldn't see anything and no one else could see my costume..."
-            m 2eub "Dressing up and going out was still really great!"
-        else:
-            m 2eka "Even if I couldn't see anything..."
-            m 2eub "Going out was still really great!"
+        call greeting_trick_or_treat_back_costume
 
         m 4eub "Let's do this again next year!"
 
@@ -592,12 +582,7 @@ label greeting_trick_or_treat_back:
         m "I guess we had too much fun, ehehe~"
         m 2eka "But anyway, thanks for taking me along, I really enjoyed it."
 
-        if wearing_costume:
-            m "Even if I couldn't see anything and no one else could see my costume..."
-            m 2eub "Dressing up and going out was still really great!"
-        else:
-            m "Even if I couldn't see anything..."
-            m 2eub "Going out was still really great!"
+        call greeting_trick_or_treat_back_costume
 
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
 
@@ -608,13 +593,13 @@ label greeting_trick_or_treat_back:
     return
 
 label greeting_trick_or_treat_back_costume:
-    #TODO: make a better 'if in costume' check
-    #if wearing_costume:
-    #    m 2eka "Even if I couldn't see anything and no one else could see my costume..."
-    #    m 2eub "Dressing up and going out was still really great!"
-    #else:
-    m 2eka "Even if I couldn't see anything..."
-    m 2eub "Going out was still really great!"
+    if monika_chr.is_wearing_clothes_with_exprop("costume"):
+        m 2eka "Even if I couldn't see anything and no one else could see my costume..."
+        m 2eub "Dressing up and going out was still really great!"
+
+    else:
+        m 2eka "Even if I couldn't see anything..."
+        m 2eub "Going out was still really great!"
     return
 
 ### o31 farewells
@@ -625,10 +610,10 @@ init 5 python:
                 persistent.farewell_database,
                 eventlabel="bye_trick_or_treat",
                 unlocked=True,
-                prompt="I'm going to take you trick or treating",
+                prompt="I'm going to take you trick or treating.",
                 pool=True
             ),
-            eventdb=evhand.farewell_database
+            code="BYE"
         )
 
 label bye_trick_or_treat:
@@ -636,15 +621,15 @@ label bye_trick_or_treat:
         curr_hour = datetime.datetime.now().hour
         too_early_to_go = curr_hour < 17
         too_late_to_go = curr_hour >= 23
-        already_went = (
-            persistent._mas_o31_went_trick_or_treating_short
-            or persistent._mas_o31_went_trick_or_treating_mid
-            or persistent._mas_o31_went_trick_or_treating_right
-            or persistent._mas_o31_went_trick_or_treating_long
-            or persistent._mas_o31_went_trick_or_treating_longlong
-        )
+        #already_went = (
+        #    persistent._mas_o31_went_trick_or_treating_short
+        #    or persistent._mas_o31_went_trick_or_treating_mid
+        #    or persistent._mas_o31_went_trick_or_treating_right
+        #    or persistent._mas_o31_went_trick_or_treating_long
+        #    or persistent._mas_o31_went_trick_or_treating_longlong
+        #)
 
-    if already_went:
+    if mas_lastSeenInYear("bye_trick_or_treat"):
         m 1eka "Again?"
 
     if too_early_to_go:
@@ -729,6 +714,10 @@ label bye_trick_or_treat_iowait:
     elif promise.done():
         # i/o thread is done
         jump bye_trick_or_treat_rtg
+
+    else:
+        #clean up the history list so only one "give me a second..." should show up
+        $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting

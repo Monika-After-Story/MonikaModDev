@@ -965,18 +965,7 @@ label bye_going_somewhere:
         jump bye_going_somewhere_normalplus_flow
 
 label bye_going_somewhere_post_aff_check:
-
-    if mas_isO31():
-        m 1wub "Oh! Are we going trick or treating, [player]?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "Oh! Are we going trick or treating, [player]?{fast}"
-            "Yes.":
-                jump bye_trick_or_treat
-
-            "No.":
-                m 2ekp "Oh, okay."
-
+    pass
 
 label bye_going_somewhere_iostart:
     # NOTE: jump back to this label to begin io generation
