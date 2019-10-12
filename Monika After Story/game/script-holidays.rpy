@@ -468,6 +468,82 @@ label greeting_o31_rin:
 
     return
 
+#Miku intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_miku",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_miku:
+    call spaceroom(hide_monika=True, scene_change=True)
+    show emptydesk at i11 zorder 9
+    #moni is off-screen
+    m "{i}~Don't forget my voice~{/i}"
+    m "{i}~My signal crosses dimensions~{/i}"
+    m "{i}~Don't call me virtual~{/i}"
+    m "{i}~I still want to be l-{/i}"
+    m "Oh!{w=0.5} Seems like someone's heard me."
+    #show moni now
+    show monika 3hub at i11 zorder MAS_MONIKA_Z
+    m 3hub "Welcome back, [player]!"
+    m 1eua "So...{w=0.5}what do you think?"
+    m 1eub "I worked really hard on this costume, but I think it was worth it."
+    m 3eub "I especially like how the headset turned out!"
+    m 1rksdla "Though I can't say it's too comfortable for moving around..."
+    m 3tsu "So don't expect me to give you a performance today, [player]!"
+    m 1hub "Ahaha~"
+    call greeting_o31_deco
+    return
+
+#Sakuya intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_sakuya",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_sakuya:
+    call spaceroom(hide_monika=True, scene_change=True)
+    show emptydesk at i11 zorder 9
+#moni is off-screen
+    m "..."
+    m "{i}Hm{/i}?"
+    m "{i}Ah, there must have been some sort of mistake.{w=0.5} I wasn't warned of any guests...{/i}"
+    m "{i}No matter. None shall disturb the m-{/i}"
+    m "Oh!{w=0.5} It's you, [player]!"
+    #show moni now
+    show monika 3hub at i11 zorder MAS_MONIKA_Z
+    m 3hub "Welcome back!"
+    m 3eub "What do you think of my costume?"
+    m 1rksdlb "It ended up being a lot more work than I expected, so I hope you like it..."
+    m 3hua "I know I sure do!"
+    m 2tua "..."
+    m 2tub "You know, [player], just because I'm dressed as a maid doesn't mean I'll be following your every command..."
+    show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5kua "Though I might make some exceptions, ehehe~"
+    call greeting_o31_deco
+    return
+
+label greeting_o31_deco:
+    m 1eua "Anyway..."
+    m 3eua "Do you like what I've done with the room?"
+    m 3eka "One of my favorite parts of Halloween is carving pumpkins..."
+    m 1hub "It's just so fun trying to make scary faces!"
+    m 1eua "I think the cobwebs are a nice touch as well..."
+    m 1rka "{cps=*2}I'm sure Amy would really like them.{/cps}{nw}"
+    $ _history_list.pop()
+    m 3tuu "Really creates a creepy vibe, don't you think?"
+    return
+
 init 5 python:
     addEvent(
         Event(
