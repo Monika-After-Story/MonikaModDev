@@ -419,8 +419,12 @@ label greeting_o31_miku:
     m "{i}~Don't call me virtual~{/i}"
     m "{i}~I still want to be l-{/i}"
     m "Oh!{w=0.5} Seems like someone's heard me."
+
     #show moni now
-    show monika 3hub at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    show monika 3hub at i11 zorder MAS_MONIKA_Z
+    with dissolve
+
     m 3hub "Welcome back, [player]!"
     m 1eua "So...{w=0.5}what do you think?"
     m 1eub "I worked really hard on this costume, but I think it was worth it."
@@ -454,7 +458,10 @@ label greeting_o31_sakuya:
     m "Oh!{w=0.5} It's you, [player]!"
 
     #show moni now
-    show monika 3hub at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    show monika 3hub at i11 zorder MAS_MONIKA_Z
+    with dissolve
+
     m 3hub "Welcome back!"
     m 3eub "What do you think of my costume?"
     m 1rksdlb "It ended up being a lot more work than I expected, so I hope you like it..."
