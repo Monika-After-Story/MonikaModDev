@@ -12,7 +12,6 @@
 #   [SPR130] - ACS sprite objects
 #   [SPR140] - Table sprite objects
 #   [SPR230] - ACS variables
-#   [SPR300] - ACS type - mux type mapping
 
 init -2 python in mas_sprites:
     # all progrmaming points should go here
@@ -427,6 +426,33 @@ init -2 python in mas_sprites:
         )
 
 
+    def _clothes_orcaramelo_hatsune_miku_entry(_moni_chr, **kwargs):
+        """
+        Entry pp for orcaramelo miku
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # swap to twintails if found. if no twin tails, abort.
+            # TODO: add handling for no twin tails when spritepack
+            _moni_chr.change_hair(store.mas_hair_orcaramelo_twintails)
+            _moni_chr.wear_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
+            _moni_chr.wear_acs(
+                store.mas_acs_orcaramelo_hatsune_miku_twinsquares
+            )
+
+
+    def _clothes_orcaramelo_hatsune_miku_exit(_moni_chr, **kwargs):
+        """
+        Exit pp for orcaramelo miku
+        """
+        # TODO: dont remove if other headset/headphones exist
+        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
+
+        # TODO: dont remove if hair is twintail prop
+        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
+
+
     def _clothes_santa_entry(_moni_chr, **kwargs):
         """
         Entry programming point for santa clothes
@@ -459,16 +485,19 @@ init -2 python in mas_sprites:
         """
         Entry programming point for sundress white
         """
-        _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
-        _moni_chr.wear_acs(store.mas_acs_musicnote_necklace_gold)
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
+            _moni_chr.wear_acs(store.mas_acs_musicnote_necklace_gold)
 
 
     def _clothes_sundress_white_exit(_moni_chr, **kwargs):
         """
         Exit programming point for sundress white
         """
-        # TODO: dont remve the bracelet.
-        #   non-bare arms clothes should remove the bracelet
+        # TODO: add selectors for these items so they dont have to be
+        #   removed
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
         _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
 
@@ -634,53 +663,31 @@ init -1 python:
         ]
     )
 
-    ### PONYTAIL (NO RIBBON)
-    ## ponytail
-    # Monika's pony tail without a ribbon
-    # thanks Orca
-    mas_hair_ponytail = MASHair(
-        "ponytail",
-        "def",  # uses default hair
+    # TODO: transfer this to spritepack after marisa + rin remade
+    ### TWINTAILS
+    ## orcaramelo_twintails
+    # twin tails for miku outfit
+    # thanks orca
+    mas_hair_orcaramelo_twintails = MASHair(
+        "orcaramelo_twintails",
+        "orcaramelo_twintails",
         MASPoseMap(
-            default = True,
-            use_reg_for_l=True,
+            default=True,
+            l_default=True
         ),
-#        entry_pp=store.mas_sprites._hair_ponytail_entry,
         ex_props={
             "ribbon": True,
-            "ribbon-off": True,
+            "twintails": True,
         }
     )
-#    store.mas_sprites.init_hair(mas_hair_ponytail)
-#    store.mas_selspr.init_selectable_hair(
-#        mas_hair_ponytail,
-#        "Ponytail (No Ribbon)",
-#        "ponytail",
- #       "hair",
- #       select_dlg=[
- #           "I AM WITHOUT LIMITS"
- #       ]
- #   )
- #   store.mas_selspr.unlock_hair(mas_hair_ponytail)
-
-    ### BUN WITH RIBBON
-    ## bun
-    # Hair tied into a bun, using the ribbon
-    # thanks Ryuse/Iron707/Taross
-#    mas_hair_bun = MASHair(
-#        "bun",
-#        "bun",
-#        MASPoseMap(
-#            default=True,
-#            p5=False
-#        ),
-#        entry_pp=store.mas_sprites._hair_bun_entry,
-#        ex_props={
-#            "ribbon": True
-#        }
-#        split=False
-#    )
-    #store.mas_sprites.init_hair(mas_hair_bun)
+    store.mas_sprites.init_hair(mas_hair_orcaramelo_twintails)
+    store.mas_selspr.init_selectable_hair(
+        mas_hair_orcaramelo_twintails,
+        "Twintails",
+        "orcaramelo_twintails",
+        "hair",
+        visible_when_locked=False
+    )
 
     ### CUSTOM
     ## custom
@@ -866,6 +873,43 @@ init -1 python:
         ]
     )
 
+    # TODO: transfer this to sprite pack after marisa+rin remade
+    ### MIKU (HATSUNE) COSTUME
+    ## orcaramelo_hatsune_miku
+    # Miku outfit. Temporarily included in main build until marisa+rin are
+    # done.
+    # thanks orca
+    mas_clothes_orcaramelo_hatsune_miku = MASClothes(
+        "orcaramelo_hatsune_miku",
+        "orcaramelo_hatsune_miku",
+
+        # NOTE: this posemap is not reflective of what the json is.
+        MASPoseMap(
+            default=True,
+            l_default=True
+        ),
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_orcaramelo_hatsune_miku_entry,
+        exit_pp=store.mas_sprites._clothes_orcaramelo_hatsune_miku_exit,
+        ex_props={
+            "desired-hair-prop": "twintails",
+            "costume": True,
+            "cosplay": True,
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_orcaramelo_hatsune_miku)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_orcaramelo_hatsune_miku,
+        "Hatsune Miku",
+        "orcaramelo_hatsune_miku",
+        "clothes",
+        visible_when_locked=False,
+        select_dlg=[
+            "The first sound of the future!",
+            "Ready for the stage!",
+            "Only missing a leek..."
+        ]
+    )
 
     ### RIN COSTUME
     ## rin
@@ -1169,6 +1213,49 @@ init -1 python:
         )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
+
+    # TODO: transfer this to spritepack after marisa + rin remade
+    ### HEADSET
+    ## orcaramelo_hatsune_miku_headset
+    # headset for miku outfit.
+    # thanks orca
+    mas_acs_orcaramelo_hatsune_miku_headset = MASAccessory(
+        "orcaramelo_hatsune_miku_headset",
+        "orcaramelo_hatsune_miku_headset",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="headset",
+        # mux type handled by defaults 
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_headset)
+
+    # TODO: transfer this to spritepack after marisa + rin remade
+    ### TWIN SQUARES
+    ## orcaramelo_hatsune_miku_twinsquares
+    # the square things miku wears. Dont know what to call them.
+    # thanks orca
+    mas_acs_orcaramelo_hatsune_miku_twinsquares = MASAccessory(
+        "orcaramelo_hatsune_miku_twinsquares",
+        "orcaramelo_hatsune_miku_twinsquares",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="twin-ribbons",
+        # muxtype handled by defaults
+        ex_props={
+            "twin-ribbon": True,
+            "ribbon-like": True,
+            "required-hair-prop": "twintails",
+        },
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_twinsquares)
 
     ### PROMISE RING
     ## promisering
@@ -1966,58 +2053,4 @@ default persistent._mas_acs_enable_quetzalplushie = False
 default persistent._mas_acs_enable_promisering = False
 # True enables promise ring, False disables promise ring
 
-
-### ACS TYPE + MUX TYPE MAPPING [SPR300] #####################################
-# this contains special acs type mappings
-# basically on startup, we evaluate each acs and add additional mux types
-# to that ACS if needed. this is to streamline adding additional acs types that
-# conflict with current ones.
-
-init -100 python in mas_sprites:
-
-    ACS_MUX_MAP = {
-        "mug": ["mug"],
-        "left-hair-flower": ["left-hair-flower"],
-        "wrist-bracelet": ["wrist-bracelet"],
-        "necklace": ["necklace"],
-#        "ring": ["ring"], # NOTE: ring is not muxed at this time
-        "ribbon": ["ribbon", "bow"],
-        "bow": ["bow", "ribbon"],
-    }
-
-
-    def get_mux_from_type(acs_type):
-        """
-        Returns mux type from the map. Returns empty list if not found.
-        """
-        return ACS_MUX_MAP.get(acs_type, [])
-
-
-    def _add_if_not_found(items_to_add, list_to_add_to):
-        """
-        Adds items from one list to the other if not in the other list
-        """
-        for item in items_to_add:
-            if item not in list_to_add_to:
-                list_to_add_to.append(item)
-
-
-    def apply_mux_map():
-        """
-        Applies mux map to all existing acs. Call this in ch30_reset for best
-        results.
-        NOTE: do not call this prior to init -5.
-        """
-        for acs_name in ACS_MAP:
-            acs_obj = ACS_MAP[acs_name]
-            mux_types = ACS_MUX_MAP.get(acs_obj.acs_type, None)
-            if mux_types is not None:
-
-                # if the ACS has a mux type list, add to it
-                if acs_obj.mux_type:
-                    _add_if_not_found(mux_types, acs_obj.mux_type)
-
-                # otherwise, just set it to ours
-                else:
-                    acs_obj.mux_type = mux_types
 

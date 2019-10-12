@@ -1686,8 +1686,8 @@ label ch30_reset:
             store.mas_globals.show_s_light = True
 
     python:
-        # apply sprite object mux types
-        store.mas_sprites.apply_mux_map()
+        # apply ACS defaults
+        store.mas_sprites.apply_ACSTemplates()
 
     python:
         # start by building event lists if they have not been built already
