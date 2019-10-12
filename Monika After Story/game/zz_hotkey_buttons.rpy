@@ -168,7 +168,7 @@ style hkb_text is default:
 screen hkb_overlay():
 
     zorder 50
-    style_prefix ("hkb" if not mas_globals.dark_mode else "hkb_dark")
+    style_prefix store.mas_ui.hkb_style_prefix
 
     vbox:
         xpos 0.05
@@ -184,7 +184,7 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+                background Image(store.mas_ui.hkb_disabled_bg)
                 text "Talk"
 
 
@@ -195,7 +195,7 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+                background Image(store.mas_ui.hkb_disabled_bg)
                 text "Extra"
 
 
@@ -206,7 +206,7 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+                background Image(store.mas_ui.hkb_disabled_bg)
                 text "Music"
 
         if store.hkb_button.play_enabled:
@@ -216,7 +216,7 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+                background Image(store.mas_ui.hkb_disabled_bg)
                 text "Play"
 
 
