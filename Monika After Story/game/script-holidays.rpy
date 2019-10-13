@@ -743,7 +743,7 @@ label greeting_trick_or_treat_back:
 
     #If it's not o31, we need to clean up
     if not mas_isO31():
-        call mas_o31_ret_home_cleanup
+        call mas_o31_ret_home_cleanup(time_out)
 
     #Now do player bday things
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
@@ -752,7 +752,11 @@ label greeting_trick_or_treat_back:
 
     return
 
-label mas_o31_ret_home_cleanup:
+label mas_o31_ret_home_cleanup(time_out=None):
+    #Time out not defined, we need to get it outselves
+    if not time_out:
+        $ time_out = store.mas_dockstat.diffCheckTimes()
+
     #Firstly, gotta get back into reasonable clothing, so we queue a change to def
     if monika_chr.is_wearing_clothes_with_exprop("costume"):
         $ queueEvent('mas_change_to_def')
