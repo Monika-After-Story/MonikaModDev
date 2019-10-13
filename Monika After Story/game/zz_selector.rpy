@@ -578,7 +578,9 @@ init -10 python in mas_selspr:
         "Good choice, [player]!",
         "I was thinking the same thing, [player]!",
         "Great choice, [player]!",
-        "Looks great, [player]!"
+        "What do you think, [player]?",
+        "How do I look, [player]?",
+        "I really like this look, [player]!"
     ]
 
 
@@ -2279,7 +2281,7 @@ init -1 python:
 
             # the appropriate dialogue
             if self.been_selected:
-                if selectable.select_dlg is not None:
+                if self.selectable.select_dlg is not None:
                     # this should be first as it allows us to override
                     # remover dialogue
                     self._send_select_text()
@@ -2296,7 +2298,7 @@ init -1 python:
                 if self.selectable.first_select_dlg is not None:
                     self._send_first_select_text()
 
-                elif selectable.select_dlg is not None:
+                elif self.selectable.select_dlg is not None:
                     self._send_select_text()
 
                 elif self.selectable.remover:
