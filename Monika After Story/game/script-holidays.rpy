@@ -214,7 +214,7 @@ label mas_holiday_o31_returned_home_relaunch:
     m 2wuo "Oh!"
     m 2wuw "Oh my gosh!"
     m 2hub "It's Halloween already, [player]."
-    m 1eua "...{w}Say."
+    m 1eua "...{w=1}Say."
     m 3eua "I'm going to close the game."
     m 1eua "After that you can reopen it."
     m 1hubfa "I have something special in store for you, ehehe~"
@@ -733,7 +733,7 @@ label greeting_trick_or_treat_back:
         $ mas_o31CapGainAff(15)
         m 1wua "We're finally home!"
         m 1wuw "It's the next morning, [player], we were out all night..."
-        m "I guess we had too much fun, ehehe~"
+        m 1hua "I guess we had too much fun, ehehe~"
         m 2eka "But anyway, thanks for taking me along, I really enjoyed it."
 
         call greeting_trick_or_treat_back_costume
