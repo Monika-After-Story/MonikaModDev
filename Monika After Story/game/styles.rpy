@@ -107,6 +107,7 @@ init python:
             style.main_menu_frame = style.main_menu_frame_dark
             style.window_monika = style.window_monika_dark
             style.window = style.window_dark
+            style.music_menu_button_text = style.music_menu_button_dark_text
 
             #Textbox handling
             if mas_globals.change_textbox:
@@ -149,6 +150,7 @@ init python:
             style.main_menu_frame = style.main_menu_frame_def
             style.window_monika = style.window_monika_def
             style.window = style.window_def
+            style.music_menu_button_text = style.music_menu_button_def_text
 
             #Textbox
             if mas_globals.change_textbox:
@@ -357,6 +359,9 @@ style check_dark_button:
 
 style check_dark_button_text:
     properties gui.button_text_properties("check_dark_button")
+    color "#8C8C8C" 
+    hover_color "#FF80B7"
+    selected_color "#DE367E"
     font "gui/font/Halogen.ttf"
     outlines []
 
@@ -627,7 +632,7 @@ style poemgame_text_dark:
     yalign 0.5
     font "gui/font/Halogen.ttf"
     size 30
-    color "#e670af"
+    color "#000"
     outlines []
 
     hover_xoffset -3
@@ -738,7 +743,7 @@ style confirm_prompt_text_def:
 style confirm_prompt_text_dark is gui_prompt_text
 
 style confirm_prompt_text_dark:
-    color "#e670af"
+    color "#FD5BA2"
     outlines []
     text_align 0.5
     layout "subtitle"
@@ -759,6 +764,9 @@ style radio_dark_button:
 style radio_dark_button_text:
     properties gui.button_text_properties("radio_dark_button")
     font "gui/font/Halogen.ttf"
+    color "#8C8C8C" 
+    hover_color "#FF80B7"
+    selected_color "#DE367E"
     outlines []
 
 style return_dark_button is navigation_button
@@ -850,6 +858,22 @@ style island_button_dark_text is default:
     idle_background  "mod_assets/island_idle_background_d.png"
     hover_background "mod_assets/island_hover_background_d.png"
     outlines []
+
+style music_menu_button_def_text is navigation_button_text:
+    properties gui.button_text_properties("navigation_button")
+    font "mod_assets/font/mplus-2p-regular.ttf"
+    color "#fff"
+    outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
+    hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
+    insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
+
+style music_menu_button_dark_text is navigation_button_text:
+    properties gui.button_text_properties("navigation_button")
+    font "mod_assets/font/mplus-2p-regular.ttf"
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
 
 #START: quick menu styles
