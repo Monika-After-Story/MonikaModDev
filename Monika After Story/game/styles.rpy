@@ -92,6 +92,9 @@ init python:
             style.frame = style.frame_dark
             style.confirm_frame = style.confirm_frame_dark
             style.game_menu_outer_frame = style.game_menu_outer_frame_dark
+            style.game_menu_label = style.game_menu_label_dark
+            style.game_menu_label_text = style.game_menu_label_dark_text
+            style.say_label = style.say_label_dark           
             style.edited_def = style.edited_def_dark
             style.poemgame_text = style.poemgame_text_dark
             style.namebox = style.namebox_dark
@@ -131,6 +134,9 @@ init python:
             style.frame = style.frame_def
             style.confirm_frame = style.confirm_frame_def
             style.game_menu_outer_frame = style.game_menu_outer_frame_def
+            style.game_menu_label = style.game_menu_label_def
+            style.game_menu_label_text = style.game_menu_label_def_text
+            style.say_label = style.say_label_def
             style.edited_def = style.edited_def_def
             style.poemgame_text = style.poemgame_text_def
             style.namebox = style.namebox_def
@@ -331,10 +337,10 @@ style navigation_dark_button_text is gui_button_text_dark
 style navigation_dark_button_text:
     properties gui.button_text_properties("navigation_button")
     font "gui/font/RifficFree-Bold.ttf"
-    color "#fff"
-    outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
-    hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
-    insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
 style check_dark_label is pref_label
 style check_dark_label_text is pref_label_text
@@ -651,6 +657,26 @@ style namebox_dark:
     background Frame("gui/namebox_d.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
     padding gui.namebox_borders.padding
 
+style say_label_def is default
+
+style say_label_def:
+    color gui.accent_color
+    font gui.name_font
+    size gui.name_text_size
+    xalign gui.name_xalign
+    yalign 0.5
+    outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
+
+style say_label_dark is default
+
+style say_label_dark:
+    color "#FFD9E8"
+    font gui.name_font
+    size gui.name_text_size
+    xalign gui.name_xalign
+    yalign 0.5
+    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+
 style window_def is default
 
 style window_def:
@@ -686,10 +712,10 @@ style navigation_button_text_dark is gui_button_text_dark
 style navigation_button_text_dark:
     properties gui.button_text_properties("navigation_button")
     font "gui/font/RifficFree-Bold.ttf"
-    color mas_ui.dark_button_text_idle_color
-    outlines []
-    hover_outlines [(3, "#ffcce8", 0, 0)]
-    insensitive_outlines [(3, "#ffcce8", 0, 0)]
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
 style main_menu_version_def is main_menu_text:
     color "#000000"
@@ -748,6 +774,33 @@ style game_menu_content_frame:
     right_margin 20
     top_margin -40
 
+style game_menu_label_def is gui_label
+style game_menu_label_def_text is gui_label_text
+
+style game_menu_label_def:
+    xpos 50
+    ysize 120
+
+style game_menu_label_def_text:
+    font "gui/font/RifficFree-Bold.ttf"
+    size gui.title_text_size
+    color "#fff"
+    outlines [(6, "#b59", 0, 0), (3, "#b59", 2, 2)]
+    yalign 0.5
+
+style game_menu_label_dark is gui_label
+style game_menu_label_dark_text is gui_label_text
+
+style game_menu_label_dark:
+    xpos 50
+    ysize 120
+
+style game_menu_label_dark_text:
+    font "gui/font/RifficFree-Bold.ttf"
+    size gui.title_text_size
+    color "#FFD9E8"
+    outlines [(6, "#DE367E", 0, 0), (3, "#DE367E", 2, 2)]
+    yalign 0.5
 
 #START: islands event styles
 style island_button_def is button
