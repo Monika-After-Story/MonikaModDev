@@ -2355,19 +2355,19 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-        #Make sure O31 effects show
-        if mas_isO31() and persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
-            #Force progressive to disabled today
-            mas_changeWeather(mas_weather_thunder, True)
+    #Make sure O31 effects show
+    if mas_isO31() and persistent._mas_o31_in_o31_mode:
+        $ store.mas_globals.show_vignette = True
+        #Force progressive to disabled today
+        $ mas_changeWeather(mas_weather_thunder, True)
 
-        #If it's not o31, and we've got deco up, we need to clean up
-        elif not mas_isO31() and persistent._mas_o31_in_o31_mode:
-            call mas_o31_ret_home_cleanup
+    #If it's not o31, and we've got deco up, we need to clean up
+    elif not mas_isO31() and persistent._mas_o31_in_o31_mode:
+        call mas_o31_ret_home_cleanup
 
-        # d25 re-entry checks
-        if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
-            #mas_is_snowing = True
-            pass
+    # d25 re-entry checks
+    if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
+        #mas_is_snowing = True
+        pass
 
     jump ch30_post_exp_check
