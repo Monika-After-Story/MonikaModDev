@@ -1428,7 +1428,7 @@ screen notif_settings():
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix "check"
+            style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
             hbox:
                 spacing 25
                 textbutton _("Use Notifications"):
@@ -1444,7 +1444,7 @@ screen notif_settings():
             label _("Alert Filters")
 
         hbox:
-            style_prefix "check"
+            style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
             box_wrap True
             spacing 25
 

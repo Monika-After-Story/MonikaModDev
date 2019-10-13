@@ -108,6 +108,12 @@ init python:
             style.window_monika = style.window_monika_dark
             style.window = style.window_dark
             style.music_menu_button_text = style.music_menu_button_dark_text
+            style.page_label = style.page_label_dark
+            style.page_label_text = style.page_label_dark_text
+            style.slot_button = style.slot_button_dark
+            style.slot_button_text = style.slot_button_dark_text
+            style.mute_all_button = style.mute_all_button_dark
+            style.mute_all_button_text = style.mute_all_button_dark_text
 
             #Textbox handling
             if mas_globals.change_textbox:
@@ -151,6 +157,12 @@ init python:
             style.window_monika = style.window_monika_def
             style.window = style.window_def
             style.music_menu_button_text = style.music_menu_button_def_text
+            style.page_label = style.page_label_def
+            style.page_label_text = style.page_label_def_text
+            style.slot_button = style.slot_button_def
+            style.slot_button_text = style.slot_button_def_text
+            style.mute_all_button = style.mute_all_button_def
+            style.mute_all_button_text = style.mute_all_button_def_text
 
             #Textbox
             if mas_globals.change_textbox:
@@ -875,6 +887,61 @@ style music_menu_button_dark_text is navigation_button_text:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
+style page_label_def is gui_label
+style page_label_def_text is gui_label_text
+
+style page_label_def:
+    xpadding 50
+    ypadding 3
+
+style page_label_def_text:
+    color "#000"
+    outlines []
+    text_align 0.5
+    layout "subtitle"
+    hover_color gui.hover_color
+
+style page_label_dark is gui_label
+style page_label_dark_text is gui_label_text
+
+style page_label_dark:
+    xpadding 50
+    ypadding 3
+
+style page_label_dark_text:
+    color "#FFD9E8"
+    outlines []
+    text_align 0.5
+    layout "subtitle"
+    hover_color gui.hover_color
+
+style slot_button_def is gui_button
+style slot_button_def_text is gui_button_text
+
+style slot_button_def:
+    properties gui.button_properties("slot_button")
+
+style slot_button_def_text:
+    properties gui.button_text_properties("slot_button")
+    color "#666"
+    outlines []
+
+style slot_button_dark is gui_button
+style slot_button_dark_text is gui_button_text
+
+style slot_button_dark:
+    properties gui.button_properties("slot_button")
+
+style slot_button_dark_text:
+    properties gui.button_text_properties("slot_button")
+    color "#8C8C8C"
+    outlines []
+
+style mute_all_button_def is check_button
+style mute_all_button_def_text is check_button_text
+
+style mute_all_button_dark is check_dark_button
+style mute_all_button_dark_text is check_dark_button_text
 
 #START: quick menu styles
 
