@@ -12928,14 +12928,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_social_contagions",
+            eventlabel="monika_social_contagion",
             category=['psychology'],
-            prompt="Social contagions",
+            prompt="Social contagion",
             random=True
         )
     )
 
-label monika_social_contagions:
+label monika_social_contagion:
     m 3eub "Say, [player], have you noticed how we tend to imitate what other people around us do?"
     m 1eua "Like, have you ever been in this situation where someone is having a laughing fit, and somehow, everyone around ends up laughing too?"
     m "Or have you ever mechanically cheered at someone just because everyone else was cheering?"
