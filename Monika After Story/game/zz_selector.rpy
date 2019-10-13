@@ -70,16 +70,6 @@ init -100 python in mas_selspr:
         },
     }
 
-    # generic select dlg quips go here
-    # should be as neutral as possible to go with any kind of acs
-    # be it singular or plural
-    generic_sel_dlg_quips = [
-        "Good choice, [player]!",
-        "I was thinking the same thing, [player]!",
-        "Great choice, [player]!",
-        "Looks great, [player]!"
-    ]
-
 
     def check_prompt(key):
         """
@@ -579,6 +569,16 @@ init -10 python in mas_selspr:
         "left-hair-clip",
         "left-hair-flower",
         "ribbon",
+    ]
+
+    # generic select dlg quips go here
+    # should be as neutral as possible to go with any kind of acs
+    # be it singular or plural
+    generic_sel_dlg_quips = [
+        "Good choice, [player]!",
+        "I was thinking the same thing, [player]!",
+        "Great choice, [player]!",
+        "Looks great, [player]!"
     ]
 
 
