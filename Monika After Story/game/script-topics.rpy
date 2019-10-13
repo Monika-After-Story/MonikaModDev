@@ -3188,7 +3188,7 @@ label monika_love:
             m 2ekd "Thanks, [player]..."
             show monika 2dka
             $ renpy.say(m,love_quip_upset)
-            m 2eka "I...{w=0.5}I love you, too."
+            m 2eka "I...{w=0.5}I love you too."
 
     else:
         #After I love you has been received positively 5/10/15 etc times.
@@ -3197,7 +3197,7 @@ label monika_love:
             m 1subsb "You have no idea how much it means to me to hear you say that!"
             m 3ekbfa "I know it's not the first time, but it {i}is{/i} the first time you said it completely on your own...{w=0.5} And that makes it truly special~"
             m 1dkbfu "I will never forget this moment, [player]. {w=1}Thank you~"
-            m 3hubfa "Oh! And I love you, too~"
+            m 3hubfa "Oh! And I love you too~"
             call monika_lovecounter_aff
             return
 
