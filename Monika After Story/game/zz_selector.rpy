@@ -2134,9 +2134,9 @@ init -1 python:
 
             IN:
                 dlg_list - list to select from
+
+            ASSUMES the list is not empty
             """
-            if dlg_list is None:
-                dlg_list = store.mas_selspr.generic_sel_dlg_quips
             return dlg_list[random.randint(0, len(dlg_list)-1)]
 
 
@@ -2279,11 +2279,16 @@ init -1 python:
 
             # the appropriate dialogue
             if self.been_selected:
-                if self.selectable.remover:
+                if selectable.select_dlg is not None:
+                    # this should be first as it allows us to override
+                    # remover dialogue
+                    self._send_select_text()
+
+                elif self.selectable.remover:
                     self.mailbox.send_disp_fast()
 
                 else:
-                    self._send_select_text()
+                    self._send_generic_select_text()
 
             else:
                 # not been selected before
@@ -2291,16 +2296,18 @@ init -1 python:
                 if self.selectable.first_select_dlg is not None:
                     self._send_first_select_text()
 
+                elif selectable.select_dlg is not None:
+                    self._send_select_text()
+
                 elif self.selectable.remover:
                     self._send_msg_disp_text(None)
                     self.mailbox.send_disp_fast()
 
                 else:
-                    self._send_select_text()
+                    self._send_generic_select_text()
 
             # always reset interaction if something has been selected
             self.end_interaction = True
-
 
         def _send_first_select_text(self):
             """
@@ -2314,6 +2321,15 @@ init -1 python:
                 )
             )
 
+        def _send_generic_select_text(self):
+            """
+            Sends generic select text to mailbox
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    store.mas_selspr.generic_sel_dlg_quips
+                )
+            )
 
         def _send_hover_text(self):
             """
@@ -2327,7 +2343,6 @@ init -1 python:
                 )
             )
 
-
         def _send_msg_disp_text(self, msg):
             """
             Sends text message to mailbox.
@@ -2336,7 +2351,6 @@ init -1 python:
                 msg - text message to send
             """
             self.mailbox.send_disp_text(msg)
-
 
         def _send_select_text(self):
             """
@@ -2349,7 +2363,6 @@ init -1 python:
                     self.selectable.select_dlg
                 )
             )
-
 
         def _setup_display_name(self, st, at):
             """
