@@ -771,7 +771,12 @@ label mas_o31_ret_home_cleanup(time_out=None):
 
     m 3rksdla "I guess it's not even Halloween anymore."
     m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
+
+    #Hide vis
     $ mas_o31HideVisuals()
+    #Reset this flag so when spaceroom is called again, we're not showing deco
+    $ persistent._mas_o31_in_o31_mode = False
+
     m 3hua "There we go!"
     return
 

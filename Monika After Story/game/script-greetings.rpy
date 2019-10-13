@@ -3180,8 +3180,12 @@ label greeting_returned_home:
         if _return:
             return 'quit'
 
-# this just returns for now
+
 label greeting_returned_home_cleanup:
+    #If it's not o31, and we've got deco up, we need to clean up
+    if not mas_isO31() and persistent._mas_o31_in_o31_mode:
+        call mas_o31_ret_home_cleanup(time_out)
+
     return
 
 label greeting_returned_home_morethan5mins:

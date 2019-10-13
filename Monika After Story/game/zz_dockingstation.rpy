@@ -2361,10 +2361,6 @@ label mas_dockstat_found_monika:
         #Force progressive to disabled today
         $ mas_changeWeather(mas_weather_thunder, True)
 
-    #If it's not o31, and we've got deco up, we need to clean up
-    elif not mas_isO31() and persistent._mas_o31_in_o31_mode:
-        call mas_o31_ret_home_cleanup
-
     # d25 re-entry checks
     if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
         #mas_is_snowing = True
