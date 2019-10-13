@@ -10526,7 +10526,7 @@ label monika_pygmalion:
     m 1rkbsa "I know we've kissed before, even with our current circumstances..."
     m 1ekbfa "But I think we both know there was a bit of a barrier between us."
     m 3hubfa "I don't know about you, but I definitely don't mind trying to kiss you through the screen anyway."
-    m 1hubfb "Maybe we'll just have to do it so many times, and that'll be what breaks the barrier between us..."
+    m 1hubfb "Maybe we'll just have to do it so many times, that'll be what breaks the barrier between us..."
     m 2rubfu "Ehehe."
     m 2tubfb "Do you think you could kiss me enough times to break that barrier?"
     m 6hubfb "Only one way to find out, ahaha!"
