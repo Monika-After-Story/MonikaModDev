@@ -741,30 +741,34 @@ label greeting_trick_or_treat_back:
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
 
 
-    #If it's not o31, we need to clean room up
+    #If it's not o31, we need to clean up
     if not mas_isO31():
-        #Firstly, gotta get back into reasonable clothing, so we queue a change to def
-        if monika_chr.is_wearing_clothes_with_exprop("costume"):
-            $ queueEvent('mas_change_to_def')
-
-        #If we were out over 5 mins then we have this little extra dialogue
-        if time_out > mas_five_minutes:
-            m 1hua "..."
-            m 1wud "Oh wow, [player]. We really were out for a while..."
-
-        else:
-            m 1esc "Anyway..."
-
-        m 3rksdla "I guess it's not even Halloween anymore."
-        m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
-        $ mas_o31HideVisuals()
-        m 3hua "There we go!"
+        call mas_o31_ret_home_cleanup
 
     #Now do player bday things
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         # if we are returning from a non-birthday date post o31 birthday
         call return_home_post_player_bday
 
+    return
+
+label mas_o31_ret_home_cleanup:
+    #Firstly, gotta get back into reasonable clothing, so we queue a change to def
+    if monika_chr.is_wearing_clothes_with_exprop("costume"):
+        $ queueEvent('mas_change_to_def')
+
+    #If we were out over 5 mins then we have this little extra dialogue
+    if time_out > mas_five_minutes:
+        m 1hua "..."
+        m 1wud "Oh wow, [player]. We really were out for a while..."
+
+    else:
+        m 1esc "Anyway..."
+
+    m 3rksdla "I guess it's not even Halloween anymore."
+    m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
+    $ mas_o31HideVisuals()
+    m 3hua "There we go!"
     return
 
 label greeting_trick_or_treat_back_costume:

@@ -1484,33 +1484,6 @@ init 200 python in mas_dockstat:
 
         return on_fail
 
-
-# NOTE: actually we dont need this
-#    def o31ShowVignette(moni_chksum):
-#        """
-#        Sets vignette flag to appropriate value depending on whether or not
-#        user returns monika from an overnight outing.
-#
-#        IN:
-#            moni_chksum - checksum created when taking monika out
-#        """
-#        # not in o31? no show vignette
-#        if not store.mas_isO31():
-#            store.mas_globals.show_vignette = False
-#            return
-#
-#        # we already setup o31 mode? keep showing the vignette
-#        if store.persistent._mas_o31_in_o31_mode:
-#            store.mas_globals.show_vignette = True
-#            return
-#
-#        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check
-#        checkout_time, checkin_time = getCheckTimes(moni_chksum)
-#
-#        if
-
-
     def generateMonika(dockstat):
         """
         Generates / writes a monika blob file.
@@ -2382,15 +2355,15 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-        # o31 re-entry checks
+        #Make sure O31 effects show
         if mas_isO31() and persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
+            #Force progressive to disabled today
+            mas_changeWeather(mas_weather_thunder, True)
 
-            # setup thunder
-            if persistent._mas_likes_rain:
-                mas_weather_thunder.unlocked = True
-                store.mas_weather.saveMWData()
-            mas_changeWeather(mas_weather_thunder)
+        #If it's not o31, and we've got deco up, we need to clean up
+        elif not mas_isO31() and persistent._mas_o31_in_o31_mode:
+            call mas_o31_ret_home_cleanup
 
         # d25 re-entry checks
         if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
