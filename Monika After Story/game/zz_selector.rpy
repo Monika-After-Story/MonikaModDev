@@ -70,6 +70,16 @@ init -100 python in mas_selspr:
         },
     }
 
+    # generic select dlg quips go here
+    # should be as neutral as possible to go with any kind of acs
+    # be it singular or plural
+    generic_sel_dlg_quips = [
+        "Good choice, [player]!",
+        "I was thinking the same thing, [player]!",
+        "Great choice, [player]!",
+        "Looks great, [player]!"
+    ]
+
 
     def check_prompt(key):
         """
@@ -2124,9 +2134,9 @@ init -1 python:
 
             IN:
                 dlg_list - list to select from
-
-            ASSUMES the list is not empty
             """
+            if dlg_list is None:
+                dlg_list = store.mas_selspr.generic_sel_dlg_quips
             return dlg_list[random.randint(0, len(dlg_list)-1)]
 
 
@@ -2269,11 +2279,11 @@ init -1 python:
 
             # the appropriate dialogue
             if self.been_selected:
-                if self.selectable.select_dlg is not None:
-                    self._send_select_text()
-
-                elif self.selectable.remover:
+                if self.selectable.remover:
                     self.mailbox.send_disp_fast()
+
+                else:
+                    self._send_select_text()
 
             else:
                 # not been selected before
@@ -2281,12 +2291,12 @@ init -1 python:
                 if self.selectable.first_select_dlg is not None:
                     self._send_first_select_text()
 
-                elif self.selectable.select_dlg is not None:
-                    self._send_select_text()
-
                 elif self.selectable.remover:
                     self._send_msg_disp_text(None)
                     self.mailbox.send_disp_fast()
+
+                else:
+                    self._send_select_text()
 
             # always reset interaction if something has been selected
             self.end_interaction = True
