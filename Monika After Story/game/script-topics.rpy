@@ -8257,21 +8257,6 @@ label monika_timetravel:
     m 1hksdlb "Could you bring back the technology that lets me cross over into your world?"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_nobody_makes_sense",category=['songs'],prompt="Nobody Makes Sense",pool=True, random=True))
-
-label monika_song_nobody_makes_sense:
-    m 1dsd "{i}~For what are we living? For what are we trying so hard?~{/i}"
-    m "{i}~There might be nothing, nothing, nothing to it. It might all be useless.~{/i}"
-    m 1hub "{i}~In a thousand years, there won't be anything left, but I still hope I could keep on smiling with you~{/i}"
-    m 1rksdlb "{i}~Even when our dreams have come true; even when we have become enlightened, in the end, we might still end up with lonliness~{/i}"
-    m 1hubfb "{i}~Even when we've turned into ghosts; even when we've returned to nothingness, I still hope I could keep on smiling with you~{/i}"
-    m 1dkbfa "..."
-    m 1hub "Ahaha!"
-    m 1ekbfa "No matter what happens or how long we wait, I'll always love you."
-    m 1ekbfb "I really hope I can keep on smiling with you forever~"
-    return
-
 # been to prom?
 default persistent._mas_pm_gone_to_prom = None
 
