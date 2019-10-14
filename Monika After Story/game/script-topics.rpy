@@ -1839,7 +1839,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_rain_holdme",
-            category=["monika"],
+            category=["monika","romance"],
             prompt="Can I hold you?",
             pool=True,
             unlocked=False,
