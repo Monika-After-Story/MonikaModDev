@@ -2008,6 +2008,10 @@ label mas_clothes_change(outfit=None):
 
     hide monika with dissolve
 
+    #If we're going to def from a costume, we reset hair too
+    if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def:
+        $ monika_chr.reset_hair()
+
     $ monika_chr.change_clothes(outfit)
     $ monika_chr.save()
     $ renpy.save_persistent()
