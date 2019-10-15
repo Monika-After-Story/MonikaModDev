@@ -580,7 +580,9 @@ init -10 python in mas_selspr:
         "Great choice, [player]!",
         "What do you think, [player]?",
         "How do I look, [player]?",
-        "I really like this look, [player]!"
+        "I really like this look, [player]!",
+        "Just what I was thinking!",
+        "Just what I had in mind!"
     ]
 
 

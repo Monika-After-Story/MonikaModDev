@@ -16,10 +16,7 @@
     "select_info": {
         "display_name": "Ribbon (Bronze)",
         "thumb": "anonymioo_ribbon_bronze",
-        "group": "ribbon",
-        "select_dlg": [
-            "I BETTER NOT BE UR THIRD"
-        ]
+        "group": "ribbon"
     },
     "giftname": "bronzeribbon"
 }

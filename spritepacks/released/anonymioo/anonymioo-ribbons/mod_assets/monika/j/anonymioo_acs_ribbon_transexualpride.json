@@ -20,10 +20,7 @@
     "select_info": {
         "display_name": "Ribbon (Transexual Pride Themed)",
         "thumb": "anonymioo_ribbon_transexualpride",
-        "group": "ribbon",
-        "select_dlg": [
-            "TODO"
-        ]
+        "group": "ribbon"
     },
     "giftname": "transexualpridethemedribbon"
 }
