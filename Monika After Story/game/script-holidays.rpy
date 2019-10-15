@@ -73,7 +73,10 @@ default persistent._mas_o31_tt_count = 0
 #Aff cap for T/T, softmax 15
 default persistent._mas_o31_trick_or_treating_aff_gain = 0
 
+#Need to know if we were asked to relaunch the game
+default persistent._mas_o31_relaunch = False
 
+#Halloween
 define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
 
 init -810 python:
@@ -87,8 +90,8 @@ init -810 python:
             # this isn't very useful, but we need the reset
             "_mas_o31_in_o31_mode": "o31.mode.o31",
             "_mas_o31_tt_count": "o31.tt.count",
+            "_mas_o31_relaunch": "o31.relaunch",
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
-
         },
         use_year_before=True,
 #        exit_pp=store.mas_history._o31_exit_pp
@@ -218,6 +221,7 @@ label mas_holiday_o31_returned_home_relaunch:
     m 3eua "I'm going to close the game."
     m 1eua "After that you can reopen it."
     m 1hubfa "I have something special in store for you, ehehe~"
+    $ persistent._mas_o31_relaunch = True
     return "quit"
 
 ### o31 images
@@ -422,11 +426,16 @@ label greeting_o31_sakuya:
     call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk at i11 zorder 9
     #moni is off-screen
-    m "..."
-    m "{i}Hm{/i}?"
-    m "{i}Ah, there must have been some sort of mistake.{w=0.5} I wasn't warned of any guests...{/i}"
-    m "{i}No matter. None shall disturb the m-{/i}"
-    m "Oh!{w=0.5} It's you, [player]!"
+    if not persistent._mas_o31_relaunch:
+        m "..."
+        m "{i}Hm{/i}?"
+        m "{i}Ah, there must have been some sort of mistake.{w=0.5} I wasn't warned of any guests...{/i}"
+        m "{i}No matter. None shall disturb the m-{/i}"
+        m "Oh!{w=0.5} It's you, [player]!"
+
+    else:
+        #TODO: alt dlg, Moni's expecting you now.
+        pass
 
     #show moni now
     hide emptydesk
