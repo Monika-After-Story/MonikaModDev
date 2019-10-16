@@ -1660,7 +1660,7 @@ label ch30_reset:
 
     python:
         # name eggs
-        if persistent.playername.lower() == "sayori":
+        if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
 
     python:

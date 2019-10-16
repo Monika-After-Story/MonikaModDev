@@ -2196,6 +2196,14 @@ label mas_dockstat_abort_gen:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
+    #NOTE: this needs to be done prior to a spaceroom call otherwise it doesn't update
+    #Make sure O31 effects show
+    if persistent._mas_o31_in_o31_mode:
+        $ mas_globals.show_vignette = True
+        #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+        if mas_current_weather != mas_weather_thunder:
+            $ mas_changeWeather(mas_weather_thunder, True)
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
@@ -2355,10 +2363,9 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-    #Make sure O31 effects show
-    if mas_isO31() and persistent._mas_o31_in_o31_mode:
+    if persistent._mas_o31_in_o31_mode:
         $ store.mas_globals.show_vignette = True
-        #Force progressive to disabled today
+        #Force progressive to disabled for o31
         $ mas_changeWeather(mas_weather_thunder, True)
 
     # d25 re-entry checks

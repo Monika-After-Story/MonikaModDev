@@ -132,6 +132,8 @@ init -10 python:
         renpy.hide("vignette")
         #Also going to stop vignette from showing on subsequent spaceroom calls
         store.mas_globals.show_vignette = False
+        #Also, if we're hiding visuals, we're no longer in o31 mode
+        store.persistent._mas_o31_in_o31_mode = False
 
     def mas_o31CapGainAff(amount):
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
@@ -741,7 +743,7 @@ label greeting_trick_or_treat_back:
         # larger than 3 hours, past sunrise
         $ mas_o31CapGainAff(15)
         m 1wua "We're finally home!"
-        m 1wuw "It's the next morning, [player], we were out all night..."
+        m 1wuw "It's not Halloween anymore, [player]... We were out all night!"
         m 1hua "I guess we had too much fun, ehehe~"
         m 2eka "But anyway, thanks for taking me along, I really enjoyed it."
 
@@ -749,16 +751,14 @@ label greeting_trick_or_treat_back:
 
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
 
-
-    #If it's not o31, we need to clean up
-    if not mas_isO31():
-        call mas_o31_ret_home_cleanup(time_out)
-
-    #Now do player bday things
+    #Now do player bday things (this also cleans up o31 deco)
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         # if we are returning from a non-birthday date post o31 birthday
         call return_home_post_player_bday
 
+    #If it's just not o31, we need to clean up
+    elif not mas_isO31():
+        call mas_o31_ret_home_cleanup(time_out)
     return
 
 label mas_o31_ret_home_cleanup(time_out=None):
@@ -783,8 +783,6 @@ label mas_o31_ret_home_cleanup(time_out=None):
 
     #Hide vis
     $ mas_o31HideVisuals()
-    #Reset this flag so when spaceroom is called again, we're not showing deco
-    $ persistent._mas_o31_in_o31_mode = False
 
     m 3hua "There we go!"
     return
@@ -1928,6 +1926,8 @@ init 5 python:
         code="SNG"
     )
 
+#TODO: Delegate label for this from songs, this has to remain in event db and use a different intro
+#But it needs to no-unlock
 label monika_aiwfc:
 
     if not renpy.seen_label('monika_aiwfc_song'):
@@ -1962,6 +1962,7 @@ label monika_aiwfc:
     play music curr_song fadein 1.0
     return "love"
 
+#TODO: Adjust timing based on missing quotes now
 label monika_aiwfc_song:
     # TODO: consider doing something where we can use lyric bar and style
     #   like in piano
@@ -3856,14 +3857,27 @@ label return_home_post_player_bday:
             m 3hksdlb "We should probably take these decorations down now, ahaha!"
             m 3eka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
             $ mas_surpriseBdayHideVisuals()
+
+            #If we returned from a date post pbday but have O31 deco
+            if not mas_isO31() and persistent._mas_o31_in_o31_mode:
+                $ mas_o31HideVisuals()
+                #Also no more o31 costume
+                if monika_chr.is_wearing_clothes_with_exprop("costume"):
+                    $ queueEvent('mas_change_to_def')
+
             m 3eua "There we go!"
             if not persistent._mas_f14_gone_over_f14:
                 m 1hua "Now, let's enjoy the day together, [player]~"
+
         if persistent._mas_f14_gone_over_f14:
             m 2etc "..."
             m 3wuo "..."
             m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
             call greeting_gone_over_f14_normal_plus
+
+    #If player told Moni their birthday on day of (o31)
+    elif not mas_o31() and persistent._mas_o31_in_o31_mode:
+        jump mas_o31_ret_home_cleanup
 
     $ persistent._mas_player_bday_decor = False
     return
