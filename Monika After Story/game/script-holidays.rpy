@@ -690,6 +690,7 @@ label greeting_trick_or_treat_back:
         time_out = store.mas_dockstat.diffCheckTimes()
         checkin_time = None
         is_past_sunrise_post31 = False
+        ret_tt_long = False
 
         if len(persistent._mas_dockstat_checkin_log) > 0:
             checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
@@ -738,6 +739,7 @@ label greeting_trick_or_treat_back:
         call greeting_trick_or_treat_back_costume
 
         m 4eub "Let's do this again next year!"
+        $ ret_tt_long = True
 
     else:
         # larger than 3 hours, past sunrise
@@ -750,6 +752,7 @@ label greeting_trick_or_treat_back:
         call greeting_trick_or_treat_back_costume
 
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
+        $ ret_tt_long = True
 
     #Now do player bday things (this also cleans up o31 deco)
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
@@ -758,10 +761,10 @@ label greeting_trick_or_treat_back:
 
     #If it's just not o31, we need to clean up
     elif not mas_isO31():
-        call mas_o31_ret_home_cleanup(time_out)
+        call mas_o31_ret_home_cleanup(time_out, ret_tt_long)
     return
 
-label mas_o31_ret_home_cleanup(time_out=None):
+label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     #Time out not defined, we need to get it outselves
     if not time_out:
         $ time_out = store.mas_dockstat.diffCheckTimes()
@@ -771,14 +774,13 @@ label mas_o31_ret_home_cleanup(time_out=None):
         $ queueEvent('mas_change_to_def')
 
     #If we were out over 5 mins then we have this little extra dialogue
-    if time_out > mas_five_minutes:
+    if not ret_tt_long and time_out > mas_five_minutes:
         m 1hua "..."
         m 1wud "Oh wow, [player]. We really were out for a while..."
 
     else:
         m 1esc "Anyway..."
 
-    m 3rksdla "I guess it's not even Halloween anymore."
     m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
 
     #Hide vis
