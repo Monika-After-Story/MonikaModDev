@@ -1680,11 +1680,11 @@ label mas_reaction_gift_acs_anonymioo_ribbon_gradient_lowpoly:
     return
 
 label mas_reaction_gift_acs_anonymioo_ribbon_gradient_rainbow:
-    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient_rainbow","rainbow-colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient_rainbow")
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient_rainbow","rainbow colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient_rainbow")
     return
 
 label mas_reaction_gift_acs_anonymioo_ribbon_polkadots_whiteonred:
-    call mas_reaction_json_ribbon_base("anonymioo_ribbon_polkadots_whiteonred","white and red polka-dot","mas_reaction_gift_acs_anonymioo_ribbon_polkadots_whiteonred")
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_polkadots_whiteonred","red and white polka dotted","mas_reaction_gift_acs_anonymioo_ribbon_polkadots_whiteonred")
     return
 
 label mas_reaction_gift_acs_anonymioo_ribbon_starsky_black:
@@ -1696,11 +1696,11 @@ label mas_reaction_gift_acs_anonymioo_ribbon_starsky_red:
     return
 
 label mas_reaction_gift_acs_anonymioo_ribbon_striped_blueandwhite:
-    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_blueandwhite","blue-and-white-striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_blueandwhite")
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_blueandwhite","blue and white striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_blueandwhite")
     return
 
 label mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite:
-    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_pinkandwhite","pink-and-white-striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite")
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_pinkandwhite","pink and white striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite")
     return
 
 label mas_reaction_gift_acs_anonymioo_ribbon_transexualpride:
