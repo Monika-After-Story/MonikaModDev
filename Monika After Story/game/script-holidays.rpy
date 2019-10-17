@@ -139,11 +139,12 @@ init -10 python:
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
 
 #START: O31 AUTOLOAD CHECK
-label mas_o31_autoload_check(intro_flow=False):
+label mas_o31_autoload_check:
     python:
         import random
 
         if mas_isO31():
+            #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
                 #Setup for greet
                 mas_skip_visuals = True
@@ -178,15 +179,16 @@ label mas_o31_autoload_check(intro_flow=False):
                 #Reset zoom
                 store.mas_sprites.reset_zoom()
 
-            #Now that we're here, we're in O31 mode
-            persistent._mas_o31_in_o31_mode = True
+                #Now that we're here, we're in O31 mode
+                persistent._mas_o31_in_o31_mode = True
 
-            #Vignette on O31
-            store.mas_globals.show_vignette = True
+                #Vignette on O31
+                store.mas_globals.show_vignette = True
+    
+                #Set by-user to True because we don't want progressive
+                mas_changeWeather(mas_weather_thunder, True)
 
-            #Set by-user to True because we don't want progressive
-            mas_changeWeather(mas_weather_thunder, True)
-
+        #It's not O31 anymore and it's time to reset
         else:
             #NOTE: Since O31 is costumes, we always reset clothes
             monika_chr.change_clothes(mas_clothes_def)
@@ -200,11 +202,6 @@ label mas_o31_autoload_check(intro_flow=False):
 
             if not mas_getEV("greeting_ourreality").shown_count:
                 mas_unlockEVL("greeting_ourreality", "GRE")
-
-    #If we're coming here from intro, we've set up o31 mode an deco/amb.
-    #Now we need to return back to intro flow.
-    if intro_flow:
-        return
 
     #Run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
@@ -684,9 +681,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_trick_or_treat_back",
             unlocked=True,
-            category=[
-                store.mas_greetings.TYPE_HOL_O31_TT
-            ]
+            category=[store.mas_greetings.TYPE_HOL_O31_TT]
         ),
         eventdb=evhand.greeting_database
     )
@@ -807,6 +802,7 @@ label greeting_trick_or_treat_back_costume:
         m 2eub "Going out was still really great!"
     return
 
+#START: D25
 #################################### D25 ######################################
 # [HOL020]
 
@@ -874,7 +870,7 @@ define mas_d25e = mas_d25 - datetime.timedelta(days=1)
 define mas_d25p = mas_d25 + datetime.timedelta(days=1)
 # day after christmas
 
-define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 1)
+define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 11)
 # start of christmas season (inclusive)
 
 define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
@@ -935,7 +931,7 @@ init -810 python:
         },
         use_year_before=True,
         exit_pp=store.mas_history._d25s_exit_pp,
-        start_dt=datetime.datetime(2019, 12, 1),
+        start_dt=datetime.datetime(2019, 12, 11),
         end_dt=datetime.datetime(2019, 12, 31)
     ))
 

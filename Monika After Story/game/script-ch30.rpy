@@ -831,10 +831,8 @@ label ch30_main:
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
-    if mas_isO31():
-        call mas_o31_autoload_check(intro_flow=True)
-
     # d25 season? d25 season you are in
+    #TODO: day of first sesh shouldn't get deoct
     if mas_isD25Season():
         call mas_holiday_d25c_autoload_check
 
