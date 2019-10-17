@@ -1640,6 +1640,8 @@ label mas_reaction_json_ribbon_base(ribbon_name, user_friendly_desc, helper_labe
         mas_finishSpriteObjInfo(sprite_data)
     return
 
+# lanvallime
+
 label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
     call mas_reaction_json_ribbon_base("lanvallime_ribbon_coffee", "coffee colored", "mas_reaction_gift_acs_lanvallime_ribbon_coffee")
     return
@@ -1675,6 +1677,60 @@ label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
 label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
     call mas_reaction_json_ribbon_base("lanvallime_ribbon_sky_blue", "sky blue", "mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
     return
+
+# anonymioo
+label mas_reaction_gift_acs_anonymioo_ribbon_bisexualpride:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_bisexualpride","bisexual-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_bisexualpride")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_blackandwhite:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_blackandwhite","black and white","mas_reaction_gift_acs_anonymioo_ribbon_blackandwhite")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_bronze:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_bronze","bronze","mas_reaction_gift_acs_anonymioo_ribbon_bronze")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_brown:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_brown","brown","mas_reaction_gift_acs_anonymioo_ribbon_brown")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_gradient:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient","multi-colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_gradient_lowpoly:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient_lowpoly","multi-colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient_lowpoly")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_gradient_rainbow:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient_rainbow","rainbow colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient_rainbow")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_polkadots_whiteonred:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_polkadots_whiteonred","red and white polka dotted","mas_reaction_gift_acs_anonymioo_ribbon_polkadots_whiteonred")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_starsky_black:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_starsky_black","night-sky-themed","mas_reaction_gift_acs_anonymioo_ribbon_starsky_black")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_starsky_red:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_starsky_red","night-sky-themed","mas_reaction_gift_acs_anonymioo_ribbon_starsky_red")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_striped_blueandwhite:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_blueandwhite","blue and white striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_blueandwhite")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_pinkandwhite","pink and white striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_transexualpride:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_transexualpride","transexual-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transexualpride")
+    return
+
 
 #specific to this, since we need to verify if the player actually gave a ribbon.
 default persistent._mas_current_gifted_ribbons = 0
