@@ -441,8 +441,11 @@ label greeting_o31_sakuya:
         m "Oh!{w=0.5} It's you, [player]!"
 
     else:
-        #TODO: alt dlg, Moni's expecting you now.
-        pass
+        m ".{w=0.3}.{w=0.3}."
+        m "Welcome{w=0.3}, to the Scarlet Devil Spaceroom..."
+        m "[player]."
+        m "Please, let me offer you our hospitality."
+        m "Ahaha! How was that impression?"
 
     #show moni now
     hide emptydesk
