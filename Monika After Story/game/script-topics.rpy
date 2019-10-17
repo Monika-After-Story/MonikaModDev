@@ -2113,7 +2113,7 @@ label monika_holdme_long:
                 m 3hubfb "...So make sure to hug me often, ahaha!"
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hubfb "I'd do the same for you, after all~"
-                m 5tsbfu "Who knows when I'd let go when I finally got the chance?"
+                m 5tsbfu "Who knows if I'll ever let go when I finally get the chance..."
                 m 5hubfu "Ehehe~"
             elif mas_isMoniEnamored():
                 m 6dkbfa "...{w=1}Hm?"
