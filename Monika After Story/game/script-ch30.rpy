@@ -832,7 +832,7 @@ label ch30_main:
     $ mas_in_intro_flow = True
 
     if mas_isO31():
-        call mas_o31_autoload_check
+        call mas_o31_autoload_check(intro_flow=True)
 
     # d25 season? d25 season you are in
     if mas_isD25Season():

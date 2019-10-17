@@ -139,7 +139,7 @@ init -10 python:
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
 
 #START: O31 AUTOLOAD CHECK
-label mas_o31_autoload_check:
+label mas_o31_autoload_check(intro_flow=False):
     python:
         import random
 
@@ -178,8 +178,8 @@ label mas_o31_autoload_check:
                 #Reset zoom
                 store.mas_sprites.reset_zoom()
 
-                #Now that we're here, we're in O31 mode
-                persistent._mas_o31_in_o31_mode = True
+            #Now that we're here, we're in O31 mode
+            persistent._mas_o31_in_o31_mode = True
 
             #Vignette on O31
             store.mas_globals.show_vignette = True
@@ -200,6 +200,11 @@ label mas_o31_autoload_check:
 
             if not mas_getEV("greeting_ourreality").shown_count:
                 mas_unlockEVL("greeting_ourreality", "GRE")
+
+    #If we're coming here from intro, we've set up o31 mode an deco/amb.
+    #Now we need to return back to intro flow.
+    if intro_flow:
+        return
 
     #Run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
