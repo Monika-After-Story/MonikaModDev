@@ -2014,8 +2014,9 @@ init -1 python:
             """
             if selected:
                 color = mas_ui.light_button_text_hover_color
+                
             else:
-                color = mas_ui.light_button_text_idle_color
+                color = mas_globals.button_text_idle_color
 
             return Text(
                 _text,

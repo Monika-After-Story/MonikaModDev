@@ -1005,6 +1005,16 @@ style music_menu_dark_button_text is navigation_button_text:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
+style music_menu_dark_return_button is return_button:
+    xminimum 0
+    xmaximum 200
+    xfill False
+
+style music_menu_dark_prev_button is return_button:
+    xminimum 0
+    xmaximum 135
+    xfill False
+
 style music_menu_dark_return_button_text is navigation_dark_button_text
 style music_menu_dark_prev_button_text is navigation_dark_button_text:
     min_width 135
