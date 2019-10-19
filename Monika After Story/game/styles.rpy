@@ -114,6 +114,10 @@ init python:
             style.slot_button_text = style.slot_button_dark_text
             style.mute_all_button = style.mute_all_button_dark
             style.mute_all_button_text = style.mute_all_button_dark_text
+            style.pref_label = style.pref_dark_label
+            style.pref_label_text = style.pref_dark_label_text
+            style.music_menu_return_button_text = style.music_menu_return_button_dark_text
+            style.music_menu_prev_button_text = style.music_menu_prev_button_dark_text
 
             #Textbox handling
             if mas_globals.change_textbox:
@@ -163,6 +167,10 @@ init python:
             style.slot_button_text = style.slot_button_def_text
             style.mute_all_button = style.mute_all_button_def
             style.mute_all_button_text = style.mute_all_button_def_text
+            style.pref_label = style.pref_def_label
+            style.pref_label_text = style.pref_def_label_text
+            style.music_menu_return_button_text = style.music_menu_return_button_def_text
+            style.music_menu_prev_button_text = style.music_menu_prev_button_def_text
 
             #Textbox
             if mas_globals.change_textbox:
@@ -355,6 +363,58 @@ style navigation_dark_button_text:
     outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
+
+style music_menu_return_button_def_text is navigation_button_text
+style music_menu_prev_button_def_text is navigation_button_text:
+    min_width 135
+    text_align 1.0
+
+style music_menu_return_button_dark_text is navigation_dark_button_text
+style music_menu_prev_button_dark_text is navigation_dark_button_text:
+    min_width 135
+    text_align 1.0
+
+style pref_def_label is gui_label
+style pref_def_label_text is gui_label_text
+
+style pref_def_label:
+    top_margin gui.pref_spacing
+    bottom_margin 2
+
+style pref_def_label_text:
+    font "gui/font/RifficFree-Bold.ttf"
+    size 24
+    color "#fff"
+    outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
+    yalign 1.0
+
+style pref_dark_label is gui_label
+style pref_dark_label_text is gui_label_text
+
+style pref_dark_label:
+    top_margin gui.pref_spacing
+    bottom_margin 2
+
+style pref_dark_label_text:
+    font "gui/font/RifficFree-Bold.ttf"
+    size 24
+    color "#FFD9E8"
+    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+    yalign 1.0
+
+style pref_dark_label is gui_label
+style pref_dark_label_text is gui_label_text
+
+style pref_dark_label:
+    top_margin gui.pref_spacing
+    bottom_margin 2
+
+style pref_dark_label_text:
+    font "gui/font/RifficFree-Bold.ttf"
+    size 24
+    color "#FFD9E8"
+    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+    yalign 1.0
 
 style check_dark_label is pref_label
 style check_dark_label_text is pref_label_text
@@ -821,6 +881,8 @@ style game_menu_label_dark_text:
     color "#FFD9E8"
     outlines [(6, "#DE367E", 0, 0), (3, "#DE367E", 2, 2)]
     yalign 0.5
+
+
 
 #START: islands event styles
 style island_button_def is button
