@@ -98,12 +98,10 @@ init python:
             style.confirm_prompt_text = style.confirm_prompt_text_dark
             style.island_button = style.island_button_dark
             style.island_button_text = style.island_button_text_dark
-            style.music_menu_outer_frame = style.music_menu_outer_frame_dark
             style.button = style.button_dark
             style.main_menu_frame = style.main_menu_frame_dark
             style.window_monika = style.window_monika_dark
             style.window = style.window_dark
-            style.music_menu_button_text = style.music_menu_button_dark_text
             style.page_label = style.page_label_dark
             style.page_label_text = style.page_label_dark_text
             style.slot_button = style.slot_button_dark
@@ -112,8 +110,6 @@ init python:
             style.mute_all_button_text = style.mute_all_button_dark_text
             style.pref_label = style.pref_dark_label
             style.pref_label_text = style.pref_dark_label_text
-            style.music_menu_return_button_text = style.music_menu_return_button_dark_text
-            style.music_menu_prev_button_text = style.music_menu_prev_button_dark_text
 
             #Textbox handling
             if mas_globals.change_textbox:
@@ -147,12 +143,10 @@ init python:
             style.confirm_prompt_text = style.confirm_prompt_text_def
             style.island_button = style.island_button_def
             style.island_button_text = style.island_button_text_def
-            style.music_menu_outer_frame = style.music_menu_outer_frame_def
             style.button = style.button_def
             style.main_menu_frame = style.main_menu_frame_def
             style.window_monika = style.window_monika_def
             style.window = style.window_def
-            style.music_menu_button_text = style.music_menu_button_def_text
             style.page_label = style.page_label_def
             style.page_label_text = style.page_label_def_text
             style.slot_button = style.slot_button_def
@@ -161,8 +155,6 @@ init python:
             style.mute_all_button_text = style.mute_all_button_def_text
             style.pref_label = style.pref_def_label
             style.pref_label_text = style.pref_def_label_text
-            style.music_menu_return_button_text = style.music_menu_return_button_def_text
-            style.music_menu_prev_button_text = style.music_menu_prev_button_def_text
 
             #Textbox
             if mas_globals.change_textbox:
@@ -355,16 +347,6 @@ style navigation_dark_button_text:
     outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
-
-style music_menu_return_button_def_text is navigation_button_text
-style music_menu_prev_button_def_text is navigation_button_text:
-    min_width 135
-    text_align 1.0
-
-style music_menu_return_button_dark_text is navigation_dark_button_text
-style music_menu_prev_button_dark_text is navigation_dark_button_text:
-    min_width 135
-    text_align 1.0
 
 style pref_def_label is gui_label
 style pref_def_label_text is gui_label_text
@@ -934,22 +916,6 @@ style island_button_dark_text is default:
     hover_background "mod_assets/island_hover_background_d.png"
     outlines []
 
-style music_menu_button_def_text is navigation_button_text:
-    properties gui.button_text_properties("navigation_button")
-    font "mod_assets/font/mplus-2p-regular.ttf"
-    color "#fff"
-    outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
-    hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
-    insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
-
-style music_menu_button_dark_text is navigation_button_text:
-    properties gui.button_text_properties("navigation_button")
-    font "mod_assets/font/mplus-2p-regular.ttf"
-    color "#FFD9E8"
-    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
-    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
-    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
-
 style page_label_def is gui_label
 style page_label_def_text is gui_label_text
 
@@ -1019,16 +985,30 @@ style quick_dark_button_text:
     outlines []
 
 #START: music selector styles
-style music_menu_outer_frame_def is game_menu_outer_frame_def
 
-style music_menu_outer_frame_def:
-    background "mod_assets/music_menu.png"
+style music_menu_dark_label is game_menu_label_dark
+style music_menu_dark_label_text is game_menu_label_dark_text
 
-style music_menu_outer_frame_dark is game_menu_outer_frame_dark
+style music_menu_dark_outer_frame is game_menu_outer_frame_dark
 
-style music_menu_outer_frame_dark:
+style music_menu_dark_outer_frame:
     background "mod_assets/music_menu_d.png"
 
+style music_menu_dark_navigation_frame is game_menu_navigation_frame
+style music_menu_dark_content_frame is game_menu_content_frame
+
+style music_menu_dark_button_text is navigation_button_text:
+    properties gui.button_text_properties("navigation_button")
+    font "mod_assets/font/mplus-2p-regular.ttf"
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
+
+style music_menu_dark_return_button_text is navigation_dark_button_text
+style music_menu_dark_prev_button_text is navigation_dark_button_text:
+    min_width 135
+    text_align 1.0
 
 #START: image definitions
 image menu_bg:

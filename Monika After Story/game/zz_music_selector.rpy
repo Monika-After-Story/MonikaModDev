@@ -844,24 +844,24 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     zorder 200
 
-    style_prefix "music_menu"
+    style_prefix ("music_menu" if not mas_globals.dark_mode else "music_menu_dark")
 
     frame:
-        style "music_menu_outer_frame"
+        style ("music_menu_outer_frame" if not mas_globals.dark_mode else "music_menu_dark_outer_frame")
 
         hbox:
 
             frame:
-                style "music_menu_navigation_frame"
+                style ("music_menu_navigation_frame" if not mas_globals.dark_mode else "music_menu_dark_navigation_frame")
 
             frame:
-                style "music_menu_content_frame"
+                style ("music_menu_content_frame" if not mas_globals.dark_mode else "music_menu_dark_content_frame")
 
                 transclude
 
         # this part copied from navigation menu
         vbox:
-            style_prefix "music_menu"
+            style_prefix ("music_menu" if not mas_globals.dark_mode else "music_menu_dark")
 
             xpos gui.navigation_xpos
     #        yalign 0.4
@@ -880,12 +880,12 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             # dynamic prevous text, so we can keep button size alignments
             if page_num > 0:
                 textbutton _("<<<< Prev"):
-                    style "music_menu_prev_button"
+                    style ("music_menu_prev_button" if not mas_globals.dark_mode else "music_menu_dark_prev_button")
                     action Return(page_num - 1)
 
             else:
                 textbutton _( " "):
-                    style "music_menu_prev_button"
+                    style ("music_menu_prev_button" if not mas_globals.dark_mode else "music_menu_dark_prev_button")
                     sensitive False
 
 #                if more_pages:
@@ -897,15 +897,15 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
             if more_pages:
                 textbutton _("Next >>>>"):
-                    style "music_menu_return_button"
+                    style ("music_menu_return_button" if not mas_globals.dark_mode else "music_menu_dark_return_button")
                     action Return(page_num + 1)
 
         textbutton _(songs.NO_SONG): 
-            style "music_menu_return_button"
+            style ("music_menu_return_button" if not mas_globals.dark_mode else "music_menu_dark_return_button")
             action Return(songs.NO_SONG)
 
         textbutton _("Return"):
-            style "music_menu_return_button"
+            style ("music_menu_return_button" if not mas_globals.dark_mode else "music_menu_dark_return_button")
             action Return(return_value)
 
     label "Music Menu"
