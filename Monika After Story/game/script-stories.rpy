@@ -123,11 +123,11 @@ label mas_stories_start(scary=False):
         $ renpy.jump(story)
 
     m 1hua "Sure thing!"
-    m 1eua "What story would you like to hear?"
 
     # move Monika to the left
-    show monika at t21
+    show monika 1eua at t21
 
+    $ renpy.say(m, "What story would you like to hear?", interact=False)
     # call scrollable pane
     call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item)
 

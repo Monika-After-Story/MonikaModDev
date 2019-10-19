@@ -1547,6 +1547,20 @@ image monika 1eubla_static = DynamicDisplayable(
     blush="lines"
 )
 
+image monika 1eubsa_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    arms="steepling",
+    head="a",
+    left="1l",
+    right="1r",
+    blush="shade"
+)
+
 image monika 1euc_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -1783,6 +1797,20 @@ image monika 1hubfb_static = DynamicDisplayable(
     left="1l",
     right="1r",
     blush="full"
+)
+
+image monika 1hubsa_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    arms="steepling",
+    head="j",
+    left="1l",
+    right="1r",
+    blush="shade"
 )
 
 image monika 1huu_static = DynamicDisplayable(
@@ -4707,6 +4735,17 @@ image monika 2lubfb_static = DynamicDisplayable(
     blush="full"
 )
 
+image monika 2lubfu_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    arms="crossed",
+    blush="full"
+)
+
 image monika 2lud_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5510,36 +5549,5 @@ image monika 3dfx_static = DynamicDisplayable(
     nose="def",
     mouth="angry",
     arms="restleftpointright"
-)
-
-image monika 3dka_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smile",
-    arms="restleftpointright"
-)
-
-image monika 3dkb_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="big",
-    arms="restleftpointright"
-)
-
-image monika 3dkbfa_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smile",
-    arms="restleftpointright",
-    blush="full"
 )
 

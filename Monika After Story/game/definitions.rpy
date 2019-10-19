@@ -128,6 +128,8 @@ python early:
     #   show_in_idle - True if this Event can be shown during idle
     #       False if not
     #       (Default: False)
+    #   flags - bitmask system that acts as unchanging flags.
+    #       (Default: 0)
     class Event(object):
 
         # tuple constants
@@ -145,7 +147,7 @@ python early:
             "end_date":10,
             "unlock_date":11,
             "shown_count":12,
-            "diary_entry":13,
+            #"diary_entry":13, # NOTE: this will not be removed until later
             "last_seen":14,
             "years":15,
             "sensitive":16,
@@ -154,7 +156,14 @@ python early:
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks", "rules")
+        N_EVENT_NAMES = (
+            "per_eventdb",
+            "eventlabel",
+            "locks",
+            "rules",
+            "diary_entry",
+            "flags"
+        )
 
         # other constants
         DIARY_LIMIT = 500
@@ -190,13 +199,14 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-                diary_entry=None,
+#                diary_entry=None,
                 rules=dict(),
                 last_seen=None,
                 years=None,
                 sensitive=False,
                 aff_range=None,
-                show_in_idle=False
+                show_in_idle=False,
+                flags=0
             ):
 
             # setting up defaults
@@ -206,12 +216,12 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
-            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
-                raise Exception(
-                    (
-                        "diary entry for {0} is longer than {1} characters"
-                    ).format(eventlabel, self.DIARY_LIMIT)
-                )
+#            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+#                raise Exception(
+#                    (
+#                        "diary entry for {0} is longer than {1} characters"
+#                    ).format(eventlabel, self.DIARY_LIMIT)
+#                )
             if rules is None:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
@@ -251,6 +261,9 @@ python early:
                     eventlabel, str(aff_range)
                 ))
 
+            if not isinstance(flags, int):
+                raise Exception("'{0}' - invalid flags".format(eventlabel))
+
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
 
@@ -275,7 +288,7 @@ python early:
                 )
 
             self.rules = rules
-
+            self.flags = flags
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -293,7 +306,7 @@ python early:
                 end_date,
                 unlock_date,
                 0, # shown_count
-                diary_entry,
+                "", # diary_entry
                 last_seen,
                 years,
                 sensitive,
@@ -343,7 +356,7 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-                    self.diary_entry = diary_entry
+#                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
                     self.sensitive = sensitive
@@ -4357,7 +4370,19 @@ init 2 python:
         if persistent.monika_reload < 4:
             persistent.monika_reload += 1
 
+    def mas_hasRPYFiles():
+        """
+        Checks if there are rpy files in the gamedir
+        """
+        return len(mas_getRPYFiles()) > 0
 
+    def mas_getRPYFiles():
+        """
+        Gets a list of rpy files in the gamedir
+        """
+        rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+
+        return rpyCheckStation.getPackageList(".rpy")
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
