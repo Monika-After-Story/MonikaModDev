@@ -1367,6 +1367,8 @@ style slider_pref_vbox is pref_vbox
 style mute_all_button is check_button
 style mute_all_button_text is check_button_text
 
+style outfit_check_button_text is gui_button_text
+
 style pref_label:
     top_margin gui.pref_spacing
     bottom_margin 2
@@ -1418,6 +1420,18 @@ style slider_button_text:
 
 style slider_vbox:
     xsize 450
+
+style outfit_check_button:
+    properties gui.button_properties("check_button")
+    foreground "gui/button/check_[prefix_]foreground.png"
+
+style outfit_check_button_text:
+    properties gui.button_text_properties("outfit_check_button")
+    font "gui/font/Halogen.ttf"
+    color "#8C8C8C"
+    selected_color "#FFEEEB"
+    hover_color "#FFAA99"
+    outlines []
 
 ##Notifications Settings Screen
 screen notif_settings():

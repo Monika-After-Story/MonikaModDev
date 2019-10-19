@@ -411,6 +411,18 @@ style check_dark_button_text:
     font "gui/font/Halogen.ttf"
     outlines []
 
+style outfit_check_dark_button:
+    properties gui.button_properties("check_button")
+    foreground "gui/button/check_[prefix_]foreground_d.png"
+
+style outfit_check_dark_button_text:
+    properties gui.button_text_properties("outfit_check_button")
+    font "gui/font/Halogen.ttf"
+    color "#8C8C8C"
+    selected_color "#FFEEEB"
+    hover_color "#FFAA99"
+    outlines []
+
 style choice_dark_vbox is vbox
 style choice_dark_button is button_dark
 style choice_dark_button_text is button_text_dark
