@@ -86,15 +86,11 @@ init python:
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_dark
             style.mas_mbs_button = style.mas_mbs_button_dark
             style.mas_adjustable_button = style.mas_adjustable_button_dark
-            style.slider = style.slider_dark
-            style.slider_slider = style.slider_slider_dark
             style.scrollbar = style.scrollbar_dark
             style.frame = style.frame_dark
             style.confirm_frame = style.confirm_frame_dark
             style.game_menu_outer_frame = style.game_menu_outer_frame_dark
-            style.game_menu_label = style.game_menu_label_dark
-            style.game_menu_label_text = style.game_menu_label_dark_text
-            style.say_label = style.say_label_dark           
+            style.say_label = style.say_label_dark
             style.edited_def = style.edited_def_dark
             style.poemgame_text = style.poemgame_text_dark
             style.namebox = style.namebox_dark
@@ -139,14 +135,10 @@ init python:
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_def
             style.mas_mbs_button = style.mas_mbs_button_def
             style.mas_adjustable_button = style.mas_adjustable_button_def
-            style.slider = style.slider_def
-            style.slider_slider = style.slider_slider_def
             style.scrollbar = style.scrollbar_def
             style.frame = style.frame_def
             style.confirm_frame = style.confirm_frame_def
             style.game_menu_outer_frame = style.game_menu_outer_frame_def
-            style.game_menu_label = style.game_menu_label_def
-            style.game_menu_label_text = style.game_menu_label_def_text
             style.say_label = style.say_label_def
             style.edited_def = style.edited_def_def
             style.poemgame_text = style.poemgame_text_def
@@ -582,13 +574,22 @@ style slider_dark:
     base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
     thumb "gui/slider/horizontal_hover_thumb.png"
 
-style slider_slider_def is gui_slider
-style slider_slider_def:
+style slider_dark_button_text:
+    properties gui.button_text_properties("slider_button")
+
+style slider_dark_vbox:
+    xsize 450
+
+style slider_dark_slider is gui_slider_dark
+style slider_dark_slider:
     xsize 350
 
-style slider_slider_dark is gui_slider_dark
-style slider_slider_dark:
-    xsize 350
+style slider_dark_label is pref_label
+style slider_dark_label_text is pref_label_text
+style slider_dark_slider is gui_slider_dark
+style slider_dark_button is gui_button
+style slider_dark_button_text is gui_button_text
+style slider_dark_pref_vbox is pref_vbox
 
 style scrollbar_def:
     ysize 18

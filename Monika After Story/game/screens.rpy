@@ -833,7 +833,7 @@ screen game_menu(title, scroll=None):
 
         action Return()
 
-    label title
+    label title style ("game_menu_label" if not mas_globals.dark_mode else "game_menu_label_dark")
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
@@ -1167,7 +1167,7 @@ screen preferences():
             null height (4 * gui.pref_spacing)
 
             hbox:
-                style_prefix "slider"
+                style_prefix ("slider" if not mas_globals.dark_mode else "slider_dark")
                 box_wrap True
 
                 python:
