@@ -1124,10 +1124,10 @@ screen preferences():
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
                     #Handle buttons
-                    textbutton _("Dark UI"):
+                    textbutton _("UI: Night Mode"):
                         action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
                         selected persistent._mas_dark_mode_enabled
-                    textbutton _("Day/Night UI"):
+                    textbutton _("UI: D/N Cycle"):
                         action [Function(mas_darkMode, morning_flag), Function(mas_settings._auto_mode_toggle)]
                         selected persistent._mas_auto_mode_enabled
 
@@ -1428,7 +1428,7 @@ style outfit_check_button:
 style outfit_check_button_text:
     properties gui.button_text_properties("outfit_check_button")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C"
+    color "#BFBFBF"
     selected_color "#FFEEEB"
     hover_color "#FFAA99"
     outlines []

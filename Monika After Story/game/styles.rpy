@@ -418,7 +418,7 @@ style outfit_check_dark_button:
 style outfit_check_dark_button_text:
     properties gui.button_text_properties("outfit_check_button")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C"
+    color "#BFBFBF"
     selected_color "#FFEEEB"
     hover_color "#FFAA99"
     outlines []
