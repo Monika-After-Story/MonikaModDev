@@ -133,7 +133,7 @@ init -2 python in mas_sprites:
             store.mas_sprites.SP_ACS,
             acs_name
         )
-        if acs_to_remove is not None;
+        if acs_to_remove is not None:
             _moni_chr.remove_acs(acs_to_remove)
 
 
