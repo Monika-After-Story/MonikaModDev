@@ -39,6 +39,22 @@ init -2 python in mas_sprites:
     ######### SHARED PROGPOINTS [SPR005] ######################
     # These should be used by other prog points to streamline commonly done
     # actions.
+    def _acs_wear_if_found(_moni_chr, acs_name):
+        """
+        Wears the acs if the acs exists
+
+        IN:
+            _moni_chr - MASMonika object
+            acs_name - name of the accessory
+        """
+        acs_to_wear = store.mas_sprites.get_sprite(
+            store.mas_sprites.SP_ACS,
+            acs_name
+        )
+        if acs_to_wear is not None:
+            _moni_chr.wear_acs(acs_to_wear)
+    
+
     def _acs_wear_if_in_tempstorage(_moni_chr, key):
         """
         Wears the acs in tempstorage at the given key, if any.
@@ -103,6 +119,22 @@ init -2 python in mas_sprites:
         """
         if not _moni_chr.is_wearing_acs_type(acs_type):
             _moni_chr.wear_acs(acs_to_wear)
+
+
+    def _acs_remove_if_found(_moni_chr, acs_name):
+        """
+        REmoves an acs if the name exists
+
+        IN:
+            _moni_chr - MASMonika object
+            acs_name - name of the accessory to remove
+        """
+        acs_to_remove = store.mas_sprites.get_sprite(
+            store.mas_sprites.SP_ACS,
+            acs_name
+        )
+        if acs_to_remove is not None;
+            _moni_chr.remove_acs(acs_to_remove)
 
 
     def _acs_ribbon_save_and_remove(_moni_chr):
@@ -223,6 +255,14 @@ init -2 python in mas_sprites:
         Entry programming point for hair bun
         """
         pass
+
+
+    def _hair_orcaramelo_bunbraid_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for bunbraid
+        """
+        # always take off the headband
+        _acs_remove_if_found(_moni_chr, "orcaramelo_sakuya_izayoi_headband")
 
 
     ######### CLOTHES [SPR020] ###########
@@ -451,6 +491,51 @@ init -2 python in mas_sprites:
 
         # TODO: dont remove if hair is twintail prop
         _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
+
+
+    def _clothes_orcaramelo_sakuya_izayoi_entry(_moni_chr, **kwargs):
+        """
+        Entry pp for orcaramelo sakuya
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # swap to bun braid if found. if not, dont wear acs.
+            bunbraid = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "orcaramelo_bunbraid"
+            )
+            if bunbraid is not None:
+                _moni_chr.change_hair(bunbraid)
+
+                # find acs and wear for this outfit
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_sakuya_izayoi_headband"
+                )
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_sakuya_izayoi_strandbow"
+                )
+
+
+    def _clothes_orcaramelo_sakuya_izayoi_exit(_moni_chr, **kwargs):
+        """
+        Exit pp for orcaramelo sakuya
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        # only remove acs in outfit mode
+        if outfit_mode:
+            # find and remove acs if found
+            _acs_remove_if_found(
+                _moni_chr,
+                "orcaramelo_sakuya_izayoi_headband"
+            )
+            _acs_remove_if_found(
+                _moni_chr,
+                "orcaramelo_sakuya_izayoi_strandbow"
+            )
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
