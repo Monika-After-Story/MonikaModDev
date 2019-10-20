@@ -486,11 +486,11 @@ init -2 python in mas_sprites:
         """
         Exit pp for orcaramelo miku
         """
-        # TODO: dont remove if other headset/headphones exist
-        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
+        outfit_mode = kwargs.get("outfit_mode", False)
 
-        # TODO: dont remove if hair is twintail prop
-        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
+            _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
 
 
     def _clothes_orcaramelo_sakuya_izayoi_entry(_moni_chr, **kwargs):
