@@ -33,7 +33,7 @@ init -200 python in mas_ui:
     light_button_text_hover_color = "#fa9"
     light_button_text_idle_color = "#000"
 
-    # Style adjustment var. None on init, "dark" if dark ui, "" otherwise
+    # Style adjustment var. None on init, "_dark" if dark ui, "" otherwise
     ui_mode_suffix = None
 
     # hotkey buttons
