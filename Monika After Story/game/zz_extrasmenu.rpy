@@ -347,7 +347,7 @@ screen mas_extramenu_area():
         # close button
         textbutton _("Close"):
             area (61, 594, 120, 35)
-            style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+            style ("hkb" + mas_ui.ui_mode_suffix + "_button")
             action Jump("mas_extra_menu_close")
 
         # zoom control
@@ -357,7 +357,7 @@ screen mas_extramenu_area():
             vbox:
                 spacing 2
                 label "Zoom":
-                    style ("hkb_button_text" if not mas_globals.dark_mode else "hkb_dark_button_text")
+                    style ("hkb" + mas_ui.ui_mode_suffix + "_button_text")
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"

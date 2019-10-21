@@ -33,6 +33,9 @@ init -200 python in mas_ui:
     light_button_text_hover_color = "#fa9"
     light_button_text_idle_color = "#000"
 
+    # Style adjustment var. None on init, "dark" if dark ui, "" otherwise
+    ui_mode_suffix = None
+
     # hotkey buttons
     hkb_style_prefix = "hkb"
     hkb_button_style = "hkb_button"
@@ -81,6 +84,7 @@ init python:
         """
         if not morning_flag:
             mas_globals.dark_mode = True
+            mas_ui.ui_mode_suffix = "_dark"
 
             #Style swaps
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_dark
@@ -126,6 +130,7 @@ init python:
 
         else:
             mas_globals.dark_mode = False
+            mas_ui.ui_mode_suffix = ""
 
             #Style swaps
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_def
