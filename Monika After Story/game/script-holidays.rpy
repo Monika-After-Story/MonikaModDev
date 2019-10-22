@@ -271,12 +271,9 @@ label mas_o31_autoload_check:
 
                 # select a costume
                 # NOTE: we should always have at least 1 costume.
-                # NOTE: call mas_o31SetCostumeWorn_n AFTER the costume has been
-                #   seen by the player. This is to ensure that in the case of 
-                #   crashes, the player wont have to wait for a full cycle of
-                #   costumes before seeing it.
                 costume = mas_o31SelectCostume()
                 store.mas_selspr.unlock_clothes(costume, True)
+                mas_o31SetCostumeWorn(costume)
                 monika_chr.change_clothes(
                     costume,
                     by_user=False,
