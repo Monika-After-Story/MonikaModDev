@@ -5560,6 +5560,20 @@ image monika 3tubfu:
         0.06
         repeat
 
+image monika 3tubsb:
+    block:
+        "monika 3tubsb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dubsb_static"
+        0.06
+        repeat
+
 image monika 3tuu:
     block:
         "monika 3tuu_static"
@@ -6971,20 +6985,6 @@ image monika 4tub:
             choice:
                 7
         "monika 4dub_static"
-        0.06
-        repeat
-
-image monika 4tubfb:
-    block:
-        "monika 4tubfb_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dubfb_static"
         0.06
         repeat
 

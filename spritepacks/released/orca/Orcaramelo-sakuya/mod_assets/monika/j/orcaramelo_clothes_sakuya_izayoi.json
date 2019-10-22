@@ -25,7 +25,9 @@
         "thumb": "orcaramelo_sakuya_izayoi",
         "group": "clothes",
         "select_dlg": [
-            "NO PADS NEEDED"
+            "Time always stops when I'm with you~",
+            "Allow me to offer you my hospitality.",
+            "Would you like a cup of tea, [player]?"
         ]
     },
     "giftname": "sakuyaizayoicosplay",
