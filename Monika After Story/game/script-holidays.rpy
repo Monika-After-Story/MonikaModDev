@@ -242,7 +242,7 @@ init -10 python:
             year = datetime.date.today().year
 
         persistent._mas_o31_costumes_worn[clothes_name] = year
-            
+
 
 #START: O31 AUTOLOAD CHECK
 label mas_o31_autoload_check:
@@ -281,7 +281,12 @@ label mas_o31_autoload_check:
                 )
 
                 #Select greet
-                selected_greeting = "greeting_o31_{0}".format(costume.name)
+                greet_label = "greeting_o31_{0}".format(costume.name)
+
+                if renpy.has_label(greet_label):
+                    selected_greeting = greet_label
+                else:
+                    selected_greeting = "greeting_o31_generic"
 
                 #Reset zoom
                 store.mas_sprites.reset_zoom()
@@ -347,15 +352,15 @@ transform mas_o31_cg_scroll:
     ease 20.0 yoffset 0.0
 
 ### o31 greetings
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_o31_marisa",
-            category=[store.mas_greetings.TYPE_HOL_O31]
-        ),
-        code="GRE"
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_o31_marisa",
+#            category=[store.mas_greetings.TYPE_HOL_O31]
+#        ),
+#        code="GRE"
+#    )
 
 label greeting_o31_marisa:
     # decoded CG means that we start with monika offscreen
@@ -420,15 +425,15 @@ label greeting_o31_marisa:
     call greeting_o31_cleanup
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_o31_rin",
-            category=[store.mas_greetings.TYPE_HOL_O31]
-        ),
-        code="GRE"
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_o31_rin",
+#            category=[store.mas_greetings.TYPE_HOL_O31]
+#        ),
+#        code="GRE"
+#    )
 
 label greeting_o31_rin:
     $ title_cased_hes = hes.capitalize()
@@ -486,17 +491,17 @@ label greeting_o31_rin:
     return
 
 #Miku intro
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_o31_miku",
-            category=[store.mas_greetings.TYPE_HOL_O31]
-        ),
-        code="GRE"
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_o31_miku",
+#            category=[store.mas_greetings.TYPE_HOL_O31]
+#        ),
+#        code="GRE"
+#    )
 
-label greeting_o31_miku:
+label greeting_o31_orcaramelo_hatsune_miku:
     call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk at i11 zorder 9
     #moni is off-screen
@@ -523,17 +528,17 @@ label greeting_o31_miku:
     return
 
 #Sakuya intro
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_o31_sakuya",
-            category=[store.mas_greetings.TYPE_HOL_O31]
-        ),
-        code="GRE"
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_o31_sakuya",
+#            category=[store.mas_greetings.TYPE_HOL_O31]
+#        ),
+#        code="GRE"
+#    )
 
-label greeting_o31_sakuya:
+label greeting_o31_orcaramelo_sakuya_izayoi:
     call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk at i11 zorder 9
     #moni is off-screen
@@ -577,6 +582,10 @@ label greeting_o31_deco:
     m 1rka "{cps=*2}I'm sure Amy would really like them.{/cps}{nw}"
     $ _history_list.pop()
     m 3tuu "Really creates a creepy vibe, don't you think?"
+    return
+
+#TODO: GENERIC O31 GREET
+label greeting_o31_generic:
     return
 
 #Cleanup for o31 greets
