@@ -76,6 +76,11 @@ default persistent._mas_o31_trick_or_treating_aff_gain = 0
 #Need to know if we were asked to relaunch the game
 default persistent._mas_o31_relaunch = False
 
+# costumes worn
+# key: costume name
+# value: year worn
+default persistent._mas_o31_costumes_worn = {}
+
 #Halloween
 define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
 
@@ -102,6 +107,8 @@ init -810 python:
     ))
 
 init -10 python:
+    import random
+
     def mas_isO31(_date=None):
         """
         Returns True if the given date is o31
@@ -135,8 +142,107 @@ init -10 python:
         #Also, if we're hiding visuals, we're no longer in o31 mode
         store.persistent._mas_o31_in_o31_mode = False
 
+
     def mas_o31CapGainAff(amount):
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
+
+
+    def mas_o31CostumeWorn(clothes):
+        """
+        Checks if the given clothes was worn on o31
+
+        IN:
+            clothes - Clothes object to check
+
+        RETURNS: year the given clothe was worn if worn on o31, None if never
+            worn on o31.
+        """
+        if clothes is None:
+            return False
+        return mas_o31CostumeWorn_n(clothes.name)
+
+
+    def mas_o31CostumeWorn_n(clothes_name):
+        """
+        Checks if the given clothes (name) was worn on o31
+
+        IN:
+            clothes_name - Clothes name to check
+
+        RETURNS: year the given clothes name was worn if worn on o31, none if
+            never worn on o31.
+        """
+        return persistent._mas_o31_costumes_worn.get(clothes_name, None)
+
+
+    def mas_o31SelectCostume(selection_pool=None):
+        """
+        Selects an o31 costume to wear. Costumes that have not been worn
+        before are selected first.
+
+        NOTE: o31 costume wear flag is NOT set here. Make sure to set this 
+            manually later.
+
+        IN:
+            selection_pool - pool to select clothes from. If NOne, we get a 
+                default list of clothes with costume exprop
+
+        RETURNS: a single MASClothes object of what to wear. None if cannot
+            return anything.
+        """
+        if selection_pool is None:
+            selection_pool = MASClothes.by_exprop("costume")
+
+        if len(selection_pool) < 1:
+            # no items to select from
+            return None
+
+        elif len(selection_pool) < 2:
+            # only 1 item to select from, just return
+            return selection_pool[0]
+
+        # otherwise, create list of non worn costumes
+        non_worn = [
+            costume
+            for costume in selection_pool
+            if not mas_o31CostumeWorn(costume)
+        ]
+
+        if len(non_worn) > 0:
+            # randomly select from non worn
+            return random.choice(non_worn)
+
+        # otherwise randomly select from overall
+        return random.choice(selection_pool)
+
+
+    def mas_o31SetCostumeWorn(clothes, year=None):
+        """
+        Sets that a clothing item is worn. Exprop checking is done
+
+        IN:
+            clothes - clothes object to set
+            year - year that the costume was worn. If NOne, we use current year
+        """
+        if clothes is None or not clothes.hasprop("costume"):
+            return
+
+        mas_o31SetCostumeWorn_n(clothes.name, year=year)
+
+
+    def mas_o31SetCostumeWorn_n(clothes_name, year=None):
+        """
+        Sets that a clothing name is worn. NO EXPROP CHECKING IS DONE
+
+        IN:
+            clothes_name - name of clothes to set
+            year - year that the costume was worn. If None, we use current year
+        """
+        if year is None:
+            year = datetime.date.today().year
+
+        persistent._mas_o31_costumes_worn[clothes_name] = year
+            
 
 #START: O31 AUTOLOAD CHECK
 label mas_o31_autoload_check:
@@ -163,18 +269,22 @@ label mas_o31_autoload_check:
                 #Put calendar shields up
                 mas_calRaiseOverlayShield()
 
-                #TODO: uncomment these when outfits are in
-                if random.randint(1,2) == 1:
-                    costume = "miku"
-                    store.mas_selspr.unlock_clothes(mas_clothes_orcaramelo_hatsune_miku, True)
-                    monika_chr.change_clothes(mas_clothes_orcaramelo_hatsune_miku, False, outfit_mode=True)
-                else:
-                    costume = "sakuya"
-                    #store.mas_selspr.unlock_clothes(mas_clothes_orcaramelo_sakuya, True)
-                    #monika_chr.change_clothes(mas_clothes_orcaramelo_sakuya, False, outfit_mode=True)
+                # select a costume
+                # NOTE: we should always have at least 1 costume.
+                # NOTE: call mas_o31SetCostumeWorn_n AFTER the costume has been
+                #   seen by the player. This is to ensure that in the case of 
+                #   crashes, the player wont have to wait for a full cycle of
+                #   costumes before seeing it.
+                costume = mas_o31SelectCostume()
+                store.mas_selspr.unlock_clothes(costume, True)
+                monika_chr.change_clothes(
+                    costume,
+                    by_user=False,
+                    outfit_mode=True
+                )
 
                 #Select greet
-                selected_greeting = "greeting_o31_{0}".format(costume)
+                selected_greeting = "greeting_o31_{0}".format(costume.name)
 
                 #Reset zoom
                 store.mas_sprites.reset_zoom()

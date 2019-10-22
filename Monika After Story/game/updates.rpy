@@ -306,8 +306,15 @@ label v0_3_1(version=version): # 0.3.1
 # non generic updates go here
 #0.10.2
 label v0_10_2(version="v0_10_2"):
-    #Songs framework changed, need to transfer ev data to new evs
     python:
+        # o31 set marisa/rin worn checks
+        # NOTE: name is used incase of costume removal in future
+        if renpy.seen_label("greeting_o31_marisa"):
+            mas_o31SetCostumeWorn_n("marisa", 2018)
+        if renpy.seen_label("greeting_o31_rin"):
+            mas_o31SetCostumeWorn_n("rin", 2018)
+
+        #Songs framework changed, need to transfer ev data to new evs
         ev_label_list = [
             ("monika_song_lover_boy", "mas_song_lover_boy"),
             ("monika_song_need_you", "mas_song_need_you"),
