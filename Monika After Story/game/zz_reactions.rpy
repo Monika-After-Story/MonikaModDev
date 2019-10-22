@@ -2133,7 +2133,6 @@ label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
     m 1lkbfb "I'd still like to be able to spend time with you, maste--{nw}"
     $ _history_list.pop()
     m 1ekbfb "I'd still like to be able to spend time with you,{fast} [player]."
-    return
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
