@@ -197,7 +197,7 @@ init 999 python:
         SEL_TX_MAP = {
             "torso": {
                 "def": "School Uniform",
-                "blazerless": "S. Uniform (Blazerless)"
+                "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
                 "rin": "Neko Costume",
                 "santa": "Santa Monika",
