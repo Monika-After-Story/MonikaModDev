@@ -18,7 +18,7 @@ init -1 python in mas_compliments:
     # pane constants
     COMPLIMENT_X = 680
     COMPLIMENT_Y = 40
-    COMPLIMENT_W = 450
+    COMPLIMENT_W = 560
     COMPLIMENT_H = 640
     COMPLIMENT_XALIGN = -0.15
     COMPLIMENT_AREA = (COMPLIMENT_X, COMPLIMENT_Y, COMPLIMENT_W, COMPLIMENT_H)
@@ -37,14 +37,14 @@ init -1 python in mas_compliments:
         ]
 
 
-# entry point for stories flow
+# entry point for compliments flow
 label mas_compliments_start:
 
     python:
         import store.mas_compliments as mas_compliments
 
         # Unlock any compliments that need to be unlocked
-#        Event.checkConditionals(mas_compliments.compliment_database)
+        Event.checkEvents(mas_compliments.compliment_database)
 
         # filter comps
         filtered_comps = Event.filterEvents(
