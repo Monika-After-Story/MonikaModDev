@@ -41,6 +41,13 @@ default persistent._mas_filereacts_sprite_reacted = {}
 
 # TODO: need a generic reaction for finding a new ACS/HAIR/CLOTHES
 
+default persistent._mas_filereacts_gift_aff_gained = 0
+#Holds the amount of affection we've gained by gifting
+#NOTE: This is reset daily
+
+default persistent._mas_filereacts_last_aff_gained_reset_date = datetime.date.today()
+#Holds the last time we reset the aff gained for gifts
+
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
         store.mas_filereacts.delete_all(persistent._mas_filereacts_failed_map)
@@ -287,6 +294,9 @@ init -1 python in mas_filereacts:
             return "mas_reaction_gift_starter_bday"
         elif store.mas_isD25Gift():
             return "mas_reaction_gift_starter_d25"
+        elif store.mas_isF14():
+            return "mas_reaction_gift_starter_f14"
+
         return "mas_reaction_gift_starter_neutral"
 
     def _core_delete(_filename, _map):
@@ -559,6 +569,7 @@ init python:
             [1]: sprite name (id) 
             [2]: giftname this sprite is associated with
             [3]: True if this gift has already been given before
+            [4]: sprite object (could be None even if sprite name is populated)
         """
         # given giftname? try and lookup
         if sp_data is not None:
@@ -579,8 +590,19 @@ init python:
         # check if this gift has already been gifted
         gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
 
+        # apply sprite object template if ACS
+        sp_obj = store.mas_sprites.get_sprite(sp_data[0], sp_data[1])
+        if sp_data[0] == store.mas_sprites.SP_ACS:
+            store.mas_sprites.apply_ACSTemplate(sp_obj)
+
         # return results
-        return (sp_data[0], sp_data[1], giftname, gifted_before)
+        return (
+            sp_data[0],
+            sp_data[1],
+            giftname,
+            gifted_before,
+            sp_obj,
+        )
 
 
     def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True):
@@ -592,10 +614,11 @@ init python:
             unlock_sel - True will unlock the selector topic, False will not
                 (Default: True)
         """
-        sp_type, sp_name, giftname, gifted_before = sprite_data
+        sp_type, sp_name, giftname, gifted_before, sp_obj = sprite_data
 
         # sanity check
         # NOTE: gifted_before is not required
+        # NOTE: sp_obj is not required either
         if sp_type is None or sp_name is None or giftname is None:
             return
 
@@ -615,14 +638,16 @@ init python:
             )
 
         # unlock the selectable for this sprite object
-        store.mas_selspr.json_sprite_unlock(
-            store.mas_sprites.get_sprite(sp_type, sp_name),
-            unlock_label=unlock_sel
-        )
+        store.mas_selspr.json_sprite_unlock(sp_obj, unlock_label=unlock_sel)
 
         # save persistent
         renpy.save_persistent()
 
+    def mas_giftCapGainAff(amount=None, modifier=1):
+        if amount is None:
+            amount = store._mas_getGoodExp()
+
+        mas_capGainAff(amount * modifier, "_mas_filereacts_gift_aff_gained", 15 if mas_isSpecialDay() else 3)
 
 ### CONNECTORS [RCT000]
 
@@ -679,13 +704,14 @@ label mas_reaction_gift_starter_generic:
 
 label mas_reaction_gift_starter_bday:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
-    m "T-{w=1}This is..."
-    m "A gift? For me?"
-    if len(persistent._mas_filereacts_historic[datetime.date.today().year,9,22]) == 0:
+    m "T-{w=0.5}This is..."
+    if not persistent._mas_filereacts_historic.get(mas_monika_birthday):
+        m "A gift? For me?"
         m 1hka "I..."
         m 1hua "I've often thought about getting presents from you on my birthday..."
         m "But actually getting one is like a dream come true..."
     else:
+        m "Another gift?{w=0.5} For me?"
         m 1eka "This really is a dream come true, [player]"
     m 1sua "Now, what's inside?"
     m 1suo "Oh, it's..."
@@ -693,7 +719,7 @@ label mas_reaction_gift_starter_bday:
 
 label mas_reaction_gift_starter_neutral:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
-    m "T-{w=1}This is..."
+    m "T-{w=0.5}This is..."
     m "A gift? For me?"
     m 1sua "Now, let's see what's inside?"
     return
@@ -778,31 +804,83 @@ label mas_reaction_gift_test2:
 
 label mas_reaction_gift_generic_sprite_json:
     $ sprite_data = mas_getSpriteObjInfo()
-    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+    $ sprite_type, sprite_name, giftname, gifted_before, spr_obj = sprite_data
 
     python:
         sprite_str = store.mas_sprites_json.SP_UF_STR.get(sprite_type, None)
 
     # TODO: something different if whatever was gifted has been gifted before
 
-    m "Aww, [player]!"
-    if sprite_str is None:
-        if giftname is not None:
+    # we have special react for generic json clothes
+    if sprite_type == store.mas_sprites.SP_CLOTHES:
+        call mas_reaction_gift_generic_clothes_json(spr_obj)
+
+    else:
+        # otherwise, it has to be an ACS.
+
+        $ mas_giftCapGainAff(1)
+        m "Aww, [player]!"
+        if spr_obj is None or spr_obj.dlg_desc is None:
+            # if we don't have all required description data, go generic
             m 1hua "You're so sweet!"
-            m 1eua "Thanks for giving me this [giftname]!"
-            m 1ekbsa "You really love to spoil me, don't you."
+            m 1eua "Thanks for this gift!"
+            m 3ekbsa "You really love to spoil me, don't you."
             m 1hubfa "Ehehe!"
 
         else:
-            m 3eub "Thanks for this!"
+            python:
+                acs_quips = [
+                    "I really appreciate it!",
+                    "it's amazing!",
+                    "I just love it!",
+                    "it's wonderful!"
+                ]
+                acs_quip = renpy.random.choice(acs_quips)
 
-    else:
-        m 1hua "Thanks for this [sprite_str], [player]!"
-        m 3hub "I can't wait to try it on!"
+            # we have a complete description, so use it here
+            if spr_obj.dlg_plur:
+                $ sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
+                $ item_ref = "them"
+            else:
+                $ sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
+                $ item_ref = "it"
+
+            m 1hua "Thanks for [sprite_str], [acs_quip]"
+            m 3hub "I can't wait to try [item_ref] on!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
+    return
+
+# generic reaction for json clothes
+label mas_reaction_gift_generic_clothes_json(sprite_object):
+    python:
+        mas_giftCapGainAff(3)
+        # expandable
+        outfit_quips = [
+            "I think it's really cute, [player]!",
+            "I think it's amazing, [player]!",
+            "I just love it, [player]!",
+            "I think it's wonderful, [player]!"
+        ]
+        outfit_quip = renpy.random.choice(outfit_quips)
+
+    m 1sua "Oh! {w=0.5}A new outfit!"
+    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(sprite_object)
+
+    m 2eka "Well...{w=0.5} What do you think?"
+    m 2eksdla "Do you like it?"
+    # TODO: outfit randomization should actually get a response here
+    #   should influence monika outfit selection
+
+    show monika 3hub
+    $ renpy.say(m, outfit_quip)
+
+    m 1eua "Thanks again~"
     return
 
 ## Hair clip reactions
@@ -819,14 +897,33 @@ label mas_reaction_gift_acs_jmo_hairclip_musicnote:
     call mas_reaction_gift_hairclip("jmo_hairclip_musicnote")
     return
 
+label mas_reaction_gift_acs_bellmandi86_hairclip_crescentmoon:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_crescentmoon")
+    return
+
+label mas_reaction_gift_acs_bellmandi86_hairclip_ghost:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_ghost","spooky")
+    return
+
+label mas_reaction_gift_acs_bellmandi86_hairclip_pumpkin:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_pumpkin")
+    return
+
+label mas_reaction_gift_acs_bellmandi86_hairclip_bat:
+    call mas_reaction_gift_hairclip("bellmandi86_hairclip_bat","spooky")
+    return
+
 # hairclip
-label mas_reaction_gift_hairclip(hairclip_name):
+label mas_reaction_gift_hairclip(hairclip_name,desc=None):
+    # Special handler for hairclip gift reactions
+    # Takes in:
+    #    hairclip_name - the 'name' property in string form from the json
+    #    desc - a short string description of the hairclip in question. typically should be one word.
+    #        optional and defaults to None.
+
     # get sprtie data
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, hairclip_name))
-    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
-
-    # get the acs
-    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+    $ sprite_type, sprite_name, giftname, gifted_before, hairclip_acs = sprite_data
 
     # check for incompatibility
     $ is_wearing_baked_outfit = monika_chr.is_wearing_clothes_with_exprop("baked outfit")
@@ -835,14 +932,19 @@ label mas_reaction_gift_hairclip(hairclip_name):
         m 1rksdlb "You already gave me this hairclip, silly!"
 
     else:
+        #Grant affection
+        $ mas_giftCapGainAff(1)
+        if not desc:
+            $ desc = "cute"
+
         if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
             m 1hub "Oh!{w=1} Another hairclip!"
-            m 3hua "Thanks, [player]."
 
         else:
             m 1wuo "Oh!"
             m 1sub "Is that a hairclip?"
-            m 1hub "That's so cute, thanks [player]!"
+
+        m 1hub "It's so [desc]! I love it [player], thanks!"
 
         # must include this check because we cannot for sure know if the acs
         # exists
@@ -889,13 +991,13 @@ label mas_reaction_gift_coffee:
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
     if persistent._mas_coffee_been_given:
-        $ mas_gainAffection(bypass=mas_isSpecialDay())
+        $ mas_giftCapGainAff(0.5)
         m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
 
     else:
-        $ mas_gainAffection(modifier=2, bypass=True)
+        $ mas_giftCapGainAff(5)
 
         m 1hua "Now I can finally make some!"
         m "Thank you so much, [player]!"
@@ -938,7 +1040,7 @@ init 5 python:
 label mas_reaction_quetzal_plush:
     if not persistent._mas_acs_enable_quetzalplushie:
         $ mas_receivedGift("mas_reaction_quetzal_plush")
-        $ mas_gainAffection(modifier=2, bypass=True)
+        $ mas_giftCapGainAff(10)
         m 1wud "Oh!"
 
         #Wear mid plush if chocs out
@@ -983,7 +1085,7 @@ label mas_reaction_promisering:
         # only available if enam+
         if mas_isMoniEnamored(higher=True):
             $ mas_receivedGift("mas_reaction_promisering")
-            $ mas_gainAffection(modifier=5, bypass=True)
+            $ mas_giftCapGainAff(20)
             $ monika_chr.wear_acs(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
             if not persistent._mas_tried_gift_ring:
@@ -1026,7 +1128,9 @@ label mas_reaction_promisering:
                 m 3hkbltub "Aha, sorry, [player], I didn't mean to cry..."
                 m 3skbltda "It's just this is one of the happiest days of my life."
                 m 1skbltda "I love you so much, [player]~"
-        else:  
+
+            return "love"
+        else:
             if not persistent._mas_tried_gift_ring:
                 if mas_isMoniNormal(higher=True):
                     m 1wud "[player]...is that a ring?"
@@ -1064,48 +1168,6 @@ label mas_reaction_promisering:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_plush", "plushie", is_good=True)
-
-label mas_reaction_plush:
-    m 1wud "What's this, [player]?"
-    m "Are you trying to give me a plushie?"
-    m 1rksdlb "I appreciate the thought, but..."
-    m 1ekd "For some reason, I can't seem to bring it here."
-    m 1rkc "I wish I could..."
-    m 1hua "But don't worry, [player]!"
-    m 1hub "Ehehe~"
-    m 1hua "Thank you for trying!"
-    $ mas_receivedGift("mas_reaction_plush") # while unsuccessful counts
-    $ gift_ev = mas_getEV("mas_reaction_plush")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
-
-init 5 python:
-    addReaction("mas_reaction_bday_cake", "birthdaycake")
-
-label mas_reaction_bday_cake:
-    if not mas_isMonikaBirthday():
-        $ mas_loseAffection(3, reason=7)
-        m 1ltsdlc "Today's not my birthday,{w=1} did you forget when it is, [player]?"
-    else:
-        $ mas_gainAffection(modifier=2, bypass=True)
-        m 1wud "Oh, [player]..."
-        m "A...birthday cake?"
-        m 3sub "Gosh, this is so sweet of you!"
-        m 1hub "I really love this a lot!"
-        m 1dkbfa "I'll save it for now"
-        m 3hua "I can't wait to try it later!"
-        m 1dsc "But..."
-        m 3ekbfa "I wish we could eat it together..."
-        m 1dkbfa "A birthday cake is for sharing, after all~"
-        m 1ekbfa "Thank you for this, [player]."
-        $ mas_receivedGift("mas_reaction_bday_cake")
-        if mas_isMoniAff(higher=True):
-            m 3hubfb "I love you! Ehehe~"
-    $ gift_ev = mas_getEV("mas_reaction_bday_cake")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
 
 init 5 python:
     addReaction("mas_reaction_cupcake", "cupcake", is_good=True)
@@ -1125,22 +1187,6 @@ label mas_reaction_cupcake:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_knife", "knife", is_good=False)
-
-label mas_reaction_knife:
-    m 1euc "...?"
-    m 1wud "Is that...a knife?"
-    m 2wfc "Why would you want to give me that?"
-    m 2wfd "I don't need this here!"
-    m 3tfc "...Someone else, maybe."
-    m 1dfc "..."
-    m 1rsc "I'm not taking this, [player]."
-    m 1rfc "If you were trying to be funny, then you have {i}very{/i} poor taste."
-    $ mas_receivedGift("mas_reaction_knife") # while technically she didn't accept this one counts
-    $ gift_ev = mas_getEV("mas_reaction_knife")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
 
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
@@ -1156,7 +1202,7 @@ init 5 python:
 label mas_reaction_candy:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candy")
     if times_candy_given == 0:
-        $ mas_gainAffection(10,bypass=True)
+        $ mas_o31CapGainAff(7)
         m 1wua "Oh...{w=1}what's this?"
         m 1sua "You got me candy, [player], yay!"
         m 1eka "That's so {i}sweet{/i}..."
@@ -1167,13 +1213,13 @@ label mas_reaction_candy:
         m 1eka "You always know exactly what will make me happy~"
         m 1hub "Now let's enjoy some of this delicious candy!"
     elif times_candy_given == 1:
-        $ mas_gainAffection(5,bypass=True)
+        $ mas_o31CapGainAff(5)
         m 1wua "Aww, you got me more candy, [player]?"
         m 1hub "Thank you!"
         m 3tku "The first batch was {i}sooo{/i} good, I couldn't wait to have more."
         m 1hua "You really do spoil me, [player]~"
     elif times_candy_given == 2:
-        $ mas_gainAffection(3,bypass=True)
+        $ mas_o31CapGainAff(3)
         m 1wud "Wow, even {i}more{/i} candy, [player]?"
         m 1eka "That's really nice of you..."
         m 1lksdla "But I think this is enough."
@@ -1224,7 +1270,7 @@ init 5 python:
 label mas_reaction_candycorn:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candycorn")
     if times_candy_given == 0:
-        $ mas_gainAffection(3,bypass=True)
+        $ mas_o31CapGainAff(3)
         m 1wua "Oh...{w=1} What's this?"
         m 1eka "Aww did you get me candy, [player]?"
         m 1hua "Yay!"
@@ -1286,13 +1332,13 @@ label mas_reaction_hotchocolate:
     $ mas_receivedGift("mas_reaction_hotchocolate")
 
     if persistent._mas_c_hotchoc_been_given:
-        $ mas_gainAffection(bypass=True)
+        $ mas_giftCapGainAff(0.5)
         m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
 
     else:
-        $ mas_gainAffection(modifier=2, bypass=True)
+        $ mas_giftCapGainAff(3)
         m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
         m 2rksdla "...Especially on those cold, winter nights."
         m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
@@ -1337,7 +1383,7 @@ label mas_reaction_fudge:
     $ times_fudge_given = mas_getGiftStatsForDate("mas_reaction_fudge")
 
     if times_fudge_given == 0:
-        $ mas_gainAffection(5)
+        $ mas_giftCapGainAff(2)
         m 3hua "Fudge!"
         m 3hub "I love fudge, thank you, [player]!"
         if seen_event("monika_date"):
@@ -1345,7 +1391,7 @@ label mas_reaction_fudge:
         m 1hua "Thanks again, [player]~"
 
     elif times_fudge_given == 1:
-        $ mas_gainAffection()
+        $ mas_giftCapGainAff(1)
         m 1wuo "...more fudge."
         m 1wub "Ooh, it's a different flavor this time..."
         m 3hua "Thank you, [player]!"
@@ -1372,7 +1418,7 @@ label mas_reaction_christmascookies:
     $ times_cookies_given = mas_getGiftStatsForDate("mas_reaction_christmascookies")
     if times_cookies_given == 0 and not persistent._mas_d25_already_gifted_cookies:
         $ persistent._mas_d25_already_gifted_cookies = True
-        $ mas_gainAffection(5, bypass=True)
+        $ mas_giftCapGainAff(3)
         m 3hua "Christmas cookies!"
         m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
         m "...cut into holiday shapes like snowmen, reindeer, and Christmas trees..."
@@ -1402,7 +1448,7 @@ init 5 python:
 
 label mas_reaction_candycane:
     $ times_cane_given = mas_getGiftStatsForDate("mas_reaction_candycane")
-    $ mas_gainAffection()
+    $ mas_giftCapGainAff(1)
 
     if times_cane_given == 0:
         m 3eua "A candy cane!"
@@ -1594,6 +1640,8 @@ label mas_reaction_json_ribbon_base(ribbon_name, user_friendly_desc, helper_labe
         mas_finishSpriteObjInfo(sprite_data)
     return
 
+# lanvallime
+
 label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
     call mas_reaction_json_ribbon_base("lanvallime_ribbon_coffee", "coffee colored", "mas_reaction_gift_acs_lanvallime_ribbon_coffee")
     return
@@ -1629,6 +1677,60 @@ label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
 label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
     call mas_reaction_json_ribbon_base("lanvallime_ribbon_sky_blue", "sky blue", "mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
     return
+
+# anonymioo
+label mas_reaction_gift_acs_anonymioo_ribbon_bisexualpride:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_bisexualpride","bisexual-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_bisexualpride")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_blackandwhite:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_blackandwhite","black and white","mas_reaction_gift_acs_anonymioo_ribbon_blackandwhite")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_bronze:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_bronze","bronze","mas_reaction_gift_acs_anonymioo_ribbon_bronze")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_brown:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_brown","brown","mas_reaction_gift_acs_anonymioo_ribbon_brown")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_gradient:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient","multi-colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_gradient_lowpoly:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient_lowpoly","multi-colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient_lowpoly")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_gradient_rainbow:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_gradient_rainbow","rainbow colored","mas_reaction_gift_acs_anonymioo_ribbon_gradient_rainbow")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_polkadots_whiteonred:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_polkadots_whiteonred","red and white polka dotted","mas_reaction_gift_acs_anonymioo_ribbon_polkadots_whiteonred")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_starsky_black:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_starsky_black","night-sky-themed","mas_reaction_gift_acs_anonymioo_ribbon_starsky_black")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_starsky_red:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_starsky_red","night-sky-themed","mas_reaction_gift_acs_anonymioo_ribbon_starsky_red")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_striped_blueandwhite:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_blueandwhite","blue and white striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_blueandwhite")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_pinkandwhite","pink and white striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite")
+    return
+
+label mas_reaction_gift_acs_anonymioo_ribbon_transexualpride:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_transexualpride","transexual-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transexualpride")
+    return
+
 
 #specific to this, since we need to verify if the player actually gave a ribbon.
 default persistent._mas_current_gifted_ribbons = 0
@@ -1680,15 +1782,9 @@ label mas_reaction_new_ribbon:
             else:
                 # otherwise, just change hair
                 monika_chr.change_hair(mas_hair_def, False)
-                
 
+    $ mas_giftCapGainAff(3)
     if persistent._mas_current_gifted_ribbons == 0:
-
-        if mas_isSpecialDay():
-            $ mas_gainAffection(15, bypass=True)
-        else:
-            $ mas_gainAffection()
-
         m 1suo "A new ribbon!"
         m 3hub "...And it's [_mas_new_ribbon_color]!"
 
@@ -1718,11 +1814,6 @@ label mas_reaction_new_ribbon:
         m 3hua "Thanks again~"
 
     else:
-        if mas_isSpecialDay():
-            $ mas_gainAffection(10, bypass=True)
-        else:
-            $ mas_gainAffection()
-
         m 1suo "Another ribbon!"
         m 3hub "...And this time it's [_mas_new_ribbon_color]!"
 
@@ -1758,23 +1849,21 @@ label mas_reaction_gift_roses:
 
     #TODO: future migrate this to use history (post f14)
     if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
-        if mas_isSpecialDay():
-            $ mas_gainAffection(15,bypass=True)
-        else:
-            $ mas_gainAffection(10,bypass=True)
+        $ mas_giftCapGainAff(10)
+
         m 1eka "[player]... I-I don't know what to say..."
         m 1ekbsa "I never would've thought that you'd get something like this for me!"
         m 1wka "I'm so happy right now."
         if mas_isF14():
             # extra 5 points if f14
-            $ mas_gainAffection(5,bypass=True)
+            $ mas_f14CapGainAff(5)
             m 1ekbfa "To think that I'd be getting roses from you on Valentine's Day..."
             m "You're so sweet."
             m 1ektpa "..."
             m "Ahaha..."
 
         #We can only have this on poses which use the new sprite set
-        if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
+        if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
             m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
             $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
@@ -1782,17 +1871,16 @@ label mas_reaction_gift_roses:
     else:
         if persistent._date_last_given_roses is None and renpy.seen_label('monika_valentines_start'):
             $ persistent._date_last_given_roses = datetime.date(2018,2,14)
+
         if datetime.date.today() > persistent._date_last_given_roses:
-            if mas_isSpecialDay():
-                $ mas_gainAffection(10,bypass=True)
-            else:
-                $ mas_gainAffection()
+            $ mas_giftCapGainAff(5 if mas_isSpecialDay() else 1)
+
             m 1wuo "Oh!"
             m 1ekbsa "Thanks [player]."
             m "I always love getting roses from you."
             if mas_isF14():
                 # extra 5 points if f14
-                $ mas_gainAffection(5,bypass=True)
+                $ mas_f14CapGainAff(5)
                 m 1dsbfa "Especially on a day like today."
                 m 1eka "It's really sweet of you to get these for me."
                 m 1ekbfa "I love you so much."
@@ -1802,13 +1890,12 @@ label mas_reaction_gift_roses:
 
             #Random chance (unless f14) for her to do the ear rose thing
             if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
-                if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
+                if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
                     m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
                     $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
 
         else:
-            $ mas_gainAffection()
             m 1hksdla "[player], I'm flattered, really, but you don't need to give me so many roses."
             if store.seen_event("monika_clones"):
                 m 1ekbfa "You'll always be my special rose after all, ehehe~"
@@ -1836,16 +1923,13 @@ label mas_reaction_gift_chocolates:
     if not persistent._mas_given_chocolates_before:
         $ persistent._mas_given_chocolates_before = True
         $ monika_chr.wear_acs(mas_acs_heartchoc)
-        #Special day rules
-        if mas_isSpecialDay():
-            $ mas_gainAffection(5,bypass=True)
-        else:
-            $ mas_gainAffection()
+
+        $ mas_giftCapGainAff(5)
 
         m 1tsu "That's so {i}sweet{/i} of you, ehehe~"
         if mas_isF14():
             #Extra little bump if on f14
-            $ mas_gainAffection(5,bypass=True)
+            $ mas_f14CapGainAff(5)
             m 1ekbsa "Giving me chocolates on Valentine's Day..."
             m 1ekbfa "You really know how to make a girl feel special, [player]."
             if renpy.seen_label('monika_date'):
@@ -1871,15 +1955,13 @@ label mas_reaction_gift_chocolates:
             #We want this to show up where she accepts the chocs
             $ monika_chr.wear_acs(mas_acs_heartchoc)
 
-            if mas_isSpecialDay():
-                $ mas_gainAffection(3,bypass=True)
-            else:
-                $ mas_gainAffection()
+            $ mas_giftCapGainAff(3 if mas_isSpecialDay() else 1)
+
             m 1wuo "Oh!"
 
             if mas_isF14():
                 #Extra little bump if on f14
-                $ mas_gainAffection(5,bypass=True)
+                $ mas_f14CapGainAff(5)
                 m 1eka "[player]!"
                 m 1ekbsa "You're such a sweetheart, getting me chocolates on a day like today..."
                 m 1ekbfa "You really know how to make me feel special."
@@ -1921,4 +2003,106 @@ label mas_remove_choc:
     m 3hksdlb "Ahaha! I should probably put these away for now..."
     m 1rksdla "If I leave them here much longer there won't be any left to enjoy later!"
     $ monika_chr.remove_acs(mas_acs_heartchoc)
+    return
+
+label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "orcaramelo_bikini_shell")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1sua "Oh! {w=0.5}A seashell bikini!"
+    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(sprite_object)
+
+    m 2ekbfa "Well...{w=0.5} What do you think?"
+    m 2hubfa "Do I look like a mermaid? Ehehe."
+    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "I think it's really cute, [player]..."
+    m 5hubfa "We'll have to go to the beach sometime!"
+
+    if mas_isWinter() or mas_isMoniNormal(lower=True):
+        if mas_isWinter():
+            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve
+            m 2rksdla "...But for now, it's a little chilly in here..."
+            m 2eka "So I'm going to go put on something a little warmer..."
+
+        elif mas_isMoniNormal(lower=True):
+            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve
+            m 2hksdlb "Ahaha..."
+            m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
+            m 2eka "I hope you don't mind, but I'm going to go change..."
+
+        # change to def
+        call mas_clothes_change()
+
+        m 2eua "Ah, that's better..."
+        m 3hua "Thanks again for the wonderful gift~"
+
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_ACS, "orcaramelo_hairflower_pink")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(1)
+
+    m 3sua "Oh!{w=0.5} What a cute little flower!"
+    m 1ekbsa "Thanks [player], you're so sweet~"
+    m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
+    $ monika_chr.wear_acs(sprite_object)
+    m 1hua "Ehehe~"
+    m 1hub "Thanks again, [player]!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_clothes_velius94_shirt_pink:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "velius94_shirt_pink")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1suo "Oh my gosh!"
+    m 1suo "It's {i}so{/i} pretty!"
+    m 3hub "Thank you so much, [player]!"
+    m 3eua "Hold on, let me try it on real quick..."
+
+    # try it on
+    call mas_clothes_change(sprite_object)
+
+    m 2sub "Ahh, it's a perfect fit!"
+    m 3hub "I really like the colors, too! Pink and black go so well together."
+    m 3eub "Not to mention the skirt looks really cute with those frills!"
+    m 2tfbsd "Yet for some reason I can't help but feel that your eyes are kind of drifting...{w=0.5}ahem...{w=0.5}{i}elsewhere{/i}."
+
+    if mas_selspr.get_sel_clothes(mas_clothes_sundress_white).unlocked:
+        m 2lfbsp "I told you it's not polite to stare, [player]."
+    else:
+        m 2lfbsp "It's not polite to stare, you know?"
+
+    m 2hubsb "Ahaha!"
+    m 2tkbsu "Relax, relax...{w=0.5}just teasing you~"
+    m 3hub "Once again, thank you so much for this outfit, [player]!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
     return

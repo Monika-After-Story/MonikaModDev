@@ -121,6 +121,8 @@ label dev_mouse_tracker:
         m "I enable mouse tracker now."
         $ mas_enableMouseTracking()
 
+    return
+
 
 screen dev_mouseoverlay():
     zorder 100
