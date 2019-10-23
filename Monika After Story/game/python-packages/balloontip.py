@@ -1,5 +1,5 @@
 # -- coding: utf-8 --
- 
+
 from win32api import *
 from win32gui import *
 import win32con
@@ -39,10 +39,19 @@ class WindowsBalloonTip:
         #Initialize the notif itself
         flags = NIF_ICON | NIF_MESSAGE | NIF_TIP
         nid = (self.hwnd, 0, flags, win32con.WM_USER+20, hicon, "Monika After Story")
-        Shell_NotifyIcon(NIM_ADD, nid)
-        Shell_NotifyIcon(NIM_MODIFY, \
-                         (self.hwnd, 0, NIF_INFO, win32con.WM_USER+20,\
-                          hicon, "Balloon  tooltip",msg,200,title))
+
+        try:
+            Shell_NotifyIcon(NIM_ADD, nid)
+            Shell_NotifyIcon(NIM_MODIFY, \
+                            (self.hwnd, 0, NIF_INFO, win32con.WM_USER+20,\
+                            hicon, "Balloon  tooltip",msg,200,title))
+
+            #If we got here, that means we had no issue making the notif
+            return True
+
+        except:
+            #Something went wrong, need to flag this to not make a sound
+            return False
 
     def OnDestroy(self, hwnd, msg, wparam, lparam):
         nid = (self.hwnd, 0)

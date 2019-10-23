@@ -11,7 +11,7 @@ init -10 python:
     #
     #   if for some reason we fail to convert the files into images
     #   then we must backout of showing the event.
-    # 
+    #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
     mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
@@ -173,24 +173,26 @@ label mas_monika_cherry_blossom1:
     m "It's a beautiful tree, isn't it?"
     m "It's called a Cherry Blossom tree."
     m "They're native to Japan."
-    m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picknick underneath the trees."
+    m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picnic underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
-    m "Just staring at the falling petals is just awe-inspiring."
+    m "Just staring at the falling petals is awe-inspiring."
     return
 
 label mas_monika_cherry_blossom2:
-    m "Did you know you can eat the flower petals of a  Cherry Blossom tree?"
-    m "I don't know the taste myself, but I'm sure it'd be as sweet as you."
+    m "Did you know you can eat the flower petals of a Cherry Blossom tree?"
+    m "I don't know the taste myself, but I'm sure it can't be as sweet as you."
     m "Ehehe~"
     return
 
 label mas_monika_cherry_blossom3:
     m "You know, the tree is symbolic like life itself."
-    m "Beautiful, but shortlived."
+    m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
+    # manually handle the "love" return key
+    $ mas_ILY()
     return
 
 label mas_monika_cherry_blossom4:
@@ -295,10 +297,10 @@ label mas_monika_daynight2:
     m "{i}It is ticking, falling down{/i}"
 
     # aurora borealis
-    m "{i}Love forever, love has freely{/i}"
+    m "{i}Love forever, love is free{/i}"
 
     # a-aurora borealis
-    m "{i}Turned forever you and me{/i}"
+    m "{i}Let's turn forever, you and me{/i}"
 
     # in this part of the country? Yes
     m "{i}Windmill, windmill for the land{/i}"
@@ -417,8 +419,8 @@ define gui.island_button_tile = False
 define gui.island_button_text_font = gui.default_font
 define gui.island_button_text_size = gui.text_size
 define gui.island_button_text_xalign = 0.5
-define gui.island_button_text_idle_color = "#000"
-define gui.island_button_text_hover_color = "#fa9"
+define gui.island_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.island_button_text_hover_color = mas_ui.light_button_text_hover_color
 define gui.island_button_text_kerning = 0.2
 
 style island_button is button

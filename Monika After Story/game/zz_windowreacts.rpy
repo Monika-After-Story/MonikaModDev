@@ -300,14 +300,13 @@ init python:
                 or skip_checks
             ):
 
-            #Play the notif sound if we have that enabled
-            if persistent._mas_notification_sounds:
-                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
+            #We keep this flag so we know whether or not the notif was sent successfully (NOTE: weassume True because only windows can 'fail')
+            notif_success = True
 
             #Now we make the notif
             if (renpy.windows):
-                # The Windows way
-                tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
+                # The Windows way, notif_success is adjusted if need be
+                notif_success = tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
                 #We need the IDs of the notifs to delete them from the tray
                 destroy_list.append(tip.hwnd)
@@ -320,7 +319,12 @@ init python:
                 # The Linux way
                 mas_tryShowNotificationLinux(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
-            return True
+            #Play the notif sound if we have that enabled and notif was successful
+            if persistent._mas_notification_sounds and notif_success:
+                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
+
+            #Now we return true if notif was successful, false otherwise
+            return notif_success
         return False
 
 
@@ -543,7 +547,7 @@ label mas_wrs_twitter:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
     return
-  
+
 init 5 python:
     addEvent(
         Event(
@@ -598,7 +602,7 @@ label mas_wrs_4chan:
     )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_4chan')
     return
 
@@ -642,6 +646,34 @@ label mas_wrs_pixiv:
         )
 
         #Unlock again if we failed
-        if not _return:
+        if not wrs_success:
             mas_unlockFailedWRS('mas_wrs_pixiv')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_reddit",
+            category=['reddit'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_reddit:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Have you found any good posts, [player]?",
+            "Browsing Reddit? Just make sure you don't spend all day looking at memes, okay?",
+            "Wonder if there are any subreddits dedicated towards me...\nAhaha, just kidding, [player].",
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_reddit')
     return
