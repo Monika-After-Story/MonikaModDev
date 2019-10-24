@@ -5692,3 +5692,13 @@ image monika 6dstsc_static = DynamicDisplayable(
     tears="streamingclosedsad"
 )
 
+image monika 6dua_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    arms="down"
+)
+

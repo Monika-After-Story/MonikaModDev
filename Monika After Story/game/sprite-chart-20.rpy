@@ -1990,6 +1990,20 @@ image monika 1tubsa:
         0.06
         repeat
 
+image monika 1tubsb:
+    block:
+        "monika 1tubsb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsb_static"
+        0.06
+        repeat
+
 image monika 1tuu:
     block:
         "monika 1tuu_static"
@@ -6985,6 +6999,20 @@ image monika 4tsbsa:
             choice:
                 7
         "monika 4dsbsa_static"
+        0.06
+        repeat
+
+image monika 4tub:
+    block:
+        "monika 4tub_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 4dub_static"
         0.06
         repeat
 
