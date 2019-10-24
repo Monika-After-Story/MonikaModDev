@@ -703,15 +703,21 @@ def make_sprite(sprite_db, sprite_db_keys):
     # create the sprite
     real_sprite = StaticSprite(sprite_code)
 
+    # now determine if we need an atl variant
+    atl_sprite = real_sprite.make_atl()
+
     # print and abort if errors occured
-    if real_sprite.invalid:
+    if real_sprite.invalid or (atl_sprite is not None and atl_sprite.invalid):
         menutils.clear_screen()
         print("\n\nError making this sprite. Notify devs to fix.")
         menutils.e_pause()
         return False
 
     # otherwise we ok
-    sprite_db[sprite_code] = real_sprite
+    sprite_db[real_sprite.spcode] = real_sprite
+
+    if atl_sprite is not None:
+        sprite_db[atl_sprite.spcode] = atl_sprite
 
     return True
 
@@ -733,7 +739,10 @@ def make_sprite_bc(sprite_db, sprite_db_keys):
         # build a static sprite with the code
         new_sprite = StaticSprite(trycode)
 
-        if new_sprite.invalid:
+        # and atl version
+        atl_sprite = new_sprite.make_atl()
+
+        if new_sprite.invalid or (atl_sprite is not None and atl_sprite.invalid):
             # if invalid, ask user if they want to continue
             print("\nSprite code {0} is invalid.\n".format(trycode))
             if not menutils.ask("Try again", def_no=False):
@@ -768,6 +777,10 @@ def make_sprite_bc(sprite_db, sprite_db_keys):
                 # user said yes!
                 # add sprite to db and prompt for more
                 sprite_db[new_sprite.spcode] = new_sprite
+
+                if atl_sprite is not None:
+                    sprite_db[atl_sprite.spcode] = atl_sprite
+
                 sprite_created = True
                 print("\nSprite created.\n")
 

@@ -17,6 +17,7 @@ class StaticSprite(object):
             "4": False,
             "5": True,
             "6": False,
+            "7": False,
         },
         "position": {
             "1": "steepling",
@@ -25,6 +26,7 @@ class StaticSprite(object):
             "4": "pointright",
             "5": ("def", "def"),
             "6": "down",
+            "7": "downleftpointright",
         },
         "sides": {
             "1": ("1l", "1r"),
@@ -33,6 +35,7 @@ class StaticSprite(object):
             "4": ("2l", "2r"),
             "5": ("", ""),
             "6": ("1l", "1r"),
+            "7": ("1l", "2r"),
         },
         "eyes": {
             "e": "normal",
@@ -45,7 +48,8 @@ class StaticSprite(object):
             "h": "closedhappy",
             "d": "closedsad",
             "k": "winkleft",
-            "n": "winkright"
+            "n": "winkright",
+            "f": "soft",
         },
         "eyebrows": {
             "f": "furrowed",
@@ -70,8 +74,6 @@ class StaticSprite(object):
             "td": "dried",
             "tp": "pooled",
             "tu": "up",
-            "tl": "left",
-            "tr": "right",
         },
         "sweat": {
             "sdl": "def",
@@ -88,9 +90,10 @@ class StaticSprite(object):
             "o": "gasp",
             "u": "smug",
             "w": "wide",
-            "x": "disgust",
+            "x": "angry",
             "p": "pout",
-            "t": "triangle"
+            "t": "triangle",
+#            "g": "disgust",
         },
         "single": { # everything else will be 3b
             "a": "3a",
@@ -133,13 +136,8 @@ class StaticSprite(object):
                 "winkleft",
                 "winkright",
             ),
-            "left": (
+            "pooled": (
                 "closedhappy",
-                "closedsad",
-            ),
-            "right": (
-                "closedhappy",
-                "closedsad",
             ),
         },
     }
@@ -391,6 +389,22 @@ class StaticSprite(object):
         Returns true if this is a wink eye sprite, False if not
         """
         return self.eyes in self._wink_eyes
+
+    def make_atl(self):
+        """
+        MAKES atl version of this sprite. 
+
+        RETURNS: the atl STaticSprite, or None if we didnt need to make one
+        """
+        if self.is_normal_eyes():
+            # normal eyes require cloesd sad
+            return StaticSprite(self.__swap_eyes("d"))
+
+        if self.is_wink_eyes():
+            # wink eyes require normal 
+            return StaticSprite(self.__swap_eyes("e"))
+
+        return None
 
     def scstr(self):
         """
@@ -669,7 +683,7 @@ class StaticSprite(object):
             "\n",
 
             self._dbl_tab,
-            "0.05\n",
+            "0.06\n",
 
             self._dbl_tab,
             self._repeat,
