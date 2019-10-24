@@ -7372,7 +7372,9 @@ init 5 python:
             eventlabel="monika_breakup",
             category=['misc'],
             prompt="I'm breaking up with you",
-            pool=True
+            unlocked=True,
+            pool=True,
+            rules={"no unlock": None}
         )
     )
 
