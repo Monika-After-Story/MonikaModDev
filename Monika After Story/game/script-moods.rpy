@@ -479,9 +479,6 @@ label mas_mood_lazy:
     $ _now = datetime.datetime.now().time()
 
     if mas_isSRtoN(_now):
-        label .sr_n:
-            pass
-
         m 1tku "Just one of those mornings huh, [player]?"
         m 1eka "I can totally understand those days where you wake up and just don't want to do anything."
         m 1rksdla "Hopefully you don't actually have anything pressing coming soon."
@@ -508,9 +505,6 @@ label mas_mood_lazy:
             m 1hub "That includes spending some time with me, ahaha!"
 
     elif mas_isNtoSS(_now):
-        label .n_ss:
-            pass
-
         m 1eka "Midday fatigue got you, [player]?"
         m 1eua "It happens, so I wouldn't worry about it too much."
         m 3eub "In fact, they say laziness makes you more creative."
@@ -521,9 +515,6 @@ label mas_mood_lazy:
         m 1eka "I'll be right here waiting for you if you decide to."
 
     elif mas_isSStoMN(_now):
-        label .ss_mn:
-            pass
-
         m 1eka "Don't feel like doing anything after a long day, [player]?"
         m 3eka "At least the day is pretty much over and you shouldn't have anything else pressing."
         m 3duu "There's nothing like sitting back and relaxing after a long day, especially when you don't have anything pressing."
