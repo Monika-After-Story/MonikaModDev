@@ -463,69 +463,105 @@ label mas_mood_lucky:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_lazy",prompt="lazy",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            "mas_mood_lazy",
+            prompt="...lazy",
+            category=[store.mas_moods.TYPE_NEUTRAL],
+            unlocked=True
+        ),
+        code="MOO"
+    )
 
 label mas_mood_lazy:
+    #Get current time
+    $ _now = datetime.datetime.now().time()
+
     if mas_isSRtoN(_now):
+        label .sr_n:
+            pass
+
         m 1tku "Just one of those mornings huh, [player]?"
-        m 1eka "I can totally understand those mornings where you wake up and just don't want to do anything."
-        m "Hopefully you don't actually have anything pressing coming soon."
-        m 1hksdlb "I know how tempting it can be to just stay in bed and not get up sometimes..."
+        m 1eka "I can totally understand those days where you wake up and just don't want to do anything."
+        m 1rksdla "Hopefully you don't actually have anything pressing coming soon."
+        m 3hksdlb "I know how tempting it can be to just stay in bed and not get up sometimes..."
+
         if mas_isMoniEnamored(higher=True):
-            m 1rsbsa "Especially if I woke up next to you~"
+            m 1dkbsa "Especially if I woke up next to you~"
+
             if mas_isMoniLove():
-                show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5tubfu "{i}Then I'd never want to get up~{/i}"
-                m "I hope you don't mind being 'stuck', [player]..."
-                m "Ehehehe~"
-                show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 3eua "But in the meantime, it does help to start your day right."
-        m "That can include washing up, getting a good breakfast..."
+                m 1dkbfa "{i}Then I'd never want to get up~{/i}"
+                m 1dsbfu "I hope you don't mind being 'stuck', [player]..."
+                m 1hubfa "Ehehe~"
+
+        m 3eka "But in the meantime, it does help start your day right."
+        m 3eub "That can include washing up, getting a good breakfast..."
+
         if mas_isMoniLove():
-            m 1rkbfb "Getting your good morning wake-up kiss, ehehe..."
-        m 1hksdlb "Or you could just laze around for now."
-        m 1eua "As long as you don't forget to do anything important if you have to, alright, [player]?"
-        if mas_isMoniAff(higher=True):
+            m 1rkbsb "Getting your good morning kiss, ehehe..."
+
+        m 1hksdlb "Or you could laze around for now."
+        m 1eka "Just as long as you don't forget to do anything important, alright, [player]?"
+
+        if mas_isMoniHappy(higher=True):
             m 1hub "That includes spending some time with me, ahaha!"
+
     elif mas_isNtoSS(_now):
-        m 1eua "Midday fatigue got you, [player]?"
-        m 1hua "It happens, so I wouldn't worry about it too much."
+        label .n_ss:
+            pass
+
+        m 1eka "Midday fatigue got you, [player]?"
+        m 1eua "It happens, so I wouldn't worry about it too much."
         m 3eub "In fact, they say laziness makes you more creative."
-        m 1hub "Who knows, maybe you're about to think of something amazing!"
-        m 1eua "If there's nothing going on, maybe you should take a break or stretch a bit."
-        m "Maybe you could grab a bite to eat if you haven't eaten already."
-        m 1hub "If it's appropriate, you could even take a nap! Ahaha~"
-        m 1hua "I'll be right here waiting for you if you decide to."
+        m 3hub "So who knows, maybe you're about to think of something amazing!"
+        m 1eua "In any case, you sould just take a break or stretch a bit.{w=0.5} {nw}"
+        extend 3eub "You could grab a bite to eat if you haven't already too."
+        m 3hub "And if it's appropriate, you could even take a nap! Ahaha~"
+        m 1eka "I'll be right here waiting for you if you decide to."
+
     elif mas_isSStoMN(_now):
-        m 1eua "Don't feel like doing anything after a long day, [player]?"
-        m 3esa "At least the day is pretty much over and you shouldn't have anything else pressing."
-        m 1hua "There's nothing like sitting back and relaxing after a long day, especially when you don't have anything pressing the next day either."
+        label .ss_mn:
+            pass
+
+        m 1eka "Don't feel like doing anything after a long day, [player]?"
+        m 3eka "At least the day is pretty much over and you shouldn't have anything else pressing."
+        m 3duu "There's nothing like sitting back and relaxing after a long day, especially when you don't have anything pressing."
+
         if mas_isMoniEnamored(higher=True):
-            m 1tubfb "I hope your evening is made better with me being here."
-            m 3hubfb "I know mine sure is with you here~"
+            m 1ekbsa "I hope being here with me makes your evening just a little better..."
+            m 3hubsa "I know mine sure is with you here~"
+
             if mas_isMoniLove():
                 m 1dkbfa "I can just imagine us relaxing together one evening..."
-                m 1rsbsa "Maybe even cuddled up under a blanket if it's a bit cold..."
-                m 1hubfa "Or we still could even if it isn't, if you don't mind, ehehe~"
-        m 3eub "We could read a nice book together too..."
-        if mas_isMoniLove():
-            m 1hubfb "Or we could even just mess around for fun!"
-            m 1tubfb "Who says it has to be calm and romantic?"
-            m 1tubfu "I hope you don't mind occasional surprise pillow fights, [player]~"
-            m 1hubfb "Ahaha!"
+                m "Maybe even cuddled up under a blanket if it's a bit cold..."
+                m 1ekbfa "We still could even if it isn't, if you don't mind, ehehe~"
+                m 3ekbfa "We could even read a nice book together too."
+                m 1hubfb "Or we could even just mess around for fun!"
+                m 1tubfb "Who says it has to be calm and romantic?"
+                m 1tubfu "I hope you don't mind occasional surprise pillow fights, [player]~"
+                m 1hubfb "Ahaha!"
+
+        else:
+            m 3eub "We could read a nice book together too..."
+
     else:
         #midnight to morning
         m 2rksdla "Uh, [player]..."
         m 1hksdlb "It's the middle of the night..."
         m 3eka "If you're feeling lazy, maybe you should go lie down in bed for a bit."
-        m 3hksdlb "And maybe, you know...{w=1} {i}sleep?{/i}"
+        m 3hksdlb "And maybe, you know...{w=1}{i}sleep{/i}?"
         m 1hksdlb "Ahaha, you can be funny sometimes, but you should really probably get to bed."
+
         if mas_isMoniLove():
             m 1tsbsa "If I were there, I'd drag you to bed myself if I had to."
-            m 1kubfu "{cps=*2}Or maybe you'd secretly enjoy that, ehehe~{/cps}{nw}"
+            m 1tubfu "Or maybe you'd secretly enjoy that, [player]?~"
             m 2tubfb "Lucky for you, I can't really do that yet."
-            m 3hubfb "So off to bed with you!"
-        m 3ekbfa "Please? I wouldn't want you to neglect your sleep."
+            m 3tfbfb "So off to bed with you."
+            m 3hubfb "Ahaha!"
+
+        else:
+            m 1eka "Please? I wouldn't want you to neglect your sleep."
     return
 
 init 5 python:
