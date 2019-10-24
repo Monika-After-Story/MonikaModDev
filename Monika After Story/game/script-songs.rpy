@@ -9,7 +9,7 @@ init -10 python in mas_songs:
     #TYPE_LONG songs should either be unlocked via a 'preview' song of TYPE_SHORT or (for ex.) some story event
     #TYPE_LONG songs would essentially be songs longer than 10-15 lines
     #NOTE: TYPE_LONG songs must have the same label name as their short song counterpart with '_long' added to the end so they unlock correctly
-    #Example: the long song for short song monika_song_example would be monika_song_example_long
+    #Example: the long song for short song mas_song_example would be mas_song_example_long
     TYPE_LONG = "long"
     TYPE_SHORT = "short"
 
@@ -371,7 +371,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="monika_song_stand_by_me",
+            eventlabel="mas_song_stand_by_me",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Stand By Me",
             random=True,
@@ -380,7 +380,7 @@ init 5 python:
         code="SNG"
     )
 
-label monika_song_stand_by_me(from_long=False):
+label mas_song_stand_by_me(from_long=False):
     m 1dsd "{i}~When the night has come~{/i}"
     m 3dsd "{i}~And the land is dark~{/i}"
     m 3eud "{i}~And the moon is the only light we'll see~{/i}"
@@ -398,7 +398,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="monika_song_stand_by_me_long",
+            eventlabel="mas_song_stand_by_me_long",
             category=[store.mas_songs.TYPE_LONG],
             prompt="Stand By Me",
             random=False,
@@ -408,8 +408,8 @@ init 5 python:
         code="SNG"
     )
 
-label monika_song_stand_by_me_long:
-    call monika_song_stand_by_me(from_long=True)
+label mas_song_stand_by_me_long:
+    call mas_song_stand_by_me(from_long=True)
 
     m 4hub "{i}~So darlin', darlin', stand by me, oh stand by me~{/i}"
     m 4duo "{i}~Oh stand, stand by me, stand by me~{/i}"
