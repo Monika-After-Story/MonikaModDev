@@ -550,8 +550,8 @@ label mas_mood_lazy:
 
         if mas_isMoniLove():
             m 1tsbsa "If I were there, I'd drag you to bed myself if I had to."
-            m 1tubfu "Or maybe you'd secretly enjoy that, [player]?~"
-            m 2tubfb "Lucky for you, I can't really do that yet."
+            m 1tkbfu "Or maybe you'd secretly enjoy that, [player]?~"
+            m 2tubfu "Lucky for you, I can't exactly do that yet."
             m 3tfbfb "So off to bed with you."
             m 3hubfb "Ahaha!"
 
