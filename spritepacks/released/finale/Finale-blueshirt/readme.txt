@@ -1,2 +1,0 @@
-# clothes:
-Blue Shirt - blueshirt
