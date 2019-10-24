@@ -246,6 +246,12 @@ label splashscreen:
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
     $ config.allow_skipping = False
+
+    python:
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(morning_flag)
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
     return
 
 label warningscreen:
@@ -310,7 +316,9 @@ label autoload:
     # finally lets run actions that needed to be run
     $ mas_runDelayedActions(MAS_FC_START)
 
-    jump expression persistent.autoload
+    #jump expression persistent.autoload
+    # NOTE: we should always jump to ch30 instead
+    jump ch30_autoload
 
 label before_main_menu:
     $ config.main_menu_music = audio.t1
@@ -333,26 +341,14 @@ label quit:
         # set the monika size
         store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
-        # save current hair / clothes
-        persistent._mas_monika_hair = monika_chr.hair.name
-        persistent._mas_monika_clothes = monika_chr.clothes.name
+        # save selectables
+        store.mas_selspr.save_selectables()
 
-        # accessory saving
-        persistent._mas_acs_pre_list = [
-            acs.name
-            for acs in monika_chr.acs[MASMonika.PRE_ACS]
-            if acs.stay_on_start
-        ]
-        persistent._mas_acs_mid_list = [
-            acs.name
-            for acs in monika_chr.acs[MASMonika.MID_ACS]
-            if acs.stay_on_start
-        ]
-        persistent._mas_acs_pst_list = [
-            acs.name
-            for acs in monika_chr.acs[MASMonika.PST_ACS]
-            if acs.stay_on_start
-        ]
+        # save current hair / clothes / acs
+        monika_chr.save()
+
+        # save weather options
+        store.mas_weather.saveMWData()
 
         # remove special images
         store.mas_island_event.removeImages()
