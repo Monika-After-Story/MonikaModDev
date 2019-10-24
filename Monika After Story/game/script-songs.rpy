@@ -28,7 +28,7 @@ init python in mas_songs:
     def getUnlockedSongs(length=None):
         """
         Gets a list of unlocked songs
-        IN: 
+        IN:
             length - a filter for the type of song we want. "long" for songs of TYPE_LONG
                 "short" for TYPE_SHORT or None for all songs. (Default None)
         OUT: list of unlocked all songs of the desired length in tuple format for a scrollable menu
@@ -63,7 +63,7 @@ init python in mas_songs:
         """
         Checks if the player has unlocked a song at any point via the random selection
 
-        IN: 
+        IN:
             length - a filter for the type of song we want. "long" for songs of TYPE_LONG
                 "short" for TYPE_SHORT or None for all songs. (Default None)
 
@@ -103,6 +103,8 @@ label monika_sing_song_pool:
     $ have_both_types = False
     # song type string to use in the switch dlg
     $ switch_str = None
+    # so we can {fast} the renpy.say line after the first time
+    $ end = ""
 
     m 1hua "Sure!"
     if mas_songs.hasUnlockedSongs(length="long") and mas_songs.hasUnlockedSongs(length="short"):
@@ -120,8 +122,9 @@ label monika_sing_song_pool:
                 $ song_length = "long"
                 $ switch_str = "short"
 
-label monika_sing_song_pool_menu:
     show monika 1eua at t21
+
+label monika_sing_song_pool_menu:
     python:
         if have_both_types:
             space = 0
@@ -139,13 +142,12 @@ label monika_sing_song_pool_menu:
         else:
             which = "Which"
 
-        renpy.say(m, "[which] song would you like me to sing?", interact=False)
+        renpy.say(m, "[which] song would you like me to sing?[end]", interact=False)
 
     if have_both_types:
         call screen mas_gen_scrollable_menu(unlocked_song_list, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, switch, ret_back)
     else:
         call screen mas_gen_scrollable_menu(unlocked_song_list, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, ret_back)
-    show monika at t11
 
     $ sel_song = _return
 
@@ -157,12 +159,16 @@ label monika_sing_song_pool_menu:
             else:
                 $ song_length = "short"
                 $ switch_str = "full"
+            $ end = "{fast}"
+            $ _history_list.pop()
             jump monika_sing_song_pool_menu
         else:
             $ pushEvent(sel_song, skipeval=True)
+            show monika at t11
             m 3hub "Alright!"
 
     else:
+        show monika at t11
         m 1eka "Alright, [player]."
         m 3eua "If you ever want me to sing to you, just let me know~"
     return
