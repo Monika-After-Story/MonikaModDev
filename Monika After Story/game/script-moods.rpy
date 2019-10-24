@@ -467,7 +467,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             "mas_mood_lazy",
-            prompt="...lazy",
+            prompt="...lazy.",
             category=[store.mas_moods.TYPE_NEUTRAL],
             unlocked=True
         ),
@@ -482,10 +482,14 @@ label mas_mood_lazy:
         m 1tku "Just one of those mornings huh, [player]?"
         m 1eka "I can totally understand those days where you wake up and just don't want to do anything."
         m 1rksdla "Hopefully you don't actually have anything pressing coming soon."
-        m 3hksdlb "I know how tempting it can be to just stay in bed and not get up sometimes..."
+
+        $ line = "I know how tempting it can be to just stay in bed and not get up sometimes..."
+        if mas_isMoniEnamored(higher=True):
+            $ line += "{w=0.5} {nw}"
+        m 3hksdlb "[line]"
 
         if mas_isMoniEnamored(higher=True):
-            m 1dkbsa "Especially if I woke up next to you~"
+            extend 1dkbsa "Especially if I woke up next to you~"
 
             if mas_isMoniLove():
                 m 1dkbfa "{i}Then I'd never want to get up~{/i}"
@@ -509,8 +513,8 @@ label mas_mood_lazy:
         m 1eua "It happens, so I wouldn't worry about it too much."
         m 3eub "In fact, they say laziness makes you more creative."
         m 3hub "So who knows, maybe you're about to think of something amazing!"
-        m 1eua "In any case, you sould just take a break or stretch a bit.{w=0.5} {nw}"
-        extend 3eub "You could grab a bite to eat if you haven't already too."
+        m 1eua "In any case, you sould just take a break or stretch a bit...{w=0.5} {nw}"
+        extend 3eub "Maybe grab a bite to eat if you haven't already."
         m 3hub "And if it's appropriate, you could even take a nap! Ahaha~"
         m 1eka "I'll be right here waiting for you if you decide to."
 
@@ -541,8 +545,8 @@ label mas_mood_lazy:
         m 2rksdla "Uh, [player]..."
         m 1hksdlb "It's the middle of the night..."
         m 3eka "If you're feeling lazy, maybe you should go lie down in bed for a bit."
-        m 3hksdlb "And maybe, you know...{w=1}{i}sleep{/i}?"
-        m 1hksdlb "Ahaha, you can be funny sometimes, but you should really probably get to bed."
+        m 3tfu "And maybe, you know...{w=1}{i}sleep{/i}?"
+        m 1hkb "Ahaha, you can be funny sometimes, but you should really probably get to bed."
 
         if mas_isMoniLove():
             m 1tsbsa "If I were there, I'd drag you to bed myself if I had to."

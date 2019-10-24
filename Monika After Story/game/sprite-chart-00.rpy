@@ -1669,6 +1669,19 @@ image monika 1hka_static = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1hkb_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    arms="steepling",
+    head="l",
+    left="1l",
+    right="1r"
+)
+
 image monika 1hkbfa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5540,16 +5553,5 @@ image monika 3dft_static = DynamicDisplayable(
     nose="def",
     mouth="triangle",
     arms="restleftpointright"
-)
-
-image monika 3dftdc_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="furrowed",
-    eyes="closedsad",
-    nose="def",
-    mouth="smirk",
-    arms="restleftpointright",
-    tears="dried"
 )
 
