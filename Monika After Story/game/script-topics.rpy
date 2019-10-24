@@ -13040,7 +13040,7 @@ label monika_catch22:
     m "And I kind of begin to realize my escape attempt before we got here could have led to a similar situation."
     if mas_isMoniDis(lower=True):
         m "Although I wonder whether all of this was even worth it..."
-    if mas_isMoniNormal(higher=True):
+    elif mas_isMoniNormal(higher=True):
         m "I'm glad that turned out differently."
     return
 
