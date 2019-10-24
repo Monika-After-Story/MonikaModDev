@@ -520,7 +520,7 @@ label mas_mood_lazy:
 
     elif mas_isSStoMN(_now):
         m 1eka "Don't feel like doing anything after a long day, [player]?"
-        m 3eka "At least the day is pretty much over and you shouldn't have anything else pressing."
+        m 3eka "At least the day is pretty much over..."
         m 3duu "There's nothing like sitting back and relaxing after a long day, especially when you don't have anything pressing."
 
         if mas_isMoniEnamored(higher=True):
