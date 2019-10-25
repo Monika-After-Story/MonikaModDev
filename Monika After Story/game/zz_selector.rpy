@@ -571,6 +571,20 @@ init -10 python in mas_selspr:
         "ribbon",
     ]
 
+    # generic select dlg quips go here
+    # should be as neutral as possible to go with any kind of acs
+    # be it singular or plural
+    generic_sel_dlg_quips = [
+        "Good choice, [player]!",
+        "I was thinking the same thing, [player]!",
+        "Great choice, [player]!",
+        "What do you think, [player]?",
+        "How do I look, [player]?",
+        "I really like this look, [player]!",
+        "Just what I was thinking!",
+        "Just what I had in mind!"
+    ]
+
 
     def selectable_key(selectable):
         """
@@ -2270,10 +2284,15 @@ init -1 python:
             # the appropriate dialogue
             if self.been_selected:
                 if self.selectable.select_dlg is not None:
+                    # this should be first as it allows us to override
+                    # remover dialogue
                     self._send_select_text()
 
                 elif self.selectable.remover:
                     self.mailbox.send_disp_fast()
+
+                else:
+                    self._send_generic_select_text()
 
             else:
                 # not been selected before
@@ -2288,9 +2307,11 @@ init -1 python:
                     self._send_msg_disp_text(None)
                     self.mailbox.send_disp_fast()
 
+                else:
+                    self._send_generic_select_text()
+
             # always reset interaction if something has been selected
             self.end_interaction = True
-
 
         def _send_first_select_text(self):
             """
@@ -2304,6 +2325,15 @@ init -1 python:
                 )
             )
 
+        def _send_generic_select_text(self):
+            """
+            Sends generic select text to mailbox
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    store.mas_selspr.generic_sel_dlg_quips
+                )
+            )
 
         def _send_hover_text(self):
             """
@@ -2317,7 +2347,6 @@ init -1 python:
                 )
             )
 
-
         def _send_msg_disp_text(self, msg):
             """
             Sends text message to mailbox.
@@ -2326,7 +2355,6 @@ init -1 python:
                 msg - text message to send
             """
             self.mailbox.send_disp_text(msg)
-
 
         def _send_select_text(self):
             """
@@ -2339,7 +2367,6 @@ init -1 python:
                     self.selectable.select_dlg
                 )
             )
-
 
         def _setup_display_name(self, st, at):
             """

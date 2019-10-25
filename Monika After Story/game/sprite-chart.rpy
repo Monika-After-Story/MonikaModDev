@@ -164,7 +164,7 @@ image monika g2:
             pause 0.2
     repeat
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #empty desk image, used when Monika is no longer in the room.
 #image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
