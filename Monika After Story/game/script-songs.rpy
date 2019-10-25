@@ -338,7 +338,7 @@ label mas_song_im_glad_youre_evil_too:
     else:
         m 1ekbfa "I don't really think either of us are evil, [player]."
         m 1ekbfb "But it would be a dream come true to face the world together, side by side...{w=0.5} Don't you think?"
-    return
+    return "derandom"
     
 init 5 python:
     addEvent(
