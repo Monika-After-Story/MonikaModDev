@@ -1,5 +1,40 @@
 # selector testing
 
+init -100 python:
+    
+    def dev_mas_unlock_all_sprites():
+        for sel_obj in store.mas_selspr.ACS_SEL_SL:
+            sel_obj.unlocked = True
+
+        for sel_obj in store.mas_selspr.HAIR_SEL_SL:
+            sel_obj.unlocked = True
+
+        for sel_obj in store.mas_selspr.CLOTH_SEL_SL:
+            sel_obj.unlocked = True
+
+
+    def dev_mas_clear_spritegift(giftname):
+        namegift_data = store.mas_sprites_json.giftname_map.get(giftname, None)
+        if namegift_data is not None :
+            ng_sp, ng_name = namegift_data
+            spr_obj = store.mas_sprites.get_sprite(ng_sp, ng_name)
+
+            if namegift_data in persistent._mas_sprites_json_gifted_sprites:
+                persistent._mas_sprites_json_gifted_sprites.pop(namegift_data)
+
+            if spr_obj is not None:
+                store.mas_selspr._lock_item(spr_obj, ng_sp)
+
+        if giftname in persistent._mas_filereacts_sprite_gifts:
+            persistent._mas_filereacts_sprite_gifts.pop(giftname)
+
+        if giftname in persistent._mas_filereacts_sprite_reacted:
+            persistent._mas_filereacts_sprite_reacted.pop(giftname)
+
+        if giftname in persistent._mas_filereacts_reacted_map:
+            persistent._mas_filereacts_reacted_map.pop(giftname)
+
+
 init 5 python:
     addEvent(
         Event(

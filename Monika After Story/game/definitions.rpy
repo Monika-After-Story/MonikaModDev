@@ -15,6 +15,10 @@ python early:
     # this is now global
     import datetime
 
+    # uncomment when needed
+    import traceback
+    _dev_tb_list = []
+
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
@@ -34,6 +38,8 @@ python early:
         EV_ACT_RANDOM,
         EV_ACT_POOL
     ]
+
+
 
     # custom event exceptions
     class EventException(Exception):
@@ -122,6 +128,8 @@ python early:
     #   show_in_idle - True if this Event can be shown during idle
     #       False if not
     #       (Default: False)
+    #   flags - bitmask system that acts as unchanging flags.
+    #       (Default: 0)
     class Event(object):
 
         # tuple constants
@@ -139,7 +147,7 @@ python early:
             "end_date":10,
             "unlock_date":11,
             "shown_count":12,
-            "diary_entry":13,
+            #"diary_entry":13, # NOTE: this will not be removed until later
             "last_seen":14,
             "years":15,
             "sensitive":16,
@@ -148,7 +156,14 @@ python early:
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks", "rules")
+        N_EVENT_NAMES = (
+            "per_eventdb",
+            "eventlabel",
+            "locks",
+            "rules",
+            "diary_entry",
+            "flags"
+        )
 
         # other constants
         DIARY_LIMIT = 500
@@ -184,13 +199,14 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-                diary_entry=None,
+#                diary_entry=None,
                 rules=dict(),
                 last_seen=None,
                 years=None,
                 sensitive=False,
                 aff_range=None,
-                show_in_idle=False
+                show_in_idle=False,
+                flags=0
             ):
 
             # setting up defaults
@@ -200,12 +216,12 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
-            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
-                raise Exception(
-                    (
-                        "diary entry for {0} is longer than {1} characters"
-                    ).format(eventlabel, self.DIARY_LIMIT)
-                )
+#            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+#                raise Exception(
+#                    (
+#                        "diary entry for {0} is longer than {1} characters"
+#                    ).format(eventlabel, self.DIARY_LIMIT)
+#                )
             if rules is None:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
@@ -245,6 +261,9 @@ python early:
                     eventlabel, str(aff_range)
                 ))
 
+            if not isinstance(flags, int):
+                raise Exception("'{0}' - invalid flags".format(eventlabel))
+
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
 
@@ -269,7 +288,7 @@ python early:
                 )
 
             self.rules = rules
-
+            self.flags = flags
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -287,7 +306,7 @@ python early:
                 end_date,
                 unlock_date,
                 0, # shown_count
-                diary_entry,
+                "", # diary_entry
                 last_seen,
                 years,
                 sensitive,
@@ -337,7 +356,7 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-                    self.diary_entry = diary_entry
+#                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
                     self.sensitive = sensitive
@@ -497,11 +516,37 @@ python early:
             new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
 
             if was_changed:
+                if self.isWithinRange():
+                    store.evhand.addYearsetBlacklist(
+                        self.eventlabel,
+                        self.end_date
+                    )
                 self.start_date = new_start
                 self.end_date = new_end
 
             return True
 
+        def isWithinRange(self, check_dt=None):
+            """
+            Checks if the given dt is within range of this events start/end
+
+            IN:
+                check_dt - datetime to check, if None passed, we use .now()
+
+            RETURNS: True if within range, False if not within range, None
+                if no dts to compare
+            """
+            if self.start_date is None or self.end_date is None:
+                return None
+            check_dt = datetime.datetime.now()
+            return self.start_date <= check_dt < self.end_date
+
+        def stripDates(self):
+            """
+            Removes date data from the event
+            """
+            self.start_date = None
+            self.end_date = None
 
         @staticmethod
         def getSortPrompt(ev):
@@ -593,11 +638,15 @@ python early:
 
             IN:
                 ev - event object to verify and set
+
+            RETURNS: was_changed
             """
             new_start, new_end, was_changed = Event._verifyDatesEV(ev)
             if was_changed:
                 ev.start_date = new_start
                 ev.end_date = new_end
+
+            return was_changed
 
 
         @staticmethod
@@ -700,7 +749,7 @@ python early:
                     new_end = add_yr_fun(_end, diff)
 
                 # now return the new start and the modified end
-                return (add_yr_fun(_start, diff), new_end, True)
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
 
             # otherwise, we have a list of years, and shoudl determine next
             if force:
@@ -731,7 +780,7 @@ python early:
 
             if force:
                 # force means we should just use this diff right away
-                return (add_yr_fun(_start, diff), new_end, True)
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
 
             if new_end <= _now:
                 if len(new_years) <= 1:
@@ -742,7 +791,7 @@ python early:
                 diff = _now.year - new_years[1]
                 new_end = add_yr_fun(_end, diff)
 
-            return (add_yr_fun(_start, diff), new_end, True)
+            return (add_yr_fun(_start, diff), new_end, diff != 0)
 
 
         @staticmethod
@@ -1448,6 +1497,23 @@ python early:
             """
             if ev.action in Event.ACTION_MAP:
                 Event._performAction(ev, **kwargs)
+
+        @staticmethod
+        def _undoEVAction(ev):
+            """
+            Undoes the ev_action
+
+            IN:
+                ev - event to undo ev action for
+            """
+            if ev.action == EV_ACT_UNLOCK:
+                ev.unlocked = False
+            elif ev.action == EV_ACT_RANDOM:
+                ev.random = False
+                #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
+                if "no rmallEVL" not in ev.rules:
+                    mas_rmallEVL(ev.eventlabel)
+            #NOTE: we don't add the rest since there's no reason to undo those.
 
 
 # init -1 python:
@@ -2388,7 +2454,6 @@ init -990 python in mas_utils:
     }
 
 
-
     def clean_gui_text(text):
         """
         Cleans the given text so its suitable for GUI usage
@@ -2403,6 +2468,33 @@ init -990 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
+
+
+    def pdget(key, table, validator=None, defval=None):
+        """
+        Protected Dict GET
+        Gets an item from a dict, using protections to ensure this item is 
+        valid
+
+        IN:
+            key - key of item to get
+            table - dict to get from
+            validator - function to call with the item to validate it
+                If None, no validating done
+                (Default: None)
+            defval - default value to return if could not get from dict
+        """
+        if table is not None and key in table:
+
+            item = table[key]
+
+            if validator is None:
+                return item
+
+            if validator(table[key]):
+                return item
+
+        return defval
 
 
     def tryparseint(value, default=0):
@@ -3124,6 +3216,80 @@ init -100 python in mas_utils:
         return (ival, int((num - cleanival) * __FLIMIT), __FLIMIT)
 
 
+init -985 python:
+    # global stuff that should be defined somewhat early
+
+    def mas_getSessionLength():
+        """
+        Gets length of current session, IF this cannot be determined, a
+        time delta of 0 is returned
+        """
+        _now = datetime.datetime.now()
+        return _now - store.mas_utils.pdget(
+            "current_session_start",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=_now
+        )
+
+
+    def mas_getAbsenceLength():
+        """
+        Gets time diff between current session start and last session end
+        aka the diff between last session and this
+        if not found, time delta of 0 is returned
+        """
+        return mas_getCurrSeshStart() - mas_getLastSeshEnd()
+
+
+    def mas_getCurrSeshStart():
+        """
+        Returns the current session start datetime
+        If there is None, we use first session
+        """
+        return store.mas_utils.pdget(
+            "current_session_start",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=mas_getFirstSesh()
+        )
+
+
+    def mas_getFirstSesh():
+        """
+        Returns the first session datetime.
+
+        If we could not get it, datetime.datetime.now() is returnd
+        """
+        return store.mas_utils.pdget(
+            "first_session",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=datetime.datetime.now()
+        )
+
+
+    def mas_getLastSeshEnd():
+        """
+        Returns datetime of the last session
+        NOTE: if there was no last session, we use first session instead
+        """
+        return store.mas_utils.pdget(
+            "last_session_end",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=mas_getFirstSesh()
+        )
+
+
+    def mas_TTDetected():
+        """
+        Checks if time travel was detected
+        NOTE: TT detection occurs at init -890
+        """
+        return store.mas_globals.tt_detected
+
+
 init -1 python:
     import datetime # for mac issues i guess.
     import os
@@ -3516,9 +3682,6 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
-    def mas_getSessionLength():
-        return datetime.datetime.now() - persistent.sessions['current_session_start']
-
 
     def mas_genDateRange(_start, _end):
         """
@@ -3603,8 +3766,6 @@ init -1 python:
         )
 
 
-    def mas_isMonikaBirthday():
-        return datetime.date.today() == mas_monika_birthday
 
 
     def mas_isSpecialDay():
@@ -3623,37 +3784,6 @@ init -1 python:
             or mas_isNYE()
             or mas_isF14()
         )
-
-    def mas_getNextMonikaBirthday():
-        today = datetime.date.today()
-        if mas_monika_birthday < today:
-            return datetime.date(
-                today.year + 1,
-                mas_monika_birthday.month,
-                mas_monika_birthday.day
-            )
-        return mas_monika_birthday
-
-
-    def mas_recognizedBday(_date=None):
-        """
-        Checks if the user recognized monika's birthday at all.
-
-        TODO: this is one-shot. we need to make this generic to future bdays
-
-        RETURNS:
-            True if the user recoginzed monika's birthday, False otherwise
-        """
-        if _date is None:
-            _date = mas_monika_birthday
-
-        return (
-            mas_generateGiftsReport(_date)[0] > 0
-            or persistent._mas_bday_date_count > 0
-            or persistent._mas_bday_sbp_reacted
-            or persistent._mas_bday_said_happybday
-        )
-
 
     def mas_maxPlaytime():
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
@@ -3705,23 +3835,6 @@ init -1 python:
 
         # otherwise we passed the cases
         return True
-
-
-    def mas_getFirstSesh():
-        """
-        Returns the first session datetime.
-
-        If we could not get it, datetime.datetime.now() is returnd
-        """
-        if (
-                persistent.sessions is not None
-                and "first_session" in persistent.sessions
-                and type(persistent.sessions["first_session"])
-                    == datetime.datetime
-            ):
-            return persistent.sessions["first_session"]
-
-        return datetime.datetime.now()
 
 
     def get_pos(channel='music'):
@@ -3889,8 +4002,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_coffee_brew_time = None
         persistent._mas_coffee_cup_done = None
-        removeEventIfExist(brew_ev.eventlabel)
-        removeEventIfExist(drink_ev.eventlabel)
+        mas_rmEVL(brew_ev.eventlabel)
+        mas_rmEVL(drink_ev.eventlabel)
 
 
     def _mas_startupCoffeeLogic():
@@ -3937,7 +4050,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
-                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_rmEVL(brew_ev.eventlabel)
                     mas_drinkCoffee(persistent._mas_coffee_brew_time)
 
                     if not still_drink(persistent._mas_coffee_cup_done):
@@ -3957,7 +4070,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_coffee_brew_time = None
-                removeEventIfExist(brew_ev.eventlabel)
+                mas_rmEVL(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_mug):
@@ -4109,8 +4222,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_c_hotchoc_brew_time = None
         persistent._mas_c_hotchoc_cup_done = None
-        removeEventIfExist(brew_ev.eventlabel)
-        removeEventIfExist(drink_ev.eventlabel)
+        mas_rmEVL(brew_ev.eventlabel)
+        mas_rmEVL(drink_ev.eventlabel)
 
 
     def _mas_startupHotChocLogic():
@@ -4158,7 +4271,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
-                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_rmEVL(brew_ev.eventlabel)
                     mas_drinkHotChoc(persistent._mas_c_hotchoc_brew_time)
 
                     if not still_drink(persistent._mas_c_hotchoc_cup_done):
@@ -4178,7 +4291,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_c_hotchoc_brew_time = None
-                removeEventIfExist(brew_ev.eventlabel)
+                mas_rmEVL(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_hotchoc_mug):
@@ -4257,7 +4370,19 @@ init 2 python:
         if persistent.monika_reload < 4:
             persistent.monika_reload += 1
 
+    def mas_hasRPYFiles():
+        """
+        Checks if there are rpy files in the gamedir
+        """
+        return len(mas_getRPYFiles()) > 0
 
+    def mas_getRPYFiles():
+        """
+        Gets a list of rpy files in the gamedir
+        """
+        rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+
+        return rpyCheckStation.getPackageList(".rpy")
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -5472,6 +5597,8 @@ default persistent.event_database = dict()
 default persistent.farewell_database = dict()
 default persistent.greeting_database = dict()
 default persistent._mas_apology_database = dict()
+default persistent._mas_undo_action_rules = dict()
+default persistent._mas_strip_dates_rules = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
@@ -5488,6 +5615,9 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
+
+#Var to see if we were on a long absence (post flag reset)
+default mas_ret_long_absence = False
 
 # rain
 define mas_is_raining = False
@@ -5547,7 +5677,6 @@ define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define mas_monika_twitter_handle = "lilmonix3"
-define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
@@ -5763,3 +5892,32 @@ label set_gender:
 
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"
+
+# functions related to ily2
+init python:
+    def mas_passedILY(pass_time, check_time=None):
+        '''
+        Checks whether we are within the appropriate time since the last time
+        Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
+        IN:
+            pass_time - a timedelta corresponding to the time limit we want to check against
+            check_time - the time at which we want to check, will typically be datetime.datetime.now()
+                which is the default
+
+        RETURNS:
+            boolean indicating if we are within the time limit
+        '''
+        if check_time is None:
+            check_time = datetime.datetime.now()
+        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+
+    def mas_ILY(set_time=None):
+        '''
+        Sets persistent._mas_last_monika_ily (the last time Monika said ily) to a given time
+        IN:
+            set_time - the time we want to set persistent._mas_last_monika_ily to
+                defaults to datetime.datetime.now()
+        '''
+        if set_time is None:
+            set_time = datetime.datetime.now()
+        persistent._mas_last_monika_ily = set_time

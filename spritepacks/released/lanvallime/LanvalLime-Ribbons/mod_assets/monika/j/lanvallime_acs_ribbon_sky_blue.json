@@ -1,4 +1,6 @@
 {
+    "__author": "LanvalLime",
+    "version": 2,
     "type": 0,
     "name": "lanvallime_ribbon_sky_blue",
     "img_sit": "lanvallime_ribbon_sky_blue",
@@ -17,10 +19,11 @@
         "thumb": "lanvallime_ribbon_sky_blue",
         "group": "ribbon",
         "hover_dlg": [
-            "Like a clear sky!"
+            "Have you ever been cloud watching?",
+            "Have you ever been cloud gazing?"
         ],
         "select_dlg": [
-            "Perfect for summer!"
+            "You always make me feel like I'm in the clouds, [player]."
         ]
     },
     "giftname": "skyblueribbon"
