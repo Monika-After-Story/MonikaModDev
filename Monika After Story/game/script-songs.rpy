@@ -374,7 +374,7 @@ init 5 python:
             eventlabel="mas_song_yozurina",
             category=[store.mas_songs.TYPE_SHORT],prompt="Yozurina",
             random=True,
-            aff_range=(mas_aff.LOVE, None)))
+            aff_range=(mas_aff.LOVE, None)
         ),
         code="SNG"
     )
