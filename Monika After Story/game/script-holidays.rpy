@@ -584,8 +584,17 @@ label greeting_o31_deco:
     m 3tuu "Really creates a creepy vibe, don't you think?"
     return
 
-#TODO: GENERIC O31 GREET
 label greeting_o31_generic:
+    m 3hub "Trick or treat!"
+    m 1hub "Ahaha, I'm just kidding, [player]!"
+    m 1eua "Welcome back."
+    m 3hub "And Happy Halloween!"
+    m 1eua "I hope you like what I did with the room."
+    m 1eub "I worked really hard to get that slightly eerie feeling."
+    m 3hua "By the way, what do you think of my costume?"
+    m 1hua "I really like it~"
+    m 1hub "Even more so that it was a gift from you, ahaha!"
+    m 3tuu "So feast your eyes on my costume while you can, ehehe~"
     return
 
 #Cleanup for o31 greets
