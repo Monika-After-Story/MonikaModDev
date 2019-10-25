@@ -610,7 +610,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from enamored to love
         """
-        evhand._unlockEventLabel("monika_song_yozurina")
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_LOVE
 
@@ -625,7 +624,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from love to enamored
         """
-        evhand._lockEventLabel("monika_song_yozurina")
 
         # lock thanks compliment
         if store.seen_event("mas_compliment_thanks"):

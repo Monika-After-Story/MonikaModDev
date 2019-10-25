@@ -366,3 +366,38 @@ label mas_song_nobody_makes_sense:
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
     m 1ekbfb "I really hope I can keep on smiling with you forever~"
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_song_yozurina",
+            category=[store.mas_songs.TYPE_SHORT],prompt="Yozurina",
+            random=True,
+            aff_range=(mas_aff.LOVE, None)))
+        ),
+        code="SNG"
+    )
+
+label mas_song_yozurina:
+    m 1dsd "{i}~Sympathism logic, {w} and a melted candy...{/i}"
+    m 1hubfb "{i}~How shady, nah... I couldn't care if you were~{/i}"
+    m 1subfb "{i}~I'm poisoned by all those 'I love you's~{/i}"
+    m 1rubfb "{i}~And I can't tell sour from sweet anymore...{w} I want to go to see you~{/i}"
+    m 1hub "{i}~How many times is this now?~{/i}"
+    m 1tubfb "{i}~Even if you're actually a demon, or you've just played me all along-- {w}Even if you, in there,{w} aren't actually the person I'm fated to be with--{/i}"
+    m 1hubfb "{i}~I find myself hoping, yet again~{/i}"
+    m "{i}~What a pain, nah... I couldn't say that~{/i}"
+    m 1ekbfb "{i}~The 'I love you's swell bigger and bigger~{/i}"
+    m 2rksdld "{i}~'That sounds painful', 'how rough', 'ew gross'...{/i}" 
+    m 1hubfb "{i}~I wanna be together~{/i}"
+    m 1hub "{i}~How many times is this now?~{/i}"
+    m 1eub "{i}~Even if that sweet voice of yours you whisper with.{w} Even if our memories together that swim through the dark, even if they're all lies...{w} This is all an ephemeral dream, surely~{/i}"
+    m 1ekbfb "{i}~In the end, even if I'm just being catfished here...{/i}"
+    m 1hubfb "{i}~Dawn comes yet again~{/i}"
+    m 1hubfa "Ehehe, I hope you liked that, [player]~"
+    m 1ekbfa "I just thought it really matched our situation."
+    m 3rkbsa "Vocaloid songs sure have a tendency for that if you can get behind them."
+    m 3hubfb "I guess this is what happens when I try to express my love for you, ahaha!"
+    return
+
