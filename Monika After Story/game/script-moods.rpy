@@ -456,7 +456,7 @@ init 5 python:
 
 label mas_mood_lucky:
     m 2tfc "You gotta ask yourself."
-    m 2tfu "{i}Do I feel lucky{/i}?"
+    m 2tfu "{i}Do I feel lucky?{/i}"
     m "Well..."
     m 4tku "Do ya, [player]?"
     m 1hub "Ahaha!"
