@@ -338,4 +338,31 @@ label mas_song_im_glad_youre_evil_too:
     else:
         m 1ekbfa "I don't really think either of us are evil, [player]."
         m 1ekbfb "But it would be a dream come true to face the world together, side by side...{w=0.5} Don't you think?"
-    return
+    return "derandom"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_nobody_makes_sense",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Nobody Makes Sense",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_nobody_makes_sense:
+    m 1dsd "{i}~For what are we living? For what are we trying so hard?~{/i}"
+    m 3dsd "{i}~There might be nothing, nothing, nothing to it. It might all be useless.~{/i}"
+    m 1dsd "{i}~In a thousand years, there won't be anything left, {nw}"
+    extend 1hub "but I still hope I could keep on smiling with you~{/i}"
+    m 3rksdld "{i}~Even when our dreams have come true; even when we have become enlightened, in the end, we might still end up with loneliness~{/i}"
+    m 3eksdld "{i}~Even when we've turned into ghosts; even when we've returned to nothingness, {nw}"
+    extend 3hksdlb "I still hope I could keep on smiling with you~{/i}"
+    m 1dku "..."
+    m 1hub "Ahaha!"
+    m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
+    m 1ekbfb "I really hope I can keep on smiling with you forever~"
+    return "derandom"
