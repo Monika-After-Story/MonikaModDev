@@ -624,7 +624,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from love to enamored
         """
-
         # lock thanks compliment
         if store.seen_event("mas_compliment_thanks"):
             store.mas_lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)

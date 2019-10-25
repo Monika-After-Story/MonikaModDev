@@ -399,5 +399,5 @@ label mas_song_yozurina:
     m 1ekbfa "I just thought it really matched our situation."
     m 3rkbsa "Vocaloid songs sure have a tendency for that if you can get behind them."
     m 3hubfb "I guess this is what happens when I try to express my love for you, ahaha!"
-    return
+    return "derandom"
 
