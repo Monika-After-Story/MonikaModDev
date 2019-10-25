@@ -502,7 +502,7 @@ label greeting_o31_rin:
 #    )
 
 label greeting_o31_orcaramelo_hatsune_miku:
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
     show emptydesk at i11 zorder 9
     #moni is off-screen
     m "{i}~Don't forget my voice~{/i}"
@@ -540,7 +540,7 @@ label greeting_o31_orcaramelo_hatsune_miku:
 #    )
 
 label greeting_o31_orcaramelo_sakuya_izayoi:
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
     show emptydesk at i11 zorder 9
     #moni is off-screen
     if not persistent._mas_o31_relaunch:
@@ -587,6 +587,8 @@ label greeting_o31_deco:
     return
 
 label greeting_o31_generic:
+    call spaceroom(scene_change=True, dissolve_all=True)
+
     m 3hub "Trick or treat!"
     m 3eua "Ahaha, I'm just kidding, [player]."
     m 1hua "Welcome back...{w=0.5}{nw}"
@@ -599,6 +601,8 @@ label greeting_o31_generic:
     m 1hua "I really like it~"
     m 1hub "Even more so that it was a gift from you, ahaha!"
     m 3tuu "So feast your eyes on my costume while you can, ehehe~"
+
+    call greeting_o31_cleanup
     return
 
 #Cleanup for o31 greets
