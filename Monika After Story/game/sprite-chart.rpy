@@ -164,7 +164,7 @@ image monika g2:
             pause 0.2
     repeat
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #empty desk image, used when Monika is no longer in the room.
 #image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
@@ -311,6 +311,9 @@ init -100 python in mas_sprites:
     DEF_MUX_HS = ["headset", "headphones", "earphones"]
     # default mux types for headset-based items
 
+    DEF_MUX_LHC = ["left-hair-clip"]
+    # default mux types for left hair clip-based items
+
     # maps ACS types to their ACS template
     ACS_DEFS = {
         "bow": ACSTemplate(
@@ -323,6 +326,13 @@ init -100 python in mas_sprites:
         "headset": ACSTemplate(
             "headset",
             mux_type=DEF_MUX_HS
+        ),
+        "left-hair-clip": ACSTemplate(
+            "left-hair-clip",
+            mux_type=DEF_MUX_LHC,
+            ex_props={
+                "left-hair-strand-eye-level": True
+            }
         ),
         "left-hair-flower": ACSTemplate(
             "left-hair-flower",
