@@ -107,7 +107,7 @@ label mas_mood_start:
 
     # return value? then push
     if _return:
-        $ pushEvent(_return)
+        $ pushEvent(_return, skipeval=True)
 
         # and set the moods
         $ persistent._mas_mood_current = _return
