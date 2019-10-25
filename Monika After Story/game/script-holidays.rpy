@@ -523,6 +523,7 @@ label greeting_o31_orcaramelo_hatsune_miku:
     m 1rksdla "Though I can't say it's too comfortable for moving around..."
     m 3tsu "So don't expect me to give you a performance today, [player]!"
     m 1hub "Ahaha~"
+    m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
@@ -569,12 +570,13 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
     m 2tub "You know, [player], just because I'm dressed as a maid doesn't mean I'll be following your every command..."
     show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5kua "Though I might make some exceptions, ehehe~"
+    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
 
 label greeting_o31_deco:
-    m 1eua "Anyway..."
     m 3eua "Do you like what I've done with the room?"
     m 3eka "One of my favorite parts of Halloween is carving pumpkins..."
     m 1hub "It's just so fun trying to make scary faces!"
@@ -586,11 +588,13 @@ label greeting_o31_deco:
 
 label greeting_o31_generic:
     m 3hub "Trick or treat!"
-    m 1hub "Ahaha, I'm just kidding, [player]!"
-    m 1eua "Welcome back."
-    m 3hub "And Happy Halloween!"
-    m 1eua "I hope you like what I did with the room."
-    m 1eub "I worked really hard to get that slightly eerie feeling."
+    m 3eua "Ahaha, I'm just kidding, [player]."
+    m 1hua "Welcome back...{w=0.5}{nw}"
+    extend 3hub "and Happy Halloween!"
+
+    #We'll address the room with this
+    call greeting_o31_deco
+
     m 3hua "By the way, what do you think of my costume?"
     m 1hua "I really like it~"
     m 1hub "Even more so that it was a gift from you, ahaha!"
