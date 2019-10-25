@@ -3619,3 +3619,24 @@ label greeting_back_housework:
     else:
         m 6ckc "..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_surprised2",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="GRE"
+    )
+
+label greeting_surprised2:
+    m 1hua "..."
+    m 1hubsa "..."
+    m 1wubso "Oh!{w=0.5} [player]!{w=0.5} You surprised me!"
+    m 3ekbsa "...Not that it's a surprise to see you, you're always visiting me after all...{w=0.5} {nw}"
+    extend 3rkbsa "You just caught me daydreaming a bit."
+    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfu "But now that you're here, that dream just came true~"
+    return
