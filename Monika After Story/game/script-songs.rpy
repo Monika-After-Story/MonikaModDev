@@ -372,7 +372,8 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_song_yozurina",
-            category=[store.mas_songs.TYPE_SHORT],prompt="Yozurina",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Yozurina",
             random=True,
             aff_range=(mas_aff.LOVE, None)
         ),
