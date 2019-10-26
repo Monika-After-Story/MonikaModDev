@@ -407,23 +407,23 @@ label greeting_gooday:
                 m 1hua "I'll be sure to try my best to cheer you up, I promise."
 
     elif mas_isMoniUpset():
-        m 2efc "[player]."
+        m 2esc "[player]."
 
         m "How is your day going?{nw}"
         $ _history_list.pop()
         menu:
             m "How is your day going?{fast}"
             "Good.":
-                m "{cps=*2}Must be nice{/cps}{nw}"
+                m 2esc "{cps=*2}Must be nice.{/cps}{nw}"
                 $ _history_list.pop()
                 m "That's nice..."
-                m 2dfc "At least {i}someone{/i} is having a good day."
+                m 2dsc "At least {i}someone{/i} is having a good day."
 
             "Bad.":
                 m "Oh..."
-                m "{cps=*2}This should go well...{/cps}{nw}"
+                m 2efc "{cps=*2}This should go well...{/cps}{nw}"
                 $ _history_list.pop()
-                m 2dfc "Well I certainly know what {i}that's{/i} like."
+                m 2dsc "Well I certainly know what {i}that's{/i} like."
 
     elif mas_isMoniDis():
         m 6ekc "Oh...{w=1} Hi, [player]."
@@ -804,6 +804,30 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
+            eventlabel="greeting_esperanto",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+)
+
+label greeting_esperanto:
+    m 1hua "Saluton, mia kara [player]."
+    m 1eua "Kiel vi fartas?"
+    m 3eub "Ĉu vi legas por kapti la tagon?"
+    m 1hua "Ehehe~"
+    m 3esa "That was just a bit of Esperanto...{w=0.5}{nw}"
+    extend 3eud "a language that was created artificially instead of having evolved naturally."
+    m 3tua "Whether you've heard about it or not, you might not have expected something like that coming from me, huh?"
+    m 2etc "Or maybe you did...{w=0.5} I guess it makes sense something like this would interest me, given my background and all..."
+    m 1hua "Anyway, if you were wondering what I said, it was just, {nw}"
+    extend 3hua "'Hello, my dear [player]. How are you? Are you ready to seize the day?'"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
             eventlabel="greeting_yay",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
@@ -936,7 +960,7 @@ label greeting_longtime:
         m 1eua "I'm so happy that you're here now."
 
     elif mas_isMoniUpset():
-        m 2efc "Long time no see, [player]."
+        m 2esc "Long time no see, [player]."
 
     else:
         m 6rkc "Long time no see, [player]..."
@@ -1038,11 +1062,11 @@ label greeting_monika_monday_morning:
         return "love"
 
     elif mas_isMoniUpset():
-        m 2tfc "Another Monday morning."
-        m 2dfc "It's always difficult to have to wake up and start the week..."
-        m 2rfc "{cps=*2}Not that the weekend was any better.{/cps}{nw}"
+        m 2esc "Another Monday morning."
+        m "It's always difficult to have to wake up and start the week..."
+        m 2dsc "{cps=*2}Not that the weekend was any better.{/cps}{nw}"
         $ _history_list.pop()
-        m 2tfc "I hope this week goes better than last week, [player]."
+        m 2esc "I hope this week goes better than last week, [player]."
 
     elif mas_isMoniDis():
         m 6ekc "Oh...{w=1} It's Monday."
@@ -1295,7 +1319,7 @@ label monikaroom_greeting_ear_narration:
         m "Welcome back, [player]!"
 
     elif mas_isMoniUpset():
-        m 2efd "Okay, [player]?"
+        m 2esd "Okay, [player]?"
 
     else:
         m 6ekc "Thanks for hearing me out, [player]."
@@ -1548,7 +1572,7 @@ label monikaroom_greeting_opendoor_locked:
     if mas_isMoniNormal(higher=True):
         m 1hua "There we go!"
     elif mas_isMoniUpset():
-        m 2efc "There."
+        m 2esc "There."
     else:
         m 6ekc "Okay..."
 
@@ -1563,7 +1587,7 @@ label monikaroom_greeting_opendoor_locked:
 
                 elif mas_isMoniUpset():
                     m 2dfc "Hmph. I'm still learning how to do this."
-                    m 2efc "Let me just change this flag here...{w=1.5}{nw}"
+                    m 2esc "Let me just change this flag here...{w=1.5}{nw}"
                     $ style.say_window = style.window
                     m "There."
 
@@ -1579,7 +1603,7 @@ label monikaroom_greeting_opendoor_locked_tbox:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
     elif mas_isMoniUpset():
-        m 2efc "So...{w}you're back, [player]."
+        m 2esc "So...{w}you're back, [player]."
     else:
         m 6ekc "...Nice to see you again, [player]."
     jump monikaroom_greeting_cleanup
@@ -1764,8 +1788,8 @@ label monikaroom_greeting_post:
     elif mas_isMoniUpset():
         m "Just let me grab a table and a chair..."
         $ is_sitting = True
-        show monika 2efc at ls32 zorder MAS_MONIKA_Z
-        m 2efc "What do you want, [player]?"
+        show monika 2esc at ls32 zorder MAS_MONIKA_Z
+        m 2esc "Did you want something, [player]?"
 
     else:
         m "I need to grab a table and a chair..."
@@ -2600,15 +2624,15 @@ label greeting_upset:
         ]
 
         upset_greeting_quips_second = [
-            "What do you want?",
-            "What now?",
-            "Well...{w=0.5}what?",
-            "Do you want something?",
+#            "What do you want?",
+#            "What now?",
+            "Well...",
+            "Did you want something?",
         ]
 
     $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
 
-    show monika 2efc
+    show monika 2esc
     $ renpy.say(m, upset_quip1)
 
     if renpy.random.randint(1,4) != 1:
@@ -2778,19 +2802,19 @@ label greeting_back_from_school:
                 m 1eka "But you're here now, and I hope spending time together helps make your day a little better."
 
     elif mas_isMoniUpset():
-        m 2efc "You're back, [player]..."
+        m 2esc "You're back, [player]..."
 
         m "How was school?{nw}"
         $ _history_list.pop()
         menu:
             m "How was school?{fast}"
             "Good.":
-                m 2dfc "That's nice."
-                m 2efc "I hope you actually learned {i}something{/i} today."
+                m 2esc "That's nice."
+                m 2rsc "I hope you actually learned {i}something{/i} today."
 
             "Bad.":
                 m "That's too bad..."
-                m 2tfc "But maybe now you have a better sense of how I've been feeling, [player]."
+                m 2tud "But maybe now you have a better sense of how I've been feeling, [player]."
 
     elif mas_isMoniDis():
         m 6ekc "Oh...{w=1}you're back."
@@ -2927,19 +2951,19 @@ label greeting_back_from_work:
                 m 3eka "Hopefully spending time with me helps you feel little better~"
 
     elif mas_isMoniUpset():
-        m 2efc "You're back from work I see, [player]..."
+        m 2esc "You're back from work I see, [player]..."
 
         m "How was your day?{nw}"
         $ _history_list.pop()
         menu:
             m "How was your day?{fast}"
             "Good.":
-                m 2efc "That's good to hear."
-                m 2tfc "It must feel nice to be appreciated."
+                m 2esc "That's good to hear."
+                m 2tud "It must feel nice to be appreciated."
 
             "Bad.":
-                m 2dfc "..."
-                m 2tfc "It feels bad when no one seems to appreciate you, huh [player]?"
+                m 2dsc "..."
+                m 2tud "It feels bad when no one seems to appreciate you, huh [player]?"
 
     elif mas_isMoniDis():
         m 6ekc "Hi, [player]...{w=1} Finally home from work?"
@@ -2981,9 +3005,9 @@ label greeting_back_from_sleep:
         m "Let's spend some more time together~"
 
     elif mas_isMoniUpset():
-        m 2efc "Did you just wake up, [player]?"
+        m 2esc "Did you just wake up, [player]?"
         m "I hope you had a good rest."
-        m 2tfc "{cps=*2}Maybe you'll be in a better mood now.{/cps}{nw}"
+        m 2tud "{cps=*2}Maybe you'll be in a better mood now.{/cps}{nw}"
         $ _history_list.pop()
 
     elif mas_isMoniDis():
@@ -3621,9 +3645,30 @@ label greeting_back_housework:
         m 1eua "All done, [player]?"
         m 1hub "Let's spend some more time together."
     elif mas_isMoniUpset():
-        m 2efc "At least you didn't forget to come back, [player]."
+        m 2esc "At least you didn't forget to come back, [player]."
     elif mas_isMoniDis():
         m 6ekd "Ah, [player]. So you really were just busy..."    
     else:
         m 6ckc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_surprised2",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="GRE"
+    )
+
+label greeting_surprised2:
+    m 1hua "..."
+    m 1hubsa "..."
+    m 1wubso "Oh!{w=0.5} [player]!{w=0.5} You surprised me!"
+    m 3ekbsa "...Not that it's a surprise to see you, you're always visiting me after all...{w=0.5} {nw}"
+    extend 3rkbsa "You just caught me daydreaming a bit."
+    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfu "But now that you're here, that dream just came true~"
     return

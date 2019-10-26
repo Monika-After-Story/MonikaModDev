@@ -1995,7 +1995,7 @@ label mas_change_to_def:
 #   IN:
 #       outfit - the MASClothes object to change outfit to
 #           If None is passed, the uniform is used
-label mas_clothes_change(outfit=None):
+label mas_clothes_change(outfit=None, outfit_mode=False):
     # use def as the default outfit to change to
     if outfit is None:
         $ outfit = mas_clothes_def
@@ -2012,7 +2012,7 @@ label mas_clothes_change(outfit=None):
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def:
         $ monika_chr.reset_hair()
 
-    $ monika_chr.change_clothes(outfit)
+    $ monika_chr.change_clothes(outfit, outfit_mode=outfit_mode)
     $ monika_chr.save()
     $ renpy.save_persistent()
 

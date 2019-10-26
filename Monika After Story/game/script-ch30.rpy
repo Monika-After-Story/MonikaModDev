@@ -1875,6 +1875,9 @@ label ch30_reset:
         if not monika_chr.is_wearing_acs_type("left-hair-flower"):
             store.mas_selspr.set_prompt("left-hair-flower", "wear")
 
+        if not monika_chr.is_wearing_acs_type("choker"):
+            store.mas_selspr.set_prompt("choker", "wear")
+
         if not monika_chr.is_wearing_ribbon():
             store.mas_selspr.set_prompt("ribbon", "wear")
 

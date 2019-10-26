@@ -164,7 +164,7 @@ image monika g2:
             pause 0.2
     repeat
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #empty desk image, used when Monika is no longer in the room.
 #image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
@@ -312,8 +312,14 @@ init -100 python in mas_sprites:
     DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons"]
     # default mux types for ribbon-based items.
 
-    DEF_MUX_HS = ["headset", "headphones", "earphones"]
+    DEF_MUX_HS = ["headset", "headphones", "earphones", "headband"]
     # default mux types for headset-based items
+
+    DEF_MUX_HB = ["headband", "headset", "headphones"]
+    # default mux types for headband-based items
+
+    DEF_MUX_LHC = ["left-hair-clip"]
+    # default mux types for left hair clip-based items
 
     # maps ACS types to their ACS template
     ACS_DEFS = {
@@ -324,9 +330,27 @@ init -100 python in mas_sprites:
                 "ribbon-like": True
             }
         ),
+        "choker": ACSTemplate(
+            "choker",
+            mux_type=["choker"],
+            ex_props={
+                "bare neck": True
+            }
+        ),
+        "headband": ACSTemplate(
+            "headband",
+            mux_type=DEF_MUX_HB
+        ),
         "headset": ACSTemplate(
             "headset",
             mux_type=DEF_MUX_HS
+        ),
+        "left-hair-clip": ACSTemplate(
+            "left-hair-clip",
+            mux_type=DEF_MUX_LHC,
+            ex_props={
+                "left-hair-strand-eye-level": True
+            }
         ),
         "left-hair-flower": ACSTemplate(
             "left-hair-flower",
@@ -7046,7 +7070,7 @@ image monika 6ATL_lookleftright:
 image monika ATL_0_to_upset:
 
     # 1 time this part
-    "monika 1esc"
+    "monika 2esc"
     5.0
 
     # repeat this part
@@ -7054,7 +7078,7 @@ image monika ATL_0_to_upset:
         # select image
         block:
             choice 0.95:
-                "monika 1esc"
+                "monika 2esc"
             choice 0.05:
                 "monika 5tsc"
 
@@ -7268,8 +7292,9 @@ image monika ATL_love_too_enam_plus:
 image monika idle = ConditionSwitch(
     "mas_isMoniBroken(lower=True)", "monika 6ckc",
     "mas_isMoniDis()", "monika 6ATL_lookleftright",
-    "mas_isMoniUpset()", "monika 2efc",
-    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+#    "mas_isMoniUpset()", "monika 2efc"
+#    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+    "mas_isBelowZero()", "monika ATL_0_to_upset",
     "mas_isMoniHappy()", "monika 1eua",
     "mas_isMoniAff()", "monika ATL_affectionate",
     "mas_isMoniEnamored()", "monika ATL_enamored",
