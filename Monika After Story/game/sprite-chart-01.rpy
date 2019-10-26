@@ -3238,6 +3238,16 @@ image monika 4eud_static = DynamicDisplayable(
     right="2r"
 )
 
+image monika 4euo_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="gasp",
+    arms="pointright"
+)
+
 image monika 4hfb_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
