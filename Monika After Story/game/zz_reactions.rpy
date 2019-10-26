@@ -266,6 +266,9 @@ init -1 python in mas_filereacts:
                 # keep stats for today
                 _register_received_gift("mas_reaction_gift_generic")
 
+                # always pop generic reacts
+                store.persistent._mas_filereacts_reacted_map.pop(mas_gift)
+
 
         generic_reacts.extend(sprite_object_reacts)
 
