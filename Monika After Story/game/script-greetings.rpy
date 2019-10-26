@@ -773,7 +773,6 @@ label greeting_latin:
     m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'"
     return
 
-#TODO needs additional dialogue so can be used for all aff
 init 5 python:
     addEvent(
         Event(
@@ -786,7 +785,6 @@ init 5 python:
 )
 
 label greeting_esperanto:
-#    m "Mia kusenveturilo estas plena je angiloj."  # execute obligatory monty.py
     m 1hua "Saluton, mia kara [player]."
     m 1eua "Kiel vi fartas?"
     m 3eub "Ĉu vi legas por kapti la tagon?"
