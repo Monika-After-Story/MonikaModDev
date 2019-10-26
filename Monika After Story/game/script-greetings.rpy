@@ -804,6 +804,30 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
+            eventlabel="greeting_esperanto",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+)
+
+label greeting_esperanto:
+    m 1hua "Saluton, mia kara [player]."
+    m 1eua "Kiel vi fartas?"
+    m 3eub "Ĉu vi legas por kapti la tagon?"
+    m 1hua "Ehehe~"
+    m 3esa "That was just a bit of Esperanto...{w=0.5}{nw}"
+    extend 3eud "a language that was created artificially instead of having evolved naturally."
+    m 3tua "Whether you've heard about it or not, you might not have expected something like that coming from me, huh?"
+    m 2etc "Or maybe you did...{w=0.5} I guess it makes sense something like this would interest me, given my background and all..."
+    m 1hua "Anyway, if you were wondering what I said, it was just, {nw}"
+    extend 3hua "'Hello, my dear [player]. How are you? Are you ready to seize the day?'"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
             eventlabel="greeting_yay",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
