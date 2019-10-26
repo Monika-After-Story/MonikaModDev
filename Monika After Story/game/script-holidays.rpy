@@ -352,15 +352,15 @@ transform mas_o31_cg_scroll:
     ease 20.0 yoffset 0.0
 
 ### o31 greetings
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.greeting_database,
-#            eventlabel="greeting_o31_marisa",
-#            category=[store.mas_greetings.TYPE_HOL_O31]
-#        ),
-#        code="GRE"
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_marisa",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
 
 label greeting_o31_marisa:
     # decoded CG means that we start with monika offscreen
@@ -425,15 +425,15 @@ label greeting_o31_marisa:
     call greeting_o31_cleanup
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.greeting_database,
-#            eventlabel="greeting_o31_rin",
-#            category=[store.mas_greetings.TYPE_HOL_O31]
-#        ),
-#        code="GRE"
-#    )
+init 5 python:
+   addEvent(
+       Event(
+           persistent.greeting_database,
+           eventlabel="greeting_o31_rin",
+           category=[store.mas_greetings.TYPE_HOL_O31]
+       ),
+       code="GRE"
+    )
 
 label greeting_o31_rin:
     $ title_cased_hes = hes.capitalize()
@@ -491,15 +491,15 @@ label greeting_o31_rin:
     return
 
 #Miku intro
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.greeting_database,
-#            eventlabel="greeting_o31_miku",
-#            category=[store.mas_greetings.TYPE_HOL_O31]
-#        ),
-#        code="GRE"
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_miku",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
 
 label greeting_o31_orcaramelo_hatsune_miku:
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
@@ -529,15 +529,15 @@ label greeting_o31_orcaramelo_hatsune_miku:
     return
 
 #Sakuya intro
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.greeting_database,
-#            eventlabel="greeting_o31_sakuya",
-#            category=[store.mas_greetings.TYPE_HOL_O31]
-#        ),
-#        code="GRE"
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_sakuya",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
 
 label greeting_o31_orcaramelo_sakuya_izayoi:
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
