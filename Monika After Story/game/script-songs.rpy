@@ -421,7 +421,7 @@ init 5 python:
 
 label mas_song_nobody_makes_sense:
     m 1dsd "{i}~For what are we living? For what are we trying so hard?~{/i}"
-    m 3dsd "{i}~There might be nothing, nothing, nothing to it. It might all be useless.~{/i}"
+    m 3dsd "{i}~There might be nothing, nothing, nothing to it. It might all be useless~{/i}"
     m 1dsd "{i}~In a thousand years, there won't be anything left, {nw}"
     extend 1hub "but I still hope I could keep on smiling with you~{/i}"
     m 3rksdld "{i}~Even when our dreams have come true; even when we have become enlightened, in the end, we might still end up with loneliness~{/i}"
