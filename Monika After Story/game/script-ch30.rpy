@@ -786,13 +786,15 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
+    # ----------- Grouping date-based events since they can never overlap:
     #O31 stuff
     if persistent._mas_o31_in_o31_mode:
         $ store.mas_o31ShowVisuals()
 
     # d25 seasonal
-    if persistent._mas_d25_deco_active:
+    elif persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
+    # ----------- end date-based events
 
     # player bday
     if persistent._mas_player_bday_decor:
@@ -1073,14 +1075,17 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
+    # ----------------
+    # grouping date-based events since they can never overlap
     if mas_isO31() or persistent._mas_o31_in_o31_mode:
         jump mas_o31_autoload_check
 
-    if mas_isD25Season():
+    elif mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
 
-    if mas_isF14() or persistent._mas_f14_in_f14_mode:
+    elif mas_isF14() or persistent._mas_f14_in_f14_mode:
         jump mas_f14_autoload_check
+    # ----------------
 
     #NOTE: This has priority because of the opendoor greet
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
