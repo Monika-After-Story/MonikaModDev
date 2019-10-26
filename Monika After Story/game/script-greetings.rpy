@@ -787,14 +787,14 @@ init 5 python:
 
 label greeting_esperanto:
 #    m "Mia kusenveturilo estas plena je angiloj."  # execute obligatory monty.py
-    m 1eub "Saluton, mia kara [player]."
-    m 5eub "Kiel vi fartas?"
-    m 2efb "Ĉu estas vi preta por la tago?"
-    m "Are you ready to seize the day?"
-    m 4hub "That was just a bit of Esperanto. It's a language that was created artificially instead of having evolved naturally."
-    m 3dfd "Even if it's artificial, that doesn't make it any lesser!"
-    m 2tub "Whether you've heard about it or not, you might not have expected something like that coming from me, huh?" # nobody expects the mon-inquisition
-    m 1eft "Then again, since you are a member of the literature club, you should already know to expect the unexpected."
+    m 1hua "Saluton, mia kara [player]."
+    m 1eua "Kiel vi fartas?"
+    m 3eub "Ĉu vi legas por kapti la tagon?"
+    m 1eub "Ehehe!"
+    m 3eud "That was just a bit of Esperanto...{w=0.5}a language that was created artificially instead of having evolved naturally."
+    m 3tua "Whether you've heard about it or not, you might not have expected something like that coming from me, huh?"
+    m 2etc "Or maybe you did...{w=0.5} I guess it makes sense something like this would interest me, given my background and all..."
+    m 3hua "Anyway, if you were wondering what I said, it was just, 'Hello, my dear [player]. How are you? Are you ready to seize the day?'"
     return
 
 init 5 python:
