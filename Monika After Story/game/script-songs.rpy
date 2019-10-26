@@ -366,3 +366,32 @@ label mas_song_nobody_makes_sense:
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
     m 1ekbfb "I really hope I can keep on smiling with you forever~"
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_song_yozurina",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Yozurina",
+            random=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_yozurina:
+    m 1dsd "{i}~Meeting up at midnight~{/i}"
+    m 1rksdld "{i}~In a world scattered with bombs~{/i}"
+    m 3hubsa "{i}~I was thinking about you, all this time~{/i}"
+    m 1eka "{i}~Could it have been a misunderstanding of the distance between us?~{/i}"
+    m 3eub "{i}~That show's so interesting, right?~{/i}"
+    m 1hua "{i}~Did you read that manga everyone's talking about?~{/i}"
+    m 1sub "{i}~Did you listen to this song yet?~{/i}"
+    m 3hub "{i}~Fooling around, on the other sides of the screen~{/i}"
+    m 1hubsa "Ehehe, I hope you liked that, [player]~"
+    m 1ekbsa "I just thought it really matched our situation."
+    m 3rkbsa "Vocaloid songs sure have a tendency for that if you can get behind them."
+    m 3hubfb "I guess this is what happens when I try to express my love for you, ahaha!"
+    return "derandom"
+

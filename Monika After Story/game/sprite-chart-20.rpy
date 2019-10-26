@@ -1332,6 +1332,20 @@ image monika 1rktsc:
         0.06
         repeat
 
+image monika 1rsbsd:
+    block:
+        "monika 1rsbsd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dsbsd_static"
+        0.05
+        repeat
+
 image monika 1rsbssdlu:
     block:
         "monika 1rsbssdlu_static"
@@ -1386,6 +1400,20 @@ image monika 1rsu:
                 7
         "monika 1dsu_static"
         0.06
+        repeat
+
+image monika 1rubfb:
+    block:
+        "monika 1rubfb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubfb_static"
+        0.05
         repeat
 
 image monika 1ruc:
