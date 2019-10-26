@@ -495,7 +495,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
-            eventlabel="greeting_o31_miku",
+            eventlabel="greeting_o31_orcaramelo_hatsune_miku",
             category=[store.mas_greetings.TYPE_HOL_O31]
         ),
         code="GRE"
@@ -533,7 +533,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
-            eventlabel="greeting_o31_sakuya",
+            eventlabel="greeting_o31_orcaramelo_sakuya_izayoi",
             category=[store.mas_greetings.TYPE_HOL_O31]
         ),
         code="GRE"
