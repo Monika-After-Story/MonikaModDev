@@ -39,6 +39,11 @@ init -100 python in mas_selspr:
 
     # prompt constants go here
     PROMPT_MAP = {
+        "choker": {
+            "_ev": "monika_choker_select",
+            "change": "Can you change your choker?",
+            "wear": "Can you wear a choker?",
+        },
         "clothes": {
             "_ev": "monika_clothes_select",
             "change": "Can you change your clothes?",
@@ -566,6 +571,7 @@ init -10 python in mas_selspr:
     CLOTH_SEL_SL = []
 
     GRP_TOPIC_LIST = [
+        "choker",
         "left-hair-clip",
         "left-hair-flower",
         "ribbon",
@@ -1480,6 +1486,9 @@ init -10 python in mas_selspr:
             sel_obj = _get_sel(sp_obj, sp_type)
             if check_prompt(sel_obj.group):
                 unlock_prompt(sel_obj.group)
+
+                # make sure the selector uses the right propmt
+
 
 
     # extension of mailbox
@@ -3462,6 +3471,49 @@ label monika_hairflower_select:
     return
 
 #### End Monika hairflower
+
+#### Monika choker
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_choker_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("choker", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+label monika_choker_select:
+    python:
+        use_acs = store.mas_selspr.filter_acs(True, group="choker")
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which choker would you like me to wear?"
+        )
+        sel_map = {}
+
+    m 6eua "Sure [player]!"
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type("choker"):
+        $ store.mas_selspr.set_prompt("choker", "change")
+        m 1eka "If you want me to change my choker, just ask, okay?"
+    else:
+        $ store.mas_selspr.set_prompt("choker", "wear")
+        m 1eka "If you want me to wear a choker, just ask, okay?"
+
+    return
+
+#### End choker
 
 
 ############### END SELECTOR TOPICS ###########################################
