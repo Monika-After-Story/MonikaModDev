@@ -815,11 +815,13 @@ label greeting_esperanto:
     m 1hua "Saluton, mia kara [player]."
     m 1eua "Kiel vi fartas?"
     m 3eub "Ĉu vi legas por kapti la tagon?"
-    m 1eub "Ehehe!"
-    m 3eud "That was just a bit of Esperanto...{w=0.5}a language that was created artificially instead of having evolved naturally."
+    m 1hua "Ehehe~"
+    m 3esa "That was just a bit of Esperanto...{w=0.5}{nw}"
+    extend 3eud "a language that was created artificially instead of having evolved naturally."
     m 3tua "Whether you've heard about it or not, you might not have expected something like that coming from me, huh?"
     m 2etc "Or maybe you did...{w=0.5} I guess it makes sense something like this would interest me, given my background and all..."
-    m 3hua "Anyway, if you were wondering what I said, it was just, 'Hello, my dear [player]. How are you? Are you ready to seize the day?'"
+    m 1hua "Anyway, if you were wondering what I said, it was just, {nw}"
+    extend 3hua "'Hello, my dear [player]. How are you? Are you ready to seize the day?'"
     return
 
 init 5 python:
