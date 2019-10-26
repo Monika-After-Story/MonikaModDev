@@ -561,6 +561,8 @@ init -10 python in mas_selspr:
     # create the selectable lists
     # we also create a dict mapping similar to sprites.
     # maps
+    # key: sprite object name
+    # value: selectable object
     ACS_SEL_MAP = {}
     HAIR_SEL_MAP = {}
     CLOTH_SEL_MAP = {}
@@ -621,6 +623,14 @@ init -10 python in mas_selspr:
                 unlock_prompt(group)
             else:
                 lock_prompt(group)
+
+    
+    def _switch_to_wear_prompts():
+        """
+        Switches all prompts for grp_topic_list topics to use their wear prompt.
+        """
+        for group in GRP_TOPIC_LIST:
+            set_prompt(group, "wear")
 
 
     def _has_remover(group):
