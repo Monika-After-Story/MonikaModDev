@@ -384,7 +384,7 @@ label anni_1month:
     m 1hubfa "Let's make today a special day~"
 
     $ unlockEventLabel("anni_1month")
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -570,7 +570,7 @@ label anni_4:
     m 1hubfb "Ahaha!"
 
     $ unlockEventLabel("anni_4")
-    return
+    return "love"
 
 init 5 python:
     addEvent(

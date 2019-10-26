@@ -122,6 +122,8 @@ label dev_mouse_tracker:
         $ mas_enableMouseTracking()
     return
 
+    return
+
 
 screen dev_mouseoverlay():
     zorder 100
