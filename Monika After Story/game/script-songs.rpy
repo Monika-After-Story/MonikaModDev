@@ -181,7 +181,7 @@ init 5 python:
             eventlabel="monika_sing_song_random",
             random=True,
             unlocked=False,
-            rules={"skip alert": None}
+            rules={"skip alert": None,"force repeat": None}
         )
     )
 
