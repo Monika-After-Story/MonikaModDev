@@ -804,6 +804,30 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
+            eventlabel="greeting_esperanto",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+)
+
+label greeting_esperanto:
+    m 1hua "Saluton, mia kara [player]."
+    m 1eua "Kiel vi fartas?"
+    m 3eub "Ĉu vi legas por kapti la tagon?"
+    m 1hua "Ehehe~"
+    m 3esa "That was just a bit of Esperanto...{w=0.5}{nw}"
+    extend 3eud "a language that was created artificially instead of having evolved naturally."
+    m 3tua "Whether you've heard about it or not, you might not have expected something like that coming from me, huh?"
+    m 2etc "Or maybe you did...{w=0.5} I guess it makes sense something like this would interest me, given my background and all..."
+    m 1hua "Anyway, if you were wondering what I said, it was just, {nw}"
+    extend 3hua "'Hello, my dear [player]. How are you? Are you ready to seize the day?'"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
             eventlabel="greeting_yay",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
@@ -3618,4 +3642,25 @@ label greeting_back_housework:
         m 6ekd "Ah, [player]. So you really were just busy..."    
     else:
         m 6ckc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_surprised2",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="GRE"
+    )
+
+label greeting_surprised2:
+    m 1hua "..."
+    m 1hubsa "..."
+    m 1wubso "Oh!{w=0.5} [player]!{w=0.5} You surprised me!"
+    m 3ekbsa "...Not that it's a surprise to see you, you're always visiting me after all...{w=0.5} {nw}"
+    extend 3rkbsa "You just caught me daydreaming a bit."
+    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfu "But now that you're here, that dream just came true~"
     return
