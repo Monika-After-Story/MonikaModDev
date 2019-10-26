@@ -2106,3 +2106,35 @@ label mas_reaction_gift_clothes_velius94_shirt_pink:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
+
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "orcaramelo_sakuya_izayoi")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1sub "Oh! {w=0.5} Is this..."
+    m 2euc "A maid outfit?"
+    m 3tuu "Ehehe~"
+    m 3tubsb "You know, if you liked this kind of thing, you could have just told me..."
+    m 1hub "Ahaha! Just kidding~"
+    m 1eua "Let me go put it on!"
+
+    # try it on
+    call mas_clothes_change(sprite_object, outfit_mode=True)
+
+    m 2hua "So,{w=0.5} how do I look?"
+    m 3eub "I almost feel like I could get anything done before you could even blink."
+    m 1eua "...So long as you don't keep me too busy, ehehe~"
+    m 1lkbfb "I'd still like to be able to spend time with you, maste--{nw}"
+    $ _history_list.pop()
+    m 1ekbfb "I'd still like to be able to spend time with you,{fast} [player]."
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return

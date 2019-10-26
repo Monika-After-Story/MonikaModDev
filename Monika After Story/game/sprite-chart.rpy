@@ -308,8 +308,11 @@ init -100 python in mas_sprites:
     DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons"]
     # default mux types for ribbon-based items.
 
-    DEF_MUX_HS = ["headset", "headphones", "earphones"]
+    DEF_MUX_HS = ["headset", "headphones", "earphones", "headband"]
     # default mux types for headset-based items
+
+    DEF_MUX_HB = ["headband", "headset", "headphones"]
+    # default mux types for headband-based items
 
     DEF_MUX_LHC = ["left-hair-clip"]
     # default mux types for left hair clip-based items
@@ -329,6 +332,10 @@ init -100 python in mas_sprites:
             ex_props={
                 "bare neck": True
             }
+        ),
+        "headband": ACSTemplate(
+            "headband",
+            mux_type=DEF_MUX_HB
         ),
         "headset": ACSTemplate(
             "headset",
