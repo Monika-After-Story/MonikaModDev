@@ -326,6 +326,13 @@ init -100 python in mas_sprites:
                 "ribbon-like": True
             }
         ),
+        "choker": ACSTemplate(
+            "choker",
+            mux_type=["choker"],
+            ex_props={
+                "bare neck": True
+            }
+        ),
         "headband": ACSTemplate(
             "headband",
             mux_type=DEF_MUX_HB

@@ -216,6 +216,8 @@ init -2 python in mas_sprites:
 
         # removes all acs
         _moni_chr.remove_all_acs()
+        # and update prompts
+        store.mas_selspr._switch_to_wear_prompts()
 
 
     ######### HAIR [SPR010] ###########
