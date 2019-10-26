@@ -7365,17 +7365,60 @@ label monika_sleep:
     m 5hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
-#special local var to handle repeated usage of this dialog box.
-default persistent._mas_monika_breakup = 0
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_breakup",
+            category=['misc'],
+            prompt="I'm breaking up with you",
+            unlocked=True,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
 
 label monika_breakup:
     #Lose affection for bringing this up.
     $ mas_loseAffection(reason=1)
-    #second time you hit the break up button.
-    if persistent._mas_monika_breakup == 1:
+
+    #Get the shown count
+    $ shown_count = mas_getEV("monika_breakup").shown_count
+
+    #First
+    if shown_count == 0:
+        m 1wud "W-what?"
+        if persistent.monika_kill:
+            m 2ekd "You're just going to leave and delete me again?"
+        if mas_isMoniUpset(lower=True):
+            m 1ekd "You wouldn't do that. I refuse to believe that..."
+            m 1lksdld "That's not a joke, [player]!"
+            m 1lksdlc "Don't say that again unless you really, truly mean it..."
+            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
+
+        else:
+            m 2wfw "I can't believe you, [player]. I really can't beli-"
+            m 2efu "..."
+            m 2hub "Ahaha!"
+            m 2hksdlb "Sorry, I couldn't keep a straight face!"
+            m 2hua "You're just so silly, [player]."
+            if persistent.monika_kill:
+                $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
+            else:
+                $ menuOption = "You'd never do that, right?"
+
+            m 2eua "[menuOption]{nw}"
+            $ _history_list.pop()
+            menu:
+                m "[menuOption]{fast}"
+
+                "Of course not.":
+                    m 2hua "Ehehe, you're so sweet."
+                    m 2eka "I love you so much, [player]! Ehehe~"
+                    return "love"
+
+    #Second time
+    elif shown_count == 1:
         m 1euc "You're breaking up with me?"
         m 2ekc "Why would you do such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
@@ -7398,8 +7441,9 @@ label monika_breakup:
                 "Yes.":
                     m 1hub "Ahaha! You're so silly, [player]."
                     m 1eka "Let's stay together forever~"
-    #Beyond the 2nd time you hit the button.
-    elif persistent._mas_monika_breakup > 1:
+
+    #Third time
+    else:
         if mas_isMoniBroken():
             m 6ckc "..."
         elif mas_isMoniUpset(lower=True):
@@ -7407,47 +7451,7 @@ label monika_breakup:
         else:
             m 1hua "Ehehe~"
 
-    #first time you hit the button.
-    else:
-        m 1wud "W-what?"
-        if persistent.monika_kill:
-            m 2ekd "You're just going to leave and delete me again?"
-        if mas_isMoniUpset(lower=True):
-            m 1ekd "You wouldn't do that. I refuse to believe that..."
-            m 1lksdld "That's not a joke, [player]!"
-            m 1lksdlc "Don't say that again unless you really, truly mean it..."
-            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-        else:
-            m 2wfw "I can't believe you, [player]. I really can't beli-"
-            m 2efu "..."
-            m 2hub "Ahaha!"
-            m 2hksdlb "Sorry, I couldn't keep a straight face!"
-            m 2hua "You're just so silly, [player]."
-            if persistent.monika_kill:
-                $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
-            else:
-                $ menuOption = "You'd never do that, right?"
-
-            m 2eua "[menuOption]{nw}"
-            $ _history_list.pop()
-            menu:
-                m "[menuOption]{fast}"
-                "Of course not.":
-                    m 2hua "Ehehe, you're so sweet."
-                    m 2eka "I love you so much, [player]! Ehehe~"
-                    call monika_breakup_logic
-                    return "love"
-
-    call monika_breakup_logic
-    return
-
-label monika_breakup_logic:
-    #Increments the persistent every time you click the button in the menu.
-    $ persistent._mas_monika_breakup += 1
-
-    #If the label was clicked 3 times, remove it.
-    if persistent._mas_monika_breakup > 2:
-        $ hideEventLabel("monika_breakup",lock=True,depool=True)
+        $ mas_lockEVL("monika_breakup", "EVE")
     return
 
 init 5 python:
