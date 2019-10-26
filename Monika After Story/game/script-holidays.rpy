@@ -296,8 +296,13 @@ label mas_o31_autoload_check:
 
                 #Vignette on O31
                 store.mas_globals.show_vignette = True
-    
+
                 #Set by-user to True because we don't want progressive
+                mas_changeWeather(mas_weather_thunder, True)
+
+            elif (persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
+                #Setup vignette and thunder on subsequent sessions
+                store.mas_globals.show_vignette = True
                 mas_changeWeather(mas_weather_thunder, True)
 
         #It's not O31 anymore and it's time to reset
@@ -312,7 +317,9 @@ label mas_o31_autoload_check:
             if not mas_getEV("greeting_hairdown").shown_count:
                 mas_unlockEVL("greeting_hairdown", "GRE")
 
-            if not mas_getEV("greeting_ourreality").shown_count:
+            ev = mas_getEV("greeting_ourreality")
+
+            if ev and ev.shown_count:
                 mas_unlockEVL("greeting_ourreality", "GRE")
 
     #Run pbday checks
