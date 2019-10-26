@@ -436,7 +436,7 @@ label mas_song_nobody_makes_sense:
 init 5 python:
     addEvent(
         Event(
-            persistent.event_database,
+            persistent._mas_songs_database,
             eventlabel="mas_song_yozurina",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Yozurina",
@@ -465,7 +465,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="monika_song_stand_by_me",
+            eventlabel="mas_song_stand_by_me",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Stand By Me",
             random=True,
@@ -474,7 +474,7 @@ init 5 python:
         code="SNG"
     )
 
-label monika_song_stand_by_me(from_long=False):
+label mas_song_stand_by_me(from_long=False):
     m 1dsd "{i}~When the night has come~{/i}"
     m 3dsd "{i}~And the land is dark~{/i}"
     m 3eud "{i}~And the moon is the only light we'll see~{/i}"
@@ -492,7 +492,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="monika_song_stand_by_me_long",
+            eventlabel="mas_song_stand_by_me_long",
             category=[store.mas_songs.TYPE_LONG],
             prompt="Stand By Me",
             random=False,
@@ -502,8 +502,8 @@ init 5 python:
         code="SNG"
     )
 
-label monika_song_stand_by_me_long:
-    call monika_song_stand_by_me(from_long=True)
+label mas_song_stand_by_me_long:
+    call mas_song_stand_by_me(from_long=True)
 
     m 4hub "{i}~So darlin', darlin', stand by me, oh stand by me~{/i}"
     m 4duo "{i}~Oh stand, stand by me, stand by me~{/i}"
