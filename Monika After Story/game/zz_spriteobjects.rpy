@@ -201,9 +201,9 @@ init -2 python in mas_sprites:
             store.mas_unlockEVL("monika_hair_select", "EVE")
 
 
-    def _clothes_baked_entry():
+    def _clothes_baked_entry(_moni_chr):
         """
-        Locks all selectors except clothes
+        Clothes baked entry
         """
         for prompt_key in store.mas_selspr.PROMPT_MAP:
             if prompt_key != "clothes":
@@ -213,6 +213,9 @@ init -2 python in mas_sprites:
                 )
                 if prompt_ev is not None:
                     store.mas_lockEVL(prompt_ev, "EVE")
+
+        # removes all acs
+        _moni_chr.remove_all_acs()
 
 
     ######### HAIR [SPR010] ###########
@@ -337,7 +340,7 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
         # lock selectors
-        _clothes_baked_entry()
+        _clothes_baked_entry(_moni_chr)
 
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
@@ -428,7 +431,7 @@ init -2 python in mas_sprites:
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
-        _clothes_baked_entry()
+        _clothes_baked_entry(_moni_chr)
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
