@@ -6988,31 +6988,3 @@ image monika 4tsb:
         0.06
         repeat
 
-image monika 4tsbsa:
-    block:
-        "monika 4tsbsa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dsbsa_static"
-        0.06
-        repeat
-
-image monika 4tub:
-    block:
-        "monika 4tub_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dub_static"
-        0.06
-        repeat
-
