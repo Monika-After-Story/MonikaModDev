@@ -2128,6 +2128,17 @@ image monika 3tubfu_static = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3tubsb_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="big",
+    arms="restleftpointright",
+    blush="shade"
+)
+
 image monika 3tuu_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5673,18 +5684,5 @@ image monika 6dsbsa_static = DynamicDisplayable(
     mouth="smile",
     arms="down",
     blush="shade"
-)
-
-image monika 6dsc_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="mid",
-    eyes="closedsad",
-    nose="def",
-    mouth="smirk",
-    arms="down",
-    head="q",
-    left="1l",
-    right="1r"
 )
 
