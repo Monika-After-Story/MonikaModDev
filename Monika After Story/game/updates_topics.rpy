@@ -45,18 +45,15 @@ init -1 python:
 
         updates.topics.clear()
         updates.topics = None
-        updates.version_updates.clear()
-        updates.version_updates = None
+        #updates.version_updates.clear()
+        #updates.version_updates = None
         # TODO
         # is there a way to delete a renpy storemodule?
 
 
 # runs before updates.rpy
 init 9 python:
-
-    if persistent.version_number != config.version:
-        renpy.call_in_new_context("vv_updates_topics")
-
+    renpy.call_in_new_context("vv_updates_topics")
 
 # init label for updats_topics
 label vv_updates_topics:
@@ -68,7 +65,15 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
-        vv0_8_15 = "v0_8_15"
+        #vv0_10_2 = "v0_10_2"
+        vv0_10_1 = "v0_10_1"
+        vv0_10_0 = "v0_10_0"
+        vv0_9_5 = "v0_9_5"
+        vv0_9_4 = "v0_9_4"
+        vv0_9_3 = "v0_9_3"
+        vv0_9_2 = "v0_9_2"
+        vv0_9_1 = "v0_9_1"
+        vv0_9_0 = "v0_9_0"
         vv0_8_14 = "v0_8_14"
         vv0_8_13 = "v0_8_13"
         vv0_8_12 = "v0_8_12"
@@ -105,7 +110,15 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
-#        updates.version_updates[vv0_8_14] = vv0_8_15
+        #updates.version_updates[vv0_10_2] = vv0_10_2
+        updates.version_updates[vv0_10_0] = vv0_10_1
+        updates.version_updates[vv0_9_5] = vv0_10_0
+        updates.version_updates[vv0_9_4] = vv0_9_5
+        updates.version_updates[vv0_9_3] = vv0_9_4
+        updates.version_updates[vv0_9_2] = vv0_9_4
+        updates.version_updates[vv0_9_1] = vv0_9_2
+        updates.version_updates[vv0_9_0] = vv0_9_1
+        updates.version_updates[vv0_8_14] = vv0_9_0
         updates.version_updates[vv0_8_13] = vv0_8_14
         updates.version_updates[vv0_8_12] = vv0_8_13
         updates.version_updates[vv0_8_11] = vv0_8_13
@@ -138,6 +151,8 @@ label vv_updates_topics:
         updates.version_updates[vv0_3_0] = vv0_3_1
         updates.version_updates[vv0_2_2] = vv0_3_0
 
+        # NOTE: we are no longer going to use this:
+        #
         # version structures:
         # if a version has changed / removed IDS, then add it as a dict
         # here

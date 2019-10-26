@@ -121,10 +121,10 @@ label mas_piano_songchoice:
     $ pnml = None
 
     if len(song_list) > 0:
-        show monika 1eua
-
+        m 1eua "Did you want to play a song or play on your own, [player]?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Did you want to play a song or play on your own, [player]?"
+            m "Did you want to play a song or play on your own, [player]?{fast}"
             "Play a song.":
                 m "Which song?"
                 show monika at t21
@@ -170,8 +170,7 @@ label mas_piano_setupstart:
     # pre call setup
     python:
         disable_esc()
-        store.songs.enabled = False
-        store.hkb_button.enabled = False
+        mas_MUMURaiseShield()
     stop music
 #    show text quit_label zorder 10 at piano_quit_label
 
@@ -181,8 +180,7 @@ label mas_piano_setupstart:
 
     # post call cleanup
 #    hide text quit_label
-    $ store.songs.enabled = True
-    $ store.hkb_button.enabled = True
+    $ mas_MUMUDropShield()
     $ enable_esc()
     $ mas_startup_song()
     $ pnmlSaveTuples()
@@ -200,9 +198,10 @@ label mas_piano_setupstart:
 
     # No-hits dont get to try again
     if post_piano != "mas_piano_result_none":
-        show monika 1eua
+        m 1eua "Would you like to play again?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Would you like to play again?"
+            m "Would you like to play again?{fast}"
             "Yes.":
                 jump mas_piano_loopstart
             "No.":
@@ -290,7 +289,7 @@ label mas_piano_hb_fail:
     elif mas_isplayer_bday():
         m 1eka "That's okay, [player]!"
         m 3hub "It was a neat idea to play that on your birthday while I sung along!"
-        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!" 
+        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!"
     else:
         m 1lksdla "..."
         m 1lksdlb "You did your best, [player]..."
@@ -324,7 +323,7 @@ label mas_piano_hb_fc:
 label mas_piano_hb_prac:
     if mas_isMonikaBirthday():
         if mas_isplayer_bday():
-            m 1eka "Aw, you're trying the Birthday Song on our birthday, [player]!"
+            m 1eka "Aww, you're trying the Birthday Song on our birthday, [player]!"
             m 3hua "Keep trying, I know you can do it!"
         else:
             m 1eua "Thanks for trying to play this one on my birthday!"
@@ -333,7 +332,7 @@ label mas_piano_hb_prac:
         m 1eksdla "Ehehe, trying the Birthday Song on your birthday, [player]?"
         m 3hua "Keep trying, I know you can do it!"
     else:
-        m 1eua "You're practing the Birthday Song?"
+        m 1eua "You're practicing the Birthday Song?"
         m 3hua "I know you can do it, [player]!"
     return
 
@@ -368,7 +367,7 @@ label mas_piano_yr_fail:
 label mas_piano_yr_prac:
     m 1hua "That was really cool, [player]!"
     m 3eua "With some more practice, you'll be able to play my song perfectly."
-    m 1eka "Make sure to practice everyday for me, okay~?"
+    m 1eka "Make sure to practice everyday for me, okay?~"
     return
 
 
@@ -379,7 +378,7 @@ label mas_piano_yr_prac:
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
     import os
-    log = renpy.renpy.log.open("log/pnm")
+    log = renpy.store.mas_utils.getMASLog("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 
@@ -400,7 +399,7 @@ init -3 python in mas_piano_keys:
     # menu constants
     MENU_X = 680
     MENU_Y = 40
-    MENU_W = 450
+    MENU_W = 560
     MENU_H = 640
     MENU_XALIGN = -0.05
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
@@ -2347,93 +2346,93 @@ init 810 python:
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
             # button shit
-            button_idle = Image("mod_assets/hkb_idle_background.png")
-            button_hover = Image("mod_assets/hkb_hover_background.png")
-            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
+            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
+            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
 
             # button text
             button_done_text_idle = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_done_text_hover = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_cancel_text_idle = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_cancel_text_hover = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_reset_text_idle = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_reset_text_hover = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_resetall_text_idle = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_resetall_text_hover = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_config_text_idle = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_config_text_hover = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_quit_text_idle = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_quit_text_hover = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 

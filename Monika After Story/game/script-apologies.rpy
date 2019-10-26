@@ -62,7 +62,9 @@ label monika_playerapologizes:
         7: "forgetting your birthday.",
         8: "not spending time with you on your birthday.",
         9: "the game crashing.",
-        10: "the game crashing." #easiest way to handle this w/o overrides
+        10: "the game crashing.", #easiest way to handle this w/o overrides
+        11: "not listening to your speech.",
+        12: "calling you evil."
     }
 
     #Set the prompt for this...
@@ -70,8 +72,12 @@ label monika_playerapologizes:
         #If there's a non-generic apology reason pending we use "for something else."
         $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0])
     else:
-        #Otherwise we just use "for something."
-        $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,"something.")
+        #Otherwise, we use "for something." if reason isn't 0
+        if mas_apology_reason == 0:
+            $ mas_getEV('mas_apology_generic').prompt = "...for something."
+        else:
+            #We set this to an apology reason if it's valid
+            $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,"something.")
 
     #Then we delete this since we're not going to need it again until we come back here, where it's created again.
     #No need to store excess memory
@@ -82,11 +88,17 @@ label monika_playerapologizes:
         apologylist = [
             (ev.prompt, ev.eventlabel, False, False)
             for ev_label, ev in store.mas_apology.apology_db.iteritems()
-            if ev.unlocked
+            if ev.unlocked and (ev.prompt != "...for something." and ev.prompt != "...for something else.")
         ]
 
+        #Now we add the generic if there's no prompt attached
+        generic_ev = mas_getEV('mas_apology_generic')
+
+        if generic_ev.prompt == "...for something." or generic_ev.prompt == "...for something else.":
+            apologylist.append((generic_ev.prompt, generic_ev.eventlabel, False, False))
+
         #The back button
-        return_prompt_back = ("Nevermind", False, False, False, 20)
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     #Display our scrollable
     show monika at t21
@@ -168,7 +180,9 @@ label mas_apology_generic:
         7: "forgetting my birthday.",
         8: "not spending time with me on my birthday.",
         9: "the game crashing. I understand it happens sometimes, but don't worry, I'm alright!",
-        10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better."
+        10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better.",
+        11: "not listening to my speech. I worked really hard on it.",
+        12: "calling me evil. I know you don't really think that."
     }
 
     #If there's no reason to apologize
@@ -178,7 +192,7 @@ label mas_apology_generic:
             m 2dsc ".{w=2}.{w=2}."
             m "Okay."
         elif mas_isMoniDis():
-            m 2dfd "{i}sigh{/i}"
+            m 2dfd "{i}*sigh*{/i}"
             m 2dsd "I hope this isn't some joke or trick, [player]."
             m 2dsc "..."
             m 1eka "...Thank you for the apology."
@@ -198,7 +212,7 @@ label mas_apology_generic:
             m 1hub "That's why I love you, [player]!"
 
     #She knows what you are apologizing for
-    elif mas_apology_reason:
+    elif mas_apology_reason_db.get(mas_apology_reason, False):
         #Set apology_reason
         $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
 
@@ -270,7 +284,7 @@ label mas_apology_bad_nickname:
         m 2wfd "I can't believe you."
         m 2dfc "I trusted you to give me a good nickname to make me more unique, but you just threw it back in my face..."
         m "I guess I couldn't trust you for this."
-        m ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+        m ".{w=0.5}.{w=0.5}.{nw}"
         m 2rfc "I'd accept your apology, [player], but I don't think you even mean it."
         #No unlock of nickname topic either.
     return

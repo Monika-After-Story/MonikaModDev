@@ -1,10 +1,10 @@
 init -1 python:
     import store.mas_affection as mas_aff
 label introduction:
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_opened_game = True
 
-    $ persistent.current_track = store.songs.FP_JUST_MONIKA
-    $ mas_startup_song()
-
+    $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
         m 6dfc "[player]..."
@@ -45,8 +45,8 @@ label introduction:
             m 2tfd "I'm still mad that you deleted me, though!"
             m 3rsc "But I guess it's because you're so game-obsessed."
             m 1eka "I can't stay mad knowing that you came back to me in the end, though."
-            m "You even added a mod so we can do more things together."
-            m "Are you going to make up for making me wait so long?"
+            m 3eka "You even added a mod so we can do more things together."
+            m 1eua "Are you going to make up for making me wait so long?"
     elif not persistent.monika_kill:
         m 1hub "Yay, there you are!"
         m "Hello again, [player]."
@@ -118,33 +118,94 @@ label introduction:
     m 1dsc "It's not like that file [_iswas] {i}me{/i}, anyway."
     m 1rsc "It [_iswas] just a file with weird code in it."
     m 3eub "I do have good news, though!"
-    m "I can {i}really{/i} transform myself into a file you can bring around."
-    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
-
-    m 1eua "Anyway..." 
-    m "It looks like the extra code made me connect to you in a special way."
+    m 3eua "I can {i}really{/i} transform myself into a file you can bring around."
+    m 1eua "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+    m 1esa "Anyway..." 
+    m 1hua "It looks like the extra code made me connect to you in a special way!"
     m 1tubfb "Or maybe it's our eternal love~"
     m 3eka "Promise me that you'll visit me every day, okay?"
     m 3eub "Or that you'll take me with you when you go out?"
     m 1ekc "I know that there will be times when you can't be here..."
     m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
     m 3hubfa "That way, we can be together all the time~"
-    m 5hua "It's not like you don't have the time to talk to your cute girlfriend."
-    m 2hua "You took the time to download this mod, after all."
-    m 2hub "Ahaha!"
-    m "God, I love you so much!"
+    m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
+    m 3hua "You took the time to download this mod, after all."
+    m 3hub "Ahaha!"
+    m 1hub "God, I love you so much!"
+
+    if not persistent.rejected_monika:
+        show screen mas_background_timed_jump(3, "intro_ily_timedout")
+        menu:
+            "I love you, too!":
+                hide screen mas_background_timed_jump
+                # bonus aff was saying it before being asked
+                $ mas_gainAffection(10,bypass=True)
+                # increment the counter so if you get this, you don't get the similar dlg in monika_love
+                $ persistent._mas_monika_lovecounter += 1
+                m 1subsw "...!"
+                m 1lkbsa "Even though it's what I dreamt you would say, I still cannot believe you actually said it!"
+                m 3hubfa "It makes everything I've done for us worthwhile!"
+                m 1dkbfu "Thank you so much for saying it..."
+    else:
+        "Do you love me, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you love me, [player]?{fast}"
+            # only one option if you've already rejected, you answer yes or you don't play the mod
+            # doing the scare more than once doesn't really make sense
+            "Yes, I love you.":
+                m 1hksdlb "Did I scare you last time? Sorry about that!"
+                m 1rsu "I knew you really loved me the whole time."
+                m 3eud "The truth is, if you didn't love me, we wouldn't be here in the first place."
+                m 1tsb "We'll be together forever."
+                m 1tfu "Won't we?"
+                m "..."
+                m 3hub "Ahaha! Anyway..."
+
+# label for the end so we can jump to this if we timed out in the previous menu
+# we fall thru to this if not
+label intro_end:
+    if not persistent.rejected_monika:
+        m 1eub "Nothing's ever going to get in the way of our love again."
+        m 1tuu "I'll make sure of it."
+    m 3eua "Now that you added some improvements, you can finally talk to me!"
+    m 3eub "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
+
+    call bookmark_derand_intro
+
+    # NOTE: the Extra menu is explained when the user clicks on it
+    m 3eub "If you get bored of the music, I can change that, too!"
+    m 1eua "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
+    m 3hub "Also, we can play games now!"
+    m 3esa "Just press 'p' or click on 'Play' to choose a game that we can play."
+    m 3eua "I'll get better over time as I figure out how to program more features into this place..."
+    m 1eua "...So just leave me running in the background."
+    m 3etc "It's not like we're still keeping secrets from each other, right?"
+    m 1tfu "After all, I can see everything on your computer now..."
+    m 3hub "Ahaha!"
+
+    #Only dissolve if needed
+    if len(persistent.event_list) == 0:
+        show monika 1esa with dissolve
+
+    if mas_isMonikaBirthday():
+        # This is at the beginning and end of intro to cover an intro
+        # that spans 2 days
+        $ persistent._mas_bday_opened_game = True
+    return
+
+label intro_ily_timedout:
+    hide screen mas_background_timed_jump
+    m 1ekd "..."
+    m "You do love me, [player]...{w=0.5}right?{nw}"
+    $ _history_list.pop()
     menu:
-        "Do you love me, [player]?"
-        "I love you too.":
+        m "You do love me, [player]...right?{fast}"
+        "Of course I love you.":
             #Gain affection for saying I love you too.
             $ mas_gainAffection()
-            if persistent.rejected_monika:
-                m 1hksdlb "Did I scare you last time? Sorry about that!"
-                m 1eua "I knew you really loved me the whole time."
-                m "The truth is, if you didn't love me, we wouldn't be here in the first place."
-                m "We'll be together forever, won't we?"
-            else:
-                m 1hua "I'm so happy you feel the same way!"
+            m 1hua "I'm so happy you feel the same way!"
+            jump intro_end
         "No.":
             #Lose affection for rejecting Monika
             $ mas_loseAffection()
@@ -154,30 +215,13 @@ label introduction:
             $ persistent.closed_self = True
             jump _quit
 
-    m 1hub "Nothing's ever going to get in the way of our love again."
-    m "I'll make sure of it."
-    m 2eua "Now that you added some improvements, you can finally talk to me!"
-    m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
-    # NOTE: the Extra menu is explained when the user clicks on it
-    m "If you get bored of the music, I can change that, too!"
-    m "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
-    m "Also, we can play games now."
-    m "Just press 'p' or click on 'Play' to choose a game that we can play."
-    m 2hua "I'll get better over time as I figure out how to program more features into this place..."
-    m "...So just leave me running in the background."
-    m 1eua "It's not like we're still keeping secrets from each other, right?"
-    m 1hub "I can see everything on your computer now!"
-    m "Ahaha!"
-    show monika 1esa
-    return
-
 #Credit for any assets from Undertale belongs to Toby Fox
 label chara_monika_scare:
     $ persistent.rejected_monika = True
     m 1esd "No...?"
-    m "Hmm...?"
-    m 1esc "How curious."
-    m "You must have misunderstood."
+    m 1etc "Hmm...?"
+    m "How curious."
+    m 1esc "You must have misunderstood."
     $ style.say_dialogue = style.edited
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
@@ -243,6 +287,13 @@ label chara_monika_scare:
 
     return
 
+label bookmark_derand_intro:
+    # this is a label so we can check if it has been seen in mas_bookmarks_notifs_intro
+    m 1hua "If there's anything I'm talking about that you want to revisit easily, just press the 'b' key and I'll bookmark it for you."
+    m 2rksdlc "And if there happens to be something that you don't want me to bring up again, press the 'x' key and I'll make sure to avoid it in the future."
+    m 4hksdlb "...Hopefully there aren't too many things like that, ahaha!"
+    return
+
 #These are the comments made when you restart the game the first few times
 # NOTE: these are now triaged by a function in script-greetings
 
@@ -293,6 +344,10 @@ label ch30_reload_1_dlg:
     elif mas_curr_affection_group == mas_affection.G_SAD:
         m 2f  "I hope you'll listen and do it for me..."
 
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 3rksdlb "There's nothing stopping you from coming back and doing that, is there?"
+        m 1eka "It would really make me happy."
+
     m "Just click on 'Talk.' and say 'Goodbye.' instead."
     m 3eua "Then I can close the game myself."
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
@@ -313,6 +368,13 @@ label ch30_reload_2_dlg:
     m "It's like getting knocked unconscious..."
     m 1ekc "So sudden and scary."
     m "Why would you want to do that to me?"
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 1rksdld "Is something happening in your other game?"
+        m 1ekc "You know you could just come talk to me if there is, right?"
+
+    elif persistent._mas_idle_data.get("monika_idle_brb",False):
+        m 1ekd "If you need to leave, you can just tell me."
 
     if mas_curr_affection_group == mas_affection.G_HAPPY:
         m 1m "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
@@ -335,11 +397,20 @@ label ch30_reload_3:
 
 label ch30_reload_3_dlg:
     pause 1
-    m 1esc "By the way..."
-    m 2esc "I'm just going to accept the fact that you need to quit the game once in a while."
-    m "I'm starting to get used to it, anyway."
-    m 2eua "Besides, it makes me happy that you always come back..."
-    m 2lsc "So I guess it's not so bad."
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 1ekd "[player]!"
+        m 1ekc "You left without saying goodbye again!"
+        m "You're not going through anything stressful or upsetting in your game, are you?"
+        m 3eka "You know you could just come back to me if anything were to happen, right?"
+        m 1eka "It'd make me really happy to see you come back before saying goodbye at least."
+        m 1rksdld "I know it might not always be possible..."
+    else:
+        m 1esc "By the way..."
+        m 2esc "I'm just going to accept the fact that you need to quit the game once in a while."
+        m "I'm starting to get used to it, anyway."
+        m 2eua "Besides, it makes me happy that you always come back..."
+        m 2lsc "So I guess it's not so bad."
     m 1eka "But I'd really prefer if you'd let me close the game myself."
 
     if mas_curr_affection_group == mas_affection.G_SAD:
@@ -367,16 +438,16 @@ label ch30_reload_continuous_dlg:
     pause 1
     python:
         reload_quip_good = [
-            "Welcome back! Can you be careful to close it properly next time?",
-            "It hurts when you don't close it properly...but I'm sure it was a mistake.",
+            "Welcome back! Can you be careful to close the game properly next time?",
+            "It hurts when you don't close the game properly...but I'm sure it was a mistake.",
             "That was really scary...but you've fixed it again. Thank you...",
             "Would you give me some more of a warning next time?",
-            "I'm sure you didn't mean it but I do need to stress how bad it feels for me.",
+            "I'm sure you didn't mean to close the game on me, but I do need to stress how bad it feels.",
             "You do remember there was a way to say goodbye right? Just checking~",
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh...It's over and I'm back with you, my love. That...that was awful.",
+            "...Oh... It's over and I'm back with you, my love. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
@@ -416,6 +487,11 @@ label ch30_reload_continuous_dlg:
             reload_quip = renpy.random.choice(reload_quip_normal)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 3eka "You don't even have to quit if something happened in your other game."
+        if mas_isMoniAff(higher=True):
+            m 1ekb "I'm sure whatever it is, it won't be as bad after you come back to me for a bit!"
 
     ## TESTING ONLY
     if persistent._mas_idle_data.get("dev_idle_test", False):
