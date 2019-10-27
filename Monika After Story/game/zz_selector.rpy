@@ -3267,6 +3267,7 @@ label monika_event_clothes_select:
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Do you want me to change?"
         )
+        # only def and the outfit in question will be available here, so outfit mode only
         mailbox.send_outfit_checkbox_visible(False)
         mailbox.send_outfit_checkbox_checked(True)
         sel_map = {}
