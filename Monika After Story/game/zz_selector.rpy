@@ -3186,6 +3186,9 @@ default persistent._mas_setting_ocb = False
 label monika_clothes_select:
     # setup
     python:
+        # set the other clothes selector to seen
+        persistent._seen_ever['monika_event_clothes_select'] = True
+
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
@@ -3264,6 +3267,9 @@ init 5 python:
 label monika_event_clothes_select:
     # setup
     python:
+        # set the other clothes selector to seen
+        persistent._seen_ever['monika_clothes_select'] = True
+
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Do you want me to change?"
         )

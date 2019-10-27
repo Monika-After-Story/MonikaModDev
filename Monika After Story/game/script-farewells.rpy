@@ -124,10 +124,14 @@ label mas_farewell_start:
     python:
         # preprocessing menu
         # TODO: consider including processing the rules dict as well
+
+        Event.checkEvents(evhand.farewell_database)
+
         bye_pool_events = Event.filterEvents(
             evhand.farewell_database,
             unlocked=True,
-            pool=True
+            pool=True,
+            aff=mas_curr_affection
         )
 
     if len(bye_pool_events) > 0:

@@ -356,6 +356,18 @@ label v0_10_2(version="v0_10_2"):
 
                 #And erase this topic
                 mas_eraseTopic(old_ev_label, persistent.event_database)
+
+        if 'monika_clothes_select' in persistent._seen_ever:
+            persistent._seen_ever['monika_event_clothes_select'] = True
+
+        trick_treat = mas_getEV('bye_trick_or_treat')
+        if trick_treat is not None:
+            trick_treat.unlocked = False
+            trick_treat.start_date = mas_o31
+            trick_treat.end_date = mas_o31+datetime.timedelta(days=1)
+            trick_treat.action = action=EV_ACT_UNLOCK
+            trick_treat.years = []
+
     return
 
 #0.10.1

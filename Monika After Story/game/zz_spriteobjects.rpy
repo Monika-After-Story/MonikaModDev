@@ -497,11 +497,10 @@ init -2 python in mas_sprites:
         """
         Exit pp for orcaramelo miku
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
+        #outfit_mode = kwargs.get("outfit_mode", False)
 
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
-            _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
+        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
+        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
 
 
     def _clothes_orcaramelo_sakuya_izayoi_entry(_moni_chr, **kwargs):
@@ -534,19 +533,17 @@ init -2 python in mas_sprites:
         """
         Exit pp for orcaramelo sakuya
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
+        #outfit_mode = kwargs.get("outfit_mode", False)
 
-        # only remove acs in outfit mode
-        if outfit_mode:
-            # find and remove acs if found
-            _acs_remove_if_found(
-                _moni_chr,
-                "orcaramelo_sakuya_izayoi_headband"
-            )
-            _acs_remove_if_found(
-                _moni_chr,
-                "orcaramelo_sakuya_izayoi_strandbow"
-            )
+        # find and remove acs if found
+        _acs_remove_if_found(
+            _moni_chr,
+            "orcaramelo_sakuya_izayoi_headband"
+        )
+        _acs_remove_if_found(
+            _moni_chr,
+            "orcaramelo_sakuya_izayoi_strandbow"
+        )
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):

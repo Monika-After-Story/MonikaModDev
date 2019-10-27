@@ -278,7 +278,7 @@ label mas_o31_autoload_check:
     python:
         import random
 
-        if mas_isO31():
+        if mas_isO31() and mas_isMoniNormal(higher=True):
             #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
                 #Setup for greet
@@ -303,6 +303,8 @@ label mas_o31_autoload_check:
                 costume = mas_o31SelectCostume()
                 store.mas_selspr.unlock_clothes(costume, True)
                 mas_o31SetCostumeWorn(costume)
+                # remove ribbon so we just get the intended costume for the reveal
+                monika_chr.remove_acs(monika_chr.get_acs_of_type('ribbon'))
                 monika_chr.change_clothes(
                     costume,
                     by_user=False,
@@ -335,7 +337,7 @@ label mas_o31_autoload_check:
                 mas_changeWeather(mas_weather_thunder, True)
 
         #It's not O31 anymore and it's time to reset
-        else:
+        elif not mas_isO31():
             #NOTE: Since O31 is costumes, we always reset clothes + hair
             monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
             monika_chr.reset_hair()
@@ -668,17 +670,28 @@ label greeting_o31_cleanup:
 
 #START: O31 DOCKSTAT FARES
 init 5 python:
-    if mas_isO31():
-        addEvent(
-            Event(
-                persistent.farewell_database,
-                eventlabel="bye_trick_or_treat",
-                unlocked=True,
-                prompt="I'm going to take you trick or treating.",
-                pool=True
-            ),
-            code="BYE"
-        )
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_trick_or_treat",
+            prompt="I'm going to take you trick or treating.",
+            pool=True,
+            unlocked=False,
+            action=EV_ACT_UNLOCK,
+            start_date=mas_o31,
+            end_date=mas_o31+datetime.timedelta(days=1),
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="BYE",
+        skipCalendar=True
+    )
+
+    MASUndoActionRule.create_rule_EVL(
+       "bye_trick_or_treat",
+       mas_o31,
+       mas_o31 + datetime.timedelta(days=1),
+    )
 
 label bye_trick_or_treat:
     python:
