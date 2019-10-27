@@ -319,7 +319,7 @@ label mas_o31_autoload_check:
 
             ev = mas_getEV("greeting_ourreality")
 
-            if ev and ev.shown_count:
+            if ev and not ev.shown_count:
                 mas_unlockEVL("greeting_ourreality", "GRE")
 
     #Run pbday checks
