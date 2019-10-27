@@ -505,7 +505,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # queue the blazerless intro event
-        if not store.seen_event("mas_blazerless_intro"):
+        if not store.seen_event("mas_blazerless_intro") and not store.mas_hasSpecialOutfit():
             store.queueEvent("mas_blazerless_intro")
 
         # unlock blazerless for use

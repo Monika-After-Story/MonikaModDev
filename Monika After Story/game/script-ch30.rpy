@@ -1302,7 +1302,7 @@ label ch30_post_exp_check:
 
     # rain check
     $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None:
+    if set_to_weather is not None and not mas_weather.force_weather:
         $ mas_changeWeather(set_to_weather)
 
     # FALL THROUGH

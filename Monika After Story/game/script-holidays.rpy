@@ -304,7 +304,8 @@ label mas_o31_autoload_check:
                 store.mas_selspr.unlock_clothes(costume, True)
                 mas_o31SetCostumeWorn(costume)
                 # remove ribbon so we just get the intended costume for the reveal
-                monika_chr.remove_acs(monika_chr.get_acs_of_type('ribbon'))
+                if monika_chr.is_wearing_acs_type('ribbon'):
+                    monika_chr.remove_acs(monika_chr.get_acs_of_type('ribbon'))
                 monika_chr.change_clothes(
                     costume,
                     by_user=False,
@@ -955,7 +956,7 @@ label greeting_trick_or_treat_back:
         call return_home_post_player_bday
 
     #If it's just not o31, we need to clean up
-    elif not mas_isO31():
+    elif not mas_isO31() and not mas_isFirstSeshDay():
         call mas_o31_ret_home_cleanup(time_out, ret_tt_long)
     return
 

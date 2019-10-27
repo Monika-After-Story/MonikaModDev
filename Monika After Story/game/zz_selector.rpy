@@ -3313,6 +3313,9 @@ label monika_event_clothes_select:
     # closing
     m 1eub "If you want me to change back, just ask, okay?"
 
+    if store.monika_chr.clothes == store.mas_clothes_def and not store.mas_hasSpecialOutfit():
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
+
     return
 
 #### ends Monika clothes topic
