@@ -1989,6 +1989,8 @@ label mas_change_to_def:
         # remove from event list in case PP and ch30 both push
         $ mas_rmallEVL("mas_change_to_def")
 
+        # lock the event clothes selector
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
     return "no_unlock"
 
 # Changes clothes to the given outfit.

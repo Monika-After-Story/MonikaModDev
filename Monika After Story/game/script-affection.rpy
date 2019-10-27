@@ -526,7 +526,7 @@ init 15 python in mas_affection:
 
         # if not wearing def, change to def
         # TODO: may need to exclude Holidays from this is we give special outfits that are meant for Normal
-        if store.monika_chr.clothes != store.mas_clothes_def:
+        if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
             store.pushEvent("mas_change_to_def",True)
 
 

@@ -3247,6 +3247,66 @@ label monika_clothes_select:
 
     return
 
+# selector for event days with special outfits for normal people
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_event_clothes_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("clothes", "change"),
+            pool=True,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, mas_aff.NORMAL)
+        )
+    )
+
+label monika_event_clothes_select:
+    # setup
+    python:
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Do you want me to change?"
+        )
+        mailbox.send_outfit_checkbox_visible(False)
+        mailbox.send_outfit_checkbox_checked(True)
+        sel_map = {}
+
+        available_clothes = mas_selspr.filter_clothes(True)
+
+        for index in range(len(available_clothes)-1, -1, -1):
+            spr_obj = available_clothes[index].get_sprobj()
+            if (
+                    spr_obj != mas_clothes_def
+            ):
+                available_clothes.pop(index)
+
+        clothes_to_add = persistent._mas_event_clothes_map.get(datetime.date.today())
+
+        #If there's something for today, then we'll add it to be unlocked
+        if clothes_to_add:
+            #Get the outfit selector and add it
+            available_clothes.append(mas_selspr.get_sel_clothes(
+                mas_sprites.get_sprite(
+                    mas_sprites.SP_CLOTHES,
+                    clothes_to_add
+                )
+            ))
+            available_clothes.sort(key=mas_selspr.selectable_key)
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    call mas_selector_sidebar_select_clothes(available_clothes, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want me to change back, just ask, okay?"
+
+    return
 
 #### ends Monika clothes topic
 

@@ -62,6 +62,17 @@ init -1 python:
 
         return
 
+    def mas_hasSpecialOutfit(_date=None):
+        """
+        Checks if the given date is a special event that has a special outfit
+        IN:
+            _date - date to check.
+                (Default: None)
+
+        RETURNS: True if given date has a special outfit, False otherwise
+        """
+        return mas_isO31(_date) or mas_isF14(_date) or mas_isD25Outfit(_date)
+
 ############################### O31 ###########################################
 # [HOL010]
 #O31 mode var, handles visuals and sets us up to return to autoload even if not O31 anymore
@@ -323,6 +334,9 @@ label mas_o31_autoload_check:
             if ev and not ev.shown_count:
                 mas_unlockEVL("greeting_ourreality", "GRE")
 
+            # lock the event clothes selector
+            mas_lockEVL("monika_event_clothes_select", "EVE")
+
     #Run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         call mas_player_bday_autoload_check
@@ -510,19 +524,23 @@ init 5 python:
     )
 
 label greeting_o31_orcaramelo_hatsune_miku:
-    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-    show emptydesk at i11 zorder 9
-    #moni is off-screen
-    m "{i}~Don't forget my voice~{/i}"
-    m "{i}~My signal crosses dimensions~{/i}"
-    m "{i}~Don't call me virtual~{/i}"
-    m "{i}~I still want to be l-{/i}"
-    m "Oh!{w=0.5} Seems like someone's heard me."
+    if not persistent._mas_o31_relaunch:
+        call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+        show emptydesk at i11 zorder 9
+        #moni is off-screen
+        m "{i}~Don't forget my voice~{/i}"
+        m "{i}~My signal crosses dimensions~{/i}"
+        m "{i}~Don't call me virtual~{/i}"
+        m "{i}~I still want to be l-{/i}"
+        m "Oh!{w=0.5} Seems like someone's heard me."
 
-    #show moni now
-    hide emptydesk
-    show monika 3hub at i11 zorder MAS_MONIKA_Z
-    with dissolve
+        #show moni now
+        hide emptydesk
+        show monika 3hub at i11 zorder MAS_MONIKA_Z
+        with dissolve
+
+    else:
+        call spaceroom(scene_change=True, dissolve_all=True)
 
     m 3hub "Welcome back, [player]!"
     m 1eua "So...{w=0.5}what do you think?"
@@ -626,6 +644,8 @@ label greeting_o31_cleanup:
         HKBShowButtons()
         # 5 - restart music
         mas_startup_song()
+        # 6 - unlock the event clothes selector
+        mas_unlockEVL("monika_event_clothes_select", "EVE")
     return
 
 #START: O31 DOCKSTAT FARES
@@ -929,6 +949,8 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
 
     #Hide vis
     $ mas_o31HideVisuals()
+    # lock the event clothes selector
+    $ mas_lockEVL("monika_event_clothes_select", "EVE")
 
     m 3hua "There we go!"
     return
