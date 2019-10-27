@@ -500,7 +500,6 @@ label mas_scary_story_setup:
     $ are_masks_changing = mas_current_weather != mas_weather_rain
     $ mas_is_raining = True
 
-    #TODO: persistent music spoop for o31
     stop music fadeout 1.0
     pause 1.0
 

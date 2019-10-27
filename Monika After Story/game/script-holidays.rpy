@@ -876,7 +876,7 @@ init 5 python:
             unlocked=True,
             category=[store.mas_greetings.TYPE_HOL_O31_TT]
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_trick_or_treat_back:
@@ -928,7 +928,7 @@ label greeting_trick_or_treat_back:
         # larger than 3 hours, but not past sunrise
         $ mas_o31CapGainAff(15)
         m 1hua "And we're home!"
-        m 1wua "Wow, [player], we sure went trick or treating for a really long time..."
+        m 1wua "Wow, [player], we sure went trick or treating for a long time..."
         m 1wub "We must have gotten a ton of candy!"
         m 3eka "I really enjoyed being there with you..."
 
@@ -956,7 +956,7 @@ label greeting_trick_or_treat_back:
         call return_home_post_player_bday
 
     #If it's just not o31, we need to clean up
-    elif not mas_isO31() and not mas_isFirstSeshDay():
+    elif not mas_isO31() and persistent._mas_o31_in_o31_mode:
         call mas_o31_ret_home_cleanup(time_out, ret_tt_long)
     return
 
@@ -4076,9 +4076,9 @@ label return_home_post_player_bday:
             m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
             call greeting_gone_over_f14_normal_plus
 
-    #If player told Moni their birthday on day of (o31)
-    elif not mas_o31() and persistent._mas_o31_in_o31_mode:
-        jump mas_o31_ret_home_cleanup
+        #If player told Moni their birthday on day of (o31)
+        if not persistent._mas_player_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
+            call mas_o31_ret_home_cleanup(time_out, ret_tt_long=False)
 
     $ persistent._mas_player_bday_decor = False
     return
