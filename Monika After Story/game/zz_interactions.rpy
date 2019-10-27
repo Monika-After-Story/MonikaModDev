@@ -10,7 +10,7 @@
 
 init -10 python in mas_interactions:
 
-    import cmath
+    import ccmath.ccmath as cmath
 
     import store.mas_sprites as mas_sprites
     import store.mas_utils as mas_utils
@@ -185,18 +185,18 @@ init -10 python in mas_interactions:
             ycoord -= (yfc + yfc_offset)
 
             # now convert the pt into polar coords
-            radius, angle = cmath.polar(complex(xcoord, ycoord))
+            radius, angle = cmath.polar(xcoord, ycoord)
 
             # modify the radius by the appropraite percent val
             radius += (radius * per_mod)
 
             # convert the new polar coord back into regular coords
-            coords = cmath.rect(radius, angle)
+            new_x, new_y = cmath.rect(radius, angle)
 
             # unnormalize to get the real x, y and save
             vx_list.append((
-                int(coords.real + xfc),
-                int(coords.imag + yfc)
+                int(new_x + xfc),
+                int(new_y + yfc)
             ))
 
         return vx_list
