@@ -304,8 +304,9 @@ label mas_o31_autoload_check:
                 store.mas_selspr.unlock_clothes(costume, True)
                 mas_o31SetCostumeWorn(costume)
                 # remove ribbon so we just get the intended costume for the reveal
-                if monika_chr.is_wearing_acs_type('ribbon'):
-                    monika_chr.remove_acs(monika_chr.get_acs_of_type('ribbon'))
+                ribbon_acs = monika_chr.get_acs_of_type("ribbon")
+                if ribbon_acs is not None:
+                    monika_chr.remove_acs(ribbon_acs)
                 monika_chr.change_clothes(
                     costume,
                     by_user=False,
