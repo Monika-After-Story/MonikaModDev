@@ -281,7 +281,13 @@ init -2 python in mas_sprites:
         """
         Entry programming point for def clothes
         """
-        pass
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # ponytail and white ribbon
+            _moni_chr.change_hair(store.mas_hair_def)
+            _moni_chr.wear_acs(store.mas_acs_ribbon_def)
+
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
 

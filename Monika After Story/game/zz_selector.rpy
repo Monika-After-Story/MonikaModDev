@@ -3247,7 +3247,7 @@ label monika_clothes_select:
 
     return
 
-# selector for event days with special outfits for normal people
+# selector for event days with special outfits for normal and upset people
 init 5 python:
     addEvent(
         Event(
@@ -3257,7 +3257,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("clothes", "change"),
             pool=True,
             unlocked=False,
-            aff_range=(mas_aff.NORMAL, mas_aff.NORMAL)
+            aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
         )
     )
 

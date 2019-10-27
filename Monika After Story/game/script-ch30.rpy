@@ -1761,7 +1761,7 @@ label ch30_reset:
     $ monika_chr.load(startup=True)
 
     # change back to def if we aren't wearing def at Normal-
-    if store.mas_isMoniNormal(lower=True) and store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
+    if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
         $ pushEvent("mas_change_to_def",True)
 
     #### END SPRITES
