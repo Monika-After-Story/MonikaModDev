@@ -508,20 +508,19 @@ label mas_scary_story_setup:
     call monika_zoom_transition_reset(1.0)
 
     $ mas_changeBackground(mas_background_def)
-    $ mas_changeWeather(mas_weather_rain)
 
-    if not mas_isO31():
+    #If we're in O31 mode, it's already raining and the room is also already set up
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_weather_rain)
         $ store.mas_globals.show_vignette = True
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
 
-    call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 
-#    $ songs.current_track = songs.FP_NO_SONG
-#    $ songs.selected_track = songs.FP_NO_SONG
 
     $ HKBHideButtons()
     $ mas_RaiseShield_core()
-    #$ store.songs.enabled = False
+
     python:
         story_begin_quips = [
             "Alright let's start the story.",
@@ -549,13 +548,15 @@ label mas_scary_story_cleanup:
     m 3eua "[story_end_quip]"
     show monika 1dsc
     pause 1.0
+
     $ morning_flag = mas_temp_m_flag
-    $ mas_changeWeather(mas_temp_r_flag)
-    if not mas_isO31():
+
+    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_temp_r_flag)
         $ store.mas_globals.show_vignette = False
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
-    call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
-#    $ store.songs.enabled = True
+        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
+        call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 
     $ play_song(None, 1.0)
     m 1eua "I hope you liked it, [player]~"
