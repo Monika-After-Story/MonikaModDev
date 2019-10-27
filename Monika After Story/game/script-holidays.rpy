@@ -193,6 +193,24 @@ init -10 python:
         if selection_pool is None:
             selection_pool = MASClothes.by_exprop("costume")
 
+        # filter the selection pool by criteria:
+        #   1 - if spritepack-based, then must be gifted
+        #   2 - if not spritepack-based, then is valid for selecting regardless
+        filt_sel_pool = []
+        for cloth in selection_pool:
+            sprite_key = (store.mas_sprites.SP_CLOTHES, cloth.name)
+            giftname = store.mas_sprites_json.namegift_map.get(
+                sprite_key,
+                None
+            )
+            if (
+                giftname is None
+                or sprite_key in persistent._mas_sprites_json_gifted_sprites
+            ):
+                filt_sel_pool.append(cloth)
+
+        selection_pool = filt_sel_pool
+
         if len(selection_pool) < 1:
             # no items to select from
             return None
