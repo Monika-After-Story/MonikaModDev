@@ -307,8 +307,9 @@ label mas_o31_autoload_check:
 
         #It's not O31 anymore and it's time to reset
         else:
-            #NOTE: Since O31 is costumes, we always reset clothes
-            monika_chr.change_clothes(mas_clothes_def)
+            #NOTE: Since O31 is costumes, we always reset clothes + hair
+            monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
+            monika_chr.reset_hair()
 
             #Reset o31_mode flag
             persistent._mas_o31_in_o31_mode = False
