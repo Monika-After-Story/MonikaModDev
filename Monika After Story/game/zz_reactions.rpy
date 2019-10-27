@@ -2117,7 +2117,7 @@ label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
 
         mas_giftCapGainAff(3)
 
-    m 1sub "Oh! {w=0.5} Is this..."
+    m 1sub "Oh! {w=0.5}Is this..."
     m 2euc "A maid outfit?"
     m 3tuu "Ehehe~"
     m 3tubsb "You know, if you liked this kind of thing, you could have just told me..."
