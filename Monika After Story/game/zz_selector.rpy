@@ -3260,6 +3260,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("clothes", "change"),
             pool=True,
             unlocked=False,
+            rules={"no unlock": None},
             aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
         )
     )

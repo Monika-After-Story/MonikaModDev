@@ -343,8 +343,8 @@ label mas_o31_autoload_check:
                 store.mas_globals.show_vignette = True
                 mas_changeWeather(mas_weather_thunder, True)
 
-        #It's not O31 anymore and it's time to reset
-        elif not mas_isO31():
+        #It's not O31 anymore or we hit dis. It's time to reset
+        elif not mas_isO31() or mas_isMoniDis(lower=True):
             #NOTE: Since O31 is costumes, we always reset clothes + hair
             monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
             monika_chr.reset_hair()
@@ -363,6 +363,11 @@ label mas_o31_autoload_check:
 
             # lock the event clothes selector
             mas_lockEVL("monika_event_clothes_select", "EVE")
+
+        #If we drop to upset during O31, we should keep decor until we hit dis
+        elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
+            store.mas_globals.show_vignette = True
+            mas_changeWeather(mas_weather_thunder, True)
 
     #Run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
