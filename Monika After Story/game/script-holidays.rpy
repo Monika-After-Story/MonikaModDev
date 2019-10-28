@@ -223,6 +223,9 @@ init -10 python:
         if selection_pool is None:
             selection_pool = MASClothes.by_exprop("costume")
 
+        # set to true if monika is wearing a costume right now
+        wearing_costume = False
+
         # filter the selection pool by criteria:
         #   1 - if spritepack-based, then must be gifted
         #   2 - if not spritepack-based, then is valid for selecting regardless
@@ -236,18 +239,23 @@ init -10 python:
             )
 
             if (
-                (
-                    giftname is None
-                    or sprite_key in persistent._mas_sprites_json_gifted_sprites
-                )
-                and cloth != monika_chr.clothes
+                giftname is None
+                or sprite_key in persistent._mas_sprites_json_gifted_sprites
             ):
-                filt_sel_pool.append(cloth)
+                if cloth != monika_chr.clothes:
+                    filt_sel_pool.append(cloth)
+                else:
+                    wearing_costume = True
+                
 
         selection_pool = filt_sel_pool
 
         if len(selection_pool) < 1:
             # no items to select from
+
+            if wearing_costume:
+                return monika_chr.clothes
+
             return None
 
         elif len(selection_pool) < 2:
