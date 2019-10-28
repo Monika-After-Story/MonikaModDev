@@ -283,76 +283,79 @@ label mas_o31_autoload_check:
     python:
         import random
 
-        if mas_isO31() and mas_isMoniNormal(higher=True):
-            #NOTE: We do not do O31 deco/amb on first sesh day
-            if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
-                #Setup for greet
-                mas_skip_visuals = True
+        if mas_isO31():
+            if mas_isMoniNormal(higher=True) and not mas_isFirstSeshDay():
+                #NOTE: We do not do O31 deco/amb on first sesh day
+                if persistent._mas_o31_in_o31_mode:
+                    #Setup vignette and thunder on subsequent sessions
+                    store.mas_globals.show_vignette = True
+                    mas_changeWeather(mas_weather_thunder, True)
 
-                #Reset idle since we will force greetings
-                mas_resetIdleMode()
-
-                #Lock the hairdown greeting for today
-                mas_lockEVL("greeting_hairdown", "GRE")
-                #Also lock islands greeting for today
-                mas_lockEVL("greeting_ourreality", "GRE")
-
-                #Disable hotkeys for this
-                store.mas_hotkeys.music_enabled = False
-
-                #Put calendar shields up
-                mas_calRaiseOverlayShield()
-
-                # select a costume
-                # NOTE: we should always have at least 1 costume.
-                costume = mas_o31SelectCostume()
-                store.mas_selspr.unlock_clothes(costume, True)
-                mas_o31SetCostumeWorn(costume)
-
-                # remove ribbon so we just get the intended costume for the reveal
-                ribbon_acs = monika_chr.get_acs_of_type("ribbon")
-                if ribbon_acs is not None:
-                    monika_chr.remove_acs(ribbon_acs)
-
-                monika_chr.change_clothes(
-                    costume,
-                    by_user=False,
-                    outfit_mode=True
-                )
-
-                #Save selectables
-                store.mas_selspr.save_selectables()
-
-                #Save persist
-                renpy.save_persistent()
-
-                #Select greet
-                greet_label = "greeting_o31_{0}".format(costume.name)
-
-                if renpy.has_label(greet_label):
-                    selected_greeting = greet_label
                 else:
-                    selected_greeting = "greeting_o31_generic"
+                    #Setup for greet
+                    mas_skip_visuals = True
 
-                #Reset zoom
-                store.mas_sprites.reset_zoom()
+                    #Reset idle since we will force greetings
+                    mas_resetIdleMode()
 
-                #Now that we're here, we're in O31 mode
-                persistent._mas_o31_in_o31_mode = True
+                    #Lock the hairdown greeting for today
+                    mas_lockEVL("greeting_hairdown", "GRE")
+                    #Also lock islands greeting for today
+                    mas_lockEVL("greeting_ourreality", "GRE")
 
-                #Vignette on O31
-                store.mas_globals.show_vignette = True
+                    #Disable hotkeys for this
+                    store.mas_hotkeys.music_enabled = False
 
-                #Set by-user to True because we don't want progressive
-                mas_changeWeather(mas_weather_thunder, True)
+                    #Put calendar shields up
+                    mas_calRaiseOverlayShield()
 
-            elif (persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
-                #Setup vignette and thunder on subsequent sessions
-                store.mas_globals.show_vignette = True
-                mas_changeWeather(mas_weather_thunder, True)
+                    # select a costume
+                    # NOTE: we should always have at least 1 costume.
+                    costume = mas_o31SelectCostume()
+                    store.mas_selspr.unlock_clothes(costume, True)
+                    mas_o31SetCostumeWorn(costume)
+
+                    # remove ribbon so we just get the intended costume for the reveal
+                    ribbon_acs = monika_chr.get_acs_of_type("ribbon")
+                    if ribbon_acs is not None:
+                        monika_chr.remove_acs(ribbon_acs)
+
+                    monika_chr.change_clothes(
+                        costume,
+                        by_user=False,
+                        outfit_mode=True
+                    )
+
+                    #Save selectables
+                    store.mas_selspr.save_selectables()
+
+                    #Save persist
+                    renpy.save_persistent()
+
+                    #Select greet
+                    greet_label = "greeting_o31_{0}".format(costume.name)
+
+                    if renpy.has_label(greet_label):
+                        selected_greeting = greet_label
+                    else:
+                        selected_greeting = "greeting_o31_generic"
+
+                    #Reset zoom
+                    store.mas_sprites.reset_zoom()
+
+                    #Now that we're here, we're in O31 mode
+                    persistent._mas_o31_in_o31_mode = True
+
+                    #Vignette on O31
+                    store.mas_globals.show_vignette = True
+
+                    #Set by-user to True because we don't want progressive
+                    mas_changeWeather(mas_weather_thunder, True)
 
         #It's not O31 anymore or we hit dis. It's time to reset
-        elif not mas_isO31() or mas_isMoniDis(lower=True):
+        elif mas_isMoniDis(lower=True):
+            # o31_in_o31 mode must be true
+
             #NOTE: Since O31 is costumes, we always reset clothes + hair
             monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
             monika_chr.reset_hair()
@@ -373,7 +376,8 @@ label mas_o31_autoload_check:
             mas_lockEVL("monika_event_clothes_select", "EVE")
 
         #If we drop to upset during O31, we should keep decor until we hit dis
-        elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
+        else:
+            # mas_o31_in_o31 mode must be True, and we must be upset state
             store.mas_globals.show_vignette = True
             mas_changeWeather(mas_weather_thunder, True)
 
