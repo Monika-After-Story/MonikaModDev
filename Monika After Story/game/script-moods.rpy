@@ -513,7 +513,7 @@ label mas_mood_lazy:
         m 1eua "It happens, so I wouldn't worry about it too much."
         m 3eub "In fact, they say laziness makes you more creative."
         m 3hub "So who knows, maybe you're about to think of something amazing!"
-        m 1eua "In any case, you sould just take a break or stretch a bit...{w=0.5} {nw}"
+        m 1eua "In any case, you should just take a break or stretch a bit...{w=0.5} {nw}"
         extend 3eub "Maybe grab a bite to eat if you haven't already."
         m 3hub "And if it's appropriate, you could even take a nap! Ahaha~"
         m 1eka "I'll be right here waiting for you if you decide to."
