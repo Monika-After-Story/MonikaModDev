@@ -528,6 +528,11 @@ init -2 python in mas_sprites:
                     "orcaramelo_sakuya_izayoi_strandbow"
                 )
 
+                #Remove ribbon so we just get the intended costume since the correct hairstyle is present
+                ribbon_acs = _moni_chr.get_acs_of_type("ribbon")
+                if ribbon_acs is not None:
+                    _moni_chr.remove_acs(ribbon_acs)
+
 
     def _clothes_orcaramelo_sakuya_izayoi_exit(_moni_chr, **kwargs):
         """
