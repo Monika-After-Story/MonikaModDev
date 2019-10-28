@@ -234,12 +234,17 @@ init -10 python:
         non_worn = [
             costume
             for costume in selection_pool
-            if not mas_o31CostumeWorn(costume)
+            if not mas_o31CostumeWorn(costume) and costume is not monika_chr.clothes
         ]
 
         if len(non_worn) > 0:
             # randomly select from non worn
             return random.choice(non_worn)
+
+        #If we should try to make sure there's always a costume reveal.
+        #So we pop the costume we're wearing already (if any, and if possible) so there's a different costume
+        if len(selection_pool) > 1 and monika_chr.is_wearing_clothes_with_exprop("costume"):
+            selection_pool.pop(selection_pool.index(monika_chr.clothes))
 
         # otherwise randomly select from overall
         return random.choice(selection_pool)
