@@ -683,6 +683,8 @@ label greeting_o31_cleanup:
         mas_startup_song()
         # 6 - unlock the event clothes selector
         mas_unlockEVL("monika_event_clothes_select", "EVE")
+        # 7 - save persist again, for safety
+        renpy.save_persistent()
     return
 
 #START: O31 DOCKSTAT FARES
