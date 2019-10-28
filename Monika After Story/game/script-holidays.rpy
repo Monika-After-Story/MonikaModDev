@@ -18,6 +18,24 @@ define mas_one_hour = datetime.timedelta(seconds=3600)
 define mas_three_hour = datetime.timedelta(seconds=3*3600)
 
 init -1 python:
+
+    def mas_addClothesToHolidayMap(clothes, key=None):
+        """
+        Adds the given clothes to the holiday clothes map
+
+        IN:
+            clothes - clothing item to
+            key - dateime.date to use as key. If None, we use today
+        """
+        if clothes is None:
+            return
+
+        if key is None:
+            key = datetime.date.today()
+
+        persistent._mas_event_clothes_map[key] = clothes.name
+
+
     def mas_checkOverDate(_date):
         """
         Checks if the player was gone over the given date entirely (taking you somewhere)
@@ -30,6 +48,7 @@ init -1 python:
         """
         checkout_time = store.mas_dockstat.getCheckTimes()[0]
         return checkout_time is not None and checkout_time.date() < _date
+
 
     def mas_capGainAff(amount, aff_gained_var, normal_cap, pbday_cap=None):
         """
@@ -312,7 +331,8 @@ label mas_o31_autoload_check:
                     # select a costume
                     # NOTE: we should always have at least 1 costume.
                     costume = mas_o31SelectCostume()
-                    store.mas_selspr.unlock_clothes(costume, True)
+                    store.mas_selspr.unlock_clothes(costume)
+                    mas_addClothesToHolidayMap(costume)
                     mas_o31SetCostumeWorn(costume)
 
                     # remove ribbon so we just get the intended costume for the reveal
@@ -4187,7 +4207,8 @@ label mas_f14_autoload_check:
 
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white, True)
+            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            mas_addClothesToHolidayMap(mas_clothes_sundress_white)
             monika_chr.change_clothes(mas_clothes_sundress_white, False)
             monika_chr.save()
             renpy.save_persistent()
@@ -4301,7 +4322,8 @@ label mas_f14_monika_valentines_intro:
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white, True)
+        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+        $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
         call mas_clothes_change(mas_clothes_sundress_white)
 
         m 1eua "..."
@@ -5783,7 +5805,8 @@ label bye_922_delegate:
 
 label mas_bday_bd_outro:
     $ monika_chr.change_clothes(mas_clothes_blackdress)
-    $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress, True)
+    $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
+    $ mas_addClothesToHolidayMap(mas_clothes_blackdress)
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     show monika 1eua
     call monika_zoom_transition_reset(1.0)

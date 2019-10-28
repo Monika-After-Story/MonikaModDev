@@ -1440,18 +1440,14 @@ init -10 python in mas_selspr:
         _unlock_item(acs, SELECT_ACS)
 
 
-    def unlock_clothes(clothes, add_to_holiday_map=False):
+    def unlock_clothes(clothes):
         """
         Unlocks the given clothes' selectable
 
         IN:
             clothes - MASClothes object to unlock
-            add_to_holiday_map - add to the holiday map if we want this for happy+ for the day
         """
         _unlock_item(clothes, SELECT_CLOTH)
-
-        if add_to_holiday_map:
-            store.persistent._mas_event_clothes_map[datetime.date.today()] = clothes.name
 
 
     def unlock_hair(hair):
