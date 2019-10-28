@@ -207,6 +207,7 @@ init -10 python:
         # filter the selection pool by criteria:
         #   1 - if spritepack-based, then must be gifted
         #   2 - if not spritepack-based, then is valid for selecting regardless
+        #   3 - dont include if monika currently wearing
         filt_sel_pool = []
         for cloth in selection_pool:
             sprite_key = (store.mas_sprites.SP_CLOTHES, cloth.name)
@@ -214,9 +215,13 @@ init -10 python:
                 sprite_key,
                 None
             )
+
             if (
-                giftname is None
-                or sprite_key in persistent._mas_sprites_json_gifted_sprites
+                (
+                    giftname is None
+                    or sprite_key in persistent._mas_sprites_json_gifted_sprites
+                )
+                and cloth != monika_chr.clothes
             ):
                 filt_sel_pool.append(cloth)
 
@@ -234,17 +239,12 @@ init -10 python:
         non_worn = [
             costume
             for costume in selection_pool
-            if not mas_o31CostumeWorn(costume) and costume is not monika_chr.clothes
+            if not mas_o31CostumeWorn(costume)
         ]
 
         if len(non_worn) > 0:
             # randomly select from non worn
             return random.choice(non_worn)
-
-        #If we should try to make sure there's always a costume reveal.
-        #So we pop the costume we're wearing already (if any, and if possible) so there's a different costume
-        if len(selection_pool) > 1 and monika_chr.is_wearing_clothes_with_exprop("costume"):
-            selection_pool.pop(selection_pool.index(monika_chr.clothes))
 
         # otherwise randomly select from overall
         return random.choice(selection_pool)
