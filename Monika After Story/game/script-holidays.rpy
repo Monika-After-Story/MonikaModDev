@@ -308,15 +308,20 @@ label mas_o31_autoload_check:
                 costume = mas_o31SelectCostume()
                 store.mas_selspr.unlock_clothes(costume, True)
                 mas_o31SetCostumeWorn(costume)
+
                 # remove ribbon so we just get the intended costume for the reveal
                 ribbon_acs = monika_chr.get_acs_of_type("ribbon")
                 if ribbon_acs is not None:
                     monika_chr.remove_acs(ribbon_acs)
+
                 monika_chr.change_clothes(
                     costume,
                     by_user=False,
                     outfit_mode=True
                 )
+
+                #Save persist
+                renpy.save_persistent()
 
                 #Select greet
                 greet_label = "greeting_o31_{0}".format(costume.name)

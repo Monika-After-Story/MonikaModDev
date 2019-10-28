@@ -387,7 +387,7 @@ label v0_10_2(version="v0_10_2"):
                 #Adjust undo action rule
                 MASUndoActionRule.adjust_rule(
                     ev,
-                    mas_d25c_start,
+                    datetime.datetime.combine(mas_d25c_start, datetime.time()),
                     ev.end_date
                 )
     return
