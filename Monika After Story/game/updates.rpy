@@ -369,7 +369,7 @@ label v0_10_2(version="v0_10_2"):
             trick_treat.years = []
 
 
-        #Also need to push D25 things back
+        #Also need to push D25 start dates back
         d25_ev_label_list = [
             ("mas_d25_monika_holiday_intro", mas_d25),
             ("mas_d25_monika_holiday_intro_upset", mas_d25p),
