@@ -368,6 +368,28 @@ label v0_10_2(version="v0_10_2"):
             trick_treat.action = action=EV_ACT_UNLOCK
             trick_treat.years = []
 
+
+        #Also need to push D25 things back
+        d25_ev_label_list = [
+            ("mas_d25_monika_holiday_intro", mas_d25),
+            ("mas_d25_monika_holiday_intro_upset", mas_d25p),
+            ("mas_d25_monika_carolling", mas_d25p),
+            ("mas_d25_monika_mistletoe", mas_d25p),
+            ("monika_aiwfc", mas_d25p)
+        ]
+
+        for ev_label, end_date in d25_ev_label_list:
+            ev = mas_getEV(ev_label)
+
+            if ev:
+                ev.start_date = mas_d25c_start
+                ev.end_date = end_date
+                #Adjust undo action rule
+                MASUndoActionRule.adjust_rule(
+                    ev,
+                    mas_d25c_start,
+                    ev.end_date
+                )
     return
 
 #0.10.1

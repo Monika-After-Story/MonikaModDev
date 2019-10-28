@@ -1176,7 +1176,7 @@ init -10 python:
     def mas_isD25Season(_date=None):
         """
         Returns True if the given date is in d25 season. The season goes from
-        dec 1 to jan 5.
+        dec 11 to jan 5.
 
         NOTE: because of the year rollover, we cannot check years
 
