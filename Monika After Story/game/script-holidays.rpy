@@ -616,9 +616,8 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
     with dissolve
 
     m 3hub "Welcome back!"
-    m 3eub "What do you think of my costume?"
-    m 1rksdlb "It ended up being a lot more work than I expected, so I hope you like it..."
-    m 3hua "I know I sure do!"
+    m 3eub "What do you think of my costume choice?"
+    m 3hua "Ever since you gave it to me I just knew I'd be wearing it today!"
     m 2tua "..."
     m 2tub "You know, [player], just because I'm dressed as a maid doesn't mean I'll be following your every command..."
     show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve
