@@ -320,6 +320,9 @@ label mas_o31_autoload_check:
                     outfit_mode=True
                 )
 
+                #Save selectables
+                store.mas_selspr.save_selectables()
+
                 #Save persist
                 renpy.save_persistent()
 
@@ -683,8 +686,6 @@ label greeting_o31_cleanup:
         mas_startup_song()
         # 6 - unlock the event clothes selector
         mas_unlockEVL("monika_event_clothes_select", "EVE")
-        # 7 - save persist again, for safety
-        renpy.save_persistent()
     return
 
 #START: O31 DOCKSTAT FARES
