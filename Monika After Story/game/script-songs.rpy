@@ -488,7 +488,7 @@ label mas_song_stand_by_me(from_long=False):
         m 5ekbsa "...I hope you feel the same way~"
     return "derandom"
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
