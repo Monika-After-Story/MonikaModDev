@@ -1985,9 +1985,18 @@ init 5 python:
     )
 
 label mas_change_to_def:
+    # on occasion after special events we want to change out of an outfit like a costume
+    # in these cases, for Happy+, change to blazerless instead
+    if mas_isMoniHappy(higher=True) and monika_chr.clothes != mas_clothes_blazerless:
+        m 3esa "Give me a second [player], I'm just going to make myself a little more comfortable..."
+
+        call mas_clothes_change(mas_clothes_blazerless)
+
+        m 2hua "Ah, much better!"
+
     # acts as a sanity check for an extremely rare case where player dropped below happy
     # closed game before this was pushed and then deleted json before next load
-    if monika_chr.clothes != mas_clothes_def:
+    elif mas_isMoniNormal(lower=True) and monika_chr.clothes != mas_clothes_def:
         m 1eka "Hey [player], I miss my old school uniform..."
         m 3eka "I'm just going to go change, be right back..."
         
@@ -1998,13 +2007,15 @@ label mas_change_to_def:
         # remove from event list in case PP and ch30 both push
         $ mas_rmallEVL("mas_change_to_def")
 
+        # lock the event clothes selector
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
     return "no_unlock"
 
 # Changes clothes to the given outfit.
 #   IN:
 #       outfit - the MASClothes object to change outfit to
 #           If None is passed, the uniform is used
-label mas_clothes_change(outfit=None):
+label mas_clothes_change(outfit=None, outfit_mode=False):
     # use def as the default outfit to change to
     if outfit is None:
         $ outfit = mas_clothes_def
@@ -2017,7 +2028,11 @@ label mas_clothes_change(outfit=None):
 
     hide monika with dissolve
 
-    $ monika_chr.change_clothes(outfit)
+    #If we're going to def or blazerless from a costume, we reset hair too
+    if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
+        $ monika_chr.reset_hair()
+
+    $ monika_chr.change_clothes(outfit, outfit_mode=outfit_mode)
     $ monika_chr.save()
     $ renpy.save_persistent()
 

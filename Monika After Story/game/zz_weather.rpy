@@ -675,7 +675,8 @@ init -1 python:
 
         entry_pp=store.mas_weather._weather_rain_entry,
         exit_pp=store.mas_weather._weather_rain_exit,
-        unlocked=True,
+
+        unlocked=True
     )
 
     # snow weather
@@ -692,7 +693,9 @@ init -1 python:
         precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
 
         entry_pp=store.mas_weather._weather_snow_entry,
-        exit_pp=store.mas_weather._weather_snow_exit
+        exit_pp=store.mas_weather._weather_snow_exit,
+
+        unlocked=True
     )
 
     # thunder/lightning
@@ -713,7 +716,9 @@ init -1 python:
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_thunder_entry,
-        exit_pp=store.mas_weather._weather_thunder_exit
+        exit_pp=store.mas_weather._weather_thunder_exit,
+
+        unlocked=True
     )
 
     #overcast
@@ -735,6 +740,7 @@ init -1 python:
 
         entry_pp=store.mas_weather._weather_overcast_entry,
         exit_pp=store.mas_weather._weather_overcast_exit,
+
         unlocked=True
     )
 

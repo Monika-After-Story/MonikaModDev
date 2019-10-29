@@ -1,2 +1,0 @@
-# gifts:
-Black Bow - blackbow
