@@ -285,25 +285,25 @@ label mas_monika_daynight1:
 
 label mas_monika_daynight2:
     # aurora borealis
-    m "{i}Windmill, windmill for the land{/i}"
+    m "{i}~Windmill, windmill for the land~{/i}"
 
     # a-aurora borealis
-    m "{i}Turn forever hand in hand{/i}"
+    m "{i}~Turn forever hand in hand~{/i}"
 
     # aurora borealis
-    m "{i}Take it all in on your stride{/i}"
+    m "{i}~Take it all in on your stride~{/i}"
 
     # at this time of day?
-    m "{i}It is ticking, falling down{/i}"
+    m "{i}~It is ticking, falling down~{/i}"
 
     # aurora borealis
-    m "{i}Love forever, love is free{/i}"
+    m "{i}~Love forever, love is free~{/i}"
 
     # a-aurora borealis
-    m "{i}Let's turn forever, you and me{/i}"
+    m "{i}~Let's turn forever, you and me~{/i}"
 
     # in this part of the country? Yes
-    m "{i}Windmill, windmill for the land{/i}"
+    m "{i}~Windmill, windmill for the land~{/i}"
 
     m "Ehehe, don't mind me, I just wanted to sing out of the blue~"
     return

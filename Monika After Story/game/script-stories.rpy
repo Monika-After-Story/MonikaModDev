@@ -352,7 +352,7 @@ label mas_story_wind_sun:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_seeds",
-        prompt="The seeds",unlocked=False),code="STY")
+        prompt="The Seeds",unlocked=False),code="STY")
 
 label mas_story_seeds:
     call mas_story_begin
@@ -372,7 +372,7 @@ label mas_story_seeds:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_gray_hair",
-        prompt="The gray hair",unlocked=False),code="STY")
+        prompt="The Gray Hair",unlocked=False),code="STY")
 
 label mas_story_gray_hair:
     call mas_story_begin
@@ -390,7 +390,7 @@ label mas_story_gray_hair:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
-        prompt="The fisherman",unlocked=False),code="STY")
+        prompt="The Fisherman",unlocked=False),code="STY")
 
 label mas_story_fisherman:
     call mas_story_begin
@@ -405,7 +405,7 @@ label mas_story_fisherman:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
-    prompt="Old man's three wishes",unlocked=False),code="STY")
+    prompt="Old Man's Three Wishes",unlocked=False),code="STY")
 
 label mas_story_ravel:
     call mas_story_begin
@@ -449,7 +449,7 @@ label mas_story_immortal_love:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
-        prompt="The tale of O-Tei",unlocked=False),code="STY")
+        prompt="The Tale of O-Tei",unlocked=False),code="STY")
 
 label mas_story_o_tei:
     call mas_story_begin
@@ -739,7 +739,7 @@ label mas_scary_story_mujina:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_ubume",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The ubume",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Ubume",unlocked=False),
     code="STY")
 
 label mas_scary_story_ubume:
@@ -771,7 +771,7 @@ label mas_scary_story_ubume:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_womaninblack",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The woman in black",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Woman in Black",unlocked=False),
     code="STY")
 
 label mas_scary_story_womaninblack:
@@ -832,7 +832,7 @@ label mas_scary_story_resurrection_mary:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_corpse",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The resuscitated corpse",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Resuscitated Corpse",unlocked=False),
     code="STY")
 
 label mas_scary_story_corpse:
@@ -882,7 +882,7 @@ label mas_scary_story_corpse:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_jack_o_lantern",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O Lantern",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O' Lantern",unlocked=False),
     code="STY")
 
 label mas_scary_story_jack_o_lantern:
@@ -968,7 +968,7 @@ label mas_scary_story_baobhan_sith:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_serial_killer",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The serial killer",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Serial Killer",unlocked=False),
     code="STY")
 
 label mas_scary_story_serial_killer:

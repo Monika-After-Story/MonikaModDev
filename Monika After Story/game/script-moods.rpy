@@ -107,7 +107,7 @@ label mas_mood_start:
 
     # return value? then push
     if _return:
-        $ pushEvent(_return)
+        $ pushEvent(_return, skipeval=True)
 
         # and set the moods
         $ persistent._mas_mood_current = _return
@@ -292,8 +292,8 @@ label mas_mood_tired:
         m 2ekc "[player]!?"
         m "You're still here?"
         m 4lksdlc "You should really be in bed right now."
-        m 2dsc "At this point, I'm not even sure if you would call this late or early,"
-        m 2ekc "and that just worries me even more, [player]..."
+        m 2dsc "At this point, I'm not even sure if you would call this late or early..."
+        m 2eksdld "...and that just worries me even more, [player]."
         m "You should {i}really{/i} get to bed before it's time to start the day."
         m 1eka "I wouldn't want you falling asleep at a bad time."
         m "So please, sleep so we can be together in your dreams."
@@ -303,7 +303,7 @@ label mas_mood_tired:
     elif 5 <= current_hour < 10:
         m 1eka "Still a bit tired, [player]?"
         m "It's still early in the morning, so you could go back and rest a little more."
-        m 1hua "Nothing wrong hitting snooze after waking up early."
+        m 1hua "Nothing wrong with hitting snooze after waking up early."
         m 1hksdlb "Except for the fact that I can't be there to cuddle up to you, ahaha~"
         m "I {i}guess{/i} I could wait for you a little longer."
         return
@@ -456,7 +456,7 @@ init 5 python:
 
 label mas_mood_lucky:
     m 2tfc "You gotta ask yourself."
-    m 2tfu "{i}Do I feel lucky{/i}?"
+    m 2tfu "{i}Do I feel lucky?{/i}"
     m "Well..."
     m 4tku "Do ya, [player]?"
     m 1hub "Ahaha!"
@@ -513,7 +513,7 @@ label mas_mood_lazy:
         m 1eua "It happens, so I wouldn't worry about it too much."
         m 3eub "In fact, they say laziness makes you more creative."
         m 3hub "So who knows, maybe you're about to think of something amazing!"
-        m 1eua "In any case, you sould just take a break or stretch a bit...{w=0.5} {nw}"
+        m 1eua "In any case, you should just take a break or stretch a bit...{w=0.5} {nw}"
         extend 3eub "Maybe grab a bite to eat if you haven't already."
         m 3hub "And if it's appropriate, you could even take a nap! Ahaha~"
         m 1eka "I'll be right here waiting for you if you decide to."

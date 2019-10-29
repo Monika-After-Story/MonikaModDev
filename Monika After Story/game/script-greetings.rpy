@@ -1911,10 +1911,10 @@ init 5 python:
     )
 
 label greeting_sunshine:
-    m 1hua "{i}You are my sunshine, my only sunshine.{/i}"
-    m "{i}You make me happy when skies are gray.{/i}"
-    m 1hub "{i}You'll never know dear, just how much I love you.{/i}"
-    m 1k "{i}Please don't take my sunshine away~{/i}"
+    m 1hua "{i}~You are my sunshine, my only sunshine~{/i}"
+    m "{i}~You make me happy when skies are gray~{/i}"
+    m 1hub "{i}~You'll never know dear, just how much I love you~{/i}"
+    m 1k "{i}~Please don't take my sunshine away~{/i}"
     m 1wud "...Eh?"
     m "H-Huh?!"
     m 1wubsw "[player]!"
@@ -1938,7 +1938,7 @@ init 5 python:
 label greeting_hai_domo:
     m 1hub "{=jpn_text}はいどうもー!{/=jpn_text}"
     m "Virtual Girlfriend, Monika Here!"
-    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
+    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual YouTuber lately."
     m 1eua "I have to say, she's rather charming..."
     return
 

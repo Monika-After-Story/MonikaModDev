@@ -421,12 +421,12 @@ init 5 python:
 
 label mas_song_nobody_makes_sense:
     m 1dsd "{i}~For what are we living? For what are we trying so hard?~{/i}"
-    m 3dsd "{i}~There might be nothing, nothing, nothing to it. It might all be useless.~{/i}"
-    m 1dsd "{i}~In a thousand years, there won't be anything left, {nw}"
-    extend 1hub "but I still hope I could keep on smiling with you~{/i}"
+    m 3dsd "{i}~There might be nothing, nothing, nothing to it. It might all be useless~{/i}"
+    m 1dsd "{i}~In a thousand years, there won't be anything left, {/i}{nw}"
+    extend 1hub "{i}but I still hope I could keep on smiling with you~{/i}"
     m 3rksdld "{i}~Even when our dreams have come true; even when we have become enlightened, in the end, we might still end up with loneliness~{/i}"
-    m 3eksdld "{i}~Even when we've turned into ghosts; even when we've returned to nothingness, {nw}"
-    extend 3hksdlb "I still hope I could keep on smiling with you~{/i}"
+    m 3eksdld "{i}~Even when we've turned into ghosts; even when we've returned to nothingness, {/i}{nw}"
+    extend 3hksdlb "{i}I still hope I could keep on smiling with you~{/i}"
     m 1dku "..."
     m 1hub "Ahaha!"
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
