@@ -395,10 +395,7 @@ init python:
         if mas_isMoniUpset(lower=True):
             return False
 
-        for ev in persistent._mas_player_bookmarked.itervalues():
-           if ev.unlocked and ev.checkAffection(mas_curr_affection):
-                return True
-        return False
+        return len(mas_get_player_bookmarks()) > 0
 
 
 #BEGIN ORIGINAL TOPICS
