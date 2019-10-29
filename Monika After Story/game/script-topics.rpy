@@ -1685,16 +1685,7 @@ label monika_rain:
             m "Would you ever do that for me, [player]?{fast}"
             "Yes.":
                 $ persistent._mas_likes_rain = True
-
-                python:
-                    # unlock rain weathers
-                    mas_weather_rain.unlocked = True
-                    if store.mas_o31_event.spentO31():
-                        mas_weather_thunder.unlocked = True
-
-                    store.mas_weather.saveMWData()
-                    mas_unlockEVL("monika_change_weather", "EVE")
-                    mas_unlockEVL("monika_rain_holdme", "EVE")
+                $ mas_unlockEVL("monika_rain_holdme", "EVE")
 
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain, by_user=False)
