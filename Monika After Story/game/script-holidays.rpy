@@ -172,6 +172,17 @@ init -10 python:
         #Also, if we're hiding visuals, we're no longer in o31 mode
         store.persistent._mas_o31_in_o31_mode = False
 
+        #unlock hairdown greet if we don't have hairdown unlocked
+        hair = store.mas_selspr.get_sel_hair(store.mas_hair_down)
+        if hair is not None and not hair.unlocked:
+            store.mas_unlockEVL("greeting_hairdown", "GRE")
+
+        # lock the event clothes selector
+        store.mas_lockEVL("monika_event_clothes_select", "EVE")
+
+         # get back into reasonable clothing, so we queue a change to def
+        if store.monika_chr.is_wearing_clothes_with_exprop("costume"):
+            store.queueEvent('mas_change_to_def')
 
     def mas_o31CapGainAff(amount):
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
@@ -321,8 +332,6 @@ label mas_o31_autoload_check:
 
                 #Lock the hairdown greeting for today
                 mas_lockEVL("greeting_hairdown", "GRE")
-                #Also lock islands greeting for today
-                mas_lockEVL("greeting_ourreality", "GRE")
 
                 #Disable hotkeys for this
                 store.mas_hotkeys.music_enabled = False
@@ -388,14 +397,10 @@ label mas_o31_autoload_check:
             #Reset o31_mode flag
             persistent._mas_o31_in_o31_mode = False
 
-            #True if shown count is 0
-            if not mas_getEV("greeting_hairdown").shown_count:
+            #unlock hairdown greet if we don't have hairdown unlocked
+            hair = store.mas_selspr.get_sel_hair(mas_hair_down)
+            if hair is not None and not hair.unlocked:
                 mas_unlockEVL("greeting_hairdown", "GRE")
-
-            ev = mas_getEV("greeting_ourreality")
-
-            if ev and not ev.shown_count:
-                mas_unlockEVL("greeting_ourreality", "GRE")
 
             # lock the event clothes selector
             mas_lockEVL("monika_event_clothes_select", "EVE")
@@ -1012,10 +1017,6 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     if not time_out:
         $ time_out = store.mas_dockstat.diffCheckTimes()
 
-    #Firstly, gotta get back into reasonable clothing, so we queue a change to def
-    if monika_chr.is_wearing_clothes_with_exprop("costume"):
-        $ queueEvent('mas_change_to_def')
-
     #If we were out over 5 mins then we have this little extra dialogue
     if not ret_tt_long and time_out > mas_five_minutes:
         m 1hua "..."
@@ -1028,8 +1029,6 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
 
     #Hide vis
     $ mas_o31HideVisuals()
-    # lock the event clothes selector
-    $ mas_lockEVL("monika_event_clothes_select", "EVE")
 
     m 3hua "There we go!"
     return
@@ -4109,9 +4108,6 @@ label return_home_post_player_bday:
             #If we returned from a date post pbday but have O31 deco
             if not mas_isO31() and persistent._mas_o31_in_o31_mode:
                 $ mas_o31HideVisuals()
-                #Also no more o31 costume
-                if monika_chr.is_wearing_clothes_with_exprop("costume"):
-                    $ queueEvent('mas_change_to_def')
 
             m 3eua "There we go!"
             if not persistent._mas_f14_gone_over_f14:
