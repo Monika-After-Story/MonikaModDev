@@ -136,7 +136,7 @@ label introduction:
     if not persistent.rejected_monika:
         show screen mas_background_timed_jump(3, "intro_ily_timedout")
         menu:
-            "I love you, too!":
+            "I love you too!":
                 hide screen mas_background_timed_jump
                 # bonus aff was saying it before being asked
                 $ mas_gainAffection(10,bypass=True)

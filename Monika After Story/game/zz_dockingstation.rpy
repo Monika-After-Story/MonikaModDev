@@ -1484,33 +1484,6 @@ init 200 python in mas_dockstat:
 
         return on_fail
 
-
-# NOTE: actually we dont need this
-#    def o31ShowVignette(moni_chksum):
-#        """
-#        Sets vignette flag to appropriate value depending on whether or not
-#        user returns monika from an overnight outing.
-#
-#        IN:
-#            moni_chksum - checksum created when taking monika out
-#        """
-#        # not in o31? no show vignette
-#        if not store.mas_isO31():
-#            store.mas_globals.show_vignette = False
-#            return
-#
-#        # we already setup o31 mode? keep showing the vignette
-#        if store.persistent._mas_o31_in_o31_mode:
-#            store.mas_globals.show_vignette = True
-#            return
-#
-#        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check
-#        checkout_time, checkin_time = getCheckTimes(moni_chksum)
-#
-#        if
-
-
     def generateMonika(dockstat):
         """
         Generates / writes a monika blob file.
@@ -2223,6 +2196,14 @@ label mas_dockstat_abort_gen:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
+    #NOTE: this needs to be done prior to a spaceroom call otherwise it doesn't update
+    #Make sure O31 effects show
+    if persistent._mas_o31_in_o31_mode:
+        $ mas_globals.show_vignette = True
+        #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+        if mas_current_weather != mas_weather_thunder:
+            $ mas_changeWeather(mas_weather_thunder, True)
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
@@ -2382,19 +2363,14 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-        # o31 re-entry checks
-        if mas_isO31() and persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_globals.show_vignette = True
+        #Force progressive to disabled for o31
+        $ mas_changeWeather(mas_weather_thunder, True)
 
-            # setup thunder
-            if persistent._mas_likes_rain:
-                mas_weather_thunder.unlocked = True
-                store.mas_weather.saveMWData()
-            mas_changeWeather(mas_weather_thunder)
-
-        # d25 re-entry checks
-        if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
-            #mas_is_snowing = True
-            pass
+    # d25 re-entry checks
+    if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
+        #mas_is_snowing = True
+        pass
 
     jump ch30_post_exp_check

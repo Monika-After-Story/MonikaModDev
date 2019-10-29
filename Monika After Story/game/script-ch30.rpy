@@ -73,26 +73,6 @@ init 970 python:
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
-        # check if coming from TT
-        store.mas_o31_event.mas_return_from_tt = (
-            store.mas_o31_event.isTTGreeting()
-        )
-
-
-    # o31 costumes flag
-    # we only enable costumes if you are not playing for the first time today.
-    if persistent._mas_o31_costumes_allowed is None:
-        first_sesh = persistent.sessions.get("first_session", None)
-        if first_sesh is not None:
-            # fresh players will have first session today
-            persistent._mas_o31_costumes_allowed = (
-                first_sesh.date() != mas_o31
-            )
-
-        else:
-            # no first sesh? you are also fresh
-            persistent._mas_o31_costumes_allowed = False
-
 
 init -10 python:
     # create the idle mailbox
@@ -801,14 +781,20 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if store.mas_globals.show_vignette:
         show vignette zorder 70
 
-    # monibday stuff
+    #Monibday stuff
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
+    # ----------- Grouping date-based events since they can never overlap:
+    #O31 stuff
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_o31ShowVisuals()
+
     # d25 seasonal
-    if persistent._mas_d25_deco_active:
+    elif persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
+    # ----------- end date-based events
 
     # player bday
     if persistent._mas_player_bday_decor:
@@ -847,19 +833,8 @@ label ch30_main:
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
-    # o31? o31 mode you are in
-    if mas_isO31():
-        $ persistent._mas_o31_in_o31_mode = True
-        $ store.mas_globals.show_vignette = True
-
-        # setup thunder
-        if persistent._mas_likes_rain:
-            $ mas_weather_thunder.unlocked = True
-            $ store.mas_weather.saveMWData()
-            $ mas_unlockEVL("monika_change_weather", "EVE")
-        $ mas_changeWeather(mas_weather_thunder)
-
     # d25 season? d25 season you are in
+    #TODO: day of first sesh shouldn't get deoct
     if mas_isD25Season():
         call mas_holiday_d25c_autoload_check
 
@@ -1100,14 +1075,17 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
-    if mas_isO31():
-        jump mas_holiday_o31_autoload_check
+    # ----------------
+    # grouping date-based events since they can never overlap
+    if mas_isO31() or persistent._mas_o31_in_o31_mode:
+        jump mas_o31_autoload_check
 
-    if mas_isD25Season():
+    elif mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
 
-    if mas_isF14() or persistent._mas_f14_in_f14_mode:
+    elif mas_isF14() or persistent._mas_f14_in_f14_mode:
         jump mas_f14_autoload_check
+    # ----------------
 
     #NOTE: This has priority because of the opendoor greet
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
@@ -1324,7 +1302,7 @@ label ch30_post_exp_check:
 
     # rain check
     $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None:
+    if set_to_weather is not None and not mas_weather.force_weather:
         $ mas_changeWeather(set_to_weather)
 
     # FALL THROUGH
@@ -1674,20 +1652,22 @@ label ch30_day:
 
         if mas_isMonikaBirthday():
             persistent._mas_bday_opened_game = True
+
+        if mas_isO31() and not persistent._mas_o31_in_o31_mode:
+            pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
     return
 
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
-
     python:
         # NOTE: unstable code
         if persistent._mas_unstable_mode:
             pass
 
     python:
-        # name/o31 eggs
-        if persistent.playername.lower() == "sayori" or store.mas_isO31():
+        # name eggs
+        if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
 
     python:
@@ -1785,7 +1765,7 @@ label ch30_reset:
     $ monika_chr.load(startup=True)
 
     # change back to def if we aren't wearing def at Normal-
-    if store.mas_isMoniNormal(lower=True) and store.monika_chr.clothes != store.mas_clothes_def:
+    if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
         $ pushEvent("mas_change_to_def",True)
 
     #### END SPRITES
@@ -1863,18 +1843,8 @@ label ch30_reset:
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
-    ## o31 content
-    python:
-        if store.mas_o31_event.isMonikaInCostume(monika_chr):
-            # NOTE: we may add additional costume logic in here if needed
-            # TODO: this is bad for o31 rests actually
-
-            if not persistent._mas_force_clothes:
-                # NOTE if the costumes were picked by user, (aka forced),
-                # then we do NOt reset
-                monika_chr.reset_clothes(False)
-
     ## d25 content
+    #TODO: put this into autoload
     python:
         if (
                 (mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE()))
@@ -1908,6 +1878,9 @@ label ch30_reset:
 
         if not monika_chr.is_wearing_acs_type("left-hair-flower"):
             store.mas_selspr.set_prompt("left-hair-flower", "wear")
+
+        if not monika_chr.is_wearing_acs_type("choker"):
+            store.mas_selspr.set_prompt("choker", "wear")
 
         if not monika_chr.is_wearing_ribbon():
             store.mas_selspr.set_prompt("ribbon", "wear")

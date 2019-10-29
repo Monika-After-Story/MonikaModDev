@@ -2217,7 +2217,7 @@ label prompt_menu:
             talk_menu.append(("Repeat conversation", "repeat"))
         if _mas_getAffection() > -50:
             if mas_passedILY(pass_time=datetime.timedelta(0,10)):
-                talk_menu.append(("I love you, too!","love_too"))
+                talk_menu.append(("I love you too!","love_too"))
             else:
                 talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
