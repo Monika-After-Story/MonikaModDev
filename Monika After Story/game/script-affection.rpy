@@ -463,6 +463,10 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # even on special event days, if going to dis, change to def
+        if store.monika_chr.clothes != store.mas_clothes_def:
+            store.pushEvent("mas_change_to_def",True)
+
 
     def _upsetToNormal():
         """
@@ -501,7 +505,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # queue the blazerless intro event
-        if not store.seen_event("mas_blazerless_intro"):
+        if not store.seen_event("mas_blazerless_intro") and not store.mas_hasSpecialOutfit():
             store.queueEvent("mas_blazerless_intro")
 
         # unlock blazerless for use
@@ -525,8 +529,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # if not wearing def, change to def
-        # TODO: may need to exclude Holidays from this is we give special outfits that are meant for Normal
-        if store.monika_chr.clothes != store.mas_clothes_def:
+        if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
             store.pushEvent("mas_change_to_def",True)
 
 

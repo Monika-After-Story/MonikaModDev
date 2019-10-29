@@ -3168,8 +3168,8 @@ label greeting_returned_home:
     # event checks
 
     #O31
-    if mas_isO31() and not persistent._mas_o31_in_o31_mode:
-        $ queueEvent("mas_holiday_o31_returned_home_relaunch")
+    if mas_isO31() and not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay() and mas_isMoniNormal(higher=True):
+        $ pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
 
     #F14
     if persistent._mas_f14_on_date:
@@ -3204,8 +3204,16 @@ label greeting_returned_home:
         if _return:
             return 'quit'
 
-# this just returns for now
+
 label greeting_returned_home_cleanup:
+    $ need_to_reset_bday_decor = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
+
+    #If it's not o31, and we've got deco up, we need to clean up
+    if not need_to_reset_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
+        call mas_o31_ret_home_cleanup(time_out)
+
+    elif need_to_reset_bday_decor:
+        call return_home_post_player_bday
     return
 
 label greeting_returned_home_morethan5mins:
@@ -3224,6 +3232,7 @@ label greeting_returned_home_morethan5mins:
     # otherwise, go to other flow
     jump greeting_returned_home_morethan5mins_other_flow
 
+#TODO: Clean this up eventually
 label greeting_returned_home_morethan5mins_cleanup:
 
     $ grant_xp(xp.NEW_GAME)
@@ -3253,9 +3262,8 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
     m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
     m 2eua "Well, it felt really great!"
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eub "Let's do this again soon, okay?"
-    if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
-        call return_home_post_player_bday
     return
 
 label greeting_returned_home_morethan5mins_other_dlg:

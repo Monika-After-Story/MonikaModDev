@@ -4370,6 +4370,19 @@ init 2 python:
         if persistent.monika_reload < 4:
             persistent.monika_reload += 1
 
+    def mas_isFirstSeshDay(_date=None):
+        """
+        Checks if _date is the day of first session
+
+        IN:
+            _date - date to compare against
+            (NOTE: if not provided, today is assumed)
+        """
+        if not _date:
+            _date = datetime.date.today()
+
+        return _date == mas_getFirstSesh().date()
+
     def mas_hasRPYFiles():
         """
         Checks if there are rpy files in the gamedir

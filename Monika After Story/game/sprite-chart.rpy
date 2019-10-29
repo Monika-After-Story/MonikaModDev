@@ -220,6 +220,10 @@ image mas_bday_balloons = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
+image mas_o31_deco = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
+    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+)
 
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings
@@ -6453,7 +6457,6 @@ init -2 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
-
         def get_hair(self, hair):
             """
             Given a hair type, grabs the available mapping for this hair type
@@ -6466,13 +6469,37 @@ init -2 python:
             """
             return self.hair_map.get(hair, self.hair_map.get("all", hair))
 
-
         def has_hair_map(self):
             """
             RETURNS: True if we have a mapping to check, False otherwise
             """
             return len(self.hair_map) > 0
 
+        @staticmethod
+        def by_exprop(exprop, value=True):
+            """
+            Gets all clothes that have the given exprop.
+
+            IN:
+                exprop - exprop to look for
+                value - value the exprop should be. Set to None to ignore.
+
+            RETURNS: list of MASClothes objects with the given exprop and value
+            """
+            clothes = []
+
+            for c_name in store.mas_sprites.CLOTH_MAP:
+                clothing = store.mas_sprites.CLOTH_MAP[c_name]
+                if (
+                        clothing.hasprop(exprop)
+                        and (
+                            value is None
+                            or value == clothing.getprop(exprop)
+                        )
+                ):
+                    clothes.append(clothing)
+
+            return clothes
 
         def _build_loadstrs(self):
             """
