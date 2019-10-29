@@ -431,7 +431,7 @@ label mas_song_nobody_makes_sense:
     m 1hub "Ahaha!"
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
     m 1ekbfb "I really hope I can keep on smiling with you forever~"
-    return "derandom"
+    return "derandom|love"
 
 init 5 python:
     addEvent(

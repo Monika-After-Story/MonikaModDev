@@ -12829,7 +12829,7 @@ label monika_life_skills:
     if persistent._mas_pm_cares_about_dokis:
         m 2rksdla "I know I wasn't that great with code, considering some of the things that happened..."
         m 2hksdlb "And I'll admit that I definitely broke a few things..."
-        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desparate."
+        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desperate."
         $ it = "And it"
 
     else:
