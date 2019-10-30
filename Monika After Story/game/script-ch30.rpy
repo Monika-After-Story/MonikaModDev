@@ -659,7 +659,6 @@ init python:
         """
         Checks the player derandom dict for events that are not random and derandoms them
         """
-        #We need to copy this dict as we may need to pop from the actual db during iteration
         for index in range(len(persistent._mas_player_derandomed)-1, -1, -1):
             #Get the ev
             ev = mas_getEV(persistent._mas_player_derandomed[index])
