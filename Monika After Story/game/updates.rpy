@@ -304,6 +304,15 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.3
+label v0_10_3(version="v0_10_3"):
+    python:
+        #Convert fav/derand dicts to lists based on their keys
+        persistent._mas_player_bookmarked = persistent._mas_player_bookmarked.keys()
+        persistent._mas_player_derandomed = persistent._mas_player_derandomed.keys()
+
+    return
+
 #0.10.2
 label v0_10_2(version="v0_10_2"):
     python:

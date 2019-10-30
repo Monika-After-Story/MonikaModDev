@@ -378,10 +378,10 @@ init python:
             and ev.prompt != ev.eventlabel
         ):
             if ev.eventlabel not in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked[ev.eventlabel] = ev
+                persistent._mas_player_bookmarked.append(ev.eventlabel)
                 renpy.notify(__("Topic bookmarked."))
             else:
-                persistent._mas_player_bookmarked.pop(ev.eventlabel)
+                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev.eventlabel))
                 renpy.notify(__("Bookmark removed."))
 
     def mas_hasBookmarks():
@@ -12881,15 +12881,15 @@ init 5 python:
 label mas_topic_derandom:
     # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
     $ prev_topic = persistent.flagged_monikatopic
-    $ ev = mas_getEV(prev_topic)
     m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you sure you don't want me to bring this up anymore?{fast}"
         "Please don't.":
             $ mas_hideEVL(prev_topic,"EVE",derandom=True)
-            $ persistent._mas_player_derandomed[ev.eventlabel] = ev
-            $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
+            $ persistent._mas_player_derandomed.append(prev_topic)
+            $ mas_showEVL('mas_topic_rerandom', 'EVE', unlock=True)
+
             m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
             m 2dksdld "If it upset you in any way, I'm really sorry...{w=0.5} I'd never do that intentionally."
             m 2eksdla "...But thanks for letting me know;{w=0.5} I appreciate the honesty."
@@ -12903,19 +12903,16 @@ init 5 python:
 
 label mas_topic_rerandom:
     python:
-        derandomlist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_derandomed.iteritems()
-        ]
+        derandomlist = mas_get_player_derandoms()
 
         derandomlist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
     if len(derandomlist) > 1:
-        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False)
     else:
-        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False )
+        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False)
 
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
@@ -12926,8 +12923,8 @@ label mas_topic_rerandom:
         m 1eua "Okay, [player]."
 
     else:
-        $ mas_showEVL(topic_choice,"EVE",_random=True)
-        $ persistent._mas_player_derandomed.pop(topic_choice)
+        $ mas_showEVL(topic_choice, "EVE", _random=True)
+        $ persistent._mas_player_derandomed.pop(persistent._mas_player_derandomed.index(topic_choice))
         m 1eua "Okay, [player]..."
 
         if len(persistent._mas_player_derandomed) > 0:
@@ -12942,7 +12939,7 @@ label mas_topic_rerandom:
 
         else:
             m 3hua "All done!"
-            $ mas_hideEVL("mas_topic_rerandom","EVE",lock=True)
+            $ mas_hideEVL("mas_topic_rerandom", "EVE", lock=True)
 
     # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
     # to be derandomed out of season is still derandomed
@@ -12954,20 +12951,16 @@ init 5 python:
 
 label mas_topic_unbookmark:
     python:
-        bookmarkslist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked and ev.checkAffection(mas_curr_affection)
-        ]
+        bookmarkslist = mas_get_player_bookmarks()
 
         bookmarkslist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
     if len(bookmarkslist) > 1:
-        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
     else:
-        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False )
+        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
         
     call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
 
@@ -12979,7 +12972,7 @@ label mas_topic_unbookmark:
 
     else:
         show monika at t11
-        $ persistent._mas_player_bookmarked.pop(topic_choice)
+        $ persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(topic_choice))
         m 1eua "Okay, [player]..."
 
         if len(bookmarkslist) > 1:

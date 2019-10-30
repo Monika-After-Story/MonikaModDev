@@ -660,15 +660,11 @@ init python:
         Checks the player derandom dict for events that are not random and derandoms them
         """
         #We need to copy this dict as we may need to pop from the actual db during iteration
-        derandomed_topics = persistent._mas_player_derandomed.copy()
-        for ev_label, ev in derandomed_topics.iteritems():
-            #We try/catch this, because we can derand from different dbs, so we can't crossref another db
-            #Therefore we just pop if we get an error
-            try:
-                if ev.random:
-                    ev.random = False
-            except:
-                persistent._mas_player_derandomed.pop(ev_label)
+        for index in range(len(persistent._mas_player_derandomed)-1, -1, -1):
+            #Get the ev
+            ev = mas_getEV(persistent._mas_player_derandomed[index])
+            if ev and ev.random:
+                ev.random = False
 
     def mas_get_player_bookmarks():
         """
@@ -678,22 +674,47 @@ init python:
         OUT:
             List of bookmarked topics in mas_gen_scrollable_menu form
         """
-        #Copy player bookmarked dict for during-iteration popping
-        bookmarked_topics = persistent._mas_player_bookmarked.copy()
         bookmarkedlist = []
 
         #Iterate and add to
-        for ev_label, ev in bookmarked_topics.iteritems():
-            try:
-                #If this ev exists, we add it to the menu item list
-                if ev.unlocked and ev.checkAffection(mas_curr_affection):
-                    bookmarkedlist.append((renpy.substitute(ev.prompt), ev_label, False, False))
+        for index in range(len(persistent._mas_player_bookmarked)-1,-1,-1):
+            #Get the ev
+            ev = mas_getEV(persistent._mas_player_bookmarked[index])
 
-            except:
-                #Otherwise we pop it
-                persistent._mas_player_bookmarked.pop(ev_label)
+            #If this ev exists, we add it to the menu item list
+            if ev and ev.unlocked and ev.checkAffection(mas_curr_affection):
+                bookmarkedlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+
+            #Otherwise we'll pop it as we shouldn't actually keep it here
+            else:
+                persistent._mas_player_bookmarked.pop(index)
 
         return bookmarkedlist
+
+    def mas_get_player_derandoms():
+        """
+        Gets topics which are derandomed by the player (in gen-scrollable-menu format)
+        Also cleans out events which no longer exist
+
+        OUT:
+            List of player-derandomed topics in mas_gen_scrollable_menu form
+        """
+        derandlist = []
+
+        #Iterate and add to
+        for index in range(len(persistent._mas_player_derandomed)-1,-1,-1):
+            #Get the ev
+            ev = mas_getEV(persistent._mas_player_derandomed[index])
+
+            #If this ev exists, we add it to the menu item list
+            if ev and ev.unlocked and ev.checkAffection(mas_curr_affection):
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+
+            #Otherwise we'll pop it as we shouldn't actually keep it here
+            else:
+                persistent._mas_player_derandomed.pop(index)
+
+        return derandlist
 
 init 1 python:
     morning_flag = mas_isMorning()
