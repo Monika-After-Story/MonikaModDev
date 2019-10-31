@@ -1853,6 +1853,16 @@ label ch30_reset:
         if not mas_isD25Season():
             persistent._mas_d25_deco_active = False
 
+
+    # reset bday decor
+    python:
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        if not mas_isMonikaBirthday() and not mas_isMonikaBirthday(yesterday):
+            persistent._mas_bday_visuals = False
+
+        if not mas_isplayer_bday() and not mas_isplayerbday(yesterday):
+            persistent._mas_player_bday_decor = False
+
     ## late farewell? set the global and clear the persistent so its auto
     ##  cleared
     python:
