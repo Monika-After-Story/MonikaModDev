@@ -1860,7 +1860,7 @@ label ch30_reset:
         if not mas_isMonikaBirthday() and not mas_isMonikaBirthday(yesterday):
             persistent._mas_bday_visuals = False
 
-        if not mas_isplayer_bday() and not mas_isplayerbday(yesterday):
+        if not mas_isplayer_bday() and not mas_isplayer_bday(yesterday):
             persistent._mas_player_bday_decor = False
 
     ## late farewell? set the global and clear the persistent so its auto
