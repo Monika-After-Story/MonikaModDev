@@ -685,7 +685,7 @@ init python:
                 bookmarkedlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
 
             #Otherwise we'll pop it as we shouldn't actually keep it here
-            else:
+            elif not ev:
                 persistent._mas_player_bookmarked.pop(index)
 
         return bookmarkedlist
@@ -710,7 +710,7 @@ init python:
                 derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
 
             #Otherwise we'll pop it as we shouldn't actually keep it here
-            else:
+            elif not ev:
                 persistent._mas_player_derandomed.pop(index)
 
         return derandlist
