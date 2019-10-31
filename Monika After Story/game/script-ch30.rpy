@@ -657,7 +657,7 @@ init python:
 
     def mas_check_player_derand():
         """
-        Checks the player derandom dict for events that are not random and derandoms them
+        Checks the player derandom list for events that are not random and derandoms them
         """
         for index in range(len(persistent._mas_player_derandomed)-1, -1, -1):
             #Get the ev
@@ -675,7 +675,7 @@ init python:
         """
         bookmarkedlist = []
 
-        #Iterate and add to
+        #Iterate and add to bookmarked list
         for index in range(len(persistent._mas_player_bookmarked)-1,-1,-1):
             #Get the ev
             ev = mas_getEV(persistent._mas_player_bookmarked[index])
@@ -700,7 +700,7 @@ init python:
         """
         derandlist = []
 
-        #Iterate and add to
+        #Iterate and add to derand list
         for index in range(len(persistent._mas_player_derandomed)-1,-1,-1):
             #Get the ev
             ev = mas_getEV(persistent._mas_player_derandomed[index])
