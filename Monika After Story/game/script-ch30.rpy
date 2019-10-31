@@ -659,9 +659,9 @@ init python:
         """
         Checks the player derandom list for events that are not random and derandoms them
         """
-        for index in range(len(persistent._mas_player_derandomed)-1, -1, -1):
+        for ev_label in persistent._mas_player_derandomed:
             #Get the ev
-            ev = mas_getEV(persistent._mas_player_derandomed[index])
+            ev = mas_getEV(ev_label)
             if ev and ev.random:
                 ev.random = False
 
