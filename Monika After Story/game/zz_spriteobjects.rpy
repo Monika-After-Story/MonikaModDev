@@ -1191,9 +1191,10 @@ init -1 python:
             default="0",
             p5="5"
         ),
-        acs_type="left-hair-flower",
+        acs_type="left-hair-flower-ear",
         mux_type=[
-            "left-hair-flower",
+            "left-hair-flower-ear",
+            "left-hair-flower"
         ],
         ex_props={
             "left-hair-strand-eye-level": True,
