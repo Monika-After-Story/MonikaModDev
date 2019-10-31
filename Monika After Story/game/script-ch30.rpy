@@ -680,13 +680,13 @@ init python:
             #Get the ev
             ev = mas_getEV(persistent._mas_player_bookmarked[index])
 
-            #If this ev exists, we add it to the menu item list
-            if ev and ev.unlocked and ev.checkAffection(mas_curr_affection):
-                bookmarkedlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
-
-            #Otherwise we'll pop it as we shouldn't actually keep it here
-            elif not ev:
+            #If no ev, we'll pop it as we shouldn't actually keep it here
+            if not ev:
                 persistent._mas_player_bookmarked.pop(index)
+
+            #Otherwise, we add it to the menu item list
+            elif ev.unlocked and ev.checkAffection(mas_curr_affection):
+                bookmarkedlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
 
         return bookmarkedlist
 
@@ -705,13 +705,13 @@ init python:
             #Get the ev
             ev = mas_getEV(persistent._mas_player_derandomed[index])
 
-            #If this ev exists, we add it to the menu item list
-            if ev and ev.unlocked and ev.checkAffection(mas_curr_affection):
-                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
-
-            #Otherwise we'll pop it as we shouldn't actually keep it here
-            elif not ev:
+            #No ev. Pop it as we shouldn't actually keep it here
+            if not ev:
                 persistent._mas_player_derandomed.pop(index)
+
+            #Ev exists. Add it to the menu item list
+            elif ev.unlocked and ev.checkAffection(mas_curr_affection):
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
 
         return derandlist
 
