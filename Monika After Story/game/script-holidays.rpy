@@ -416,8 +416,9 @@ label mas_o31_autoload_check:
         #It's not O31 anymore or we hit dis. It's time to reset
         elif not mas_isO31() or mas_isMoniDis(lower=True):
             #NOTE: Since O31 is costumes, we always reset clothes + hair
-            monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
-            monika_chr.reset_hair()
+            if monika_chr.is_wearing_clothes_with_exprop("costume"):
+                monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
+                monika_chr.reset_hair()
 
             #Reset o31_mode flag
             persistent._mas_o31_in_o31_mode = False
