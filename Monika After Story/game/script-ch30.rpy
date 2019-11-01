@@ -793,7 +793,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
     # d25 seasonal
     elif persistent._mas_d25_deco_active:
-        $ store.mas_d25_event.showD25Visuals()
+        $ store.mas_d25ShowVisuals()
     # ----------- end date-based events
 
     # player bday

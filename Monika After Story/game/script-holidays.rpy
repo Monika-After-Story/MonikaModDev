@@ -18,13 +18,18 @@ define mas_one_hour = datetime.timedelta(seconds=3600)
 define mas_three_hour = datetime.timedelta(seconds=3*3600)
 
 init -1 python:
+    def mas_lastSeenLastYear(ev_label):
+        """
+        Checks if the event corresponding to ev_label was last seen last year
+        """
+        return mas_lastSeenInYear(ev_label, datetime.date.today().year-1)
 
     def mas_addClothesToHolidayMap(clothes, key=None):
         """
         Adds the given clothes to the holiday clothes map
 
         IN:
-            clothes - clothing item to
+            clothes - clothing item to add
             key - dateime.date to use as key. If None, we use today
         """
         if clothes is None:
@@ -35,6 +40,26 @@ init -1 python:
 
         persistent._mas_event_clothes_map[key] = clothes.name
 
+    def mas_addClothesToHolidayMapRange(clothes, start_date, end_date):
+        """
+        Adds the given clothes to the holiday clothes map over the day range provided
+
+        IN:
+            clothes - clothing item to add
+            start_date - datetime.date to start adding to the map on
+            end_date - datetime.date to stop adding to the map on
+        """
+        if not clothes:
+            return
+
+        #We have clothes, we need to create a generator for building a range
+        def daterange(start_date, end_date):
+            for n in range(int((end_date-start_date).days)):
+                yield start_date + datetime.timedelta(n)
+
+        #Now we need to iterate over the new range:
+        for date in daterange(start_date, end_date):
+            mas_addClothesToHolidayMap(clothes, date)
 
     def mas_checkOverDate(_date):
         """
@@ -1095,10 +1120,10 @@ default persistent._mas_d25_deco_active = False
 default persistent._mas_d25_intro_seen = False
 # True once a d25 intro has been seen
 
-default persistent._mas_d25_went_out_d25e = 0
+default persistent._mas_d25_d25e_date_count = 0
 # number of times user takes monika out on d25e
 
-default persistent._mas_d25_went_out_d25 = 0
+default persistent._mas_d25_d25_date_count = 0
 # number of times user takes monika out on d25
 # this also includes if the day was partially or entirely spent out
 
@@ -1109,10 +1134,10 @@ define mas_d25e = mas_d25 - datetime.timedelta(days=1)
 # christmas eve
 
 define mas_d25p = mas_d25 + datetime.timedelta(days=1)
-# day after christmas
+#Dec 26, the day Monika stops wearing santa and the end of the christmas gift range
 
 define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 11)
-# start of christmas season (inclusive)
+# start of christmas season (inclusive) and when Monika wears santa
 
 define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
 # end of christmas season (exclusive)
@@ -1120,28 +1145,8 @@ define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
 define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
 # start of gift = d25 gift (inclusive)
 
-define mas_d25g_end = mas_d25p
-# end of gift = d25 gift (exclusive)
-
-define mas_d25cl_start = mas_d25c_start
-# start of when monika wears santa (inclusive)
-
-define mas_d25cl_end = mas_d25p
-# end of when monika wears santa (on her own) (exclusive)
-
 
 init -810 python:
-    # MASHistorySaver for d25
-#    store.mas_history.addMHS(MASHistorySaver(
-#        "d25",
-#        datetime.datetime(2018, 12, 26),
-#        {
-#
-#
-#        },
-#        exit_pp=store.mas_history._d25_exit_pp
-#    ))
-
     # we also need a history svaer for when the d25 season ends.
     store.mas_history.addMHS(MASHistorySaver(
         "d25s",
@@ -1157,21 +1162,16 @@ init -810 python:
             "_mas_d25_started_upset": "d25s.monika.started_season_upset",
             "_mas_d25_second_chance_upset": "d25s.monika.upset_after_2ndchance",
 
-            # related to chibiak sayori event
-            "_mas_d25_chibika_sayori": "d25s.needed_to_do_chibika_sayori",
-            "_mas_d25_chibika_sayori_performed": "d25s.did_chibika_sayori",
-
             "_mas_d25_intro_seen": "d25s.saw_an_intro",
 
             # d25 dates
-            "_mas_d25_went_out_d25e": "d25s.d25e.went_out_count",
-            "_mas_d25_went_out_d25": "d25s.d25.went_out_count",
+            "_mas_d25_d25e_date_count": "d25s.d25e.went_out_count",
+            "_mas_d25_d25_date_count": "d25s.d25.went_out_count",
 
             "_mas_d25_spent_d25": "d25.actions.spent_d25",
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._d25s_exit_pp,
         start_dt=datetime.datetime(2019, 12, 11),
         end_dt=datetime.datetime(2019, 12, 31)
     ))
@@ -1309,7 +1309,7 @@ init -10 python:
         if _date is None:
             _date = datetime.date.today()
 
-        return mas_isInDateRange(_date, mas_d25g_start, mas_d25g_end)
+        return mas_isInDateRange(_date, mas_d25g_start, mas_d25p)
 
 
     def mas_isD25Outfit(_date=None):
@@ -1328,10 +1328,27 @@ init -10 python:
         if _date is None:
             _date = datetime.date.today()
 
-        return mas_isInDateRange(_date, mas_d25cl_start, mas_d25cl_end)
+        return mas_isInDateRange(_date, mas_d25c_start, mas_d25p)
 
 
-#### d25 arts
+    def mas_d25ShowVisuals():
+        """
+        Shows d25 visuals.
+        """
+        renpy.show("mas_d25_banners", zorder=7)
+        renpy.show("mas_d25_tree", zorder=8)
+        # NOTE: we should only handle the sayori part if we can fit the chibika event
+
+
+    def mas_d25HideVisuals():
+        """
+        Hides d25 visuals
+        """
+        renpy.hide("mas_d25_banners")
+        renpy.hide("mas_d25_tree")
+
+
+####START: d25 arts
 
 # window banners
 image mas_d25_banners = ConditionSwitch(
@@ -1354,37 +1371,6 @@ image mas_d25_tree_sayori = ConditionSwitch(
     "not morning_flag",
     "mod_assets/location/spaceroom/d25/tree-sayori-n.png"
 )
-
-init -11 python in mas_d25_event:
-
-    def showD25Visuals():
-        """
-        Shows d25 visuals.
-        """
-        renpy.show("mas_d25_banners", zorder=7)
-        renpy.show("mas_d25_tree", zorder=8)
-        # NOTE: we should only handle the sayori part if we can fit the chibika event
-
-
-    def hideD25Visuals():
-        """
-        Hides d25 visuals
-        """
-        renpy.hide("mas_d25_banners")
-        renpy.hide("mas_d25_tree")
-
-
-    def redeemed():
-        """
-        RETURNS: True if the user started d25 season with an upset monika,
-            and now has a monika above upset.
-
-        If not started with upset monika, True is returned.
-        """
-        return (
-            not store.persistent._mas_d25_started_upset
-            or store.mas_isMoniNormal(higher=True)
-        )
 
 
 # auto load starter check
@@ -1443,20 +1429,7 @@ label mas_holiday_d25c_autoload_check:
     jump mas_ch30_post_holiday_check
 
 
-init -815 python in mas_history:
-
-    # d25
-    def _d25_exit_pp(mhs):
-        # just add approprpiate delayed actions
-        _MDA_safeadd(9)
-
-    # d25 season
-    def _d25s_exit_pp(mhs):
-        # just add appropriate delayed action IDs
-        _MDA_safeadd(8, 9, 10)
-
-
-# topics
+#START: d25 topics
 # TODO: dont forget to update script topics's seen properties
 
 init 5 python:
@@ -1476,19 +1449,6 @@ init 5 python:
 
 
 label mas_d25_monika_holiday_intro:
-    # TODO: this should have the chibika thing in the background, but only
-    #   if you saw christmas last year.
-    python:
-        # TODO gonezo this after this year
-        seen_d25_last_year = renpy.seen_label("monika_christmas")
-        if persistent._mas_d25_chibika_sayori is None:
-            persistent._mas_d25_chibika_sayori = (
-                not persistent._mas_sensitive_mode
-                and seen_d25_last_year
-                and not persistent._mas_d25_chibika_sayori_done
-                and not persistent._mas_d25_chibika_sayori_performed
-            )
-
     if not persistent._mas_d25_deco_active:
         m 1eua "So, today is..."
         m 1euc "...wait."
@@ -1517,8 +1477,7 @@ label mas_d25_monika_holiday_intro:
 
     m 1eub "Happy holidays, [player]!"
 
-    # TODO: after this christmas, we change this to a history lookup
-    if seen_d25_last_year:
+    if mas_lastSeenLastYear("mas_d25_monika_holiday_intro"):
         m 1hua "Can you believe it's already that time of year again?"
         m 3eua "It seems like just yesterday we spent our first holiday season together, and now a whole year has gone by!"
 
@@ -1532,16 +1491,12 @@ label mas_d25_monika_holiday_intro:
         pass
 
     m 3eua "Do you like what I've done with the room?"
-    # TODO: chibika moves to under the tree
     m 1hua "I must say that I'm pretty proud of it."
-    # TODO: chibika jumps to sayori and pulls her down
     m "Christmas time has always been one of my favorite occasions of the year..."
 
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
 
-    # TODO: chibika runs off the side
-    # TODO: after this d25, we change this to a history lookup
-    if renpy.seen_label('monika_christmas'):
+    if mas_lastSeenLastYear("mas_d25_monika_holiday_intro"):
         m 5eka "So I'm glad that you're here to share it with me again this year~"
     else:
         m 5eka "And I'm so glad that you're here to share it with me~"
@@ -1596,18 +1551,9 @@ label mas_d25_monika_holiday_intro_upset:
     call mas_d25_monika_holiday_intro_deco
 
     m 3hub "Tada~"
-
-    # TODO: chibiika appears
-
     m 3eka "What do you think?"
-
-    # TODO: chibika moves under tree
     m 1eka "Not too bad for last minute, huh?"
-    # TODO: cibika jumps and rmeoves sayori
-
     m 1hua "Christmas time has always been one of my favorite occasions of the year..."
-    # TODO: chibika moves off screen
-
     m 3eua "And I'm so glad we can spend it happily together, [player]~"
 
     # now we can renable everything
@@ -1624,20 +1570,22 @@ label mas_d25_monika_holiday_intro_deco:
     # black scene
     scene black
 
-    # we should consider ourselves in d25 mode now, if not already
-    $ persistent._mas_d25_in_d25_mode = True
+    python:
+        #We should consider ourselves in d25 mode now, if not already
+        persistent._mas_d25_in_d25_mode = True
 
-    # we want to be wearing ponytail hair
-    $ monika_chr.change_hair(mas_hair_def, False)
+        #We want to be wearing ponytail hair
+        monika_chr.change_hair(mas_hair_def, False)
 
-    # unlock and wear santa
-    $ store.mas_selspr.unlock_clothes(mas_clothes_santa)
-    $ store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
-    $ monika_chr.change_clothes(mas_clothes_santa, False)
-    $ persistent._mas_d25_seen_santa_costume = True
+        #Unlock and wear santa
+        store.mas_selspr.unlock_clothes(mas_clothes_santa)
+        store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
+        monika_chr.change_clothes(mas_clothes_santa, False)
 
-    # enable deco
-    $ persistent._mas_d25_deco_active = True
+        persistent._mas_d25_seen_santa_costume = True
+
+        #Enable deco
+        persistent._mas_d25_deco_active = True
 
     # now we can do spacroom call
     call spaceroom(scene_change=True)
@@ -2007,7 +1955,7 @@ init 5 python:
 
 label mas_d25_spent_time_monika:
 
-    $ d25_gifts_total, d25_gifts_good, d25_gifts_neutral, d25_gifts_bad = mas_getGiftStatsRange(mas_d25g_start, mas_d25g_end + datetime.timedelta(days=1))
+    $ d25_gifts_total, d25_gifts_good, d25_gifts_neutral, d25_gifts_bad = mas_getGiftStatsRange(mas_d25g_start, mas_d25p + datetime.timedelta(days=1))
 
     if mas_isMoniNormal(higher=True):
         m 1eua "[player]..."
@@ -2365,7 +2313,7 @@ label mas_d25_postd25_notimespent:
 #Christmas Eve dockingstation
 label bye_d25e_delegate:
     # delegation label that determins what bye dialogue to show
-    if persistent._mas_d25_went_out_d25e > 0:
+    if persistent._mas_d25_d25e_date_count > 0:
         call bye_d25e_second_time_out
 
     else:
@@ -2397,7 +2345,7 @@ label bye_d25e_second_time_out:
 #Christmas Day dockingstation
 label bye_d25_delegate:
     # delegation label that determins which bye dialogue to show
-    if persistent._mas_d25_went_out_d25 > 0:
+    if persistent._mas_d25_d25_date_count > 0:
         call bye_d25_second_time_out
 
     else:
@@ -2436,7 +2384,7 @@ label bye_d25_second_time_out:
 
 #returned from d25e date on d25e
 label greeting_d25e_returned_d25e:
-    $ persistent._mas_d25_went_out_d25e += 1
+    $ persistent._mas_d25_d25e_date_count += 1
 
     m 1hua "And we're home!"
     m 3eka "It was really sweet of you to bring me along today..."
@@ -2445,8 +2393,8 @@ label greeting_d25e_returned_d25e:
 
 #returned from d25e date on d25
 label greeting_d25e_returned_d25:
-    $ persistent._mas_d25_went_out_d25e += 1
-    $ persistent._mas_d25_went_out_d25 += 1
+    $ persistent._mas_d25_d25e_date_count += 1
+    $ persistent._mas_d25_d25_date_count += 1
 
     m 1hua "And we're home!"
     m 3wud "Wow, we were out all night..."
@@ -2456,8 +2404,8 @@ label greeting_d25e_returned_d25:
 
 #returned from d25e date (or left before d25e) after d25 but before nyd is over
 label greeting_d25e_returned_post_d25:
-    $ persistent._mas_d25_went_out_d25e += 1
-    $ persistent._mas_d25_went_out_d25 += 1
+    $ persistent._mas_d25_d25e_date_count += 1
+    $ persistent._mas_d25_d25_date_count += 1
     $ persistent._mas_d25_spent_d25 = True
 
     m 1hua "We're finally home!"
@@ -2479,7 +2427,7 @@ label greeting_pd25e_returned_d25:
 
 #returned from d25 date on d25
 label greeting_d25_returned_d25:
-    $ persistent._mas_d25_went_out_d25 += 1
+    $ persistent._mas_d25_d25_date_count += 1
     $ persistent._mas_d25_spent_d25 = True
 
     m 1hua "And we're home!"
@@ -2490,7 +2438,7 @@ label greeting_d25_returned_d25:
 
 #returned from d25 date after d25
 label greeting_d25_returned_post_d25:
-    $ persistent._mas_d25_went_out_d25 += 1
+    $ persistent._mas_d25_d25_date_count += 1
     $ persistent._mas_d25_spent_d25 = True
 
     m 1hua "We're finally home!"
@@ -2646,10 +2594,10 @@ default persistent._mas_nye_spent_nye = False
 default persistent._mas_nye_spent_nyd = False
 # true if user spent new years day with monika
 
-default persistent._mas_nye_went_out_nye = 0
+default persistent._mas_nye_nye_date_count = 0
 # number of times user took monika out for nye
 
-default persistent._mas_nye_went_out_nyd = 0
+default persistent._mas_nye_nyd_date_count = 0
 # number of times user took monika out for nyd
 
 default persistent._mas_nye_date_aff_gain = 0
@@ -2667,8 +2615,8 @@ init -810 python:
             "_mas_nye_spent_nye": "nye.actions.spent_nye",
             "_mas_nye_spent_nyd": "nye.actions.spent_nyd",
 
-            "_mas_nye_went_out_nye": "nye.actions.went_out_nye",
-            "_mas_nye_went_out_nyd": "nye.actions.went_out_nyd",
+            "_mas_nye_nye_date_count": "nye.actions.went_out_nye",
+            "_mas_nye_nyd_date_count": "nye.actions.went_out_nyd",
 
             "_mas_nye_date_aff_gain": "nye.aff.date_gain"
         },
@@ -3236,7 +3184,7 @@ label bye_nye_delegate:
     elif _curr_time < _eve_time:
         # before evening but after morning
 
-        if persistent._mas_nye_went_out_nye > 0:
+        if persistent._mas_nye_nye_date_count > 0:
             call bye_nye_second_time_out
 
         else:
@@ -3292,7 +3240,7 @@ label greeting_nye_delegate:
     else:
         call greeting_nye_infw
 
-    $ persistent._mas_nye_went_out_nye += 1
+    $ persistent._mas_nye_nye_date_count += 1
 
     return
 
@@ -3318,7 +3266,7 @@ label greeting_nye_infw:
 #===========================================================Going to take you somewhere on NYD===========================================================#
 
 label bye_nyd_delegate:
-    if persistent._mas_nye_went_out_nyd > 0:
+    if persistent._mas_nye_nyd_date_count > 0:
         call bye_nyd_second_time_out
 
     else:
@@ -3343,8 +3291,8 @@ label bye_nyd_second_time_out:
 
 label greeting_nye_returned_nyd:
     #if returning home from NYE:
-    $ persistent._mas_nye_went_out_nye += 1
-    $ persistent._mas_nye_went_out_nyd += 1
+    $ persistent._mas_nye_nye_date_count += 1
+    $ persistent._mas_nye_nyd_date_count += 1
 
     m 1hua "And we're home!"
     m 1eka "Thanks for taking me out yesterday, [player]."
@@ -3357,7 +3305,7 @@ label greeting_nye_returned_nyd:
 
 label greeting_nyd_returned_nyd:
     #normal return home:(i.e. took out, and returned on NYD itself)
-    $ persistent._mas_nye_went_out_nyd += 1
+    $ persistent._mas_nye_nyd_date_count += 1
     m 1hua "And we're home!"
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "That was a lot of fun, [player]!"
@@ -3369,10 +3317,10 @@ label greeting_nyd_returned_nyd:
 
 label greeting_pd25e_returned_nydp:
     #Here for historical data
-    $ persistent._mas_d25_went_out_d25e += 1
-    $ persistent._mas_d25_went_out_d25 += 1
-    $ persistent._mas_nye_went_out_nye += 1
-    $ persistent._mas_nye_went_out_nyd += 1
+    $ persistent._mas_d25_d25e_date_count += 1
+    $ persistent._mas_d25_d25_date_count += 1
+    $ persistent._mas_nye_nye_date_count += 1
+    $ persistent._mas_nye_nyd_date_count += 1
     $ persistent._mas_d25_spent_d25 = True
     $ persistent._mas_nye_spent_nye = True
     $ persistent._mas_nye_spent_nyd = True
@@ -3390,8 +3338,8 @@ label greeting_pd25e_returned_nydp:
 
 #============================================================Greeting returned home D25P NYD(P)============================================================#
 label greeting_d25p_returned_nyd:
-    $ persistent._mas_nye_went_out_nye += 1
-    $ persistent._mas_nye_went_out_nyd += 1
+    $ persistent._mas_nye_nye_date_count += 1
+    $ persistent._mas_nye_nyd_date_count += 1
     $ persistent._mas_nye_spent_nye = True
 
     m 1hua "And we're home!"
@@ -3403,8 +3351,8 @@ label greeting_d25p_returned_nyd:
     return
 
 label greeting_d25p_returned_nydp:
-    $ persistent._mas_nye_went_out_nye += 1
-    $ persistent._mas_nye_went_out_nyd += 1
+    $ persistent._mas_nye_nye_date_count += 1
+    $ persistent._mas_nye_nyd_date_count += 1
     $ persistent._mas_nye_spent_nye = True
     $ persistent._mas_nye_spent_nyd = True
 

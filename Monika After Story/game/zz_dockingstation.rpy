@@ -2214,7 +2214,7 @@ label mas_dockstat_empty_desk:
     show emptydesk zorder ed_zorder at i11
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
-        $ store.mas_d25_event.showD25Visuals()
+        $ store.mas_d25ShowVisuals()
 
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
