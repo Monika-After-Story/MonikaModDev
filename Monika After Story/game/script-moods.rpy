@@ -50,12 +50,6 @@ init -1 python in mas_moods:
 
     # pane constants
     # most of these are the same as the unseen area consants
-    MOOD_X = 680
-    MOOD_Y = 40
-    MOOD_W = 560
-    MOOD_H = 640
-    MOOD_XALIGN = -0.05
-    MOOD_AREA = (MOOD_X, MOOD_Y, MOOD_W, MOOD_H)
     MOOD_RETURN = "...like talking about something else."
 
 ## FUNCTIONS ==================================================================
@@ -103,7 +97,7 @@ label mas_mood_start:
         final_item = (mas_moods.MOOD_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(mood_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
