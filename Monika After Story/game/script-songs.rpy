@@ -209,6 +209,29 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_aiwfc",
+            prompt="All I want for Christmas",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="SNG"
+    )
+
+
+label mas_song_aiwfc:
+    #Get current song
+    $ curr_song = songs.current_track
+    call monika_aiwfc_song
+
+    #Play previous song again
+    $ play_song(curr_song, fadein=1.0)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_lover_boy",
             prompt="Old Fashioned Lover Boy",
             category=[store.mas_songs.TYPE_SHORT],

@@ -304,6 +304,17 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.4
+label v0_10_4(version="v0_10_4"):
+    python:
+        if renpy.seen_label("monika_aiwfc"):
+            #Need to swap out for song variant
+            mas_unlockEVL("mas_song_aiwfc", "SNG")
+            mas_lockEVL("monika_aiwfc")
+
+    return
+
+
 #0.10.2
 label v0_10_2(version="v0_10_2"):
     python:

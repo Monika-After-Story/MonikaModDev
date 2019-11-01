@@ -2169,8 +2169,7 @@ init 5 python:
             aff_range=(mas_aff.NORMAL, None),
             years=[]
         ),
-        skipCalendar=True,
-        code="SNG"
+        skipCalendar=True
     )
 
 #TODO: Delegate label for this from songs, this has to remain in event db and use a different intro
@@ -2190,7 +2189,8 @@ label monika_aiwfc:
     else:
         m 1eka "I'm happy to sing for you again!"
 
-    $ curr_song = renpy.music.get_playing()
+    #Get current song
+    $ curr_song = songs.current_track
 
     call monika_aiwfc_song
 
@@ -2200,14 +2200,17 @@ label monika_aiwfc:
         m 1ekbfa "You're the only gift I could ever want."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "I love you, [player]."
-        $ mas_showEVL("monika_aiwfc", "EVE", _pool=True, unlock=True)
+
     else:
         m 1eka "I'm glad you like it when I sing that song."
         m 1ekbsa "You'll always be the only gift I'll ever need, [player]."
         m 1ekbfa "I love you."
 
-    play music curr_song fadein 1.0
-    return "love"
+    $ play_song(curr_song, fadein=1.0)
+
+    #Unlock the song
+    $ mas_unlockEVL("mas_song_aiwfc", "SNG")
+    return "no_unlock|love"
 
 #TODO: Adjust timing based on missing quotes now
 label monika_aiwfc_song:
@@ -2217,7 +2220,7 @@ label monika_aiwfc_song:
     #Disable text speed for this
     $ mas_disableTextSpeed()
 
-    stop music fadeout 1.0
+    $ play_song(None, 1.0)
     play music "mod_assets/bgm/aiwfc.ogg"
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
