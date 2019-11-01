@@ -1091,9 +1091,6 @@ default persistent._mas_d25_spent_d25 = False
 # True if the user spent time with monika on d25
 # (basically they got the merry christmas dialogue)
 
-default persistent._mas_d25_seen_santa_costume = False
-# True if user has seen santa costume this year.
-
 default persistent._mas_d25_chibika_sayori = None
 # True if we need to perform the chibika sayori intro
 # False if we do NOT need to perform the chibka sayori intro
@@ -1169,8 +1166,7 @@ init -810 python:
             "_mas_d25_d25e_date_count": "d25s.d25e.went_out_count",
             "_mas_d25_d25_date_count": "d25s.d25.went_out_count",
 
-            "_mas_d25_spent_d25": "d25.actions.spent_d25",
-            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
+            "_mas_d25_spent_d25": "d25.actions.spent_d25"
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 11),
@@ -1383,9 +1379,15 @@ label mas_holiday_d25c_autoload_check:
     # NOTE: this is called in introduction.
 
     python:
-        if not persistent._mas_d25_in_d25_mode:
+        #We don't want the day of the first sesh having d25 content
+        #This is first loadin
+        if (
+            not persistent._mas_d25_in_d25_mode
+            and mas_isD25Season()
+            and not mas_isFirstSeshDay()
+        ):
 
-            # enable d25
+            #Enable d25 dockstat
             persistent._mas_d25_in_d25_mode = True
 
             # affection upset and below? no d25 for you
@@ -1393,8 +1395,7 @@ label mas_holiday_d25c_autoload_check:
                 persistent._mas_d25_started_upset = True
 
             else:
-
-                #We don't want santa outfit on fresh persists, same w/ decorations. No point at this point if past d25 itself.
+                #We don't want any d25 content on first sesh day. No point at this point if past d25 itself.
                 if mas_isD25Outfit():
                     # we want to be wearing ponytail hair
                     monika_chr.change_hair(mas_hair_def, False)
@@ -1402,37 +1403,46 @@ label mas_holiday_d25c_autoload_check:
                     # unlock and wear santa/wine ribbon
                     store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
                     store.mas_selspr.unlock_clothes(mas_clothes_santa)
+
+                    #Change into santa
                     monika_chr.change_clothes(mas_clothes_santa, False)
-                    persistent._mas_d25_seen_santa_costume = True
+
+                    #Add to holiday map
+                    mas_addClothesToHolidayMapRange(mas_clothes_santa, mas_d25c_start, mas_d25p)
 
                     # mark decorations and outfit as active
                     persistent._mas_d25_deco_active = True
 
-    # NOTE: holiday intro is handled with conditional
-
-    if (
-            mas_isD25()
-            and persistent._mas_d25_deco_active
-            and monika_chr.clothes != mas_clothes_santa
+        #This is d25 exit
+        elif (
+            (persistent._mas_d25_in_d25_mode and not mas_isD25Season())
+            or mas_isMoniDis(lower=True)
         ):
-        # on d25, monika will wear santa on start, regardless of whatever
-        # (and if deco is active)
-        $ monika_chr.change_clothes(mas_clothes_santa, False)
+            #It's time to clean everything up
+            if monika_chr.is_wearing_clothes_with_exprop("costume"):
+                #Monika takes off santa outfit after d25
+                monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
 
-    if mas_in_intro_flow:
-        # intro will call us instead of jump
-        return
+            #Remove deco
+            persistent._mas_d25_deco_active = False
 
-    elif mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
-        jump mas_player_bday_autoload_check
+            #And no more d25 mode
+            persistent._mas_d25_in_d25_mode = False
+
+        elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
+            #Force Santa on D25 if deco active and not first sesh day
+            monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
+
+        #And then run pbday checks
+        #TODO: Verify this placement
+        elif mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+            renpy.jump("mas_player_bday_autoload_check")
 
     # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
 
 
 #START: d25 topics
-# TODO: dont forget to update script topics's seen properties
-
 init 5 python:
     addEvent(
         Event(
@@ -1583,8 +1593,6 @@ label mas_d25_monika_holiday_intro_deco:
         store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
         monika_chr.change_clothes(mas_clothes_santa, False)
 
-        persistent._mas_d25_seen_santa_costume = True
-
         #Enable deco
         persistent._mas_d25_deco_active = True
 
@@ -1684,8 +1692,7 @@ label mas_d25_monika_christmas:
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m "Snuggling with each other by a fireplace, watching the snow gently fall..."
 
-        # TODO: this should be chnaged to a history lookup after d25
-        if not renpy.seen_label('monika_christmas'):
+        if not seen_event("mas_d25_monika_christmas"):
             m 5hubfa "I'm forever grateful I got this chance with you."
         else:
             m 5hubfa "I'm so glad I get to spend Christmas with you again."
@@ -1720,64 +1727,6 @@ label mas_d25_monika_christmas:
 
 label mas_d25_monika_christmas_no_wish:
     hide screen mas_background_timed_jump
-    return
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_hanukkah"
-#            # TODO: props
-#            # TODO: bewteen 12th and 20th I guess?
-#        )
-#    )
-
-# NOTE: we are shelfing hannukkah until we get better dialogue
-
-#TODO: Normal+ also Hanukkah is over before our release this year, so next year?
-label mas_d25_monika_hanukkah:
-    m 1dsd "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
-    m 1dsa "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
-    m 3esa "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
-    m 3eub "Eight nights worth of celebration!"
-    m 3eua "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
-    m "It's on the 25th of Kislev, meaning 'trust' or 'hope.'"
-    m 1hua "A very appropriate meaning for such an occasion, don't you think?"
-
-    # NOTE: wtf is this
-    m 3eua "Anyway, have you ever had fried sufganiyot before?"
-
-    m "It's a special kind of donut made during this holiday."
-    m 3eub "It's filled in with something really sweet, deep friend, and rolled onto some sugar."
-    m 1wub "It's a really good pastry! I especially love the ones filled with strawberry filling~"
-    m 1hua "This time of year sure has a lot of wonderful holidays and traditions."
-    m 1eub "I don't know if you celebrate Hanukkah, but can we match a menorah lighting ceremony together, anyway?"
-    m 3hua "We can sing and dance the night away~"
-    return
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_kwanzaa"
-#            # TODO: props
-#            # TODO: between 26th and 30th I guess
-#        )
-#    )
-
-# shelving kwanzaa until we get better dialogue
-
-#TODO: Normalt+
-label mas_d25_monika_kwanzaa:
-    m 1eub "[player], have you ever heard of Kwanzaa?"
-    m 1eua "It's a week-long festival celebrating African American history that starts the day after Christmas."
-    m 3eua "The word 'Kwanzaa' comes from the Swahili praise 'matunda ya kwanza', which means 'first fruits'."
-    m "Even if Christmas is the main event for many, other holidays are always interesting to learn about."
-    m 1euc "Apparently, people celebrate the tradition by decorating their homes with bright adornments."
-    m "There's also music to enjoy, and a candleholder called the 'kinara' to light a new fire with each passing day."
-    m 1eua "Doesn't it remind you of some other holidays? The concepts certainly seem familiar."
-    m "In the end, having a day to celebrate is the most important part. Everyone has their own way to enjoy themselves."
-    m 1hua "We can celebrate Kwanzaa together, too, [player]."
     return
 
 init 5 python:
@@ -1838,35 +1787,6 @@ label mas_d25_monika_carolling:
             m 3hua "Sing with me sometime, okay?"
 
     return "derandom"
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_dreidel"
-#            # TODO: props
-#            # TODO: during hannkkau time
-#        )
-#    )
-
-# NOTE: we are shelving until further notice
-
-#TODO: Normal+
-#TODO: Merge this into monika_hanukkah or remove? Hanukkah is over before our release this year, so next year?
-label mas_d25_monika_dreidel:
-    # NOTE: this topic is weird wtf. maybe a bit too religious to include here.
-    m 3eua "[player], did you know that each side of a dreidel actaully means something?"
-    m "Nun, Gimel, Hel, Shim."
-    m 1eub "These stand for Nes Gadol Hayah Sham - A Great Miracle Happened There."
-    m "It refers to the Hanukkah story of how one day's worth of oil lasted for eight days."
-    m 3eua "Over in Israel, they change the last word to 'poh', making it 'A Great Miracle Happened Here.'"
-
-    # TODO: oops, should have made this
-    m 1rksdla "I don't have one, unfortunately, but maybe next year I'll have one to spin~"
-    m 3hua "But for now, [player], do you have any gelt?"
-    m 3hub "The chocolate coin variety tastes really good."
-    m 1tku "Though money is always good, too, ehehe~"
-    return
 
 
 init 5 python:
@@ -2121,8 +2041,6 @@ init 5 python:
         skipCalendar=True
     )
 
-#TODO: Delegate label for this from songs, this has to remain in event db and use a different intro
-#But it needs to no-unlock
 label monika_aiwfc:
 
     if not renpy.seen_label('monika_aiwfc_song'):
@@ -2231,10 +2149,17 @@ label mas_d25_monika_christmas_eve:
     m 1eka "I would be so anxious to see what I'd find under the tree the next morning..."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
 
-    # TODO: change to historical data version
-    if renpy.seen_label('monika_christmas'):
+    #Were there last Christmas
+    if mas_lastSeenLastYear("mas_d25_monika_christmas"):
         m 5ekbfa "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
         m 5hkbfa "I can't wait for tomorrow!"
+
+    #Weren't there last Christmas
+    elif seen_event("mas_d25_monika_christmas"):
+        m 5ekbfa "But I'm even {i}more{/i} excited this year..."
+        m 5hkbfa "Just the thought of spending another Christmas together...{w=1}I can't wait!"
+
+    #First Chistmas with Moni
     else:
         m 5ekbfa "But I'm even {i}more{/i} excited this year..."
         m 5hkbfa "Just the thought of our first Christmas together...{w=1}I can't wait!"
@@ -2624,7 +2549,6 @@ init -810 python:
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 31),
         end_dt=datetime.datetime(2020, 1, 6)
-        # TODO: programming points probably
     ))
 
 
@@ -2663,81 +2587,8 @@ init -10 python:
         return _date == mas_nyd.replace(year=_date.year)
 
 
-# topics
-# TODO: dont forget to updaet script seen props
-# TODO: event props have been updated so this topic only comes up between 7pm and 11pm on NYE, changed from PUSH to QUEUE, please review
 
-#########################
-#NOTE: THIS TOPIC WAS MERGED WITH 'accomplished_resolutions' AND IS NOW CALLED 'monika_resolutions'
-#########################
-
-#init 5 python:
-##    # NOTE: new years eve
-##    # NOTE: known as monika_newyear1
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_nye_monika_nye",
-#            action=EV_ACT_QUEUE,
-#            start_date=datetime.datetime.combine(mas_nye, datetime.time(hour=19)),
-#            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23)),
-#            years=[],
-#            aff_range=(mas_aff.UPSET, None)
-#        ),
-#        skipCalendar=True
-#    )
-
-# does the user have new years resolutions?
-
-label mas_nye_monika_nye:
-    $ persistent._mas_nye_spent_nye = True
-
-    m 1eua "[player]! It's almost time, isn't it?"
-    m "It's incredible to think that the year is almost over."
-    m 1eka "Time flies by so quickly."
-    if mas_isMoniAff(higher=True) and store.mas_anni.pastOneMonth():
-        m 1ekbsa "Especially when I get to see you so often."
-
-    # TODO: probably shouldl actually check time before saying this, new event props should take care of this
-    m 3hua "Well, there's still some time left before midnight."
-    m 1eua "We might as well enjoy this year while it lasts..."
-
-    m 3euc "Say, [player], do you have any resolutions for next year?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Say, [player], do you have any resolutions for next year?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_has_new_years_res = True
-
-            m 1eub "It's always nice to set goals for yourself in the coming year."
-            m 3eka "Even if they can be hard to reach or maintain."
-            m 1hua "I'll be here to help you, if need be!"
-
-        "No.":
-            $ persistent._mas_pm_has_new_years_res = False
-            m 1eud "Oh, is that so?"
-            if mas_isMoniNormal(higher=True):
-                if mas_isMoniHappy(higher=True):
-                    m 1eka "You don't have to change. I think you're wonderful the way you are."
-                else:
-                    m 1eka "You don't have to change. I think you're fine the way you are."
-                m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
-                m 1kua "Maybe you'll think of something that you want to do, [player]."
-            else:
-                m 2ekc "{cps=*2}I was kind of hoping--{/cps}{nw}"
-                m 2rfc "You know what, nevermind..."
-
-    if mas_isMoniAff(higher=True):
-        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
-    elif mas_isMoniNormal(higher=True):
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
-    else:
-        m 2ekc "My resolution is to improve our relationship, [player]."
-
-    return
-
+#START: NYE/NYD TOPICS
 default persistent._mas_pm_got_a_fresh_start = None
 #pm var so she forgives, but doesn't forget
 default persistent._mas_aff_before_fresh_start = None
@@ -2843,7 +2694,6 @@ label mas_nye_monika_nyd_fresh_start:
             $ persistent._mas_pm_got_a_fresh_start = False
 
             # set affection to broken
-            # TODO: consider making a function for easy affection level setting
             $ mas_setAffection(store.mas_affection.AFF_BROKEN_MIN - 1)
             $ _mas_AffSave()
             $ renpy.save_persistent()
@@ -2975,14 +2825,12 @@ label monika_resolutions:
 
     return
 
-
+#TODO: Consider adding player bday into this
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_nye_year_review",
-#            prompt="Last year...",
-#            category=["misc","you","monika"],
             action=store.EV_ACT_PUSH,
             start_date=datetime.datetime.combine(mas_nye, datetime.time(hour=19)),
             end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23)),
@@ -2994,6 +2842,7 @@ init 5 python:
 
 label monika_nye_year_review:
     $ persistent._mas_nye_spent_nye = True
+    $ spent_an_event = False
 
     # starting with an overview based on time
     if store.mas_anni.anniCount() >= 0:
@@ -3048,28 +2897,25 @@ label monika_nye_year_review:
             else:
                 m 1ekbfa "To show your commitment to me."
 
-    # TODO: change to history
-    # bit based on vday
-    if renpy.seen_label('monika_valentines_greeting'):
+    #vday
+    if mas_lastSeenInYear("mas_f14_monika_valentines_intro"):
+        $ spent_an_event = True
         m 1wuo "Oh!"
         m 3ekbfa "You spent Valentine's Day with me..."
 
-        if renpy.seen_label('monika_valentines_start'):
-            m 4ekbfb "...you gave me such beautiful flowers too."
+        if mas_getGiftStatsForDate("mas_reaction_gift_roses", mas_f14):
+            m 4ekbfb "...and gave me such beautiful flowers too."
 
-        if renpy.seen_label('monika_white_day_start'):
-            m 3ekbsa "We also spent White Day together..."
-            if renpy.seen_label('monika_found'):
-                m 4ekbfa "That was the day I gave my first gift to you~"
 
-    # bit based on 922
-    if mas_HistVerify("922.actions.opened_game",True,datetime.date.today().year)[0]:
+    #922
+    if persistent._mas_bday_opened_game:
+        $ spent_an_event = True
         m 2eka "You spent time with me on my birthday..."
 
-        if mas_HistVerify("922.actions.no_recognize",False,datetime.date.today().year)[0]:
+        if not persistent._mas_bday_no_recognize:
             m 2dua "...celebrated with me..."
 
-        if mas_HistVerify("922.actions.surprise.reacted",True,datetime.date.today().year)[0]:
+        if persistent._mas_bday_sbp_reacted:
             m 2hub "...threw me a surprise party..."
 
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
@@ -3077,10 +2923,11 @@ label monika_nye_year_review:
 
     # bit on christmas
     if persistent._mas_d25_spent_d25:
+        $ spent_an_event = True
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "You spent your Christmas with me..."
 
-        if persistent._mas_first_kiss is not None and mas_isD25(persistent._mas_first_kiss.date()):
+        if persistent._mas_first_kiss is not None and persistent._mas_first_kiss.date() == mas_d25:
             m 5eubla "...and we shared our first kiss together~"
             m 5lubsa "I'll never forget that moment..."
             m 5ekbfa "{i}Our{/i} moment."
@@ -3088,13 +2935,11 @@ label monika_nye_year_review:
         else:
             m 5ekbla "...a day that I couldn't imagine spending with anyone else."
 
-    # TODO history
-    # smaller filler if nothing good happend
-    # TODO: consider setting a flag to True if a big event occured rather than
-    #   rechecking all of these
-    if not (persistent._mas_d25_spent_d25 or persistent._mas_bday_opened_game or persistent._mas_acs_enable_promisering or renpy.seen_label('monika_valentines_greeting')):
+
+    if not spent_an_event:
         m 2rksdla "...I guess we haven't actually been through any big events together."
         m 3eka "But still..."
+
     else:
         show monika 5dsa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dsa "..."
@@ -3132,7 +2977,7 @@ label monika_nye_year_review:
                 m 5hubfb "Let's make this year even better than the last, [player]."
 
             else:
-                call monika_kissing_motion #should probably be quicker than the one above
+                call monika_kissing_motion_short
                 m 1ekbfa "I love you, [player]."
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hubfb "Let's make this year better than the last."
@@ -3149,7 +2994,7 @@ label monika_nye_year_review:
 
 label greeting_nye_aff_gain:
     # gaining affection for nye
-
+    #TODO: CLEAN THIS
     python:
         if persistent._mas_nye_date_aff_gain < 15:
             # retain older affection gain so we can compare

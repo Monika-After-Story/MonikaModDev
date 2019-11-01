@@ -1086,6 +1086,7 @@ init -1 python:
         exit_pp=store.mas_sprites._clothes_santa_exit,
         ex_props={
             "desired-ribbon": "ribbon_wine",
+            "costume": True
         },
     )
     store.mas_sprites.init_clothes(mas_clothes_santa)

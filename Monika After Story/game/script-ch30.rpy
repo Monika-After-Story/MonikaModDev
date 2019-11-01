@@ -833,11 +833,6 @@ label ch30_main:
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
-    # d25 season? d25 season you are in
-    #TODO: day of first sesh shouldn't get deoct
-    if mas_isD25Season():
-        call mas_holiday_d25c_autoload_check
-
     # before we render visuals:
     # 1 - all core interactions should be disabeld
     $ mas_RaiseShield_core()
@@ -1080,7 +1075,7 @@ label mas_ch30_post_retmoni_check:
     if mas_isO31() or persistent._mas_o31_in_o31_mode:
         jump mas_o31_autoload_check
 
-    elif mas_isD25Season():
+    elif mas_isD25Season() or persistent._mas_d25_in_d25_mode:
         jump mas_holiday_d25c_autoload_check
 
     elif mas_isF14() or persistent._mas_f14_in_f14_mode:
@@ -1838,20 +1833,6 @@ label ch30_reset:
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
-
-    ## d25 content
-    #TODO: put this into autoload
-    python:
-        if (
-                (mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE()))
-                and monika_chr.clothes == mas_clothes_santa
-                and not persistent._mas_force_clothes
-            ):
-            # monika takes off santa outfit after d25
-            monika_chr.reset_clothes(False)
-
-        if not mas_isD25Season():
-            persistent._mas_d25_deco_active = False
 
     ## late farewell? set the global and clear the persistent so its auto
     ##  cleared
