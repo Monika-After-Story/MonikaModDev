@@ -1136,17 +1136,6 @@ default persistent._mas_d25_spent_d25 = False
 # True if the user spent time with monika on d25
 # (basically they got the merry christmas dialogue)
 
-default persistent._mas_d25_chibika_sayori = None
-# True if we need to perform the chibika sayori intro
-# False if we do NOT need to perform the chibka sayori intro
-# None means we have not checked for the chibika sayori intro
-
-default persistent._mas_d25_chibika_sayori_performed = False
-# Set to True if we do the chibika sayori thing
-
-default persistent._mas_d25_chibika_sayori_done = False
-# Set to True when we no longer want to repeat the sayori thing
-
 default persistent._mas_d25_started_upset = False
 # True if we started the d25 season with upset and below monika
 
@@ -1541,11 +1530,6 @@ label mas_d25_monika_holiday_intro:
             #if you've been with her for over a year, you really should be at Love by now
             m 3hua "Time really flies now that I'm with you~"
 
-    # chibika start
-    if persistent._mas_d25_chibika_sayori:
-        # show chibika from right
-        pass
-
     m 3eua "Do you like what I've done with the room?"
     m 1hua "I must say that I'm pretty proud of it."
     m "Christmas time has always been one of my favorite occasions of the year..."
@@ -1681,8 +1665,6 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas",
-#            category=["holidays"],
-#            prompt="Christmas",
             conditional="persistent._mas_d25_in_d25_mode",
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
