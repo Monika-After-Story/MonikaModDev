@@ -566,6 +566,12 @@ init -2 python in mas_sprites:
             p6=None
         )
 
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_def)
+            _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
+
 
     def _clothes_santa_exit(_moni_chr, **kwargs):
         """

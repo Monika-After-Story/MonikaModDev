@@ -1609,7 +1609,7 @@ label mas_d25_monika_holiday_intro_deco:
         #Unlock and wear santa
         store.mas_selspr.unlock_clothes(mas_clothes_santa)
         store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
-        monika_chr.change_clothes(mas_clothes_santa, False)
+        monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
 
         #Enable deco
         persistent._mas_d25_deco_active = True
