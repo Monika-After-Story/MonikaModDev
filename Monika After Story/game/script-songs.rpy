@@ -218,7 +218,6 @@ init 5 python:
         code="SNG"
     )
 
-
 label mas_song_aiwfc:
     #Get current song
     $ curr_song = songs.current_track

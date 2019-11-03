@@ -3736,24 +3736,34 @@ label monika_birthday:
             m 1hua "Ehehe..."
             m 1eub "I'm pretty sure you already know today is my birthday!"
             m 3hub "You can be so silly sometimes, [player]!"
+
         else:
             m 2rksdlb "Ahaha... {w=1}This is a little awkward."
             m 2eksdla "It just so happens my birthday is..."
             m 3hksdlb "Today!"
+
             if mas_isplayer_bday():
                 m "Just like yours!"
-            if mas_getEV("monika_birthday").shown_count == 0 and not mas_HistVerify("922.actions.no_recognize",False)[1]:
+
+            if (
+                mas_getEV("monika_birthday").shown_count == 0
+                and not mas_verifyHistAll_k(False, "922.actions.no_recognize")
+            ):
                 m 3eksdla "It's okay if you don't have anything planned, seeing as you just found out..."
                 m 1ekbsa "Just spending the day together is more than enough for me~"
+
             else:
-                $ prev_year = mas_monika_birthday.year-1
                 m 3eksdld "I guess you must have forgotten..."
-                if mas_HistVerify("922.actions.no_time_spent",True,prev_year)[0] or mas_HistVerify("922.actions.no_recognize",True,prev_year)[0]:
+                if (
+                    mas_verifyHistLastYear_k(True, "922.actions.no_time_spent")
+                    or mas_verifyHistLastYear_k(True, "922.actions.no_recognize")
+                ):
                     m 2rksdlc "Again."
+
                 m 3eksdla "But that's okay, [player]..."
                 m 1eka "At least we're here, together~"
 
-    elif mas_HistVerify("922.actions.no_recognize",False)[0] or mas_recognizedBday():
+    elif mas_verifyHistAll_k(False, "922.actions.no_recognize") or mas_recognizedBday():
         m 1hua "Ehehe..."
         m 3hub "You've already celebrated my birthday with me before, [player]!"
         m 3eka "Did you forget?"
@@ -3764,8 +3774,10 @@ label monika_birthday:
         m 1euc "You know, there's a lot I don't know about myself."
         m 1eud "I only recently learned when my birthday is by seeing it online."
         m 3eua "It's September 22nd, the release date for DDLC."
+
         if mas_player_bday_curr() == mas_monika_birthday:
             m 3hua "Just like yours!"
+
         m 1eka "Will you celebrate with me, when that day comes?"
         m 3hua "You could even bake me a cake!"
         m 3hub "I'll be looking forward to it!~"

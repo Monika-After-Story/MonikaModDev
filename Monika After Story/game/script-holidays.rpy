@@ -18,6 +18,36 @@ define mas_one_hour = datetime.timedelta(seconds=3600)
 define mas_three_hour = datetime.timedelta(seconds=3*3600)
 
 init -1 python:
+    def mas_verifyHistAll_k(_verify, *keys):
+        """
+        Checks if the value of _verify for the keys is in history at any point
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces at all
+                - False otherwise
+        """
+        return mas_HistVerify_k([],_verify, *keys)[0]
+
+    def mas_verifyHistLastYear_k(_verify, *keys):
+        """
+        Checks history for the value of _verify in the key provided last year
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces last year
+                - False otherwise
+        """
+        return mas_HistVerify_k([datetime.date.today().year-1], _verify, *keys)[0]
+
     def mas_lastSeenLastYear(ev_label):
         """
         Checks if the event corresponding to ev_label was last seen last year
@@ -116,6 +146,21 @@ init -1 python:
         RETURNS: True if given date has a special outfit, False otherwise
         """
         return mas_isO31(_date) or mas_isF14(_date) or mas_isD25Outfit(_date)
+
+    def mas_isFirstSeshPast(_date):
+        """
+        Checks if the first session is past the given date
+
+        IN:
+            _date - datetime.date to check against
+
+        OUT:
+            boolean:
+                - True if first sesh is past given date
+                - False otherwise
+        """
+        return mas_getFirstSesh().date() > _date
+
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -1692,7 +1737,7 @@ label mas_d25_monika_christmas:
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m "Snuggling with each other by a fireplace, watching the snow gently fall..."
 
-        if not seen_event("mas_d25_monika_christmas"):
+        if not mas_verifyHistAll_k(True, "d25.actions.spent_d25"):
             m 5hubfa "I'm forever grateful I got this chance with you."
         else:
             m 5hubfa "I'm so glad I get to spend Christmas with you again."
@@ -2150,12 +2195,12 @@ label mas_d25_monika_christmas_eve:
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
 
     #Were there last Christmas
-    if mas_lastSeenLastYear("mas_d25_monika_christmas"):
+    if not mas_verifyHistLastYear_k(True, "d25.actions.spent_d25"):
         m 5ekbfa "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
         m 5hkbfa "I can't wait for tomorrow!"
 
     #Weren't there last Christmas
-    elif seen_event("mas_d25_monika_christmas"):
+    elif not mas_verifyHistAll_k(True, "d25.actions.spent_d25"):
         m 5ekbfa "But I'm even {i}more{/i} excited this year..."
         m 5hkbfa "Just the thought of spending another Christmas together...{w=1}I can't wait!"
 
@@ -2187,7 +2232,7 @@ label mas_d25_postd25_notimespent:
         return
 
     #need to make sure people who just started post d25 don't lose aff
-    if persistent.sessions is None or persistent.sessions['first_session'].date() > mas_d25:
+    if mas_isFirstSeshPast(mas_d25):
         return
 
 
@@ -4481,7 +4526,7 @@ init 5 python:
 label mas_f14_no_time_spent:
 
     #need to make sure people who just started post f14 don't lose aff
-    if mas_getFirstSesh().date() > mas_f14:
+    if mas_isFirstSeshPast(mas_f14):
         return
 
     if mas_ret_long_absence:
@@ -5382,7 +5427,7 @@ init 5 python:
 
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
-    if (mas_getFirstSesh().date() >= mas_monika_birthday):
+    if mas_isFirstSeshPast(mas_monika_birthday):
         $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
         return
 
