@@ -1436,6 +1436,10 @@ label mas_holiday_d25c_autoload_check:
                     # mark decorations and outfit as active
                     persistent._mas_d25_deco_active = True
 
+                    #If we're loading on D25, then we're gonna make it snow
+                    if mas_isD25():
+                        mas_changeWeather(mas_weather_snow, by_user=True)
+
         #This is d25 exit
         elif (
             (persistent._mas_d25_in_d25_mode and not mas_isD25Season())
@@ -1611,6 +1615,9 @@ label mas_d25_monika_holiday_intro_deco:
         store.mas_selspr.unlock_clothes(mas_clothes_santa)
         store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
         monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
+
+        #Set to snow for this sesh
+        mas_changeWeather(mas_weather_snow, by_user=True)
 
         #Enable deco
         persistent._mas_d25_deco_active = True
