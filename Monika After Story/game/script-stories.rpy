@@ -485,6 +485,27 @@ label mas_story_o_tei:
     m 3esa "As she came to, she had no memory of what happened in the inn."
     m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
     return
+    
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_crow_and_pitcher",
+        prompt="The Crow and the Pitcher",unlocked=False),code="STY")
+
+label mas_story_crow_and_pitcher:
+    call mas_story_begin
+    m 3esd "It was a spell of hot, dry weather. Not even the birds could find much to drink."
+    m 3eub "Whilst searching from above, a thirsty crow found a pitcher of water, and was relieved to find there was some water still in it!"
+    m 1ekd "But the pitcher was tall, with a narrow neck. No matter how he tried, he could not reach the water with his beak."
+    m 1wkd "For the poor crow, all hope seemed lost. Surely he would die of thirst."
+    m 3wud "...Then he had an idea."
+    m 3esd "He began searching for small pebbles on the ground and dropping them into the pitcher, one by one."
+    m 1efc "It was slow, grueling work."
+    m 1eub "But with each pebble, the water rose higher and higher, until finally..."
+    m 1dub "He could take a long, refreshing drink."
+    m 2dua "..."
+    m 2dka "Sometimes it feels like what we want the most will never find us."
+    m 2ekb "But the crow proved that small steps make a big difference in the end."
+    m 1hub "We'll keep adding pebbles to our pitcher, [player]. It'll be worth it in the end."
+    return
 
 define mas_scary_story_setup_done = False
 
