@@ -213,8 +213,8 @@ init -1 python in mas_hangman:
 
 
     # file names
-    NORMAL_LIST = "mod_assets/MASpoemwords.txt"
-    HARD_LIST = "mod_assets/1000poemwords.txt"
+    NORMAL_LIST = "mod_assets/games/hangman/MASpoemwords.txt"
+    HARD_LIST = "mod_assets/games/hangman/1000poemwords.txt"
 
     # hangman game text
     game_name = "Hangman"
