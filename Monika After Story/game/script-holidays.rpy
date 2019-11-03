@@ -1433,8 +1433,11 @@ label mas_holiday_d25c_autoload_check:
                     #Add to holiday map
                     mas_addClothesToHolidayMapRange(mas_clothes_santa, mas_d25c_start, mas_d25p)
 
-                    # mark decorations and outfit as active
+                    #Deco active
                     persistent._mas_d25_deco_active = True
+
+                    #Unlock the event clothes selector
+                    mas_unlockEVL("monika_event_clothes_select", "EVE")
 
                     #If we're loading on D25, then we're gonna make it snow
                     if mas_isD25():
@@ -1449,6 +1452,9 @@ label mas_holiday_d25c_autoload_check:
             if monika_chr.is_wearing_clothes_with_exprop("costume"):
                 #Monika takes off santa outfit after d25
                 monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
+
+            #Lock event clothes selector
+            mas_lockEVL("monika_event_clothes_select", "EVE")
 
             #Remove deco
             persistent._mas_d25_deco_active = False
