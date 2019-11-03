@@ -1428,7 +1428,7 @@ label mas_holiday_d25c_autoload_check:
                     store.mas_selspr.unlock_clothes(mas_clothes_santa)
 
                     #Change into santa
-                    monika_chr.change_clothes(mas_clothes_santa, False)
+                    monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
 
                     #Add to holiday map
                     mas_addClothesToHolidayMapRange(mas_clothes_santa, mas_d25c_start, mas_d25p)
@@ -1453,8 +1453,9 @@ label mas_holiday_d25c_autoload_check:
             persistent._mas_d25_in_d25_mode = False
 
         elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
-            #Force Santa on D25 if deco active and not first sesh day
+            #Force Santa and snow on D25 if deco active and not first sesh day
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
+            mas_changeWeather(mas_weather_snow, by_user=True)
 
         #And then run pbday checks
         #TODO: Verify this placement
@@ -1682,7 +1683,7 @@ label mas_d25_monika_christmas:
         m 1eka "But you being here today...{w=0.5}it just means everything to me..."
         m 1dku "..."
 
-        if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
+        if mas_is_snowing:
             m 1lkbsa "Maybe it's just the snow, or the decorations..."
 
         else:
