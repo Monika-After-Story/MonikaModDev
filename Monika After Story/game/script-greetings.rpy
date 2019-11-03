@@ -3204,17 +3204,8 @@ label greeting_returned_home:
         if _return:
             return 'quit'
 
+        jump greeting_returned_home_cleanup
 
-label greeting_returned_home_cleanup:
-    $ need_to_reset_bday_decor = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
-
-    #If it's not o31, and we've got deco up, we need to clean up
-    if not need_to_reset_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
-        call mas_o31_ret_home_cleanup(time_out)
-
-    elif need_to_reset_bday_decor:
-        call return_home_post_player_bday
-    return
 
 label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):
@@ -3232,13 +3223,6 @@ label greeting_returned_home_morethan5mins:
     # otherwise, go to other flow
     jump greeting_returned_home_morethan5mins_other_flow
 
-#TODO: Clean this up eventually
-label greeting_returned_home_morethan5mins_cleanup:
-
-    $ grant_xp(xp.NEW_GAME)
-
-    # jump to cleanup
-    jump greeting_returned_home_cleanup
 
 label greeting_returned_home_morethan5mins_normalplus_flow:
     call greeting_returned_home_morethan5mins_normalplus_dlg
@@ -3256,7 +3240,22 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
     # changed the point structure for low aff, might be a good idea, might now ~ JW
     # you gain 0.5 per hour, max 2.5, min 0.5
     $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
-    jump greeting_returned_home_morethan5mins_cleanup
+    #FALL THROUGH
+
+label greeting_returned_home_morethan5mins_cleanup:
+    $ grant_xp(xp.NEW_GAME)
+    #FALL THROUGH
+
+label greeting_returned_home_cleanup:
+    $ need_to_reset_bday_decor = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
+
+    #If it's not o31, and we've got deco up, we need to clean up
+    if not need_to_reset_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
+        call mas_o31_ret_home_cleanup(time_out)
+
+    elif need_to_reset_bday_decor:
+        call return_home_post_player_bday
+    return
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
