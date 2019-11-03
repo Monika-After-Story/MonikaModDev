@@ -78,8 +78,8 @@ init:
 
                 # Sounds used.
                 self.playsounds = True
-                self.soundboop = "mod_assets/games/pong/pong_boop.wav"
-                self.soundbeep = "mod_assets/games/pong/pong_beep.wav"
+                self.soundboop = "mod_assets/sounds/pong_sounds/pong_boop.wav"
+                self.soundbeep = "mod_assets/sounds/pong_sounds/pong_beep.wav"
 
                 # The sizes of some of the images.
                 self.PADDLE_WIDTH = 8
