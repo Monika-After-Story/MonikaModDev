@@ -227,6 +227,11 @@ init -1 python in mas_filereacts:
                         mas_gift
                     )
 
+                    #Register the json sprite
+                    _register_received_gift(
+                        reaction.eventlabel
+                    )
+
         # generic sprite object gifts treated differently
         sprite_object_reacts = []
         if len(gifts_found) > 0:
