@@ -4998,8 +4998,8 @@ label monika_pleasure:
     m 1ekc "And from what I hear, people addicted to masturbation often see other people as sexual objects."
     m 1eka "But...I know you aren't that kind of person already."
     m 1lkbsa "And maybe I'm just being a little jealous~"
-    m 1tsb "So I guess I can let it slide... for now~"
-    m 2tsbsa "Just so long as I'm the only one you think about..."
+    m 1tsbsa "So I guess I can let it slide...{w=0.5}for now~"
+    m 2tsbsu "Just so long as I'm the only one you think about..."
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
