@@ -1395,12 +1395,7 @@ image mas_d25_tree_sayori = ConditionSwitch(
 
 # auto load starter check
 label mas_holiday_d25c_autoload_check:
-    # ASSUMPTIONS:
-    #   monika is NOT returning home
-    #
-    # NOTE: this is jumped to in startup ch30 flow.
-    # NOTE: this is called in introduction.
-
+    #NOTE: we use the costume exprop in case we get more D25 outfits.
     python:
         #We don't want the day of the first sesh having d25 content
         #This is first loadin
@@ -1443,12 +1438,12 @@ label mas_holiday_d25c_autoload_check:
                     if mas_isD25():
                         mas_changeWeather(mas_weather_snow, by_user=True)
 
-        #This is d25 exit
+        #This is d25 SEASON exit
         elif (
             (persistent._mas_d25_in_d25_mode and not mas_isD25Season())
             or mas_isMoniDis(lower=True)
         ):
-            #It's time to clean everything up
+            #It's time to clean everything up. We're going to reset the outfit regardless, here
             if monika_chr.is_wearing_clothes_with_exprop("costume"):
                 #Monika takes off santa outfit after d25
                 monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
@@ -1461,6 +1456,15 @@ label mas_holiday_d25c_autoload_check:
 
             #And no more d25 mode
             persistent._mas_d25_in_d25_mode = False
+
+        elif (
+            perssitent._mas_d25_in_d25_mode
+            and not persistent._mas_force_clothes
+            and monika_chr.is_wearing_clothes_with_exprop("costume")
+            and not mas_isD25Outfit()
+        ):
+            #Monika takes off santa after d25
+            monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
 
         elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
             #Force Santa and snow on D25 if deco active and not first sesh day
