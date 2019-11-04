@@ -492,18 +492,18 @@ init 5 python:
 
 label mas_story_crow_and_pitcher:
     call mas_story_begin
-    m 3esd "It was a spell of hot, dry weather. Not even the birds could find much to drink."
-    m 3eub "Whilst searching from above, a thirsty crow found a pitcher of water, and was relieved to find there was some water still in it!"
+    m 3esd "It was the middle of a heavy drought. Not even the birds could find much to drink."
+    m 3eub "Whilst searching from above, a thirsty crow found a pitcher, and was relieved to find there was some water still in it!"
     m 1ekd "But the pitcher was tall, with a narrow neck. No matter how he tried, he could not reach the water with his beak."
     m 1wkd "For the poor crow, all hope seemed lost. Surely he would die of thirst."
     m 3wud "...Then he had an idea."
     m 3esd "He began searching for small pebbles on the ground and dropping them into the pitcher, one by one."
-    m 1efc "It was slow, grueling work."
+    m 1efc "Hours passed. It was slow, grueling work, gathering more and more."
     m 1eub "But with each pebble, the water rose higher and higher, until finally..."
     m 1dub "He could take a long, refreshing drink."
     m 2dua "..."
     m 2dka "Sometimes it feels like what we want the most will never find us."
-    m 2ekb "But the crow proved that small steps make a big difference in the end."
+    m 2ekb "But the crow proved that small steps make a big difference after all."
     m 1hub "We'll keep adding pebbles to our pitcher, [player]. It'll be worth it in the end."
     return
 
