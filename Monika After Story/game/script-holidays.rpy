@@ -1457,6 +1457,7 @@ label mas_holiday_d25c_autoload_check:
             #And no more d25 mode
             persistent._mas_d25_in_d25_mode = False
 
+        #This is D25 Exit
         elif (
             persistent._mas_d25_in_d25_mode
             and not persistent._mas_force_clothes
@@ -1466,6 +1467,7 @@ label mas_holiday_d25c_autoload_check:
             #Monika takes off santa after d25
             monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
 
+        #This is D25 itself
         elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
             #Force Santa and snow on D25 if deco active and not first sesh day
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
