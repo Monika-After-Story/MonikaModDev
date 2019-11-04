@@ -1075,7 +1075,7 @@ label mas_ch30_post_retmoni_check:
     if mas_isO31() or persistent._mas_o31_in_o31_mode:
         jump mas_o31_autoload_check
 
-    elif mas_isD25Season() or persistent._mas_d25_in_d25_mode:
+    elif mas_isD25Season() or persistent._mas_d25_in_d25_mode or run_d25s_exit:
         jump mas_holiday_d25c_autoload_check
 
     elif mas_isF14() or persistent._mas_f14_in_f14_mode:

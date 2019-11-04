@@ -199,7 +199,6 @@ init -810 python:
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
         },
         use_year_before=True,
-#        exit_pp=store.mas_history._o31_exit_pp
         start_dt=datetime.datetime(2019, 10, 31),
 
         # end is 1 day out in case of an overnight trick or treat
@@ -1436,10 +1435,7 @@ label mas_holiday_d25c_autoload_check:
 
 
     #This is d25 SEASON exit
-    elif (
-        (persistent._mas_d25_in_d25_mode and not mas_isD25Season())
-        or mas_isMoniDis(lower=True)
-    ):
+    elif run_d25s_exit or mas_isMoniDis(lower=True):
         #NOTE: We can run this early via mas_d25_monika_d25_mode_exit
         call mas_d25_season_exit
 
@@ -2600,9 +2596,19 @@ init -810 python:
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 31),
-        end_dt=datetime.datetime(2020, 1, 6)
+        end_dt=datetime.datetime(2020, 1, 6),
+        exit_pp=store.mas_d25SeasonExit_PP
     ))
 
+init -825 python:
+    run_d25s_exit = False
+
+    def mas_d25SeasonExit_PP():
+        """
+        Sets a flag to run the D25 exit PP
+        """
+        global run_d25s_exit
+        run_d25s_exit = True
 
 init -10 python:
     def mas_isNYE(_date=None):
