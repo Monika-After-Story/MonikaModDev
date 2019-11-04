@@ -1622,6 +1622,9 @@ label mas_d25_monika_holiday_intro_deco:
         store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
         monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
 
+        #Add to holiday map
+        mas_addClothesToHolidayMapRange(mas_clothes_santa, mas_d25c_start, mas_d25p)
+
         #Set to snow for this sesh
         mas_changeWeather(mas_weather_snow, by_user=True)
 
