@@ -1458,7 +1458,7 @@ label mas_holiday_d25c_autoload_check:
             persistent._mas_d25_in_d25_mode = False
 
         elif (
-            perssitent._mas_d25_in_d25_mode
+            persistent._mas_d25_in_d25_mode
             and not persistent._mas_force_clothes
             and monika_chr.is_wearing_clothes_with_exprop("costume")
             and not mas_isD25Outfit()
