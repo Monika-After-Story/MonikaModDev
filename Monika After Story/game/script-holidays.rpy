@@ -1396,15 +1396,15 @@ image mas_d25_tree_sayori = ConditionSwitch(
 # auto load starter check
 label mas_holiday_d25c_autoload_check:
     #NOTE: we use the costume exprop in case we get more D25 outfits.
-    python:
-        #We don't want the day of the first sesh having d25 content
-        #This is first loadin
-        if (
-            not persistent._mas_d25_in_d25_mode
-            and mas_isD25Season()
-            and not mas_isFirstSeshDay()
-        ):
 
+    #We don't want the day of the first sesh having d25 content
+    #This is first loadin
+    if (
+        not persistent._mas_d25_in_d25_mode
+        and mas_isD25Season()
+        and not mas_isFirstSeshDay()
+    ):
+        python:
             #Enable d25 dockstat
             persistent._mas_d25_in_d25_mode = True
 
@@ -1412,75 +1412,88 @@ label mas_holiday_d25c_autoload_check:
             if mas_isMoniUpset(lower=True):
                 persistent._mas_d25_started_upset = True
 
-            else:
-                #We don't want any d25 content on first sesh day. No point at this point if past d25 itself.
-                if mas_isD25Outfit():
-                    # we want to be wearing ponytail hair
-                    monika_chr.change_hair(mas_hair_def, False)
+            #Setup
+            elif mas_isD25Outfit():
+                #Unlock and wear santa/wine ribbon
+                store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
+                store.mas_selspr.unlock_clothes(mas_clothes_santa)
 
-                    # unlock and wear santa/wine ribbon
-                    store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
-                    store.mas_selspr.unlock_clothes(mas_clothes_santa)
+                #Change into santa. Outfit mode forces ponytail
+                monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
 
-                    #Change into santa
-                    monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
+                #Add to holiday map
+                mas_addClothesToHolidayMapRange(mas_clothes_santa, mas_d25c_start, mas_d25p)
 
-                    #Add to holiday map
-                    mas_addClothesToHolidayMapRange(mas_clothes_santa, mas_d25c_start, mas_d25p)
+                #Deco active
+                persistent._mas_d25_deco_active = True
 
-                    #Deco active
-                    persistent._mas_d25_deco_active = True
+                #Unlock the event clothes selector
+                mas_unlockEVL("monika_event_clothes_select", "EVE")
 
-                    #Unlock the event clothes selector
-                    mas_unlockEVL("monika_event_clothes_select", "EVE")
+                #If we're loading in for the first time on D25, then we're gonna make it snow
+                if mas_isD25():
+                    mas_changeWeather(mas_weather_snow, by_user=True)
 
-                    #If we're loading on D25, then we're gonna make it snow
-                    if mas_isD25():
-                        mas_changeWeather(mas_weather_snow, by_user=True)
 
-        #This is d25 SEASON exit
-        elif (
-            (persistent._mas_d25_in_d25_mode and not mas_isD25Season())
-            or mas_isMoniDis(lower=True)
-        ):
-            #It's time to clean everything up. We're going to reset the outfit regardless, here
-            if monika_chr.is_wearing_clothes_with_exprop("costume"):
-                #Monika takes off santa outfit after d25
-                monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
+    #This is d25 SEASON exit
+    elif (
+        (persistent._mas_d25_in_d25_mode and not mas_isD25Season())
+        or mas_isMoniDis(lower=True)
+    ):
+        #NOTE: We can run this early via mas_d25_monika_d25_mode_exit
+        call mas_d25_season_exit
 
-            #Lock event clothes selector
-            mas_lockEVL("monika_event_clothes_select", "EVE")
 
-            #Remove deco
-            persistent._mas_d25_deco_active = False
+    #This is D25 Exit
+    elif (
+        persistent._mas_d25_in_d25_mode
+        and not persistent._mas_force_clothes
+        and monika_chr.is_wearing_clothes_with_exprop("costume")
+        and not mas_isD25Outfit()
+    ):
+        #Monika takes off santa after d25 if player didn't ask her to wear it
+        $ monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
 
-            #And no more d25 mode
-            persistent._mas_d25_in_d25_mode = False
 
-        #This is D25 Exit
-        elif (
-            persistent._mas_d25_in_d25_mode
-            and not persistent._mas_force_clothes
-            and monika_chr.is_wearing_clothes_with_exprop("costume")
-            and not mas_isD25Outfit()
-        ):
-            #Monika takes off santa after d25
-            monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
-
-        #This is D25 itself
-        elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
-            #Force Santa and snow on D25 if deco active and not first sesh day
+    #This is D25 itself
+    elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
+        #Force Santa and snow on D25 if deco active and not first sesh day
+        python:
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
             mas_changeWeather(mas_weather_snow, by_user=True)
 
-        #And then run pbday checks
-        #TODO: Verify this placement
-        elif mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
-            renpy.jump("mas_player_bday_autoload_check")
+
+    #And then run pbday checks
+    #TODO: Verify this placement
+    elif mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+        jump mas_player_bday_autoload_check
 
     # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
 
+#D25 Season exit
+label mas_d25_season_exit:
+    python:
+        #It's time to clean everything up
+
+        #We reset outfit directly if we're not coming from the dlg workflow
+        if monika_chr.is_wearing_clothes_with_exprop("costume") and not mas_globals.dlg_workflow:
+            #Monika takes off santa outfit after d25
+            monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
+
+        #Otherwise we push change to def if we're here via topic
+        elif monika_chr.is_wearing_clothes_with_exprop("costume") and mas_globals.dlg_workflow:
+            pushEvent("mas_change_to_def")
+
+        #Lock event clothes selector
+        mas_lockEVL("monika_event_clothes_select", "EVE")
+
+        #Remove deco
+        persistent._mas_d25_deco_active = False
+
+        #And no more d25 mode
+        persistent._mas_d25_in_d25_mode = False
+    return
 
 #START: d25 topics
 init 5 python:
@@ -3062,7 +3075,9 @@ label mas_d25_monika_d25_mode_exit:
     m 1hua "As long as it's with you, of course~"
     m 3hub "Ahaha!"
     m 2dsa "Just give me a second to take the decorations down.{w=1}.{w=1}.{nw}"
-    #TODO: Run d25 exit here. Should labelize the d25 exit block in autoload and call it here
+
+    call mas_d25_season_exit
+
     m 1hua "Okay!{w=0.5} {nw}"
     extend 3hub "Now we're ready to start off the new year!"
     return
