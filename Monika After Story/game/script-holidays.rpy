@@ -2994,7 +2994,7 @@ label monika_nye_year_review:
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eka "I can't wait to see just how much will change in the future for us..."
 
-    # frestart commentary
+    # fresh start commentary
     if not persistent._mas_pm_got_a_fresh_start:
         show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dka "Thank you."
@@ -3030,6 +3030,42 @@ label monika_nye_year_review:
         m 1ekbfa "I love you."
 
     return "derandom|love"
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_d25_mode_exit",
+            category=['holidays'],
+            prompt="Can you take down the holiday decorations?",
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_nyd+datetime.timedelta(days=1),
+            end_date=mas_d25c_end,
+            action=EV_ACT_UNLOCK,
+            pool=True,
+            rules={"no unlock": None},
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+    MASUndoActionRule.create_rule_EVL(
+        "mas_d25_monika_d25_mode_exit",
+        mas_nyd + datetime.timedelta(days=1),
+        mas_d25c_end,
+    )
+
+label mas_d25_monika_d25_mode_exit:
+    m 3eka "Had enough of the holiday spirit, [player]?"
+    m 3eua "I wouldn't mind getting right into the new year."
+    m 1hua "As long as it's with you, of course~"
+    m 3hub "Ahaha!"
+    m 2dsa "Just give me a second to take the decorations down.{w=1}.{w=1}.{nw}"
+    #TODO: Run d25 exit here. Should labelize the d25 exit block in autoload and call it here
+    m 1hua "Okay!{w=0.5} {nw}"
+    extend 3hub "Now we're ready to start off the new year!"
+    return
 
 label greeting_nye_aff_gain:
     # gaining affection for nye
