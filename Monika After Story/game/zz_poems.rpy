@@ -185,7 +185,11 @@ label mas_showpoem(poem=None, paper="paper", use_mas_poem_screen=False):
     $ pause()
 
     #And hide it
-    hide screen poem
+    if use_mas_poem_screen:
+        hide screen mas_generic_poem
+    else:
+        hide screen poem
+
     with Dissolve(.5)
     window auto
 
