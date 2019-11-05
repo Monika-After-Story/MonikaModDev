@@ -1999,24 +1999,7 @@ label mas_d25_spent_time_monika:
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
 
-        call mas_showpoem(poem_d25, paper="mod_assets/poem_assets/poem_d25.png")
-
-#        generic poem show
-#        window hide
-#        show screen mas_generic_poem(poem_d25, paper="mod_assets/poem_d25.png")
-#        with Dissolve(1)
-
-#        # need to reset zoom here so we dont end up with issues
-#        $ pause(1)
-#        hide monika with dissolve
-#        $ store.mas_sprites.zoom_out()
-#        show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
-#        $ pause()
-
-#        hide screen mas_generic_poem
-#        with Dissolve(0.5)
-#        window auto
-#        TODO: We actually need mistletoe for this
+        call mas_showpoem(poem_d25, paper="mod_assets/poem_assets/poem_d25.png", background_action_label="mas_d25_poem_mistletoe")
 
         if d25_gifts_good>0 or d25_gifts_neutral>0:
             m 1ekbfa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
@@ -2076,6 +2059,13 @@ label mas_d25_spent_time_monika:
         m 1hubfa "I love you, [player]~"
     return "love"
 
+label mas_d25_poem_mistletoe:
+#        $ pause(1)
+#        hide monika with dissolve
+#        $ store.mas_sprites.zoom_out()
+#        show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
+#TODO: Mistletoe. For now, this just returns
+    return
 
 #NOTE: kept in the event database because of the start/end date + cond/act logic
 init 5 python:
