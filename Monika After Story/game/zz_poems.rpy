@@ -161,8 +161,8 @@ init 10 python:
 #IN:
 #   poem - poem to show
 #   paper - paper to use (Default: "paper")
-#   use_mas_poem_screen - whether or not to use the mas_generic_poem screen to display the poem (Default: False)
-label mas_showpoem(poem=None, paper="paper", use_mas_poem_screen=False):
+#   background_action_label - label to handle background setup with (Default: None)
+label mas_showpoem(poem=None, paper="paper", background_action_label=None):
     #No poem? That's not right. Return
     if poem == None:
         return
@@ -174,21 +174,20 @@ label mas_showpoem(poem=None, paper="paper", use_mas_poem_screen=False):
     $ renpy.game.preferences.afm_enable = False
 
     #Handle the poem screen we use
-    if use_mas_poem_screen:
-        show screen mas_generic_poem(poem, paper=paper)
-    else:
-        show screen poem(poem, paper=paper)
+    show screen mas_generic_poem(poem, paper=paper)
 
     with Dissolve(1)
+
+    #If we have a bg_action_label, we execute what it needs to do
+    if background_action_label and renpy.has_label(background_action_label):
+        call expression background_action_label
 
     #Wait for user to progress the poem
     $ pause()
 
     #And hide it
-    if use_mas_poem_screen:
-        hide screen mas_generic_poem
-    else:
-        hide screen poem
+    hide screen mas_generic_poem
+
 
     with Dissolve(.5)
     window auto
