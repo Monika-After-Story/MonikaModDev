@@ -1486,6 +1486,7 @@ label mas_d25_season_exit:
 
         #Remove deco
         persistent._mas_d25_deco_active = False
+        mas_d25HideVisuals()
 
         #And no more d25 mode
         persistent._mas_d25_in_d25_mode = False
