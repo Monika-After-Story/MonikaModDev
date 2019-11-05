@@ -1435,7 +1435,7 @@ label mas_holiday_d25c_autoload_check:
 
 
     #This is d25 SEASON exit
-    elif run_d25s_exit or mas_isMoniDis(lower=True):
+    elif mas_run_d25s_exit or mas_isMoniDis(lower=True):
         #NOTE: We can run this early via mas_d25_monika_d25_mode_exit
         call mas_d25_season_exit
 
@@ -2605,14 +2605,14 @@ init -810 python:
     ))
 
 init -825 python:
-    run_d25s_exit = False
+    mas_run_d25s_exit = False
 
     def mas_d25SeasonExit_PP(mhs):
         """
         Sets a flag to run the D25 exit PP
         """
-        global run_d25s_exit
-        run_d25s_exit = True
+        global mas_run_d25s_exit
+        mas_run_d25s_exit = True
 
 init -10 python:
     def mas_isNYE(_date=None):
