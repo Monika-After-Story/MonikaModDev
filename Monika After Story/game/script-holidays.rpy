@@ -1397,6 +1397,7 @@ label mas_holiday_d25c_autoload_check:
     #NOTE: we use the costume exprop in case we get more D25 outfits.
 
     #We don't want the day of the first sesh having d25 content
+    #We also don't want people who first sesh d25p getting deco, because it doesn't make sense
     #This is first loadin
     if (
         not persistent._mas_d25_in_d25_mode
@@ -1412,7 +1413,7 @@ label mas_holiday_d25c_autoload_check:
                 persistent._mas_d25_started_upset = True
 
             #Setup
-            elif mas_isD25Outfit():
+            elif mas_isD25Outfit() and not mas_isFirstSeshPast(mas_d25):
                 #Unlock and wear santa/wine ribbon
                 store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
                 store.mas_selspr.unlock_clothes(mas_clothes_santa)
@@ -3062,7 +3063,7 @@ init 5 python:
             eventlabel="mas_d25_monika_d25_mode_exit",
             category=['holidays'],
             prompt="Can you take down the holiday decorations?",
-            conditional="persistent._mas_d25_in_d25_mode",
+            conditional="persistent._mas_d25_deco_active",
             start_date=mas_nyd+datetime.timedelta(days=1),
             end_date=mas_d25c_end,
             action=EV_ACT_UNLOCK,
