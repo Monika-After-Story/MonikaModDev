@@ -2087,7 +2087,7 @@ init 5 python:
             end_date=mas_d25p,
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL, None),
-            rules={"no unlock": None}
+            rules={"no unlock": None},
             years=[]
         ),
         skipCalendar=True
