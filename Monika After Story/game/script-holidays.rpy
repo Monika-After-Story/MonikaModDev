@@ -3090,6 +3090,9 @@ label mas_d25_monika_d25_mode_exit:
 
     m 1hua "Okay!{w=0.5} {nw}"
     extend 3hub "Now we're ready to start off the new year!"
+
+    #And we lock this so we can'd run it again
+    $ mas_lockEVL("mas_d25_monika_d25_mode_exit", "EVE")
     return
 
 label greeting_nye_aff_gain:
