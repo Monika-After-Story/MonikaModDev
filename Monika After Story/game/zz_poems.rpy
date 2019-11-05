@@ -154,32 +154,46 @@ init 10 python:
             """
             return store.persistent._mas_poems_seen.get(self.poem_id, 0)
 
-
-label mas_showpoem(poem=None, paper=None):
+#### mas_showpoem ####
+#Handles showing poems and automatically incrementing the shown counts of MASPoems
+#Can also show normal poems
+#
+#IN:
+#   poem - poem to show
+#   paper - paper to use (Default: "paper")
+#   use_mas_poem_screen - whether or not to use the mas_generic_poem screen to display the poem (Default: False)
+label mas_showpoem(poem=None, paper="paper", use_mas_poem_screen=False):
+    #No poem? That's not right. Return
     if poem == None:
         return
 
+    #Play the page turn sound
     play sound page_turn
 
     window hide
     $ renpy.game.preferences.afm_enable = False
 
-    if paper:
-        show screen poem(poem, paper=paper)
+    #Handle the poem screen we use
+    if use_mas_poem_screen:
+        show screen mas_generic_poem(poem, paper=paper)
     else:
-        show screen poem(poem)
+        show screen poem(poem, paper=paper)
 
     with Dissolve(1)
 
+    #Wait for user to progress the poem
     $ pause()
 
+    #And hide it
     hide screen poem
     with Dissolve(.5)
     window auto
 
     #Flag this poem as seen
-    if poem.poem_id in persistent._mas_poems_seen:
-        $ persistent._mas_poems_seen[poem.poem_id] += 1
-    else:
-        $ persistent._mas_poems_seen[poem.poem_id] = 1
+    #We only want to increment showns of MASPoems, since only they have the poem_id attribute
+    if isinstance(poem, MASPoem):
+        if poem.poem_id in persistent._mas_poems_seen:
+            $ persistent._mas_poems_seen[poem.poem_id] += 1
+        else:
+            $ persistent._mas_poems_seen[poem.poem_id] = 1
     return

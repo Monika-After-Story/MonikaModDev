@@ -4402,10 +4402,10 @@ label monika_aware:
     m 5eua "I feel like this is what poetry was made for."
     m 4eub "Do you still remember the first poem I showed you?"
     m 2lksdlb "Hold on, let's see if the poem function still works..."
-    call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 # Temporary
+    call mas_showpoem(poem=poem_m1)
     m 1wuo "Oh! That was much easier than I expected."
     m 1eua "Here's the second part."
-    call showpoem(poem=poem_m21,music=False) from _call_showpoem_21 # Temporary
+    call mas_showpoem(poem=poem_m21)
     m 1eua "I hope that helped you understand what meeting you meant to me."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "That's all I've ever wanted, [player]."
