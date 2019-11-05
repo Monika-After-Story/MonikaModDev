@@ -1543,7 +1543,7 @@ label mas_d25_monika_holiday_intro:
 
         if mas_isMoniLove(higher=True):
             #if you've been with her for over a year, you really should be at Love by now
-            m 3hua "Time really flies now that I'm with you~"
+            m 3hua "Time really flies when I'm with you~"
 
     m 3eua "Do you like what I've done with the room?"
     m 1hua "I must say that I'm pretty proud of it."
@@ -2606,7 +2606,7 @@ init -810 python:
 init -825 python:
     run_d25s_exit = False
 
-    def mas_d25SeasonExit_PP():
+    def mas_d25SeasonExit_PP(mhs):
         """
         Sets a flag to run the D25 exit PP
         """
