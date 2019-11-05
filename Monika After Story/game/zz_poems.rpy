@@ -11,6 +11,16 @@ init 11 python in mas_poems:
     def getPoemsByCategory(category, unseen=False):
         """
         Returns a list of poems by the category provided
+
+        IN:
+            category:
+                category to search for
+
+            unseen:
+                whether or not we only want unseen poems
+
+        OUT:
+            A list of poems based on the specifications above
         """
 
         #If we only want unseen, do this
@@ -61,12 +71,27 @@ init 11 python in mas_poems:
         """
         return poem_map.get(poem_id, None)
 
+    def getSeenPoemsMenu():
+        """
+        Gets a list of seen poems in scrollable menu format
+
+        OUT:
+            A list of seen poems in the format for a mas gen scrollable menu
+        """
+        return [
+            (poem.prompt, poem, False, False)
+            for poem in poem_map.itervalues()
+            if poem.is_seen()
+        ]
+
+
 init 10 python:
     class MASPoem:
         def __init__(
             self,
             poem_id,
             category,
+            prompt,
             title="",
             text="",
             author="monika"
@@ -83,6 +108,9 @@ init 10 python:
             category:
                 category for the poem is under (So we can get poems by category)
 
+            prompt:
+                prompt for this poem (So it can be viewed by a scrollable menu)
+
             title:
                 poem title (supports renpy substitution)
 
@@ -97,6 +125,7 @@ init 10 python:
 
             self.poem_id=poem_id
             self.category=category
+            self.prompt=prompt
             self.title=renpy.substitute(title)
             self.text=text
             self.author=author

@@ -1879,6 +1879,7 @@ init 20 python:
     poem_d25 = MASPoem(
     poem_id = "poem_d25_1",
     category = "d25",
+    prompt = "The Joy to my World",
     author = "monika",
     title = "     My dearest [player],",
     text = """\
@@ -4026,10 +4027,12 @@ label return_home_post_player_bday:
     return
 
 # birthday card/poem for player
+#TODO: review prompt for this pls
 init 20 python:
     poem_pbday = MASPoem(
     poem_id = "poem_pbday_1",
     category = "pbday",
+    prompt = "Your Birthday",
     author = "monika",
     title = " My dearest [player],",
     text = """\
@@ -4702,6 +4705,7 @@ init 20 python:
     poem_vday = MASPoem(
     poem_id = "poem_f14_1",
     category = "f14",
+    prompt = "Our first Valentine's Day",
     author = "monika",
     title = " My dearest [player],",
     text = """\
@@ -4721,6 +4725,7 @@ init 20 python:
     poem_vday2 = MASPoem(
     poem_id = "poem_f14_2",
     category = "f14",
+    prompt = "Our Second Valentine's Day",
     author = "monika",
     title = " My dearest [player],",
     text = """\
