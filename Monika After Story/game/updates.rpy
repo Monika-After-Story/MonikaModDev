@@ -310,8 +310,31 @@ label v0_10_4(version="v0_10_4"):
         if renpy.seen_label("monika_aiwfc"):
             #Need to swap out for song variant
             mas_unlockEVL("mas_song_aiwfc", "SNG")
-            mas_lockEVL("monika_aiwfc")
+            mas_lockEVL("monika_aiwfc", "EVE")
 
+        #Handle poem seens
+        #NOTE: f14 makes the assumption that you were > 0 aff.
+        #There is no way to be sure if you actually saw it
+
+        #If you got first kiss on d25, you got the poem too
+        if persistent._mas_first_kiss and persistent._mas_first_kiss.date().replace(year=mas_d25.year) == mas_d25:
+            persistent._mas_poems_seen["poem_d25_1"] = 1
+
+        #If you saw the old vday label, you got the poem
+        if renpy.seen_label("monika_valentines_start"):
+            persistent._mas_poems_seen["poem_f14_1"] = 1
+
+            #If you also saw the new vday label this year, then you saw the second one too
+            if mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
+                persistent._mas_poems_seen["poem_f14_2"] = 1
+
+        #Otherwise if we only saw this one, we got the first one
+        elif mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
+            persistent._mas_poems_seen["poem_f14_1"] = 1
+
+        #If you saw either of these two labels, you saw the player bday card
+        if renpy.seen_label("mas_player_bday_cake") or renpy.seen_label("mas_player_bday_card"):
+            persistent._mas_poems_seen["poem_pbday_1"] = 1
     return
 
 

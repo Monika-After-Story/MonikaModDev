@@ -1874,11 +1874,13 @@ label mas_d25_monika_mistletoe:
     m 1hub "Ehehe~"
     return
 
-init 2 python:
+init 20 python:
 
-    poem_d25 = Poem(
+    poem_d25 = MASPoem(
+    poem_id = "poem_d25_1",
+    category = "d25",
     author = "monika",
-    title = "     My dearest {0},".format(persistent.playername),
+    title = "     My dearest [player],",
     text = """\
      You truly are the joy to my world.
      Neither the light emitted by the tallest Christmas tree,
@@ -1993,7 +1995,8 @@ label mas_d25_spent_time_monika:
 
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
-        call showpoem(poem_d25, music=False,paper="mod_assets/poem_assets/poem_d25.png")
+
+        call mas_showpoem(poem_d25, paper="mod_assets/poem_assets/poem_d25.png")
 
 #        generic poem show
 #        window hide
@@ -3667,8 +3670,11 @@ label mas_player_bday_card:
         m 6ekbsu "I...I made a card for you, [player], I hope you like it..."
     else:
         m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
+
     $ p_bday_month = mas_player_bday_curr().month
-    call showpoem(poem_pbday, music=False,paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
+
+    call mas_showpoem(poem_pbday, paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
+
     if mas_isMoniEnamored(higher=True):
         if persistent._mas_first_kiss is None:
             m 6dkbsu "..."
@@ -4020,10 +4026,12 @@ label return_home_post_player_bday:
     return
 
 # birthday card/poem for player
-init 2 python:
-    poem_pbday = Poem(
+init 20 python:
+    poem_pbday = MASPoem(
+    poem_id = "poem_pbday_1",
+    category = "pbday",
     author = "monika",
-    title = " My dearest {0},".format(persistent.playername),
+    title = " My dearest [player],",
     text = """\
  To the one I love,
  The one I trust,
@@ -4493,7 +4501,9 @@ label mas_f14_monika_spent_time_with:
     if not mas_isBelowZero():
         if renpy.seen_label('monika_valentines_start'):
             m 1ekbsa "Here, let me show it to you."
-            call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+
+            call mas_showpoem(poem_vday2, paper="mod_assets/poem_assets/poem_vday.jpg")
+
             m "You really are everything to me, [player]~"
             if mas_isMoniEnamored(higher=True):
                 if persistent._mas_first_kiss is None:
@@ -4503,7 +4513,7 @@ label mas_f14_monika_spent_time_with:
 
         else:
             m 1ekbsa "Here, let me show it to you."
-            call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+            call mas_showpoem(poem_vday, paper="mod_assets/poem_assets/poem_vday.jpg")
             m "I really mean that, [player]..."
             m 3ekbsa "In you I found everything I could ever hope for~"
             if mas_isMoniEnamored(higher=True):
@@ -4688,11 +4698,12 @@ label mas_apology_missed_vday:
     return
 
 
-init 2 python:
-
-    poem_vday = Poem(
+init 20 python:
+    poem_vday = MASPoem(
+    poem_id = "poem_f14_1",
+    category = "f14",
     author = "monika",
-    title = " My dearest {0},".format(persistent.playername),
+    title = " My dearest [player],",
     text = """\
  I`ve always loved Valentine's day, but this one feels different.
  Has the world changed, or just me?
@@ -4707,9 +4718,11 @@ init 2 python:
 """
     )
 
-    poem_vday2 = Poem(
+    poem_vday2 = MASPoem(
+    poem_id = "poem_f14_2",
+    category = "f14",
     author = "monika",
-    title = " My dearest {0},".format(persistent.playername),
+    title = " My dearest [player],",
     text = """\
  Can it really be our second Valentine's Day?
  The first seems like just yesterday, yet so much has happened.
