@@ -2434,6 +2434,7 @@ init -999 python:
 init -990 python in mas_utils:
     import store
     import os
+    import stat
     import shutil
     import datetime
     import codecs
@@ -2446,6 +2447,7 @@ init -990 python in mas_utils:
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
     _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
+    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
 
     # bad text dict
     BAD_TEXT = {
@@ -2647,6 +2649,26 @@ init -990 python in mas_utils:
 
         # and delete the current file
         trydel(old_path)
+
+
+    def is_folder(fpath):
+        """
+        Checks if the given path is actually a folder.
+
+        IN:
+            fpath - path to check
+
+        RETURNS: True if the fpath is a folder, false if not, None if we dont
+            really know.
+        """
+        try:
+            stat_data = os.stat(fpath)
+            return stat.S_ISDIR(stat_data.st_mode) > 0
+        
+        except Exception as e:
+            writelog(_mas__faildir.format(fpath, repr(e)))
+            return None
+
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """

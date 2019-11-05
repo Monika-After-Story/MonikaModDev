@@ -309,6 +309,7 @@ init -45 python:
         def getPackageList(self, ext_filter=""):
             """
             Gets a list of the packages in the docking station.
+            We also ensure that the item retrieved is not a folder.
 
             IN:
                 ext_filter - extension filter to use when getting list.
@@ -329,6 +330,7 @@ init -45 python:
                 package
                 for package in os.listdir(self.station)
                 if package.endswith(ext_filter)
+                and self.mas_utils.is_folder(package) is False
             ]
 
 
@@ -962,10 +964,10 @@ init -45 python:
 
             return None
 
-
         def __check_access(self, package_path, check_read):
             """
-            Checks access of the file at package_path
+            Checks access of the file at package_path.
+            Also ensures that the file is not actually is folder.
 
             NOTE:
                 will log exceptions
@@ -987,6 +989,7 @@ init -45 python:
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
+                not_dir = self.mas_utils.is_folder(package_path) is False
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
@@ -999,17 +1002,12 @@ init -45 python:
                 return self.__bad_check_read(check_read)
 
             if check_read:
-                if not (file_ok and read_ok):
+                if not (file_ok and read_ok and not_dir):
                     return None
 
-            else:
-                if not file_ok:
-                    return False
+            return file_ok and not_dir
 
-            return True
-
-
-        def __bad_check_read(check_read):
+        def __bad_check_read(self, check_read):
             """
             Returns an appropriate failure value givne the check_read value
 
