@@ -2082,13 +2082,12 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_aiwfc",
-            category=[store.mas_songs.TYPE_LONG],
-            prompt="All I Want For Christmas",
             conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_d25c_start,
             end_date=mas_d25p,
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL, None),
+            rules={"no unlock": None}
             years=[]
         ),
         skipCalendar=True
