@@ -2651,25 +2651,6 @@ init -990 python in mas_utils:
         trydel(old_path)
 
 
-    def is_folder(fpath):
-        """
-        Checks if the given path is actually a folder.
-
-        IN:
-            fpath - path to check
-
-        RETURNS: True if the fpath is a folder, false if not, None if we dont
-            really know.
-        """
-        try:
-            stat_data = os.stat(fpath)
-            return stat.S_ISDIR(stat_data.st_mode) > 0
-        
-        except Exception as e:
-            writelog(_mas__faildir.format(fpath, repr(e)))
-            return None
-
-
     def tryparsedt(_datetime, default=None, sep=" "):
         """
         Trys to parse a datetime isoformat string into a datetime object

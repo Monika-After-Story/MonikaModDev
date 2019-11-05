@@ -330,7 +330,7 @@ init -45 python:
                 package
                 for package in os.listdir(self.station)
                 if package.endswith(ext_filter)
-                and self.mas_utils.is_folder(package) is False
+                and not os.path.isdir(self._trackPackage(package))
             ]
 
 
@@ -989,7 +989,7 @@ init -45 python:
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
-                not_dir = self.mas_utils.is_folder(package_path) is False
+                not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
