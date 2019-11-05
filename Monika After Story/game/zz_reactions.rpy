@@ -657,6 +657,41 @@ init python:
 
         mas_capGainAff(amount * modifier, "_mas_filereacts_gift_aff_gained", 15 if mas_isSpecialDay() else 3)
 
+    def mas_getGiftedDates(giftlabel):
+        """
+        Gets the dates that a gift was gifted
+
+        IN:
+            giftlabel - gift reaction label to check when it was last gifted
+
+        OUT:
+            list of datetime.dates of the times the gift was given
+        """
+        return sorted([
+            _date
+            for _date, giftstat in persistent._mas_filereacts_historic.iteritems()
+            if giftlabel in giftstat
+        ])
+
+    def mas_lastGiftedInYear(giftlabel, _year):
+        """
+        Checks if the gift for giftlabel was last gifted in _year
+
+        IN:
+            giftlabel - gift reaction label to check it's last gifted year
+            _year - year to see if it was last gifted in this year
+
+        OUT:
+            boolean:
+                - True if last gifted in _year
+                - False otherwise
+        """
+        datelist = mas_getGiftedDates(giftlabel)
+
+        if datelist:
+            return datelist[-1].year == _year
+        return False
+
 ### CONNECTORS [RCT000]
 
 # none here!

@@ -2060,11 +2060,12 @@ label mas_d25_spent_time_monika:
     return "love"
 
 label mas_d25_poem_mistletoe:
-#        $ pause(1)
-#        hide monika with dissolve
-#        $ store.mas_sprites.zoom_out()
-#        show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
-#TODO: Mistletoe. For now, this just returns
+    #$ pause(1)
+    #hide monika with dissolve
+    #$ store.mas_sprites.zoom_out()
+    #show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
+    #show mas_mistletoe
+    #TODO: Mistletoe. For now, this just returns
     return
 
 #NOTE: kept in the event database because of the start/end date + cond/act logic
@@ -2124,8 +2125,6 @@ label monika_aiwfc:
 
 #TODO: Adjust timing based on missing quotes now
 label monika_aiwfc_song:
-    # TODO: consider doing something where we can use lyric bar and style
-    #   like in piano
 
     #Disable text speed for this
     $ mas_disableTextSpeed()
@@ -2878,7 +2877,7 @@ label monika_resolutions:
 
     return
 
-#TODO: Consider adding player bday into this
+
 init 5 python:
     addEvent(
         Event(
@@ -2938,12 +2937,12 @@ label monika_nye_year_review:
     m 2dtc "Let's see..."
 
     # promisering related stuff
-    if persistent._mas_acs_enable_promisering: #note, this should only trigger for this year. I.e. if promisering was given this year
+    if mas_lastGiftedInYear("mas_reaction_promisering", mas_nye.year):
         m 3eka "Looking back, you gave me your promise this year when you gave me this ring..."
         m 1ekbsa "...a symbol of our love."
 
         if persistent._mas_pm_wearsRing:
-            m "And you even got one for yourself..." #note, should be only if you got a promise ring for yourself this year
+            m "And you even got one for yourself..."
 
             if mas_isMoniAff(higher=True):
                 m 1ekbfa "To show that you're as committed to me, as I am to you."
@@ -2974,7 +2973,16 @@ label monika_nye_year_review:
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbla "...and it really made me feel loved. I can't thank you enough for doing that for me."
 
-    # bit on christmas
+    #Pbday
+    if persistent._mas_player_bday_spent_time:
+        $ spent_an_event = True
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "We even spent your birthday together too!"
+
+        if persistent._mas_player_bday_date:
+            5eubla "We had such a nice date together too~"
+
+    #bit on christmas
     if persistent._mas_d25_spent_d25:
         $ spent_an_event = True
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
@@ -3088,7 +3096,6 @@ label mas_d25_monika_d25_mode_exit:
 
 label greeting_nye_aff_gain:
     # gaining affection for nye
-    #TODO: CLEAN THIS
     python:
         if persistent._mas_nye_date_aff_gain < 15:
             # retain older affection gain so we can compare
