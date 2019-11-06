@@ -304,6 +304,18 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.3
+label v0_10_3(version="v0_10_3"):
+    python:
+        #Convert fav/derand dicts to lists based on their keys if needed
+        if isinstance(persistent._mas_player_bookmarked, dict):
+            persistent._mas_player_bookmarked = persistent._mas_player_bookmarked.keys()
+
+        if isinstance(persistent._mas_player_derandomed, dict):
+            persistent._mas_player_derandomed = persistent._mas_player_derandomed.keys()
+
+    return
+
 #0.10.2
 label v0_10_2(version="v0_10_2"):
     python:
@@ -838,11 +850,6 @@ label v0_8_14(version="v0_8_14"):
         rain_ev = mas_getEV("monika_rain")
         if rain_ev is not None and not rain_ev.random:
             rain_ev.unlocked = True
-
-        # unlock thunder if you spent time on o31
-        if store.mas_o31_event.spentO31():
-            mas_weather_thunder.unlocked = True
-            store.mas_weather.saveMWData()
 
     return
 

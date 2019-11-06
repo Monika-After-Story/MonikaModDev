@@ -3440,8 +3440,17 @@ label monika_ribbon_select:
 #        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
+        
+        # make sure ot use ribbon for remover type
+        use_acs.append(store.mas_selspr.create_selectable_remover(
+            "ribbon",
+            "ribbon",
+            "Basic Hair Band"
+        ))
 
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which hair tie would you like me to use?")
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hair tie would you like me to use?"
+        )
         sel_map = {}
 
     m 1eua "Sure [player]!"
@@ -3451,7 +3460,7 @@ label monika_ribbon_select:
 #        $ monika_chr.reset_outfit(False)
 
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, remover_name="Basic Hair Band")
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
 
     if not _return:
         m 1eka "Oh, alright."
@@ -3524,6 +3533,13 @@ init 5 python:
 label monika_hairflower_select:
     python:
         use_acs = store.mas_selspr.filter_acs(True, group="left-hair-flower")
+
+        # since left-hair-flower group can have mutpile types, force using
+        #   left-hair-flower type for muxing
+        use_acs.append(store.mas_selspr.create_selectable_remover(
+            "left-hair-flower",
+            "left-hair-flower"
+        ))
 
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which flower would you like me to put in my hair?"

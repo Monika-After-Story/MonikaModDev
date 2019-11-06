@@ -2443,11 +2443,7 @@ init 5 python:
 label mas_bookmarks:
     show monika idle
     python:
-        bookmarkedlist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked and ev.checkAffection(mas_curr_affection)
-        ]
+        bookmarkedlist = mas_get_player_bookmarks()
 
         bookmarkedlist.sort()
         remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)

@@ -753,7 +753,7 @@ label bye_goodnight:
     if mas_isMoniNormal(higher=True):
         m 1eua "Goodnight, [player]."
         m 1eka "I'll see you tomorrow, okay?"
-        m 3eka "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+        m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
         m 1ekbfa "I love you~"
 
     elif mas_isMoniUpset():

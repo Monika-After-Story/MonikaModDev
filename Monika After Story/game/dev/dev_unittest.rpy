@@ -358,7 +358,7 @@ init -1 python in mas_dev_unit_tests:
             self.tests = []
 
 init 10 python in mas_dev_unit_tests:
-    from store.mas_moods import MOOD_AREA, MOOD_XALIGN
+    from store.mas_ui import SCROLLABLE_MENU_AREA, SCROLLABLE_MENU_XALIGN
 
 
 label dev_unit_tests_show_pass:
@@ -421,7 +421,7 @@ init 5 python:
 
 label dev_unit_tests:
     $ final_item = ("RETURN", False, False, False, 20)
-    call screen mas_gen_scrollable_menu(store.mas_dev_unit_tests.unit_tests, store.mas_dev_unit_tests.MOOD_AREA, store.mas_dev_unit_tests.MOOD_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(store.mas_dev_unit_tests.unit_tests, store.mas_dev_unit_tests.SCROLLABLE_MENU_AREA, store.mas_dev_unit_tests.SCROLLABLE_MENU_XALIGN, final_item)
 
     if _return == "RETURN":
         return
