@@ -657,12 +657,63 @@ init python:
 
     def mas_check_player_derand():
         """
-        Checks the player derandom dict for events that are not random and derandoms them
+        Checks the player derandom list for events that are not random and derandoms them
         """
-        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
-            if ev.random:
+        for ev_label in persistent._mas_player_derandomed:
+            #Get the ev
+            ev = mas_getEV(ev_label)
+            if ev and ev.random:
                 ev.random = False
 
+    def mas_get_player_bookmarks():
+        """
+        Gets topics which are bookmarked by the player (in gen-scrollable-menu format)
+        Also cleans events which no longer exist
+
+        OUT:
+            List of bookmarked topics in mas_gen_scrollable_menu form
+        """
+        bookmarkedlist = []
+
+        #Iterate and add to bookmarked list
+        for index in range(len(persistent._mas_player_bookmarked)-1,-1,-1):
+            #Get the ev
+            ev = mas_getEV(persistent._mas_player_bookmarked[index])
+
+            #If no ev, we'll pop it as we shouldn't actually keep it here
+            if not ev:
+                persistent._mas_player_bookmarked.pop(index)
+
+            #Otherwise, we add it to the menu item list
+            elif ev.unlocked and ev.checkAffection(mas_curr_affection):
+                bookmarkedlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+
+        return bookmarkedlist
+
+    def mas_get_player_derandoms():
+        """
+        Gets topics which are derandomed by the player (in gen-scrollable-menu format)
+        Also cleans out events which no longer exist
+
+        OUT:
+            List of player-derandomed topics in mas_gen_scrollable_menu form
+        """
+        derandlist = []
+
+        #Iterate and add to derand list
+        for index in range(len(persistent._mas_player_derandomed)-1,-1,-1):
+            #Get the ev
+            ev = mas_getEV(persistent._mas_player_derandomed[index])
+
+            #No ev. Pop it as we shouldn't actually keep it here
+            if not ev:
+                persistent._mas_player_derandomed.pop(index)
+
+            #Ev exists. Add it to the menu item list
+            elif ev.unlocked and ev.checkAffection(mas_curr_affection):
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+
+        return derandlist
 
 init 1 python:
     morning_flag = mas_isMorning()
@@ -1837,6 +1888,15 @@ label ch30_reset:
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
+
+    # reset bday decor
+    python:
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        if not mas_isMonikaBirthday() and not mas_isMonikaBirthday(yesterday):
+            persistent._mas_bday_visuals = False
+
+        if not mas_isplayer_bday() and not mas_isplayer_bday(yesterday):
+            persistent._mas_player_bday_decor = False
 
     ## late farewell? set the global and clear the persistent so its auto
     ##  cleared

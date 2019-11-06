@@ -814,7 +814,7 @@ init 5 python:
 label greeting_esperanto:
     m 1hua "Saluton, mia kara [player]."
     m 1eua "Kiel vi fartas?"
-    m 3eub "Ĉu vi legas por kapti la tagon?"
+    m 3eub "Ĉu vi pretas por kapti la tagon?"
     m 1hua "Ehehe~"
     m 3esa "That was just a bit of Esperanto...{w=0.5}{nw}"
     extend 3eud "a language that was created artificially instead of having evolved naturally."

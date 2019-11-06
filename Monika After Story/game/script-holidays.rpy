@@ -4912,8 +4912,21 @@ init -810 python:
 
 ############### [HOL060]: METHODS
 init -1 python:
-    def mas_isMonikaBirthday():
-        return datetime.date.today() == mas_monika_birthday
+    def mas_isMonikaBirthday(_date=None):
+        """
+        checks if the given date is monikas birthday
+        Comparison is done solely with month and day
+
+        IN:
+            _date - date to check. If not passed in, we use today.
+        """
+        if _date is None:
+            _date = datetime.date.today()
+
+        return (
+            _date.month == mas_monika_birthday.month 
+            and _date.day == mas_monika_birthday.day
+        )
 
 
     def mas_getNextMonikaBirthday():
