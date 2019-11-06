@@ -1999,7 +1999,15 @@ label mas_d25_spent_time_monika:
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
 
-        call mas_showpoem(poem_d25, paper="mod_assets/poem_assets/poem_d25.png", background_action_label="mas_d25_poem_mistletoe")
+        #TODO: New D25 Poem
+        if poem_d25.is_seen():
+            $ poem_to_show = None
+
+        else:
+            $ poem_to_show = poem_d25
+
+        #Show the poem
+        call mas_showpoem(poem_d25, background_action_label="mas_d25_poem_mistletoe")
 
         if d25_gifts_good>0 or d25_gifts_neutral>0:
             m 1ekbfa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
@@ -2123,7 +2131,7 @@ label monika_aiwfc:
     $ mas_unlockEVL("mas_song_aiwfc", "SNG")
     return "no_unlock|love"
 
-#TODO: Adjust timing based on missing quotes now
+
 label monika_aiwfc_song:
 
     #Disable text speed for this
@@ -2136,8 +2144,8 @@ label monika_aiwfc_song:
     m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"
     m 3eua "{i}{cps=15}Underneath{/cps}{cps=8} the Christmas tree{/cps}{/i}{nw}"
 
-    m 1eub "{i}{cps=10}I don't need{/cps}{cps=20} to hang{/cps}{cps=8} my stocking{/cps}{/i}{nw}"
-    m 1eua "{i}{cps=10}There{/cps}{cps=15} upon{/cps}{cps=7} the fireplace{/cps}{/i}{nw}"
+    m 1eub "{i}{cps=10}I don't need{/cps}{cps=20} to hang{/cps}{cps=9} my stocking{/cps}{/i}{nw}"
+    m 1eua "{i}{cps=9}There{/cps}{cps=15} upon{/cps}{cps=7} the fireplace{/cps}{/i}{nw}"
     m 3hub "{i}{w=0.5}{cps=20}Santa Claus{/cps}{cps=10} won't make me happy{/cps}{/i}{nw}"
     m 4hub "{i}{cps=8}With{/cps}{cps=15} a toy{/cps}{cps=8} on Christmas Day{/cps}{/i}{nw}"
 
@@ -2146,14 +2154,14 @@ label monika_aiwfc_song:
     m 1ekbsa "{i}{cps=10}Make my wish{/cps}{cps=20} come truuuuuuue{w=0.8}{/cps}{/i}{nw}"
     m 3hua "{i}{cps=8}All I want for Christmas{/cps}{/i}{nw}"
     m 3hubfb "{i}{cps=7}Is yoooooooooou{w=1}{/cps}{/i}{nw}"
-    m "{i}{cps=9}Yoooooooou, baaaaby~{w=1}{/cps}{/i}{nw}"
+    m "{i}{cps=9}Yoooooooou, baaaaby~{w=0.7}{/cps}{/i}{nw}"
 
     m 2eka "{i}{cps=10}I won't ask{/cps}{cps=20} for much{/cps}{cps=10} this Christmas{/cps}{/i}{nw}"
     m 3hub "{i}{cps=10}I{/cps}{cps=20} won't {/cps}{cps=10}even wish for snow{w=0.8}{/cps}{/i}{nw}"
     m 3eua "{i}{cps=10}I'm{/cps}{cps=20} just gonna{/cps}{cps=10} keep on waiting{w=0.4}{/cps}{/i}{nw}"
-    m 3hubfb "{i}{cps=17}Underneath{/cps}{cps=10} the mistletoe{w=1}{/cps}{/i}{nw}"
+    m 3hubfb "{i}{cps=17}Underneath{/cps}{cps=11} the mistletoe{w=1}{/cps}{/i}{nw}"
 
-    m 2eua "{i}{cps=10}I{/cps}{cps=17} won't make{/cps}{cps=9} a list and send it{w=0.35}{/cps}{/i}{nw}"
+    m 2eua "{i}{cps=10}I{/cps}{cps=17} won't make{/cps}{cps=10} a list and send it{w=0.35}{/cps}{/i}{nw}"
     m 3eua "{i}{cps=10}To{/cps}{cps=20} the North{/cps}{cps=10} Pole for Saint Nick{w=0.3}{/cps}{/i}{nw}"
     m 4hub "{i}{cps=18}I won't ev{/cps}{cps=10}en stay awake to{w=0.4}{/cps}{/i}{nw}"
     m 3hub "{i}{cps=10}Hear{/cps}{cps=20} those ma{/cps}{cps=14}gic reindeer click{w=0.9}{/cps}{/i}{nw}"
@@ -2163,7 +2171,7 @@ label monika_aiwfc_song:
     m 4hksdlb "{i}{cps=10}What more{/cps}{cps=15} can I{/cps}{cps=8} doooo?{w=0.3}{/cps}{/i}{nw}"
     m 4ekbfb "{i}{cps=20}Cause baby{/cps}{cps=12} all I want for Christmas{w=0.3} is yoooooooou~{w=2.3}{/cps}{/i}{nw}"
     m "{i}{cps=9}Yoooooooou, baaaaby~{w=2.5}{/cps}{/i}{nw}"
-    stop music fadeout 1.0
+    stop music fadeout 0.5
 
     #Now we re-enable text speed
     $ mas_resetTextSpeed()
@@ -4503,10 +4511,10 @@ label mas_f14_monika_spent_time_with:
         m 1rkbsb "Also, I...{w=1}made something for you, [player]!"
 
     if not mas_isBelowZero():
-        if renpy.seen_label('monika_valentines_start'):
+        if poem_vday.is_seen():
             m 1ekbsa "Here, let me show it to you."
 
-            call mas_showpoem(poem_vday2, paper="mod_assets/poem_assets/poem_vday.jpg")
+            call mas_showpoem(poem_vday2)
 
             m "You really are everything to me, [player]~"
             if mas_isMoniEnamored(higher=True):
@@ -4517,7 +4525,7 @@ label mas_f14_monika_spent_time_with:
 
         else:
             m 1ekbsa "Here, let me show it to you."
-            call mas_showpoem(poem_vday, paper="mod_assets/poem_assets/poem_vday.jpg")
+            call mas_showpoem(poem_vday)
             m "I really mean that, [player]..."
             m 3ekbsa "In you I found everything I could ever hope for~"
             if mas_isMoniEnamored(higher=True):

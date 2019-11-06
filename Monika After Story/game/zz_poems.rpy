@@ -5,6 +5,11 @@ default persistent._mas_poems_seen = dict()
 init python in mas_poems:
     poem_map = dict()
 
+    paper_cat_map = {
+        "f14": "mod_assets/poem_assets/poem_vday.jpg",
+        "d25": "mod_assets/poem_assets/poem_d25.png"
+    }
+
 init 11 python in mas_poems:
     import store
 
@@ -160,12 +165,23 @@ init 10 python:
 #
 #IN:
 #   poem - poem to show
-#   paper - paper to use (Default: "paper")
+#   paper - paper to use
+#       If None, and the poem is a MASPoem, it attempts to get paper by the category.
+#       If nothing can be found, it defaults to paper.
+#       Normal poems use the standard paper by default if None.
+#       (Default: None)
 #   background_action_label - label to handle background setup with (Default: None)
-label mas_showpoem(poem=None, paper="paper", background_action_label=None):
+label mas_showpoem(poem=None, paper=None, background_action_label=None):
     #No poem? That's not right. Return
     if poem == None:
         return
+
+    $ is_maspoem = isinstance(poem, MASPoem)
+    if not paper:
+        if is_maspoem:
+            $ paper = mas_poems.paper_cat_map.get(poem.category, "paper")
+        else:
+            $ paper = "paper"
 
     #Play the page turn sound
     play sound page_turn
@@ -194,7 +210,7 @@ label mas_showpoem(poem=None, paper="paper", background_action_label=None):
 
     #Flag this poem as seen
     #We only want to increment showns of MASPoems, since only they have the poem_id attribute
-    if isinstance(poem, MASPoem):
+    if is_maspoem:
         if poem.poem_id in persistent._mas_poems_seen:
             $ persistent._mas_poems_seen[poem.poem_id] += 1
         else:
