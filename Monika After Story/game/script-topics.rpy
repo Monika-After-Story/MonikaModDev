@@ -1685,16 +1685,7 @@ label monika_rain:
             m "Would you ever do that for me, [player]?{fast}"
             "Yes.":
                 $ persistent._mas_likes_rain = True
-
-                python:
-                    # unlock rain weathers
-                    mas_weather_rain.unlocked = True
-                    if store.mas_o31_event.spentO31():
-                        mas_weather_thunder.unlocked = True
-
-                    store.mas_weather.saveMWData()
-                    mas_unlockEVL("monika_change_weather", "EVE")
-                    mas_unlockEVL("monika_rain_holdme", "EVE")
+                $ mas_unlockEVL("monika_rain_holdme", "EVE")
 
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain, by_user=False)
@@ -3026,7 +3017,7 @@ label monika_dan:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_4chan",category=['misc'],prompt="Have you even been to 4chan?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_4chan",category=['misc'],prompt="Have you ever been to 4chan?",pool=True))
 
 label monika_4chan:
     m 3eua "You know, this mod got its start over there."
@@ -5007,8 +4998,8 @@ label monika_pleasure:
     m 1ekc "And from what I hear, people addicted to masturbation often see other people as sexual objects."
     m 1eka "But...I know you aren't that kind of person already."
     m 1lkbsa "And maybe I'm just being a little jealous~"
-    m 1tsb "So I guess I can let it slide... for now~"
-    m 2tsbsa "Just so long as I'm the only one you think about..."
+    m 1tsbsa "So I guess I can let it slide...{w=0.5}for now~"
+    m 2tsbsu "Just so long as I'm the only one you think about..."
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
@@ -12238,7 +12229,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_snowballfight",
             category=["winter"],
-            prompt="Have you had a snowball fight?",
+            prompt="Have you ever had a snowball fight?",
             pool=True,
             unlocked=mas_isWinter(),
             rules={"no_unlock":None}
@@ -12829,7 +12820,7 @@ label monika_life_skills:
     if persistent._mas_pm_cares_about_dokis:
         m 2rksdla "I know I wasn't that great with code, considering some of the things that happened..."
         m 2hksdlb "And I'll admit that I definitely broke a few things..."
-        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desparate."
+        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desperate."
         $ it = "And it"
 
     else:

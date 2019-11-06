@@ -23,13 +23,7 @@ init -1 python in mas_stories:
     # TYPES:
     TYPE_SCARY = 0
 
-    # pane constants
-    STORY_X = 680
-    STORY_Y = 40
-    STORY_W = 560
-    STORY_H = 640
-    STORY_XALIGN = -0.05
-    STORY_AREA = (STORY_X, STORY_Y, STORY_W, STORY_H)
+    # pane constant
     STORY_RETURN = "I changed my mind."
     story_database = dict()
 
@@ -129,7 +123,7 @@ label mas_stories_start(scary=False):
 
     $ renpy.say(m, "What story would you like to hear?", interact=False)
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value?
     if _return:

@@ -839,11 +839,6 @@ label v0_8_14(version="v0_8_14"):
         if rain_ev is not None and not rain_ev.random:
             rain_ev.unlocked = True
 
-        # unlock thunder if you spent time on o31
-        if store.mas_o31_event.spentO31():
-            mas_weather_thunder.unlocked = True
-            store.mas_weather.saveMWData()
-
     return
 
 # 0.8.13
