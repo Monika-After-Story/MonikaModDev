@@ -1349,8 +1349,8 @@ label mas_coffee_finished_brewing:
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
     $ monika_chr.wear_acs_pst(mas_acs_mug)
-    $ persistent._mas_coffee_brew_time = None
-    $ mas_drinkCoffee()
+    $ persistent._mas_current_drink["brew time"] = None
+    $ mas_getConsumableDrink("coffee").drink()
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
@@ -1382,9 +1382,9 @@ init 5 python:
 
 
 label mas_coffee_finished_drinking:
-
     # monika only gets a new cup between 6am and noon
-    $ get_new_cup = mas_isCoffeeTime()
+    $ coffee = mas_getConsumableDrink("coffee")
+    $ get_new_cup = coffee.isDrinkTime()
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my coffee."
@@ -1416,11 +1416,10 @@ label mas_coffee_finished_drinking:
     $ renpy.pause(1.0, hard=True)
     # decide if new coffee
     if not get_new_cup:
-        $ monika_chr.remove_acs(mas_acs_mug)
-        $ persistent._mas_coffee_cup_done = None
+        $ coffee.reset()
 
     else:
-        $ mas_drinkCoffee()
+        $ coffee.drink()
 
     $ renpy.pause(4.0, hard=True)
 
@@ -1479,8 +1478,8 @@ label mas_c_hotchoc_finished_brewing:
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
     $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
-    $ persistent._mas_c_hotchoc_brew_time = None
-    $ mas_drinkHotChoc()
+    $ persistent._mas_current_drink["brew time"] = None
+    $ mas_getConsumableDrink("hotchocolate").drink()
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
@@ -1515,7 +1514,8 @@ init 5 python:
 label mas_c_hotchoc_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
-    $ get_new_cup = mas_isHotChocTime()
+    $ hotchoc = mas_getConsumableDrink("hotchocolate")
+    $ get_new_cup = hotchoc.isDrinkTime()
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my hot chocolate."
@@ -1548,11 +1548,10 @@ label mas_c_hotchoc_finished_drinking:
 
     # decide if new coffee
     if not get_new_cup:
-        $ monika_chr.remove_acs(mas_acs_hotchoc_mug)
-        $ persistent._mas_c_hotchoc_cup_done = None
+        $ hotchoc.reset()
 
     else:
-        $ mas_drinkHotChoc()
+        $ hotchoc.drink()
 
     $ renpy.pause(4.0, hard=True)
 

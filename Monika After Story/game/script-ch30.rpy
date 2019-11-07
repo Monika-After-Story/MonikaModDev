@@ -1882,10 +1882,7 @@ label ch30_reset:
                 persistent._mas_affection["freeze_date"] = today
 
     ## should we drink coffee?
-    $ _mas_startupCoffeeLogic()
-
-    ## shoujld we drink hot chocolate
-    $ _mas_startupHotChocLogic()
+    $ _mas_startupDrinkLogic()
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
@@ -1947,7 +1944,7 @@ label ch30_reset:
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_resetCoffee()
+            mas_getConsumableDrink("coffee").reset()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
     # make sure nothing the player has derandomed is now random

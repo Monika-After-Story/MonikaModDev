@@ -1029,7 +1029,7 @@ label mas_reaction_gift_coffee:
         # monika back on screen
         m 1eua "I'll let that brew for a few minutes."
 
-        $ mas_brewCoffee()
+        $ mas_getConsumableDrink("coffee").brew()
         $ persistent._mas_acs_enable_coffee = True
         $ persistent._mas_coffee_been_given = True
 
@@ -1370,7 +1370,7 @@ label mas_reaction_hotchocolate:
 
             m 1hua "There, it'll be ready in a few minutes."
 
-            $ mas_brewHotChoc()
+            $ mas_getConsumableDrink("hotchocolate").brew()
 
         $ persistent._mas_acs_enable_hotchoc = True
         $ persistent._mas_c_hotchoc_been_given = True
