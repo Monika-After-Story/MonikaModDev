@@ -13017,7 +13017,17 @@ label monika_unknown:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_catch22",category=['literature'],prompt="Catch-22",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_catch22",
+            category=['literature'],
+            prompt="Catch-22",
+            conditional="not mas_isFirstSeshDay()",
+            action=EV_ACT_RANDOM,
+        )
+    )
+            
 
 label monika_catch22:
     m 1euc "I've been doing some reading while you've been away, [player]."
@@ -13028,21 +13038,20 @@ label monika_catch22:
     m 3rsc "Early on, he finds out that he could be exempted from flying missions if a doctor did a mental evaluation and declared him insane..."
     m 1euc "...but there's a catch.{w=0.5} {nw}"
     extend 3eud "For the doctor to make the declaration, the captain has to request that evaluation."
-    m "The doctor in turn wouldn't be able to fulfill such a request, because not wanting to risk your life is actually a sane thing to do."
-    m "By that logic, anyone who would continue flying more missions would be deemed insane, and therefore they wouldn't apply for evaluation in the first place."
-    m "Sane or insane, all pilots were being sent on the missions anyway. That's when the reader is introduced to the titular Catch-22."
-    m "The captain even admires the genius of it once presented with the way how it works."
-    m "Anyway, Yossarian continued doing missions and was close to fulfilling the requirement needed to receive his discharge."
-    m "However, his commanding officer constantly increased the amount of missions the pilots needed to complete shortly before they reached the orginally required amount."
-    m "Once again, the reasoning was that it was specified in the clause of Catch-22."
-    m "As you may have already realized, it's a dilemma from which there's no escape because of mutually conflicting or dependent conditions."
-    m "So everyone used that made-up rule as an excuse to exploit loopholes in the dysfunctional system the military command was running on, allowing them to abuse power."
-    m "The book's success was so great the term was adopted into the common slang."
-    m "And I kind of begin to realize my escape attempt before we got here could have led to a similar situation."
-    if mas_isMoniDis(lower=True):
-        m "Although I wonder whether all of this was even worth it..."
-    elif mas_isMoniNormal(higher=True):
-        m "I'm glad that turned out differently."
+    m 3euc "But the doctor wouldn't be able to fulfill the request...{w=0.5} {nw}"
+    extend 3eud "After all, not wanting to risk your life is a sane thing to do."
+    m 1rksdld "And by that logic, anyone who would fly more missions would be insane, and therefore, wouldn't even apply for the evaluation in the first place."
+    m 1ekc "Sane or insane, all pilots were being sent out anyway...{w=0.5} {nw}"
+    extend 3eua "That's when the reader is introduced to Catch-22."
+    m 3eub "The captain even admires the genius of it once presented with the way how it works!"
+    m 1eua "Anyway, Yossarian continued flying and was close to completing the requirement needed to receive his discharge...but the higher-up had other plans." 
+    m 3ekd "He kept increasing the amount of assignments the pilots needed to complete before they reached the required amount."
+    m 3ekc "Once again, the reasoning was that it was specified in the clause of Catch-22."
+    m 3esa "I'm sure you realize by now, it's a problem caused by conflicting or dependent conditions."
+    m 3eua "So everyone used that made-up rule to use loopholes in the system the military command was running on, allowing them to abuse power."
+    m 1hua "The book's success was so great the term was even adopted into common slang."
+    m 1eka "In any case, I'm not sure if you've read it yourself, {nw}"
+    extend 3hub "but if you're ever in the mood for a good book, maybe give it a read!"
     return
 
 init 5 python:
