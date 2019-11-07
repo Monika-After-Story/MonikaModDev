@@ -4547,7 +4547,7 @@ init 2 python:
             return
 
         #Otherwise, step two: what are we drinking?
-        drink = random.choice()
+        drink = random.choice(drinks)
 
         #Do we even have the drink enabled?
         if not drink.enabled():
