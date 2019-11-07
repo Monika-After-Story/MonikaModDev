@@ -4540,7 +4540,7 @@ init 2 python:
     # global functions that should be defined after level 0a
     def _mas_startupDrinkLogic():
         #Step one, what are we drinking?
-        drink = mas_getConsumableDrink(random.choice(store.mas_consumables.consumable_map.keys()))
+        drink = random.choice(mas_getDrinksForTime())
 
         #Do we even have the drink enabled?
         if not drink.enabled():
@@ -4617,7 +4617,7 @@ init 2 python:
                 #Brew
                 drink.brew()
 
-            elif _chance <= drink_chance:
+            elif _chance <= drink.drink_chance:
                 # monika is drinking coffee
                 drink.drink()
                 monika_chr.wear_acs_pst(drink.drink_acs)

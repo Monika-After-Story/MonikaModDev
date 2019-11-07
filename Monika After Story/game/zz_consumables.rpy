@@ -134,7 +134,7 @@ init 10 python:
                 _start_time = datetime.datetime.now()
 
             #Start brew
-            persistent.__mas_current_drink['brew time'] = _start_time
+            persistent._mas_current_drink['brew time'] = _start_time
     
             #Calculate end brew time
             end_brew = random.randint(self.brew_low, self.brew_high)
@@ -142,15 +142,15 @@ init 10 python:
             #Setup the event conditional
             brew_ev = mas_getEV(self.finished_brewing_evl)
             brew_ev.conditional = (
-                "persistent.__mas_current_drink['brew time'] is not None "
+                "persistent._mas_current_drink['brew time'] is not None "
                 "and (datetime.datetime.now() - "
-                "persistent.__mas_current_drink['brew time']) "
+                "persistent._mas_current_drink['brew time']) "
                 "> datetime.timedelta(0, {0})"
             ).format(end_brew)
             brew_ev.action = EV_ACT_QUEUE
 
             #Now we set what we're drinking
-            persistent.__mas_current_drink["drink"] = self.consumable_id
+            persistent._mas_current_drink["drink"] = self.consumable_id
 
         def drink(self, _start_time=None):
             """
@@ -167,13 +167,13 @@ init 10 python:
             drinking_time = datetime.timedelta(0, random.randint(self.drink_low, self.drink_high))
 
             #Setup the stop time for the cup
-            persistent.__mas_current_drink["drink time"] = _start_time + drinking_time
+            persistent._mas_current_drink["drink time"] = _start_time + drinking_time
 
             #Setup the event conditional
             drink_ev = mas_getEV(self.finished_drinking_evl)
             drink_ev.conditional = (
-                "persistent.__mas_current_drink['drink time'] is not None "
-                "and datetime.datetime.now() > persistent.__mas_current_drink['drink time']"
+                "persistent._mas_current_drink['drink time'] is not None "
+                "and datetime.datetime.now() > persistent._mas_current_drink['drink time']"
             )
             drink_ev.action = EV_ACT_QUEUE
 
@@ -200,9 +200,9 @@ init 10 python:
             mas_rmEVL(drink_ev.eventlabel)
 
             #Now we clean the persist var
-            persistent.__mas_current_drink["brew time"] = None
-            persistent.__mas_current_drink["drink time"] = None
-            persistent.__mas_current_drink["drink"] = None
+            persistent._mas_current_drink["brew time"] = None
+            persistent._mas_current_drink["drink time"] = None
+            persistent._mas_current_drink["drink"] = None
 
         def isStillBrew(self, _now):
             """
@@ -216,7 +216,7 @@ init 10 python:
                     - True if we're still brewing something
                     - False otherwise
             """
-            _time = persistent.__mas_current_drink["brew time"]
+            _time = persistent._mas_current_drink["brew time"]
             return (
                 _time is not None
                 and _time.date() == _now.date()
@@ -240,7 +240,7 @@ init 10 python:
             if _now is None:
                 _now = datetime.datetime.now()
 
-            _time = persistent.__mas_current_drink["drink time"]
+            _time = persistent._mas_current_drink["drink time"]
             return _time is not None and _now < _time
 
         def isDrinkTime(self, _now=None):
@@ -282,6 +282,8 @@ init 10 python:
             if _now is None:
                 _now = datetime.datetime.now()
 
+            _chance = random.randint(1, 100)
+
             for split in self.split_list:
                 if _now.hour < split and _chance <= self.brew_chance:
                     return True
@@ -299,6 +301,25 @@ init 10 python:
             MASConsumableDrink object if found, None otherwise
         """
         return store.mas_consumables.consumable_map.get(consumable_id, None)
+
+
+    def mas_getDrinksForTime(_now=None):
+        """
+        Gets a list of all consumable drinks active at this time
+
+        IN:
+            _now - datetime.datetime object representing current time
+            If None, now is assumed
+            (Default: None)
+
+        OUT:
+            list of consumable drink objects enabled and within time range
+        """
+        return [
+            drink
+            for drink in mas_consumables.consumable_map.itervalues()
+            if drink.enabled() and drink.isDrinkTime()
+        ]
 
 #START: consumable drink defs:
 init 11 python:
