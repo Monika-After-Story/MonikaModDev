@@ -1,5 +1,3 @@
-# r7 mode
-define mas_r7_mode = True
 
 # enabling unstable mode
 default persistent._mas_unstable_mode = False
@@ -739,7 +737,7 @@ init -1 python:
 
 
 init python in mas_updater:
-
+    import store
 
     def checkUpdate():
         """
@@ -753,7 +751,7 @@ init python in mas_updater:
 
         curr_time = time.time()
 
-        if mas_r7_mode:
+        if store.mas_r7_mode:
             update_link = r7
 
         elif renpy.game.persistent._mas_unstable_mode:
