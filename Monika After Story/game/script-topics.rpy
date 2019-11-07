@@ -13020,9 +13020,9 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_catch22",category=['literature'],prompt="Catch-22",random=True))
 
 label monika_catch22:
-    m "I've been doing some reading while you've been away, [player]."
-    m "Have you heard about {i}Catch-22{/i}?"
-    m "It's a satirical novel by Joseph Heller that makes fun of military bureaucracy and is set in an American airbase in occupied Italy during the war."
+    m 1euc "I've been doing some reading while you've been away, [player]."
+    m 3euc "Have you heard about {i}Catch-22{/i}?"
+    m 3eud "It's a satirical novel by Joseph Heller that makes fun of military bureaucracy and is set in an U.S. Army Air Corps bomber squadron base on Pianosa during World War Two."
     m "The story primarily revolves around Captain Yossarian among other characters, a bombardier that would prefer to be... well, anywhere but there."
     m "Throughout the story, the captain repeatedly attempts to evade flying his missions."
     m "Early on, he finds out that he could be exempted from flying more missions if a doctor did a mental evaluation and declared him insane."
