@@ -83,12 +83,10 @@ init -1 python:
             return
 
         #We have clothes, we need to create a generator for building a range
-        def daterange(start_date, end_date):
-            for n in range(int((end_date-start_date).days)):
-                yield start_date + datetime.timedelta(n)
+        daterange = mas_genDateRange(start_date, end_date)
 
         #Now we need to iterate over the new range:
-        for date in daterange(start_date, end_date):
+        for date in daterange:
             mas_addClothesToHolidayMap(clothes, date)
 
     def mas_checkOverDate(_date):
