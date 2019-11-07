@@ -13028,7 +13028,6 @@ init 5 python:
         )
     )
             
-
 label monika_catch22:
     m 1euc "I've been doing some reading while you've been away, [player]."
     m 3eua "Have you heard of {i}Catch-22{/i}?"
