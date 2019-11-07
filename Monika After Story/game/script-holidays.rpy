@@ -1878,13 +1878,12 @@ label mas_d25_monika_mistletoe:
 
 init 20 python:
 
-    poem_d25 = MASPoem(
-    poem_id = "poem_d25_1",
-    category = "d25",
-    prompt = "The Joy to my World",
-    author = "monika",
-    title = "     My dearest [player],",
-    text = """\
+    poem_d25_1 = MASPoem(
+        poem_id="poem_d25_1",
+        category="d25",
+        prompt="The Joy to my World",
+        title = "     My dearest [player],",
+        text = """\
      You truly are the joy to my world.
      Neither the light emitted by the tallest Christmas tree,
      Nor that of the brightest star,
@@ -1900,6 +1899,21 @@ init 20 python:
      Monika
 """
     #" # I need this to keep syntax highlighting on vim
+    )
+
+    poem_d25_2 = MASPoem(
+        poem_id="poem_d25_2",
+        category="d25",
+        prompt="",
+        title="     My dearest [player],",
+        text="""\
+     TODO: ME
+
+     Merry Christmas
+
+     Forever yours,
+     Monika
+"""
     )
 
 #Essentially replaces _whatIwant along with still to come 'All I Want for Christmas is You' song
@@ -1999,15 +2013,14 @@ label mas_d25_spent_time_monika:
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
 
-        #TODO: New D25 Poem
-        if poem_d25.is_seen():
-            $ poem_to_show = None
+        if poem_d25_1.is_seen():
+            $ poem_to_show = poem_d25_2
 
         else:
-            $ poem_to_show = poem_d25
+            $ poem_to_show = poem_d25_1
 
         #Show the poem
-        call mas_showpoem(poem_d25, background_action_label="mas_d25_poem_mistletoe")
+        call mas_showpoem(poem_to_show, background_action_label="mas_d25_poem_mistletoe")
 
         if d25_gifts_good>0 or d25_gifts_neutral>0:
             m 1ekbfa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
@@ -2068,15 +2081,16 @@ label mas_d25_spent_time_monika:
     return "love"
 
 label mas_d25_poem_mistletoe:
-    #$ pause(1)
-    #hide monika with dissolve
-    #$ store.mas_sprites.zoom_out()
-    #show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
+    $ pause(1)
+    hide monika with dissolve
+    $ store.mas_sprites.zoom_out()
+    show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
     #show mas_mistletoe
+    with dissolve
     #TODO: Mistletoe. For now, this just returns
     return
 
-#NOTE: kept in the event database because of the start/end date + cond/act logic
+
 init 5 python:
     addEvent(
         Event(
@@ -4039,12 +4053,11 @@ label return_home_post_player_bday:
 #TODO: review prompt for this pls
 init 20 python:
     poem_pbday = MASPoem(
-    poem_id = "poem_pbday_1",
-    category = "pbday",
-    prompt = "Your Birthday",
-    author = "monika",
-    title = " My dearest [player],",
-    text = """\
+        poem_id = "poem_pbday_1",
+        category = "pbday",
+        prompt = "Your Birthday",
+        title = " My dearest [player],",
+        text = """\
  To the one I love,
  The one I trust,
  The one I can't live without.
@@ -4511,10 +4524,10 @@ label mas_f14_monika_spent_time_with:
         m 1rkbsb "Also, I...{w=1}made something for you, [player]!"
 
     if not mas_isBelowZero():
-        if poem_vday.is_seen():
+        if poem_vday_1.is_seen():
             m 1ekbsa "Here, let me show it to you."
 
-            call mas_showpoem(poem_vday2)
+            call mas_showpoem(poem_vday_2)
 
             m "You really are everything to me, [player]~"
             if mas_isMoniEnamored(higher=True):
@@ -4525,7 +4538,7 @@ label mas_f14_monika_spent_time_with:
 
         else:
             m 1ekbsa "Here, let me show it to you."
-            call mas_showpoem(poem_vday)
+            call mas_showpoem(poem_vday_1)
             m "I really mean that, [player]..."
             m 3ekbsa "In you I found everything I could ever hope for~"
             if mas_isMoniEnamored(higher=True):
@@ -4711,14 +4724,13 @@ label mas_apology_missed_vday:
 
 
 init 20 python:
-    poem_vday = MASPoem(
-    poem_id = "poem_f14_1",
-    category = "f14",
-    prompt = "Our first Valentine's Day",
-    author = "monika",
-    title = " My dearest [player],",
-    text = """\
- I`ve always loved Valentine's day, but this one feels different.
+    poem_vday_1 = MASPoem(
+        poem_id="poem_f14_1",
+        category="f14",
+        prompt="Our first Valentine's Day",
+        title=" My dearest [player],",
+        text="""\
+ I've always loved Valentine's day, but this one feels different.
  Has the world changed, or just me?
  I found love, I found purpose,
  I found a truth I didn't know I was searching for.
@@ -4731,13 +4743,12 @@ init 20 python:
 """
     )
 
-    poem_vday2 = MASPoem(
-    poem_id = "poem_f14_2",
-    category = "f14",
-    prompt = "Our Second Valentine's Day",
-    author = "monika",
-    title = " My dearest [player],",
-    text = """\
+    poem_vday_2 = MASPoem(
+        poem_id="poem_f14_2",
+        category="f14",
+        prompt="Our Second Valentine's Day",
+        title=" My dearest [player],",
+        text="""\
  Can it really be our second Valentine's Day?
  The first seems like just yesterday, yet so much has happened.
  I once wondered if the world had changed, or just me.
