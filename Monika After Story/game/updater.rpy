@@ -1,3 +1,6 @@
+# r7 mode
+define mas_r7_mode = True
+
 # enabling unstable mode
 default persistent._mas_unstable_mode = False
 default persistent._mas_can_update = True
@@ -12,6 +15,7 @@ default persistent._mas_just_updated = False
 # new s3 links
 define mas_updater.regular = "http://d2vycydjjutzqv.cloudfront.net/updates.json"
 define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
+define mas_updater.r7 = "http://d1j8x24k8p6koi.cloudfront.net/updates.json"
 
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
@@ -528,7 +532,7 @@ init -1 python:
                 return
 
             # old version check
-            if persistent._mas_unstable_mode:
+            if mas_r7_mode:
                 # rpartion the ., the last item should be build number
                 lv_build_number = store.mas_utils.tryparseint(
                     latest_version.rpartition(".")[2],
@@ -749,7 +753,10 @@ init python in mas_updater:
 
         curr_time = time.time()
 
-        if renpy.game.persistent._mas_unstable_mode:
+        if mas_r7_mode:
+            update_link = r7
+
+        elif renpy.game.persistent._mas_unstable_mode:
             update_link = unstable
 
         else:
@@ -970,7 +977,7 @@ label update_now:
     $import time #this instance of time can stay
 
     # steam check
-    if persistent.steam and not persistent._mas_unstable_mode:
+    if persistent.steam:
         return
 
     # screen check
