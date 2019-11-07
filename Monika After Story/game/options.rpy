@@ -237,8 +237,8 @@ init python:
     build.classify("CustomIcon**.**",build.name)
 
     # add lib and renpy
-    build.classify("lib/*", build.name)
-    build.classify("renpy/*", build.name)
+    build.classify("lib/**", build.name)
+    build.classify("renpy/**", build.name)
 
     build.package(build.directory_name + "Mod",'zip',build.name,description='DDLC Compatible Mod')
 
