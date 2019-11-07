@@ -4539,8 +4539,15 @@ init -1 python:
 init 2 python:
     # global functions that should be defined after level 0a
     def _mas_startupDrinkLogic():
-        #Step one, what are we drinking?
-        drink = random.choice(mas_getDrinksForTime())
+        #Step one: what can we drink right now?
+        drinks = mas_getDrinksForTime()
+
+        #If we have no drinks, then there's no point in doing anything
+        if not drinks:
+            return
+
+        #Otherwise, step two: what are we drinking?
+        drink = random.choice()
 
         #Do we even have the drink enabled?
         if not drink.enabled():
