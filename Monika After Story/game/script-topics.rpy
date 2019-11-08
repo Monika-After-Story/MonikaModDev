@@ -13037,7 +13037,7 @@ label monika_catch22:
     m 3rsc "Early on, he finds out that he could be exempted from flying missions if a doctor did a mental evaluation and declared him insane..."
     m 1euc "...but there's a catch.{w=0.5} {nw}"
     extend 3eud "For the doctor to make the declaration, the captain has to request that evaluation."
-    m 3euc "But the doctor wouldn't be able to fulfill the request...{w=0.5} {nw}"
+    m 3euc "But the doctor wouldn't be able to fulfill the request...{w=0.5}{nw}"
     extend 3eud "After all, not wanting to risk your life is a sane thing to do."
     m 1rksdld "And by that logic, anyone who would fly more missions would be insane, and therefore, wouldn't even apply for the evaluation in the first place."
     m 1ekc "Sane or insane, all pilots were being sent out anyway...{w=0.5} {nw}"
