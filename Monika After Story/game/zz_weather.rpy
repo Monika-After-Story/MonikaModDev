@@ -317,7 +317,8 @@ init -20 python in mas_weather:
                 store.audio.rain,
                 channel="background",
                 loop=True,
-                fadein=1.0
+                fadein=1.0,
+                if_changed=True
             )
 
             # lock rain start/rain/islands
@@ -364,11 +365,6 @@ init -20 python in mas_weather:
 
         # lock islands
         store.mas_lockEVL("mas_monika_islands", "EVE")
-
-        #Unlock snow weather (It should only be winter to get this anyway, because of progressive weather/startup weather)
-        if not store.mas_weather_snow.unlocked:
-            store.mas_weather_snow.unlocked = True
-            saveMWData()
 
         # TODO: lock islands greeting as well
 
