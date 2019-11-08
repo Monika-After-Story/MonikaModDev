@@ -13039,7 +13039,7 @@ label monika_catch22:
     extend 3eud "For the doctor to make the declaration, the captain has to request that evaluation."
     m 3euc "But the doctor wouldn't be able to fulfill the request...{w=0.5}{nw}"
     extend 3eud "after all, not wanting to risk your life is a sane thing to do."
-    m 1rksdld "And by that logic, anyone who would fly more missions would be insane, and therefore, wouldn't even apply for the evaluation in the first place."
+    m 1rksdld "...And by that logic, anyone who would fly more missions would be insane, and therefore, wouldn't even apply for the evaluation in the first place."
     m 1ekc "Sane or insane, all pilots were being sent out anyway...{w=0.5} {nw}"
     extend 3eua "That's when the reader is introduced to Catch-22."
     m 3eub "The captain even admires the genius of it once presented with the way how it works!"
