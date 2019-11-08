@@ -13043,7 +13043,7 @@ label monika_catch22:
     m 1ekc "Sane or insane, all pilots were being sent out anyway...{w=0.5} {nw}"
     extend 3eua "That's when the reader is introduced to Catch-22."
     m 3eub "The captain even admires its genius once he learns how it works!"
-    m 1eua "Anyway, Yossarian continued flying and was close to completing the requirement needed to receive his discharge...but the higher-up had other plans." 
+    m 1eua "Anyway, Yossarian continued flying and was close to completing the requirement needed to receive his discharge...{w=0.5}but the higher-up had other plans." 
     m 3ekd "He kept increasing the amount of assignments the pilots needed to complete before they reached the required amount."
     m 3ekc "Once again, the reasoning was that it was specified in the clause of Catch-22."
     m 3esa "I'm sure you realize by now, it's a problem caused by conflicting or dependent conditions."
