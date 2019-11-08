@@ -13031,7 +13031,7 @@ init 5 python:
 label monika_catch22:
     m 1euc "I've been doing some reading while you've been away, [player]."
     m 3eua "Have you ever heard of {i}Catch-22{/i}?"
-    m 3eud "It's a satirical novel by Joseph Heller that makes fun of military bureaucracy in the Pianosa airbase."
+    m 3eud "It's a satirical novel by Joseph Heller that makes fun of military bureaucracy in the Pianosa airbase, located in Italy."
     m 1eud "The story primarily revolves around Captain Yossarian, a bombardier that would prefer to be...{w=0.5}{nw}"
     extend 3hksdlb "anywhere but there."
     m 3rsc "Early on, he finds out that he could be exempted from flying missions if a doctor did a mental evaluation and declared him insane..."
