@@ -61,6 +61,8 @@ init -1 python in mas_globals:
     last_day = None
     # numbr of the day we last ran ch30_day
 
+    previous_weath = None
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -372,7 +374,10 @@ init python:
             mask += "_fb"
 
         # now show the mask
-        renpy.show(mask, tag="rm")
+        if store.mas_globals.previous_weath != mask:
+            renpy.show(mask)
+            store.mas_globals.previous_weath = mask
+
 
         if dissolve_masks:
             renpy.with_statement(Dissolve(1.0))
