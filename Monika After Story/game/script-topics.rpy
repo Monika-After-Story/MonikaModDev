@@ -13047,7 +13047,7 @@ label monika_catch22:
     m 3ekd "He kept increasing the amount of assignments the pilots needed to complete before they reached the required amount."
     m 3ekc "Once again, the reasoning was that it was specified in the clause of Catch-22."
     m 3esa "I'm sure you realize by now, it's a problem caused by conflicting or dependent conditions."
-    m 3eua "So everyone used that made-up rule to use loopholes in the system the military command was running on, allowing them to abuse power."
+    m 3eua "So everyone used that made-up rule to exploit loopholes in the system the military command was running on, allowing them to abuse power."
     m 1hua "The book's success was so great the term was even adopted into common slang."
     m 1eka "In any case, I'm not sure if you've read it yourself, {nw}"
     extend 3hub "but if you're ever in the mood for a good book, maybe give it a read!"
