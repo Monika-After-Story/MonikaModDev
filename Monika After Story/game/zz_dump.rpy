@@ -255,7 +255,7 @@ init 999 python:
         total_playtime = persistent.sessions.get("total_playtime", None)
         last_sesh_ed = persistent.sessions.get("last_session_end", "N/A")
 
-        if total_sesh is not None and total_playtime is not None:
+        if total_sesh and total_playtime is not None:
             avg_sesh = total_playtime / total_sesh
 
         else:
