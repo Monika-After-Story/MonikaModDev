@@ -176,10 +176,13 @@ image emptydesk = ConditionSwitch(
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 image mas_roses = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/monika/a/acs-roses-0.png",
-    "not morning_flag",
-    "mod_assets/monika/a/acs-roses-0-n.png"
+    "morning_flag", "mod_assets/monika/a/acs-roses-0.png",
+    "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
+)
+
+image mas_mistletoe = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/mistletoe.png",
+    "not morning_flag", "mod_assets/location/spaceroom/d25/mistletoe-n.png"
 )
 
 ### bday stuff

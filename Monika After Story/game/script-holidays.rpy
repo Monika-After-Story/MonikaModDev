@@ -1859,6 +1859,7 @@ init 5 python:
        mas_d25c_start,
        mas_d25p,
     )
+
 label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
     m 1eub "You've heard about the mistletoe tradition, right?"
@@ -1933,10 +1934,9 @@ init 5 python:
     )
 
 
-#default persistent._mas_pm_d25_mistletoe_kiss = False
-# True if user and monika kissed under the mistletoe
-# NOTE: this var determins if user and monika shared a mistletoe kiss. It will
-#   be only set in this topic. the other kissed var is for first kiss.
+default persistent._mas_pm_d25_mistletoe_kiss = False
+# True if user and Monika kissed under the mistletoe
+# NOTE: this var ONLY determines if player and Monika shared a mistletoe kiss.
 
 
 label mas_d25_spent_time_monika:
@@ -2020,7 +2020,7 @@ label mas_d25_spent_time_monika:
         #Show the poem
         call mas_showpoem(poem_to_show, background_action_label="mas_d25_poem_mistletoe")
 
-        if d25_gifts_good>0 or d25_gifts_neutral>0:
+        if d25_gifts_good > 0 or d25_gifts_neutral > 0:
             m 1ekbfa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
         elif d25_gifts_bad>0:
             #only if all gifts were bad
@@ -2053,10 +2053,11 @@ label mas_d25_spent_time_monika:
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion(hide_ui=False)
 
-                #$ persistent._mas_pm_d25_mistletoe_kiss = True
+                $ persistent._mas_pm_d25_mistletoe_kiss = True
 
                 #no more mistletoe topic once youve done it
-                #$ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
+                $ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
+
 
                 show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 6ekbfa "...I love you too~"
@@ -2083,9 +2084,10 @@ label mas_d25_poem_mistletoe:
     hide monika with dissolve
     $ store.mas_sprites.zoom_out()
     show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
-    #show mas_mistletoe
+
+    #NOTE: This stays up for the full session
+    show mas_mistletoe zorder MAS_MONIKA_Z - 1
     with dissolve
-    #TODO: Mistletoe. For now, this just returns
     return
 
 
