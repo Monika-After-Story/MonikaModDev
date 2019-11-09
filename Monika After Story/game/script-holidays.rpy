@@ -1870,9 +1870,11 @@ label mas_d25_monika_mistletoe:
     m 1dsc "..."
     m 3rksdlb "Come to think of it, that sounds more like taking advantage of someone."
     m 1hksdlb "But I'm sure it's different now!"
-    m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
-    m 1tku "...Maybe I can even add one in here!"
-    m 1hub "Ehehe~"
+
+    if not persistent._mas_pm_d25_mistletoe_kiss:
+        m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
+        m 1tku "...Maybe I can even add one in here!"
+        m 1hub "Ehehe~"
     return
 
 init 20 python:
@@ -2053,20 +2055,26 @@ label mas_d25_spent_time_monika:
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion(hide_ui=False)
 
-                $ persistent._mas_pm_d25_mistletoe_kiss = True
-
-                #no more mistletoe topic once youve done it
-                $ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
-
-
                 show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 6ekbfa "...I love you too~"
                 if is_first_kiss:
                     m 6dkbfa "..."
                     m "That was everything I had always dreamt it would be~"
                     m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment..."
+                    m 6dkbfa "Under the mistletoe with you..."
                     m 6dkbsu "I will never forget this..."
                     m 6ekbsu "...the moment of our first kiss~"
+
+                elif not persistent._mas_pm_d25_mistletoe_kiss:
+                    m 6dkbfu "Ehehe..."
+                    m 6ekbfa "I've always wanted to share a kiss with you under the mistletoe~"
+
+                $ persistent._mas_pm_d25_mistletoe_kiss = True
+
+                #no more mistletoe topic once youve done it
+                $ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
+
+                #Re-enable buttons
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
