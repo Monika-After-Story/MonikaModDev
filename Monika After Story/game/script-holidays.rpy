@@ -1321,7 +1321,7 @@ init -10 python:
                 If None, we use today's date
                 (Default: None)
 
-        RETURNS: True if given date is in the d25 gift range, Falsee otherwise
+        RETURNS: True if given date is in the d25 gift range, False otherwise
         """
         if _date is None:
             _date = datetime.date.today()
@@ -1339,13 +1339,29 @@ init -10 python:
                 if None, we use today's date
                 (Default: None)
 
-        RETURNS: True if given date is in teh d25 santa outfit range, False
+        RETURNS: True if given date is in the d25 santa outfit range, False
             otherwise
         """
         if _date is None:
             _date = datetime.date.today()
 
         return mas_isInDateRange(_date, mas_d25c_start, mas_d25p)
+
+
+    def mas_isD25Pre(_date=None):
+        """
+        IN:
+            _date - date to check
+                if None, we use today's date
+                (Default: None)
+
+        RETURNS: True if given date is in the D25 season, but before Christmas, False
+            otherwise
+        """
+        if _date is None:
+            _date = datetime.date.today()
+
+        return mas_isInDateRange(_date, mas_d25c_start, mas_d25)
 
 
     def mas_d25ShowVisuals():
@@ -1500,7 +1516,8 @@ init 5 python:
             conditional=(
                 "not persistent._mas_d25_started_upset "
                 "and mas_isD25Outfit() "
-                "and not mas_isplayer_bday()"
+                "and not mas_isplayer_bday() "
+                "and not persistent._mas_d25_intro_seen"
             ),
             action=EV_ACT_PUSH,
             start_date=mas_d25c_start,
@@ -1515,11 +1532,19 @@ init 5 python:
 label mas_d25_monika_holiday_intro:
     #TODO: pbday intro dlg pathing
     if not persistent._mas_d25_deco_active:
-        m 1eua "So, today is..."
-        m 1euc "...wait."
-        m "..."
-        m 3wuo "Oh!"
-        m 3hub "Today's the day I was going to..."
+        if mas_isplayer_bday():
+            window hide
+            pause 2.0
+            m 1dku "..."
+            m 1huu "Ehehe..."
+            m 3eub "I have another surprise for you!"
+
+        else:
+            m 1eua "So, today is..."
+            m 1euc "...wait."
+            m "..."
+            m 3wuo "Oh!"
+            m 3hub "Today's the day I was going to..."
 
         # hide overlays here
         # NOTE: hide here because it prevents player from pausing
@@ -1562,6 +1587,10 @@ label mas_d25_monika_holiday_intro:
         m 5eka "And I'm so glad that you're here to share it with me~"
 
     $ persistent._mas_d25_intro_seen = True
+
+    # in case we get here from player bday if the party spilled into the next day
+    # don't want this to run twice
+    $ mas_rmallEVL("mas_d25_monika_holiday_intro")
     return
 
 
@@ -3741,7 +3770,12 @@ label mas_player_bday_card:
     $ mas_rmallEVL("mas_player_bday_no_restart")
     $ mas_rmallEVL("mas_player_bday_ret_on_bday")
     # "love" return key won't work here without adding a bunch of return _returns, so we'll set this manually
+
     $ mas_ILY()
+
+    # if d25 season and decor not yet active, set that up now
+    if mas_isD25Pre() and not persistent._mas_d25_deco_active:
+        $ pushEvent("mas_d25_monika_holiday_intro", skipeval=True)
     return
 
 label mas_monika_gets_cake:

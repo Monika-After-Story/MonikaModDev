@@ -318,7 +318,8 @@ label v0_10_4(version="v0_10_4"):
             ev.conditional=(
                 "not persistent._mas_d25_started_upset "
                 "and mas_isD25Outfit() "
-                "and not mas_isplayer_bday()"
+                "and not mas_isplayer_bday() "
+                "and not persistent._mas_d25_intro_seen"
             )
         
         ev = mas_getEV("mas_d25_monika_holiday_intro_upset")
