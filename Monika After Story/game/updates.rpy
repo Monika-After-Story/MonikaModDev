@@ -312,9 +312,27 @@ label v0_10_4(version="v0_10_4"):
             mas_unlockEVL("mas_song_aiwfc", "SNG")
             mas_lockEVL("monika_aiwfc", "EVE")
 
+        #Fix d25 intro conditionals for player bday
+        ev = mas_getEV("mas_d25_monika_holiday_intro")
+        if ev:
+            ev.conditional=(
+                "not persistent._mas_d25_started_upset "
+                "and mas_isD25Outfit() "
+                "and not mas_isplayer_bday()"
+            )
+        
+        ev = mas_getEV("mas_d25_monika_holiday_intro_upset")
+        if ev:
+            ev.conditional=(
+                "not persistent._mas_d25_intro_seen "
+                "and persistent._mas_d25_started_upset "
+                "and mas_isD25Outfit() "
+                "and not mas_isplayer_bday()"
+            )
+
         #Handle poem seens
         #NOTE: f14 makes the assumption that you were > 0 aff.
-        #There is no way to be sure if you actually saw it
+        #There is no way to be sure if you actually saw it (since normal aff covers from -34 to -1 as well)
 
         #If you got first kiss on d25, you got the poem too
         if persistent._mas_first_kiss and persistent._mas_first_kiss.date().replace(year=mas_d25.year) == mas_d25:

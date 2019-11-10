@@ -1382,13 +1382,6 @@ image mas_d25_tree = ConditionSwitch(
     "mod_assets/location/spaceroom/d25/tree-n.png"
 )
 
-image mas_d25_tree_sayori = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/d25/tree-sayori.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/d25/tree-sayori-n.png"
-)
-
 
 # auto load starter check
 label mas_holiday_d25c_autoload_check:
@@ -1396,12 +1389,15 @@ label mas_holiday_d25c_autoload_check:
 
     #We don't want the day of the first sesh having d25 content
     #We also don't want people who first sesh d25p getting deco, because it doesn't make sense
-    #This is first loadin
+    #We also filter out player bday on first load in d25 season
+
+    #This is first loadin for D25Season (can also run on D25 itself)
     if (
         not persistent._mas_d25_in_d25_mode
         and mas_isD25Season()
         and not mas_isFirstSeshDay()
     ):
+        #Firstly, we need to see if we need to run playerbday before all of this
         python:
             #Enable d25 dockstat
             persistent._mas_d25_in_d25_mode = True
@@ -1411,7 +1407,12 @@ label mas_holiday_d25c_autoload_check:
                 persistent._mas_d25_started_upset = True
 
             #Setup
-            elif mas_isD25Outfit() and not mas_isFirstSeshPast(mas_d25):
+            #NOTE: Player bday will SKIP decorations via autoload as it is handled elsewhere
+            #UNLESS it is D25
+            elif (
+                mas_isD25Outfit()
+                and (not mas_isplayer_bday() or mas_isD25())
+            ):
                 #Unlock and wear santa/wine ribbon
                 store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
                 store.mas_selspr.unlock_clothes(mas_clothes_santa)
@@ -1450,7 +1451,7 @@ label mas_holiday_d25c_autoload_check:
         $ monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
 
 
-    #This is D25 itself
+    #This is D25 itself (NOT FIRST LOAD IN FOR D25S)
     elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
         #Force Santa and snow on D25 if deco active and not first sesh day
         python:
@@ -1459,8 +1460,7 @@ label mas_holiday_d25c_autoload_check:
 
 
     #And then run pbday checks
-    #TODO: Verify this placement
-    elif mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
 
     # finally, return to holiday check point
@@ -1497,7 +1497,11 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro",
-            conditional="not persistent._mas_d25_started_upset",
+            conditional=(
+                "not persistent._mas_d25_started_upset "
+                "and mas_isD25Outfit() "
+                "and not mas_isplayer_bday()"
+            ),
             action=EV_ACT_PUSH,
             start_date=mas_d25c_start,
             end_date=mas_d25,
@@ -1509,6 +1513,7 @@ init 5 python:
 
 
 label mas_d25_monika_holiday_intro:
+    #TODO: pbday intro dlg pathing
     if not persistent._mas_d25_deco_active:
         m 1eua "So, today is..."
         m 1euc "...wait."
@@ -1568,6 +1573,8 @@ init 5 python:
             conditional=(
                 "not persistent._mas_d25_intro_seen "
                 "and persistent._mas_d25_started_upset "
+                "and mas_isD25Outfit() "
+                "and not mas_isplayer_bday()"
             ),
             action=EV_ACT_PUSH,
             start_date=mas_d25c_start,
