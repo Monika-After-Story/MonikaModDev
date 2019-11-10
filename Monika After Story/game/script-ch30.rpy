@@ -363,9 +363,6 @@ init python:
             mas_is_raining
             mas_is_snowing
         """
-        # hide the existing mask
-        renpy.hide("rm")
-
         # get current weather masks
         mask = mas_current_weather.sp_window(morning_flag)
 
@@ -375,7 +372,9 @@ init python:
 
         # now show the mask
         if store.mas_globals.previous_weath != mask:
-            renpy.show(mask)
+            # hide the existing mask
+            renpy.hide("rm")
+            renpy.show(mask, tag="rm")
             store.mas_globals.previous_weath = mask
 
 
