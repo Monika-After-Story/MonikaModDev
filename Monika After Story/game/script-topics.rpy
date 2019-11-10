@@ -10802,54 +10802,6 @@ label monika_vehicle_other:
     m 1hubfa "I guess I'll just have to wait and see, ehehe~"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_short_stories",
-            category=['literature'],
-            prompt="Can you tell me a story?",
-            pool=True,
-            unlocked=True
-        )
-    )
-
-label monika_short_stories:
-    jump mas_stories_start
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_compliments",
-            category=['monika', 'romance'],
-            prompt="I want to tell you something...",
-            pool=True,
-            unlocked=True
-        )
-    )
-
-label monika_compliments:
-    jump mas_compliments_start
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_scary_stories",
-            category=['literature'],
-            prompt="Can you tell me a horror story?",
-            pool=True,
-            unlocked=True,
-            sensitive=True
-        )
-    )
-
-label monika_scary_stories:
-    call mas_stories_start(scary=True)
-    return
-
 ##### PM Vars for player appearance
 default persistent._mas_pm_eye_color = None
 default persistent._mas_pm_hair_color = None
