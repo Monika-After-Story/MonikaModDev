@@ -151,7 +151,6 @@ label mas_story_begin:
             "Ready to hear the story?",
             "Ready for story time?",
             "Let's begin~",
-            "Let's begin, then~",
             "Are you ready?"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
@@ -521,8 +520,7 @@ label mas_scary_story_setup:
             "Alright let's start the story.",
             "Ready to hear the story?",
             "Ready for story time?",
-            "Let's begin~",
-            "Let's begin, then~",
+            "Let's begin.",
             "Are you ready?"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
@@ -538,7 +536,7 @@ label mas_scary_story_cleanup:
             "Did I scare you, [player]?",
             "How was it?",
             "Well?",
-            "So...{w=0.5} did it scare you?"
+            "So...{w=0.5}did I scare you?"
         ]
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 

@@ -916,7 +916,7 @@ init 15 python in mas_affection:
             "What's on your mind?",
             "What's on your mind, darling?",
             "Anything on your mind?",
-            "Anything on your mind, hon?",
+            "Anything on your mind, hun?",
             "What's up, darling?",
             "What's up, honey?",
             "What's up, dear?",
@@ -926,7 +926,7 @@ init 15 python in mas_affection:
             "Yes, sweetheart?",
             "Yes, honey?",
             "Yes, dear?",
-            "Yes, my love?",
+            "Yes, love?",
             "^_^",
             "<3",
             "Anything you'd like to talk about?",
@@ -960,7 +960,7 @@ init 15 python in mas_affection:
             "I guess we can play a game.",
             "I guess, if you really want to.",
             "I suppose a game would be fine.",
-            "...Yes...why not?"
+            "...{w=0.5}yeah, why not?"
         ]
         save_quips(DISTRESSED, quips)
 

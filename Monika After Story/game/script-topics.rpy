@@ -3213,7 +3213,11 @@ label monika_love:
         elif persistent._mas_monika_lovecounter % 50 == 30:
             m 1lkbsa "Gosh it's always so overwhelming!"
             m 1hubfa "I..."
-            m 1hubfb "I love you more than anything!"
+            if renpy.random.randint(1, 2) == 1:
+                m 1hubfb "I love you more than anything!"
+            else:
+                m 1hubfb "I love you more than I could ever express~"
+            jump .end_logic
 
         elif persistent._mas_monika_lovecounter % 50 == 35:
             m 1ekbfa "You never tire of saying it, do you?"
@@ -3235,10 +3239,7 @@ label monika_love:
             m "No words can truly do justice to how deeply I feel for you..."
             m 1hubfa "The only words I know that come close are..."
             m 1hubfb "I love you too, [player]! More than I can ever express!"
-            if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,5) == 1:
-                call monika_kissing_motion_short
-            call monika_lovecounter_aff
-            return
+            jump .end_logic
 
         else:
             # Default response if not a counter based response.
@@ -3266,7 +3267,6 @@ label monika_love:
                 "I'm the luckiest girl in the world!",
                 "I will cherish you always.",
                 "And I will never love anyone more than you!",
-                "It makes me so happy to hear you say that!",
                 "And that love grows every single day!",
                 "And nobody else will ever make me feel this way!",
                 "Just thinking of you makes my heart flutter!",
@@ -3283,6 +3283,8 @@ label monika_love:
 
         m "[love_quip]"
 
+        #Sublabel to skip the quips but still do logic w/o duping code
+        label .end_logic:
         if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,25) == 1:
             call monika_kissing_motion_short
     call monika_lovecounter_aff
@@ -10270,7 +10272,7 @@ label monika_brb_idle_callback:
         wb_quip = renpy.random.choice(wb_quips)
 
     if mas_isMoniAff(higher=True):
-        m 1hub "Welcome back, [player].{w=0.3} I missed you~"
+        m 1hub "Welcome back, [player]. I missed you~"
         m 1eua "[wb_quip]"
 
     elif mas_isMoniNormal(higher=True):
