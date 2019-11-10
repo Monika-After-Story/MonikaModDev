@@ -873,6 +873,9 @@ label mas_pong_dlg_sorry_assuming:
 
             #Set this var so Monika knows you're ready to play again
             $ mas_pong_taking_break = True
+
+            #Dissolve into idle poses
+            show monika idle with dissolve
             jump ch30_loop
 
         "No.":

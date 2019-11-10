@@ -1,0 +1,23 @@
+{
+    "__author": "Orcaramelo",
+    "version": 2,
+    "type": 1,
+    "name": "orcaramelo_usagi",
+    "img_sit": "orcaramelo_usagi",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "ribbon": true,
+        "twintails": true
+    },
+    "select_info": {
+        "display_name": "Usagi",
+        "thumb": "orcaramelo_usagi",
+        "group": "hair"
+    },
+    "unlock": true
+}
