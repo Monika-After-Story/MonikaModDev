@@ -13037,12 +13037,12 @@ label monika_career:
                     m 1hua "Still though, thanks for humoring me through all my python lessons."
                     m 1eua "I really enjoyed teaching you about python."
                     m 1hua "But when the time comes, I think it might be more helpful for {i}you{/i} to teach {i}me{/i} instead, ehehe~"
-
+                
                 else:
                     m 2rksdla "To be honest, I was kind of looking forward to teaching you your next python lesson."
                     m 1eua "But I won't force you to sit through it if you already know how to code."
                     m 1eka "I mean...teaching you would help reinforce my knowledge, but I wouldn't want to bore you."
-
+                
                 m 2wuo "Oh!"
                 m 3sub "Maybe I could be a teacher!"
                 m 2hksdlb "Ahaha, well...{w=1}it's a fun thought, but I really don't know if I'd be able to go through all the work needed for that..."
@@ -13052,15 +13052,15 @@ label monika_career:
                 m 1hua "Just kidding~"
                 m 1eka "You don't have to worry too much about it."
                 m 1ekbfa "I'm sure it might not be that easy, and I'm happy with what you already do for me."
-
+            
             else:
                 m 1eua "I've been practicing a bit of python myself, actually."
                 m 2rksdla "I was secretly hoping I could teach you..."
                 m 2hksdlb "But I guess that's not really necessary for you, is it?"
-                m 1eka "Still, maybe you could listen to me teach and let me test my knowledge!"
+                m 3eub "Still, maybe you could listen to me teach and let me test my knowledge!"
                 m 1hua "If I have you to help me along the way, maybe joining you as a programmer wouldn't be so bad."
                 m 1hub "That would be one more thing to have in common, ahaha!"
-
+        
         "I'm in a different field.":
             $ persistent._mas_pm_career = "other"
             m 1eud "Ah, I guess I shouldn't be too surprised."
@@ -13069,22 +13069,22 @@ label monika_career:
             m 1eub "It might be a field I never even considered for myself."
             m 3eua "A lot of the time, people end up on paths they never expected to."
             m 3tubfb "For example..."
-            m 1rksdla "I bet you never thought you'd end up in a relationship like ours..."
+            m 1hubfa "I bet you never thought you'd end up in a relationship like ours..."
             show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5tubfu "But you just {i}had{/i} to play this cheesy visual novel you found, didn't you?"
             show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 1hubfb "Ahaha!"
             m 2hksdlb "I guess that wasn't really a good example..."
             m 3eub "Still, a lot of the time, people with interesting life experiences end up becoming famous by writing about them."
-            m 1ekbfa "Maybe we could write a book one day about our love."
+            m 1eka "Maybe we could write a book one day about our love."
             m 1eub "With your help, it might even take off."
             m 1hubfa "You never know, ehehe~"
-
+        
         "I don't have a job yet.":
             $ persistent._mas_pm_career = "none"
             m 1euc "Oh, I see."
             m 1eua "That's alright."
-
+            
             m 1eub "Are you looking for one?{nw}"
             $ _history_list.pop()
             menu:
@@ -13096,7 +13096,7 @@ label monika_career:
                     m 1rksdlc "A lot of the time, it takes countless attempts to land a job, and it's often discouraging..."
                     m 1hua "But I believe in you, [player]."
                     m 1hubfa "Know that whatever happens, I'll always love you~"
-
+                
                 "No.":
                     m "Ah, that's fine."
                     m 1eua "I'm sure you know what's best for yourself."
@@ -13106,7 +13106,7 @@ label monika_career:
                     m 1hua "I think it's nice to enjoy your time while you have it."
                     m 1hubfa "That just means you can spend more time with me, right?"
                     m 1hubfb "Ahaha!"
-
+        
         "I don't know what I want yet.":
             $ persistent._mas_pm_career = "unsure"
             m 1eub "That's alright!"
@@ -13121,8 +13121,8 @@ label monika_career:
                 m 2tubfb "And no, [player]..."
                 m 2tubfa "I'm not a career, ehehe~"
                 m 2hubfb "Though, I guess love and respect is also a good start with me too, ahaha!"
-
-    m 1ruc "As for me..."
+    
+    m 1eka "But really, as for my career..."
     m 2rksdla "I don't really know for sure yet what I'll end up doing."
     m 2hksdlb "If I had to guess, I'd say that I still have quite a long time to decide..."
     m 1eka "Maybe it's a bit too early for me to decide."
