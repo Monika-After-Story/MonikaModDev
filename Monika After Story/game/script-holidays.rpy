@@ -1370,8 +1370,8 @@ init -10 python:
         """
         renpy.show("mas_d25_banners", zorder=7)
         renpy.show("mas_d25_tree", zorder=8)
-        # NOTE: we should only handle the sayori part if we can fit the chibika event
-
+        renpy.show("mas_d25_garlands", zorder=7)
+        renpy.show("mas_d25_lights", zorder=7)
 
     def mas_d25HideVisuals():
         """
@@ -1379,16 +1379,17 @@ init -10 python:
         """
         renpy.hide("mas_d25_banners")
         renpy.hide("mas_d25_tree")
-
+        renpy.hide("mas_d25_garlands")
+        renpy.hide("mas_d25_lights")
 
 ####START: d25 arts
 
 # window banners
 image mas_d25_banners = ConditionSwitch(
     "morning_flag",
-    "mod_assets/location/spaceroom/d25/windowdeco.png",
+    "mod_assets/location/spaceroom/d25/bgdeco.png",
     "not morning_flag",
-    "mod_assets/location/spaceroom/d25/windowdeco-n.png"
+    "mod_assets/location/spaceroom/d25/bgdeco-n.png"
 )
 
 image mas_d25_tree = ConditionSwitch(
@@ -1398,6 +1399,46 @@ image mas_d25_tree = ConditionSwitch(
     "mod_assets/location/spaceroom/d25/tree-n.png"
 )
 
+image mas_mistletoe = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/mistletoe.png",
+    "not morning_flag", "mod_assets/location/spaceroom/d25/mistletoe-n.png"
+)
+
+image mas_d25_lights = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/lights_off.png",
+    "not morning_flag", ConditionSwitch(
+        "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/lights_on_1.png",
+        "not persistent._mas_disable_animations", "mas_d25_night_lights_atl"
+    )
+)
+
+image mas_d25_night_lights_atl:
+    block:
+        "mod_assets/location/spaceroom/d25/lights_on_1.png"
+        0.5
+        "mod_assets/location/spaceroom/d25/lights_on_2.png"
+        0.5
+        "mod_assets/location/spaceroom/d25/lights_on_3.png"
+        0.5
+    repeat
+
+
+image mas_d25_garlands = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/garland.png",
+    "not morning_flag", ConditionSwitch(
+        "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/garland_on_1.png",
+        "not persistent._mas_disable_animations", "mas_d25_night_garlands_atl"
+    )
+)
+
+image mas_d25_night_garlands_atl:
+    "mod_assets/location/spaceroom/d25/garland_on_1.png"
+    block:
+        "mod_assets/location/spaceroom/d25/garland_on_1.png" with Dissolve(3, alpha=True)
+        5
+        "mod_assets/location/spaceroom/d25/garland_on_2.png" with Dissolve(3, alpha=True)
+        5
+        repeat
 
 # auto load starter check
 label mas_holiday_d25c_autoload_check:

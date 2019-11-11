@@ -180,11 +180,6 @@ image mas_roses = ConditionSwitch(
     "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
 )
 
-image mas_mistletoe = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/mistletoe.png",
-    "not morning_flag", "mod_assets/location/spaceroom/d25/mistletoe-n.png"
-)
-
 ### bday stuff
 define mas_bday_cake_lit = False
 image mas_bday_cake_monika = ConditionSwitch(
