@@ -13031,7 +13031,7 @@ label monika_stayathome_player:
     m 2hksdlb "You know, if you ask me, I think it's just a little early to be planning for things like that already."
     m 2rksdla "I mean, I'm sure you can handle any plans you make for yourself, but doesn't that leave me to provide for us?"
     if seen_event("monika_career"):
-        m 3euc "I think I remember talking about what I would go into a little while ago."
+        m 3euc "I think I remember talking about what I might go into a little while ago."
         m 2hksdlb "I'm pretty sure I told you that it was a bit too early to really decide what I'd do for a living..."
     else:
         m 2rksdla "I know I definitely had a lot of things going for me; Being in debate club, starting up my own club, learning piano..."
