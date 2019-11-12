@@ -569,17 +569,6 @@ init -2 python in mas_sprites:
         """
         Entry programming point for santa clothes
         """
-        # TODO: handle other promise ring types
-        temp_storage["clothes.santa"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2=None,
-            p3="1",
-            p4="1",
-            p5=None,
-            p6=None
-        )
-
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
@@ -591,12 +580,7 @@ init -2 python in mas_sprites:
         """
         Exit programming point for santa clothes
         """
-        santa_map = temp_storage.get("clothes.santa", None)
-        if santa_map is not None:
-            store.mas_acs_promisering.pose_map = santa_map
-
-        # TODO: need to add ex prop checking and more
-        # so we can rmeove bare acs
+        return
 
 
     def _clothes_sundress_white_entry(_moni_chr, **kwargs):
@@ -1083,29 +1067,14 @@ init -1 python:
     mas_clothes_santa = MASClothes(
         "santa",
         "santa",
-        # NOTE: this is disabled until santa is using new leaning
-#        MASPoseMap(
-#            default=True,
-#            use_reg_for_l=True
-#        ),
         MASPoseMap(
-            mpm_type=MASPoseMap.MPM_TYPE_FB,
-            default="steepling",
-            use_reg_for_l=True,
-            p1="steepling",
-            p2="steepling",
-            p3="restleftpointright",
-            p4="restleftpointright",
-            p5="steepling",
-            p6="steepling",
-            p7="restleftpointright"
+            default=True,
+            use_reg_for_l=True
         ),
-        fallback=True,
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_santa_entry,
         exit_pp=store.mas_sprites._clothes_santa_exit,
         ex_props={
-            "desired-ribbon": "ribbon_wine",
             "costume": True
         },
     )
