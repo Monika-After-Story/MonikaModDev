@@ -4539,19 +4539,23 @@ init -1 python:
 init 2 python:
     # global functions that should be defined after level 0a
     def _mas_startupDrinkLogic():
+
         #Step one: what can we drink right now?
         drinks = mas_getDrinksForTime()
 
         #If we have no drinks, then there's no point in doing anything
         if not drinks:
+            drink = mas_getConsumableDrink(persistent._mas_current_drink["drink"])
+            if persistent._mas_current_drink["drink"] is not None and not drink.isStillDrink():
+                drink.reset()
+            return
+
+        #If we're currently brewing or drinking, we don't need to do anything else
+        if persistent._mas_current_drink["drink"] is not None:
             return
 
         #Otherwise, step two: what are we drinking?
         drink = random.choice(drinks)
-
-        #Do we even have the drink enabled?
-        if not drink.enabled():
-            return
 
         #Setup some vars
         brew_ev = mas_getEV(drink.finished_brewing_evl)
@@ -4560,74 +4564,14 @@ init 2 python:
         _now = datetime.datetime.now()
         _chance = random.randint(1, 100)
 
-        time_for_drink = drink.isDrinkTime(_now)
+        #Time to drink!
 
-        #Should we even drink right now?
-        if not time_for_drink:
-            # if its not time for coffee, we can still be drinking coffee
-            # because of a couple reasons:
-            #   - monika started her brew before her cut off time
-            #   - monika's drink time hasn't been reached yet
-            if drink.isStillBrew(_now):
-                # monika's brew started before the cut off.
-                # if the brew is done, then skip to drinking.
-                # otherwise, the finished brewing event will trigger on its
-                # own
-                if brew_ev.conditional is not None and eval(brew_ev.conditional):
-                    # even though this in inaccurate, it works for the
-                    # immersive purposes, so whatever.
-                    mas_rmEVL(brew_ev.eventlabel)
-                    drink.drink()
+        #First, clear vars so we start fresh
+        drink.reset()
 
-                    if not drink.isStillDrink(_now):
-                        #Monika should have finished this coffee already
-                        drink.reset()
-
-                    else:
-                        #Monika is currently drinking
-                        brew_ev.conditional = None
-                        brew_ev.action = None
-                        persistent._mas_current_drink["brew time"] = None
-                        monika_chr.wear_acs_pst(drink.drink_acs)
-
-            elif drink.isStillDrink(_now):
-                #Monika is still drinking
-                #Clear brew vars just in case
-                brew_ev.conditional = None
-                brew_ev.action = None
-                persistent._mas_current_drink["brew time"] = None
-                mas_rmEVL(brew_ev.eventlabel)
-
-                #Make sure she has the cup, just in case
-                if not monika_chr.is_wearing_acs(drink.drink_acs):
-                    monika_chr.wear_acs_pst(drink.drink_acs)
-
-            else:
-                #Otherwise, just reset
-                drink.reset()
-
-        else:
-            #Time to drink!
-            #If we're currently brewing or drinking, we don't need to do anything else
-            if (
-                    drink.isStillBrew(_now)
-                    or drink.isStillDrink(_now)
-                ):
-                return
-
-            #Otherwise, lets checek if monika should be brewing or drinking
-
-            #First, clear vars so we start fresh
-            drink.reset()
-
-            if drink.shouldBrew(_now):
-                #Brew
-                drink.brew()
-
-            elif _chance <= drink.drink_chance:
-                # monika is drinking coffee
-                drink.drink()
-                monika_chr.wear_acs_pst(drink.drink_acs)
+        if drink.shouldBrew(_chance, _now):
+            #Brew
+            drink.brew()
 
 
     def mas_startupPlushieLogic(chance=4):

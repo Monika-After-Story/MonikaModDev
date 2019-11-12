@@ -265,11 +265,14 @@ init 10 python:
                     return True
             return False
 
-        def shouldBrew(self, _now=None):
+        def shouldBrew(self, _chance=None, _now=None):
             """
             Checks if we're in the time range for this drink
 
             IN:
+                _chance - random.randint to check the likelihood of Monika to brew
+                (Default: None)
+
                 _time - datetime.datetime to check if we're within the time for
                 If none, now is assumed
                 (Default: None)
@@ -279,10 +282,12 @@ init 10 python:
                     - True if we're within the drink time(s) of this drink
                     - False otherwise
             """
+
             if _now is None:
                 _now = datetime.datetime.now()
 
-            _chance = random.randint(1, 100)
+            if _chance is None:
+                _chance = random.randint(1, 100)
 
             for split in self.split_list:
                 if _now.hour < split and _chance <= self.brew_chance:

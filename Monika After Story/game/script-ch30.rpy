@@ -1678,6 +1678,7 @@ label ch30_minute(time_since_check):
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+    $ _mas_startupDrinkLogic()
     return
 
 # label for things that should run about once per day
