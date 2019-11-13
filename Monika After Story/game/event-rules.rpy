@@ -382,7 +382,8 @@ init -1 python:
                 ev=None,
                 skip_visual=False,
                 random_chance=0,
-                setup_label=None
+                setup_label=None,
+                override_type=False
             ):
             """
             IN:
@@ -398,6 +399,9 @@ init -1 python:
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
                     (Default: None)
+                override_type - True will let this greeting override type
+                    checks during selection, False will not
+                    (Default: False)
 
             RETURNS:
                 a dict containing the specified rules
@@ -416,7 +420,8 @@ init -1 python:
                 EV_RULE_GREET_RANDOM: (
                     skip_visual,
                     random_chance,
-                    setup_label
+                    setup_label,
+                    override_type,
                 )
             }
 
@@ -461,6 +466,22 @@ init -1 python:
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
 
+        @staticmethod
+        def should_override_type(ev=None, rule=None):
+            """
+            IN:
+                ev - the event to evaluate, gets priority
+                rule - the MASGreetingRule to evaluate
+
+            RETURNS: True if the rule should override types, false if not
+            """
+            if ev:
+                rule = ev.rules.get(EV_RULE_GREET_RANDOM, None)
+
+            if rule is not None and len(rule) > 3:
+                return rule[3]
+
+            return False
 
         @staticmethod
         def should_skip_visual(event=None, rule=None):
