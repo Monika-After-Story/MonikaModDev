@@ -9,6 +9,8 @@
 #       MASNumericalRepeatRule - repeat every x time
 #       MASPriorityRule - priority of this event. if not given, we assume
 #           the default priority (which is also the lowest)
+#       MASGreetingTypeOverrideRule - signals that this greeting overrides
+#           the type check
 
 # PRIORITY RULES:
 #   Special, moni wants/debug greetings should have negative priority.
@@ -65,6 +67,15 @@ init -1 python in mas_greetings:
     # reload dialogue only
     TYPE_RELOAD = "reload_dlg"
 
+    # High priority types
+    # These types ALWAYS override greeting priority rules
+    # These CANNOT be override with GreetingTypeOverrideRules
+    HP_TYPES = [
+        TYPE_GO_SOMEWHERE,
+        TYPE_GENERIC_RET,
+        TYPE_LONG_ABSENCE,
+    ]
+
     # idle mode returns
     # these are meant if you had a game crash/quit during idle mode
 
@@ -110,14 +121,26 @@ init -1 python in mas_greetings:
 
         # type check, optional
         if gre_type is not None:
-            # with a type, we MUST match the type
+            # with a type, we may have to match the type
 
-            if ev.category is None:
-                # no category is a False
-                return False
+            if gre_type in HP_TYPES:
+                # this type is a high priority type and MUST be matched.
 
-            elif gre_type not in ev.category:
-                # no matches is a False
+                if ev.category is None or gre_type not in ev.category:
+                    # must have a matching type
+                    return False
+
+            elif ev.category is not None:
+                # greeting has types
+
+                if gre_type not in ev.category:
+                # but does not have the current type
+                    return False
+
+            elif not store.MASGreetingTypeOverrideRule.should_override(ev):
+                # greeting does not have types, but the type is not high
+                # priority so if the greeting doesnt alllow
+                # type override then it cannot be used
                 return False
 
         elif ev.category is not None:
@@ -2450,6 +2473,7 @@ init 5 python:
         MASGreetingRule.create_rule(skip_visual=True, random_chance=5)
     )
     ev_rules.update(MASPriorityRule.create_rule(45))
+    ev_rules.update(MASGreetingTypeOverrideRule.create_rule(True))
 
     addEvent(
         Event(
@@ -3049,6 +3073,7 @@ init 5 python:
     if not mas_cannot_decode_islands:
         ev_rules = {}
         ev_rules.update(MASPriorityRule.create_rule(40))
+        ev_rules.update(MASGreetingTypeOverrideRule.create_rule(True))
 
         addEvent(
             Event(

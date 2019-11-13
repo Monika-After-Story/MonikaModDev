@@ -14,6 +14,7 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
+    EV_RULE_GR_OVR_TYPE = "rule_gr_override_type"
 
 
     # special constants for numerical repeat rules
@@ -691,6 +692,49 @@ init -1 python:
                 is found
             """
             return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
+
+
+    class MASGreetingTypeOverrideRule(object):
+        """
+        Static class used in creationof greeting type override rules.
+        Greeting type override rules should be set in greetings that need
+        to override type rules despite not having a type.
+
+        These rules are just bool flags.
+        """
+
+        @staticmethod
+        def create_rule(should_override, ev=None):
+            """
+            IN:
+                should_override - True if we want to override greeting
+                    types, false if not
+                ev - Event to add this rule to. This will replace
+                    existing: (Default: None)
+
+            RETURNS: created rule
+            """
+            rule = {EV_RULE_GR_OVR_TYPE: bool(should_override)}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
+        @staticmethod
+        def should_override(ev):
+            """
+            Checks if this event should override gr types.
+
+            IN:
+                ev - event to check override status
+
+            RETURNS: True if the event should override, false otherwise
+            """
+            if ev is not None:
+                return ev.rules.get(EV_RULE_GR_OVR_TYPE, False)
+
+            return False
 
 
 init python:
