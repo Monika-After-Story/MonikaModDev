@@ -10284,6 +10284,57 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_idle_shower",
+            prompt="I'm going to take a shower",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_idle_shower:
+    if mas_isMoniLove():
+        m 1eua "Going to go shower?"
+        if renpy.random.randint(1,200) == 1:
+            call bye_brb_shower_tease
+        else:
+            m 1hua "It makes me happy to know you're keeping yourself clean."
+            m 1eua "Have a nice shower~"
+            m 1eub "Come back soon!"
+    else:
+        m 1eub "Going to go shower? Alright."
+        m 1eua "Come back soon."
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_shower_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_shower"] = True
+    return "idle"
+    
+label monika_idle_shower_callback:
+    m 1eua "Welcome back, [player]."
+    if mas_isMoniLove() and renpy.random.randint(1,20) == 1:
+        m 3tubfb "Now that you've had your bath, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
+        m 1hubfa "You could just relax with me some more~"
+        m 1hub "Ahaha!"
+    else:
+        m 1hua "I hope you had a nice shower."
+        m 3eub "Now we can get back to having some good, {i}clean{/i} fun together, right?"
+        m 1hub "Ahaha!"
+        m 3eua "One good thing about taking a shower instead of a bath is that it saves water."
+        m 3eud "It's not as thorough as a bath, but it barely makes a difference if you're not overly dirty."
+        if mas_isMoniEnamored(higher=True):
+            m 2rka "Although if I had to choose between the two..."
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "I think sharing a hot bath with you would be much more relaxing, don't you think?"
+            show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 1hubfa "Ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel='monika_shipping',
             prompt="Shipping",
             category=['ddlc'],
