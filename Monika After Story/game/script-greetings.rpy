@@ -1127,6 +1127,7 @@ init 5 python:
             )
         )
         ev_rules.update(MASPriorityRule.create_rule(50))
+        ev_rules.update(MASGreetingTypeOverrideRule.create_rule(True))
 
         # TODO: should we have this limited to aff levels?
 
