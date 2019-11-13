@@ -386,7 +386,7 @@ label mas_song_im_glad_youre_evil_too:
     m 3hksdlb "{i}~We laugh at some terrible movie, and cry while watching a variety show~{/i}"
     m 3hub "{i}~That's us- Two slightly lonely souls, having the time of our lives~{/i}"
     m 3dsa "{i}~Our time is only finite, yet it feels like an unending joke~{/i}"
-    m 1ekbsa "{i}~But I have you to keep me company thorugh this all too short life~{/i}"
+    m 1ekbsa "{i}~But I have you to keep me company through this all too short life~{/i}"
     m 1tubsb "{i}~And together we'd laugh at this boring world, saying: 'How boring~{/i}'"
     m 1dubfb "{i}~That's us- Two slightly lonely souls, leaning on each other's shoulders~{/i}"
     m 1dsbfo "{i}~I'm glad you're just as evil as me~{/i}"
@@ -431,7 +431,7 @@ label mas_song_nobody_makes_sense:
     m 1hub "Ahaha!"
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
     m 1ekbfb "I really hope I can keep on smiling with you forever~"
-    return "derandom"
+    return "derandom|love"
 
 init 5 python:
     addEvent(

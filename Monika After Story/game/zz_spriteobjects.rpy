@@ -305,6 +305,9 @@ init -2 python in mas_sprites:
             p5=None,
             p6=None
         )
+        wearing_promise_ring = _moni_chr.is_wearing_acs(
+            store.mas_acs_promisering
+        )
 
         # hide hair down select
 #        store.mas_lockEVL("monika_hair_select", "EVE")
@@ -349,6 +352,10 @@ init -2 python in mas_sprites:
 
         # lock selectors
         _clothes_baked_entry(_moni_chr)
+
+        # re-add promise wring if it was worn
+        if wearing_promise_ring:
+            _moni_chr.wear_acs(store.mas_acs_promisering)
 
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
@@ -403,6 +410,9 @@ init -2 python in mas_sprites:
             p5=None,
             p6=None
         )
+        wearing_promise_ring = _moni_chr.is_wearing_acs(
+            store.mas_acs_promisering
+        )
 
         # hide hair down select
 #        store.mas_lockEVL("monika_hair_select", "EVE")
@@ -440,6 +450,10 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
         _clothes_baked_entry(_moni_chr)
+
+        # re-add promise wring if it was worn
+        if wearing_promise_ring:
+            _moni_chr.wear_acs(store.mas_acs_promisering)
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
@@ -1191,9 +1205,10 @@ init -1 python:
             default="0",
             p5="5"
         ),
-        acs_type="left-hair-flower",
+        acs_type="left-hair-flower-ear",
         mux_type=[
-            "left-hair-flower",
+            "left-hair-flower-ear",
+            "left-hair-flower"
         ],
         ex_props={
             "left-hair-strand-eye-level": True,
