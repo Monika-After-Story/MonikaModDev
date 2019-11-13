@@ -9,8 +9,6 @@
 #       MASNumericalRepeatRule - repeat every x time
 #       MASPriorityRule - priority of this event. if not given, we assume
 #           the default priority (which is also the lowest)
-#       MASGreetingTypeOverrideRule - signals that this greeting overrides
-#           the type check
 
 # PRIORITY RULES:
 #   Special, moni wants/debug greetings should have negative priority.
@@ -69,7 +67,7 @@ init -1 python in mas_greetings:
 
     # High priority types
     # These types ALWAYS override greeting priority rules
-    # These CANNOT be override with GreetingTypeOverrideRules
+    # These CANNOT be override with GreetingTypeRules
     HP_TYPES = [
         TYPE_GO_SOMEWHERE,
         TYPE_GENERIC_RET,
@@ -137,7 +135,7 @@ init -1 python in mas_greetings:
                 # but does not have the current type
                     return False
 
-            elif not store.MASGreetingTypeOverrideRule.should_override(ev):
+            elif not store.MASGreetingRule.should_override_type(ev):
                 # greeting does not have types, but the type is not high
                 # priority so if the greeting doesnt alllow
                 # type override then it cannot be used
@@ -1123,11 +1121,11 @@ init 5 python:
         ev_rules.update(
             MASGreetingRule.create_rule(
                 skip_visual=True,
-                random_chance=opendoor.chance
+                random_chance=opendoor.chance,
+                override_type=True
             )
         )
         ev_rules.update(MASPriorityRule.create_rule(50))
-        ev_rules.update(MASGreetingTypeOverrideRule.create_rule(True))
 
         # TODO: should we have this limited to aff levels?
 
@@ -2470,11 +2468,12 @@ label greeting_timeconcern_day:
 
 init 5 python:
     ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(skip_visual=True, random_chance=5)
-    )
+    ev_rules.update(MASGreetingRule.create_rule(
+        skip_visual=True,
+        random_chance=5,
+        override_type=True
+    ))
     ev_rules.update(MASPriorityRule.create_rule(45))
-    ev_rules.update(MASGreetingTypeOverrideRule.create_rule(True))
 
     addEvent(
         Event(
@@ -3073,8 +3072,8 @@ label greeting_siat:
 init 5 python:
     if not mas_cannot_decode_islands:
         ev_rules = {}
+        ev_rules.update(MASGreetingRule.create_rule(override_type=True))
         ev_rules.update(MASPriorityRule.create_rule(40))
-        ev_rules.update(MASGreetingTypeOverrideRule.create_rule(True))
 
         addEvent(
             Event(

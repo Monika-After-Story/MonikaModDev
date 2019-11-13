@@ -14,7 +14,6 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
-    EV_RULE_GR_OVR_TYPE = "rule_gr_override_type"
 
 
     # special constants for numerical repeat rules
@@ -383,7 +382,8 @@ init -1 python:
                 ev=None,
                 skip_visual=False,
                 random_chance=0,
-                setup_label=None
+                setup_label=None,
+                override_type=False
             ):
             """
             IN:
@@ -399,6 +399,9 @@ init -1 python:
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
                     (Default: None)
+                override_type - True will let this greeting override type
+                    checks during selection, False will not
+                    (Default: False)
 
             RETURNS:
                 a dict containing the specified rules
@@ -417,7 +420,8 @@ init -1 python:
                 EV_RULE_GREET_RANDOM: (
                     skip_visual,
                     random_chance,
-                    setup_label
+                    setup_label,
+                    override_type,
                 )
             }
 
@@ -462,6 +466,22 @@ init -1 python:
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
 
+        @staticmethod
+        def should_override_type(ev=None, rule=None):
+            """
+            IN:
+                ev - the event to evaluate, gets priority
+                rule - the MASGreetingRule to evaluate
+
+            RETURNS: True if the rule should override types, false if not
+            """
+            if ev:
+                rule = ev.rules.get(EV_RULE_GREET_RANDOM, None)
+
+            if rule is not None and len(rule) > 3:
+                return rule[3]
+
+            return False
 
         @staticmethod
         def should_skip_visual(event=None, rule=None):
@@ -692,49 +712,6 @@ init -1 python:
                 is found
             """
             return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
-
-
-    class MASGreetingTypeOverrideRule(object):
-        """
-        Static class used in creationof greeting type override rules.
-        Greeting type override rules should be set in greetings that need
-        to override type rules despite not having a type.
-
-        These rules are just bool flags.
-        """
-
-        @staticmethod
-        def create_rule(should_override, ev=None):
-            """
-            IN:
-                should_override - True if we want to override greeting
-                    types, false if not
-                ev - Event to add this rule to. This will replace
-                    existing: (Default: None)
-
-            RETURNS: created rule
-            """
-            rule = {EV_RULE_GR_OVR_TYPE: bool(should_override)}
-
-            if ev:
-                ev.rules.update(rule)
-
-            return rule
-
-        @staticmethod
-        def should_override(ev):
-            """
-            Checks if this event should override gr types.
-
-            IN:
-                ev - event to check override status
-
-            RETURNS: True if the event should override, false otherwise
-            """
-            if ev is not None:
-                return ev.rules.get(EV_RULE_GR_OVR_TYPE, False)
-
-            return False
 
 
 init python:
