@@ -4562,14 +4562,13 @@ init 2 python:
         drink_ev = mas_getEV(drink.finished_drinking_evl)
 
         _now = datetime.datetime.now()
-        _chance = random.randint(1, 100)
 
         #Time to drink!
 
         #First, clear vars so we start fresh
         drink.reset()
 
-        if drink.shouldBrew(_chance, _now):
+        if drink.shouldBrew(_now):
             #Brew
             drink.brew()
 
