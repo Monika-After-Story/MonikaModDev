@@ -952,12 +952,12 @@ label mas_reaction_quetzal_plush:
         m "Oh my gosh, thanks a lot, [player]!"
         m 1eua "I did mention that I'd like to have a quetzal as a pet..."
         m 1rud "But I would never force the poor thing to stay."
-        m 1hua "And now you gave me the next closest thing!"
+        m 1hua "And now you gave me the next best thing!"
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
             m 3ekbsa "You always seem to know how to make me smile."
 
-        m 1hsb "Thank you again, [player]~"
+        m 1hub "Thank you again, [player]~"
 
         #Remove mid plush
         if monika_chr.is_wearing_acs(mas_acs_heartchoc):
