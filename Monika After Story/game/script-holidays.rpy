@@ -1446,12 +1446,14 @@ init -10 python:
                         mas_gift
                     )
 
-                    # add the generic react
+                    #Generic react
                     sprite_object_reacts.append(
                         "mas_reaction_gift_generic_sprite_json"
                     )
+
+                    #Connect the react
                     sprite_object_reacts.append(
-                        store.mas_filereacts.gift_connectors.quip()[1]
+                        "mas_d25_gift_connector"
                     )
 
                     # stats for today
@@ -1480,7 +1482,7 @@ init -10 python:
 
             # add the starter
             generic_reacts.append(
-                store.mas_filereacts._pick_starter_label()
+                "mas_d25_gift_starter"
             )
 
             #Now we queue the reacts
@@ -1689,6 +1691,35 @@ label mas_d25_season_exit:
 
         #And no more d25 mode
         persistent._mas_d25_in_d25_mode = False
+    return
+
+#D25 holiday gift starter/connector
+label mas_d25_gift_starter:
+    m 1wud "Oh! I should open all of the presents you gave me!"
+    m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
+    return
+
+label mas_d25_gift_connector:
+    python:
+        d25_gift_quips = [
+            "Next one!",
+            "Oh, there's another one here!",
+            "Now let me open this one!",
+            "I'll open this one next!"
+        ]
+
+        picked_quip = random.choice(d25_gift_quips)
+
+    m 1hub "[picked_quip]"
+    m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
+    return
+
+label mas_d25_gift_end:
+    m 1eka "[player]..."
+    m 3eka "You really didn't have to get me anything for Christmas... Just having you here with me was more than enough."
+    m 3ekbfa "I can't thank you enough for all of these gifts. It really makes me feel loved."
+    m 3ekbfb "Merry Christmas, [player]. I love you~"
+    $ mas_ILY()
     return
 
 #START: d25 topics
@@ -1916,7 +1947,7 @@ init 5 python:
         skipCalendar=True
     )
 
-
+#TODO: Intro to gift reactions, and also handle d25 gifts post d25
 label mas_d25_monika_christmas:
     #Flag for hist
     $ persistent._mas_d25_spent_d25 = True
