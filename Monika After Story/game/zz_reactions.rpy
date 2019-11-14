@@ -182,16 +182,24 @@ init -1 python in mas_filereacts:
             gift_name, ext, garbage = mas_gift.partition(GIFT_EXT)
             c_gift_name = gift_name.lower()
             if (
-                    c_gift_name not in
-                        store.persistent._mas_filereacts_failed_map
-                    and c_gift_name not in
-                        store.persistent._mas_filereacts_reacted_map
-                    and c_gift_name not in
-                        store.persistent._mas_filereacts_stop_map
+                    c_gift_name not in store.persistent._mas_filereacts_failed_map
+                    and c_gift_name not in store.persistent._mas_filereacts_reacted_map
+                    and c_gift_name not in store.persistent._mas_filereacts_stop_map
                 ):
-                gifts_found.append(c_gift_name)
-                found_map[c_gift_name] = mas_gift
-                store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
+                    #NOTE: If we're in the d25 gift range, we save them for d25 and react then
+                    #(unless the gift is a consumable)
+                    if (
+                        store.mas_isD25Gift()
+                        and c_gift_name not in ["hotchocolate", "coffee", "fudge", "candycane", "christmascookies"]
+                    ):
+                        store.persistent._mas_d25_gifts_given.append(c_gift_name)
+                        store.mas_docking_station.destroyPackage(gift_name + ext)
+
+                    #Otherwise we do standard flow
+                    else:
+                        gifts_found.append(c_gift_name)
+                        found_map[c_gift_name] = mas_gift
+                        store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
 
         # then sort the list
         gifts_found.sort()
@@ -264,7 +272,8 @@ init -1 python in mas_filereacts:
 
         # add in the generic gift reactions
         generic_reacts = []
-        if len(gifts_found) > 0:
+        #NOTE: We don't run this for d25 gift season because they're all stored for d25 itself
+        if len(gifts_found) > 0 and not store.mas_isD25Gift():
             for mas_gift in gifts_found:
                 generic_reacts.append("mas_reaction_gift_generic")
                 generic_reacts.append(gift_connectors.quip()[1])

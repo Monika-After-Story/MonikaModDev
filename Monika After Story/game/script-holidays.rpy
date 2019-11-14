@@ -1378,6 +1378,7 @@ init -10 python:
         renpy.show("mas_d25_tree", zorder=8)
         renpy.show("mas_d25_garlands", zorder=7)
         renpy.show("mas_d25_lights", zorder=7)
+        renpy.show("mas_d25_gifts", zorder=9)
 
     def mas_d25HideVisuals():
         """
@@ -1387,6 +1388,105 @@ init -10 python:
         renpy.hide("mas_d25_tree")
         renpy.hide("mas_d25_garlands")
         renpy.hide("mas_d25_lights")
+        renpy.hide("mas_d25_gifts")
+
+    def mas_d25ReactToGifts():
+        """
+        Goes thru the gifts stored from the d25 gift season and reacts to them
+        """
+        #Step one, store all of the found reacts
+        found_reacts = list()
+
+        #Just sort the gifts given list:
+        persistent._mas_d25_gifts_given.sort()
+
+        #Now we iter backward over the list, popping as we go
+        for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
+            mas_gift = persistent._mas_d25_gifts_given[index]
+            reaction = store.mas_filereacts.filereact_map.get(mas_gift, None)
+
+            if mas_gift is not None and reaction is not None:
+                # remove from the list and add to found
+                # TODO add to the persistent react map today
+                persistent._mas_d25_gifts_given.pop(index)
+                found_reacts.append(reaction.eventlabel)
+                found_reacts.append(
+                    store.mas_filereacts.gift_connectors.quip()[1]
+                )
+
+                # if a special sprite gift, add to the per list matching
+                # sprite objects with data.
+                sp_data = persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+                if sp_data is not None:
+                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
+                    )
+
+                    #Register the json sprite
+                    store.mas_filereacts._register_received_gift(
+                        reaction.eventlabel
+                    )
+
+        #Generic sprite object gifts treated differently
+        sprite_object_reacts = []
+        if len(persistent._mas_d25_gifts_given) > 0:
+            for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
+                mas_gift = persistent._mas_d25_gifts_given[index]
+
+                sp_data = persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+                if sp_data is not None:
+                    persistent._mas_d25_gifts_given.pop(index)
+                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
+                    )
+
+                    # add the generic react
+                    sprite_object_reacts.append(
+                        "mas_reaction_gift_generic_sprite_json"
+                    )
+                    sprite_object_reacts.append(
+                        store.mas_filereacts.gift_connectors.quip()[1]
+                    )
+
+                    # stats for today
+                    store.mas_filereacts._register_received_gift(
+                        "mas_reaction_gift_generic_sprite_json"
+                    )
+
+        # extend the list
+        sprite_object_reacts.extend(found_reacts)
+
+        # add in the generic gift reactions
+        generic_reacts = []
+
+        #NOTE: We don't respond to gifts with no reaction to them
+        if len(persistent._mas_d25_gifts_given) > 0:
+            persistent._mas_d25_gifts_given = []
+
+        generic_reacts.extend(sprite_object_reacts)
+
+        # gotta remove the extra
+        if len(generic_reacts) > 0:
+            generic_reacts.pop()
+
+            # add the ender
+            generic_reacts.insert(0, "mas_reaction_end")
+
+            # add the starter
+            generic_reacts.append(
+                store.mas_filereacts._pick_starter_label()
+            )
+
+            #Now we queue the reacts
+            generic_reacts.reverse()
+            for _react in generic_reacts:
+                queueEvent(_react)
 
 ####START: d25 arts
 
