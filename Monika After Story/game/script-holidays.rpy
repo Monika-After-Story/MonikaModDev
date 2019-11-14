@@ -1145,6 +1145,9 @@ default persistent._mas_d25_d25_date_count = 0
 # number of times user takes monika out on d25
 # this also includes if the day was partially or entirely spent out
 
+default persistent._mas_d25_gifts_given = list()
+#List of all gifts which will be opened on christmas
+
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
 
@@ -1170,11 +1173,11 @@ init -810 python:
         "d25s",
         datetime.datetime(2019, 1, 6),
         {
-            # not very useful, but we need the reset
-            # NOTE: this is here because the d25 season actually ends in jan
+            #Not very useful, but we need the reset
+            #NOTE: this is here because the d25 season actually ends in jan
             "_mas_d25_in_d25_mode": "d25s.mode.25",
 
-            # NOTE: this is here because the deco ends with the season
+            #NOTE: this is here because the deco ends with the season
             "_mas_d25_deco_active": "d25s.deco_active",
 
             "_mas_d25_started_upset": "d25s.monika.started_season_upset",
@@ -1182,11 +1185,14 @@ init -810 python:
 
             "_mas_d25_intro_seen": "d25s.saw_an_intro",
 
-            # d25 dates
+            #D25 dates
             "_mas_d25_d25e_date_count": "d25s.d25e.went_out_count",
             "_mas_d25_d25_date_count": "d25s.d25.went_out_count",
 
-            "_mas_d25_spent_d25": "d25.actions.spent_d25"
+            "_mas_d25_spent_d25": "d25.actions.spent_d25",
+
+            #D25 gifts
+            "_mas_d25_gifts_given": "d25.given_gifts"
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 11),
@@ -1392,13 +1398,6 @@ image mas_d25_banners = ConditionSwitch(
     "mod_assets/location/spaceroom/d25/bgdeco-n.png"
 )
 
-image mas_d25_tree = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/d25/tree.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/d25/tree-n.png"
-)
-
 image mas_mistletoe = ConditionSwitch(
     "morning_flag", "mod_assets/location/spaceroom/d25/mistletoe.png",
     "not morning_flag", "mod_assets/location/spaceroom/d25/mistletoe-n.png"
@@ -1440,7 +1439,51 @@ image mas_d25_night_garlands_atl:
         5
         repeat
 
-# auto load starter check
+image mas_d25_tree = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/tree_lights_off.png",
+    "not morning_flag", ConditionSwitch(
+        "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/tree_lights_on_1.png",
+        "not persistent._mas_disable_animations", "mas_d25_night_tree_lights_atl"
+    )
+)
+
+image mas_d25_night_tree_lights_atl:
+    block:
+        "mod_assets/location/spaceroom/d25/tree_lights_on_1.png"
+        1.5
+        "mod_assets/location/spaceroom/d25/tree_lights_on_2.png"
+        1.5
+        "mod_assets/location/spaceroom/d25/tree_lights_on_3.png"
+        1.5
+    repeat
+
+#0 gifts is blank
+#1-3 gifts gets you part 1
+#4 gifts gets you part 2
+#5+ gifts get you part 3
+image mas_d25_gifts = ConditionSwitch(
+    "len(persistent._mas_d25_gifts_given) == 0", "mod_assets/location/spaceroom/d25/gifts_0.png",
+    "0 < len(persistent._mas_d25_gifts_given) < 3", "mas_d25_gifts_1",
+    "3 <= len(persistent._mas_d25_gifts_given) <= 4", "mas_d25_gifts_2",
+    "len(persistent._mas_d25_gifts_given) > 4", "mas_d25_gifts_3"
+)
+
+image mas_d25_gifts_1 = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/gifts_1.png",
+    "not morning_flag", "mod_assets/location/spaceroom/d25/gifts_1-n.png"
+)
+
+image mas_d25_gifts_2 = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/gifts_2.png",
+    "not morning_flag", "mod_assets/location/spaceroom/d25/gifts_2-n.png"
+)
+
+image mas_d25_gifts_3 = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/d25/gifts_3.png",
+    "not morning_flag", "mod_assets/location/spaceroom/d25/gifts_3-n.png"
+)
+
+#autoload starter check
 label mas_holiday_d25c_autoload_check:
     #NOTE: we use the costume exprop in case we get more D25 outfits.
 
