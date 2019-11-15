@@ -151,7 +151,7 @@ init 10 python in mas_seasons:
         # disbale hot choc
         store.persistent._mas_acs_enable_hotchoc = False
 
-        # hide fall topics
+        # hide non-fall topics
         store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
         store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
 
