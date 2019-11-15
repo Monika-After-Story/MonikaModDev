@@ -50,12 +50,6 @@ init -1 python in mas_moods:
 
     # pane constants
     # most of these are the same as the unseen area consants
-    MOOD_X = 680
-    MOOD_Y = 40
-    MOOD_W = 560
-    MOOD_H = 640
-    MOOD_XALIGN = -0.05
-    MOOD_AREA = (MOOD_X, MOOD_Y, MOOD_W, MOOD_H)
     MOOD_RETURN = "...like talking about something else."
 
 ## FUNCTIONS ==================================================================
@@ -103,11 +97,11 @@ label mas_mood_start:
         final_item = (mas_moods.MOOD_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(mood_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
-        $ pushEvent(_return)
+        $ pushEvent(_return, skipeval=True)
 
         # and set the moods
         $ persistent._mas_mood_current = _return
@@ -141,7 +135,7 @@ label mas_mood_hungry:
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
     m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
     m 4esa "After all, the healthier you are, the better the chances of you living quite long."
-    m 1hua "Which means more time for us to spend together~!"
+    m 1hua "Which means more time for us to spend together!~"
     return
 
 init 5 python:
@@ -183,7 +177,7 @@ label mas_mood_sad:
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
                             m 1ekbfa "I love you, [player], and I always will~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
@@ -206,6 +200,7 @@ label mas_mood_proud:
             m 3hub "It'll be reality someday..."
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfb "But until then, just know that I'm very proud of you, my love!"
+            return
         "Minor.":
             m 2hua "Ahaha!~"
             m 2hub "That's wonderful!"
@@ -216,7 +211,7 @@ label mas_mood_proud:
             m 4hub "So keep hitting those small goals, [player]!"
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfb "And remember, I love you, and I'm always cheering you on!"
-return
+            return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
@@ -225,7 +220,7 @@ label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
     m "Know that you can always come up to me and I'll cheer you up, [player]."
     m 3eka "I love you and I'll always be here for you, so don't ever forget that~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="...sick.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
@@ -291,8 +286,8 @@ label mas_mood_tired:
         m 2ekc "[player]!?"
         m "You're still here?"
         m 4lksdlc "You should really be in bed right now."
-        m 2dsc "At this point, I'm not even sure if you would call this late or early,"
-        m 2ekc "and that just worries me even more, [player]..."
+        m 2dsc "At this point, I'm not even sure if you would call this late or early..."
+        m 2eksdld "...and that just worries me even more, [player]."
         m "You should {i}really{/i} get to bed before it's time to start the day."
         m 1eka "I wouldn't want you falling asleep at a bad time."
         m "So please, sleep so we can be together in your dreams."
@@ -302,7 +297,7 @@ label mas_mood_tired:
     elif 5 <= current_hour < 10:
         m 1eka "Still a bit tired, [player]?"
         m "It's still early in the morning, so you could go back and rest a little more."
-        m 1hua "Nothing wrong hitting snooze after waking up early."
+        m 1hua "Nothing wrong with hitting snooze after waking up early."
         m 1hksdlb "Except for the fact that I can't be there to cuddle up to you, ahaha~"
         m "I {i}guess{/i} I could wait for you a little longer."
         return
@@ -387,7 +382,7 @@ label mas_mood_scared:
     if not seen_event("monika_confidence"):
         m 2euc "No?"
         m 2lksdla "Guess that's for another time then."
-        m 1eka "Anyways…"
+        m 1eka "Anyway..."
     m 1eua "Keeping up one's appearance helps with faking your own confidence."
     m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
     if seen_event("monika_confidence_2"):
@@ -397,10 +392,10 @@ label mas_mood_scared:
     m 1hub "You can also try spending a few minutes to meditate!"
     m 1hksdlb "It doesn't necessarily mean you have to cross your legs when sitting on the ground."
     m 1hua "Listening to your favorite music can be counted as meditating too!"
-    m 1eua "I'm serious!"
+    m 3eub "I'm serious!"
     m 3eua "You can try setting aside your work and do something else in the meantime."
-    m "Procrastination isn't necessarily bad, you know?"
-    m 2esc "Besides…"
+    m "Procrastination isn't {i}always{/i} bad, you know?"
+    m 2esc "Besides..."
     m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"
     return
@@ -448,7 +443,7 @@ label mas_mood_inadequate:
     m 1hua "Finding meaning in the people who matter."
     m 1eka "Please don't forget that, okay?"
     m 1ekbfa "I love you, [player]~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
@@ -461,6 +456,102 @@ label mas_mood_lucky:
     m 1hub "Ahaha!"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            "mas_mood_lazy",
+            prompt="...lazy.",
+            category=[store.mas_moods.TYPE_NEUTRAL],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_lazy:
+    #Get current time
+    $ _now = datetime.datetime.now().time()
+
+    if mas_isSRtoN(_now):
+        m 1tku "Just one of those mornings huh, [player]?"
+        m 1eka "I can totally understand those days where you wake up and just don't want to do anything."
+        m 1rksdla "Hopefully you don't actually have anything pressing coming soon."
+
+        $ line = "I know how tempting it can be to just stay in bed and not get up sometimes..."
+        if mas_isMoniEnamored(higher=True):
+            $ line += "{w=0.5} {nw}"
+        m 3hksdlb "[line]"
+
+        if mas_isMoniEnamored(higher=True):
+            extend 1dkbsa "Especially if I woke up next to you~"
+
+            if mas_isMoniLove():
+                m 1dkbfa "{i}Then I'd never want to get up~{/i}"
+                m 1dsbfu "I hope you don't mind being 'stuck', [player]..."
+                m 1hubfa "Ehehe~"
+
+        m 3eka "But in the meantime, it does help start your day right."
+        m 3eub "That can include washing up, getting a good breakfast..."
+
+        if mas_isMoniLove():
+            m 1rkbsb "Getting your good morning kiss, ehehe..."
+
+        m 1hksdlb "Or you could laze around for now."
+        m 1eka "Just as long as you don't forget to do anything important, alright, [player]?"
+
+        if mas_isMoniHappy(higher=True):
+            m 1hub "That includes spending some time with me, ahaha!"
+
+    elif mas_isNtoSS(_now):
+        m 1eka "Midday fatigue got you, [player]?"
+        m 1eua "It happens, so I wouldn't worry about it too much."
+        m 3eub "In fact, they say laziness makes you more creative."
+        m 3hub "So who knows, maybe you're about to think of something amazing!"
+        m 1eua "In any case, you should just take a break or stretch a bit...{w=0.5} {nw}"
+        extend 3eub "Maybe grab a bite to eat if you haven't already."
+        m 3hub "And if it's appropriate, you could even take a nap! Ahaha~"
+        m 1eka "I'll be right here waiting for you if you decide to."
+
+    elif mas_isSStoMN(_now):
+        m 1eka "Don't feel like doing anything after a long day, [player]?"
+        m 3eka "At least the day is pretty much over..."
+        m 3duu "There's nothing like sitting back and relaxing after a long day, especially when you don't have anything pressing."
+
+        if mas_isMoniEnamored(higher=True):
+            m 1ekbsa "I hope being here with me makes your evening just a little better..."
+            m 3hubsa "I know mine sure is with you here~"
+
+            if mas_isMoniLove():
+                m 1dkbfa "I can just imagine us relaxing together one evening..."
+                m "Maybe even cuddled up under a blanket if it's a bit cold..."
+                m 1ekbfa "We still could even if it isn't, if you don't mind, ehehe~"
+                m 3ekbfa "We could even read a nice book together too."
+                m 1hubfb "Or we could even just mess around for fun!"
+                m 1tubfb "Who says it has to be calm and romantic?"
+                m 1tubfu "I hope you don't mind occasional surprise pillow fights, [player]~"
+                m 1hubfb "Ahaha!"
+
+        else:
+            m 3eub "We could read a nice book together too..."
+
+    else:
+        #midnight to morning
+        m 2rksdla "Uh, [player]..."
+        m 1hksdlb "It's the middle of the night..."
+        m 3eka "If you're feeling lazy, maybe you should go lie down in bed for a bit."
+        m 3tfu "And maybe, you know...{w=1}{i}sleep{/i}?"
+        m 1hkb "Ahaha, you can be funny sometimes, but you should really probably get to bed."
+
+        if mas_isMoniLove():
+            m 1tsbsa "If I were there, I'd drag you to bed myself if I had to."
+            m 1tkbfu "Or maybe you'd secretly enjoy that, [player]?~"
+            m 2tubfu "Lucky for you, I can't exactly do that yet."
+            m 3tfbfb "So off to bed with you."
+            m 3hubfb "Ahaha!"
+
+        else:
+            m 1eka "Please? I wouldn't want you to neglect your sleep."
+    return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="...bored.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
@@ -483,7 +574,7 @@ label mas_mood_bored:
 
             "Well...":
                 $ mas_loseAffection()
-                m 2ekc "Oh... {w=1}I see."
+                m 2ekc "Oh...{w=1} I see."
                 m 2dkc "I didn't realize I was boring you..."
                 m 2eka "I'm sure we can find something to do..."
 

@@ -210,6 +210,7 @@ label mas_apology_generic:
             m 1eub "Anyway, thank you for the apology."
             m 1eua "Whatever it is, I know you're doing your best to make things right."
             m 1hub "That's why I love you, [player]!"
+            $ mas_ILY()
 
     #She knows what you are apologizing for
     elif mas_apology_reason_db.get(mas_apology_reason, False):
@@ -284,7 +285,7 @@ label mas_apology_bad_nickname:
         m 2wfd "I can't believe you."
         m 2dfc "I trusted you to give me a good nickname to make me more unique, but you just threw it back in my face..."
         m "I guess I couldn't trust you for this."
-        m ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+        m ".{w=0.5}.{w=0.5}.{nw}"
         m 2rfc "I'd accept your apology, [player], but I don't think you even mean it."
         #No unlock of nickname topic either.
     return

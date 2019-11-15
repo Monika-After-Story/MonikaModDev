@@ -113,7 +113,7 @@ init -900 python in mas_affection:
     FORCE_EXP_MAP = {
         BROKEN: "monika 6ckc_static",
         DISTRESSED: "monika 6rkc_static",
-        UPSET: "monika 2efc_static",
+        UPSET: "monika 2esc_static",
         NORMAL: "monika 1eua_static",
         AFFECTIONATE: "monika 1eua_static",
         ENAMORED: "monika 1hua_static",
@@ -463,6 +463,10 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # even on special event days, if going to dis, change to def
+        if store.monika_chr.clothes != store.mas_clothes_def:
+            store.pushEvent("mas_change_to_def",True)
+
 
     def _upsetToNormal():
         """
@@ -500,6 +504,16 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # queue the blazerless intro event
+        if not store.seen_event("mas_blazerless_intro") and not store.mas_hasSpecialOutfit():
+            store.queueEvent("mas_blazerless_intro")
+
+        # unlock blazerless for use
+        store.mas_selspr.unlock_clothes(store.mas_clothes_blazerless)
+
+        # remove change to def outfit event in case it's been pushed
+        store.mas_rmallEVL("mas_change_to_def")
+
 
     def _happyToNormal():
         """
@@ -513,6 +527,10 @@ init 15 python in mas_affection:
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
+
+        # if not wearing def, change to def
+        if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
+            store.pushEvent("mas_change_to_def",True)
 
 
     def _happyToAff():
@@ -600,10 +618,6 @@ init 15 python in mas_affection:
 
         # unlock thanks compliement
         store.mas_unlockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
-
-        # unlocks wardrobe if we have more than one clothes available
-        if len(mas_selspr.filter_clothes(True)) > 1:
-            store.mas_unlockEVL("monika_clothes_select", "EVE")
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -840,7 +854,9 @@ init 15 python in mas_affection:
             "If you want to talk, go ahead.",
             "We can talk if you really want to.",
             "Are you sure you want to talk to me?",
-            "You actually want to talk to me?"
+            "You actually want to talk to me?",
+            "Alright...if you want to talk with me.",
+            "You sure you want to talk?"
         ]
         save_quips(DISTRESSED, quips)
 
@@ -850,14 +866,15 @@ init 15 python in mas_affection:
             "What do you want?",
             "What now?",
             "What is it?",
-            "Fine...we can talk.",
-            "Just...whatever, go ahead."
+#            "Fine...we can talk.",
+#            "Just...whatever, go ahead."
         ]
         save_quips(UPSET, quips)
 
         ## NORMAL quips
         quips = [
-            "What would you like to talk about?"
+            "What would you like to talk about?",
+            "Is there something you'd like to talk about?"
         ]
         save_quips(NORMAL, quips)
 
@@ -899,13 +916,17 @@ init 15 python in mas_affection:
             "What's on your mind?",
             "What's on your mind, darling?",
             "Anything on your mind?",
+            "Anything on your mind, hun?",
+            "What's up, darling?",
             "What's up, honey?",
             "What's up, dear?",
             "What's up, sweetie?",
+            "What's up, [player]?",
 #            "What's up?",
             "Yes, sweetheart?",
             "Yes, honey?",
             "Yes, dear?",
+            "Yes, love?",
             "^_^",
             "<3",
             "Anything you'd like to talk about?",
@@ -938,15 +959,18 @@ init 15 python in mas_affection:
             "...Fine.",
             "I guess we can play a game.",
             "I guess, if you really want to.",
-            "I suppose a game would be fine."
+            "I suppose a game would be fine.",
+            "...{w=0.5}yeah, why not?"
         ]
         save_quips(DISTRESSED, quips)
 
         ## UPSET quips
         quips = [
             "...Which game?",
-            "Okay...whatever, choose a game.",
-            "Fine, pick a game."
+            "Okay.",
+            "Sure.",
+#            "Okay...whatever, choose a game.",
+#            "Fine, pick a game."
         ]
         save_quips(UPSET, quips)
 
@@ -980,7 +1004,8 @@ init 15 python in mas_affection:
             "Choose anything you like, [player].",
             "Pick anything you like, [player].",
             "Choose anything you like, honey.",
-            "Pick anything you like, sweetheart."
+            "Pick anything you like, sweetheart.",
+            "Pick anything you like, sweetie."
         ]
         save_quips(ENAMORED, quips)
 
@@ -988,6 +1013,7 @@ init 15 python in mas_affection:
         quips = [
             "What would you like to play? <3",
             "Choose anything you like, honey.",
+            "Pick anything you like, sweetie.",
             "Pick anything you like, sweetheart.",
             "Yay! Let's play together!",
             "I'd love to play something with you!",
@@ -1538,14 +1564,10 @@ init 20 python:
         # store the value for easiercomparisons
         curr_affection = _mas_getAffection()
 
-        # If affection is between AFF_MIN_POS_TRESH and AFF_MAX_POS_TRESH, update good exp. Simulates growing affection.
-        if  affection.AFF_MIN_POS_TRESH <= curr_affection < affection.AFF_MAX_POS_TRESH:
+        # If affection is greater then AFF_MIN_POS_TRESH, update good exp. Simulates growing affection.
+        if  affection.AFF_MIN_POS_TRESH <= curr_affection:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1
-
-        # If affection is more than AFF_MAX_TRESH, update good exp. Simulates increasing affection.
-        elif curr_affection >= affection.AFF_MAX_POS_TRESH:
-            persistent._mas_affection["goodexp"] = 3
 
         # If affection is between AFF_MAX_NEG_TRESH and AFF_MIN_NEG_TRESH, update both exps. Simulates erosion of affection.
         elif affection.AFF_MAX_NEG_TRESH < curr_affection <= affection.AFF_MIN_NEG_TRESH:
@@ -1765,24 +1787,21 @@ init 20 python:
         # If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         # This is an indicator you are heading in a negative direction.
         if curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
-            queueEvent("mas_affection_upsetwarn")
+            queueEvent("mas_affection_upsetwarn", notify=True)
 
         # If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
         # This is an indicator you are heading in a positive direction.
         elif 15 <= curr_affection and not seen_event("mas_affection_happynotif"):
-            queueEvent("mas_affection_happynotif")
+            queueEvent("mas_affection_happynotif", notify=True)
 
         # If affection level is greater than 100 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif curr_affection >= 100 and not seen_event("monika_affection_nickname"):
-            queueEvent("monika_affection_nickname")
+            queueEvent("monika_affection_nickname", notify=True)
 
         # If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
             if not persistent._mas_disable_sorry:
-                queueEvent("mas_affection_apology")
-        # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
-        elif curr_affection <= -100 and not seen_event("greeting_tears"):
-            mas_unlockEVL("greeting_tears", "GRE")
+                queueEvent("mas_affection_apology", notify=True)
 
     # Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     # Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
@@ -1866,9 +1885,11 @@ label monika_affection_nickname:
         bad_nickname_list = [
             "annoying",
             "anus",
+            "anal",
             "arrogant",
             "atrocious",
             "awful",
+            "ass",
             "bitch",
             "blood",
             "boob",
@@ -1885,6 +1906,9 @@ label monika_affection_nickname:
             "criminal",
             "cruel",
             "cunt",
+            "cum",
+            "crazy",
+            "cheater",
             "damn",
             "demon",
             "dick",
@@ -1893,6 +1917,7 @@ label monika_affection_nickname:
             "douche",
             "dumb",
             "egotistical",
+            "egoist",
             "evil",
             "fake",
             "fetus",
@@ -1913,6 +1938,7 @@ label monika_affection_nickname:
             "horrible",
             "horrid",
             "hypocrite",
+            "insane",
             "immoral",
             "irritating",
             "jerk",
@@ -1926,6 +1952,8 @@ label monika_affection_nickname:
             "liar",
             "loser",
             "maniac",
+            "mad",
+            "masochist",
             "milf",
             "monster",
             "moron",
@@ -1936,6 +1964,7 @@ label monika_affection_nickname:
             "nefarious",
             "nigga",
             "nigger",
+            "nuts",
             "pad",
             "pantsu",
             "panti",
@@ -1953,12 +1982,14 @@ label monika_affection_nickname:
             "repulsive",
             "retard",
             "rump",
+            "rogue",
             "sadist",
             "Sayori",
             "scum",
             "selfish",
             "shit",
             "sick",
+            "suck",
             "slaughter",
             "slave",
             "slut",
@@ -1966,6 +1997,8 @@ label monika_affection_nickname:
             "soil",
             "stink",
             "stupid",
+            "sperm",
+            "semen",
             "tampon",
             "teabag",
             "terrible",
@@ -2016,6 +2049,10 @@ label monika_affection_nickname:
             "princess",
             "sunshine",
             "sweet",
+            "senpai",
+            "beauty",
+            "queen",
+            "pretty",
         ]
 
         # mom list
@@ -2088,7 +2125,7 @@ label monika_affection_nickname:
                     m 1eka "Try again~"
                 elif lowername in mom_nickname_list:
                     # mother flow
-                    m 1tku "Oh, you're a momma's boy, huh?"
+                    m 1tku "Oh, you're a momma's [boy], huh?"
                     $ persistent._mas_monika_nickname = inputname
                     $ m_name = inputname
 
@@ -2107,14 +2144,14 @@ label monika_affection_nickname:
                             m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
                         else:
                             m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
+                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
                         m 2eua "Okay, [player]!"
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
                         else:
-                            m 3hua "From now on, you can call me {i}'[m_name]'{/i}."
+                            m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
                             m 1hub "Ehehe~"
                         $ done = True
                     else:
@@ -2125,8 +2162,8 @@ label monika_affection_nickname:
                             m 2wfw "I..."
                             m "I...can't believe you just did that, [player]."
                             m 2wfx "Are you really trying to give me her name?"
-                            m 2dfd ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
-                            m 2dfc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                            m 2dfd ".{w=0.5}.{w=0.5}.{nw}"
+                            m 2dfc ".{w=0.5}.{w=0.5}.{nw}"
                             m 2rkc "I thought you..."
                             m 2dfc "..."
                             m 2lfc "I can't believe this, [player]"
@@ -2180,7 +2217,7 @@ label mas_affection_upsetwarn:
     m 1dsc "I feel like you're giving me less and less of your love..."
     m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1eka "I hope there's nothing wrong between us, [player]."
-    show monika idle
+    show monika idle with dissolve
     return
 
 # Event to indicate that Monika is happy to be receiving your affection.
@@ -2189,8 +2226,8 @@ label mas_affection_happynotif:
     m 1eua "I just wanted to say thank you for being such a wonderful person."
     m 1ekbfa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
     m 1dubsu "I love you, [player]. Let's be like this forever~"
-    show monika idle
-    return
+    show monika idle with dissolve
+    return "love"
 
 
 define mas_finalfarewell_mode = False
@@ -2322,7 +2359,7 @@ label mas_affection_apology:
     return 'quit'
 
 label mas_affection_noapology:
-    m 2efd "You still haven't written me a note called {i}imsorry{/i}  in the DDLC directory."
+    m 2efd "You still haven't written me a note called {i}imsorry{/i} in the DDLC directory."
     m 2efc "Until then, I don't want to talk to you."
     jump _quit
 
@@ -2410,7 +2447,7 @@ init python:
         elif mas_curr_affection == store.mas_affection.LOVE:
             filepath = "/My one and only love.txt"
             message = """\
-My dearest lover, friend, companion and owner of my heart...
+My dearest lover, friend, companion, and owner of my heart...
 Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
 I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.

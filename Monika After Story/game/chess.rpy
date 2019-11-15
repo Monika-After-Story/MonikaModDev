@@ -404,6 +404,9 @@ init:
         import collections
         import os
 
+        #For the buttons
+        import store.mas_ui as mas_ui
+
         ON_POSIX = 'posix' in sys.builtin_module_names
 
         def enqueue_output(out, queue, lock):
@@ -534,9 +537,9 @@ init:
                 self.BUTTON_Y_SPACING = 10
 
                 # hotkey button displayables
-                button_idle = Image("mod_assets/hkb_idle_background.png")
-                button_hover = Image("mod_assets/hkb_hover_background.png")
-                button_no = Image("mod_assets/hkb_disabled_background.png")
+                button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
+                button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
+                button_no = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
 
                 # hotkey button text
                 # idle style/ disabled style:
@@ -544,21 +547,21 @@ init:
                     "Save",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#000",
+                    color=mas_globals.button_text_idle_color,
                     outlines=[]
                 )
                 button_text_giveup_idle = Text(
                     "Give Up",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#000",
+                    color=mas_globals.button_text_idle_color,
                     outlines=[]
                 )
                 button_text_done_idle = Text(
                     "Done",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#000",
+                    color=mas_globals.button_text_idle_color,
                     outlines=[]
                 )
 
@@ -567,21 +570,21 @@ init:
                     "Save",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#fa9",
+                    color=mas_globals.button_text_hover_color,
                     outlines=[]
                 )
                 button_text_giveup_hover = Text(
                     "Give Up",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#fa9",
+                    color=mas_globals.button_text_hover_color,
                     outlines=[]
                 )
                 button_text_done_hover = Text(
                     "Done",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#fa9",
+                    color=mas_globals.button_text_hover_color,
                     outlines=[]
                 )
 
@@ -1884,7 +1887,7 @@ label mas_chess_dlg_qs_lost_3:
 # 5th time recurring quicksave lost statement
 label mas_chess_dlg_qs_lost_5r:
     m 2esc "This has happened [qs_gone_count] times now..."
-    m 2tsc "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
+    m 2tsc "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}."
     m 1esd "Anyway..."
     m "Let's start a new game."
     show monika 1esc
@@ -2900,11 +2903,9 @@ screen mas_chess_confirm():
     zorder 200
 
     style_prefix "confirm"
-
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -2912,6 +2913,7 @@ screen mas_chess_confirm():
 
             label _("Are you sure you want to give up?"):
                 style "confirm_prompt"
+                text_color mas_globals.button_text_idle_color
                 xalign 0.5
 
             hbox:
