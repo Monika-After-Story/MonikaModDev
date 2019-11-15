@@ -117,6 +117,8 @@ init 10 python in mas_seasons:
 
         # show spring topics
         store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
+        store.mas_showEVL("monika_outdoors", "EVE", _random=True)
+        store.mas_showEVL("monika_backpacking", "EVE", _random=True)
 
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
@@ -148,6 +150,10 @@ init 10 python in mas_seasons:
         """
         # disbale hot choc
         store.persistent._mas_acs_enable_hotchoc = False
+
+        # hide fall topics
+        store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
+        store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
 
 
     def _pp_winter():

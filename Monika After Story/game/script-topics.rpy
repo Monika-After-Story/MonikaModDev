@@ -3935,7 +3935,7 @@ init 5 python:
             eventlabel="monika_outdoors",
             category=['nature'],
             prompt="Camping safety",
-            random=True
+            random=mas_isSpring() or mas_isSummer()
         )
     )
 
@@ -8868,7 +8868,7 @@ label monika_timeconcern_day_0:
     m 1wuo "...!"
     m 1hksdlb "Ahaha! Sorry, [player]."
     m 1lksdla "I just kind of zoned out..."
-    m 1eka "Geez, I keep doing that, don't I?"
+    m 1eka "Jeez, I keep doing that, don't I?"
     m "Sometimes I just get lost in my thoughts..."
     m 1eua "You understand, right, [player]?"
     return
@@ -11425,7 +11425,7 @@ label monika_players_control:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=mas_isSpring() or mas_isSummer()))
 
 label monika_backpacking:
     m 1esa "You know what I've always wanted to do, [player]?"
