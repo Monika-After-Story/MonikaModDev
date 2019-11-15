@@ -1400,15 +1400,17 @@ init -10 python:
         #Just sort the gifts given list:
         persistent._mas_d25_gifts_given.sort()
 
+        given_gifts = list(persistent._mas_d25_gifts_given)
+
         #Now we iter backward over the list, popping as we go
-        for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
-            mas_gift = persistent._mas_d25_gifts_given[index]
+        for index in range(len(given_gifts)-1, -1, -1):
+            mas_gift = given_gifts[index]
             reaction = store.mas_filereacts.filereact_map.get(mas_gift, None)
 
             if mas_gift is not None and reaction is not None:
                 # remove from the list and add to found
                 # TODO add to the persistent react map today
-                persistent._mas_d25_gifts_given.pop(index)
+                given_gifts.pop(index)
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(
                     store.mas_filereacts.gift_connectors.quip()[1]
@@ -1432,16 +1434,16 @@ init -10 python:
 
         #Generic sprite object gifts treated differently
         sprite_object_reacts = []
-        if len(persistent._mas_d25_gifts_given) > 0:
-            for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
-                mas_gift = persistent._mas_d25_gifts_given[index]
+        if len(given_gifts) > 0:
+            for index in range(len(given_gifts)-1, -1, -1):
+                mas_gift = given_gifts[index]
 
                 sp_data = persistent._mas_filereacts_sprite_gifts.get(
                     mas_gift,
                     None
                 )
                 if sp_data is not None:
-                    persistent._mas_d25_gifts_given.pop(index)
+                    given_gifts.pop(index)
                     persistent._mas_filereacts_sprite_reacted[sp_data] = (
                         mas_gift
                     )
@@ -1468,8 +1470,8 @@ init -10 python:
         generic_reacts = []
 
         #NOTE: We don't respond to gifts with no reaction to them
-        if len(persistent._mas_d25_gifts_given) > 0:
-            persistent._mas_d25_gifts_given = []
+        if len(given_gifts) > 0:
+            given_gifts = []
 
         generic_reacts.extend(sprite_object_reacts)
 
@@ -1477,8 +1479,8 @@ init -10 python:
         if len(generic_reacts) > 0:
             generic_reacts.pop()
 
-            # add the ender
-            generic_reacts.insert(0, "mas_reaction_end")
+            # add the end-er
+            generic_reacts.insert(0, "mas_d25_gift_end")
 
             # add the starter
             generic_reacts.append(
@@ -1697,6 +1699,9 @@ label mas_d25_season_exit:
 label mas_d25_gift_starter:
     m 1wud "Oh! I should open all of the presents you gave me!"
     m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
+
+    #Pop the last index so we remove gifts from under the tree as we go
+    $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_connector:
@@ -1712,6 +1717,9 @@ label mas_d25_gift_connector:
 
     m 1hub "[picked_quip]"
     m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
+
+    #Pop here too for the tree gifts
+    $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_end:
