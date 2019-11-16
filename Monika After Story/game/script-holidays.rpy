@@ -1472,9 +1472,7 @@ init -10 python:
         # add in the generic gift reactions
         generic_reacts = []
 
-        #NOTE: We don't respond to gifts with no reaction to them
-        if len(given_gifts) > 0:
-            given_gifts = []
+        #NOTE: We don't set up reactions to gifts which are invalid
 
         generic_reacts.extend(sprite_object_reacts)
 
@@ -2061,7 +2059,7 @@ init 5 python:
         skipCalendar=True
     )
 
-#TODO: Intro to gift reactions, and also handle d25 gifts post d25
+#TODO: Intro to gift reactions
 label mas_d25_monika_christmas:
     #Flag for hist
     $ persistent._mas_d25_spent_d25 = True

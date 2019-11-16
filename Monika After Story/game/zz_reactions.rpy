@@ -198,7 +198,7 @@ init -1 python in mas_filereacts:
                     and c_gift_name not in store.persistent._mas_filereacts_stop_map
                 ):
                     #NOTE: If we're in the d25 gift range, we save them for d25 and react then
-                    #(unless the gift is a consumable)
+                    #(unless the gift is a consumable, roses, or a ring)
                     if (
                         store.mas_isD25Gift()
                         and c_gift_name not in d25_gift_exclude_list

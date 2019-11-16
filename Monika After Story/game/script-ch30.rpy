@@ -1975,4 +1975,12 @@ label ch30_reset:
 
     #Run a confirmed party check within a week of Moni's bday
     $ mas_confirmedParty()
+
+    #If it's past d25, not within the gift range, and we haven't reacted to gifts, let's silently do that now
+    if (
+        persistent._mas_d25_gifts_given
+        and not mas_isD25Gift()
+        and not mas_isD25()
+    ):
+        $ mas_d25SilentReactToGifts()
     return
