@@ -163,6 +163,17 @@ init -1 python in mas_filereacts:
         RETURNS:
             list of event labels in the order they should be shown
         """
+        d25_gift_exclude_list = [
+            "hotchocolate",
+            "coffee",
+            "fudge",
+            "candycane",
+            "christmascookies",
+            "cupcake",
+            "roses",
+            "chocolates",
+            "promisering"
+            ]
 
         GIFT_EXT = ".gift"
         raw_gifts = store.mas_docking_station.getPackageList(GIFT_EXT)
@@ -190,7 +201,7 @@ init -1 python in mas_filereacts:
                     #(unless the gift is a consumable)
                     if (
                         store.mas_isD25Gift()
-                        and c_gift_name not in ["hotchocolate", "coffee", "fudge", "candycane", "christmascookies"]
+                        and c_gift_name not in d25_gift_exclude_list
                     ):
                         store.persistent._mas_d25_gifts_given.append(c_gift_name)
                         store.mas_docking_station.destroyPackage(gift_name + ext)

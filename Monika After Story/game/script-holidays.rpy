@@ -1400,6 +1400,9 @@ init -10 python:
         #Just sort the gifts given list:
         persistent._mas_d25_gifts_given.sort()
 
+        #Now we copy the giftnames for local usage
+        #We do this because we pop from the persistent list during the reactions
+        #Because then it looks more like Monika is taking them from under the tree
         given_gifts = list(persistent._mas_d25_gifts_given)
 
         #Now we iter backward over the list, popping as we go
@@ -1413,7 +1416,7 @@ init -10 python:
                 given_gifts.pop(index)
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(
-                    store.mas_filereacts.gift_connectors.quip()[1]
+                    "mas_d25_gift_connector"
                 )
 
                 # if a special sprite gift, add to the per list matching
@@ -1491,6 +1494,110 @@ init -10 python:
             generic_reacts.reverse()
             for _react in generic_reacts:
                 queueEvent(_react)
+
+    def mas_d25SilentReactToGifts():
+        """
+        Method to silently 'react' to gifts.
+
+        This is to be used if you gave Moni a christmas gift but didn't show up on
+        D25 when she would have opened them in front of you.
+        """
+
+        def _getAndUnlockSprite(sp_data):
+            """
+            Gets and unlocks a sprite
+            """
+            #Get the selector and unlock it
+            mas_selspr.get_sel(
+                mas_sprites.get_sprite(
+                    sp_data[0],
+                    sp_data[1]
+                )
+            ).unlocked=True
+
+        base_gift_ribbon_id_map = {
+            "blackribbon":"ribbon_black",
+            "blueribbon": "ribbon_blue",
+            "darkpurpleribbon": "ribbon_dark_purple",
+            "emeraldribbon": "ribbon_emerald",
+            "grayribbon": "ribbon_gray",
+            "greenribbon": "ribbon_green",
+            "lightpurpleribbon": "ribbon_light_purple",
+            "peachribbon": "ribbon_peach",
+            "pinkribbon": "ribbon_pink",
+            "platinumribbon": "ribbon_platinum",
+            "redribbon": "ribbon_red",
+            "rubyribbon": "ribbon_ruby",
+            "sapphireribbon": "ribbon_sapphire",
+            "silverribbon": "ribbon_silver",
+            "tealribbon": "ribbon_teal",
+            "yellowribbon": "ribbon_yellow"
+        }
+
+        #Iter backward over the list, popping as we go
+        for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
+            mas_gift = persistent._mas_d25_gifts_given[index]
+            reaction = store.mas_filereacts.filereact_map.get(mas_gift, None)
+
+            if mas_gift is not None and reaction is not None:
+                # remove from the list and add to found
+                persistent._mas_d25_gifts_given.pop(index)
+
+
+                #If this is a ribbon included in base MAS (not spritepack)
+                if mas_gift in base_gift_ribbon_id_map:
+                    ribbon_id = base_gift_ribbon_id_map[mas_gift]
+
+                    #Now we need to get its selectable and unlock it.
+                    mas_selspr.get_sel(
+                        mas_sprites.get_sprite(0, ribbon_id)
+                    ).unlocked=True
+
+                #If this is a json sprite
+                sp_data = persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+                if sp_data is not None:
+                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
+                    )
+
+                    #Unlock the sprite
+                    _getAndUnlockSprite(sp_data)
+
+                    #Register the json sprite
+                    store.mas_filereacts._register_received_gift(
+                        reaction.eventlabel
+                    )
+
+        #Generic sprite object gifts treated differently
+        if len(persistent._mas_d25_gifts_given) > 0:
+            for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
+                mas_gift = persistent._mas_d25_gifts_given[index]
+
+                sp_data = persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+                if sp_data is not None:
+                    persistent._mas_d25_gifts_given.pop(index)
+                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
+                    )
+
+                    #Unlock sprite
+                    _getAndUnlockSprite(sp_data)
+
+                    # stats for today
+                    store.mas_filereacts._register_received_gift(
+                        "mas_reaction_gift_generic_sprite_json"
+                    )
+
+        #Save selectables
+        store.mas_selspr.save_selectables()
+        #Save persist
+        renpy.save_persistent()
 
 ####START: d25 arts
 
@@ -1753,7 +1860,6 @@ init 5 python:
 
 
 label mas_d25_monika_holiday_intro:
-    #TODO: pbday intro dlg pathing
     if not persistent._mas_d25_deco_active:
         if mas_isplayer_bday():
             window hide
