@@ -354,6 +354,12 @@ label v0_10_4(version="v0_10_4"):
         #If you saw either of these two labels, you saw the player bday card
         if renpy.seen_label("mas_player_bday_cake") or renpy.seen_label("mas_player_bday_card"):
             persistent._mas_poems_seen["poem_pbday_1"] = 1
+
+
+        #Run weather unlocks
+        mas_weather_snow.unlocked=True
+        mas_weather_thunder.unlocked=True
+        mas_weather.saveMWData()
     return
 
 
