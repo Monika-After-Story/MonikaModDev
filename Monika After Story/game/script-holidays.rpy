@@ -1369,6 +1369,19 @@ init -10 python:
 
         return mas_isInDateRange(_date, mas_d25c_start, mas_d25)
 
+    def mas_isD25GiftHold(_date=None):
+        """
+        IN:
+            _date - date to check, defaults None, which means today's date is assumed
+
+        RETURNS:
+            boolean - True if within d25gift start, to d31 (end of nts range)
+            (The time to hold onto gifts, aka not silently react)
+        """
+        if _date is None:
+            _date = datetime.date.today()
+
+        return mas_isInDateRange(_date, mas_d25g_start, mas_d25+datetime.timedelta(days=7))
 
     def mas_d25ShowVisuals():
         """

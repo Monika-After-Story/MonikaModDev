@@ -2332,7 +2332,7 @@ label mas_dockstat_found_monika_from_empty:
 
 # found our monika
 label mas_dockstat_found_monika:
-
+    $ store.mas_globals.returned_home_this_sesh = True
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()

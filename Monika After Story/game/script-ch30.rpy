@@ -61,6 +61,8 @@ init -1 python in mas_globals:
     last_day = None
     # numbr of the day we last ran ch30_day
 
+    returned_home_this_sesh = False
+    #Whether or not this sesh was started by a returned home greet
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -1979,8 +1981,8 @@ label ch30_reset:
     #If it's past d25, not within the gift range, and we haven't reacted to gifts, let's silently do that now
     if (
         persistent._mas_d25_gifts_given
-        and not mas_isD25Gift()
-        and not mas_isD25()
+        and not mas_isD25GiftHold()
+        and not mas_globals.returned_home_this_sesh
     ):
         $ mas_d25SilentReactToGifts()
     return
