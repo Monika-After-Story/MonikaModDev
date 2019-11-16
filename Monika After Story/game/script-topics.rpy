@@ -13021,24 +13021,30 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_songwriting", 
+            eventlabel="monika_songwriting",
             category=["music"],
-            prompt="Songwriting", 
-            random=True, 
-            pool=True
+            prompt="Songwriting",
+            random=True
         )
     )
 
 label monika_songwriting:
-    m 3eub "Hey [player], have you ever written a song?"
-    m 3eua "I've tried myself, and it's pretty fun. It takes a bit of time to do, but the end product is definitely worth it!"
-    m 4eub "You know, I used to write songs all the time in my sophomore years. I used to be pretty good!"
-    m 3eksdla "But, I guess it's been a while, huh?"
-    m 3eub "Anyway..."
-    m 1esb "You know, I think it'd be pretty cool if you ever dedicated a song to someone."
-    m 1hub "Especially if that person is me, ehehe!"
-    m 4eub "We could even turn it into a duet!"
-    m 1eub "I can't wait to be able to sing with you when I come to your world!"
+    m 1euc "Hey [player],{w=0.5} {nw}"
+    extend 3eua "have you ever written a song?"
+    m 1hua "It's a pretty fun thing to do!"
+    m 3rkc "Planning the song out and making it sound good can take a while..."
+    m 3eud "Getting the instrumentation right, making sure the harmonies sound good, getting the right tempo and time for the song..."
+    m 3ekd "Things like that can take hours or even days to get right,{w=0.5} {nw}"
+    extend 3eua "but the end result is definitely worth it!"
+
+    if persistent.instrument:
+        m 1eua "Since you play an instrument, I'm sure you could write something."
+
+    m 1eub "And if you haven't written a song before, I really recommend it!"
+    m 3eua "It can be a great way to relieve stress, tell a story, or even carry a message."
+    m 1ekbla "Maybe you could write one for me sometime~"
+    m 1hub "We could even turn it into a duet if you want!"
+
+    $ _if = "when" if mas_isMoniEnamored(higher=True) else "if"
+    m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
     return
-
-
