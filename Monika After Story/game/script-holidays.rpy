@@ -1189,10 +1189,7 @@ init -810 python:
             "_mas_d25_d25e_date_count": "d25s.d25e.went_out_count",
             "_mas_d25_d25_date_count": "d25s.d25.went_out_count",
 
-            "_mas_d25_spent_d25": "d25.actions.spent_d25",
-
-            #D25 gifts
-            "_mas_d25_gifts_given": "d25.given_gifts"
+            "_mas_d25_spent_d25": "d25.actions.spent_d25"
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 11),
