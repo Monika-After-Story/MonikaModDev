@@ -198,10 +198,12 @@ init -1 python in mas_filereacts:
                     and c_gift_name not in store.persistent._mas_filereacts_stop_map
                 ):
                     #NOTE: If we're in the d25 gift range, we save them for d25 and react then
+                    #This does NOT handle gifts w/o reactions
                     #(unless the gift is a consumable, roses, or a ring)
                     if (
                         store.mas_isD25Gift()
                         and c_gift_name not in d25_gift_exclude_list
+                        and filereact_map.get(c_gift_name, None)
                     ):
                         store.persistent._mas_d25_gifts_given.append(c_gift_name)
                         store.mas_docking_station.destroyPackage(gift_name + ext)
@@ -283,8 +285,7 @@ init -1 python in mas_filereacts:
 
         # add in the generic gift reactions
         generic_reacts = []
-        #NOTE: We don't run this for d25 gift season because they're all stored for d25 itself
-        if len(gifts_found) > 0 and not store.mas_isD25Gift():
+        if len(gifts_found) > 0:
             for mas_gift in gifts_found:
                 generic_reacts.append("mas_reaction_gift_generic")
                 generic_reacts.append(gift_connectors.quip()[1])

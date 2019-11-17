@@ -1163,7 +1163,7 @@ define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 11)
 define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
 # end of christmas season (exclusive)
 
-define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
+define mas_d25g_start = datetime.date.today()#mas_d25 - datetime.timedelta(days=5)
 # start of gift = d25 gift (inclusive)
 
 
@@ -1815,7 +1815,15 @@ label mas_d25_season_exit:
 
 #D25 holiday gift starter/connector
 label mas_d25_gift_starter:
-    m 1wud "Oh! I should open all of the presents you gave me!"
+    $ amt_gifts = len(persistent._mas_d25_gifts_given)
+    $ presents = "presents"
+    $ the = "the"
+
+    if amt_gifts == 1:
+        $ presents = "present"
+    elif amt_gifts > 3:
+        $ the = "all of the"
+    m 1wud "Oh! I should open [the] [presents] you gave me!"
     m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
 
     #Pop the last index so we remove gifts from under the tree as we go
@@ -1842,7 +1850,8 @@ label mas_d25_gift_connector:
 
 label mas_d25_gift_end:
     m 1eka "[player]..."
-    m 3eka "You really didn't have to get me anything for Christmas... Just having you here with me was more than enough."
+    m 3eka "You really didn't have to get me anything for Christmas...{w=0.3} {nw}"
+    extend 3dku "Just having you here with me was more than enough."
     m 3ekbfa "I can't thank you enough for all of these gifts. It really makes me feel loved."
     m 3ekbfb "Merry Christmas, [player]. I love you~"
     $ mas_ILY()

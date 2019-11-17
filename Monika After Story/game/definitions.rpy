@@ -5065,6 +5065,30 @@ init 2 python:
         eighteenth_bday = mas_utils.add_years(persistent._mas_player_bday, 18)
         return _date >= eighteenth_bday
 
+    def mas_canShowRisque(aff_thresh=2000):
+        """
+        Checks if we can show something risque
+
+        Conditions for this:
+            1. We're not in sensitive mode
+            2. Player is over 18
+            3. Aff condition (raw)
+
+        IN:
+            aff_thresh:
+                - Raw affection value to be greater than or equal to
+
+        OUT:
+            boolean:
+                - True if the above conditions are satisfied
+                - False if not
+        """
+        return (
+            not persistent._mas_sensitive_mode
+            and mas_is18Over()
+            and _mas_getAffection() >= aff_thresh
+        )
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
