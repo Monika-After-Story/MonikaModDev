@@ -351,7 +351,7 @@ init python:
         ):
             if mas_findEVL("mas_topic_derandom") < 0:
                 persistent.flagged_monikatopic = ev.eventlabel
-                pushEvent('mas_topic_derandom',True)
+                pushEvent('mas_topic_derandom',skipeval=True)
                 renpy.notify(__("Topic flagged for removal."))
             else:
                 mas_rmEVL("mas_topic_derandom")
@@ -12971,7 +12971,7 @@ label mas_topic_unbookmark:
 
     if not topic_choice:
         m 1eua "Okay, [player]."
-        $ pushEvent('mas_bookmarks',True)
+        $ pushEvent('mas_bookmarks',skipeval=True)
 
     else:
         show monika at t11
@@ -12987,7 +12987,7 @@ label mas_topic_unbookmark:
                     jump mas_topic_unbookmark
                 "No.":
                     m 3eua "Okay."
-                    $ pushEvent('mas_bookmarks',True)
+                    $ pushEvent('mas_bookmarks',skipeval=True)
 
         else:
             m 3hua "All done!"

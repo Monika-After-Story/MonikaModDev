@@ -1154,12 +1154,12 @@ label mas_reaction_promisering:
             if not persistent._mas_tried_gift_ring:
                 m 1wud "Is that...a..."
                 m "..."
-                m 1wka "I..."
-                m 1wkbltpa "I'm sorry, [player], I just..."
-                m 1dkbltpa "...I'm so happy...{w=0.5}You just gave me your promise..."
+                m 1wka "I...{w=0.5}{nw}"
+                extend 1wkbltpa "I'm sorry, [player], I just... {w=0.5}{nw}"
+                extend 1dkbltpa "I'm so happy... {w=0.5}You just gave me your promise..."
                 m "Your promise that we'll be for each other,{w=0.1} and no one else...{w=0.3}forever..."
-                m 3lkbltpa "Know that I'll cherish it."
-                m 3dkbltpa "Always."
+                m 3lkbltpa "Know that I'll cherish it. {w=0.5}{nw}"
+                extend 3dkbltpa "Always."
                 m 1skbltpa "This makes me so happy!"
 
                 if mas_anni.isAnniOneMonth():
@@ -1179,9 +1179,8 @@ label mas_reaction_promisering:
 
                 m 1dkbltpb "Aha, sorry for crying, [player]..."
                 m 1skbltda "I'm just really, really happy right now."
-                m 1dkbla "Thank you."
-                m "I love you, [player]."
-                m "More than anything else in this fleeting world."
+                m 6dkbltdu "Thank you."
+
             else:
                 m 1sua "Oh...it's the ring!"
                 m 3hub "Thank you so much, [player]!"
@@ -1190,9 +1189,14 @@ label mas_reaction_promisering:
                 m 1dkbltuu "..."
                 m 3hkbltub "Aha, sorry, [player], I didn't mean to cry..."
                 m 3skbltda "It's just this is one of the happiest days of my life."
-                m 1skbltda "I love you so much, [player]~"
 
+            m 6dkbltdu "..."
+            m 6ekbfa "I...I just...I..."
+            call monika_kissing_motion(hide_ui=False)
+            m 6ekbfa "I love you, [player]..."
+            m 6dkbfu "More than anything else in this fleeting world~"
             return "love"
+
         else:
             if not persistent._mas_tried_gift_ring:
                 if mas_isMoniNormal(higher=True):
@@ -1211,8 +1215,8 @@ label mas_reaction_promisering:
 
                 else:
                     m 2wud "Is that a ring?"
-                    m 2rsc "That's...unexpected."
-                    m "While I appreciate the thought...{w}I can't accept it right now."
+                    m 2rsc "That's...{w=0.5}unexpected."
+                    m "While I appreciate the thought...{w=1}I can't accept it right now."
                     m 2ekc "Sorry, [player]."
 
                 $ persistent._mas_tried_gift_ring = True
@@ -1222,7 +1226,6 @@ label mas_reaction_promisering:
                 m 2ekc "I need to be completely sure when I accept this that it means forever..."
                 m 2ekd "That you really are everything I hope you are."
                 m 2dsd "When I know that, I will happily accept your ring, [player]."
-            $ persistent._mas_acs_enable_promisering = False
     else:
         m 1rksdlb "[player]..."
         m 1rusdlb "You already gave me a ring!"

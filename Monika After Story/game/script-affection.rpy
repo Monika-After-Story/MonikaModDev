@@ -465,7 +465,7 @@ init 15 python in mas_affection:
 
         # even on special event days, if going to dis, change to def
         if store.monika_chr.clothes != store.mas_clothes_def:
-            store.pushEvent("mas_change_to_def",True)
+            store.pushEvent("mas_change_to_def",skipeval=True)
 
 
     def _upsetToNormal():
@@ -530,7 +530,7 @@ init 15 python in mas_affection:
 
         # if not wearing def, change to def
         if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
-            store.pushEvent("mas_change_to_def",True)
+            store.pushEvent("mas_change_to_def",skipeval=True)
 
 
     def _happyToAff():

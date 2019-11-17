@@ -3139,7 +3139,7 @@ label greeting_ourreality:
     $ unlockEventLabel("mas_monika_islands")
 
     # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands",True)
+    $ pushEvent("mas_monika_islands",skipeval=True)
     return
 
 init 5 python:

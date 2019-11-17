@@ -1816,7 +1816,7 @@ init python:
         if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
             pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event',True)
+            pushEvent('continue_event',skipeval=True)
             persistent.current_monikatopic = 0
         return
 
@@ -2240,10 +2240,10 @@ label prompt_menu:
         call prompts_categories(False) from _call_prompts_categories_1
 
     elif madechoice == "love":
-        $ pushEvent("monika_love",True)
+        $ pushEvent("monika_love",skipeval=True)
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too",True)
+        $ pushEvent("monika_love_too",skipeval=True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
@@ -2456,5 +2456,5 @@ label mas_bookmarks:
     $ topic_choice = _return
 
     if topic_choice:
-        $ pushEvent(topic_choice,True)
+        $ pushEvent(topic_choice,skipeval=True)
     return

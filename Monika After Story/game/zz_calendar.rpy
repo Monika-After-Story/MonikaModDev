@@ -1997,7 +1997,7 @@ label _first_time_calendar_use:
 
     # push calendar birthdate for users without any birthdate
     elif persistent._mas_player_bday is None:
-        $ pushEvent("calendar_birthdate",True)
+        $ pushEvent("calendar_birthdate",skipeval=True)
         $ mas_MUMUDropShield()
 
     else:
