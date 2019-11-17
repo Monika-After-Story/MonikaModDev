@@ -5058,12 +5058,31 @@ init 2 python:
         if not persistent._mas_player_bday:
             return False
 
-        if _date is None:
+        return mas_getPlayerAge(_date) >= 18
+
+    def mas_getPlayerAge(_date=None):
+        """
+        Gets the player age
+
+        IN:
+            _date - the datetime.date to get the player age at
+
+        OUT:
+            integer representing the player's current age or None if we don't have player's bday
+        """
+        if not persistent._mas_player_bday:
+            return None
+
+        elif _date is None:
             _date = datetime.date.today()
 
-        #Build the date of the 18th bday and ret if we're past that date or not
-        eighteenth_bday = mas_utils.add_years(persistent._mas_player_bday, 18)
-        return _date >= eighteenth_bday
+        year_bday = mas_player_bday_curr(_date)
+        _years = year_bday.year - persistent._mas_player_bday.year
+
+        if _date < year_bday:
+            _years -= 1
+
+        return _years
 
     def mas_canShowRisque(aff_thresh=2000):
         """
