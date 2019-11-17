@@ -12804,7 +12804,18 @@ label monika_enjoyingspring:
 default persistent._mas_pm_career = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_career",category=['monika'],prompt="What career would you go into?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_career",
+            category=['monika'],
+            prompt="What career would you go into?",
+            pool=True,
+            conditional="mas_is18Over()",
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock": None}
+        )
+    )
 
 label monika_career:
     m 1euc "What career would I choose?"
