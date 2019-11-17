@@ -1163,7 +1163,7 @@ define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 11)
 define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
 # end of christmas season (exclusive)
 
-define mas_d25g_start = datetime.date.today()#mas_d25 - datetime.timedelta(days=5)
+define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
 # start of gift = d25 gift (inclusive)
 
 
