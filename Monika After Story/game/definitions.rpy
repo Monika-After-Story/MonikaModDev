@@ -4546,8 +4546,9 @@ init 2 python:
         #If we have no drinks, then there's no point in doing anything
         if not drinks:
             drink = mas_getConsumableDrink(persistent._mas_current_drink["drink"])
-            if persistent._mas_current_drink["drink"] is not None and not drink.isStillDrink():
-                drink.reset()
+            if persistent._mas_current_drink["drink"] and persistent._mas_current_drink["drink time"]:
+                if not drink.isStillDrink() and mas_getCurrSeshStart() > persistent._mas_current_drink["drink time"]:
+                    drink.reset()
             return
 
         #If we're currently brewing or drinking, we don't need to do anything else
