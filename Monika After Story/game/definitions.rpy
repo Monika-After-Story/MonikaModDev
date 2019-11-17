@@ -5040,6 +5040,31 @@ init 2 python:
 
         return rpyCheckStation.getPackageList(".rpy")
 
+    def mas_is18Over(_date=None):
+        """
+        Checks if player is over 18
+
+        IN:
+            _date - date to check
+            If None, today is assumed.
+            Default: None
+
+        OUT:
+            boolean:
+                - True if player is over 18
+                - False otherwise
+        """
+        #If we don't have player bday, we assume not.
+        if not persistent._mas_player_bday:
+            return False
+
+        if _date is None:
+            _date = datetime.date.today()
+
+        #Build the date of the 18th bday and ret if we're past that date or not
+        eighteenth_bday = mas_utils.add_years(persistent._mas_player_bday, 18)
+        return _date > eighteenth_bday
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
