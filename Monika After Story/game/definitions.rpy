@@ -5063,7 +5063,7 @@ init 2 python:
 
         #Build the date of the 18th bday and ret if we're past that date or not
         eighteenth_bday = mas_utils.add_years(persistent._mas_player_bday, 18)
-        return _date > eighteenth_bday
+        return _date >= eighteenth_bday
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
