@@ -12919,7 +12919,7 @@ label monika_career:
                     m 1eka "Well, I hope your search goes well."
                     m 2ekc "I know finding one can be really difficult a lot of the time..."
                     m 1eka "I'm really proud of you for trying, though."
-                    m 1rksdlc "A lot of the time, it takes countless attempts to land a job, and it's often discouraging..."
+                    m 1rksdlc "More often than not, it takes countless attempts to land a job, and it's often discouraging..."
                     m 1hua "But I believe in you, [player]."
                     m 1hubfa "Know that whatever happens, I'll always love you~"
                 
@@ -12942,7 +12942,7 @@ label monika_career:
             m 3eua "A lot of people end up in careers they never thought they'd be in."
             m 1eub "A good start at least would be to see if you could make a career out of any hobbies you have."
             m 1eua "The first step towards being successful in something is respecting and loving it."
-            m 2eka "It would be pretty hard to be successful in something you don't like."
+            m 2eka "It would be pretty hard to be any good at something you don't like."
             if mas_isMoniEnamored():
                 m 2tubfb "And no, [player]..."
                 m 2tubfa "I'm not a career, ehehe~"
@@ -12951,7 +12951,7 @@ label monika_career:
     m 1eka "But really, as for my career..."
     m 2rksdla "I don't really know for sure yet what I'll end up doing."
     m 2hksdlb "If I had to guess, I'd say that I still have quite a long time to decide..."
-    m 1eka "Maybe it's a bit too early for me to decide."
+    m 1eka "Maybe it's a bit too early for me to make up my mind."
     m 1rksdlc "After all, I think we might have bigger concerns than my career..."
     m 1hua "I'm not worried though, not as long as I have you by my side~"
     m 1hubfa "I hope it's the same for you too~"
