@@ -1721,9 +1721,7 @@ init -10 python in mas_d25_utils:
         # they will be reacted to later
         for c_gift_name, gift_name in d25_map.iteritems():
             store.persistent._mas_d25_gifts_given.append(c_gift_name)
-            store.mas_docking_station.destroyPackage(
-                gift_name + mas_frs.GIFT_EXT
-            )
+            store.mas_docking_station.destroyPackage(gift_name)
 
         # the excluded gifts will be reacted to now
         # also rebuild found_gifts to contain these gifts
@@ -1735,7 +1733,7 @@ init -10 python in mas_d25_utils:
         found_gifts.sort()
 
         # now build the reaction labels for standard gifts
-        return build_gift_react_labels(
+        return store.mas_filereacts.build_gift_react_labels(
             found_gifts,
             mas_frs.gift_connectors,
             False,

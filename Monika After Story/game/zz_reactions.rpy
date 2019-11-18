@@ -811,12 +811,15 @@ init python:
         if persistent._mas_filereacts_just_reacted:
             return
 
-        # TODO: determine when it is appropriate to use react_to_gifts
-        #   from mas_D25_utils
-
         # otherwise check
         mas_filereacts.foundreact_map.clear()
-        reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
+
+        #If it's the D25Gift range, we need to use the react to gifts in d25_utils
+        if mas_isD25Gift():
+            reacts = mas_d25_utils.react_to_gifts(mas_filereacts.foundreact_map)
+        else:
+            reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
+
         if len(reacts) > 0:
             # need to reverse it now
             reacts.reverse()
