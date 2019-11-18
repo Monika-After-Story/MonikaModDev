@@ -1429,9 +1429,10 @@ init -10 python:
         )
 
         # queue the reacts
-        for react_label in react_labels:
-            queueEvent(react_label)
-
+        if len(react_labels) > 0:
+            react_labels.reverse()
+            for react_label in react_labels:
+                queueEvent(react_label)
 
 
 #        #Now we iter backward over the list, popping as we go
