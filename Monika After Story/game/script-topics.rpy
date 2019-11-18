@@ -12949,7 +12949,7 @@ label monika_career:
                 m 2hubfb "Though, I guess love and respect is also a good start with me too, ahaha!"
     
     m 1eka "But really, as for my career..."
-    m 2rksdla "I don't really know for sure yet what I'll end up doing."
+    m 2rksdla "I don't really know for sure what I'll end up doing yet."
     m 2hksdlb "If I had to guess, I'd say that I still have quite a long time to decide..."
     m 1eka "Maybe it's a bit too early for me to make up my mind."
     m 1rksdlc "After all, I think we might have bigger concerns than my career..."
