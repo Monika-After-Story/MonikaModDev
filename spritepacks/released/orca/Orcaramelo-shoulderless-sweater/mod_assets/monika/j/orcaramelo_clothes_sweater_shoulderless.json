@@ -20,7 +20,9 @@
         "thumb": "orcaramelo_sweater_shoulderless",
         "group": "clothes",
         "select_dlg": [
-            "COLD"
+            "Feels cozy~",
+            "Fitting for a winter day!",
+            "It's very warm..."
         ]
     },
     "giftname": "shoulderlesssweater"
