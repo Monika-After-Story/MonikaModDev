@@ -111,7 +111,7 @@ init -11 python in mas_filereacts:
     GIFT_EXT = ".gift"
 
 
-    def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE, is_good=None):
+    def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE, is_good=None, exclude_on=[]):
         """
         Adds a reaction to the file reactions database.
 
@@ -121,19 +121,27 @@ init -11 python in mas_filereacts:
             _action - the EV_ACT to do
                 (Default: EV_ACT_QUEUE)
             is_good - if the gift is good(True), neutral(None) or bad(False)
-               (Default: None)
+                (Default: None)
+            exclude_on - keys marking times to exclude this gift
+            (Need to check ev.rules in a respective react_to_gifts to exclude with)
+                (Default: [])
         """
         # lowercase the list in case
         if fname is not None:
             fname = fname.lower()
 
+        exclude_keys = {}
+        if exclude_on:
+            for _key in exclude_on:
+                exclude_keys[_key] = None
 
         # build new Event object
         ev = store.Event(
             store.persistent.event_database,
             ev_label,
             category=fname,
-            action=_action
+            action=_action,
+            rules=exclude_keys
         )
 
         # TODO: should ovewrite category and action always
@@ -270,7 +278,7 @@ init -11 python in mas_filereacts:
 
             # only pop if we used connectors
             if gift_cntrs is not None:
-                generic_reacts.pop()
+                labels.pop()
 
             # add the ender
             if ending_label is not None:
@@ -283,6 +291,21 @@ init -11 python in mas_filereacts:
         # now return the list
         return labels
 
+    def build_exclusion_list(_key):
+        """
+        Builds a list of excluded gifts based on the key provided
+
+        IN:
+            _key - key to build an exclusion list for
+
+        OUT:
+            list of giftnames which are excluded by the key
+        """
+        return [
+            giftname
+            for giftname, react_ev in filereact_map.iteritems()
+            if _key in react_ev.rules
+        ]
 
     def check_for_gifts(
             found_map={},
@@ -425,7 +448,7 @@ init -11 python in mas_filereacts:
             for mas_gift in gifts:
                 if mas_gift is not None:
                     # add details
-                    gen_details.append(GiftReactionDetails(
+                    gen_details.append(GiftReactDetails(
                         "mas_reaction_gift_generic",
                         mas_gift,
                         None
@@ -858,14 +881,14 @@ init python:
     import store.mas_filereacts as mas_filereacts
     import store.mas_d25_utils as mas_d25_utils
 
-    def addReaction(ev_label, fname_list, _action=EV_ACT_QUEUE, is_good=None):
+    def addReaction(ev_label, fname_list, _action=EV_ACT_QUEUE, is_good=None, exclude_on=[]):
         """
         Globalied version of the addReaction function in the mas_filereacts
         store.
 
         Refer to that function for more information
         """
-        mas_filereacts.addReaction(ev_label, fname_list, _action, is_good)
+        mas_filereacts.addReaction(ev_label, fname_list, _action, is_good, exclude_on)
 
 
     def mas_checkReactions():
@@ -1417,7 +1440,7 @@ label mas_reaction_gift_hairclip(hairclip_name,desc=None):
 # persistent._mas_coffee_brewing
 
 init 5 python:
-    addReaction("mas_reaction_gift_coffee", "coffee", is_good=True)
+    addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_gift_coffee:
 
@@ -1513,7 +1536,7 @@ label mas_reaction_quetzal_plush:
     return
 
 init 5 python:
-    addReaction("mas_reaction_promisering", "promisering", is_good=True)
+    addReaction("mas_reaction_promisering", "promisering", is_good=True, exclude_on=["d25g"])
 
 default persistent._mas_tried_gift_ring = False
 label mas_reaction_promisering:
@@ -1609,7 +1632,7 @@ label mas_reaction_promisering:
 
 
 init 5 python:
-    addReaction("mas_reaction_cupcake", "cupcake", is_good=True)
+    addReaction("mas_reaction_cupcake", "cupcake", is_good=True, exclude_on=["d25g"])
     #Not sure why this was a bad gift. Dialogue doesn't reflect it being bad
     #plus, Monika said she wants either Natsuki's cupcakes or the player's
 
@@ -1763,7 +1786,7 @@ label mas_reaction_candycorn:
     return
 
 init 5 python:
-    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True)
+    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_hotchocolate:
     m 3hub "Hot chocolate!"
@@ -1816,7 +1839,7 @@ label mas_reaction_hotchocolate:
     return
 
 init 5 python:
-    addReaction("mas_reaction_fudge", "fudge", is_good=True)
+    addReaction("mas_reaction_fudge", "fudge", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_fudge:
     $ times_fudge_given = mas_getGiftStatsForDate("mas_reaction_fudge")
@@ -1851,7 +1874,7 @@ default persistent._mas_d25_already_gifted_cookies = False
 
 init 5 python:
     if store.mas_isD25Gift():
-        addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True)
+        addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_christmascookies:
     $ times_cookies_given = mas_getGiftStatsForDate("mas_reaction_christmascookies")
@@ -1883,7 +1906,7 @@ label mas_reaction_christmascookies:
 
 init 5 python:
     if store.mas_isD25Gift():
-        addReaction("mas_reaction_candycane", "candycane", is_good=True)
+        addReaction("mas_reaction_candycane", "candycane", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_candycane:
     $ times_cane_given = mas_getGiftStatsForDate("mas_reaction_candycane")
@@ -2277,7 +2300,7 @@ label mas_reaction_old_ribbon:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_roses", "roses", is_good=True)
+    addReaction("mas_reaction_gift_roses", "roses", is_good=True, exclude_on=["d25g"])
 
 default persistent._date_last_given_roses = None
 
@@ -2352,7 +2375,7 @@ label mas_reaction_gift_roses:
 
 
 init 5 python:
-    addReaction("mas_reaction_gift_chocolates", "chocolates", is_good=True)
+    addReaction("mas_reaction_gift_chocolates", "chocolates", is_good=True, exclude_on=["d25g"])
 
 default persistent._given_chocolates_before = False
 

@@ -1445,95 +1445,6 @@ init -10 python:
             for react_label in react_labels:
                 queueEvent(react_label)
 
-
-#        #Now we iter backward over the list, popping as we go
-#        for index in range(len(given_gifts)-1, -1, -1):
-#            mas_gift = given_gifts[index]
-#            reaction = store.mas_filereacts.filereact_map.get(mas_gift, None)
-#
-#            if mas_gift is not None and reaction is not None:
-#                # remove from the list and add to found
-#                # TODO add to the persistent react map today
-#                given_gifts.pop(index)
-#                found_reacts.append(reaction.eventlabel)
-#                found_reacts.append(
-#                    "mas_d25_gift_connector"
-#                )
-#
-#                # if a special sprite gift, add to the per list matching
-#                # sprite objects with data.
-#                sp_data = persistent._mas_filereacts_sprite_gifts.get(
-#                    mas_gift,
-#                    None
-#                )
-#                if sp_data is not None:
-#                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
-#                        mas_gift
-#                    )
-#
-#                    #Register the json sprite
-#                    store.mas_filereacts._register_received_gift(
-#                        reaction.eventlabel
-#                    )
-#
-#        #Generic sprite object gifts treated differently
-#        sprite_object_reacts = []
-#        if len(given_gifts) > 0:
-#            for index in range(len(given_gifts)-1, -1, -1):
-#                mas_gift = given_gifts[index]
-#
-#                sp_data = persistent._mas_filereacts_sprite_gifts.get(
-#                    mas_gift,
-#                    None
-#                )
-#                if sp_data is not None:
-#                    given_gifts.pop(index)
-#                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
-#                        mas_gift
-#                    )
-#
-#                    #Generic react
-#                    sprite_object_reacts.append(
-#                        "mas_reaction_gift_generic_sprite_json"
-#                    )
-#
-#                    #Connect the react
-#                    sprite_object_reacts.append(
-#                        "mas_d25_gift_connector"
-#                    )
-#
-#                    # stats for today
-#                    store.mas_filereacts._register_received_gift(
-#                        "mas_reaction_gift_generic_sprite_json"
-#                    )
-#
-#        # extend the list
-#        sprite_object_reacts.extend(found_reacts)
-#
-#        # add in the generic gift reactions
-#        generic_reacts = []
-#
-#        #NOTE: We don't set up reactions to gifts which are invalid
-#
-#        generic_reacts.extend(sprite_object_reacts)
-#
-#        # gotta remove the extra
-#        if len(generic_reacts) > 0:
-#            generic_reacts.pop()
-#
-#            # add the end-er
-#            generic_reacts.insert(0, "mas_d25_gift_end")
-#
-#            # add the starter
-#            generic_reacts.append(
-#                "mas_d25_gift_starter"
-#            )
-#
-#            #Now we queue the reacts
-#            generic_reacts.reverse()
-#            for _react in generic_reacts:
-#                queueEvent(_react)
-
     def mas_d25SilentReactToGifts():
         """
         Method to silently 'react' to gifts.
@@ -1543,18 +1454,6 @@ init -10 python:
 
         This also registeres gifts
         """
-
-        def _getAndUnlockSprite(sp_data):
-            """
-            Gets and unlocks a sprite
-            """
-            #Get the selector and unlock it
-            mas_selspr.get_sel(
-                mas_sprites.get_sprite(
-                    sp_data[0],
-                    sp_data[1]
-                )
-            ).unlocked=True
 
         base_gift_ribbon_id_map = {
             "blackribbon":"ribbon_black",
@@ -1622,90 +1521,9 @@ init -10 python:
         renpy.save_persistent()
 
 
-#        #Iter backward over the list, popping as we go
-#        for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
-#            mas_gift = persistent._mas_d25_gifts_given[index]
-#            reaction = store.mas_filereacts.filereact_map.get(mas_gift, None)
-#
-#            if mas_gift is not None and reaction is not None:
-#                # remove from the list and add to found
-#                persistent._mas_d25_gifts_given.pop(index)
-#
-#
-#                #If this is a ribbon included in base MAS (not spritepack)
-#                if mas_gift in base_gift_ribbon_id_map:
-#                    ribbon_id = base_gift_ribbon_id_map[mas_gift]
-#
-#                    #Now we need to get its selectable and unlock it.
-#                    mas_selspr.get_sel(
-#                        mas_sprites.get_sprite(0, ribbon_id)
-#                    ).unlocked=True
-#
-#                #If this is a json sprite
-#                sp_data = persistent._mas_filereacts_sprite_gifts.get(
-#                    mas_gift,
-#                    None
-#                )
-#                if sp_data is not None:
-#                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
-#                        mas_gift
-#                    )
-#
-#                    #Unlock the sprite
-#                    _getAndUnlockSprite(sp_data)
-#
-#                    #Register the json sprite
-#                    store.mas_filereacts._register_received_gift(
-#                        reaction.eventlabel
-#                    )
-#
-#        #Generic sprite object gifts treated differently
-#        if len(persistent._mas_d25_gifts_given) > 0:
-#            for index in range(len(persistent._mas_d25_gifts_given)-1, -1, -1):
-#                mas_gift = persistent._mas_d25_gifts_given[index]
-#
-#                sp_data = persistent._mas_filereacts_sprite_gifts.get(
-#                    mas_gift,
-#                    None
-#                )
-#                if sp_data is not None:
-#                    persistent._mas_d25_gifts_given.pop(index)
-#                    persistent._mas_filereacts_sprite_reacted[sp_data] = (
-#                        mas_gift
-#                    )
-#
-#                    #Unlock sprite
-#                    _getAndUnlockSprite(sp_data)
-#
-#                    # stats for today
-#                    store.mas_filereacts._register_received_gift(
-#                        "mas_reaction_gift_generic_sprite_json"
-#                    )
-#
-#        #Save selectables
-#        store.mas_selspr.save_selectables()
-#        #Save persist
-#        renpy.save_persistent()
-
-
 init -10 python in mas_d25_utils:
     import store
     import store.mas_filereacts as mas_frs
-
-    # gifts that should not be considered d25 gifts
-    # TODO: this is non-maintainble. look to adding this as an event property,
-    #   probably a flag or maybe rule.
-    non_d25_gifts = [
-        "hotchocolate",
-        "coffee",
-        "fudge",
-        "candycane",
-        "christmascookies",
-        "cupcake",
-        "roses",
-        "chocolates",
-        "promisering",
-    ] 
 
     def react_to_gifts(found_map):
         """
@@ -1721,7 +1539,7 @@ init -10 python in mas_d25_utils:
         # first find gifts
         # d25_map contains all d25 gifts.
         # found_map will contain non_d25 gifts, which should be reacted to now
-        d25_giftnames = mas_frs.check_for_gifts(d25_map, non_d25_gifts, found_map)
+        d25_giftnames = mas_frs.check_for_gifts(d25_map, mas_frs.build_exclusion_list("d25g"), found_map)
 
         # parse d25 gifts for types
         d25_giftnames.sort()
