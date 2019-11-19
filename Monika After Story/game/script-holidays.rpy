@@ -1403,6 +1403,8 @@ init -10 python:
     def mas_d25ReactToGifts():
         """
         Goes thru the gifts stored from the d25 gift season and reacts to them
+
+        this also registeres gifts
         """
         #Step one, store all of the found reacts
         found_reacts = list()
@@ -1419,18 +1421,27 @@ init -10 python:
         gift_cntrs = store.MASQuipList(allow_glitch=False, allow_line=False)
         gift_cntrs.addLabelQuip("mas_d25_gift_connector")
 
+        # process giftnames (no generics)
+        d25_evb = []
+        d25_gsp = []
+        store.mas_filereacts.process_gifts(given_gifts, d25_evb, d25_gsp)
+
+        # register gifts
+        store.mas_filereacts.register_sp_grds(d25_evb)
+        store.mas_filereacts.register_sp_grds(d25_gsp)
+
         # build reaction labels
         react_labels = store.mas_filereacts.build_gift_react_labels(
-            given_gifts,
+            d25_evb,
+            d25_gsp,
+            [],
             gift_cntrs,
-            True,
             "mas_d25_gift_end",
             "mas_d25_gift_starter"
         )
 
         # queue the reacts
         if len(react_labels) > 0:
-            react_labels.reverse()
             for react_label in react_labels:
                 queueEvent(react_label)
 
@@ -1529,6 +1540,8 @@ init -10 python:
 
         This is to be used if you gave Moni a christmas gift but didn't show up on
         D25 when she would have opened them in front of you.
+
+        This also registeres gifts
         """
 
         def _getAndUnlockSprite(sp_data):
@@ -1562,29 +1575,21 @@ init -10 python:
             "yellowribbon": "ribbon_yellow"
         }
 
-        # build reaction labels
-        # this also registers gifts
-        details = {}
-        store.mas_filereacts.build_gift_react_labels(
+        # process gifts
+        evb_details = []
+        gso_details = []
+        store.mas_filereacts.process_gifts(
             persistent._mas_d25_gifts_given,
-            None,
-            True,
-            None,
-            None,
-            details=details
+            evb_details,
+            gso_details
         )
 
         # clear the gifts given
-        persistent._mas_d25_gifts_given = {}
+        persistent._mas_d25_gifts_given = []
 
         # process the evb details
-        for evb_detail in details[0]:
-            # for event-based details, check if the item is a json sprite first
-            sp_data = persistent._mas_filereacts_sprite_gifts.get(
-                evb_detail.c_gift_name,
-                None
-            )
-            if sp_data is None:
+        for evb_detail in evb_details:
+            if evb_detail.sp_data is not None:
                 # then this probably is a built-in sprite, use ribbon map.
                 ribbon_id = base_gift_ribbon_id_map.get(
                     evb_detail.c_gift_name,
@@ -1592,24 +1597,25 @@ init -10 python:
                 )
                 if ribbon_id is not None:
                     mas_selspr.unlock_acs(mas_sprites.get_sprite(0, ribbon_id))
+                    mas_receivedGift(evb_detail.label)
 
             else:
                 # this is probably a json sprite, try json sprite unlock
-                mas_selspr.json_sprite_unlock(
-                    mas_sprites.get_sprite(sp_data[0], sp_data[1])
-                )
+                mas_selspr.json_sprite_unlock(mas_sprites.get_sprite(
+                    evb_detail.sp_data[0],
+                    evb_detail.sp_data[1]
+                ))
+                mas_receivedGift(evb_detail.label)
 
         # then generics
-        for gso_detail in details[1]:
+        for gso_detail in gso_details:
             # for generic sprite objects, only have to check for json sprite
-            sp_data = persistent._mas_filereacts_sprite_gifts.get(
-                gso_detail.c_gift_name,
-                None
-            )
-            if sp_data is not None:
-                mas_selspr.json_sprite_unlock(
-                    mas_sprites.get_sprites(sp_data[0], sp_data[1])
-                )
+            if gso_detail.sp_data is not None:
+                mas_selspr.json_sprite_unlock(mas_sprites.get_sprites(
+                    gso_detail.sp_data[0],
+                    gso_detail.sp_data[1]
+                ))
+                mas_receivedGift(gso_detail.label)
 
         # save the restuls
         store.mas_selspr.save_selectables()
@@ -1715,28 +1721,49 @@ init -10 python in mas_d25_utils:
         # first find gifts
         # d25_map contains all d25 gifts.
         # found_map will contain non_d25 gifts, which should be reacted to now
-        mas_frs.check_for_gifts(d25_map, non_d25_gifts, found_map)
+        d25_giftnames = mas_frs.check_for_gifts(d25_map, non_d25_gifts, found_map)
 
-        # save d25 gifts and delete the packages
+        # parse d25 gifts for types
+        d25_giftnames.sort()
+        d25_evb = []
+        d25_gsp = []
+        d25_gen = []
+        mas_frs.process_gifts(d25_giftnames, d25_evb, d25_gsp, d25_gen)
+
+        # parse non_d25_gifts for types
+        non_d25_giftnames = [x for x in found_map]
+        non_d25_giftnames.sort()
+        nd25_evb = []
+        nd25_gsp = []
+        nd25_gen = []
+        mas_frs.process_gifts(non_d25_giftnames, nd25_evb, nd25_gsp, nd25_gen)
+
+        # include d25 generic with non-d25 gifts
+        for grd in d25_gen:
+            nd25_gen.append(grd)
+            found_map[grd.c_gift_name] = d25_map.pop(grd.c_gift_name)
+
+        # save remaining d25 gifts and delete the packages
         # they will be reacted to later
         for c_gift_name, gift_name in d25_map.iteritems():
             store.persistent._mas_d25_gifts_given.append(c_gift_name)
             store.mas_docking_station.destroyPackage(gift_name)
 
-        # the excluded gifts will be reacted to now
-        # also rebuild found_gifts to contain these gifts
-        found_gifts = []
+        # set all excluded and generic gifts to react now
         for c_gift_name, mas_gift in found_map.iteritems():
             store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
-            found_gifts.append(c_gift_name)
 
-        found_gifts.sort()
+        # register these gifts
+        mas_frs.register_sp_grds(nd25_evb)
+        mas_frs.register_sp_grds(nd25_gsp)
+        mas_frs.register_gen_grds(nd25_gen)
 
         # now build the reaction labels for standard gifts
-        return store.mas_filereacts.build_gift_react_labels(
-            found_gifts,
+        return mas_frs.build_gift_react_labels(
+            nd25_evb,
+            nd25_gsp,
+            nd25_gen,
             mas_frs.gift_connectors,
-            False,
             "mas_reaction_end",
             mas_frs._pick_starter_label()
         )

@@ -172,149 +172,101 @@ init -11 python in mas_filereacts:
 
 
     def build_gift_react_labels(
-            gifts,
-            gift_cntrs,
-            ignore_generics,
-            ending_label,
-            starting_label,
-            details={}
+            evb_details=[],
+            gsp_details=[],
+            gen_details=[],
+            gift_cntrs=None,
+            ending_label=None,
+            starting_label=None,
+            prepare_data=True
     ):
         """
-        Processes a list of gifts and builds an appropriate list of
+        Processes gift details into a list of labels to show
         labels to queue/push whatever.
-        NOTE: this also registeres gifts
 
         IN:
-            gifts - list of giftnames to process
+            evb_details - list of GiftReactDetails objects of event-based
+                reactions. If empty list, then we don't build event-based
+                reaction labels.
+                (Default: [])
+            gsp_details - list of GiftReactDetails objects of generic sprite
+                object reactions. If empty list, then we don't build generic
+                sprite object reaction labels.
+                (Default: [])
+            gen_details - list of GiftReactDetails objects of generic gift
+                reactions. If empty list, then we don't build generic gift
+                reaction labels.
+                (Default: [])
             gift_cntrs - MASQuipList of gift connectors to use. If None,
                 then we don't add any connectors.
-            ignore_generics - if True, then dont react to generic gifts.
+                (Default: [])
             ending_label - label to use when finished reacting.
+                (Default: None)
             starting_label - label to use when starting reacting
+                (Default: None)
+            prepare_data - True will also setup the appropriate data
+                elements for when dialogue is shown. False will not.
+                (Default: True)
 
-        OUT:
-            details - dict containing detailed information regarding reacted
-                gifts. will contain the following:
-                [0] - list of GiftReactDetails objects regarding 
-                    event-baesd reactions
-                [1] - list of GiftReactDetails objects regarding
-                    generic sprite object reactions
-                [2] - list of GiftReactDetails objects regarding
-                    generic gift reactions
-
-        RETURNS: list of labels
+        RETURNS: list of labels. Evb reactions are first, followed by
+            gsp reactions, then gen reactions
         """
-        # setup details
-        if details is None:
-            details = {}
-
-        details[0] = []
-        details[1] = []
-        details[2] = []
+        labels = []
 
         # first find standard reactions
-        found_reacts = []
-        for index in range(len(gifts)-1, -1, -1):
-            mas_gift = gifts[index]
-            reaction = filereact_map.get(mas_gift, None)
-            
-            if mas_gift is not None and reaction is not None:
-                # remove from list and add to found
-                gifts.pop(index)
-                found_reacts.append(reaction.eventlabel)
+        if len(evb_details) > 0:
+            evb_labels = []
+            for evb_detail in evb_details:
+                evb_labels.append(evb_detail.label)
 
                 if gift_cntrs is not None:
-                    found_reacts.append(gift_cntrs.quip()[1])
-
-                # if a sepcial sprite gift, add to the per list matching
-                # sprite objects with data
-                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
-                    mas_gift,
-                    None
-                )
-                if sp_data is not None:
+                    evb_labels.append(gift_cntrs.quip()[1])
+                
+                if prepare_data and evb_detail.sp_data is not None:
+                    # if we need to prepare data, then add the sprite_data
+                    # to reacted map
                     store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
-                        mas_gift
+                        evb_detail.c_gift_name
                     )
 
-                    #Register the json sprite
-                    _register_received_gift(
-                        reaction.eventlabel
-                    )
-
-                # add details
-                details[0].append(GiftReactDetails(
-                    reaction.eventlabel,
-                    mas_gift,
-                    sp_data
-                ))
-
-        # generic sprite object gifts treated differently
-        sprite_object_reacts = []
-        if len(gifts) > 0:
-            for index in range(len(gifts)-1, -1, -1):
-                mas_gift = gifts[index]
-
-                sp_label = None
-                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
-                    mas_gift,
-                    None
-                )
-                if sp_data is not None:
-                    gifts.pop(index)
-                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
-                        mas_gift
-                    )
-                    sp_label = "mas_reaction_gift_generic_sprite_json"
-
-                    # add the generic react
-                    sprite_object_reacts.append(sp_label)
-                    if gift_cntrs is not None:
-                        sprite_object_reacts.append(gift_cntrs.quip()[1])
-
-                    # stats for today
-                    _register_received_gift(sp_label)
-
-                # add details
-                details[1].append(GiftReactDetails(
-                    sp_label,
-                    mas_gift,
-                    sp_data
-                ))
+            labels.extend(evb_labels)
                     
+        # now generic sprite objects
+        if len(gsp_details) > 0:
+            gsp_labels = []
+            for gsp_detail in gsp_details:
+                if gsp_detail.sp_data is not None:
+                    gsp_labels.append("mas_reaction_gift_generic_sprite_json")
 
-        # extend the list
-        sprite_object_reacts.extend(found_reacts)
-
-        generic_reacts = []
-
-        # add in the generic gift reactions if desired
-        if not ignore_generics:
-            if len(gifts) > 0:
-                gen_label = "mas_reaction_gift_generic"
-
-                for mas_gift in gifts:
-
-                    generic_reacts.append(gen_label)
                     if gift_cntrs is not None:
-                        generic_reacts.append(gift_cntrs.quip()[1])
-                    # keep stats for today
-                    _register_received_gift(gen_label)
+                        gsp_labels.append(gift_cntrs.quip()[1])
 
-                    # always pop generic reacts
-                    store.persistent._mas_filereacts_reacted_map.pop(mas_gift)
+                    if prepare_data:
+                        store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                            gsp_detail.c_gift_name
+                        )
 
-                    # add details
-                    details[2].append(GiftReactionDetails(
-                        gen_label,
-                        mas_gift,
+            labels.extend(gsp_labels)
+                    
+        # and lastlly is generics
+        if len(gen_details) > 0:
+            gen_labels = []
+            for gen_detail in gen_details:
+                gen_labels.append("mas_reaction_gift_generic")
+
+                if gift_cntrs is not None:
+                    gen_labels.append(gift_cntrs.quip()[1])
+
+                if prepare_data:
+                    store.persistent._mas_filereacts_reacted_map.pop(
+                        gen_detail.c_gift_name,
                         None
-                    ))
+                    )
 
-        generic_reacts.extend(sprite_object_reacts)
+            labels.extend(gen_labels)
 
         # final setup
-        if len(generic_reacts) > 0:
+        if len(labels) > 0:
 
             # only pop if we used connectors
             if gift_cntrs is not None:
@@ -322,21 +274,21 @@ init -11 python in mas_filereacts:
 
             # add the ender
             if ending_label is not None:
-                generic_reacts.insert(0, ending_label)
+                labels.append(ending_label)
 
             # add the starter
             if starting_label is not None:
-                generic_reacts.append(starting_label)
+                labels.insert(0, starting_label)
 
         # now return the list
-        return generic_reacts
+        return labels
 
 
     def check_for_gifts(
             found_map={},
             exclusion_list=[],
             exclusion_found_map={},
-            override_react_map=False
+            override_react_map=False,
     ):
         """
         Finds gifts. 
@@ -403,6 +355,83 @@ init -11 python in mas_filereacts:
         return gifts_found
 
 
+    def process_gifts(gifts, evb_details=[], gsp_details=[], gen_details=[]):
+        """
+        Processes list of giftnames into types of gift
+
+        IN:
+            gifts - list of giftnames to process. This is copied so it wont
+                be modified.
+
+        OUT:
+            evb_details - list of GiftReactDetails objects regarding
+                event-based reactions
+            spo_details - list of GiftReactDetails objects regarding
+                generic sprite object reactions
+            gen_details - list of GiftReactDetails objects regarding
+                generic gift reactions
+        """
+        if len(gifts) == 0:
+            return
+
+        # make copy of gifts
+        gifts = list(gifts)
+
+        # first find standard reactions
+        for index in range(len(gifts)-1, -1, -1):
+
+            # determine if reaction exists
+            mas_gift = gifts[index]
+            reaction = filereact_map.get(mas_gift, None)
+            
+            if mas_gift is not None and reaction is not None:
+
+                # pull sprite data
+                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+
+                # remove gift and add details
+                gifts.pop(index)
+                evb_details.append(GiftReactDetails(
+                    reaction.eventlabel,
+                    mas_gift,
+                    sp_data
+                ))
+
+        # now for generic sprite objects
+        if len(gifts) > 0:
+            for index in range(len(gifts)-1, -1, -1):
+                mas_gift = gifts[index]
+                # pull sprite data
+                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+
+                if mas_gift is not None and sp_data is not None:
+                    gifts.pop(index)
+
+                    # add details
+                    gsp_details.append(GiftReactDetails(
+                        "mas_reaction_gift_generic_sprite_json",
+                        mas_gift,
+                        sp_data
+                    ))
+
+        # and lastly is generics
+        if len(gifts) > 0:
+            for mas_gift in gifts:
+                if mas_gift is not None:
+                    # add details
+                    gen_details.append(GiftReactionDetails(
+                        "mas_reaction_gift_generic",
+                        mas_gift,
+                        None
+                    ))
+
+
     def react_to_gifts(found_map, connect=True):
         """
         Reacts to gifts using the standard protocol (no exclusions) 
@@ -430,6 +459,17 @@ init -11 python in mas_filereacts:
 
         found_gifts.sort()
 
+        # pull details from teh gifts
+        evb_details = []
+        gsp_details = []
+        gen_details = []
+        process_gifts(found_gifts, evb_details, gsp_details, gen_details)
+
+        # register all the gifts
+        register_sp_grds(evb_details)
+        register_sp_grds(gsp_details)
+        register_gen_grds(gen_details)
+
         # then build the reaction labels
         # setup connectors
         if connect:
@@ -439,12 +479,14 @@ init -11 python in mas_filereacts:
 
         # now build
         return build_gift_react_labels(
-            found_gifts,
+            evb_details,
+            gsp_details,
+            gen_details,
             gift_cntrs,
-            False,
             "mas_reaction_end",
             _pick_starter_label()
         )
+
 
 #
 #
@@ -609,7 +651,31 @@ init -11 python in mas_filereacts:
 ##            generic_reacts.append(gift_starters.quip()[1])
 #
 #        # now return the list
-#        return generic_reacts
+#        return generic_reacts 
+
+
+    def register_gen_grds(details):
+        """
+        registers gifts given a generic GiftReactDetails list
+
+        IN:
+            details - list of GiftReactDetails objects to register
+        """
+        for grd in details:
+            if grd.label is not None:
+                _register_received_gift(grd.label)
+
+
+    def register_sp_grds(details):
+        """
+        registers gifts given sprite-based GiftReactDetails list
+
+        IN:
+            details - list of GiftReactDetails objcts to register
+        """
+        for grd in details:
+            if grd.label is not None and grd.sp_data is not None:
+                _register_received_gift(grd.label)
 
 
     def _pick_starter_label():
@@ -821,8 +887,6 @@ init python:
             reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
 
         if len(reacts) > 0:
-            # need to reverse it now
-            reacts.reverse()
             for _react in reacts:
                 queueEvent(_react)
             persistent._mas_filereacts_just_reacted = True
