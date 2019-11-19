@@ -1589,7 +1589,7 @@ init -10 python:
 
         # process the evb details
         for evb_detail in evb_details:
-            if evb_detail.sp_data is not None:
+            if evb_detail.sp_data is None:
                 # then this probably is a built-in sprite, use ribbon map.
                 ribbon_id = base_gift_ribbon_id_map.get(
                     evb_detail.c_gift_name,
