@@ -574,6 +574,7 @@ init -2 python in mas_sprites:
         if outfit_mode:
             _moni_chr.change_hair(store.mas_hair_def)
             _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
+            _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
 
 
     def _clothes_santa_exit(_moni_chr, **kwargs):
@@ -582,6 +583,14 @@ init -2 python in mas_sprites:
         """
         return
 
+    def _clothes_santa_lingerie_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for santa lingerie
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
 
     def _clothes_sundress_white_entry(_moni_chr, **kwargs):
         """
@@ -1106,6 +1115,7 @@ init -1 python:
         ex_props={
             "lingerie": True
         },
+        entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
         pose_arms=MASPoseMap(
             default=None,
             use_reg_for_l=True
@@ -1350,7 +1360,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="headset",
-        # mux type handled by defaults 
+        # mux type handled by defaults
         rec_layer=MASMonika.AFH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_headset)
@@ -1378,6 +1388,31 @@ init -1 python:
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_twinsquares)
+
+    ### Holly Hairclip
+    #Thanks Orca
+    mas_acs_holly_hairclip = MASAccessory(
+        "holly_hairclip",
+        "holly_hairclip",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="left-hair-clip",
+        # mux type handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_holly_hairclip)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black,
+        "Hairclip (Holly)",
+        "holly_hairclip",
+        "left-hair-clip"
+        select_dlg=[
+            "TODO: ME"
+        ]
+    )
 
     ### PROMISE RING
     ## promisering
