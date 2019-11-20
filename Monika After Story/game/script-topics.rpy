@@ -8125,8 +8125,7 @@ label monika_attractiveness:
         m 2lfd "I mean, it's bad enough that I didn't get a route in the game..."
         m 2lfw "...but did they really have to make it even harder for me to get chosen?"
     m 2dfc "...{w=0.5}{nw}"
-    $ _history_list.pop()
-    m 2dkc "..."
+    extend 2dkc ""
     if mas_isMoniUpset(lower=True):
         if persistent._mas_pm_cares_about_dokis:
             m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
