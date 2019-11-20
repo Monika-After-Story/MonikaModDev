@@ -1093,6 +1093,39 @@ init -1 python:
         ]
     )
 
+    ### SEXY SANTA (santa lingerie)
+    #Thanks Velius
+    mas_clothes_santa_lingerie = MASClothes(
+        "santa_lingerie",
+        "santa_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            "lingerie": True
+        },
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_santa_lingerie,
+        "Santa Lingerie",
+        "santa_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Merry Christmas!",
+            "What kind of {i}presents{/i} do you want?",
+            "Happy holidays!"
+        ]
+    )
+
     ### SUNDRESS (WHITE)
     ## sundress_white
     # The casual outfit from vday
