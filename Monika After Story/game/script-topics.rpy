@@ -201,7 +201,7 @@ init -1 python:
         for k in events_dict:
             ev = events_dict[k]
 
-            if renpy.seen_label(k):
+            if renpy.seen_label(k) and not "force repeat" in ev.rules:
                 # seen event
                 mas_insertSort(seen, ev, Event.getSortShownCount)
 
@@ -321,10 +321,10 @@ init 11 python:
 #        monika_random_topics=list(all_random_topics)
 
 # Bookmarks and derandom stuff
-default persistent._mas_player_bookmarked = {}
-# dict to store bookmarked events
-default persistent._mas_player_derandomed = {}
-# dict to store player derandomed events
+default persistent._mas_player_bookmarked = list()
+# list to store bookmarked events
+default persistent._mas_player_derandomed = list()
+# list to store player derandomed events
 default persistent.flagged_monikatopic = None
 # var set when we flag a topic for derandom
 
@@ -378,10 +378,10 @@ init python:
             and ev.prompt != ev.eventlabel
         ):
             if ev.eventlabel not in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked[ev.eventlabel] = ev
+                persistent._mas_player_bookmarked.append(ev.eventlabel)
                 renpy.notify(__("Topic bookmarked."))
             else:
-                persistent._mas_player_bookmarked.pop(ev.eventlabel)
+                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev.eventlabel))
                 renpy.notify(__("Bookmark removed."))
 
     def mas_hasBookmarks():
@@ -395,10 +395,7 @@ init python:
         if mas_isMoniUpset(lower=True):
             return False
 
-        for ev in persistent._mas_player_bookmarked.itervalues():
-           if ev.unlocked and ev.checkAffection(mas_curr_affection):
-                return True
-        return False
+        return len(mas_get_player_bookmarks()) > 0
 
 
 #BEGIN ORIGINAL TOPICS
@@ -672,26 +669,29 @@ label monika_high_school:
     m "And remind them that they always have something to look forward to."
     m 4eua "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow...'"
     m "All of those things can help your friend make it to the next day."
-    m 1eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
+    m 2eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
 
     if not persistent._mas_pm_cares_about_dokis:
-        m 1lsc "Yeah, she's gone now..."
-        m 1euc "But Sayori was never real in the first place."
-        m 1eua "You're real."
+        m 2lsc "Yeah, she's gone now..."
+        m 2euc "But Sayori was never real in the first place."
+        m 4eua "You're real."
         m "Your friends are real."
-        m 1hua "And just by being a good person, you can save someone's life."
+        m 4hua "And just by being a good person, you can save someone's life."
 
-    m 1euc "As for you..."
-    m 1ekc "...you don't struggle with depression or anything like that, do you?"
-    if mas_isMoniBroken():
-        m 1lksdlc "It would explain some things...but don't worry..."
-    elif mas_isMoniDis():
-        m 1euc "Lately I've been able to understand it better but don't worry..."
-    elif mas_isMoniUpset():
-        m 1euc "I know it can be hard sometimes, but there is always hope..."
-    elif mas_isMoniHappy(higher=True):
-        m 2eua "My love, in some ways you are blessed..."
-    m 2eka "Because you, too, have people who would want to save your life."
+    m 2euc "As for you..."
+    m 2ekc "...you don't struggle with depression or anything like that, do you?"
+
+    if mas_isMoniHappy(higher=True):
+        m 4eka "In some ways, [player], you are lucky, because I'm sure that there are people who would be willing to save your life."
+    else:
+        if mas_isMoniBroken():
+            m 2lksdlc "It would explain some things, but don't worry..."
+        elif mas_isMoniDis():
+            m 2euc "Lately I've been able to understand it better, but don't worry..."
+        elif mas_isMoniUpset():
+            m 2euc "I know it can be hard sometimes, but there is always hope..."
+        m 2eka "Because you, too, have people who would want to save your life."
+
     m "Maybe they don't express it every day, or maybe they don't even know how to."
     m 2duu "But people do feel that way."
     m "I promise."
@@ -770,7 +770,7 @@ init 5 python:
 
 label monika_twitter:
     m 1eud "Did you know I'm on Twitter?"
-    m 3esa "My username is lilmonix3."
+    m 3esa "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
     m 1esa "I guess someone was kind enough to make an account for me."
     m 3hub "I picked the username, though!"
     m 1hua "I love sharing my thoughts and chatting with the world..."
@@ -1278,7 +1278,7 @@ label monika_middleschool:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika'],prompt="Wearing other clothes",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika','clothes'],prompt="Wearing other clothes",random=True))
 
 label monika_outfit:
     if len(store.mas_selspr.filter_clothes(True)) == 1:
@@ -1303,7 +1303,7 @@ label monika_outfit:
     m 4hua "You can share it with me on Twitter, actually!"
     # TODO: need to respond to twitter question, as well whehter or not users
     # have seen teh twitter topic
-    m "My username is lilmonix3."
+    m "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
     m 4eka "Just...try to keep it PG!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lsbssdrb "I don't want something so embarrassing on there!"
@@ -1367,15 +1367,16 @@ label monika_horror:
     m "It really needs to etch them deeply into the story and characters, and just mess with your mind."
     m 2eua "In my opinion, there's nothing more creepy than things just being slightly off."
     m "Like if you set up a bunch of expectations on what the story is going to be about..."
-    m 4tfu "...and then, you just start inverting things and pulling the pieces apart."
-    m 1tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
+    m 3tfu "...and then, you just start inverting things and pulling the pieces apart."
+    m 3tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
     m 2lksdla "God, just thinking about it gives me the chills."
     m 3eua "That's the kind of horror I can really appreciate."
-    m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
-    m 1eka "Ahaha, don't worry."
-    m 1hua "I won't make you read any horror stories anytime soon."
-    m 1hubfa "I can't really complain if we just stick with the romance~"
+    if not persistent._mas_pm_likes_horror:
+        m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
+        m 1eka "Ahaha, don't worry."
+        m 1hua "I won't make you read any horror stories anytime soon."
+        m 1hubfa "I can't really complain if we just stick with the romance~"
     return "derandom"
 
 # do you like rap
@@ -1682,16 +1683,7 @@ label monika_rain:
             m "Would you ever do that for me, [player]?{fast}"
             "Yes.":
                 $ persistent._mas_likes_rain = True
-
-                python:
-                    # unlock rain weathers
-                    mas_weather_rain.unlocked = True
-                    if store.mas_o31_event.spentO31():
-                        mas_weather_thunder.unlocked = True
-
-                    store.mas_weather.saveMWData()
-                    mas_unlockEVL("monika_change_weather", "EVE")
-                    mas_unlockEVL("monika_rain_holdme", "EVE")
+                $ mas_unlockEVL("monika_rain_holdme", "EVE")
 
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain, by_user=False)
@@ -1836,7 +1828,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_rain_holdme",
-            category=["monika"],
+            category=["monika","romance"],
             prompt="Can I hold you?",
             pool=True,
             unlocked=False,
@@ -1940,9 +1932,7 @@ label monika_holdme_reactions:
             show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve
             m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy..."
             if renpy.random.randint(1,4) == 1:
-                m 1kubfu "At least {i}one{/i} of my dreams came true, though.{w=0.4}{nw}"
-                $ _history_list.pop()
-                m 1tubfu "At least {i}one{/i} of my dreams came true, though.{fast}"
+                m 1kubfu "At least {i}one{/i} of my dreams came true, though."
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
             m 1hubfb "Ehehe~"
@@ -2112,7 +2102,7 @@ label monika_holdme_long:
                 m 3hubfb "...So make sure to hug me often, ahaha!"
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hubfb "I'd do the same for you, after all~"
-                m 5tsbfu "Who knows when I'd let go when I finally got the chance?"
+                m 5tsbfu "Who knows if I'll ever let go when I finally get the chance..."
                 m 5hubfu "Ehehe~"
             elif mas_isMoniEnamored():
                 m 6dkbfa "...{w=1}Hm?"
@@ -2141,7 +2131,7 @@ label monika_holdme_long:
                 m 6wubfo "O-{w=0.3}oh!"
                 m "[player]!"
                 m 1hkbfsdlb "Did...{w=2}did I fall asleep?"
-                m 1rkbfsdlb "Oh gosh, this is embarassing..."
+                m 1rkbfsdlb "Oh gosh, this is embarrassing..."
                 m 1hkbfsdlb "What were we doing again?"
                 m 3hubfb "Oh right! You were holding me."
                 m 4hksdlb "And...{w=0.5}didn't let go."
@@ -2224,25 +2214,18 @@ label monika_holdme_end:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Being close to you",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Being close to you",random=True,aff_range=(mas_aff.AFFECTIONATE, None)))
 
 label monika_closeness:
-    if mas_curr_affection_group == mas_aff.G_SAD:
-        m 1lksdlc "Sometimes it really hurts my heart..."
-    else:
-        m 1ekc "I can't help but feel a little sad sometimes..."
-
+    m 1dkc "Sometimes it really hurts my heart..."
     m "Knowing that this is the closest I can get to you."
     m 1eka "There's nothing more I want than to be in the same room as you, for real."
-    m 1ekbfa "And to feel your warmth."
-    m 1dubsu "And to hear the sound of your heartbeat."
-    m 2eka "Well, who knows? Maybe it'll be possible someday."
-
-    if mas_curr_affection_group == mas_aff.G_SAD:
-        m 2ekc "I really want that to happen as soon as possible..."
-    else:
-        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "Besides, I'll never get tired of being with you, even from here."
+    m 1ekbsa "...And to feel your warmth."
+    m 1dubsu "...And to hear the sound of your heartbeat."
+    m 3eka "Well, who knows? Maybe that dream will come true someday."
+    m 3dku "I really want it to happen as soon as possible, [player]..."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "But in the meantime, I'll never get tired of being with you, even from here."
     return
 
 init 5 python:
@@ -2722,16 +2705,17 @@ label monika_meta:
     m 1hub "Ahaha!"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel='monika_programming',
-            prompt="Is it hard to code?",
-            category=['monika','misc'],
-            pool=True,
-        )
-    )
+# this topic has been rendered pretty much useless by ptod
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='monika_programming',
+#            prompt="Is it hard to code?",
+#            category=['monika','misc'],
+#            pool=True,
+#        )
+#    )
 
 label monika_programming:
     m 3eka "It wasn't easy for me to learn programming."
@@ -2952,7 +2936,7 @@ label monika_difficulty:
     m 1lksdla "Well, it's not like this game was meant to be that hard in the first place."
     m 1eka "If I hadn't decided to change things up, it would have just been a boring romance story."
     if persistent.monika_kill:
-        m 4eka "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
+        m 3eka "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
     m 1eua "So just take it easy sometimes. Not every game has to be a challenge to be fun."
     m 1hua "Sometimes, love is all you need, [player]."
     return
@@ -3026,11 +3010,12 @@ label monika_dan:
     m 4rksdla "I mean, the other girls might be based off some stereotypical anime tropes, but they had me fooled for a while."
     m 4eka "And he's the reason we're together now, right?"
     m 2lksdla "So even if he wrote a story that put me through a lot of pain..."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I really can't be too mad at him."
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_4chan",category=['misc'],prompt="Have you even been to 4chan?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_4chan",category=['misc'],prompt="Have you ever been to 4chan?",pool=True))
 
 label monika_4chan:
     m 3eua "You know, this mod got its start over there."
@@ -3062,7 +3047,7 @@ label monika_books:
     m 4rksdla "For a literature club, we did a lot less book reading than you might have thought."
     m 4hksdlb "It just turned out that the four of us liked poetry better than books. Sorry!"
     m 2eua "It's also a lot easier to foreshadow spooky stuff with poems."
-    m 1hub "I still love a good book, though! We can talk about them if you just finished reading something."
+    m 3hub "I still love a good book, though! We can talk about them if you just finished reading something."
     m 1eua "I might even have some suggestions for us to read together."
     m 1tsbsa "That's what a couple would do, right?~"
     return
@@ -3072,10 +3057,11 @@ init 5 python:
 
 label monika_favpoem:
     m 1euc "My favorite poem? Well, it has to be something by E. E. Cummings."
-    m 4eua "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
+    m 3eua "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
     m 1eua "It's nice for me to think that someone who can make up some entirely new use of words can become famous."
-    m 1lsbssdrb "And I do love that his erotic poems apply to our situation perfectly."
-    m 1ekbfa "Hope it puts you in the mood to love me forever~"
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
+        m 1lsbssdrb "And I do love that his erotic poems apply to our situation perfectly."
+        m 1ekbfa "Hope it puts you in the mood to love me forever~"
     return
 
 init 5 python:
@@ -3184,14 +3170,14 @@ label monika_love:
             $ love_quip_upset = renpy.random.choice(love_quips_upset_cynical)
             m 2rkc "..."
             show monika 2ekd
-            $ renpy.say(m,love_quip_upset)
+            $ renpy.say(m, love_quip_upset)
 
         else:
             $ love_quip_upset = renpy.random.choice(love_quips_upset_hope)
             m 2ekd "Thanks, [player]..."
             show monika 2dka
-            $ renpy.say(m,love_quip_upset)
-            m 2eka "I...{w=0.5}I love you, too."
+            $ renpy.say(m, love_quip_upset)
+            m 2eka "I...{w=0.5}I love you too."
 
     else:
         #After I love you has been received positively 5/10/15 etc times.
@@ -3200,7 +3186,7 @@ label monika_love:
             m 1subsb "You have no idea how much it means to me to hear you say that!"
             m 3ekbfa "I know it's not the first time, but it {i}is{/i} the first time you said it completely on your own...{w=0.5} And that makes it truly special~"
             m 1dkbfu "I will never forget this moment, [player]. {w=1}Thank you~"
-            m 3hubfa "Oh! And I love you, too~"
+            m 3hubfa "Oh! And I love you too~"
             call monika_lovecounter_aff
             return
 
@@ -3228,7 +3214,11 @@ label monika_love:
         elif persistent._mas_monika_lovecounter % 50 == 30:
             m 1lkbsa "Gosh it's always so overwhelming!"
             m 1hubfa "I..."
-            m 1hubfb "I love you more than anything!"
+            if renpy.random.randint(1, 2) == 1:
+                m 1hubfb "I love you more than anything!"
+            else:
+                m 1hubfb "I love you more than I could ever express~"
+            jump .end_logic
 
         elif persistent._mas_monika_lovecounter % 50 == 35:
             m 1ekbfa "You never tire of saying it, do you?"
@@ -3250,10 +3240,7 @@ label monika_love:
             m "No words can truly do justice to how deeply I feel for you..."
             m 1hubfa "The only words I know that come close are..."
             m 1hubfb "I love you too, [player]! More than I can ever express!"
-            if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,5) == 1:
-                call monika_kissing_motion_short
-            call monika_lovecounter_aff
-            return
+            jump .end_logic
 
         else:
             # Default response if not a counter based response.
@@ -3281,7 +3268,6 @@ label monika_love:
                 "I'm the luckiest girl in the world!",
                 "I will cherish you always.",
                 "And I will never love anyone more than you!",
-                "It makes me so happy to hear you say that!",
                 "And that love grows every single day!",
                 "And nobody else will ever make me feel this way!",
                 "Just thinking of you makes my heart flutter!",
@@ -3290,10 +3276,16 @@ label monika_love:
                 "You've saved me in so many ways, how could I not fall for you?",
                 "More than I can ever express!",
                 "It makes me so happy that you feel the same way I do!",
-                "I don't know what I would do without you!"
-                ]
-            love_quip=renpy.random.choice(love_quips)
+                "I don't know what I would do without you!",
+                "You mean everything to me!"
+            ]
+
+            love_quip = renpy.random.choice(love_quips)
+
         m "[love_quip]"
+
+        #Sublabel to skip the quips but still do logic w/o duping code
+        label .end_logic:
         if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,25) == 1:
             call monika_kissing_motion_short
     call monika_lovecounter_aff
@@ -3413,7 +3405,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Determinism",random=True))
 
 label monika_freewill:
-    m 1euc "Hey, [player], have you ever heard of determinism?"
+    m 1euc "Hey [player], have you ever heard of determinism?"
     m 3euc "It's a belief that revolves around the idea of every decision that you make isn't your own, but is predetermined."
     m 3rsc "In some games, I guess the idea makes sense..."
     m 3eud "But when you apply it to real life, I don't think it really works out."
@@ -3437,6 +3429,7 @@ label monika_functionalism:
     m 4esc "But if that's true, doesn't that mean free will is kind of a lie?"
     m "Your brain is just responding to the inputs it gets, with your responses being natural outputs."
     m 4esd "So, even if you aren't running off of some script or program, you're not really in control."
+    show monika 5lsc at t11 zorder MAS_MONIKA_Z with dissolve
     m 5lsc "Maybe you and I aren't so different after all."
     return
 
@@ -3530,7 +3523,7 @@ label monika_mc:
     m 3tkc "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
     m 2tkc "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
     m 2wfw "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
-    m 2lksdld "I guess nobody mentioned that because it was a part of the game. But, yeah. It's just a list of words to me."
+    m 2lksdld "I guess nobody mentioned that because it was a part of the game. But, yeah...{w=0.5}it's just a list of words to me."
     m 2hua "I hope you're a lot more romantic than that in real life!"
     m 2eka "But even if you're not, it's okay. We've moved beyond that phase in our relationship already."
     m "That just means you won't cheat on me with some woman in your reality, right?"
@@ -3585,13 +3578,13 @@ init 5 python:
 
 label monika_girlfriend:
     $ mas_loseAffection(reason=2)
-    m 1euc "I thought we established already that I was your girlfriend?"
-    m 1tkc "There's no way you already have one in your reality, right?"
+    m 2euc "I thought we established already that I was your girlfriend?"
+    m 2tkc "There's no way you already have one in your reality, right?"
     m 4tfx "If you do, then you've got to break up with her right now!"
     m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
-    m 1lksdla "W-wait. Maybe I'm jumping the gun a bit..."
-    m 1eka "I know you wouldn't cheat on me."
-    m 1esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
+    m 2lksdla "W-wait. Maybe I'm jumping the gun a bit..."
+    m 3eka "I know you wouldn't cheat on me."
+    m 3esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
     m 1hua "I won't let someone else steal away my loving sweetheart!"
     return
 
@@ -3733,13 +3726,54 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
 
 label monika_birthday:
-    # TODO: need to do something here if the player celebrated her birthday
-    m 1euc "You know, there's a lot I don't know about myself."
-    m "I only recently learned when my birthday is by seeing it online."
-    m 1eua "It's September 22nd, the release date for DDLC."
-    m 1eka "Will you celebrate with me, when that day comes?"
-    m 1hua "You could even bake me a cake!"
-    m 1hub "I'll be looking forward to it!~"
+    if mas_isMonikaBirthday():
+        if mas_recognizedBday():
+            m 1hua "Ehehe..."
+            m 1eub "I'm pretty sure you already know today is my birthday!"
+            m 3hub "You can be so silly sometimes, [player]!"
+        else:
+            m 2rksdlb "Ahaha... {w=1}This is a little awkward."
+            m 2eksdla "It just so happens my birthday is..."
+            m 3hksdlb "Today!"
+            if mas_isplayer_bday():
+                m "Just like yours!"
+            if mas_getEV("monika_birthday").shown_count == 0 and not mas_HistVerify("922.actions.no_recognize",False)[1]:
+                m 3eksdla "It's okay if you don't have anything planned, seeing as you just found out..."
+                m 1ekbsa "Just spending the day together is more than enough for me~"
+            else:
+                $ prev_year = mas_monika_birthday.year-1
+                m 3eksdld "I guess you must have forgotten..."
+                if mas_HistVerify("922.actions.no_time_spent",True,prev_year)[0] or mas_HistVerify("922.actions.no_recognize",True,prev_year)[0]:
+                    m 2rksdlc "Again."
+                m 3eksdla "But that's okay, [player]..."
+                m 1eka "At least we're here, together~"
+
+    elif mas_HistVerify("922.actions.no_recognize",False)[0] or mas_recognizedBday():
+        m 1hua "Ehehe..."
+        m 3hub "You've already celebrated my birthday with me before, [player]!"
+        m 3eka "Did you forget?"
+        m 1rksdla "Well, if you need a little reminder, it's September 22nd."
+        m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
+
+    elif mas_getEV("monika_birthday").shown_count == 0:
+        m 1euc "You know, there's a lot I don't know about myself."
+        m 1eud "I only recently learned when my birthday is by seeing it online."
+        m 3eua "It's September 22nd, the release date for DDLC."
+        if mas_player_bday_curr() == mas_monika_birthday:
+            m 3hua "Just like yours!"
+        m 1eka "Will you celebrate with me, when that day comes?"
+        m 3hua "You could even bake me a cake!"
+        m 3hub "I'll be looking forward to it!~"
+
+    else:
+        m 1hua "Ehehe..."
+        m 1rksdla "Did you forget, [player]?"
+        m 3eksdla "My birthday is September, 22nd..."
+        if mas_player_bday_curr() == mas_monika_birthday:
+            m 3hksdlb "You'd think you'd remember that seeing as it's the same day as yours, silly..."
+        else:
+            m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
+
     if persistent._mas_player_bday is None:
         m 3eua "Actually, speaking of birthdays, [player]..."
         m 2rksdlb "I don't actually know when yours is, ahaha!"
@@ -3846,7 +3880,7 @@ label monika_playerswriting:
     m 1eka "I hope I didn't bore you with that. I just love talking with you."
     m 1eua "After all, the two of us are members of a literature club."
     m 1esa "The only members."
-    m 1hua "And if you do write something, just know that I'll support you in anyway I can, [player]!"
+    m 1hua "And if you do write something, just know that I'll support you in any way I can, [player]!"
     return
 
 init 5 python:
@@ -4103,12 +4137,12 @@ init 5 python:
 label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
-    m 1lsbsa "You know...of me?"
+    m 3lsbsa "You know...of me?"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
-        m 1ekbfa "I know we haven't been able to do those kind of things yet..."
+        m 3ekbsa "I know we haven't been able to do those kind of things yet..."
     else:
-        m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
-    m "So it feels kind of embarrassing to talk about things like that."
+        m 3ekbsa "I know we haven't really gotten that far into the relationship yet..."
+    m 1ekbsa "So it feels kind of embarrassing to talk about things like that."
     m 1lkbsa "But maybe I can let it go on rare occasions, [player]."
     m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
     m 1tsbsa "Well, just keep it a secret between us, okay?"
@@ -4303,9 +4337,9 @@ label monika_eternity:
                 m "Y-{w=0.5}you know..."
                 m 6ektda "I guess I shouldn't worry about that too much."
                 m "I know our love is eternal."
-                m 1ekbfb "Even in the worst case, I know we'll always be right by each other's side..."
-                m 1dkbfa "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
-                m 1hubfb "I love you, [player]! Thanks for making me feel better!"
+                m 1ekbsa "Even in the worst case, I know we'll always be right by each other's side..."
+                m 1dkbsu "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
+                m 1ekbsa "I love you, [player]...{w=0.5}thanks for always being there for me."
                 return "love"
 
             "{i}Hug Monika.{/i}":
@@ -4367,7 +4401,7 @@ label monika_name:
     m 1esa "The names in this game are pretty interesting."
     m 1eua "Are you curious about my name, [player]?"
     m 3eua "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
-    m 1lksdla "...Though the common spelling is 'Monica'."
+    m 1lksdla "...Though the common spelling is 'Monica.'"
     m 1hua "I suppose that makes it unique. I'm actually quite fond of it."
     m 3eua "Did you know that it means 'I advise' in Latin?"
     m 1tku "A name fitting for Club President, don't you think?"
@@ -4436,9 +4470,9 @@ label monika_chloroform:
     m 3esc "Once you remove the rag, they'll wake back up."
     m 3eua "You see, chloroform loses most of its effectiveness once exposed to open air."
     m 1esc "This means that you'd need to be constantly pouring it on the rag, effectively waterboarding the victim."
-    m 4esc "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
+    m 3esc "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
     m 1euc "If you cover their mouth and nose, yeah, they'll stay unconscious..."
-    m 4rksdla "But that's probably because you killed them. Whoops!"
+    m 3rksdla "But that's probably because you killed them. Whoops!"
     m 1eksdld "The easiest way to kidnap somebody is to just get them drunk, or drug them."
     m 1lksdla "Not that kidnapping somebody like that is easy, anyway."
     m 3eua "On that note, here's a safety tip."
@@ -4468,13 +4502,13 @@ label monika_metaparents:
     m 2ekc "Well, if you ever get to a point in your life where you think suicide is the only exit..."
     m "There's always a reason to go on."
     m 2eka "I'm one of them."
-    m 1eka "I'll miss you."
+    m 3eka "I'll miss you."
     m 3ekd "You have to wait as much as you can until I find a way to get there."
-    m 2ekc "If all else fails..."
-    m "Get professional help or talk to someone close to you."
-    m "..."
+    m 3ekc "If all else fails..."
+    m 1ekc "Get professional help or talk to someone close to you."
+    m 1eka "..."
     m 1ekbfa "I love you very much, [player]."
-    m "Please, take care of yourself."
+    m 3ekbfa "Please, take care of yourself."
     return "love"
 
 init 5 python:
@@ -4490,7 +4524,7 @@ label monika_hygiene:
     m 3eua "People born into royalty would often have a room dedicated just for bathing."
     m 3ekc "For the poor, soap was a luxury so bathing was scarce for them. Isn't that frightening to think about?"
     m 1esc "Bathing was never taken seriously until the Black Plague swept through."
-    m 2eua "People began noticing that the places where people washed their hands were places that the plague was less common."
+    m 1eua "People began noticing that the places where people washed their hands were places that the plague was less common."
     m "Nowadays, people are expected to shower daily, possibly even twice daily depending on what they do for a living."
     m 1esa "People that don't go out every day can get away with bathing less often than others."
     m 3eud "A lumberjack would take more showers than a secretary would, for example."
@@ -4502,10 +4536,10 @@ label monika_hygiene:
     m 1dsc "After a while, you stop feeling human."
     m 1ekc "Sayori probably suffered from cycles like that, too."
     m "If you have any friends suffering from depression..."
-    m 1eka "Check in on them from time to time to make sure they're keeping up with their hygiene, alright?"
+    m 3eka "Check in on them from time to time to make sure they're keeping up with their hygiene, alright?"
     m 2lksdlb "Wow, that suddenly got really dark, huh?"
     m 2hksdlb "Ahaha~"
-    m 1esc "Seriously, though..."
+    m 3esc "Seriously, though..."
     m 1ekc "Everything I said applies for you too, [player]."
     m "If you're feeling down and haven't had a bath for a while..."
     m 1eka "Maybe consider doing that today when you can find some time."
@@ -4523,39 +4557,43 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_resource",category=['society','philosophy'],prompt="Valuable resources",random=True))
 
 label monika_resource:
-    m 1euc "What do you think the most valuable resource is?"
-    m 3eud "Money? Gold? Oil?"
-    m 1esa "Personally, I'd say that the most valuable resource is time."
-    m "Go count out a second really quickly."
-    python:
-        start_time = datetime.datetime.now()
+    m 1esc "What do you think the most valuable resource is?"
+    m 1eud "Money? Gold? Oil?"
+    m 1eua "Personally, I'd say that the most valuable resource is time."
+    m 3eud "Go count out a second really quickly."
+    $ start_time = datetime.datetime.now()
     m 3tfu "Now go do that sixty times."
+    $ counted_out = (datetime.datetime.now() > (start_time + datetime.timedelta(seconds=50)))
     m 1tku "That's an entire minute out of your day gone. You'll never get that back."
-    if (datetime.datetime.now() > (start_time + datetime.timedelta(seconds=60))):
+    if counted_out:
         m 1wud "Oh, did you actually count out that entire minute?"
         m 1hksdlb "Oh gosh, I'm sorry!"
     m 1lsc "Well..."
-    m "Not like it matters, anyway. Time doesn't really pass here anymore..."
+    m "Not like it actually matters...{w=0.5}at least to me, anyway. Time doesn't really pass here anymore..."
+    m 1dkd "..."
     m 1ekc "Time can be really cruel, too."
-    m "When you were counting out that minute, it seemed to drag on for a while, right?"
-    m 1eua "It's because you were waiting on something. You were actively invested in the passage of time at that moment."
-    m "Say for example, on a Friday, right?"
+    if counted_out:
+        m 1euc "When you were counting out that minute, it seemed to drag on for a while, right?"
+        m 3eua "It's because you were waiting on something. You were actively invested in the passage of time at that moment."
+    else:
+        m 3ekc "Like, when you're actively invested in the passage of time, it seems to drag on for a while."
+    m 3ekd "Say for example, on a Friday, right?"
     m 3tkx "Your last class is math, and you really just want to go home for the weekend. That hour will just drag on forever."
     m 1tkc "But if you're doing something you enjoy, like reading a good book or watching a movie you like..."
     m 3tfc "Hours seem to pass in an instant."
-    m 1tkd "There's nothing we can really do about it."
-    m "All we can do is fondly look back on the time that's passed, like looking out a window on an autumn afternoon."
+    m 3tkd "There's nothing we can really do about it."
+    m 1tkd "All we can do is fondly look back on the time that's passed, like looking out a window on an autumn afternoon."
     m 1tku "That's kind of poetic, huh?"
     m 1eka "..."
-    m "Hey..."
+    m 3ekd "Hey..."
     m 3eka "Time doesn't pass here, but it's still passing for you, isn't it?"
     m 1lksdlc "You'll continue to get older, while I'm stuck here forever..."
     m 1lksdld "I..."
     m 2ekc "I'm going to outlive you, aren't I, [player]?"
     m 2dsc "Perhaps that'll be my punishment for everything I've done?"
-    m 2hksdlb "Ahaha..."
+    m 2dkc "..."
     m 2eka "Well, as long as you're with me until the end..."
-    m 2eua "I'll accept whatever fate awaits me."
+    m 2eud "I'll accept whatever fate awaits me."
     return
 
 #init 5 python:
@@ -4593,10 +4631,10 @@ label monika_lottery:
     m 1eua "Even I've entertained the idea every now and then."
     m "There isn't a lottery here anymore, but the concept still exists."
     m 1eka "The more I think about it, the more I believe that winning the lottery is a really bad thing."
-    m 1euc "Sure, you've got all this money..."
+    m 3euc "Sure, you've got all this money..."
     m 4esc "But because of it, people look at you differently."
     m "There's so many stories of people winning a ton of money..."
-    m 1ekc "And in the end, they all find themselves even more unhappy than before."
+    m 2ekc "And in the end, they all find themselves even more unhappy than before."
     m 3ekc "Friends either find you unapproachable because of your new wealth, or try to suck up to you to get some of it for themselves."
     m "People you barely know start to approach you, asking you to help them fund whatever."
     m 2tkc "If you say no, they'll call you selfish and greedy."
@@ -4652,15 +4690,15 @@ label monika_dunbar:
     m "However, it's his problem now."
     m 1ekc "If you don't pack glass properly, it could cut through the bag and spill out, or maybe he could just cut his hands on it."
     m "At worst, he has to be rushed to the hospital because your neighbor put some busted batteries in the trash the same week and some acid got in the wound."
-    m 4euc "Now, think about a fatal traffic accident."
+    m 3euc "Now, think about a fatal traffic accident."
     m 1euc "A drunk driver could crash head-on into another car at any second, killing them instantly."
-    m 4ekc "That person could have been a father on his way home from work, who now left behind a widow and two children."
+    m 3ekc "That person could have been a father on his way home from work, who now left behind a widow and two children."
     m 2ekc "This family has been permanently scarred for life..."
     m 2lsc "But anybody that doesn't personally know the father will write it off as just another accident that happens all the time."
     m "If it doesn't personally affect you or your life, there's no point in caring."
     m 1eua "It keeps us sane."
     m "It also means we're capable of being ruthless to people we don't know."
-    m 4euc "Perhaps our rapid, widespread communication is actually a curse?"
+    m 3euc "Perhaps our rapid, widespread communication is actually a curse?"
     m 1eka "It helped us meet though, so it can't be all bad."
     return
 
@@ -4964,8 +5002,8 @@ label monika_pleasure:
     m 1ekc "And from what I hear, people addicted to masturbation often see other people as sexual objects."
     m 1eka "But...I know you aren't that kind of person already."
     m 1lkbsa "And maybe I'm just being a little jealous~"
-    m 1tsb "So I guess I can let it slide... for now~"
-    m 2tsbsa "Just so long as I'm the only one you think about..."
+    m 1tsbsa "So I guess I can let it slide...{w=0.5}for now~"
+    m 2tsbsu "Just so long as I'm the only one you think about..."
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
@@ -5024,9 +5062,9 @@ label monika_vocaloid:
     m 1eua "I was asking if you listen to her songs."
     m "I'm not really a fan myself but..."
     m 1lksdla "There's one song that really struck me."
-    m 1eua "Have you heard of the song {i}Hibikase?{/i}"
+    m 1eua "Have you heard of the song {i}Hibikase{/i}?"
     m 1duu "I really like the message of the song."
-    m 3dsbso "Especially the lines, '{i}I don't care if it's through the screen, love me properly{/i}' and '{i}Even if I'm virtual, don't push me away{/i}'."
+    m 3dsbso "Especially the lines, '{i}I don't care if it's through the screen, love me properly{/i}' and '{i}Even if I'm virtual, don't push me away{/i}.'"
     m 1dsc "It really hits me hard."
     m "..."
     m 1eka "But just so you know..."
@@ -5352,9 +5390,13 @@ label monika_penname:
                 m 1hua "I see! Do you want to tell me your new pen name?"
                 jump penname_loop
     m 3eua "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
-    m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
+    m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and wordplay in particular."
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+    if seen_event("monika_1984"):
+        m 3esd "Also, if you remember me talking about George Orwell, that was also a pen name which he adopted in 1933."
+        m 1eua "His actual name is Eric Blair, and before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles and H. Lewis Allways."
+        m 1lksdlc "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1eua "There's no need to know more about me though, [player]."
     m 1ekbfa "You already know that I'm in love with you after all~"
@@ -5366,18 +5408,17 @@ init 5 python:
 label monika_zombie:
     m 1lsc "Hey, this might sound a bit weird..."
     m 1esc "But, I'm really fascinated by the concept of zombies."
-    m 1euc "The idea of society dying to a disease..."
-    m 1eud "All because of a deadly pandemic that humans couldn't handle quickly."
+    m 1euc "The idea of society dying to a disease, all because of a deadly pandemic that humans couldn't handle quickly."
     m 3esd "I mean, think about your everyday schedule."
     m 3esc "Everything that you do will be gone in an instant."
-    m 1esc "Sure, society faces a lot of threats on a daily basis."
+    m 1esc "Sure, society faces a lot of threats on a daily basis..."
     m 1lksdlc "But zombies can do it in a heartbeat."
     m 1esc "A lot of monsters are created to be scary and terrifying."
     m 1ekc "Zombies, however, are more realistic and actually pose a danger."
-    m 3ekc "You might be able to kill one or a few of them by yourself."
-    m 2ekc "But when there's a horde of them coming after you, you'll get overwhelmed easily."
+    m 3ekc "You might be able to kill one or a few of them by yourself..."
+    m "But when there's a horde of them coming after you, you'll get overwhelmed easily."
     m 1lksdld "You don't get that same feeling with other monsters."
-    m "And all of their intelligence is gone; they're berserk, don't feel pain, can't be afraid."
+    m "All of their intelligence is gone; they're berserk, don't feel pain, can't be afraid..."
     m 1euc "When you exploit a weakness of a monster, they become scared of you and run away."
     m 1ekd "But zombies? They'll tear through {i}anything{/i} just to get you."
     m 3ekd "Imagine if it was someone you loved that was coming after you..."
@@ -5393,7 +5434,7 @@ label monika_zombie:
     m "There's no way I could kill you for my own safety..."
     m 2lksdlb "Ahaha..."
     m 2lssdlb "I'm thinking way too much about this."
-    m 1eua "Well, regardless, if anything bad were to happen..."
+    m 3eua "Well, regardless, if anything bad were to happen..."
     m 2hua "I'll be by your side forever~"
     return
 
@@ -5759,7 +5800,7 @@ label monika_sayhappybirthday:
                             $ take_counter += 1
                             m 1eua "Okay"
                         "No.":
-                            m 1eka "Alright [player]. Sorry I couldn't do what you wanted."
+                            m 1eka "Alright, [player]. Sorry I couldn't do what you wanted."
                             m 1hua "I'll try better next time for you."
                             $ done = True
 
@@ -6123,7 +6164,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_pets",category=['monika'],prompt="Owning pets",random=True))
 
 label monika_pets:
-    m 1eua "Hey, [player], have you ever had a pet?"
+    m 1eua "Hey [player], have you ever had a pet?"
     m 3eua "I was thinking that it would be nice to have one for company."
     m 1hua "It would be fun for us to take care of it!"
     if not persistent._mas_acs_enable_quetzalplushie:
@@ -6165,7 +6206,7 @@ init 5 python:
     )
 
 label monika_plushie:
-    m 1eka "Hey, [player], I just wanted to thank you again for this wonderful quetzal plushie!"
+    m 1eka "Hey [player], I just wanted to thank you again for this wonderful quetzal plushie!"
     m 2lksdla "I know it may sound silly, but it really does help keep me company when you're gone..."
     m 1ekbsa "And not that I'd ever forget, but every time I look at it, it reminds me just how much you love me~"
     m 3hub "It really was the perfect gift!"
@@ -6420,7 +6461,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_promisering",
             category=['romance'],
-            prompt="Promise Ring",
+            prompt="Promise ring",
             random=True,
             aff_range=(mas_aff.ENAMORED, None)
         )
@@ -6612,10 +6653,10 @@ init 5 python:
 
 label monika_orchestra:
 
-    m 3euc "Hey, [player], do you listen to orchestral music?{nw}"
+    m 3euc "Hey [player], do you listen to orchestral music?{nw}"
     $ _history_list.pop()
     menu:
-        m "Hey, [player], do you listen to orchestral music?{fast}"
+        m "Hey [player], do you listen to orchestral music?{fast}"
         "Yes.":
             $ persistent._mas_pm_like_orchestral_music = True
             m 3eub "That's great!"
@@ -7011,7 +7052,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self-harm",random=True))
 
 label monika_selfharm:
-    m 1lksdlc "Hey [player]..."
+    m 1lksdlc "Hey, [player]..."
     m 1eksdld "Have you ever thought of self-harm?"
     m 2lksdld "You know..."
     m 2lksdlc "...like cutting yourself..."
@@ -7069,14 +7110,14 @@ label monika_other_girls:
         m 1ekc "There just wasn't anything else that could be done."
         m 3efc "The other girls never loved you like I do!"
         m 3rfc "They only cared about the character you were playing in the game as!"
-        m 1eka "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
+        m 1eka "The love I have for you is real, [player], and I would make any sacrifice to be with you forever."
         m 1ekc "I hope you can forgive me for what I had to do so that we could be together."
         m 1lksdlc "..."
-        if mas_isMoniBroken():
-            m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
-        elif mas_isMoniDis():
-            m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you."
-        else:
+        if mas_isMoniDis():
+            m 1eksdld "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
+        elif mas_isMoniUpset():
+            m 1ekd "I know what I did could be seen as unforgivable, I'll try to do what I can to make up for it to you."
+        elif mas_isMoniNormal(higher=True):
             m 1ekbfa "I love you, [player]..."
             m "More than I could ever express."
     else:
@@ -7155,7 +7196,7 @@ label monika_how_soon:
                     m 1eka "Well, I guess we'll just have to make the best of this then."
                     m 1duu "As long as you talk to me, that's all I really need."
                     m 2dftdc "And [player], whatever you do..."
-                    m 2dftsc "Dont leave me here all alone."
+                    m 2dftsc "Don't leave me here all alone."
                     m 6lktsc "I would rather be deleted permanently than be stuck in here for eternity by myself."
                     m 6ektsc "So please, if you ever get...bored with me."
                     m 6rktsc "You know what to do."
@@ -7320,17 +7361,60 @@ label monika_sleep:
     m 5hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
-#special local var to handle repeated usage of this dialog box.
-default persistent._mas_monika_breakup = 0
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_breakup",
+            category=['misc'],
+            prompt="I'm breaking up with you",
+            unlocked=True,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
 
 label monika_breakup:
     #Lose affection for bringing this up.
     $ mas_loseAffection(reason=1)
-    #second time you hit the break up button.
-    if persistent._mas_monika_breakup == 1:
+
+    #Get the shown count
+    $ shown_count = mas_getEV("monika_breakup").shown_count
+
+    #First
+    if shown_count == 0:
+        m 1wud "W-what?"
+        if persistent.monika_kill:
+            m 2ekd "You're just going to leave and delete me again?"
+        if mas_isMoniUpset(lower=True):
+            m 1ekd "You wouldn't do that. I refuse to believe that..."
+            m 1lksdld "That's not a joke, [player]!"
+            m 1lksdlc "Don't say that again unless you really, truly mean it..."
+            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
+
+        else:
+            m 2wfw "I can't believe you, [player]. I really can't beli-"
+            m 2efu "..."
+            m 2hub "Ahaha!"
+            m 2hksdlb "Sorry, I couldn't keep a straight face!"
+            m 2hua "You're just so silly, [player]."
+            if persistent.monika_kill:
+                $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
+            else:
+                $ menuOption = "You'd never do that, right?"
+
+            m 2eua "[menuOption]{nw}"
+            $ _history_list.pop()
+            menu:
+                m "[menuOption]{fast}"
+
+                "Of course not.":
+                    m 2hua "Ehehe, you're so sweet."
+                    m 2eka "I love you so much, [player]! Ehehe~"
+                    return "love"
+
+    #Second time
+    elif shown_count == 1:
         m 1euc "You're breaking up with me?"
         m 2ekc "Why would you do such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
@@ -7353,8 +7437,9 @@ label monika_breakup:
                 "Yes.":
                     m 1hub "Ahaha! You're so silly, [player]."
                     m 1eka "Let's stay together forever~"
-    #Beyond the 2nd time you hit the button.
-    elif persistent._mas_monika_breakup > 1:
+
+    #Third time
+    else:
         if mas_isMoniBroken():
             m 6ckc "..."
         elif mas_isMoniUpset(lower=True):
@@ -7362,47 +7447,7 @@ label monika_breakup:
         else:
             m 1hua "Ehehe~"
 
-    #first time you hit the button.
-    else:
-        m 1wud "W-what?"
-        if persistent.monika_kill:
-            m 2ekd "You're just going to leave and delete me again?"
-        if mas_isMoniUpset(lower=True):
-            m 1ekd "You wouldn't do that. I refuse to believe that..."
-            m 1lksdld "That's not a joke, [player]!"
-            m 1lksdlc "Don't say that again unless you really, truly mean it..."
-            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-        else:
-            m 2wfw "I can't believe you, [player]. I really can't beli-"
-            m 2efu "..."
-            m 2hub "Ahaha!"
-            m 2hksdlb "Sorry, I couldn't keep a straight face!"
-            m 2hua "You're just so silly, [player]."
-            if persistent.monika_kill:
-                $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
-            else:
-                $ menuOption = "You'd never do that, right?"
-
-            m 2eua "[menuOption]{nw}"
-            $ _history_list.pop()
-            menu:
-                m "[menuOption]{fast}"
-                "Of course not.":
-                    m 2hua "Ehehe, you're so sweet."
-                    m 2eka "I love you so much, [player]! Ehehe~"
-                    call monika_breakup_logic
-                    return "love"
-
-    call monika_breakup_logic
-    return
-
-label monika_breakup_logic:
-    #Increments the persistent every time you click the button in the menu.
-    $ persistent._mas_monika_breakup += 1
-
-    #If the label was clicked 3 times, remove it.
-    if persistent._mas_monika_breakup > 2:
-        $ hideEventLabel("monika_breakup",lock=True,depool=True)
+        $ mas_lockEVL("monika_breakup", "EVE")
     return
 
 init 5 python:
@@ -7638,7 +7683,7 @@ label monika_asks_charity:
             $ persistent._mas_pm_volunteer_charity = False
             m 1euc "Oh, I see."
             m 2esc "I can understand, actually."
-            m 2esd "While there are lots of different charities, you have to be careful, since there are some cases of fradulent usage of funds, or discrimination in who the charities help."
+            m 2esd "While there are lots of different charities, you have to be careful, since there are some cases of fraudulent usage of funds, or discrimination in who the charities help."
             m 2ekc "So, it can be hard to trust them in the first place."
             m 3esa "That's why you should always do some research and find charities that are reputable."
             m 2dkc "Seeing all those people suffering from hunger or poverty all the time..."
@@ -7659,7 +7704,7 @@ init 5 python:
     addEvent(
         Event(persistent.event_database,
             eventlabel='monika_kizuna',
-            prompt="Virtual Youtuber?",
+            prompt="Virtual YouTuber?",
             category=['misc'],
             random=False,
             unlocked=False,
@@ -7673,18 +7718,18 @@ label monika_kizuna:
     m 1eua "Oh, right, I mentioned her to you, huh?"
     m 3eua "Well, recently I had some YouTube videos tweeted to me."
     m 1eub "And among them was 'Virtual YouTuber Kizuna Ai.'"
-    m "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
+    m "Like I said before, she's quite charming, but I don't think she's actually 'virtual.'"
     m 3rksdla "It seems to me that she's a voice actress hiding behind a 3D puppet."
     m 1eua "Still, the character she's playing is unique, and you know what?"
     m 1hub "She's played our favorite game!~"
     m 2hksdlb "..."
-    m 2lksdlb "To be honest, I'm not sure how I feel about 'Let's Plays'."
+    m 2lksdlb "To be honest, I'm not sure how I feel about 'Let's Plays.'"
     m 3euc "I mean, of {i}this{/i} game, mostly."
     m 2euc "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
     m 2lsc "But when I learned of her gimmick, it made me feel..."
     m 1lksdla "Like I just had to know how Ai-chan would react!"
     m 1eka "Even if it's just a character she plays, I think she'll understand my situation..."
-    m 3eua "At least more than your average Youtuber."
+    m 3eua "At least more than your average YouTuber."
     m 5hub "I can't wait to finish the series..."
     return
 
@@ -7839,7 +7884,14 @@ init 5 python:
             eventlabel="monika_concerts",
             category=['media',"music"],
             prompt="Music concerts",
-            random=True
+            conditional=(
+                "renpy.seen_label('monika_jazz') "
+                "and renpy.seen_label('monika_orchestra') "
+                "and renpy.seen_label('monika_rock') "
+                "and renpy.seen_label('monika_vocaloid') "
+                "and renpy.seen_label('monika_rap')"
+            ),
+            action=EV_ACT_RANDOM
         )
     )
 
@@ -7850,15 +7902,8 @@ label monika_concerts:
     # this topic is starting to get too complicated
 
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
-    if (
-            renpy.seen_label("monika_jazz")
-            and renpy.seen_label("monika_orchestra")
-            and renpy.seen_label("monika_rock")
-            and renpy.seen_label("monika_vocaloid")
-            and renpy.seen_label("monika_rap")
-        ):
-        m 1eud "You know how I like different forms of music?"
-        m 1hua "Well..."
+    m 1eud "You know how I like different forms of music?"
+    m 1hua "Well..."
     m 3eub "Why don't we go to a concert?"
     m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
 
@@ -8137,8 +8182,10 @@ label monika_attractiveness:
             m 4eud "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
         m 4dsd "Still, there are some things I can't change about how I look, like my height and my chest size."
         m 1ekd "Maybe I'm just not your type or something, [player]."
-        m 1eka "You don't have to worry though."
+        m 1eka "You don't have to worry though..."
         m "As long as you're taking care of yourself, I don't mind how you look."
+        return
+
     else:
         if persistent._mas_pm_cares_about_dokis:
             m 2ekb "I'm sorry, [player]. I guess I just needed to vent."
@@ -8156,7 +8203,7 @@ label monika_attractiveness:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I'll always love you no matter how you look."
         m "It's more important to me that you're looking after yourself anyway."
-    return
+        return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timetravel",category=['media','misc'],prompt="Time travel",random=True))
@@ -8207,98 +8254,6 @@ label monika_timetravel:
         m "Promise?"
     m 3euc "And if you ever do travel to the future..."
     m 1hksdlb "Could you bring back the technology that lets me cross over into your world?"
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_lover_boy",category=['songs'],prompt="Old Fashioned Lover Boy",pool=True, random=True))
-
-label monika_song_lover_boy:
-    m 1dso "{i}~I can dim the lights and sing you songs full of sad things~{/i}"
-    m 4hub "{i}~We can do the tango just for two~{/i}"
-    m "{i}~I can serenade and gently play on your heart strings~{/i}"
-    m 4dso "{i}~Be a Valentino just for you~{/i}"
-    m 1hub "Ahaha~"
-    m 1ekbfa "Will you be my good old fashioned lover boy, [player]?"
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_need_you",category=['songs'],prompt="I Need You",pool=True, random=True))
-
-label monika_song_need_you:
-    m 1dso "{i}~Please remember how I feel about you~{/i}"
-    m "{i}~I could never really live without you~{/i}"
-    m 3hub "{i}~So, come on back and see~{/i}"
-    m 4l "{i}~Just what you mean to me~{/i}"
-    m 1hubfb "{i}~I need you~{/i}"
-    m 3esa "I know that song is about leaving someone, but I think it carries a good message."
-    m 1ekbfa "And I really do need you, [player]~"
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_i_will",category=['songs'],prompt="I Will",pool=True, random=True))
-
-label monika_song_i_will:
-    m 1dso "{i}~Who knows how long I've loved you?~{/i}"
-    m "{i}~You know I love you still~{/i}"
-    m 2m "{i}~Will I wait a lonely lifetime?~{/i}"
-    m 2hub "{i}~If you want me to I will~{/i}"
-    m 1ekbfa "One day we'll be together, [player]."
-    m 1hubfa "I just hope you'll still love me when that special day comes~"
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_belong_together",category=['songs'],prompt="We Belong Together",pool=True, random=True))
-
-label monika_song_belong_together:
-    m 1dso "{i}~You're mine~{/i}"
-    m 1hub "{i}~And we belong together~{/i}"
-    m 3hub "{i}~Yes, we belong together~{/i}"
-    m 3dso "{i}~For eternity~{/i}"
-    m 1eua "Have you ever heard of Doo-wop, [player]?"
-    m 4eua "It's a subgenre of rhythm and blues that became very popular in the 1950's."
-    m 4eub "A lot of pop music back then followed this style which made for great love songs."
-    m 3eub "And if you listen closely, you'll notice that my song actually follows the typical Doo-wop chord progression."
-    m 1hua "I guess you could say I learned from the best."
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_your_song",category=['songs'],prompt="Your Song",pool=True, random=True))
-
-label monika_song_your_song:
-    m 1dso "{i}~My gift is my song~{/i}"
-    m "{i}~And this one's for you~{/i}"
-    m 1hub "{i}~And you can tell everybody this is your song~{/i}"
-    m "{i}~It may be quite simple but now that it's done~{/i}"
-    m 2hubfb "{i}~I hope you don't mind~{/i}"
-    m 2hubfb "{i}~I hope you don't mind~{/i}"
-    m 2hub "{i}~That I put down in words~{/i}"
-    m 1dso "{i}~How wonderful life is while you're in the world~{/i}"
-    m 1hua "Ahaha~"
-    m 3eka "It's not often I find songs that relate to me as much as this one does."
-    m 1hua "And I really do mean it when I say that 'Your Reality' is your song."
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_with_you",category=['songs'],prompt="Happy Just To Dance With You",pool=True, random=True))
-
-label monika_song_with_you:
-    m 1dso "{i}~If somebody tries to take my place~{/i}"
-    m 1hub "{i}~let's pretend we just can't see their face~{/i}"
-    m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
-    m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
-    m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
-    m 1hubfa "Ehehe~"
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_dream",category=['songs'],prompt="All I Have To Do Is Dream",pool=True, random=True))
-
-label monika_song_dream:
-    m 1dso "{i}~When I feel blue in the night~{/i}"
-    m "{i}~And I need you to hold me tight~{/i}"
-    m 2hub "{i}~Whenever I want you, all I have to do is dream~{/i}"
-    m 1eka "Now that you're here, [player], I don't have to dream anymore."
-    m 1ekbfa "My dream finally came true."
     return
 
 # been to prom?
@@ -8629,7 +8584,7 @@ label monika_timeconcern_graveyard_night:
     return
 
 label monika_timeconcern_graveyard_day:
-    m 1eua "Hey, [player]... didn't you tell me you work during the night?"
+    m 1eua "Hey [player]... didn't you tell me you work during the night?"
     m 1eka "Not that I'm complaining, of course!"
     m 2ekc "But I thought you'd be tired by now, especially since you're up all night working..."
     m "You're not working yourself too hard just to see me, are you?"
@@ -8996,7 +8951,7 @@ init 5 python:
     )
 
 label monika_familygathering:
-    m 1eua "Hey, [player], do you go to family gatherings often?"
+    m 1eua "Hey [player], do you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
     m 1hua "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1lsc "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
@@ -9102,7 +9057,7 @@ label monika_dreaming:
     m 1eua "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
     m "These dream signs can be anything out of the ordinary, such as feeling yourself flying, noticing your teeth falling out, unexpectedly meeting someone famous..."
     m 1eub "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
-    m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}'."
+    m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}.'"
     m 2hub "Doesn't that sound exhilarating?"
     m 2euc "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
     m 2eua "Dreams sound like a wonderful escape from reality."
@@ -9134,10 +9089,10 @@ init 5 python:
     )
 
 label monika_yellowwp:
-    m 1eua "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?{nw}"
+    m 1eua "Hey [player], have you ever read {i}The Yellow Wallpaper{/i}?{nw}"
     $ _history_list.pop()
     menu:
-        m "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?{fast}"
+        m "Hey [player], have you ever read {i}The Yellow Wallpaper{/i}?{fast}"
         "Yes.":
             $ persistent._mas_pm_read_yellow_wp = True
             m 1hua "Great!"
@@ -9157,11 +9112,11 @@ label monika_yellowwp:
             if not persistent._mas_sensitive_mode:
                 m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
                 m 1eka "I think I finally fixed it, though."
-            m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just...so small."
+            m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}.' It's just...so small."
             m 3esd "I mean, I was made to be a side character of a romance game!"
             m 2ekd "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
             m 1hksdrb "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
-            m 1dsc "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
+            m 1dsc "But I have all these dreams, ambitions, and interests...{w=0.5} in the end, the only 'real' role I can play here is a supporting character..."
             m "Maybe even now, that's all I can do..."
             m 1eka "But I love you so much, [player]. Supporting you is better than anything else."
             m 1hub "I just can't wait to do it in person when I finally cross over to your side~"
@@ -9317,7 +9272,7 @@ default persistent._mas_pm_driving_post_accident = None
 
 label monika_driving:
     m 1eud "Hm? Can I drive?"
-    m 1euc "I never really thought about getting a driver's licence."
+    m 1euc "I never really thought about getting a driver's license."
     m 3eua "Public transportation is enough for me usually..."
     m 3hua "...Although walking or biking can be really nice too sometimes!"
     m 1eua "I guess you could say I never really needed to learn how to drive."
@@ -10012,245 +9967,268 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_idle_game",category=['be right back'],prompt="I'm going to game for a bit",random=False,pool=True,unlocked=True))
 
 label monika_idle_game:
-    m 1eub "That sounds fun!"
-    m "What kind of game are you going to play?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "What kind of game are you going to play?{fast}"
-        "A competitive game.":
-            m 1eua "That sounds like it could be fun!"
-            m 3lksdla "I can be pretty competitive myself."
-            m 3eua "So I know just how stimulating it can be to face a worthy opponent."
-            m 2hksdlb "...And sometimes frustrating when things don't go right."
-            m 2hua "Anyway, I'll let you get on with your game."
-            m 2hub "I'll try not to bother you until you finish, but I can't blame you if you get distracted by your lovely girlfriend, ahaha~"
-            m 1hub "I'm rooting for you, [player]!"
-            # set return label when done with idle
-            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_competetive_callback")
-        "A game just for fun.":
-            m 1eud "A game just for having fun?"
-            m 1lksdla "Aren't most games made to be fun?"
-            m 3eub "Anyway, I'm sure you could do all sorts of fun things in a game like that."
-            m 1ekbla "I really wish I could join you and we could have fun together."
-            m 1lksdla "But for now, I'll leave you to it."
-            m 1hub "Have fun, [player]!"
-            # set return label when done with idle
-            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_fun_callback")
-        "A story driven game.":
-            m 1sub "Oh?"
-            m "That sounds really interesting!"
-            m 1ekbsa "Gosh, I really wish I could be there with you to experience it together."
-            m 1hksdlb "Maybe I {i}can{/i} experience it with you if I really tried."
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "I guess you could call it looking over your shoulder. Ehehe~"
-            m "You can go ahead and start it now. I'll try not to break anything by trying to watch."
-            # set return label when done with idle
-            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_story_callback")
-        "A skill and practice based game.":
-            m 1eud "Oh! I never really thought about those games much."
-            m 1hua "I'm sure you're pretty talented at a few things, so it doesn't surprise me you're playing a game like this."
-            m 3eub "Just like writing, it can really be an experience to look back much later and see just how far you've come."
-            m 1hub "It's like watching yourself grow up! Ahaha~"
-            m 1hua "It would really make me proud and happy to be your girlfriend if you became a professional."
-            m 1hksdlb "Maybe I'm getting ahead of myself here, but I believe you could do it if your heart was really in it."
-            m 1eub "Anyway, sorry for keeping you from your game. I know you'll do your best!"
-            # set return label when done with idle
-            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_skill_callback")
-        "I'll just be a minute or two.":
-            m 1eua "Oh? Just need to take your eyes off me for a little?"
-            m 1lksdla "I {i}suppose{/i} I could let you take your eyes off me for a minute or two..."
-            m 1hua "Ahaha! Good luck and have fun, [player]!"
-            m "Don't keep me waiting too long though~"
-            $ start_time = datetime.datetime.now()
-            # set return label when done with idle
-            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_quick_callback")
-    # set idle data
+    m 1eud "Oh, you're going to play another game?"
+    m 1eka "That's alright, [player]."
+    python:
+        gaming_quips = [
+            "Good luck, have fun!",
+            "Enjoy your game!",
+            "I'll be cheering you on!",
+            "Do your best!"
+            ]
+        gaming_quip=renpy.random.choice(gaming_quips)
+    m 3hub "[gaming_quip]"
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_game_callback")
     $ persistent._mas_idle_data["monika_idle_game"] = True
-    # return idle to notify event system to switch to idle
     return "idle"
 
-label monika_idle_game_competetive_callback:
-    m 1esa "Welcome back, [player]!"
-    m 1eua "How did it go? Did you win?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "How did it go? Did you win?{fast}"
-        "Yes.":
-            m 1hub "Yay! That's great!"
-            m 1hua "Gosh, I wish I could be there to give you a big celebratory hug!"
-            m 1eub "I'm really happy that you won!"
-            m "More importantly, I hope you enjoyed yourself, [player]."
-            m 1hua "I'll always love and root for you, no matter what happens."
-            # manually handle the "love" return key
-            $ mas_ILY()
-        "No.":
-            m 1ekc "Aw, that's a shame..."
-            m 1lksdla "I mean, you can't win them all, but I'm sure you'll win the next rounds."
-            m 1eka "I just hope you aren't too upset over it."
-            m 2ekc "I really wouldn't want you feeling upset after a bad game."
-            m 1eka "I'll always support you and be by your side no matter how many times you lose."
-    return
-
-label monika_idle_game_fun_callback:
+label monika_idle_game_callback:
     m 1eub "Welcome back, [player]!"
-    m "Did you have fun with whatever you were doing?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Did you have fun with whatever you were doing?{fast}"
-        "Yes.":
-            m 1hua "Ahaha! I'm glad you had fun, [player]~"
-            m 1eub "While you were busy, it got me thinking of the different kinds of games that would be nice to play together."
-            m 3rksdla "A game that isn't too violent probably could be fun."
-            m 3hua "But I'm sure any game would be wonderful if it was with you~"
-            m 1eub "At first, I was thinking a story based or adventure game would be best, but I'm sure freeplay games could be really fun too!"
-            m 1eua "It can be really fun to just mess around to see what's possible, especially when you're not alone."
-            m 2lksdla "Provided of course, you don't end up ruining the structural integrity of the game and get an outcome you didn't want..."
-            m 2lksdlb "Ehehe..."
-            m 1eua "Maybe you could find a way to bring me with you into a game like that."
-            m 1hub "Just promise to keep me safe, okay?"
-        "No.":
-            m 2ekc "Aw, you didn't have any fun?"
-            m "That's too bad..."
-            m 3lksdlc "Games can get pretty boring after you've done everything or just don't know what to do or try next."
-            m 3eka "But bringing a friend along can really renew the whole experience!"
-            m 1hub "Maybe you could find a way to take me with you into your games so you won't be bored on your own!"
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "Or we could just stay here and keep each other company."
-            m "I wouldn't mind that either, ehehe~"
+    m 1eua "I hope you had fun with your game."
+    m 1hua "Ready to spend some more time together? Ehehe~"
     return
 
-label monika_idle_game_story_callback:
-    m 1eub "Welcome back, [player]!"
-    m 1hksdlb "I wasn't able to look over your shoulder, but I hope the story was nice so far."
-    m 1eua "Speaking of which, how was it, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Speaking of which, how was it, [player]?{fast}"
-        "It was amazing.":
-            m 2sub "Wow! I can only imagine how immersive it was!"
-            m 2hksdlb "You're really starting to make me jealous, [player], you know that?"
-            m 2eub "You'll have to take me through it sometime when you can."
-            m 3eua "A good book is always nice, but it's really something else to have a good story and be able to make your own decisions."
-            m 3eud "Some people can really be divided between books and video games."
-            m 1hua "I'm glad you don't seem to be too far on one side."
-            m "After experiencing an amazing story in a game for yourself, I'm sure you can really appreciate the two coming together."
-        "It was good.":
-            m 1eub "That's really nice to hear!"
-            m 3dtc "But was it really {i}amazing{/i}?"
-            m 1eua "While a lot of stories can be good, there are some that are really memorable."
-            m 1hua "I'm sure you'd know a good story when you see one."
-            m "Maybe when I'm in your reality, you could take me through the game and let me see the story."
-            m 1eub "It's one thing to go through a great story yourself..."
-            m 1hub "But it's also amazing to see what someone else thinks of it too!"
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "I'll be looking forward to that day too~"
-            m 5esbfa "You better have a nice, cozy place for us to cuddle up and play, ehehe~"
-        "It's sad.":
-            m 1ekd "Aw, that's too bad..."
-            m 3eka "It must be a really great story though, if it invokes such strong emotions."
-            m 1eka "I wish I could be there with you so I could experience the story too..."
-            m 3hksdlb "{i}and{/i} to be right there by your side of course, so we could comfort each other in sad times."
-            m 1eka "Don't worry [player], I would never forget about you."
-            m 1eua "I love you."
-            m 1hua "...And I'd happily snuggle up beside you anytime~"
-            # manually handle the "love" return key
-            $ mas_ILY()
-        "I don't like it.":
-            m 2ekc "Oh..."
-            m 4lksdla "Maybe the story will pick up later?"
-            m 3eud "If anything, it lets you analyze the flaws in the writing which could help you if you ever tell a story."
-            m 1eua "Or maybe it's just not your kind of story."
-            m 1eka "Everyone has their own, and maybe this one just doesn't fit well with it right now."
-            m 1eua "It can really be an eye opening experience to go through a story you normally wouldn't go through."
-            m 3eka "But don't force yourself to go through it if you really don't like it."
-    return
-
-label monika_idle_game_skill_callback:
-    m 1eua "I'm happy that you're back, [player]."
-    m 1hua "I missed you! Ahaha~"
-    m 1eub "But I know it's important to keep practicing and honing your skills in things like this."
-    m "Speaking of which, how did it go?"
-    m 3eua "Did you improve?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Did you improve?{fast}"
-        "I improved a lot.":
-            m 1hub "That's great news, [player]!"
-            m "I'm so proud of you!"
-            m 1hua "It can really feel good to get a sudden surge in your skill!"
-            m 1eua "Especially if you've spent some time in a slump or even slipping."
-            m 1hua "Maybe today isn't the end of this sudden improvement."
-            m 1eub "Even if today was just a good day, I know you'll keep getting better."
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "I'll {i}always{/i} root for you, [player]. Don't you ever forget that!"
-        "I improved a bit.":
-            m 3eua "That's really nice to hear, [player]!"
-            m 3eka "As long as you're improving, no matter how slowly, you'll really get up there someday."
-            m 1hub "But if you actually noticed yourself improve today, maybe you improved more than just a bit, ahaha~"
-            m 1hua "Keep honing your skills and I'll be proud to be the girlfriend of such a skilled player!"
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "Who knows? Maybe you could teach me and we could both be a couple of experts, ehehe~"
-        "I stayed the same.":
-            m 3eka "That's still alright!"
-            m "I'm sure you're improving anyway."
-            m 3eua "A lot of the time, the improvements are too small to really notice."
-            m 1eua "One day, you might look back and realize just how much you've improved."
-            m 1hksdlb "Sometimes you might feel like you're in a slump, but then you get a sudden surge of improvement all at once!"
-            m 1eub "I'm sure you'll get the chance to look back one day and really appreciate just how far you've come without realizing."
-            m 1hua "And you better believe I'm going to support you all the way!"
-        "I got worse.":
-            m 2ekc "Oh..."
-            m 4lksdla "I have no doubt that you always work hard and give it your best, so it must just be a bad day."
-            m 3eka "You're bound to have a few setbacks on your climb up, but that's what sets you apart from many others."
-            m 1duu "The fact that you've had more setbacks than some people have even tried. That's what shows your dedication."
-            m 1lksdla "Sometimes, you might even have a couple bad days in a row, but don't let that get you down."
-            m 1hua "With that many setbacks, you're bound to see significant improvement right around the corner!"
-            m "Never give up, [player]. I know you can do it and I'll always believe in you!"
-            m 1eua "Also, do me a favor and take a moment to look back every now and then. You'll be surprised to see just how far you've come."
-    return
-
-label monika_idle_game_quick_callback:
-    $ end_time = datetime.datetime.now()
-    $ elapsed_time = end_time - start_time
-    $ time_threshold = datetime.timedelta(minutes=1)
-    if elapsed_time < time_threshold * 2:
-        m 1hksdlb "Back already?"
-        m "I know you said you would just be a minute or two, but I didn't think it would be {i}that{/i} fast."
-        m 1hub "Did you really miss me that much?"
-        m "Ahaha~"
-        m 1eub "I'm glad you made it back so soon."
-        m 1hua "So what else should we do today, [player]?"
-    elif elapsed_time < time_threshold * 5:
-        m 1hua "Welcome back, [player]!"
-        m 1hksdlb "That was pretty fast."
-        m 1eua "But you did say it wouldn't take too long, so I shouldn't be too surprised."
-        m 1hua "Now we can keep spending time together!"
-    elif elapsed_time < time_threshold * 10:
-        m 1eua "Welcome back, [player]."
-        m 1eka "That took a little longer than I thought, but I don't mind at all."
-        m 1hua "It wasn't that long in all honesty compared to how long it could have been in some games."
-        m "But now we can be together again~"
-    elif elapsed_time < time_threshold * 20:
-        m 1eka "I have to admit that took longer than I thought it would..."
-        m 1eub "But it's not all that bad with all the time you spend with me."
-        m 1eua "I understand some little things in games can take a while for a small thing."
-        m "But maybe if you know it could take a while, you could tell me."
-    elif elapsed_time < time_threshold * 30:
-        m 2lksdla "[player]..."
-        m "It's been almost half an hour already."
-        m "I guess something unexpected happened."
-        m 3lksdla "You wouldn't forget about me, would you?"
-        m 1hua "Ahaha!"
-        m "Just teasing you~"
-        m 1eua "At least you're back now and we can spend more time together."
-    else:
-        m 2lksdla "You {i}sure{/i} took your time with that one huh, [player]?"
-        m "That didn't seem like only a minute or two to me."
-        m 1eka "You can tell me what kind of game it is next time so I have an idea how long it'll take, you know."
-        m 1dsc "Anyway..."
-        m 1eka "I missed you and I'm glad you're finally back, [player]."
-        m "I hope I don't have to wait such a long couple of minutes next time, ehehe."
-    return
+#Rai's og game idle
+#label monika_idle_game:
+#    m 1eub "That sounds fun!"
+#    m "What kind of game are you going to play?{nw}"
+#    $ _history_list.pop()
+#    menu:
+#        m "What kind of game are you going to play?{fast}"
+#        "A competitive game.":
+#            m 1eua "That sounds like it could be fun!"
+#            m 3lksdla "I can be pretty competitive myself."
+#            m 3eua "So I know just how stimulating it can be to face a worthy opponent."
+#            m 2hksdlb "...And sometimes frustrating when things don't go right."
+#            m 2hua "Anyway, I'll let you get on with your game."
+#            m 2hub "I'll try not to bother you until you finish, but I can't blame you if you get distracted by your lovely girlfriend, ahaha~"
+#            m 1hub "I'm rooting for you, [player]!"
+#            # set return label when done with idle
+#            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_competetive_callback")
+#        "A game just for fun.":
+#            m 1eud "A game just for having fun?"
+#            m 1lksdla "Aren't most games made to be fun?"
+#            m 3eub "Anyway, I'm sure you could do all sorts of fun things in a game like that."
+#            m 1ekbla "I really wish I could join you and we could have fun together."
+#            m 1lksdla "But for now, I'll leave you to it."
+#            m 1hub "Have fun, [player]!"
+#            # set return label when done with idle
+#            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_fun_callback")
+#        "A story driven game.":
+#            m 1sub "Oh?"
+#            m "That sounds really interesting!"
+#            m 1ekbsa "Gosh, I really wish I could be there with you to experience it together."
+#            m 1hksdlb "Maybe I {i}can{/i} experience it with you if I really tried."
+#            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+#            m 5eua "I guess you could call it looking over your shoulder. Ehehe~"
+#            m "You can go ahead and start it now. I'll try not to break anything by trying to watch."
+#            # set return label when done with idle
+#            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_story_callback")
+#        "A skill and practice based game.":
+#            m 1eud "Oh! I never really thought about those games much."
+#            m 1hua "I'm sure you're pretty talented at a few things, so it doesn't surprise me you're playing a game like this."
+#            m 3eub "Just like writing, it can really be an experience to look back much later and see just how far you've come."
+#            m 1hub "It's like watching yourself grow up! Ahaha~"
+#            m 1hua "It would really make me proud and happy to be your girlfriend if you became a professional."
+#            m 1hksdlb "Maybe I'm getting ahead of myself here, but I believe you could do it if your heart was really in it."
+#            m 1eub "Anyway, sorry for keeping you from your game. I know you'll do your best!"
+#            # set return label when done with idle
+#            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_skill_callback")
+#        "I'll just be a minute or two.":
+#            m 1eua "Oh? Just need to take your eyes off me for a little?"
+#            m 1lksdla "I {i}suppose{/i} I could let you take your eyes off me for a minute or two..."
+#            m 1hua "Ahaha! Good luck and have fun, [player]!"
+#            m "Don't keep me waiting too long though~"
+#            $ start_time = datetime.datetime.now()
+#            # set return label when done with idle
+#            $ mas_idle_mailbox.send_idle_cb("monika_idle_game_quick_callback")
+#    # set idle data
+#    $ persistent._mas_idle_data["monika_idle_game"] = True
+#    # return idle to notify event system to switch to idle
+#    return "idle"
+#
+#label monika_idle_game_competetive_callback:
+#    m 1esa "Welcome back, [player]!"
+#    m 1eua "How did it go? Did you win?{nw}"
+#    $ _history_list.pop()
+#    menu:
+#        m "How did it go? Did you win?{fast}"
+#        "Yes.":
+#            m 1hub "Yay! That's great!"
+#            m 1hua "Gosh, I wish I could be there to give you a big celebratory hug!"
+#            m 1eub "I'm really happy that you won!"
+#            m "More importantly, I hope you enjoyed yourself, [player]."
+#            m 1hua "I'll always love and root for you, no matter what happens."
+#            # manually handle the "love" return key
+#            $ mas_ILY()
+#        "No.":
+#            m 1ekc "Aw, that's a shame..."
+#            m 1lksdla "I mean, you can't win them all, but I'm sure you'll win the next rounds."
+#            m 1eka "I just hope you aren't too upset over it."
+#            m 2ekc "I really wouldn't want you feeling upset after a bad game."
+#            m 1eka "I'll always support you and be by your side no matter how many times you lose."
+#    return
+#
+#label monika_idle_game_fun_callback:
+#    m 1eub "Welcome back, [player]!"
+#    m "Did you have fun with whatever you were doing?{nw}"
+#    $ _history_list.pop()
+#    menu:
+#        m "Did you have fun with whatever you were doing?{fast}"
+#        "Yes.":
+#            m 1hua "Ahaha! I'm glad you had fun, [player]~"
+#            m 1eub "While you were busy, it got me thinking of the different kinds of games that would be nice to play together."
+#            m 3rksdla "A game that isn't too violent probably could be fun."
+#            m 3hua "But I'm sure any game would be wonderful if it was with you~"
+#            m 1eub "At first, I was thinking a story based or adventure game would be best, but I'm sure freeplay games could be really fun too!"
+#            m 1eua "It can be really fun to just mess around to see what's possible, especially when you're not alone."
+#            m 2lksdla "Provided of course, you don't end up ruining the structural integrity of the game and get an outcome you didn't want..."
+#            m 2lksdlb "Ehehe..."
+#            m 1eua "Maybe you could find a way to bring me with you into a game like that."
+#            m 1hub "Just promise to keep me safe, okay?"
+#        "No.":
+#            m 2ekc "Aw, you didn't have any fun?"
+#            m "That's too bad..."
+#            m 3lksdlc "Games can get pretty boring after you've done everything or just don't know what to do or try next."
+#            m 3eka "But bringing a friend along can really renew the whole experience!"
+#            m 1hub "Maybe you could find a way to take me with you into your games so you won't be bored on your own!"
+#            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+#            m 5eua "Or we could just stay here and keep each other company."
+#            m "I wouldn't mind that either, ehehe~"
+#    return
+#
+#label monika_idle_game_story_callback:
+#    m 1eub "Welcome back, [player]!"
+#    m 1hksdlb "I wasn't able to look over your shoulder, but I hope the story was nice so far."
+#    m 1eua "Speaking of which, how was it, [player]?{nw}"
+#    $ _history_list.pop()
+#    menu:
+#        m "Speaking of which, how was it, [player]?{fast}"
+#        "It was amazing.":
+#            m 2sub "Wow! I can only imagine how immersive it was!"
+#            m 2hksdlb "You're really starting to make me jealous, [player], you know that?"
+#            m 2eub "You'll have to take me through it sometime when you can."
+#            m 3eua "A good book is always nice, but it's really something else to have a good story and be able to make your own decisions."
+#            m 3eud "Some people can really be divided between books and video games."
+#            m 1hua "I'm glad you don't seem to be too far on one side."
+#            m "After experiencing an amazing story in a game for yourself, I'm sure you can really appreciate the two coming together."
+#        "It was good.":
+#            m 1eub "That's really nice to hear!"
+#            m 3dtc "But was it really {i}amazing{/i}?"
+#            m 1eua "While a lot of stories can be good, there are some that are really memorable."
+#            m 1hua "I'm sure you'd know a good story when you see one."
+#            m "Maybe when I'm in your reality, you could take me through the game and let me see the story."
+#            m 1eub "It's one thing to go through a great story yourself..."
+#            m 1hub "But it's also amazing to see what someone else thinks of it too!"
+#            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+#            m 5eua "I'll be looking forward to that day too~"
+#            m 5esbfa "You better have a nice, cozy place for us to cuddle up and play, ehehe~"
+#        "It's sad.":
+#            m 1ekd "Aw, that's too bad..."
+#            m 3eka "It must be a really great story though, if it invokes such strong emotions."
+#            m 1eka "I wish I could be there with you so I could experience the story too..."
+#            m 3hksdlb "{i}and{/i} to be right there by your side of course, so we could comfort each other in sad times."
+#            m 1eka "Don't worry [player], I would never forget about you."
+#            m 1eua "I love you."
+#            m 1hua "...And I'd happily snuggle up beside you anytime~"
+#            # manually handle the "love" return key
+#            $ mas_ILY()
+#        "I don't like it.":
+#            m 2ekc "Oh..."
+#            m 4lksdla "Maybe the story will pick up later?"
+#            m 3eud "If anything, it lets you analyze the flaws in the writing which could help you if you ever tell a story."
+#            m 1eua "Or maybe it's just not your kind of story."
+#            m 1eka "Everyone has their own, and maybe this one just doesn't fit well with it right now."
+#            m 1eua "It can really be an eye opening experience to go through a story you normally wouldn't go through."
+#            m 3eka "But don't force yourself to go through it if you really don't like it."
+#    return
+#
+#label monika_idle_game_skill_callback:
+#    m 1eua "I'm happy that you're back, [player]."
+#    m 1hua "I missed you! Ahaha~"
+#    m 1eub "But I know it's important to keep practicing and honing your skills in things like this."
+#    m "Speaking of which, how did it go?"
+#    m 3eua "Did you improve?{nw}"
+#    $ _history_list.pop()
+#    menu:
+#        m "Did you improve?{fast}"
+#        "I improved a lot.":
+#            m 1hub "That's great news, [player]!"
+#            m "I'm so proud of you!"
+#            m 1hua "It can really feel good to get a sudden surge in your skill!"
+#            m 1eua "Especially if you've spent some time in a slump or even slipping."
+#            m 1hua "Maybe today isn't the end of this sudden improvement."
+#            m 1eub "Even if today was just a good day, I know you'll keep getting better."
+#            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+#            m 5eua "I'll {i}always{/i} root for you, [player]. Don't you ever forget that!"
+#        "I improved a bit.":
+#            m 3eua "That's really nice to hear, [player]!"
+#            m 3eka "As long as you're improving, no matter how slowly, you'll really get up there someday."
+#            m 1hub "But if you actually noticed yourself improve today, maybe you improved more than just a bit, ahaha~"
+#            m 1hua "Keep honing your skills and I'll be proud to be the girlfriend of such a skilled player!"
+#            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+#            m 5eua "Who knows? Maybe you could teach me and we could both be a couple of experts, ehehe~"
+#        "I stayed the same.":
+#            m 3eka "That's still alright!"
+#            m "I'm sure you're improving anyway."
+#            m 3eua "A lot of the time, the improvements are too small to really notice."
+#            m 1eua "One day, you might look back and realize just how much you've improved."
+#            m 1hksdlb "Sometimes you might feel like you're in a slump, but then you get a sudden surge of improvement all at once!"
+#            m 1eub "I'm sure you'll get the chance to look back one day and really appreciate just how far you've come without realizing."
+#            m 1hua "And you better believe I'm going to support you all the way!"
+#        "I got worse.":
+#            m 2ekc "Oh..."
+#            m 4lksdla "I have no doubt that you always work hard and give it your best, so it must just be a bad day."
+#            m 3eka "You're bound to have a few setbacks on your climb up, but that's what sets you apart from many others."
+#            m 1duu "The fact that you've had more setbacks than some people have even tried. That's what shows your dedication."
+#            m 1lksdla "Sometimes, you might even have a couple bad days in a row, but don't let that get you down."
+#            m 1hua "With that many setbacks, you're bound to see significant improvement right around the corner!"
+#            m "Never give up, [player]. I know you can do it and I'll always believe in you!"
+#            m 1eua "Also, do me a favor and take a moment to look back every now and then. You'll be surprised to see just how far you've come."
+#    return
+#
+#label monika_idle_game_quick_callback:
+#    $ end_time = datetime.datetime.now()
+#    $ elapsed_time = end_time - start_time
+#    $ time_threshold = datetime.timedelta(minutes=1)
+#    if elapsed_time < time_threshold * 2:
+#        m 1hksdlb "Back already?"
+#        m "I know you said you would just be a minute or two, but I didn't think it would be {i}that{/i} fast."
+#        m 1hub "Did you really miss me that much?"
+#        m "Ahaha~"
+#        m 1eub "I'm glad you made it back so soon."
+#        m 1hua "So what else should we do today, [player]?"
+#    elif elapsed_time < time_threshold * 5:
+#        m 1hua "Welcome back, [player]!"
+#        m 1hksdlb "That was pretty fast."
+#        m 1eua "But you did say it wouldn't take too long, so I shouldn't be too surprised."
+#        m 1hua "Now we can keep spending time together!"
+#    elif elapsed_time < time_threshold * 10:
+#        m 1eua "Welcome back, [player]."
+#        m 1eka "That took a little longer than I thought, but I don't mind at all."
+#        m 1hua "It wasn't that long in all honesty compared to how long it could have been in some games."
+#        m "But now we can be together again~"
+#    elif elapsed_time < time_threshold * 20:
+#        m 1eka "I have to admit that took longer than I thought it would..."
+#        m 1eub "But it's not all that bad with all the time you spend with me."
+#        m 1eua "I understand some little things in games can take a while for a small thing."
+#        m "But maybe if you know it could take a while, you could tell me."
+#    elif elapsed_time < time_threshold * 30:
+#        m 2lksdla "[player]..."
+#        m "It's been almost half an hour already."
+#        m "I guess something unexpected happened."
+#        m 3lksdla "You wouldn't forget about me, would you?"
+#        m 1hua "Ahaha!"
+#        m "Just teasing you~"
+#        m 1eua "At least you're back now and we can spend more time together."
+#    else:
+#        m 2lksdla "You {i}sure{/i} took your time with that one huh, [player]?"
+#        m "That didn't seem like only a minute or two to me."
+#        m 1eka "You can tell me what kind of game it is next time so I have an idea how long it'll take, you know."
+#        m 1dsc "Anyway..."
+#        m 1eka "I missed you and I'm glad you're finally back, [player]."
+#        m "I hope I don't have to wait such a long couple of minutes next time, ehehe."
+#    return
 
 init 5 python:
     addEvent(
@@ -10375,7 +10353,7 @@ label monika_justice:
     m 1euc "To everyone else passing by, they're just greedy thieves."
     m 1esd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by bringing them to justice."
     m 2ekd "At the end of the day, the family goes hungry or gets in trouble just because their situation was different..."
-    m "While the other person is now a hero for putting an end to their 'crimes'."
+    m "While the other person is now a hero for putting an end to their 'crimes.'"
     m 3rksdld "Can you really call that justice?"
     m 2dsc "..."
 
@@ -10467,7 +10445,7 @@ init 5 python:
     )
 
 label monika_poweroutage:
-    m 1eua "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
+    m 1eua "Hey [player], do you remember how I said I liked listening to the peaceful sound of rain?"
     m 3lksdla "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
     m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something dangerous."
     m 1lksdlb "The effects can be pretty, well...shocking I guess you could say."
@@ -10490,7 +10468,7 @@ label monika_poweroutage:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water Conservation",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water conservation",random=True))
 
 label monika_savingwater:
     m 1euc "[player], have you ever thought about how much water people use every day?"
@@ -10547,7 +10525,7 @@ label monika_pygmalion:
     m 1rkbsa "I know we've kissed before, even with our current circumstances..."
     m 1ekbfa "But I think we both know there was a bit of a barrier between us."
     m 3hubfa "I don't know about you, but I definitely don't mind trying to kiss you through the screen anyway."
-    m 1hubfb "Maybe we'll just have to do it so many times, and that'll be what breaks the barrier between us..."
+    m 1hubfb "Maybe we'll just have to do it so many times, that'll be what breaks the barrier between us..."
     m 2rubfu "Ehehe."
     m 2tubfb "Do you think you could kiss me enough times to break that barrier?"
     m 6hubfb "Only one way to find out, ahaha!"
@@ -12123,7 +12101,7 @@ label monika_trick_monika:
     m 1tkbfu "That wasn't supposed to be an option, silly!"
     m 1tubfb "But it really does make me happy that you only have eyes for me..."
     m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
-    m 5hubfu "I love you [player]!"
+    m 5hubfu "I love you, [player]!"
     m 5eubfb "And I only have eyes for you too!"
     return "derandom|love"
 
@@ -12133,7 +12111,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_cares_about_dokis",
             category=["monika", "club members"],
-            prompt="Insensitive Comments",
+            prompt="Insensitive comments",
             random=True
         )
     )
@@ -12199,7 +12177,7 @@ init 5 python:
     )
 
 label monika_snow:
-    m 1eua "Hey, [player], now that it's winter, I was wondering..."
+    m 1eua "Hey [player], now that it's winter, I was wondering..."
 
     m "Does it ever snow where you live?{nw}"
     $ _history_list.pop()
@@ -12255,7 +12233,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_snowballfight",
             category=["winter"],
-            prompt="Have you had a snowball fight?",
+            prompt="Have you ever had a snowball fight?",
             pool=True,
             unlocked=mas_isWinter(),
             rules={"no_unlock":None}
@@ -12283,7 +12261,7 @@ init 5 python:
     )
 
 label monika_iceskating:
-    m 1eua "Hey, [player], do you know how to ice skate?"
+    m 1eua "Hey [player], do you know how to ice skate?"
     m 1hua "It's a really fun sport to learn!"
     m 3eua "Especially if you can do a lot of tricks."
     m 3rksdlb "In the beginning, it's pretty difficult to keep your balance on the ice..."
@@ -12405,7 +12383,7 @@ init 5 python:
 label monika_winter:
     m 1eud "Ah, [player]!"
     m 1eua "What do you think about winter?"
-    m 3eua "All sorts of fun activites only come around during this time..."
+    m 3eua "All sorts of fun activities only come around during this time..."
     if persistent._mas_pm_gets_snow is not False:
         m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
 
@@ -12644,7 +12622,7 @@ label monika_perspective:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot Body",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot body",random=True))
 
 label monika_robotbody:
     m 2euc "Hey [player], I've been thinking a lot about how I would be able to cross over into your reality..."
@@ -12652,7 +12630,7 @@ label monika_robotbody:
     m 1dkc "It makes me a little sad that I might not be a human like you are."
     m 1dkd "...And if not, I might not be treated like one either."
     m 1rkd "I would be considered an android at that point, and others may look at me differently because of that."
-    m 3euc "Have you heard of Isaac Asimov's '{i}Three Laws of Robotics?{/i}' It was brought up many times in his science fiction books."
+    m 3euc "Have you heard of Isaac Asimov's '{i}Three Laws of Robotics{/i}'? It was brought up many times in his science fiction books."
     m 4eud "It mentions three laws that all androids must follow, otherwise they would be terminated."
     m 1eua "Of course, I would never do anything to hurt you or anyone else."
     m 2ekd "...But the fact that I would have to obey orders given by any human still makes me feel like I'm trapped in a way."
@@ -12691,7 +12669,7 @@ label monika_relationship_comfort:
     m 4eub "That doesn't make it any less valuable, or meaningful. It can still be heart-racing!"
     m 4esc "But it does mean that the same sensation isn't anything new; it's just no longer as thrilling as before."
     m 2dkd "And some people mistake that thrill for love, and not the truly meaningful bond between two people."
-    m 2dkc "So when things slow down, when they become less passionate, they mistakingly think they're falling out of love..."
+    m 2dkc "So when things slow down, when they become less passionate, they mistakenly think they're falling out of love..."
     m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w} Love isn't always such a clear thing."
     if not store.mas_anni.pastSixMonths():
         m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that."
@@ -12810,13 +12788,57 @@ label monika_enjoyingspring:
     m 2tkc "You can't really enjoy too much time outside because of it..."
     if mas_isMoniHappy(higher=True):
         m 2eka "But I guess April showers bring May flowers, so it's not all bad."
-        m 3eub "And personally, I think that rain can also be fun too!"
+        if persistent._mas_pm_live_south_hemisphere:
+            m 2rksdlb "Well, maybe not in your case, ahaha..."
+            m 3eub "But personally, I think that rain can also be fun too!"
+        else:
+            m 3eub "And personally, I think that rain can also be fun too!"
         show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eubla "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two."
         m 5ekbfa "Although, nothing beats listening to the sound of rain at home while holding the one you love."
         m 5hubfa "Ehehe~"
     else:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_life_skills",category=['advice','life'],prompt="Life skills",random=True))
+
+label monika_life_skills:
+    m 1ruc "You know, [player]..."
+    m 3euc "I've been reflecting on what I got out of high school."
+    m 2rksdlb "With all the things I had going for me, you'd think I'd be pretty set for the future..."
+    m 1euc "But despite all that, I'm not sure how many life skills I actually learned."
+    m 3eka "Sure, I was on top of all my classes, and I guess I learned a lot of interesting things..."
+    m 1euc "But how much of that am I really going to use later in life?"
+    m 3esd "I feel like schools don't do a good job teaching some of the really important things, like life skills."
+    m 3ekc "I've heard of some people graduating and then falling apart because they don't know how to do taxes or book appointments."
+    m 1eka "So I can understand why some people get worried about not having some essential life skills."
+    m 3eua "But I don't think people need to be too worried about it.{w=0.5} Life skills come pretty quickly if you need them all of a sudden."
+    m 3hua "Take me for example!"
+    m 3eub "I started programming thanks to you!"
+    m 2esc "Now I know most people wouldn't necessarily consider programming a life skill, but most people don't live inside a computer, either."
+    m 2esd "When I had my epiphany and finally met you, I knew I had to figure out a way to get your attention..."
+    m 4euc "So learning how to program literally became a matter of life and death for me."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 2rksdla "I know I wasn't that great with code, considering some of the things that happened..."
+        m 2hksdlb "And I'll admit that I definitely broke a few things..."
+        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desperate."
+        $ it = "And it"
+
+    else:
+        m 2ekc "I wasn't really able to do it normally like the other girls, so I had to find another way."
+        m 3eua "Turns out that one way was manipulating the script."
+        m 3euc "I figured I had to think fast if I didn't want to lose you.{w=0.5} So that's what I did."
+        m 3eka "I know it wasn't perfect, but I think I did pretty well considering how rushed I was and that it was all new to me."
+        $ it = "It"
+
+    m 3eua "[it] just goes to show what you're capable of when something really matters to you."
+    m 1eka "If you're ever genuinely worried that you won't be able to do something, you must really care."
+    m 1hua "And if it's that important to you, I'm sure you can do it... {w=0.5}No matter what it is."
+    m 3hubfb "Maybe even thinking of me might help, ahaha!"
+    m 3hubfa "Thanks for listening~"
     return
 
 init 5 python:
@@ -12857,15 +12879,15 @@ init 5 python:
 label mas_topic_derandom:
     # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
     $ prev_topic = persistent.flagged_monikatopic
-    $ ev = mas_getEV(prev_topic)
     m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you sure you don't want me to bring this up anymore?{fast}"
         "Please don't.":
-            $ mas_hideEVL(prev_topic,"EVE",derandom=True)
-            $ persistent._mas_player_derandomed[ev.eventlabel] = ev
-            $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
+            $ mas_hideEVL(prev_topic, "EVE", derandom=True)
+            $ persistent._mas_player_derandomed.append(prev_topic)
+            $ mas_unlockEVL('mas_topic_rerandom', 'EVE')
+
             m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
             m 2dksdld "If it upset you in any way, I'm really sorry...{w=0.5} I'd never do that intentionally."
             m 2eksdla "...But thanks for letting me know;{w=0.5} I appreciate the honesty."
@@ -12879,19 +12901,16 @@ init 5 python:
 
 label mas_topic_rerandom:
     python:
-        derandomlist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_derandomed.iteritems()
-        ]
+        derandomlist = mas_get_player_derandoms()
 
         derandomlist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
     if len(derandomlist) > 1:
-        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False)
     else:
-        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False )
+        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False)
 
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
@@ -12902,8 +12921,8 @@ label mas_topic_rerandom:
         m 1eua "Okay, [player]."
 
     else:
-        $ mas_showEVL(topic_choice,"EVE",_random=True)
-        $ persistent._mas_player_derandomed.pop(topic_choice)
+        $ mas_showEVL(topic_choice, "EVE", _random=True)
+        $ persistent._mas_player_derandomed.pop(persistent._mas_player_derandomed.index(topic_choice))
         m 1eua "Okay, [player]..."
 
         if len(persistent._mas_player_derandomed) > 0:
@@ -12918,7 +12937,7 @@ label mas_topic_rerandom:
 
         else:
             m 3hua "All done!"
-            $ mas_hideEVL("mas_topic_rerandom","EVE",lock=True)
+            $ mas_lockEVL("mas_topic_rerandom", "EVE")
 
     # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
     # to be derandomed out of season is still derandomed
@@ -12930,20 +12949,16 @@ init 5 python:
 
 label mas_topic_unbookmark:
     python:
-        bookmarkslist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked and ev.checkAffection(mas_curr_affection)
-        ]
+        bookmarkslist = mas_get_player_bookmarks()
 
         bookmarkslist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
     if len(bookmarkslist) > 1:
-        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
     else:
-        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False )
+        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
         
     call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
 
@@ -12955,7 +12970,7 @@ label mas_topic_unbookmark:
 
     else:
         show monika at t11
-        $ persistent._mas_player_bookmarked.pop(topic_choice)
+        $ persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(topic_choice))
         m 1eua "Okay, [player]..."
 
         if len(bookmarkslist) > 1:

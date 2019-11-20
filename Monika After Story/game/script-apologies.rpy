@@ -210,6 +210,7 @@ label mas_apology_generic:
             m 1eub "Anyway, thank you for the apology."
             m 1eua "Whatever it is, I know you're doing your best to make things right."
             m 1hub "That's why I love you, [player]!"
+            $ mas_ILY()
 
     #She knows what you are apologizing for
     elif mas_apology_reason_db.get(mas_apology_reason, False):
