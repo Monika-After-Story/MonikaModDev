@@ -426,7 +426,7 @@ style input:
 ## http://www.renpy.org/doc/html/screen_special.html#choice
 
 screen choice(items):
-    style_prefix ("choice" + mas_ui.ui_mode_suffix)
+    style_prefix mas_ui.cb_style_prefix
 
     vbox:
         for i in items:
@@ -467,7 +467,7 @@ init python:
             renpy.display.draw.set_mouse_pos((currentpos[0] * 9 + targetpos[0]) / 10.0, (currentpos[1] * 9 + targetpos[1]) / 10.0)
 
 screen rigged_choice(items):
-    style_prefix ("choice" + mas_ui.ui_mode_suffix)
+    style_prefix mas_ui.cb_style_prefix
 
     vbox:
         for i in items:
@@ -484,7 +484,7 @@ style talk_choice_button_text is choice_button_text
 
 ## This screen is used for the talk menu
 screen talk_choice(items):
-    style_prefix ("talk_choice" + mas_ui.ui_mode_suffix)
+    style_prefix mas_ui.tcb_style_prefix
 
     vbox:
         for i in items:
@@ -531,7 +531,7 @@ screen quick_menu():
 
         # Add an in-game quick menu.
         hbox:
-            style_prefix ("quick" + mas_ui.ui_mode_suffix)
+            style_prefix mas_ui.qm_style_prefix
 
             xalign 0.5
             yalign 0.995
@@ -593,7 +593,7 @@ init python:
 
 screen navigation():
     vbox:
-        style_prefix ("navigation" + mas_ui.ui_mode_suffix)
+        style_prefix mas_ui.nm_style_prefix
 
         xpos gui.navigation_xpos
         yalign 0.8
@@ -829,11 +829,11 @@ screen game_menu(title, scroll=None):
     #     on "show" action Show("game_menu_m")
 
     textbutton _("Return"):
-        style ("return" + mas_ui.ui_mode_suffix + "_button")
+        style mas_ui.rb_button_style
 
         action Return()
 
-    label title style ("game_menu_label" + mas_ui.ui_mode_suffix)
+    label title style mas_ui.gm_label_style
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
@@ -1104,7 +1104,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix ("radio" + mas_ui.ui_mode_suffix)
+                        style_prefix mas_ui.rab_style_prefix
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1118,7 +1118,7 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix ("check" + mas_ui.ui_mode_suffix)
+                    style_prefix mas_ui.cbx_style_prefix
                     label _("Graphics")
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
@@ -1133,7 +1133,7 @@ screen preferences():
 
 
                 vbox:
-                    style_prefix ("check" + mas_ui.ui_mode_suffix)
+                    style_prefix mas_ui.cbx_style_prefix
                     label _("Gameplay")
                     if persistent._mas_unstable_mode:
                         textbutton _("Unstable"):
@@ -1153,7 +1153,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix ("check" + mas_ui.ui_mode_suffix)
+                    style_prefix mas_ui.cbx_style_prefix
                     label _(" ")
                     textbutton _("Sensitive Mode"):
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
@@ -1167,7 +1167,7 @@ screen preferences():
             null height (4 * gui.pref_spacing)
 
             hbox:
-                style_prefix ("slider" + mas_ui.ui_mode_suffix)
+                style_prefix mas_ui.sld_style_prefix
                 box_wrap True
 
                 python:
@@ -1321,17 +1321,17 @@ screen preferences():
             hbox:
                 textbutton _("Update Version"):
                     action Function(renpy.call_in_new_context, 'forced_update_now')
-                    style ("navigation" + mas_ui.ui_mode_suffix + "_button")
+                    style mas_ui.nm_button_style
 
                 textbutton _("Import DDLC Save Data"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
-                    style ("navigation" + mas_ui.ui_mode_suffix + "_button")
+                    style mas_ui.nm_button_style
 
 
     text tooltip.value:
         xalign 0.0 yalign 1.0
         xoffset 300 yoffset -10
-        style ("main_menu_version_def" if not mas_globals.dark_mode else "main_menu_version_dark")
+        style mas_ui.mm_tt_style
 #        layout "greedy"
 #        text_align 0.5
 #        xmaximum 650
@@ -1339,7 +1339,7 @@ screen preferences():
     text "v[config.version]":
         xalign 1.0 yalign 0.0
         xoffset -10
-        style ("main_menu_version_def" if not mas_globals.dark_mode else "main_menu_version_dark")
+        style mas_ui.mm_tt_style
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text
@@ -1442,7 +1442,7 @@ screen notif_settings():
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix ("check" + mas_ui.ui_mode_suffix)
+            style_prefix mas_ui.cbx_style_prefix
             hbox:
                 spacing 25
                 textbutton _("Use Notifications"):
@@ -1458,7 +1458,7 @@ screen notif_settings():
             label _("Alert Filters")
 
         hbox:
-            style_prefix ("check" + mas_ui.ui_mode_suffix)
+            style_prefix mas_ui.cbx_style_prefix
             box_wrap True
             spacing 25
 
@@ -2215,7 +2215,7 @@ style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_but
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
 screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
-    style_prefix ("twopane_scrollable_menu" + mas_ui.ui_mode_suffix)
+    style_prefix mas_ui.tpsm_style_prefix
 
     fixed:
         area left_area
@@ -2232,9 +2232,9 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 for i_caption,i_label in prev_items:
                     textbutton i_caption:
                         if renpy.has_label(i_label) and not seen_event(i_label):
-                            style ("twopane_scrollable_menu" + mas_ui.ui_mode_suffix + "_new_button")
+                            style mas_ui.tpsm_button_new_style
                         if not renpy.has_label(i_label):
-                            style ("twopane_scrollable_menu" + mas_ui.ui_mode_suffix + "_special_button")
+                            style mas_ui.tpsm_button_special_style
 
                         action Return(i_label)
 
@@ -2261,9 +2261,9 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                     for i_caption,i_label in main_items:
                         textbutton i_caption:
                             if renpy.has_label(i_label) and not seen_event(i_label):
-                                style ("twopane_scrollable_menu" + mas_ui.ui_mode_suffix + "_new_button")
+                                style mas_ui.tpsm_button_new_style
                             if not renpy.has_label(i_label):
-                                style ("twopane_scrollable_menu" + mas_ui.ui_mode_suffix + "_special_button")
+                                style mas_ui.tpsm_button_special_style
 
                             action Return(i_label)
 
@@ -2273,7 +2273,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
-    style_prefix ("scrollable_menu" + mas_ui.ui_mode_suffix)
+    style_prefix mas_ui.sm_style_prefix
 
     fixed:
         area display_area
@@ -2291,9 +2291,9 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
                 for i_caption,i_label in items:
                     textbutton i_caption:
                         if renpy.has_label(i_label) and not seen_event(i_label):
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_new_button")
+                            style mas_ui.sm_button_new_style
                         if not renpy.has_label(i_label):
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_special_button")
+                            style mas_ui.sm_button_special_style
                         action Return(i_label)
 
 
@@ -2331,7 +2331,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
 #               NOTE: must be >= 0
 #       (Default: None)
 screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
-    style_prefix ("scrollable_menu" + mas_ui.ui_mode_suffix)
+    style_prefix mas_ui.sm_style_prefix
 
     fixed:
         area display_area
@@ -2349,11 +2349,11 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                 for item_prompt,item_value,is_italic,is_bold in items:
                     textbutton item_prompt:
                         if is_italic and is_bold:
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_crazy_button")
+                            style mas_ui.sm_button_crazy_style
                         elif is_italic:
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_new_button")
+                            style mas_ui.sm_button_new_style
                         elif is_bold:
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_special_button")
+                            style mas_ui.sm_button_special_style
                         action Return(item_value)
 
                 for final_items in args:
@@ -2362,11 +2362,11 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 
                     textbutton _(final_items[0]):
                         if final_items[2] and final_items[3]:
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_crazy_button")
+                            style mas_ui.sm_button_crazy_style
                         elif final_items[2]:
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_new_button")
+                            style mas_ui.sm_button_new_style
                         elif final_items[3]:
-                            style ("scrollable_menu" + mas_ui.ui_mode_suffix + "_special_button")
+                            style mas_ui.sm_button_special_style
                         action Return(final_items[1])
 
 # background timed jump screen
@@ -2389,7 +2389,7 @@ screen mas_generic_restart:
     zorder 200
 
     style_prefix "confirm"
-    add mas_getTimeFile("gui/overlay/confirm.png")
+    add mas_ui.cm_bg
 
     frame:
 

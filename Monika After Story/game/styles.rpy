@@ -19,6 +19,9 @@ init -1 python in mas_globals:
 init -201 python in mas_ui:
     # img strings and other constants
 
+    # confirm
+    CNF_BG = "gui/overlay/confirm.png"
+
     # hotkey buttons
     HKB_DISABLED_BG = "mod_assets/hkb_disabled_background.png"
 
@@ -36,10 +39,58 @@ init -200 python in mas_ui:
     # Style adjustment var. None on init, "_dark" if dark ui, "" otherwise
     ui_mode_suffix = None
 
+    # choice buttons
+    cb_style_prefix = "choice"
+
+    # checkbox
+    cbx_style_prefix = "check"
+
+    # game menu 
+    gm_label_style = "game_menu_label"
+
     # hotkey buttons
     hkb_style_prefix = "hkb"
     hkb_button_style = "hkb_button"
     hkb_text_style = "hkb_text"
+
+    # main menu
+    mm_tt_style = "main_menu_version_def"
+
+    # nav menu
+    nm_style_prefix = "navigation"
+    nm_button_style = "navigation_button"
+
+    # quick menu
+    qm_style_prefix = "quick"
+
+    # radio button
+    rab_style_prefix = "radio"
+
+    # return button
+    rb_button_style = "return_button"
+
+    # slider
+    sld_style_prefix = "slider"
+
+    # scrollable menu
+    sm_style_prefix = "scrollable_menu"
+    sm_button_crazy_style = "scrollable_menu_crazy_button"
+    sm_button_new_style = "scrollable_menu_new_button"
+    sm_button_special_style = "scrollable_menu_special_button"
+
+    # talk choice 
+    tcb_style_prefix = "talk_choice"
+
+    # two pane scrollable
+    tpsm_style_prefix = "twopane_scrollable_menu"
+    tpsm_button_new_style = "twopane_scrollable_menu_new_button"
+    tpsm_button_special_style = "twopane_scrollable_menu_special_button"
+
+    # ---- files ----
+
+    cm_bg = CNF_BG
+
+    # hotkey buttons
     hkb_disabled_bg = HKB_DISABLED_BG
 
     # selector
@@ -124,9 +175,27 @@ init python:
             mas_globals.button_text_idle_color = mas_ui.dark_button_text_idle_color
 
             # ui swaps
+            mas_ui.cb_style_prefix = "choice_dark"
+            mas_ui.cbx_style_prefix = "check_dark"
+            mas_ui.gm_label_style = "game_menu_label_dark"
             mas_ui.hkb_style_prefix = "hkb_dark"
             mas_ui.hkb_button_style = "hkb_dark_button"
             mas_ui.hkb_text_style = "hkb_dark_text"
+            mas_ui.mm_tt_style = "main_menu_version_dark"
+            mas_ui.nm_style_prefix = "navigation_dark"
+            mas_ui.nm_button_style = "navigation_dark_button"
+            mas_ui.qm_style_prefix = "quick_dark"
+            mas_ui.rab_style_prefix = "radio_dark"
+            mas_ui.rb_button_style = "return_dark_button"
+            mas_ui.sld_style_prefix = "slider_dark"
+            mas_ui.sm_style_prefix = "scrollable_menu_dark"
+            mas_ui.sm_button_crazy_style = "scrollable_menu_dark_crazy_button"
+            mas_ui.sm_button_new_style = "scrollable_menu_dark_new_button"
+            mas_ui.sm_button_special_style = "scrollable_menu_dark_special_button"
+            mas_ui.tcb_style_prefix = "talk_choice_dark"
+            mas_ui.tpsm_style_prefix = "twopane_scrollable_menu_dark"
+            mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_dark_new_button"
+            mas_ui.tpsm_button_special_style = "twopane_scrollable_menu_dark_special_button"
 
         else:
             mas_globals.dark_mode = False
@@ -170,11 +239,30 @@ init python:
             mas_globals.button_text_idle_color = mas_ui.light_button_text_idle_color
 
             # ui swaps
+            mas_ui.cb_style_prefix = "choice"
+            mas_ui.cbx_style_prefix = "check"
+            mas_ui.gm_label_style = "game_menu_label"
             mas_ui.hkb_style_prefix = "hkb"
             mas_ui.hkb_button_style = "hkb_button"
             mas_ui.hkb_text_style = "hkb_text"
+            mas_ui.mm_tt_style = "main_menu_version_def"
+            mas_ui.nm_style_prefix = "navigation"
+            mas_ui.nm_button_style = "navigation_button"
+            mas_ui.qm_style_prefix = "quick"
+            mas_ui.rab_style_prefix = "radio"
+            mas_ui.rb_button_style = "return_button"
+            mas_ui.sld_style_prefix = "slider"
+            mas_ui.sm_style_prefix = "scrollable_menu"
+            mas_ui.sm_button_crazy_style = "scrollable_menu_crazy_button"
+            mas_ui.sm_button_new_style = "scrollable_menu_new_button"
+            mas_ui.sm_button_special_style = "scrollable_menu_special_button"
+            mas_ui.tcb_style_prefix = "talk_choice"
+            mas_ui.tpsm_style_prefix = "twopane_scrollable_menu"
+            mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_new_button"
+            mas_ui.tpsm_button_special_style = "twopane_scrollable_menu_special_button"
 
         # timefile changes
+        mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
         mas_ui.hkb_disabled_bg = mas_getTimeFile(mas_ui.HKB_DISABLED_BG)
         mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
     
