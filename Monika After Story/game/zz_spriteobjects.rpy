@@ -1405,10 +1405,10 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_holly_hairclip)
     store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_black,
+        mas_acs_holly_hairclip,
         "Hairclip (Holly)",
         "holly_hairclip",
-        "left-hair-clip"
+        "left-hair-clip",
         select_dlg=[
             "TODO: ME"
         ]
