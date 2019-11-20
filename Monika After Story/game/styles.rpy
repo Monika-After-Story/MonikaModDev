@@ -22,6 +22,9 @@ init -201 python in mas_ui:
     # confirm
     CNF_BG = "gui/overlay/confirm.png"
 
+    # extras frame
+    EX_FRAME = "mod_assets/frames/trans_pink2pxborder100.png"
+
     # hotkey buttons
     HKB_DISABLED_BG = "mod_assets/hkb_disabled_background.png"
 
@@ -51,10 +54,19 @@ init -200 python in mas_ui:
     # hotkey buttons
     hkb_style_prefix = "hkb"
     hkb_button_style = "hkb_button"
+    hkb_button_text_style = "hkb_button_text"
     hkb_text_style = "hkb_text"
 
     # main menu
     mm_tt_style = "main_menu_version_def"
+
+    # music menu (music selector)
+    mms_style_prefix = "music_menu"
+    mms_button_prev_style = "music_menu_prev_button"
+    mms_button_return_style = "music_menu_return_button"
+    mms_frame_content_style = "music_menu_content_frame"
+    mms_frame_navigation_style = "music_menu_navigation_frame"
+    mms_frame_outer_style = "music_menu_outer_frame"
 
     # nav menu
     nm_style_prefix = "navigation"
@@ -78,6 +90,9 @@ init -200 python in mas_ui:
     sm_button_new_style = "scrollable_menu_new_button"
     sm_button_special_style = "scrollable_menu_special_button"
 
+    # selector menu
+    st_cbx_style = "outfit_check_button"
+
     # talk choice 
     tcb_style_prefix = "talk_choice"
 
@@ -88,7 +103,11 @@ init -200 python in mas_ui:
 
     # ---- files ----
 
+    # confirm screen
     cm_bg = CNF_BG
+
+    # extras menu
+    exm_frame = EX_FRAME
 
     # hotkey buttons
     hkb_disabled_bg = HKB_DISABLED_BG
@@ -180,8 +199,15 @@ init python:
             mas_ui.gm_label_style = "game_menu_label_dark"
             mas_ui.hkb_style_prefix = "hkb_dark"
             mas_ui.hkb_button_style = "hkb_dark_button"
+            mas_ui.hkb_button_text_style = "hkb_dark_button_text"
             mas_ui.hkb_text_style = "hkb_dark_text"
             mas_ui.mm_tt_style = "main_menu_version_dark"
+            mas_ui.mms_style_prefix = "music_menu_dark"
+            mas_ui.mms_button_prev_style = "music_menu_dark_prev_button"
+            mas_ui.mms_button_return_style = "music_menu_dark_return_button"
+            mas_ui.mms_frame_content_style = "music_menu_dark_content_frame"
+            mas_ui.mms_frame_navigation_style = "music_menu_dark_navigation_frame"
+            mas_ui.mms_frame_outer_style = "music_menu_dark_outer_frame"
             mas_ui.nm_style_prefix = "navigation_dark"
             mas_ui.nm_button_style = "navigation_dark_button"
             mas_ui.qm_style_prefix = "quick_dark"
@@ -192,6 +218,7 @@ init python:
             mas_ui.sm_button_crazy_style = "scrollable_menu_dark_crazy_button"
             mas_ui.sm_button_new_style = "scrollable_menu_dark_new_button"
             mas_ui.sm_button_special_style = "scrollable_menu_dark_special_button"
+            mas_ui.st_cbx_style = "outfit_check_dark_button"
             mas_ui.tcb_style_prefix = "talk_choice_dark"
             mas_ui.tpsm_style_prefix = "twopane_scrollable_menu_dark"
             mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_dark_new_button"
@@ -244,8 +271,15 @@ init python:
             mas_ui.gm_label_style = "game_menu_label"
             mas_ui.hkb_style_prefix = "hkb"
             mas_ui.hkb_button_style = "hkb_button"
+            mas_ui.hkb_button_text_style = "hkb_button_text"
             mas_ui.hkb_text_style = "hkb_text"
             mas_ui.mm_tt_style = "main_menu_version_def"
+            mas_ui.mms_style_prefix = "music_menu"
+            mas_ui.mms_button_prev_style = "music_menu_prev_button"
+            mas_ui.mms_button_return_style = "music_menu_return_button"
+            mas_ui.mms_frame_content_style = "music_menu_content_frame"
+            mas_ui.mms_frame_navigation_style = "music_menu_navigation_frame"
+            mas_ui.mms_frame_outer_style = "music_menu_outer_frame"
             mas_ui.nm_style_prefix = "navigation"
             mas_ui.nm_button_style = "navigation_button"
             mas_ui.qm_style_prefix = "quick"
@@ -256,6 +290,7 @@ init python:
             mas_ui.sm_button_crazy_style = "scrollable_menu_crazy_button"
             mas_ui.sm_button_new_style = "scrollable_menu_new_button"
             mas_ui.sm_button_special_style = "scrollable_menu_special_button"
+            mas_ui.st_cbx_style = "outfit_check_button"
             mas_ui.tcb_style_prefix = "talk_choice"
             mas_ui.tpsm_style_prefix = "twopane_scrollable_menu"
             mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_new_button"
@@ -263,6 +298,7 @@ init python:
 
         # timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
+        mas_ui.exm_frame = mas_getTimeFile(mas_ui.EX_FRAME)
         mas_ui.hkb_disabled_bg = mas_getTimeFile(mas_ui.HKB_DISABLED_BG)
         mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
     

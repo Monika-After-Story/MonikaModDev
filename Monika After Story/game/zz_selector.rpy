@@ -2688,7 +2688,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
             if mailbox.read_outfit_checkbox_visible():
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
-                    style ("outfit_check" + mas_ui.ui_mode_suffix + "_button")
+                    style mas_ui.st_cbx_style
                     activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocb"),
