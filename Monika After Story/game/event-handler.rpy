@@ -77,6 +77,12 @@ init -999 python in mas_ev_data_ver:
         return isinstance(val, str) or isinstance(val, unicode)
 
 
+    def _verify_td(val, allow_none=True):
+        if val is None:
+            return allow_none
+        return _verify_item(val, datetime.timedelta, allow_none)
+
+
     def _verify_tuli(val, allow_none=True):
         if val is None:
             return allow_none
