@@ -903,8 +903,8 @@ init python:
         # otherwise check
         mas_filereacts.foundreact_map.clear()
 
-        #If it's the D25Gift range, we need to use the react to gifts in d25_utils
-        if mas_isD25Gift():
+        #If conditions are met to use d25 react to gifts, we do.
+        if mas_d25_utils.shouldUseD25ReactToGifts():
             reacts = mas_d25_utils.react_to_gifts(mas_filereacts.foundreact_map)
         else:
             reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
