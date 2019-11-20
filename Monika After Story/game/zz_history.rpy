@@ -918,6 +918,9 @@ init -810 python:
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
             "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
+            # lifestyle / work
+            "_mas_pm_career": "pm.lifestyle.work.career",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
 
