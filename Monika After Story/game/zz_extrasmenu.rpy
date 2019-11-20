@@ -375,12 +375,12 @@ screen mas_extramenu_area():
         # TODO: frame for nose boop control
         # TODO: only have available if certain affection + 
         #   (Definitely not below normal)
-        frame:
-            area (280, 450, 80, 120)
-            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
-
-            vbox:
-                spacing 2
-                
-                label "Boop":
-                    style "hkb_button_text"
+#        frame:
+#            area (280, 450, 80, 120)
+#            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+#
+#            vbox:
+#                spacing 2
+#                
+#                label "Boop":
+#                    style "hkb_button_text"
