@@ -675,7 +675,8 @@ init -1 python:
 
         entry_pp=store.mas_weather._weather_rain_entry,
         exit_pp=store.mas_weather._weather_rain_exit,
-        unlocked=True,
+
+        unlocked=True
     )
 
     # snow weather
@@ -692,7 +693,9 @@ init -1 python:
         precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
 
         entry_pp=store.mas_weather._weather_snow_entry,
-        exit_pp=store.mas_weather._weather_snow_exit
+        exit_pp=store.mas_weather._weather_snow_exit,
+
+        unlocked=True
     )
 
     # thunder/lightning
@@ -713,7 +716,9 @@ init -1 python:
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_thunder_entry,
-        exit_pp=store.mas_weather._weather_thunder_exit
+        exit_pp=store.mas_weather._weather_thunder_exit,
+
+        unlocked=True
     )
 
     #overcast
@@ -735,6 +740,7 @@ init -1 python:
 
         entry_pp=store.mas_weather._weather_overcast_entry,
         exit_pp=store.mas_weather._weather_overcast_exit,
+
         unlocked=True
     )
 
@@ -869,7 +875,7 @@ label monika_change_weather_loop:
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(weathers, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     $ sel_weather = _return
 

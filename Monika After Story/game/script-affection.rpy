@@ -113,7 +113,7 @@ init -900 python in mas_affection:
     FORCE_EXP_MAP = {
         BROKEN: "monika 6ckc_static",
         DISTRESSED: "monika 6rkc_static",
-        UPSET: "monika 2efc_static",
+        UPSET: "monika 2esc_static",
         NORMAL: "monika 1eua_static",
         AFFECTIONATE: "monika 1eua_static",
         ENAMORED: "monika 1hua_static",
@@ -463,6 +463,10 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # even on special event days, if going to dis, change to def
+        if store.monika_chr.clothes != store.mas_clothes_def:
+            store.pushEvent("mas_change_to_def",True)
+
 
     def _upsetToNormal():
         """
@@ -501,7 +505,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # queue the blazerless intro event
-        if not store.seen_event("mas_blazerless_intro"):
+        if not store.seen_event("mas_blazerless_intro") and not store.mas_hasSpecialOutfit():
             store.queueEvent("mas_blazerless_intro")
 
         # unlock blazerless for use
@@ -525,8 +529,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # if not wearing def, change to def
-        # TODO: may need to exclude Holidays from this is we give special outfits that are meant for Normal
-        if store.monika_chr.clothes != store.mas_clothes_def:
+        if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
             store.pushEvent("mas_change_to_def",True)
 
 
@@ -861,8 +864,8 @@ init 15 python in mas_affection:
             "What do you want?",
             "What now?",
             "What is it?",
-            "Fine...we can talk.",
-            "Just...whatever, go ahead."
+#            "Fine...we can talk.",
+#            "Just...whatever, go ahead."
         ]
         save_quips(UPSET, quips)
 
@@ -956,8 +959,10 @@ init 15 python in mas_affection:
         ## UPSET quips
         quips = [
             "...Which game?",
-            "Okay...whatever, choose a game.",
-            "Fine, pick a game."
+            "Okay.",
+            "Sure.",
+#            "Okay...whatever, choose a game.",
+#            "Fine, pick a game."
         ]
         save_quips(UPSET, quips)
 

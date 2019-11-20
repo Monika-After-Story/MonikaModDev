@@ -23,13 +23,7 @@ init -1 python in mas_stories:
     # TYPES:
     TYPE_SCARY = 0
 
-    # pane constants
-    STORY_X = 680
-    STORY_Y = 40
-    STORY_W = 560
-    STORY_H = 640
-    STORY_XALIGN = -0.05
-    STORY_AREA = (STORY_X, STORY_Y, STORY_W, STORY_H)
+    # pane constant
     STORY_RETURN = "I changed my mind."
     story_database = dict()
 
@@ -129,7 +123,7 @@ label mas_stories_start(scary=False):
 
     $ renpy.say(m, "What story would you like to hear?", interact=False)
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value?
     if _return:
@@ -352,7 +346,7 @@ label mas_story_wind_sun:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_seeds",
-        prompt="The seeds",unlocked=False),code="STY")
+        prompt="The Seeds",unlocked=False),code="STY")
 
 label mas_story_seeds:
     call mas_story_begin
@@ -372,7 +366,7 @@ label mas_story_seeds:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_gray_hair",
-        prompt="The gray hair",unlocked=False),code="STY")
+        prompt="The Gray Hair",unlocked=False),code="STY")
 
 label mas_story_gray_hair:
     call mas_story_begin
@@ -390,7 +384,7 @@ label mas_story_gray_hair:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
-        prompt="The fisherman",unlocked=False),code="STY")
+        prompt="The Fisherman",unlocked=False),code="STY")
 
 label mas_story_fisherman:
     call mas_story_begin
@@ -405,7 +399,7 @@ label mas_story_fisherman:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
-    prompt="Old man's three wishes",unlocked=False),code="STY")
+    prompt="Old Man's Three Wishes",unlocked=False),code="STY")
 
 label mas_story_ravel:
     call mas_story_begin
@@ -449,7 +443,7 @@ label mas_story_immortal_love:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
-        prompt="The tale of O-Tei",unlocked=False),code="STY")
+        prompt="The Tale of O-Tei",unlocked=False),code="STY")
 
 label mas_story_o_tei:
     call mas_story_begin
@@ -500,7 +494,6 @@ label mas_scary_story_setup:
     $ are_masks_changing = mas_current_weather != mas_weather_rain
     $ mas_is_raining = True
 
-    #TODO: persistent music spoop for o31
     stop music fadeout 1.0
     pause 1.0
 
@@ -509,20 +502,19 @@ label mas_scary_story_setup:
     call monika_zoom_transition_reset(1.0)
 
     $ mas_changeBackground(mas_background_def)
-    $ mas_changeWeather(mas_weather_rain)
 
-    if not mas_isO31():
+    #If we're in O31 mode, it's already raining and the room is also already set up
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_weather_rain)
         $ store.mas_globals.show_vignette = True
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
 
-    call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 
-#    $ songs.current_track = songs.FP_NO_SONG
-#    $ songs.selected_track = songs.FP_NO_SONG
 
     $ HKBHideButtons()
     $ mas_RaiseShield_core()
-    #$ store.songs.enabled = False
+
     python:
         story_begin_quips = [
             "Alright let's start the story.",
@@ -550,13 +542,15 @@ label mas_scary_story_cleanup:
     m 3eua "[story_end_quip]"
     show monika 1dsc
     pause 1.0
+
     $ morning_flag = mas_temp_m_flag
-    $ mas_changeWeather(mas_temp_r_flag)
-    if not mas_isO31():
+
+    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_temp_r_flag)
         $ store.mas_globals.show_vignette = False
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
-    call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
-#    $ store.songs.enabled = True
+        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
+        call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 
     $ play_song(None, 1.0)
     m 1eua "I hope you liked it, [player]~"
@@ -739,7 +733,7 @@ label mas_scary_story_mujina:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_ubume",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The ubume",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Ubume",unlocked=False),
     code="STY")
 
 label mas_scary_story_ubume:
@@ -771,7 +765,7 @@ label mas_scary_story_ubume:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_womaninblack",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The woman in black",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Woman in Black",unlocked=False),
     code="STY")
 
 label mas_scary_story_womaninblack:
@@ -832,7 +826,7 @@ label mas_scary_story_resurrection_mary:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_corpse",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The resuscitated corpse",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Resuscitated Corpse",unlocked=False),
     code="STY")
 
 label mas_scary_story_corpse:
@@ -882,7 +876,7 @@ label mas_scary_story_corpse:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_jack_o_lantern",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O Lantern",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O' Lantern",unlocked=False),
     code="STY")
 
 label mas_scary_story_jack_o_lantern:
@@ -968,7 +962,7 @@ label mas_scary_story_baobhan_sith:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_serial_killer",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The serial killer",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Serial Killer",unlocked=False),
     code="STY")
 
 label mas_scary_story_serial_killer:

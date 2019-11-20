@@ -304,10 +304,29 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.3
+label v0_10_3(version="v0_10_3"):
+    python:
+        #Convert fav/derand dicts to lists based on their keys if needed
+        if isinstance(persistent._mas_player_bookmarked, dict):
+            persistent._mas_player_bookmarked = persistent._mas_player_bookmarked.keys()
+
+        if isinstance(persistent._mas_player_derandomed, dict):
+            persistent._mas_player_derandomed = persistent._mas_player_derandomed.keys()
+
+    return
+
 #0.10.2
 label v0_10_2(version="v0_10_2"):
-    #Songs framework changed, need to transfer ev data to new evs
     python:
+        # o31 set marisa/rin worn checks
+        # NOTE: name is used incase of costume removal in future
+        if renpy.seen_label("greeting_o31_marisa"):
+            mas_o31SetCostumeWorn_n("marisa", 2018)
+        if renpy.seen_label("greeting_o31_rin"):
+            mas_o31SetCostumeWorn_n("rin", 2018)
+
+        #Songs framework changed, need to transfer ev data to new evs
         ev_label_list = [
             ("monika_song_lover_boy", "mas_song_lover_boy"),
             ("monika_song_need_you", "mas_song_need_you"),
@@ -349,6 +368,40 @@ label v0_10_2(version="v0_10_2"):
 
                 #And erase this topic
                 mas_eraseTopic(old_ev_label, persistent.event_database)
+
+        if 'monika_clothes_select' in persistent._seen_ever:
+            persistent._seen_ever['monika_event_clothes_select'] = True
+
+        trick_treat = mas_getEV('bye_trick_or_treat')
+        if trick_treat is not None:
+            trick_treat.unlocked = False
+            trick_treat.start_date = mas_o31
+            trick_treat.end_date = mas_o31+datetime.timedelta(days=1)
+            trick_treat.action = action=EV_ACT_UNLOCK
+            trick_treat.years = []
+
+
+        #Also need to push D25 start dates back
+        d25_ev_label_list = [
+            ("mas_d25_monika_holiday_intro", mas_d25),
+            ("mas_d25_monika_holiday_intro_upset", mas_d25p),
+            ("mas_d25_monika_carolling", mas_d25p),
+            ("mas_d25_monika_mistletoe", mas_d25p),
+            ("monika_aiwfc", mas_d25p)
+        ]
+
+        for ev_label, end_date in d25_ev_label_list:
+            ev = mas_getEV(ev_label)
+
+            if ev:
+                ev.start_date = mas_d25c_start
+                ev.end_date = end_date
+                #Adjust undo action rule
+                MASUndoActionRule.adjust_rule(
+                    ev,
+                    datetime.datetime.combine(mas_d25c_start, datetime.time()),
+                    ev.end_date
+                )
     return
 
 #0.10.1
@@ -797,11 +850,6 @@ label v0_8_14(version="v0_8_14"):
         rain_ev = mas_getEV("monika_rain")
         if rain_ev is not None and not rain_ev.random:
             rain_ev.unlocked = True
-
-        # unlock thunder if you spent time on o31
-        if store.mas_o31_event.spentO31():
-            mas_weather_thunder.unlocked = True
-            store.mas_weather.saveMWData()
 
     return
 

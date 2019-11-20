@@ -39,6 +39,22 @@ init -2 python in mas_sprites:
     ######### SHARED PROGPOINTS [SPR005] ######################
     # These should be used by other prog points to streamline commonly done
     # actions.
+    def _acs_wear_if_found(_moni_chr, acs_name):
+        """
+        Wears the acs if the acs exists
+
+        IN:
+            _moni_chr - MASMonika object
+            acs_name - name of the accessory
+        """
+        acs_to_wear = store.mas_sprites.get_sprite(
+            store.mas_sprites.SP_ACS,
+            acs_name
+        )
+        if acs_to_wear is not None:
+            _moni_chr.wear_acs(acs_to_wear)
+    
+
     def _acs_wear_if_in_tempstorage(_moni_chr, key):
         """
         Wears the acs in tempstorage at the given key, if any.
@@ -105,6 +121,22 @@ init -2 python in mas_sprites:
             _moni_chr.wear_acs(acs_to_wear)
 
 
+    def _acs_remove_if_found(_moni_chr, acs_name):
+        """
+        REmoves an acs if the name exists
+
+        IN:
+            _moni_chr - MASMonika object
+            acs_name - name of the accessory to remove
+        """
+        acs_to_remove = store.mas_sprites.get_sprite(
+            store.mas_sprites.SP_ACS,
+            acs_name
+        )
+        if acs_to_remove is not None:
+            _moni_chr.remove_acs(acs_to_remove)
+
+
     def _acs_ribbon_save_and_remove(_moni_chr):
         """
         Removes ribbon acs and aves them to temp storage.
@@ -169,9 +201,9 @@ init -2 python in mas_sprites:
             store.mas_unlockEVL("monika_hair_select", "EVE")
 
 
-    def _clothes_baked_entry():
+    def _clothes_baked_entry(_moni_chr):
         """
-        Locks all selectors except clothes
+        Clothes baked entry
         """
         for prompt_key in store.mas_selspr.PROMPT_MAP:
             if prompt_key != "clothes":
@@ -181,6 +213,11 @@ init -2 python in mas_sprites:
                 )
                 if prompt_ev is not None:
                     store.mas_lockEVL(prompt_ev, "EVE")
+
+        # removes all acs
+        _moni_chr.remove_all_acs()
+        # and update prompts
+        store.mas_selspr._switch_to_wear_prompts()
 
 
     ######### HAIR [SPR010] ###########
@@ -225,6 +262,14 @@ init -2 python in mas_sprites:
         pass
 
 
+    def _hair_orcaramelo_bunbraid_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for bunbraid
+        """
+        # always take off the headband
+        _acs_remove_if_found(_moni_chr, "orcaramelo_sakuya_izayoi_headband")
+
+
     ######### CLOTHES [SPR020] ###########
     # available kwargs:
     #   entry:
@@ -236,7 +281,13 @@ init -2 python in mas_sprites:
         """
         Entry programming point for def clothes
         """
-        pass
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # ponytail and white ribbon
+            _moni_chr.change_hair(store.mas_hair_def)
+            _moni_chr.wear_acs(store.mas_acs_ribbon_def)
+
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
 
@@ -253,6 +304,9 @@ init -2 python in mas_sprites:
             p4=None,
             p5=None,
             p6=None
+        )
+        wearing_promise_ring = _moni_chr.is_wearing_acs(
+            store.mas_acs_promisering
         )
 
         # hide hair down select
@@ -297,7 +351,11 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
         # lock selectors
-        _clothes_baked_entry()
+        _clothes_baked_entry(_moni_chr)
+
+        # re-add promise wring if it was worn
+        if wearing_promise_ring:
+            _moni_chr.wear_acs(store.mas_acs_promisering)
 
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
@@ -352,6 +410,9 @@ init -2 python in mas_sprites:
             p5=None,
             p6=None
         )
+        wearing_promise_ring = _moni_chr.is_wearing_acs(
+            store.mas_acs_promisering
+        )
 
         # hide hair down select
 #        store.mas_lockEVL("monika_hair_select", "EVE")
@@ -388,7 +449,11 @@ init -2 python in mas_sprites:
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
-        _clothes_baked_entry()
+        _clothes_baked_entry(_moni_chr)
+
+        # re-add promise wring if it was worn
+        if wearing_promise_ring:
+            _moni_chr.wear_acs(store.mas_acs_promisering)
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
@@ -446,11 +511,58 @@ init -2 python in mas_sprites:
         """
         Exit pp for orcaramelo miku
         """
-        # TODO: dont remove if other headset/headphones exist
-        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
+        #outfit_mode = kwargs.get("outfit_mode", False)
 
-        # TODO: dont remove if hair is twintail prop
+        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
         _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
+
+
+    def _clothes_orcaramelo_sakuya_izayoi_entry(_moni_chr, **kwargs):
+        """
+        Entry pp for orcaramelo sakuya
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # swap to bun braid if found. if not, dont wear acs.
+            bunbraid = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "orcaramelo_bunbraid"
+            )
+            if bunbraid is not None:
+                _moni_chr.change_hair(bunbraid)
+
+                # find acs and wear for this outfit
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_sakuya_izayoi_headband"
+                )
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_sakuya_izayoi_strandbow"
+                )
+
+                #Remove ribbon so we just get the intended costume since the correct hairstyle is present
+                ribbon_acs = _moni_chr.get_acs_of_type("ribbon")
+                if ribbon_acs is not None:
+                    _moni_chr.remove_acs(ribbon_acs)
+
+
+    def _clothes_orcaramelo_sakuya_izayoi_exit(_moni_chr, **kwargs):
+        """
+        Exit pp for orcaramelo sakuya
+        """
+        #outfit_mode = kwargs.get("outfit_mode", False)
+
+        # find and remove acs if found
+        _acs_remove_if_found(
+            _moni_chr,
+            "orcaramelo_sakuya_izayoi_headband"
+        )
+        _acs_remove_if_found(
+            _moni_chr,
+            "orcaramelo_sakuya_izayoi_strandbow"
+        )
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
@@ -1093,9 +1205,10 @@ init -1 python:
             default="0",
             p5="5"
         ),
-        acs_type="left-hair-flower",
+        acs_type="left-hair-flower-ear",
         mux_type=[
-            "left-hair-flower",
+            "left-hair-flower-ear",
+            "left-hair-flower"
         ],
         ex_props={
             "left-hair-strand-eye-level": True,

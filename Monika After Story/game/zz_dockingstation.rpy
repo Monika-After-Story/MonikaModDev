@@ -309,6 +309,7 @@ init -45 python:
         def getPackageList(self, ext_filter=""):
             """
             Gets a list of the packages in the docking station.
+            We also ensure that the item retrieved is not a folder.
 
             IN:
                 ext_filter - extension filter to use when getting list.
@@ -329,6 +330,7 @@ init -45 python:
                 package
                 for package in os.listdir(self.station)
                 if package.endswith(ext_filter)
+                and not os.path.isdir(self._trackPackage(package))
             ]
 
 
@@ -962,10 +964,10 @@ init -45 python:
 
             return None
 
-
         def __check_access(self, package_path, check_read):
             """
-            Checks access of the file at package_path
+            Checks access of the file at package_path.
+            Also ensures that the file is not actually is folder.
 
             NOTE:
                 will log exceptions
@@ -987,6 +989,7 @@ init -45 python:
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
+                not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
@@ -999,17 +1002,12 @@ init -45 python:
                 return self.__bad_check_read(check_read)
 
             if check_read:
-                if not (file_ok and read_ok):
+                if not (file_ok and read_ok and not_dir):
                     return None
 
-            else:
-                if not file_ok:
-                    return False
+            return file_ok and not_dir
 
-            return True
-
-
-        def __bad_check_read(check_read):
+        def __bad_check_read(self, check_read):
             """
             Returns an appropriate failure value givne the check_read value
 
@@ -1483,33 +1481,6 @@ init 200 python in mas_dockstat:
                     package.close()
 
         return on_fail
-
-
-# NOTE: actually we dont need this
-#    def o31ShowVignette(moni_chksum):
-#        """
-#        Sets vignette flag to appropriate value depending on whether or not
-#        user returns monika from an overnight outing.
-#
-#        IN:
-#            moni_chksum - checksum created when taking monika out
-#        """
-#        # not in o31? no show vignette
-#        if not store.mas_isO31():
-#            store.mas_globals.show_vignette = False
-#            return
-#
-#        # we already setup o31 mode? keep showing the vignette
-#        if store.persistent._mas_o31_in_o31_mode:
-#            store.mas_globals.show_vignette = True
-#            return
-#
-#        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check
-#        checkout_time, checkin_time = getCheckTimes(moni_chksum)
-#
-#        if
-
 
     def generateMonika(dockstat):
         """
@@ -2223,6 +2194,14 @@ label mas_dockstat_abort_gen:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
+    #NOTE: this needs to be done prior to a spaceroom call otherwise it doesn't update
+    #Make sure O31 effects show
+    if persistent._mas_o31_in_o31_mode:
+        $ mas_globals.show_vignette = True
+        #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+        if mas_current_weather != mas_weather_thunder:
+            $ mas_changeWeather(mas_weather_thunder, True)
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
@@ -2382,19 +2361,14 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-        # o31 re-entry checks
-        if mas_isO31() and persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_globals.show_vignette = True
+        #Force progressive to disabled for o31
+        $ mas_changeWeather(mas_weather_thunder, True)
 
-            # setup thunder
-            if persistent._mas_likes_rain:
-                mas_weather_thunder.unlocked = True
-                store.mas_weather.saveMWData()
-            mas_changeWeather(mas_weather_thunder)
-
-        # d25 re-entry checks
-        if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
-            #mas_is_snowing = True
-            pass
+    # d25 re-entry checks
+    if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
+        #mas_is_snowing = True
+        pass
 
     jump ch30_post_exp_check

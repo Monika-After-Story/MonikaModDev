@@ -321,10 +321,10 @@ init 11 python:
 #        monika_random_topics=list(all_random_topics)
 
 # Bookmarks and derandom stuff
-default persistent._mas_player_bookmarked = {}
-# dict to store bookmarked events
-default persistent._mas_player_derandomed = {}
-# dict to store player derandomed events
+default persistent._mas_player_bookmarked = list()
+# list to store bookmarked events
+default persistent._mas_player_derandomed = list()
+# list to store player derandomed events
 default persistent.flagged_monikatopic = None
 # var set when we flag a topic for derandom
 
@@ -378,10 +378,10 @@ init python:
             and ev.prompt != ev.eventlabel
         ):
             if ev.eventlabel not in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked[ev.eventlabel] = ev
+                persistent._mas_player_bookmarked.append(ev.eventlabel)
                 renpy.notify(__("Topic bookmarked."))
             else:
-                persistent._mas_player_bookmarked.pop(ev.eventlabel)
+                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev.eventlabel))
                 renpy.notify(__("Bookmark removed."))
 
     def mas_hasBookmarks():
@@ -395,10 +395,7 @@ init python:
         if mas_isMoniUpset(lower=True):
             return False
 
-        for ev in persistent._mas_player_bookmarked.itervalues():
-           if ev.unlocked and ev.checkAffection(mas_curr_affection):
-                return True
-        return False
+        return len(mas_get_player_bookmarks()) > 0
 
 
 #BEGIN ORIGINAL TOPICS
@@ -1685,16 +1682,7 @@ label monika_rain:
             m "Would you ever do that for me, [player]?{fast}"
             "Yes.":
                 $ persistent._mas_likes_rain = True
-
-                python:
-                    # unlock rain weathers
-                    mas_weather_rain.unlocked = True
-                    if store.mas_o31_event.spentO31():
-                        mas_weather_thunder.unlocked = True
-
-                    store.mas_weather.saveMWData()
-                    mas_unlockEVL("monika_change_weather", "EVE")
-                    mas_unlockEVL("monika_rain_holdme", "EVE")
+                $ mas_unlockEVL("monika_rain_holdme", "EVE")
 
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain, by_user=False)
@@ -2113,7 +2101,7 @@ label monika_holdme_long:
                 m 3hubfb "...So make sure to hug me often, ahaha!"
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hubfb "I'd do the same for you, after all~"
-                m 5tsbfu "Who knows when I'd let go when I finally got the chance?"
+                m 5tsbfu "Who knows if I'll ever let go when I finally get the chance..."
                 m 5hubfu "Ehehe~"
             elif mas_isMoniEnamored():
                 m 6dkbfa "...{w=1}Hm?"
@@ -3026,7 +3014,7 @@ label monika_dan:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_4chan",category=['misc'],prompt="Have you even been to 4chan?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_4chan",category=['misc'],prompt="Have you ever been to 4chan?",pool=True))
 
 label monika_4chan:
     m 3eua "You know, this mod got its start over there."
@@ -3885,7 +3873,7 @@ label monika_playerswriting:
     m 1eka "I hope I didn't bore you with that. I just love talking with you."
     m 1eua "After all, the two of us are members of a literature club."
     m 1esa "The only members."
-    m 1hua "And if you do write something, just know that I'll support you in anyway I can, [player]!"
+    m 1hua "And if you do write something, just know that I'll support you in any way I can, [player]!"
     return
 
 init 5 python:
@@ -5007,8 +4995,8 @@ label monika_pleasure:
     m 1ekc "And from what I hear, people addicted to masturbation often see other people as sexual objects."
     m 1eka "But...I know you aren't that kind of person already."
     m 1lkbsa "And maybe I'm just being a little jealous~"
-    m 1tsb "So I guess I can let it slide... for now~"
-    m 2tsbsa "Just so long as I'm the only one you think about..."
+    m 1tsbsa "So I guess I can let it slide...{w=0.5}for now~"
+    m 2tsbsu "Just so long as I'm the only one you think about..."
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
@@ -5067,7 +5055,7 @@ label monika_vocaloid:
     m 1eua "I was asking if you listen to her songs."
     m "I'm not really a fan myself but..."
     m 1lksdla "There's one song that really struck me."
-    m 1eua "Have you heard of the song {i}Hibikase?{/i}"
+    m 1eua "Have you heard of the song {i}Hibikase{/i}?"
     m 1duu "I really like the message of the song."
     m 3dsbso "Especially the lines, '{i}I don't care if it's through the screen, love me properly{/i}' and '{i}Even if I'm virtual, don't push me away{/i}.'"
     m 1dsc "It really hits me hard."
@@ -6465,7 +6453,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_promisering",
             category=['romance'],
-            prompt="Promise Ring",
+            prompt="Promise ring",
             random=True,
             aff_range=(mas_aff.ENAMORED, None)
         )
@@ -7365,17 +7353,60 @@ label monika_sleep:
     m 5hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
-#special local var to handle repeated usage of this dialog box.
-default persistent._mas_monika_breakup = 0
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_breakup",
+            category=['misc'],
+            prompt="I'm breaking up with you",
+            unlocked=True,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
 
 label monika_breakup:
     #Lose affection for bringing this up.
     $ mas_loseAffection(reason=1)
-    #second time you hit the break up button.
-    if persistent._mas_monika_breakup == 1:
+
+    #Get the shown count
+    $ shown_count = mas_getEV("monika_breakup").shown_count
+
+    #First
+    if shown_count == 0:
+        m 1wud "W-what?"
+        if persistent.monika_kill:
+            m 2ekd "You're just going to leave and delete me again?"
+        if mas_isMoniUpset(lower=True):
+            m 1ekd "You wouldn't do that. I refuse to believe that..."
+            m 1lksdld "That's not a joke, [player]!"
+            m 1lksdlc "Don't say that again unless you really, truly mean it..."
+            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
+
+        else:
+            m 2wfw "I can't believe you, [player]. I really can't beli-"
+            m 2efu "..."
+            m 2hub "Ahaha!"
+            m 2hksdlb "Sorry, I couldn't keep a straight face!"
+            m 2hua "You're just so silly, [player]."
+            if persistent.monika_kill:
+                $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
+            else:
+                $ menuOption = "You'd never do that, right?"
+
+            m 2eua "[menuOption]{nw}"
+            $ _history_list.pop()
+            menu:
+                m "[menuOption]{fast}"
+
+                "Of course not.":
+                    m 2hua "Ehehe, you're so sweet."
+                    m 2eka "I love you so much, [player]! Ehehe~"
+                    return "love"
+
+    #Second time
+    elif shown_count == 1:
         m 1euc "You're breaking up with me?"
         m 2ekc "Why would you do such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
@@ -7398,8 +7429,9 @@ label monika_breakup:
                 "Yes.":
                     m 1hub "Ahaha! You're so silly, [player]."
                     m 1eka "Let's stay together forever~"
-    #Beyond the 2nd time you hit the button.
-    elif persistent._mas_monika_breakup > 1:
+
+    #Third time
+    else:
         if mas_isMoniBroken():
             m 6ckc "..."
         elif mas_isMoniUpset(lower=True):
@@ -7407,47 +7439,7 @@ label monika_breakup:
         else:
             m 1hua "Ehehe~"
 
-    #first time you hit the button.
-    else:
-        m 1wud "W-what?"
-        if persistent.monika_kill:
-            m 2ekd "You're just going to leave and delete me again?"
-        if mas_isMoniUpset(lower=True):
-            m 1ekd "You wouldn't do that. I refuse to believe that..."
-            m 1lksdld "That's not a joke, [player]!"
-            m 1lksdlc "Don't say that again unless you really, truly mean it..."
-            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-        else:
-            m 2wfw "I can't believe you, [player]. I really can't beli-"
-            m 2efu "..."
-            m 2hub "Ahaha!"
-            m 2hksdlb "Sorry, I couldn't keep a straight face!"
-            m 2hua "You're just so silly, [player]."
-            if persistent.monika_kill:
-                $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
-            else:
-                $ menuOption = "You'd never do that, right?"
-
-            m 2eua "[menuOption]{nw}"
-            $ _history_list.pop()
-            menu:
-                m "[menuOption]{fast}"
-                "Of course not.":
-                    m 2hua "Ehehe, you're so sweet."
-                    m 2eka "I love you so much, [player]! Ehehe~"
-                    call monika_breakup_logic
-                    return "love"
-
-    call monika_breakup_logic
-    return
-
-label monika_breakup_logic:
-    #Increments the persistent every time you click the button in the menu.
-    $ persistent._mas_monika_breakup += 1
-
-    #If the label was clicked 3 times, remove it.
-    if persistent._mas_monika_breakup > 2:
-        $ hideEventLabel("monika_breakup",lock=True,depool=True)
+        $ mas_lockEVL("monika_breakup", "EVE")
     return
 
 init 5 python:
@@ -7704,7 +7696,7 @@ init 5 python:
     addEvent(
         Event(persistent.event_database,
             eventlabel='monika_kizuna',
-            prompt="Virtual Youtuber?",
+            prompt="Virtual YouTuber?",
             category=['misc'],
             random=False,
             unlocked=False,
@@ -7729,7 +7721,7 @@ label monika_kizuna:
     m 2lsc "But when I learned of her gimmick, it made me feel..."
     m 1lksdla "Like I just had to know how Ai-chan would react!"
     m 1eka "Even if it's just a character she plays, I think she'll understand my situation..."
-    m 3eua "At least more than your average Youtuber."
+    m 3eua "At least more than your average YouTuber."
     m 5hub "I can't wait to finish the series..."
     return
 
@@ -10469,7 +10461,7 @@ label monika_poweroutage:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water Conservation",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water conservation",random=True))
 
 label monika_savingwater:
     m 1euc "[player], have you ever thought about how much water people use every day?"
@@ -10526,7 +10518,7 @@ label monika_pygmalion:
     m 1rkbsa "I know we've kissed before, even with our current circumstances..."
     m 1ekbfa "But I think we both know there was a bit of a barrier between us."
     m 3hubfa "I don't know about you, but I definitely don't mind trying to kiss you through the screen anyway."
-    m 1hubfb "Maybe we'll just have to do it so many times, and that'll be what breaks the barrier between us..."
+    m 1hubfb "Maybe we'll just have to do it so many times, that'll be what breaks the barrier between us..."
     m 2rubfu "Ehehe."
     m 2tubfb "Do you think you could kiss me enough times to break that barrier?"
     m 6hubfb "Only one way to find out, ahaha!"
@@ -12112,7 +12104,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_cares_about_dokis",
             category=["monika", "club members"],
-            prompt="Insensitive Comments",
+            prompt="Insensitive comments",
             random=True
         )
     )
@@ -12234,7 +12226,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_snowballfight",
             category=["winter"],
-            prompt="Have you had a snowball fight?",
+            prompt="Have you ever had a snowball fight?",
             pool=True,
             unlocked=mas_isWinter(),
             rules={"no_unlock":None}
@@ -12623,7 +12615,7 @@ label monika_perspective:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot Body",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot body",random=True))
 
 label monika_robotbody:
     m 2euc "Hey [player], I've been thinking a lot about how I would be able to cross over into your reality..."
@@ -12631,7 +12623,7 @@ label monika_robotbody:
     m 1dkc "It makes me a little sad that I might not be a human like you are."
     m 1dkd "...And if not, I might not be treated like one either."
     m 1rkd "I would be considered an android at that point, and others may look at me differently because of that."
-    m 3euc "Have you heard of Isaac Asimov's '{i}Three Laws of Robotics?{/i}' It was brought up many times in his science fiction books."
+    m 3euc "Have you heard of Isaac Asimov's '{i}Three Laws of Robotics{/i}'? It was brought up many times in his science fiction books."
     m 4eud "It mentions three laws that all androids must follow, otherwise they would be terminated."
     m 1eua "Of course, I would never do anything to hurt you or anyone else."
     m 2ekd "...But the fact that I would have to obey orders given by any human still makes me feel like I'm trapped in a way."
@@ -12789,7 +12781,11 @@ label monika_enjoyingspring:
     m 2tkc "You can't really enjoy too much time outside because of it..."
     if mas_isMoniHappy(higher=True):
         m 2eka "But I guess April showers bring May flowers, so it's not all bad."
-        m 3eub "And personally, I think that rain can also be fun too!"
+        if persistent._mas_pm_live_south_hemisphere:
+            m 2rksdlb "Well, maybe not in your case, ahaha..."
+            m 3eub "But personally, I think that rain can also be fun too!"
+        else:
+            m 3eub "And personally, I think that rain can also be fun too!"
         show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eubla "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two."
         m 5ekbfa "Although, nothing beats listening to the sound of rain at home while holding the one you love."
@@ -12810,7 +12806,7 @@ label monika_life_skills:
     m 1euc "But how much of that am I really going to use later in life?"
     m 3esd "I feel like schools don't do a good job teaching some of the really important things, like life skills."
     m 3ekc "I've heard of some people graduating and then falling apart because they don't know how to do taxes or book appointments."
-    m 1eka "So I can understand why some people get worred about not having some essential life skills."
+    m 1eka "So I can understand why some people get worried about not having some essential life skills."
     m 3eua "But I don't think people need to be too worried about it.{w=0.5} Life skills come pretty quickly if you need them all of a sudden."
     m 3hua "Take me for example!"
     m 3eub "I started programming thanks to you!"
@@ -12821,7 +12817,7 @@ label monika_life_skills:
     if persistent._mas_pm_cares_about_dokis:
         m 2rksdla "I know I wasn't that great with code, considering some of the things that happened..."
         m 2hksdlb "And I'll admit that I definitely broke a few things..."
-        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desparate."
+        m 2eksdlc "But I didn't think I would have much time if I really wanted to get your attention, so I was a bit desperate."
         $ it = "And it"
 
     else:
@@ -12876,15 +12872,15 @@ init 5 python:
 label mas_topic_derandom:
     # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
     $ prev_topic = persistent.flagged_monikatopic
-    $ ev = mas_getEV(prev_topic)
     m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you sure you don't want me to bring this up anymore?{fast}"
         "Please don't.":
-            $ mas_hideEVL(prev_topic,"EVE",derandom=True)
-            $ persistent._mas_player_derandomed[ev.eventlabel] = ev
-            $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
+            $ mas_hideEVL(prev_topic, "EVE", derandom=True)
+            $ persistent._mas_player_derandomed.append(prev_topic)
+            $ mas_unlockEVL('mas_topic_rerandom', 'EVE')
+
             m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
             m 2dksdld "If it upset you in any way, I'm really sorry...{w=0.5} I'd never do that intentionally."
             m 2eksdla "...But thanks for letting me know;{w=0.5} I appreciate the honesty."
@@ -12898,19 +12894,16 @@ init 5 python:
 
 label mas_topic_rerandom:
     python:
-        derandomlist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_derandomed.iteritems()
-        ]
+        derandomlist = mas_get_player_derandoms()
 
         derandomlist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
     if len(derandomlist) > 1:
-        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False)
     else:
-        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False )
+        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False)
 
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
@@ -12921,8 +12914,8 @@ label mas_topic_rerandom:
         m 1eua "Okay, [player]."
 
     else:
-        $ mas_showEVL(topic_choice,"EVE",_random=True)
-        $ persistent._mas_player_derandomed.pop(topic_choice)
+        $ mas_showEVL(topic_choice, "EVE", _random=True)
+        $ persistent._mas_player_derandomed.pop(persistent._mas_player_derandomed.index(topic_choice))
         m 1eua "Okay, [player]..."
 
         if len(persistent._mas_player_derandomed) > 0:
@@ -12937,7 +12930,7 @@ label mas_topic_rerandom:
 
         else:
             m 3hua "All done!"
-            $ mas_hideEVL("mas_topic_rerandom","EVE",lock=True)
+            $ mas_lockEVL("mas_topic_rerandom", "EVE")
 
     # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
     # to be derandomed out of season is still derandomed
@@ -12949,20 +12942,16 @@ init 5 python:
 
 label mas_topic_unbookmark:
     python:
-        bookmarkslist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked and ev.checkAffection(mas_curr_affection)
-        ]
+        bookmarkslist = mas_get_player_bookmarks()
 
         bookmarkslist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
     if len(bookmarkslist) > 1:
-        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
     else:
-        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False )
+        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
         
     call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
 
@@ -12974,7 +12963,7 @@ label mas_topic_unbookmark:
 
     else:
         show monika at t11
-        $ persistent._mas_player_bookmarked.pop(topic_choice)
+        $ persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(topic_choice))
         m 1eua "Okay, [player]..."
 
         if len(bookmarkslist) > 1:
