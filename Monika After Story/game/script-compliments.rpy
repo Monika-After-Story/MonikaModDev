@@ -390,8 +390,8 @@ label mas_compliment_thanks:
                 $ mas_gainAffection(10,bypass=True)
             m 1ekbsa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
-            m "No matter what the future may have for us both..."
-            m 1ekbfa "Know that I'll always love you and be here for you!"# really need a second opinion on this answer
+            m "No matter what the future may have for us both...{w=0.5} {nw}"
+            extend 1dkbfa "Know that I'll always love you and be here for you."
         "Yeah.":
             m 1hub "Ehehe~"
             m 1eub "I love you, [player]."
