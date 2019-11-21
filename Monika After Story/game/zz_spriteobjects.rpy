@@ -1490,7 +1490,7 @@ init -1 python:
             "front-hair-crown": True,
         },
         priority=20,
-        stay_on_start=False,
+        stay_on_start=True,
         rec_layer=MASMonika.PST_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_flower_crown)
