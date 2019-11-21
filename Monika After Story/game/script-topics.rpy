@@ -9968,6 +9968,7 @@ init 5 python:
 label monika_idle_game:
     m 1eud "Oh, you're going to play another game?"
     m 1eka "That's alright, [player]."
+    label .skip_intro:
     python:
         gaming_quips = [
             "Good luck, have fun!",
