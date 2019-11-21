@@ -25,6 +25,13 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
+# cutoff for a greeting type. 
+# if timedelta, then we add this time to last session end to check if the 
+#   type should be cleared
+# if datetime, then we compare it to the current dt to check if type should be
+#   cleared
+default persistent._mas_greeting_type_timeout = None
+
 default persistent._mas_idle_mode_was_crashed = None
 # this gets to set to True if the user crashed during idle mode
 # or False if the user quit during idle mode.
@@ -32,6 +39,7 @@ default persistent._mas_idle_mode_was_crashed = None
 
 init -1 python in mas_greetings:
     import store
+    import store.mas_ev_data_ver as mas_edv
     import datetime
     import random
 
@@ -73,6 +81,14 @@ init -1 python in mas_greetings:
         TYPE_GENERIC_RET,
         TYPE_LONG_ABSENCE,
     ]
+
+    NTO_TYPES = (
+        TYPE_GO_SOMEWHERE,
+        TYPE_GENERIC_RET,
+        TYPE_LONG_ABSENCE,
+        TYPE_CRASHED,
+        TYPE_RELOAD,
+    )
 
     # idle mode returns
     # these are meant if you had a game crash/quit during idle mode
@@ -230,115 +246,45 @@ init -1 python in mas_greetings:
         return random.choice(gre_pool)
 
 
-#    def selectGreeting_noType():
-#        """
-#        Selects a greeting without checking for Type
-#
-#        RETURNS:
-#            a single greeting (as an Event) that we want to use
-#        """
-#
-#        # NOTE: new rules:
-#        #   1. check for events that
-#
-#        # check if we have moni_wants greetings
-#        moni_wants_greetings = renpy.store.Event.filterEvents(
-#            renpy.store.evhand.greeting_database,
-#            unlocked=True,
-#            moni_wants=True
-#        )
-#        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
-#
-#            # select one label randomly
-#            return moni_wants_greetings[
-#                renpy.random.choice(moni_wants_greetings.keys())
-#            ]
-#
-#
-#        # check first if we have to select from a special type
-#        if _type is not None:
-#
-#            # filter them using the type as filter
-#            unlocked_greetings = renpy.store.Event.filterEvents(
-#                renpy.store.evhand.greeting_database,
-#                unlocked=True,
-#                category=(True,[_type])
-#            )
-#
-#        else:
-#
-#            # filter events by their unlocked property only and
-#            # that don't have a category
-#            unlocked_greetings = renpy.store.Event.filterEvents(
-#                renpy.store.evhand.greeting_database,
-#                unlocked=True,
-#                excl_cat=list()
-#            )
-#
-#        # filter greetings using the affection rules dict
-#        unlocked_greetings = renpy.store.Event.checkAffectionRules(
-#            unlocked_greetings,
-#            keepNoRule=True
-#        )
-#
-#        # check for the special monikaWantsThisFirst case
-#        #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
-#        #    return affection_greetings_dict.values()[0]
-#
-#        # filter greetings using the special rules dict
-#        random_greetings_dict = renpy.store.Event.checkRepeatRules(
-#            unlocked_greetings
-#        )
-#
-#        # check if we have a greeting that actually should be shown now
-#        if len(random_greetings_dict) > 0:
-#
-#            # select one label randomly
-#            return random_greetings_dict[
-#                renpy.random.choice(random_greetings_dict.keys())
-#            ]
-#
-#        # since we don't have special greetings for this time we now check for special random chance
-#        # pick a greeting filtering by special random chance rule
-#        random_greetings_dict = renpy.store.Event.checkGreetingRules(
-#            unlocked_greetings
-#        )
-#
-#        # check if we have a greeting that actually should be shown now
-#        if len(random_greetings_dict) > 0:
-#
-#            # select on label randomly
-#            return random_greetings_dict[
-#                renpy.random.choice(random_greetings_dict.keys())
-#            ]
-#
-#        # filter to get only random ones
-#        random_unlocked_greetings = renpy.store.Event.filterEvents(
-#            unlocked_greetings,
-#            random=True
-#        )
-#
-#        # check if we have greetings available to display with current filter
-#        if len(random_unlocked_greetings) > 0:
-#
-#            # select one randomly if we have at least one
-#            return random_unlocked_greetings[
-#                renpy.random.choice(random_unlocked_greetings.keys())
-#            ]
-#
-#        # We couldn't find a suitable greeting we have to default to normal random selection
-#        # filter random events normally
-#        random_greetings_dict = renpy.store.Event.filterEvents(
-#            renpy.store.evhand.greeting_database,
-#            unlocked=True,
-#            random=True,
-#            excl_cat=list()
-#        )
-#
-#        # select one randomly
-#        return random_greetings_dict[
-#            renpy.random.choice(random_greetings_dict.keys())
-#        ]
+    def checkTimeout(gre_type):
+        """
+        Checks if we should clear the current greeting type because of a
+        timeout.
+
+        IN:
+            gre_type - greeting type we are checking
+
+        RETURNS: passed in gre_type, or None if timeout occured.
+        """
+        tout = store.persistent._mas_greeting_type_timeout
+
+        # always clear the timeout
+        store.persistent._mas_greeting_type_timeout = None
+
+        if gre_type is None or gre_type in NTO_TYPES or tout is None:
+            return gre_type
+
+        if mas_edv._verify_td(tout, False):
+            # this is a timedelta, compare with last session end
+            last_sesh_end = store.mas_getLastSeshEnd()
+            if datetime.datetime.now() < (tout + last_sesh_end):
+                # havent timedout yet
+                return gre_type
+
+            # otherwise has timed out
+            return None
+
+        elif mas_edv._verify_dt(tout, False):
+            # this is a datetime, compare with current dt
+            if datetime.datetime.now() < tout:
+                # havent timedout yet
+                return gre_type
+
+            # otherwise has timeed out
+            return None
+
+        return gre_type
+
 
 # NOTE: this is auto pushed to be shown after an idle mode greeting
 label mas_idle_mode_greeting_cleanup:

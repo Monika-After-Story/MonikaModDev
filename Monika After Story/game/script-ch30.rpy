@@ -1209,6 +1209,11 @@ label mas_ch30_post_holiday_check:
     # greeting selection
     python:
 
+        # greeting timeout check
+        persistent._mas_greeting_type = store.mas_greetings.checkTimeout(
+            persistent._mas_greeting_type
+        )
+
         # we select a greeting depending on the type that we should select
         sel_greeting_ev = store.mas_greetings.selectGreeting(
             persistent._mas_greeting_type
