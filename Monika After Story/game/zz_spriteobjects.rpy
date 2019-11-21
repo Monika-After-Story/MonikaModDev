@@ -592,6 +592,35 @@ init -2 python in mas_sprites:
         if outfit_mode:
             _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
 
+    def _clothes_dress_newyears_entry(_moni_chr, **kwargs):
+        """
+        entry progpoint for dress_newyears
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        #TODO: this needs to remove other hairclips and etc
+        if outfit_mode:
+            #Swap to braided ponytail if found
+            ponytailbraid = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "orcaramelo_ponytailbraid"
+            )
+            if ponytailbraid is not None:
+                _moni_chr.change_hair(ponytailbraid)
+
+            _moni_chr.wear_acs(store.mas_acs_flower_crown)
+            _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
+
+    def _clothes_dress_newyears_exit(_moni_chr, **kwargs):
+        """
+        exit progpoint for dress_newyears
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+    
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_flower_crown)
+            _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
+
     def _clothes_sundress_white_entry(_moni_chr, **kwargs):
         """
         Entry programming point for sundress white
@@ -1130,16 +1159,48 @@ init -1 python:
         visible_when_locked=False,
         hover_dlg=None,
         select_dlg=[
-            "Merry Christmas!",
+            "Would you like to open your present?~",
             "What kind of {i}presents{/i} do you want?",
-            "Happy holidays!"
+            "Open your present, ehehe~",
+            "All I want for Christmas is you~"
         ]
+    )
+
+
+    ### New Year's Dress
+    #Thanks Orca
+    mas_clothes_dress_newyears = MASClothes(
+        "new_years_dress",
+        "new_years_dress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        entry_pp=store.mas_sprites._clothes_dress_newyears_entry,
+        exit_pp=store.mas_sprites._clothes_dress_newyears_exit,
+        stay_on_start=True,
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_dress_newyears)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_dress_newyears,
+        "Dress (New Years)",
+        "new_years_dress",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: ME",
+        ],
     )
 
     ### SUNDRESS (WHITE)
     ## sundress_white
     # The casual outfit from vday
-    # thanks @EntonyEscX
+    # thanks Orca
     mas_clothes_sundress_white = MASClothes(
         "sundress_white",
         "sundress_white",
@@ -1413,6 +1474,26 @@ init -1 python:
             "Ready to deck the halls, [player]?"
         ]
     )
+
+    mas_acs_flower_crown = MASAccessory(
+        "flower_crown",
+        "flower_crown",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        acs_type="left-hair-flower-ear",
+        mux_type=[
+            "hair-flower-crown",
+        ],
+        ex_props={
+            "front-hair-crown": True,
+        },
+        priority=20,
+        stay_on_start=False,
+        rec_layer=MASMonika.PST_ACS,
+    )
+    store.mas_sprites.init_acs(mas_acs_flower_crown)
 
     ### PROMISE RING
     ## promisering

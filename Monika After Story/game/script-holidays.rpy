@@ -1727,8 +1727,9 @@ label mas_holiday_d25c_autoload_check:
                 mas_isD25Outfit()
                 and (not mas_isplayer_bday() or mas_isD25())
             ):
-                #Unlock and wear santa/wine ribbon
+                #Unlock and wear santa/wine ribbon + holly hairclip
                 store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
+                store.mas_selspr.unlock_acs(mas_acs_holly_hairclip)
                 store.mas_selspr.unlock_clothes(mas_clothes_santa)
 
                 #Change into santa. Outfit mode forces ponytail
@@ -2012,6 +2013,7 @@ label mas_d25_monika_holiday_intro_deco:
         #Unlock and wear santa
         store.mas_selspr.unlock_clothes(mas_clothes_santa)
         store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
+        store.mas_selspr.unlock_acs(mas_acs_holly_hairclip)
         monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
 
         #Add to holiday map
