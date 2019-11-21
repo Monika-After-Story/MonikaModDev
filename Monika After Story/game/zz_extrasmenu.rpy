@@ -357,7 +357,8 @@ screen mas_extramenu_area():
             vbox:
                 spacing 2
                 label "Zoom":
-                    style mas_ui.hkb_button_text_style
+                    text_style mas_ui.hkb_button_text_style
+                    xalign 0.5
 
                 # resets the zoom value back to default
                 textbutton _("Reset"):

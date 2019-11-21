@@ -1240,6 +1240,7 @@ define gui.hkb_dark_button_text_size = gui.text_size
 define gui.hkb_dark_button_text_xalign = 0.5
 define gui.hkb_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
 define gui.hkb_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
+define gui.hkb_dark_button_text_insensitive_color = mas_ui.dark_button_text_idle_color
 define gui.hkb_dark_button_text_kerning = 0.2
 
 define gui.choice_dark_button_width = 420
