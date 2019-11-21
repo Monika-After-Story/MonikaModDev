@@ -1283,8 +1283,6 @@ default persistent._mas_pm_ate_late_times = 0
 
 
 label bye_prompt_eat:
-    #Since everything but snack uses the same time, we'll set it here
-    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=3)
     $ _now = datetime.datetime.now().time()
 
     if mas_isMNtoSR(_now):
@@ -1310,9 +1308,14 @@ label bye_prompt_eat:
             m 4ekc "You should really go to bed, you know."
             m 4eud "...Try to go straight to bed when you're finished."
             m 2euc "Anyway, I guess I'll see you tomorrow..."
+
+        #NOTE: Due to the greet of this having an 18 hour limit, we use a 20 hour cap
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
         $ persistent.mas_late_farewell = True
 
     else:
+        #NOTE: Since everything but snack uses the same time, we'll set it here
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=3)
         menu:
             "Breakfast.":
                 if mas_isSRtoN(_now):
