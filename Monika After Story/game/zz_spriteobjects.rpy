@@ -1410,7 +1410,7 @@ init -1 python:
         "holly_hairclip",
         "left-hair-clip",
         select_dlg=[
-            "TODO: ME"
+            "Ready to deck the halls, [player]?"
         ]
     )
 
