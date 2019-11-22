@@ -1288,7 +1288,7 @@ label bye_prompt_eat:
             m 1eka "Are you planning on having a midnight snack?"
             m 3rksdlb "If I were you, I'd find something to eat a little earlier, ahaha..."
             m 3rksdla "Of course...{w=1}I'd also try to be in bed by now..."
-            if renpy.random.randint(1,25) == 1 and mas_isMoniLove(higher=True):
+            if mas_is18Over() and mas_isMoniLove(higher=True) and renpy.random.randint(1,25) == 1:
                 m 2tubfu "You know, if I were there, maybe we could have a bit of both..."
                 show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."

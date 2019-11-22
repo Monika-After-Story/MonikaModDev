@@ -1506,7 +1506,7 @@ label monika_kiss:
         m 1wubsw "Eh? D-Did you say...k...kiss?"
         m 2lkbsa "This suddenly...it's a little embarrassing..."
         m 2lsbssdlb "But...if it's with you...I-I might be okay with it..."
-        m 2hksdlb "...Ahahaha! Wow, sorry..."
+        m 2hksdlb "...Ahaha! Wow, sorry..."
         m 1eka "I really couldn't keep a straight face there."
         m 1eua "That's the kind of thing girls say in these kinds of romance games, right?"
         m 1tku "Don't lie if it turned you on a little bit."
@@ -10383,7 +10383,7 @@ label monika_justice:
                         m "I guess you're right..."
                         m 1ekc "I did do some pretty bad things after all..."
                     elif mas_isMoniLove():
-                        m 1hub "Ahahaha!"
+                        m 1hub "Ahaha!"
                         m 1hua "You can be really funny sometimes~"
                         m 3tku "You expect me to believe that after all we've been through?"
                         m 1tsb "That all this time, you thought that I deserved hate from those other people?"

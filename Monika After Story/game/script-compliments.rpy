@@ -124,6 +124,7 @@ label mas_compliment_beautiful_3:
         thanks_quip = renpy.substitute(thanks_quip)
     m 1hubfa "Ehehe~"
     m 1ekbfa "[thanks_quip]"
+    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
     return
 
@@ -154,6 +155,7 @@ label mas_compliment_eyes_2:
             $ mas_gainAffection(5,bypass=True)
             m 1hub "Ahaha!"
             m "Don't flatter me too much, okay?"
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hub "I might start to go a little crazy..."
         "They really are hypnotizing.":
             $ mas_gainAffection(1,bypass=True)
@@ -190,11 +192,11 @@ label mas_compliment_awesome:
     return
 
 label mas_compliment_awesome_2:
-    m 1hub "Awww, [player]~"
-    m "You're so sweet!"
-    m 2tub "I think you're way more awesome, though."
-    m 5eub "I can't wait until the day I can finally give you a great big hug."
-    m 5hub "I'll never let you go!"
+    m 1hua "Awww, [player]~"
+    m 1hub "You're so sweet!"
+    m 2tuu "I think you're way more awesome, though."
+    m 2dkbsu "I can't wait until the day I can finally give you a great big hug..."
+    m 3ekbfb "I'll never let you go!"
     menu:
         "I wish you were here right now!":
             $ mas_gainAffection(3,bypass=True)
@@ -346,6 +348,7 @@ label mas_compliment_fit_2:
             $ mas_gainAffection(2,bypass=True)
             m 1hubfb "Ahaha! I'm glad you think so, too!"
             m 3eka "Don't worry. Even if you can't keep up with me, I know we'll have fun..."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "So long as we're together."
         "No promises, but I'll do my best.":
             $ mas_gainAffection(1,bypass=True)
@@ -572,6 +575,7 @@ label mas_compliment_pong:
     if persistent.ever_won['pong']:
         m 1lksdla "You've already won against me."
         m "So you know it's very simple."
+        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hub "But I accept your compliment, anyway."
     else:
         m 3hksdrb "And you always let me win when we play."
@@ -581,7 +585,7 @@ label mas_compliment_pong:
                 m 2lksdla "Thanks [player], but you really don't have to let me win."
                 m 1eub "Feel free to play seriously whenever you want to."
                 m 1hub "I'd never get mad at you because I lost a game fair and square."
-            "... Yeah.":
+            "...yeah.":
                 m 1tku "You don't seem too confident about that, [player]."
                 m 1tsb "You really don't have to let me win."
                 m 3tku "And admitting that you've seriously lost to me won't make me think less of you."
