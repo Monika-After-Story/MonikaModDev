@@ -615,11 +615,8 @@ init -2 python in mas_sprites:
         """
         exit progpoint for dress_newyears
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
-    
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_flower_crown)
-            _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
+        _moni_chr.remove_acs(store.mas_acs_flower_crown)
+        _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
 
     def _clothes_sundress_white_entry(_moni_chr, **kwargs):
         """
@@ -1482,9 +1479,11 @@ init -1 python:
             default="0",
             p5="5"
         ),
-        acs_type="left-hair-flower-ear",
+        acs_type="front-hair-flower-crown",
         mux_type=[
             "hair-flower-crown",
+            "left-hair-flower", #We want this to remove hair flowers
+            "left-hair-flower-ear"
         ],
         ex_props={
             "front-hair-crown": True,
