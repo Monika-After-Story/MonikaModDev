@@ -364,7 +364,7 @@ screen mas_islands_background:
             zoom 0.5
 
 screen mas_show_islands():
-    style_prefix "island"
+    style_prefix mas_ui.fli_style_prefix
     imagemap:
 
         ground mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)

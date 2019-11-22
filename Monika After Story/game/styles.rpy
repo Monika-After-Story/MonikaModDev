@@ -101,6 +101,10 @@ init -200 python in mas_ui:
     tpsm_button_new_style = "twopane_scrollable_menu_new_button"
     tpsm_button_special_style = "twopane_scrollable_menu_special_button"
 
+    # floating islands
+
+    fli_style_prefix = "island"
+
     # ---- files ----
 
     # confirm screen
@@ -180,8 +184,6 @@ init python:
             style.namebox = style.namebox_dark
             style.main_menu_version = style.main_menu_version_dark
             style.confirm_prompt_text = style.confirm_prompt_text_dark
-            style.island_button = style.island_button_dark
-            style.island_button_text = style.island_button_text_dark
             style.button = style.button_dark
             style.main_menu_frame = style.main_menu_frame_dark
             style.window_monika = style.window_monika_dark
@@ -233,6 +235,7 @@ init python:
             mas_ui.tpsm_style_prefix = "twopane_scrollable_menu_dark"
             mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_dark_new_button"
             mas_ui.tpsm_button_special_style = "twopane_scrollable_menu_dark_special_button"
+            mas_ui.fli_style_prefix = "island_dark"
 
         else:
             mas_globals.dark_mode = False
@@ -252,8 +255,6 @@ init python:
             style.namebox = style.namebox_def
             style.main_menu_version = style.main_menu_version_def
             style.confirm_prompt_text = style.confirm_prompt_text_def
-            style.island_button = style.island_button_def
-            style.island_button_text = style.island_button_text_def
             style.button = style.button_def
             style.main_menu_frame = style.main_menu_frame_def
             style.window_monika = style.window_monika_def
@@ -305,6 +306,7 @@ init python:
             mas_ui.tpsm_style_prefix = "twopane_scrollable_menu"
             mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_new_button"
             mas_ui.tpsm_button_special_style = "twopane_scrollable_menu_special_button"
+            mas_ui.fli_style_prefix = "island"
 
         # timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
@@ -1019,19 +1021,10 @@ style game_menu_label_dark_text:
 
 
 #START: islands event styles
-style island_button_def is button
 
-style island_button_def is default:
-    properties gui.button_properties("island_button")
-    idle_background  "mod_assets/island_idle_background.png"
-    hover_background "mod_assets/island_hover_background.png"
-    ypadding 5
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style island_dark_button is button_dark
 
-style island_button_dark is button_dark
-
-style island_button_dark is default:
+style island_dark_button is default:
     properties gui.button_properties("island_button")
     idle_background  "mod_assets/island_idle_background_d.png"
     hover_background "mod_assets/island_hover_background_d.png"
@@ -1039,30 +1032,10 @@ style island_button_dark is default:
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-style island_button_text_def is button_text
+style island_dark_button_text is button_text_dark
 
-style island_button_text_def is default:
-    properties gui.button_text_properties("island_button")
-    idle_background  "mod_assets/island_idle_background.png"
-    hover_background "mod_assets/island_hover_background.png"
-    outlines []
-
-style island_button_def_text is default:
-    properties gui.button_text_properties("island_button")
-    idle_background  "mod_assets/island_idle_background.png"
-    hover_background "mod_assets/island_hover_background.png"
-    outlines []
-
-style island_button_text_dark is button_text_dark
-
-style island_button_text_dark is default:
-    properties gui.button_text_properties("island_button_dark")
-    idle_background  "mod_assets/island_idle_background_d.png"
-    hover_background "mod_assets/island_hover_background_d.png"
-    outlines []
-
-style island_button_dark_text is default:
-    properties gui.button_text_properties("island_button_dark")
+style island_dark_button_text is default:
+    properties gui.button_text_properties("island_dark_button")
     idle_background  "mod_assets/island_idle_background_d.png"
     hover_background "mod_assets/island_hover_background_d.png"
     outlines []
@@ -1273,15 +1246,15 @@ define gui.twopane_scrollable_menu_dark_button_text_xalign = 0.0
 define gui.twopane_scrollable_menu_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
 define gui.twopane_scrollable_menu_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
 
-define gui.island_button_dark_height = None
-define gui.island_button_dark_width = 205
-define gui.island_button_dark_tile = False
-define gui.island_button_dark_text_font = gui.default_font
-define gui.island_button_dark_text_size = gui.text_size
-define gui.island_button_dark_text_xalign = 0.5
-define gui.island_button_dark_text_idle_color = mas_ui.dark_button_text_idle_color
-define gui.island_button_dark_text_hover_color = mas_ui.dark_button_text_hover_color
-define gui.island_button_dark_text_kerning = 0.2
+define gui.island_dark_button_height = None
+define gui.island_dark_button_width = 205
+define gui.island_dark_button_tile = False
+define gui.island_dark_button_text_font = gui.default_font
+define gui.island_dark_button_text_size = gui.text_size
+define gui.island_dark_button_text_xalign = 0.5
+define gui.island_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
+define gui.island_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
+define gui.island_dark_button_text_kerning = 0.2
 
 define gui.quick_dark_button_text_height = None
 define gui.quick_dark_button_text_width = 205
