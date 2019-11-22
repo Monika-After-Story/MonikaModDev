@@ -1,0 +1,28 @@
+{
+    "__author": "Velius94",
+    "version": 2,
+    "type": 0,
+    "name": "velius94_ribbon_blue",
+    "img_sit": "velius94_ribbon_blue",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "stay_on_starT": true,
+    "giftname": "WHATISTHIS",
+    "ex_props": {
+        "ribbon-like": true
+    },
+    "dlg_desc": "TODO WHAT IS THIS",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "THIS THING",
+        "thumb": "velius94_ribbon_blue",
+        "group": "ribbon",
+        "select_dlg": [
+            "IS THIS A RIBBON?"
+        ]
+    }
+}
