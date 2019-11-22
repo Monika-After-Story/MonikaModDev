@@ -1480,14 +1480,6 @@ init -1 python:
             p5="5"
         ),
         acs_type="front-hair-flower-crown",
-        mux_type=[
-            "hair-flower-crown",
-            "left-hair-flower", #We want this to remove hair flowers
-            "left-hair-flower-ear"
-        ],
-        ex_props={
-            "front-hair-crown": True,
-        },
         priority=20,
         stay_on_start=True,
         rec_layer=MASMonika.PST_ACS,

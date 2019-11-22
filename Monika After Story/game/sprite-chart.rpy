@@ -372,6 +372,13 @@ init -100 python in mas_sprites:
                 "left-hair-strand-eye-level": True
             }
         ),
+        "front-hair-flower-crown": ACSTemplate(
+            "front-hair-flower-crown",
+            mux_type=["hair-flower-crown", "left-hair-flower", "left-hair-flower-ear"],
+            ex_props={
+                "front-hair-crown": True,
+            },
+        ),
         "left-hair-flower-ear": ACSTemplate(
             "left-hair-flower-ear",
             mux_type=DEF_MUX_LHFE,
