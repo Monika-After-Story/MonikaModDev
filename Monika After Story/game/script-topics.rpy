@@ -4061,7 +4061,7 @@ label monika_algernon:
     m 3eua "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
     m 1eud "Basically, it's about a mentally handicapped man who suddenly has his IQ raised to genius levels by an experimental surgical treatment."
     m 1eka "The way he sees how the world really is for the first time reminds me of my own epiphany..."
-    m "But, the effect doesn't last forever.  He eventually reverts back to his original intelligence level."
+    m "But, the effect doesn't last forever. He eventually reverts back to his original intelligence level."
     m 1ekc "That's what I'm afraid of. What if I forget about the real world one day?"
     m 3ekd "What if my original programming reasserts itself?"
     m 3lksdlc "What if I forget about you, the real you?"
