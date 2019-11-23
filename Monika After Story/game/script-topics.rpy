@@ -6040,33 +6040,38 @@ label monika_daydream:
         daydream_quips_normplus = [
             "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
             "us having a duet together, with you singing my song while I play the piano...",
-            "the two of us having a wonderful dinner together...",
-            "the both of us having a late night on the couch together...",
-            "you holding my hand while we take a stroll outside, on a sunny day...",
+            "us having a wonderful dinner together...",
+            "us having a late night on the couch together...",
+            "you holding my hand while we take a stroll outside on a sunny day...",
         ]
 
         #Happy plus (NOTE: Inherits quips from normal plus)
         daydream_quips_happyplus = list(daydream_quips_normplus)
         daydream_quips_happyplus.extend([
-            "us cuddling each other while we're watching a show...",
+            "us cuddling while we're watching a show...",
         ])
 
         #Affectionare plus (NOTE: Inherits from happy plus)
         daydream_quips_affplus = list(daydream_quips_happyplus)
-        daydream_quips_affplus.extend([
-            "me writing a special poem for my one and only...",
-        ])
+        #TODO: "Why don't I do that right now?"
+        #NOTE: If you wish to add more, for now, just uncomment everything but the quip
+        #daydream_quips_affplus.extend([
+        #    "writing a special poem for my one and only...",
+        #])
 
         #Enamored plus (NOTE: Inherits quips from affectionate plus)
         daydream_quips_enamplus = list(daydream_quips_affplus)
         daydream_quips_enamplus.extend([
-            "me gently playing with your hair while your head rests my lap...",
-            "me waking up next to you in the morning, watching you sleep beside me...",
+            "waking up next to you in the morning, watching you sleep beside me...",
         ])
 
         #Islands related thing
         if renpy.seen_label("mas_monika_cherry_blossom_tree"):
             daydream_quips_enamplus.append("the two of us resting our heads under the cherry blossom tree...")
+
+        #Player appearance related thing
+        if not persistent._mas_pm_hair_length == "bald":
+            daydream_quips_enamplus.append("me gently playing with your hair while your head rests my lap...")
 
         #Pick the quip
         if mas_isMoniEnamored(higher=True):
