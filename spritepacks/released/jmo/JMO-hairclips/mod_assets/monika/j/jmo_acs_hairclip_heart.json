@@ -1,0 +1,34 @@
+{
+    "__author": "JMO",
+    "version": 2,
+    "type": 0,
+    "name": "jmo_hairclip_heart",
+    "img_sit": "jmo_hairclip_heart",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "left-hair-clip",
+    "mux_type": [
+        "left-hair-clip"
+    ],
+    "stay_on_start": true,
+    "ex_props": {
+        "left-hair-strand-eye-level": true
+    },
+    "select_info": {
+        "display_name": "Hairclip (Heart)",
+        "thumb": "jmo_hairclip_heart",
+        "group": "left-hair-clip",
+        "hover_dlg": [
+            "A little bit of love..."
+        ],
+        "select_dlg": [
+            "I love this hairpin.",
+            "This hairpin is adorable!",
+            "Cute!"
+        ]
+    },
+    "giftname": "hearthairclip"
+}

@@ -7,7 +7,7 @@ label mas_monikamovie:
         # pane constants
         MOVIE_X = 680
         MOVIE_Y = 40
-        MOVIE_W = 450
+        MOVIE_W = 560
         MOVIE_H = 640
         MOVIE_XALIGN = -0.05
         MOVIE_AREA = (MOVIE_X, MOVIE_Y, MOVIE_W, MOVIE_H)
@@ -210,7 +210,7 @@ label mas_monikamovie:
         show monika at t21
 
         # call scrollable pane
-        call screen mas_gen_scrollable_menu(listMovies.listOfMovies, MOVIE_AREA, MOVIE_XALIGN, final_item=final_item)
+        call screen mas_gen_scrollable_menu(listMovies.listOfMovies, MOVIE_AREA, MOVIE_XALIGN, final_item)
 
         # move her back to center
         show monika at t11
@@ -238,7 +238,7 @@ label mas_monikamovie:
 
         menu:
             "Ready?"
-            "Yes":
+            "Yes.":
                 label mm_movie_resume:
                     $ mas_RaiseShield_dlg()
                     m 1eua "Three...{w=1}{nw}"
@@ -265,7 +265,7 @@ label mas_monikamovie:
 
                         jump movie_loop
 
-            "No":
+            "No.":
                 hide countdown # Dupicated code, call function?
                 $ MovieOverlayHideButtons()
                 m 1eua "Oh, okay! I will just wait for you then~"
@@ -294,10 +294,10 @@ label mas_monikamovie:
         m 1eub "Oh, you just paused the movie, [player]."
         menu:
             "Do want to continue?"
-            "Yes":
+            "Yes.":
                 m 1hua "Okay, [player]."
                 jump mm_movie_resume
-            "No":
+            "No.":
                 m 1eua "Oh, alright then, [player]."
                 jump mm_movie_loop_end
 
