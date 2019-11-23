@@ -543,7 +543,6 @@ label monika_selfesteem:
             m 3hub "I'll always root for you, [player]!"
     return "derandom"
 
-
 init 5 python:
     addEvent(
         Event(
