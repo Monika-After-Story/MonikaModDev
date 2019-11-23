@@ -13028,10 +13028,10 @@ init 5 python:
     )
 
 label monika_songwriting:
-    m 3euc "Hey [player], have you ever written a song?"
-    m 1hua "It's a pretty fun thing to do!"
-    m 1rkc "Planning the song out and tweaking it can take a while..."
-    m 3eud "Getting the instrumentation right, making sure the harmonies blend, getting the right tempo and time for the song..."
+    m 1euc "Hey [player], have you ever written a song?"
+    m 3hua "It's a pretty fun thing to do!"
+    m 3rkc "Though, planning the song out and tweaking it can take a while..."
+    m 1eud "Getting the instrumentation right, making sure the harmonies blend, getting the right tempo and time for the song..."
     m 3rksdla "...and I haven't even gotten to writing lyrics yet."
     m 3eub "Speaking of lyrics, I think it's pretty neat that there's such a similarity between writing lyrics for songs and writing poems!"
     m 3eua "Both can tell stories or convey feelings when phrased right, and music can even amplify that too."
