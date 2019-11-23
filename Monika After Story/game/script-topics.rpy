@@ -13029,21 +13029,48 @@ init 5 python:
     )
 
 label monika_songwriting:
-    m 1euc "Hey [player],{w=0.5} {nw}"
-    extend 3eua "have you ever written a song?"
+    m 3euc "Hey [player], have you ever written a song?"
     m 1hua "It's a pretty fun thing to do!"
-    m 3rkc "Planning the song out and making it sound good can take a while..."
-    m 3eud "Getting the instrumentation right, making sure the harmonies sound good, getting the right tempo and time for the song..."
-    m 3ekd "Things like that can take hours or even days to get right,{w=0.5} {nw}"
-    extend 3eua "but the end result is definitely worth it!"
+    m 1rkc "Planning the song out and tweaking it can take a while..."
+    m 3eud "Getting the instrumentation right, making sure the harmonies blend, getting the right tempo and time for the song..."
+    m 3rksdla "...and I haven't even gotten to writing lyrics yet."
+    m 3eub "Speaking of lyrics, I think it's pretty neat that there's such a similarity between writing lyrics for songs and writing poems!"
+    m 3eua "Both can tell stories or convey feelings when phrased right, and music can even amplify that too."
+
+    if persistent.monika_kill:
+        m 1ttu "I wonder if my song was what brought us here now~"
+        m 1eua "Anyway, just because lyrics can have a strong effect on us doesn't mean instrumental music can't be powerful."
+    else:
+        m 3eka "But that doesn't mean instrumental music can't be powerful too."
+
+    if renpy.seen_label("monika_orchestra"):
+        m 3etc "Remember when I talked about orchestral music?{w=0.5} {nw}"
+        extend 3hub "That's a great example of how powerful music can be!"
+    else:
+        m 3hua "If you've ever listened to orchestral music before, you'll know that it's a great example of how powerful music is."
+
+    m 1eud "Since there's no lyrics, everything has to be expressed in a way that the listener can {i}feel{/i} the emotion in a piece."
+    m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
+    m 3euc "I guess that goes for lyrics too, actually."
+    m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
+
+    if renpy.seen_audio(songs.FP_YOURE_REAL):
+        m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
+        m 3ekbla "I knew I couldn't let you go without telling you everything."
+
+    m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
     if persistent.instrument:
-        m 1eua "Since you play an instrument, I'm sure you could write something."
+        m 1hua "Since you play an instrument, I'm sure you could write something."
 
-    m 1eub "And if you haven't written a song before, I really recommend it!"
-    m 3eua "It can be a great way to relieve stress, tell a story, or even carry a message."
-    m 1ekbla "Maybe you could write one for me sometime~"
-    m 1hub "We could even turn it into a duet if you want!"
+    m 3eua "It can be a great way to relieve stress, tell a story, or even convey a message."
+
+    if persistent.instrument:
+        m 3hub "I'm sure whatever you write would be amazing!"
+    else:
+        m 1ekbla "Maybe you could write one for me sometime~"
+
+    m 1hua "We could even turn it into a duet if you want."
 
     $ _if = "when" if mas_isMoniEnamored(higher=True) else "if"
     m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
