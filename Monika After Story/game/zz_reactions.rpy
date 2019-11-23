@@ -2125,7 +2125,7 @@ label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
     m 3tuu "Ehehe~"
     m 3tubsb "You know, if you liked this kind of thing, you could have just told me..."
     m 1hub "Ahaha! Just kidding~"
-    m 1eua "Let me go put it on!"
+    m 1eub "Let me go put it on!"
 
     # try it on
     call mas_clothes_change(sprite_object, outfit_mode=True)
