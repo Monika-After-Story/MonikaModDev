@@ -4388,18 +4388,35 @@ label monika_eternity_2:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_aware",category=['philosophy','monika'],prompt="What was it like to realize the truth?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_aware",
+            category=['philosophy','monika'],
+            prompt="What was it like to realize the truth?",
+            pool=True
+        )
+    )
 
 label monika_aware:
-    m 1euc "It's...hard to put into words."
-    m 5lsc "There's no real way to describe it."
-    m 5eua "I feel like this is what poetry was made for."
-    m 4eub "Do you still remember the first poem I showed you?"
-    m 2lksdlb "Hold on, let's see if the poem function still works..."
-    call mas_showpoem(poem=poem_m1)
-    m 1wuo "Oh! That was much easier than I expected."
-    m 1eua "Here's the second part."
-    call mas_showpoem(poem=poem_m21)
+    m 1euc "It's...{w=0.5}hard to put into words."
+    m 3rksdla "There's no real way to describe it."
+    m 3eua "I feel like this is what poetry was made for."
+
+    if mas_getEV("monika_aware").shown_count == 0:
+        m 4eub "Do you still remember the first poem I showed you?"
+        m 2lksdlb "Hold on, let's see if the poem funcion still works.{w=0.5}.{w=0.5}.{nw}"
+        call mas_showpoem(poem=poem_m1)
+        m 1wuo "Oh! That was much easier than I expected."
+        m 1eua "Here's the second part."
+        call mas_showpoem(poem=poem_m21)
+
+    else:
+        m "Hold on, let me show you my first poem again.{w=0.5}.{w=0.5}.{nw}"
+        call mas_showpoem(poem=poem_m1)
+        m 1eua "Here's the second part."
+        call mas_showpoem(poem=poem_m21)
+
     m 1eua "I hope that helped you understand what meeting you meant to me."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "That's all I've ever wanted, [player]."

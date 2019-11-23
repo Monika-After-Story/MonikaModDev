@@ -3,12 +3,23 @@
 default persistent._mas_poems_seen = dict()
 
 init python in mas_poems:
+    import store
     poem_map = dict()
 
     paper_cat_map = {
         "f14": "mod_assets/poem_assets/poem_vday.jpg",
         "d25": "mod_assets/poem_assets/poem_d25.png"
     }
+
+    #If we've got pbday, let's also add this here.
+    if store.persistent._mas_player_bday is not None:
+        paper_cat_map["pbday"] = "mod_assets/poem_assets/poem_pbday_" + str(store.persistent._mas_player_bday.month) + ".png"
+
+    def hasUnlockedPoems():
+        """
+        Checks if we have any poems that we've unlocked.
+        """
+        return len(store.persistent._mas_poems_seen) > 0
 
 init 11 python in mas_poems:
     import store
@@ -215,4 +226,56 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
             $ persistent._mas_poems_seen[poem.poem_id] += 1
         else:
             $ persistent._mas_poems_seen[poem.poem_id] = 1
+    return
+
+#Poem accessor topic
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_showpoem",
+            prompt="Can I read one of your poems again?",
+            category=["literature"],
+            pool=True,
+            conditional="store.mas_poems.hasUnlockedPoems()",
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.ENAMORED,None)
+        )
+    )
+
+
+label monika_showpoem:
+    m 1hub "Sure!"
+
+    show monika 1eua at t21
+    python:
+        #We'll store the base DDLC poems here
+        poems_list = [
+            ("Hole in Wall", poem_m1, False, False),
+            ("Hole in Wall (Part 2)", poem_m21, False, False),
+            ("Save Me", poem_m2, False, False),
+            ("The Lady Who Knows Everything", poem_m3, False, False),
+            ("Happy End", poem_m4, False, False)
+        ]
+
+        ret_back = ret_back = ("Nevermind", False, False, False, 20)
+        #Extend the new poems
+        poems_list.extend(sorted(mas_poems.getSeenPoemsMenu()))
+
+        renpy.say(m, "Which poem would you like to read?", interact=False)
+
+    call screen mas_gen_scrollable_menu(poems_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+
+    $ _poem = _return
+
+    if not _poem:
+        m 1eka "Alright [player]."
+        m 3eua "If you ever want to read one of my poems, just ask okay?"
+        return
+
+    show monika 3hua at t11
+    m 3hua "Alright!"
+    call mas_showpoem(_poem)
+    m 3eka "I hope you liked it, [player]."
     return

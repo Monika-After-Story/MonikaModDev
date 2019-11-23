@@ -2284,7 +2284,7 @@ init 20 python:
     poem_d25_2 = MASPoem(
         poem_id="poem_d25_2",
         category="d25",
-        prompt="",
+        prompt="Second D25",
         title="     My dearest [player],",
         text="""\
      TODO: ME
@@ -4084,7 +4084,7 @@ label mas_player_bday_card:
 
     $ p_bday_month = mas_player_bday_curr().month
 
-    call mas_showpoem(poem_pbday, paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
+    call mas_showpoem(poem_pbday)
 
     if mas_isMoniEnamored(higher=True):
         if persistent._mas_first_kiss is None:
@@ -5119,7 +5119,7 @@ init 20 python:
     poem_vday_1 = MASPoem(
         poem_id="poem_f14_1",
         category="f14",
-        prompt="Our first Valentine's Day",
+        prompt="Our First Valentine's Day",
         title=" My dearest [player],",
         text="""\
  I've always loved Valentine's day, but this one feels different.
