@@ -1189,7 +1189,7 @@ label bye_prompt_game:
                     m 1hubfb "Yay!"
                 else:
                     m 2eka "Okay..."
-                jump monika_idle_game
+                jump monika_idle_game.skip_intro
             "No.":
                 if mas_isMoniNormal(higher=True):
                     m 2ekc "Aww..."

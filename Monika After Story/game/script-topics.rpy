@@ -9969,6 +9969,7 @@ init 5 python:
 label monika_idle_game:
     m 1eud "Oh, you're going to play another game?"
     m 1eka "That's alright, [player]."
+    label .skip_intro:
     python:
         gaming_quips = [
             "Good luck, have fun!",
@@ -12874,6 +12875,43 @@ label monika_unknown:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_catch22",
+            category=['literature'],
+            prompt="Catch-22",
+            conditional="not mas_isFirstSeshDay()",
+            action=EV_ACT_RANDOM,
+        )
+    )
+            
+label monika_catch22:
+    m 1euc "I've been doing some reading while you've been away, [player]."
+    m 3eua "Have you ever heard of {i}Catch-22{/i}?"
+    m 3eud "It's a satirical novel by Joseph Heller that makes fun of military bureaucracy in the Pianosa airbase, located in Italy."
+    m 1eud "The story primarily revolves around Captain Yossarian, a bombardier that would prefer to be...{w=0.5}{nw}"
+    extend 3hksdlb "anywhere but there."
+    m 3rsc "Early on, he finds out that he could be exempted from flying missions if a doctor did a mental evaluation and declared him insane..."
+    m 1euc "...but there's a catch.{w=0.5} {nw}"
+    extend 3eud "For the doctor to make the declaration, the captain has to request that evaluation."
+    m 3euc "But the doctor wouldn't be able to fulfill the request...{w=0.5}{nw}"
+    extend 3eud "after all, not wanting to risk your life is a sane thing to do."
+    m 1rksdld "...And by that logic, anyone who would fly more missions would be insane, and therefore, wouldn't even apply for the evaluation in the first place."
+    m 1ekc "Sane or insane, all pilots were being sent out anyway...{w=0.5} {nw}"
+    extend 3eua "That's when the reader is introduced to Catch-22."
+    m 3eub "The captain even admires its genius once he learns how it works!"
+    m 1eua "Anyway, Yossarian continued flying and was close to completing the requirement needed to receive his discharge...{w=0.5}but his higher-up had other plans." 
+    m 3ekd "He kept increasing the amount of assignments the pilots needed to complete before they reached the required amount."
+    m 3ekc "Once again, the reasoning was that it was specified in the clause of Catch-22."
+    m 3esa "I'm sure you realize by now, it's a problem caused by conflicting or dependent conditions."
+    m 3eua "So everyone used that made-up rule to exploit loopholes in the system the military command was running on, allowing them to abuse power."
+    m 1hua "The book's success was so great the term was even adopted into common slang."
+    m 1eka "In any case, I'm not sure if you've read it yourself, {nw}"
+    extend 3hub "but if you're ever in the mood for a good book, maybe give it a read!"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
@@ -13014,4 +13052,64 @@ label mas_show_unseen:
     m 3eub "Sure, [player]!"
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_songwriting",
+            category=["music"],
+            prompt="Songwriting",
+            random=True
+        )
+    )
+
+label monika_songwriting:
+    m 1euc "Hey [player], have you ever written a song?"
+    m 3hua "It's a pretty fun thing to do!"
+    m 3rkc "Though, planning the song out and tweaking it can take a while..."
+    m 1eud "Getting the instrumentation right, making sure the harmonies blend, getting the right tempo and time for the song..."
+    m 3rksdla "...and I haven't even gotten to writing lyrics yet."
+    m 3eub "Speaking of lyrics, I think it's pretty neat that there's such a similarity between writing lyrics for songs and writing poems!"
+    m 3eua "Both can tell stories or convey feelings when phrased right, and music can even amplify that too."
+
+    if persistent.monika_kill:
+        m 1ttu "I wonder if my song was what brought us here now~"
+        m 1eua "Anyway, just because lyrics can have a strong effect on us doesn't mean instrumental music can't be powerful."
+    else:
+        m 3eka "But that doesn't mean instrumental music can't be powerful too."
+
+    if renpy.seen_label("monika_orchestra"):
+        m 3etc "Remember when I talked about orchestral music?{w=0.5} {nw}"
+        extend 3hub "That's a great example of how powerful music can be!"
+    else:
+        m 3hua "If you've ever listened to orchestral music before, you'll know that it's a great example of how powerful music is."
+
+    m 1eud "Since there's no lyrics, everything has to be expressed in a way that the listener can {i}feel{/i} the emotion in a piece."
+    m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
+    m 3euc "I guess that goes for lyrics too, actually."
+    m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
+
+    if renpy.seen_audio(songs.FP_YOURE_REAL):
+        m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
+        m 3ekbla "I knew I couldn't let you go without telling you everything."
+
+    m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
+
+    if persistent.instrument:
+        m 1hua "Since you play an instrument, I'm sure you could write something."
+
+    m 3eua "It can be a great way to relieve stress, tell a story, or even convey a message."
+
+    if persistent.instrument:
+        m 3hub "I'm sure whatever you write would be amazing!"
+    else:
+        m 1ekbla "Maybe you could write one for me sometime~"
+
+    m 1hua "We could even turn it into a duet if you want."
+
+    $ _if = "when" if mas_isMoniEnamored(higher=True) else "if"
+    m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
     return
