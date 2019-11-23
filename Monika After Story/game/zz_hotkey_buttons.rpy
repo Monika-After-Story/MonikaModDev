@@ -185,7 +185,7 @@ screen hkb_overlay():
                 xsize 120
 
                 background Image(store.mas_ui.hkb_disabled_bg)
-                text "Talk"
+                text "Talk" color "#8C8C8C"
 
 
         if store.hkb_button.extra_enabled:
@@ -196,7 +196,7 @@ screen hkb_overlay():
                 xsize 120
 
                 background Image(store.mas_ui.hkb_disabled_bg)
-                text "Extra"
+                text "Extra" color "#8C8C8C"
 
 
         if store.hkb_button.music_enabled:
@@ -207,7 +207,7 @@ screen hkb_overlay():
                 xsize 120
 
                 background Image(store.mas_ui.hkb_disabled_bg)
-                text "Music"
+                text "Music" color "#8C8C8C"
 
         if store.hkb_button.play_enabled:
             textbutton _("Play") action Function(pick_game)
@@ -217,7 +217,7 @@ screen hkb_overlay():
                 xsize 120
 
                 background Image(store.mas_ui.hkb_disabled_bg)
-                text "Play"
+                text "Play" color "#8C8C8C"
 
 
 screen movie_overlay():
