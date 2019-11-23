@@ -4543,12 +4543,17 @@ init 2 python:
         #Step one: what can we drink right now?
         drinks = mas_getDrinksForTime()
 
+        drink = mas_getConsumableDrink(persistent._mas_current_drink["drink"])
+        currently_drinking = persistent._mas_current_drink["drink"] and persistent._mas_current_drink["drink time"]
+
+        #wear the cup if we drink and don't have a cup for some reason
+        if currently_drinking and not monika_chr.is_wearing_acs(drink.drink_acs):
+            monika_chr.wear_acs_pst(drink.drink_acs)
+
         #If we have no drinks, then there's no point in doing anything
         if not drinks:
-            drink = mas_getConsumableDrink(persistent._mas_current_drink["drink"])
-            if persistent._mas_current_drink["drink"] and persistent._mas_current_drink["drink time"]:
-                if not drink.isStillDrink() and mas_getCurrSeshStart() > persistent._mas_current_drink["drink time"]:
-                    drink.reset()
+            if currently_drinking and (not drink.isStillDrink() and mas_getCurrSeshStart() > persistent._mas_current_drink["drink time"]):
+                drink.reset()
             return
 
         #If we're currently brewing or drinking, we don't need to do anything else
@@ -4559,9 +4564,6 @@ init 2 python:
         drink = random.choice(drinks)
 
         #Setup some vars
-        brew_ev = mas_getEV(drink.finished_brewing_evl)
-        drink_ev = mas_getEV(drink.finished_drinking_evl)
-
         _now = datetime.datetime.now()
 
         #Time to drink!
