@@ -13079,7 +13079,7 @@ label monika_songwriting:
         m 1ttu "I wonder if my song was what brought us here now~"
         m 1eua "Anyway, just because lyrics can have a strong effect on us doesn't mean instrumental music can't be powerful."
     else:
-        m 3eka "But that doesn't mean instrumental music can't be powerful too."
+        m 3eka "But that doesn't mean instrumental music can't be powerful as well."
 
     if renpy.seen_label("monika_orchestra"):
         m 3etc "Remember when I talked about orchestral music?{w=0.5} {nw}"
