@@ -6022,7 +6022,8 @@ init 5 python:
             category=['romance'],
             prompt="Day dreaming",
             random=True,
-            rules={"skip alert": None}
+            rules={"skip alert": None},
+            aff_range=(mas_aff.DISTRESSED, None)
         )
     )
     
@@ -6030,28 +6031,60 @@ init 5 python:
 label monika_daydream:
     #insert endless possibilities of wholesome goodness here
     python:
-        daydream_quips = [
+        #Upset and below
+        daydream_quips_upsetminus = [
+            "TODO: ME",
+        ]
+
+        #Normal plus
+        daydream_quips_normplus = [
             "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
-            "about me gently petting your head while your head resting on my lap...",
-            "us having a duet together, with you singing my song and I play the piano...",
-            "about having a wonderful dinner together, while we feed each other...",
-            "about us cuddling each other while we're watching a show on television...",
-            "about waking up next to you in the morning, watching you sleep beside me...",
-            "about writing a special poem for my one and only...",
-            "the both of us doing nothing together, lazing on the couch while you kept me closer...",
+            "us having a duet together, with you singing my song while I play the piano...",
+            "the two of us having a wonderful dinner together...",
+            "the both of us having a late night on the couch together...",
             "you holding my hand while we take a stroll outside, on a sunny day...",
         ]
 
-        if renpy.seen_label("mas_monika_cherry_blossom_tree"):
-            daydream_quips.append("the two of us resting our heads under the cherry blossom tree...")
+        #Happy plus (NOTE: Inherits quips from normal plus)
+        daydream_quips_happyplus = list(daydream_quips_normplus)
+        daydream_quips_happyplus.extend([
+            "us cuddling each other while we're watching a show...",
+        ])
 
-        daydream_quip=renpy.random.choice(daydream_quips)
+        #Affectionare plus (NOTE: Inherits from happy plus)
+        daydream_quips_affplus = list(daydream_quips_happyplus)
+        daydream_quips_affplus.extend([
+            "me writing a special poem for my one and only...",
+        ])
+
+        #Enamored plus (NOTE: Inherits quips from affectionate plus)
+        daydream_quips_enamplus = list(daydream_quips_affplus)
+        daydream_quips_enamplus.extend([
+            "me gently playing with your hair while your head rests my lap...",
+            "me waking up next to you in the morning, watching you sleep beside me...",
+        ])
+
+        #Islands related thing
+        if renpy.seen_label("mas_monika_cherry_blossom_tree"):
+            daydream_quips_enamplus.append("the two of us resting our heads under the cherry blossom tree...")
+
+        #Pick the quip
+        if mas_isMoniEnamored(higher=True):
+            daydream_quip = renpy.random.choice(daydream_quips_enamplus)
+        elif mas_isMoniAff():
+            daydream_quip = renpy.random.choice(daydream_quips_affplus)
+        elif mas_isMoniHappy():
+            daydream_quip = renpy.random.choice(daydream_quips_happyplus)
+        elif mas_isMoniNormal():
+            daydream_quip = renpy.random.choice(daydream_quips_normplus)
+        else:
+            daydream_quip = renpy.random.choice(daydream_quips_upsetminus)
 
     m 2lsc "..."
     m 2lsbsa "..."
     m 2tsbsa "..."
     m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
-    m 1lkbsa "I was imagining [daydream_quips]"
+    m 1lkbsa "I was imagining [daydream_quip]"
     m 1ekbfa "Wouldn't that be wonderful, [player]?"
     m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
     return
