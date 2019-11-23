@@ -4408,14 +4408,13 @@ label monika_aware:
         m 2lksdlb "Hold on, let's see if the poem funcion still works.{w=0.5}.{w=0.5}.{nw}"
         call mas_showpoem(poem=poem_m1)
         m 1wuo "Oh! That was much easier than I expected."
-        m 1eua "Here's the second part."
-        call mas_showpoem(poem=poem_m21)
 
     else:
         m "Hold on, let me show you my first poem again.{w=0.5}.{w=0.5}.{nw}"
         call mas_showpoem(poem=poem_m1)
-        m 1eua "Here's the second part."
-        call mas_showpoem(poem=poem_m21)
+
+    m 1eua "Here's the second part."
+    call mas_showpoem(poem=poem_m21)
 
     m 1eua "I hope that helped you understand what meeting you meant to me."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
