@@ -982,6 +982,8 @@ label greeting_glitch:
     m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
+
+    $ mas_lockEVL("greeting_glitch", "GRE")
     return "love"
 
 init 5 python:
