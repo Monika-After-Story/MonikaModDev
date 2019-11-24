@@ -12911,6 +12911,33 @@ label monika_catch22:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_scamming",
+            category=['you', 'society'],
+            prompt="Being scammed",
+            random=True
+        )
+    )
+
+label monika_scamming:
+    m 1euc "Have you ever been scammed, [player]?"
+    m 1ekd "I hope you never had to go through something like that, but it wouldn't be that unlikely after all. It's not that uncommon."
+    m 1euc "It's something that's more and more prevalent nowadays; especially online, with the advance of technology."
+    m 2rfd "It really is the worst when it happens. Not only do you lose money, but most of the time, you can't even fight back!"
+    m 3esd "It makes you feel like it's your fault for being had, too. A lot of victims start hating themselves for being 'naive', or feeling like they're idiots."
+    m 3rssdlb "But really, they shouldn't be so hard on themselves! Getting scammed is something that can happen to anyone, under the right conditions!"
+    m 4esc "People who do this take advantage of the goodwill of their victims, and exploit natural human reactions to fool you."
+    m 1dsd "Which is why it can feel so gut-wrenching. You placed your trust in others, and they betrayed you."
+    m 1eka "If this ever happens to you, don't feel bad. I'll be here for you."
+    m 3esd "Falling for this does {i}not{/i} mean you're stupid, or a loser, or anything. It just means you've been preyed upon by someone who knew exactly how to play you."
+    m 1esd "If you don't have a way to get back at your scammer, the best thing you can do is to let go."
+    m 1eka "Don't blame yourself for it, focus on what you can do at the moment."
+    m 3eka "And please, [player], don't stop believing in people because of the few that took advantage of you."
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
