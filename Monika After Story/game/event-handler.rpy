@@ -23,7 +23,7 @@ transform prompt_monika:
     tcommon(950,z=0.8)
 
 
-init -950 python in mas_ev_data_ver:
+init -999 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
@@ -31,7 +31,6 @@ init -950 python in mas_ev_data_ver:
 
     # special store dedicated to verification of Event-based data
     import datetime
-    import store
 
     ## verification type functions
     ## most of these lead into verify_item
@@ -54,6 +53,10 @@ init -950 python in mas_ev_data_ver:
             ):
             return False
         return _verify_item(val, datetime.datetime, allow_none)
+
+
+    def _verify_dt_nn(val):
+        return _verify_dt(val, False)
 
 
     def _verify_evact(val, allow_none=True):
@@ -139,6 +142,9 @@ init -950 python in mas_ev_data_ver:
             return self.verifier(value, self.allow_none)
 
 
+init -950 python in mas_ev_data_ver:
+    import store
+
     # map data to tuples
     _verify_map = {
         0: MASCurriedVerify(_verify_str, False), # eventlabel
@@ -155,7 +161,7 @@ init -950 python in mas_ev_data_ver:
         10: MASCurriedVerify(_verify_dt, True), # end_date
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
-        13: MASCurriedVerify(_verify_str, True), # diary_entry
+        #13: MASCurriedVerify(_verify_str, True), # diary_entry
         14: MASCurriedVerify(_verify_dt, True), # last_seen
         15: MASCurriedVerify(_verify_tuli, True), # years
         16: MASCurriedVerify(_verify_bool, True), # sensitive
@@ -289,7 +295,16 @@ init -500 python:
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
 
+
 init 4 python:
+
+    # ev reset handling
+#    if persistent._mas_ev_reset_date is None:
+#        persistent._mas_ev_reset_date = datetime.date.today()
+
+#    else:
+        # 
+
 
     # the mapping is built here so events can use to build 
     # map databses to a code
@@ -303,7 +318,8 @@ init 4 python:
         "FLR": store.mas_filereacts.filereact_db,
         "APL": store.mas_apology.apology_db,
         "WRS": store.mas_windowreacts.windowreact_db,
-        "FFF": store.mas_fun_facts.fun_fact_db
+        "FFF": store.mas_fun_facts.fun_fact_db,
+        "SNG": store.mas_songs.song_db
     }
 
 
@@ -453,6 +469,42 @@ init 6 python:
             if list_pop:
                 mas_rmEVL(ev_label)
 
+init 4 python:
+    def mas_lastSeenInYear(ev_label, year=None):
+        """
+        Checks whether or not the even was last seen in the year provided
+
+        IN:
+            ev_label - label of the event we want to check
+            year - the year we want to check if it's been last seen in
+
+        OUT:
+            boolean - True if last seen this year, False otherwise
+
+        NOTE: if no year provided, we assume this year
+        """
+        #Get our ev
+        try:
+            #NOTE: try/except because of init time conditional checks
+            ev = mas_getEV(ev_label)
+        except:
+            ev = None
+
+        #If we can't get the ev or it hasn't been seen before, then we can't do anything and we'll just return False
+        if not ev or not ev.last_seen:
+            return False
+
+        #If no year provided, assume current year
+        if year is None:
+            year = datetime.date.today().year
+
+        #Otherwise return this evaluation
+        return ev.last_seen.year == year
+
+    # clean yearset
+    store.evhand.cleanYearsetBlacklist()
+
+
 python early:
     # FLOW CHECK CONSTANTS
     # these define where in game flow should a delayed action be checked
@@ -476,12 +528,20 @@ python early:
     # NOTE: in other words, only check when we enter spcaeroom
     MAS_FC_IDLE_ONCE = 16
 
+    # checked during idle, once per hour
+    MAS_FC_IDLE_HOUR = 32
+
+    # checked during idle, once per day
+    MAS_FC_IDLE_DAY = 64
+
     MAS_FC_CONSTANTS = [
         MAS_FC_INIT,
         MAS_FC_START,
         MAS_FC_END,
         MAS_FC_IDLE_ROUTINE,
-        MAS_FC_IDLE_ONCE
+        MAS_FC_IDLE_ONCE,
+        MAS_FC_IDLE_HOUR,
+        MAS_FC_IDLE_DAY,
     ]
 
 
@@ -850,14 +910,14 @@ init -875 python in mas_delact:
 #        5: _mas_bday_surprise_party_cleanup_reset,
 #        6: _mas_bday_surprise_party_hint_reset,
 #        7: _mas_bday_spent_time_with_reset,
-        8: _mas_d25_holiday_intro_upset_reset,
-        9: _mas_d25_monika_carolling_reset,
-        10: _mas_d25_monika_mistletoe_reset,
-        11: _mas_pf14_monika_lovey_dovey_reset,
-        12: _mas_f14_monika_vday_colors_reset,
-        13: _mas_f14_monika_vday_cliches_reset,
-        14: _mas_f14_monika_vday_chocolates_reset,
-        15: _mas_f14_monika_vday_origins_reset,
+#        8: _mas_d25_holiday_intro_upset_reset,
+#        9: _mas_d25_monika_carolling_reset,
+#        10: _mas_d25_monika_mistletoe_reset,
+#        11: _mas_pf14_monika_lovey_dovey_reset,
+#        12: _mas_f14_monika_vday_colors_reset,
+#        13: _mas_f14_monika_vday_cliches_reset,
+#        14: _mas_f14_monika_vday_chocolates_reset,
+#        15: _mas_f14_monika_vday_origins_reset,
     }
 
 
@@ -889,6 +949,11 @@ init 994 python in mas_delact:
 
     # now run the init
     loadDelayedActionMap()
+
+
+default persistent._mas_ev_yearset_blacklist = {}
+# key: label of the ev to reset yeras
+# value: datetime that this blacklist expires
 
 # special store to contain scrollable menu constants
 init -1 python in evhand:
@@ -1161,6 +1226,50 @@ init -1 python in evhand:
         """
         _unlockEvent(eventdb.get(evlabel, None))
 
+    
+    def addYearsetBlacklist(evl, expire_dt):
+        """
+        Adds the given evl to the yearset blacklist, with the given expiration
+        dt
+
+        IN:
+            evl - event label
+            expire_dt - when the evl should be removed from the blacklist
+        """
+        if expire_dt > datetime.datetime.now():
+            store.persistent._mas_ev_yearset_blacklist[evl] = expire_dt
+
+
+    def cleanYearsetBlacklist():
+        """
+        Goes through the year setblacklist and removes expired entries
+        """
+        now_dt = datetime.datetime.now()
+        for evl in store.persistent._mas_ev_yearset_blacklist.keys():
+            if store.persistent._mas_ev_yearset_blacklist[evl] <= now_dt:
+                store.persistent._mas_ev_yearset_blacklist.pop(evl)
+
+
+    def isYearsetBlacklisted(evl):
+        """
+        Checks if the given evl is yearset blacklisted. Also checks expiration
+        date and removes if needed.
+
+        IN:
+            evl - event label
+
+        RETURNS: True if blacklisted, false if not
+        """
+        if evl not in store.persistent._mas_ev_yearset_blacklist:
+            return False
+
+        expire_dt = store.persistent._mas_ev_yearset_blacklist[evl]
+        if expire_dt <= datetime.datetime.now():
+            store.persistent._mas_ev_yearset_blacklist.pop(evl)
+            return False
+
+        return True
+
 
 init python:
     import store.evhand as evhand
@@ -1212,7 +1321,8 @@ init python:
 
         # verify the event's dates
         # NOTE: this covers time travel
-        Event._verifyAndSetDatesEV(event)
+        if not store.evhand.isYearsetBlacklisted(event.eventlabel):
+            Event._verifyAndSetDatesEV(event)
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
@@ -1740,6 +1850,13 @@ init python:
 
         return False
 
+    def mas_cleanEventList():
+        """
+        Iterates through the event list and removes items which shouldn't be restarted
+        """
+        for index in range(len(persistent.event_list)-1,-1,-1):
+            if mas_isRstBlk(persistent.event_list[index][0]):
+                mas_rmEVL(persistent.event_list[index][0])
 
     def mas_cleanJustSeen(eventlist, db):
         """
@@ -1972,6 +2089,9 @@ label call_next_event:
                 $ persistent._mas_in_idle_mode = True
                 $ renpy.save_persistent()
 
+            if "love" in ret_items:
+                $ mas_ILY()
+
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 $ mas_clearNotifs()
@@ -2095,7 +2215,11 @@ label prompt_menu:
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
-        talk_menu.append(("I love you!", "love"))
+        if _mas_getAffection() > -50:
+            if mas_passedILY(pass_time=datetime.timedelta(0,10)):
+                talk_menu.append(("I love you too!","love_too"))
+            else:
+                talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind","nevermind"))
@@ -2117,6 +2241,9 @@ label prompt_menu:
 
     elif madechoice == "love":
         $ pushEvent("monika_love",True)
+
+    elif madechoice == "love_too":
+        $ pushEvent("monika_love_too",True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
@@ -2316,11 +2443,7 @@ init 5 python:
 label mas_bookmarks:
     show monika idle
     python:
-        bookmarkedlist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked and ev.checkAffection(mas_curr_affection)
-        ]
+        bookmarkedlist = mas_get_player_bookmarks()
 
         bookmarkedlist.sort()
         remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)

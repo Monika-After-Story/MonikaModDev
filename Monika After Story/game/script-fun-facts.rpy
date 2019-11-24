@@ -136,7 +136,7 @@ label mas_fun_facts_3:
     m 1hksdlb "I'll have a real fact next time, don't you worry~"
     #No end for this fact since it ends itself
     $ persistent._mas_funfactfun = True
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -280,7 +280,7 @@ init 5 python:
 label mas_fun_facts_9:
     m 1dsc "Ah, this one..."
     m 1ekd "It's a little disheartening, [player]..."
-    m 1ekc "Did you know that Vincent Van Gogh's last words were '{i}La tristesse durera toujours?{/i}'"
+    m 1ekc "Did you know that Vincent Van Gogh's last words were '{i}La tristesse durera toujours{/i}'?"
     m 1eud "If you translate it, it means '{i}The sadness will last forever.{/i}'"
     m 1rkc "..."
     m 2ekc "It's really sad to know that someone so renowned would say something so dark with his last breath."
