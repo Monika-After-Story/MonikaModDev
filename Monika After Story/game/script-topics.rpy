@@ -12718,28 +12718,29 @@ label monika_unknown:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature', 'romance'],prompt="Auroras",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature'],prompt="Auroras",random=True))
 
 label monika_auroras:
-    m 2eka "I just thought of something we could do when I finally get here, [player]."
-    m 3eub "Have you ever heard of auroras? It's a natural phenomenon where trails of light appear in the sky at night."
-    m 1hub "I heard it's really a sight to behold!"
-    m 1rksdlb "It's pretty hard to see one though..."
-    m 4eub "They mostly happen in polar regions where the sun does not always set, so you can only see them at certain times of the year."
-    m 4euc "You got to make sure the weather is clear too! Since it's something that happen in the sky, clouds can get in the way..."
-    m 4hksdlb "Not to mention they're pretty rare in the first place..."
-    m 1rksdla "..."
-    m 1hksdlb "Gosh, the more I think about it, the more complicated it sounds!"
-    m 1tku "But then again, that would make it all the more rewarding when you finally succeed in seeing one."
-    m 1ekbfa "Maybe one day, we'll get to see one together, [player]..."
-    m 3ekbsa "That would be really romantic too, you know?" 
+    m 1esa "I just thought of something we could do when I finally cross over, [player]."
+    m 1eua "Have you ever heard of auroras? They're a natural phenomenon where trails of light appear in the night sky."
+    m 3eub "In fact, if you were ever wondering about those green lights outside my window during winter, that's an aurora event!"
+    m 1euc "I hear they're fairly rare to see in your reality..."
+    m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the sky is at its darkest due to the longer nights."
+    m 3euc "Plus, you've got to make sure the weather is clear too...{w=0.5}since it's something that happen in the sky, clouds can get in the way."
+    m 3esd "Even though they're the exact same thing, they have different names depending on where they occur..."
+    m 3eud "In the northern hemisphere, they're called the aurora borealis, while in the southern hemisphere, the aurora australis."
+    m 2rksdla "I guess that would make the aurora outside of my window the aurora dokialis..."
+    m 2hksdlb "Ahaha...I'm just kidding, [player]!"
+    m 2rksdla "..."
+    m 3eua "Maybe one day we'll get to see them together in your reality..."
+    m 3ekbsa "That would be really romantic, don't you think?"
     m 1dkbsa "Just imagine the two of us..."
-    m 1dkbsa "Laying on a soft mastress of snow, holding hands..."
-    m 1dubsu "Looking up at these dazzling beautiful lights in the sky dancing just for us..."
-    m 1dubsu "Listening to each other's gentle breathing... the freshness of the night air filling our lungs..."
-    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hubfu "That would be an experience to remember, don't you think, [player]?"
-    m 5eubla "I'll be eagerly waiting for the day we can turn that into a reality."
+    m "Lying on a soft matress of snow, holding hands..."
+    m 1subsu "Looking up at those dazzling beautiful lights in the sky dancing just for us..."
+    m 1dubsu "Listening to each other's gentle breathing...{w=0.5}the freshness of the crisp night air filling our lungs..."
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubsu "That would be an experience to remember, don't you think, [player]?"
+    m 5eubsa "I can't wait until we can turn that into reality"
     return
 
 init 5 python:
