@@ -359,7 +359,6 @@ init -20 python in mas_weather:
         """
         Snow entry programming point
         """
-
         # set global flag
         store.mas_is_snowing = True
 
@@ -401,7 +400,6 @@ init -20 python in mas_weather:
         """
         Thunder entry programming point
         """
-
         # dont run rain if swtiching from it
         # run rain programming points
         if _old != store.mas_weather_rain:

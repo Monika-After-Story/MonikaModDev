@@ -12920,14 +12920,14 @@ label monika_auroras:
     if not morning_flag and mas_current_weather == mas_weather_snow:
         m 3eub "In fact, if you were wondering about those green lights outside my window, that's an aurora event!"
     else:
-        m 3eub "In fact, if you were ever wondering about those green lights outside my window during winter, that's an aurora event!"
+        m 3eub "In fact, if you ever wondered about those green lights outside my window during winter, that's an aurora event!"
 
     m 1euc "I hear they're fairly rare to see in your reality, though..."
-    m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the skys is at its darkest due to the longer nights."
+    m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the sky is at its darkest due to the longer nights."
     m 3euc "Plus, you've got to make sure the weather is clear too. {w=0.5}{nw}"
     extend 3eud "Since it's something that happens in the sky, clouds can get in the way."
     m 3esc "Even though they're the exact same thing, they have different names depending on where they occur..."
-    m 3eud "In the northern hemisphere, they're called the aurora borealis, while in the southern hemisphere, the aurora australis."
+    m 3eud "In the Northern Hemisphere, they're called the aurora borealis, while in the Southern Hemisphere, the aurora australis."
     if not morning_flag and mas_current_weather == mas_weather_snow:
         m 2rksdla "I guess that would make the aurora outside of my window the aurora dokialis..."
         m 2hksdlb "Ahaha...I'm just kidding, [player]!"
@@ -12935,7 +12935,7 @@ label monika_auroras:
     m 3eua "Maybe one day we'll get to see them together in your reality..."
     m 3ekbsa "That would be really romantic, don't you think?"
     m 1dkbsa "Just imagine the two of us..."
-    m "Lying on a soft matress of snow, holding hands..."
+    m "Lying on a soft mattress of snow, holding hands..."
     m 1subsu "Looking up at those dazzling lights in the sky, dancing just for us..."
     m 1dubsu "Listening to each other's gentle breathing...{w=0.5}the freshness of the crisp night air filling our lungs..."
     show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
