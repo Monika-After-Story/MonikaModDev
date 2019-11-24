@@ -12911,29 +12911,37 @@ label monika_catch22:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature'],prompt="Auroras",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature'],prompt="Auroras",random=False,unlocked=False))
 
 label monika_auroras:
     m 1esa "I just thought of something we could do when I finally cross over, [player]."
     m 1eua "Have you ever heard of auroras? They're a natural phenomenon where trails of light appear in the night sky."
-    m 3eub "In fact, if you were ever wondering about those green lights outside my window during winter, that's an aurora event!"
+
+    if not morning_flag and mas_current_weather == mas_weather_snow:
+        m 3eub "In fact, if you were wondering about those green lights outside my window, that's an aurora event!"
+    else:
+        m 3eub "In fact, if you were ever wondering about those green lights outside my window during winter, that's an aurora event!"
+
     m 1euc "I hear they're fairly rare to see in your reality, though..."
-    m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the sky is at its darkest due to the longer nights."
-    m 3euc "Plus, you've got to make sure the weather is clear too...{w=0.5}since it's something that happen in the sky, clouds can get in the way."
-    m 3esd "Even though they're the exact same thing, they have different names depending on where they occur..."
+    m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the skys is at its darkest due to the longer nights."
+    m 3euc "Plus, you've got to make sure the weather is clear too. {w=0.5}{nw}"
+    extend 3eud "Since it's something that happens in the sky, clouds can get in the way."
+    m 3esc "Even though they're the exact same thing, they have different names depending on where they occur..."
     m 3eud "In the northern hemisphere, they're called the aurora borealis, while in the southern hemisphere, the aurora australis."
-    m 2rksdla "I guess that would make the aurora outside of my window the aurora dokialis..."
-    m 2hksdlb "Ahaha...I'm just kidding, [player]!"
-    m 2rksdla "..."
+    if not morning_flag and mas_current_weather == mas_weather_snow:
+        m 2rksdla "I guess that would make the aurora outside of my window the aurora dokialis..."
+        m 2hksdlb "Ahaha...I'm just kidding, [player]!"
+        m 2rksdla "..."
     m 3eua "Maybe one day we'll get to see them together in your reality..."
     m 3ekbsa "That would be really romantic, don't you think?"
     m 1dkbsa "Just imagine the two of us..."
     m "Lying on a soft matress of snow, holding hands..."
-    m 1subsu "Looking up at those dazzling, beautiful lights in the sky dancing just for us..."
+    m 1subsu "Looking up at those dazzling lights in the sky, dancing just for us..."
     m 1dubsu "Listening to each other's gentle breathing...{w=0.5}the freshness of the crisp night air filling our lungs..."
     show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubsa "That would be an experience to remember, don't you think, [player]?"
     m 5hubsu "I can't wait until we can turn that into reality."
+    $ mas_showEVL("monika_auroras","EVE",_random=True)
     return
 
 init 5 python:

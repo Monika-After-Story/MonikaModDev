@@ -359,6 +359,7 @@ init -20 python in mas_weather:
         """
         Snow entry programming point
         """
+
         # set global flag
         store.mas_is_snowing = True
 
@@ -369,6 +370,10 @@ init -20 python in mas_weather:
         if not store.mas_weather_snow.unlocked:
             store.mas_weather_snow.unlocked = True
             saveMWData()
+
+        # we want this topic seen for the first time with aurora visible outside her window
+        if not store.morning_flag and store.mas_getEV("monika_auroras").shown_count == 0:
+            store.pushEvent("monika_auroras",notify=True)
 
         # TODO: lock islands greeting as well
 
