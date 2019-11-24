@@ -12917,7 +12917,7 @@ label monika_auroras:
     m 1esa "I just thought of something we could do when I finally cross over, [player]."
     m 1eua "Have you ever heard of auroras? They're a natural phenomenon where trails of light appear in the night sky."
     m 3eub "In fact, if you were ever wondering about those green lights outside my window during winter, that's an aurora event!"
-    m 1euc "I hear they're fairly rare to see in your reality..."
+    m 1euc "I hear they're fairly rare to see in your reality, though..."
     m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the sky is at its darkest due to the longer nights."
     m 3euc "Plus, you've got to make sure the weather is clear too...{w=0.5}since it's something that happen in the sky, clouds can get in the way."
     m 3esd "Even though they're the exact same thing, they have different names depending on where they occur..."
@@ -12929,11 +12929,11 @@ label monika_auroras:
     m 3ekbsa "That would be really romantic, don't you think?"
     m 1dkbsa "Just imagine the two of us..."
     m "Lying on a soft matress of snow, holding hands..."
-    m 1subsu "Looking up at those dazzling beautiful lights in the sky dancing just for us..."
+    m 1subsu "Looking up at those dazzling, beautiful lights in the sky dancing just for us..."
     m 1dubsu "Listening to each other's gentle breathing...{w=0.5}the freshness of the crisp night air filling our lungs..."
-    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hubsu "That would be an experience to remember, don't you think, [player]?"
-    m 5eubsa "I can't wait until we can turn that into reality"
+    show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eubsa "That would be an experience to remember, don't you think, [player]?"
+    m 5hubsu "I can't wait until we can turn that into reality."
     return
 
 init 5 python:
