@@ -1829,7 +1829,7 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                if mas_finalfarewell_mode:
+                if mas_in_finalfarewell_mode:
                     textbutton _("-") action yes_action
                     textbutton _("-") action yes_action
                 else:

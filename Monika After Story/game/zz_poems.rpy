@@ -8,7 +8,8 @@ init python in mas_poems:
 
     paper_cat_map = {
         "f14": "mod_assets/poem_assets/poem_vday.jpg",
-        "d25": "mod_assets/poem_assets/poem_d25.png"
+        "d25": "mod_assets/poem_assets/poem_d25.png",
+        "ff": "mod_assets/poem_assets/poem_finalfarewell.png"
     }
 
     #If we've got pbday, let's also add this here.
