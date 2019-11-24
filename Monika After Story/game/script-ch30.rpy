@@ -1098,9 +1098,15 @@ label ch30_autoload:
     # call reset stuff
     call ch30_reset
 
-    # general affection checks that hijack flow
+    #Affection will trigger a final farewell mode
     if persistent._mas_affection["affection"] <= -115:
-        jump mas_affection_finalfarewell_start
+        $ persistent._mas_load_in_finalfarewell_mode = True
+        $ persistent._mas_finalfarwell_poem_id = "ff_affection"
+
+
+    #If we should go into FF mode, we do.
+    if persistent._mas_load_in_finalfarewell_mode:
+        jump mas_finalfarewell_start
 
     # set this to None for now
     $ selected_greeting = None

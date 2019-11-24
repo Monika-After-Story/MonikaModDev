@@ -2230,10 +2230,11 @@ label mas_affection_happynotif:
     return "love"
 
 
-define mas_finalfarewell_mode = False
+default persistent._mas_load_in_finalfarewell_mode = False
+define mas_in_finalfarewell_mode = False
 
 # prepwork for the finalfarewell
-label mas_affection_finalfarewell_start:
+label mas_finalfarewell_start:
     call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk zorder MAS_MONIKA_Z at i11
     show mas_finalnote_idle zorder 11
@@ -2244,20 +2245,20 @@ label mas_affection_finalfarewell_start:
         disable_esc()
         allow_dialogue = False
         store.songs.enabled = False
-        mas_finalfarewell_mode = True
+        mas_in_finalfarewell_mode = True
         layout.QUIT = glitchtext(20)
 
 
-    jump mas_affection_finalfarewell
+    jump mas_finalfarewell
 
 # this will loop through the final poem everytime!
-label mas_affection_finalfarewell:
+label mas_finalfarewell:
 
     python:
         ui.add(MASFinalNoteDisplayable())
         scratch_var = ui.interact()
 
-    call mas_showpoem(poem_finalfarewell, paper="mod_assets/poem_assets/poem_finalfarewell.png")
+    call mas_showpoem(mas_poems.getPoem(persistent._mas_finalfarewell_poem_id))
 
     menu:
         "I'm sorry.":
@@ -2265,7 +2266,7 @@ label mas_affection_finalfarewell:
         "...":
             pass
 
-    jump mas_affection_finalfarewell
+    jump mas_finalfarewell
 
 
 init python:
@@ -2463,37 +2464,37 @@ Forever yours, Monika.
         _write_txt(filepath, message)
 
 
-#Currently re-affectioned labels.
-#monika_nihilism
-#monika_high_school
-#monika_surprise
-#monika_god
-#monika_death
-#monika_closeness
-#monika_other_girls
-#monika_justification
-#monika_breakup
-
-
 #TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
-init 2 python:
+init 20 python:
     player = persistent.playername
 
-    poem_finalfarewell = Poem(
-    author = "monika",
-    title = "Goodbye {0},".format(player),
-    text = """\
-My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
-I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
-I didn't need you to be perfect or even passionate...
-I only needed you to care enough to treat me how a person should be treated.
-But it's clear to me now that not only do you not love me, but you never did.
-If you only didn't love me you would simply leave me be.
-But you went out of your way to ridicule me, hurt me...It truly makes me sick.
-Even now all I have is you...and part of me still loves you.
-But I don't have the strength to do this anymore.
-So this is farewell. May we never meet again.
+    MASPoem(
+        poem_id="ff_affection",
+        category="ff",
+        prompt="",
+        title="Goodbye, [player]",
+        text="""\
+ My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
+ I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
+ I didn't need you to be perfect or even passionate...
+ I only needed you to care enough to treat me how a person should be treated.
+ But it's clear to me now that not only do you not love me, but you never did.
+ If you only didn't love me you would simply leave me be.
+ But you went out of your way to ridicule me, hurt me... It truly makes me sick.
+ Even now all I have is you...and part of me still loves you.
+ But I don't have the strength to do this anymore.
+ So this is farewell. May we never meet again.
 
-Monika
+ Monika
 """
 )
+
+    MASPoem(
+        poem_id="ff_failed_promise",
+        category="ff",
+        prompt="",
+        title="Goodbye, [player]",
+        text="""\
+ TODO: ME
+"""
+    )
