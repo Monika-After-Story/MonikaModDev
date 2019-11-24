@@ -1710,7 +1710,7 @@ label ch30_day:
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
             persistent._mas_filereacts_reacted_map
-            mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+            and mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
         ):
             persistent._mas_filereacts_reacted_map = dict()
     return
@@ -1936,8 +1936,9 @@ label ch30_reset:
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
             persistent._mas_filereacts_reacted_map
-            mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+            and mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
         ):
+            persistent._mas_filereacts_reacted_map = dict()
 
     # set any prompt variants for acs that can be removed here
     python:
