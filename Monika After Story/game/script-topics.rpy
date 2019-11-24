@@ -12258,6 +12258,35 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_snowmen",
+            category=['winter'],
+            prompt="Snowmen",
+            random=False,
+            conditional=(
+                "persistent._mas_pm_gets_snow is not False "
+                "and mas_isWinter()"
+            ),
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_snowmen:
+    m 3eua "Hey [player], have you ever built a snowman?"
+    m 3eub "I think it sounds like a lot of fun!"
+    m 3rka "Building snowmen is usually seen as something children do, but I think they're really cute!"
+    m 1wub "They really can be brought to life with a variety of objects!"
+    m "Like sticks for arms, a mouth made with pebbles, stones for eyes, and even a little winter hat!"
+    m 1rka "I've noticed that giving them carrot noses is common, although I don't really understand why..."
+    m 3rka "Isn't that a bit of a strange thing to do?"
+    m 2hub "Ahaha!"
+    m 2eub "Anyway, I think it would be nice to build one together someday."
+    m 5eua "I hope you feel the same way!~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_snowballfight",
             category=["winter"],
             prompt="Have you ever had a snowball fight?",
@@ -12986,7 +13015,7 @@ label mas_topic_unbookmark:
         $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
     else:
         $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
-        
+
     call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
 
     $ topic_choice = _return

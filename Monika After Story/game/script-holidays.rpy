@@ -1765,7 +1765,6 @@ label mas_holiday_d25c_autoload_check:
         #Monika takes off santa after d25 if player didn't ask her to wear it
         $ monika_chr.change_clothes(mas_clothes_def, by_user=False, outfit_mode=True)
 
-
     #This is D25 itself (NOT FIRST LOAD IN FOR D25S)
     elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
         #Force Santa and snow on D25 if deco active and not first sesh day
@@ -1804,6 +1803,9 @@ label mas_d25_season_exit:
 
         #And no more d25 mode
         persistent._mas_d25_in_d25_mode = False
+
+        #We'll also derandom this topic as the lights are no longer up
+        mas_hideEVL("mas_d25_monika_christmaslights", "EVE", derandom=True)
     return
 
 #D25 holiday gift starter/connector
@@ -2254,6 +2256,71 @@ label mas_d25_monika_mistletoe:
         m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
         m 1tku "...Maybe I can even add one in here!"
         m 1hub "Ehehe~"
+    return
+
+default persistent._mas_pm_hangs_d25_lights = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_christmaslights",
+            category=['holidays'],
+            prompt="Christmas Lights",
+            random=False,
+            start_date=mas_d25c_start,
+            end_date=mas_d25c_end,
+            conditional=(
+                "persistent._mas_d25_deco_active "
+                "and not persistent._mas_pm_live_south_hemisphere"
+            ),
+            action=EV_ACT_RANDOM,
+            years=[]
+        )
+    )
+
+    MASUndoActionRule.create_rule_EVL(
+        "mas_d25_monika_christmaslights",
+        mas_d25c_start,
+        mas_d25c_end,
+    )
+
+label mas_d25_monika_christmaslights:
+    m 1euc "Hey, [player]..."
+    m 1eua "I've been spending a lot of time looking at the lights in here..."
+    m 3eub "They're very pretty, aren't they?"
+    m 1eua "I'd love to see them in your reality with you."
+    m 1eka "They bring such a warm, cozy vibe during the harshest, coldest season..."
+    m 3hub "There's many different types too!"
+    m 3eka "It sounds like a dream come true to walk around with you, [player], on a cold winter's night."
+    m 1eka "Admiring all of the lights..."
+
+    m 1eua "Say, [player], do you hang lights up on your house during winter?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Say, [player], do you hang lights up on your house during winter?{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_hangs_d25_lights = True
+            m 3sub "Really? I bet they're gorgeous!"
+            m 2dubsu "I can already imagine us, outside of your house...sitting on our porch together..."
+            m "As the beautiful lights glow in the deep night."
+            m 2dkbfu "We would hold each other close, drinking hot chocolate..."
+
+            if persistent._mas_pm_gets_snow is not False:
+                m 2ekbfa "Watching the snow gently fall..."
+
+            show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ekbfa "One day, [player]. One day, we can make that a reality."
+
+        "No.":
+            $ persistent._mas_pm_hangs_d25_lights = False
+            m 1eka "Aw, that's okay, [player]."
+            m 1dkbla "I'm sure it would still be nice to relax with you on a cold night..."
+            m 1dkbsa "Watching the snow fall and drinking hot chocolate together."
+            m 1dkbsa "Holding each other close to keep warm..."
+            m 1rkbfb "Yeah, that sounds really nice."
+            m 3hubsa "But, when we have our own house, I may hang some up myself, ehehe~"
     return
 
 init 20 python:
