@@ -12911,6 +12911,39 @@ label monika_catch22:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_social_contagion",
+            category=['psychology'],
+            prompt="Social contagion",
+            random=True
+        )
+    )
+
+label monika_social_contagion:
+    m 3eub "Say, [player], have you noticed how we tend to imitate what other people around us do?"
+    m 1eua "Like, have you ever been in this situation where someone is having a laughing fit, and somehow, everyone around ends up laughing too?"
+    m "Or have you ever mechanically cheered at someone just because everyone else was cheering?"
+    m 3hub "Apparently, this is due to something called 'social contagion'."
+    m 4eub "Basically, this means that how you feel and what you do has a subconscious influence on those around you."
+    m 4hua "It's something I picked up pretty quickly when I became president!"
+    m 3eub "I noticed that when I felt unmotivated, or I was in a bad day, it would put a damper on club activities."
+    m 3euc "Everyone would end up going off on their own to do their own things."
+    m 3eub "Conversely, if I made an effort and tried to stay upbeat, the other girls would usually respond in kind. We would all end up having a better time!"
+    m 1hub "It's pretty gratifying when you start noticing these kinds of things. You realize that, just by staying positive, you can make someone else's day better!"
+    m 3wuo "You'd be surprised how far this kind of influence can reach, too!"
+    m 4esd "I heard that stuff like binge eating, gambling, or heavy drinking are all contagious behaviors."
+    m 1esc "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself. That's a bit disheartening..."
+    m 3hub "It also works the other way around, though! Smiling, laughing, and positive thinking are contagious too!"
+    m 1huu "Turns out we are all more connected than you think. Those around you matter a lot on how you feel about things!"
+    m 1ekbla "I hope by noticing these kinds of things, you'll be able to better understand and control your own feelings, [player]."
+    m "I just want to see you be the happiest you can be."
+    if mas_isMoniHappy(higher=True):
+        m 3hub "Maybe then, you too could try spreading your happiness to others around you? Ahaha~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
