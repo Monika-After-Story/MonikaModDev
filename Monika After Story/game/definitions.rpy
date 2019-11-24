@@ -5065,6 +5065,40 @@ init 2 python:
         eighteenth_bday = mas_utils.add_years(persistent._mas_player_bday, 18)
         return _date >= eighteenth_bday
 
+    def mas_timePastSince(timekeeper, passed_time, _now=None):
+        """
+        Checks if a certain amount of time has passed since the time in the timekeeper
+        IN:
+            timekeeper - variable holding the time since last event
+            passed_time - datetime.timedelta of the amount of time passed
+            _now - time to check against (If none, now is assumed, (Default: None))
+        OUT:
+            boolean:
+                - True if it has been passed_time units past timekeeper
+                - False otherwise
+        """
+        if timekeeper is None:
+            return True
+
+        elif _now is None:
+            _now = datetime.datetime.now()
+
+        #If our timekeeper is holding a datetime.date, we need to convert it to a datetime.datetime
+        if not isinstance(timekeeper, datetime.datetime):
+            timekeeper = datetime.datetime.combine(timekeeper, datetime.time())
+
+        return timekeeper + passed_time <= _now
+
+    def mas_pastOneDay(timekeeper, _now=None):
+        """
+        One day time past version of mas_timePastSince()
+
+        IN:
+            timekeeper - variable holding the time since last event
+            _now - time to check against (Default: None)
+        """
+        return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme

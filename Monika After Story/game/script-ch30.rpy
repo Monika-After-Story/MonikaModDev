@@ -1706,6 +1706,13 @@ label ch30_day:
 
         if mas_isO31() and not persistent._mas_o31_in_o31_mode:
             pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
+
+        #If the map isn't empty and it's past the last reacted date, let's empty it now
+        if (
+            persistent._mas_filereacts_reacted_map
+            mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+        ):
+            persistent._mas_filereacts_reacted_map = dict()
     return
 
 
@@ -1925,6 +1932,12 @@ label ch30_reset:
     python:
         if persistent._mas_filereacts_just_reacted:
             queueEvent("mas_reaction_end")
+
+        #If the map isn't empty and it's past the last reacted date, let's empty it now
+        if (
+            persistent._mas_filereacts_reacted_map
+            mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+        ):
 
     # set any prompt variants for acs that can be removed here
     python:

@@ -97,7 +97,7 @@ init python in mas_weather:
     def shouldRainToday():
 
         #Is it a new day? If so, we should see if it should rain today
-        if not store.persistent._mas_date_last_checked_rain or store.persistent._mas_date_last_checked_rain < datetime.date.today():
+        if store.mas_pastOneDay(store.persistent._mas_date_last_checked_rain):
             store.persistent._mas_date_last_checked_rain = datetime.date.today()
 
             #Now we roll
