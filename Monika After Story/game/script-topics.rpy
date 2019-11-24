@@ -6295,7 +6295,7 @@ label monika_rock:
     m 3esa "You wanna know a cool form of literature?"
     m 3hua "Rock and roll!"
     m 3hub "That's right. Rock and roll!"
-    m 2eka "It's disheartening to know that so many people think that rock and roll is just a bunch of noises."
+    m 2eka "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
     m 2lsc "To tell you the truth, I judged rock too."
     m 3euc "They're no different from poems, actually."
     m 1euc "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
