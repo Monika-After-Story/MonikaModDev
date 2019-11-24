@@ -12743,33 +12743,6 @@ label monika_auroras:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_three_musketeers",category=['literature'],prompt="The Three Musketeers",random=True))
-
-label monika_three_musketeers:
-    m 3eub "[player], do you know what a musketeer is?"
-    m 3hub "If you do, it's probably from that book, 'The Three Musketeers'."
-    m 4eub "If you've not heard of it, it's a historical adventure novel from the 19th century. It's considered a classic in literature."
-    m 2rksdla "It's kind of funny you know... the way we picture a whole group of people who actually existed is completely based on a single source."
-    m 2dkc "And from what I've heard, that source is not very historicaly accurate."
-    m 3eub "Nowadays, when you think of a musketeer, most people tend to picture a swashbuckling heroic figure... someone standing up for the weak and the oppressed."
-    m 3eub "Throwing witty quips while fighting in fencing duels... just like the protagonists of the book do."
-    m 4eub "In reality, these guys were a branch of the military; they served either as royal bodyguards, or an elite fighting company during wars."
-    m 4hksdlb "Not much to do with the kind of adventures depicted in the book."
-    m 4wuo "Even their signature fencing sword is a myth. A real life musketeer would favor... a musket! {w=0.5}It's even in their name, musket-eers!"
-    m 1hua "You can really see where the author came from when he said 'You can rape history, so long as you give her a beautiful child'."
-    m 1eua "And it's true it was a pretty entertaining read... "
-    m 3ekb "Yet, I think it's important to keep in mind that for every fiction, the reality behind it may be pretty different from what is depicted."
-    m 1huu "And I don't mean that just for musketeers!"
-    m 2eub "Whether it's pirates, ninjas, or even contemporary things, like policemen, or filmmakers, this applies too!"
-    m 2euc "If you only know something from a movie, or a book, it's probably safe to assume this thing is pretty different in real life."
-    m 1huu "Well, nothing wrong with being entertained..."
-    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eka "But let's just try to keep an open mind, [player], and try to see behind the lines of the stories we're told..."
-    show monika 1huu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1huu "After all, we ourselves wouldn't want people to judge us based on some misplaced preconceptions~"
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
