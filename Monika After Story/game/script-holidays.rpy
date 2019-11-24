@@ -1729,7 +1729,6 @@ label mas_holiday_d25c_autoload_check:
             ):
                 #Unlock and wear santa/wine ribbon + holly hairclip
                 store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
-                store.mas_selspr.unlock_acs(mas_acs_holly_hairclip)
                 store.mas_selspr.unlock_clothes(mas_clothes_santa)
 
                 #Change into santa. Outfit mode forces ponytail
@@ -2665,22 +2664,52 @@ label mas_d25_monika_christmas_eve:
     m 3hub "Can you believe it...?{w=1} It'll be Christmas soon!"
     m 1rksdla "I've always had such a hard time sleeping on Christmas Eve..."
     m 1eka "I would be so anxious to see what I'd find under the tree the next morning..."
-    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
 
     #Were there last Christmas
-    if not mas_verifyHistLastYear_k(True, "d25.actions.spent_d25"):
-        m 5ekbfa "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
-        m 5hkbfa "I can't wait for tomorrow!"
+    if mas_verifyHistLastYear_k(True, "d25.actions.spent_d25"):
+        m "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
+        m 5hkbsa "I can't wait for tomorrow!"
 
     #Weren't there last Christmas
-    elif not mas_verifyHistAll_k(True, "d25.actions.spent_d25"):
-        m 5ekbfa "But I'm even {i}more{/i} excited this year..."
-        m 5hkbfa "Just the thought of spending another Christmas together...{w=1}I can't wait!"
+    elif mas_verifyHistAll_k(True, "d25.actions.spent_d25"):
+        m "But I'm even {i}more{/i} excited this year..."
+        m 5hkbsa "Just the thought of spending another Christmas together...{w=1}I can't wait!"
 
     #First Chistmas with Moni
     else:
-        m 5ekbfa "But I'm even {i}more{/i} excited this year..."
-        m 5hkbfa "Just the thought of our first Christmas together...{w=1}I can't wait!"
+        m "But I'm even {i}more{/i} excited this year..."
+        m 5hkbsa "Just the thought of our first Christmas together...{w=1}I can't wait!"
+
+    if mas_canShowRisque():
+        m 5ekbfa "..."
+        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m "..."
+        m "Also, [player]..."
+        m 3ekbfsdla "There's...{w=1}s-something I want to show you."
+        m 2rkbfsdla "I've been wanting to do this for while now actually, but...{w=1}well it's kind of embarrassing..."
+        m "..."
+        m 2hkbfsdlb "Oh gosh, I'm super nervous, ahaha!"
+        m 2rkbfsdlc "It's just I've never--{nw}"
+        m 2dkbfsdlc "Ah, okay, time to stop stalling and just do it."
+        m 2ekbfsdla "Just give me a few seconds, [player]."
+        call mas_clothes_change(outfit=mas_clothes_santa_lingerie, outfit_mode=True, exp="monika 2rkbfsdlu", restore_zoom=False)
+        pause 3.0
+        m 2ekbfsdlb "Ahaha, [player]...{w=1}you're staring..."
+        m 2ekbfu "Well...{w=1}do you like what you see?"
+        m 1lkbfa "I've never really...{w=1}worn anything like this before."
+        m "...At least not that anyone's seen."
+
+        #TODO: may want to add a prop to bathing suit jsons to make this simpler once we have more
+        if mas_selspr.CLOTH_SEL_MAP.get("orcaramelo_bikini_shell", None).unlocked:
+            m 3hkbfb "Ahaha, what am I saying, you've seen me in a bikini before, which is essentially the same thing..."
+            m 2rkbfa "...Though for some reason this just feels...{w=0.5}{i}different{/i}."
+
+        m 2ekbfa "Anyway, something about being with you tonight on Christmas Eve seems really romantic, you know?"
+        m "It just felt like the perfect time for the next step in our relationship."
+        m 2rkbfsdlu "Now I know that we can't really--{nw}"
+        m 3hubfb "Ah! Nevermind, ahaha!"
+        m 1ekbfa "Just know that I love you very, very much, [player]~"
     return
 
 init 5 python:

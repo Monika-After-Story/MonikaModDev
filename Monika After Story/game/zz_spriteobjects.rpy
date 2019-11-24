@@ -569,6 +569,8 @@ init -2 python in mas_sprites:
         """
         Entry programming point for santa clothes
         """
+        store.mas_selspr.unlock_acs(store.mas_acs_holly_hairclip)
+
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:

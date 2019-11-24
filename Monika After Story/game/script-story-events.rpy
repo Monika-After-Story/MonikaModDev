@@ -2016,7 +2016,7 @@ label mas_change_to_def:
 #   IN:
 #       outfit - the MASClothes object to change outfit to
 #           If None is passed, the uniform is used
-label mas_clothes_change(outfit=None, outfit_mode=False):
+label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True):
     # use def as the default outfit to change to
     if outfit is None:
         $ outfit = mas_clothes_def
@@ -2038,11 +2038,12 @@ label mas_clothes_change(outfit=None, outfit_mode=False):
     $ renpy.save_persistent()
 
     pause 4.0
-    show monika 2eua zorder MAS_MONIKA_Z at i11 with dissolve
+    $ renpy.show(exp, zorder=MAS_MONIKA_Z, at_list=[i11])
     hide emptydesk
 
-    pause 0.5
-    call monika_zoom_transition (curr_zoom, 1.0)
+    if restore_zoom:
+        pause 0.5
+        call monika_zoom_transition(curr_zoom, 1.0)
     return
 
 init 5 python:
