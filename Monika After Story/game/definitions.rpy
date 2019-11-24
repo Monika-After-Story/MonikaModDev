@@ -5090,8 +5090,9 @@ init 2 python:
 
         Conditions for this:
             1. We're not in sensitive mode
-            2. Player is over 18
-            3. Aff condition (raw)
+            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            3. Player is over 18
+            4. Aff condition (raw)
 
         IN:
             aff_thresh:
@@ -5104,6 +5105,7 @@ init 2 python:
         """
         return (
             not persistent._mas_sensitive_mode
+            and persistent._mas_first_kiss is not None
             and mas_is18Over()
             and _mas_getAffection() >= aff_thresh
         )
