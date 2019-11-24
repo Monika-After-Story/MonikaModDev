@@ -12464,7 +12464,7 @@ label monika_hemispheres:
     m 1eua "Which hemisphere do you live in?"
     m 1eka "I know it's kind of a strange question..."
     m 3hub "But it gives me a better idea of how things work around you."
-    m 3eua "Like, you know how when it's winter in the Northern hemisphere, it's actually summer in the Southern hemisphere?"
+    m 3eua "Like, you know how when it's winter in the Northern Hemisphere, it's actually summer in the Southern Hemisphere?"
     m 3hksdrb "It would be a little awkward if I started talking about how nice summer weather is, but where you are, it's the middle of winter..."
     m 2eka "But anyway..."
 
@@ -12473,22 +12473,22 @@ label monika_hemispheres:
     menu:
         m "Which hemisphere do you live in, [player]?{fast}"
 
-        "The Northern hemisphere.":
+        "The Northern Hemisphere.":
             $ persistent._mas_pm_live_south_hemisphere = False
             m 2eka "I had a feeling..."
 
-        "The Southern hemisphere.":
+        "The Southern Hemisphere.":
             $ persistent._mas_pm_live_south_hemisphere = True
             m 1wuo "I wouldn't have thought!"
 
     $ store.mas_calendar.addSeasonEvents()
-    m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
-    m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
+    m 3rksdlb "Most of the world's population lives in the Northern Hemisphere after all."
+    m 3eka "In fact, only about twelve percent of the population lives in the Southern Hemisphere."
     if not persistent._mas_pm_live_south_hemisphere:
-        m 1eua "So I kind of figured you lived in the Northern hemisphere."
+        m 1eua "So I kind of figured you lived in the Northern Hemisphere."
 
     else:
-        m 2rksdla "So you can see why I would have thought you would be living in the Northern hemisphere..."
+        m 2rksdla "So you can see why I would have thought you would be living in the Northern Hemisphere..."
         m 1hub "But I guess that makes you a bit more special, ehehe~"
 
     if mas_isSpring():
