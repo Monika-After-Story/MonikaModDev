@@ -5069,9 +5069,16 @@ init 2 python:
         """
         Checks if a certain amount of time has passed since the time in the timekeeper
         IN:
-            timekeeper - variable holding the time since last event
-            passed_time - datetime.timedelta of the amount of time passed
-            _now - time to check against (If none, now is assumed, (Default: None))
+            timekeeper:
+                variable holding the time we last checked whatever it restricts
+                (can be datetime.datetime or datetime.date)
+
+            passed_time:
+                datetime.timedelta of the amount of time which should
+                have passed since the last check in order to return True
+
+            _now:
+                time to check against (If none, now is assumed, (Default: None))
         OUT:
             boolean:
                 - True if it has been passed_time units past timekeeper
