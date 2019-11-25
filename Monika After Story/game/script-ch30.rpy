@@ -1099,7 +1099,15 @@ label ch30_autoload:
     call ch30_reset
 
     #Affection will trigger a final farewell mode
-    if persistent._mas_affection["affection"] <= -115:
+    #If we got a fresh start, then -50 is the cutoff vs -115.
+    if (
+        persistent._mas_pm_got_a_fresh_start
+        and _mas_getAffection() <= -50
+    ):
+        $ persistent._mas_load_in_finalfarewell_mode = True
+        $ persistent._mas_finalfarwell_poem_id = "ff_failed_promise"
+
+    elif _mas_getAffection() <= -115:
         $ persistent._mas_load_in_finalfarewell_mode = True
         $ persistent._mas_finalfarwell_poem_id = "ff_affection"
 

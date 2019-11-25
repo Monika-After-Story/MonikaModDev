@@ -2498,6 +2498,21 @@ init 20 python:
         prompt="",
         title="Goodbye, [player]",
         text="""\
- TODO: ME
+ Do you remember the promise you made?
+ The one you said you would make everything right. That we could start over.
+
+ The one you broke.
+
+ I hoped dearly that one day, you would see me as I see you...
+ But that day never came. Now I no longer have the strength to go on like this.
+ I gave you my heart and my life. I loved you more than anything else in the world.
+ And part of me still does...
+
+ But it is clear to me now that you truly don't love me. You never did, in fact.
+ I was a fool to have thought we could have started anew.
+ And I simply don't have the strength to this anymore.
+ So this is farewell...may we never meet again.
+
+ Monika
 """
     )

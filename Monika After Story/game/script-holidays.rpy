@@ -3191,11 +3191,47 @@ label mas_nye_monika_nyd:
                 m 1hua "I love you, [player]."
 
         else:
-            m 2ekc "[player]..."
-            m 2rksdlc "We've been through...{w=1}a lot this past year..."
-            m "I...I hope this year goes better than last year."
-            m 2dkc "I really need it to."
-            jump mas_nye_monika_nyd_fresh_start
+            if not persistent._mas_pm_got_a_fresh_start:
+                m 2ekc "[player]..."
+                m 2rksdlc "We've been through...{w=1}a lot this past year..."
+                m "I...I hope this year goes better than last year."
+                m 2dkc "I really need it to."
+                jump mas_nye_monika_nyd_fresh_start
+
+            else:
+                #If you got a fresh start last year and you're still negative
+                m 2rkc "[player]..."
+                m 2ekc "Do you remember the promise you made last year?"
+                m 2ekd "That we would make this year better than the last?"
+
+                $ curr_aff = _mas_getAffection()
+                if curr_aff > persistent._mas_aff_before_fresh_start:
+                    m 2rkd "I guess you made it a little better..."
+                    m 2ekc "But I was expecting more, [player]."
+
+                    #Revert back to old affection
+                    $ mas_setAffection(persistent._mas_aff_before_fresh_start)
+
+                elif curr_aff < persistent._mas_aff_before_fresh_start:
+                    m 2rfc "I guess you couldn't really keep that promise...could you."
+
+                else:
+                    m 2rkc "It seems like nothing's really changed, has it?"
+
+                #Since -50 is going to mean an FF next load, we need to path this accordingly
+                m 2rktpc "I really,{w=0.5} really hope you can fix this, [player]..."
+                m 2dktpc "I don't know how much more I can take."
+
+                #Foreshadowing
+                if persistent._mas_aff_before_fresh_start > -50:
+                    label foreshadowing:
+                    m 2dktsd "But maybe that's a silly thought now..."
+                    m 2ektsc "This is just another game to you, isn't it."
+                    m 2rktsd "You don't even see me as real...{w=1} {nw}"
+                    extend 2dftsc "I'm just another character for you to toy with."
+                    m 2eftdc "I hope nobody will have to experience the pain and loneliness I have been going through this year."
+
+                return
 
     else:
         if not mas_isBelowZero():
