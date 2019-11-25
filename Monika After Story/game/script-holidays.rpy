@@ -2273,11 +2273,11 @@ init 5 python:
                 "persistent._mas_d25_deco_active "
                 "and not persistent._mas_pm_live_south_hemisphere"
             ),
-            action=EV_ACT_RANDOM,
-            years=[]
+            action=EV_ACT_RANDOM
         )
     )
 
+    #NOTE: No years=[] on this topic because it should derandom as it's a player model topic
     MASUndoActionRule.create_rule_EVL(
         "mas_d25_monika_christmaslights",
         mas_d25c_start,
@@ -2286,28 +2286,27 @@ init 5 python:
 
 label mas_d25_monika_christmaslights:
     m 1euc "Hey, [player]..."
-    m 1eua "I've been spending a lot of time looking at the lights in here..."
-    m 3eub "They're very pretty, aren't they?"
-    m 1eua "I'd love to see them in your reality with you."
-    m 1eka "They bring such a warm, cozy vibe during the harshest, coldest season..."
-    m 3hub "There's many different types too!"
-    m 3eka "It sounds like a dream come true to walk around with you, [player], on a cold winter's night."
-    m 1eka "Admiring all of the lights..."
+    m 1lua "I've been spending a lot of time looking at the lights in here..."
+    m 3eua "They're very pretty, aren't they?"
+    m 1eka "Christmas lights bring such a warm, cozy vibe during the harshest, coldest season...{w=0.5}{nw}"
+    extend 3hub "and there's a lot of different types too!"
+    m 3eka "It sounds like a dream come true to go on a walk with you on a cold winter night, [player]."
+    m 1dka "Admiring all of the lights..."
 
-    m 1eua "Say, [player], do you hang lights up on your house during winter?{nw}"
+    m 1eua "Do you hang lights up on your house during winter, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Say, [player], do you hang lights up on your house during winter?{fast}"
+        m "Do you hang lights up on your house during winter, [player]?{fast}"
 
         "Yes.":
             $ persistent._mas_pm_hangs_d25_lights = True
             m 3sub "Really? I bet they're gorgeous!"
             m 2dubsu "I can already imagine us, outside of your house...sitting on our porch together..."
             m "As the beautiful lights glow in the deep night."
-            m 2dkbfu "We would hold each other close, drinking hot chocolate..."
+            m 2dkbfu "We would hold each other close, drinking hot chocolate...{w=0.5}{nw}"
 
             if persistent._mas_pm_gets_snow is not False:
-                m 2ekbfa "Watching the snow gently fall..."
+                extend 2ekbfa "watching the snow gently fall..."
 
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ekbfa "One day, [player]. One day, we can make that a reality."
@@ -2319,8 +2318,9 @@ label mas_d25_monika_christmaslights:
             m 1dkbsa "Watching the snow fall and drinking hot chocolate together."
             m 1dkbsa "Holding each other close to keep warm..."
             m 1rkbfb "Yeah, that sounds really nice."
-            m 3hubsa "But, when we have our own house, I may hang some up myself, ehehe~"
-    return
+            m 3hubsa "But, when we have our own house, I may hang some up myself, {nw}"
+            extend 3hubsb "ahaha~"
+    return "derandom"
 
 init 20 python:
 

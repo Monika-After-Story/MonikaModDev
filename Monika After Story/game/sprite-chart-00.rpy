@@ -2196,6 +2196,16 @@ image monika 1ltsdlc_static = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1lua_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    arms="steepling"
+)
+
 image monika 1lubfb_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5561,16 +5571,6 @@ image monika 2wfw_static = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="wide",
-    arms="crossed"
-)
-
-image monika 2wfx_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="furrowed",
-    eyes="wide",
-    nose="def",
-    mouth="angry",
     arms="crossed"
 )
 
