@@ -2141,3 +2141,31 @@ label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_clothes_orcaramelo_sweater_shoulderless:
+
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "orcaramelo_sweater_shoulderless")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1sub "Oh!{w=0.5} A sweater!"
+    m 1hub "And it looks so cozy, too!"
+    if mas_isWinter():
+        m 2eka "You're so thoughtful [player], giving this to me on such a cold winter day..."
+    m 3eua "Let me go try it on."
+
+    # try it on
+    call mas_clothes_change(sprite_object)
+
+    m 2dkbsu "It's so...{w=1}comfy. I feel as snug as a bug in a rug. Ehehe~"
+    m 1ekbsa "Thank you, [player]. I love it!"
+    m 3hubsa "Now whenever I wear it I'll think of your warmth. Ahaha~"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
