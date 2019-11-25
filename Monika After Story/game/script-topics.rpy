@@ -6026,12 +6026,11 @@ init 5 python:
             aff_range=(mas_aff.DISTRESSED, None)
         )
     )
-    
-        
+
 label monika_daydream:
     #insert endless possibilities of wholesome goodness here
     python:
-        #Upset and below
+        #Upset up to -50
         daydream_quips_upset = [
             "what it was like when we first met...",
             "how I felt when I first met you...",
@@ -6100,10 +6099,10 @@ label monika_daydream:
     elif _mas_getAffection() > -50:
         m 2lsc "..."
         m 2dkc "..."
-        m 2dku "..."
-        m 2wud "Oh, sorry...{w=0.5} I was just lost in thought for a second there."
-        m 2dku "I was just remembering [daydream_quip]"
-        m 2ektpa "I wonder if we can be that happy again someday, [player]..."
+        m 2dktpu "..."
+        m 2ektpd "Oh, sorry...{w=0.5} I was just lost in thought for a second there."
+        m 2dktpu "I was just remembering [daydream_quip]"
+        m 2ektdd "I wonder if we can be that happy again someday, [player]..."
 
     else:
         m 6lsc "..."
