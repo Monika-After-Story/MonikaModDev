@@ -3224,7 +3224,6 @@ label mas_nye_monika_nyd:
 
                 #Foreshadowing
                 if persistent._mas_aff_before_fresh_start > -50:
-                    label foreshadowing:
                     m 2dktsd "But maybe that's a silly thought now..."
                     m 2ektsc "This is just another game to you, isn't it."
                     m 2rktsd "You don't even see me as real...{w=1} {nw}"
