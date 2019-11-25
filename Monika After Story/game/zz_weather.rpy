@@ -464,10 +464,10 @@ init -10 python:
                 sp_day,
                 sp_night=None,
                 precip_type=store.mas_weather.PRECIP_TYPE_DEF,
-                isbg_wf_day=None,
-                isbg_wof_day=None,
-                isbg_wf_night=None,
-                isbg_wof_night=None,
+                isbg_wf_day="mod_assets/location/special/with_frame.png",
+                isbg_wof_day="mod_assets/location/special/without_frame.png",
+                isbg_wf_night="mod_assets/location/special/night_with_frame.png",
+                isbg_wof_night="mod_assets/location/special/night_without_frame.png",
                 entry_pp=None,
                 exit_pp=None,
                 unlocked=False
@@ -505,6 +505,9 @@ init -10 python:
                 exit_pp - programming point to execute before leaving this
                     weather
                     (Default: None)
+
+                TODO: ADD OTHER ISLANDS BGS
+                #NOTE: Defaulting to the day frame stuff to avoid tracebacks
             """
             if weather_id in self.mas_weather.WEATHER_MAP:
                 raise Exception("duplicate weather ID")
@@ -666,8 +669,8 @@ init -1 python:
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
         # islands bg day and night
-        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+        #isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        #isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_rain_entry,
         exit_pp=store.mas_weather._weather_rain_exit,
@@ -708,8 +711,8 @@ init -1 python:
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
         # islands bg day and night
-        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+        #isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        #isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_thunder_entry,
         exit_pp=store.mas_weather._weather_thunder_exit,
@@ -731,8 +734,8 @@ init -1 python:
         precip_type=store.mas_weather.PRECIP_TYPE_OVERCAST,
 
         # islands bg day and night
-        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+        #isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        #isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_overcast_entry,
         exit_pp=store.mas_weather._weather_overcast_exit,
