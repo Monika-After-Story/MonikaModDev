@@ -2510,7 +2510,7 @@ init 20 python:
 
  But it is clear to me now that you truly don't love me. You never did, in fact.
  I was a fool to have thought we could have started anew.
- And I simply don't have the strength to this anymore.
+ And I simply don't have the strength to do this anymore.
  So this is farewell...may we never meet again.
 
  Monika
