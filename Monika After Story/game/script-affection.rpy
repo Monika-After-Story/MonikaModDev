@@ -2247,6 +2247,8 @@ label mas_finalfarewell_start:
         store.songs.enabled = False
         mas_in_finalfarewell_mode = True
         layout.QUIT = glitchtext(20)
+        #Console is not going to save you.
+        config.keymap["console"] = []
 
 
     jump mas_finalfarewell
@@ -2465,9 +2467,10 @@ Forever yours, Monika.
 
 
 #TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
-init 20 python:
+init 2 python:
     player = persistent.playername
 
+init 20 python:
     MASPoem(
         poem_id="ff_affection",
         category="ff",
@@ -2487,7 +2490,7 @@ init 20 python:
 
  Monika
 """
-)
+    )
 
     MASPoem(
         poem_id="ff_failed_promise",
