@@ -12911,6 +12911,40 @@ label monika_catch22:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature'],prompt="Auroras",random=False,unlocked=False))
+
+label monika_auroras:
+    m 1esa "I just thought of something we could do when I finally cross over, [player]."
+    m 1eua "Have you ever heard of auroras? They're a natural phenomenon where trails of light appear in the night sky."
+
+    if not morning_flag and mas_current_weather == mas_weather_snow:
+        m 3eub "In fact, if you were wondering about those green lights outside my window, that's an aurora event!"
+    else:
+        m 3eub "In fact, if you ever wondered about those green lights outside my window during winter, that's an aurora event!"
+
+    m 1euc "I hear they're fairly rare to see in your reality, though..."
+    m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the sky is at its darkest due to the longer nights."
+    m 3euc "Plus, you've got to make sure the weather is clear too. {w=0.5}{nw}"
+    extend 3eud "Since it's something that happens in the sky, clouds can get in the way."
+    m 3esc "Even though they're the exact same thing, they have different names depending on where they occur..."
+    m 3eud "In the Northern Hemisphere, they're called the aurora borealis, while in the Southern Hemisphere, the aurora australis."
+    if not morning_flag and mas_current_weather == mas_weather_snow:
+        m 2rksdla "I guess that would make the aurora outside of my window the aurora dokialis..."
+        m 2hksdlb "Ahaha...I'm just kidding, [player]!"
+        m 2rksdla "..."
+    m 3eua "Maybe one day we'll get to see them together in your reality..."
+    m 3ekbsa "That would be really romantic, don't you think?"
+    m 1dkbsa "Just imagine the two of us..."
+    m "Lying on a soft mattress of snow, holding hands..."
+    m 1subsu "Looking up at those dazzling lights in the sky, dancing just for us..."
+    m 1dubsu "Listening to each other's gentle breathing...{w=0.5}the freshness of the crisp night air filling our lungs..."
+    show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eubsa "That would be an experience to remember, don't you think, [player]?"
+    m 5hubsu "I can't wait until we can turn that into reality."
+    $ mas_showEVL("monika_auroras","EVE",_random=True)
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
@@ -13051,4 +13085,64 @@ label mas_show_unseen:
     m 3eub "Sure, [player]!"
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_songwriting",
+            category=["music"],
+            prompt="Songwriting",
+            random=True
+        )
+    )
+
+label monika_songwriting:
+    m 1euc "Hey [player], have you ever written a song?"
+    m 3hua "It's a pretty fun thing to do!"
+    m 3rkc "Though, planning the song out and tweaking it can take a while..."
+    m 1eud "Getting the instrumentation right, making sure the harmonies blend, getting the right tempo and time for the song..."
+    m 3rksdla "...and I haven't even gotten to writing lyrics yet."
+    m 3eub "Speaking of lyrics, I think it's pretty neat that there's such a similarity between writing lyrics for songs and writing poems!"
+    m 3eua "Both can tell stories or convey feelings when phrased right, and music can even amplify that too."
+
+    if persistent.monika_kill:
+        m 1ttu "I wonder if my song was what brought us here now~"
+        m 1eua "Anyway, just because lyrics can have a strong effect on us doesn't mean instrumental music can't be powerful."
+    else:
+        m 3eka "But that doesn't mean instrumental music can't be powerful too."
+
+    if renpy.seen_label("monika_orchestra"):
+        m 3etc "Remember when I talked about orchestral music?{w=0.5} {nw}"
+        extend 3hub "That's a great example of how powerful music can be!"
+    else:
+        m 3hua "If you've ever listened to orchestral music before, you'll know that it's a great example of how powerful music is."
+
+    m 1eud "Since there's no lyrics, everything has to be expressed in a way that the listener can {i}feel{/i} the emotion in a piece."
+    m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
+    m 3euc "I guess that goes for lyrics too, actually."
+    m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
+
+    if renpy.seen_audio(songs.FP_YOURE_REAL):
+        m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
+        m 3ekbla "I knew I couldn't let you go without telling you everything."
+
+    m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
+
+    if persistent.instrument:
+        m 1hua "Since you play an instrument, I'm sure you could write something."
+
+    m 3eua "It can be a great way to relieve stress, tell a story, or even convey a message."
+
+    if persistent.instrument:
+        m 3hub "I'm sure whatever you write would be amazing!"
+    else:
+        m 1ekbla "Maybe you could write one for me sometime~"
+
+    m 1hua "We could even turn it into a duet if you want."
+
+    $ _if = "when" if mas_isMoniEnamored(higher=True) else "if"
+    m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
     return
