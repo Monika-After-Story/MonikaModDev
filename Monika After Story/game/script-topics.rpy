@@ -6032,8 +6032,11 @@ label monika_daydream:
     #insert endless possibilities of wholesome goodness here
     python:
         #Upset and below
-        daydream_quips_upsetminus = [
-            "TODO: ME",
+        daydream_quips_upset = [
+            "what it was like when we first met...",
+            "how I felt when I first met you...",
+            "the good times we used to have...",
+            "the hope I used to have for our future..."
         ]
 
         #Normal plus
@@ -6083,15 +6086,31 @@ label monika_daydream:
         elif mas_isMoniNormal():
             daydream_quip = renpy.random.choice(daydream_quips_normplus)
         else:
-            daydream_quip = renpy.random.choice(daydream_quips_upsetminus)
+            daydream_quip = renpy.random.choice(daydream_quips_upset)
 
-    m 2lsc "..."
-    m 2lsbsa "..."
-    m 2tsbsa "..."
-    m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
-    m 1lkbsa "I was imagining [daydream_quip]"
-    m 1ekbfa "Wouldn't that be wonderful, [player]?"
-    m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
+    if mas_isMoniNormal(higher=True):
+        m 2lsc "..."
+        m 2lsbsa "..."
+        m 2tsbsa "..."
+        m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
+        m 1lkbsa "I was imagining [daydream_quip]"
+        m 1ekbfa "Wouldn't that be wonderful, [player]?"
+        m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
+
+    elif _mas_getAffection() > -50:
+        m 2lsc "..."
+        m 2dkc "..."
+        m 2dku "..."
+        m 2wud "Oh, sorry...{w=0.5} I was just lost in thought for a second there."
+        m 2dku "I was just remembering [daydream_quip]"
+        m 2ektpa "I wonder if we can be that happy again someday, [player]..."
+
+    else:
+        m 6lsc "..."
+        m 6lkc "..."
+        m 6lktpc "..."
+        m 6ektpd "Oh, sorry, I was just..."
+        m 6dktdc "You know what, nevermind."
     return
 
 # init 5 python:
