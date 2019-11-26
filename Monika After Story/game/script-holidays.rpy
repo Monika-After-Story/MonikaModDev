@@ -3607,9 +3607,11 @@ label mas_nye_dress_intro:
         m 2tubsu "..."
         m 3hubsb "Ahaha! Just teasing you~"
         m 3eua "I'm glad you like my dress.{nw}"
+
     else:
-        m 2rksbsdla "..."
+        m 2rkbssdla "..."
         m "I'm...{w=1}glad you like my dress.{nw}"
+
     extend 3eua " It was very hard to get right!"
     m 3rka "The flower crown kept falling off..."
     m 1hua "I went for the 'Greek goddess' look, I hope it shows."
