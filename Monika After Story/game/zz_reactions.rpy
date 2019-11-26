@@ -1851,15 +1851,6 @@ label mas_reaction_gift_roses:
 
         monika_chr.wear_acs(mas_acs_roses)
 
-        chance = (2 if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start') else 4)
-
-        should_rose_kiss = (
-            mas_isMoniEnamored(higher=True)
-            and persistent._mas_first_kiss
-            and (renpy.random.randint(1,chance) == 1 or mas_isSpecialDay())
-            and mas_timePastSince(persistent._mas_last_kiss, datetime.timedelta(hours=1))
-        )
-
     #TODO: future migrate this to use history (post f14)
     if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
         $ mas_giftCapGainAff(10)
@@ -1881,7 +1872,7 @@ label mas_reaction_gift_roses:
             $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
-        if should_rose_kiss:
+        if mas_shouldKiss(chance=2, special_day_bypass=True):
             call monika_kissing_motion_short
 
     else:
@@ -1911,7 +1902,7 @@ label mas_reaction_gift_roses:
                     $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
 
-            if should_rose_kiss:
+            if mas_shouldKiss(chance=4, special_day_bypass=True):
                 call monika_kissing_motion_short
 
         else:

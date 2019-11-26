@@ -3285,7 +3285,7 @@ label monika_love:
 
         #Sublabel to skip the quips but still do logic w/o duping code
         label .end_logic:
-        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,25) == 1:
+        if mas_shouldKiss(chance=25):
             call monika_kissing_motion_short
     call monika_lovecounter_aff
     return

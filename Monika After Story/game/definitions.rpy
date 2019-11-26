@@ -6643,3 +6643,32 @@ init python:
         if set_time is None:
             set_time = datetime.datetime.now()
         persistent._mas_last_monika_ily = set_time
+
+# function regarding whether Monika should kiss the player
+init python:
+    def mas_shouldKiss(chance, cooldown=datetime.timedelta(hours=1), special_day_bypass=False):
+        '''
+        Checks if Monika should give the player a random kiss
+        CONDITIONS:
+            1. Enamored+ affection
+            2. Player already had their first kiss with Monika
+            3. Random chance that changes depending on the chance and special_day_bypass vars
+            4. Enough time has passed since the last kiss
+
+        IN:
+            chance - the chance to receive a kiss from Monika
+            cooldown - a datetime.timedelta regarding how much time should pass before we allow this kiss to happen
+                (Default=datetime.timedelta(hours=1))
+            special_day_bypass - whether a special day should bypass the chance (Default=False)
+        '''
+        should_kiss = (
+            renpy.random.randint(1, chance) == 1
+            or (special_day_bypass and mas_isSpecialDay())
+            )
+
+        return (
+            mas_isMoniEnamored(higher=True)
+            and persistent._mas_first_kiss
+            and should_kiss
+            and mas_timePastSince(persistent._mas_last_kiss, cooldown)
+        )
