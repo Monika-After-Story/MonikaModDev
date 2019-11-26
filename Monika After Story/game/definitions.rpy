@@ -6645,7 +6645,6 @@ init python:
         persistent._mas_last_monika_ily = set_time
 
 # function regarding whether Monika should kiss the player
-init python:
     def mas_shouldKiss(chance, cooldown=datetime.timedelta(hours=1), special_day_bypass=False):
         '''
         Checks if Monika should give the player a random kiss
