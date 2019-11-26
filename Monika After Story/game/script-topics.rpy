@@ -12272,15 +12272,17 @@ init 5 python:
 
 label monika_snowmen:
     m 3eua "Hey [player], have you ever built a snowman?"
-    m 3eub "I think it sounds like a lot of fun!"
-    m 3rka "Building snowmen is usually seen as something children do, but I think they're really cute!"
-    m 1wub "They really can be brought to life with a variety of objects!"
-    m "Like sticks for arms, a mouth made with pebbles, stones for eyes, and even a little winter hat!"
+    m 3hub "I think it sounds like a lot of fun!"
+    m 1eka "Building snowmen is usually seen as something children do,{w=0.2} {nw}"
+    extend 3hua "but I think they're really cute."
+    m 3eua "It's amazing how they can really be brought to life with a variety of objects..."
+    m 3eub "...like sticks for arms, a mouth made with pebbles, stones for eyes, and even a little winter hat!"
     m 1rka "I've noticed that giving them carrot noses is common, although I don't really understand why..."
     m 3rka "Isn't that a bit of a strange thing to do?"
     m 2hub "Ahaha!"
-    m 2eub "Anyway, I think it would be nice to build one together someday."
-    m 5eua "I hope you feel the same way!~"
+    m 2eua "Anyway, I think it would be nice to build one together someday."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "I hope you feel the same way~"
     return
 
 init 5 python:
