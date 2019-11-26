@@ -46,12 +46,62 @@ init -900 python in mas_ics:
 
     # rain with frame
     islands_rwf = (
-        "6e13efca7df89d7627f0e9f7b696ec110b40e88b82e70ce1249335246597eab4"
+        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
     )
 
     # rain without frame
     islands_rwof = (
-        "435fc21d818dc77b46c93e94c8976eb0702c83b9aa6c4043067f42e8827f27d6"
+        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
+    )
+
+    # night rain with frame
+    islands_nrwf = (
+        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
+    )
+
+    # night rain without frame
+    islands_nrwof = (
+        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
+    )
+
+    # overcast with frame
+    islands_owf = (
+        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
+    )
+
+    # overcast without frame
+    islands_owof = (
+        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
+    )
+
+    # night overcast with frame
+    islands_nowf = (
+        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
+    )
+
+    # night overcast without frame
+    islands_nowof = (
+        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
+    )
+
+    # snow with frame
+    islands_swf = (
+        "fde85a1441ffc5d81b7054d2b362a6fcbaad961e5bace4b52b83e77423eaf2af"
+    )
+
+    # snow without frame
+    islands_swof = (
+        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
+    )
+
+    # night snow with frame
+    islands_nswf = (
+        "292cfa2ed3a7405b98d7c32350baf1d340a8d034f032aade32a7f957d4521de9"
+    )
+
+    # night snow without frame
+    islands_nswof = (
+        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
     )
 
     # islands dict to map filenames to checksums and real filenames
@@ -64,8 +114,18 @@ init -900 python in mas_ics:
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof),
-#        "rwf": ("rain_with_frame.png", islands_rwf),
-#        "rwof": ("rain_without_frame.png", islands_rwof)
+        "rwf": ("rain_with_frame.png", islands_rwf),
+        "rwof": ("rain_without_frame.png", islands_rwof),
+        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
+        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
+        "owf": ("overcast_with_frame.png", islands_owf),
+        "owof": ("overcast_without_frame.png", islands_owof),
+        "nowf": ("night_overcast_with_frame.png", islands_nowf),
+        "nowof": ("night_overcast_without_frame.png", islands_nowof),
+        "swf": ("snow_with_frame.png", islands_swf),
+        "swof": ("snow_without_frame.png", islands_swof),
+        "nswf": ("night_snow_with_frame.png", islands_nswf),
+        "nswof": ("night_snow_without_frame.png", islands_nswof)
     }
 
     #################################### O31 ##################################

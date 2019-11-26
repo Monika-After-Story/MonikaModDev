@@ -73,8 +73,18 @@ image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
 image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
 image mas_island_night = "mod_assets/location/special/night_without_frame.png"
-#image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
-#image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
+image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
+image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
+image mas_island_frame_rain_night = "mod_assets/location/special/night_rain_with_frame.png"
+image mas_island_rain_night = "mod_assets/location/special/night_rain_without_frame.png"
+image mas_island_frame_overcast = "mod_assets/location/special/overcast_with_frame.png"
+image mas_island_overcast = "mod_assets/location/special/overcast_without_frame.png"
+image mas_island_frame_overcast_night = "mod_assets/location/special/night_overcast_with_frame.png"
+image mas_island_overcast_night = "mod_assets/location/special/night_overcast_without_frame.png"
+image mas_island_frame_snow = "mod_assets/location/special/snow_with_frame.png"
+image mas_island_snow = "mod_assets/location/special/snow_without_frame.png"
+image mas_island_frame_snow_night = "mod_assets/location/special/night_snow_with_frame.png"
+image mas_island_snow_night = "mod_assets/location/special/night_snow_without_frame.png"
 
 ## end island bg weather art
 
@@ -322,7 +332,7 @@ init -20 python in mas_weather:
             )
 
             # lock rain start/rain/islands
-            store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art
+            # store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art
 
 
     def _weather_rain_exit(_new):
@@ -364,7 +374,7 @@ init -20 python in mas_weather:
         store.mas_is_snowing = True
 
         # lock islands
-        store.mas_lockEVL("mas_monika_islands", "EVE")
+        # store.mas_lockEVL("mas_monika_islands", "EVE")
 
         # TODO: lock islands greeting as well
 
@@ -417,7 +427,8 @@ init -20 python in mas_weather:
 
     def _weather_overcast_entry(_old):
         #Lock islands
-        store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
+        #store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
+        pass
 
 
     def _weather_overcast_exit(_new):
@@ -464,10 +475,10 @@ init -10 python:
                 sp_day,
                 sp_night=None,
                 precip_type=store.mas_weather.PRECIP_TYPE_DEF,
-                isbg_wf_day="mod_assets/location/special/with_frame.png",
-                isbg_wof_day="mod_assets/location/special/without_frame.png",
-                isbg_wf_night="mod_assets/location/special/night_with_frame.png",
-                isbg_wof_night="mod_assets/location/special/night_without_frame.png",
+                isbg_wf_day=None,
+                isbg_wof_day=None,
+                isbg_wf_night=None,
+                isbg_wof_night=None,
                 entry_pp=None,
                 exit_pp=None,
                 unlocked=False
@@ -668,9 +679,13 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
-        # islands bg day and night
-        #isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        #isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+        # islands bg day
+        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_rain_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_rain_entry,
         exit_pp=store.mas_weather._weather_rain_exit,
@@ -691,6 +706,14 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
 
+        # islands bg day
+        isbg_wf_day="mod_assets/location/special/snow_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/snow_without_frame.png",
+
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_snow_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_snow_without_frame.png",
+
         entry_pp=store.mas_weather._weather_snow_entry,
         exit_pp=store.mas_weather._weather_snow_exit,
 
@@ -710,9 +733,13 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
-        # islands bg day and night
-        #isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        #isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+        # islands bg day
+        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_rain_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_thunder_entry,
         exit_pp=store.mas_weather._weather_thunder_exit,
@@ -733,9 +760,13 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_OVERCAST,
 
-        # islands bg day and night
-        #isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        #isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+        # islands bg day
+        isbg_wf_day="mod_assets/location/special/overcast_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/overcast_without_frame.png",
+
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_overcast_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_overcast_without_frame.png",
 
         entry_pp=store.mas_weather._weather_overcast_entry,
         exit_pp=store.mas_weather._weather_overcast_exit,
