@@ -68,29 +68,6 @@ init -900 python in mas_ics:
 #        "rwof": ("rain_without_frame.png", islands_rwof)
     }
 
-    ########################## SURPRISE BDAY PARTY ############################
-    # cake
-    sbp_cake = (
-        "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
-    )
-
-    # banners
-    sbp_banners = (
-        "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
-    )
-
-    # balloons
-    sbp_balloons = (
-        "eda87e74b8dc9d5082a0f2a7d5202dc0e7b96ec36cbaebc98eb046584834b8e9"
-    )
-
-    # surprise bday party dicts to map filenames to checksums
-    sbp_map = {
-        "cake": sbp_cake,
-        "banners": sbp_banners,
-        "balloons": sbp_balloons
-    }
-
     #################################### O31 ##################################
     # cg folder
     o31_cg_folder = os.path.normcase(
