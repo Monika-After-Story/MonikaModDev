@@ -331,9 +331,6 @@ init -20 python in mas_weather:
                 if_changed=True
             )
 
-            # lock rain start/rain/islands
-            # store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art
-
 
     def _weather_rain_exit(_new):
         """
@@ -348,23 +345,6 @@ init -20 python in mas_weather:
             # stop rain sound
             renpy.music.stop(channel="background", fadeout=1.0)
 
-        # unlock rain/islands
-#        store.mas_unlockEVL("monika_rain", "EVE")
-
-            # TODO: island rain art
-            islands_ev = store.mas_getEV("mas_monika_islands")
-            if (
-                    islands_ev is not None
-                    and islands_ev.shown_count > 0
-                    and islands_ev.checkAffection(store.mas_curr_affection)
-                ):
-                store.mas_unlockEVL("mas_monika_islands", "EVE")
-
-#        else:
-#            store.mas_unlockEVL("greeting_ourreality", "GRE")
-
-        # TODO: unlock islands greeting as well
-
 
     def _weather_snow_entry(_old):
         """
@@ -373,11 +353,6 @@ init -20 python in mas_weather:
         # set global flag
         store.mas_is_snowing = True
 
-        # lock islands
-        # store.mas_lockEVL("mas_monika_islands", "EVE")
-
-        # TODO: lock islands greeting as well
-
 
     def _weather_snow_exit(_new):
         """
@@ -385,17 +360,6 @@ init -20 python in mas_weather:
         """
         # set globla flag
         store.mas_is_snowing = False
-
-        # unlock islands
-        islands_ev = store.mas_getEV("mas_monika_islands")
-        if (
-                islands_ev is not None
-                and islands_ev.shown_count > 0
-                and islands_ev.checkAffection(store.mas_curr_affection)
-            ):
-            store.mas_unlockEVL("mas_monika_islands", "EVE")
-
-        # TODO: unlock islands greeting as well
 
 
     def _weather_thunder_entry(_old):
@@ -426,20 +390,16 @@ init -20 python in mas_weather:
 
 
     def _weather_overcast_entry(_old):
-        #Lock islands
-        #store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
+        """
+        Overcast entry programming point
+        """
         pass
 
-
     def _weather_overcast_exit(_new):
-        #Unlock islands
-        islands_ev = store.mas_getEV("mas_monika_islands")
-        if (
-                islands_ev is not None
-                and islands_ev.shown_count > 0
-                and islands_ev.checkAffection(store.mas_curr_affection)
-            ):
-            store.mas_unlockEVL("mas_monika_islands", "EVE")
+        """
+        Overcast exit programming point
+        """
+        pass
 
 
 init -10 python:
@@ -517,7 +477,6 @@ init -10 python:
                     weather
                     (Default: None)
 
-                TODO: ADD OTHER ISLANDS BGS
                 #NOTE: Defaulting to the day frame stuff to avoid tracebacks
             """
             if weather_id in self.mas_weather.WEATHER_MAP:

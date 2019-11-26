@@ -577,11 +577,7 @@ init 15 python in mas_affection:
         Runs when transitioning from affectionate to enamored
         """
         # unlock islands event if seen already
-        if (
-                store.seen_event("mas_monika_islands")
-                and not store.mas_is_snowing
-                and not store.mas_is_raining # TODO: rain versions
-            ):
+        if store.seen_event("mas_monika_islands"):
             if store.mas_cannot_decode_islands:
                 # failed to decode islandds, delay this action
                 store.mas_addDelayedAction(2)
