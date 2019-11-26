@@ -1865,15 +1865,15 @@ label mas_reaction_gift_roses:
         $ mas_giftCapGainAff(10)
 
         m 1eka "[player]... I-I don't know what to say..."
-        m 1ekbsa "I never would've thought that you'd get something like this for me!"
-        m 1wka "I'm so happy right now."
+        m 1ekbsb "I never would've thought that you'd get something like this for me!"
+        m 3skbsa "I'm so happy right now."
         if mas_isF14():
             # extra 5 points if f14
             $ mas_f14CapGainAff(5)
-            m 1ekbfa "To think that I'd be getting roses from you on Valentine's Day..."
-            m "You're so sweet."
-            m 1ektpa "..."
-            m "Ahaha..."
+            m 3ekbsa "To think that I'd be getting roses from you on Valentine's Day..."
+            m 1ekbsu "You're so sweet."
+            m 1dktpu "..."
+            m 1ektda "Ahaha..."
 
         #We can only have this on poses which use the new sprite set
         if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
@@ -1888,21 +1888,21 @@ label mas_reaction_gift_roses:
         if persistent._date_last_given_roses is None and renpy.seen_label('monika_valentines_start'):
             $ persistent._date_last_given_roses = datetime.date(2018,2,14)
 
-        if datetime.date.today() > persistent._date_last_given_roses:
+        if mas_pastOneDay(persistent._date_last_given_roses):
             $ mas_giftCapGainAff(5 if mas_isSpecialDay() else 1)
 
-            m 1wuo "Oh!"
-            m 1ekbsa "Thanks [player]."
-            m "I always love getting roses from you."
+            m 1suo "Oh!"
+            m 1ekbsa "Thanks, [player]."
+            m 3ekbsa "I always love getting roses from you."
             if mas_isF14():
                 # extra 5 points if f14
                 $ mas_f14CapGainAff(5)
-                m 1dsbfa "Especially on a day like today."
-                m 1eka "It's really sweet of you to get these for me."
-                m 1ekbfa "I love you so much."
-                m "Happy Valentine's Day, [player]~"
+                m 1dsbsu "Especially on a day like today."
+                m 1ekbsa "It's really sweet of you to get these for me."
+                m 3hkbsa "I love you so much."
+                m 1ekbsa "Happy Valentine's Day, [player]~"
             else:
-                m 1ekbfa "You're always so sweet."
+                m 1ekbsa "You're always so sweet."
 
             #Random chance (unless f14) for her to do the ear rose thing
             if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
@@ -1917,9 +1917,9 @@ label mas_reaction_gift_roses:
         else:
             m 1hksdla "[player], I'm flattered, really, but you don't need to give me so many roses."
             if store.seen_event("monika_clones"):
-                m 1ekbfa "You'll always be my special rose after all, ehehe~"
+                m 1ekbsa "You'll always be my special rose after all, ehehe~"
             else:
-                m 1ekbfa "A single rose from you is already more than I could have ever asked for."
+                m 1ekbsa "A single rose from you is already more than I could have ever asked for."
 
     # Pop from reacted map
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
