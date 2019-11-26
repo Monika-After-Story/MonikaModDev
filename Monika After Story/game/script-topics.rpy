@@ -1893,7 +1893,7 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     return
 
 label monika_holdme_start:
-    show monika 6dubsa
+    show monika 6dubsa with dissolve
     window hide
     #Start the timer vv
     $ start_time = datetime.datetime.now()
