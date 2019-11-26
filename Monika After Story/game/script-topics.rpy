@@ -6015,16 +6015,101 @@ label monika_piggybank:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True,rules={"skip alert": None}))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_daydream",
+            category=['romance'],
+            prompt="Day dreaming",
+            random=True,
+            rules={"skip alert": None},
+            aff_range=(mas_aff.DISTRESSED, None)
+        )
+    )
 
 label monika_daydream:
-    m 2lsc "..."
-    m 2lsbsa "..."
-    m 2tsbsa "..."
-    m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
-    m 1lkbsa "I was imagining the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
-    m 1ekbfa "Wouldn't that be wonderful, [player]?"
-    m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
+    #insert endless possibilities of wholesome goodness here
+    python:
+        #Upset up to -50
+        daydream_quips_upset = [
+            "what it was like when we first met...",
+            "how I felt when I first met you...",
+            "the good times we used to have...",
+            "the hope I used to have for our future..."
+        ]
+
+        #Normal plus
+        daydream_quips_normplus = [
+            "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
+            "us having a duet together, with you singing my song while I play the piano...",
+            "us having a wonderful dinner together...",
+            "us having a late night on the couch together...",
+            "you holding my hand while we take a stroll outside on a sunny day...",
+        ]
+
+        #Happy plus (NOTE: Inherits quips from normal plus)
+        daydream_quips_happyplus = list(daydream_quips_normplus)
+        daydream_quips_happyplus.extend([
+            "us cuddling while we're watching a show...",
+        ])
+
+        #Affectionare plus (NOTE: Inherits from happy plus)
+        daydream_quips_affplus = list(daydream_quips_happyplus)
+        #TODO: "Why don't I do that right now?"
+        #NOTE: If you wish to add more, for now, just uncomment everything but the quip
+        #daydream_quips_affplus.extend([
+        #    "writing a special poem for my one and only...",
+        #])
+
+        #Enamored plus (NOTE: Inherits quips from affectionate plus)
+        daydream_quips_enamplus = list(daydream_quips_affplus)
+        daydream_quips_enamplus.extend([
+            "waking up next to you in the morning, watching you sleep beside me...",
+        ])
+
+        #Islands related thing
+        if renpy.seen_label("mas_monika_cherry_blossom_tree"):
+            daydream_quips_enamplus.append("the two of us resting our heads under the cherry blossom tree...")
+
+        #Player appearance related thing
+        if not persistent._mas_pm_hair_length == "bald":
+            daydream_quips_enamplus.append("me gently playing with your hair while your head rests my lap...")
+
+        #Pick the quip
+        if mas_isMoniEnamored(higher=True):
+            daydream_quip = renpy.random.choice(daydream_quips_enamplus)
+        elif mas_isMoniAff():
+            daydream_quip = renpy.random.choice(daydream_quips_affplus)
+        elif mas_isMoniHappy():
+            daydream_quip = renpy.random.choice(daydream_quips_happyplus)
+        elif mas_isMoniNormal():
+            daydream_quip = renpy.random.choice(daydream_quips_normplus)
+        else:
+            daydream_quip = renpy.random.choice(daydream_quips_upset)
+
+    if mas_isMoniNormal(higher=True):
+        m 2lsc "..."
+        m 2lsbsa "..."
+        m 2tsbsa "..."
+        m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
+        m 1lkbsa "I was imagining [daydream_quip]"
+        m 1ekbfa "Wouldn't that be wonderful, [player]?"
+        m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
+
+    elif _mas_getAffection() > -50:
+        m 2lsc "..."
+        m 2dkc "..."
+        m 2dktpu "..."
+        m 2ektpd "Oh, sorry...{w=0.5} I was just lost in thought for a second there."
+        m 2dktpu "I was just remembering [daydream_quip]"
+        m 2ektdd "I wonder if we can be that happy again someday, [player]..."
+
+    else:
+        m 6lsc "..."
+        m 6lkc "..."
+        m 6lktpc "..."
+        m 6ektpd "Oh, sorry, I was just..."
+        m 6dktdc "You know what, nevermind."
     return
 
 # init 5 python:
