@@ -331,6 +331,13 @@ label v0_10_4(version="v0_10_4"):
                 "and not mas_isplayer_bday()"
             )
 
+        islands_ev = store.mas_getEV("mas_monika_islands")
+        if (
+                islands_ev is not None
+                and islands_ev.shown_count > 0
+            ):
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
         #Handle poem seens
         #NOTE: f14 makes the assumption that you were > 0 aff.
         #There is no way to be sure if you actually saw it (since normal aff covers from -34 to -1 as well)
