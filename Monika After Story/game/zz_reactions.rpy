@@ -2158,8 +2158,43 @@ label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
         $ store.mas_filereacts.delete_file(giftname)
     return
 
-label mas_reaction_gift_clothes_orcaramelo_sweater_shoulderless:
+label mas_reaction_gift_clothes_finale_jacket_brown:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "finale_jacket_brown")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
 
+        mas_giftCapGainAff(3)
+
+    m 1sub "Oh!{w=0.5} A winter jacket!"
+    m 1suo "And it even comes with a scarf!"
+    if mas_isSummer():
+        m 3rksdla "...Though I'm getting a little hot just by looking at it, ahaha..."
+        m 3eksdla "Perhaps summer isn't the best time to wear this, [player]."
+        m 3eka "I do appreciate the thought, and I'll be glad to wear it in a few months."
+
+    else:
+        if mas_isWinter():
+            m 1tuu "I won't be getting cold anytime soon because of you, [player]~"
+        m 3eub "Let me go put it on! I'll be right back."
+    
+        # try it on
+        call mas_clothes_change(sprite_object)
+
+        m 2dku "Ahh, it feels very nice~"
+        m 1eua "I like the way it looks on me, don't you agree?"
+        if mas_isMoniNormal(higher=True):
+            m 3tku "Well... I can't really expect you to be objective about that question, can I?"
+            m 1hubfb "Ahaha!"
+        m 1ekbfa "Thank you [player], I love it."
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_clothes_orcaramelo_sweater_shoulderless:
     python:
         sprite_data = mas_getSpriteObjInfo(
             (store.mas_sprites.SP_CLOTHES, "orcaramelo_sweater_shoulderless")
