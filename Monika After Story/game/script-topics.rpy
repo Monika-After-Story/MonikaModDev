@@ -3285,16 +3285,6 @@ label monika_love:
         if milestone_count not in [0, 30]:
             m "[love_quip]"
 
-        #Setup chances
-        if milestone_count == 0:
-            $ chance = 5
-        elif milestone_count % 5 == 0:
-            $ chance = 15
-        else:
-            $ chance = 25
-
-        if mas_shouldKiss(chance):
-            call monika_kissing_motion_short
     call monika_lovecounter_aff
     return
 
@@ -3306,6 +3296,18 @@ label monika_lovecounter_aff:
         if mas_isMoniNormal(higher=True):
             # always increase counter at Normal+ if it's been 3 mins
             $ persistent._mas_monika_lovecounter += 1
+
+            #Setup kiss chances
+            if milestone_count == 0:
+                $ chance = 5
+            elif milestone_count % 5 == 0:
+                $ chance = 15
+            else:
+                $ chance = 25
+
+            #If we should do a kiss, we do
+            if mas_shouldKiss(chance):
+                call monika_kissing_motion_short
 
     elif mas_isMoniNormal(higher=True) and persistent._mas_monika_lovecounter % 5 == 0:
         # increase counter no matter what at Normal+ if at milestone
