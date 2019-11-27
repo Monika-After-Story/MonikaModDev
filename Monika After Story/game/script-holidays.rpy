@@ -1115,58 +1115,60 @@ label greeting_trick_or_treat_back_costume:
 #################################### D25 ######################################
 # [HOL020]
 
-default persistent._mas_d25_in_d25_mode = False
 # True if we should consider ourselves in d25 mode.
+default persistent._mas_d25_in_d25_mode = False
 
-default persistent._mas_d25_spent_d25 = False
 # True if the user spent time with monika on d25
 # (basically they got the merry christmas dialogue)
+default persistent._mas_d25_spent_d25 = False
 
-default persistent._mas_d25_started_upset = False
 # True if we started the d25 season with upset and below monika
+default persistent._mas_d25_started_upset = False
 
-default persistent._mas_d25_second_chance_upset = False
 # True if we dipped below to upset again.
+default persistent._mas_d25_second_chance_upset = False
 
-default persistent._mas_d25_deco_active = False
 # True if d25 decorations are active
 # this also includes santa outfit
 # This should only be True if:
 #   Monika is NOt being returned after the d25 season begins
 #   and season is d25.
+default persistent._mas_d25_deco_active = False
 
-default persistent._mas_d25_intro_seen = False
 # True once a d25 intro has been seen
+default persistent._mas_d25_intro_seen = False
 
-default persistent._mas_d25_d25e_date_count = 0
 # number of times user takes monika out on d25e
+default persistent._mas_d25_d25e_date_count = 0
 
-default persistent._mas_d25_d25_date_count = 0
 # number of times user takes monika out on d25
 # this also includes if the day was partially or entirely spent out
+default persistent._mas_d25_d25_date_count = 0
 
-default persistent._mas_d25_gifts_given = list()
 #List of all gifts which will be opened on christmas
+default persistent._mas_d25_gifts_given = list()
 
+#Stores if we were on a date with Monika over the full d25 day
 default persistent._mas_d25_gone_over_d25 = None
 
-define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
+define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 
-define mas_d25e = mas_d25 - datetime.timedelta(days=1)
 # christmas eve
+define mas_d25e = mas_d25 - datetime.timedelta(days=1)
 
-define mas_d25p = mas_d25 + datetime.timedelta(days=1)
 #Dec 26, the day Monika stops wearing santa and the end of the christmas gift range
+define mas_d25p = mas_d25 + datetime.timedelta(days=1)
 
-define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 11)
 # start of christmas season (inclusive) and when Monika wears santa
+define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 11)
 
-define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
 # end of christmas season (exclusive)
+define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
 
-define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
 # start of gift = d25 gift (inclusive)
+define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
+
 
 
 init -810 python:
@@ -1190,10 +1192,9 @@ init -810 python:
             #D25 dates
             "_mas_d25_d25e_date_count": "d25s.d25e.went_out_count",
             "_mas_d25_d25_date_count": "d25s.d25.went_out_count",
+            "_mas_d25_gone_over_d25": "d25.actions.gone_over_d25"
 
             "_mas_d25_spent_d25": "d25.actions.spent_d25"
-
-            "_mas_d25_gone_over_d25": "d25.actions.gone_over_d25"
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 11),
@@ -2830,6 +2831,7 @@ label mas_gone_over_d25_check:
         $ persistent._mas_d25_spent_d25 = True
         $ persistent._mas_d25_d25_date_count += 1
         $ mas_rmallEVL("mas_d25_postd25_notimespent")
+    return
 
 #Christmas Eve dockingstation
 label bye_d25e_delegate:
