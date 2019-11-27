@@ -3179,6 +3179,9 @@ label monika_love:
             m 2eka "I...{w=0.5}I love you too."
 
     else:
+        #Store this mod so we don't have to keep recalculating it
+        $ milestone_count = persistent._mas_monika_lovecounter % 50
+
         #After I love you has been received positively 5/10/15 etc times.
         if persistent._mas_monika_lovecounter == 0:
             m 1subsw "[player]!"
@@ -3189,57 +3192,55 @@ label monika_love:
             call monika_lovecounter_aff
             return
 
-        elif persistent._mas_monika_lovecounter % 50 == 5:
+        elif milestone_count == 5:
             m 1hubfb "I love you so much, [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 10:
+        elif milestone_count == 10:
             m 1hubfa "Ehehe~"
             m 1hubfb "I love you too!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 15:
+        elif milestone_count == 15:
             m 1ekbfa "You sure love saying that..."
             m 1hubfb "Well, I love you too!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 20:
+        elif milestone_count == 20:
             m 1wubso "Gosh you've said it so many times!"
             m 1tsbsa "You really do mean it, don't you?"
             m 1hubfb "Well, I love you back just as much!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 25:
+        elif milestone_count == 25:
             m 1hubfa "Hearing you say that always makes my heart jump!"
             m 1ekbfa "Well, I know you want to hear it just as much..."
             m 1hubfb "[player], I love you too!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 30:
+        elif milestone_count == 30:
             m 1lkbsa "Gosh it's always so overwhelming!"
             m 1hubfa "I..."
             if renpy.random.randint(1, 2) == 1:
                 m 1hubfb "I love you more than anything!"
             else:
                 m 1hubfb "I love you more than I could ever express~"
-            jump .end_logic
 
-        elif persistent._mas_monika_lovecounter % 50 == 35:
+        elif milestone_count == 35:
             m 1ekbfa "You never tire of saying it, do you?"
             m 1hubfa "Well, I never tire of hearing it!"
             m 1hubfb "Or saying it back...I love you [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 40:
+        elif milestone_count == 40:
             m 1dubsu "Ehehe~"
             m 1hubfa "I..."
             m 1hubfb "Looooooooove you too, [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 45:
+        elif milestone_count == 45:
             m 1hubfa "You saying that always makes my day!"
             m 1hubfb "I love you so much, [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 0:
+        elif milestone_count == 0:
             m 1lkbsa "I just can't handle you saying it so much to me!"
             m 1ekbfa "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
             m "No words can truly do justice to how deeply I feel for you..."
             m 1hubfa "The only words I know that come close are..."
             m 1hubfb "I love you too, [player]! More than I can ever express!"
-            jump .end_logic
 
         else:
             # Default response if not a counter based response.
@@ -3281,23 +3282,32 @@ label monika_love:
 
             love_quip = renpy.random.choice(love_quips)
 
-        m "[love_quip]"
+        if milestone_count not in [0, 30]:
+            m "[love_quip]"
 
-        #Sublabel to skip the quips but still do logic w/o duping code
-        label .end_logic:
-        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,25) == 1:
-            call monika_kissing_motion_short
     call monika_lovecounter_aff
     return
 
 label monika_lovecounter_aff:
-    if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+    if mas_timePastSince(persistent._mas_monika_lovecountertime, datetime.timedelta(minutes=3)):
         # only give affection if it's been 3 minutes since the last ily
         $ mas_gainAffection()
 
         if mas_isMoniNormal(higher=True):
             # always increase counter at Normal+ if it's been 3 mins
             $ persistent._mas_monika_lovecounter += 1
+
+            #Setup kiss chances
+            if milestone_count == 0:
+                $ chance = 5
+            elif milestone_count % 5 == 0:
+                $ chance = 15
+            else:
+                $ chance = 25
+
+            #If we should do a kiss, we do
+            if mas_shouldKiss(chance):
+                call monika_kissing_motion_short
 
     elif mas_isMoniNormal(higher=True) and persistent._mas_monika_lovecounter % 5 == 0:
         # increase counter no matter what at Normal+ if at milestone

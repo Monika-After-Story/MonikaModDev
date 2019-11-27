@@ -6618,7 +6618,7 @@ style jpn_text:
 # functions related to ily2
 init python:
     def mas_passedILY(pass_time, check_time=None):
-        '''
+        """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
@@ -6628,18 +6628,55 @@ init python:
 
         RETURNS:
             boolean indicating if we are within the time limit
-        '''
+        """
         if check_time is None:
             check_time = datetime.datetime.now()
         return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
-        '''
+        """
         Sets persistent._mas_last_monika_ily (the last time Monika said ily) to a given time
         IN:
             set_time - the time we want to set persistent._mas_last_monika_ily to
                 defaults to datetime.datetime.now()
-        '''
+        """
         if set_time is None:
             set_time = datetime.datetime.now()
         persistent._mas_last_monika_ily = set_time
+
+    def mas_shouldKiss(chance, cooldown=datetime.timedelta(hours=1), special_day_bypass=False):
+        """
+        Checks if Monika should give the player a random kiss
+
+        CONDITIONS:
+            1. Enamored+ affection
+            2. Player already had their first kiss with Monika
+            3. Random chance that changes depending on the chance and special_day_bypass vars
+            4. Enough time has passed since the last kiss
+
+        IN:
+            chance:
+                the chance to receive a kiss from Monika
+            cooldown:
+                a datetime.timedelta representing the amount of time after the
+                last kiss the next random kiss will be allowed
+                (Default: 1 hour)
+            special_day_bypass:
+                whether a special day should bypass the chance (Default=False)
+
+        OUT:
+            boolean:
+                - True if the above conditions are met
+                - False otherwise
+        """
+        should_kiss = (
+            renpy.random.randint(1, chance) == 1
+            or (special_day_bypass and mas_isSpecialDay())
+            )
+
+        return (
+            mas_isMoniEnamored(higher=True)
+            and persistent._mas_first_kiss
+            and should_kiss
+            and mas_timePastSince(persistent._mas_last_kiss, cooldown)
+        )
