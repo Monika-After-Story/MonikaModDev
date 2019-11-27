@@ -3282,11 +3282,11 @@ label monika_love:
 
             love_quip = renpy.random.choice(love_quips)
 
-        if milestone_count not in [30, 50]:
+        if milestone_count not in [0, 30]:
             m "[love_quip]"
 
         #Setup chances
-        if milestone_count == 50:
+        if milestone_count == 0:
             $ chance = 5
         elif milestone_count % 5 == 0:
             $ chance = 15
