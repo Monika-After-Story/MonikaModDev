@@ -3171,12 +3171,24 @@ label greeting_returned_home:
     if persistent._mas_f14_on_date:
         jump greeting_returned_home_f14
 
-    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
+
+    # gone over checks
+    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(days=7):
         # did we miss f14 because we were on a date
         call mas_gone_over_f14_check
 
-    if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(7):
+    if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(days=7):
         call mas_gone_over_bday_check
+
+    if mas_d25 < datetime.date.today() <= mas_d25 + datetime.timedetla(days=7):
+        call mas_gone_over_d25_check
+
+    if mas_nye < datetime.date.today() <= mas_d25c_end:
+        call mas_gone_over_nye_check
+
+    if mas_nyd < datetime.date.today() <= mas_d25c_end:
+        call mas_gone_over_nyd_check
+
 
     # NOTE: this ordering is key, greeting_returned_home_player_bday handles the case
     # if we left before f14 on your bday and return after f14

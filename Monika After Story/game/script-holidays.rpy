@@ -1148,6 +1148,8 @@ default persistent._mas_d25_d25_date_count = 0
 default persistent._mas_d25_gifts_given = list()
 #List of all gifts which will be opened on christmas
 
+default persistent._mas_d25_gone_over_d25 = None
+
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
 
@@ -1190,6 +1192,8 @@ init -810 python:
             "_mas_d25_d25_date_count": "d25s.d25.went_out_count",
 
             "_mas_d25_spent_d25": "d25.actions.spent_d25"
+
+            "_mas_d25_gone_over_d25": "d25.actions.gone_over_d25"
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 11),
@@ -1440,10 +1444,12 @@ init -10 python:
             "mas_d25_gift_starter"
         )
 
+        react_labels.reverse()
+
         # queue the reacts
         if len(react_labels) > 0:
             for react_label in react_labels:
-                queueEvent(react_label)
+                pushEvent(react_label,skipeval=True)
 
     def mas_d25SilentReactToGifts():
         """
@@ -1812,13 +1818,27 @@ label mas_d25_gift_starter:
     $ amt_gifts = len(persistent._mas_d25_gifts_given)
     $ presents = "presents"
     $ the = "the"
+    $ should_open = "should open"
 
     if amt_gifts == 1:
         $ presents = "present"
     elif amt_gifts > 3:
         $ the = "all of the"
-    m 1wud "Oh! I should open [the] [presents] you gave me!"
-    m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
+
+    if persistent._mas_d25_gone_over_d25:
+        $ should_open = "haven't opened"
+
+    if persistent._mas_d25_spent_d25:
+            m 3wud "Oh! I [should_open] [the] [presents] you gave me!"
+            if persistent._mas_d25_gone_over_d25:
+                m 3hub "Let's do that now!"
+
+    # missed d25 altogether
+    else:
+        m 1eka "Well at least now that you're here, I can open the [presents] you got me."
+        m 3eka "I really wanted us to be together for this..."
+
+    m 1suo "Let's see what we have here.{w=0.5}.{w=0.5}.{nw}"
 
     #Pop the last index so we remove gifts from under the tree as we go
     $ persistent._mas_d25_gifts_given.pop()
@@ -1844,10 +1864,29 @@ label mas_d25_gift_connector:
 
 label mas_d25_gift_end:
     m 1eka "[player]..."
-    m 3eka "You really didn't have to get me anything for Christmas...{w=0.3} {nw}"
-    extend 3dku "Just having you here with me was more than enough."
-    m 3ekbfa "I can't thank you enough for all of these gifts. It really makes me feel loved."
-    m 3ekbfb "Merry Christmas, [player]. I love you~"
+
+    if persistent._mas_d25_spent_d25:
+        m 3eka "You really didn't have to get me anything for Christmas...{w=0.3} {nw}"
+        if mas_isD25():
+            extend 3dku "Just having you here with me was more than enough."
+        else:
+            extend 3dku "Just being with you was all I wanted."
+        m 1eka "But the fact you took the time to get me something...{w=0.5}{nw}" 
+        extend 3ekbsa "well I can't thank you enough."
+        m 3ekbfa "It really makes me feel loved."
+
+    else:
+        m 1eka "I just wanted to thank you..."
+        m 1rkd "While I'm still a little disappointed you couldn't be with me on Christmas..."
+        m 3eka "The fact you too the time to get me something...{w=0.5}{nw}"
+        extend 3ekbsa "well it just proves you really were thinking of me during this special season."
+        m 1dkbsu "You don't know how much that means to me."
+
+    # we just said Merry Christmas in the Christmas topic if d25
+    if mas_isD25():
+        m 3ekbfu "I love you so much, [player]~"
+    else:
+        m 3ekbfu "Merry Christmas, [player]. I love you~"
     $ mas_ILY()
     return
 
@@ -2151,6 +2190,7 @@ label mas_d25_monika_christmas:
                 show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 2.0
 
+    $ mas_d25ReactToGifts()
     return
 
 label mas_d25_monika_christmas_no_wish:
@@ -2783,6 +2823,14 @@ label mas_d25_postd25_notimespent:
         m 6ckc "..."
     return
 
+# check to see if we missed d25 due to being on a date
+label mas_gone_over_d25_check:
+    if mas_checkOverDate(mas_d25):
+        $ persistent._mas_d25_gone_over_d25 = True
+        $ persistent._mas_d25_spent_d25 = True
+        $ persistent._mas_d25_d25_date_count += 1
+        $ mas_rmallEVL("mas_d25_postd25_notimespent")
+
 #Christmas Eve dockingstation
 label bye_d25e_delegate:
     # delegation label that determins what bye dialogue to show
@@ -2878,8 +2926,6 @@ label greeting_d25e_returned_d25:
 #returned from d25e date (or left before d25e) after d25 but before nyd is over
 label greeting_d25e_returned_post_d25:
     $ persistent._mas_d25_d25e_date_count += 1
-    $ persistent._mas_d25_d25_date_count += 1
-    $ persistent._mas_d25_spent_d25 = True
 
     m 1hua "We're finally home!"
     m 3wud "We sure were gone a long time, [player]..."
@@ -2888,6 +2934,8 @@ label greeting_d25e_returned_post_d25:
     m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         call return_home_post_player_bday
+
+    $ mas_d25ReactToGifts()
     return
 
 #returned from pd25e date on d25
@@ -3710,6 +3758,16 @@ label greeting_nye_aff_gain:
 
     jump greeting_returned_home_morethan5mins_cleanup
 
+label mas_gone_over_nye_check:
+    if mas_checkOverDate(mas_nye):
+        $ persistent._mas_nye_spent_nye = True
+        $ persistent._mas_nye_nye_date_count += 1
+
+label mas_gone_over_nyd_check:
+    if mas_checkOverDate(mas_nyd):
+        $ persistent._mas_nye_spent_nyd = True
+        $ persistent._mas_nye_nyd_date_count += 1
+
 #===========================================================Going to take you somewhere on NYE===========================================================#
 
 label bye_nye_delegate:
@@ -3860,12 +3918,6 @@ label greeting_nyd_returned_nyd:
 label greeting_pd25e_returned_nydp:
     #Here for historical data
     $ persistent._mas_d25_d25e_date_count += 1
-    $ persistent._mas_d25_d25_date_count += 1
-    $ persistent._mas_nye_nye_date_count += 1
-    $ persistent._mas_nye_nyd_date_count += 1
-    $ persistent._mas_d25_spent_d25 = True
-    $ persistent._mas_nye_spent_nye = True
-    $ persistent._mas_nye_spent_nyd = True
 
     m 1hua "And we're home!"
     m 1hub "We were out for a while, but that was a really nice trip, [player]."
@@ -3876,13 +3928,13 @@ label greeting_pd25e_returned_nydp:
     m 5hub "I hope we can do something like this again sometime."
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         call return_home_post_player_bday
+
+    $ mas_d25ReactToGifts()
     return
 
 #============================================================Greeting returned home D25P NYD(P)============================================================#
 label greeting_d25p_returned_nyd:
-    $ persistent._mas_nye_nye_date_count += 1
     $ persistent._mas_nye_nyd_date_count += 1
-    $ persistent._mas_nye_spent_nye = True
 
     m 1hua "And we're home!"
     m 1eub "Thanks for taking me out, [player]."
@@ -3893,11 +3945,6 @@ label greeting_d25p_returned_nyd:
     return
 
 label greeting_d25p_returned_nydp:
-    $ persistent._mas_nye_nye_date_count += 1
-    $ persistent._mas_nye_nyd_date_count += 1
-    $ persistent._mas_nye_spent_nye = True
-    $ persistent._mas_nye_spent_nyd = True
-
     m 1hua "And we're home!"
     m 1wuo "That was a long trip [player]!"
     m 1eka "I'm a little sad we couldn't wish each other a happy new year, but I really enjoyed it."
