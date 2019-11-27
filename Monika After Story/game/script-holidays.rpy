@@ -3591,12 +3591,26 @@ label monika_nye_year_review:
         m "Let's make this year great for each other."
         m 1ekbfa "I love you."
 
-    return "derandom|love"
+    return "no_unlock|love"
 
-label mas_nye_dress_intro:
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_nye_monika_nye_dress_intro",
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_nye,
+            end_date=mas_nye + datetime.timedelta(days=1),
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
-    m 3hub "I actually have something in store for you this year, [player]~"
-    m 3eua "Just let me go change..."
+label mas_nye_monika_nye_dress_intro:
+    m 3hub "Hey [player], I have something in store for you this year~"
+    m 3eua "Just let me go change.{w=0.5}.{w=0.5}.{nw}"
 
     # change into dress
     call mas_clothes_change(mas_clothes_dress_newyears, outfit_mode=True)
@@ -3606,29 +3620,33 @@ label mas_nye_dress_intro:
     if mas_isMoniAff(higher=True):
         m 2tubsu "..."
         m 3hubsb "Ahaha! Just teasing you~"
-        m 3eua "I'm glad you like my dress.{nw}"
+        m 3eua "I'm glad you like my dress. {nw}"
 
     else:
         m 2rkbssdla "..."
-        m "I'm...{w=1}glad you like my dress.{nw}"
+        m "I'm...{w=1}glad you like my dress. {nw}"
 
-    extend 3eua " It was very hard to get right!"
+    extend 3eua "It was really hard to get right!"
     m 3rka "The flower crown kept falling off..."
     m 1hua "I went for the 'Greek goddess' look, I hope it shows."
     m 3eud "But this outfit has a bit more depth to it, you know?"
+
     if seen_event("mas_f14_monika_vday_colors"):
         m 3eua "Maybe you remember when we talked about roses and the feelings their colors convey."
     else:
         m 3eua "Maybe you guessed it already, but it's because of the color choice."
+
     m "White represents a lot of positive feelings, like goodness, purity, safety..."
     m 3eub "However, what I wanted this outfit to highlight was a succesful beginning."
+
     if persistent._mas_pm_got_a_fresh_start:
         m 2eka "Last year we decided to start anew, and I'm very glad we did."
         m 2ekbsa "I knew we could be happy together, [player]."
         m 2fkbsa "And you've made me the happiest I've ever been."
+
     m 3dkbsu "So I'd like to wear this when the new year begins."
     m 1ekbsa "It might just help make next year even better."
-    return
+    return "no_unlock"
 
 
 init 5 python:
