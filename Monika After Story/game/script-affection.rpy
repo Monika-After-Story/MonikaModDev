@@ -1634,7 +1634,7 @@ init 20 python:
             amount = _mas_getGoodExp()
 
         # is it a new day?
-        if persistent._mas_affection.get("freeze_date") is None or datetime.date.today() > persistent._mas_affection["freeze_date"]:
+        if mas_pastOneDay(persistent._mas_affection.get("freeze_date")):
             persistent._mas_affection["freeze_date"] = datetime.date.today()
             persistent._mas_affection["today_exp"] = 0
             mas_UnfreezeGoodAffExp()
