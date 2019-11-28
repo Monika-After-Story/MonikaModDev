@@ -3764,11 +3764,13 @@ label mas_gone_over_nye_check:
     if mas_checkOverDate(mas_nye):
         $ persistent._mas_nye_spent_nye = True
         $ persistent._mas_nye_nye_date_count += 1
+    return
 
 label mas_gone_over_nyd_check:
     if mas_checkOverDate(mas_nyd):
         $ persistent._mas_nye_spent_nyd = True
         $ persistent._mas_nye_nyd_date_count += 1
+    return
 
 #===========================================================Going to take you somewhere on NYE===========================================================#
 
