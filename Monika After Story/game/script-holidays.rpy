@@ -1192,7 +1192,7 @@ init -810 python:
             #D25 dates
             "_mas_d25_d25e_date_count": "d25s.d25e.went_out_count",
             "_mas_d25_d25_date_count": "d25s.d25.went_out_count",
-            "_mas_d25_gone_over_d25": "d25.actions.gone_over_d25"
+            "_mas_d25_gone_over_d25": "d25.actions.gone_over_d25",
 
             "_mas_d25_spent_d25": "d25.actions.spent_d25"
         },
