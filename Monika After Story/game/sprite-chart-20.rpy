@@ -4622,6 +4622,20 @@ image monika 3ekbfsdla:
         0.06
         repeat
 
+image monika 3ekbfu:
+    block:
+        "monika 3ekbfu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dkbfu_static"
+        0.06
+        repeat
+
 image monika 3ekbla:
     block:
         "monika 3ekbla_static"
@@ -6971,20 +6985,6 @@ image monika 4rfc:
             choice:
                 7
         "monika 4dfc_static"
-        0.06
-        repeat
-
-image monika 4rfd:
-    block:
-        "monika 4rfd_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfd_static"
         0.06
         repeat
 
