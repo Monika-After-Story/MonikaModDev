@@ -2747,6 +2747,99 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="mas_d25_night_before_christmas",
+            conditional="persistent._mas_d25_in_d25_mode",
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=21)),
+            end_date=mas_d25,
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        skipCalendar=True
+    )
+
+label mas_d25_night_before_christmas:
+    m 1esa "Hey, [player]..."
+    m 3eua "I'm sure you've heard it before, but Christmas Eve just wouldn't be complete without {i}'Twas the Night Before Christmas{/i}!"
+    m 3eka "It was always one of my favorite parts on Christmas Eve growing up, so I hope you don't mind listening to me read it now."
+    m 1dka "..."
+
+    m 3esa "'Twas the night before Christmas, when all through the house..."
+    m 3eud "Not a creature was stirring, not even a mouse;"
+    m 1eud "The stockings were hung by the chimney with care,"
+    m 1eka "In hopes that St. Nicholas soon would be there;"
+
+    m 1esa "The children were nestled all snug in their beds,"
+    m 1hua "While visions of sugar-plums danced in their heads;"
+    m 3eua "And mamma in her 'kerchief, and I in my cap,"
+    m 1dsc "Had just settled down for a long winter's nap,"
+
+    m 3wuo "When out on the lawn there arose such a clatter,"
+    m "I sprang from the bed to see what was the matter."
+    m 3wud "Away to the window I flew like a flash,"
+    m "Tore open the shutters and threw up the sash."
+
+    m 1eua "The moon on the breast of the new-fallen snow..."
+    m 3eua "Gave the lustre of mid-day to objects below,"
+    m 3wud "When, what to my wondering eyes should appear,"
+    m 3wuo "But a miniature sleigh, and eight tiny reindeer,"
+
+    m 1eua "With a little old driver, so lively and quick,"
+    m 3eud "I knew in a moment it must be St. Nick."
+    m 3eua "More rapid than eagles his coursers they came,"
+    m 3eud "And he whistled, and shouted, and called them by name;"
+
+    m 3euo "'Now, Dasher! now, Dancer! now, Prancer and Vixen!'"
+    m "'On, Comet! on Cupid! on, Donner and Blitzen!'"
+    m 3wuo "'To the top of the porch! to the top of the wall!'"
+    m "'Now dash away! dash away! dash away all!'"
+
+    m 1eua "As dry leaves that before the wild hurricane fly,"
+    m 1eud "When they meet with an obstacle, mount to the sky,"
+    m 3eua "So up to the house-top the coursers they flew,"
+    m "With the sleigh full of toys, and St. Nicholas too."
+
+    m 3eud "And then, in a twinkling, I heard on the roof..."
+    m "The prancing and pawing of each little hoof."
+    m 1rkc "As I drew in my hand, and was turning around,"
+    m 1wud "Down the chimney St. Nicholas came with a bound."
+
+    m 3eua "He was dressed all in fur, from his head to his foot,"
+    m 3ekd "And his clothes were all tarnished with ashes and soot;"
+    m 1eua "A bundle of toys he had flung on his back,"
+    m 1eud "And he looked like a peddler just opening his pack."
+
+    m 3sub "His eyes--how they twinkled! His dimples how merry!"
+    m 3subsb "His cheeks were like roses, his nose like a cherry!"
+    m 3subsu "His droll little mouth was drawn up like a bow,"
+    m 1subsu "And the beard of his chin was as white as the snow;"
+
+    m 1eud "The stump of a pipe he held tight in his teeth,"
+    m 3rkc "And the smoke it encircled his head like a wreath;"
+    m 2eka "He had a broad face and a little round belly,"
+    m 2hub "That shook, when he laughed like a bowlful of jelly."
+
+    m 2eka "He was chubby and plump, a right jolly old elf,"
+    m 3hub "And I laughed when I saw him, {nw}"
+    extend 3eub "in spite of myself;"
+    m 1kua "A wink of his eye and a twist of his head,"
+    m 1eka "Soon gave me to know I had nothing to dread;"
+
+    m 1euc "He spoke not a word, but went straight to his work,"
+    m 1eud "And filled all the stockings; then turned with a jerk,"
+    m 3esa "And laying his finger aside of his nose,"
+    m 3eua "And giving a nod, up the chimney he rose;"
+
+    m 1eud "He sprang to his sleigh, to his team gave a whistle,"
+    m 1eua "And away they all flew like the down of a thistle."
+    m 3eua "But I heard him exclaim, ere he drove out of sight,"
+    m 3hub "'Happy Christmas to all, and to all a good night!'"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
             conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_QUEUE,
