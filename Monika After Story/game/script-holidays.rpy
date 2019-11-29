@@ -2689,6 +2689,64 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="mas_d25_spider_tinsel",
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_d25c_start,
+            end_date=mas_d25e - datetime.timedelta(days=1),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.NORMAL, None),
+            rules={"force repeat": None, "no rmallEVL": None},
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+    #Create the undo action rule
+    MASUndoActionRule.create_rule_EVL(
+        "mas_d25_spider_tinsel",
+        mas_d25c_start,
+        mas_d25e - datetime.timedelta(days=1)
+    )
+
+# queue this if it hasn't been seen by d25e - 1
+init 10 python:
+    if datetime.date.today() == mas_d25e - datetime.timedelta(days=1) and not mas_lastSeenInYear("mas_d25_spider_tinsel"):
+        queueEvent("mas_d25_spider_tinsel")
+
+label mas_d25_spider_tinsel:
+    m 1esa "Hey, [player]..."
+    m 1etc "Do you ever wonder where traditions that we often take for granted come from?"
+    m 3eud "A lot of times things that are considered tradition are just accepted and we never really take the time to learn why."
+    m 3euc "Well I got curious as to why we do certain things around Christmas, so I started doing a little research."
+    m 1eua "...And I found this really interesting folk story from Ukraine regarding the origin of why tinsel is often used to decorate Christmas trees."
+    m 1eka "I thought it was a really nice story and wanted to share it with you."
+    m 1dka "..."
+    m 3esa "There once was a widow (let's call her Amy) who lived in a cramped old hut with her children."
+    m 3eud "Outside of their home was a tall pine tree, and from the tree dropped a pinecone that soon started to grow from the soil."
+    m 3eua "The children were excited about the idea of having a Christmas tree, so they tended to it until it became tall enough to take inside their home."
+    m 2ekd "Unfortunately, the family was poor and even though they had the Christmas tree, they couldn't afford any ornaments to decorate it."
+    m 2dkc "And so, on Christmas Eve, Amy and her children went to bed knowing they would have a bare tree on Christmas morning."
+    m 2eua "However, the spiders living in the hut heard the sobs of the children and decided they would not leave the Christmas tree bare."
+    m 3eua "So the spiders created beautiful webs on the Christmas tree, decorating it with elegant and beautiful silky patterns."
+    m 3eub "When the children woke up early on Christmas morning, they were jumping with excitemet!"
+    m "They went to their mother and woke her up, exclaiming, 'Mother! You have to come see the Christmas tree! It's so beautiful!'"
+    m 1wud "As Amy woke and stood in front of the tree, she was truly amazed at the sight before her eyes."
+    m "Then, one of the children opened the window to let the sun shine in..."
+    m 3sua "When the rays of sunshine hit the tree, the webs reflected the light, creating glittering silver and gold strands..."
+    m "...making the Christmas tree dazzle and sparkle with a magical twinkle."
+    m 1eka "From that day forward, Amy never felt poor; {w=0.3}instead, she was always grateful for all the wonderful gifts she already had in life."
+    m 3tuu "Well, I guess we know now why Amy likes spiders..."
+    m 3hub "Ahaha! I'm only kidding!"
+    m 1eka "Isn't that such a sweet and wonderful story, [player]?"
+    m "I think it's a really interesting take on why tinsel is used as decoration on Christmas tree."
+    m 3eud "I also read that Ukrainians often decorate their Christmas tree with spider web ornaments, believing they will bring them good fortune for the upcoming year."
+    m 3eub "So I guess if you ever find a spider living in your Christmas tree, don't kill it and maybe it'll bring you good luck in the future!"
+    return "derandom|no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
             conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_QUEUE,
