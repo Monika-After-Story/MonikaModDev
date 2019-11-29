@@ -3349,14 +3349,14 @@ label monika_hedgehog:
     m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
     m 1ekc "We can't hurt each other from different realities, right?"
     if mas_isMoniUpset(lower=True):
-    $ line = "..."
-    if mas_isMoniDis(lower=True):
-        $ line += "{w=0.5} {nw}"
+        $ line = "..."
+        if mas_isMoniDis(lower=True):
+            $ line += "{w=0.5} {nw}"
 
-    m 1rksdlc "[line]"
+        m 1rksdlc "[line]"
 
-    if mas_isMoniDis(lower=True):
-        extend 1rksdld "Maybe you actually can..."
+        if mas_isMoniDis(lower=True):
+            extend 1rksdld "Maybe you actually can..."
     return
 
 init 5 python:
