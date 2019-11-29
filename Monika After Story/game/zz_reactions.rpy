@@ -1585,6 +1585,8 @@ label mas_reaction_promisering:
             call monika_kissing_motion(hide_ui=False)
             m 6ekbfa "I love you, [player]..."
             m 6dkbfu "More than anything else in this fleeting world~"
+            $ gift_ev = mas_getEV("mas_reaction_promisering")
+            $ store.mas_filereacts.delete_file(gift_ev.category)
             return "love"
 
         else:

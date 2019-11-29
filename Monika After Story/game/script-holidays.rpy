@@ -1383,7 +1383,10 @@ init -10 python:
         if _date is None:
             _date = datetime.date.today()
 
-        return mas_isInDateRange(_date, mas_d25g_start, mas_d25+datetime.timedelta(days=7))
+        return (
+            mas_isInDateRange(_date, mas_d25g_start, mas_nye)
+            or mas_isNYD(_date)
+        )
 
     def mas_d25ShowVisuals():
         """
@@ -1517,7 +1520,7 @@ init -10 python:
         for gso_detail in gso_details:
             # for generic sprite objects, only have to check for json sprite
             if gso_detail.sp_data is not None:
-                mas_selspr.json_sprite_unlock(mas_sprites.get_sprites(
+                mas_selspr.json_sprite_unlock(mas_sprites.get_sprite(
                     gso_detail.sp_data[0],
                     gso_detail.sp_data[1]
                 ))
@@ -2062,6 +2065,9 @@ label mas_d25_monika_holiday_intro_deco:
 
         #Set to snow for this sesh
         mas_changeWeather(mas_weather_snow, by_user=True)
+
+        #We'll also rmallEVL the auroras topic because it ends up immediately after
+        mas_rmallEVL("monika_auroras")
 
         #Enable deco
         persistent._mas_d25_deco_active = True

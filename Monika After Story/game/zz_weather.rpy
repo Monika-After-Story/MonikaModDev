@@ -353,9 +353,14 @@ init -20 python in mas_weather:
         # set global flag
         store.mas_is_snowing = True
 
-        # we want this topic seen for the first time with aurora visible outside her window
-        if not store.morning_flag and store.mas_getEV("monika_auroras").shown_count == 0:
-            store.pushEvent("monika_auroras",notify=True)
+        #We want this topic seen for the first time with aurora visible outside her window
+        #But we also don't want it to machine gun other topics too
+        if (
+            not store.morning_flag
+            and not store.persistent.event_list
+            and store.mas_getEV("monika_auroras").shown_count == 0
+        ):
+            store.queueEvent("monika_auroras", notify=True)
 
 
     def _weather_snow_exit(_new):
