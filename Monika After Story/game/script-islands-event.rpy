@@ -341,10 +341,26 @@ label mas_island_bookshelf2:
     m "That'd be wonderful~"
     return
 
+#NOTE: This is temporary until we split islands into foreground/background
+init 500 python in mas_island_event:
+    def getBackground():
+        """
+        Because of the dead cherry blossom, we keep the snowy islands during all of winter
+
+        Picks the islands bg to use based on the season.
+
+        OUT:
+            image filepath to show
+        """
+        if store.mas_isWinter():
+            return store.mas_weather_snow.isbg_window(store.morning_flag, store._mas_island_window_open)
+
+        else:
+            return store.mas_current_weather.isbg_window(store.morning_flag, store._mas_island_window_open)
+
 screen mas_islands_background:
 
-    # NOTE: we will ALWAYS show the islands firs time without any weather options
-    add mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+    add mas_island_event.getBackground()
 
 #    if morning_flag:
 #        if _mas_island_window_open:
