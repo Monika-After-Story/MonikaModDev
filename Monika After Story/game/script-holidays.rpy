@@ -3214,6 +3214,9 @@ label greeting_d25_and_nye_delegate:
             call greeting_nye_returned_nyd
             jump greeting_nye_aff_gain
 
+        elif checkout_time < datetime.datetime.combine(mas_d25.replace(year=checkout_time.year), datetime.time()):
+            call greeting_pd25e_returned_nydp
+
         else:
             # all other cases should be as if leaving d25post
             call greeting_d25p_returned_nyd
@@ -4041,7 +4044,7 @@ label bye_nyd_delegate:
 
 label bye_nyd_first_time_out:
     #first time out
-    m 3tub "New Years Day celebration, [player]?"
+    m 3tub "New Year's Day celebration, [player]?"
     m 1hua "That sounds like fun!"
     m 1eka "Let's have a great time together."
     return
@@ -4089,9 +4092,11 @@ label greeting_pd25e_returned_nydp:
     m 1hua "And we're home!"
     m 1hub "We were out for a while, but that was a really nice trip, [player]."
     m 1eka "Thanks for taking me with you, I really enjoyed that."
-    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
-    show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    $ new_years = "New Years"
+    if mas_isNYD():
+        $ new_years = "New Year's Eve"
+    m 5ekbsa "I always love to spend time with you, but spending both Christmas and [new_years] out together was amazing."
     m 5hub "I hope we can do something like this again sometime."
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         call return_home_post_player_bday
