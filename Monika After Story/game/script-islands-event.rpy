@@ -383,7 +383,7 @@ screen mas_show_islands():
     style_prefix "island"
     imagemap:
 
-        ground mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+        ground mas_island_event.getBackground()
 
 #        if mas_is_raining:
 #            if _mas_island_window_open:

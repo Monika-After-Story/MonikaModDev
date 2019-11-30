@@ -86,7 +86,7 @@ init -900 python in mas_ics:
 
     # snow with frame
     islands_swf = (
-        "fde85a1441ffc5d81b7054d2b362a6fcbaad961e5bace4b52b83e77423eaf2af"
+        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
     )
 
     # snow without frame
@@ -96,7 +96,7 @@ init -900 python in mas_ics:
 
     # night snow with frame
     islands_nswf = (
-        "292cfa2ed3a7405b98d7c32350baf1d340a8d034f032aade32a7f957d4521de9"
+        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
     )
 
     # night snow without frame
