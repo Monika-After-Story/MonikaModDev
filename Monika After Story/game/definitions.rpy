@@ -1257,7 +1257,7 @@ python early:
 
 
         @staticmethod
-        def checkEvents(ev_dict, rebuild_ev=True):
+        def checkEvents(ev_dict, rebuild_ev=True, on_load=False):
             """
             This acts as a combination of both checkConditoinal and
             checkCalendar
@@ -1272,6 +1272,14 @@ python early:
             for ev_label,ev in ev_dict.iteritems():
                 # TODO: same TODO as in checkConditionals.
                 #   indexing would be smarter.
+
+                #If this is on load and the event action is a push/queue without post greet, we skip its eval here
+                if (
+                    on_load
+                    and ev.action in [EV_ACT_PUSH, EV_ACT_QUEUE]
+                    and "postgreet" not in ev.rules
+                ):
+                    continue
 
                 if Event._checkEvent(ev, _now):
                     # perform action

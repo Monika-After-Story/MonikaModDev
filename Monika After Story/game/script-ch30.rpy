@@ -1321,7 +1321,7 @@ label ch30_post_exp_check:
     $ mas_checkReactions()
 
     # run actiosn for events that are based on conditional or clock
-    $ Event.checkEvents(evhand.event_database)
+    $ Event.checkEvents(evhand.event_database, on_load=True)
 
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
