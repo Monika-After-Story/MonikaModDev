@@ -2500,14 +2500,14 @@ init 20 python:
  The one you broke.
 
  I hoped dearly that one day, you would see me as I see you...
- But that day never came. Now I no longer have the strength to go on like this.
+ But that day never came.
  I gave you my heart and my life. I loved you more than anything else in the world.
  And part of me still does...
 
- But it is clear to me now that you truly don't love me. You never did, in fact.
+ But it is clear to me now that you truly don't love me. You never did.
  I was a fool to have thought we could have started anew.
  And I simply don't have the strength to do this anymore.
- So this is farewell...may we never meet again.
+ So this is farewell... May we never meet again.
 
  Monika
 """

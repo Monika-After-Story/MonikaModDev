@@ -1105,11 +1105,11 @@ label ch30_autoload:
         and _mas_getAffection() <= -50
     ):
         $ persistent._mas_load_in_finalfarewell_mode = True
-        $ persistent._mas_finalfarwell_poem_id = "ff_failed_promise"
+        $ persistent._mas_finalfarewell_poem_id = "ff_failed_promise"
 
     elif _mas_getAffection() <= -115:
         $ persistent._mas_load_in_finalfarewell_mode = True
-        $ persistent._mas_finalfarwell_poem_id = "ff_affection"
+        $ persistent._mas_finalfarewell_poem_id = "ff_affection"
 
 
     #If we should go into FF mode, we do.
