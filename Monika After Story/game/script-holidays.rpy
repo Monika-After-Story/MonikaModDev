@@ -1383,10 +1383,7 @@ init -10 python:
         if _date is None:
             _date = datetime.date.today()
 
-        return (
-            mas_isInDateRange(_date, mas_d25g_start, mas_nye)
-            or mas_isNYD(_date)
-        )
+        return mas_isInDateRange(_date, mas_d25g_start, mas_nye, end_inclusive=True)
 
     def mas_d25ShowVisuals():
         """
@@ -1507,6 +1504,9 @@ init -10 python:
                 if ribbon_id is not None:
                     mas_selspr.unlock_acs(mas_sprites.get_sprite(0, ribbon_id))
                     mas_receivedGift(evb_detail.label)
+
+                elif ribbon_id is None and evb_detail.c_gift_name == "quetzalplushie":
+                    persistent._mas_acs_enable_quetzalplushie = True
 
             else:
                 # this is probably a json sprite, try json sprite unlock
@@ -1815,6 +1815,8 @@ label mas_d25_season_exit:
 
         #We'll also derandom this topic as the lights are no longer up
         mas_hideEVL("mas_d25_monika_christmaslights", "EVE", derandom=True)
+
+        mas_d25SilentReactToGifts()
     return
 
 #D25 holiday gift starter/connector
@@ -2919,7 +2921,7 @@ init 5 python:
             # d25 at all, and they were not long absenced or had her on a date
             conditional="not persistent._mas_d25_spent_d25",
             start_date=mas_d25p,
-            end_date=mas_d25p + datetime.timedelta(days=7),
+            end_date=mas_d25p + datetime.timedelta(days=6),
             years=[],
             action=EV_ACT_PUSH
         ),
@@ -2979,6 +2981,8 @@ label mas_d25_postd25_notimespent:
     else:
         $ mas_loseAffection(150)
         m 6ckc "..."
+
+    $ mas_d25ReactTogifts()
     return
 
 # check to see if we missed d25 due to being on a date
@@ -4079,6 +4083,8 @@ label greeting_nyd_returned_nyd:
 label greeting_pd25e_returned_nydp:
     #Here for historical data
     $ persistent._mas_d25_d25e_date_count += 1
+    $ persistent._mas_d25_d25_date_count += 1
+    $ persistent._mas_d25_spent_d25 = True
 
     m 1hua "And we're home!"
     m 1hub "We were out for a while, but that was a really nice trip, [player]."
@@ -4103,6 +4109,8 @@ label greeting_d25p_returned_nyd:
     m 3hub "It's great to be back home now though, we can spend the new year together."
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         call return_home_post_player_bday
+
+    $ mas_d25ReactToGifts()
     return
 
 label greeting_d25p_returned_nydp:
@@ -4113,6 +4121,8 @@ label greeting_d25p_returned_nydp:
     m 3hub "Happy New Year, [player]~"
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
         call return_home_post_player_bday
+
+    $ mas_d25ReactToGifts()
     return
 
 ########################################################### player_bday ########################################################################
@@ -4700,7 +4710,7 @@ label greeting_returned_home_player_bday:
 
             # were we gone over d25
             #TODO: do this for the rest of the holidays
-            if left_date < mas_d25 < ret_date:
+            if left_date < mas_d25.replace(year=left_year) < ret_date:
                 if ret_date < mas_history.getMHS("d25s").trigger.replace(year=left_year+1):
                     persistent._mas_d25_spent_d25 = True
                 else:

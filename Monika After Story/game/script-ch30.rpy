@@ -61,7 +61,7 @@ init -1 python in mas_globals:
     last_day = None
     # numbr of the day we last ran ch30_day
 
-    returned_home_this_sesh = False
+    returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
 
 init 970 python:

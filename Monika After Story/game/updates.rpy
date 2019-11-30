@@ -338,6 +338,10 @@ label v0_10_4(version="v0_10_4"):
             ):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
 
+        ev = mas_getEV("mas_d25_postd25_notimespent")
+        if ev:
+            ev.end_date = mas_d25p + datetime.timedelta(days=6)
+
         #Handle poem seens
         #NOTE: f14 makes the assumption that you were > 0 aff.
         #There is no way to be sure if you actually saw it (since normal aff covers from -34 to -1 as well)

@@ -2369,7 +2369,6 @@ label mas_dockstat_found_monika_from_empty:
 
 # found our monika
 label mas_dockstat_found_monika:
-    $ store.mas_globals.returned_home_this_sesh = True
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
@@ -2402,5 +2401,8 @@ label mas_dockstat_found_monika:
         $ store.mas_globals.show_vignette = True
         #Force progressive to disabled for o31
         $ mas_changeWeather(mas_weather_thunder, True)
+
+    elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
+        call mas_d25_season_exit
 
     jump ch30_post_exp_check

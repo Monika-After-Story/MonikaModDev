@@ -583,7 +583,11 @@ init -2 python in mas_sprites:
         """
         Exit programming point for santa clothes
         """
-        return
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_holly_hairclip)
+
 
     def _clothes_santa_lingerie_entry(_moni_chr, **kwargs):
         """
@@ -593,6 +597,17 @@ init -2 python in mas_sprites:
 
         if outfit_mode:
             _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
+
+
+    def _clothes_santa_lingerie_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for santa lingerie
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_holly_hairclip)
+
 
     def _clothes_dress_newyears_entry(_moni_chr, **kwargs):
         """
@@ -1144,6 +1159,7 @@ init -1 python:
             "lingerie": True
         },
         entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
+        exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
         pose_arms=MASPoseMap(
             default=None,
             use_reg_for_l=True

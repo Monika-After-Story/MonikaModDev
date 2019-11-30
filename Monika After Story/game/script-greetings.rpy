@@ -3180,10 +3180,10 @@ label greeting_returned_home:
     if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(days=7):
         call mas_gone_over_bday_check
 
-    if mas_d25 < datetime.date.today() <= mas_d25 + datetime.timedetla(days=7):
+    if mas_d25 < datetime.date.today() <= mas_nye:
         call mas_gone_over_d25_check
 
-    if mas_nye < datetime.date.today() <= mas_d25c_end:
+    if mas_nyd <= datetime.date.today() <= mas_d25c_end:
         call mas_gone_over_nye_check
 
     if mas_nyd < datetime.date.today() <= mas_d25c_end:
