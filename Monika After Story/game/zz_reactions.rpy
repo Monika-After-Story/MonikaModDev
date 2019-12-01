@@ -2211,3 +2211,29 @@ label mas_reaction_gift_clothes_orcaramelo_sweater_shoulderless:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
+
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "velius94_dress_whitenavyblue")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+    
+    m 1suo "Oh my gosh!"
+    m 1sub "This dress is gorgeous, [player]!"
+    m 3hub "I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(sprite_object, outfit_mode=True)
+
+    m 3eua "So,{w=0.5} what do you think?"
+    m "I think this shade of blue goes really well with the white."
+    m 3eub "And the bow scrunchie complements the outfit nicely too!"
+    m 1eka "Thank you so much, [player]."
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
