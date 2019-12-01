@@ -131,7 +131,8 @@ init 10 python in mas_seasons:
         store.persistent._mas_acs_enable_hotchoc = False
 
         # unhibernate islands greet
-        store.mas_unlockEVL("greeting_ourreality", "GRE")
+        if not renpy.seen_label("greeting_ourreality"):
+            store.mas_unlockEVL("greeting_ourreality", "GRE")
 
 
     def _pp_summer():
