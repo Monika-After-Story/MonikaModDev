@@ -996,6 +996,20 @@ image monika 5tsbfu:
         0.06
         repeat
 
+image monika 5tsbsu:
+    block:
+        "monika 5tsbsu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 5dsbsu_static"
+        0.06
+        repeat
+
 image monika 5tsc:
     block:
         "monika 5tsc_static"
