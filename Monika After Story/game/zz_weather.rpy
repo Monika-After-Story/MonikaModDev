@@ -97,7 +97,7 @@ init python in mas_weather:
     def shouldRainToday():
 
         #Is it a new day? If so, we should see if it should rain today
-        if not store.persistent._mas_date_last_checked_rain or store.persistent._mas_date_last_checked_rain < datetime.date.today():
+        if store.mas_pastOneDay(store.persistent._mas_date_last_checked_rain):
             store.persistent._mas_date_last_checked_rain = datetime.date.today()
 
             #Now we roll
@@ -370,6 +370,10 @@ init -20 python in mas_weather:
             store.mas_weather_snow.unlocked = True
             saveMWData()
 
+        # we want this topic seen for the first time with aurora visible outside her window
+        if not store.morning_flag and store.mas_getEV("monika_auroras").shown_count == 0:
+            store.pushEvent("monika_auroras",notify=True)
+
         # TODO: lock islands greeting as well
 
 
@@ -396,7 +400,6 @@ init -20 python in mas_weather:
         """
         Thunder entry programming point
         """
-
         # dont run rain if swtiching from it
         # run rain programming points
         if _old != store.mas_weather_rain:

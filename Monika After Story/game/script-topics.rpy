@@ -3179,6 +3179,9 @@ label monika_love:
             m 2eka "I...{w=0.5}I love you too."
 
     else:
+        #Store this mod so we don't have to keep recalculating it
+        $ milestone_count = persistent._mas_monika_lovecounter % 50
+
         #After I love you has been received positively 5/10/15 etc times.
         if persistent._mas_monika_lovecounter == 0:
             m 1subsw "[player]!"
@@ -3189,57 +3192,55 @@ label monika_love:
             call monika_lovecounter_aff
             return
 
-        elif persistent._mas_monika_lovecounter % 50 == 5:
+        elif milestone_count == 5:
             m 1hubfb "I love you so much, [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 10:
+        elif milestone_count == 10:
             m 1hubfa "Ehehe~"
             m 1hubfb "I love you too!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 15:
+        elif milestone_count == 15:
             m 1ekbfa "You sure love saying that..."
             m 1hubfb "Well, I love you too!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 20:
+        elif milestone_count == 20:
             m 1wubso "Gosh you've said it so many times!"
             m 1tsbsa "You really do mean it, don't you?"
             m 1hubfb "Well, I love you back just as much!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 25:
+        elif milestone_count == 25:
             m 1hubfa "Hearing you say that always makes my heart jump!"
             m 1ekbfa "Well, I know you want to hear it just as much..."
             m 1hubfb "[player], I love you too!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 30:
+        elif milestone_count == 30:
             m 1lkbsa "Gosh it's always so overwhelming!"
             m 1hubfa "I..."
             if renpy.random.randint(1, 2) == 1:
                 m 1hubfb "I love you more than anything!"
             else:
                 m 1hubfb "I love you more than I could ever express~"
-            jump .end_logic
 
-        elif persistent._mas_monika_lovecounter % 50 == 35:
+        elif milestone_count == 35:
             m 1ekbfa "You never tire of saying it, do you?"
             m 1hubfa "Well, I never tire of hearing it!"
             m 1hubfb "Or saying it back...I love you [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 40:
+        elif milestone_count == 40:
             m 1dubsu "Ehehe~"
             m 1hubfa "I..."
             m 1hubfb "Looooooooove you too, [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 45:
+        elif milestone_count == 45:
             m 1hubfa "You saying that always makes my day!"
             m 1hubfb "I love you so much, [player]!"
 
-        elif persistent._mas_monika_lovecounter % 50 == 0:
+        elif milestone_count == 0:
             m 1lkbsa "I just can't handle you saying it so much to me!"
             m 1ekbfa "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
             m "No words can truly do justice to how deeply I feel for you..."
             m 1hubfa "The only words I know that come close are..."
             m 1hubfb "I love you too, [player]! More than I can ever express!"
-            jump .end_logic
 
         else:
             # Default response if not a counter based response.
@@ -3281,23 +3282,32 @@ label monika_love:
 
             love_quip = renpy.random.choice(love_quips)
 
-        m "[love_quip]"
+        if milestone_count not in [0, 30]:
+            m "[love_quip]"
 
-        #Sublabel to skip the quips but still do logic w/o duping code
-        label .end_logic:
-        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,25) == 1:
-            call monika_kissing_motion_short
     call monika_lovecounter_aff
     return
 
 label monika_lovecounter_aff:
-    if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+    if mas_timePastSince(persistent._mas_monika_lovecountertime, datetime.timedelta(minutes=3)):
         # only give affection if it's been 3 minutes since the last ily
         $ mas_gainAffection()
 
         if mas_isMoniNormal(higher=True):
             # always increase counter at Normal+ if it's been 3 mins
             $ persistent._mas_monika_lovecounter += 1
+
+            #Setup kiss chances
+            if milestone_count == 0:
+                $ chance = 5
+            elif milestone_count % 5 == 0:
+                $ chance = 15
+            else:
+                $ chance = 25
+
+            #If we should do a kiss, we do
+            if mas_shouldKiss(chance):
+                call monika_kissing_motion_short
 
     elif mas_isMoniNormal(higher=True) and persistent._mas_monika_lovecounter % 5 == 0:
         # increase counter no matter what at Normal+ if at milestone
@@ -6015,16 +6025,101 @@ label monika_piggybank:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True,rules={"skip alert": None}))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_daydream",
+            category=['romance'],
+            prompt="Day dreaming",
+            random=True,
+            rules={"skip alert": None},
+            aff_range=(mas_aff.DISTRESSED, None)
+        )
+    )
 
 label monika_daydream:
-    m 2lsc "..."
-    m 2lsbsa "..."
-    m 2tsbsa "..."
-    m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
-    m 1lkbsa "I was imagining the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
-    m 1ekbfa "Wouldn't that be wonderful, [player]?"
-    m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
+    #insert endless possibilities of wholesome goodness here
+    python:
+        #Upset up to -50
+        daydream_quips_upset = [
+            "what it was like when we first met...",
+            "how I felt when I first met you...",
+            "the good times we used to have...",
+            "the hope I used to have for our future..."
+        ]
+
+        #Normal plus
+        daydream_quips_normplus = [
+            "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
+            "us having a duet together, with you singing my song while I play the piano...",
+            "us having a wonderful dinner together...",
+            "us having a late night on the couch together...",
+            "you holding my hand while we take a stroll outside on a sunny day...",
+        ]
+
+        #Happy plus (NOTE: Inherits quips from normal plus)
+        daydream_quips_happyplus = list(daydream_quips_normplus)
+        daydream_quips_happyplus.extend([
+            "us cuddling while we're watching a show...",
+        ])
+
+        #Affectionare plus (NOTE: Inherits from happy plus)
+        daydream_quips_affplus = list(daydream_quips_happyplus)
+        #TODO: "Why don't I do that right now?"
+        #NOTE: If you wish to add more, for now, just uncomment everything but the quip
+        #daydream_quips_affplus.extend([
+        #    "writing a special poem for my one and only...",
+        #])
+
+        #Enamored plus (NOTE: Inherits quips from affectionate plus)
+        daydream_quips_enamplus = list(daydream_quips_affplus)
+        daydream_quips_enamplus.extend([
+            "waking up next to you in the morning, watching you sleep beside me...",
+        ])
+
+        #Islands related thing
+        if renpy.seen_label("mas_monika_cherry_blossom_tree"):
+            daydream_quips_enamplus.append("the two of us resting our heads under the cherry blossom tree...")
+
+        #Player appearance related thing
+        if not persistent._mas_pm_hair_length == "bald":
+            daydream_quips_enamplus.append("me gently playing with your hair while your head rests my lap...")
+
+        #Pick the quip
+        if mas_isMoniEnamored(higher=True):
+            daydream_quip = renpy.random.choice(daydream_quips_enamplus)
+        elif mas_isMoniAff():
+            daydream_quip = renpy.random.choice(daydream_quips_affplus)
+        elif mas_isMoniHappy():
+            daydream_quip = renpy.random.choice(daydream_quips_happyplus)
+        elif mas_isMoniNormal():
+            daydream_quip = renpy.random.choice(daydream_quips_normplus)
+        else:
+            daydream_quip = renpy.random.choice(daydream_quips_upset)
+
+    if mas_isMoniNormal(higher=True):
+        m 2lsc "..."
+        m 2lsbsa "..."
+        m 2tsbsa "..."
+        m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
+        m 1lkbsa "I was imagining [daydream_quip]"
+        m 1ekbfa "Wouldn't that be wonderful, [player]?"
+        m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
+
+    elif _mas_getAffection() > -50:
+        m 2lsc "..."
+        m 2dkc "..."
+        m 2dktpu "..."
+        m 2ektpd "Oh, sorry...{w=0.5} I was just lost in thought for a second there."
+        m 2dktpu "I was just remembering [daydream_quip]"
+        m 2ektdd "I wonder if we can be that happy again someday, [player]..."
+
+    else:
+        m 6lsc "..."
+        m 6lkc "..."
+        m 6lktpc "..."
+        m 6ektpd "Oh, sorry, I was just..."
+        m 6dktdc "You know what, nevermind."
     return
 
 # init 5 python:
@@ -12911,6 +13006,40 @@ label monika_catch22:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature'],prompt="Auroras",random=False,unlocked=False))
+
+label monika_auroras:
+    m 1esa "I just thought of something we could do when I finally cross over, [player]."
+    m 1eua "Have you ever heard of auroras? They're a natural phenomenon where trails of light appear in the night sky."
+
+    if not morning_flag and mas_current_weather == mas_weather_snow:
+        m 3eub "In fact, if you were wondering about those green lights outside my window, that's an aurora event!"
+    else:
+        m 3eub "In fact, if you ever wondered about those green lights outside my window during winter, that's an aurora event!"
+
+    m 1euc "I hear they're fairly rare to see in your reality, though..."
+    m 1esd "They mostly occur in polar regions and are typically seen during the winter months when the sky is at its darkest due to the longer nights."
+    m 3euc "Plus, you've got to make sure the weather is clear too. {w=0.5}{nw}"
+    extend 3eud "Since it's something that happens in the sky, clouds can get in the way."
+    m 3esc "Even though they're the exact same thing, they have different names depending on where they occur..."
+    m 3eud "In the Northern Hemisphere, they're called the aurora borealis, while in the Southern Hemisphere, the aurora australis."
+    if not morning_flag and mas_current_weather == mas_weather_snow:
+        m 2rksdla "I guess that would make the aurora outside of my window the aurora dokialis..."
+        m 2hksdlb "Ahaha...I'm just kidding, [player]!"
+        m 2rksdla "..."
+    m 3eua "Maybe one day we'll get to see them together in your reality..."
+    m 3ekbsa "That would be really romantic, don't you think?"
+    m 1dkbsa "Just imagine the two of us..."
+    m "Lying on a soft mattress of snow, holding hands..."
+    m 1subsu "Looking up at those dazzling lights in the sky, dancing just for us..."
+    m 1dubsu "Listening to each other's gentle breathing...{w=0.5}the freshness of the crisp night air filling our lungs..."
+    show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eubsa "That would be an experience to remember, don't you think, [player]?"
+    m 5hubsu "I can't wait until we can turn that into reality."
+    $ mas_showEVL("monika_auroras","EVE",_random=True)
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
@@ -13051,4 +13180,64 @@ label mas_show_unseen:
     m 3eub "Sure, [player]!"
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_songwriting",
+            category=["music"],
+            prompt="Songwriting",
+            random=True
+        )
+    )
+
+label monika_songwriting:
+    m 1euc "Hey [player], have you ever written a song?"
+    m 3hua "It's a pretty fun thing to do!"
+    m 3rkc "Though, planning the song out and tweaking it can take a while..."
+    m 1eud "Getting the instrumentation right, making sure the harmonies blend, getting the right tempo and time for the song..."
+    m 3rksdla "...and I haven't even gotten to writing lyrics yet."
+    m 3eub "Speaking of lyrics, I think it's pretty neat that there's such a similarity between writing lyrics for songs and writing poems!"
+    m 3eua "Both can tell stories or convey feelings when phrased right, and music can even amplify that too."
+
+    if persistent.monika_kill:
+        m 1ttu "I wonder if my song was what brought us here now~"
+        m 1eua "Anyway, just because lyrics can have a strong effect on us doesn't mean instrumental music can't be powerful."
+    else:
+        m 3eka "But that doesn't mean instrumental music can't be powerful too."
+
+    if renpy.seen_label("monika_orchestra"):
+        m 3etc "Remember when I talked about orchestral music?{w=0.5} {nw}"
+        extend 3hub "That's a great example of how powerful music can be!"
+    else:
+        m 3hua "If you've ever listened to orchestral music before, you'll know that it's a great example of how powerful music is."
+
+    m 1eud "Since there's no lyrics, everything has to be expressed in a way that the listener can {i}feel{/i} the emotion in a piece."
+    m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
+    m 3euc "I guess that goes for lyrics too, actually."
+    m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
+
+    if renpy.seen_audio(songs.FP_YOURE_REAL):
+        m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
+        m 3ekbla "I knew I couldn't let you go without telling you everything."
+
+    m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
+
+    if persistent.instrument:
+        m 1hua "Since you play an instrument, I'm sure you could write something."
+
+    m 3eua "It can be a great way to relieve stress, tell a story, or even convey a message."
+
+    if persistent.instrument:
+        m 3hub "I'm sure whatever you write would be amazing!"
+    else:
+        m 1ekbla "Maybe you could write one for me sometime~"
+
+    m 1hua "We could even turn it into a duet if you want."
+
+    $ _if = "when" if mas_isMoniEnamored(higher=True) else "if"
+    m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
     return
