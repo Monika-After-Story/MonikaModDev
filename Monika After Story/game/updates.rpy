@@ -342,6 +342,13 @@ label v0_10_4(version="v0_10_4"):
         if ev:
             ev.end_date = mas_d25p + datetime.timedelta(days=6)
 
+        ev = mas_getEV("mas_d25_monika_christmas")
+        if ev:
+            ev.conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and not mas_lastSeenInYear('mas_d25_monika_christmas')"
+            )
+
         #Handle poem seens
         #NOTE: f14 makes the assumption that you were > 0 aff.
         #There is no way to be sure if you actually saw it (since normal aff covers from -34 to -1 as well)

@@ -3131,8 +3131,8 @@ label greeting_ourreality:
     m 1hua "But it's a start."
     # m 1eub "I'll let you admire the scenery for now."
     # m 1hub "Hope you like it!"
-    $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
-    $ unlockEventLabel("mas_monika_islands")
+    $ mas_lockEVL("greeting_ourreality", "GRE")
+    $ mas_unlockEVL("mas_monika_islands", "EVE")
 
     # we can push here because of the slightly optimized call_next_event
     $ pushEvent("mas_monika_islands",skipeval=True)

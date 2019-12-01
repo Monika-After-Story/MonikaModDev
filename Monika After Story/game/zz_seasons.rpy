@@ -130,6 +130,9 @@ init 10 python in mas_seasons:
         # disable hot choc
         store.persistent._mas_acs_enable_hotchoc = False
 
+        # unhibernate islands greet
+        store.mas_unlockEVL("greeting_ourreality", "GRE")
+
 
     def _pp_summer():
         """
@@ -173,6 +176,9 @@ init 10 python in mas_seasons:
         # enable hotchoc if it has been given
         if store.persistent._mas_c_hotchoc_been_given:
             store.persistent._mas_acs_enable_hotchoc = True
+
+        # want to ensure first time we see the islands they are dead and covered in snow
+        store.mas_lockEVL("greeting_ourreality", "GRE")
 
     
     # seaonal pp id:

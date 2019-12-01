@@ -2107,14 +2107,19 @@ label mas_d25_monika_holiday_intro_rh_rh:
     # NOTE this counts as seeing the intro
     $ persistent._mas_d25_intro_seen = True
 
-    jump mas_d25_monika_christmas
+    $ pushEvent("mas_d25_monika_christmas",skipeval=True)
+
+    return
 
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas",
-            conditional="persistent._mas_d25_in_d25_mode",
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and not mas_lastSeenInYear('mas_d25_monika_christmas')"
+            ),
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
             end_date=mas_d25p,
@@ -4716,7 +4721,7 @@ label greeting_returned_home_player_bday:
             # were we gone over d25
             #TODO: do this for the rest of the holidays
             if left_date < mas_d25.replace(year=left_year) < ret_date:
-                if ret_date < mas_history.getMHS("d25s").trigger.replace(year=left_year+1):
+                if ret_date < mas_history.getMHS("d25s").trigger.date().replace(year=left_year+1):
                     persistent._mas_d25_spent_d25 = True
                 else:
                     persistent._mas_history_archives[left_year]["d25.actions.spent_d25"] = True
