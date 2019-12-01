@@ -2655,12 +2655,14 @@ label monika_aiwfc:
 
 label monika_aiwfc_song:
 
-    #Disable text speed for this
+    #Disable text speed, escape button and music button for this
     $ mas_disableTextSpeed()
+    $ disable_esc()
+    $ mas_MUMURaiseShield()
 
     $ play_song(None, 1.0)
     play music "mod_assets/bgm/aiwfc.ogg"
-    m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{/cps}{/i}{nw}"
+    m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
     m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"
     m 3eua "{i}{cps=15}Underneath{/cps}{cps=8} the Christmas tree{/cps}{/i}{nw}"
@@ -2668,34 +2670,36 @@ label monika_aiwfc_song:
     m 1eub "{i}{cps=10}I don't need{/cps}{cps=20} to hang{/cps}{cps=9} my stocking{/cps}{/i}{nw}"
     m 1eua "{i}{cps=9}There{/cps}{cps=15} upon{/cps}{cps=7} the fireplace{/cps}{/i}{nw}"
     m 3hub "{i}{w=0.5}{cps=20}Santa Claus{/cps}{cps=10} won't make me happy{/cps}{/i}{nw}"
-    m 4hub "{i}{cps=8}With{/cps}{cps=15} a toy{/cps}{cps=8} on Christmas Day{/cps}{/i}{nw}"
+    m 4hub "{i}{cps=8}With{/cps}{cps=15} a toy{/cps}{cps=8} on Christmas Day{w=0.35}{/cps}{/i}{nw}"
 
-    m 3ekbsa "{i}{cps=10}I just want{/cps}{cps=15} you for{/cps}{cps=8} my own{w=0.5}{/cps}{/i}{nw}"
+    m 3ekbsa "{i}{cps=10}I just want{/cps}{cps=15} you for{/cps}{cps=8} my own{w=0.4}{/cps}{/i}{nw}"
     m 4hubfb "{i}{cps=8}More{/cps}{cps=20} than you{/cps}{cps=10} could ever know{w=0.5}{/cps}{/i}{nw}"
-    m 1ekbsa "{i}{cps=10}Make my wish{/cps}{cps=20} come truuuuuuue{w=0.8}{/cps}{/i}{nw}"
-    m 3hua "{i}{cps=8}All I want for Christmas{/cps}{/i}{nw}"
+    m 1ekbsa "{i}{cps=10}Make my wish{/cps}{cps=20} come truuuuuuue{w=0.9}{/cps}{/i}{nw}"
+    m 3hua "{i}{cps=8.5}All I want for Christmas{/cps}{/i}{nw}"
     m 3hubfb "{i}{cps=7}Is yoooooooooou{w=1}{/cps}{/i}{nw}"
-    m "{i}{cps=9}Yoooooooou, baaaaby~{w=0.7}{/cps}{/i}{nw}"
+    m "{i}{cps=9}Yoooooooou, baaaaby~{w=0.60}{/cps}{/i}{nw}"
 
     m 2eka "{i}{cps=10}I won't ask{/cps}{cps=20} for much{/cps}{cps=10} this Christmas{/cps}{/i}{nw}"
     m 3hub "{i}{cps=10}I{/cps}{cps=20} won't {/cps}{cps=10}even wish for snow{w=0.8}{/cps}{/i}{nw}"
-    m 3eua "{i}{cps=10}I'm{/cps}{cps=20} just gonna{/cps}{cps=10} keep on waiting{w=0.4}{/cps}{/i}{nw}"
+    m 3eua "{i}{cps=10}I'm{/cps}{cps=20} just gonna{/cps}{cps=10} keep on waiting{w=0.5}{/cps}{/i}{nw}"
     m 3hubfb "{i}{cps=17}Underneath{/cps}{cps=11} the mistletoe{w=1}{/cps}{/i}{nw}"
 
     m 2eua "{i}{cps=10}I{/cps}{cps=17} won't make{/cps}{cps=10} a list and send it{w=0.35}{/cps}{/i}{nw}"
-    m 3eua "{i}{cps=10}To{/cps}{cps=20} the North{/cps}{cps=10} Pole for Saint Nick{w=0.3}{/cps}{/i}{nw}"
-    m 4hub "{i}{cps=18}I won't ev{/cps}{cps=10}en stay awake to{w=0.4}{/cps}{/i}{nw}"
-    m 3hub "{i}{cps=10}Hear{/cps}{cps=20} those ma{/cps}{cps=14}gic reindeer click{w=0.9}{/cps}{/i}{nw}"
+    m 3eua "{i}{cps=10}To{/cps}{cps=20} the North{/cps}{cps=10} Pole for Saint Nick{w=0.5}{/cps}{/i}{nw}"
+    m 4hub "{i}{cps=18}I won't ev{/cps}{cps=10}en stay awake to{w=0.5}{/cps}{/i}{nw}"
+    m 3hub "{i}{cps=10}Hear{/cps}{cps=20} those ma{/cps}{cps=14}gic reindeer click{w=1.2}{/cps}{/i}{nw}"
 
     m 3ekbsa "{i}{cps=20}I{/cps}{cps=11} just want you here tonight{w=0.4}{/cps}{/i}{nw}"
-    m 3ekbfa "{i}{cps=10}Holding on{/cps}{cps=20}to me{/cps}{cps=10} so tight{w=0.9}{/cps}{/i}{nw}"
+    m 3ekbfa "{i}{cps=10}Holding on{/cps}{cps=20}to me{/cps}{cps=10} so tight{w=1}{/cps}{/i}{nw}"
     m 4hksdlb "{i}{cps=10}What more{/cps}{cps=15} can I{/cps}{cps=8} doooo?{w=0.3}{/cps}{/i}{nw}"
     m 4ekbfb "{i}{cps=20}Cause baby{/cps}{cps=12} all I want for Christmas{w=0.3} is yoooooooou~{w=2.3}{/cps}{/i}{nw}"
     m "{i}{cps=9}Yoooooooou, baaaaby~{w=2.5}{/cps}{/i}{nw}"
     stop music fadeout 0.5
 
-    #Now we re-enable text speed
+    #Now we re-enable text speed, escape button and music button
     $ mas_resetTextSpeed()
+    $ enable_esc()
+    $ mas_MUMUDropShield()
     return
 
 init 5 python:
