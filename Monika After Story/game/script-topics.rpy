@@ -1661,7 +1661,7 @@ init 5 python:
             category=["weather"],
             prompt="Sounds of rain",
             random=True,
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
@@ -1671,68 +1671,52 @@ label monika_rain:
     m 1eua "But a nice, quiet day at home with the sound of rainfall outside my window?"
     m 1duu "It's very calming to me."
     m "Yeah..."
+    m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m 2lkbsa "That's not too cheesy or anything, is it?"
+    m 1ekbfa "Would you ever do that for me, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you ever do that for me, [player]?{fast}"
+        "Yes.":
+            $ persistent._mas_likes_rain = True
+            $ mas_unlockEVL("monika_rain_holdme", "EVE")
 
-    if mas_isMoniHappy(higher=True):
-        # need to be happy or above to get the hold me segway
-        m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
-        m 2lkbsa "That's not too cheesy or anything, is it?"
-        m 1ekbfa "Would you ever do that for me, [player]?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "Would you ever do that for me, [player]?{fast}"
-            "Yes.":
-                $ persistent._mas_likes_rain = True
-                $ mas_unlockEVL("monika_rain_holdme", "EVE")
+            if not mas_is_raining:
+                call mas_change_weather(mas_weather_rain, by_user=False)
 
-                if not mas_is_raining:
-                    call mas_change_weather(mas_weather_rain, by_user=False)
+            call monika_holdme_prep(False,True)
 
-                call monika_holdme_prep(False,True)
+            m 1hua "Then hold me, [player]..."
+            show monika 6dubsa with dissolve
+            $ mas_gainAffection()
+            $ ui.add(PauseDisplayable())
+            $ ui.interact()
 
-                m 1hua "Then hold me, [player]..."
-                show monika 6dubsa
-                $ mas_gainAffection()
-                $ ui.add(PauseDisplayable())
-                $ ui.interact()
+            # renable ui and hotkeys
+            $ store.songs.enabled = True
+            $ HKBShowButtons()
+            call monika_holdme_end
 
-                # renable ui and hotkeys
-                $ store.songs.enabled = True
-                $ HKBShowButtons()
-                call monika_holdme_end
+            if mas_isMoniAff(higher=True):
+                m 1eua "If you want the rain to stop, just ask me, okay?"
 
-                if mas_isMoniAff(higher=True):
-                    m 1eua "If you want the rain to stop, just ask me, okay?"
+        "I hate the rain.":
+            $ persistent._mas_likes_rain = False
 
-            "I hate the rain.":
-                $ persistent._mas_likes_rain = False
+            m 2tkc "Aw, that's a shame."
+            if mas_is_raining:
+                call mas_change_weather(mas_weather_def,by_user=False)
 
-                # lock weather topic if we can only select 1
-#                if store.mas_weather.unlockedWeathers() < 2:
-#                    $ mas_lockEVL("monika_change_weather", "EVE")
+            m 2eka "But it's understandable."
+            m 1eua "Rainy weather can look pretty gloomy."
+            m 3rksdlb "Not to mention pretty cold!"
+            m 1eua "But if you focus on the sounds raindrops make..."
+            m 1hua "I think you'll come to enjoy it."
 
-                m 2tkc "Aw, that's a shame."
-                if mas_is_raining:
-                    if mas_isWinter():
-                        # TODO: also check if user liks snow
-                        call mas_change_weather(mas_weather_snow)
-
-                    else:
-                        call mas_change_weather(mas_weather_def,by_user=False)
-
-                m 2eka "But it's understandable."
-                m 1eua "Rainy weather can look pretty gloomy."
-                m 3rksdlb "Not to mention pretty cold!"
-                m 1eua "But if you focus on the sounds raindrops make..."
-                m 1hua "I think you'll come to enjoy it."
-
-        # unrandom this event if its currently random topic
-        # NOTE: we force event rebuild because this can be pushed by weather
-        #   selection topic
-        #Derandom only if had choice
-        return "derandom|rebuild_ev"
-
-    #Otherwise we normal return
-    return
+    # unrandom this event if its currently random topic
+    # NOTE: we force event rebuild because this can be pushed by weather
+    #   selection topic
+    return "derandom|rebuild_ev"
 
 #init 5 python:
 #    # available only if moni affection is normal+

@@ -2309,7 +2309,7 @@ label mas_d25_monika_mistletoe:
         m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
         m 1tku "...Maybe I can even add one in here!"
         m 1hub "Ehehe~"
-    return
+    return "derandom"
 
 default persistent._mas_pm_hangs_d25_lights = None
 
@@ -2571,7 +2571,7 @@ label mas_d25_spent_time_monika:
                 $ persistent._mas_pm_d25_mistletoe_kiss = True
 
                 #no more mistletoe topic once youve done it
-                $ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
+                $ mas_hideEVL("mas_d25_monika_mistletoe", "EVE", derandom=True)
 
                 #Re-enable buttons
                 $ enable_esc()
@@ -2608,43 +2608,55 @@ init 5 python:
             end_date=mas_d25p,
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL, None),
-            rules={"no unlock": None},
             years=[]
         ),
         skipCalendar=True
     )
 
 label monika_aiwfc:
+    # set dates for the other song to start a day after this one
+    $ d25_baby = mas_getEV('monika_merry_christmas_baby')
+    if d25_baby:
+        if not mas_isD25():
+            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(days=1)
+            $ d25_baby.end_date = mas_d25p
+        else:
+            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
+            $ d25_baby.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
 
     if not renpy.seen_label('monika_aiwfc_song'):
         m 1rksdla "Hey, [player]?"
         m 1eksdla "I hope you don't mind, but I prepared a song for you."
-        m 3hksdlb "I know it's a little cheesy, but I think you might like it"
+        m 3hksdlb "I know it's a little cheesy, but I think you might like it."
         m 3eksdla "If your volume is off, would you mind turning it on for me?"
         if songs.getVolume("music") == 0.0:
             m 3hksdlb "Oh, don't forget about your in game volume too!"
             m 3eka "I really want you to hear this."
-
         m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
+
     else:
-        m 1eka "I'm happy to sing for you again!"
+        m 1hua "Ehehe..."
+        m 3tuu "I hope you're ready, [player]..."
+        m "It {i}is{/i} that time of year again, after all..."
+        m 3hub "Make sure you have your volume up!"
+        m 1huu ".{w=0.5}.{w=0.5}.{nw}"
 
     #Get current song
     $ curr_song = songs.current_track
 
     call monika_aiwfc_song
 
-    if mas_getEV('monika_aiwfc').shown_count == 0:
+    if not renpy.seen_label('monika_aiwfc_song'):
         m 1eka "I hope you liked that, [player]."
         m 1ekbsa "I really meant it too."
         m 1ekbfa "You're the only gift I could ever want."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbfa "I love you, [player]."
+        m 5ekbfa "I love you, [player]~"
 
     else:
-        m 1eka "I'm glad you like it when I sing that song."
-        m 1ekbsa "You'll always be the only gift I'll ever need, [player]."
-        m 1ekbfa "I love you."
+        m 1eka "I hope you like it when I sing that song, [player]."
+        m 1ekbsa "You'll always be the only gift I'll ever need."
+        m 1ekbfa "I love you~"
 
     $ play_song(curr_song, fadein=1.0)
 
@@ -2661,6 +2673,10 @@ label monika_aiwfc_song:
     $ mas_MUMURaiseShield()
 
     $ play_song(None, 1.0)
+    $ amb_vol = songs.getVolume("backsound")
+    $ renpy.music.set_volume(0.0, 1.0, "background")
+    $ renpy.music.set_volume(0.0, 1.0, "backsound")
+
     play music "mod_assets/bgm/aiwfc.ogg"
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
@@ -2700,7 +2716,36 @@ label monika_aiwfc_song:
     $ mas_resetTextSpeed()
     $ enable_esc()
     $ mas_MUMUDropShield()
+
+    $ renpy.music.set_volume(amb_vol, 1.0, "background")
+    $ renpy.music.set_volume(amb_vol, 1.0, "backsound")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_merry_christmas_baby",
+            conditional="persistent._mas_d25_in_d25_mode and mas_lastSeenInYear('monika_aiwfc')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL, None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label monika_merry_christmas_baby:
+    m 1eua "Hey, [player]..."
+    m 3eub "I just thought of another Christmas song that I really want to share with you!"
+    m 3eka "I don't have any music prepared this time, but I hope you'll enjoy hearing me sing it all the same."
+    m 1hua ".{w=0.5}.{w=0.5}.{nw}"
+
+    call mas_song_merry_christmas_baby
+
+    m 1hua "Ehehe..."
+    m 3eka "I hope you liked it~"
+    $ mas_unlockEVL("mas_song_merry_christmas_baby", "SNG")
+    return "no_unlock"
 
 init 5 python:
     addEvent(
@@ -2859,7 +2904,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
             conditional="persistent._mas_d25_in_d25_mode",
-            action=EV_ACT_QUEUE,
+            action=EV_ACT_PUSH,
             start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
             end_date=mas_d25,
             years=[],
@@ -2910,7 +2955,8 @@ label mas_d25_monika_christmas_eve:
         m "...At least not that anyone's seen."
 
         #TODO: may want to add a prop to bathing suit jsons to make this simpler once we have more
-        if mas_selspr.CLOTH_SEL_MAP.get("orcaramelo_bikini_shell", None).unlocked:
+        $ shell_bikini = mas_selspr.CLOTH_SEL_MAP.get("orcaramelo_bikini_shell", None)
+        if shell_bikini and shell_bikini.unlocked:
             m 3hkbfb "Ahaha, what am I saying, you've seen me in a bikini before, which is essentially the same thing..."
             m 2rkbfa "...Though for some reason this just feels...{w=0.5}{i}different{/i}."
 

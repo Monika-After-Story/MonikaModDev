@@ -231,6 +231,43 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_merry_christmas_baby",
+            prompt="Merry Christmas Baby",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_merry_christmas_baby:
+    m 1hub "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m 3eua "{i}~I feel just like I'm living, {w=0.2}living in paradise~{/i}"
+    m 3hub "{i}~I feel real good tonight~{/i}"
+    m 3eub "{i}~And I got music on the radio~{/i}"
+    m 3hub "{i}~I feel real good tonight~{/i}"
+    m 3eub "{i}~And I got music on the radio~{/i}"
+    m 2hkbsu "{i}~Now I feel just like I wanna kiss ya~{/i}"
+    m 2hkbsb "{i}~Underneath the mistletoe~{/i}"
+    m 3eub "{i}~Santa came down chimney, {w=0.2}half past three~{/i}"
+    m 3hub "{i}~With lots of nice little presents for my baby and me~{/i}"
+    m "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m 1eua "{i}~And I feel like I'm living, {w=0.2}just living in paradise~{/i}"
+    m 1eub "{i}~Merry Christmas baby~{/i}"
+    m 3hub "{i}~And Happy New Year too~{/i}"
+    m 3ekbsa "{i}~Merry Christmas, honey~{/i}"
+    m 3ekbsu "{i}~Everything here is beautiful~{/i}"
+    m 3ekbfb "{i}~I love you, baby~{/i}"
+    m "{i}~For everything that you give me~{/i}"
+    m 3ekbfb "{i}~I love you, honey~{/i}"
+    m 3ekbsu "{i}~Merry Christmas, honey~{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_lover_boy",
             prompt="Old Fashioned Lover Boy",
             category=[store.mas_songs.TYPE_SHORT],

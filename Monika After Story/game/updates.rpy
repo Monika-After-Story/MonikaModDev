@@ -373,6 +373,10 @@ label v0_10_4(version="v0_10_4"):
         if renpy.seen_label("mas_player_bday_cake") or renpy.seen_label("mas_player_bday_card"):
             persistent._mas_poems_seen["poem_pbday_1"] = 1
 
+        # change this from QUEUE to PUSH since we added an event we want after this
+        ev = mas_getEV("mas_d25_monika_christmas_eve")
+        if ev:
+            ev.action = EV_ACT_PUSH
 
         #Run weather unlocks
         mas_weather_snow.unlocked=True
