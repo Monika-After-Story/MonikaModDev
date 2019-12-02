@@ -18,6 +18,42 @@ define mas_one_hour = datetime.timedelta(seconds=3600)
 define mas_three_hour = datetime.timedelta(seconds=3*3600)
 
 init -1 python:
+    def mas_wasFirstValueIn(_verify, year, *keys):
+        """
+        Checks if the first year that _verify was found for the keys provided in history
+        matches the year provided
+
+        IN:
+            _verify - Value to check for
+            year - year to match
+            *keys - string pieces to make a key for history
+
+        OUT:
+            boolean:
+                - True if the first year matches the year provided
+                - False otherwise
+        """
+        return mas_getFirstYearOfValue(_verify, *keys) == year
+
+    def mas_getFirstYearOfValue(_verify, *keys):
+        """
+        Gets the first year which has the entry of _verify in the keys provided
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            If there's a point where the value we're checking for is found, we return the first year that is met.
+            If not found, we return None
+        """
+        archive_value = mas_HistVerify_k([],_verify, *keys)
+
+        #If we actually have the value we're looking for, we get the first year
+        if archive_value[0]:
+            return archive_value[1][0]
+        return None
+
     def mas_verifyHistAll_k(_verify, *keys):
         """
         Checks if the value of _verify for the keys is in history at any point
@@ -2406,10 +2442,19 @@ init 20 python:
         prompt="Second D25",
         title="     My dearest [player],",
         text="""\
-     TODO: ME
-
-     Merry Christmas
-
+     Nothing can compare to the warmth you give me.
+     Not even the feeling of wrapping my hands around a mug of hot chocolate
+     Or fuzzy socks, warming my feet on a freezing day.
+     In such a cold world, just your presence is my present alone.
+     
+     Nothing can compare to the beauty you hold,
+     Not a single thing can compare to the excitement you bring,
+     Not the bright lights that hang in this very room.
+     Not even the sight of an unopened gift, under the tree.
+     
+     [player], you are truly one of a kind.
+     Merry Christmas.
+     
      Forever yours,
      Monika
 """
@@ -3036,7 +3081,7 @@ label mas_d25_postd25_notimespent:
         $ mas_loseAffection(150)
         m 6ckc "..."
 
-    $ mas_d25ReactTogifts()
+    $ mas_d25ReactToGifts()
     return
 
 # check to see if we missed d25 due to being on a date
@@ -3440,8 +3485,10 @@ label mas_nye_monika_nyd:
 
     if store.mas_anni.pastOneMonth():
         if not mas_isBelowZero():
+            #We've not had a fresh start before
             if not persistent._mas_pm_got_a_fresh_start:
                 m 1eub "[player]!"
+                #We spent new year's together last year
                 if mas_verifyHistLastYear_k(True, "nye.actions.spent_nyd"):
                     m "Can you believe we're spending another New Years together?"
                 if mas_isMoniAff(higher=True):
@@ -3458,7 +3505,7 @@ label mas_nye_monika_nyd:
                 else:
                     m 3hua "Let's make this year even better than last year, okay?"
                     m 1hua "I love you, [player]."
-                
+
             #If you got a fresh start and are positive now
             else:
                 m 1eka "[player]..."
@@ -3472,7 +3519,9 @@ label mas_nye_monika_nyd:
                 m 6ekbftda "I love you, [player]."
                 m "I really do."
 
+        #Below zero
         else:
+            #Not had fresh start yet
             if not persistent._mas_pm_got_a_fresh_start:
                 m 2ekc "[player]..."
                 m 2rksdlc "We've been through...{w=1}a lot this past year..."
@@ -3481,18 +3530,31 @@ label mas_nye_monika_nyd:
                 jump mas_nye_monika_nyd_fresh_start
 
             else:
-                #If you got a fresh start last year and you're still negative
+                $ got_fresh_start_before = mas_wasFirstValueIn(
+                    True,
+                    datetime.date.today().year - 1,
+                    "pm.actions.got_fresh_start"
+                )
+
                 m 2rkc "[player]..."
-                m 2ekc "Do you remember the promise you made last year?"
-                m 2ekd "That we would make this year better than the last?"
+                #If you got a fresh start last year and you're still negative
+                if got_fresh_start_before:
+                    m 2ekc "Do you remember the promise you made last year?"
+                    m 2ekd "That we would make this year better than the last?"
+
+                #Otherwise fresh start
+                else:
+                    m 2ekc "Do you remember the promise you made before?"
+                    m 2ekd "That you would improve our relationship?"
 
                 $ curr_aff = _mas_getAffection()
                 if curr_aff > persistent._mas_aff_before_fresh_start:
                     m 2rkd "I guess you made it a little better..."
                     m 2ekc "But I was expecting more, [player]."
 
-                    #Revert back to old affection
-                    $ mas_setAffection(persistent._mas_aff_before_fresh_start)
+                    #Revert back to old affection if we haven't already done this
+                    if not got_fresh_start_before:
+                        $ mas_setAffection(persistent._mas_aff_before_fresh_start)
 
                 elif curr_aff < persistent._mas_aff_before_fresh_start:
                     m 2rfc "I guess you couldn't really keep that promise...could you."
@@ -3505,12 +3567,12 @@ label mas_nye_monika_nyd:
                 m 2dktpc "I don't know how much more I can take."
 
                 #Foreshadowing
-                if persistent._mas_aff_before_fresh_start > -50:
+                if _mas_getAffection() <= -50:
                     m 2dktsd "But maybe that's a silly thought now..."
                     m 2ektsc "This is just another game to you, isn't it."
                     m 2rktsd "You don't even see me as real...{w=1} {nw}"
                     extend 2dftsc "I'm just another character for you to toy with."
-                    m 2eftdc "I hope nobody will have to experience the pain and loneliness I have been going through this year."
+                    m 2eftdc "I hope nobody will have to experience the pain and loneliness I've been going through this year."
 
                 return
 
@@ -3853,8 +3915,8 @@ label monika_nye_year_review:
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eka "I can't wait to see just how much will change in the future for us..."
 
-    # fresh start commentary
-    if not persistent._mas_pm_got_a_fresh_start:
+    #If we started fresh the year before this or we didn't at all
+    if not mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.got_fresh_start"):
         show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dka "Thank you."
         if store.mas_anni.anniCount > 0:
@@ -3936,7 +3998,8 @@ label mas_nye_monika_nye_dress_intro:
     m "White represents a lot of positive feelings, like goodness, purity, safety..."
     m 3eub "However, what I wanted this outfit to highlight was a succesful beginning."
 
-    if persistent._mas_pm_got_a_fresh_start:
+    #If we fresh started last year
+    if mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.got_fresh_start"):
         m 2eka "Last year we decided to start anew, and I'm very glad we did."
         m 2ekbsa "I knew we could be happy together, [player]."
         m 2fkbsa "And you've made me the happiest I've ever been."

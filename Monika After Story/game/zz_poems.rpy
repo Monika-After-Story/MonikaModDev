@@ -144,7 +144,7 @@ init 10 python:
             self.category=category
             self.prompt=prompt
             self.title=renpy.substitute(title)
-            self.text=text
+            self.text=renpy.substitute(text)
             self.author=author
 
             #And add this to map

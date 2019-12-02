@@ -934,6 +934,7 @@ init -810 python:
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
+            "_mas_pm_got_a_fresh_start": "pm.actions.got_fresh_start",
             "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
             # actions / games
@@ -1081,6 +1082,7 @@ init -810 python:
         {
             "_mas_aff_before_fresh_start": "aff.before_fresh_start"
         },
-        use_year_before=True
+        use_year_before=True,
+        dont_reset=True
     ))
 

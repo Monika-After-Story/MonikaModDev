@@ -386,6 +386,13 @@ label v0_10_4(version="v0_10_4"):
         mas_weather_snow.unlocked=True
         mas_weather_thunder.unlocked=True
         mas_weather.saveMWData()
+
+        #We need to add fresh start to hist
+        if persistent._mas_pm_got_a_fresh_start:
+            persistent._mas_history_archives[2018]["pm.actions.got_fresh_start"] = True
+
+            #We also need to pull the affection we had before out of the historical archives
+            persistent._mas_aff_before_fresh_start = mas_HistLookup("aff.before_fresh_start", 2018)
     return
 
 
