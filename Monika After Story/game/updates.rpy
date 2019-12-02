@@ -311,6 +311,10 @@ label v0_10_4(version="v0_10_4"):
             #Need to swap out for song variant
             mas_unlockEVL("mas_song_aiwfc", "SNG")
             mas_lockEVL("monika_aiwfc", "EVE")
+            aiwfc_ev = mas_getEV("monika_aiwfc")
+
+            if aiwfc_ev:
+                aiwfc_ev.action = EV_ACT_QUEUE
 
         #Fix d25 intro conditionals for player bday
         ev = mas_getEV("mas_d25_monika_holiday_intro")
