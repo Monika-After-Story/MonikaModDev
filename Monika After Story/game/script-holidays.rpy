@@ -2129,7 +2129,6 @@ init 5 python:
         skipCalendar=True
     )
 
-#TODO: Intro to gift reactions
 label mas_d25_monika_christmas:
     #Flag for hist
     $ persistent._mas_d25_spent_d25 = True
@@ -2157,7 +2156,7 @@ label mas_d25_monika_christmas:
         m 3hksdlb "Just kidding, I didn't hang one up."
 
         if mas_isMoniEnamored(higher=True):
-            m 1lksdla "...{cps=*2}Maybe~{/cps}{nw}"
+            m 1lksdla "...{cps=*2}Yet~{/cps}{nw}"
             $ _history_list.pop()
 
         m 1lksdlb "Ehehe..."
@@ -3590,63 +3589,38 @@ label monika_resolutions:
     m 2eub "Hey, [player]?"
     m 2eka "I was wondering..."
 
-    m 3eub "Did you make any New Year's resolutions last year?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Did you make any New Year's resolutions last year?{fast}"
+    #If we didn't see this last year, we need to ask if we made a resolution or not
+    if not mas_lastSeenLastYear("monika_resolutions"):
+        m 3eub "Did you make any New Year's resolutions last year?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Did you make any New Year's resolutions last year?{fast}"
 
-        "Yes.":
-            m 3hua "It always makes me so proud to hear that you're trying to better yourself, [player]."
-            m 2eka "That said..."
+            "Yes.":
+                m 3hua "It always makes me so proud to hear that you're trying to better yourself, [player]."
+                m 2eka "That said..."
 
-            m 3hub "Did you accomplish last year's resolutions?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Did you accomplish last year's resolutions?{fast}"
+                call monika_resolutions_accomplished_resolutions_menu("Did you accomplish last year's resolutions?")
 
-                "Yes.":
-                    $ persistent._mas_pm_accomplished_resolutions = True
-                    if mas_isMoniNormal(higher=True):
-                        m 4hub "I'm glad to hear that, [player]!"
-                        m 2eka "It's great that you managed to do that."
-                        m 3ekb "Things like this really make me proud of you."
-                        m 2eka "I wish I could be there to celebrate a little with you though."
+
+            "No.":
+                m 2euc "Oh, I see..."
+
+                if mas_isMoniNormal(higher=True):
+                    if mas_isMoniHappy(higher=True):
+                        m 3eka "Well, I don't think you really needed to change at all anyway."
+                        m 3hub "I think you're wonderful, just the way you are."
                     else:
-                        m 2rkc "That's good, [player]."
-                        m 2esc "Maybe you can make another one this year..."
-                        m 3euc "You never know what might change."
+                        m 3eka "There's nothing wrong with that. I don't think you really needed to change anyway."
 
-                "No.":
-                    $ persistent._mas_pm_accomplished_resolutions = False
-                    if mas_isMoniNormal(higher=True):
-                        m 2eka "Aw...well, sometimes things just don't work out like we plan them to."
-
-                        if mas_isMoniHappy(higher=True):
-                            m 2eub "Plus, I think you're wonderful, so even if you couldn't accomplish your goals..."
-                            m 2eka "...I'm still really proud of you for setting them and trying to better yourself, [player]."
-                            m 3eub "If you decide to make a resolution this year, I'll support you every step of the way."
-                            m 4hub "I'd love to help you reach your goals!"
-                        else:
-                            m "But I think it's great that you did at least try to better yourself by setting goals."
-                            m 3eua "Maybe if you make a resolution this year, you can accomplish it!"
-                            m 3hub "I believe in you, [player]!"
-
-                    else:
-                        m 2euc "Oh...{w=1} Well maybe you should try a little harder for next year's resolution."
-
-        "No.":
-            m 2euc "Oh, I see..."
-
-            if mas_isMoniNormal(higher=True):
-                if mas_isMoniHappy(higher=True):
-                    m 3eka "Well, I don't think you really needed to change at all anyway."
-                    m 3hub "I think you're wonderful, just the way you are."
                 else:
-                    m 3eka "There's nothing wrong with that. I don't think you really needed to change anyway."
+                    m 2rkc "You probably should make one this year [player]..."
 
-            else:
-                m 2rkc "You probably should make one this year [player]..."
+    #If we made a resolution last year, then we should ask if the player accomplished it
+    elif mas_verifyHistLastYear_k(True, "pm.actions.made_new_years_resolutions"):
+        call monika_resolutions_accomplished_resolutions_menu("Since you made a resolution last year, did you accomplish it?")
 
+    #This path will be the first thing you see if you didn't make a resolution last year
     m "Do you have any resolutions for next year?{nw}"
     $ _history_list.pop()
     menu:
@@ -3685,6 +3659,46 @@ label monika_resolutions:
         m 2ekc "My resolution is to improve our relationship, [player]."
 
     return
+
+label monika_resolutions_accomplished_resolutions_menu(question):
+    m 3hub "[question]{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[question]{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_accomplished_resolutions = True
+            if mas_isMoniNormal(higher=True):
+                m 4hub "I'm glad to hear that, [player]!"
+                m 2eka "It's great that you managed to do that."
+                m 3ekb "Things like this really make me proud of you."
+                m 2eka "I wish I could be there to celebrate a little with you though."
+            else:
+                m 2rkc "That's good, [player]."
+                m 2esc "Maybe you can make another one this year..."
+                m 3euc "You never know what might change."
+
+            return True
+
+        "No.":
+            $ persistent._mas_pm_accomplished_resolutions = False
+            if mas_isMoniNormal(higher=True):
+                m 2eka "Aw...well, sometimes things just don't work out like we plan them to."
+
+                if mas_isMoniHappy(higher=True):
+                    m 2eub "Plus, I think you're wonderful, so even if you couldn't accomplish your goals..."
+                    m 2eka "...I'm still really proud of you for setting them and trying to better yourself, [player]."
+                    m 3eub "If you decide to make a resolution this year, I'll support you every step of the way."
+                    m 4hub "I'd love to help you reach your goals!"
+                else:
+                    m "But I think it's great that you did at least try to better yourself by setting goals."
+                    m 3eua "Maybe if you make a resolution this year, you can accomplish it!"
+                    m 3hub "I believe in you, [player]!"
+
+            else:
+                m 2euc "Oh...{w=1} Well maybe you should try a little harder for next year's resolution."
+
+            return False
 
 
 init 5 python:

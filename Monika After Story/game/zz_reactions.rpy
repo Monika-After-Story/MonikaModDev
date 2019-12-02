@@ -229,7 +229,7 @@ init -11 python in mas_filereacts:
 
                 if gift_cntrs is not None:
                     evb_labels.append(gift_cntrs.quip()[1])
-                
+
                 if prepare_data and evb_detail.sp_data is not None:
                     # if we need to prepare data, then add the sprite_data
                     # to reacted map
@@ -238,7 +238,7 @@ init -11 python in mas_filereacts:
                     )
 
             labels.extend(evb_labels)
-                    
+
         # now generic sprite objects
         if len(gsp_details) > 0:
             gsp_labels = []
@@ -250,7 +250,7 @@ init -11 python in mas_filereacts:
                         gsp_labels.append(gift_cntrs.quip()[1])
 
                     if prepare_data:
-                        store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        store.persistent._mas_filereacts_sprite_reacted[gsp_detail.sp_data] = (
                             gsp_detail.c_gift_name
                         )
 
