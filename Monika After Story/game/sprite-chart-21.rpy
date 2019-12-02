@@ -1500,6 +1500,34 @@ image monika 6ekbfd:
         0.06
         repeat
 
+image monika 6ekbftda:
+    block:
+        "monika 6ekbftda_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 6dkbftda_static"
+        0.06
+        repeat
+
+image monika 6ekbftpa:
+    block:
+        "monika 6ekbftpa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 6dkbftpa_static"
+        0.06
+        repeat
+
 image monika 6ekbsa:
     block:
         "monika 6ekbsa_static"

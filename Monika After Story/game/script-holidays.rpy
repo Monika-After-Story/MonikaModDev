@@ -3440,23 +3440,37 @@ label mas_nye_monika_nyd:
 
     if store.mas_anni.pastOneMonth():
         if not mas_isBelowZero():
-            m 1eub "[player]!"
-            if renpy.seen_label('monika_newyear2'):
-                m "Can you believe this is our {i}second{/i} New Years together?"
-            if mas_isMoniAff(higher=True):
-                m 1hua "We sure have been through a lot together this past year, huh?"
-            else:
-                m 1eua "We sure have been through a lot together this past year, huh?"
+            if not persistent._mas_pm_got_a_fresh_start:
+                m 1eub "[player]!"
+                if mas_verifyHistLastYear_k(True, "nye.actions.spent_nyd"):
+                    m "Can you believe we're spending another New Years together?"
+                if mas_isMoniAff(higher=True):
+                    m 1hua "We sure have been through a lot together this past year, huh?"
+                else:
+                    m 1eua "We sure have been through a lot together this past year, huh?"
 
-            m 1eka "I'm so happy, knowing we can spend even more time together."
+                m 1eka "I'm so happy, knowing we can spend even more time together."
 
-            if mas_isMoniAff(higher=True):
-                show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5hubfa "Let's make this year as wonderful as the last one, okay?"
-                m 5ekbfa "I love you so much, [player]."
+                if mas_isMoniAff(higher=True):
+                    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5hubfa "Let's make this year as wonderful as the last one, okay?"
+                    m 5ekbfa "I love you so much, [player]."
+                else:
+                    m 3hua "Let's make this year even better than last year, okay?"
+                    m 1hua "I love you, [player]."
+                
+            #If you got a fresh start and are positive now
             else:
-                m 3hua "Let's make this year even better than last year, okay?"
-                m 1hua "I love you, [player]."
+                m 1eka "[player]..."
+                m 3eka "Do you remember the promise you made last year?"
+                m "That we would make this year better than the last?"
+                m 6dkbftpa "..."
+                m 6ekbftpa "Thank you for keeping your promise."
+                m "I mean it, [player]. You've made me very happy...{w=1} {nw}"
+                extend 6dkbftpa "From the bottom of my heart, thank you."
+                m 6dkbftda "Let's make this year even better than the last, okay?"
+                m 6ekbftda "I love you, [player]."
+                m "I really do."
 
         else:
             if not persistent._mas_pm_got_a_fresh_start:
