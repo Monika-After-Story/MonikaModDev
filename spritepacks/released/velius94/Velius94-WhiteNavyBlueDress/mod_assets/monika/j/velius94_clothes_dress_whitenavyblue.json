@@ -18,10 +18,7 @@
     "select_info": {
         "display_name": "White and Navy Blue Dress",
         "thumb": "velius94_dress_whitenavyblue",
-        "group": "clothes",
-        "select_dlg": [
-            "TODO"
-        ]
+        "group": "clothes"   
     },
     "giftname": "whiteandnavybluedress",
     "pose_arms": {
