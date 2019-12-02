@@ -392,7 +392,8 @@ label v0_10_4(version="v0_10_4"):
             persistent._mas_history_archives[2018]["pm.actions.got_fresh_start"] = True
 
             #We also need to pull the affection we had before out of the historical archives
-            persistent._mas_aff_before_fresh_start = mas_HistLookup("aff.before_fresh_start", 2018)
+            if not persistent._mas_aff_before_fresh_start:
+                persistent._mas_aff_before_fresh_start = mas_HistLookup("aff.before_fresh_start", 2018)
     return
 
 
