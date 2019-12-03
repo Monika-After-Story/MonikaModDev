@@ -934,7 +934,6 @@ init -810 python:
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
-            "_mas_pm_got_a_fresh_start": "pm.actions.got_fresh_start",
             "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
             # actions / games
@@ -953,6 +952,8 @@ init -810 python:
             "_mas_pm_longest_held_monika": "pm.actions.monika.longest_held_time",
             "_mas_pm_total_held_monika": "pm.actions.monika.total_held_time",
             "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
+            "_mas_pm_got_a_fresh_start": "pm.actions.monika.got_fresh_start",
+            "_mas_pm_failed_fresh_start": "pm.actions.monika.failed_fresh_start",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",

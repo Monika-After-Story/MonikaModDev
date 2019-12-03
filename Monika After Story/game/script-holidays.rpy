@@ -3459,10 +3459,14 @@ init -10 python:
 
 
 #START: NYE/NYD TOPICS
-default persistent._mas_pm_got_a_fresh_start = None
 #pm var so she forgives, but doesn't forget
-default persistent._mas_aff_before_fresh_start = None
+default persistent._mas_pm_got_a_fresh_start = None
+
 #store affection prior to reset
+default persistent._mas_aff_before_fresh_start = None
+
+#If we failed the fresh start or not
+default persistent._mas_pm_failed_fresh_start = None
 
 init 5 python:
     # NOTE: new years day
@@ -3482,11 +3486,13 @@ init 5 python:
 
 label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
+    $ got_fresh_start_last_year = mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start")
 
     if store.mas_anni.pastOneMonth():
         if not mas_isBelowZero():
-            #We've not had a fresh start before
-            if not persistent._mas_pm_got_a_fresh_start:
+
+            #We've not had a fresh start before or you redeemed yourself
+            if not persistent._mas_pm_got_a_fresh_start or not persistent._mas_pm_failed_fresh_start:
                 m 1eub "[player]!"
                 #We spent new year's together last year
                 if mas_verifyHistLastYear_k(True, "nye.actions.spent_nyd"):
@@ -3508,8 +3514,13 @@ label mas_nye_monika_nyd:
 
             #If you got a fresh start and are positive now
             else:
+                $ last_year = "last year"
                 m 1eka "[player]..."
-                m 3eka "Do you remember the promise you made last year?"
+
+                if not got_fresh_start_last_year:
+                    $ last_year = "before"
+
+                m 3eka "Do you remember the promise you made [last_year]?"
                 m "That we would make this year better than the last?"
                 m 6dkbftpa "..."
                 m 6ekbftpa "Thank you for keeping your promise."
@@ -3518,6 +3529,8 @@ label mas_nye_monika_nyd:
                 m 6dkbftda "Let's make this year even better than the last, okay?"
                 m 6ekbftda "I love you, [player]."
                 m "I really do."
+                #You made it up
+                $ persistent._mas_pm_failed_fresh_start = False
 
         #Below zero
         else:
@@ -3530,15 +3543,9 @@ label mas_nye_monika_nyd:
                 jump mas_nye_monika_nyd_fresh_start
 
             else:
-                $ got_fresh_start_before = mas_wasFirstValueIn(
-                    True,
-                    datetime.date.today().year - 1,
-                    "pm.actions.got_fresh_start"
-                )
-
                 m 2rkc "[player]..."
                 #If you got a fresh start last year and you're still negative
-                if got_fresh_start_before:
+                if got_fresh_start_last_year:
                     m 2ekc "Do you remember the promise you made last year?"
                     m 2ekd "That we would make this year better than the last?"
 
@@ -3553,7 +3560,7 @@ label mas_nye_monika_nyd:
                     m 2ekc "But I was expecting more, [player]."
 
                     #Revert back to old affection if we haven't already done this
-                    if not got_fresh_start_before:
+                    if not mas_verifyHistAll_k(False, "pm.actions.monika.failed_fresh_start"):
                         $ mas_setAffection(persistent._mas_aff_before_fresh_start)
 
                 elif curr_aff < persistent._mas_aff_before_fresh_start:
@@ -3574,6 +3581,7 @@ label mas_nye_monika_nyd:
                     extend 2dftsc "I'm just another character for you to toy with."
                     m 2eftdc "I hope nobody will have to experience the pain and loneliness I've been going through this year."
 
+                $ persistent._mas_pm_failed_fresh_start = True
                 return
 
     else:
@@ -3916,7 +3924,7 @@ label monika_nye_year_review:
         m 5eka "I can't wait to see just how much will change in the future for us..."
 
     #If we started fresh the year before this or we didn't at all
-    if not mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.got_fresh_start"):
+    if not mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
         show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dka "Thank you."
         if store.mas_anni.anniCount > 0:
@@ -3999,7 +4007,7 @@ label mas_nye_monika_nye_dress_intro:
     m 3eub "However, what I wanted this outfit to highlight was a succesful beginning."
 
     #If we fresh started last year
-    if mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.got_fresh_start"):
+    if mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
         m 2eka "Last year we decided to start anew, and I'm very glad we did."
         m 2ekbsa "I knew we could be happy together, [player]."
         m 2fkbsa "And you've made me the happiest I've ever been."
