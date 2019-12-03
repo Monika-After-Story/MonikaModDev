@@ -615,7 +615,6 @@ init -2 python in mas_sprites:
         """
         outfit_mode = kwargs.get("outfit_mode", False)
 
-        #TODO: this needs to remove other hairclips and etc
         if outfit_mode:
             #Swap to braided ponytail if found
             ponytailbraid = store.mas_sprites.get_sprite(
@@ -627,6 +626,12 @@ init -2 python in mas_sprites:
 
             _moni_chr.wear_acs(store.mas_acs_flower_crown)
             _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
+
+            hairclip = _moni_chr.get_acs_of_type("left-hair-clip")
+            if hairclip:
+                _moni_chr.remove_acs(hairclip)
+
+
 
     def _clothes_dress_newyears_exit(_moni_chr, **kwargs):
         """

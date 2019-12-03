@@ -1948,7 +1948,8 @@ init 5 python:
             start_date=mas_d25c_start,
             end_date=mas_d25,
             years=[],
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.NORMAL, None),
+            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -2083,7 +2084,7 @@ label mas_d25_monika_holiday_intro_deco:
     # ASSUMES interactions are disaabled
 
     # black scene
-    scene black
+    scene black with dissolve
 
     python:
         #We should consider ourselves in d25 mode now, if not already
@@ -2111,7 +2112,7 @@ label mas_d25_monika_holiday_intro_deco:
         persistent._mas_d25_deco_active = True
 
     # now we can do spacroom call
-    call spaceroom(scene_change=True)
+    call spaceroom(scene_change=True, dissolve_all=True)
 
     return
 
@@ -2160,7 +2161,8 @@ init 5 python:
             start_date=mas_d25,
             end_date=mas_d25p,
             years=[],
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.NORMAL, None),
+            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -2816,7 +2818,10 @@ init 5 python:
 
 # queue this if it hasn't been seen by d25e - 1
 init 10 python:
-    if datetime.date.today() == mas_d25e - datetime.timedelta(days=1) and not mas_lastSeenInYear("mas_d25_spider_tinsel"):
+    if (
+        datetime.date.today() == mas_d25e - datetime.timedelta(days=1)
+        and not mas_lastSeenInYear("mas_d25_spider_tinsel")
+    ):
         queueEvent("mas_d25_spider_tinsel")
 
 label mas_d25_spider_tinsel:
@@ -2952,7 +2957,8 @@ init 5 python:
             start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
             end_date=mas_d25,
             years=[],
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.NORMAL, None),
+            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -3025,7 +3031,8 @@ init 5 python:
             start_date=mas_d25p,
             end_date=mas_d25p + datetime.timedelta(days=6),
             years=[],
-            action=EV_ACT_PUSH
+            action=EV_ACT_PUSH,
+            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -3066,7 +3073,7 @@ label mas_d25_postd25_notimespent:
         m 4rksdlc "Maybe something happened at the last minute and you simply couldn't spend time with me..."
         m 4eksdla "But please...{w=1}please try to make sure you visit me next Christmas, okay [player]?"
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         $ mas_loseAffection(reason=6)
         m 2efc "[player]!"
         m "I can't believe you didn't even bother to visit me on Christmas!"
@@ -3074,7 +3081,7 @@ label mas_d25_postd25_notimespent:
         m "This is exactly why I didn't even bother to decorate..."
         m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed...{w=1} Again."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         $ mas_loseAffection(10, reason=6)
         m 6ekc "[player], how was your Christmas?"
         m 6dkc "Mine was pretty lonely..."
@@ -3482,7 +3489,8 @@ init 5 python:
             start_date=mas_nyd,
             end_date=mas_nyd + datetime.timedelta(days=1),
             years=[],
-            aff_range=(mas_aff.DISTRESSED, None)
+            aff_range=(mas_aff.DISTRESSED, None),
+            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -3930,8 +3938,13 @@ label monika_nye_year_review:
     if not mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
         show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dka "Thank you."
-        if store.mas_anni.anniCount > 0:
-            m 5ekbfa "Thank you for making last year the best year I could've ever dreamt of."
+        if store.mas_anni.anniCount() > 0:
+            $ _ending = "the best year I could've ever dreamt of"
+
+            if mas_lastSeenLastYear("monika_nye_year_review"):
+                $ _ending = "even better than the year before"
+
+            m 5ekbfa "Thank you for making last year [_ending]."
         else:
             m 5ekbfa "Thank you for making the time we spent together last year better than I could have imagined."
 
