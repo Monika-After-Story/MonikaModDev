@@ -2439,7 +2439,7 @@ init 20 python:
     poem_d25_2 = MASPoem(
         poem_id="poem_d25_2",
         category="d25",
-        prompt="Second D25",
+        prompt="Incomparable",
         title="     My dearest [player],",
         text="""\
      Nothing can compare to the warmth you give me.
@@ -5005,12 +5005,11 @@ label return_home_post_player_bday:
     return
 
 # birthday card/poem for player
-#TODO: review prompt for this pls
 init 20 python:
     poem_pbday = MASPoem(
         poem_id = "poem_pbday_1",
         category = "pbday",
-        prompt = "Your Birthday",
+        prompt = "The One",
         title = " My dearest [player],",
         text = """\
  To the one I love,
