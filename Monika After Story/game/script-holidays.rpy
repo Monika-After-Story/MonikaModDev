@@ -3560,7 +3560,7 @@ label mas_nye_monika_nyd:
                     m 2ekc "But I was expecting more, [player]."
 
                     #Revert back to old affection if we haven't already done this
-                    if not mas_verifyHistAll_k(False, "pm.actions.monika.failed_fresh_start"):
+                    if not mas_verifyHistAll_k(True, "pm.actions.monika.failed_fresh_start"):
                         $ mas_setAffection(persistent._mas_aff_before_fresh_start)
 
                 elif curr_aff < persistent._mas_aff_before_fresh_start:
