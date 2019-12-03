@@ -14,6 +14,8 @@ default persistent._mas_story_database = dict()
 default mas_can_unlock_story = False
 default mas_can_unlock_scary_story = False
 default mas_full_scares = False
+# dict storing the last date we saw a new story of normal and scary type
+default persistent._mas_last_seen_new_story = {"normal":None,"scary":None}
 
 
 # store containing stories-related things
@@ -24,7 +26,7 @@ init -1 python in mas_stories:
     TYPE_SCARY = 0
 
     # pane constant
-    STORY_RETURN = "I changed my mind."
+    STORY_RETURN = "I changed my mind"
     story_database = dict()
 
     def _unlock_everything():
@@ -43,13 +45,54 @@ init -1 python in mas_stories:
             _story.pool = False
 
 
-# entry point for stories flow
-label mas_stories_start(scary=False):
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_short_stories",
+            category=['literature'],
+            prompt="Can you tell me a story?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_short_stories:
+    call monika_short_stories_premenu(None)
+    return
+
+label monika_short_stories_premenu(story_type=None):
+    $ end = ""
+
+label monika_short_stories_menu:
+    # TODO: consider caching the built stories if we have many story 
+    #   categories.
 
     python:
         import store.mas_stories as mas_stories
 
-        if scary:
+        # determine if a new story can be unlocked
+        mas_can_unlock_story = False
+        if story_type == mas_stories.TYPE_SCARY:
+            scary_story_ls = persistent._mas_last_seen_new_story["scary"]
+
+            if mas_isO31():
+                mas_can_unlock_story = True
+            elif scary_story_ls is None:
+                mas_can_unlock_story = seen_event("mas_scary_story_hunter")
+            else:
+                mas_can_unlock_story = scary_story_ls != datetime.date.today()
+
+        else:
+            new_story_ls = persistent._mas_last_seen_new_story["normal"]
+
+            if new_story_ls is None:
+                mas_can_unlock_story = seen_event("mas_story_tyrant")
+            else:
+                mas_can_unlock_story = new_story_ls != datetime.date.today()
+
+        # setup stories list
+        if story_type == mas_stories.TYPE_SCARY:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
                 category=(True,[mas_stories.TYPE_SCARY]),
@@ -71,20 +114,11 @@ label mas_stories_start(scary=False):
             if mas_stories.story_database[k].unlocked
         ]
 
-        if len(stories_menu_items) == 1 and not seen_event(stories_menu_items[0][1]):
-            # set the mas_can_unlock_story flag to False since it
-            # shouldn't unlock anything at this time
-            if scary:
-                mas_can_unlock_scary_story = False
-            else:
-                mas_can_unlock_story = False
-
         # check if we have a story available to be unlocked and we can unlock it
-        if len(stories_menu_items) < len(stories) and ((not scary and mas_can_unlock_story)
-                or (scary and mas_can_unlock_scary_story)):
+        if len(stories_menu_items) < len(stories) and mas_can_unlock_story:
 
             # Add to the menu the new story option
-            if scary:
+            if story_type == mas_stories.TYPE_SCARY:
                 return_label = "mas_scary_story_unlock_random"
             else:
                 return_label = "mas_story_unlock_random"
@@ -94,36 +128,41 @@ label mas_stories_start(scary=False):
         # also sort this list
         stories_menu_items.sort()
 
+        # build switch button
+        if story_type == mas_stories.TYPE_SCARY:
+            switch_str = "short"
+        else:
+            switch_str = "scary"
+        switch_item = (
+            "I'd like to hear a " + switch_str + " story",
+            "monika_short_stories_menu",
+            False,
+            False,
+            20
+        )
+
         # final quit item
-        final_item = (mas_stories.STORY_RETURN, False, False, False, 20)
-
-    # if we have only one story
-    if len(stories_menu_items) == 1:
-
-        # get the event label
-        $ story = stories_menu_items[0][1]
-
-        # check if we have seen it already
-        if seen_event(story):
-            m 1ekc "Sorry [player]. That's the only story I can tell you right now."
-            m 3hksdlb "Don't worry! I'll think of a story to tell you next time."
-            return
-
-        # increment event's shown count and update last seen
-        $ mas_stories.story_database[story].shown_count += 1
-        $ mas_stories.story_database[story].last_seen = datetime.datetime.now()
-
-        # and we jump to it, since doing pushEvent looks weird
-        $ renpy.jump(story)
-
-    m 1hua "Sure thing!"
+        if persistent._mas_sensitive_mode:
+            space = 20
+        else:
+            space = 0
+        final_item = (mas_stories.STORY_RETURN, False, False, False, space)
 
     # move Monika to the left
     show monika 1eua at t21
 
-    $ renpy.say(m, "What story would you like to hear?", interact=False)
+    if story_type == mas_stories.TYPE_SCARY:
+        $ which = "Witch"
+    else:
+        $ which = "Which"
+
+    $ renpy.say(m, which + " story would you like to hear?" + end, interact=False)
+
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    if persistent._mas_sensitive_mode:
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN,final_item)
+    else:
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
@@ -136,8 +175,40 @@ label mas_stories_start(scary=False):
 #            $ mas_stories.story_database[_return].shown_count += 1
 #            $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
 
-        # then push
-        $ pushEvent(_return)
+        # switching between types
+        if _return == "monika_short_stories_menu":
+            # NOTE: this is not scalable.
+            if story_type == mas_stories.TYPE_SCARY:
+                $ story_type = None
+            else:
+                $ story_type = mas_stories.TYPE_SCARY
+
+            $ end = "{fast}"
+            $ _history_list.pop()
+
+            jump monika_short_stories_menu
+
+        else:
+            # if we are seeing a new story, store the date for future unlocks
+            $ new_story_key = None
+
+            if _return == "mas_story_unlock_random":
+                $ new_story_key = "normal"
+
+            elif _return == "mas_scary_story_unlock_random":
+                $ new_story_key = "scary"
+
+            elif not seen_event(_return):
+                if story_type == mas_stories.TYPE_SCARY:
+                    $ new_story_key = "scary"
+                else:
+                    $ new_story_key = "normal"
+
+            if new_story_key is not None:
+                $ persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
+
+            # then push
+            $ pushEvent(_return, skipeval=True)
 
     # move her back to center
     show monika at t11
@@ -171,9 +242,6 @@ label mas_story_unlock_random_cat(scary=False):
 
     python:
         if scary:
-            # reset flag so we don't unlock another one
-            mas_can_unlock_scary_story = False
-
             # get locked stories
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
@@ -207,9 +275,6 @@ label mas_story_unlock_random_cat(scary=False):
                         aff=mas_curr_affection
                     )
         else:
-            # reset flag so we don't unlock another one
-            mas_can_unlock_story = False
-
             # get locked stories
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
@@ -549,7 +614,8 @@ label mas_scary_story_cleanup:
     if not persistent._mas_o31_in_o31_mode:
         $ mas_changeWeather(mas_temp_r_flag)
         $ store.mas_globals.show_vignette = False
-        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+        hide vignette
         call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 
     $ play_song(None, 1.0)

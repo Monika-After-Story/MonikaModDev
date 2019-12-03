@@ -38,8 +38,19 @@ init -1 python in mas_compliments:
 
 
 # entry point for compliments flow
-label mas_compliments_start:
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_compliments",
+            category=['monika', 'romance'],
+            prompt="I want to tell you something...",
+            pool=True,
+            unlocked=True
+        )
+    )
 
+label monika_compliments:
     python:
         import store.mas_compliments as mas_compliments
 
