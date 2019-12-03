@@ -930,6 +930,7 @@ python early:
             #   full_copy - True means we create a new dict with deepcopies of
             #       the events. False will only copy references
             #       (Default: False)
+            #       DEPRECATEDE
             #
             #   FILTERING RULES: (recommend to use **kwargs)
             #   NOTE: None means we ignore that filtering rule
@@ -1257,7 +1258,7 @@ python early:
 
 
         @staticmethod
-        def checkEvents(ev_dict, rebuild_ev=True, on_load=False):
+        def checkEvents(ev_dict, rebuild_ev=True):
             """
             This acts as a combination of both checkConditoinal and
             checkCalendar
@@ -1273,31 +1274,19 @@ python early:
                 # TODO: same TODO as in checkConditionals.
                 #   indexing would be smarter.
 
-                #If not on_load, then we let all pass
-                #Otherwise, if on_load and the event has a push/queue action, we need to make sure the rule is part of the ev
-                #Also, we need to make sure if it's on_load but it's valid to process, we should
-                if (
-                    not on_load
-                    or (
-                        on_load
-                        and ev.action in [EV_ACT_PUSH, EV_ACT_QUEUE]
-                        and "postgreet" in ev.rules
+                if Event._checkEvent(ev, _now):
+                    # perform action
+                    Event._performAction(
+                        ev,
+                        unlock_time=_now,
+                        rebuild_ev=rebuild_ev
                     )
-                    or on_load and ev.action not in [EV_ACT_PUSH, EV_ACT_QUEUE]
-                ):
-                    if Event._checkEvent(ev, _now):
-                        # perform action
-                        Event._performAction(
-                            ev,
-                            unlock_time=_now,
-                            rebuild_ev=rebuild_ev
-                        )
 
-                        # check if we should repeat
-                        if not ev.prepareRepeat(True):
-                            # no repeats
-                            ev.conditional = None
-                            ev.action = None
+                    # check if we should repeat
+                    if not ev.prepareRepeat(True):
+                        # no repeats
+                        ev.conditional = None
+                        ev.action = None
 
             return
 
