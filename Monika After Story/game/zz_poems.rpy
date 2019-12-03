@@ -238,7 +238,7 @@ init 5 python:
             prompt="Can I read one of your poems again?",
             category=["literature"],
             pool=True,
-            conditional="store.mas_poems.hasUnlockedPoems()",
+            unlocked=True,
             action=EV_ACT_UNLOCK,
             rules={"no unlock": None},
             aff_range=(mas_aff.ENAMORED,None)
@@ -253,7 +253,7 @@ label monika_showpoem:
     python:
         #We'll store the base DDLC poems here
         poems_list = [
-            ("Hole in Wall", poem_m1, False, False),
+            ("Hole in Wall (Part 1)", poem_m1, False, False),
             ("Hole in Wall (Part 2)", poem_m21, False, False),
             ("Save Me", poem_m2, False, False),
             ("The Lady Who Knows Everything", poem_m3, False, False),

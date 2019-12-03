@@ -2979,7 +2979,10 @@ label mas_d25_monika_christmas_eve:
         m "But I'm even {i}more{/i} excited this year..."
         m 5hkbsa "Just the thought of our first Christmas together...{w=1}I can't wait!"
 
-    if mas_canShowRisque():
+    if (
+        mas_canShowRisque()
+        and not mas_selspr.get_sel_clothes(mas_clothes_santa_lingerie).unlocked
+    ):
         m 5ekbfa "..."
         show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m "..."
