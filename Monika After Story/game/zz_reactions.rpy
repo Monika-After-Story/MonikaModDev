@@ -171,7 +171,7 @@ init -1 python in mas_filereacts:
             return []
 
         # is it a new day?
-        if store.persistent._mas_filereacts_last_reacted_date is None or store.persistent._mas_filereacts_last_reacted_date != datetime.date.today():
+        if store.mas_pastOneDay(store.persistent._mas_filereacts_last_reacted_date):
             store.persistent._mas_filereacts_last_reacted_date = datetime.date.today()
             store.persistent._mas_filereacts_reacted_map = dict()
 
@@ -1846,24 +1846,25 @@ init 5 python:
 default persistent._date_last_given_roses = None
 
 label mas_reaction_gift_roses:
-    $ gift_ev = mas_getEV("mas_reaction_gift_roses")
+    python:
+        gift_ev = mas_getEV("mas_reaction_gift_roses")
 
-    $ monika_chr.wear_acs(mas_acs_roses)
+        monika_chr.wear_acs(mas_acs_roses)
 
     #TODO: future migrate this to use history (post f14)
     if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
         $ mas_giftCapGainAff(10)
 
         m 1eka "[player]... I-I don't know what to say..."
-        m 1ekbsa "I never would've thought that you'd get something like this for me!"
-        m 1wka "I'm so happy right now."
+        m 1ekbsb "I never would've thought that you'd get something like this for me!"
+        m 3skbsa "I'm so happy right now."
         if mas_isF14():
             # extra 5 points if f14
             $ mas_f14CapGainAff(5)
-            m 1ekbfa "To think that I'd be getting roses from you on Valentine's Day..."
-            m "You're so sweet."
-            m 1ektpa "..."
-            m "Ahaha..."
+            m 3ekbsa "To think that I'd be getting roses from you on Valentine's Day..."
+            m 1ekbsu "You're so sweet."
+            m 1dktpu "..."
+            m 1ektda "Ahaha..."
 
         #We can only have this on poses which use the new sprite set
         if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
@@ -1871,25 +1872,28 @@ label mas_reaction_gift_roses:
             $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
+        if mas_shouldKiss(chance=2, special_day_bypass=True):
+            call monika_kissing_motion_short
+
     else:
         if persistent._date_last_given_roses is None and renpy.seen_label('monika_valentines_start'):
             $ persistent._date_last_given_roses = datetime.date(2018,2,14)
 
-        if datetime.date.today() > persistent._date_last_given_roses:
+        if mas_pastOneDay(persistent._date_last_given_roses):
             $ mas_giftCapGainAff(5 if mas_isSpecialDay() else 1)
 
-            m 1wuo "Oh!"
-            m 1ekbsa "Thanks [player]."
-            m "I always love getting roses from you."
+            m 1suo "Oh!"
+            m 1ekbsa "Thanks, [player]."
+            m 3ekbsa "I always love getting roses from you."
             if mas_isF14():
                 # extra 5 points if f14
                 $ mas_f14CapGainAff(5)
-                m 1dsbfa "Especially on a day like today."
-                m 1eka "It's really sweet of you to get these for me."
-                m 1ekbfa "I love you so much."
-                m "Happy Valentine's Day, [player]~"
+                m 1dsbsu "Especially on a day like today."
+                m 1ekbsa "It's really sweet of you to get these for me."
+                m 3hkbsa "I love you so much."
+                m 1ekbsa "Happy Valentine's Day, [player]~"
             else:
-                m 1ekbfa "You're always so sweet."
+                m 1ekbsa "You're always so sweet."
 
             #Random chance (unless f14) for her to do the ear rose thing
             if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
@@ -1898,12 +1902,15 @@ label mas_reaction_gift_roses:
                     $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
 
+            if mas_shouldKiss(chance=4, special_day_bypass=True):
+                call monika_kissing_motion_short
+
         else:
             m 1hksdla "[player], I'm flattered, really, but you don't need to give me so many roses."
             if store.seen_event("monika_clones"):
-                m 1ekbfa "You'll always be my special rose after all, ehehe~"
+                m 1ekbsa "You'll always be my special rose after all, ehehe~"
             else:
-                m 1ekbfa "A single rose from you is already more than I could have ever asked for."
+                m 1ekbsa "A single rose from you is already more than I could have ever asked for."
 
     # Pop from reacted map
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
@@ -2137,6 +2144,95 @@ label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
     $ _history_list.pop()
     m 1ekbfb "I'd still like to be able to spend time with you,{fast} [player]."
 
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_clothes_finale_jacket_brown:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "finale_jacket_brown")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1sub "Oh!{w=0.5} A winter jacket!"
+    m 1suo "And it even comes with a scarf!"
+    if mas_isSummer():
+        m 3rksdla "...Though I'm getting a little hot just by looking at it, ahaha..."
+        m 3eksdla "Perhaps summer isn't the best time to wear this, [player]."
+        m 3eka "I do appreciate the thought, and I'll be glad to wear it in a few months."
+
+    else:
+        if mas_isWinter():
+            m 1tuu "I won't be getting cold anytime soon because of you, [player]~"
+        m 3eub "Let me go put it on! I'll be right back."
+    
+        # try it on
+        call mas_clothes_change(sprite_object)
+
+        m 2dku "Ahh, it feels very nice~"
+        m 1eua "I like the way it looks on me, don't you agree?"
+        if mas_isMoniNormal(higher=True):
+            m 3tku "Well... I can't really expect you to be objective about that question, can I?"
+            m 1hubfb "Ahaha!"
+        m 1ekbfa "Thank you [player], I love it."
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_clothes_orcaramelo_sweater_shoulderless:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "orcaramelo_sweater_shoulderless")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1sub "Oh!{w=0.5} A sweater!"
+    m 1hub "And it looks so cozy, too!"
+    if mas_isWinter():
+        m 2eka "You're so thoughtful [player], giving this to me on such a cold winter day..."
+    m 3eua "Let me go try it on."
+
+    # try it on
+    call mas_clothes_change(sprite_object)
+
+    m 2dkbsu "It's so...{w=1}comfy. I feel as snug as a bug in a rug. Ehehe~"
+    m 1ekbsa "Thank you, [player]. I love it!"
+    m 3hubsa "Now whenever I wear it I'll think of your warmth. Ahaha~"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
+
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "velius94_dress_whitenavyblue")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+    
+    m 1suo "Oh my gosh!"
+    m 1sub "This dress is gorgeous, [player]!"
+    m 3hub "I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(sprite_object, outfit_mode=True)
+
+    m 3eua "So,{w=0.5} what do you think?"
+    m "I think this shade of blue goes really well with the white."
+    m 3eub "And the bow scrunchie complements the outfit nicely too!"
+    m 1eka "Thank you so much, [player]."
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)

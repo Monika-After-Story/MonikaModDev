@@ -161,10 +161,12 @@ transform mas_kissing(_zoom, _y,time=2.0):
 transform mas_back_from_kissing(time, y):
     linear time xcenter 640 yoffset (y) zoom 0.80
 
-
-default persistent._mas_first_kiss = None
 # contains datetime of users's first kiss with monika
 # NOTE: need to add this to calendar
+default persistent._mas_first_kiss = None
+
+# contains datetime of users's last kiss with monika
+default persistent._mas_last_kiss = None
 
 # mas_kissing_motion_base label
 # Used to do the kiss motion, it takes care of setting persistent._mas_first_kiss
@@ -195,6 +197,8 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
 
     if persistent._mas_first_kiss is None:
         $ persistent._mas_first_kiss = datetime.datetime.now()
+
+    $ persistent._mas_last_kiss = datetime.datetime.now()
 
     window hide
     if hide_ui:
