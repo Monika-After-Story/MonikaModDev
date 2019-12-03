@@ -2446,15 +2446,15 @@ init 20 python:
      Not even the feeling of wrapping my hands around a mug of hot chocolate
      Or fuzzy socks, warming my feet on a freezing day.
      In such a cold world, just your presence is my present alone.
-     
+
      Nothing can compare to the beauty you hold,
      Not a single thing can compare to the excitement you bring,
      Not the bright lights that hang in this very room.
      Not even the sight of an unopened gift, under the tree.
-     
+
      [player], you are truly one of a kind.
      Merry Christmas.
-     
+
      Forever yours,
      Monika
 """
