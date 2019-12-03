@@ -2231,7 +2231,10 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
 
     m 3eua "So,{w=0.5} what do you think?"
     m "I think this shade of blue goes really well with the white."
-    m 3eub "And the bow scrunchie complements the outfit nicely too!"
+    $ scrunchie = monika_chr.get_acs_of_type('bunny-scrunchie')
+
+    if scrunchie and scrunchie.name == "velius94_bunnyscrunchie_blue":
+        m 3eub "And the bunny scrunchie complements the outfit nicely too!"
     m 1eka "Thank you so much, [player]."
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
