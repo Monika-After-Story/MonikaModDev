@@ -304,6 +304,14 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.10.4
+label v0_10_4(version="v0_10_4"):
+    python:
+        # erase monika scary stories
+        mas_eraseTopic("monika_scary_stories", persistent.event_database)
+
+    return
+
 #0.10.3
 label v0_10_3(version="v0_10_3"):
     python:
