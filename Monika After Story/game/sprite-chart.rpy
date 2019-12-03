@@ -309,7 +309,7 @@ init -101 python in mas_sprites:
 
 init -100 python in mas_sprites:
 
-    DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons"]
+    DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons", "bunny-scrunchie"]
     # default mux types for ribbon-based items.
 
     DEF_MUX_HS = [
@@ -340,6 +340,13 @@ init -100 python in mas_sprites:
     ACS_DEFS = {
         "bow": ACSTemplate(
             "bow",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                "ribbon-like": True
+            }
+        ),
+        "bunny-scrunchie": ACSTemplate(
+            "bunny-scrunchie",
             mux_type=DEF_MUX_RB,
             ex_props={
                 "ribbon-like": True
