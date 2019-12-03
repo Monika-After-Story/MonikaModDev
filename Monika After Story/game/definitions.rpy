@@ -1273,27 +1273,31 @@ python early:
                 # TODO: same TODO as in checkConditionals.
                 #   indexing would be smarter.
 
-                #If this is on load and the event action is a push/queue without post greet, we skip its eval here
+                #If not on_load, then we let all pass
+                #Otherwise, if on_load and the event has a push/queue action, we need to make sure the rule is part of the ev
+                #Also, we need to make sure if it's on_load but it's valid to process, we should
                 if (
-                    on_load
-                    and ev.action in [EV_ACT_PUSH, EV_ACT_QUEUE]
-                    and "postgreet" not in ev.rules
-                ):
-                    continue
-
-                if Event._checkEvent(ev, _now):
-                    # perform action
-                    Event._performAction(
-                        ev,
-                        unlock_time=_now,
-                        rebuild_ev=rebuild_ev
+                    not on_load
+                    or (
+                        on_load
+                        and ev.action in [EV_ACT_PUSH, EV_ACT_QUEUE]
+                        and "postgreet" in ev.rules
                     )
+                    or on_load and ev.action not in [EV_ACT_PUSH, EV_ACT_QUEUE]
+                ):
+                    if Event._checkEvent(ev, _now):
+                        # perform action
+                        Event._performAction(
+                            ev,
+                            unlock_time=_now,
+                            rebuild_ev=rebuild_ev
+                        )
 
-                    # check if we should repeat
-                    if not ev.prepareRepeat(True):
-                        # no repeats
-                        ev.conditional = None
-                        ev.action = None
+                        # check if we should repeat
+                        if not ev.prepareRepeat(True):
+                            # no repeats
+                            ev.conditional = None
+                            ev.action = None
 
             return
 
