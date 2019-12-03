@@ -1320,18 +1320,15 @@ label ch30_post_exp_check:
     # file reactions
     $ mas_checkReactions()
 
-    # run actiosn for events that are based on conditional or clock
-    # startup should skip events that have a push/queue action, unless 
-    # they have the postgreet rule
+    #All pushed events will have priority on load. Queued events will be pushed to the first idle loop
+    #random/unlock/pool actions are also evaluated here
     python:
         startup_events = {}
         for evl in evhand.event_database:
             ev = evhand.event_database[evl]
-            if Event._filterEvent(ev, action=(EV_ACT_PUSH, EV_ACT_QUEUE)):
-                if "postgreet" in ev.rules:
-                    startup_events[evl] = ev
-            else:
+            if not ev.action == EV_ACT_QUEUE:
                 startup_events[evl] = ev
+
         Event.checkEvents(startup_events)
 
     #Checks to see if affection levels have met the criteria to push an event or not.
