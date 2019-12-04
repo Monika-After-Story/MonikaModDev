@@ -2992,7 +2992,7 @@ label mas_d25_monika_christmas_eve:
         m "..."
         m "Also, [player]..."
         m 3ekbfsdla "There's...{w=1}s-something I want to show you."
-        m 2rkbfsdla "I've been wanting to do this for while now actually, but...{w=1}well it's kind of embarrassing..."
+        m 2rkbfsdla "I've been wanting to do this for a while now actually, but...{w=1}well it's kind of embarrassing..."
         m "..."
         m 2hkbfsdlb "Oh gosh, I'm super nervous, ahaha!"
         m 2rkbfsdlc "It's just I've never--{nw}"
