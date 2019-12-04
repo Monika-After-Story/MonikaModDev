@@ -309,6 +309,42 @@ init -101 python in mas_sprites:
 
 init -100 python in mas_sprites:
 
+    # --- exprops ---
+
+    # ---- ACS ----
+
+    EXP_A_EXCLHP = "excluded-hair-props"
+    # v: list of strings
+    # marks that an ACS requires a hairstyle with none of the value'd props 
+    # to be worn
+
+    EXP_A_LHSEL = "left-hair-strand-eye-level"
+    # v: ignored
+    # marks that an ACS is located at the left hair strand, eye level
+
+    EXP_A_RQHP = "required-hair-prop"
+    # v: string
+    # marks that an ACS requires a hairstyle with the value'd prop to be worn
+
+    EXP_A_RBL = "ribbon-like"
+    # v: ignored
+    # marks that an ACS is like a ribbon in function
+
+    EXP_A_TWRB = "twin-ribbon"
+    # v: ignored
+    # marks that an ACS is a twin ribbon-based acs
+
+    # ---- HAIR ----
+
+    EXP_H_TT = "twintails"
+    # v: ignored
+    # marks that a hair style is a twintails style
+
+    # --- default exprops ---
+    DEF_EXP_TT_EXCL = [EXP_H_TT]
+
+    # --- default mux types ---
+
     DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons", "bunny-scrunchie"]
     # default mux types for ribbon-based items.
 
@@ -342,14 +378,16 @@ init -100 python in mas_sprites:
             "bow",
             mux_type=DEF_MUX_RB,
             ex_props={
-                "ribbon-like": True
+                EXP_A_RBL: True,
+                EXP_A_EXCLHP: DEF_EXP_TT_EXCL,
             }
         ),
         "bunny-scrunchie": ACSTemplate(
             "bunny-scrunchie",
             mux_type=DEF_MUX_RB,
             ex_props={
-                "ribbon-like": True
+                EXP_A_RBL: True,
+                EXP_A_EXCLHP: DEF_EXP_TT_EXCL,
             }
         ),
         "choker": ACSTemplate(
@@ -371,21 +409,21 @@ init -100 python in mas_sprites:
             "left-hair-clip",
             mux_type=DEF_MUX_LHC,
             ex_props={
-                "left-hair-strand-eye-level": True
+                EXP_A_LHSEL: True
             }
         ),
         "left-hair-flower": ACSTemplate(
             "left-hair-flower",
             mux_type=["left-hair-flower", "left-hair-flower-ear"],
             ex_props={
-                "left-hair-strand-eye-level": True
+                EXP_A_LHSEL: True
             }
         ),
         "left-hair-flower-ear": ACSTemplate(
             "left-hair-flower-ear",
             mux_type=DEF_MUX_LHFE,
             ex_props={
-                "left-hair-strand-eye-level": True
+                EXP_A_LHSEL: True
             }
         ),
         "mug": ACSTemplate(
@@ -408,9 +446,9 @@ init -100 python in mas_sprites:
             "twin-ribbons",
             mux_type=DEF_MUX_RB,
             ex_props={
-                "twin-ribbon": True,
-                "ribbon-like": True,
-                "required-hair-prop": "twintails",
+                EXP_A_TWRB: True,
+                EXP_A_RBL: True,
+                EXP_A_RQHP: EXP_H_TT,
             }
         ),
         "wrist-bracelet": ACSTemplate(
@@ -923,7 +961,7 @@ init -5 python in mas_sprites:
 
     # sprite exprop - list of topics
     EXPROP_TOPIC_MAP = {
-        "left-hair-strand-eye-level": [
+        EXP_A_LHSEL: [
             "monika_hairclip_select"
         ],
     }
@@ -1231,14 +1269,9 @@ init -5 python in mas_sprites:
             new_acs - acs we are adding
             acs_loc - acs location to wear this acs
         """
-        # abort if current hair not required hair prop
-        req_hair_prop = new_acs.getprop("required-hair-prop", None)
-        if (
-                req_hair_prop is not None
-                and not moni_chr.is_wearing_hair_with_exprop(req_hair_prop)
-        ):
+        # abort if current hair not compatible wtih CAS
+        if not is_hairacs_compatible(moni_chr.hair, new_acs):
             temp_space["abort"] = True
-            return
 
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
@@ -1379,18 +1412,10 @@ init -5 python in mas_sprites:
             prev_hair - current hair
             new_hair - hair we are changing to
         """
-        # now clean acs with required-hair-prop that is not found
-        req_hair_acs_list = moni_chr.get_acs_of_exprop(
-            "required-hair-prop",
-            get_all=True
-        )
-        for req_hair_acs in req_hair_acs_list:
-            req_hair_prop = req_hair_acs.getprop("required-hair-prop", None)
-            if (
-                    req_hair_prop is not None
-                    and not new_hair.hasprop(req_hair_prop)
-            ):
-                moni_chr.remove_acs(req_hair_acs)
+        all_acs = moni_chr.get_acs()
+        for acs in all_acs:
+            if not is_hairacs_compatible(new_hair, acs):
+                moni_chr.remove_acs(acs)
 
 
     def hair_exit_pst_change(temp_space, moni_chr, prev_hair, new_hair):
@@ -1470,6 +1495,30 @@ init -5 python in mas_sprites:
             # new hair not enabled for ribbon
             _acs_ribbon_save_and_remove(moni_chr)
             _acs_ribbon_like_save_and_remove(moni_chr)
+
+    # hook function helpers
+
+    def is_hairacs_compatible(hair, acs):
+        """
+        Checks if the given hair is compatible with the given acs
+
+        IN:
+            hair - hair to check
+            acs - acs to check
+        """
+        # first check for required hair prop
+        req_hair_prop = acs.getprop(EXP_A_RQHP, None)
+        if req_hair_prop is not None and not hair.hasprop(req_hair_prop):
+            return False
+
+        # then chceck exclusions
+        excl_hair_props = acs.getprop(EXP_A_EXCLHP, None)
+        if excl_hair_props is not None:
+            for excl_hair_prop in excl_hair_props:
+                if hair.hasprop(excl_hair_prop):
+                    return False
+
+        return True
 
 
     # sprite maker functions
@@ -4069,6 +4118,21 @@ init -2 python:
             """
             self.change_clothes(new_cloth, by_user=by_user, startup=startup)
             self.change_hair(new_hair, by_user=by_user, startup=startup)
+
+
+        def get_acs(self):
+            """
+            Gets all acs objects currently worn by Monika
+
+            RETURNS: list of all acs objects being worn
+            """
+            acs_items = []
+            for acs_name in self.acs_list_map:
+                acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if acs is not None:
+                    acs_items.append(acs)
+
+            return acs_items
 
 
         def get_acs_of_exprop(self, exprop, get_all=False):
