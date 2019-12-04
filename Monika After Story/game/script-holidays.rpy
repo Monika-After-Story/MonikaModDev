@@ -3482,7 +3482,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_nye_monika_nyd",
-            action=EV_ACT_PUSH
+            action=EV_ACT_PUSH,
             start_date=mas_nyd,
             end_date=mas_nyd + datetime.timedelta(days=1),
             years=[],
@@ -5214,8 +5214,8 @@ label mas_f14_monika_valentines_intro:
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-        $ mas_addClothesToHolidayMap(mas_clothes_sundress_white, unlock=True)
-        call mas_clothes_change(mas_clothes_sundress_white)
+        $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
+        call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
 
         m 1eua "..."
         m 2eksdla "..."
