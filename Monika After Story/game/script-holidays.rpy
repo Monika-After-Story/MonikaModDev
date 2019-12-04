@@ -3993,6 +3993,7 @@ label mas_nye_monika_nye_dress_intro:
 
     # change into dress
     call mas_clothes_change(mas_clothes_dress_newyears, outfit_mode=True, unlock=True)
+    $ mas_addClothesToHolidayMap(mas_clothes_dress_newyears)
 
     m 2rkbssdla "..."
     m 2rkbssdlb "My eyes are up here, [player]..."
