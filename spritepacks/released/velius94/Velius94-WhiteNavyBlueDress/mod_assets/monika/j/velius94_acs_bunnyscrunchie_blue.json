@@ -20,9 +20,6 @@
     "select_info": {
         "display_name": "Bunny Scrunchie (Blue)",
         "thumb": "velius94_bunnyscrunchie_blue",
-        "group": "ribbon",
-        "select_dlg": [
-            "IS THIS A RIBBON?"
-        ]
+        "group": "ribbon" 
     }
 }
