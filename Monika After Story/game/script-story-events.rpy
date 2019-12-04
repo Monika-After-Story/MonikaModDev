@@ -697,7 +697,7 @@ init 5 python:
                 "is_running(['monikai.exe']) and " +
                 "not seen_event('mas_monikai_detected')"
             ),
-            action=EV_ACT_PUSH
+            action=EV_ACT_QUEUE
         )
     )
 
@@ -2016,7 +2016,15 @@ label mas_change_to_def:
 #   IN:
 #       outfit - the MASClothes object to change outfit to
 #           If None is passed, the uniform is used
-label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True):
+#       outfit_mode - does this outfit have and accompanying outfit_mode
+#           Defaults to False
+#       exp - the expression we want monika to use when she reveals the outfit
+#           Defaults to monika 2eua
+#       restore_zoom - do we want to restore to player preffered zoom after changing
+#           Defaults to True
+#       unlock - is this a new outfit we need to unlock
+#           Defaults to False
+label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True, unlock=False):
     # use def as the default outfit to change to
     if outfit is None:
         $ outfit = mas_clothes_def
@@ -2034,6 +2042,9 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
         $ monika_chr.reset_hair()
 
     $ monika_chr.change_clothes(outfit, outfit_mode=outfit_mode)
+    if unlock:
+        $ store.mas_selspr.unlock_clothes(outfit)
+        $ store.mas_selspr.save_selectables()
     $ monika_chr.save()
     $ renpy.save_persistent()
 

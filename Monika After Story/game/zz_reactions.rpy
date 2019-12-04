@@ -233,7 +233,7 @@ init -11 python in mas_filereacts:
                 if prepare_data and evb_detail.sp_data is not None:
                     # if we need to prepare data, then add the sprite_data
                     # to reacted map
-                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                    store.persistent._mas_filereacts_sprite_reacted[evb_detail.sp_data] = (
                         evb_detail.c_gift_name
                     )
 

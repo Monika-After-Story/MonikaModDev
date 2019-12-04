@@ -1949,7 +1949,6 @@ init 5 python:
             end_date=mas_d25,
             years=[],
             aff_range=(mas_aff.NORMAL, None),
-            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -2030,7 +2029,7 @@ init 5 python:
                 "and mas_isD25Outfit() "
                 "and not mas_isplayer_bday()"
             ),
-            action=EV_ACT_PUSH,
+            action=EV_ACT_QUEUE,
             start_date=mas_d25c_start,
             end_date=mas_d25p,
             years=[],
@@ -2162,7 +2161,6 @@ init 5 python:
             end_date=mas_d25p,
             years=[],
             aff_range=(mas_aff.NORMAL, None),
-            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -2455,7 +2453,8 @@ init 20 python:
      Not even the sight of an unopened gift, under the tree.
 
      [player], you are truly one of a kind.
-     Merry Christmas.
+
+     Merry Christmas
 
      Forever yours,
      Monika
@@ -2958,7 +2957,6 @@ init 5 python:
             end_date=mas_d25,
             years=[],
             aff_range=(mas_aff.NORMAL, None),
-            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -3000,7 +2998,7 @@ label mas_d25_monika_christmas_eve:
         m 2rkbfsdlc "It's just I've never--{nw}"
         m 2dkbfsdlc "Ah, okay, time to stop stalling and just do it."
         m 2ekbfsdla "Just give me a few seconds, [player]."
-        call mas_clothes_change(outfit=mas_clothes_santa_lingerie, outfit_mode=True, exp="monika 2rkbfsdlu", restore_zoom=False)
+        call mas_clothes_change(outfit=mas_clothes_santa_lingerie, outfit_mode=True, exp="monika 2rkbfsdlu", restore_zoom=False, unlock=True)
         pause 3.0
         m 2ekbfsdlb "Ahaha, [player]...{w=1}you're staring..."
         m 2ekbfu "Well...{w=1}do you like what you see?"
@@ -3032,7 +3030,6 @@ init 5 python:
             end_date=mas_d25p + datetime.timedelta(days=6),
             years=[],
             action=EV_ACT_PUSH,
-            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -3485,12 +3482,11 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_nye_monika_nyd",
-            action=EV_ACT_QUEUE, # we queue this one so it after nye
+            action=EV_ACT_PUSH
             start_date=mas_nyd,
             end_date=mas_nyd + datetime.timedelta(days=1),
             years=[],
             aff_range=(mas_aff.DISTRESSED, None),
-            rules={"postgreet": None}
         ),
         skipCalendar=True
     )
@@ -3996,7 +3992,7 @@ label mas_nye_monika_nye_dress_intro:
     m 3eua "Just let me go change.{w=0.5}.{w=0.5}.{nw}"
 
     # change into dress
-    call mas_clothes_change(mas_clothes_dress_newyears, outfit_mode=True)
+    call mas_clothes_change(mas_clothes_dress_newyears, outfit_mode=True, unlock=True)
 
     m 2rkbssdla "..."
     m 2rkbssdlb "My eyes are up here, [player]..."
@@ -5218,8 +5214,7 @@ label mas_f14_monika_valentines_intro:
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
+        $ mas_addClothesToHolidayMap(mas_clothes_sundress_white, unlock=True)
         call mas_clothes_change(mas_clothes_sundress_white)
 
         m 1eua "..."
@@ -5568,7 +5563,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_f14_no_time_spent",
-            action=EV_ACT_QUEUE,
+            action=EV_ACT_PUSH,
             start_date=mas_f14+datetime.timedelta(1),
             end_date=mas_f14+datetime.timedelta(8),
             conditional=(
@@ -6489,7 +6484,7 @@ init 5 python:
                 "not mas_recognizedBday() "
                 "and not persistent._mas_bday_gone_over_bday"
             ),
-            action=EV_ACT_QUEUE,
+            action=EV_ACT_PUSH,
             start_date=mas_monika_birthday+datetime.timedelta(1),
             end_date=mas_monika_birthday+datetime.timedelta(8),
             years=[]

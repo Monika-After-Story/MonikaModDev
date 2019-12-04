@@ -334,6 +334,7 @@ label v0_10_4(version="v0_10_4"):
                 "and mas_isD25Outfit() "
                 "and not mas_isplayer_bday()"
             )
+            ev.action = EV_ACT_QUEUE
 
         islands_ev = store.mas_getEV("mas_monika_islands")
         if (
@@ -377,10 +378,22 @@ label v0_10_4(version="v0_10_4"):
         if renpy.seen_label("mas_player_bday_cake") or renpy.seen_label("mas_player_bday_card"):
             persistent._mas_poems_seen["poem_pbday_1"] = 1
 
-        # change this from QUEUE to PUSH since we added an event we want after this
-        ev = mas_getEV("mas_d25_monika_christmas_eve")
+        # change these from QUEUE to PUSH since we want these post_greet
+        push_list = [
+            "mas_d25_monika_christmas_eve",
+            "mas_nye_monika_nyd",
+            "mas_f14_no_time_spent",
+            "mas_bday_postbday_notimespent"
+        ]
+        
+        for ev_label in push_list:
+            ev = mas_getEV(ev_label)
+            if ev:
+                ev.action = EV_ACT_PUSH
+
+        ev = mas_getEV("mas_monikai_detected")
         if ev:
-            ev.action = EV_ACT_PUSH
+            ev.action = EV_ACT_QUEUE
 
         #Run weather unlocks
         mas_weather_snow.unlocked=True
