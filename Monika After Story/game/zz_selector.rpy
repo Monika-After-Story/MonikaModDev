@@ -1783,8 +1783,30 @@ init -1 python:
 
         elif allow_lock:
             store.mas_selspr.lock_prompt(group)
-            
 
+    def mas_hasUnlockedClothesWithExprop(exprop, value=None):
+        """
+        Checks if we have unlocked clothes with a specific exprop
+
+        IN:
+            exprop - exprop to look for
+            value - value the exprop should be. Set to None to ignore.
+            (Default: None)
+
+        OUT:
+            boolean:
+                True if we have unlocked clothes with the exprop + value provided
+                False otherwise
+        """
+        clothes_with_exprop = MASClothes.by_exprop(exprop, value)
+
+        if not clothes_with_exprop:
+            return False
+
+        for clothes in clothes_with_exprop:
+            if mas_SELisUnlocked(clothes):
+                return True
+        return False
 
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):

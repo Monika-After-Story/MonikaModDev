@@ -3005,9 +3005,7 @@ label mas_d25_monika_christmas_eve:
         m 1lkbfa "I've never really...{w=1}worn anything like this before."
         m "...At least not that anyone's seen."
 
-        #TODO: may want to add a prop to bathing suit jsons to make this simpler once we have more
-        $ shell_bikini = mas_selspr.CLOTH_SEL_MAP.get("orcaramelo_bikini_shell", None)
-        if shell_bikini and shell_bikini.unlocked:
+        if mas_hasUnlockedClothesWithExprop("bikini"):
             m 3hkbfb "Ahaha, what am I saying, you've seen me in a bikini before, which is essentially the same thing..."
             m 2rkbfa "...Though for some reason this just feels...{w=0.5}{i}different{/i}."
 
