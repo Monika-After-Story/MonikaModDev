@@ -206,7 +206,7 @@ label mas_monika_cherry_blossom3:
 label mas_monika_cherry_blossom4:
     m "You know what'd be nice to drink under the Cherry Blossom tree?"
     m "A little sake~"
-    m "Ahaha! I'm just kidding"
+    m "Ahaha! I'm just kidding."
     m "I'd rather have tea or coffee."
     if mas_is_snowing:
         m "Or hot chocolate, even. It'd certainly help with the cold."

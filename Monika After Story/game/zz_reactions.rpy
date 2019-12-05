@@ -2675,7 +2675,7 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
         sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
 
         mas_giftCapGainAff(3)
-    
+
     m 1suo "Oh my gosh!"
     m 1sub "This dress is gorgeous, [player]!"
     m 3hub "I'm going to try it on right now!"

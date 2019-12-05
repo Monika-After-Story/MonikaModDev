@@ -223,8 +223,9 @@ label mas_song_aiwfc:
     $ curr_song = songs.current_track
     call monika_aiwfc_song
 
-    #Play previous song again
-    $ play_song(curr_song, fadein=1.0)
+    #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
+    if curr_song != store.songs.FP_MONIKA_LULLABY:
+        $ play_song(curr_song, fadein=1.0)
     return
 
 init 5 python:

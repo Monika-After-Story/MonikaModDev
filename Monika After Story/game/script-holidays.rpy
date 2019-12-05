@@ -2005,7 +2005,7 @@ label mas_d25_monika_holiday_intro:
 
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
 
-    if mas_lastSeenLastYear("mas_d25_monika_holiday_intro"):
+    if mas_verifyHistLastYear_k(True, "d25.actions.spent_d25"):
         m 5eka "So I'm glad that you're here to share it with me again this year~"
     else:
         m 5eka "And I'm so glad that you're here to share it with me~"
@@ -2703,7 +2703,9 @@ label monika_aiwfc:
         m 1ekbsa "You'll always be the only gift I'll ever need."
         m 1ekbfa "I love you~"
 
-    $ play_song(curr_song, fadein=1.0)
+    #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
+    if curr_song != store.songs.FP_MONIKA_LULLABY:
+        $ play_song(curr_song, fadein=1.0)
 
     #Unlock the song
     $ mas_unlockEVL("mas_song_aiwfc", "SNG")
@@ -3014,6 +3016,7 @@ label mas_d25_monika_christmas_eve:
         m 2rkbfsdlu "Now I know that we can't really--{nw}"
         m 3hubfb "Ah! Nevermind, ahaha!"
         m 1ekbfa "Just know that I love you very, very much, [player]~"
+        return "love"
     return
 
 init 5 python:
@@ -3886,7 +3889,10 @@ label monika_nye_year_review:
         m 5ekbla "...and it really made me feel loved. I can't thank you enough for doing that for me."
 
     #Pbday
-    if persistent._mas_player_bday_spent_time:
+    if (
+        persistent._mas_player_bday_spent_time
+        or mas_HistVerify_k([datetime.date.today().year], True, "player_bday.spent_time")[0]
+    ):
         $ spent_an_event = True
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "We even spent your birthday together too!"
@@ -5691,7 +5697,7 @@ init 20 python:
     poem_vday_1 = MASPoem(
         poem_id="poem_f14_1",
         category="f14",
-        prompt="Our First Valentine's Day",
+        prompt="Found",
         title=" My dearest [player],",
         text="""\
  I've always loved Valentine's day, but this one feels different.
@@ -5710,7 +5716,7 @@ init 20 python:
     poem_vday_2 = MASPoem(
         poem_id="poem_f14_2",
         category="f14",
-        prompt="Our Second Valentine's Day",
+        prompt="Everything",
         title=" My dearest [player],",
         text="""\
  Can it really be our second Valentine's Day?

@@ -6,6 +6,8 @@ init python in mas_poems:
     import store
     poem_map = dict()
 
+    poem_sort_key = lambda x:x.category
+
     paper_cat_map = {
         "f14": "mod_assets/poem_assets/poem_vday.jpg",
         "d25": "mod_assets/poem_assets/poem_d25.png",
@@ -57,23 +59,23 @@ init 11 python in mas_poems:
 
     def getSeenPoems():
         """
-        Returns a list of all seen poems
+        Returns a list of all seen poems ordered by category
         """
-        return [
+        return sorted([
             poem
             for poem in poem_map.itervalues()
             if poem.is_seen()
-        ]
+        ], key=poem_sort_key)
 
     def getUnseenPoems():
         """
-        Returns a list of all unseen poems
+        Returns a list of all unseen poems ordered by category
         """
-        return [
+        return sorted([
             poem
             for poem in poem_map.itervalues()
             if not poem.is_seen()
-        ]
+        ], key=poem_sort_key)
 
     def getPoem(poem_id):
         """
