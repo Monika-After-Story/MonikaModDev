@@ -644,10 +644,15 @@ init -2 python in mas_sprites:
             _moni_chr.wear_acs(store.mas_acs_flower_crown)
             _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
 
+            #Remove hairclips
             hairclip = _moni_chr.get_acs_of_type("left-hair-clip")
             if hairclip:
                 _moni_chr.remove_acs(hairclip)
 
+            #Remove ribbon
+            ribbon = _moni_chr.get_acs_of_type("ribbon")
+            if ribbon:
+                _moni_chr.remove_acs(ribbon)
 
 
     def _clothes_dress_newyears_exit(_moni_chr, **kwargs):

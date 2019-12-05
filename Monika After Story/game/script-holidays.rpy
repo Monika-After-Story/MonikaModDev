@@ -1852,7 +1852,7 @@ label mas_d25_season_exit:
         #We'll also derandom this topic as the lights are no longer up
         mas_hideEVL("mas_d25_monika_christmaslights", "EVE", derandom=True)
 
-        mas_d25SilentReactToGifts()
+        mas_d25ReactToGifts()
     return
 
 #D25 holiday gift starter/connector
@@ -1870,7 +1870,7 @@ label mas_d25_gift_starter:
     if persistent._mas_d25_gone_over_d25:
         $ should_open = "haven't opened"
 
-    if persistent._mas_d25_spent_d25:
+    if persistent._mas_d25_spent_d25 or mas_globals.returned_home_this_sesh:
             m 3wud "Oh! I [should_open] [the] [presents] you gave me!"
             if persistent._mas_d25_gone_over_d25:
                 m 3hub "Let's do that now!"
@@ -1907,7 +1907,7 @@ label mas_d25_gift_connector:
 label mas_d25_gift_end:
     m 1eka "[player]..."
 
-    if persistent._mas_d25_spent_d25:
+    if persistent._mas_d25_spent_d25 or mas_globals.returned_home_this_sesh:
         m 3eka "You really didn't have to get me anything for Christmas...{w=0.3} {nw}"
         if mas_isD25():
             extend 3dku "Just having you here with me was more than enough."
