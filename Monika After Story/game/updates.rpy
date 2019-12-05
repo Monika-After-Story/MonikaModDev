@@ -315,6 +315,7 @@ label v0_10_4(version="v0_10_4"):
 
             if aiwfc_ev:
                 aiwfc_ev.action = EV_ACT_QUEUE
+                aiwfc_ev.pool = False
 
         #Fix d25 intro conditionals for player bday
         ev = mas_getEV("mas_d25_monika_holiday_intro")
