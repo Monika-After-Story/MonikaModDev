@@ -930,6 +930,7 @@ python early:
             #   full_copy - True means we create a new dict with deepcopies of
             #       the events. False will only copy references
             #       (Default: False)
+            #       DEPRECATEDE
             #
             #   FILTERING RULES: (recommend to use **kwargs)
             #   NOTE: None means we ignore that filtering rule
