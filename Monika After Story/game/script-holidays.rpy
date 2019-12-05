@@ -2901,10 +2901,10 @@ label mas_d25_night_before_christmas:
     m 3eua "More rapid than eagles his coursers they came,"
     m 3eud "And he whistled, and shouted, and called them by name;"
 
-    m 3euo "'Now, Dasher! now, Dancer! now, Prancer and Vixen!'"
-    m "'On, Comet! on Cupid! on, Donner and Blitzen!'"
-    m 3wuo "'To the top of the porch! to the top of the wall!'"
-    m "'Now dash away! dash away! dash away all!'"
+    m 3euo "'Now, Dasher! Now, Dancer! Now, Prancer and Vixen!'"
+    m "'On, Comet! On Cupid! On, Donner and Blitzen!'"
+    m 3wuo "'To the top of the porch! To the top of the wall!'"
+    m "'Now dash away! Dash away! Dash away all!'"
 
     m 1eua "As dry leaves that before the wild hurricane fly,"
     m 1eud "When they meet with an obstacle, mount to the sky,"
