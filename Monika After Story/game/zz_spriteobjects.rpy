@@ -53,6 +53,23 @@ init -2 python in mas_sprites:
         )
         if acs_to_wear is not None:
             _moni_chr.wear_acs(acs_to_wear)
+
+
+    def _acs_wear_if_gifted(_moni_chr, acs_name):
+        """
+        Wears the acs if it exists and has been gifted/reacted.
+        It has been gifted/reacted if the selectable is unlocked.
+
+        IN:
+            _moni_chr - MASMonika object
+            acs_name - name of the accessory
+        """
+        acs_to_wear = store.mas_sprites.get_sprite(
+            store.mas_sprites.SP_ACS,
+            acs_name
+        )
+        if acs_to_wear is not None and store.mas_SELisUnlocked(acs_to_wear):
+            _moni_chr.wear_acs(acs_to_wear)
     
 
     def _acs_wear_if_in_tempstorage(_moni_chr, key):
@@ -659,6 +676,23 @@ init -2 python in mas_sprites:
         #   removed
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
         _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
+
+
+    def _clothes_velius94_dress_whitenavyblue_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for navyblue dress
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # default to ponytail if not wearing a ribbon-acceptable hair
+            if (
+                    not _moni_chr.is_wearing_hair_with_exprop("ribbon")
+                    or _moni_chr.is_wearing_hair_with_exprop("twintails")
+            ):
+                _moni_chr.change_hair(store.mas_hair_def)
+
+            _acs_wear_if_gifted(_moni_chr, "velius94_bunnyscrunchie_blue")
 
 
     ######### ACS [SPR030] ###########
