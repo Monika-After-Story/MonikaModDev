@@ -3440,6 +3440,16 @@ label monika_ribbon_select:
 #        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
+
+        # remove non-compatible acs
+        for index in range(len(use_acs)-1, -1, -1):
+            if (
+                not store.mas_sprites.is_hairacs_compatible(
+                    monika_chr.hair,
+                    use_acs[index].get_sprobj()
+                )
+            ):
+                use_acs.pop(index)
         
         # make sure ot use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
