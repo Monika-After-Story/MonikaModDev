@@ -3503,7 +3503,7 @@ label mas_nye_monika_nyd:
             if not persistent._mas_pm_got_a_fresh_start or not persistent._mas_pm_failed_fresh_start:
                 m 1eub "[player]!"
                 #We spent new year's together last year
-                if mas_verifyHistLastYear_k(True, "nye.actions.spent_nyd"):
+                if mas_HistVerify_k([datetime.date.today().year-2], True, "nye.actions.spent_nyd")[0]:
                     m "Can you believe we're spending another New Years together?"
                 if mas_isMoniAff(higher=True):
                     m 1hua "We sure have been through a lot together this past year, huh?"
