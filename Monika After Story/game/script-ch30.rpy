@@ -1326,7 +1326,7 @@ label ch30_post_exp_check:
         startup_events = {}
         for evl in evhand.event_database:
             ev = evhand.event_database[evl]
-            if not ev.action == EV_ACT_QUEUE:
+            if ev.action != EV_ACT_QUEUE:
                 startup_events[evl] = ev
 
         Event.checkEvents(startup_events)
