@@ -1190,6 +1190,8 @@ init -1 python:
     )
 
     ### SEXY SANTA (santa lingerie)
+    ## santa_lingerie
+    # santa outfit which shows a lot of skin
     #Thanks Velius
     mas_clothes_santa_lingerie = MASClothes(
         "santa_lingerie",
@@ -1227,6 +1229,8 @@ init -1 python:
 
 
     ### New Year's Dress
+    ## new_years_dress
+    # dress Monika wears on New Year's Eve
     #Thanks Orca
     mas_clothes_dress_newyears = MASClothes(
         "new_years_dress",
@@ -1510,6 +1514,8 @@ init -1 python:
     store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_twinsquares)
 
     ### Holly Hairclip
+    ## holly_hairclip
+    # holly hairclip to go with the santa/santa_lingerie outfits
     #Thanks Orca
     mas_acs_holly_hairclip = MASAccessory(
         "holly_hairclip",
@@ -1534,6 +1540,10 @@ init -1 python:
         ]
     )
 
+    ### FLOWER CROWN
+    ## flower_crown
+    # flower crown to go with the new year's dress (exclusive to the outfit)
+    # Thanks Orca
     mas_acs_flower_crown = MASAccessory(
         "flower_crown",
         "flower_crown",

@@ -317,6 +317,11 @@ label v0_10_4(version="v0_10_4"):
                 aiwfc_ev.action = EV_ACT_QUEUE
                 aiwfc_ev.pool = False
 
+                #Since we know the normal ev exists, let's also add shown couns
+                aiwfc_sng_ev = mas_getEV("mas_song_aiwfc")
+                if aiwfc_sng_ev:
+                    aiwfc_sng_ev.shown_count += aiwfc_ev.shown_count
+
         #Fix d25 intro conditionals for player bday
         ev = mas_getEV("mas_d25_monika_holiday_intro")
         if ev:

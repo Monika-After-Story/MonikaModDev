@@ -2022,7 +2022,7 @@ label mas_change_to_def:
 #           Defaults to monika 2eua
 #       restore_zoom - do we want to restore to player preffered zoom after changing
 #           Defaults to True
-#       unlock - is this a new outfit we need to unlock
+#       unlock - True unlocks the outfit's selectable (if it exists)
 #           Defaults to False
 label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True, unlock=False):
     # use def as the default outfit to change to

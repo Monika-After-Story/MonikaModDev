@@ -366,7 +366,8 @@ init -100 python in mas_sprites:
         "headphones",
         "earphones",
         "left-hair-flower-ear",
-        "left-hair-flower"
+        "left-hair-flower",
+        "front-hair-flower-crown"
     ]
     # default mux tyoes for left hair flower-baesd items
 
@@ -419,7 +420,7 @@ init -100 python in mas_sprites:
         ),
         "front-hair-flower-crown": ACSTemplate(
             "front-hair-flower-crown",
-            mux_type=["hair-flower-crown", "left-hair-flower", "left-hair-flower-ear"],
+            mux_type=DEF_MUX_LHFE,
             ex_props={
                 "front-hair-crown": True,
             },

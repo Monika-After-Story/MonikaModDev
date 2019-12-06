@@ -5071,7 +5071,7 @@ init 2 python:
             integer representing the player's current age or None if we don't have player's bday
         """
         if not persistent._mas_player_bday:
-            return None
+            return 0
 
         elif _date is None:
             _date = datetime.date.today()

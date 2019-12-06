@@ -134,7 +134,7 @@ init 10 python:
                 poem title (supports renpy substitution)
 
             text:
-                poem contents
+                poem contents (supports renpy substitution)
 
             author:
                 poem author (Default: monika)
@@ -145,8 +145,8 @@ init 10 python:
             self.poem_id=poem_id
             self.category=category
             self.prompt=prompt
-            self.title=renpy.substitute(title)
-            self.text=renpy.substitute(text)
+            self.title=title
+            self.text=text
             self.author=author
 
             #And add this to map
@@ -262,7 +262,7 @@ label monika_showpoem:
             ("Happy End", poem_m4, False, False)
         ]
 
-        ret_back = ret_back = ("Nevermind", False, False, False, 20)
+        ret_back = ("Nevermind", False, False, False, 20)
         #Extend the new poems
         poems_list.extend(sorted(mas_poems.getSeenPoemsMenu()))
 
