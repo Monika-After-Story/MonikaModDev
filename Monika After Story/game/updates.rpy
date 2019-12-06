@@ -401,6 +401,19 @@ label v0_10_4(version="v0_10_4"):
         if ev:
             ev.action = EV_ACT_QUEUE
 
+        #Change these rands accordingly to season
+        ev = mas_getEV("monika_backpacking")
+        if ev:
+            ev.random = not mas_isWinter()
+
+        ev = mas_getEV("monika_outdoors")
+        if ev:
+            ev.random = not mas_isWinter()
+
+        ev = mas_getEV("monika_mountain")
+        if ev:
+            ev.random = not mas_isWinter()
+
         #Run weather unlocks
         mas_weather_snow.unlocked=True
         mas_weather_thunder.unlocked=True
