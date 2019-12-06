@@ -3811,8 +3811,8 @@ label monika_nye_year_review:
     $ persistent._mas_nye_spent_nye = True
     $ spent_an_event = False
 
-    # starting with an overview based on time
-    if store.mas_anni.anniCount() >= 0:
+    #Starting with an overview based on time
+    if store.mas_anni.anniCount() >= 1:
         m 2eka "You know, [player], we really have been through a lot together."
         if store.mas_anni.anniCount() == 1:
             m 2wuo "We spent the entire year together!"
@@ -3945,8 +3945,13 @@ label monika_nye_year_review:
                 $ _ending = "even better than the year before"
 
             m 5ekbfa "Thank you for making last year [_ending]."
+
         else:
-            m 5ekbfa "Thank you for making the time we spent together last year better than I could have imagined."
+            $ _last_year = " "
+            if store.mas_anni.pastOneMonth():
+                $ _last_year = " last year "
+
+            m 5ekbfa "Thank you for making the time we spent together[_last_year]better than I could have imagined."
 
         if mas_isMoniEnamored(higher=True):
             if persistent._mas_first_kiss is None:
