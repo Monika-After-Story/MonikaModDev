@@ -251,7 +251,7 @@ label mas_song_merry_christmas_baby:
     m 3eub "{i}~And I got music on the radio~{/i}"
     m 2hkbsu "{i}~Now I feel just like I wanna kiss ya~{/i}"
     m 2hkbsb "{i}~Underneath the mistletoe~{/i}"
-    m 3eub "{i}~Santa came down chimney, {w=0.2}half past three~{/i}"
+    m 3eub "{i}~Santa came down the chimney, {w=0.2}half past three~{/i}"
     m 3hub "{i}~With lots of nice little presents for my baby and me~{/i}"
     m "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
     m 1eua "{i}~And I feel like I'm living, {w=0.2}just living in paradise~{/i}"
