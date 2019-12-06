@@ -170,7 +170,7 @@ label mas_monika_cherry_blossom_tree:
     return
 
 label mas_monika_cherry_blossom1:
-    if mas_is_snowing:
+    if mas_is_snowing or mas_isWinter():
         m "This tree may look dead right now...but when it blooms, it's gorgeous."
     else:
         m "It's a beautiful tree, isn't it?"
@@ -180,7 +180,7 @@ label mas_monika_cherry_blossom1:
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
     m "Just staring at the falling petals is awe-inspiring."
-    if mas_is_snowing:
+    if mas_is_snowing or mas_isWinter():
         m "When it's blooming, that is."
         m "I can't wait until we get the chance to experience that, [player]."
     return
@@ -195,7 +195,7 @@ label mas_monika_cherry_blossom3:
     m "You know, the tree is symbolic like life itself."
     m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
-    if mas_is_snowing:
+    if mas_is_snowing or mas_isWinter():
         m "Even if it's bare now, it'll blossom again soon."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
@@ -208,7 +208,7 @@ label mas_monika_cherry_blossom4:
     m "A little sake~"
     m "Ahaha! I'm just kidding."
     m "I'd rather have tea or coffee."
-    if mas_is_snowing:
+    if mas_is_snowing or mas_isWinter():
         m "Or hot chocolate, even. It'd certainly help with the cold."
         m "Of course, even if that failed, we could always cuddle together...{w=0.5} That'd be really romantic~"
     else:
@@ -250,7 +250,7 @@ label mas_monika_day1:
         if mas_current_weather == mas_weather_def:
             m "Lying under the shade while reading my favorite book."
             m "Along with a snack and your favorite drink on the side."
-        if mas_is_snowing:
+        if mas_is_snowing or mas_isWinter():
             m "Huddled together, so as to stave off the cold."
             m "With some nice hot drinks to help keep us warm."
         m "Ahh, that'd be really nice to do~"
@@ -264,7 +264,7 @@ label mas_monika_day2:
         m "Staring into each other's eyes."
         m "Then we start leaning closer and closer until we're almost-"
         m "I think you can finish that thought yourself, [player]~"
-    if mas_is_snowing:
+    if mas_is_snowing or mas_isWinter():
         m "Have you ever made a snow angel, [player]?"
         m "I've tried in the past, but never had much success..."
         m "It's a lot harder than it looks like."
@@ -288,7 +288,7 @@ label mas_monika_day3:
         m "Though being indoors at a time like this feels pretty cozy, don't you think?"
     else:
         m "It's pretty peaceful outside."
-        if mas_is_snowing:
+        if mas_is_snowing or mas_isWinter():
             m "We could have a snowball fight, you know."
             m "Ahaha, that'd be so much fun!"
             m "I bet I could land a shot on you a few islands away."
