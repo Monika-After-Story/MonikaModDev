@@ -1505,14 +1505,19 @@ label mas_reaction_quetzal_plush:
         $ persistent._mas_acs_enable_quetzalplushie = True
         m 1sub "It's a quetzal!"
         m "Oh my gosh, thanks a lot, [player]!"
-        m 1eua "I did mention that I'd like to have a quetzal as a pet..."
-        m 1rud "But I would never force the poor thing to stay."
-        m 1hua "And now you gave me the next closest thing!"
+        if seen_event("monika_pets"):
+            m 1eua "I did mention that I'd like to have a quetzal as a pet..."
+        else:
+            m 1wub "How did you guess, [player]?"
+            m 3eka "You must know me very well~"
+            m 1eua "A quetzal would be my first choice for a pet..."
+        m 1rud "But I would never force the poor thing to stay."    
+        m 1hua "And now you gave me the next best thing!"
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
             m 3ekbsa "You always seem to know how to make me smile."
 
-        m 1hsb "Thank you again, [player]~"
+        m 1hub "Thank you again, [player]~"
 
         #Remove mid plush
         if monika_chr.is_wearing_acs(mas_acs_heartchoc):
@@ -2587,7 +2592,7 @@ label mas_reaction_gift_clothes_orcaramelo_sakuya_izayoi:
     m 3tuu "Ehehe~"
     m 3tubsb "You know, if you liked this kind of thing, you could have just told me..."
     m 1hub "Ahaha! Just kidding~"
-    m 1eua "Let me go put it on!"
+    m 1eub "Let me go put it on!"
 
     # try it on
     call mas_clothes_change(sprite_object, outfit_mode=True)

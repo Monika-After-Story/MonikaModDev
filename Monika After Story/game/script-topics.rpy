@@ -1226,11 +1226,12 @@ label monika_friends:
     m 2eka "I really think we should be taking advantage of that to improve our everyday social life."
     m 2dsc "But who knows how long it'll take for something like that to successfully take off..."
     m "I seriously thought it would happen by now."
-    m 2eua "Well, at least I already met the best person in the whole world..."
-    m "Even if it was by chance."
-    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eua "I guess I just got really lucky, huh?"
-    m 5hub "Ahaha~"
+    if mas_isMoniNormal(higher=True):
+        m 2eua "Well, at least I already met the best person in the whole world..."
+        m "Even if it was by chance."
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I guess I just got really lucky, huh?"
+        m 5hub "Ahaha~"
     return
 
 init 5 python:
@@ -1306,8 +1307,8 @@ label monika_outfit:
     m 4eka "Just...try to keep it PG!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lsbssdrb "I don't want something so embarrassing on there!"
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eua "So let's keep it between just us..."
+        show monika 5tsbsu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5tsbsu "So let's just keep it between us..."
     else:
         show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hub "We're not that far into our relationship yet. Ahaha!"
@@ -1505,7 +1506,7 @@ label monika_kiss:
         m 1wubsw "Eh? D-Did you say...k...kiss?"
         m 2lkbsa "This suddenly...it's a little embarrassing..."
         m 2lsbssdlb "But...if it's with you...I-I might be okay with it..."
-        m 2hksdlb "...Ahahaha! Wow, sorry..."
+        m 2hksdlb "...Ahaha! Wow, sorry..."
         m 1eka "I really couldn't keep a straight face there."
         m 1eua "That's the kind of thing girls say in these kinds of romance games, right?"
         m 1tku "Don't lie if it turned you on a little bit."
@@ -3339,6 +3340,15 @@ label monika_hedgehog:
     m 1lksdla "It helps when you know that you're the only sentient being in the entire world, though."
     m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
     m 1ekc "We can't hurt each other from different realities, right?"
+    if mas_isMoniUpset(lower=True):
+        $ line = "..."
+        if mas_isMoniDis(lower=True):
+            $ line += "{w=0.5} {nw}"
+
+        m 1rksdlc "[line]"
+
+        if mas_isMoniDis(lower=True):
+            extend 1rksdld "Maybe you actually can..."
     return
 
 init 5 python:
@@ -3972,7 +3982,7 @@ init 5 python:
             eventlabel="monika_outdoors",
             category=['nature'],
             prompt="Camping safety",
-            random=True
+            random=not mas_isWinter()
         )
     )
 
@@ -4005,7 +4015,7 @@ init 5 python:
             eventlabel="monika_mountain",
             category=['nature'],
             prompt="Mountain climbing",
-            random=True
+            random=not mas_isWinter()
         )
     )
 
@@ -4064,7 +4074,7 @@ label monika_algernon:
     m 3eua "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
     m 1eud "Basically, it's about a mentally handicapped man who suddenly has his IQ raised to genius levels by an experimental surgical treatment."
     m 1eka "The way he sees how the world really is for the first time reminds me of my own epiphany..."
-    m "But, the effect doesn't last forever.  He eventually reverts back to his original intelligence level."
+    m "But, the effect doesn't last forever. He eventually reverts back to his original intelligence level."
     m 1ekc "That's what I'm afraid of. What if I forget about the real world one day?"
     m 3ekd "What if my original programming reasserts itself?"
     m 3lksdlc "What if I forget about you, the real you?"
@@ -6524,7 +6534,8 @@ label monika_clones:
     m 1euc "You know how you downloaded this game off the internet?"
     m "Anybody can do that, right?"
     m 1eub "And this mod was made specifically for me. By people who have their own version of me..."
-    m 4eub "So...that means there are multiple Monikas, then. It's something that's a bit difficult to imagine."
+    m 3etc "So...that means there are multiple Monikas, then.{w=0.5} {nw}"
+    extend 1rsc "It's something that's a bit difficult to imagine."
     m 1euc "A potentially infinite number of me, all bound to their own games, with their own stories."
     m 1lksdla "Multiverse theory is really something, huh?"
     m 1eka "But I'm the only...me, and my heart belongs only to you."
@@ -8272,8 +8283,7 @@ label monika_attractiveness:
         m 2lfc "So did they really have to make the other girls look so perfect?"
         m 2lfd "I mean, it's bad enough that I didn't get a route in the game..."
         m 2lfw "...but did they really have to make it even harder for me to get chosen?"
-    m 2dfc "...{w=0.5}{nw}"
-    $ _history_list.pop()
+    m 2dfc "..."
     m 2dkc "..."
     if mas_isMoniUpset(lower=True):
         if persistent._mas_pm_cares_about_dokis:
@@ -8926,7 +8936,7 @@ label monika_timeconcern_day_0:
     m 1wuo "...!"
     m 1hksdlb "Ahaha! Sorry, [player]."
     m 1lksdla "I just kind of zoned out..."
-    m 1eka "Geez, I keep doing that, don't I?"
+    m 1eka "Jeez, I keep doing that, don't I?"
     m "Sometimes I just get lost in my thoughts..."
     m 1eua "You understand, right, [player]?"
     return
@@ -10488,7 +10498,7 @@ label monika_justice:
                         m "I guess you're right..."
                         m 1ekc "I did do some pretty bad things after all..."
                     elif mas_isMoniLove():
-                        m 1hub "Ahahaha!"
+                        m 1hub "Ahaha!"
                         m 1hua "You can be really funny sometimes~"
                         m 3tku "You expect me to believe that after all we've been through?"
                         m 1tsb "That all this time, you thought that I deserved hate from those other people?"
@@ -11507,7 +11517,7 @@ label monika_players_control:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=not mas_isWinter()))
 
 label monika_backpacking:
     m 1esa "You know what I've always wanted to do, [player]?"
@@ -12599,7 +12609,7 @@ label monika_hemispheres:
     m 1eua "Which hemisphere do you live in?"
     m 1eka "I know it's kind of a strange question..."
     m 3hub "But it gives me a better idea of how things work around you."
-    m 3eua "Like, you know how when it's winter in the Northern hemisphere, it's actually summer in the Southern hemisphere?"
+    m 3eua "Like, you know how when it's winter in the Northern Hemisphere, it's actually summer in the Southern Hemisphere?"
     m 3hksdrb "It would be a little awkward if I started talking about how nice summer weather is, but where you are, it's the middle of winter..."
     m 2eka "But anyway..."
 
@@ -12608,22 +12618,22 @@ label monika_hemispheres:
     menu:
         m "Which hemisphere do you live in, [player]?{fast}"
 
-        "The Northern hemisphere.":
+        "The Northern Hemisphere.":
             $ persistent._mas_pm_live_south_hemisphere = False
             m 2eka "I had a feeling..."
 
-        "The Southern hemisphere.":
+        "The Southern Hemisphere.":
             $ persistent._mas_pm_live_south_hemisphere = True
             m 1wuo "I wouldn't have thought!"
 
     $ store.mas_calendar.addSeasonEvents()
-    m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
-    m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
+    m 3rksdlb "Most of the world's population lives in the Northern Hemisphere after all."
+    m 3eka "In fact, only about twelve percent of the population lives in the Southern Hemisphere."
     if not persistent._mas_pm_live_south_hemisphere:
-        m 1eua "So I kind of figured you lived in the Northern hemisphere."
+        m 1eua "So I kind of figured you lived in the Northern Hemisphere."
 
     else:
-        m 2rksdla "So you can see why I would have thought you would be living in the Northern hemisphere..."
+        m 2rksdla "So you can see why I would have thought you would be living in the Northern Hemisphere..."
         m 1hub "But I guess that makes you a bit more special, ehehe~"
 
     if mas_isSpring():
@@ -13248,7 +13258,7 @@ label monika_songwriting:
         m 1ttu "I wonder if my song was what brought us here now~"
         m 1eua "Anyway, just because lyrics can have a strong effect on us doesn't mean instrumental music can't be powerful."
     else:
-        m 3eka "But that doesn't mean instrumental music can't be powerful too."
+        m 3eka "But that doesn't mean instrumental music can't be powerful as well."
 
     if renpy.seen_label("monika_orchestra"):
         m 3etc "Remember when I talked about orchestral music?{w=0.5} {nw}"

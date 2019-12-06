@@ -331,7 +331,7 @@ label v0_10_4(version="v0_10_4"):
                 "and not mas_isplayer_bday() "
                 "and not persistent._mas_d25_intro_seen"
             )
-        
+
         ev = mas_getEV("mas_d25_monika_holiday_intro_upset")
         if ev:
             ev.conditional=(
@@ -391,7 +391,7 @@ label v0_10_4(version="v0_10_4"):
             "mas_f14_no_time_spent",
             "mas_bday_postbday_notimespent"
         ]
-        
+
         for ev_label in push_list:
             ev = mas_getEV(ev_label)
             if ev:
