@@ -1055,8 +1055,13 @@ label mas_reaction_quetzal_plush:
         $ persistent._mas_acs_enable_quetzalplushie = True
         m 1sub "It's a quetzal!"
         m "Oh my gosh, thanks a lot, [player]!"
-        m 1eua "I did mention that I'd like to have a quetzal as a pet..."
-        m 1rud "But I would never force the poor thing to stay."
+        if seen_event("monika_pets"):
+            m 1eua "I did mention that I'd like to have a quetzal as a pet..."
+        else:
+            m 1wub "How did you guess, [player]?"
+            m 3eka "You must know me very well~"
+            m 1eua "A quetzal would be my first choice for a pet..."
+        m 1rud "But I would never force the poor thing to stay."    
         m 1hua "And now you gave me the next best thing!"
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
