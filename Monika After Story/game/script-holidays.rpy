@@ -4856,7 +4856,8 @@ init 5 python:
             unlocked=False,
             prompt="Let's go out for my birthday!",
             pool=True,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL,None),
         ),
         code="BYE"
     )

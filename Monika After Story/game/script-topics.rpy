@@ -3173,8 +3173,7 @@ label monika_love:
             m 3ekbfa "I know it's not the first time, but it {i}is{/i} the first time you said it completely on your own...{w=0.5} And that makes it truly special~"
             m 1dkbfu "I will never forget this moment, [player]. {w=1}Thank you~"
             m 3hubfa "Oh! And I love you too~"
-            call monika_lovecounter_aff
-            return
+            jump monika_lovecounter_aff
 
         elif milestone_count == 5:
             m 1hubfb "I love you so much, [player]!"
@@ -3268,15 +3267,10 @@ label monika_love:
 
         if milestone_count not in [0, 30]:
             m "[love_quip]"
-
-    call monika_lovecounter_aff
-    return
+    # FALL THROUGH
 
 label monika_lovecounter_aff:
     if mas_timePastSince(persistent._mas_monika_lovecountertime, datetime.timedelta(minutes=3)):
-        # only give affection if it's been 3 minutes since the last ily
-        $ mas_gainAffection()
-
         if mas_isMoniNormal(higher=True):
             # always increase counter at Normal+ if it's been 3 mins
             $ persistent._mas_monika_lovecounter += 1
@@ -3292,6 +3286,10 @@ label monika_lovecounter_aff:
             #If we should do a kiss, we do
             if mas_shouldKiss(chance):
                 call monika_kissing_motion_short
+
+        # only give affection if it's been 3 minutes since the last ily
+        # NOTE: DO NOT MOVE THIS SET, IT MUST BE SET AFTER THE ABOVE PATH TO PREVENT A POTENTIAL CRASH
+        $ mas_gainAffection()
 
     elif mas_isMoniNormal(higher=True) and persistent._mas_monika_lovecounter % 5 == 0:
         # increase counter no matter what at Normal+ if at milestone
