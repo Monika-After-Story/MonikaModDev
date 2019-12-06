@@ -119,6 +119,7 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
         store.mas_showEVL("monika_outdoors", "EVE", _random=True)
         store.mas_showEVL("monika_backpacking", "EVE", _random=True)
+        store.mas_showEVL("monika_mountain", "EVE", _random=True)
 
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
@@ -151,10 +152,6 @@ init 10 python in mas_seasons:
         # disbale hot choc
         store.persistent._mas_acs_enable_hotchoc = False
 
-        # hide non-fall topics
-        store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
-        store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
-
 
     def _pp_winter():
         """
@@ -170,6 +167,11 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_winter", "EVE", _random=True)
         store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
         store.mas_unlockEVL("monika_snowballfight", "EVE")
+
+        # hide non-winter topics
+        store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
+        store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
+        store.mas_hideEVL("monika_mountain", "EVE", derandom=True)
 
         # enable hotchoc if it has been given
         if store.persistent._mas_c_hotchoc_been_given:
