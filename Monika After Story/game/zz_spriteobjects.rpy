@@ -317,7 +317,7 @@ init -2 python in mas_sprites:
         store.mas_acs_promisering.pose_map = store.MASPoseMap(
             p1=None,
             p2=None,
-            p3="1",
+            p3="3",
             p4=None,
             p5=None,
             p6=None
@@ -421,8 +421,8 @@ init -2 python in mas_sprites:
         temp_storage["clothes.marisa"] = store.mas_acs_promisering.pose_map
         store.mas_acs_promisering.pose_map = store.MASPoseMap(
             p1=None,
-            p2="6",
-            p3="1",
+            p2="marisa",
+            p3="3",
             p4=None,
             p5=None,
             p6=None
@@ -1566,8 +1566,8 @@ init -1 python:
         "promisering",
         MASPoseMap(
             p1=None,
-            p2="4",
-            p3="1",
+            p2="2",
+            p3="3",
             p4=None,
             p5="5",
             p6=None,
