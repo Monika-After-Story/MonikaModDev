@@ -3245,8 +3245,7 @@ label greeting_returned_home_morethan5mins_other_flow:
     # FALL THROUGH
 
 label greeting_returned_home_morethan5mins_other_flow_aff:
-    # changed the point structure for low aff, might be a good idea, might now ~ JW
-    # you gain 0.5 per hour, max 2.5, min 0.5
+    # for low aff you gain 0.5 per hour, max 2.5, min 0.5
     $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
     #FALL THROUGH
 
@@ -3255,14 +3254,22 @@ label greeting_returned_home_morethan5mins_cleanup:
     #FALL THROUGH
 
 label greeting_returned_home_cleanup:
-    $ need_to_reset_bday_decor = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
+    $ need_to_reset_bday_vars = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
 
     #If it's not o31, and we've got deco up, we need to clean up
-    if not need_to_reset_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
+    if not need_to_reset_bday_vars and not mas_isO31() and persistent._mas_o31_in_o31_mode:
         call mas_o31_ret_home_cleanup(time_out)
 
-    elif need_to_reset_bday_decor:
+    elif need_to_reset_bday_vars:
         call return_home_post_player_bday
+
+    # Check if we are entering d25 season at upset-
+    if (
+        mas_isD25Outfit()
+        and not persistent._mas_d25_intro_seen
+        and mas_isMoniUpset(lower=True)
+    ):
+        $ persistent._mas_d25_started_upset = True
     return
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
