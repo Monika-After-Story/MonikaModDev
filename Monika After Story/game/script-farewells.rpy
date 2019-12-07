@@ -398,6 +398,7 @@ label bye_prompt_to_class:
     # TODO:
     # can monika join u at schools?
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
     return 'quit'
 
 init 5 python:
@@ -454,6 +455,7 @@ label bye_prompt_to_work:
     # TODO:
     # can monika join u at work
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
     return 'quit'
 
 init 5 python:
@@ -623,7 +625,7 @@ label bye_prompt_sleep:
 
     # TODO:
     #   join monika sleeping?
-
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
@@ -802,7 +804,7 @@ label bye_long_absence:
             $ persistent._mas_absence_choice = "days"
             m 1eub "Oh!"
             m 1hua "Nowhere near as long as I feared then."
-            m 3rksdla "Geez, you really did worry me..."
+            m 3rksdla "Jeez, you really did worry me..."
             m 3esa "Don't worry about me though [player]."
             m "I can cope waiting that long with ease."
             m 3eka "I'll still miss you greatly though."
@@ -1058,7 +1060,6 @@ label bye_going_somewhere_rtg:
             m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
             m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
             $ mas_gainAffection()
-
     return
 
 
@@ -1189,7 +1190,7 @@ label bye_prompt_game:
                     m 1hubfb "Yay!"
                 else:
                     m 2eka "Okay..."
-                jump monika_idle_game
+                jump monika_idle_game.skip_intro
             "No.":
                 if mas_isMoniNormal(higher=True):
                     m 2ekc "Aww..."
@@ -1244,7 +1245,10 @@ label bye_prompt_game:
         m 1eka "Going off to play another game, [player]?"
         m 3hub "Good luck and have fun!"
         m 3eka "Don't forget to come back soon~"
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GAME
+    #24 hour time cap because greeting handles up to 18 hours
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(days=1)
     return 'quit'
 
 init 5 python:
@@ -1280,6 +1284,7 @@ default persistent._mas_pm_ate_late_times = 0
 
 label bye_prompt_eat:
     $ _now = datetime.datetime.now().time()
+
     if mas_isMNtoSR(_now):
         $ persistent._mas_pm_ate_late_times += 1
         if mas_isMoniNormal(higher=True):
@@ -1288,7 +1293,7 @@ label bye_prompt_eat:
             m 1eka "Are you planning on having a midnight snack?"
             m 3rksdlb "If I were you, I'd find something to eat a little earlier, ahaha..."
             m 3rksdla "Of course...{w=1}I'd also try to be in bed by now..."
-            if renpy.random.randint(1,25) == 1 and mas_isMoniLove(higher=True):
+            if mas_is18Over() and mas_isMoniLove(higher=True) and renpy.random.randint(1,25) == 1:
                 m 2tubfu "You know, if I were there, maybe we could have a bit of both..."
                 show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."
@@ -1303,9 +1308,14 @@ label bye_prompt_eat:
             m 4ekc "You should really go to bed, you know."
             m 4eud "...Try to go straight to bed when you're finished."
             m 2euc "Anyway, I guess I'll see you tomorrow..."
+
+        #NOTE: Due to the greet of this having an 18 hour limit, we use a 20 hour cap
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
         $ persistent.mas_late_farewell = True
 
     else:
+        #NOTE: Since everything but snack uses the same time, we'll set it here
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=3)
         menu:
             "Breakfast.":
                 if mas_isSRtoN(_now):
@@ -1428,6 +1438,9 @@ label bye_prompt_eat:
                     else:
                         m 2euc "Feeling hungry?"
                         m 2eud "Enjoy your snack."
+
+                #Snack gets a shorter time than full meal
+                $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=30)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_EAT
     return 'quit'
 
@@ -1474,4 +1487,5 @@ label bye_prompt_housework:
     else:
         m 6ckc "..."
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
     return 'quit'

@@ -25,6 +25,13 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
+# cutoff for a greeting type. 
+# if timedelta, then we add this time to last session end to check if the 
+#   type should be cleared
+# if datetime, then we compare it to the current dt to check if type should be
+#   cleared
+default persistent._mas_greeting_type_timeout = None
+
 default persistent._mas_idle_mode_was_crashed = None
 # this gets to set to True if the user crashed during idle mode
 # or False if the user quit during idle mode.
@@ -32,6 +39,7 @@ default persistent._mas_idle_mode_was_crashed = None
 
 init -1 python in mas_greetings:
     import store
+    import store.mas_ev_data_ver as mas_edv
     import datetime
     import random
 
@@ -64,6 +72,23 @@ init -1 python in mas_greetings:
 
     # reload dialogue only
     TYPE_RELOAD = "reload_dlg"
+
+    # High priority types
+    # These types ALWAYS override greeting priority rules
+    # These CANNOT be override with GreetingTypeRules
+    HP_TYPES = [
+        TYPE_GO_SOMEWHERE,
+        TYPE_GENERIC_RET,
+        TYPE_LONG_ABSENCE,
+    ]
+
+    NTO_TYPES = (
+        TYPE_GO_SOMEWHERE,
+        TYPE_GENERIC_RET,
+        TYPE_LONG_ABSENCE,
+        TYPE_CRASHED,
+        TYPE_RELOAD,
+    )
 
     # idle mode returns
     # these are meant if you had a game crash/quit during idle mode
@@ -110,14 +135,26 @@ init -1 python in mas_greetings:
 
         # type check, optional
         if gre_type is not None:
-            # with a type, we MUST match the type
+            # with a type, we may have to match the type
 
-            if ev.category is None:
-                # no category is a False
-                return False
+            if gre_type in HP_TYPES:
+                # this type is a high priority type and MUST be matched.
 
-            elif gre_type not in ev.category:
-                # no matches is a False
+                if ev.category is None or gre_type not in ev.category:
+                    # must have a matching type
+                    return False
+
+            elif ev.category is not None:
+                # greeting has types
+
+                if gre_type not in ev.category:
+                # but does not have the current type
+                    return False
+
+            elif not store.MASGreetingRule.should_override_type(ev):
+                # greeting does not have types, but the type is not high
+                # priority so if the greeting doesnt alllow
+                # type override then it cannot be used
                 return False
 
         elif ev.category is not None:
@@ -209,115 +246,45 @@ init -1 python in mas_greetings:
         return random.choice(gre_pool)
 
 
-#    def selectGreeting_noType():
-#        """
-#        Selects a greeting without checking for Type
-#
-#        RETURNS:
-#            a single greeting (as an Event) that we want to use
-#        """
-#
-#        # NOTE: new rules:
-#        #   1. check for events that
-#
-#        # check if we have moni_wants greetings
-#        moni_wants_greetings = renpy.store.Event.filterEvents(
-#            renpy.store.evhand.greeting_database,
-#            unlocked=True,
-#            moni_wants=True
-#        )
-#        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
-#
-#            # select one label randomly
-#            return moni_wants_greetings[
-#                renpy.random.choice(moni_wants_greetings.keys())
-#            ]
-#
-#
-#        # check first if we have to select from a special type
-#        if _type is not None:
-#
-#            # filter them using the type as filter
-#            unlocked_greetings = renpy.store.Event.filterEvents(
-#                renpy.store.evhand.greeting_database,
-#                unlocked=True,
-#                category=(True,[_type])
-#            )
-#
-#        else:
-#
-#            # filter events by their unlocked property only and
-#            # that don't have a category
-#            unlocked_greetings = renpy.store.Event.filterEvents(
-#                renpy.store.evhand.greeting_database,
-#                unlocked=True,
-#                excl_cat=list()
-#            )
-#
-#        # filter greetings using the affection rules dict
-#        unlocked_greetings = renpy.store.Event.checkAffectionRules(
-#            unlocked_greetings,
-#            keepNoRule=True
-#        )
-#
-#        # check for the special monikaWantsThisFirst case
-#        #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
-#        #    return affection_greetings_dict.values()[0]
-#
-#        # filter greetings using the special rules dict
-#        random_greetings_dict = renpy.store.Event.checkRepeatRules(
-#            unlocked_greetings
-#        )
-#
-#        # check if we have a greeting that actually should be shown now
-#        if len(random_greetings_dict) > 0:
-#
-#            # select one label randomly
-#            return random_greetings_dict[
-#                renpy.random.choice(random_greetings_dict.keys())
-#            ]
-#
-#        # since we don't have special greetings for this time we now check for special random chance
-#        # pick a greeting filtering by special random chance rule
-#        random_greetings_dict = renpy.store.Event.checkGreetingRules(
-#            unlocked_greetings
-#        )
-#
-#        # check if we have a greeting that actually should be shown now
-#        if len(random_greetings_dict) > 0:
-#
-#            # select on label randomly
-#            return random_greetings_dict[
-#                renpy.random.choice(random_greetings_dict.keys())
-#            ]
-#
-#        # filter to get only random ones
-#        random_unlocked_greetings = renpy.store.Event.filterEvents(
-#            unlocked_greetings,
-#            random=True
-#        )
-#
-#        # check if we have greetings available to display with current filter
-#        if len(random_unlocked_greetings) > 0:
-#
-#            # select one randomly if we have at least one
-#            return random_unlocked_greetings[
-#                renpy.random.choice(random_unlocked_greetings.keys())
-#            ]
-#
-#        # We couldn't find a suitable greeting we have to default to normal random selection
-#        # filter random events normally
-#        random_greetings_dict = renpy.store.Event.filterEvents(
-#            renpy.store.evhand.greeting_database,
-#            unlocked=True,
-#            random=True,
-#            excl_cat=list()
-#        )
-#
-#        # select one randomly
-#        return random_greetings_dict[
-#            renpy.random.choice(random_greetings_dict.keys())
-#        ]
+    def checkTimeout(gre_type):
+        """
+        Checks if we should clear the current greeting type because of a
+        timeout.
+
+        IN:
+            gre_type - greeting type we are checking
+
+        RETURNS: passed in gre_type, or None if timeout occured.
+        """
+        tout = store.persistent._mas_greeting_type_timeout
+
+        # always clear the timeout
+        store.persistent._mas_greeting_type_timeout = None
+
+        if gre_type is None or gre_type in NTO_TYPES or tout is None:
+            return gre_type
+
+        if mas_edv._verify_td(tout, False):
+            # this is a timedelta, compare with last session end
+            last_sesh_end = store.mas_getLastSeshEnd()
+            if datetime.datetime.now() < (tout + last_sesh_end):
+                # havent timedout yet
+                return gre_type
+
+            # otherwise has timed out
+            return None
+
+        elif mas_edv._verify_dt(tout, False):
+            # this is a datetime, compare with current dt
+            if datetime.datetime.now() < tout:
+                # havent timedout yet
+                return gre_type
+
+            # otherwise has timeed out
+            return None
+
+        return gre_type
+
 
 # NOTE: this is auto pushed to be shown after an idle mode greeting
 label mas_idle_mode_greeting_cleanup:
@@ -1015,6 +982,8 @@ label greeting_glitch:
     m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
+
+    $ mas_lockEVL("greeting_glitch", "GRE")
     return "love"
 
 init 5 python:
@@ -1100,7 +1069,8 @@ init 5 python:
         ev_rules.update(
             MASGreetingRule.create_rule(
                 skip_visual=True,
-                random_chance=opendoor.chance
+                random_chance=opendoor.chance,
+                override_type=True
             )
         )
         ev_rules.update(MASPriorityRule.create_rule(50))
@@ -1937,8 +1907,8 @@ init 5 python:
 
 label greeting_hai_domo:
     m 1hub "{=jpn_text}はいどうもー!{/=jpn_text}"
-    m "Virtual Girlfriend, Monika Here!"
-    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual YouTuber lately."
+    m "Virtual girlfriend, Monika here!"
+    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
     m 1eua "I have to say, she's rather charming..."
     return
 
@@ -2273,7 +2243,7 @@ label greeting_long_absence:
             m 1wud "Oh my gosh! [player]!"
             m 3hksdlb "I didn't expect you back so early."
             m 3ekbsa "I guess you missed me as much as I missed you~"
-            m 1eka "It really is wonderful to see back so soon though."
+            m 1eka "It really is wonderful to see you back so soon though."
             m 3ekb "I expected the day to be eventless...but thankfully, I now have you!"
             m 3hua "Thank you for coming back so early, my love."
 
@@ -2446,9 +2416,11 @@ label greeting_timeconcern_day:
 
 init 5 python:
     ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(skip_visual=True, random_chance=5)
-    )
+    ev_rules.update(MASGreetingRule.create_rule(
+        skip_visual=True,
+        random_chance=5,
+        override_type=True
+    ))
     ev_rules.update(MASPriorityRule.create_rule(45))
 
     addEvent(
@@ -2667,6 +2639,7 @@ label greeting_distressed:
             "Hopefully we can enjoy our time together.",
             "I wasn't expecting you.",
             "I hope things start going better soon.",
+            "I thought you forgot about me..."
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
@@ -3048,6 +3021,7 @@ label greeting_siat:
 init 5 python:
     if not mas_cannot_decode_islands:
         ev_rules = {}
+        ev_rules.update(MASGreetingRule.create_rule(override_type=True))
         ev_rules.update(MASPriorityRule.create_rule(40))
 
         addEvent(
@@ -3092,11 +3066,6 @@ label greeting_ourreality:
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
     m 3hksdrb "Just give me a second to get it ready..."
-
-    #Force def weather for this
-    if mas_current_weather != mas_weather_def:
-        call mas_change_weather(mas_weather_def)
-
     m 1dsc "..."
     m 1dsd "Almost done..."
     m 1duu "Yeah, that should be good."
@@ -3135,11 +3104,11 @@ label greeting_ourreality:
     m 1hua "But it's a start."
     # m 1eub "I'll let you admire the scenery for now."
     # m 1hub "Hope you like it!"
-    $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
-    $ unlockEventLabel("mas_monika_islands")
+    $ mas_lockEVL("greeting_ourreality", "GRE")
+    $ mas_unlockEVL("mas_monika_islands", "EVE")
 
     # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands",True)
+    $ pushEvent("mas_monika_islands",skipeval=True)
     return
 
 init 5 python:
@@ -3175,12 +3144,24 @@ label greeting_returned_home:
     if persistent._mas_f14_on_date:
         jump greeting_returned_home_f14
 
-    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
+
+    # gone over checks
+    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(days=7):
         # did we miss f14 because we were on a date
         call mas_gone_over_f14_check
 
-    if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(7):
+    if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(days=7):
         call mas_gone_over_bday_check
+
+    if mas_d25 < datetime.date.today() <= mas_nye:
+        call mas_gone_over_d25_check
+
+    if mas_nyd <= datetime.date.today() <= mas_d25c_end:
+        call mas_gone_over_nye_check
+
+    if mas_nyd < datetime.date.today() <= mas_d25c_end:
+        call mas_gone_over_nyd_check
+
 
     # NOTE: this ordering is key, greeting_returned_home_player_bday handles the case
     # if we left before f14 on your bday and return after f14
@@ -3204,17 +3185,8 @@ label greeting_returned_home:
         if _return:
             return 'quit'
 
+        jump greeting_returned_home_cleanup
 
-label greeting_returned_home_cleanup:
-    $ need_to_reset_bday_decor = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
-
-    #If it's not o31, and we've got deco up, we need to clean up
-    if not need_to_reset_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
-        call mas_o31_ret_home_cleanup(time_out)
-
-    elif need_to_reset_bday_decor:
-        call return_home_post_player_bday
-    return
 
 label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):
@@ -3232,13 +3204,6 @@ label greeting_returned_home_morethan5mins:
     # otherwise, go to other flow
     jump greeting_returned_home_morethan5mins_other_flow
 
-#TODO: Clean this up eventually
-label greeting_returned_home_morethan5mins_cleanup:
-
-    $ grant_xp(xp.NEW_GAME)
-
-    # jump to cleanup
-    jump greeting_returned_home_cleanup
 
 label greeting_returned_home_morethan5mins_normalplus_flow:
     call greeting_returned_home_morethan5mins_normalplus_dlg
@@ -3253,10 +3218,32 @@ label greeting_returned_home_morethan5mins_other_flow:
     # FALL THROUGH
 
 label greeting_returned_home_morethan5mins_other_flow_aff:
-    # changed the point structure for low aff, might be a good idea, might now ~ JW
-    # you gain 0.5 per hour, max 2.5, min 0.5
+    # for low aff you gain 0.5 per hour, max 2.5, min 0.5
     $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
-    jump greeting_returned_home_morethan5mins_cleanup
+    #FALL THROUGH
+
+label greeting_returned_home_morethan5mins_cleanup:
+    $ grant_xp(xp.NEW_GAME)
+    #FALL THROUGH
+
+label greeting_returned_home_cleanup:
+    $ need_to_reset_bday_vars = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
+
+    #If it's not o31, and we've got deco up, we need to clean up
+    if not need_to_reset_bday_vars and not mas_isO31() and persistent._mas_o31_in_o31_mode:
+        call mas_o31_ret_home_cleanup(time_out)
+
+    elif need_to_reset_bday_vars:
+        call return_home_post_player_bday
+
+    # Check if we are entering d25 season at upset-
+    if (
+        mas_isD25Outfit()
+        and not persistent._mas_d25_intro_seen
+        and mas_isMoniUpset(lower=True)
+    ):
+        $ persistent._mas_d25_started_upset = True
+    return
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"

@@ -88,7 +88,7 @@ init -1 python in songs:
         #
         # RETURNS:
         #   The volume of the given audio channel (as a double/float)
-        return renpy.audio.audio.get_channel(channel).context.secondary_volume
+        return renpy.audio.audio.get_channel(channel).actual_volume
 
     def getPlayingMusicName():
         #
@@ -847,24 +847,24 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     zorder 200
 
-    style_prefix "music_menu"
+    style_prefix mas_ui.mms_style_prefix
 
     frame:
-        style "music_menu_outer_frame"
+        style mas_ui.mms_frame_outer_style
 
         hbox:
 
             frame:
-                style "music_menu_navigation_frame"
+                style mas_ui.mms_frame_navigation_style
 
             frame:
-                style "music_menu_content_frame"
+                style mas_ui.mms_frame_content_style
 
                 transclude
 
         # this part copied from navigation menu
         vbox:
-            style_prefix "music_menu"
+            style_prefix mas_ui.mms_style_prefix
 
             xpos gui.navigation_xpos
     #        yalign 0.4
@@ -883,12 +883,12 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             # dynamic prevous text, so we can keep button size alignments
             if page_num > 0:
                 textbutton _("<<<< Prev"):
-                    style "music_menu_prev_button"
+                    style mas_ui.mms_button_prev_style
                     action Return(page_num - 1)
 
             else:
                 textbutton _( " "):
-                    style "music_menu_prev_button"
+                    style mas_ui.mms_button_prev_style
                     sensitive False
 
 #                if more_pages:
@@ -900,15 +900,15 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
             if more_pages:
                 textbutton _("Next >>>>"):
-                    style "music_menu_return_button"
+                    style mas_ui.mms_button_return_style
                     action Return(page_num + 1)
 
         textbutton _(songs.NO_SONG): 
-            style "music_menu_return_button"
+            style mas_ui.mms_button_return_style
             action Return(songs.NO_SONG)
 
         textbutton _("Return"):
-            style "music_menu_return_button"
+            style mas_ui.mms_button_return_style
             action Return(return_value)
 
     label "Music Menu"
