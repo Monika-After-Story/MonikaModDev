@@ -321,6 +321,10 @@ label v0_10_4(version="v0_10_4"):
                 aiwfc_sng_ev = mas_getEV("mas_song_aiwfc")
                 if aiwfc_sng_ev:
                     aiwfc_sng_ev.shown_count += aiwfc_ev.shown_count
+                    aiwfc_sng_ev.last_seen = aiwfc_ev.last_seen
+
+                    #Now reset the last seen of the aiwfc_ev
+                    aiwfc_ev.last_seen = None
 
         #Fix d25 intro conditionals for player bday
         ev = mas_getEV("mas_d25_monika_holiday_intro")
