@@ -3903,7 +3903,7 @@ label monika_nye_year_review:
             persistent._mas_player_bday_date
             or not mas_HistVerify_k([datetime.date.today().year], 0, "player_bday.date")[0]
         ):
-            5eubla "We had such a nice date together too~"
+            m 5eubla "We had such a nice date together too~"
 
     #bit on christmas
     if persistent._mas_d25_spent_d25:
