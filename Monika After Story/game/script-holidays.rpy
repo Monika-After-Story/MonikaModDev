@@ -3897,9 +3897,12 @@ label monika_nye_year_review:
     ):
         $ spent_an_event = True
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "We even spent your birthday together too!"
+        m 5hua "We even spent your birthday together!"
 
-        if persistent._mas_player_bday_date:
+        if (
+            persistent._mas_player_bday_date
+            or not mas_HistVerify_k([datetime.date.today().year], 0, "player_bday.date")[0]
+        ):
             5eubla "We had such a nice date together too~"
 
     #bit on christmas
@@ -4863,7 +4866,7 @@ init 5 python:
     )
 
 label bye_player_bday:
-    $  persistent._mas_player_bday_date += 1
+    $ persistent._mas_player_bday_date += 1
     if persistent._mas_player_bday_date == 1:
         m 1sua "You want to go out for your birthday?{w=1} Okay!"
         m 1skbla "That sounds really romantic...I can't wait~"
