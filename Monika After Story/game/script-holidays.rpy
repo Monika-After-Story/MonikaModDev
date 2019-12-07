@@ -100,14 +100,17 @@ init -1 python:
 
     def mas_hasSpecialOutfit(_date=None):
         """
-        Checks if the given date is a special event that has a special outfit
+        Checks if the given date is a special event that has an outfit in the event clothes map
         IN:
             _date - date to check.
                 (Default: None)
 
         RETURNS: True if given date has a special outfit, False otherwise
         """
-        return mas_isO31(_date) or mas_isF14(_date) or mas_isD25Outfit(_date)
+        if _date is None:
+            _date = datetime.date.today()
+
+        return _date in persistent._mas_event_clothes_map
 
 
 ############################### O31 ###########################################
@@ -4259,12 +4262,15 @@ default persistent._mas_player_bday_date_aff_gain = 0
 default persistent._mas_player_bday_spent_time = False
 
 init -10 python:
-    def mas_isplayer_bday(_date=None):
+    def mas_isplayer_bday(_date=None, use_date_year=False):
         """
         IN:
             _date - date to check
                 If None, we use today's date
                 (default: None)
+
+            use_date_year - True if we should use the year from _date or not.
+                (Default: False)
 
         RETURNS: True if given date is player_bday, False otherwise
         """
@@ -4274,7 +4280,9 @@ init -10 python:
         if persistent._mas_player_bday is None:
             return False
         else:
-            return _date == mas_player_bday_curr()
+            if use_date_year:
+                return _date == mas_player_bday_curr(_date)
+            return _date == mas_player_bday_curr
 
     def strip_mas_birthdate():
         """
