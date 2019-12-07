@@ -1539,7 +1539,11 @@ init -10 python in mas_d25_utils:
         # save remaining d25 gifts and delete the packages
         # they will be reacted to later
         for c_gift_name, gift_name in d25_map.iteritems():
-            store.persistent._mas_d25_gifts_given.append(c_gift_name)
+            #Only add if the gift isn't already stored under the tree
+            if c_gift_name not in store.persistent._mas_d25_gifts_given:
+                store.persistent._mas_d25_gifts_given.append(c_gift_name)
+
+            #Now we delete the gift file
             store.mas_docking_station.destroyPackage(gift_name)
 
         # set all excluded and generic gifts to react now
