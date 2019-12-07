@@ -52,11 +52,29 @@ init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
         store.mas_filereacts.delete_all(persistent._mas_filereacts_failed_map)
 
-init -1 python in mas_filereacts:
+init -11 python in mas_filereacts:
     import store
     import store.mas_utils as mas_utils
     import datetime
     import random
+
+    from collections import namedtuple
+
+    GiftReactDetails = namedtuple(
+        "GiftReactDetails",
+        [
+            # label corresponding to this gift react
+            "label", 
+
+            # lowercase, no extension giftname for this gift react
+            "c_gift_name",
+
+            # will contain a reference to sprite object data if this is
+            # associatd with a sprite. Will be None if not related to
+            # sprite objects.
+            "sp_data",
+        ]
+    )
 
     # file react database
     filereact_db = dict()
@@ -90,7 +108,10 @@ init -1 python in mas_filereacts:
     starters = None
     gift_starters = None
 
-    def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE, is_good=None):
+    GIFT_EXT = ".gift"
+
+
+    def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE, is_good=None, exclude_on=[]):
         """
         Adds a reaction to the file reactions database.
 
@@ -100,19 +121,27 @@ init -1 python in mas_filereacts:
             _action - the EV_ACT to do
                 (Default: EV_ACT_QUEUE)
             is_good - if the gift is good(True), neutral(None) or bad(False)
-               (Default: None)
+                (Default: None)
+            exclude_on - keys marking times to exclude this gift
+            (Need to check ev.rules in a respective react_to_gifts to exclude with)
+                (Default: [])
         """
         # lowercase the list in case
         if fname is not None:
             fname = fname.lower()
 
+        exclude_keys = {}
+        if exclude_on:
+            for _key in exclude_on:
+                exclude_keys[_key] = None
 
         # build new Event object
         ev = store.Event(
             store.persistent.event_database,
             ev_label,
             category=fname,
-            action=_action
+            action=_action,
+            rules=exclude_keys
         )
 
         # TODO: should ovewrite category and action always
@@ -150,141 +179,521 @@ init -1 python in mas_filereacts:
         gift_starters = store.MASQuipList(allow_glitch=False, allow_line=False)
 
 
-    def react_to_gifts(found_map, connect=True):
+    def build_gift_react_labels(
+            evb_details=[],
+            gsp_details=[],
+            gen_details=[],
+            gift_cntrs=None,
+            ending_label=None,
+            starting_label=None,
+            prepare_data=True
+    ):
         """
-        call this function when you want to check files for reacting to gifts.
+        Processes gift details into a list of labels to show
+        labels to queue/push whatever.
 
         IN:
-            found_map - dict to use to insert found items.
-                NOTE: this function does NOT empty this dict.
-            connect - True will add connectors in between each reaction label
+            evb_details - list of GiftReactDetails objects of event-based
+                reactions. If empty list, then we don't build event-based
+                reaction labels.
+                (Default: [])
+            gsp_details - list of GiftReactDetails objects of generic sprite
+                object reactions. If empty list, then we don't build generic
+                sprite object reaction labels.
+                (Default: [])
+            gen_details - list of GiftReactDetails objects of generic gift
+                reactions. If empty list, then we don't build generic gift
+                reaction labels.
+                (Default: [])
+            gift_cntrs - MASQuipList of gift connectors to use. If None,
+                then we don't add any connectors.
+                (Default: [])
+            ending_label - label to use when finished reacting.
+                (Default: None)
+            starting_label - label to use when starting reacting
+                (Default: None)
+            prepare_data - True will also setup the appropriate data
+                elements for when dialogue is shown. False will not.
                 (Default: True)
 
-        RETURNS:
-            list of event labels in the order they should be shown
+        RETURNS: list of labels. Evb reactions are first, followed by
+            gsp reactions, then gen reactions
         """
+        labels = []
 
-        GIFT_EXT = ".gift"
+        # first find standard reactions
+        if len(evb_details) > 0:
+            evb_labels = []
+            for evb_detail in evb_details:
+                evb_labels.append(evb_detail.label)
+
+                if gift_cntrs is not None:
+                    evb_labels.append(gift_cntrs.quip()[1])
+
+                if prepare_data and evb_detail.sp_data is not None:
+                    # if we need to prepare data, then add the sprite_data
+                    # to reacted map
+                    store.persistent._mas_filereacts_sprite_reacted[evb_detail.sp_data] = (
+                        evb_detail.c_gift_name
+                    )
+
+            labels.extend(evb_labels)
+
+        # now generic sprite objects
+        if len(gsp_details) > 0:
+            gsp_labels = []
+            for gsp_detail in gsp_details:
+                if gsp_detail.sp_data is not None:
+                    gsp_labels.append("mas_reaction_gift_generic_sprite_json")
+
+                    if gift_cntrs is not None:
+                        gsp_labels.append(gift_cntrs.quip()[1])
+
+                    if prepare_data:
+                        store.persistent._mas_filereacts_sprite_reacted[gsp_detail.sp_data] = (
+                            gsp_detail.c_gift_name
+                        )
+
+            labels.extend(gsp_labels)
+                    
+        # and lastlly is generics
+        if len(gen_details) > 0:
+            gen_labels = []
+            for gen_detail in gen_details:
+                gen_labels.append("mas_reaction_gift_generic")
+
+                if gift_cntrs is not None:
+                    gen_labels.append(gift_cntrs.quip()[1])
+
+                if prepare_data:
+                    store.persistent._mas_filereacts_reacted_map.pop(
+                        gen_detail.c_gift_name,
+                        None
+                    )
+
+            labels.extend(gen_labels)
+
+        # final setup
+        if len(labels) > 0:
+
+            # only pop if we used connectors
+            if gift_cntrs is not None:
+                labels.pop()
+
+            # add the ender
+            if ending_label is not None:
+                labels.append(ending_label)
+
+            # add the starter
+            if starting_label is not None:
+                labels.insert(0, starting_label)
+
+        # now return the list
+        return labels
+
+    def build_exclusion_list(_key):
+        """
+        Builds a list of excluded gifts based on the key provided
+
+        IN:
+            _key - key to build an exclusion list for
+
+        OUT:
+            list of giftnames which are excluded by the key
+        """
+        return [
+            giftname
+            for giftname, react_ev in filereact_map.iteritems()
+            if _key in react_ev.rules
+        ]
+
+    def check_for_gifts(
+            found_map={},
+            exclusion_list=[],
+            exclusion_found_map={},
+            override_react_map=False,
+    ):
+        """
+        Finds gifts. 
+
+        IN:
+            exclusion_list - list of giftnames to exclude from the search
+            override_react_map - True will skip the last reacted date check,
+                False will not
+                (Default: False)
+
+        OUT:
+            found_map - contains all gifts that were found:
+                key: lowercase giftname, no extension
+                val: full giftname wtih extension
+            exclusion_found_map - contains all gifts that were found but
+                are excluded.
+                key: lowercase giftname, no extension
+                val: full giftname with extension
+
+        RETURNS: list of found giftnames
+        """
         raw_gifts = store.mas_docking_station.getPackageList(GIFT_EXT)
 
         if len(raw_gifts) == 0:
             return []
 
-        # is it a new day?
+        # day check
         if store.mas_pastOneDay(store.persistent._mas_filereacts_last_reacted_date):
             store.persistent._mas_filereacts_last_reacted_date = datetime.date.today()
             store.persistent._mas_filereacts_reacted_map = dict()
 
-        # otherwise we found some potential gifts
-        gifts_found = list()
-        # now lets lowercase this list whie also buliding a map of files
+        # look for potential gifts
+        gifts_found = []
+        has_exclusions = len(exclusion_list) > 0
+
         for mas_gift in raw_gifts:
             gift_name, ext, garbage = mas_gift.partition(GIFT_EXT)
             c_gift_name = gift_name.lower()
             if (
-                    c_gift_name not in
-                        store.persistent._mas_filereacts_failed_map
-                    and c_gift_name not in
-                        store.persistent._mas_filereacts_reacted_map
-                    and c_gift_name not in
-                        store.persistent._mas_filereacts_stop_map
-                ):
-                gifts_found.append(c_gift_name)
-                found_map[c_gift_name] = mas_gift
-                store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
+                c_gift_name not in store.persistent._mas_filereacts_failed_map
+                and c_gift_name not in store.persistent._mas_filereacts_stop_map
+                and (
+                    override_react_map
+                    or c_gift_name not 
+                        in store.persistent._mas_filereacts_reacted_map
+                )
+            ):
+                # this gift is valid (not in failed/stopped/or reacted)
 
-        # then sort the list
-        gifts_found.sort()
+                # check for exclusions
+                if has_exclusions and c_gift_name in exclusion_list:
+                    exclusion_found_map[c_gift_name] = mas_gift
 
-        # now we are ready to check for reactions
-        # first we check for all file reacts:
-        #all_reaction = filereact_map.get(gifts_found, None)
+                else:
+                    gifts_found.append(c_gift_name)
+                    found_map[c_gift_name] = mas_gift
 
-        #if all_reaction is not None:
-        #    return [all_reaction.eventlabel]
+        return gifts_found
 
-        # otherwise, we need to do this more carefully
-        found_reacts = list()
-        for index in range(len(gifts_found)-1, -1, -1):
-            mas_gift = gifts_found[index]
+
+    def process_gifts(gifts, evb_details=[], gsp_details=[], gen_details=[]):
+        """
+        Processes list of giftnames into types of gift
+
+        IN:
+            gifts - list of giftnames to process. This is copied so it wont
+                be modified.
+
+        OUT:
+            evb_details - list of GiftReactDetails objects regarding
+                event-based reactions
+            spo_details - list of GiftReactDetails objects regarding
+                generic sprite object reactions
+            gen_details - list of GiftReactDetails objects regarding
+                generic gift reactions
+        """
+        if len(gifts) == 0:
+            return
+
+        # make copy of gifts
+        gifts = list(gifts)
+
+        # first find standard reactions
+        for index in range(len(gifts)-1, -1, -1):
+
+            # determine if reaction exists
+            mas_gift = gifts[index]
             reaction = filereact_map.get(mas_gift, None)
-
+            
             if mas_gift is not None and reaction is not None:
-                # remove from the list and add to found
-                # TODO add to the persistent react map today
-                gifts_found.pop(index)
-                found_reacts.append(reaction.eventlabel)
-                found_reacts.append(gift_connectors.quip()[1])
 
-                # if a special sprite gift, add to the per list matching
-                # sprite objects with data.
+                # pull sprite data
                 sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
                     mas_gift,
                     None
                 )
-                if sp_data is not None:
-                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
-                        mas_gift
-                    )
 
-        # generic sprite object gifts treated differently
-        sprite_object_reacts = []
-        if len(gifts_found) > 0:
-            for index in range(len(gifts_found)-1, -1, -1):
-                mas_gift = gifts_found[index]
+                # remove gift and add details
+                gifts.pop(index)
+                evb_details.append(GiftReactDetails(
+                    reaction.eventlabel,
+                    mas_gift,
+                    sp_data
+                ))
 
+        # now for generic sprite objects
+        if len(gifts) > 0:
+            for index in range(len(gifts)-1, -1, -1):
+                mas_gift = gifts[index]
+                # pull sprite data
                 sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
                     mas_gift,
                     None
                 )
-                if sp_data is not None:
-                    gifts_found.pop(index)
-                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
-                        mas_gift
-                    )
 
-                    # add the generic react
-                    sprite_object_reacts.append(
-                        "mas_reaction_gift_generic_sprite_json"
-                    )
-                    sprite_object_reacts.append(gift_connectors.quip()[1])
+                if mas_gift is not None and sp_data is not None:
+                    gifts.pop(index)
 
-                    # stats for today
-                    _register_received_gift(
-                        "mas_reaction_gift_generic_sprite_json"
-                    )
+                    # add details
+                    gsp_details.append(GiftReactDetails(
+                        "mas_reaction_gift_generic_sprite_json",
+                        mas_gift,
+                        sp_data
+                    ))
 
-        # extend the list
-        sprite_object_reacts.extend(found_reacts)
-
-        # add in the generic gift reactions
-        generic_reacts = []
-        if len(gifts_found) > 0:
-            for mas_gift in gifts_found:
-                generic_reacts.append("mas_reaction_gift_generic")
-                generic_reacts.append(gift_connectors.quip()[1])
-                # keep stats for today
-                _register_received_gift("mas_reaction_gift_generic")
-
-                # always pop generic reacts
-                store.persistent._mas_filereacts_reacted_map.pop(mas_gift)
+        # and lastly is generics
+        if len(gifts) > 0:
+            for mas_gift in gifts:
+                if mas_gift is not None:
+                    # add details
+                    gen_details.append(GiftReactDetails(
+                        "mas_reaction_gift_generic",
+                        mas_gift,
+                        None
+                    ))
 
 
-        generic_reacts.extend(sprite_object_reacts)
+    def react_to_gifts(found_map, connect=True):
+        """
+        Reacts to gifts using the standard protocol (no exclusions) 
 
-        # gotta remove the extra
-        if len(generic_reacts) > 0:
-            generic_reacts.pop()
+        IN:
+            connect - true will apply connectors, FAlse will not
 
-            # add the ender
-            generic_reacts.insert(0, "mas_reaction_end")
+        OUT:
+            found_map - map of found reactions
+                key: lowercaes giftname, no extension
+                val: giftname with extension
 
-            # add the starter
-            generic_reacts.append(_pick_starter_label())
-#            generic_reacts.append(gift_starters.quip()[1])
+        RETURNS:
+            list of labels to be queued/pushed
+        """
+        # first find gifts
+        found_gifts = check_for_gifts(found_map)
 
-        # now return the list
-        return generic_reacts
+        if len(found_gifts) == 0:
+            return []
+
+        # put the gifts in the reacted map
+        for c_gift_name, mas_gift in found_map.iteritems():
+            store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
+
+        found_gifts.sort()
+
+        # pull details from teh gifts
+        evb_details = []
+        gsp_details = []
+        gen_details = []
+        process_gifts(found_gifts, evb_details, gsp_details, gen_details)
+
+        # register all the gifts
+        register_sp_grds(evb_details)
+        register_sp_grds(gsp_details)
+        register_gen_grds(gen_details)
+
+        # then build the reaction labels
+        # setup connectors
+        if connect:
+            gift_cntrs = gift_connectors
+        else:
+            gift_cntrs = None
+
+        # now build
+        return build_gift_react_labels(
+            evb_details,
+            gsp_details,
+            gen_details,
+            gift_cntrs,
+            "mas_reaction_end",
+            _pick_starter_label()
+        )
+
+
+#
+#
+#        """
+#        call this function when you want to check files for reacting to gifts.
+#
+#        IN:
+#            found_map - dict to use to insert found items.
+#                NOTE: this function does NOT empty this dict.
+#            connect - True will add connectors in between each reaction label
+#                (Default: True)
+#
+#        RETURNS:
+#            list of event labels in the order they should be shown
+#        """
+#
+#
+#        d25_gift_exclude_list = [
+#            "hotchocolate",
+#            "coffee",
+#            "fudge",
+#            "candycane",
+#            "christmascookies",
+#            "cupcake",
+#            "roses",
+#            "chocolates",
+#            "promisering"
+#            ]
+#
+#        GIFT_EXT = ".gift"
+#        raw_gifts = store.mas_docking_station.getPackageList(GIFT_EXT)
+#
+#        if len(raw_gifts) == 0:
+#            return []
+#
+#        # is it a new day?
+#        if store.persistent._mas_filereacts_last_reacted_date is None or store.persistent._mas_filereacts_last_reacted_date != datetime.date.today():
+#            store.persistent._mas_filereacts_last_reacted_date = datetime.date.today()
+#            store.persistent._mas_filereacts_reacted_map = dict()
+#
+#        # otherwise we found some potential gifts
+#        gifts_found = list()
+#        # now lets lowercase this list whie also buliding a map of files
+#        for mas_gift in raw_gifts:
+#            gift_name, ext, garbage = mas_gift.partition(GIFT_EXT)
+#            c_gift_name = gift_name.lower()
+#            if (
+#                    c_gift_name not in store.persistent._mas_filereacts_failed_map
+#                    and c_gift_name not in store.persistent._mas_filereacts_reacted_map
+#                    and c_gift_name not in store.persistent._mas_filereacts_stop_map
+#                ):
+#                    #NOTE: If we're in the d25 gift range, we save them for d25 and react then
+#                    #This does NOT handle gifts w/o reactions
+#                    #(unless the gift is a consumable, roses, or a ring)
+#                    if (
+#                        store.mas_isD25Gift()
+#                        and c_gift_name not in d25_gift_exclude_list
+#                        and filereact_map.get(c_gift_name, None)
+#                    ):
+#                        store.persistent._mas_d25_gifts_given.append(c_gift_name)
+#                        store.mas_docking_station.destroyPackage(gift_name + ext)
+#
+#                    #Otherwise we do standard flow
+#                    else:
+#                        gifts_found.append(c_gift_name)
+#                        found_map[c_gift_name] = mas_gift
+#                        store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
+#
+#        # then sort the list
+#        gifts_found.sort()
+#
+#        # now we are ready to check for reactions
+#        # first we check for all file reacts:
+#        #all_reaction = filereact_map.get(gifts_found, None)
+#
+#        #if all_reaction is not None:
+#        #    return [all_reaction.eventlabel]
+#
+#        # otherwise, we need to do this more carefully
+#        found_reacts = list()
+#        for index in range(len(gifts_found)-1, -1, -1):
+#            mas_gift = gifts_found[index]
+#            reaction = filereact_map.get(mas_gift, None)
+#
+#            if mas_gift is not None and reaction is not None:
+#                # remove from the list and add to found
+#                # TODO add to the persistent react map today
+#                gifts_found.pop(index)
+#                found_reacts.append(reaction.eventlabel)
+#                found_reacts.append(gift_connectors.quip()[1])
+#
+#                # if a special sprite gift, add to the per list matching
+#                # sprite objects with data.
+#                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
+#                    mas_gift,
+#                    None
+#                )
+#                if sp_data is not None:
+#                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+#                        mas_gift
+#                    )
+#
+#                    #Register the json sprite
+#                    _register_received_gift(
+#                        reaction.eventlabel
+#                    )
+#
+#        # generic sprite object gifts treated differently
+#        sprite_object_reacts = []
+#        if len(gifts_found) > 0:
+#            for index in range(len(gifts_found)-1, -1, -1):
+#                mas_gift = gifts_found[index]
+#
+#                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
+#                    mas_gift,
+#                    None
+#                )
+#                if sp_data is not None:
+#                    gifts_found.pop(index)
+#                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+#                        mas_gift
+#                    )
+#
+#                    # add the generic react
+#                    sprite_object_reacts.append(
+#                        "mas_reaction_gift_generic_sprite_json"
+#                    )
+#                    sprite_object_reacts.append(gift_connectors.quip()[1])
+#
+#                    # stats for today
+#                    _register_received_gift(
+#                        "mas_reaction_gift_generic_sprite_json"
+#                    )
+#
+#        # extend the list
+#        sprite_object_reacts.extend(found_reacts)
+#
+#        # add in the generic gift reactions
+#        generic_reacts = []
+#        if len(gifts_found) > 0:
+#            for mas_gift in gifts_found:
+#                generic_reacts.append("mas_reaction_gift_generic")
+#                generic_reacts.append(gift_connectors.quip()[1])
+#                # keep stats for today
+#                _register_received_gift("mas_reaction_gift_generic")
+#
+#                # always pop generic reacts
+#                store.persistent._mas_filereacts_reacted_map.pop(mas_gift)
+#
+#
+#        generic_reacts.extend(sprite_object_reacts)
+#
+#        # gotta remove the extra
+#        if len(generic_reacts) > 0:
+#            generic_reacts.pop()
+#
+#            # add the ender
+#            generic_reacts.insert(0, "mas_reaction_end")
+#
+#            # add the starter
+#            generic_reacts.append(_pick_starter_label())
+##            generic_reacts.append(gift_starters.quip()[1])
+#
+#        # now return the list
+#        return generic_reacts 
+
+
+    def register_gen_grds(details):
+        """
+        registers gifts given a generic GiftReactDetails list
+
+        IN:
+            details - list of GiftReactDetails objects to register
+        """
+        for grd in details:
+            if grd.label is not None:
+                _register_received_gift(grd.label)
+
+
+    def register_sp_grds(details):
+        """
+        registers gifts given sprite-based GiftReactDetails list
+
+        IN:
+            details - list of GiftReactDetails objcts to register
+        """
+        for grd in details:
+            if grd.label is not None and grd.sp_data is not None:
+                _register_received_gift(grd.label)
+
 
     def _pick_starter_label():
         """
@@ -464,31 +873,37 @@ init -1 python in mas_filereacts:
 
 init python:
     import store.mas_filereacts as mas_filereacts
+    import store.mas_d25_utils as mas_d25_utils
 
-    def addReaction(ev_label, fname_list, _action=EV_ACT_QUEUE, is_good=None):
+    def addReaction(ev_label, fname_list, _action=EV_ACT_QUEUE, is_good=None, exclude_on=[]):
         """
         Globalied version of the addReaction function in the mas_filereacts
         store.
 
         Refer to that function for more information
         """
-        mas_filereacts.addReaction(ev_label, fname_list, _action, is_good)
+        mas_filereacts.addReaction(ev_label, fname_list, _action, is_good, exclude_on)
 
 
     def mas_checkReactions():
         """
         Checks for reactions, then queues them
         """
+
         # only check if we didnt just react
         if persistent._mas_filereacts_just_reacted:
             return
 
         # otherwise check
         mas_filereacts.foundreact_map.clear()
-        reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
+
+        #If conditions are met to use d25 react to gifts, we do.
+        if mas_d25_utils.shouldUseD25ReactToGifts():
+            reacts = mas_d25_utils.react_to_gifts(mas_filereacts.foundreact_map)
+        else:
+            reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
+
         if len(reacts) > 0:
-            # need to reverse it now
-            reacts.reverse()
             for _react in reacts:
                 queueEvent(_react)
             persistent._mas_filereacts_just_reacted = True
@@ -651,6 +1066,41 @@ init python:
             amount = store._mas_getGoodExp()
 
         mas_capGainAff(amount * modifier, "_mas_filereacts_gift_aff_gained", 15 if mas_isSpecialDay() else 3)
+
+    def mas_getGiftedDates(giftlabel):
+        """
+        Gets the dates that a gift was gifted
+
+        IN:
+            giftlabel - gift reaction label to check when it was last gifted
+
+        OUT:
+            list of datetime.dates of the times the gift was given
+        """
+        return sorted([
+            _date
+            for _date, giftstat in persistent._mas_filereacts_historic.iteritems()
+            if giftlabel in giftstat
+        ])
+
+    def mas_lastGiftedInYear(giftlabel, _year):
+        """
+        Checks if the gift for giftlabel was last gifted in _year
+
+        IN:
+            giftlabel - gift reaction label to check it's last gifted year
+            _year - year to see if it was last gifted in this year
+
+        OUT:
+            boolean:
+                - True if last gifted in _year
+                - False otherwise
+        """
+        datelist = mas_getGiftedDates(giftlabel)
+
+        if datelist:
+            return datelist[-1].year == _year
+        return False
 
 ### CONNECTORS [RCT000]
 
@@ -984,7 +1434,7 @@ label mas_reaction_gift_hairclip(hairclip_name,desc=None):
 # persistent._mas_coffee_brewing
 
 init 5 python:
-    addReaction("mas_reaction_gift_coffee", "coffee", is_good=True)
+    addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_gift_coffee:
 
@@ -1085,7 +1535,7 @@ label mas_reaction_quetzal_plush:
     return
 
 init 5 python:
-    addReaction("mas_reaction_promisering", "promisering", is_good=True)
+    addReaction("mas_reaction_promisering", "promisering", is_good=True, exclude_on=["d25g"])
 
 default persistent._mas_tried_gift_ring = False
 label mas_reaction_promisering:
@@ -1099,12 +1549,12 @@ label mas_reaction_promisering:
             if not persistent._mas_tried_gift_ring:
                 m 1wud "Is that...a..."
                 m "..."
-                m 1wka "I..."
-                m 1wkbltpa "I'm sorry, [player], I just..."
-                m 1dkbltpa "...I'm so happy...{w=0.5}You just gave me your promise..."
+                m 1wka "I...{w=0.5}{nw}"
+                extend 1wkbltpa "I'm sorry, [player], I just... {w=0.5}{nw}"
+                extend 1dkbltpa "I'm so happy... {w=0.5}You just gave me your promise..."
                 m "Your promise that we'll be for each other,{w=0.1} and no one else...{w=0.3}forever..."
-                m 3lkbltpa "Know that I'll cherish it."
-                m 3dkbltpa "Always."
+                m 3lkbltpa "Know that I'll cherish it. {w=0.5}{nw}"
+                extend 3dkbltpa "Always."
                 m 1skbltpa "This makes me so happy!"
 
                 if mas_anni.isAnniOneMonth():
@@ -1124,9 +1574,8 @@ label mas_reaction_promisering:
 
                 m 1dkbltpb "Aha, sorry for crying, [player]..."
                 m 1skbltda "I'm just really, really happy right now."
-                m 1dkbla "Thank you."
-                m "I love you, [player]."
-                m "More than anything else in this fleeting world."
+                m 6dkbltdu "Thank you."
+
             else:
                 m 1sua "Oh...it's the ring!"
                 m 3hub "Thank you so much, [player]!"
@@ -1135,9 +1584,16 @@ label mas_reaction_promisering:
                 m 1dkbltuu "..."
                 m 3hkbltub "Aha, sorry, [player], I didn't mean to cry..."
                 m 3skbltda "It's just this is one of the happiest days of my life."
-                m 1skbltda "I love you so much, [player]~"
 
+            m 6dkbltdu "..."
+            m 6ekbfa "I...I just...I..."
+            call monika_kissing_motion(hide_ui=False)
+            m 6ekbfa "I love you, [player]..."
+            m 6dkbfu "More than anything else in this fleeting world~"
+            $ gift_ev = mas_getEV("mas_reaction_promisering")
+            $ store.mas_filereacts.delete_file(gift_ev.category)
             return "love"
+
         else:
             if not persistent._mas_tried_gift_ring:
                 if mas_isMoniNormal(higher=True):
@@ -1156,8 +1612,8 @@ label mas_reaction_promisering:
 
                 else:
                     m 2wud "Is that a ring?"
-                    m 2rsc "That's...unexpected."
-                    m "While I appreciate the thought...{w}I can't accept it right now."
+                    m 2rsc "That's...{w=0.5}unexpected."
+                    m "While I appreciate the thought...{w=1}I can't accept it right now."
                     m 2ekc "Sorry, [player]."
 
                 $ persistent._mas_tried_gift_ring = True
@@ -1167,7 +1623,6 @@ label mas_reaction_promisering:
                 m 2ekc "I need to be completely sure when I accept this that it means forever..."
                 m 2ekd "That you really are everything I hope you are."
                 m 2dsd "When I know that, I will happily accept your ring, [player]."
-            $ persistent._mas_acs_enable_promisering = False
     else:
         m 1rksdlb "[player]..."
         m 1rusdlb "You already gave me a ring!"
@@ -1178,7 +1633,7 @@ label mas_reaction_promisering:
 
 
 init 5 python:
-    addReaction("mas_reaction_cupcake", "cupcake", is_good=True)
+    addReaction("mas_reaction_cupcake", "cupcake", is_good=True, exclude_on=["d25g"])
     #Not sure why this was a bad gift. Dialogue doesn't reflect it being bad
     #plus, Monika said she wants either Natsuki's cupcakes or the player's
 
@@ -1332,7 +1787,7 @@ label mas_reaction_candycorn:
     return
 
 init 5 python:
-    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True)
+    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_hotchocolate:
     m 3hub "Hot chocolate!"
@@ -1385,7 +1840,7 @@ label mas_reaction_hotchocolate:
     return
 
 init 5 python:
-    addReaction("mas_reaction_fudge", "fudge", is_good=True)
+    addReaction("mas_reaction_fudge", "fudge", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_fudge:
     $ times_fudge_given = mas_getGiftStatsForDate("mas_reaction_fudge")
@@ -1420,7 +1875,7 @@ default persistent._mas_d25_already_gifted_cookies = False
 
 init 5 python:
     if store.mas_isD25Gift():
-        addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True)
+        addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_christmascookies:
     $ times_cookies_given = mas_getGiftStatsForDate("mas_reaction_christmascookies")
@@ -1452,7 +1907,7 @@ label mas_reaction_christmascookies:
 
 init 5 python:
     if store.mas_isD25Gift():
-        addReaction("mas_reaction_candycane", "candycane", is_good=True)
+        addReaction("mas_reaction_candycane", "candycane", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_candycane:
     $ times_cane_given = mas_getGiftStatsForDate("mas_reaction_candycane")
@@ -1846,7 +2301,7 @@ label mas_reaction_old_ribbon:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_roses", "roses", is_good=True)
+    addReaction("mas_reaction_gift_roses", "roses", is_good=True, exclude_on=["d25g"])
 
 default persistent._date_last_given_roses = None
 
@@ -1928,7 +2383,7 @@ label mas_reaction_gift_roses:
 
 
 init 5 python:
-    addReaction("mas_reaction_gift_chocolates", "chocolates", is_good=True)
+    addReaction("mas_reaction_gift_chocolates", "chocolates", is_good=True, exclude_on=["d25g"])
 
 default persistent._given_chocolates_before = False
 
@@ -2053,8 +2508,11 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
             m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
             m 2eka "I hope you don't mind, but I'm going to go change..."
 
-        # change to def
-        call mas_clothes_change()
+        # change to def normally, santa during d25 outfit season
+        $ clothes = mas_clothes_def
+        if persistent._mas_d25_in_d25_mode and mas_isD25Outfit():
+            $ clothes = mas_clothes_santa
+        call mas_clothes_change(clothes)
 
         m 2eua "Ah, that's better..."
         m 3hua "Thanks again for the wonderful gift~"
@@ -2218,7 +2676,6 @@ label mas_reaction_gift_clothes_orcaramelo_sweater_shoulderless:
     return
 
 label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
-
     python:
         sprite_data = mas_getSpriteObjInfo(
             (store.mas_sprites.SP_CLOTHES, "velius94_dress_whitenavyblue")
@@ -2226,7 +2683,7 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
         sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
 
         mas_giftCapGainAff(3)
-    
+
     m 1suo "Oh my gosh!"
     m 1sub "This dress is gorgeous, [player]!"
     m 3hub "I'm going to try it on right now!"
@@ -2234,13 +2691,14 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
     # try it on
     call mas_clothes_change(sprite_object, outfit_mode=True)
 
-    m 3eua "So,{w=0.5} what do you think?"
-    m "I think this shade of blue goes really well with the white."
+    m "So,{w=0.5} what do you think?"
+    m 3eua "I think this shade of blue goes really well with the white."
     $ scrunchie = monika_chr.get_acs_of_type('bunny-scrunchie')
 
     if scrunchie and scrunchie.name == "velius94_bunnyscrunchie_blue":
         m 3eub "And the bunny scrunchie complements the outfit nicely too!"
     m 1eka "Thank you so much, [player]."
+
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)

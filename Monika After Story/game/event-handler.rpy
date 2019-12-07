@@ -501,6 +501,12 @@ init 4 python:
         #Otherwise return this evaluation
         return ev.last_seen.year == year
 
+    def mas_lastSeenLastYear(ev_label):
+        """
+        Checks if the event corresponding to ev_label was last seen last year
+        """
+        return mas_lastSeenInYear(ev_label, datetime.date.today().year-1)
+
     # clean yearset
     store.evhand.cleanYearsetBlacklist()
 
@@ -1816,7 +1822,7 @@ init python:
         if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
             pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event',True)
+            pushEvent('continue_event',skipeval=True)
             persistent.current_monikatopic = 0
         return
 
@@ -2240,10 +2246,10 @@ label prompt_menu:
         call prompts_categories(False) from _call_prompts_categories_1
 
     elif madechoice == "love":
-        $ pushEvent("monika_love",True)
+        $ pushEvent("monika_love",skipeval=True)
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too",True)
+        $ pushEvent("monika_love_too",skipeval=True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
@@ -2456,5 +2462,5 @@ label mas_bookmarks:
     $ topic_choice = _return
 
     if topic_choice:
-        $ pushEvent(topic_choice,True)
+        $ pushEvent(topic_choice,skipeval=True)
     return

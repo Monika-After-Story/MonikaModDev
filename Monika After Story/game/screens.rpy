@@ -1829,7 +1829,7 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                if mas_finalfarewell_mode:
+                if mas_in_finalfarewell_mode:
                     textbutton _("-") action yes_action
                     textbutton _("-") action yes_action
                 else:
@@ -2435,7 +2435,7 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         draggable True
         has vbox
         null height 40
-        text "[_poem.title]\n\n[_poem.text]" style _styletext
+        text "{0}\n\n{1}".format(renpy.substitute(_poem.title), renpy.substitute(_poem.text)) style _styletext
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 

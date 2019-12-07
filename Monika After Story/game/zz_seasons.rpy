@@ -128,9 +128,14 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_cozy", "EVE", derandom=True)
         store.mas_hideEVL("monika_winter", "EVE", derandom=True)
         store.mas_hideEVL("monika_winter_dangers", "EVE", derandom=True)
+        store.mas_hideEVL("monika_snowmen", "EVE", derandom=True)
 
-        # disbale hot choc
+        # disable hot choc
         store.persistent._mas_acs_enable_hotchoc = False
+
+        # unhibernate islands greet
+        if not renpy.seen_label("greeting_ourreality"):
+            store.mas_unlockEVL("greeting_ourreality", "GRE")
 
 
     def _pp_summer():
@@ -168,6 +173,10 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
         store.mas_unlockEVL("monika_snowballfight", "EVE")
 
+        #For if you get snow (or we don't know if you get snow or not)
+        if store.persistent._mas_pm_gets_snow is not False:
+            store.mas_showEVL("monika_snowmen", "EVE", _random=True)
+
         # hide non-winter topics
         store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
         store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
@@ -176,6 +185,9 @@ init 10 python in mas_seasons:
         # enable hotchoc if it has been given
         if store.persistent._mas_c_hotchoc_been_given:
             store.persistent._mas_acs_enable_hotchoc = True
+
+        # want to ensure first time we see the islands they are dead and covered in snow
+        store.mas_lockEVL("greeting_ourreality", "GRE")
 
     
     # seaonal pp id:

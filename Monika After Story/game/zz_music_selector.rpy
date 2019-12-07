@@ -86,7 +86,7 @@ init -1 python in songs:
         #
         # RETURNS:
         #   The volume of the given audio channel (as a double/float)
-        return renpy.audio.audio.get_channel(channel).context.secondary_volume
+        return renpy.audio.audio.get_channel(channel).actual_volume
 
     def getPlayingMusicName():
         #

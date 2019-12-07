@@ -3911,6 +3911,19 @@ init -985 python:
             defval=datetime.datetime.now()
         )
 
+    def mas_isFirstSeshPast(_date):
+        """
+        Checks if the first session is past the given date
+
+        IN:
+            _date - datetime.date to check against
+
+        OUT:
+            boolean:
+                - True if first sesh is past given date
+                - False otherwise
+        """
+        return mas_getFirstSesh().date() > _date
 
     def mas_getLastSeshEnd():
         """
@@ -5058,12 +5071,57 @@ init 2 python:
         if not persistent._mas_player_bday:
             return False
 
-        if _date is None:
+        return mas_getPlayerAge(_date) >= 18
+
+    def mas_getPlayerAge(_date=None):
+        """
+        Gets the player age
+
+        IN:
+            _date - the datetime.date to get the player age at
+
+        OUT:
+            integer representing the player's current age or None if we don't have player's bday
+        """
+        if not persistent._mas_player_bday:
+            return 0
+
+        elif _date is None:
             _date = datetime.date.today()
 
-        #Build the date of the 18th bday and ret if we're past that date or not
-        eighteenth_bday = mas_utils.add_years(persistent._mas_player_bday, 18)
-        return _date >= eighteenth_bday
+        year_bday = mas_player_bday_curr(_date)
+        _years = year_bday.year - persistent._mas_player_bday.year
+
+        if _date < year_bday:
+            _years -= 1
+
+        return _years
+
+    def mas_canShowRisque(aff_thresh=2000):
+        """
+        Checks if we can show something risque
+
+        Conditions for this:
+            1. We're not in sensitive mode
+            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            3. Player is over 18
+            4. Aff condition (raw)
+
+        IN:
+            aff_thresh:
+                - Raw affection value to be greater than or equal to
+
+        OUT:
+            boolean:
+                - True if the above conditions are satisfied
+                - False if not
+        """
+        return (
+            not persistent._mas_sensitive_mode
+            and persistent._mas_first_kiss is not None
+            and mas_is18Over()
+            and _mas_getAffection() >= aff_thresh
+        )
 
     def mas_timePastSince(timekeeper, passed_time, _now=None):
         """

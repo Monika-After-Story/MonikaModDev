@@ -3093,11 +3093,6 @@ label greeting_ourreality:
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
     m 3hksdrb "Just give me a second to get it ready..."
-
-    #Force def weather for this
-    if mas_current_weather != mas_weather_def:
-        call mas_change_weather(mas_weather_def)
-
     m 1dsc "..."
     m 1dsd "Almost done..."
     m 1duu "Yeah, that should be good."
@@ -3136,11 +3131,11 @@ label greeting_ourreality:
     m 1hua "But it's a start."
     # m 1eub "I'll let you admire the scenery for now."
     # m 1hub "Hope you like it!"
-    $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
-    $ unlockEventLabel("mas_monika_islands")
+    $ mas_lockEVL("greeting_ourreality", "GRE")
+    $ mas_unlockEVL("mas_monika_islands", "EVE")
 
     # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands",True)
+    $ pushEvent("mas_monika_islands",skipeval=True)
     return
 
 init 5 python:
@@ -3176,12 +3171,24 @@ label greeting_returned_home:
     if persistent._mas_f14_on_date:
         jump greeting_returned_home_f14
 
-    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
+
+    # gone over checks
+    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(days=7):
         # did we miss f14 because we were on a date
         call mas_gone_over_f14_check
 
-    if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(7):
+    if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(days=7):
         call mas_gone_over_bday_check
+
+    if mas_d25 < datetime.date.today() <= mas_nye:
+        call mas_gone_over_d25_check
+
+    if mas_nyd <= datetime.date.today() <= mas_d25c_end:
+        call mas_gone_over_nye_check
+
+    if mas_nyd < datetime.date.today() <= mas_d25c_end:
+        call mas_gone_over_nyd_check
+
 
     # NOTE: this ordering is key, greeting_returned_home_player_bday handles the case
     # if we left before f14 on your bday and return after f14
@@ -3205,17 +3212,8 @@ label greeting_returned_home:
         if _return:
             return 'quit'
 
+        jump greeting_returned_home_cleanup
 
-label greeting_returned_home_cleanup:
-    $ need_to_reset_bday_decor = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
-
-    #If it's not o31, and we've got deco up, we need to clean up
-    if not need_to_reset_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
-        call mas_o31_ret_home_cleanup(time_out)
-
-    elif need_to_reset_bday_decor:
-        call return_home_post_player_bday
-    return
 
 label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):
@@ -3233,13 +3231,6 @@ label greeting_returned_home_morethan5mins:
     # otherwise, go to other flow
     jump greeting_returned_home_morethan5mins_other_flow
 
-#TODO: Clean this up eventually
-label greeting_returned_home_morethan5mins_cleanup:
-
-    $ grant_xp(xp.NEW_GAME)
-
-    # jump to cleanup
-    jump greeting_returned_home_cleanup
 
 label greeting_returned_home_morethan5mins_normalplus_flow:
     call greeting_returned_home_morethan5mins_normalplus_dlg
@@ -3254,10 +3245,32 @@ label greeting_returned_home_morethan5mins_other_flow:
     # FALL THROUGH
 
 label greeting_returned_home_morethan5mins_other_flow_aff:
-    # changed the point structure for low aff, might be a good idea, might now ~ JW
-    # you gain 0.5 per hour, max 2.5, min 0.5
+    # for low aff you gain 0.5 per hour, max 2.5, min 0.5
     $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
-    jump greeting_returned_home_morethan5mins_cleanup
+    #FALL THROUGH
+
+label greeting_returned_home_morethan5mins_cleanup:
+    $ grant_xp(xp.NEW_GAME)
+    #FALL THROUGH
+
+label greeting_returned_home_cleanup:
+    $ need_to_reset_bday_vars = persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday()
+
+    #If it's not o31, and we've got deco up, we need to clean up
+    if not need_to_reset_bday_vars and not mas_isO31() and persistent._mas_o31_in_o31_mode:
+        call mas_o31_ret_home_cleanup(time_out)
+
+    elif need_to_reset_bday_vars:
+        call return_home_post_player_bday
+
+    # Check if we are entering d25 season at upset-
+    if (
+        mas_isD25Outfit()
+        and not persistent._mas_d25_intro_seen
+        and mas_isMoniUpset(lower=True)
+    ):
+        $ persistent._mas_d25_started_upset = True
+    return
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
