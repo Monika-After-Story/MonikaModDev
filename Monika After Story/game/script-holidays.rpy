@@ -4279,10 +4279,10 @@ init -10 python:
 
         if persistent._mas_player_bday is None:
             return False
-        else:
-            if use_date_year:
-                return _date == mas_player_bday_curr(_date)
-            return _date == mas_player_bday_curr()
+
+        elif use_date_year:
+            return _date == mas_player_bday_curr(_date)
+        return _date == mas_player_bday_curr()
 
     def strip_mas_birthdate():
         """
