@@ -756,12 +756,12 @@ init python:
             #Step 1, verify that our start/end dates are datetime.datetimes or datetime.dates
             if type(start_date) is not datetime.datetime and type(start_date) is not datetime.date:
                 raise Exception(
-                    "{0} is not a valid start_date".format(start_date)
+                    "{0} is not a valid start_date (eventlabel: {1})".format(start_date, evl)
                 )
 
             if type(end_date) is not datetime.datetime and type(start_date) is not datetime.date:
                 raise Exception(
-                    "{0} is not a valid end_date".format(end_date)
+                    "{0} is not a valid end_date (eventlabel: {1})".format(end_date, evl)
                 )
 
             #Step 2, we need to turn datetime.date into datetime.datetime
@@ -857,7 +857,13 @@ init python:
             if _end_date < _now:
                 _start_date = ev.start_date
                 _end_date = ev.end_date
-                MASUndoActionRule.adjust_rule(ev, _start_date, _end_date)
+
+                #We prevent a NoneType addition by removing the rule if any fields here are None.
+                if not _start_date or not _end_date:
+                    MASUndoActionRule.remove_rule(ev)
+                else:
+                    MASUndoActionRule.adjust_rule(ev, _start_date, _end_date)
+
                 #We're now past the dates and need to undo the action
                 return True
             #We're still not at the date or we're within the dates, so we cannot go

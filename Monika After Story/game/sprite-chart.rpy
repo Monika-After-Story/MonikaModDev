@@ -176,10 +176,8 @@ image emptydesk = ConditionSwitch(
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 image mas_roses = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/monika/a/acs-roses-0.png",
-    "not morning_flag",
-    "mod_assets/monika/a/acs-roses-0-n.png"
+    "morning_flag", "mod_assets/monika/a/acs-roses-0.png",
+    "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
 )
 
 ### bday stuff
@@ -368,7 +366,8 @@ init -100 python in mas_sprites:
         "headphones",
         "earphones",
         "left-hair-flower-ear",
-        "left-hair-flower"
+        "left-hair-flower",
+        "front-hair-flower-crown"
     ]
     # default mux tyoes for left hair flower-baesd items
 
@@ -418,6 +417,13 @@ init -100 python in mas_sprites:
             ex_props={
                 EXP_A_LHSEL: True
             }
+        ),
+        "front-hair-flower-crown": ACSTemplate(
+            "front-hair-flower-crown",
+            mux_type=DEF_MUX_LHFE,
+            ex_props={
+                "front-hair-crown": True,
+            },
         ),
         "left-hair-flower-ear": ACSTemplate(
             "left-hair-flower-ear",
