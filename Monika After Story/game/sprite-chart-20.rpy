@@ -284,6 +284,20 @@ image monika 1ekbsa:
         0.06
         repeat
 
+image monika 1ekbsb:
+    block:
+        "monika 1ekbsb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dkbsb_static"
+        0.06
+        repeat
+
 image monika 1ekbsu:
     block:
         "monika 1ekbsu_static"
@@ -1640,6 +1654,20 @@ image monika 1subsb:
         0.06
         repeat
 
+image monika 1subsu:
+    block:
+        "monika 1subsu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsu_static"
+        0.06
+        repeat
+
 image monika 1subsw:
     block:
         "monika 1subsw_static"
@@ -2589,6 +2617,62 @@ image monika 2ekt:
             choice:
                 7
         "monika 2dkt_static"
+        0.06
+        repeat
+
+image monika 2ektda:
+    block:
+        "monika 2ektda_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dktda_static"
+        0.06
+        repeat
+
+image monika 2ektdd:
+    block:
+        "monika 2ektdd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dktdd_static"
+        0.06
+        repeat
+
+image monika 2ektpa:
+    block:
+        "monika 2ektpa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dktpa_static"
+        0.06
+        repeat
+
+image monika 2ektpd:
+    block:
+        "monika 2ektpd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dktpd_static"
         0.06
         repeat
 
@@ -5266,6 +5350,20 @@ image monika 3skbltda:
         0.06
         repeat
 
+image monika 3skbsa:
+    block:
+        "monika 3skbsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dkbsa_static"
+        0.06
+        repeat
+
 image monika 3sua:
     block:
         "monika 3sua_static"
@@ -6887,104 +6985,6 @@ image monika 4subfb:
             choice:
                 7
         "monika 4dubfb_static"
-        0.06
-        repeat
-
-image monika 4subftsb:
-    block:
-        "monika 4subftsb_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dubftsb_static"
-        0.06
-        repeat
-
-image monika 4sutsa:
-    block:
-        "monika 4sutsa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dutsa_static"
-        0.06
-        repeat
-
-image monika 4tfb:
-    block:
-        "monika 4tfb_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfb_static"
-        0.06
-        repeat
-
-image monika 4tfc:
-    block:
-        "monika 4tfc_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfc_static"
-        0.06
-        repeat
-
-image monika 4tfd:
-    block:
-        "monika 4tfd_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfd_static"
-        0.06
-        repeat
-
-image monika 4tfu:
-    block:
-        "monika 4tfu_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfu_static"
-        0.06
-        repeat
-
-image monika 4tfx:
-    block:
-        "monika 4tfx_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfx_static"
         0.06
         repeat
 

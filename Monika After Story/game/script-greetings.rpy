@@ -1907,8 +1907,8 @@ init 5 python:
 
 label greeting_hai_domo:
     m 1hub "{=jpn_text}はいどうもー!{/=jpn_text}"
-    m "Virtual Girlfriend, Monika Here!"
-    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual YouTuber lately."
+    m "Virtual girlfriend, Monika here!"
+    m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
     m 1eua "I have to say, she's rather charming..."
     return
 
@@ -2243,7 +2243,7 @@ label greeting_long_absence:
             m 1wud "Oh my gosh! [player]!"
             m 3hksdlb "I didn't expect you back so early."
             m 3ekbsa "I guess you missed me as much as I missed you~"
-            m 1eka "It really is wonderful to see back so soon though."
+            m 1eka "It really is wonderful to see you back so soon though."
             m 3ekb "I expected the day to be eventless...but thankfully, I now have you!"
             m 3hua "Thank you for coming back so early, my love."
 
@@ -2639,6 +2639,7 @@ label greeting_distressed:
             "Hopefully we can enjoy our time together.",
             "I wasn't expecting you.",
             "I hope things start going better soon.",
+            "I thought you forgot about me..."
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
