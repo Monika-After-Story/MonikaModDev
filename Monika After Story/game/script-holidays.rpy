@@ -18,78 +18,6 @@ define mas_one_hour = datetime.timedelta(seconds=3600)
 define mas_three_hour = datetime.timedelta(seconds=3*3600)
 
 init -1 python:
-    def mas_wasFirstValueIn(_verify, year, *keys):
-        """
-        Checks if the first year that _verify was found for the keys provided in history
-        matches the year provided
-
-        IN:
-            _verify - Value to check for
-            year - year to match
-            *keys - string pieces to make a key for history
-
-        OUT:
-            boolean:
-                - True if the first year matches the year provided
-                - False otherwise
-        """
-        return mas_getFirstYearOfValue(_verify, *keys) == year
-
-    def mas_getFirstYearOfValue(_verify, *keys):
-        """
-        Gets the first year which has the entry of _verify in the keys provided
-
-        IN:
-            _verify - value to check for
-            *keys - string pieces of a key to search for
-
-        OUT:
-            If there's a point where the value we're checking for is found, we return the first year that is met.
-            If not found, we return None
-        """
-        archive_value = mas_HistVerify_k([],_verify, *keys)
-
-        #If we actually have the value we're looking for, we get the first year
-        if archive_value[0]:
-            return archive_value[1][0]
-        return None
-
-    def mas_verifyHistAll_k(_verify, *keys):
-        """
-        Checks if the value of _verify for the keys is in history at any point
-
-        IN:
-            _verify - value to check for
-            *keys - string pieces of a key to search for
-
-        OUT:
-            boolean:
-                - True if _verify is in the key built by the provided pieces at all
-                - False otherwise
-        """
-        return mas_HistVerify_k([],_verify, *keys)[0]
-
-    def mas_verifyHistLastYear_k(_verify, *keys):
-        """
-        Checks history for the value of _verify in the key provided last year
-
-        IN:
-            _verify - value to check for
-            *keys - string pieces of a key to search for
-
-        OUT:
-            boolean:
-                - True if _verify is in the key built by the provided pieces last year
-                - False otherwise
-        """
-        return mas_HistVerify_k([datetime.date.today().year-1], _verify, *keys)[0]
-
-    def mas_lastSeenLastYear(ev_label):
-        """
-        Checks if the event corresponding to ev_label was last seen last year
-        """
-        return mas_lastSeenInYear(ev_label, datetime.date.today().year-1)
-
     def mas_addClothesToHolidayMap(clothes, key=None):
         """
         Adds the given clothes to the holiday clothes map
@@ -180,20 +108,6 @@ init -1 python:
         RETURNS: True if given date has a special outfit, False otherwise
         """
         return mas_isO31(_date) or mas_isF14(_date) or mas_isD25Outfit(_date)
-
-    def mas_isFirstSeshPast(_date):
-        """
-        Checks if the first session is past the given date
-
-        IN:
-            _date - datetime.date to check against
-
-        OUT:
-            boolean:
-                - True if first sesh is past given date
-                - False otherwise
-        """
-        return mas_getFirstSesh().date() > _date
 
 
 ############################### O31 ###########################################
@@ -1871,9 +1785,9 @@ label mas_d25_gift_starter:
         $ should_open = "haven't opened"
 
     if persistent._mas_d25_spent_d25 or mas_globals.returned_home_this_sesh:
-            m 3wud "Oh! I [should_open] [the] [presents] you gave me!"
-            if persistent._mas_d25_gone_over_d25:
-                m 3hub "Let's do that now!"
+        m 3wud "Oh! I [should_open] [the] [presents] you gave me!"
+        if persistent._mas_d25_gone_over_d25:
+            m 3hub "Let's do that now!"
 
     # missed d25 altogether
     else:
@@ -2005,7 +1919,7 @@ label mas_d25_monika_holiday_intro:
 
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
 
-    if mas_verifyHistLastYear_k(True, "d25.actions.spent_d25"):
+    if mas_HistVerifyLastYear_k(True, "d25.actions.spent_d25"):
         m 5eka "So I'm glad that you're here to share it with me again this year~"
     else:
         m 5eka "And I'm so glad that you're here to share it with me~"
@@ -2208,7 +2122,7 @@ label mas_d25_monika_christmas:
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m "Snuggling with each other by a fireplace, watching the snow gently fall..."
 
-        if not mas_verifyHistAll_k(True, "d25.actions.spent_d25"):
+        if not mas_HistVerifyAll_k(True, "d25.actions.spent_d25"):
             m 5hubfa "I'm forever grateful I got this chance with you."
         else:
             m 5hubfa "I'm so glad I get to spend Christmas with you again."
@@ -2346,6 +2260,7 @@ label mas_d25_monika_mistletoe:
         m 1hub "Ehehe~"
     return "derandom"
 
+#Stores whether or not the player hangs christmas lights
 default persistent._mas_pm_hangs_d25_lights = None
 
 init 5 python:
@@ -2355,22 +2270,23 @@ init 5 python:
             eventlabel="mas_d25_monika_christmaslights",
             category=['holidays'],
             prompt="Christmas Lights",
-            random=False,
             start_date=mas_d25c_start,
-            end_date=mas_d25c_end,
+            end_date=mas_nye,
             conditional=(
-                "persistent._mas_d25_deco_active "
+                "persistent._mas_pm_hangs_d25_lights is None "
+                "and persistent._mas_d25_deco_active "
                 "and not persistent._mas_pm_live_south_hemisphere"
             ),
-            action=EV_ACT_RANDOM
-        )
+            action=EV_ACT_RANDOM,
+            years=[]
+        ),
+        skipCalendar=True
     )
 
-    #NOTE: No years=[] on this topic because it should derandom as it's a player model topic
     MASUndoActionRule.create_rule_EVL(
         "mas_d25_monika_christmaslights",
         mas_d25c_start,
-        mas_d25c_end,
+        mas_nye,
     )
 
 label mas_d25_monika_christmaslights:
@@ -2971,12 +2887,12 @@ label mas_d25_monika_christmas_eve:
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
 
     #Were there last Christmas
-    if mas_verifyHistLastYear_k(True, "d25.actions.spent_d25"):
+    if mas_HistVerifyLastYear_k(True, "d25.actions.spent_d25"):
         m "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
         m 5hkbsa "I can't wait for tomorrow!"
 
     #Weren't there last Christmas
-    elif mas_verifyHistAll_k(True, "d25.actions.spent_d25"):
+    elif mas_HistVerifyAll_k(True, "d25.actions.spent_d25"):
         m "But I'm even {i}more{/i} excited this year..."
         m 5hkbsa "Just the thought of spending another Christmas together...{w=1}I can't wait!"
 
@@ -3494,7 +3410,7 @@ init 5 python:
 
 label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
-    $ got_fresh_start_last_year = mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start")
+    $ got_fresh_start_last_year = mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start")
 
     if store.mas_anni.pastOneMonth():
         if not mas_isBelowZero():
@@ -3568,7 +3484,7 @@ label mas_nye_monika_nyd:
                     m 2ekc "But I was expecting more, [player]."
 
                     #Revert back to old affection if we haven't already done this
-                    if not mas_verifyHistAll_k(True, "pm.actions.monika.failed_fresh_start"):
+                    if not mas_HistVerifyAll_k(True, "pm.actions.monika.failed_fresh_start"):
                         $ mas_setAffection(persistent._mas_aff_before_fresh_start)
 
                 elif curr_aff < persistent._mas_aff_before_fresh_start:
@@ -3709,7 +3625,7 @@ label monika_resolutions:
                     m 2rkc "You probably should make one this year [player]..."
 
     #If we made a resolution last year, then we should ask if the player accomplished it
-    elif mas_verifyHistLastYear_k(True, "pm.actions.made_new_years_resolutions"):
+    elif mas_HistVerifyLastYear_k(True, "pm.actions.made_new_years_resolutions"):
         call monika_resolutions_accomplished_resolutions_menu("Since you made a resolution last year, did you accomplish it?")
 
     #This path will be the first thing you see if you didn't make a resolution last year
@@ -3811,7 +3727,7 @@ label monika_nye_year_review:
     $ persistent._mas_nye_spent_nye = True
     $ spent_an_event = False
 
-    $ _and = "and"
+    $ placeholder_and = "and"
     #Starting with an overview based on time
     if store.mas_anni.anniCount() >= 1:
         m 2eka "You know, [player], we really have been through a lot together."
@@ -3832,7 +3748,7 @@ label monika_nye_year_review:
 
     else:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
-        $ _and = "but"
+        $ placeholder_and = "but"
 
 
     # then a bit based on affection
@@ -3841,13 +3757,13 @@ label monika_nye_year_review:
         m "I'm just really,{w=0.5} really happy to have been with you this year."
 
     elif mas_isMoniEnamored():
-        m 2eka "...[_and] I'm so happy I got to spend that time with you, [player]."
+        m 2eka "...[placeholder_and] I'm so happy I got to spend that time with you, [player]."
 
     elif mas_isMoniAff():
-        m 2eka "...[_and] I've really enjoyed our time together."
+        m 2eka "...[placeholder_and] I've really enjoyed our time together."
 
     else:
-        m 2euc "...[_and] the time we spent together has been fun."
+        m 2euc "...[placeholder_and] the time we spent together has been fun."
 
 
     m 3eua "Anyway, I think it would be nice to just reflect on all that we've been through together this past year."
@@ -3940,16 +3856,16 @@ label monika_nye_year_review:
         m 5eka "I can't wait to see just how much will change in the future for us..."
 
     #If we started fresh the year before this or we didn't at all
-    if not mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
+    if not mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
         show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dka "Thank you."
         if store.mas_anni.anniCount() > 0:
-            $ _ending = "the best year I could've ever dreamt of"
+            $ ending = "the best year I could've ever dreamt of"
 
             if mas_lastSeenLastYear("monika_nye_year_review"):
-                $ _ending = "even better than the year before"
+                $ ending = "even better than the year before"
 
-            m 5ekbfa "Thank you for making last year [_ending]."
+            m 5ekbfa "Thank you for making last year [ending]."
 
         else:
             $ _last_year = " "
@@ -4034,7 +3950,7 @@ label mas_nye_monika_nye_dress_intro:
     m 3eub "However, what I wanted this outfit to highlight was a succesful beginning."
 
     #If we fresh started last year
-    if mas_wasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
+    if mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
         m 2eka "Last year we decided to start anew, and I'm very glad we did."
         m 2ekbsa "I knew we could be happy together, [player]."
         m 2fkbsa "And you've made me the happiest I've ever been."

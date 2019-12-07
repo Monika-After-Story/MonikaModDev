@@ -501,6 +501,12 @@ init 4 python:
         #Otherwise return this evaluation
         return ev.last_seen.year == year
 
+    def mas_lastSeenLastYear(ev_label):
+        """
+        Checks if the event corresponding to ev_label was last seen last year
+        """
+        return mas_lastSeenInYear(ev_label, datetime.date.today().year-1)
+
     # clean yearset
     store.evhand.cleanYearsetBlacklist()
 

@@ -3743,7 +3743,7 @@ label monika_birthday:
 
             if (
                 mas_getEV("monika_birthday").shown_count == 0
-                and not mas_verifyHistAll_k(False, "922.actions.no_recognize")
+                and not mas_HistVerifyAll_k(False, "922.actions.no_recognize")
             ):
                 m 3eksdla "It's okay if you don't have anything planned, seeing as you just found out..."
                 m 1ekbsa "Just spending the day together is more than enough for me~"
@@ -3751,15 +3751,15 @@ label monika_birthday:
             else:
                 m 3eksdld "I guess you must have forgotten..."
                 if (
-                    mas_verifyHistLastYear_k(True, "922.actions.no_time_spent")
-                    or mas_verifyHistLastYear_k(True, "922.actions.no_recognize")
+                    mas_HistVerifyLastYear_k(True, "922.actions.no_time_spent")
+                    or mas_HistVerifyLastYear_k(True, "922.actions.no_recognize")
                 ):
                     m 2rksdlc "Again."
 
                 m 3eksdla "But that's okay, [player]..."
                 m 1eka "At least we're here, together~"
 
-    elif mas_verifyHistAll_k(False, "922.actions.no_recognize") or mas_recognizedBday():
+    elif mas_HistVerifyAll_k(False, "922.actions.no_recognize") or mas_recognizedBday():
         m 1hua "Ehehe..."
         m 3hub "You've already celebrated my birthday with me before, [player]!"
         m 3eka "Did you forget?"

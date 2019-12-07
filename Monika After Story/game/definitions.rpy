@@ -3911,6 +3911,19 @@ init -985 python:
             defval=datetime.datetime.now()
         )
 
+    def mas_isFirstSeshPast(_date):
+        """
+        Checks if the first session is past the given date
+
+        IN:
+            _date - datetime.date to check against
+
+        OUT:
+            boolean:
+                - True if first sesh is past given date
+                - False otherwise
+        """
+        return mas_getFirstSesh().date() > _date
 
     def mas_getLastSeshEnd():
         """
