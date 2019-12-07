@@ -1731,6 +1731,15 @@ label mas_holiday_d25c_autoload_check:
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
             mas_changeWeather(mas_weather_snow, by_user=True)
 
+    # if we are at normal- and gifted another outfit, change back to Santa next load
+    if (
+        mas_isMoniNormal(lower=True)
+        and persistent._mas_d25_in_d25_mode
+        and mas_isD25Outfit()
+        and (monika_chr.clothes != mas_clothes_def or monika_chr.clothes != store.mas_clothes_santa)
+    ):
+        $ monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
+
 
     #And then run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:

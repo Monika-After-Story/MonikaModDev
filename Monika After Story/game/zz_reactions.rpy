@@ -2508,8 +2508,11 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
             m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
             m 2eka "I hope you don't mind, but I'm going to go change..."
 
-        # change to def
-        call mas_clothes_change()
+        # change to def normally, santa during d25 outfit season
+        $ clothes = mas_clothes_def
+        if persistent._mas_d25_in_d25_mode and mas_isD25Outfit():
+            $ clothes = mas_clothes_santa
+        call mas_clothes_change(clothes)
 
         m 2eua "Ah, that's better..."
         m 3hua "Thanks again for the wonderful gift~"
