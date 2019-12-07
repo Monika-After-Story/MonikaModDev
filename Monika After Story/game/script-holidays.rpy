@@ -4282,7 +4282,7 @@ init -10 python:
         else:
             if use_date_year:
                 return _date == mas_player_bday_curr(_date)
-            return _date == mas_player_bday_curr
+            return _date == mas_player_bday_curr()
 
     def strip_mas_birthdate():
         """
