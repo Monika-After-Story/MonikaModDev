@@ -1800,7 +1800,7 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
  
     else:
@@ -1809,7 +1809,7 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
 
     $ persistent._mas_player_bday = selected_date
