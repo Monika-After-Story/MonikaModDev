@@ -69,9 +69,8 @@ init -1 python in songs:
             direct = -1
 
         # volume checks
-        new_vol = _sanitizeVolume(getVolume(channel)+(direct*vol_bump))
-
-        renpy.music.set_volume(new_vol, channel=channel)
+        new_vol = _sanitizeVolume(getUserVolume(channel)+(direct*vol_bump))
+        setUserVolume(new_vol, channel)
 
 
     def getVolume(channel):
@@ -98,7 +97,10 @@ init -1 python in songs:
 
         RETURNS: value of the user slider for the audio channel (double/float)
         """
-        return renpy.audio.audio.get_channel(channel).actual_volume
+        return renpy.game.preferences.volumes.get(
+            renpy.audio.audio.get_channel(channel).mixer,
+            0.0
+        )
 
 
     def getPlayingMusicName():
@@ -1024,7 +1026,7 @@ init python:
             mute_enabled - True means we are allowed to mute.
                 False means we are not
         """
-        curr_volume = songs.getVolume("music")
+        curr_volume = songs.getUserVolume("music")
         # sayori cannot mute
         if (
                 curr_volume > 0.0 
@@ -1035,9 +1037,9 @@ init python:
                 and mute_enabled
             ):
             songs.music_volume = curr_volume
-            renpy.music.set_volume(0.0, channel="music")
+            songs.setUserVolume(0.0, "music")
         else:
-            renpy.music.set_volume(songs.music_volume, channel="music")
+            songs.setUserVolume(songs.music_volume, "music")
 
 
     def play_song(song, fadein=0.0, loop=True, set_per=False):
