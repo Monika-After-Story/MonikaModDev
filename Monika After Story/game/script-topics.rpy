@@ -345,12 +345,12 @@ init python:
         if (
             ev is not None
             and ev.random
-            and ev.eventlabel.startswith("monika_")
+            and ev_label.startswith("monika_")
             # need to make sure we don't allow any events that start with monika_ that don't have a prompt
-            and ev.prompt != ev.eventlabel
+            and ev.prompt != ev_label
         ):
             if mas_findEVL("mas_topic_derandom") < 0:
-                persistent.flagged_monikatopic = ev.eventlabel
+                persistent.flagged_monikatopic = ev_label
                 pushEvent('mas_topic_derandom',skipeval=True)
                 renpy.notify(__("Topic flagged for removal."))
             else:
@@ -370,18 +370,24 @@ init python:
 
         ev = mas_getEV(ev_label)
 
+        # expandable whitelist for topics that we are fine with bookmarking
+        # that don't otherwise meet our requirements
+        bookmark_whitelist = [
+            "mas_monika_islands",
+        ]
+
         if (
             mas_isMoniNormal(higher=True)
             and ev is not None
-            and ev.eventlabel.startswith("monika_")
+            and (ev_label.startswith("monika_") or ev_label in bookmark_whitelist)
             # need to make sure we don't allow any events that start with monika_ that don't have a prompt
-            and ev.prompt != ev.eventlabel
+            and ev.prompt != ev_label
         ):
-            if ev.eventlabel not in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked.append(ev.eventlabel)
+            if ev_label not in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked.append(ev_label)
                 renpy.notify(__("Topic bookmarked."))
             else:
-                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev.eventlabel))
+                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev_label))
                 renpy.notify(__("Bookmark removed."))
 
     def mas_hasBookmarks():
