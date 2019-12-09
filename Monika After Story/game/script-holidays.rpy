@@ -2606,7 +2606,7 @@ label monika_aiwfc:
         m 1eksdla "I hope you don't mind, but I prepared a song for you."
         m 3hksdlb "I know it's a little cheesy, but I think you might like it."
         m 3eksdla "If your volume is off, would you mind turning it on for me?"
-        if songs.getVolume("music") == 0.0:
+        if songs.getUserVolume("music") == 0.0:
             m 3hksdlb "Oh, don't forget about your in game volume too!"
             m 3eka "I really want you to hear this."
         m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
@@ -2651,8 +2651,18 @@ label monika_aiwfc_song:
     $ disable_esc()
     $ mas_MUMURaiseShield()
 
-    $ play_song(None, 1.0)
+    # always unmute the music channel (or at least attempt to)
+    # TODO: there should probably be handling for sayori name case.
+    if songs.getVolume("music") == 0.0:
+        if songs.music_volume > 0.0:
+            $ mute_music()
+        else:
+            $ renpy.music.set_volume(1.0, channel="music")
+
+    # save background sound for later
     $ amb_vol = songs.getVolume("backsound")
+
+    $ play_song(None, 1.0)
     $ renpy.music.set_volume(0.0, 1.0, "background")
     $ renpy.music.set_volume(0.0, 1.0, "backsound")
 
