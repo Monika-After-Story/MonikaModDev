@@ -2654,10 +2654,7 @@ label monika_aiwfc_song:
     # always unmute the music channel (or at least attempt to)
     # TODO: there should probably be handling for sayori name case.
     if songs.getVolume("music") == 0.0:
-        if songs.music_volume > 0.0:
-            $ mute_music()
-        else:
-            $ renpy.music.set_volume(1.0, channel="music")
+        $ renpy.music.set_volume(1.0, channel="music")
 
     # save background sound for later
     $ amb_vol = songs.getVolume("backsound")
