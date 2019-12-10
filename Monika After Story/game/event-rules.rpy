@@ -836,14 +836,12 @@ init python:
                 True if we are past the stored end date and we need to
             """
             #NOTE: This should be used AFTER init 7
-            dates = persistent._mas_undo_action_rules.get(ev.eventlabel)
+            _start_date, _end_date = persistent._mas_undo_action_rules.get(ev.eventlabel)
 
-            if not ev or not dates:
-                #This ev doesn't exist and/or it doesn't exist in the rules dict, so no point checking this
-                return False
-
-            #Since these exist, let's unpack for easy usage
-            _start_date, _end_date = dates
+            #Check for invalid data
+            if not ev or not _start_date or not _end_date:
+                #This ev doesn't exist and/or it doesn't exist in the rules dict. We should set this to be removed
+                return None
 
             #Need to turn
             _now = datetime.datetime.now()
