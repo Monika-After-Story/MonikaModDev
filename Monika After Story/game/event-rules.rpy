@@ -858,11 +858,11 @@ init python:
                 _start_date = ev.start_date
                 _end_date = ev.end_date
 
-                #We prevent a NoneType addition by removing the rule if any fields here are None.
+                #We return none here
                 if not _start_date or not _end_date:
-                    MASUndoActionRule.remove_rule(ev)
-                else:
-                    MASUndoActionRule.adjust_rule(ev, _start_date, _end_date)
+                    return None
+
+                MASUndoActionRule.adjust_rule(ev, _start_date, _end_date)
 
                 #We're now past the dates and need to undo the action
                 return True
@@ -879,11 +879,24 @@ init python:
             IN:
                 per_rules - persistent dict/list to get rules from
             """
+            remove_list = list()
+
             for ev_label in per_rules:
                 ev = mas_getEV(ev_label)
-                if ev is not None and MASUndoActionRule.evaluate_rule(ev):
+                #Since we can have differing returns, we store this to use later
+                should_undo = MASUndoActionRule.evaluate_rule(ev)
+
+                #If we do have the dates and we're out of the time period, we undo the action
+                if ev is not None and should_undo:
                     Event._undoEVAction(ev)
 
+                #We ended up getting a none, so we need to add the ev to a list of ons we need to remove
+                elif should_undo is None:
+                    remove_list.append(ev)
+
+            #Now we go thru the items in remove list and remove their rules
+            for ev in remove_list:
+                MASUndoActionRule.remove_rule(ev)
 
     class MASStripDatesRule(object):
         """
