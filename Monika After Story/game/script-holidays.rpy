@@ -2623,7 +2623,8 @@ label monika_aiwfc:
 
     call monika_aiwfc_song
 
-    if not renpy.seen_label('monika_aiwfc_song'):
+    #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
+    if not mas_getEV("monika_aiwfc").shown_count:
         m 1eka "I hope you liked that, [player]."
         m 1ekbsa "I really meant it too."
         m 1ekbfa "You're the only gift I could ever want."

@@ -417,9 +417,11 @@ label v0_10_4(version="v0_10_4"):
         if ev:
             ev.random = not mas_isWinter()
 
-        ev = mas_getEV("monika_mountain")
-        if ev:
-            ev.random = not mas_isWinter()
+        #Only do this if the topic hasn't been answered yet
+        if persistent._mas_pm_would_like_mt_peak is None:
+            ev = mas_getEV("monika_mountain")
+            if ev:
+                ev.random = not mas_isWinter()
 
         #Run weather unlocks
         mas_weather_snow.unlocked=True
