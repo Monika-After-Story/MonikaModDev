@@ -174,6 +174,7 @@ label mas_monika_cherry_blossom1:
         m "This tree may look dead right now...but when it blooms, it's gorgeous."
     else:
         m "It's a beautiful tree, isn't it?"
+
     m "It's called a Cherry Blossom tree."
     m "They're native to Japan."
     m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picnic underneath the trees."
@@ -211,6 +212,7 @@ label mas_monika_cherry_blossom4:
     if mas_is_snowing or mas_isWinter():
         m "Or hot chocolate, even. It'd certainly help with the cold."
         m "Of course, even if that failed, we could always cuddle together...{w=0.5} That'd be really romantic~"
+
     else:
         m "But, it'd be nice to watch the falling petals with you."
         m "That'd be really romantic~"
@@ -240,10 +242,12 @@ label mas_monika_day1:
         m "But I'd rather avoid getting my books wet..."
         m "Soggy pages are a pain to deal with."
         m "Another time, maybe."
-    if mas_current_weather == mas_weather_overcast:
+
+    elif mas_current_weather == mas_weather_overcast:
         m "Reading outside with this weather wouldn't be too bad, but it could rain at any moment."
         m "I'd rather not risk it."
         m "Don't worry, [player]. We'll do it some other time."
+
     else:
         m "It's a nice day today."
         m "This weather would be good for a little book reading under the Cherry Blossom tree right, [player]?"
@@ -264,12 +268,14 @@ label mas_monika_day2:
         m "Staring into each other's eyes."
         m "Then we start leaning closer and closer until we're almost-"
         m "I think you can finish that thought yourself, [player]~"
-    if mas_is_snowing or mas_isWinter():
+
+    elif mas_is_snowing or mas_isWinter():
         m "Have you ever made a snow angel, [player]?"
         m "I've tried in the past, but never had much success..."
         m "It's a lot harder than it looks like."
         m "I bet we'd have a lot of fun, even if whatever we make doesn't end up looking like an angel."
         m "It's just a matter of being a bit silly, you know?"
+
     else:
         m "The weather looks nice."
         m "This would definitely be the best time to have a picnic."
@@ -286,6 +292,7 @@ label mas_monika_day3:
         m "It's raining pretty heavily..."
         m "I wouldn't want to be outside now."
         m "Though being indoors at a time like this feels pretty cozy, don't you think?"
+
     else:
         m "It's pretty peaceful outside."
         if mas_is_snowing or mas_isWinter():
@@ -293,6 +300,7 @@ label mas_monika_day3:
             m "Ahaha, that'd be so much fun!"
             m "I bet I could land a shot on you a few islands away."
             m "Some healthy competition never hurt anyone, right?"
+
         else:
             m "I wouldn't mind lazing around in the grass right now..."
             m "With your head resting on my lap..."
@@ -310,6 +318,7 @@ label mas_monika_night2:
         m "Too bad we can't see the stars tonight..."
         m "I would've loved to gaze at the cosmos with you."
         m "That's alright though, we'll get to see it some other time, then."
+
     else:
         m "Have you ever gone stargazing, [player]?"
         m "Taking some time out of your evening to look at the night sky and to just stare at the beauty of the sky above..."
@@ -325,6 +334,7 @@ label mas_monika_night3:
         m "Cloudy weather is kind of depressing, don't you think?"
         m "Especially at nighttime, when it hides the stars away from our view."
         m "It's such a shame, really..."
+
     else:
         m "What a beautiful night!"
         m "If I could, I'd add fireflies."
