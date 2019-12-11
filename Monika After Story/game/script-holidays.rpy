@@ -1923,7 +1923,13 @@ label mas_d25_monika_holiday_intro:
 
     if mas_lastSeenLastYear("mas_d25_monika_holiday_intro"):
         m 1hua "Can you believe it's already that time of year again?"
-        m 3eua "It seems like just yesterday we spent our first holiday season together, and now a whole year has gone by!"
+
+        $ the_last = "the last"
+
+        if mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "d25s.saw_an_intro"):
+            $ the_last = "our first"
+
+        m 3eua "It seems like just yesterday we spent [the_last] holiday season together, and now a whole year has gone by!"
 
         if mas_isMoniLove(higher=True):
             #if you've been with her for over a year, you really should be at Love by now
