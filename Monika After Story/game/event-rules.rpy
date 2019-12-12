@@ -836,7 +836,7 @@ init python:
                 True if we are past the stored end date and we need to
             """
             #NOTE: This should be used AFTER init 7
-            _start_date, _end_date = persistent._mas_undo_action_rules.get(ev.eventlabel)
+            _start_date, _end_date = persistent._mas_undo_action_rules.get(ev.eventlabel, (None, None))
 
             #Check for invalid data
             if not ev or not _start_date or not _end_date:
@@ -868,18 +868,13 @@ init python:
             return False
 
         @staticmethod
-        def check_persistent_rules(per_rules):
+        def check_persistent_rules():
             """
             Applies rules from persistent dict
 
             NOTE: uses mas_getEV
-
-            IN:
-                per_rules - persistent dict/list to get rules from
             """
-            remove_list = list()
-
-            for ev_label in per_rules:
+            for ev_label in persistent._mas_undo_action_rules.keys():
                 ev = mas_getEV(ev_label)
                 #Since we can have differing returns, we store this to use later
                 should_undo = MASUndoActionRule.evaluate_rule(ev)
@@ -888,13 +883,9 @@ init python:
                 if ev is not None and should_undo:
                     Event._undoEVAction(ev)
 
-                #We ended up getting a none, so we need to add the ev to a list of ons we need to remove
+                #If this is None, we need to pop due to bad data
                 elif should_undo is None:
-                    remove_list.append(ev)
-
-            #Now we go thru the items in remove list and remove their rules
-            for ev in remove_list:
-                MASUndoActionRule.remove_rule(ev)
+                    persistent._mas_undo_action_rules.pop(ev_label)
 
     class MASStripDatesRule(object):
         """
