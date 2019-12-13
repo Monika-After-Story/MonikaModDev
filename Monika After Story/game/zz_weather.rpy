@@ -834,11 +834,6 @@ init 5 python:
     )
 
 label monika_change_weather:
-
-    m 1hua "Sure!"
-
-label monika_change_weather_loop:
-
     show monika 1eua at t21
 
     $ renpy.say(m, "What kind of weather would you like?", interact=False)
@@ -876,15 +871,12 @@ label monika_change_weather_loop:
 
     $ sel_weather = _return
 
-    show monika at t11
-
     # return value False? then return
     if sel_weather is False:
-        m 1eka "Oh, alright."
-        m "If you want to change the weather, just ask, okay?"
-        return
+        jump prompt_menu
 
     elif sel_weather == "auto":
+        show monika at t11
         if mas_weather.force_weather:
             m 1hub "Sure!"
             m 1dsc "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
@@ -896,13 +888,13 @@ label monika_change_weather_loop:
         else:
             m 1hua "That's the current weather, silly."
             m "Try again~"
-            jump monika_change_weather_loop
+            jump monika_change_weather
         return
 
     if sel_weather == mas_current_weather and mas_weather.force_weather:
         m 1hua "That's the current weather, silly."
         m "Try again~" 
-        jump monika_change_weather_loop
+        jump monika_change_weather
 
     $ skip_outro = False
     $ skip_leadin = False

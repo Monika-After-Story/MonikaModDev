@@ -26,7 +26,7 @@ init -1 python in mas_stories:
     TYPE_SCARY = 0
 
     # pane constant
-    STORY_RETURN = "I changed my mind"
+    STORY_RETURN = "Nevermind"
     story_database = dict()
 
     def _unlock_everything():
@@ -210,8 +210,9 @@ label monika_short_stories_menu:
             # then push
             $ pushEvent(_return, skipeval=True)
 
-    # move her back to center
-    show monika at t11
+    else:
+        jump prompt_menu
+
     return
 
 # Stories start here

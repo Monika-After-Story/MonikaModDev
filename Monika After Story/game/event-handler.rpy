@@ -2283,13 +2283,17 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    $ nvm_text = "That's enough for now."
+    $ nvm_text = "Nevermind."
 
     $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
 
     call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
 
-    $pushEvent(_return)
+    if _return:
+        $ pushEvent(_return)
+
+    else:
+        jump prompt_menu
 
     return
 
@@ -2442,6 +2446,9 @@ label prompts_categories(pool=True):
             if len(current_category) > 0:
                 $ current_category.pop()
 
+        elif not _return:
+            jump prompt_menu
+
         else: # event picked
             $picked_event = True
             $pushEvent(_return)
@@ -2463,10 +2470,14 @@ label mas_bookmarks:
 
     show monika at t21
     call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
-    show monika at t11
 
     $ topic_choice = _return
 
     if topic_choice:
+        show monika at t11
         $ pushEvent(topic_choice,skipeval=True)
+
+    else:
+        jump prompt_menu
+
     return

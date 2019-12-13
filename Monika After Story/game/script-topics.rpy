@@ -13088,14 +13088,14 @@ label mas_topic_rerandom:
         $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False)
 
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
-    show monika at t11
 
     $ topic_choice = _return
 
     if not _return:
-        m 1eua "Okay, [player]."
+        jump prompt_menu
 
     else:
+        show monika at t11
         $ mas_showEVL(topic_choice, "EVE", _random=True)
         $ persistent._mas_player_derandomed.pop(persistent._mas_player_derandomed.index(topic_choice))
         m 1eua "Okay, [player]..."

@@ -249,8 +249,6 @@ init 5 python:
 
 
 label monika_showpoem:
-    m 1hub "Sure!"
-
     show monika 1eua at t21
     python:
         #We'll store the base DDLC poems here
@@ -273,9 +271,7 @@ label monika_showpoem:
     $ _poem = _return
 
     if not _poem:
-        m 1eka "Alright [player]."
-        m 3eua "If you ever want to read one of my poems, just ask okay?"
-        return
+        jump prompt_menu
 
     show monika 3hua at t11
     m 3hua "Alright!"

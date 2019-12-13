@@ -3264,9 +3264,6 @@ label monika_clothes_select:
         # user hit cancel
         m 1eka "Oh, alright."
 
-    # closing
-    m 1eub "If you want me to wear different clothes, just ask, okay?"
-
     return
 
 # selector for event days with special outfits for normal and upset people
@@ -3329,9 +3326,6 @@ label monika_event_clothes_select:
     if not _return:
         # user hit cancel
         m 1eka "Oh, alright."
-
-    # closing
-    m 1eub "If you want me to change back, just ask, okay?"
 
     if store.monika_chr.clothes == store.mas_clothes_def and not store.mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
@@ -3436,9 +3430,6 @@ label monika_hair_select:
         # user hit cancel
         m 1eka "Oh, alright."
 
-    # closing
-    m 1eub "If you want my hair in a different style, just ask, okay?"
-
     return
 
 ##### End monika hair topics
@@ -3499,7 +3490,6 @@ label monika_ribbon_select:
         m 1eka "Oh, alright."
 
     $ store.mas_selspr.set_prompt("ribbon", "change")
-    m 1eka "If you want me to change my hair tie, just ask, okay?"
 
     return
 #### End Ribbon change topic
@@ -3538,10 +3528,8 @@ label monika_hairclip_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type('left-hair-clip'):
         $ store.mas_selspr.set_prompt("left-hair-clip", "change")
-        m 1eka "If you want me to change my hairclip, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
-        m 1eka "If you want me to wear a hairclip again, just ask, okay?"
 
     return
 
@@ -3589,10 +3577,8 @@ label monika_hairflower_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("left-hair-flower"):
         $ store.mas_selspr.set_prompt("left-hair-flower", "change")
-        m 1eka "If you want me to change the flower, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("left-hair-flower", "wear")
-        m 1eka "If you want me to wear a flower, just ask, okay?"
 
     return
 
@@ -3632,10 +3618,8 @@ label monika_choker_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("choker"):
         $ store.mas_selspr.set_prompt("choker", "change")
-        m 1eka "If you want me to change my choker, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("choker", "wear")
-        m 1eka "If you want me to wear a choker, just ask, okay?"
 
     return
 

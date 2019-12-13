@@ -98,31 +98,18 @@ init 5 python:
 
 label monika_sing_song_pool:
     # what length of song do we want
-    $ song_length = None
+    $ song_length = "short"
     # do we have both long and short songs
     $ have_both_types = False
     # song type string to use in the switch dlg
-    $ switch_str = None
+    $ switch_str = "full"
     # so we can {fast} the renpy.say line after the first time
     $ end = ""
 
-    m 1hua "Sure!"
+    show monika 1eua at t21
+
     if mas_songs.hasUnlockedSongs(length="long") and mas_songs.hasUnlockedSongs(length="short"):
         $ have_both_types = True
-        m 3eua "What type of song would you like me to sing?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "What type of song would you like me to sing?{fast}"
-
-            "A short song.":
-                $ song_length = "short"
-                $ switch_str = "full"
-
-            "A full song.":
-                $ song_length = "long"
-                $ switch_str = "short"
-
-    show monika 1eua at t21
 
 label monika_sing_song_pool_menu:
     python:
@@ -168,9 +155,8 @@ label monika_sing_song_pool_menu:
             m 3hub "Alright!"
 
     else:
-        show monika at t11
-        m 1eka "Alright, [player]."
-        m 3eua "If you ever want me to sing to you, just let me know~"
+        jump prompt_menu
+
     return
 
 #START: Random song delegate
