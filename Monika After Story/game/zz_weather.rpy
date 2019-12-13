@@ -884,7 +884,6 @@ label monika_change_weather:
             #Set to false and return since nothing more needs to be done
             $ mas_weather.force_weather = False
             m 1eua "There we go!"
-            m 1eka "If you want me to change the weather, just ask. Okay?"
         else:
             m 1hua "That's the current weather, silly."
             m "Try again~"
@@ -915,6 +914,7 @@ label monika_change_weather:
     # TODO: maybe react to snow?
 
     if not skip_leadin:
+        show monika at t11
         m 1eua "Alright!"
         m 1dsc "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
 
@@ -923,6 +923,5 @@ label monika_change_weather:
 
     if not skip_outro:
         m 1eua "There we go!"
-        m "If you want to change the weather again, just ask me, okay?"
 
     return

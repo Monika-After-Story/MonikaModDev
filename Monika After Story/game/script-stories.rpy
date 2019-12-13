@@ -209,6 +209,7 @@ label monika_short_stories_menu:
 
             # then push
             $ pushEvent(_return, skipeval=True)
+            show monika at t11
 
     else:
         jump prompt_menu
