@@ -17,7 +17,7 @@ define mas_five_minutes = datetime.timedelta(seconds=5*60)
 define mas_one_hour = datetime.timedelta(seconds=3600)
 define mas_three_hour = datetime.timedelta(seconds=3*3600)
 
-init -1 python:
+init 10 python:
     def mas_addClothesToHolidayMap(clothes, key=None):
         """
         Adds the given clothes to the holiday clothes map
@@ -33,6 +33,9 @@ init -1 python:
             key = datetime.date.today()
 
         persistent._mas_event_clothes_map[key] = clothes.name
+
+        #We also unlock the event clothes selector here
+        mas_unlockEVL("monika_event_clothes_select", "EVE")
 
     def mas_addClothesToHolidayMapRange(clothes, start_date, end_date):
         """
@@ -53,6 +56,7 @@ init -1 python:
         for date in daterange:
             mas_addClothesToHolidayMap(clothes, date)
 
+init -1 python:
     def mas_checkOverDate(_date):
         """
         Checks if the player was gone over the given date entirely (taking you somewhere)
@@ -423,7 +427,7 @@ label mas_o31_autoload_check:
             if hair is not None and not hair.unlocked:
                 mas_unlockEVL("greeting_hairdown", "GRE")
 
-            # lock the event clothes selector
+            #Lock the event clothes selector
             mas_lockEVL("monika_event_clothes_select", "EVE")
 
         #If we drop to upset during O31, we should keep decor until we hit dis
@@ -738,8 +742,6 @@ label greeting_o31_cleanup:
         HKBShowButtons()
         # 5 - restart music
         mas_startup_song()
-        # 6 - unlock the event clothes selector
-        mas_unlockEVL("monika_event_clothes_select", "EVE")
     return
 
 #START: O31 DOCKSTAT FARES
@@ -1707,9 +1709,6 @@ label mas_holiday_d25c_autoload_check:
                 #Deco active
                 persistent._mas_d25_deco_active = True
 
-                #Unlock the event clothes selector
-                mas_unlockEVL("monika_event_clothes_select", "EVE")
-
                 #If we're loading in for the first time on D25, then we're gonna make it snow
                 if mas_isD25():
                     mas_changeWeather(mas_weather_snow, by_user=True)
@@ -1738,9 +1737,9 @@ label mas_holiday_d25c_autoload_check:
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
             mas_changeWeather(mas_weather_snow, by_user=True)
 
-    # if we are at normal- and gifted another outfit, change back to Santa next load
+    #If we are at normal and we've not gifted another outfit, change back to Santa next load
     if (
-        mas_isMoniNormal(lower=True)
+        mas_isMoniNormal()
         and persistent._mas_d25_in_d25_mode
         and mas_isD25Outfit()
         and (monika_chr.clothes != mas_clothes_def or monika_chr.clothes != store.mas_clothes_santa)
@@ -5080,6 +5079,9 @@ label mas_f14_autoload_check:
             mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
             mas_idle_mailbox.send_rebuild_msg()
 
+            #Need to lock the event clothes selector
+            mas_lockEVL("monika_event_clothes_select", "EVE")
+
             #Reset the f14 mode, and outfit if we're lower than the love aff level.
             persistent._mas_f14_in_f14_mode = False
             if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
@@ -5963,6 +5965,9 @@ label mas_bday_autoload_check:
         $ persistent._mas_bday_in_bday_mode = False
         #Also make sure we're no longer showing visuals
         $ persistent._mas_bday_visuals = False
+
+        #Lock the event clothes selector
+        $ store.mas_lockEVL("monika_event_clothes_select", "EVE")
 
         #And reset outfit if not at the right aff
         if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
