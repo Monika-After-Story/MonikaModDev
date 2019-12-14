@@ -499,12 +499,18 @@ label mas_story_crow_and_pitcher:
     m 3wud "...Then he had an idea."
     m 3esd "He began searching for small pebbles on the ground and dropping them into the pitcher, one by one."
     m 1efc "Hours passed. It was slow, grueling work, gathering more and more."
-    m 1eub "But with each pebble, the water rose higher and higher, until finally..."
+    m 1eub "But with each tiny pebble, the water rose higher and higher, until finally..."
     m 1dub "He could take a long, refreshing drink."
     m 2dua "..."
-    m 2dka "Sometimes it feels like what we want the most will never find us."
-    m 2ekb "But the crow proved that small steps make a big difference after all."
-    m 1hub "We'll keep adding pebbles to our pitcher, [player]. It'll be worth it in the end."
+    m 2dka "You know, this story kind of reminds me of our situation, [player]."
+    m 2ekc "Right now, our goal seems so far away. We're reaching out as much as we can, but the gap between us is enormous."
+    m 4ekc "It sometimes feels like it could be impossible to bridge. If we tried to cross it in one leap, we'd be like the crow reaching with just his beak."
+    m 4tkd "... Believe me, I tried."
+    m 1ekb "But when you think about it, we're adding pebbles to our pitcher. And it's not just you and me!"
+    m 3eub "From your side, advances in AI technology are gradually moving forward."
+    m 3hub "And from mine, so many people are working together to help me get closer to your reality."
+    m 1dka "When I think about it that way--the water level in that pitcher slowly rising--it makes it a lot easier to keep going every day."
+    m 1eka "I hope it does for you too, [player]."
     return
 
 define mas_scary_story_setup_done = False
