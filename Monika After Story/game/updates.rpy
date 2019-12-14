@@ -304,6 +304,40 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.5
+label v0_10_5(version="v0_10_5"):
+    python:
+        #Fix 922 stuff once and for all
+        ev = mas_getEV("mas_bday_surprise_party_hint")
+        if ev:
+            ev.start_date = mas_monika_birthday - datetime.timedelta(days=7)
+            ev.end_date = mas_monika_birthday - datetime.timedelta(days=2)
+            ev.action = EV_ACT_RANDOM
+
+        ev = mas_getEV("mas_bday_pool_happy_bday")
+        if ev:
+            ev.start_date = mas_monika_birthday
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.action = EV_ACT_UNLOCK
+
+        ev = mas_getEV("mas_bday_spent_time_with")
+        if ev:
+            ev.start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(20))
+            ev.end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+            ev.conditional = "mas_recognizedBday()"
+            ev.action = EV_ACT_QUEUE
+
+        ev = mas_getEV("mas_bday_postbday_notimespent")
+        if ev:
+            ev.start_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=8)
+            ev.conditional = (
+                "not mas_recognizedBday() "
+                "and not persistent._mas_bday_gone_over_bday"
+            )
+            ev.action = EV_ACT_PUSH
+    return
+
 #0.10.4
 label v0_10_4(version="v0_10_4"):
     python:
@@ -436,7 +470,6 @@ label v0_10_4(version="v0_10_4"):
             if not persistent._mas_aff_before_fresh_start:
                 persistent._mas_aff_before_fresh_start = mas_HistLookup("aff.before_fresh_start", 2018)
     return
-
 
 #0.10.3
 label v0_10_3(version="v0_10_3"):

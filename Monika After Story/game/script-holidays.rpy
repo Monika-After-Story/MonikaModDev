@@ -245,7 +245,7 @@ init -10 python:
         Selects an o31 costume to wear. Costumes that have not been worn
         before are selected first.
 
-        NOTE: o31 costume wear flag is NOT set here. Make sure to set this 
+        NOTE: o31 costume wear flag is NOT set here. Make sure to set this
             manually later.
 
         IN:
@@ -6099,7 +6099,7 @@ init 5 python:
             action=EV_ACT_UNLOCK,
             rules={"no unlock":0},
             start_date=mas_monika_birthday,
-            end_date=mas_monika_birthday + datetime.timedelta(1),
+            end_date=mas_monika_birthday + datetime.timedelta(days=1),
             years=[]
         ),
         code="CMP",
@@ -6336,7 +6336,7 @@ init 5 python:
             conditional="mas_recognizedBday()",
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
-            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(1), datetime.time(hour=1)),
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
             years=[]
         ),
         skipCalendar=True
@@ -6457,8 +6457,8 @@ init 5 python:
                 "and not persistent._mas_bday_gone_over_bday"
             ),
             action=EV_ACT_PUSH,
-            start_date=mas_monika_birthday+datetime.timedelta(1),
-            end_date=mas_monika_birthday+datetime.timedelta(8),
+            start_date=mas_monika_birthday+datetime.timedelta(days=1),
+            end_date=mas_monika_birthday+datetime.timedelta(days=8),
             years=[]
         ),
         skipCalendar=True
