@@ -13079,7 +13079,7 @@ label mas_topic_rerandom:
         derandomlist = mas_get_player_derandoms()
 
         derandomlist.sort()
-        return_prompt_back = ("Nevermind.", False, False, False, 20)
+        return_prompt_back = ("Nevermind", False, False, False, 20)
 
     show monika 1eua at t21
     if len(derandomlist) > 1:
@@ -13092,7 +13092,7 @@ label mas_topic_rerandom:
     $ topic_choice = _return
 
     if not _return:
-        jump prompt_menu
+        return "prompt"
 
     else:
         show monika at t11

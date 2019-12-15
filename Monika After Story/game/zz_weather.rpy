@@ -873,7 +873,7 @@ label monika_change_weather:
 
     # return value False? then return
     if sel_weather is False:
-        jump prompt_menu
+        return "prompt"
 
     elif sel_weather == "auto":
         show monika at t11

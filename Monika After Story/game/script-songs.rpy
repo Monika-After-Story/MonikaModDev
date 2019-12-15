@@ -155,7 +155,7 @@ label monika_sing_song_pool_menu:
             m 3hub "Alright!"
 
     else:
-        jump prompt_menu
+        return "prompt"
 
     return
 

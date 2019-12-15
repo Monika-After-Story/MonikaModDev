@@ -2104,6 +2104,9 @@ label call_next_event:
             if "love" in ret_items:
                 $ mas_ILY()
 
+            if "prompt" in ret_items:
+                jump prompt_menu
+
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 $ mas_clearNotifs()
@@ -2253,20 +2256,24 @@ label prompt_menu:
 
     elif madechoice == "love":
         $ pushEvent("monika_love",skipeval=True)
+        $ _return = True
 
     elif madechoice == "love_too":
         $ pushEvent("monika_love_too",skipeval=True)
+        $ _return = True
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
-        if not _return:
-            jump prompt_menu
 
     elif madechoice == "goodbye":
         call mas_farewell_start from _call_select_farewell
 
     else: #nevermind
         $_return = None
+
+    # check explicitly for False here due to how farewells return
+    if _return is False:
+        jump prompt_menu
 
 label prompt_menu_end:
 
@@ -2292,10 +2299,7 @@ label show_prompt_list(sorted_event_keys):
     if _return:
         $ pushEvent(_return)
 
-    else:
-        jump prompt_menu
-
-    return
+    return _return
 
 label prompts_categories(pool=True):
 
@@ -2446,14 +2450,11 @@ label prompts_categories(pool=True):
             if len(current_category) > 0:
                 $ current_category.pop()
 
-        elif not _return:
-            jump prompt_menu
-
         else: # event picked
             $picked_event = True
             $pushEvent(_return)
 
-    return
+    return _return
 
 # sets up the bookmarks menu
 init 5 python:
@@ -2477,7 +2478,4 @@ label mas_bookmarks:
         show monika at t11
         $ pushEvent(topic_choice,skipeval=True)
 
-    else:
-        jump prompt_menu
-
-    return
+    return _return

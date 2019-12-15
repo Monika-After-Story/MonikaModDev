@@ -271,7 +271,7 @@ label monika_showpoem:
     $ _poem = _return
 
     if not _poem:
-        jump prompt_menu
+        return "prompt"
 
     show monika 3hua at t11
     m 3hua "Alright!"

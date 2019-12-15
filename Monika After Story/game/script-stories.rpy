@@ -59,7 +59,7 @@ init 5 python:
 
 label monika_short_stories:
     call monika_short_stories_premenu(None)
-    return
+    return _return
 
 label monika_short_stories_premenu(story_type=None):
     $ end = ""
@@ -212,7 +212,7 @@ label monika_short_stories_menu:
             show monika at t11
 
     else:
-        jump prompt_menu
+        return "prompt"
 
     return
 
