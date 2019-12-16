@@ -39,6 +39,11 @@ init -100 python in mas_selspr:
 
     # prompt constants go here
     PROMPT_MAP = {
+        "choker": {
+            "_ev": "monika_choker_select",
+            "change": "Can you change your choker?",
+            "wear": "Can you wear a choker?",
+        },
         "clothes": {
             "_ev": "monika_clothes_select",
             "change": "Can you change your clothes?",
@@ -556,6 +561,8 @@ init -10 python in mas_selspr:
     # create the selectable lists
     # we also create a dict mapping similar to sprites.
     # maps
+    # key: sprite object name
+    # value: selectable object
     ACS_SEL_MAP = {}
     HAIR_SEL_MAP = {}
     CLOTH_SEL_MAP = {}
@@ -566,6 +573,7 @@ init -10 python in mas_selspr:
     CLOTH_SEL_SL = []
 
     GRP_TOPIC_LIST = [
+        "choker",
         "left-hair-clip",
         "left-hair-flower",
         "ribbon",
@@ -615,6 +623,14 @@ init -10 python in mas_selspr:
                 unlock_prompt(group)
             else:
                 lock_prompt(group)
+
+    
+    def _switch_to_wear_prompts():
+        """
+        Switches all prompts for grp_topic_list topics to use their wear prompt.
+        """
+        for group in GRP_TOPIC_LIST:
+            set_prompt(group, "wear")
 
 
     def _has_remover(group):
@@ -1424,18 +1440,14 @@ init -10 python in mas_selspr:
         _unlock_item(acs, SELECT_ACS)
 
 
-    def unlock_clothes(clothes, add_to_holiday_map=False):
+    def unlock_clothes(clothes):
         """
         Unlocks the given clothes' selectable
 
         IN:
             clothes - MASClothes object to unlock
-            add_to_holiday_map - add to the holiday map if we want this for happy+ for the day
         """
         _unlock_item(clothes, SELECT_CLOTH)
-
-        if add_to_holiday_map:
-            store.persistent._mas_event_clothes_map[datetime.date.today()] = clothes.name
 
 
     def unlock_hair(hair):
@@ -1480,6 +1492,9 @@ init -10 python in mas_selspr:
             sel_obj = _get_sel(sp_obj, sp_type)
             if check_prompt(sel_obj.group):
                 unlock_prompt(sel_obj.group)
+
+                # make sure the selector uses the right propmt
+
 
 
     # extension of mailbox
@@ -1768,8 +1783,30 @@ init -1 python:
 
         elif allow_lock:
             store.mas_selspr.lock_prompt(group)
-            
 
+    def mas_hasUnlockedClothesWithExprop(exprop, value=None):
+        """
+        Checks if we have unlocked clothes with a specific exprop
+
+        IN:
+            exprop - exprop to look for
+            value - value the exprop should be. Set to None to ignore.
+            (Default: None)
+
+        OUT:
+            boolean:
+                True if we have unlocked clothes with the exprop + value provided
+                False otherwise
+        """
+        clothes_with_exprop = MASClothes.by_exprop(exprop, value)
+
+        if not clothes_with_exprop:
+            return False
+
+        for clothes in clothes_with_exprop:
+            if mas_SELisUnlocked(clothes):
+                return True
+        return False
 
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
@@ -2028,8 +2065,9 @@ init -1 python:
             """
             if selected:
                 color = mas_ui.light_button_text_hover_color
+                
             else:
-                color = mas_ui.light_button_text_idle_color
+                color = mas_globals.button_text_idle_color
 
             return Text(
                 _text,
@@ -2714,7 +2752,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
             if mailbox.read_outfit_checkbox_visible():
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
-                    style "check_button"
+                    style mas_ui.st_cbx_style
                     activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocb"),
@@ -3167,6 +3205,9 @@ default persistent._mas_setting_ocb = False
 label monika_clothes_select:
     # setup
     python:
+        # set the other clothes selector to seen
+        persistent._seen_ever['monika_event_clothes_select'] = True
+
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
@@ -3228,6 +3269,74 @@ label monika_clothes_select:
 
     return
 
+# selector for event days with special outfits for normal and upset people
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_event_clothes_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("clothes", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
+        )
+    )
+
+label monika_event_clothes_select:
+    # setup
+    python:
+        # set the other clothes selector to seen
+        persistent._seen_ever['monika_clothes_select'] = True
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Do you want me to change?"
+        )
+        # only def and the outfit in question will be available here, so outfit mode only
+        mailbox.send_outfit_checkbox_visible(False)
+        mailbox.send_outfit_checkbox_checked(True)
+        sel_map = {}
+
+        available_clothes = mas_selspr.filter_clothes(True)
+
+        for index in range(len(available_clothes)-1, -1, -1):
+            spr_obj = available_clothes[index].get_sprobj()
+            if (
+                    spr_obj != mas_clothes_def
+            ):
+                available_clothes.pop(index)
+
+        clothes_to_add = persistent._mas_event_clothes_map.get(datetime.date.today())
+
+        #If there's something for today, then we'll add it to be unlocked
+        if clothes_to_add:
+            #Get the outfit selector and add it
+            available_clothes.append(mas_selspr.get_sel_clothes(
+                mas_sprites.get_sprite(
+                    mas_sprites.SP_CLOTHES,
+                    clothes_to_add
+                )
+            ))
+            available_clothes.sort(key=mas_selspr.selectable_key)
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    call mas_selector_sidebar_select_clothes(available_clothes, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want me to change back, just ask, okay?"
+
+    if store.monika_chr.clothes == store.mas_clothes_def and not store.mas_hasSpecialOutfit():
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
+
+    return
 
 #### ends Monika clothes topic
 
@@ -3355,7 +3464,26 @@ label monika_ribbon_select:
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which hair tie would you like me to use?")
+        # remove non-compatible acs
+        for index in range(len(use_acs)-1, -1, -1):
+            if (
+                not store.mas_sprites.is_hairacs_compatible(
+                    monika_chr.hair,
+                    use_acs[index].get_sprobj()
+                )
+            ):
+                use_acs.pop(index)
+        
+        # make sure ot use ribbon for remover type
+        use_acs.append(store.mas_selspr.create_selectable_remover(
+            "ribbon",
+            "ribbon",
+            "Basic Hair Band"
+        ))
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hair tie would you like me to use?"
+        )
         sel_map = {}
 
     m 1eua "Sure [player]!"
@@ -3365,7 +3493,7 @@ label monika_ribbon_select:
 #        $ monika_chr.reset_outfit(False)
 
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, remover_name="Basic Hair Band")
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
 
     if not _return:
         m 1eka "Oh, alright."
@@ -3439,6 +3567,13 @@ label monika_hairflower_select:
     python:
         use_acs = store.mas_selspr.filter_acs(True, group="left-hair-flower")
 
+        # since left-hair-flower group can have mutpile types, force using
+        #   left-hair-flower type for muxing
+        use_acs.append(store.mas_selspr.create_selectable_remover(
+            "left-hair-flower",
+            "left-hair-flower"
+        ))
+
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which flower would you like me to put in my hair?"
         )
@@ -3462,6 +3597,49 @@ label monika_hairflower_select:
     return
 
 #### End Monika hairflower
+
+#### Monika choker
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_choker_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("choker", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+label monika_choker_select:
+    python:
+        use_acs = store.mas_selspr.filter_acs(True, group="choker")
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which choker would you like me to wear?"
+        )
+        sel_map = {}
+
+    m 6eua "Sure [player]!"
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type("choker"):
+        $ store.mas_selspr.set_prompt("choker", "change")
+        m 1eka "If you want me to change my choker, just ask, okay?"
+    else:
+        $ store.mas_selspr.set_prompt("choker", "wear")
+        m 1eka "If you want me to wear a choker, just ask, okay?"
+
+    return
+
+#### End choker
 
 
 ############### END SELECTOR TOPICS ###########################################
