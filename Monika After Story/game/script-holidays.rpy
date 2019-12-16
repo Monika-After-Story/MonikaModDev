@@ -3743,7 +3743,7 @@ label monika_nye_year_review:
     $ persistent._mas_nye_spent_nye = True
     $ spent_an_event = False
 
-    $ placeholder_and = "and"
+    $ placeholder_and = "and "
     #Starting with an overview based on time
     if store.mas_anni.anniCount() >= 1:
         m 2eka "You know, [player], we really have been through a lot together."
@@ -3764,7 +3764,7 @@ label monika_nye_year_review:
 
     else:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
-        $ placeholder_and = "but"
+        $ placeholder_and = ""
 
 
     # then a bit based on affection
@@ -3773,13 +3773,13 @@ label monika_nye_year_review:
         m "I'm just really,{w=0.5} really happy to have been with you this year."
 
     elif mas_isMoniEnamored():
-        m 2eka "...[placeholder_and] I'm so happy I got to spend that time with you, [player]."
+        m 2eka "...[placeholder_and]I'm so happy I got to spend that time with you, [player]."
 
     elif mas_isMoniAff():
-        m 2eka "...[placeholder_and] I've really enjoyed our time together."
+        m 2eka "...[placeholder_and]I've really enjoyed our time together."
 
     else:
-        m 2euc "...[placeholder_and] the time we spent together has been fun."
+        m 2euc "...[placeholder_and]the time we spent together has been fun."
 
 
     m 3eua "Anyway, I think it would be nice to just reflect on all that we've been through together this past year."

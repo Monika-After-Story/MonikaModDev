@@ -320,7 +320,7 @@ label mas_mood_tired:
         m 1eka "If you're tired, maybe you should go lie down for a while?"
         m 1eua "Getting enough sleep on a daily basis is very important to your overall health."
         m 3euc "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
-        m 3hua "It can really mess with your health, [player]."
+        m 3ekd "It can really mess with your health, [player]..."
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
 
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
