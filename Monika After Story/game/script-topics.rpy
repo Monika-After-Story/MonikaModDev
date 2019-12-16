@@ -8917,10 +8917,20 @@ label monika_hydration:
     m 4huu "Why not get a glass of water right now, hmm?"
     return
 
-default persistent._mas_hasbeentothemepark = None
+#If player has been to a theme park or not
+default persistent._mas_pm_has_been_to_theme_park = None
 
+#NOTE: This is more describing an amusement park than a theme park
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_themepark",category=['life'],prompt="Theme parks",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_themepark",
+            category=['life'],
+            prompt="Theme parks",
+            random=True
+        )
+    )
 
 label monika_themepark:
     m 3eua "Hey, [player]!"
@@ -8929,14 +8939,15 @@ label monika_themepark:
     menu:
         m "Have you ever been to a theme park?{fast}"
         "Yes.":
-            $ persistent._mas_hasbeentothemepark = True
+            $ persistent._mas_pm_has_been_to_theme_park = True
             m 1hub "Really? That's great!"
             m 1lsu "I've never been to one, but I'd really like to."
 
         "No.":
-            $ persistent._mas_hasbeentothemepark = False
+            $ persistent._mas_pm_has_been_to_theme_park = False
             m 1hub "Really? You don't know what you're missing!"
             m 1lsu "Although I haven't been to one either...but I'd really like to."
+
     m 3esu "What if we arrange a date to a theme park for the future?"
     m 3esb "Wouldn't that be great?"
     m 3hub "Thrilling roller coasters, water rides, drop towers..."
@@ -8944,12 +8955,20 @@ label monika_themepark:
     show monika 5lsbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5lsbsa "Ehehe~, I think I'm getting a bit carried away, but..."
     m 5esbfu "I just can't help it when it comes to thinking about being together with you, [player]~"
-    return
+    return "derandom"
 
-default persistent._mas_likestravelling = None
+#If the player likes to travel or not
+default persistent._mas_pm_likes_travelling = None
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['life'],prompt="Travelling",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_travelling",
+            category=['life'],prompt="Travelling",
+            random=True
+        )
+    )
 
 label monika_travelling:
     m 1esa "Do you like travelling around the world, [player]?{nw}"
@@ -8957,7 +8976,7 @@ label monika_travelling:
     menu:
         m "Do you like travelling around the world, [player]?{fast}"
         "Yes.":
-            $ persistent._mas_likestravelling = True
+            $ persistent._mas_pm_likes_travelling = True
             m 1hua "That's great! I'm so glad you like doing it."
             m "It's one of the things I wanna do the most when I finally get out of this world."
             m 4esu "There's so much out there that I haven't been able to see yet..."
@@ -8971,7 +8990,7 @@ label monika_travelling:
                 m 5hublb "I hope that you will take me to a lot of cool places!"
             
         "Not really.":
-            $ persistent._mas_likestravelling = False
+            $ persistent._mas_pm_likes_travelling = False
             m 1eka "Aww, that's okay, [player]~"
             m 3huu "I wouldn't mind staying at home with you during vacations."
             m 3esb "Just by having the oportunity to be together in your reality I would feel pleased."
@@ -8981,27 +9000,18 @@ label monika_travelling:
             show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfu "Doesn't that sound like a dream?"
             m "Ehehe~"
-return
+    return "derandom"
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_desert",category=['misc'],prompt="Deserts",random=True))
-
-label monika_desert:
-    m 1eua "[player], have you ever been in a desert?"
-    m 1euu "I know this question is sudden, but it just came to my mind."
-    m 3hsb "Did you know that deserts are quite unique in their own way? Although they don't offer a lot of positive factors."
-    m 4eub "Their temperatures vary between extreme hot during daytime and freezing cold at night."
-    m "In addition, their average rainfall is quite low, making living there a hard task for humans."
-    m 3eku "Still, their surface is a great spot for a solar power generation, plus oil is commonly found beneath all that sand, so deserts are not as bad as they seem."
-    m 1lku "Anyways...ehehe, I think I got carried a bit with all this information."
-    m 1esc "Just one more thing, [player]. If you ever travel to a desert don't forget to always carry water with you, alright?"
-    show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5lkc "I wouldn't want to know that the person who I love the most suffers from extreme heat and dehydration in such a place."
-    m 5hub "Don't forget to take care of yourself, my love~"
-    return
-
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_metamorphosis",category=['literature, psychology'],prompt="The Metamorphosis",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_metamorphosis",
+            category=['literature, psychology'],
+            prompt="The Metamorphosis",
+            random=True
+        )
+    )
 
 label monika_metamorphosis:
     m 1eua "Hey [player], have you ever read {i}The Metamorphosis{/i}?"
@@ -9011,154 +9021,6 @@ label monika_metamorphosis:
     m 3eub "So if you ever have the time and chance to read it you should totally do it!"
     m 3eua "Perhaps...we could even read it together."
     m 1hublb "I don't mind reading it again if it's with you this time, my love~"
-    return
-
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_simulated_hardships",category=['life, psychology, monika'],prompt="Simulated hardships",random=True))
-
-label monika_simulated_hardships:
-    m 1lkc "Hey [player], I have been wondering..."
-    m 1ekc "This might sound weird but...do you feel accomplished in your life?"
-    m 3ltc "You know, since I discovered that everything in my reality is just a composition of code...I've been thinking quite a bit."
-    m 3rtc "All of the difficult tasks and challenges that I have been overcoming, were they even real?"
-    m 2ekc "I know it's probably not making any sense to you right now."
-    m 2dkc "Well, not to me at least. It's just bugging me so much."
-    m 2tkp "What if all of those challenges were programed to be there? If so... What if they were designed to be beaten?"
-    m 2tkc "Would that be considered the same as overcoming a real problem?"
-    show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5lkc "Would that mean that I haven't really overcome anything so far in my life?"
-    m 5eka "Ehehe...sorry [player], I think I might be getting too carried away with this."
-    m 5ekb "I shouldn't be thinking so much about it, Should I?"
-    m 5huu "All that matters right now is that I get to stay with you, [player]."
-    return
-
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_lovescale",category=['romance'],prompt="Love scale",random=True,aff_range=(mas_aff.NORMAL, None)))
-
-label monika_lovescale:
-    m 1hub "Ehehe~"
-    m 1lub "Hey, [player], I have a tricky question for you~"
-    m 1tub "You say that you do love me, don't you?"
-    m "But...I'm curious."
-    m "How much exactly?"
-    m 3tub "Is it maybe enough to move a mountain? To stop a train?"
-    m 3hub "Is it even bigger than all the love I feel for you?"
-    m 3lub "Well, I don't think that's even possible..."
-    m 3esblb "You should probably know by now that my love for you is bigger than anything else there is!"
-    m 2euu "Ehehe, I was just joking with you, my love~"
-    m 3esu "You don't have to worry about not knowing how to answer."
-    m "I don't even know how to describe the amount of love I have for you either~"
-    m 2ekbfu "Gosh, I'm so happy to get to be with you...~"
-    return
-
-default persistent._mas_knowsosu = None
-
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_osu",category=['games'],prompt="Osu!",random=True))
-
-label monika_osu:
-    m 4eua "You know, a while ago I was wandering around when I found a game called 'Osu!'."
-    m 4esu "Do you know it by any chance?{nw}"
-    $ _history_list.pop()
-    menu: 
-        m "Do you know it by any chance?{fast}"
-        "Yes.":
-            $ persistent._mas_knowsosu = True
-            m 1huu "Really? That's great~"
-            m 1luu "I didn't know you knew about those kinds of games."
-            m 3esb "Do you play it everyday? Also, I got surprised when I saw my song in the game."
-            m "Maybe playing it would allow you to become better at piano."
-            m 3huu "Seeing that sort of improvements would make me so happy~"
-            m 3ttu "I just hope that you don't end up forgetting me because of it."
-            show monika 5tub at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5tub "Ehehe...Just kidding, you silly~"
-
-        "No.":
-            $ persistent._mas_knowsosu = False
-            m 2kublu "Really? Well consider yourself lucky! Because I'm about to explain the game to you~"
-            m 3esu "'Osu!' is a rhythm game in which the objective is to click the circles that appear on screen following the rhythm of the music that plays."
-            m 2eku "It may seem simple, but rhythm games are known for having steep learning curves and being addictive."
-            m "There are also other game modes to play, like taiko, catch the beat, and mania, but I won't spoil them for you."
-            m 4tub "You could try it if you want to, but be careful not to forget me when you get absorbed into the game~"
-            show monika 5lsblb at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5lsblb "Although I shouldn't be the one talking about that. After all...I'm the one having my eyes on you all the time~"
-            m 5ekbfu "Ehehe~ I love you so much, [player]."
-    return
-
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_earthlikeplanets",category=['misc'],prompt="Earthlike Planets",random=True))
-
-label monika_earthlikeplanets:
-    m 1lua "Have you ever wondered how lucky we all are?"
-    m 4esa "If you think about it, the possibilities of having an existing planet that is suitable for human life are quite sparse."
-    m 4eka "Most of the celestial bodies out there don't support any kind of human activity."
-    m 4eku "Some of them have little to no gravity, no oxygen, or even terrain to stand on."
-    m 1eku "Yet, here we are, on planet Earth."
-    m 1hub "Isn't that great? You should be feeling lucky right now just for being alive."
-    m 2euu "It's almost like life itself gave us the oportunity to live..."
-    m 3esb "You better remember that next time you are feeling down, [player]!"
-    m 3tsb "Or... You could also come to me and allow me to lift your mood~"
-    m 1hublb "Ehehe~"
-    return
-
-define persistent._mas_didplayerbetray = None
-
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_betrayal",category=['misc'],prompt="Betrayal",random=True))
-
-label monika_betrayal:
-    m 1eka "...Say, [player]?"
-    m 1lka "Something came to my mind just now."
-    m 1eka "Have you ever betrayed someone by any means?"
-    m 4eka "I don't mean to 'betray' little promises with friends that could even be considered jokes."
-    m 4eku "I mean it in a real way... You know, breaking the trust someone had with you because you did something terrible to them."
-    m "You don't have to answer if you don't want to. It's completely understandable.{nw}"
-    $ _history_list.pop()
-    menu:
-        m "You don't have to answer if you don't want to, it's completely understandable.{fast}"
-        "Yes, I have betrayed someone.":
-            $ persistent._mas_didplayerbetray = True
-            m 2ekc "..."
-            m "It's alright, [player]."
-            m 3ekc "I know you probably didn't mean to do that."
-            m 3ekb "We all mess up sometimes, don't we?"
-            m "Maybe you didn't do it on purpose."
-            m "Maybe the situation pushed you into doing it in some way."
-            m 3ekc "Whatever happened, you have to make sure to never do that again, alright?"
-            m "You have to promise me."
-            m "Trust is not something to play with."
-            m "Try to keep that in mind."
-
-        "No, I haven't betrayed anyone.":
-            $ persistent._mas_didplayerbetray = False
-            m 2huu "I'm so happy to hear that, [player]."
-            m 3efb "People's trust isn't something to be played with."
-            m "So I'm glad to hear that from you."
-            m 3esa "And just so you know..."
-            m 3hublb "I...{w=1}would never betray you, [player]~."
-
-        "...":
-            m 2ekc "It's alright, [player]."
-            m "I won't force you to say anything."
-            m "I understand it's a deep topic to talk about, so I won't push you."
-            m 3ekc "Besides, what kind of girlfriend would I be if I did that?"
-            m 3ekb "Let's just try to forget this conversation existed in first place."
-    return "derandom"
-        
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_photography",category=['misc'],prompt="Photography",random=True))
-
-label monika_photography:
-    m 1eua "...Say, [player]?"
-    m 1esa "Do you happen to know about photography?"
-    m 3esu "It has become an interesting topic for me."
-    m "The more I research it, the more I like it."
-    m 3lsu "For example, did you know that the first photograph was taken using a box with a hole in it as a camera?"
-    m "Lenses weren't introduced until much later."
-    m 3esb "Also, early photography relied on a series of special liquids to work."
-    m 3hsb "Surely, old photos were much harder to take than modern ones, don't you think?"
-    m 1esa "Maybe one day I could take photography as my new hobby, it would be really interesting."
-    m 1euu "But for now...I'll focus on literature, and on you, my love~"
     return
 
 init 5 python:
