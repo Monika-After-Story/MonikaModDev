@@ -8918,37 +8918,37 @@ label monika_hydration:
     return
 
 #If player has been to a theme park or not
-default persistent._mas_pm_has_been_to_theme_park = None
+default persistent._mas_pm_has_been_to_amusement_park = None
 
 #NOTE: This is more describing an amusement park than a theme park
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_themepark",
+            eventlabel="monika_amusementpark",
             category=['life'],
-            prompt="Theme parks",
+            prompt="Amusement parks",
             random=True
         )
     )
 
-label monika_themepark:
+label monika_amusementpark:
     m 3eua "Hey, [player]!"
-    m "Have you ever been to a theme park?{nw}"
+    m "Have you ever been to an amusement park?{nw}"
     $ _history_list.pop()
     menu:
-        m "Have you ever been to a theme park?{fast}"
+        m "Have you ever been to a amusement park?{fast}"
         "Yes.":
-            $ persistent._mas_pm_has_been_to_theme_park = True
+            $ persistent._mas_pm_has_been_to_amusement_park = True
             m 1hub "Really? That's great!"
             m 1lsu "I've never been to one, but I'd really like to."
 
         "No.":
-            $ persistent._mas_pm_has_been_to_theme_park = False
+            $ persistent._mas_pm_has_been_to_amusement_park = False
             m 1hub "Really? You don't know what you're missing!"
             m 1lsu "Although I haven't been to one either...but I'd really like to."
 
-    m 3esu "What if we arrange a date to a theme park for the future?"
+    m 3esu "What if we arrange a date to one in the future?"
     m 3esb "Wouldn't that be great?"
     m 3hub "Thrilling roller coasters, water rides, drop towers..."
     m 3rsbsu "And maybe even a romantic Ferris wheel ride~"
