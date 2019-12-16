@@ -1783,8 +1783,30 @@ init -1 python:
 
         elif allow_lock:
             store.mas_selspr.lock_prompt(group)
-            
 
+    def mas_hasUnlockedClothesWithExprop(exprop, value=None):
+        """
+        Checks if we have unlocked clothes with a specific exprop
+
+        IN:
+            exprop - exprop to look for
+            value - value the exprop should be. Set to None to ignore.
+            (Default: None)
+
+        OUT:
+            boolean:
+                True if we have unlocked clothes with the exprop + value provided
+                False otherwise
+        """
+        clothes_with_exprop = MASClothes.by_exprop(exprop, value)
+
+        if not clothes_with_exprop:
+            return False
+
+        for clothes in clothes_with_exprop:
+            if mas_SELisUnlocked(clothes):
+                return True
+        return False
 
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
@@ -2043,8 +2065,9 @@ init -1 python:
             """
             if selected:
                 color = mas_ui.light_button_text_hover_color
+                
             else:
-                color = mas_ui.light_button_text_idle_color
+                color = mas_globals.button_text_idle_color
 
             return Text(
                 _text,
@@ -2729,7 +2752,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
             if mailbox.read_outfit_checkbox_visible():
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
-                    style "check_button"
+                    style mas_ui.st_cbx_style
                     activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocb"),
@@ -3441,7 +3464,26 @@ label monika_ribbon_select:
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which hair tie would you like me to use?")
+        # remove non-compatible acs
+        for index in range(len(use_acs)-1, -1, -1):
+            if (
+                not store.mas_sprites.is_hairacs_compatible(
+                    monika_chr.hair,
+                    use_acs[index].get_sprobj()
+                )
+            ):
+                use_acs.pop(index)
+        
+        # make sure ot use ribbon for remover type
+        use_acs.append(store.mas_selspr.create_selectable_remover(
+            "ribbon",
+            "ribbon",
+            "Basic Hair Band"
+        ))
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hair tie would you like me to use?"
+        )
         sel_map = {}
 
     m 1eua "Sure [player]!"
@@ -3451,7 +3493,7 @@ label monika_ribbon_select:
 #        $ monika_chr.reset_outfit(False)
 
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, remover_name="Basic Hair Band")
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
 
     if not _return:
         m 1eka "Oh, alright."
@@ -3524,6 +3566,13 @@ init 5 python:
 label monika_hairflower_select:
     python:
         use_acs = store.mas_selspr.filter_acs(True, group="left-hair-flower")
+
+        # since left-hair-flower group can have mutpile types, force using
+        #   left-hair-flower type for muxing
+        use_acs.append(store.mas_selspr.create_selectable_remover(
+            "left-hair-flower",
+            "left-hair-flower"
+        ))
 
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which flower would you like me to put in my hair?"

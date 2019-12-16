@@ -10,6 +10,9 @@
         "use_reg_for_l": true
     },
     "stay_on_start": true,
+    "ex_props": {
+        "bikini": true
+    },
     "select_info": {
         "display_name": "Bikini (Shell)",
         "thumb": "orcaramelo_bikini_shell",
