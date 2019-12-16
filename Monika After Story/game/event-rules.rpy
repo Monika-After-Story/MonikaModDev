@@ -382,7 +382,8 @@ init -1 python:
                 ev=None,
                 skip_visual=False,
                 random_chance=0,
-                setup_label=None
+                setup_label=None,
+                override_type=False
             ):
             """
             IN:
@@ -398,6 +399,9 @@ init -1 python:
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
                     (Default: None)
+                override_type - True will let this greeting override type
+                    checks during selection, False will not
+                    (Default: False)
 
             RETURNS:
                 a dict containing the specified rules
@@ -416,7 +420,8 @@ init -1 python:
                 EV_RULE_GREET_RANDOM: (
                     skip_visual,
                     random_chance,
-                    setup_label
+                    setup_label,
+                    override_type,
                 )
             }
 
@@ -461,6 +466,22 @@ init -1 python:
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
 
+        @staticmethod
+        def should_override_type(ev=None, rule=None):
+            """
+            IN:
+                ev - the event to evaluate, gets priority
+                rule - the MASGreetingRule to evaluate
+
+            RETURNS: True if the rule should override types, false if not
+            """
+            if ev:
+                rule = ev.rules.get(EV_RULE_GREET_RANDOM, None)
+
+            if rule is not None and len(rule) > 3:
+                return rule[3]
+
+            return False
 
         @staticmethod
         def should_skip_visual(event=None, rule=None):
@@ -735,12 +756,12 @@ init python:
             #Step 1, verify that our start/end dates are datetime.datetimes or datetime.dates
             if type(start_date) is not datetime.datetime and type(start_date) is not datetime.date:
                 raise Exception(
-                    "{0} is not a valid start_date".format(start_date)
+                    "{0} is not a valid start_date (eventlabel: {1})".format(start_date, evl)
                 )
 
             if type(end_date) is not datetime.datetime and type(start_date) is not datetime.date:
                 raise Exception(
-                    "{0} is not a valid end_date".format(end_date)
+                    "{0} is not a valid end_date (eventlabel: {1})".format(end_date, evl)
                 )
 
             #Step 2, we need to turn datetime.date into datetime.datetime
@@ -836,7 +857,13 @@ init python:
             if _end_date < _now:
                 _start_date = ev.start_date
                 _end_date = ev.end_date
-                MASUndoActionRule.adjust_rule(ev, _start_date, _end_date)
+
+                #We prevent a NoneType addition by removing the rule if any fields here are None.
+                if not _start_date or not _end_date:
+                    MASUndoActionRule.remove_rule(ev)
+                else:
+                    MASUndoActionRule.adjust_rule(ev, _start_date, _end_date)
+
                 #We're now past the dates and need to undo the action
                 return True
             #We're still not at the date or we're within the dates, so we cannot go
