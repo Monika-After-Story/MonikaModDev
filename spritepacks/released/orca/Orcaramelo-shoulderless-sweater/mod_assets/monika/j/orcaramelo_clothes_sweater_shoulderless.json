@@ -1,0 +1,29 @@
+{
+    "__author": "Orcaramelo & moniking",
+    "version": 2,
+    "type": 2,
+    "name": "orcaramelo_sweater_shoulderless",
+    "img_sit": "orcaramelo_sweater_shoulderless",
+    "pose_map": {
+        "mpm_type": 0,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Sweater (Shoulderless)",
+        "thumb": "orcaramelo_sweater_shoulderless",
+        "group": "clothes",
+        "select_dlg": [
+            "Feels cozy~",
+            "Fitting for a winter day!",
+            "It's very warm..."
+        ]
+    },
+    "giftname": "shoulderlesssweater"
+}

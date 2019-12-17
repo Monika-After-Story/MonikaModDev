@@ -369,6 +369,71 @@ init -850 python:
         """
         return store.mas_history.verify(".".join(keys), _verify, years_list)
 
+    def mas_HistWasFirstValueIn(_verify, year, *keys):
+        """
+        Checks if the first year that _verify was found for the keys provided in history
+        matches the year provided
+
+        IN:
+            _verify - Value to check for
+            year - year to match
+            *keys - string pieces to make a key for history
+
+        OUT:
+            boolean:
+                - True if the first year matches the year provided
+                - False otherwise
+        """
+        return mas_HistGetFirstYearOfValue(_verify, *keys) == year
+
+    def mas_HistGetFirstYearOfValue(_verify, *keys):
+        """
+        Gets the first year which has the entry of _verify in the keys provided
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            If there's a point where the value we're checking for is found, we return the first year that is met.
+            If not found, we return None
+        """
+        archive_value = mas_HistVerify_k([],_verify, *keys)
+
+        #If we actually have the value we're looking for, we get the first year
+        if archive_value[0]:
+            return archive_value[1][0]
+        return None
+
+    def mas_HistVerifyAll_k(_verify, *keys):
+        """
+        Checks if the value of _verify for the keys is in history at any point
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces at all
+                - False otherwise
+        """
+        return mas_HistVerify_k([],_verify, *keys)[0]
+
+    def mas_HistVerifyLastYear_k(_verify, *keys):
+        """
+        Checks history for the value of _verify in the key provided last year
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces last year
+                - False otherwise
+        """
+        return mas_HistVerify_k([datetime.date.today().year-1], _verify, *keys)[0]
 
     ## MASHistorySaver stuff
     
@@ -935,6 +1000,7 @@ init -810 python:
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
             "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
+            "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
 
             # actions / games
             "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
@@ -952,6 +1018,8 @@ init -810 python:
             "_mas_pm_longest_held_monika": "pm.actions.monika.longest_held_time",
             "_mas_pm_total_held_monika": "pm.actions.monika.total_held_time",
             "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
+            "_mas_pm_got_a_fresh_start": "pm.actions.monika.got_fresh_start",
+            "_mas_pm_failed_fresh_start": "pm.actions.monika.failed_fresh_start",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -1074,33 +1142,6 @@ init -810 python:
         dont_reset=True
     ))
 
-    # BDAY
-    # NOTE: kind of wish I put all the bday variables together. Since they are
-    #   not together, they will be here.
-    store.mas_history.addMHS(MASHistorySaver(
-        "922",
-        #datetime.datetime(2018, 9, 30),
-        datetime.datetime(2020, 1, 6), 
-        {
-            "_mas_bday_opened_game": "922.actions.opened_game",
-            "_mas_bday_no_time_spent": "922.actions.no_time_spent",
-            "_mas_bday_no_recognize": "922.actions.no_recognize",
-            "_mas_bday_said_happybday": "922.actions.said_happybday",
-            "_mas_bday_date_count": "922.actions.date.count",
-            "_mas_bday_date_affection_lost": "922.actions.date.aff_lost",
-            "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
-            "_mas_bday_sbp_aff_given": "922.actions.surprise.aff_given",
-            "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
-            "_mas_bday_sbp_found_cake": "922.actions.surprise.found_cake",
-            "_mas_bday_sbp_found_banners": "922.actions.surprise.found_banners",
-            "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons"
-        },
-        use_year_before=True,
-        exit_pp=store.mas_history._bday_exit_pp,
-        start_dt=datetime.datetime(2019, 9, 22),
-        end_dt=datetime.datetime(2019, 9, 24)
-    ))
-
     # AFFection
     store.mas_history.addMHS(MASHistorySaver(
         "aff",
@@ -1108,6 +1149,7 @@ init -810 python:
         {
             "_mas_aff_before_fresh_start": "aff.before_fresh_start"
         },
-        use_year_before=True
+        use_year_before=True,
+        dont_reset=True
     ))
 

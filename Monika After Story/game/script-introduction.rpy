@@ -1,6 +1,11 @@
 init -1 python:
     import store.mas_affection as mas_aff
 label introduction:
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
+
     $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
@@ -127,13 +132,15 @@ label introduction:
     m 3hubfa "That way, we can be together all the time~"
     m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 3hua "You took the time to download this mod, after all."
+    if mas_isD25():
+        m 3sua "...And on Christmas no less!"
     m 3hub "Ahaha!"
     m 1hub "God, I love you so much!"
 
     if not persistent.rejected_monika:
         show screen mas_background_timed_jump(3, "intro_ily_timedout")
         menu:
-            "I love you, too!":
+            "I love you too!":
                 hide screen mas_background_timed_jump
                 # bonus aff was saying it before being asked
                 $ mas_gainAffection(10,bypass=True)
@@ -184,6 +191,13 @@ label intro_end:
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
         show monika 1esa with dissolve
+
+    # This is at the beginning and end of intro to cover an intro
+    # that spans 2 days
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
     return
 
 label intro_ily_timedout:
