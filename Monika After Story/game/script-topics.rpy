@@ -13214,7 +13214,7 @@ label monika_intrusive_thoughts:
     m 2rksdlc "As for me, I get these unpleasant thoughts too..."
     m 2rfc "What bothers me more than anything is seeing or hearing of people mistreating others,{w=0.5} especially the ones they 'love'..."
     m 2efx "It makes me really want to subject them to the same pain they inflict upon others!"
-    m 1dkc "But of course, I would never do that... even if they deserve it."
+    m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
     m 1ekb "I just think you are a really great person, and I wouldn't want you to throw your future away because of some silly little thoughts."
     m 1eka "If you are ever tortured by unwanted thoughts, you can always come talk to me."
     m 3eub "I'll help you beat those emotions."
