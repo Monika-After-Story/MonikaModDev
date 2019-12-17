@@ -13197,7 +13197,7 @@ init 5 python:
     )
 
 label monika_intrusive_thoughts:
-    m 1euc "Hey, [player]..."
+    m 1rsc "Hey, [player]..."
     m 1ekd "Do you ever get thoughts that are upsetting, distressing, or all around unpleasant to you?"
     m 3eub "I've been reading on a study on what are called 'intrusive thoughts'. It's actually quite interesting." 
     m 3ekc "The study claims that the mind tends to think of some... unpleasant thoughts when triggered by certain, often negative circumstances."
