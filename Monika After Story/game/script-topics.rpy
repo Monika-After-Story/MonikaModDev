@@ -13214,7 +13214,7 @@ label monika_intrusive_thoughts:
     m 3tkd "It breaks their will and eventually overcomes them, leading them to act..."
     m 1dkc "It's a terrible downward spiral."
     m 1ekc "I hope you don't have to deal with them too much, [player]."
-    m 2efx "It makes me really want to subject them to the same pain they inflict upon others!"
+    m 1ekd "It'd break my heart to know you're suffering because of these awful thoughts."
     m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
     return
 
