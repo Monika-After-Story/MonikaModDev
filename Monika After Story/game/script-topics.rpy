@@ -13211,7 +13211,7 @@ label monika_intrusive_thoughts:
     extend 4eub "They might even do something good to prove that they aren't a bad person."
     m 2ekc "But for some people, these thoughts tend to happen really often...{w=0.3}{nw}"
     extend 2dkd "to the point where they can no longer block them out..."
-    m 3tkd "It breaks down their will, and eventually the thoughts overcome them...{w=0.5} and they begin to act on them."
+    m 3tkd "It breaks their will and eventually overcomes them, leading them to act..."
     m 2rksdlc "As for me, I get these unpleasant thoughts too..."
     m 2rfc "What bothers me more than anything is seeing or hearing of people mistreating others,{w=0.5} especially the ones they 'love'..."
     m 2efx "It makes me really want to subject them to the same pain they inflict upon others!"
