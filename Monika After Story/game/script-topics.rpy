@@ -13201,7 +13201,7 @@ label monika_intrusive_thoughts:
     m 1euc "Have you ever had intrusive thoughts?"
     m 3eud "I've been reading a study on them, it's actually quite interesting."
     m 3ekc "The study claims that the mind tends to think of some...{w=0.2}unpleasant things when triggered by certain, often negative circumstances."
-    m 1esd "These thoughts can be anything from sadistic, violent, vengeful, or even sexual."
+    m 1esd "They can be anything from sadistic, violent, vengeful, to even sexual."
     m 2rkc "When most people start to think of these thoughts, they feel disgusted by them."
     m 2dkd "And what's worse, they start to believe that they are a bad person because they think that!"
     m 3wuo "But the truth is, it doesn't make you a bad person at all!"
