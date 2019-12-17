@@ -13199,7 +13199,7 @@ init 5 python:
 label monika_intrusive_thoughts:
     m 1rsc "Hey, [player]..."
     m 1euc "Have you ever had intrusive thoughts?"
-    m 3eub "I've been reading on a study on what are called 'intrusive thoughts'. It's actually quite interesting." 
+    m 3eud "I've been reading a study on them, it's actually quite interesting."
     m 3ekc "The study claims that the mind tends to think of some... unpleasant thoughts when triggered by certain, often negative circumstances."
     m 1esd "These thoughts can be anything from sadistic, violent, vengeful, or even sexual."
     m 2rkc "When most people start to think of these thoughts, they feel disgusted by them."
