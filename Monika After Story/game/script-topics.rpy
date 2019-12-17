@@ -13215,7 +13215,6 @@ label monika_intrusive_thoughts:
     m 2rfc "What bothers me more than anything is seeing or hearing of people mistreating others,{w=0.5} especially the ones they 'love'..."
     m 2efx "It makes me really want to subject them to the same pain they inflict upon others!"
     m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
-    m 1eka "If you are ever tortured by unwanted thoughts, you can always come talk to me."
     return
 
 init 5 python:
