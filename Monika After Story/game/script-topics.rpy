@@ -13206,7 +13206,7 @@ label monika_intrusive_thoughts:
     m 2tkd "...and what's worse, they start to believe that they're a bad person because they'd even think that."
     m 3ekd "But the truth is, it doesn't make you a bad person at all!"
     m 3rka "It's actually natural to have these thoughts..."
-    m 1rksdlc "But what separates good people from the bad people is how they act on those thoughts."
+    m 3eud "What matters is how you act on them."
     m 4esd "A good person would never act on unwanted thoughts like that."
     m 4eub "Instead, they might do something good to prove to themselves and others that they aren't a bad person at all."
     m 2dkc "But for some people, these thoughts tend to happen very often, to the point where they can no longer block them out..."
