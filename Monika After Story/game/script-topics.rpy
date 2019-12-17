@@ -13216,7 +13216,6 @@ label monika_intrusive_thoughts:
     m 2efx "It makes me really want to subject them to the same pain they inflict upon others!"
     m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
     m 1eka "If you are ever tortured by unwanted thoughts, you can always come talk to me."
-    m 3eub "I'll help you beat those emotions."
     return
 
 init 5 python:
