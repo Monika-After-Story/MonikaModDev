@@ -13204,7 +13204,7 @@ label monika_intrusive_thoughts:
     m 1esd "They can be anything from sadistic, violent, vengeful, to even sexual."
     m 2rkc "When most people have an intrusive thought, they feel disgusted by it..."
     m 2tkd "...and what's worse, they start to believe that they're a bad person because they'd even think that."
-    m 3wuo "But the truth is, it doesn't make you a bad person at all!"
+    m 3ekd "But the truth is, it doesn't make you a bad person at all!"
     m 4eub "It's very natural to have these thoughts."
     m 1rksdlc "But what separates good people from the bad people is how they act on those thoughts."
     m 4esd "A good person would never act on unwanted thoughts like that."
