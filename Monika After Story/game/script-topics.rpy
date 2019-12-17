@@ -13208,7 +13208,7 @@ label monika_intrusive_thoughts:
     m 3rka "It's actually natural to have these thoughts..."
     m 3eud "What matters is how you act on them."
     m 4esa "A good person would never act on their intrusive thoughts.{w=0.4} {nw}"
-    m 4eub "Instead, they might do something good to prove to themselves and others that they aren't a bad person at all."
+    extend 4eub "They might even do something good to prove that they aren't a bad person."
     m 2dkc "But for some people, these thoughts tend to happen very often, to the point where they can no longer block them out..."
     m 3tkd "It breaks down their will, and eventually the thoughts overcome them...{w=0.5} and they begin to act on them."
     m 2rksdlc "As for me, I get these unpleasant thoughts too..."
