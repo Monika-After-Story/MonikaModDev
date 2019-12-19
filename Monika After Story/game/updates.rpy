@@ -195,7 +195,71 @@ init python:
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
 
+init 7 python:
+    def mas_transferTopicData(
+        new_topic_evl,
+        old_topic_evl,
+        old_topic_ev_db,
+        transfer_unlocked=True,
+        transfer_shown_count=True,
+        transfer_seen_data=True,
+        transfer_last_seen=True,
+        erase_topic=True
+    ):
+        """
+        Transfers topic data from ev to ev
 
+        IN:
+            new_topic_evl - new topic's eventlabel
+            old_topic_evl - old topic's eventlabel
+            old_topic_ev_db - event database containing the old topic
+            transfer_unlocked - whether or not we should transfer the unlocked property of the old topic
+            (Default: True)
+            transfer_shown_count - whether or not we should transfer the shown_count property of the old topic
+            (Default: True)
+            transfer_seen_data - whether or not we should transfer the _seen_ever state of the old topic
+            (Default: True)
+            transfer_last_seen - whether or not we should transfer the last_seen property of the old topic
+            (Default: True)
+            erase_topic - whether or not we should erase this topic after transferring data
+            (Defualt: True)
+        """
+        #Build new ev
+        new_ev = mas_getEV(new_topic_evl)
+
+        #if old ev exists in the evdb, then we need to build it and get it
+        if old_topic_evl in old_topic_ev_db:
+            old_ev = Event(
+                old_topic_ev_db,
+                old_topic_evl
+            )
+        else:
+            old_ev = None
+
+        if new_ev is not None and old_ev is not None:
+            if transfer_unlocked:
+                #If old ev is unlocked, we want the new one to be too
+                new_ev.unlocked = old_ev.unlocked
+
+            if transfer_shown_count:
+                #Match the shown counts
+                new_ev.shown_count += old_ev.shown_count
+
+            if (
+                transfer_last_seen
+                and old_ev.last_seen is not None
+                and (new_ev.last_seen is None or new_ev.last_seen <= old_ev.last_seen)
+            ):
+                #For potential unstable users, last seen should be accurate
+                new_ev.last_seen = old_ev.last_seen
+
+            if transfer_seen_data:
+                #Now transfer the seen data
+                mas_transferTopicSeen(old_topic_evl, new_topic_evl)
+
+            #And erase this topic if we need to
+            if erase_topic:
+                mas_eraseTopic(old_topic_evl, old_topic_ev_db)
 
 
 # this needs to run post script-topics
@@ -336,6 +400,45 @@ label v0_10_5(version="v0_10_5"):
                 "and not persistent._mas_bday_gone_over_bday"
             )
             ev.action = EV_ACT_PUSH
+
+        #Give fun facts label names
+        fun_facts_evls = {
+            #Good facts
+            "mas_fun_facts_1": "mas_fun_fact_librocubiculartist",
+            "mas_fun_facts_2": "mas_fun_fact_menu_currency",
+            "mas_fun_facts_3": "mas_fun_fact_love_you",
+            "mas_fun_facts_4": "mas_fun_fact_morpheus",
+            "mas_fun_facts_5": "mas_fun_fact_otter_hand_holding",
+            "mas_fun_facts_6": "mas_fun_fact_chess",
+            "mas_fun_facts_7": "mas_fun_fact_struck_by_lightning",
+            "mas_fun_facts_8": "mas_fun_fact_honey",
+            "mas_fun_facts_9": "mas_fun_fact_vincent_van_gone",
+            "mas_fun_facts_10": "mas_fun_fact_king_snakes",
+            "mas_fun_facts_11": "mas_fun_fact_strength",
+            "mas_fun_facts_12": "mas_fun_fact_reindeer_eyes",
+            "mas_fun_facts_13": "mas_fun_fact_bananas",
+            "mas_fun_facts_14": "mas_fun_fact_pens",
+            "mas_fun_facts_15": "mas_fun_fact_density",
+            "mas_fun_facts_16": "mas_fun_fact_binky",
+            "mas_fun_facts_17": "mas_fun_fact_windows_games",
+            "mas_fun_facts_18": "mas_fun_fact_mental_word_processing",
+            "mas_fun_facts_19": "mas_fun_fact_I_am",
+            "mas_fun_facts_20": "mas_fun_fact_low_rates",
+
+            #Bad facts
+            "mas_bad_facts_1": "mas_bad_fact_10_percent",
+            "mas_bad_facts_2": "mas_bad_fact_taste_areas",
+            "mas_bad_facts_3": "mas_bad_fact_antivaxx",
+            "mas_bad_facts_4": "mas_bad_fact_tree_moss",
+        }
+
+        for old_evl, new_evl in fun_facts_evls.iteritems():
+            mas_transferTopicData(
+                new_evl,
+                old_evl,
+                persistent._mas_fun_facts_database,
+                transfer_unlocked=False
+            )
     return
 
 #0.10.4
