@@ -1223,7 +1223,8 @@ init -1 python:
             "Would you like to open your present?~",
             "What kind of {i}presents{/i} do you want?",
             "Open your present, ehehe~",
-            "All I want for Christmas is you~"
+            "All I want for Christmas is you~",
+            "Santa baby~"
         ]
     )
 
@@ -1256,7 +1257,9 @@ init -1 python:
         visible_when_locked=False,
         hover_dlg=None,
         select_dlg=[
-            "TODO: ME",
+            "Are we going somewhere special, [player]?",
+            "Very formal!",
+            "Any special occasion, [player]?"
         ],
     )
 
