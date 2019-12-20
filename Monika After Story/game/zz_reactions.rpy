@@ -704,7 +704,7 @@ init -11 python in mas_filereacts:
         """
         if store.mas_isMonikaBirthday():
             return "mas_reaction_gift_starter_bday"
-        elif store.mas_isD25Gift():
+        elif store.mas_isD25():
             return "mas_reaction_gift_starter_d25"
         elif store.mas_isF14():
             return "mas_reaction_gift_starter_f14"
@@ -1182,7 +1182,7 @@ label mas_reaction_gift_starter_d25:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A present? For me?"
-    if mas_getGiftStatsRange(mas_d25g_start,mas_d25+datetime.timedelta(days=1))[0] == 0:
+    if mas_getGiftStatsRange(mas_d25c_start, mas_d25 + datetime.timedelta(days=1))[0] == 0:
         m 1eka "You really didn't have to get me anything for Christmas..."
         m 3hua "But I'm so happy that you did!"
     else:
@@ -1874,7 +1874,7 @@ label mas_reaction_fudge:
 default persistent._mas_d25_already_gifted_cookies = False
 
 init 5 python:
-    if store.mas_isD25Gift():
+    if store.mas_isD25Pre():
         addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_christmascookies:
@@ -1906,7 +1906,7 @@ label mas_reaction_christmascookies:
     return
 
 init 5 python:
-    if store.mas_isD25Gift():
+    if store.mas_isD25Pre():
         addReaction("mas_reaction_candycane", "candycane", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_candycane:

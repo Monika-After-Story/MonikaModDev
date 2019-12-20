@@ -1121,9 +1121,6 @@ define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 11)
 # end of christmas season (exclusive)
 define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
 
-# start of gift = d25 gift (inclusive)
-define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
-
 
 
 init -810 python:
@@ -1274,24 +1271,6 @@ init -10 python:
         return mas_isInDateRange(_date, mas_nyd, mas_d25c_end, False)
 
 
-    def mas_isD25Gift(_date=None):
-        """
-        Returns True if the given date is in the range of days where a gift
-        is considered a christmas gift.
-
-        IN:
-            _date - date to check
-                If None, we use today's date
-                (Default: None)
-
-        RETURNS: True if given date is in the d25 gift range, False otherwise
-        """
-        if _date is None:
-            _date = datetime.date.today()
-
-        return mas_isInDateRange(_date, mas_d25g_start, mas_d25p)
-
-
     def mas_isD25Outfit(_date=None):
         """
         Returns True if the given date is tn the range of days where Monika
@@ -1320,6 +1299,8 @@ init -10 python:
 
         RETURNS: True if given date is in the D25 season, but before Christmas, False
             otherwise
+
+        NOTE: This is used for gifts too
         """
         if _date is None:
             _date = datetime.date.today()
@@ -1332,13 +1313,13 @@ init -10 python:
             _date - date to check, defaults None, which means today's date is assumed
 
         RETURNS:
-            boolean - True if within d25gift start, to d31 (end of nts range)
+            boolean - True if within d25c start, to d31 (end of nts range)
             (The time to hold onto gifts, aka not silently react)
         """
         if _date is None:
             _date = datetime.date.today()
 
-        return mas_isInDateRange(_date, mas_d25g_start, mas_nye, end_inclusive=True)
+        return mas_isInDateRange(_date, mas_d25c_start, mas_nye, end_inclusive=True)
 
     def mas_d25ShowVisuals():
         """
@@ -1500,7 +1481,7 @@ init -10 python in mas_d25_utils:
             3. Must have deco active. No point otherwise as no tree to put gifts under
         """
         return (
-            store.mas_isD25Gift()
+            store.mas_isD25Pre()
             and store.mas_isMoniNormal(higher=True)
             and store.persistent._mas_d25_deco_active
         )
@@ -2424,7 +2405,7 @@ default persistent._mas_pm_d25_mistletoe_kiss = False
 
 label mas_d25_spent_time_monika:
 
-    $ d25_gifts_total, d25_gifts_good, d25_gifts_neutral, d25_gifts_bad = mas_getGiftStatsRange(mas_d25g_start, mas_d25p + datetime.timedelta(days=1))
+    $ d25_gifts_total, d25_gifts_good, d25_gifts_neutral, d25_gifts_bad = mas_getGiftStatsRange(mas_d25c_start, mas_d25p + datetime.timedelta(days=1))
 
     if mas_isMoniNormal(higher=True):
         m 1eua "[player]..."
