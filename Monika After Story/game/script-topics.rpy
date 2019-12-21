@@ -1919,7 +1919,7 @@ label monika_holdme_reactions:
                 m 1kubfu "At least {i}one{/i} of my dreams came true, though."
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
-            m 1hubfb "Ehehe~"
+            m 1hubfu "Ehehe~"
         elif mas_isMoniEnamored():
             m 6dubsa "Mmm~"
             m 6tsbsa "..."
@@ -4306,9 +4306,9 @@ label monika_fanfiction:
     m 1euc "Have you heard of fanfiction?"
     m "..."
     m 3eua "Personally, I think it's a better way of writing."
-    m "There's more freedom."
-    m 1eub "Letting your mind wander to create some..."
-    m "Interesting stories."
+    m 3eud "There's more freedom."
+    m 1rsc "Letting your mind wander to create some...{w=0.5} {nw}"
+    extend 1rksdla "Interesting stories."
     m 1euc "[player], I'm curious."
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
@@ -5423,8 +5423,8 @@ label monika_penname:
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
     if seen_event("monika_1984"):
-        m 3esd "Also, if you remember me talking about George Orwell, that was also a pen name which he adopted in 1933."
-        m 1eua "His actual name is Eric Blair, and before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles and H. Lewis Allways."
+        m 3esd "Also, if you remember me talking about George Orwell, his actual name is Eric Blair."
+        m 1eua "Before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles, and H. Lewis Allways."
         m 1lksdlc "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1eua "There's no need to know more about me though, [player]..."
