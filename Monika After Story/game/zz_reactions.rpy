@@ -704,7 +704,7 @@ init -11 python in mas_filereacts:
         """
         if store.mas_isMonikaBirthday():
             return "mas_reaction_gift_starter_bday"
-        elif store.mas_isD25():
+        elif store.mas_isD25() or store.mas_isD25Pre():
             return "mas_reaction_gift_starter_d25"
         elif store.mas_isF14():
             return "mas_reaction_gift_starter_f14"
@@ -1871,7 +1871,6 @@ label mas_reaction_fudge:
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
 
-default persistent._mas_d25_already_gifted_cookies = False
 
 init 5 python:
     if store.mas_isD25Pre():
@@ -1879,8 +1878,10 @@ init 5 python:
 
 label mas_reaction_christmascookies:
     $ times_cookies_given = mas_getGiftStatsForDate("mas_reaction_christmascookies")
-    if times_cookies_given == 0 and not persistent._mas_d25_already_gifted_cookies:
-        $ persistent._mas_d25_already_gifted_cookies = True
+
+    #First time cookies gifted this year
+    if times_cookies_given == 0 and not persistent._mas_d25_gifted_cookies:
+        $ persistent._mas_d25_gifted_cookies = True
         $ mas_giftCapGainAff(3)
         m 3hua "Christmas cookies!"
         m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
@@ -1888,7 +1889,7 @@ label mas_reaction_christmascookies:
         m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
         m 3hua "Thank you, [player]~"
 
-    elif times_cookies_given == 1:
+    elif times_cookies_given == 1 or (times_cookies_given == 0 and persistent._mas_d25_gifted_cookies):
         m 1wuo "...another batch of Christmas cookies!"
         m 3wuo "That's a whole lot of cookies, [player]!"
         m 3rksdlb "I'm going to be eating cookies forever, ahaha!"
