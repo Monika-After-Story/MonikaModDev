@@ -13052,8 +13052,8 @@ label monika_boardgames:
     m 2rsc "Well, I assume you do...{w=1} {nw}"
     extend 2eud " I don't know if many people would play a game like this one if they weren't at least a little into video games in the first place."
     m 2eua "But I was wondering, what do you think of board games?"
-    m 4eub "As you probably know, board games have been around since very early in our history. And video games most likely wouldn't be a thing today if it weren't for them."
-    m 1rksdlb "...I guess that means I probably wouldn't have existed either, if our ancestors didn't play board games in their time.{w=0.3} {nw}"
+    m 4eub "As you probably know, board games have been around since very early in our history, and video games most likely wouldn't be a thing today if it weren't for them."
+    m 1rksdla "...I guess that means I probably wouldn't have existed either, if our ancestors didn't play board games in their time.{w=0.3} {nw}"
     extend 1hksdlb "ahaha~"
     m 1euc "I never really got the occasion to play a lot of board games myself, so I'm a little intrigued by them."
     if renpy.seen_label('unlock_chess') or renpy.seen_label('game_chess') :
@@ -13063,7 +13063,7 @@ label monika_boardgames:
         m 1hua "As well as a little something I've been working on... I'm keeping it a surprise, though!"
     m 1etc "But I can't help but think... Those are pretty basic and well known games, right? I'm sure most people have played a game like that at least once in their lives."
     m 3esa "Even if I never got too much into this before, I figured there had to be a wider variety of games out there and,{w=0.2} well,{w=0.2} I got curious and made a bit of research to see for myself."
-    m 3wud "And, as it turns out...{w=0.5} This is actually a pretty big market!"
+    m 3wud "And, as it turns out, this is actually a pretty big market!"
     m 1eub "Board games tend to be a little overshadowed by video games nowadays, but there seems to be a lot of people who are really passionate about them anyway."
     m "Some of those people will want to play any game they can, and might even spend a lot of money into buying a lot of different games."
     m 1lksdla "...Not that I'm judging, of course. It's nice that they are having fun."
@@ -13072,9 +13072,7 @@ label monika_boardgames:
     m "Those kinds of things."
     m 2lsc "Though, as fancy as those particular games look, one might wonder if they aren't meant for collection more than actually playing, at this point."
     m 2euc "Speaking of collecting..."
-    m 2eud "Maybe you've heard of those card games where you collect as much cards as possible and then play against someone else's cards?"
-    m 2dtc "What was the name again? Card...   ...Trading..."
-    m 4eud "Ah, right, Trading Card Games, or TCG for short."
+    m 2eud "Maybe you've heard of those card games where you collect as many cards as possible and then play against someone else's deck?"
     m 4eub "They're games where you buy cards in packs to grow your collection, and then try to make them work together in a single deck, usually with one or two specific strategies in mind."
     m 4rkd "To tell you the truth, I thought these were a bit childish at first..."
     m 1eksdlc "...I mean, can you blame me?{w=0.5} {nw}"
@@ -13082,11 +13080,9 @@ label monika_boardgames:
     m 3rssdlb "Comparing their collections with each other to see who has the strongest cards, trade them to get someone else's card that they thought looked cool..."
     m 3eud "But then, I got to watch what a game between serious players looks like..."
     m 2wud "...And surprisingly enough, this actually looks very complex!"
-    m 2eud "There usually are many different strategies that you can try, each with its strengths and weaknesses, which will adapt differently depending on your opponent's strategy."
-    m 2euc "And since expansions of new cards are always releasing, it means that players can't always rely on the same strategies to stay relevant against newer cards."
-    m "So they need to constantly re-think their game plan in order to adapt to how the game is changing."
-    m 4rksdla "I can't imagine the kind of dedication you'd need to have to keep playing a game like that."
-    m 4eua "In any case, I think this is just another example of how we shouldn't always take things for granted...{w=0.7} {nw}"
+    m 2eud "Especially since unlike traditional card games, your opponent probably plays cards that are very different to yours, so something completely unexpected can happen at any moment."
+    m 4esa "Since there are so many possibilities, it probably makes it hard to get bored with a game like that. So I can see why some people are really into it."
+    m 4eua "I guess this is just another example of how we shouldn't always take things for granted...{w=0.7} {nw}"
     extend 4eub "There might be more to it than what we think at first !"
     m 1eua "But what about you, [player]?"
 
@@ -13094,7 +13090,7 @@ label monika_boardgames:
     $ _history_list.pop()
     menu:
         m "Do you like board games?{fast}"
-        "Yeah !":
+        "Yeah":
             $ persistent._mas_pm_likes_board_games = True
             m 1eub "Oh, really?"
             m 1eka "Well, if we ever do get the chance, I'd love to play some of your favorite games with you."
