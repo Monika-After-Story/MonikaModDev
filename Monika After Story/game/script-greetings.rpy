@@ -1869,7 +1869,7 @@ label greeting_japan:
         m 2hksdlb "Sorry if that didn't make sense!"
         m 3eua "You know what that means, [player]?"
         m 4ekbfa "It means '{i}I'll be yours forever{/i}'~"
-    return
+        return
     
     m 4hub "Watashi wa itsumademo anata no mono desu!"
     if shown_count == 1:
