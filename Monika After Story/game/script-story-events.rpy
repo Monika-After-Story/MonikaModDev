@@ -539,6 +539,10 @@ label unlock_chess:
     m 3hua "But I have a new game for us to play!"
     m "This one's a lot more strategic..."
     m 3hub "It's Chess!"
+    if persistent._mas_pm_likes_board_games = False
+        m 3eka "I know you told me that those kinds of games aren't really your thing..."
+        m 1eka "But it would make me very happy if you could give it a try."
+        m 1eua "Anyway..."
     m 1esa "I'm not sure if you know how to play, but it's always been a bit of a hobby for me."
     m 1tku "So I'll warn you in advance!"
     m 3tku "I'm pretty good."
