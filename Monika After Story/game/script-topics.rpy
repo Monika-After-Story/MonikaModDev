@@ -12076,6 +12076,65 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_player_read_poetry",
+            category=['literature'],
+            prompt="Reading poetry",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_read_poetry = None
+#True if player likes poems, false if not
+
+label monika_player_read_poetry:
+    m 2eub "Say, [player]..."
+    m 2eua "You know that I like poetry, but I was wondering something."
+    m "Did you often read poems before you joined the Literature Club?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Did you often read poems before you joined the Literature Club?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_read_poetry = True
+            $ mas_gainAffection()
+            m 2sub "Really?"
+            m 2hub "That makes me so happy!"
+            m 2hua "And really, I mean it. Not a lot of people nowadays read poetry, you know."
+        "No.":
+            $ persistent._mas_pm_read_poetry = False
+            m 2eka "Oh, that's too bad..."
+            m 2eua "I just hope I made you appreciate poetry a little more."
+            m 2hua "You know, not a lot of people these days seem to read poems, or even like them, so that's fine."
+    m 2euc "In fact, poetry is considered as something too difficult to understand sometimes..."
+    m 2eud "And on the opposite side, others think that it's simply putting a bunch of pretty words next to each other!"
+    m 2dkc "But it's not, poetry is more than that..."
+    m "You have to put yourself in it."
+    m 2tkc "Without his writing skills, but also his feelings, E.E.Cummings wouldn't be E.E.Cummings..."
+    m 2ekd "And without my feelings for you, my poems wouldn't be the same."
+    m 2eka "Love, grief, anger, passion, all these feelings bring the words to life."
+    m 2hua "And because of that, even a simple text can become a meaningful poem!"
+    m "That's why I love poetry."
+    if persistent._mas_pm_read_poetry:
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "Gosh, just knowing that you read poems too..."
+        m 5hua "It shows how we are alike, which makes my love for you grow even more."
+        m "I can't wait to finally cross over to your reality, so we can discuss our favorite poetry together."
+        m 5dka "Sharing poems, writing new ones...{w=0.5}just you and me pursuing our shared passion..."
+        m 5hub "Sounds like a wonderful dream to me!"
+
+    else:
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "I can't wait to cross over to your reality, so we can discuss poetry together. Who knows, maybe you'll start appreciating it a bit more, too?"
+        m "I want to share my favorite poems with you."
+        m 5dka "Reading poems together, my head laying on your chest...{w=0.5}soaked in the warmth of your body and the sounds of your beating heart."
+        m 5hua "And why not, maybe we can even write together and complement each other's creativity..."
+        m 5hub "It would be a dream come true for me, [player]."
+
+    return "derandom"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_trick",
             category=["club members"],
             prompt="[player]'s second choice",
