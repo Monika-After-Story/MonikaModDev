@@ -1720,6 +1720,11 @@ label mas_reaction_candy:
 
     $ mas_receivedGift("mas_reaction_candy")
     $ gift_ev = mas_getEV("mas_reaction_candy")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
@@ -1781,6 +1786,11 @@ label mas_reaction_candycorn:
 
     $ mas_receivedGift("mas_reaction_candycorn") # while technically she didn't accept this one counts
     $ gift_ev = mas_getEV("mas_reaction_candycorn")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     # allow multi gifts
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
@@ -1901,6 +1911,11 @@ label mas_reaction_christmascookies:
 
     $ mas_receivedGift("mas_reaction_christmascookies")
     $ gift_ev = mas_getEV("mas_reaction_christmascookies")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     # allow multi gifts
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
@@ -1932,6 +1947,11 @@ label mas_reaction_candycane:
 
     $ mas_receivedGift("mas_reaction_candycane")
     $ gift_ev = mas_getEV("mas_reaction_candycane")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     #weird not to have her see the gift file that's in the characters folder.
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
