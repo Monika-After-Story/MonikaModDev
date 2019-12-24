@@ -1032,6 +1032,7 @@ init -810 python:
 
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
+            "_mas_pm_read_poetry" : "pm.actions.books.read_poetry",
 
             # actions / charity
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
