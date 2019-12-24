@@ -1224,7 +1224,8 @@ init -1 python:
             "What kind of {i}presents{/i} do you want?",
             "Open your present, ehehe~",
             "All I want for Christmas is you~",
-            "Santa baby~"
+            "Santa baby~",
+            "What {i}else{/i} do you want to unwrap?~"
         ]
     )
 
