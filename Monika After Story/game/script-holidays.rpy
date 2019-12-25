@@ -2161,12 +2161,13 @@ label mas_d25_monika_christmas:
                 show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 2.0
 
+#FALL THROUGH
+label mas_d25_monika_christmas_no_wish:
+    hide screen mas_background_timed_jump
+
     $ mas_d25ReactToGifts()
     return
 
-label mas_d25_monika_christmas_no_wish:
-    hide screen mas_background_timed_jump
-    return
 
 init 5 python:
     addEvent(
