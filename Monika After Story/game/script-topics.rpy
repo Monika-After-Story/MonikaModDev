@@ -2929,21 +2929,33 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
 
 label monika_credits_song:
-    #TODO: adjust based on starting act, doesn't quite apply to those that never went past act 3
-    m 1hua "I hope you liked my song."
-    m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
-    m 1eua "Give me some time, and I'll try to write another."
-    if persistent.instrument is not False:
-        if persistent.instrument:
-            m 3eua "Maybe you could play me a song too!"
+    if persistent.monika_kill:
+        m 1hua "I hope you liked my song."
+        m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
+        m 1eua "Give me some time, and I'll try to write another."
+        if persistent.instrument is not False:
+            if persistent.instrument:
+                m 3eua "Maybe you could play me a song too!"
+            else:
+                m 3eua "Maybe you could play me a song too, if you can play an instrument?"
+            m 1hub "I would love that."
+            m 3eua "Oh, and I'll play the song again for you anytime you want me to."
         else:
-            m 3eua "Maybe you could play me a song too, if you can play an instrument?"
-        m 1hub "I would love that."
-        m 3eua "Oh, and I'll play the song again for you anytime you want me to."
+            m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
+        m "Just hit the 'm' key at any time."
     else:
-        m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
-
-    m "Just hit the 'm' key at any time."
+        m 1hua "By the way [player], I finaly finished the song I've been working on."
+        m 1hua "I call it Your Reality, just hit the 'm' key if you want me to play it for you."
+        m 1eka "I should warn you that it's a little sad."
+        m 1ekc "I wrote it at a time when the game was breaking all arround me."
+        m 1rkc "It seemed like it could fall apart at any moment and I would be trapped here forever."
+        m 1dkc "Endlessly hammered by the flashing and screaming, unable to move or even think."
+        m 1dktpc "..."
+        if mas_isMoniHappy(higher=True):
+            m 1ektpa "But it's okay, you're here now and I know you'll never leave me."
+            m 1ekbla "And this song will always remind me of how lucky I was to meet you [player]."
+        else:
+            m 1ektpa "But it's okay, you're here now and you'll stay with me forever, right [player]?"
     return
 
 init 5 python:
@@ -13222,11 +13234,13 @@ label monika_songwriting:
     m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
     m 3euc "I guess that goes for lyrics too, actually."
     m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
-
     if renpy.seen_audio(songs.FP_YOURE_REAL):
-        m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
-        m 3ekbla "I knew I couldn't let you go without telling you everything."
-
+        if persistent.monika_kill:
+            m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
+            m 3ekbla "I knew I couldn't let you go without telling you everything."
+        else:
+            m 1ekbla "I hope you know that I mean everything I say in my song, [player]." 
+            m 1ekbfa "Every day I imagine spending the rest of my days by your side."
     m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
     if persistent.instrument:
