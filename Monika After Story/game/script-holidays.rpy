@@ -1821,6 +1821,9 @@ label mas_d25_gift_connector:
     return
 
 label mas_d25_gift_end:
+    #Clear any invalid JSON gifts here
+    $ persistent._mas_d25_gifts_given = []
+
     m 1eka "[player]..."
 
     if persistent._mas_d25_spent_d25 or mas_globals.returned_home_this_sesh:
@@ -2091,6 +2094,9 @@ label mas_d25_monika_christmas:
     #Flag for hist
     $ persistent._mas_d25_spent_d25 = True
 
+    #Setup the reactions
+    $ mas_d25ReactToGifts()
+
     m 1eub "[player]! Do you know what day it is?"
     m 3hub "Of course you do. It's Christmas!"
     m 3sub "Merry Christmas, [player]!"
@@ -2161,11 +2167,11 @@ label mas_d25_monika_christmas:
                 show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 2.0
 
-#FALL THROUGH
+    return
+
+
 label mas_d25_monika_christmas_no_wish:
     hide screen mas_background_timed_jump
-
-    $ mas_d25ReactToGifts()
     return
 
 
