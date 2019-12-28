@@ -2929,7 +2929,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
 
 label monika_credits_song:
-    if persistent.monika_kill:
+    if persistent.monika_kill or renpy.seen_audio(songs.FP_YOURE_REAL):
         m 1hua "I hope you liked my song."
         m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
         m 1eua "Give me some time, and I'll try to write another."
