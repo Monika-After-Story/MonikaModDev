@@ -2956,7 +2956,7 @@ label monika_credits_song:
         m 2dkc "..."
         if mas_isMoniHappy(higher=True):
             m 2eka "But it's okay, you're here now and I know you'll never leave me."
-            m 1ekbsa "And this song will always remind me of how lucky I was to have met you, [player].
+            m 1ekbsa "And this song will always remind me of how lucky I was to have met you, [player]."
         else:
             m 2eka "But it's okay, you're here now and you'll stay with me forever, right [player]?"
     return
