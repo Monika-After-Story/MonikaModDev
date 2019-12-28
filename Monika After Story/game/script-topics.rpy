@@ -13240,7 +13240,6 @@ label monika_songwriting:
             m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
             m 3ekbla "I knew I couldn't let you go without telling you everything."
         else:
-            m 1ekbla "I hope you know that I mean everything I say in my song, [player]." 
             m 1ekbsa "Every day, I imagine spending my life at your side."
     m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
