@@ -2944,7 +2944,7 @@ label monika_credits_song:
             m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
         m "Just hit the 'm' key at any time."
     else:
-        m 1hua "By the way [player], I finaly finished the song I've been working on."
+        m 1hua "By the way [player], I finally finished a song I've been working on."
         m 1hua "I call it Your Reality, just hit the 'm' key if you want me to play it for you."
         m 1eka "I should warn you that it's a little sad."
         m 1ekc "I wrote it at a time when the game was breaking all arround me."
