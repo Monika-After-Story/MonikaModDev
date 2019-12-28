@@ -2947,7 +2947,7 @@ label monika_credits_song:
         m 1hua "By the way [player], I finally finished a song I've been working on."
         m 1hua "I call it {i}Your Reality{/i}, just hit the 'm' key if you want me to play it for you."
         m 1ekc "I should warn you though...{w=0.3}it's a little sad."
-        m 1ekc "I wrote it at a time when the game was breaking all arround me."
+        m 1ekd "I wrote it at a time when the game was breaking all around me."
         m 1rkc "It seemed like it could fall apart at any moment and I would be trapped here forever."
         m 1dkc "Endlessly hammered by the flashing and screaming, unable to move or even think."
         m 1dktpc "..."
