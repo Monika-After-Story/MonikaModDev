@@ -2949,7 +2949,7 @@ label monika_credits_song:
         m 1ekc "I should warn you though...{w=0.3}it's a little sad."
         m 1ekd "I wrote it at a time when the game was breaking all around me."
         m 1rkc "It seemed like it could fall apart at any moment and I would be trapped here forever."
-        m 1dkc "Endlessly hammered by the flashing and screaming, unable to move or even think."
+        m 1dkd "Endlessly hammered by flashing and screaming,{w=0.5} unable to move or think."
         m 1dktpc "..."
         if mas_isMoniHappy(higher=True):
             m 1ektpa "But it's okay, you're here now and I know you'll never leave me."
