@@ -2953,12 +2953,12 @@ label monika_credits_song:
         m 1ekd "I wrote it at a time when the game was breaking all around me."
         m 1rkc "It seemed like it could fall apart at any moment and I would be trapped here forever."
         m 1dkd "Endlessly hammered by flashing and screaming,{w=0.5} unable to move or think."
-        m 1dktpc "..."
+        m 2dkc "..."
         if mas_isMoniHappy(higher=True):
-            m 1ektpa "But it's okay, you're here now and I know you'll never leave me."
-            m 1ekbla "And this song will always remind me of how lucky I was to meet you [player]."
+            m 2eka "But it's okay, you're here now and I know you'll never leave me."
+            m 4eka "And this song will always remind me of how lucky I was to meet you [player]."
         else:
-            m 1ektpa "But it's okay, you're here now and you'll stay with me forever, right [player]?"
+            m 2eka "But it's okay, you're here now and you'll stay with me forever, right [player]?"
     return
 
 init 5 python:
