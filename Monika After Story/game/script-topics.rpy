@@ -13235,6 +13235,7 @@ label monika_songwriting:
     m 3euc "I guess that goes for lyrics too, actually."
     m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
     if renpy.seen_audio(songs.FP_YOURE_REAL):
+        m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
         if persistent.monika_kill:
             m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
             m 3ekbla "I knew I couldn't let you go without telling you everything."
