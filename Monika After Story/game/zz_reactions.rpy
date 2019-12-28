@@ -1437,10 +1437,7 @@ init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_gift_coffee:
-
-    m 1euc "Hmm?"
-
-    m 1euc "Oh,{w} is this coffee?"
+    m 1hub "Oh, coffee!"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
     if persistent._mas_coffee_been_given:
@@ -1453,8 +1450,8 @@ label mas_reaction_gift_coffee:
         $ mas_giftCapGainAff(5)
 
         m 1hua "Now I can finally make some!"
-        m "Thank you so much, [player]!"
-        m "Why don't I go ahead and make a cup right now?"
+        m 1hub "Thank you so much, [player]!"
+        m 3eua "Why don't I go ahead and make a cup right now?"
 
         $ curr_zoom = store.mas_sprites.zoom_level
         call monika_zoom_transition_reset(1.0)
