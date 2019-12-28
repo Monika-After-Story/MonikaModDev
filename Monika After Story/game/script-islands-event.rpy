@@ -385,17 +385,30 @@ label mas_island_bookshelf:
     return
 
 label mas_island_bookshelf1:
-    m "Some of my favorite books are in there."
-    m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i}, and a few others."
-    m "Maybe we can read them together sometime~"
+    if mas_current_weather == mas_weather_overcast or mas_is_raining:
+        m "At times like this, I wish I would've kept my books indoors..."
+        m "Looks like we'll just have to wait for better weather to read them."
+        m "In the meantime..."
+        m "How about cuddling a bit, [player]?"
+        m "Ehehe~"
+    else:
+        m "Some of my favorite books are in there."
+        m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i}, and a few others."
+        m "Maybe we can read them together sometime~"
     return
 
 label mas_island_bookshelf2:
-    m "Reading outdoors is a nice change of pace, you know?"
-    m "I'd take a cool breeze over a stuffy library any day."
-    m "Maybe I should add a table underneath the Cherry Blossom tree."
-    m "It'd be nice to enjoy a cup of coffee with some snacks to go alongside my book reading."
-    m "That'd be wonderful~"
+    if mas_current_weather == mas_weather_overcast or mas_is_raining:
+        m "Reading indoors with rain just outside our window is pretty relaxing."
+        m "If only I hadn't left the books outside..."
+        m "I should probably bring some here when I get the chance."
+        m "I'm certain we can find other things to do meanwhile, right [player]?"
+    else:
+        m "Reading outdoors is a nice change of pace, you know?"
+        m "I'd take a cool breeze over a stuffy library any day."
+        m "Maybe I should add a table underneath the Cherry Blossom tree."
+        m "It'd be nice to enjoy a cup of coffee with some snacks to go alongside my book reading."
+        m "That'd be wonderful~"
     return
 
 #NOTE: This is temporary until we split islands into foreground/background
