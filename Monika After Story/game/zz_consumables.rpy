@@ -4,48 +4,44 @@ default persistent._mas_current_drink = {
     "drink": None,
 }
 
+default persistent._mas_consumable_map = dict()
+
 init python in mas_consumables:
+    TYPE_DRINK = 0
+    TYPE_FOOD = 1
     consumable_map = dict()
 
 
 init 10 python:
-    #MASConsumableDrink class
-    class MASConsumableDrink:
+    #MASConsumable class
+    class MASConsumable():
         """
-        MASConsumableDrink class
+        Base class for consumables
 
         PROPERTIES:
             consumable_id - id of the consumable
-            enabled_var - persistent var indicating if this is enabled
-            finished_brewing_evl - eventlabel of the finished brewing event
-            finished_drinking_evl - eventlabel of the finished drinking event
+            disp_name - friendly name for this consumable
+            consumable_type - type of consumable this is:
+                0 - Drink
+                1 - Food
             start_end_tuple_list - list of (start_hour, end_hour) tuples
-            counter_var - persistent cups of x drank var
-            drink_acs - acs to display for the drink
+            acs - MASAccessory to display for the consumable
             split_list - list of split hours
-            brew_chance - likelihood of Monika to brew this consumable drink
-            drink_chance - likelihood of Monika to keep drinking this consumable drink
-            brew_low - bottom bracket of brew time
-            brew_high - top bracket of brew time
-            drink_low - bottom bracket of drink time
-            drink_high - top bracket of drink time
+            consumable_chance - likelihood of Monika to keep having this consumable
+            consumable_low - bottom bracket of consume time
+            consumable_high - top bracket of consume time
         """
+
         def __init__(
             self,
             consumable_id,
-            enabled_var,
-            finished_brewing_evl,
-            finished_drinking_evl,
+            disp_name,
+            consumable_type,
             start_end_tuple_list,
-            counter_var,
-            drink_acs,
-            split_list,
-            brew_chance=80,
-            drink_chance=80,
-            brew_low=2*60,
-            brew_high=4*60,
-            drink_low=10*60,
-            drink_high=2*3600
+            acs,
+            consumable_chance,
+            consumable_low,
+            consumable_high
         ):
             """
             MASConsumableDrink constructor
@@ -54,73 +50,189 @@ init 10 python:
                 consumable_id - id for the consumable
                     NOTE: Must be unique
 
-                enabled_var - persistent var setting this as enabled or disabled
-                    NOTE: must be persistent
-
-                finished_brewing_evl - eventlabel for the finished brewing event
-                    NOTE: must have an event object associated
-
-                finished_drinking_evl - eventlabel for the finished drinking event
-                    NOTE: must have an event object associated
+                disp_name - Friendly display name (for use in dialogue)
 
                 start_end_tuple_list - list of tuples storing (start_hour, end_hour)
 
-                counter_var - persistent var for counting the amount of cups drank
-                    NOTE: must be persistent
+                acs - MASAccessory object for this consumable
 
-                drink_acs - MASAccessory object for this consumable drink
+                consumable_chance - chance for Monika to continue having this consumable
+
+                consumable_low - low bracket for Monika to have this consumable
+
+                consumable_high - high bracket for Monika to have this consumable
+            """
+            if (
+                consumable_type in store.mas_consumables.consumable_map
+                and consumable_id in store.mas_consumables.consumable_map[consumable_type]
+            ):
+                raise Exception("consumable {0} already exists.".format(consumable_id))
+
+            self.consumable_id=consumable_id
+            self.consumable_type=consumable_type
+            self.disp_name=disp_name
+            self.start_end_tuple_list=start_end_tuple_list
+            self.acs=acs
+            self.consumable_chance=consumable_chance
+            self.consumable_low=consumable_low
+            self.consumable_high=consumable_high
+
+            #Add this to the map
+            if consumable_type not in store.mas_consumables.consumable_map:
+                store.mas_consumables.consumable_map[consumable_type] = dict()
+
+            store.mas_consumables.consumable_map[consumable_type][consumable_id] = self
+
+            #Now we need to set up data if not already set
+            if consumable_id not in persistent._mas_consumable_map:
+                persistent._mas_consumable_map[consumable_id] = {
+                    "enabled": False,
+                    "times_had": 0
+                }
+
+        def enabled(self):
+            """
+            Checks if this consumable is enabled
+
+            OUT:
+                boolean:
+                    - True if this consumable is enabled
+                    - False otherwise
+            """
+            return persistent._mas_consumable_map[self.consumable_id]["enabled"]
+
+        def enable(self):
+            """
+            Enables the consumable
+            """
+            persistent._mas_consumable_map[self.consumable_id]["enabled"] = True
+
+        def disable(self):
+            """
+            Disables the consumable
+            """
+            persistent._mas_consumable_map[self.consumable_id]["enabled"] = False
+
+        def increment(self):
+            """
+            Increments the amount of times Monika has had the consumable
+            """
+            persistent._mas_consumable_map[self.consumable_id]["times_had"] += 1
+
+    class MASConsumableFood(MASConsumable):
+        """
+        MASConsumableFood class
+
+        Inherits from MASConsumable
+        """
+        def __init__(
+            self,
+            consumable_id,
+            disp_name,
+            start_end_tuple_list,
+            acs,
+            consumable_chance,
+            consumable_low,
+            consumable_high
+        ):
+            raise NotImplementedError
+
+    #MASConsumableDrink class
+    class MASConsumableDrink(MASConsumable):
+        """
+        MASConsumableDrink class
+
+        Inherits from MASConsumable (See that class for info on properties)
+
+        PROPERTIES:
+            consumable_id - id of the consumable
+            disp_name - friendly name for this consumable
+            container - the container of this drink (cup, mug, glass, bottle, etc)
+            start_end_tuple_list - list of (start_hour, end_hour) tuples
+            acs - MASAccessory to display for the drink
+            split_list - list of split hours
+            brew_chance - likelihood of Monika to brew this consumable drink
+            consumable_chance - likelihood of Monika to keep drinking this consumable drink
+            brew_low - bottom bracket of brew time
+            brew_high - top bracket of brew time
+            consumable_low - bottom bracket of drink time
+            consumable_high - top bracket of drink time
+        """
+
+        #Constants:
+        BREW_FINISH_EVL = "mas_finished_brewing"
+        DRINK_FINISH_EVL = "mas_finished_drinking"
+
+        def __init__(
+            self,
+            consumable_id,
+            disp_name,
+            container,
+            start_end_tuple_list,
+            acs,
+            split_list,
+            consumable_chance=80,
+            consumable_low=10*60,
+            consumable_high=2*3600,
+            brew_chance=80,
+            brew_low=2*60,
+            brew_high=4*60
+        ):
+            """
+            MASConsumableDrink constructor
+
+            IN:
+                consumable_id - id for the consumable
+                    NOTE: Must be unique
+
+                disp_name - Friendly diaply name (for use in dialogue)
+
+                start_end_tuple_list - list of tuples storing (start_hour, end_hour)
+
+                acs - MASAccessory object for this consumable drink
 
                 split_list - list of split hours for brewing
 
                 brew_chance - chance for Monika to brew this drink
                     (Default: 80/100)
+                    NOTE: If set to None or 0, this will not be considered brewable
 
-                drink_change - chance for Monika to continue drinking this drink
+                consumable_chance - chance for Monika to continue drinking this drink
                     (Default: 80/100)
 
                 brew_low - low bracket for brew time
                     (Default: 2 minutes)
+                    NOTE: If set to None, this will not be considered brewable
 
                 brew_high - high bracket for brew time
                     (Default: 4 minutes)
+                    NOTE: If set to None, this will not be considered brewable
 
-                drink_low - low bracket for Monika to drink this drink
+                consumable_low - low bracket for Monika to drink this drink
                     (Default: 10 minutes)
 
-                drink_high - high bracket for Monika to drink this drink
+                consumable_high - high bracket for Monika to drink this drink
                     (Default: 2 hours)
             """
             if consumable_id in store.mas_consumables.consumable_map:
                 raise Exception("consumable {0} already exists.".format(consumable_id))
 
-            elif not mas_getEV(finished_brewing_evl):
-                raise Exception("No event object with eventlabel {0} exists".format(finished_brewing_evl))
+            super(MASConsumableDrink, self).__init__(
+                consumable_id,
+                disp_name,
+                mas_consumables.TYPE_DRINK,
+                start_end_tuple_list,
+                acs,
+                consumable_chance,
+                consumable_low,
+                consumable_high
+            )
 
-            elif not mas_getEV(finished_drinking_evl):
-                raise Exception("No event object with eventlabel {0} exists".format(finished_drinking_evl))
-
-            self.consumable_id=consumable_id
-            self.enabled_var=enabled_var
-            self.finished_brewing_evl=finished_brewing_evl
-            self.finished_drinking_evl=finished_drinking_evl
-            self.start_end_tuple_list=start_end_tuple_list
+            self.container=container
+            self.split_list=split_list
             self.brew_low=brew_low
             self.brew_high=brew_high
-            self.drink_low=drink_low
-            self.drink_high=drink_high
-            self.counter_var=counter_var
-            self.drink_acs=drink_acs
-            self.split_list=split_list
             self.brew_chance=brew_chance
-            self.drink_chance=drink_chance
-
-            store.mas_consumables.consumable_map[consumable_id] = self
-
-        def enabled(self):
-            """
-            Checks the flag to see if this consumable drink is enabled
-            """
-            return bool(persistent.__dict__[self.enabled_var])
 
         def brew(self, _start_time=None):
             """
@@ -140,7 +252,7 @@ init 10 python:
             end_brew = random.randint(self.brew_low, self.brew_high)
     
             #Setup the event conditional
-            brew_ev = mas_getEV(self.finished_brewing_evl)
+            brew_ev = mas_getEV(MASConsumableDrink.BREW_FINISH_EVL)
             brew_ev.conditional = (
                 "persistent._mas_current_drink['brew time'] is not None "
                 "and (datetime.datetime.now() - "
@@ -164,13 +276,13 @@ init 10 python:
                 _start_time = datetime.datetime.now()
 
             #Delta for drinking
-            drinking_time = datetime.timedelta(0, random.randint(self.drink_low, self.drink_high))
+            drinking_time = datetime.timedelta(0, random.randint(self.consumable_low, self.consumable_high))
 
             #Setup the stop time for the cup
             persistent._mas_current_drink["drink time"] = _start_time + drinking_time
 
             #Setup the event conditional
-            drink_ev = mas_getEV(self.finished_drinking_evl)
+            drink_ev = mas_getEV(MASConsumableDrink.DRINK_FINISH_EVL)
             drink_ev.conditional = (
                 "persistent._mas_current_drink['drink time'] is not None "
                 "and datetime.datetime.now() > persistent._mas_current_drink['drink time']"
@@ -178,26 +290,28 @@ init 10 python:
             drink_ev.action = EV_ACT_QUEUE
 
             #Increment cup count
-            persistent.__dict__[self.counter_var] += 1
+            self.increment()
 
         def reset(self):
             """
             Resets the events for the consumable and resets the current consumable drink
             """
             #Get evs
-            brew_ev = mas_getEV(self.finished_brewing_evl)
-            drink_ev = mas_getEV(self.finished_drinking_evl)
+            brew_ev = mas_getEV(MASConsumableDrink.BREW_FINISH_EVL)
+            drink_ev = mas_getEV(MASConsumableDrink.DRINK_FINISH_EVL)
 
             #Hide cup/mug
-            monika_chr.remove_acs(self.drink_acs)
+            monika_chr.remove_acs(self.acs)
 
             #Reset the events
             brew_ev.conditional = None
             brew_ev.action = None
             drink_ev.conditional = None
             drink_ev.action = None
-            mas_rmEVL(brew_ev.eventlabel)
-            mas_rmEVL(drink_ev.eventlabel)
+
+            #And remove them from the event list
+            mas_rmEVL(MASConsumableDrink.BREW_FINISH_EVL)
+            mas_rmEVL(MASConsumableDrink.DRINK_FINISH_EVL)
 
             #Now we clean the persist var
             persistent._mas_current_drink["brew time"] = None
@@ -290,7 +404,37 @@ init 10 python:
                     return True
             return False
 
+        def brewable(self):
+            """
+            Checks if this drink is brewable
 
+            OUT:
+                boolean:
+                    - True if this drink has:
+                        1. brew_high
+                        2. brew_low
+                        3. brew_chance
+
+                    - False otherwise
+            """
+            return (
+                not self.brew_chance
+                or self.brew_low is None
+                or self.brew_high is None
+            )
+
+        @staticmethod
+        def _getCurrentDrink():
+            """
+            Gets the MASConsumableDrink object for the current drink or None if we're not drinking
+
+            OUT:
+                - Current MASConsumableDrink if drinking
+                - None if not drinking
+            """
+            return mas_getConsumableDrink(persistent._mas_current_drink["drink"])
+
+    #START: Global functions
     def mas_getConsumableDrink(consumable_id):
         """
         Gets the consumable drink by id.
@@ -301,7 +445,9 @@ init 10 python:
         OUT:
             MASConsumableDrink object if found, None otherwise
         """
-        return store.mas_consumables.consumable_map.get(consumable_id, None)
+        if mas_consumables.TYPE_DRINK not in mas_consumables.consumable_map:
+            return None
+        return store.mas_consumables.consumable_map[mas_consumables.TYPE_DRINK].get(consumable_id, None)
 
 
     def mas_getDrinksForTime(_now=None):
@@ -316,9 +462,12 @@ init 10 python:
         OUT:
             list of consumable drink objects enabled and within time range
         """
+        if mas_consumables.TYPE_DRINK not in mas_consumables.consumable_map:
+            return []
+
         return [
             drink
-            for drink in mas_consumables.consumable_map.itervalues()
+            for drink in mas_consumables.consumable_map[mas_consumables.TYPE_DRINK].itervalues()
             if drink.enabled() and drink.isDrinkTime()
         ]
 
@@ -326,22 +475,151 @@ init 10 python:
 init 11 python:
     MASConsumableDrink(
         consumable_id="coffee",
-        enabled_var="_mas_acs_enable_coffee",
-        finished_brewing_evl="mas_coffee_finished_brewing",
-        finished_drinking_evl="mas_coffee_finished_drinking",
+        disp_name="coffee",
+        container="cup",
         start_end_tuple_list=[(5, 12)],
-        counter_var="_mas_coffee_cups_drank",
-        drink_acs=mas_acs_mug,
+        acs=mas_acs_mug,
         split_list=[9]
     )
 
     MASConsumableDrink(
         consumable_id="hotchocolate",
-        enabled_var="_mas_acs_enable_hotchoc",
-        finished_brewing_evl="mas_c_hotchoc_finished_brewing",
-        finished_drinking_evl="mas_c_hotchoc_finished_drinking",
+        disp_name="hot chocolate",
+        container="cup",
         start_end_tuple_list=[(19,22)],
-        counter_var="_mas_c_hotchoc_cups_drank",
-        drink_acs=mas_acs_hotchoc_mug,
+        acs=mas_acs_hotchoc_mug,
         split_list=[21]
     )
+
+#START: Finished brewing/drinking events
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_finished_brewing",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        )
+    )
+
+label mas_finished_brewing:
+    $ current_drink = MASConsumableDrink._getCurrentDrink()
+
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
+        m 1esd "Oh, my [current_drink.disp_name] is ready."
+
+    #Moving this here so she uses this line to 'pull her chair back'
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
+    #This line is here so it looks better when we hide monika
+    show emptydesk at i11 zorder 9
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        #Idle pauses and then progresses on its own
+        m 1eua "I'm going to grab some [current_drink.disp_name]. I'll be right back.{w=1}{nw}"
+
+    else:
+        m 1eua "Hold on a moment."
+
+    #Monika is off screen
+    hide monika with dissolve
+
+    #Transition stuffs
+    $ renpy.pause(1.0, hard=True)
+
+    #Wear drink acs
+    $ monika_chr.wear_acs_pst(current_drink.acs)
+    #Reset brew time
+    $ persistent._mas_current_drink["brew time"] = None
+    #Start drinking
+    $ current_drink.drink()
+
+    $ renpy.pause(4.0, hard=True)
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+    return
+
+###Drinking done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_finished_drinking",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        )
+    )
+
+
+label mas_finished_drinking:
+    # monika only gets a new cup between 6am and noon
+    $ current_drink = MASConsumableDrink._getCurrentDrink()
+    $ get_new_cup = current_drink.isDrinkTime()
+
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
+        m 1esd "Oh, I've finished my [current_drink.disp_name]."
+
+    #Moving this here so she uses this line to 'pull her chair back'
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
+    show emptydesk at i11 zorder 9
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        if get_new_cup:
+            #It's drinking time
+            m 1eua "I'm going to get some more [current_drink.disp_name]. I'll be right back.{w=1}{nw}"
+
+        else:
+            m 1eua "I'm going to put this [current_drink.container] away. I'll be right back.{w=1}{nw}"
+    
+    else:
+        if get_new_cup:
+            m 1eua "I'm going to get another [current_drink.container]."
+
+        m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statemetns so we can properly add / remove the mug
+    $ renpy.pause(1.0, hard=True)
+
+    #Should we get some more?
+    if not get_new_cup:
+        $ current_drink.reset()
+
+    else:
+        $ current_drink.drink()
+
+    $ renpy.pause(4.0, hard=True)
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+    return

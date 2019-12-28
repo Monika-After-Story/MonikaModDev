@@ -4547,8 +4547,8 @@ init 2 python:
         currently_drinking = persistent._mas_current_drink["drink"] and persistent._mas_current_drink["drink time"]
 
         #wear the cup if we drink and don't have a cup for some reason
-        if currently_drinking and not monika_chr.is_wearing_acs(drink.drink_acs):
-            monika_chr.wear_acs_pst(drink.drink_acs)
+        if currently_drinking and not monika_chr.is_wearing_acs(drink.acs):
+            monika_chr.wear_acs_pst(drink.acs)
 
         #If we have no drinks, then there's no point in doing anything
         if not drinks:
