@@ -1701,7 +1701,9 @@ label ch30_minute(time_since_check):
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
-    $ _mas_startupDrinkLogic()
+
+    #Runtime checks to see if we should have a consumable
+    $ MASConsumableDrink._checkDrink()
     return
 
 # label for things that should run about once per day
@@ -1920,8 +1922,8 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    ## should we drink coffee?
-    $ _mas_startupDrinkLogic()
+    #Let's see if we should have something to drink
+    $ MASConsumableDrink._checkDrink()
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
@@ -1980,8 +1982,18 @@ label ch30_reset:
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_getConsumableDrink("coffee").reset()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+        if store.mas_globals.returned_home_this_sesh:
+            MASConsumableDrink._reset()
+
+        #Store this because we may need to reset this
+        mug_acs = monika_chr.get_acs_of_type("mug")
+
+        #If we're not currently drinking something but still have the acs out, let's remove that
+        #NOTE: This is used in the case of crashes
+        if not MASConsumableDrink._isDrinking() and mug_acs:
+            monika_chr.remove_acs(mug_acs)
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()

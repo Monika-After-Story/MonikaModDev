@@ -4552,44 +4552,6 @@ init -1 python:
 
 init 2 python:
     # global functions that should be defined after level 0a
-    def _mas_startupDrinkLogic():
-
-        #Step one: what can we drink right now?
-        drinks = mas_getDrinksForTime()
-
-        drink = mas_getConsumableDrink(persistent._mas_current_drink["drink"])
-        currently_drinking = persistent._mas_current_drink["drink"] and persistent._mas_current_drink["drink time"]
-
-        #wear the cup if we drink and don't have a cup for some reason
-        if currently_drinking and not monika_chr.is_wearing_acs(drink.acs):
-            monika_chr.wear_acs_pst(drink.acs)
-
-        #If we have no drinks, then there's no point in doing anything
-        if not drinks:
-            if currently_drinking and (not drink.isStillDrink() and mas_getCurrSeshStart() > persistent._mas_current_drink["drink time"]):
-                drink.reset()
-            return
-
-        #If we're currently brewing or drinking, we don't need to do anything else
-        if persistent._mas_current_drink["drink"] is not None:
-            return
-
-        #Otherwise, step two: what are we drinking?
-        drink = random.choice(drinks)
-
-        #Setup some vars
-        _now = datetime.datetime.now()
-
-        #Time to drink!
-
-        #First, clear vars so we start fresh
-        drink.reset()
-
-        if drink.shouldBrew(_now):
-            #Brew
-            drink.brew()
-
-
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.
@@ -4619,7 +4581,6 @@ init 2 python:
             mas_acs_quetzalplushie.exit(monika_chr)
 
         return
-
 
     def mas_incMoniReload():
         """

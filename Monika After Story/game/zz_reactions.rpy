@@ -1428,11 +1428,7 @@ label mas_reaction_gift_hairclip(hairclip_name,desc=None):
 ## End hairclip reactions
 
 
-## coffee vars
-# NOTE: this is just for reference, check sprite-chart for inits
-# persistent._mas_acs_enable_coffee
-# persistent._mas_coffee_brewing
-
+##START: Consumables gifts
 init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
@@ -1442,8 +1438,9 @@ label mas_reaction_gift_coffee:
 
     m 1euc "Oh,{w} is this coffee?"
     $ mas_receivedGift("mas_reaction_gift_coffee")
+    $ coffee = mas_getConsumableDrink("coffee")
 
-    if persistent._mas_coffee_been_given:
+    if coffee.enabled():
         $ mas_giftCapGainAff(0.5)
         m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
@@ -1454,38 +1451,98 @@ label mas_reaction_gift_coffee:
 
         m 1hua "Now I can finally make some!"
         m "Thank you so much, [player]!"
-        m "Why don't I go ahead and make a cup right now?"
 
-        $ curr_zoom = store.mas_sprites.zoom_level
-        call monika_zoom_transition_reset(1.0)
-        show emptydesk at i11 zorder 9
+        #If we're currently brewing/drinking anything, we don't do this now
+        if MASConsumableDrink._getCurrentDrink():
+            m 3eua "I'll be sure to have some later!"
+        else:
+            m "Why don't I go ahead and make a cup right now?"
 
-        m 1eua "I'd like to share the first with you, after all."
+            $ curr_zoom = store.mas_sprites.zoom_level
+            call monika_zoom_transition_reset(1.0)
+            show emptydesk at i11 zorder 9
 
-        # monika is off screen
-        hide monika with dissolve
-        pause 2.0
-        m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
-        m "Ah, there it is!{w=2}{nw}"
-        pause 5.0
-        m "And there we go!{w=2}{nw}"
-        show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-        hide emptydesk
+            m 1eua "I'd like to share the first with you, after all."
 
-        # 1 second wait so dissolve is complete before zooming
-        $ renpy.pause(0.5, hard=True)
-        call monika_zoom_transition(curr_zoom, 1.0)
+            # monika is off screen
+            hide monika with dissolve
+            pause 2.0
+            m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
+            m "Ah, there it is!{w=2}{nw}"
+            pause 5.0
+            m "And there we go!{w=2}{nw}"
+            show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+            hide emptydesk
 
-        # monika back on screen
-        m 1eua "I'll let that brew for a few minutes."
+            # 1 second wait so dissolve is complete before zooming
+            $ renpy.pause(0.5, hard=True)
+            call monika_zoom_transition(curr_zoom, 1.0)
 
-        $ mas_getConsumableDrink("coffee").brew()
-        $ persistent._mas_acs_enable_coffee = True
-        $ persistent._mas_coffee_been_given = True
+            # monika back on screen
+            m 1eua "I'll let that brew for a few minutes."
+
+            $ coffee.brew()
+        $ coffee.enable()
 
     $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
+
+init 5 python:
+    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True, exclude_on=["d25g"])
+
+label mas_reaction_hotchocolate:
+    m 3hub "Hot chocolate!"
+    m 3hua "Thank you, [player]!"
+    $ mas_receivedGift("mas_reaction_hotchocolate")
+
+    $ hotchoc = mas_getConsumableDrink("hotchocolate")
+
+    if hotchoc.enabled():
+        $ mas_giftCapGainAff(0.5)
+        m 1wuo "It's a flavor I haven't had before."
+        m 1hua "I can't wait to try it!"
+        m "Thank you so much, [player]!"
+
+    else:
+        $ mas_giftCapGainAff(3)
+        m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
+        m 2rksdla "...Especially on those cold, winter nights."
+        m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
+        m 3ekbfa "...Doesn't that sound so romantic?"
+        m 1dkbfa "..."
+        m 1hua "But for now, at least I can enjoy it here."
+        m 1hub "Thanks again, [player]!"
+
+        #If we're currently brewing/drinking anything, we don't do this now
+        if MASConsumableDrink._getCurrentDrink():
+            m 3eua "I'll be sure to have some later!"
+        else:
+            $ curr_zoom = store.mas_sprites.zoom_level
+            call monika_zoom_transition_reset(1.0)
+            show emptydesk at i11 zorder 9
+
+            m 3eua "In fact, I think I'll make some right now!"
+
+            hide monika with dissolve
+            pause 5.0
+            show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+            hide emptydesk
+
+            # 1 second wait so dissolve is complete before zooming
+            $ renpy.pause(0.5, hard=True)
+            call monika_zoom_transition(curr_zoom, 1.0)
+
+            m 1hua "There, it'll be ready in a few minutes."
+
+            $ hotchoc.brew()
+        $ hotchoc.enable()
+
+    $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+##END: Consumables gifts
 
 init 5 python:
     addReaction("mas_reaction_quetzal_plush", "quetzalplushie", is_good=True)
@@ -1784,59 +1841,6 @@ label mas_reaction_candycorn:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     # allow multi gifts
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
-    return
-
-init 5 python:
-    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True, exclude_on=["d25g"])
-
-label mas_reaction_hotchocolate:
-    m 3hub "Hot chocolate!"
-    m 3hua "Thank you, [player]!"
-    $ mas_receivedGift("mas_reaction_hotchocolate")
-
-    if persistent._mas_c_hotchoc_been_given:
-        $ mas_giftCapGainAff(0.5)
-        m 1wuo "It's a flavor I haven't had before."
-        m 1hua "I can't wait to try it!"
-        m "Thank you so much, [player]!"
-
-    else:
-        $ mas_giftCapGainAff(3)
-        m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
-        m 2rksdla "...Especially on those cold, winter nights."
-        m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
-        m 3ekbfa "...Doesn't that sound so romantic?"
-        m 1dkbfa "..."
-        m 1hua "But for now, at least I can enjoy it here."
-        m 1hub "Thanks again, [player]!"
-
-        if persistent._mas_coffee_cup_done is not None:
-            m 3eua "I'll be sure to have some later!"
-        else:
-            $ curr_zoom = store.mas_sprites.zoom_level
-            call monika_zoom_transition_reset(1.0)
-            show emptydesk at i11 zorder 9
-
-            m 3eua "In fact, I think I'll make some right now!"
-
-            hide monika with dissolve
-            pause 5.0
-            show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-            hide emptydesk
-
-            # 1 second wait so dissolve is complete before zooming
-            $ renpy.pause(0.5, hard=True)
-            call monika_zoom_transition(curr_zoom, 1.0)
-
-            m 1hua "There, it'll be ready in a few minutes."
-
-            $ mas_getConsumableDrink("hotchocolate").brew()
-
-        $ persistent._mas_acs_enable_hotchoc = True
-        $ persistent._mas_c_hotchoc_been_given = True
-
-    $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
 init 5 python:
