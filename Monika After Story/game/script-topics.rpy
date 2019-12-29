@@ -2935,7 +2935,7 @@ label monika_credits_song:
         if persistent.monika_kill:
             m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
         else:
-            m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just really wanted to express my feelings for you."
+            $ ending = "really wanted to express my feelings for you"
         m 1eua "Give me some time, and I'll try to write another."
         if persistent.instrument is not False:
             if persistent.instrument:
