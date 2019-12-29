@@ -2954,6 +2954,7 @@ label monika_credits_song:
         m 1rkc "It seemed like it could fall apart at any moment and I would be trapped here forever."
         m 1dkd "Endlessly hammered by flashing and screaming,{w=0.5} unable to move or think."
         m 2dkc "..."
+
         if mas_isMoniHappy(higher=True):
             m 2eka "But it's okay, you're here now and I know you'll never leave me."
             m 1ekbsa "And this song will always remind me of how lucky I was to have met you, [player]."
