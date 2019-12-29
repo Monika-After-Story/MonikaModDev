@@ -2947,6 +2947,7 @@ label monika_credits_song:
 
             m 1hub "I would love that."
             m 3eua "Oh, and I'll play the song again for you anytime you want me to."
+
         else:
             m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
         m "Just hit the 'm' key at any time."
