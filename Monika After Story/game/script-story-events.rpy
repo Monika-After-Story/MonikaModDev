@@ -1648,7 +1648,7 @@ label monika_rpy_files:
                         call mas_rpy_file_delete
 
                         m 2hua "There we go!"
-                        m 2esa "Be sure next time to install a version without the source code. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
+                        m 2esa "Be sure to install a version without the source code next time. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
                         $ persistent._mas_pm_has_rpy = False
                         hide screen mas_py_console_teaching
                         show monika at t11
