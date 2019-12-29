@@ -61,6 +61,8 @@ init -1 python in mas_globals:
     last_day = None
     # numbr of the day we last ran ch30_day
 
+    returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
+    #Whether or not this sesh was started by a returned home greet
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -844,7 +846,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
     # d25 seasonal
     elif persistent._mas_d25_deco_active:
-        $ store.mas_d25_event.showD25Visuals()
+        $ store.mas_d25ShowVisuals()
     # ----------- end date-based events
 
     # player bday
@@ -883,11 +885,6 @@ label ch30_main:
 
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
-
-    # d25 season? d25 season you are in
-    #TODO: day of first sesh shouldn't get deoct
-    if mas_isD25Season():
-        call mas_holiday_d25c_autoload_check
 
     # before we render visuals:
     # 1 - all core interactions should be disabeld
@@ -1101,9 +1098,23 @@ label ch30_autoload:
     # call reset stuff
     call ch30_reset
 
-    # general affection checks that hijack flow
-    if persistent._mas_affection["affection"] <= -115:
-        jump mas_affection_finalfarewell_start
+    #Affection will trigger a final farewell mode
+    #If we got a fresh start, then -50 is the cutoff vs -115.
+    if (
+        persistent._mas_pm_got_a_fresh_start
+        and _mas_getAffection() <= -50
+    ):
+        $ persistent._mas_load_in_finalfarewell_mode = True
+        $ persistent._mas_finalfarewell_poem_id = "ff_failed_promise"
+
+    elif _mas_getAffection() <= -115:
+        $ persistent._mas_load_in_finalfarewell_mode = True
+        $ persistent._mas_finalfarewell_poem_id = "ff_affection"
+
+
+    #If we should go into FF mode, we do.
+    if persistent._mas_load_in_finalfarewell_mode:
+        jump mas_finalfarewell_start
 
     # set this to None for now
     $ selected_greeting = None
@@ -1131,7 +1142,11 @@ label mas_ch30_post_retmoni_check:
     if mas_isO31() or persistent._mas_o31_in_o31_mode:
         jump mas_o31_autoload_check
 
-    elif mas_isD25Season():
+    elif (
+        mas_isD25Season()
+        or persistent._mas_d25_in_d25_mode
+        or (mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"))
+    ):
         jump mas_holiday_d25c_autoload_check
 
     elif mas_isF14() or persistent._mas_f14_in_f14_mode:
@@ -1208,6 +1223,11 @@ label mas_ch30_post_holiday_check:
 
     # greeting selection
     python:
+
+        # greeting timeout check
+        persistent._mas_greeting_type = store.mas_greetings.checkTimeout(
+            persistent._mas_greeting_type
+        )
 
         # we select a greeting depending on the type that we should select
         sel_greeting_ev = store.mas_greetings.selectGreeting(
@@ -1295,11 +1315,6 @@ label ch30_post_restartevent_check:
             #Grant the away XP
             grant_xp(away_xp)
 
-
-            #Set unlock flag for stories
-            mas_can_unlock_story = True
-            mas_can_unlock_scary_story = True
-
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
                 persistent._mas_pool_unlocks -= 1
@@ -1315,8 +1330,16 @@ label ch30_post_exp_check:
     # file reactions
     $ mas_checkReactions()
 
-    # run actiosn for events that are based on conditional or clock
-    $ Event.checkEvents(evhand.event_database)
+    #All pushed events will have priority on load. Queued events will be pushed to the first idle loop
+    #random/unlock/pool actions are also evaluated here
+    python:
+        startup_events = {}
+        for evl in evhand.event_database:
+            ev = evhand.event_database[evl]
+            if ev.action != EV_ACT_QUEUE:
+                startup_events[evl] = ev
+
+        Event.checkEvents(startup_events)
 
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
@@ -1707,6 +1730,21 @@ label ch30_day:
 
         if mas_isO31() and not persistent._mas_o31_in_o31_mode:
             pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
+
+        #If the map isn't empty and it's past the last reacted date, let's empty it now
+        if (
+            persistent._mas_filereacts_reacted_map
+            and mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+        ):
+            persistent._mas_filereacts_reacted_map = dict()
+
+        # Check if we are entering d25 season at upset-
+        if (
+            not persistent._mas_d25_intro_seen
+            and mas_isD25Outfit()
+            and mas_isMoniUpset(lower=True)
+        ):
+            persistent._mas_d25_started_upset = True
     return
 
 
@@ -1814,7 +1852,7 @@ label ch30_reset:
 
     # change back to def if we aren't wearing def at Normal-
     if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
-        $ pushEvent("mas_change_to_def",True)
+        $ pushEvent("mas_change_to_def",skipeval=True)
 
     #### END SPRITES
 
@@ -1888,28 +1926,18 @@ label ch30_reset:
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
-    ## d25 content
-    #TODO: put this into autoload
-    python:
-        if (
-                (mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE()))
-                and monika_chr.clothes == mas_clothes_santa
-                and not persistent._mas_force_clothes
-            ):
-            # monika takes off santa outfit after d25
-            monika_chr.reset_clothes(False)
-
-        if not mas_isD25Season():
-            persistent._mas_d25_deco_active = False
-
-
     # reset bday decor
     python:
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         if not mas_isMonikaBirthday() and not mas_isMonikaBirthday(yesterday):
             persistent._mas_bday_visuals = False
 
-        if not mas_isplayer_bday() and not mas_isplayer_bday(yesterday):
+        #TODO: revist this once TT stuff is complete
+        if (
+            not mas_isplayer_bday()
+            and not mas_isplayer_bday(yesterday, use_date_year=True)
+            and not persistent._mas_player_bday_left_on_bday
+        ):
             persistent._mas_player_bday_decor = False
 
     ## late farewell? set the global and clear the persistent so its auto
@@ -1923,6 +1951,13 @@ label ch30_reset:
     python:
         if persistent._mas_filereacts_just_reacted:
             queueEvent("mas_reaction_end")
+
+        #If the map isn't empty and it's past the last reacted date, let's empty it now
+        if (
+            persistent._mas_filereacts_reacted_map
+            and mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+        ):
+            persistent._mas_filereacts_reacted_map = dict()
 
     # set any prompt variants for acs that can be removed here
     python:
@@ -1988,4 +2023,12 @@ label ch30_reset:
 
     #Run a confirmed party check within a week of Moni's bday
     $ mas_confirmedParty()
+
+    #If it's past d25, not within the gift range, and we haven't reacted to gifts, let's silently do that now
+    if (
+        persistent._mas_d25_gifts_given
+        and not mas_isD25GiftHold()
+        and not mas_globals.returned_home_this_sesh
+    ):
+        $ mas_d25SilentReactToGifts()
     return
