@@ -2944,6 +2944,7 @@ label monika_credits_song:
                 m 3eua "Maybe you could play me a song too!"
             else:
                 m 3eua "Maybe you could play me a song too, if you can play an instrument?"
+
             m 1hub "I would love that."
             m 3eua "Oh, and I'll play the song again for you anytime you want me to."
         else:
