@@ -13252,7 +13252,7 @@ init 5 python:
 label monika_sweatercurse:
     m 1eub "Have you ever heard of 'the curse of the love sweater?'"
     m 1hub "Ahaha! What a weird name, right?"
-    m 3eub "But it's actually an interesting superstition--and one that might actually have a cause!"
+    m 3eub "But it's actually an interesting superstition...{w=0.2}and one that might actually have some merit!"
     m 3eua "The 'curse,' or so it's called, states that if someone gives a hand-knit sweater to their romantic partner..."
     m 3eka "It will lead to the couple breaking up."
     m 2lsc "You might think that a gift that requires so much work and investment would have the {i}opposite{/i} effect..."
