@@ -948,6 +948,10 @@ label mas_finished_drinking:
         $ current_drink.drink()
         $ current_drink.re_serve()
 
+        #Non-brewables are per refill, so they'll run out a bit faster
+        if not current_drink.brewable():
+            $ current_drink.use()
+
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
