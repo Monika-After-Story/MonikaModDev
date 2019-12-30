@@ -1433,18 +1433,23 @@ init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_gift_coffee:
-
     m 1euc "Hmm?"
 
     m 1euc "Oh,{w} is this coffee?"
     $ mas_receivedGift("mas_reaction_gift_coffee")
+
     $ coffee = mas_getConsumableDrink("coffee")
 
-    if coffee.enabled():
+    if coffee.enabled() and coffee.hasServing():
         $ mas_giftCapGainAff(0.5)
         m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
+
+    elif coffee.enabled() and not coffee.hasServing():
+        $ mas_giftCapGainAff(0.5)
+        m 3eub "I actually ran out of coffee, so getting more from you now is amazing!"
+        m 1hua "Thanks again, [player]~"
 
     else:
         $ mas_giftCapGainAff(5)
@@ -1484,6 +1489,9 @@ label mas_reaction_gift_coffee:
             $ coffee.brew()
         $ coffee.enable()
 
+    #Stock some coffee
+    $ coffee.restock(30)
+
     $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
@@ -1503,6 +1511,12 @@ label mas_reaction_hotchocolate:
         m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
+
+    elif hotchoc.enabled() and not hotchoc.hasServing():
+        $ mas_giftCapGainAff(0.5)
+        m 3rksdla "I'm actually out of hot chocolate, ahaha...{w=0.5} {nw}"
+        extend 3eub "So getting more from you now is amazing!"
+        m 1hua "Thanks again, [player]~"
 
     else:
         $ mas_giftCapGainAff(3)
@@ -1537,6 +1551,9 @@ label mas_reaction_hotchocolate:
 
             $ hotchoc.brew()
         $ hotchoc.enable()
+
+    #Stock up some hotchocolate
+    $ hotchoc.restock(30)
 
     $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
     $ store.mas_filereacts.delete_file(gift_ev.category)

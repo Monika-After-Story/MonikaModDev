@@ -4,6 +4,7 @@
 #   - persistent._mas_coffee_been_given
 #   - persistent._mas_acs_enable_hotchoc
 #   - persistent._mas_c_hotchoc_been_given
+#TODO: Stock existing users with some coffee/hotchoc
 
 default persistent._mas_current_drink = {
     "brew time": None,
@@ -19,7 +20,7 @@ init python in mas_consumables:
     TYPE_FOOD = 1
 
     #Dict of dicts:
-    #Consumable map: {
+    #consumable_map = {
     #   0: {"consumable_id": MASConsumableDrink},
     #   1: {"consumable_id": MASConsumableFood}
     #}
@@ -44,6 +45,7 @@ init 10 python:
             consumable_low - bottom bracket of consume time
             consumable_high - top bracket of consume time
             late_entry_list - list of integers storing the hour which would be considered a late entry
+            max_re_serve - amount of times Monika can go back for another serving of this consumable
         """
 
         def __init__(
@@ -56,10 +58,11 @@ init 10 python:
             consumable_chance,
             consumable_low,
             consumable_high,
-            late_entry_list=None
+            late_entry_list=None,
+            max_re_serve=None
         ):
             """
-            MASConsumableDrink constructor
+            MASConsumable constructor
 
             IN:
                 consumable_id - id for the consumable
@@ -84,6 +87,11 @@ init 10 python:
                 late_entry_list - list of integers storing the hour which would be considered a late entry
                     If None, the start values from start_end_tuple_list are assumed
                     NOTE: Must have the same length as start_end_tuple_list
+                    (Default: None)
+
+                max_re_serve - amount of times Monika can get a re-serving of this consumable
+                    NOTE: If None, Monika can get as many re-servings as she wants, provided chance and time range is met
+                    (Default: None)
             """
             if (
                 consumable_type in store.mas_consumables.consumable_map
@@ -108,6 +116,9 @@ init 10 python:
             else:
                 self.late_entry_list=late_entry_list
 
+            self.max_re_serve=max_re_serve
+            self.re_serves_had=0
+
             #Add this to the map
             if consumable_type not in store.mas_consumables.consumable_map:
                 store.mas_consumables.consumable_map[consumable_type] = dict()
@@ -118,7 +129,8 @@ init 10 python:
             if consumable_id not in persistent._mas_consumable_map:
                 persistent._mas_consumable_map[consumable_id] = {
                     "enabled": False,
-                    "times_had": 0
+                    "times_had": 0,
+                    "servings_left": 0
                 }
 
         def enabled(self):
@@ -154,9 +166,13 @@ init 10 python:
             """
             Checks if we should have this consumable now
 
+            CONDITIONS:
+                1. We're within the consumable time range
+                2. We pass the chance check to have this consumable
+                3. We have not met/exceeded the maximum re-serve amount
+
             IN:
-                _now - datetime.datetime to check if we're within the timerange,
-                and we pass the chance check to have this consumable
+                _now - datetime.datetime to check if we're within the timerange for this consumable
                 If None, now is assumed
                 (Default: None)
 
@@ -167,6 +183,10 @@ init 10 python:
 
             NOTE: This does NOT anticipate splits/preparation
             """
+            #First, let's check if we've reached the max re-serve point
+            if self.max_re_serve is not None and self.re_serves_had == self.max_re_serve:
+                return False
+
             if _now is None:
                 _now = datetime.datetime.now()
 
@@ -176,6 +196,49 @@ init 10 python:
                 if start_time <= _now.hour < end_time and _chance <= self.consumable_chance:
                     return True
             return False
+
+        def hasServing(self):
+            """
+            Checks if we have a serving of this consumable in order to use it
+
+            OUT:
+                boolean:
+                    - True if we have at least 1 serving left of the consumable
+                    - False otherwise
+            """
+            return persistent._mas_consumable_map[self.consumable_id]["servings_left"] > 0
+
+        def restock(self, servings=12):
+            """
+            Adds more servings of the consumable
+
+            IN:
+                servings - amount of servings to add
+                (Default: 12)
+            """
+            persistent._mas_consumable_map[self.consumable_id]["servings_left"] += servings
+
+        def getStock(self):
+            """
+            Gets the amount of servings left of a consumable
+
+            OUT:
+                integer:
+                    - The amount of servings left for the consumable
+            """
+            return persistent._mas_consumable_map[self.consumable_id]["servings_left"]
+
+        def use(self):
+            """
+            Uses a serving of this consumable
+            """
+            persistent._mas_consumable_map[self.consumable_id]["servings_left"] -= 1
+
+        def re_serve(self):
+            """
+            Increments the re-serve count
+            """
+            self.re_serves_had += 1
 
         def isLateEntry(self, _now=None):
             """
@@ -224,6 +287,7 @@ init 10 python:
             consumable_low,
             consumable_high,
             late_entry_list=None,
+            max_re_serve=None
         ):
             raise NotImplementedError
 
@@ -235,7 +299,8 @@ init 10 python:
                 consumable_chance,
                 consumable_low,
                 consumable_high,
-                late_entry_list
+                late_entry_list,
+                max_re_serve
             )
 
     #MASConsumableDrink class
@@ -252,13 +317,14 @@ init 10 python:
             start_end_tuple_list - list of (start_hour, end_hour) tuples
             acs - MASAccessory to display for the drink
             split_list - list of split hours
+            late_entry_list - list of integers storing the hour which would be considered a late entry
+            max_re_serve - amount of times Monika can get a refill of this drink
             brew_chance - likelihood of Monika to brew this consumable drink
             consumable_chance - likelihood of Monika to keep drinking this consumable drink
             brew_low - bottom bracket of brew time
             brew_high - top bracket of brew time
             consumable_low - bottom bracket of drink time
             consumable_high - top bracket of drink time
-            late_entry_list -
             done_drink_until - the time until Monika can randomly have this drink again
         """
 
@@ -277,6 +343,7 @@ init 10 python:
             acs,
             split_list,
             late_entry_list=None,
+            max_re_serve=None,
             consumable_chance=80,
             consumable_low=10*60,
             consumable_high=2*3600,
@@ -298,6 +365,9 @@ init 10 python:
                 start_end_tuple_list - list of tuples storing (start_hour, end_hour)
 
                 late_entry_list - list of times storing when we should load in with a drink already out
+
+                max_re_serve - amount of times Monika can get a refill of this drink
+                    (Default: None)
 
                 acs - MASAccessory object for this consumable drink
 
@@ -334,7 +404,8 @@ init 10 python:
                 consumable_chance,
                 consumable_low,
                 consumable_high,
-                late_entry_list
+                late_entry_list,
+                max_re_serve
             )
 
             self.container=container
@@ -548,8 +619,10 @@ init 10 python:
             #Hide cup/mug
             current_drink = MASConsumableDrink._getCurrentDrink()
 
+            #If we've got a current drink, let's hide it and get rid of the amount of re-serves
             if current_drink:
                 monika_chr.remove_acs(current_drink.acs)
+                current_drink.re_serves_had = 0
 
             #Reset the events
             brew_ev.conditional = None
@@ -603,7 +676,7 @@ init 10 python:
             return [
                 drink
                 for drink in mas_consumables.consumable_map[mas_consumables.TYPE_DRINK].itervalues()
-                if drink.enabled() and drink.checkCanDrink() and drink.isDrinkTime()
+                if drink.enabled() and drink.hasServing() and drink.checkCanDrink() and drink.isDrinkTime()
             ]
 
         @staticmethod
@@ -666,6 +739,9 @@ init 10 python:
 
             #First, should we even have this?
             if drink.shouldHave():
+                #Use a charge of this drink
+                drink.use()
+
                 #Are we loading in after the time? If so, we should already have the drink out. No brew, just drink
                 if startup and drink.isLateEntry():
                     drink.drink(skip_leadin=True)
@@ -870,6 +946,7 @@ label mas_finished_drinking:
 
     else:
         $ current_drink.drink()
+        $ current_drink.re_serve()
 
     $ renpy.pause(4.0, hard=True)
 
