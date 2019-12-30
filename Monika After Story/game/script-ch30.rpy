@@ -1922,8 +1922,8 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    #Let's see if we should have something to drink
-    $ MASConsumableDrink._checkDrink()
+    #Do startup checks
+    $ MASConsumableDrink._checkDrink(startup=True)
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
@@ -1984,6 +1984,7 @@ label ch30_reset:
         if store.mas_dockstat.retmoni_status is not None:
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
+        #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
         if store.mas_globals.returned_home_this_sesh:
             MASConsumableDrink._reset()
 

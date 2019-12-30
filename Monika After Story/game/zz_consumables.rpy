@@ -97,7 +97,7 @@ init 10 python:
                 self.late_entry_list=[]
 
                 for start, end in start_end_tuple_list:
-                    late_entry_list.append(start)
+                    self.late_entry_list.append(start)
             else:
                 self.late_entry_list=late_entry_list
 
@@ -306,11 +306,11 @@ init 10 python:
                 disp_name,
                 mas_consumables.TYPE_DRINK,
                 start_end_tuple_list,
-                late_entry_list,
                 acs,
                 consumable_chance,
                 consumable_low,
-                consumable_high
+                consumable_high,
+                late_entry_list
             )
 
             self.container=container
@@ -490,9 +490,8 @@ init 10 python:
                     - False otherwise
             """
             return (
-                not self.brew_chance
-                or self.brew_low is None
-                or self.brew_high is None
+                bool(self.brew_chance)
+                and (self.brew_low is not None and self.brew_high is not None)
             )
 
         def checkCanDrink(self, _now=None):
@@ -597,9 +596,13 @@ init 10 python:
                 }
 
         @staticmethod
-        def _checkDrink():
+        def _checkDrink(startup=False):
             """
             Logic to handle Monika drinking a consumable both on startup and during runtime
+
+            IN:
+                startup - Whether or not we should check for a late entry
+                (Default: False)
             """
             #Step one: what can we drink right now?
             drinks = MASConsumableDrink._getDrinksForTime()
@@ -636,18 +639,20 @@ init 10 python:
             #First, clear vars so we start fresh
             MASConsumableDrink._reset()
 
-            #Are we loading in after the time? If so, we should already have the drink out. No brew, just drink
-            if drink.isLateEntry() and drink.shouldHave():
-                drink.drink(skip_leadin=True)
+            #First, should we even have this?
+            if drink.shouldHave():
+                #Are we loading in after the time? If so, we should already have the drink out. No brew, just drink
+                if startup and drink.isLateEntry():
+                    drink.drink(skip_leadin=True)
 
-            else:
-                #If this is a brewable, we should brew it
-                if drink.brewable() and drink.shouldBrew(_now):
-                    drink.brew()
+                else:
+                    #If this is a brewable, we should brew it
+                    if drink.brewable() and drink.shouldBrew(_now):
+                        drink.brew()
 
-                #Otherwise, we'll just set up drinking
-                elif not drink.brewable() and drink.shouldHave():
-                    drink.drink()
+                    #Otherwise, we'll just set up drinking
+                    elif not drink.brewable():
+                        drink.drink()
 
 
     #START: Global functions
@@ -878,7 +883,7 @@ label mas_get_drink:
         m 1eua "I'm going to get a [current_drink.container] of [current_drink.disp_name]. I'll be right back.{w=1}{nw}"
 
     else:
-        m 1eua "I'm going to get a [current_drink.container] of [current_drink.container]."
+        m 1eua "I'm going to get a [current_drink.container] of [current_drink.disp_name]."
         m 1eua "Hold on a moment."
 
     # monika is off screen
@@ -886,7 +891,7 @@ label mas_get_drink:
 
     # wrap these statemetns so we can properly add / remove the mug
     $ renpy.pause(1.0, hard=True)
-    $ current_drink.drink()
+    $ monika_chr.wear_acs_pst(current_drink.acs)
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
