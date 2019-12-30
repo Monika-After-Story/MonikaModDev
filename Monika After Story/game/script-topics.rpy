@@ -13190,7 +13190,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_intrusive_thoughts",
-            category=['Psychology'],
+            category=['psychology'],
             prompt="Intrusive thoughts",
             random=True
         )
