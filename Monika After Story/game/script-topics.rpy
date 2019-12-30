@@ -13269,6 +13269,6 @@ label monika_sweatercurse:
     m 1eua "For example, starting out with smaller projects like mittens or hats. {w=0.2}{nw}"
     extend 3rksdlb "That way, if they don't go over well, you haven't put a year's worth of work into it!"
     m 3hksdlb "Man, who knew that a simple gift could be so complicated?"
-    m 1ekbfb "But I want you to know that I'll always appreciate any project you put your heart into, [player]."
+    m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
     m 1ekbfa "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
     return
