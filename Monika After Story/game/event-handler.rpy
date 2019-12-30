@@ -1020,17 +1020,7 @@ init -1 python in evhand:
     LAST_SEEN_DELTA = datetime.timedelta(hours=6)
 
     # restart topic blacklist
-    # TODO: consider an addEvent param instead
-    RESTART_BLKLST = [
-        "mas_crashed_start",
-        "monika_affection_nickname",
-        "mas_coffee_finished_brewing",
-        "mas_coffee_finished_drinking",
-        "monikaroom_will_change",
-        "monika_hair_select",
-        "monika_clothes_select",
-        "monika_rain_holdme",
-    ]
+    RESTART_BLKLST = []
 
     # idle topic whitelist
     IDLE_WHITELIST = [
@@ -1291,6 +1281,7 @@ init python:
             event,
             eventdb=None,
             skipCalendar=False,
+            restartBlacklist=False,
             code="EVE"
         ):
         #
@@ -1335,6 +1326,10 @@ init python:
         # NOTE: this covers time travel
         if not store.evhand.isYearsetBlacklisted(event.eventlabel):
             Event._verifyAndSetDatesEV(event)
+
+        # check whether we should add the event in the restart blacklist
+        if restartBlacklist:
+            evhand.RESTART_BLKLST.append(event.eventlabel)
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)

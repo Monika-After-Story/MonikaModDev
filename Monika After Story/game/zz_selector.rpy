@@ -3196,7 +3196,8 @@ init 5 python:
             pool=True,
             unlocked=True,
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 default persistent._mas_setting_ocb = False
@@ -3410,7 +3411,8 @@ init 5 python:
             pool=True,
             unlocked=False,
             rules={"no unlock": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_hair_select:
