@@ -13270,5 +13270,5 @@ label monika_sweatercurse:
     extend 3rksdlb "That way, if they don't go over well, you haven't put a year's worth of work into it!"
     m 3hksdlb "Man, who knew that a simple gift could be so complicated?"
     m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
-    m 1ekbfa "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
+    m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
     return
