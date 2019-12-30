@@ -240,19 +240,19 @@ label mas_monika_day1:
         m "But I'd rather avoid getting my books wet..."
         m "Soggy pages are a pain to deal with."
         m "Another time, maybe."
-    if mas_current_weather == mas_weather_overcast:
+    elif mas_current_weather == mas_weather_overcast:
         m "Reading outside with this weather wouldn't be too bad, but it could rain at any moment."
         m "I'd rather not risk it."
         m "Don't worry, [player]. We'll do it some other time."
     else:
         m "It's a nice day today."
         m "This weather would be good for a little book reading under the Cherry Blossom tree right, [player]?"
-        if mas_current_weather == mas_weather_def:
-            m "Lying under the shade while reading my favorite book."
-            m "Along with a snack and your favorite drink on the side."
         if mas_is_snowing or mas_isWinter():
             m "Huddled together, so as to stave off the cold."
             m "With some nice hot drinks to help keep us warm."
+        else:
+            m "Lying under the shade while reading my favorite book."
+            m "Along with a snack and your favorite drink on the side."
         m "Ahh, that'd be really nice to do~"
     return
 
@@ -264,7 +264,7 @@ label mas_monika_day2:
         m "Staring into each other's eyes."
         m "Then we start leaning closer and closer until we're almost-"
         m "I think you can finish that thought yourself, [player]~"
-    if mas_is_snowing or mas_isWinter():
+    elif mas_is_snowing or mas_isWinter():
         m "Have you ever made a snow angel, [player]?"
         m "I've tried in the past, but never had much success..."
         m "It's a lot harder than it looks like."
@@ -391,6 +391,10 @@ label mas_island_bookshelf1:
         m "In the meantime..."
         m "How about cuddling a bit, [player]?"
         m "Ehehe~"
+    elif mas_is_snowing or mas_isWinter():
+        m "That bookshelf might not look terribly sturdy, but I'm sure it can weather a little snow."
+        m "It's the books that worry me a bit."
+        m "I just hope they don't get too damaged..."
     else:
         m "Some of my favorite books are in there."
         m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i}, and a few others."
@@ -403,6 +407,12 @@ label mas_island_bookshelf2:
         m "If only I hadn't left the books outside..."
         m "I should probably bring some here when I get the chance."
         m "I'm certain we can find other things to do meanwhile, right [player]?"
+    elif mas_is_snowing or mas_isWinter():
+        m "You know, I wouldn't mind doing a bit of reading outside even if it's snowing."
+        m "Though I wouldn't venture out without a warm coat, a thick scarf, and a snug pair of gloves."
+        m "I guess turning the pages might be a bit hard that way, ahaha..."
+        m "But I'm sure we'll manage somehow."
+        m "Isn't that right, [player]?"
     else:
         m "Reading outdoors is a nice change of pace, you know?"
         m "I'd take a cool breeze over a stuffy library any day."
