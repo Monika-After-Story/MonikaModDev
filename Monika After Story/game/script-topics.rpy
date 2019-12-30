@@ -13254,7 +13254,7 @@ label monika_sweatercurse:
     m 1hub "Ahaha! What a weird name, right?"
     m 3eub "But it's actually an interesting superstition...{w=0.2}and one that might actually have some merit!"
     m 3eua "The 'curse,' or so it's called, states that if someone gives a hand-knit sweater to their romantic partner, {w=0.2}{nw}"
-    m 3eka "It will lead to the couple breaking up."
+    extend 3eksdld "it will lead to the couple breaking up!"
     m 2lsc "You might think that a gift that requires so much work and investment would have the {i}opposite{/i} effect..."
     m 2esd "But there are actually a few logical reasons why this curse might exist."
     m 4esc "Firstly... well, knitting a sweater just takes a {i}lot{/i} of time. {w=0.5}{nw}"
