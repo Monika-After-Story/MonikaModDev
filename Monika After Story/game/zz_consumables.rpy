@@ -14,8 +14,15 @@ default persistent._mas_current_drink = {
 default persistent._mas_consumable_map = dict()
 
 init python in mas_consumables:
+    #Consumable types for sorting in the consumable map
     TYPE_DRINK = 0
     TYPE_FOOD = 1
+
+    #Dict of dicts:
+    #Consumable map: {
+    #   0: {"consumable_id": MASConsumableDrink},
+    #   1: {"consumable_id": MASConsumableFood}
+    #}
     consumable_map = dict()
 
 
@@ -33,10 +40,10 @@ init 10 python:
                 1 - Food
             start_end_tuple_list - list of (start_hour, end_hour) tuples
             acs - MASAccessory to display for the consumable
-            split_list - list of split hours
             consumable_chance - likelihood of Monika to keep having this consumable
             consumable_low - bottom bracket of consume time
             consumable_high - top bracket of consume time
+            late_entry_list - list of integers storing the hour which would be considered a late entry
         """
 
         def __init__(
@@ -184,7 +191,10 @@ init 10 python:
                     - True if we should load in with consumable already out
                     - False otherwise
             """
-            for index in range(len(self.start_end_tuple_list)-1,-1):
+            if _now is None:
+                _now = datetime.datetime.now()
+
+            for index in range(len(self.start_end_tuple_list)):
                 #Bit of setup
                 _start, _end = self.start_end_tuple_list[index]
                 late_hour = self.late_entry_list[index]
@@ -194,26 +204,39 @@ init 10 python:
                     and _now.hour >= late_hour
                 ):
                     return True
-                return False
+            return False
 
     class MASConsumableFood(MASConsumable):
         """
         MASConsumableFood class
 
         Inherits from MASConsumable
+
+        TODO: Consumable food implementation
         """
         def __init__(
             self,
             consumable_id,
             disp_name,
             start_end_tuple_list,
-            late_entry_list,
             acs,
             consumable_chance,
             consumable_low,
-            consumable_high
+            consumable_high,
+            late_entry_list=None,
         ):
             raise NotImplementedError
+
+            super(MASConsumableFood, self).__init__(
+                consumable_id,
+                disp_name,
+                start_end_tuple_list,
+                acs,
+                consumable_chance,
+                consumable_low,
+                consumable_high,
+                late_entry_list
+            )
 
     #MASConsumableDrink class
     class MASConsumableDrink(MASConsumable):
@@ -235,6 +258,7 @@ init 10 python:
             brew_high - top bracket of brew time
             consumable_low - bottom bracket of drink time
             consumable_high - top bracket of drink time
+            late_entry_list -
             done_drink_until - the time until Monika can randomly have this drink again
         """
 
@@ -334,10 +358,10 @@ init 10 python:
 
             #Start brew
             persistent._mas_current_drink['brew time'] = _start_time
-    
+
             #Calculate end brew time
             end_brew = random.randint(self.brew_low, self.brew_high)
-    
+
             #Setup the event conditional
             brew_ev = mas_getEV(MASConsumableDrink.BREW_FINISH_EVL)
             brew_ev.conditional = (
@@ -358,6 +382,7 @@ init 10 python:
 
             IN:
                 _start_time - time to start brewing. If none, now is assumed
+                skip_leadin - whether or not we should push the event where Monika gets something to drink
             """
             if _start_time is None:
                 _start_time = datetime.datetime.now()
@@ -714,7 +739,8 @@ init 11 python:
         container="cup",
         start_end_tuple_list=[(5, 12)],
         acs=mas_acs_mug,
-        split_list=[9]
+        split_list=[9],
+        late_entry_list=[7]
     )
 
     MASConsumableDrink(
@@ -723,7 +749,8 @@ init 11 python:
         container="cup",
         start_end_tuple_list=[(19,22)],
         acs=mas_acs_hotchoc_mug,
-        split_list=[21]
+        split_list=[21],
+        late_entry_list=[20]
     )
 
 #START: Finished brewing/drinking events
