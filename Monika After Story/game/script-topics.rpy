@@ -13261,7 +13261,7 @@ label monika_sweatercurse:
     extend 4wud "Possibly a year, or even more!"
     m 4eka "Over all those months, something bad might happen that causes the couple to fight and eventually separate."
     m 4ekc "Or worse...{w=0.2}the knitter might be trying to make the sweater as a great gift to save an already suffering relationship."
-    m 1rkd "There's also the likely possibility that the recipient... doesn't like the sweater that much."
+    m 1rksdld "There's also the likely possibility that the recipient...{w=0.2}doesn't like the sweater that much."
     m 1tkd "After putting so much time and effort into knitting it, imagining their partner happily wearing it, I'm sure you can understand how much it would hurt to see it cast aside."
     m 3eud "A common piece of advice to avoid the curse is to have the recipient be very involved in the crafting of the sweater, picking materials and styles they enjoy."
     m 1etc "But it's equally common for the knitter to be told 'surprise me,' or 'make whatever you want,' which can sometimes make the recipient sound uncaring about their partner's hobby."
