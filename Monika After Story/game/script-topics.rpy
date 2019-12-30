@@ -13185,6 +13185,38 @@ label mas_show_unseen:
     m 3hua "There you go!"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_intrusive_thoughts",
+            category=['psychology'],
+            prompt="Intrusive thoughts",
+            random=True
+        )
+    )
+
+label monika_intrusive_thoughts:
+    m 1rsc "Hey, [player]..."
+    m 1euc "Have you ever had intrusive thoughts?"
+    m 3eud "I've been reading a study on them...{w=0.5}I find it quite interesting."
+    m 3ekc "The study claims that the mind tends to think of some...{w=0.2}unpleasant things when triggered by certain, often negative circumstances."
+    m 1esd "They can be anything from sadistic, violent, vengeful, to even sexual."
+    m 2rkc "When most people have an intrusive thought, they feel disgusted by it..."
+    m 2tkd "...and what's worse, they start to believe that they're a bad person for even thinking of such a thing."
+    m 3ekd "But the truth is, it doesn't make you a bad person at all!"
+    m 3rka "It's actually natural to have these thoughts."
+    m 3eud "...What matters is how you act on them."
+    m 4esa "Normally, a person wouldn't act on their intrusive thoughts.{w=0.2} {nw}"
+    extend 4eub "In fact, they might even do something good to prove that they aren't a bad person."
+    m 2ekc "But for some people, these thoughts tend to happen really often...{w=0.2}{nw}"
+    extend 2dkd "to the point where they can no longer block them out."
+    m 3tkd "It breaks their will and eventually overwhelms them, leading them to act."
+    m 1dkc "It's a terrible downward spiral."
+    m 1ekc "I hope you don't have to deal with them too much, [player]."
+    m 1ekd "It'd break my heart to know you're suffering because of these awful thoughts."
+    m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
+    return
 
 init 5 python:
     addEvent(
