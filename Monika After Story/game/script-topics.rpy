@@ -13250,7 +13250,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sweatercurse",category=['clothes'],prompt="Sweater curse",random=True))
 
 label monika_sweatercurse:
-    m 1eub "Have you ever heard of {i}the curse of the love sweater?{/i}"
+    m 1eub "Have you ever heard of 'the curse of the love sweater?'"
     m 1hub "Ahaha! What a weird name, right?"
     m 3eub "But it's actually an interesting superstition--and one that might actually have a cause!"
     m 3eua "The 'curse,' or so it's called, states that if someone gives a hand-knit sweater to their romantic partner..."
