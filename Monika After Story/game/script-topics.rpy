@@ -11888,7 +11888,7 @@ label monika_whydoyouloveme:
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniLove(higher=True):
-        if renpy.random.randint(1,2) == 1
+        if renpy.random.randint(1,2) == 1:
             if store.mas_anni.pastSixMonths():
                 m 1eka "Why do I even love you?"
                 m 2eka "[player]...{w=1} there are so many reasons why... Where do I even begin?"
