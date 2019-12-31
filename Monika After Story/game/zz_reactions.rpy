@@ -1490,7 +1490,7 @@ label mas_reaction_gift_coffee:
         $ coffee.enable()
 
     #Stock some coffee
-    $ coffee.restock(30)
+    $ coffee.restock()
 
     $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
     $ store.mas_filereacts.delete_file(gift_ev.category)
@@ -1506,7 +1506,7 @@ label mas_reaction_hotchocolate:
 
     $ hotchoc = mas_getConsumableDrink("hotchocolate")
 
-    if hotchoc.enabled():
+    if hotchoc.enabled() and hotchoc.hasServing():
         $ mas_giftCapGainAff(0.5)
         m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
@@ -1553,7 +1553,7 @@ label mas_reaction_hotchocolate:
         $ hotchoc.enable()
 
     #Stock up some hotchocolate
-    $ hotchoc.restock(30)
+    $ hotchoc.restock()
 
     $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
     $ store.mas_filereacts.delete_file(gift_ev.category)

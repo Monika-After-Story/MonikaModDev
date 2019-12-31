@@ -1923,6 +1923,11 @@ label ch30_reset:
                 persistent._mas_affection["freeze_date"] = today
 
     #Do startup checks
+
+    #First we check for use during absence
+    $ MASConsumableDrink._absentUse()
+
+    #Now we check if we should drink
     $ MASConsumableDrink._checkDrink(startup=True)
 
     # call plushie logic
