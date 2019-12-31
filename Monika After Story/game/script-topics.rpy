@@ -9030,58 +9030,42 @@ label monika_hydration:
     m 4huu "Why not get a glass of water right now, hmm?"
     return
 
-#If player has been to a theme park or not
+#If player has been to an amusement park or not
 default persistent._mas_pm_has_been_to_amusement_park = None
 
-#NOTE: This is more describing an amusement park than a theme park
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_amusementpark",
-            category=['life'],
-            prompt="Amusement parks",
-            random=True
-        )
-    )
+   addEvent(Event(persistent.event_database,eventlabel="monika_amusementpark",category=['misc'],prompt="Amusement parks",random=True))
 
 label monika_amusementpark:
-    m 3eua "Hey, [player]!"
-    m "Have you ever been to an amusement park?{nw}"
+    m 1eua "Hey, [player]."
+    m 3eua "Have you ever been to an amusement park?{nw}"
     $ _history_list.pop()
     menu:
-        m "Have you ever been to a amusement park?{fast}"
+        m "Have you ever been to an amusement park?{fast}"
         "Yes.":
             $ persistent._mas_pm_has_been_to_amusement_park = True
-            m 1hub "Really? That's great!"
-            m 1lsu "I've never been to one, but I'd really like to."
-
+            m 1sub "Really? It must have been really fun!"
+            m 1eub "I've never been to one, but I'd really like to."
+            m 1hua "Maybe you could take me to one someday!"
         "No.":
             $ persistent._mas_pm_has_been_to_amusement_park = False
-            m 1hub "Really? You don't know what you're missing!"
-            m 1lsu "Although I haven't been to one either...but I'd really like to."
-
-    m 3esu "What if we arrange a date to one in the future?"
-    m 3esb "Wouldn't that be great?"
-    m 3hub "Thrilling roller coasters, water rides, drop towers..."
-    m 3rsbsu "And maybe even a romantic Ferris wheel ride~"
-    show monika 5lsbsa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5lsbsa "Ehehe~, I think I'm getting a bit carried away, but..."
-    m 5esbfu "I just can't help it when it comes to thinking about being together with you, [player]~"
+            m 1eka "Really? Aw, that's too bad."
+            m 3hua "I've always heard that they're really fun."
+            m 1rksdla "I've never had the chance to go to one, myself, but I'm hoping I get to someday."
+            m 1eub "Maybe we could go to one together someday!"
+        m 3hua "Wouldn't that be great?"
+        m 1dua "Thrilling roller coasters, water rides, drop towers..."
+        m 2tubfb "And maybe even a romantic Ferris wheel ride~"
+        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hubfa "Ehehe, I think I'm getting a bit carried away, but..."
+        m 5ekbfa "I just can't help it when it comes to thinking about being together with you, [player]~"
     return "derandom"
 
 #If the player likes to travel or not
 default persistent._mas_pm_likes_travelling = None
 
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_travelling",
-            category=['life'],prompt="Travelling",
-            random=True
-        )
-    )
+   addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['misc'],prompt="Travelling",random=True))
 
 label monika_travelling:
     m 1esa "Do you like travelling around the world, [player]?{nw}"
@@ -9091,28 +9075,24 @@ label monika_travelling:
         "Yes.":
             $ persistent._mas_pm_likes_travelling = True
             m 1hua "That's great! I'm so glad you like doing it."
-            m "It's one of the things I wanna do the most when I finally get out of this world."
-            m 4esu "There's so much out there that I haven't been able to see yet..."
-            m 1esb "Don't get me wrong, I've read a lot about your world, but I want to take a look at it in person."
-            m 3hsb "Important cities, monuments, and even the different types of societies and cultures out there."
-            m 3hsb "I want to see everything that is to be seen."
-            show monika 5lua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5lua "And I'm sure that exploring the world would be much funnier having you next to me, [player]~"
-            if persistent._mas_pm_driving_can_drive:
-                m 5tsu "Now that I remember... You know how to drive, dont't you?"
-                m 5hublb "I hope that you will take me to a lot of cool places!"
-            
+            m 3eub "It's one of the things I want to do the most when I finally cross over."
+            m 1eua "There's so much out there that I haven't been able to see yet..."
+            m 3eka "Don't get me wrong, I've read a lot about your world, but I want to take a look at it in person."
+            m 3eub "Important cities, monuments, and even the different types of cultures out there."
+            m 1hua "I want to see everything that is to be seen."
+            show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfa "And I'm sure that exploring the world would be much funnier having you next to me, [player]~"
         "Not really.":
             $ persistent._mas_pm_likes_travelling = False
-            m 1eka "Aww, that's okay, [player]~"
-            m 3huu "I wouldn't mind staying at home with you during vacations."
-            m 3esb "Just by having the oportunity to be together in your reality I would feel pleased."
-            m 3lsa "Although we might have to find some activities to keep ourselves entertained."
-            m "How about playing the piano or writing poems together?"
-            m 3lsbla "We could even spend the days cuddling up together while we read a book."
-            show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5hubfu "Doesn't that sound like a dream?"
-            m "Ehehe~"
+            m 1eka "Aww, that's okay, [player]."
+            m 1hua "I wouldn't mind staying at home with you during vacations."
+            m 3ekbfa "I would be pleased just to have the oportunity to be together in your reality."
+            m 1eua "Although, we might have to find some activities to keep ourselves entertained."
+            m 1hua "How about playing the piano or writing poems together?"
+            m 3hubfb "We could even spend the days cuddling up together while we read a book."
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "Doesn't that sound like a dream?"
+            m 5hubfa "Ehehe~"
     return "derandom"
 
 init 5 python:
