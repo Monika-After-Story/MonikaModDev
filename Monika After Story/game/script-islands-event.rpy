@@ -252,7 +252,7 @@ label mas_monika_day1:
             m "With some nice hot drinks to help keep us warm."
         else:
             m "Lying under the shade while reading my favorite book."
-            m "Along with a snack and your favorite drink on the side."
+            m "...Along with a snack and your favorite drink on the side."
         m "Ahh, that'd be really nice to do~"
     return
 
