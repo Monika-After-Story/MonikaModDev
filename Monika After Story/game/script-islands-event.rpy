@@ -405,7 +405,7 @@ label mas_island_bookshelf2:
     if mas_current_weather == mas_weather_overcast or mas_is_raining:
         m "Reading indoors with rain just outside the window is pretty relaxing."
         m "If only I hadn't left the books outside..."
-        m "I should probably bring some here when I get the chance."
+        m "I should probably bring some in here when I get the chance."
         m "I'm certain we can find other things to do meanwhile, right [player]?"
     elif mas_is_snowing or mas_isWinter():
         m "You know, I wouldn't mind doing a bit of reading outside even if it's snowing."
