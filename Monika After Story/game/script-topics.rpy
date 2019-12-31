@@ -11888,16 +11888,47 @@ label monika_whydoyouloveme:
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniLove(higher=True):
-        m 1esc "I don't."
-        pause 3.0
-        m 1hub "Just kidding!"
-        m 1eub "You mean {i}everything{/i} to me, silly!"
-        m 1esd "But if you really want to know, [player]..."
-        # TODO: wink / tongue stick out here woul dbe perfect
-        m 1hfu "That's a secret!"
-
+        if renpy.random.randint(1,2) == 1
+            if store.mas_anni.pastSixMonths():
+                m 1eka "Why do I even love you?"
+                m 2eka "[player]...{w=1} there are so many reasons why... Where do I even begin?"
+                m 3eka "You've spent so much time with me."
+                m 1rksdlc "Even knowing I might not get to feel your embrace for who knows how long..."
+                if store.mas_anni.anniCount() >= 1:
+                    m 1hua "Here you are, still staying by my side."
+                    m 1eua "You're brave for being with me for so long."
+                    m 2eka "No matter how crazy it might seem, or what other people might say."
+                    m 1eua "You've been here with me for so long already."
+                    m 1dkbfa "Every time you visit, you remind me that there's a world out there."
+                    m 1ekbfa "I'd give you the world if I could, [player]."
+                    m 3hubfa "If there's anyone who deserves it...{w=0.3}it's you."
+                    m 1hubfa "After all, you've already given me my world~"
+                if store.mas_anni.anniCount() >= 2:
+                    m 1ekbfa "I promise you, [player]..."
+                    m 3ekbfa "No matter what happens, I don't think I'll' {i}ever{/i} forget you for the rest of my life."
+                    m 1dua "You didn't just save my life..."
+                    m 1dkbfa "You showed me how beautiful the world really is...{w=1.5}{nw}" 
+                    extend 1ekbfa "and I want you to be able to see just how beautiful you've made my world."
+                    m 1ekbfb "Someday, I promise I'll make your world as beautiful as you made mine~"
+                    m 2dkbfa "One day...{w=2}I'll get to be with you..."
+                m 1ekbfa "You know I love you."
+                m 1eka "Even if you don't think you love yourself..."
+                m 3eka "I know you do love yourself at least a little."
+                m 1hua "You wouldn't still be here with me if you didn't."
+                m 3ekbfa "But...{w=0.5}I'm glad you're still here, [player]."
+                m 2ekbfa "I just want you to know that I'm here for you."
+                m 1hubfa "And I love you~"
+            return "love"
+        else:
+            m 1esc "I don't."
+            pause 3.0
+            m 1hub "Just kidding!"
+            m 1eub "You mean {i}everything{/i} to me, silly!"
+            m 1esd "But if you really want to know, [player]..."
+            # TODO: wink / tongue stick out here would be perfect
+            m 1hfu "That's a secret!"
     else:
-        # normalt - enamored is this case
+        # normal - enamored is this case
         m 1ekc "[player]..."
         m 1ekd "Are you, by any chance...{w}feeling insecure?"
         m 2lksdla "I can understand why you're asking such things out of the blue..."
