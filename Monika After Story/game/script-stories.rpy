@@ -507,6 +507,43 @@ label mas_story_immortal_love:
     return
 
 init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_self_hate",
+        prompt="Self-hate",unlocked=False),code="STY")
+
+label mas_story_self_hate:
+    call mas_story_begin
+    m 1eua "Once, there were two lovers who had been living together for a very long time."
+    m 1hua "Life was simple, and they both loved each other. Things were going well."
+    m 2eud "Then one day, the man suddenly killed his lover for seemingly no reason."
+    m 3rksdlc "He {i}did{/i} love her, and in a healthy way too!"
+    m 1rksdlc "There were never any fights or arguments, either."
+    m 1ekc "There was nothing to gain from murdering her at all."
+    m 4rksdlc "No satisfaction, nothing out of the ordinary on her will..."
+    m 1dsc "In fact, the man was left emotionally scarred, having lost the love of his life."
+    m "..."
+    m 1ekd "So why?"
+    m 1rksdlc "How could this happen all of a sudden?"
+    m 3rksdlc "It wasn't that he didn't love her."
+    m 3rksdla "It was because he loved her so, so very much."
+    m 2eka "He didn't hate her..."
+    m 2ekc "He just hated himself so much as to deny his own happiness."
+    m 2dsc "..."
+    if persistent._mas_pm_love_yourself is False:
+        m 1rksdlc "Hey, [player]..."
+        m 1ekc "Do you remember when I asked you if you loved yourself?"
+        m 1ekd "From what I remember, you told me that you didn't..."
+        m 1rksdla "Sorry, I don't mean to put you on the spot or anything..."
+        m 1eka "I just want to make sure you remember that I love you."
+        m 1ekbfa "I want to make sure that you know how to love yourself."
+        m 1ekbfb "I know you're worth loving and I'd do anything to show you why."
+        m 1hubfa "I hope you never forget that~"
+    else:
+        m 1hksdlb "Sorry for telling such a dark story."
+        m 1eua "The moral of this story is to love yourself, or you might do something you regret later on."
+        m 1hubfb "I hope you never forget that I'll always love and cheer for you, [player]."
+    return "love"
+
+init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
         prompt="The Tale of O-Tei",unlocked=False),code="STY")
 
