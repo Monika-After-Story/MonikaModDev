@@ -6550,7 +6550,7 @@ label monika_clones:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Immortality",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Age gap",random=True))
 
 label monika_immortal:
     m 3hua "[player]! I've been thinking about something..."
@@ -9242,6 +9242,38 @@ label monika_yellowwp:
             m 1hua "It'll definitely be an interesting read for you."
 
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_immortality",
+            category=['philosophy'],
+            prompt="Immortality",
+            random=True
+        )
+    )
+
+label monika_immortality:
+    m 1eud "Hey, [player], I've been thinking lately about immortality."
+    m 1lksdlc "...Seeing as how I'm essentially immortal while I'm in here and all."
+    m 1esc "A lot of people think it's a good thing, but I don't really think it is."
+    m 3euc "Sure, it's an interesting thought; {w=0.1}living forever, not having to worry about dying..."
+    m 3eud "But not everyone is immortal, and some people just don't want to be."
+    m 1etc "Like, after a while, what would you even do?"
+    m 1euc "I mean, after living long enough, {i}eventually{/i} you would achieve everything you could ever possibly want to...{w=0.3}experience everything there is to experience."
+    m 3lksdld "Not to mention, it would be really hard to have friends or build connections if they don't last as long as you do."
+    m 3eksdla "Sure, it would be nice in the beginning, {w=0.1}{nw}"
+    extend 3eksdlc "but after seeing enough people you care about die, would you really want to keep going through that over and over?"
+    m 2dkd "At some point, you might as well not even be human anymore."
+    m 2ekc "Someday, you'll have lived long enough for hundreds of years to go by in what seems like mere moments to you."
+    m 2dkd "You'll be so tired of life that you'll just wish you could sleep forever..."
+    m 3eksdlc "But you always keep waking back up to the same boring things, with the occasional tragedy in the world... {w=0.3}And even those you'd eventually just become numb to."
+    m 1lksdla "Wow, I didn't mean for that to get so dark. Sorry, [player]."
+    m 1eka "Just so you know, I'd gladly give up my immortality to be with you..."
+    m 1ekbsa "No matter how much or little time you may have left, spending that time with you would be worth more than a billion years without you."
+    m 1ekbsu "Not that I'd mind spending eternity with you if it were possible, but just living a normal life with you is all I've ever wanted, [player]~"
+    return
 
 init 5 python:
     addEvent(
