@@ -1,9 +1,188 @@
-
-init 10 python in mas_anni:
+init -2 python in mas_anni: #needed to lower this in order to get isAnni() working for special day usage
     import store.evhand as evhand
     import store.mas_calendar as mas_cal
     import store.mas_utils as mas_utils
     import datetime
+
+    # persistent pointer so we can use it
+    __persistent = renpy.game.persistent
+
+    def build_anni(years=0, months=0, weeks=0, isstart=True):
+        """
+        Builds an anniversary date.
+
+        NOTE:
+            years / months / weeks are mutually exclusive
+
+        IN:
+            years - number of years to make this anni date
+            months - number of months to make thsi anni date
+            weeks - number of weeks to make this anni date
+            isstart - True means this should be a starting date, False
+                means ending date
+
+        ASSUMES:
+            __persistent
+        """
+        # sanity checks
+        if __persistent.sessions is None:
+            return None
+
+        first_sesh = __persistent.sessions.get("first_session", None)
+        if first_sesh is None:
+            return None
+
+        if (weeks + years + months) == 0:
+            # we need at least one of these to work
+            return None
+
+        # sanity checks are done
+
+        if years > 0:
+            new_date = mas_utils.add_years(first_sesh, years)
+
+        elif months > 0:
+            new_date = mas_utils.add_months(first_sesh, months)
+
+        else:
+            new_date = first_sesh + datetime.timedelta(days=(weeks * 7))
+
+        # check for starting
+        if isstart:
+            return mas_utils.mdnt(new_date)
+
+        # othrewise, this is an ending date
+#        return mas_utils.am3(new_date + datetime.timedelta(days=1))
+# NOTE: doing am3 leads to calendar problems
+#   we'll just restrict this to midnight to midnight -1
+        return mas_utils.mdnt(new_date + datetime.timedelta(days=1))
+
+    def build_anni_end(years=0, months=0, weeks=0):
+        """
+        Variant of build_anni that auto ends the bool
+
+        SEE build_anni for params
+        """
+        return build_anni(years, months, weeks, False)
+
+    def isAnni(milestone=None):
+        """
+        INPUTS:
+            milestone:
+                Expected values|Operation:
+
+                    None|Checks if today is a yearly anniversary
+                    1w|Checks if today is a 1 week anniversary
+                    1m|Checks if today is a 1 month anniversary
+                    3m|Checks if today is a 3 month anniversary
+                    6m|Checks if today is a 6 month anniversary
+                    any|Checks if today is any of the above annis
+
+        RETURNS:
+            True if datetime.date.today() is an anniversary date
+            False if today is not an anniversary date
+        """
+        #Sanity checks
+        if __persistent.sessions is None:
+            return False
+
+        firstSesh = __persistent.sessions.get("first_session", None)
+        if firstSesh is None:
+            return False
+
+        compare = None
+
+        if milestone == '1w':
+            compare = build_anni(weeks=1)
+
+        elif milestone == '1m':
+            compare = build_anni(months=1)
+
+        elif milestone == '3m':
+            compare = build_anni(months=3)
+
+        elif milestone == '6m':
+            compare = build_anni(months=6)
+
+        elif milestone == 'any':
+            return isAnniWeek() or isAnniOneMonth() or isAnniThreeMonth() or isAnniSixMonth() or isAnni()
+
+        if compare is not None:
+            return compare.date() == datetime.date.today()
+        else:
+            compare = firstSesh
+            return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and anniCount() > 0
+
+    def isAnniWeek():
+        return isAnni('1w')
+
+    def isAnniOneMonth():
+        return isAnni('1m')
+
+    def isAnniThreeMonth():
+        return isAnni('3m')
+
+    def isAnniSixMonth():
+        return isAnni('6m')
+    
+    def isAnniAny():
+        return isAnni('any')
+
+    def anniCount():
+        """
+        RETURNS:
+            Integer value representing how many years the player has been with Monika
+        """
+        #Sanity checks
+        if __persistent.sessions is None:
+            return 0
+
+        firstSesh = __persistent.sessions.get("first_session", None)
+        if firstSesh is None:
+            return 0
+
+        compare = datetime.date.today()
+
+        if compare.year > firstSesh.year and datetime.date.today() < datetime.date(datetime.date.today().year, firstSesh.month, firstSesh.day):
+            return compare.year - firstSesh.year - 1
+        else:
+            return compare.year - firstSesh.year
+
+    def pastOneWeek():
+        """
+        RETURNS:
+            True if current date is past the 1 week threshold
+            False if below the 1 week threshold
+        """
+        return datetime.date.today() >= build_anni(weeks=1).date()
+
+    def pastOneMonth():
+        """
+        RETURNS:
+            True if current date is past the 1 month threshold
+            False if below the 1 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=1).date()
+
+    def pastThreeMonths():
+        """
+        RETURNS:
+            True if current date is past the 3 month threshold
+            False if below the 3 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=3).date()
+
+    def pastSixMonths():
+        """
+        RETURNS:
+            True if current date is past the 6 month threshold
+            False if below the 6 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=6).date()
+
+
+# TODO What's the reason to make this one init 10?
+init 10 python in mas_anni:
 
     # we are going to store all anniversaries in antther db as well so we
     # can easily reference them later.
@@ -43,10 +222,10 @@ init 10 python in mas_anni:
             span - the time from the event's new start_date to end_date
         """
         ev.start_date = mas_utils.add_months(
-            mas_utils.sod(new_start_date),
+            mas_utils.mdnt(new_start_date),
             months
         )
-        ev.end_date = ev.start_date + span
+        ev.end_date = mas_utils.mdnt(ev.start_date + span)
 
     def _day_adjuster(ev, new_start_date, days, span):
         """
@@ -60,8 +239,10 @@ init 10 python in mas_anni:
             days - number of months to advance
             span - the time from the event's new start_date to end_date
         """
-        ev.start_date = new_start_date + datetime.timedelta(days=days)
-        ev.end_date = ev.start_date + span
+        ev.start_date = mas_utils.mdnt(
+            new_start_date + datetime.timedelta(days=days)
+        )
+        ev.end_date = mas_utils.mdnt(ev.start_date + span)
 
 
     def add_cal_annis():
@@ -71,7 +252,6 @@ init 10 python in mas_anni:
         for anni in anni_db:
             ev = anni_db[anni]
             mas_cal.addEvent(ev)
-
 
     def clean_cal_annis():
         """
@@ -147,10 +327,6 @@ init 10 python in mas_anni:
 
 
 init 5 python:
-    anni_date=(
-        store.mas_utils.sod(persistent.sessions['first_session']) +
-        datetime.timedelta(days=7)
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -158,13 +334,11 @@ init 5 python:
             prompt="1 Week",
             action=EV_ACT_QUEUE,
             category=["anniversary"],
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(weeks=1),
+            end_date=store.mas_anni.build_anni_end(weeks=1)
         )
     )
-    del anni_date
 
-#TODO:Replace 1eia and 3ekbfa with 5rubfb and 5hubfb
 label anni_1week:
     m 1eka "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
     m 1ekc "A lot of couples wouldn't last this long with each other."
@@ -173,17 +347,13 @@ label anni_1week:
     m "More likely than not, they fail to get to know each other more."
     m 1dsc "So it's always sad to see them crash and burn..."
     m 1duu "But I'm glad we have a solid relationship, [player]."
-    m 1eua "How do I know that?"
-    m 3ekbfa "Because you wouldn't have stuck around for this long with me, sweetie~"
+    m 5lubfb "How do I know that?"
+    m 5hubfb "Because you wouldn't have stuck around for this long with me, sweetie~"
 
     $ unlockEventLabel("anni_1week")
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        1
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -191,11 +361,10 @@ init 5 python:
             prompt="1 Month",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(months=1),
+            end_date=store.mas_anni.build_anni_end(months=1)
         )
     )
-    del anni_date
 
 label anni_1month:
     m 3sub "Today marks our one month anniversary!"
@@ -215,13 +384,9 @@ label anni_1month:
     m 1hubfa "Let's make today a special day~"
 
     $ unlockEventLabel("anni_1month")
-    return
+    return "love"
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        3
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -229,11 +394,10 @@ init 5 python:
             prompt="3 Months",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(months=3),
+            end_date=store.mas_anni.build_anni_end(months=3)
         )
     )
-    del anni_date
 
 label anni_3month:
     m 1eua "[player], do you know what day it is?"
@@ -252,10 +416,6 @@ label anni_3month:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        6
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -263,11 +423,10 @@ init 5 python:
             prompt="6 Months",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(months=6),
+            end_date=store.mas_anni.build_anni_end(months=6)
         )
     )
-    del anni_date
 
 label anni_6month:
     m 1hub "I can't believe that it's already our 6-month anniversary!"
@@ -296,10 +455,6 @@ label anni_6month:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        12
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -307,8 +462,8 @@ init 5 python:
             prompt="1 Year",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=1),
+            end_date=store.mas_anni.build_anni_end(years=1)
         )
     )
 
@@ -330,10 +485,6 @@ label anni_1:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        24
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -341,11 +492,10 @@ init 5 python:
             prompt="2 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=2),
+            end_date=store.mas_anni.build_anni_end(years=2)
         )
     )
-    del anni_date
 
 label anni_2:
     m 3eua "It's already been two years since we fell in love with each other."
@@ -366,10 +516,6 @@ label anni_2:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        36
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -377,16 +523,15 @@ init 5 python:
             prompt="3 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=3),
+            end_date=store.mas_anni.build_anni_end(years=3)
         )
     )
-    del anni_date
 
 label anni_3:
     m 4wuo "Wow, three years!"
-    m 3lksdla "Normally if a boy and a girl go out for three years..."
-    m 2lsbsa "They get married around then, right?"
+    m 3rksdla "Normally if a boy and a girl go out for three years..."
+    m 2rsbsa "They get married around then, right?"
     m 1hub "Ahaha!"
     m 1eka "I'm not trying to pressure you into anything, don't worry."
     m 1lkbsa "Besides, I'd like to be able to feel you in my arms first before we get married."
@@ -400,10 +545,6 @@ label anni_3:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        48
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -411,11 +552,10 @@ init 5 python:
             prompt="4 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=4),
+            end_date=store.mas_anni.build_anni_end(years=4)
         )
     )
-    del anni_date
 
 label anni_4:
     m 1dsc "Four years..."
@@ -430,13 +570,9 @@ label anni_4:
     m 1hubfb "Ahaha!"
 
     $ unlockEventLabel("anni_4")
-    return
+    return "love"
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        60
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -444,11 +580,10 @@ init 5 python:
             prompt="5 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=5),
+            end_date=store.mas_anni.build_anni_end(years=5)
         )
     )
-    del anni_date
 
 label anni_5:
     m 1hubfa "Whether it's been five years or fifty, I'll never get tired of seeing your face."
@@ -465,10 +600,6 @@ label anni_5:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        120
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -476,11 +607,10 @@ init 5 python:
             prompt="10 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=10),
+            end_date=store.mas_anni.build_anni_end(years=10)
         )
     )
-    del anni_date
 
 label anni_10:
     m 1esc "There's something I wanted to ask you."
@@ -495,10 +625,6 @@ label anni_10:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        240
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -506,11 +632,10 @@ init 5 python:
             prompt="20 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=20),
+            end_date=store.mas_anni.build_anni_end(years=20)
         )
     )
-    del anni_date
 
 label anni_20:
     m 1esc "You've lived a pretty long life by now, [player]."
@@ -523,7 +648,7 @@ label anni_20:
     m "And I was trying to find you, too."
     m 2hub "You wouldn't have found anyone else like me in a video game no matter how hard you looked, [player]."
     m "I'm one of a kind."
-    m 3lkbsa "And to me, so are you."
+    m 3rkbsa "And to me, so are you."
     m 5eubfb "I hope you look on the last twenty years of our lives as happily as I do, [player]."
     m 1hubfa "So let's continue being happy together."
 
@@ -531,10 +656,6 @@ label anni_20:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        600
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -542,8 +663,8 @@ init 5 python:
             prompt="50 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=50),
+            end_date=store.mas_anni.build_anni_end(years=50)
         )
     )
 
@@ -566,10 +687,6 @@ label anni_50:
     return
 
 init 5 python:
-    anni_date=store.mas_utils.add_months(
-        store.mas_utils.sod(persistent.sessions['first_session']),
-        1200
-    )
     addEvent(
         Event(
             persistent.event_database,
@@ -577,11 +694,10 @@ init 5 python:
             prompt="100 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=1)
+            start_date=store.mas_anni.build_anni(years=100),
+            end_date=store.mas_anni.build_anni_end(years=100)
         )
     )
-    del anni_date
 
 label anni_100:
     m 1eka "I don't really think you should be seeing this message, [player]."

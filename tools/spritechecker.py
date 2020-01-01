@@ -19,11 +19,15 @@ DLG_START = "m "
 # every show line starts with show monika
 SHW_START = "show monika"
 
+#Every extend line starts with extend
+EXT_START = "extend "
+
 # special key words that are unique to show lines
 SHW_KEY = [
     "at",
     "zorder",
-    "as"
+    "as",
+    "with"
 ]
 
 EXT_RPY = ".rpy"
@@ -94,6 +98,10 @@ def check_file(fpath, sp_dict):
                 # okay, then try show line
                 _code = extract_code_if_shw(cl_line)
 
+            #Otherwise it may be an extend line. Let's try that
+            if _code is None:
+                _code = extract_code_if_ext(cl_line)
+
             if _code and _code not in sp_dict:
                 # we have a code but its not in the dict?!
                 sp_mismatches.append(SpriteMismatch(_code, ln_count, fpath))
@@ -106,7 +114,7 @@ def check_file(fpath, sp_dict):
 def extract_dlg_code(line):
     """
     Extracts the sprite code from the given line
-    Assumes the line is a dlg line
+    Assumes the line is a dlg line or extend line
 
     IN:
         line - line to get sprite code
@@ -178,6 +186,27 @@ def extract_code_if_shw(line):
 
     return None
 
+def extract_code_if_ext(line):
+    """
+    Does both checking and extractiong of a code from a potential extend line
+
+    IN:
+        line - line to check and get srpite code
+
+    RETURNS:
+        the extracted sprite code, or None if no sprite found
+    """
+    if line.startswith(EXT_START):
+        # line is an extend line
+
+        code = extract_dlg_code(line)
+        if code.startswith('"') or code.startswith("'"):
+            return None
+
+        # otherwise we have a dlg code
+        return code
+
+    return None
 
 def get_rpy_paths(inc_dev=False):
     """
