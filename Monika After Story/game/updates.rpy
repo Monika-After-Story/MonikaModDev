@@ -409,6 +409,14 @@ label v0_10_5(version="v0_10_5"):
                 persistent._mas_fun_facts_database,
                 transfer_unlocked=False
             )
+
+        #Fix these persist vars
+        persistent._mas_pm_plays_instrument = persistent.instrument
+        persistent._mas_pm_likes_rain = persistent._mas_likes_rain
+
+        #And delete the old
+        del persistent.instrument
+        del persistent._mas_likes_rain
     return
 
 #0.10.4
