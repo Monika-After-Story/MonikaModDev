@@ -136,7 +136,7 @@ label mas_monika_islands:
     m 1eua "I hope you liked it, [player]~"
     return
 
-label mas_monika_upsidedownisland:
+label mas_island_upsidedownisland:
     m "Oh, that."
     m "I guess you're wondering why that island is upside down, right?"
     m "Well...I was about to fix it until I took another good look at it."
@@ -145,7 +145,7 @@ label mas_monika_upsidedownisland:
     m "It's just...mesmerizing."
     return
 
-label mas_monika_glitchedmess:
+label mas_island_glitchedmess:
     m "Oh, that."
     m "It's something I'm currently working on."
     m "It's still a huge mess, though. I'm still trying to figure out how to be good at it."
@@ -153,23 +153,23 @@ label mas_monika_glitchedmess:
     m "Practice makes perfect after all, right?"
     return
 
-label mas_monika_cherry_blossom_tree:
+label mas_island_cherry_blossom_tree:
     python:
 
-        if not renpy.store.seen_event("mas_monika_cherry_blossom1"):
+        if not renpy.store.seen_event("mas_island_cherry_blossom1"):
 
-            renpy.call("mas_monika_cherry_blossom1")
+            renpy.call("mas_island_cherry_blossom1")
 
         else:
-            _mas_cherry_blossom_events = ["mas_monika_cherry_blossom1",
-                "mas_monika_cherry_blossom2", "mas_monika_cherry_blossom3",
-                "mas_monika_cherry_blossom4"]
+            _mas_cherry_blossom_events = ["mas_island_cherry_blossom1",
+                "mas_island_cherry_blossom2", "mas_island_cherry_blossom3",
+                "mas_island_cherry_blossom4"]
 
             renpy.call(renpy.random.choice(_mas_cherry_blossom_events))
 
     return
 
-label mas_monika_cherry_blossom1:
+label mas_island_cherry_blossom1:
     if mas_is_snowing or mas_isWinter():
         m "This tree may look dead right now...but when it blooms, it's gorgeous."
     else:
@@ -185,13 +185,13 @@ label mas_monika_cherry_blossom1:
         m "I can't wait until we get the chance to experience that, [player]."
     return
 
-label mas_monika_cherry_blossom2:
+label mas_island_cherry_blossom2:
     m "Did you know you can eat the flower petals of a Cherry Blossom tree?"
     m "I don't know the taste myself, but I'm sure it can't be as sweet as you."
     m "Ehehe~"
     return
 
-label mas_monika_cherry_blossom3:
+label mas_island_cherry_blossom3:
     m "You know, the tree is symbolic like life itself."
     m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
@@ -203,7 +203,7 @@ label mas_monika_cherry_blossom3:
     $ mas_ILY()
     return
 
-label mas_monika_cherry_blossom4:
+label mas_island_cherry_blossom4:
     m "You know what'd be nice to drink under the Cherry Blossom tree?"
     m "A little sake~"
     m "Ahaha! I'm just kidding."
@@ -216,25 +216,25 @@ label mas_monika_cherry_blossom4:
         m "That'd be really romantic~"
     return
 
-label mas_monika_sky:
+label mas_island_sky:
     python:
 
         if morning_flag:
-            _mas_sky_events = ["mas_monika_day1","mas_monika_day2",
-                "mas_monika_day3"]
+            _mas_sky_events = ["mas_island_day1","mas_island_day2",
+                "mas_island_day3"]
 
         else:
-            _mas_sky_events = ["mas_monika_night1","mas_monika_night2",
-                "mas_monika_night3"]
+            _mas_sky_events = ["mas_island_night1","mas_island_night2",
+                "mas_island_night3"]
 
-        _mas_sky_events.append("mas_monika_daynight1")
-        _mas_sky_events.append("mas_monika_daynight2")
+        _mas_sky_events.append("mas_island_daynight1")
+        _mas_sky_events.append("mas_island_daynight2")
 
         renpy.call(renpy.random.choice(_mas_sky_events))
 
     return
 
-label mas_monika_day1:
+label mas_island_day1:
     if mas_is_raining:
         m "Aww, I would've liked to do some reading outdoors."
         m "But I'd rather avoid getting my books wet..."
@@ -256,7 +256,7 @@ label mas_monika_day1:
         m "Ahh, that'd be really nice to do~"
     return
 
-label mas_monika_day2:
+label mas_island_day2:
     if mas_current_weather == mas_weather_overcast or mas_is_raining:
         m "Going outdoors with this kind of weather doesn't look very appealing..."
         m "Maybe if I had an umbrella I'd feel more comfortable."
@@ -281,7 +281,7 @@ label mas_monika_day2:
         m "Ahh, that'd be fantastic~"
     return
 
-label mas_monika_day3:
+label mas_island_day3:
     if mas_is_raining:
         m "It's raining pretty heavily..."
         m "I wouldn't want to be outside now."
@@ -299,13 +299,13 @@ label mas_monika_day3:
             m "Ehehe~"
     return
 
-label mas_monika_night1:
+label mas_island_night1:
     m "You're probably wondering what happened to that orange comet that occasionally passes by."
     m "Don't worry, I've dealt with it."
     m "I wouldn't want you to get hurt~"
     return
 
-label mas_monika_night2:
+label mas_island_night2:
     if mas_current_weather == mas_weather_overcast or mas_is_raining:
         m "Too bad we can't see the stars tonight..."
         m "I would've loved to gaze at the cosmos with you."
@@ -320,7 +320,7 @@ label mas_monika_night2:
         m "Ahaha..."
     return
 
-label mas_monika_night3:
+label mas_island_night3:
     if mas_current_weather == mas_weather_overcast or mas_is_raining:
         m "Cloudy weather is kind of depressing, don't you think?"
         m "Especially at nighttime, when it hides the stars away from our view."
@@ -332,7 +332,7 @@ label mas_monika_night3:
         m "Improve the ambience a little, you know?"
     return
 
-label mas_monika_daynight1:
+label mas_island_daynight1:
     m "Maybe I should add more shrubs and trees."
     m "Make the islands prettier you know?"
     m "I just have to find the right flowers and foliage to go with it."
@@ -340,7 +340,7 @@ label mas_monika_daynight1:
     m "I'm getting excited thinking about it~"
     return
 
-label mas_monika_daynight2:
+label mas_island_daynight2:
     # aurora borealis
     m "{i}~Windmill, windmill for the land~{/i}"
 
@@ -482,11 +482,11 @@ screen mas_show_islands():
 #                ground "mod_assets/location/special/night_with_frame.png"
 
 
-        hotspot (11, 13, 314, 270) action Return("mas_monika_upsidedownisland") # island upside down
-        hotspot (403, 7, 868, 158) action Return("mas_monika_sky") # sky
-        hotspot (699, 347, 170, 163) action Return("mas_monika_glitchedmess") # glitched house
-        hotspot (622, 269, 360, 78) action Return("mas_monika_cherry_blossom_tree") # cherry blossom tree
-        hotspot (716, 164, 205, 105) action Return("mas_monika_cherry_blossom_tree") # cherry blossom tree
+        hotspot (11, 13, 314, 270) action Return("mas_island_upsidedownisland") # island upside down
+        hotspot (403, 7, 868, 158) action Return("mas_island_sky") # sky
+        hotspot (699, 347, 170, 163) action Return("mas_island_glitchedmess") # glitched house
+        hotspot (622, 269, 360, 78) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
+        hotspot (716, 164, 205, 105) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
         hotspot (872, 444, 50, 30) action Return("mas_island_bookshelf") # bookshelf
 
         if _mas_island_shimeji:
