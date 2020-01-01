@@ -579,8 +579,7 @@ label mas_fun_fact_photography:
     m 1esa "Did you know that the first photograph was taken using a box with a hole in it as a camera?"
     m 1eua "Lenses weren't actually introduced until much later on."
     m 1euc "Early photography also relied on a series of special chemicals in a dark room to prepare the photos..."
-    m 3rsc "Developer, stop bath, and fixer chemicals..."
-    m 3eud "All of these were used just to prepare the paper the photos would be printed on...{w=0.3} {nw}"
+    m 3eud "Developer, stop bath, and fixer chemicals were used just to prepare the paper the photos would be printed on...{w=0.3} {nw}"
     extend 1wuo "And that's only for black and white prints!"
     m 1hksdlb "Old photos were much harder to prepare compared to modern ones, don't you think?"
 
