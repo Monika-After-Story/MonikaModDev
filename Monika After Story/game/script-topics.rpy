@@ -1657,7 +1657,7 @@ label monika_simulated:
     m 1tfu "I'll show him what a simulation can do."
     return
 
-default persistent._mas_likes_rain = None
+default persistent._mas_pm_likes_rain = None
 
 init 5 python:
     # only available if moni-affecition normal and above
@@ -1685,7 +1685,7 @@ label monika_rain:
     menu:
         m "Would you ever do that for me, [player]?{fast}"
         "Yes.":
-            $ persistent._mas_likes_rain = True
+            $ persistent._mas_pm_likes_rain = True
             $ mas_unlockEVL("monika_rain_holdme", "EVE")
 
             if not mas_is_raining:
@@ -1708,7 +1708,7 @@ label monika_rain:
                 m 1eua "If you want the rain to stop, just ask me, okay?"
 
         "I hate the rain.":
-            $ persistent._mas_likes_rain = False
+            $ persistent._mas_pm_likes_rain = False
 
             m 2tkc "Aw, that's a shame."
             if mas_is_raining:
@@ -2939,8 +2939,8 @@ label monika_credits_song:
     m 1hua "I hope you liked my song."
     m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
     m 1eua "Give me some time, and I'll try to write another."
-    if persistent.instrument is not False:
-        if persistent.instrument:
+    if persistent._mas_pm_plays_instrument is not False:
+        if persistent._mas_pm_plays_instrument:
             m 3eua "Maybe you could play me a song too!"
         else:
             m 3eua "Maybe you could play me a song too, if you can play an instrument?"
@@ -6758,8 +6758,6 @@ label monika_meditation:
 # do you like orchestral music
 default persistent._mas_pm_like_orchestral_music = None
 
-# TODO: persistent.instrument should be historical at some point, also convert to pm var
-
 init 5 python:
     addEvent(
         Event(
@@ -6813,7 +6811,7 @@ label monika_orchestra:
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
                 m 1hua "Maybe we could do a duet someday!"
                 m 1hub "Ehehe~"
-                $ persistent.instrument = True
+                $ persistent._mas_pm_plays_instrument = True
             elif tempinstrument == "harmonika":
                 m 1hub "Wow, I've always wanted to try the harmonik--"
                 m 3eub "...Oh!"
@@ -6843,17 +6841,17 @@ label monika_orchestra:
                 m 2esa "Personally, I prefer the {cps=*0.7}{i}harmonika{/i}{/cps}..."
                 m 2eua "..."
                 m 4hub "Ahaha! That was so silly, I'm only kidding, [player]~"
-                $ persistent.instrument = True
+                $ persistent._mas_pm_plays_instrument = True
             else:
                 m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
                 m 1eua "I would love to hear you play for me."
                 m 3eua "Maybe you could teach me how to play, too~"
                 m 1wuo "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
                 m 1hua "Ehehe~"
-                $ persistent.instrument = True
+                $ persistent._mas_pm_plays_instrument = True
 
         "No.":
-            $persistent.instrument = False
+            $persistent._mas_pm_plays_instrument = False
             m 1euc "I see..."
             m 1eka "You should try to pick up an instrument that interests you, sometime."
             m 3eua "Playing the piano opened up a whole new world of expression for me. It's an incredibly rewarding experience."
@@ -6900,7 +6898,7 @@ label monika_jazz:
         "Yes.":
             $ persistent._mas_pm_like_jazz = True
             m 1hua "Oh, okay!"
-            if persistent.instrument == True:
+            if persistent._mas_pm_plays_instrument:
                 m "Do you play jazz music, as well?{nw}"
                 $ _history_list.pop()
                 menu:
@@ -12606,7 +12604,7 @@ label monika_hemispheres:
             m 5hubfa "It just sounds magical~"
             m 5eubfb "I can't wait to experience something like that with you for real, [player]."
         else:
-            if persistent._mas_likes_rain:
+            if persistent._mas_pm_likes_rain:
                 m 2eka "I'm sure we could spend hours listening to the rain together."
             else:
                 m 3hub "You might not like the rain too much, but you have to admit, the flowers it brings are gorgeous, and the rainbows are beautiful too!"
@@ -13235,12 +13233,12 @@ label monika_songwriting:
 
     m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
-    if persistent.instrument:
+    if persistent._mas_pm_plays_instrument:
         m 1hua "Since you play an instrument, I'm sure you could write something."
 
     m 3eua "It can be a great way to relieve stress, tell a story, or even convey a message."
 
-    if persistent.instrument:
+    if persistent._mas_pm_plays_instrument:
         m 3hub "I'm sure whatever you write would be amazing!"
     else:
         m 1ekbla "Maybe you could write one for me sometime~"
