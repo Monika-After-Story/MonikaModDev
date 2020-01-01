@@ -492,12 +492,12 @@ label mas_story_immortal_love:
     m 1eud "After some time, the husband passed away."
     m 1eka "The wife, saddened by her loss, believed she would spend her next Valentine's Day alone and in mourning."
     m 1dsc "..."
-    m 2euc "However,{w} on her first Valentine's Day without her husband, she still received a bouquet from him."
+    m 2euc "However,{w=0.3} on her first Valentine's Day without her husband, she still received a bouquet from him."
     m 2efd "Heartbroken and angry, she complained to the florist that there was a mistake."
     m 2euc "The florist explained that there was no mistake."
-    m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
-    m "Speechless and stunned, the wife read the note attached to the bouquet."
-    m "{i}My love for you is eternal.{/i}"
+    m 3eua "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
+    m 3eka "Speechless and stunned, the wife read the note attached to the bouquet."
+    m 1ekbsa "{i}My love for you is eternal.{/i}"
     m 1dubsu "Ahh..."
     m 1eua "Wasn't that a touching story, [player]?"
     m 1hua "I thought it was really romantic."
@@ -505,6 +505,46 @@ label mas_story_immortal_love:
     m 1eua "At least the ending was very heartwarming."
     m 1hua "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_self_hate",
+        prompt="Self-hate",unlocked=False),code="STY")
+
+label mas_story_self_hate:
+    call mas_story_begin
+    m 1eua "Once, there were two people who had been living together for a very long time."
+    m 1hua "Life was simple, and they both loved each other. Things were going well."
+    m 3euc "Then one day, the man suddenly killed his lover for seemingly no reason."
+    m 3eud "He {i}did{/i} love her, and in a healthy way too!"
+    m 2ekc "There were never any fights or arguments, either."
+    m "There was nothing to gain from murdering her at all."
+    m 4ekd "No satisfaction, nothing out of the ordinary on her will..."
+    m 1dkc "In fact, the man was left emotionally scarred having lost the love of his life."
+    m "..."
+    m 1ekd "So why?"
+    m 1rksdlc "How could this happen all of a sudden?"
+    m 1eksdlc "It wasn't that he didn't love her."
+    m 3eksdla "It was because he loved her so, so very much."
+    m "He didn't hate her..."
+    m 2eksdld "He just hated himself so much as to deny his own happiness."
+    m 2dkc "..."
+    if persistent._mas_pm_love_yourself is False:
+        m 3ekc "Hey [player], do you remember when I asked you if you loved yourself?"
+        m 1rksdld "From what I remember, you told me that you didn't..."
+        m 1rksdla "Sorry, I don't mean to put you on the spot or anything..."
+        m 3eka "I just want to make sure you remember that I love you."
+        m 3ekd "More importantly, I want to make sure that you know how to love yourself."
+        m 1ekbsa "I know you're worth loving and I'd do anything to show you why."
+        m 1ekbfa "I hope you never forget that~"
+    else:
+        m 1rksdlb "Sorry for telling such a dark story, [player]..."
+        m 3eksdla "But it does have an important message..."
+        m 3eud "And that is you need to find a way to love yourself, or you might do something you regret later on."
+        m 1ekc "As much as you may try, trying to live your life solely for someone else will never work."
+        m 1eka "You have to love yourself to be able to allow yourself to truly love someone else."
+        m 3ekbsa "Just remember I'll always love you, [player]."
+        m 3ekbfa "If you ever begin to doubt loving yourself, just come to me and I'll be more than happy to remind you of all your wonderful qualities~"
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
@@ -1037,7 +1077,7 @@ label mas_scary_story_serial_killer:
     m 3tub "A young couple parked their car next to a large willow tree at a cemetery one night for some undisturbed 'lovemaking.'"
     m 3euc "After a while, they were interrupted by a radio report that a notorious serial killer had escaped from a psychiatric hospital nearby."
     m "Worried about their safety, they decided to continue elsewhere."
-    m 1esc "However...{w}the car wouldn't start at all."
+    m 1esc "However...{w=0.3}the car wouldn't start at all."
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."
