@@ -42,6 +42,28 @@ init -11 python in mas_island_event:
         """
         mds.removeImages(islands_station, mis.islands_map)
 
+    def isWinterWeather():
+        """
+        Checks if the weather on the islands is wintery
+
+        OUT:
+            boolean:
+                - True if we're using snow islands
+                - False otherwise
+        """
+        return store.mas_is_snowing or store.mas_isWinter()
+
+    def isCloudyWeather():
+        """
+        Checks if the weather on the islands is cloudy
+
+        OUT:
+            boolean:
+                - True if we're using overcast/rain islands
+                - False otherwise
+        """
+        return store.mas_is_raining or store.mas_current_weather == store.mas_weather_overcast
+
 
 init 4 python:
     # adjustments to islands flags in the case of other runtime things
@@ -148,7 +170,7 @@ label mas_island_upsidedownisland:
 label mas_island_glitchedmess:
     m "Oh, that."
     m "It's something I'm currently working on."
-    m "It's still a huge mess, though. I'm still trying to figure out how to be good at it."
+    m "It's still a huge mess, though. I'm still trying to figure it all out."
     m "In due time, I'm sure I'll get better at coding!"
     m "Practice makes perfect after all, right?"
     return
@@ -161,16 +183,21 @@ label mas_island_cherry_blossom_tree:
             renpy.call("mas_island_cherry_blossom1")
 
         else:
-            _mas_cherry_blossom_events = ["mas_island_cherry_blossom1",
-                "mas_island_cherry_blossom2", "mas_island_cherry_blossom3",
-                "mas_island_cherry_blossom4"]
+            _mas_cherry_blossom_events = [
+                "mas_island_cherry_blossom1",
+                "mas_island_cherry_blossom3",
+                "mas_island_cherry_blossom4"
+            ]
+
+            if not mas_island_event.isWinterWeather():
+                _mas_cherry_blossom_events.append("mas_island_cherry_blossom2")
 
             renpy.call(renpy.random.choice(_mas_cherry_blossom_events))
 
     return
 
 label mas_island_cherry_blossom1:
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "This tree may look dead right now...but when it blooms, it's gorgeous."
     else:
         m "It's a beautiful tree, isn't it?"
@@ -179,7 +206,7 @@ label mas_island_cherry_blossom1:
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
     m "Just staring at the falling petals is awe-inspiring."
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "When it's blooming, that is."
         m "I can't wait until we get the chance to experience that, [player]."
     return
@@ -194,7 +221,7 @@ label mas_island_cherry_blossom3:
     m "You know, the tree is symbolic like life itself."
     m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "Even if it's bare now, it'll blossom again soon."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
@@ -207,7 +234,7 @@ label mas_island_cherry_blossom4:
     m "A little sake~"
     m "Ahaha! I'm just kidding."
     m "I'd rather have tea or coffee."
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "Or hot chocolate, even. It'd certainly help with the cold."
         m "Of course, even if that failed, we could always cuddle together...{w=0.5} That'd be really romantic~"
     else:
@@ -219,12 +246,18 @@ label mas_island_sky:
     python:
 
         if morning_flag:
-            _mas_sky_events = ["mas_island_day1","mas_island_day2",
-                "mas_island_day3"]
+            _mas_sky_events = [
+                "mas_island_day1",
+                "mas_island_day2",
+                "mas_island_day3"
+            ]
 
         else:
-            _mas_sky_events = ["mas_island_night1","mas_island_night2",
-                "mas_island_night3"]
+            _mas_sky_events = [
+                "mas_island_night1",
+                "mas_island_night2",
+                "mas_island_night3"
+            ]
 
         _mas_sky_events.append("mas_island_daynight1")
         _mas_sky_events.append("mas_island_daynight2")
@@ -234,9 +267,9 @@ label mas_island_sky:
     return
 
 label mas_island_day1:
-    # this ordering is key, during winter we only use snow covered islands with clear sky
+    #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "What a beautiful day today."
         m "Perfect for taking a walk to admire the scenery."
         m "...Huddled together, so as to stave off the cold."
@@ -259,15 +292,15 @@ label mas_island_day1:
     return
 
 label mas_island_day2:
-    # this ordering is key, during winter we only use snow covered islands with clear sky
+    #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "Have you ever made a snow angel, [player]?"
         m "I've tried in the past, but never had much success..."
         m "It's a lot harder than it looks like."
         m "I bet we'd have a lot of fun, even if whatever we make doesn't end up looking like an angel."
         m "It's just a matter of being a bit silly, you know?"
-    elif mas_current_weather == mas_weather_overcast or mas_is_raining:
+    elif mas_island_event.isCloudyWeather():
         m "Going outdoors with this kind of weather doesn't look very appealing..."
         m "Maybe if I had an umbrella I'd feel more comfortable."
         m "Imagine both of us, shielded from the rain, inches apart."
@@ -292,7 +325,7 @@ label mas_island_day3:
         m "Though being indoors at a time like this feels pretty cozy, don't you think?"
     else:
         m "It's pretty peaceful outside."
-        if mas_is_snowing or mas_isWinter():
+        if mas_island_event.isWinterWeather():
             m "We could have a snowball fight, you know."
             m "Ahaha, that'd be so much fun!"
             m "I bet I could land a shot on you a few islands away."
@@ -310,7 +343,7 @@ label mas_island_night1:
     return
 
 label mas_island_night2:
-    if not mas_isWinter() and (mas_current_weather == mas_weather_overcast or mas_is_raining):
+    if not mas_isWinter() and mas_island_event.isCloudyWeather():
         m "Too bad we can't see the stars tonight..."
         m "I would've loved to gaze at the cosmos with you."
         m "That's alright though, we'll get to see it some other time, then."
@@ -325,13 +358,13 @@ label mas_island_night2:
     return
 
 label mas_island_night3:
-    if not mas_isWinter() and (mas_current_weather == mas_weather_overcast or mas_is_raining):
+    if not mas_isWinter() and mas_island_event.isCloudyWeather():
         m "Cloudy weather is kind of depressing, don't you think?"
         m "Especially at nighttime, when it hides the stars away from our view."
         m "It's such a shame, really..."
     else:
         m "What a beautiful night!"
-        if mas_isWinter() or mas_is_snowing:
+        if mas_island_event.isWinterWeather():
             m "There's just something about a cold, crisp night that I love."
             m "The contrast of the dark sky and the land covered in snow is really breathtaking, don't you think?"
         else:
@@ -385,21 +418,23 @@ label mas_island_shimeji:
 label mas_island_bookshelf:
     python:
 
-        _mas_bookshelf_events = ["mas_island_bookshelf1",
-                "mas_island_bookshelf2"]
+        _mas_bookshelf_events = [
+            "mas_island_bookshelf1",
+            "mas_island_bookshelf2"
+        ]
 
         renpy.call(renpy.random.choice(_mas_bookshelf_events))
 
     return
 
 label mas_island_bookshelf1:
-    # this ordering is key, during winter we only use snow covered islands with clear sky
+    #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "That bookshelf might not look terribly sturdy, but I'm sure it can weather a little snow."
         m "It's the books that worry me a bit."
         m "I just hope they don't get too damaged..."
-    elif mas_current_weather == mas_weather_overcast or mas_is_raining:
+    elif mas_island_event.isCloudyWeather():
         m "At times like this, I wish I would've kept my books indoors..."
         m "Looks like we'll just have to wait for better weather to read them."
         m "In the meantime..."
@@ -412,15 +447,15 @@ label mas_island_bookshelf1:
     return
 
 label mas_island_bookshelf2:
-    # this ordering is key, during winter we only use snow covered islands with clear sky
+    #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_is_snowing or mas_isWinter():
+    if mas_island_event.isWinterWeather():
         m "You know, I wouldn't mind doing a bit of reading outside even if it's snowing."
         m "Though I wouldn't venture out without a warm coat, a thick scarf, and a snug pair of gloves."
         m "I guess turning the pages might be a bit hard that way, ahaha..."
         m "But I'm sure we'll manage somehow."
         m "Isn't that right, [player]?"
-    elif mas_current_weather == mas_weather_overcast or mas_is_raining:
+    elif mas_island_event.isCloudyWeather():
         m "Reading indoors with rain just outside the window is pretty relaxing."
         m "If only I hadn't left the books outside..."
         m "I should probably bring some in here when I get the chance."
