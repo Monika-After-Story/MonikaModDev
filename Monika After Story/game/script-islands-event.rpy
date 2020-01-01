@@ -450,7 +450,7 @@ label mas_island_bookshelf2:
     #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
     if mas_island_event.isWinterWeather():
-        m "You know, I wouldn't mind doing a bit of reading outside even if it's snowing."
+        m "You know, I wouldn't mind doing some reading outside even if there is a bit of snow."
         m "Though I wouldn't venture out without a warm coat, a thick scarf, and a snug pair of gloves."
         m "I guess turning the pages might be a bit hard that way, ahaha..."
         m "But I'm sure we'll manage somehow."
