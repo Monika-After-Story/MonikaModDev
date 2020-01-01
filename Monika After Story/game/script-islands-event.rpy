@@ -174,8 +174,7 @@ label mas_island_cherry_blossom1:
         m "This tree may look dead right now...but when it blooms, it's gorgeous."
     else:
         m "It's a beautiful tree, isn't it?"
-    m "It's called a Cherry Blossom tree."
-    m "They're native to Japan."
+    m "It's called a Cherry Blossom tree; they're native to Japan."
     m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picnic underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
@@ -235,7 +234,14 @@ label mas_island_sky:
     return
 
 label mas_island_day1:
-    if mas_is_raining:
+    # this ordering is key, during winter we only use snow covered islands with clear sky
+    # so Winter path needs to be first
+    if mas_is_snowing or mas_isWinter():
+        m "What a beautiful day today."
+        m "Perfect for taking a walk to admire the scenery."
+        m "...Huddled together, so as to stave off the cold."
+        m "...With some nice hot drinks to help keep us warm."
+    elif mas_is_raining:
         m "Aww, I would've liked to do some reading outdoors."
         m "But I'd rather avoid getting my books wet..."
         m "Soggy pages are a pain to deal with."
@@ -247,29 +253,27 @@ label mas_island_day1:
     else:
         m "It's a nice day today."
         m "This weather would be good for a little book reading under the Cherry Blossom tree right, [player]?"
-        if mas_is_snowing or mas_isWinter():
-            m "Huddled together, so as to stave off the cold."
-            m "With some nice hot drinks to help keep us warm."
-        else:
-            m "Lying under the shade while reading my favorite book."
-            m "...Along with a snack and your favorite drink on the side."
+        m "Lying under the shade while reading my favorite book."
+        m "...Along with a snack and your favorite drink on the side."
         m "Ahh, that'd be really nice to do~"
     return
 
 label mas_island_day2:
-    if mas_current_weather == mas_weather_overcast or mas_is_raining:
+    # this ordering is key, during winter we only use snow covered islands with clear sky
+    # so Winter path needs to be first
+    if mas_is_snowing or mas_isWinter():
+        m "Have you ever made a snow angel, [player]?"
+        m "I've tried in the past, but never had much success..."
+        m "It's a lot harder than it looks like."
+        m "I bet we'd have a lot of fun, even if whatever we make doesn't end up looking like an angel."
+        m "It's just a matter of being a bit silly, you know?"
+    elif mas_current_weather == mas_weather_overcast or mas_is_raining:
         m "Going outdoors with this kind of weather doesn't look very appealing..."
         m "Maybe if I had an umbrella I'd feel more comfortable."
         m "Imagine both of us, shielded from the rain, inches apart."
         m "Staring into each other's eyes."
         m "Then we start leaning closer and closer until we're almost-"
         m "I think you can finish that thought yourself, [player]~"
-    elif mas_is_snowing or mas_isWinter():
-        m "Have you ever made a snow angel, [player]?"
-        m "I've tried in the past, but never had much success..."
-        m "It's a lot harder than it looks like."
-        m "I bet we'd have a lot of fun, even if whatever we make doesn't end up looking like an angel."
-        m "It's just a matter of being a bit silly, you know?"
     else:
         m "The weather looks nice."
         m "This would definitely be the best time to have a picnic."
@@ -282,7 +286,7 @@ label mas_island_day2:
     return
 
 label mas_island_day3:
-    if mas_is_raining:
+    if mas_is_raining and not mas_isWinter():
         m "It's raining pretty heavily..."
         m "I wouldn't want to be outside now."
         m "Though being indoors at a time like this feels pretty cozy, don't you think?"
@@ -306,7 +310,7 @@ label mas_island_night1:
     return
 
 label mas_island_night2:
-    if mas_current_weather == mas_weather_overcast or mas_is_raining:
+    if not mas_isWinter() and (mas_current_weather == mas_weather_overcast or mas_is_raining):
         m "Too bad we can't see the stars tonight..."
         m "I would've loved to gaze at the cosmos with you."
         m "That's alright though, we'll get to see it some other time, then."
@@ -321,15 +325,19 @@ label mas_island_night2:
     return
 
 label mas_island_night3:
-    if mas_current_weather == mas_weather_overcast or mas_is_raining:
+    if not mas_isWinter() and (mas_current_weather == mas_weather_overcast or mas_is_raining):
         m "Cloudy weather is kind of depressing, don't you think?"
         m "Especially at nighttime, when it hides the stars away from our view."
         m "It's such a shame, really..."
     else:
         m "What a beautiful night!"
-        m "If I could, I'd add fireflies."
-        m "Their lights complement the night sky, it's a pretty sight."
-        m "Improve the ambience a little, you know?"
+        if mas_isWinter() or mas_is_snowing:
+            m "There's just something about a cold, crisp night that I love."
+            m "The contrast of the dark sky and the land covered in snow is really breathtaking, don't you think?"
+        else:
+            m "If I could, I'd add fireflies."
+            m "Their lights complement the night sky, it's a pretty sight."
+            m "Improve the ambience a little, you know?"
     return
 
 label mas_island_daynight1:
@@ -385,16 +393,18 @@ label mas_island_bookshelf:
     return
 
 label mas_island_bookshelf1:
-    if mas_current_weather == mas_weather_overcast or mas_is_raining:
+    # this ordering is key, during winter we only use snow covered islands with clear sky
+    # so Winter path needs to be first
+    if mas_is_snowing or mas_isWinter():
+        m "That bookshelf might not look terribly sturdy, but I'm sure it can weather a little snow."
+        m "It's the books that worry me a bit."
+        m "I just hope they don't get too damaged..."
+    elif mas_current_weather == mas_weather_overcast or mas_is_raining:
         m "At times like this, I wish I would've kept my books indoors..."
         m "Looks like we'll just have to wait for better weather to read them."
         m "In the meantime..."
         m "How about cuddling a bit, [player]?"
         m "Ehehe~"
-    elif mas_is_snowing or mas_isWinter():
-        m "That bookshelf might not look terribly sturdy, but I'm sure it can weather a little snow."
-        m "It's the books that worry me a bit."
-        m "I just hope they don't get too damaged..."
     else:
         m "Some of my favorite books are in there."
         m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i}, and a few others."
@@ -402,17 +412,19 @@ label mas_island_bookshelf1:
     return
 
 label mas_island_bookshelf2:
-    if mas_current_weather == mas_weather_overcast or mas_is_raining:
-        m "Reading indoors with rain just outside the window is pretty relaxing."
-        m "If only I hadn't left the books outside..."
-        m "I should probably bring some in here when I get the chance."
-        m "I'm certain we can find other things to do meanwhile, right [player]?"
-    elif mas_is_snowing or mas_isWinter():
+    # this ordering is key, during winter we only use snow covered islands with clear sky
+    # so Winter path needs to be first
+    if mas_is_snowing or mas_isWinter():
         m "You know, I wouldn't mind doing a bit of reading outside even if it's snowing."
         m "Though I wouldn't venture out without a warm coat, a thick scarf, and a snug pair of gloves."
         m "I guess turning the pages might be a bit hard that way, ahaha..."
         m "But I'm sure we'll manage somehow."
         m "Isn't that right, [player]?"
+    elif mas_current_weather == mas_weather_overcast or mas_is_raining:
+        m "Reading indoors with rain just outside the window is pretty relaxing."
+        m "If only I hadn't left the books outside..."
+        m "I should probably bring some in here when I get the chance."
+        m "I'm certain we can find other things to do meanwhile, right [player]?"
     else:
         m "Reading outdoors is a nice change of pace, you know?"
         m "I'd take a cool breeze over a stuffy library any day."
