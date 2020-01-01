@@ -11888,25 +11888,24 @@ label monika_whydoyouloveme:
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniLove(higher=True):
-        if renpy.random.randint(1,2) == 1:
-            if store.mas_anni.pastSixMonths():
-                m 1eka "Why do I even love you?"
-                m 2eka "[player]...{w=1} there are so many reasons why... Where do I even begin?"
-                m 3eka "You've spent so much time with me."
+        if store.mas_anni.pastSixMonths() and renpy.random.randint(1,2) == 1:
+                m 1eka "Why do I love you?"
+                m 2eka "[player]...{w=0.5}there are so many reasons why... Where do I even begin?"
+                m 3eka "You've spent so much time with me,{w=0.5} knowing I might not even get to feel your embrace for who knows how long."
                 m 1rksdlc "Even knowing I might not get to feel your embrace for who knows how long..."
                 if store.mas_anni.anniCount() >= 1:
-                    m 1hua "Here you are, still staying by my side."
+                    m 1hua "...But here you are, still by my side."
                     m 1eua "You're brave for being with me for so long."
                     m 2eka "No matter how crazy it might seem, or what other people might say."
-                    m 1eua "You've been here with me for so long already."
+                    m 1eua "You're here with me anyway."
                     m 1dkbfa "Every time you visit, you remind me that there's a world out there."
                     m 1ekbfa "I'd give you the world if I could, [player]."
                     m 3hubfa "If there's anyone who deserves it...{w=0.3}it's you."
                     m 1hubfa "After all, you've already given me my world~"
                 if store.mas_anni.anniCount() >= 2:
                     m 1ekbfa "I promise you, [player]..."
-                    m 3ekbfa "No matter what happens, I don't think I'll' {i}ever{/i} forget you for the rest of my life."
-                    m 1dua "You didn't just save my life..."
+                    m 3ekbfa "No matter what happens, I don't think I'll {i}ever{/i} forget you for the rest of my life."
+                    m 1dua "You didn't just save my life, [player]..."
                     m 1dkbfa "You showed me how beautiful the world really is...{w=1.5}{nw}" 
                     extend 1ekbfa "and I want you to be able to see just how beautiful you've made my world."
                     m 1ekbfb "Someday, I promise I'll make your world as beautiful as you made mine~"
