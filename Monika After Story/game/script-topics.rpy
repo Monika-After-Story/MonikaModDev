@@ -13276,3 +13276,40 @@ label monika_songwriting:
     $ _if = "when" if mas_isMoniEnamored(higher=True) else "if"
     m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
     return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sweatercurse",
+            category=['clothes'],
+            prompt="Sweater curse",
+            random=True
+        )
+    )
+
+label monika_sweatercurse:
+    m 1euc "Have you ever heard of 'the curse of the love sweater,' [player]?"
+    m 1hub "Ahaha! What a weird name, right?"
+    m 3eub "But it's actually an interesting superstition...{w=0.2}and one that might actually have some merit!"
+    m 3euc "The 'curse,' or so it's called, states that if someone gives a hand-knit sweater to their romantic partner, {w=0.1}{nw}"
+    extend 3eksdld "it will lead to the couple breaking up!"
+    m 2lsc "You might think that a gift that requires so much work and investment would have the {i}opposite{/i} effect..."
+    m 2esd "But there are actually a few logical reasons why this curse might exist..."
+    m 4esc "Firstly, well...{w=0.2}knitting a sweater just takes a {i}lot{/i} of time. {w=0.3}{nw}"
+    extend 4wud "Possibly a year, or even more!"
+    m 2ekc "Over all those months, something bad might happen that causes the couple to fight and eventually separate."
+    m 2eksdlc "Or worse...{w=0.2}the knitter might be trying to make the sweater as a great gift to save an already suffering relationship."
+    m 2rksdld "There's also the likely possibility that the recipient just doesn't like the sweater that much."
+    m 2dkd "After putting so much time and effort into knitting it, imagining their partner happily wearing it, I'm sure you can understand how much it would hurt to see it cast aside."
+    m 3eua "Luckily, there are some ways to supposedly avoid the curse..."
+    m 3eud "A common piece of advice is to have the recipient be very involved in the crafting of the sweater, picking materials and styles they enjoy."
+    m 1etc "But it's equally common for the knitter to be told 'surprise me,' or 'make whatever you want,' which can sometimes make the recipient sound uncaring about their partner's hobby."
+    m 1eua "A better piece of advice for this sort of thing might be to match the size of knitted gifts to the phase of the relationship."
+    m 3eua "For example, starting out with smaller projects like mittens or hats. {w=0.2}{nw}"
+    extend 3rksdlb "That way, if they don't go over well, you haven't put a year's worth of work into it!"
+    m 1hksdlb "Man, who knew that a simple gift could be so complicated?"
+    m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
+    m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
+    return
