@@ -3864,7 +3864,7 @@ label monika_nye_year_review:
     if store.mas_anni.pastThreeMonths():
         if mas_isMoniHappy(higher=True):
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eka "I really can't just believe how much has changed since we've been together..."
+            m 5eka "I really can't believe just how much has changed since we've been together..."
         else:
             m 2eka "I really hope we can get further in our relationship, [player]..."
     else:
