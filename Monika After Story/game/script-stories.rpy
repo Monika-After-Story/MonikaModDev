@@ -14,6 +14,8 @@ default persistent._mas_story_database = dict()
 default mas_can_unlock_story = False
 default mas_can_unlock_scary_story = False
 default mas_full_scares = False
+# dict storing the last date we saw a new story of normal and scary type
+default persistent._mas_last_seen_new_story = {"normal":None,"scary":None}
 
 
 # store containing stories-related things
@@ -24,7 +26,7 @@ init -1 python in mas_stories:
     TYPE_SCARY = 0
 
     # pane constant
-    STORY_RETURN = "I changed my mind."
+    STORY_RETURN = "I changed my mind"
     story_database = dict()
 
     def _unlock_everything():
@@ -43,13 +45,54 @@ init -1 python in mas_stories:
             _story.pool = False
 
 
-# entry point for stories flow
-label mas_stories_start(scary=False):
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_short_stories",
+            category=['literature'],
+            prompt="Can you tell me a story?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_short_stories:
+    call monika_short_stories_premenu(None)
+    return
+
+label monika_short_stories_premenu(story_type=None):
+    $ end = ""
+
+label monika_short_stories_menu:
+    # TODO: consider caching the built stories if we have many story 
+    #   categories.
 
     python:
         import store.mas_stories as mas_stories
 
-        if scary:
+        # determine if a new story can be unlocked
+        mas_can_unlock_story = False
+        if story_type == mas_stories.TYPE_SCARY:
+            scary_story_ls = persistent._mas_last_seen_new_story["scary"]
+
+            if mas_isO31():
+                mas_can_unlock_story = True
+            elif scary_story_ls is None:
+                mas_can_unlock_story = seen_event("mas_scary_story_hunter")
+            else:
+                mas_can_unlock_story = scary_story_ls != datetime.date.today()
+
+        else:
+            new_story_ls = persistent._mas_last_seen_new_story["normal"]
+
+            if new_story_ls is None:
+                mas_can_unlock_story = seen_event("mas_story_tyrant")
+            else:
+                mas_can_unlock_story = new_story_ls != datetime.date.today()
+
+        # setup stories list
+        if story_type == mas_stories.TYPE_SCARY:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
                 category=(True,[mas_stories.TYPE_SCARY]),
@@ -71,20 +114,11 @@ label mas_stories_start(scary=False):
             if mas_stories.story_database[k].unlocked
         ]
 
-        if len(stories_menu_items) == 1 and not seen_event(stories_menu_items[0][1]):
-            # set the mas_can_unlock_story flag to False since it
-            # shouldn't unlock anything at this time
-            if scary:
-                mas_can_unlock_scary_story = False
-            else:
-                mas_can_unlock_story = False
-
         # check if we have a story available to be unlocked and we can unlock it
-        if len(stories_menu_items) < len(stories) and ((not scary and mas_can_unlock_story)
-                or (scary and mas_can_unlock_scary_story)):
+        if len(stories_menu_items) < len(stories) and mas_can_unlock_story:
 
             # Add to the menu the new story option
-            if scary:
+            if story_type == mas_stories.TYPE_SCARY:
                 return_label = "mas_scary_story_unlock_random"
             else:
                 return_label = "mas_story_unlock_random"
@@ -94,36 +128,41 @@ label mas_stories_start(scary=False):
         # also sort this list
         stories_menu_items.sort()
 
+        # build switch button
+        if story_type == mas_stories.TYPE_SCARY:
+            switch_str = "short"
+        else:
+            switch_str = "scary"
+        switch_item = (
+            "I'd like to hear a " + switch_str + " story",
+            "monika_short_stories_menu",
+            False,
+            False,
+            20
+        )
+
         # final quit item
-        final_item = (mas_stories.STORY_RETURN, False, False, False, 20)
-
-    # if we have only one story
-    if len(stories_menu_items) == 1:
-
-        # get the event label
-        $ story = stories_menu_items[0][1]
-
-        # check if we have seen it already
-        if seen_event(story):
-            m 1ekc "Sorry [player]. That's the only story I can tell you right now."
-            m 3hksdlb "Don't worry! I'll think of a story to tell you next time."
-            return
-
-        # increment event's shown count and update last seen
-        $ mas_stories.story_database[story].shown_count += 1
-        $ mas_stories.story_database[story].last_seen = datetime.datetime.now()
-
-        # and we jump to it, since doing pushEvent looks weird
-        $ renpy.jump(story)
-
-    m 1hua "Sure thing!"
+        if persistent._mas_sensitive_mode:
+            space = 20
+        else:
+            space = 0
+        final_item = (mas_stories.STORY_RETURN, False, False, False, space)
 
     # move Monika to the left
     show monika 1eua at t21
 
-    $ renpy.say(m, "What story would you like to hear?", interact=False)
+    if story_type == mas_stories.TYPE_SCARY:
+        $ which = "Witch"
+    else:
+        $ which = "Which"
+
+    $ renpy.say(m, which + " story would you like to hear?" + end, interact=False)
+
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    if persistent._mas_sensitive_mode:
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN,final_item)
+    else:
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
@@ -136,8 +175,40 @@ label mas_stories_start(scary=False):
 #            $ mas_stories.story_database[_return].shown_count += 1
 #            $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
 
-        # then push
-        $ pushEvent(_return)
+        # switching between types
+        if _return == "monika_short_stories_menu":
+            # NOTE: this is not scalable.
+            if story_type == mas_stories.TYPE_SCARY:
+                $ story_type = None
+            else:
+                $ story_type = mas_stories.TYPE_SCARY
+
+            $ end = "{fast}"
+            $ _history_list.pop()
+
+            jump monika_short_stories_menu
+
+        else:
+            # if we are seeing a new story, store the date for future unlocks
+            $ new_story_key = None
+
+            if _return == "mas_story_unlock_random":
+                $ new_story_key = "normal"
+
+            elif _return == "mas_scary_story_unlock_random":
+                $ new_story_key = "scary"
+
+            elif not seen_event(_return):
+                if story_type == mas_stories.TYPE_SCARY:
+                    $ new_story_key = "scary"
+                else:
+                    $ new_story_key = "normal"
+
+            if new_story_key is not None:
+                $ persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
+
+            # then push
+            $ pushEvent(_return, skipeval=True)
 
     # move her back to center
     show monika at t11
@@ -171,9 +242,6 @@ label mas_story_unlock_random_cat(scary=False):
 
     python:
         if scary:
-            # reset flag so we don't unlock another one
-            mas_can_unlock_scary_story = False
-
             # get locked stories
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
@@ -207,9 +275,6 @@ label mas_story_unlock_random_cat(scary=False):
                         aff=mas_curr_affection
                     )
         else:
-            # reset flag so we don't unlock another one
-            mas_can_unlock_story = False
-
             # get locked stories
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
@@ -427,12 +492,12 @@ label mas_story_immortal_love:
     m 1eud "After some time, the husband passed away."
     m 1eka "The wife, saddened by her loss, believed she would spend her next Valentine's Day alone and in mourning."
     m 1dsc "..."
-    m 2euc "However,{w} on her first Valentine's Day without her husband, she still received a bouquet from him."
+    m 2euc "However,{w=0.3} on her first Valentine's Day without her husband, she still received a bouquet from him."
     m 2efd "Heartbroken and angry, she complained to the florist that there was a mistake."
     m 2euc "The florist explained that there was no mistake."
-    m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
-    m "Speechless and stunned, the wife read the note attached to the bouquet."
-    m "{i}My love for you is eternal.{/i}"
+    m 3eua "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
+    m 3eka "Speechless and stunned, the wife read the note attached to the bouquet."
+    m 1ekbsa "{i}My love for you is eternal.{/i}"
     m 1dubsu "Ahh..."
     m 1eua "Wasn't that a touching story, [player]?"
     m 1hua "I thought it was really romantic."
@@ -440,6 +505,46 @@ label mas_story_immortal_love:
     m 1eua "At least the ending was very heartwarming."
     m 1hua "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_self_hate",
+        prompt="Self-hate",unlocked=False),code="STY")
+
+label mas_story_self_hate:
+    call mas_story_begin
+    m 1eua "Once, there were two people who had been living together for a very long time."
+    m 1hua "Life was simple, and they both loved each other. Things were going well."
+    m 3euc "Then one day, the man suddenly killed his lover for seemingly no reason."
+    m 3eud "He {i}did{/i} love her, and in a healthy way too!"
+    m 2ekc "There were never any fights or arguments, either."
+    m "There was nothing to gain from murdering her at all."
+    m 4ekd "No satisfaction, nothing out of the ordinary on her will..."
+    m 1dkc "In fact, the man was left emotionally scarred having lost the love of his life."
+    m "..."
+    m 1ekd "So why?"
+    m 1rksdlc "How could this happen all of a sudden?"
+    m 1eksdlc "It wasn't that he didn't love her."
+    m 3eksdla "It was because he loved her so, so very much."
+    m "He didn't hate her..."
+    m 2eksdld "He just hated himself so much as to deny his own happiness."
+    m 2dkc "..."
+    if persistent._mas_pm_love_yourself is False:
+        m 3ekc "Hey [player], do you remember when I asked you if you loved yourself?"
+        m 1rksdld "From what I remember, you told me that you didn't..."
+        m 1rksdla "Sorry, I don't mean to put you on the spot or anything..."
+        m 3eka "I just want to make sure you remember that I love you."
+        m 3ekd "More importantly, I want to make sure that you know how to love yourself."
+        m 1ekbsa "I know you're worth loving and I'd do anything to show you why."
+        m 1ekbfa "I hope you never forget that~"
+    else:
+        m 1rksdlb "Sorry for telling such a dark story, [player]..."
+        m 3eksdla "But it does have an important message..."
+        m 3eud "And that is you need to find a way to love yourself, or you might do something you regret later on."
+        m 1ekc "As much as you may try, trying to live your life solely for someone else will never work."
+        m 1eka "You have to love yourself to be able to allow yourself to truly love someone else."
+        m 3ekbsa "Just remember I'll always love you, [player]."
+        m 3ekbfa "If you ever begin to doubt loving yourself, just come to me and I'll be more than happy to remind you of all your wonderful qualities~"
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
@@ -550,7 +655,8 @@ label mas_scary_story_cleanup:
     if not persistent._mas_o31_in_o31_mode:
         $ mas_changeWeather(mas_temp_r_flag)
         $ store.mas_globals.show_vignette = False
-        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+        hide vignette
         call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 
     $ play_song(None, 1.0)
@@ -971,7 +1077,7 @@ label mas_scary_story_serial_killer:
     m 3tub "A young couple parked their car next to a large willow tree at a cemetery one night for some undisturbed 'lovemaking.'"
     m 3euc "After a while, they were interrupted by a radio report that a notorious serial killer had escaped from a psychiatric hospital nearby."
     m "Worried about their safety, they decided to continue elsewhere."
-    m 1esc "However...{w}the car wouldn't start at all."
+    m 1esc "However...{w=0.3}the car wouldn't start at all."
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."

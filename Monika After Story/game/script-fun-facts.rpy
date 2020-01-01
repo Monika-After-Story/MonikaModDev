@@ -493,7 +493,7 @@ label mas_fun_facts_18:
     m 3eua "The brain is a fickle thing..."
     m 3eub "Its way of composing and archiving information is very unique."
     m "Naturally it differs from person to person but but reading slowly like we're taught is usually less effective than going at at a faster pace."
-    m 1tku "Our brains process information very rapidly and loves predictability in in our language."
+    m 1tku "Our brains process information very rapidly and love predictability in in our language."
     m 3tub "For example, in this sentence, by the the time you are done reading you will have already skipped over the double 'the.'"
     m 1tfu "..."
     m 2hfu "Check the history log if you missed them~"
@@ -538,6 +538,51 @@ label mas_fun_facts_20:
     m 3eub "Life expectancy, average income, and standards of living is the highest for most of the global population too!"
     m 3eka "This tells me that it can always get better. It really does show that despite all the bad things, the good times will always come afterwards."
     m 1hua "There really is {i}hope{/i}..."
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_desert",
+            category=[store.mas_fun_facts.TYPE_GOOD]
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_desert:
+    m 3euc "Deserts have a pretty unique ecosystem..."
+    m 3rksdla "However, they don't offer a lot of positive factors for humans."
+    m 1eud "Temperatures can vary between extreme heat during the day and freezing cold at night. Their average rainfall is also pretty low, making living in one difficult."
+    m 3eub "That's not to say they can't be beneficial to us though!"
+    m 3eua "Their surface is a great spot for solar power generation and oil is commonly found beneath all that sand."
+    m 3eub "Not to mention, their unique landscape makes them popular vacation spots!"
+    m 1eua "So I guess while we can't live in them that easily, they're still better than they seem."
+
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_photography",
+            category=[store.mas_fun_facts.TYPE_GOOD]
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_photography:
+    m 1esa "Did you know that the first photograph was taken using a box with a hole in it as a camera?"
+    m 1eua "Lenses weren't actually introduced until much later on."
+    m 1euc "Early photography also relied on a series of special chemicals in a dark room to prepare the photos..."
+    m 3eud "Developer, stop bath, and fixer chemicals were used just to prepare the paper the photos would be printed on...{w=0.3} {nw}"
+    extend 1wuo "And that's only for black and white prints!"
+    m 1hksdlb "Old photos were much harder to prepare compared to modern ones, don't you think?"
+
     #Call the end
     call mas_fun_facts_end
     return
@@ -625,8 +670,8 @@ label mas_bad_facts_4:
     m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there'll be moss there too."
     m 2efd "But relying on that kind of logic is dangerous!"
     m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in."
-    m "Plus even if it wasn't like that, the trick would only work in the Northern hemisphere."
-    m 2wfc "Anyone within the Southern hemisphere would have it growing facing south."
+    m "Plus even if it wasn't like that, the trick would only work in the Northern Hemisphere."
+    m 2wfc "Anyone within the Southern Hemisphere would have it growing facing south."
     m 2dfc "..."
     m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
     m 2dkc "I would hate for something to happen to you, especially because of false information like this..."
