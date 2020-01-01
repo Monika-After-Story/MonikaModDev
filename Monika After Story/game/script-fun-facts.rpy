@@ -558,6 +558,7 @@ label mas_fun_fact_desert:
     m 1eud "Temperatures can vary between extreme heat during the day and freezing cold at night. Their average rainfall is also pretty low, making living in one difficult."
     m 3eub "That's not to say they can't be beneficial to us though!"
     m 3eua "Their surface is a great spot for solar power generation and oil is commonly found beneath all that sand."
+    m 3eub "Not to mention, their unique landscape makes them popular vacation spots!"
     m 1eua "So I guess while we can't live in them that easily, they're still better than they seem."
 
     #Call the end
