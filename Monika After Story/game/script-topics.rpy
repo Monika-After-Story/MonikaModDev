@@ -4684,9 +4684,9 @@ label monika_clones:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_agegap",category=['monika','philosophy'],prompt="Age gap",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Age gap",random=True))
 
-label monika_agegap:
+label monika_immortal:
     m 4d "[player]! I've been thinking about something..."
     m "Did you know that this game has a wiki page for me?"
     m "Well..."
