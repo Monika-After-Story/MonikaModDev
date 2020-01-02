@@ -798,7 +798,7 @@ init 10 python:
                 if (
                     MASConsumable._isHaving(_type)
                     and (
-                        not curr_cons.isStillCons()
+                        not curr_cons.isStillCons(_type)
                         and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
                     )
                 ):
