@@ -13264,7 +13264,12 @@ init 5 python:
     )
 
 label monika_writing_idle:
-    m 1eub "Oh! You're going to go write something?"
+    if random.randint(1,5) == 1:
+        m 1eub "Oh! You're {cps=*2}going to write me a love letter, [player]?{/cps}{nw}"
+        $ _history_list.pop()
+        m "Oh! You're {fast}going to go write something?"
+    else:
+        m 1eub "Oh! You're going to go write something?"
     m 1hua "That makes me so glad!"
     m 3eua "Maybe someday you could share it with me, {nw}"
     extend 3hua "I'd love to read your work, [player]!"
