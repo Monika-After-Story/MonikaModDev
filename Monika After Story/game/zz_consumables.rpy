@@ -405,12 +405,12 @@ init 10 python:
 
             #Skipping leadin? We need to set this to persistent and wear the acs for it
             if skip_leadin:
-                persistent._mas_current_consumable[self.consumable_id]["id"] = self.consumable_id
+                persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
                 monika_chr.wear_acs_pst(self.acs)
 
             #If this isn't a prepable type and we don't have a current consumable of this type, we should push the ev
             elif not self.prepable() and not MASConsumable.__getCurrentConsumable(self.consumable_type):
-                persistent._mas_current_consumable[self.consumable_id]["id"] = self.consumable_id
+                persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
                 pushEvent(self.get_cons_evl)
 
             #Increment cup count
@@ -456,7 +456,7 @@ init 10 python:
             if _now is None:
                 _now = datetime.datetime.now()
 
-            _time = persistent._mas_current_consumable[self.consumable_id]["consume_time"]
+            _time = persistent._mas_current_consumable[self.consumable_type]["consume_time"]
             return _time is not None and _now < _time
 
         def isConsTime(self, _now=None):
