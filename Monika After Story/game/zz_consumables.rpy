@@ -918,7 +918,8 @@ init 11 python:
         late_entry_list=[20]
     )
 
-#START: Finished brewing/drinking events
+#START: Finished brewing/drinking evs
+##Finished brewing
 init 5 python:
     import random
     #This event gets its params via _startupDrinkLogic()
@@ -931,54 +932,11 @@ init 5 python:
         )
     )
 
-label mas_finished_brewing:
+label mas_finished_brewing(consumable):
     $ current_drink = MASConsumable._getCurrentDrink()
-
-    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, my [current_drink.disp_name] is ready."
-
-    #Moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    #This line is here so it looks better when we hide monika
-    show emptydesk at i11 zorder 9
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        #Idle pauses and then progresses on its own
-        m 1eua "I'm going to grab some [current_drink.disp_name]. I'll be right back.{w=1}{nw}"
-
-    else:
-        m 1eua "Hold on a moment."
-
-    #Monika is off screen
-    hide monika with dissolve
-
-    #Transition stuffs
-    $ renpy.pause(1.0, hard=True)
-
-    #Wear drink acs
-    $ monika_chr.wear_acs_pst(current_drink.acs)
-    #Reset prep time
-    $ persistent._mas_current_consumable[mas_consumables.TYPE_DRINK]["prep_time"] = None
-    #Start drinking
-    $ current_drink.have()
-
-    $ renpy.pause(4.0, hard=True)
-
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1hua "Back!{w=1.5}{nw}"
-
-    else:
-        m 1eua "Okay, what else should we do today?"
+    call mas_consumables_generic_finished_prepping(current_drink)
     return
+
 
 ###Drinking done
 init 5 python:
@@ -996,13 +954,125 @@ init 5 python:
 label mas_finished_drinking:
     #Get the current drink and see how we should act here
     $ current_drink = MASConsumable._getCurrentDrink()
-    $ get_new_cup = (
-        current_drink.shouldHave()
-        and (current_drink.prepable() or (not current_drink.prepable() and current_drink.hasServing()))
+    call mas_consumables_generic_finish_having(current_drink)
+    return
+
+##Get drink
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_get_drink",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        )
+    )
+
+label mas_get_drink:
+    $ current_drink = MASConsumable._getCurrentDrink()
+    call mas_consumables_generic_get(current_drink)
+    return
+#END: Generic drink evs
+
+#START: Generic food evs
+init 5 python:
+    import random
+    #This event gets its params via _startupDrinkLogic()
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_finished_prepping",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        )
+    )
+
+label mas_finished_prepping(consumable):
+    $ current_food = MASConsumable._getCurrentDrink()
+    call mas_consumables_generic_finished_prepping(current_food)
+    return
+
+
+###Drinking done
+init 5 python:
+    import random
+    #Like finshed_brewing, this event gets its params from
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_finished_eating",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        )
+    )
+
+label mas_finished_eating:
+    #Get the current drink and see how we should act here
+    $ current_food = MASConsumable._getCurrentDrink()
+    call mas_consumables_generic_finish_having(current_food)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_get_food",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        )
+    )
+
+label mas_get_food:
+    $ current_food = MASConsumable._getCurrentDrink()
+    call mas_consumables_generic_get(current_food)
+    return
+#END: Generic food evs
+
+#START: Generic consumable labels
+label mas_consumables_generic_get(consumable):
+    #Moving this here so she uses this line to 'pull her chair back'
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
+    show emptydesk at i11 zorder 9
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1eua "I'm going to get a [consumable.container] of [consumable.disp_name]. I'll be right back.{w=1}{nw}"
+
+    else:
+        m 1eua "I'm going to get a [consumable.container] of [consumable.disp_name]."
+        m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statemetns so we can properly add / remove the mug
+    $ renpy.pause(1.0, hard=True)
+    $ monika_chr.wear_acs_pst(consumable.acs)
+    $ renpy.pause(4.0, hard=True)
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+    return
+
+label mas_consumables_generic_finish_having(consumable):
+    $ get_more = (
+        consumable.shouldHave()
+        and (consumable.prepable() or (not consumable.prepable() and consumable.hasServing()))
     )
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, I've finished my [current_drink.disp_name]."
+        m 1esd "Oh, I've finished my [consumable.disp_name]."
 
     #Moving this here so she uses this line to 'pull her chair back'
     $ curr_zoom = store.mas_sprites.zoom_level
@@ -1011,16 +1081,16 @@ label mas_finished_drinking:
     show emptydesk at i11 zorder 9
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        if get_new_cup:
+        if get_more:
             #It's drinking time
-            m 1eua "I'm going to get some more [current_drink.disp_name]. I'll be right back.{w=1}{nw}"
+            m 1eua "I'm going to get some more [consumable.disp_name]. I'll be right back.{w=1}{nw}"
 
         else:
-            m 1eua "I'm going to put this [current_drink.container] away. I'll be right back.{w=1}{nw}"
+            m 1eua "I'm going to put this [consumable.container] away. I'll be right back.{w=1}{nw}"
 
     else:
-        if get_new_cup:
-            m 1eua "I'm going to get another [current_drink.container]."
+        if get_more:
+            m 1eua "I'm going to get another [consumable.container]."
 
         m 1eua "Hold on a moment."
 
@@ -1031,18 +1101,18 @@ label mas_finished_drinking:
     $ renpy.pause(1.0, hard=True)
 
     #Should we get some more?
-    if not get_new_cup:
+    if not get_more:
         $ MASConsumable._reset()
         #We'll just set up a time when we can have this drink again
-        $ current_drink.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
+        $ consumable.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
 
     else:
-        $ current_drink.have()
-        $ current_drink.re_serve()
+        $ consumable.have()
+        $ consumable.re_serve()
 
         #Non-prepables are per refill, so they'll run out a bit faster
-        if not current_drink.prepable():
-            $ current_drink.use()
+        if not consumable.prepable():
+            $ consumable.use()
 
     $ renpy.pause(4.0, hard=True)
 
@@ -1060,38 +1130,37 @@ label mas_finished_drinking:
         m 1eua "Okay, what else should we do today?"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_get_drink",
-            show_in_idle=True,
-            rules={"skip alert": None}
-        )
-    )
-
-label mas_get_drink:
-    $ current_drink = MASConsumable._getCurrentDrink()
+label mas_consumables_generic_finished_prepping(consumable):
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
+        m 1esd "Oh, my [consumable.disp_name] is ready."
 
     #Moving this here so she uses this line to 'pull her chair back'
     $ curr_zoom = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
 
+    #This line is here so it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1eua "I'm going to get a [current_drink.container] of [current_drink.disp_name]. I'll be right back.{w=1}{nw}"
+        #Idle pauses and then progresses on its own
+        m 1eua "I'm going to grab some [consumable.disp_name]. I'll be right back.{w=1}{nw}"
 
     else:
-        m 1eua "I'm going to get a [current_drink.container] of [current_drink.disp_name]."
         m 1eua "Hold on a moment."
 
-    # monika is off screen
+    #Monika is off screen
     hide monika with dissolve
 
-    # wrap these statemetns so we can properly add / remove the mug
+    #Transition stuffs
     $ renpy.pause(1.0, hard=True)
-    $ monika_chr.wear_acs_pst(current_drink.acs)
+
+    #Wear drink acs
+    $ monika_chr.wear_acs_pst(consumable.acs)
+    #Reset prep time
+    $ persistent._mas_current_consumable[consumable.consumable_type]["prep_time"] = None
+    #Start drinking
+    $ consumable.have()
+
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
