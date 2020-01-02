@@ -634,7 +634,7 @@ label mas_compliment_bestgirl:
     m 5ekbfa "But if you ask me, you made the right choice."
     m 5hubfa "...and I'll be forever grateful that you did~"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -651,6 +651,7 @@ label mas_compliment_lookuptoyou:
         call mas_compliment_lookuptoyou_2
     else:
         call mas_compliment_lookuptoyou_3
+    #Both paths return love, so we combine that here
     return "love"
 
 label mas_compliment_lookuptoyou_2:
@@ -661,7 +662,7 @@ label mas_compliment_lookuptoyou_2:
     m 3ekbfa "The truth is, I've always looked up to {i}you{/i}, [player]..."
     m 3hubfa "But if you really feel that way, I'll do my best to continue to be someone you look up to."
     m 1ekbfa "I love you so much~"
-    return "love"
+    return
 
 label mas_compliment_lookuptoyou_3:
     $ thanks_quip = renpy.substitute(renpy.random.choice(store.mas_compliments.thanking_quips))
@@ -669,5 +670,5 @@ label mas_compliment_lookuptoyou_3:
     m 3hubfa "Hearing you say that never fails to make me smile!"
     m 3hubfb "I'll always look up to you too, [player]!"
     m 1ekbfa "I love you~"
-    return "love"
+    return
 
