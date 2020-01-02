@@ -645,27 +645,29 @@ init 5 python:
         ),
         code="CMP",
     )
+
 label mas_compliment_lookuptoyou:
     if not renpy.seen_label("mas_compliment_lookuptoyou_2"):
         call mas_compliment_lookuptoyou_2
     else:
         call mas_compliment_lookuptoyou_3
     return "love"
-    
+
 label mas_compliment_lookuptoyou_2:
-    $ mas_gainAffection(3,bypass=True)
-    m 1wud "You...{w=0.5}look up to me?"
-    m 1hubfb "Thank you so much, [player]!"
-    m 1rkbfb "You have no idea how happy it makes me to hear you say that..."
-    m 3hubfb "I'll always look up to you too, [player]!"
-    m 1ekbfa "I love you~"
-return "love"
-    
+    $ mas_gainAffection(3, bypass=True)
+    m 1wud "You...{w=0.5}you do?"
+    m 1ekbsa "[player], that's really sweet of you to say..."
+    m 3ekbsa "It makes me really happy to know I'm someone you look up to."
+    m 3ekbfa "The truth is, I've always looked up to {i}you{/i}, [player]..."
+    m 3hubfa "But if you really feel that way, I'll do my best to continue to be someone you look up to."
+    m 1ekbfa "I love you so much~"
+    return "love"
+
 label mas_compliment_lookuptoyou_3:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
+    $ thanks_quip = renpy.substitute(renpy.random.choice(store.mas_compliments.thanking_quips))
     m 1hubfb "[thanks_quip]"
-    m 3hubfa "Hearing you say that never fails to make me happy!"
+    m 3hubfa "Hearing you say that never fails to make me smile!"
     m 3hubfb "I'll always look up to you too, [player]!"
     m 1ekbfa "I love you~"
-return "love"
+    return "love"
+
