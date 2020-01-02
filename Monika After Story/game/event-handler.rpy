@@ -77,6 +77,12 @@ init -999 python in mas_ev_data_ver:
         return isinstance(val, str) or isinstance(val, unicode)
 
 
+    def _verify_td(val, allow_none=True):
+        if val is None:
+            return allow_none
+        return _verify_item(val, datetime.timedelta, allow_none)
+
+
     def _verify_tuli(val, allow_none=True):
         if val is None:
             return allow_none
@@ -161,7 +167,7 @@ init -950 python in mas_ev_data_ver:
         10: MASCurriedVerify(_verify_dt, True), # end_date
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
-        13: MASCurriedVerify(_verify_str, True), # diary_entry
+        #13: MASCurriedVerify(_verify_str, True), # diary_entry
         14: MASCurriedVerify(_verify_dt, True), # last_seen
         15: MASCurriedVerify(_verify_tuli, True), # years
         16: MASCurriedVerify(_verify_bool, True), # sensitive
@@ -318,7 +324,8 @@ init 4 python:
         "FLR": store.mas_filereacts.filereact_db,
         "APL": store.mas_apology.apology_db,
         "WRS": store.mas_windowreacts.windowreact_db,
-        "FFF": store.mas_fun_facts.fun_fact_db
+        "FFF": store.mas_fun_facts.fun_fact_db,
+        "SNG": store.mas_songs.song_db
     }
 
 
@@ -499,6 +506,12 @@ init 4 python:
 
         #Otherwise return this evaluation
         return ev.last_seen.year == year
+
+    def mas_lastSeenLastYear(ev_label):
+        """
+        Checks if the event corresponding to ev_label was last seen last year
+        """
+        return mas_lastSeenInYear(ev_label, datetime.date.today().year-1)
 
     # clean yearset
     store.evhand.cleanYearsetBlacklist()
@@ -1815,7 +1828,7 @@ init python:
         if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
             pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event',True)
+            pushEvent('continue_event',skipeval=True)
             persistent.current_monikatopic = 0
         return
 
@@ -2216,7 +2229,7 @@ label prompt_menu:
             talk_menu.append(("Repeat conversation", "repeat"))
         if _mas_getAffection() > -50:
             if mas_passedILY(pass_time=datetime.timedelta(0,10)):
-                talk_menu.append(("I love you, too!","love_too"))
+                talk_menu.append(("I love you too!","love_too"))
             else:
                 talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
@@ -2239,10 +2252,10 @@ label prompt_menu:
         call prompts_categories(False) from _call_prompts_categories_1
 
     elif madechoice == "love":
-        $ pushEvent("monika_love",True)
+        $ pushEvent("monika_love",skipeval=True)
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too",True)
+        $ pushEvent("monika_love_too",skipeval=True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
@@ -2442,11 +2455,7 @@ init 5 python:
 label mas_bookmarks:
     show monika idle
     python:
-        bookmarkedlist = [
-            (renpy.substitute(ev.prompt), ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked and ev.checkAffection(mas_curr_affection)
-        ]
+        bookmarkedlist = mas_get_player_bookmarks()
 
         bookmarkedlist.sort()
         remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)
@@ -2459,5 +2468,5 @@ label mas_bookmarks:
     $ topic_choice = _return
 
     if topic_choice:
-        $ pushEvent(topic_choice,True)
+        $ pushEvent(topic_choice,skipeval=True)
     return
