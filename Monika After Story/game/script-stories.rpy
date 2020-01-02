@@ -543,19 +543,19 @@ init 5 python:
 label mas_story_genie_regret:
     call mas_story_begin
     m 1eua "There was once a genie who was immortal..."
-    m "Seeing the world change over time and granting wishes to anyone who crossed his path."
-    m 1esc "With how long he had lived, he had seen a lot of things,{w=0.2} {nw}"
+    m "Through his years, he had seen the world change over time and granted wishes to anyone who crossed his path."
+    m 1esc "With how long he had lived, he'd seen a lot of things,{w=0.2} {nw}"
     extend 1rsc "some of them unpleasant."
     m 1ekd "Wars, natural disasters, the deaths of all the friends he ever made..."
-    m 1rkc "He knew some of them were caused by wishes he had granted."
+    m 1rkc "Some of which, he knew were caused by wishes he had granted."
     m 1ekc "At first, he wasn't too concerned with the consequences...but after a while, it began to bother him more and more."
     m 1ekd "He had come to a simple, beautiful, pure world, and caused immeasurable damage to it."
-    m 1lksdlc "Unbalance and jealousy spread as he granted more wishes, which seeded wishes for revenge and greed."
+    m 1lksdlc "Unbalance and jealousy spread as he granted more wishes, seeding wishes for revenge and greed."
     m 2dkd "This was something he had to live with for the rest of his life."
     m 2ekc "He wanted things to return to how they were, but his pleas always fell upon deaf ears."
     m 2eka "As time went on however, he had met some people and made friends who taught him how to go on despite all of his acts."
-    m "It was true that he was the one who granted the wishes that started the chaos...{w=0.5}{nw}"
-    extend 2ekd "but some were bound to happen even without him."
+    m "While it was true that he was the one who granted the wishes that started the chaos...{w=0.5}{nw}"
+    extend 2ekd "some were bound to happen even without him."
     m 3ekd "There was always going to be jealousy and unfairness among people...{w=0.3}{nw}"
     extend 3eka "but even so, the world was still doing alright."
     m 3eua "He was going to live with the things he had done, but the question remained as to what he planned to do about it."
@@ -592,9 +592,9 @@ init 5 python:
 
 label mas_story_genie_end:
     call mas_story_begin
-    m 1eua "There was once a genie who had lived a long life."
+    m 1eua "There was once an immortal genie who had lived a long life."
     m 1euc "He had seen everything there was to see...{w=0.3}lived freely, and learned the fulfillment of working towards a goal."
-    m 3euc "Essentially, he gave up his powers to be able to live like a human...{w=0.5}except he still had an extended lifespan."
+    m 3euc "Essentially, he gave everything up but his immortality to be able to live like a human."
     m 1ekc "It's true that he had lived a nice life and surrounded himself with loving friends and family..."
     m 1ekd "But he grew cold as years went by and he watched each one of his loved ones pass on."
     m 1rksdlc "There were still a select few people whom he held dear, despite knowing that he would have to watch them die as well."
