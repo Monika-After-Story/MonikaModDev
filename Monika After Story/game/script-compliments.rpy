@@ -34,7 +34,7 @@ init -1 python in mas_compliments:
         "Aww, [player]~",
         "Thanks, [player]!",
         "You always flatter me, [player]."
-        ]
+    ]
 
 
 # entry point for compliments flow
