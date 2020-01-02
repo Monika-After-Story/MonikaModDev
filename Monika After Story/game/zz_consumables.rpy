@@ -5,6 +5,7 @@
 #   - persistent._mas_acs_enable_hotchoc
 #   - persistent._mas_c_hotchoc_been_given
 #TODO: Stock existing users with some coffee/hotchoc
+#TODO: Generic food labels
 
 default persistent._mas_current_consumable = {
     0: {
@@ -43,21 +44,21 @@ init 10 python:
         PROPERTIES:
             consumable_id - id of the consumable
             disp_name - friendly name for this consumable
-            container - the container of this drink (cup, mug, glass, bottle, etc)
+            container - the container of this consumable (cup, mug, glass, bottle, etc)
             start_end_tuple_list - list of (start_hour, end_hour) tuples
-            acs - MASAccessory to display for the drink
+            acs - MASAccessory to display for the consumable
             split_list - list of split hours
             late_entry_list - list of integers storing the hour which would be considered a late entry
-            max_re_serve - amount of times Monika can get a refill of this drink
-            cons_chance - likelihood of Monika to keep drinking this consumable drink
-            prep_low - bottom bracket of brew time
-            prep_high - top bracket of brew time
-            cons_low - bottom bracket of drink time
-            cons_high - top bracket of drink time
-            done_cons_until - the time until Monika can randomly have this drink again
-            get_cons_evl - evl to use for getting the drink
-            finish_prep_evl - evl to use when finished brewing
-            finish_cons_evl - evl to use when finished drinking
+            max_re_serve - amount of times Monika can get a re-serving of this consumable
+            cons_chance - likelihood of Monika to keep having this consumable
+            prep_low - bottom bracket of preparation time
+            prep_high - top bracket of preparation time
+            cons_low - bottom bracket of consumable time
+            cons_high - top bracket of consumable time
+            done_cons_until - the time until Monika can randomly have this consumable again
+            get_cons_evl - evl to use for getting the consumable (no prep)
+            finish_prep_evl - evl to use when finished preparing a consumable
+            finish_cons_evl - evl to use when finished having a consumable
         """
 
         #Constants:
@@ -115,7 +116,7 @@ init 10 python:
 
                 acs - MASAccessory object for this consumable
 
-                split_list - list of split hours for brewing
+                split_list - list of split hours for prepping
 
                 cons_chance - chance for Monika to continue having this consumable
                     (Default: 80/100)
@@ -357,10 +358,10 @@ init 10 python:
             if _start_time is None:
                 _start_time = datetime.datetime.now()
 
-            #Start brew
+            #Start prep
             persistent._mas_current_consumable[self.consumable_type]["prep_time"] = _start_time
 
-            #Calculate end brew time
+            #Calculate end prep time
             end_prep = random.randint(self.prep_low, self.prep_high)
 
             #Setup the event conditional
@@ -373,7 +374,7 @@ init 10 python:
             ).format(self.consumable_type, end_prep)
             prep_ev.action = EV_ACT_QUEUE
 
-            #Now we set what we're drinking
+            #Now we set what we're having
             persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
 
         def have(self, _start_time=None, skip_leadin=False):
@@ -382,8 +383,8 @@ init 10 python:
             (Sets up the finished consumable event)
 
             IN:
-                _start_time - time to start brewing. If none, now is assumed
-                skip_leadin - whether or not we should push the event where Monika gets something to drink
+                _start_time - time to start prepping. If none, now is assumed
+                skip_leadin - whether or not we should push the event where Monika gets something to have
             """
             if _start_time is None:
                 _start_time = datetime.datetime.now()
@@ -392,7 +393,7 @@ init 10 python:
             consumable_time = datetime.timedelta(0, random.randint(self.cons_low, self.cons_high))
 
             #Setup the stop time for the cup
-            persistent._mas_current_consumable[self.consumable_type]["consume_time"] = _start_time + drinking_time
+            persistent._mas_current_consumable[self.consumable_type]["consume_time"] = _start_time + consumable_time
 
             #Setup the event conditional
             cons_ev = mas_getEV(self.finish_cons_evl)
@@ -407,9 +408,9 @@ init 10 python:
                 persistent._mas_current_consumable[self.consumable_id]["id"] = self.consumable_id
                 monika_chr.wear_acs_pst(self.acs)
 
-            #If this isn't a prepable type and we don't have a current drink, we should push the ev
-            elif not self.prepable() and not MASConsumable._getCurrentDrink():
-                persistent._mas_current_consumable[self.consumable_id]["drink"] = self.consumable_id
+            #If this isn't a prepable type and we don't have a current consumable of this type, we should push the ev
+            elif not self.prepable() and not MASConsumable.__getCurrentConsumable(self.consumable_type):
+                persistent._mas_current_consumable[self.consumable_id]["id"] = self.consumable_id
                 pushEvent(self.get_cons_evl)
 
             #Increment cup count
@@ -424,7 +425,7 @@ init 10 python:
 
             OUT:
                 boolean:
-                    - True if we're still brewing something
+                    - True if we're still prepping something
                     - False otherwise
             """
             _time = persistent._mas_current_consumable[self.consumable_type]["prep_time"]
@@ -449,7 +450,7 @@ init 10 python:
 
             OUT:
                 boolean:
-                    - True if we're still brewing something
+                    - True if we're still having something
                     - False otdherwise
             """
             if _now is None:
@@ -551,7 +552,7 @@ init 10 python:
         @staticmethod
         def _reset():
             """
-            Resets the events for the consumable and resets the current consumable drink
+            Resets the events for the consumable and resets the current consumable(s)
             """
             def cons_reset(consumable):
                 """
@@ -591,7 +592,7 @@ init 10 python:
                     "id": None
                 }
 
-            #Get current drink
+            #Get current consumables and reset
             cons_reset(MASConsumable._getCurrentDrink())
             cons_reset(MASConsumable._getCurrentFood())
 
@@ -615,7 +616,7 @@ init 10 python:
                 - Current MASConsumable if eating
                 - None if not eating
             """
-            return MASConsumable.__getCurrentConsumable(store.mas_consumables.TYPE_DRINK)
+            return MASConsumable.__getCurrentConsumable(store.mas_consumables.TYPE_FOOD)
 
         @staticmethod
         def _isHaving(_type):
@@ -678,7 +679,7 @@ init 10 python:
         @staticmethod
         def _checkConsumables(startup=False):
             """
-            Logic to handle Monika drinking a consumable both on startup and during runtime
+            Logic to handle Monika having a consumable both on startup and during runtime
 
             IN:
                 startup - Whether or not we should check for a late entry
@@ -696,10 +697,13 @@ init 10 python:
                 startup=startup
             )
 
+            if startup:
+                MASConsumable._absentUse()
+
         @staticmethod
         def _absentUse():
             """
-            Runs a check on all consumable drinks and subtracts the amount used
+            Runs a check on all consumables and subtracts the amount used in the player's absence
             """
             def calculate_and_use(consumable, servings, days_absent):
                 """
@@ -817,7 +821,7 @@ init 10 python:
 
             #First, should we even have this?
             if cons.shouldHave():
-                #If we prep, we brew for 7 chages worth (to acct for multiple servings)
+                #If we prepare, we prep for 7 chages worth (to acct for multiple servings)
                 if cons.prepable():
                     cons.use(amount=7)
 

@@ -1924,11 +1924,8 @@ label ch30_reset:
 
     #Do startup checks
 
-    #First we check for use during absence
-    $ MASConsumable._absentUse()
-
     #Now we check if we should drink
-    $ MASConsumable._checkConsumables(startup=True)
+    $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)

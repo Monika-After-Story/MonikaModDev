@@ -182,8 +182,9 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
         store.mas_hideEVL("monika_mountain", "EVE", derandom=True)
 
-        # enable hotchoc
-        store.mas_getConsumableDrink("hotchoc").enable()
+        # enable hotchoc if given before
+        if store.seen_event("mas_reaction_hotchocolate"):
+            store.mas_getConsumableDrink("hotchoc").enable()
 
         # want to ensure first time we see the islands they are dead and covered in snow
         store.mas_lockEVL("greeting_ourreality", "GRE")
