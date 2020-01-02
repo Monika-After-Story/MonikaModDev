@@ -73,8 +73,18 @@ image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
 image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
 image mas_island_night = "mod_assets/location/special/night_without_frame.png"
-#image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
-#image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
+image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
+image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
+image mas_island_frame_rain_night = "mod_assets/location/special/night_rain_with_frame.png"
+image mas_island_rain_night = "mod_assets/location/special/night_rain_without_frame.png"
+image mas_island_frame_overcast = "mod_assets/location/special/overcast_with_frame.png"
+image mas_island_overcast = "mod_assets/location/special/overcast_without_frame.png"
+image mas_island_frame_overcast_night = "mod_assets/location/special/night_overcast_with_frame.png"
+image mas_island_overcast_night = "mod_assets/location/special/night_overcast_without_frame.png"
+image mas_island_frame_snow = "mod_assets/location/special/snow_with_frame.png"
+image mas_island_snow = "mod_assets/location/special/snow_without_frame.png"
+image mas_island_frame_snow_night = "mod_assets/location/special/night_snow_with_frame.png"
+image mas_island_snow_night = "mod_assets/location/special/night_snow_without_frame.png"
 
 ## end island bg weather art
 
@@ -97,7 +107,7 @@ init python in mas_weather:
     def shouldRainToday():
 
         #Is it a new day? If so, we should see if it should rain today
-        if not store.persistent._mas_date_last_checked_rain or store.persistent._mas_date_last_checked_rain < datetime.date.today():
+        if store.mas_pastOneDay(store.persistent._mas_date_last_checked_rain):
             store.persistent._mas_date_last_checked_rain = datetime.date.today()
 
             #Now we roll
@@ -317,11 +327,9 @@ init -20 python in mas_weather:
                 store.audio.rain,
                 channel="background",
                 loop=True,
-                fadein=1.0
+                fadein=1.0,
+                if_changed=True
             )
-
-            # lock rain start/rain/islands
-            store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art
 
 
     def _weather_rain_exit(_new):
@@ -337,23 +345,6 @@ init -20 python in mas_weather:
             # stop rain sound
             renpy.music.stop(channel="background", fadeout=1.0)
 
-        # unlock rain/islands
-#        store.mas_unlockEVL("monika_rain", "EVE")
-
-            # TODO: island rain art
-            islands_ev = store.mas_getEV("mas_monika_islands")
-            if (
-                    islands_ev is not None
-                    and islands_ev.shown_count > 0
-                    and islands_ev.checkAffection(store.mas_curr_affection)
-                ):
-                store.mas_unlockEVL("mas_monika_islands", "EVE")
-
-#        else:
-#            store.mas_unlockEVL("greeting_ourreality", "GRE")
-
-        # TODO: unlock islands greeting as well
-
 
     def _weather_snow_entry(_old):
         """
@@ -362,15 +353,14 @@ init -20 python in mas_weather:
         # set global flag
         store.mas_is_snowing = True
 
-        # lock islands
-        store.mas_lockEVL("mas_monika_islands", "EVE")
-
-        #Unlock snow weather (It should only be winter to get this anyway, because of progressive weather/startup weather)
-        if not store.mas_weather_snow.unlocked:
-            store.mas_weather_snow.unlocked = True
-            saveMWData()
-
-        # TODO: lock islands greeting as well
+        #We want this topic seen for the first time with aurora visible outside her window
+        #But we also don't want it to machine gun other topics too
+        if (
+            not store.morning_flag
+            and not store.persistent.event_list
+            and store.mas_getEV("monika_auroras").shown_count == 0
+        ):
+            store.queueEvent("monika_auroras", notify=True)
 
 
     def _weather_snow_exit(_new):
@@ -380,23 +370,11 @@ init -20 python in mas_weather:
         # set globla flag
         store.mas_is_snowing = False
 
-        # unlock islands
-        islands_ev = store.mas_getEV("mas_monika_islands")
-        if (
-                islands_ev is not None
-                and islands_ev.shown_count > 0
-                and islands_ev.checkAffection(store.mas_curr_affection)
-            ):
-            store.mas_unlockEVL("mas_monika_islands", "EVE")
-
-        # TODO: unlock islands greeting as well
-
 
     def _weather_thunder_entry(_old):
         """
         Thunder entry programming point
         """
-
         # dont run rain if swtiching from it
         # run rain programming points
         if _old != store.mas_weather_rain:
@@ -420,19 +398,16 @@ init -20 python in mas_weather:
 
 
     def _weather_overcast_entry(_old):
-        #Lock islands
-        store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
-
+        """
+        Overcast entry programming point
+        """
+        pass
 
     def _weather_overcast_exit(_new):
-        #Unlock islands
-        islands_ev = store.mas_getEV("mas_monika_islands")
-        if (
-                islands_ev is not None
-                and islands_ev.shown_count > 0
-                and islands_ev.checkAffection(store.mas_curr_affection)
-            ):
-            store.mas_unlockEVL("mas_monika_islands", "EVE")
+        """
+        Overcast exit programming point
+        """
+        pass
 
 
 init -10 python:
@@ -509,6 +484,8 @@ init -10 python:
                 exit_pp - programming point to execute before leaving this
                     weather
                     (Default: None)
+
+                #NOTE: Defaulting to the day frame stuff to avoid tracebacks
             """
             if weather_id in self.mas_weather.WEATHER_MAP:
                 raise Exception("duplicate weather ID")
@@ -669,13 +646,18 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
-        # islands bg day and night
+        # islands bg day
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_rain_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_rain_without_frame.png",
+
         entry_pp=store.mas_weather._weather_rain_entry,
         exit_pp=store.mas_weather._weather_rain_exit,
-        unlocked=True,
+
+        unlocked=True
     )
 
     # snow weather
@@ -691,8 +673,18 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
 
+        # islands bg day
+        isbg_wf_day="mod_assets/location/special/snow_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/snow_without_frame.png",
+
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_snow_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_snow_without_frame.png",
+
         entry_pp=store.mas_weather._weather_snow_entry,
-        exit_pp=store.mas_weather._weather_snow_exit
+        exit_pp=store.mas_weather._weather_snow_exit,
+
+        unlocked=True
     )
 
     # thunder/lightning
@@ -708,12 +700,18 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
-        # islands bg day and night
+        # islands bg day
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_rain_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_rain_without_frame.png",
+
         entry_pp=store.mas_weather._weather_thunder_entry,
-        exit_pp=store.mas_weather._weather_thunder_exit
+        exit_pp=store.mas_weather._weather_thunder_exit,
+
+        unlocked=True
     )
 
     #overcast
@@ -729,12 +727,17 @@ init -1 python:
 
         precip_type=store.mas_weather.PRECIP_TYPE_OVERCAST,
 
-        # islands bg day and night
-        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+        # islands bg day
+        isbg_wf_day="mod_assets/location/special/overcast_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/overcast_without_frame.png",
+
+        # islands bg night
+        isbg_wf_night="mod_assets/location/special/night_overcast_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_overcast_without_frame.png",
 
         entry_pp=store.mas_weather._weather_overcast_entry,
         exit_pp=store.mas_weather._weather_overcast_exit,
+
         unlocked=True
     )
 
@@ -869,7 +872,7 @@ label monika_change_weather_loop:
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(weathers, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     $ sel_weather = _return
 

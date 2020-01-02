@@ -164,7 +164,7 @@ image monika g2:
             pause 0.2
     repeat
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #empty desk image, used when Monika is no longer in the room.
 #image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
@@ -176,10 +176,8 @@ image emptydesk = ConditionSwitch(
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 image mas_roses = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/monika/a/acs-roses-0.png",
-    "not morning_flag",
-    "mod_assets/monika/a/acs-roses-0-n.png"
+    "morning_flag", "mod_assets/monika/a/acs-roses-0.png",
+    "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
 )
 
 ### bday stuff
@@ -219,6 +217,301 @@ image mas_bday_balloons = ConditionSwitch(
     "not morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
+
+image mas_o31_deco = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
+    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+)
+
+### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
+# this contains special acs type mappings
+# basically on startup, we evaluate each acs and add mux types and other
+# properties.
+
+init -101 python in mas_sprites:
+    
+    class ACSTemplate(renpy.store.object):
+        """
+        ACS template object
+        Establishes guidelines for defauling properties for an ACS
+
+        PROPERTIES:
+            acs_type - the acs type associated with this template
+            mux_type - the default mux type list for this template
+            ex_props - default exprops dict for this template
+        """
+
+        def __init__(self, acs_type, mux_type=None, ex_props=None):
+            """
+            Constructor
+
+            IN:
+                acs_type - acs type this template should be associated with
+                mux_type - the mux_type we want to use as default. Ignored if
+                    None.
+                    (Default: None)
+                ex_props - the ex_props we want to use as default. Ignored if
+                    None.
+                    (Default: None)
+            """
+            self.acs_type = acs_type
+            self.mux_type = mux_type
+            self.ex_props = ex_props
+
+        def _apply_ex_props(self, acs):
+            """
+            Applies ex prop defaults to the given ACS.
+
+            acs_type is NOT checked.
+
+            IN:
+                acs - acs to modify
+            """
+            if self.ex_props is None:
+                return
+
+            if acs.ex_props is None:
+                acs.ex_props = dict(self.ex_props)
+
+            else:
+                acs.ex_props.update(self.ex_props)
+
+        def _apply_mux_type(self, acs):
+            """
+            Applies mux type defaults to the given ACS. 
+            
+            acs_type is NOT checked.
+
+            IN:
+                acs - acs to modify.
+            """
+            if self.mux_type is None:
+                return
+
+            if acs.mux_type is None:
+                acs.mux_type = list(self.mux_type)
+
+            else:
+                for mux_type in self.mux_type:
+                    if mux_type not in acs.mux_type:
+                        acs.mux_type.append(mux_type)
+
+        def apply(self, acs):
+            """
+            Applies the defaults to the given ACS. (NOTE: acs type is checked)
+            """
+            if self.acs_type == acs.acs_type:
+                self._apply_ex_props(acs)
+                self._apply_mux_type(acs)
+
+
+init -100 python in mas_sprites:
+
+    # --- exprops ---
+
+    # ---- ACS ----
+
+    EXP_A_EXCLHP = "excluded-hair-props"
+    # v: list of strings
+    # marks that an ACS requires a hairstyle with none of the value'd props 
+    # to be worn
+
+    EXP_A_LHSEL = "left-hair-strand-eye-level"
+    # v: ignored
+    # marks that an ACS is located at the left hair strand, eye level
+
+    EXP_A_RQHP = "required-hair-prop"
+    # v: string
+    # marks that an ACS requires a hairstyle with the value'd prop to be worn
+
+    EXP_A_RBL = "ribbon-like"
+    # v: ignored
+    # marks that an ACS is like a ribbon in function
+
+    EXP_A_TWRB = "twin-ribbon"
+    # v: ignored
+    # marks that an ACS is a twin ribbon-based acs
+
+    # ---- HAIR ----
+
+    EXP_H_TT = "twintails"
+    # v: ignored
+    # marks that a hair style is a twintails style
+
+    # --- default exprops ---
+    DEF_EXP_TT_EXCL = [EXP_H_TT]
+
+    # --- default mux types ---
+
+    DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons", "bunny-scrunchie"]
+    # default mux types for ribbon-based items.
+
+    DEF_MUX_HS = [
+        "headset",
+        "headphones",
+        "earphones",
+        "headband",
+        "left-hair-flower-ear"
+    ]
+    # default mux types for headset-based items
+
+    DEF_MUX_HB = ["headband", "headset", "headphones"]
+    # default mux types for headband-based items
+
+    DEF_MUX_LHC = ["left-hair-clip"]
+    # default mux types for left hair clip-based items
+
+    DEF_MUX_LHFE = [
+        "headset",
+        "headphones",
+        "earphones",
+        "left-hair-flower-ear",
+        "left-hair-flower",
+        "front-hair-flower-crown"
+    ]
+    # default mux tyoes for left hair flower-baesd items
+
+    # maps ACS types to their ACS template
+    ACS_DEFS = {
+        "bow": ACSTemplate(
+            "bow",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+                EXP_A_EXCLHP: DEF_EXP_TT_EXCL,
+            }
+        ),
+        "bunny-scrunchie": ACSTemplate(
+            "bunny-scrunchie",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+                EXP_A_EXCLHP: DEF_EXP_TT_EXCL,
+            }
+        ),
+        "choker": ACSTemplate(
+            "choker",
+            mux_type=["choker"],
+            ex_props={
+                "bare neck": True
+            }
+        ),
+        "headband": ACSTemplate(
+            "headband",
+            mux_type=DEF_MUX_HB
+        ),
+        "headset": ACSTemplate(
+            "headset",
+            mux_type=DEF_MUX_HS
+        ),
+        "left-hair-clip": ACSTemplate(
+            "left-hair-clip",
+            mux_type=DEF_MUX_LHC,
+            ex_props={
+                EXP_A_LHSEL: True
+            }
+        ),
+        "left-hair-flower": ACSTemplate(
+            "left-hair-flower",
+            mux_type=["left-hair-flower", "left-hair-flower-ear"],
+            ex_props={
+                EXP_A_LHSEL: True
+            }
+        ),
+        "front-hair-flower-crown": ACSTemplate(
+            "front-hair-flower-crown",
+            mux_type=DEF_MUX_LHFE,
+            ex_props={
+                "front-hair-crown": True,
+            },
+        ),
+        "left-hair-flower-ear": ACSTemplate(
+            "left-hair-flower-ear",
+            mux_type=DEF_MUX_LHFE,
+            ex_props={
+                EXP_A_LHSEL: True
+            }
+        ),
+        "mug": ACSTemplate(
+            "mug",
+            mux_type=["mug"],
+        ),
+        "necklace": ACSTemplate(
+            "necklace",
+            mux_type=["necklace"],
+            ex_props={
+                "bare collar": True,
+            }
+        ),
+        # ring
+        "ribbon": ACSTemplate(
+            "ribbon",
+            mux_type=DEF_MUX_RB
+        ),
+        "twin-ribbons": ACSTemplate(
+            "twin-ribbons",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_TWRB: True,
+                EXP_A_RBL: True,
+                EXP_A_RQHP: EXP_H_TT,
+            }
+        ),
+        "wrist-bracelet": ACSTemplate(
+            "wrist-bracelet",
+            mux_type=["wrist-bracelet"],
+            ex_props={
+                "bare wrist": True,
+            }
+        ),
+    }
+
+
+    def apply_ACSTemplate(acs):
+        """
+        Applies ACS template to the given ACS
+
+        IN:
+            acs - acs to apply defaults to
+        """
+        template = get_ACSTemplate(acs)
+        if template is not None:
+            template.apply(acs)
+
+
+    def apply_ACSTemplates():
+        """RUNTIME ONLY
+        Applies all templates to the available ACS.
+        """
+        for acs_name in ACS_MAP:
+            apply_ACSTemplate(ACS_MAP[acs_name])
+
+
+    def get_ACSTemplate(acs):
+        """
+        Gets the template for an ACS given the ACS.
+
+        IN:
+            acs - acs to get template for
+
+        RETURNS: ACSTemplate associated with the acs, or None if not found
+        """
+        if acs is None:
+            return None
+        return get_ACSTemplate_by_type(acs.acs_type)
+
+
+    def get_ACSTemplate_by_type(acs_type):
+        """
+        Gets the template for an ACS given the ACS type
+
+        IN:
+            acs_type - acs type to get template for
+
+        RETURNS: ACSTemplate associated with the acs_type or Nonr if not ound
+        """
+        return ACS_DEFS.get(acs_type, None)
+
 
 init -5 python in mas_sprites:
     # specific image generation functions
@@ -674,7 +967,7 @@ init -5 python in mas_sprites:
 
     # sprite exprop - list of topics
     EXPROP_TOPIC_MAP = {
-        "left-hair-strand-eye-level": [
+        EXP_A_LHSEL: [
             "monika_hairclip_select"
         ],
     }
@@ -739,7 +1032,7 @@ init -5 python in mas_sprites:
         return PREFIX_FACE
 
 
-    def create_remover(acs_type, group):
+    def create_remover(acs_type, group, mux_types):
         """
         Creates a remover ACS
 
@@ -747,6 +1040,7 @@ init -5 python in mas_sprites:
             acs_type - acs type for the remover. This is also used in mux_type
             group - group of selectables this ACS remover should be linked to
                 This is used in the naming of the ACS.
+            mux_types - list of types to use for mux_type
 
         RETURNS: remover ACS object
         """
@@ -759,7 +1053,7 @@ init -5 python in mas_sprites:
             ),
             stay_on_start=False,
             acs_type=acs_type,
-            mux_type=[acs_type]
+            mux_type=mux_types
         )
         init_acs(remover_acs)
         return remover_acs
@@ -937,8 +1231,12 @@ init -5 python in mas_sprites:
         return sprite_map.get(sprite_name, None)
 
 
-    # special mas monika functions
-
+    # special mas monika functions (hooks)
+    # NOTE: set flag "abort" to True in prechange points to prevent 
+    #   change/add/removal. This is dependent on the specific hook.
+    #   ACS: only wear_mux_pre_change and rm_exit_pre_change
+    #   HAIR: hair_exit_pre_change
+    #   CLOTHES: clothes_exit_pre_change
 
     def acs_rm_exit_pre_change(temp_space, moni_chr, rm_acs, acs_loc):
         """
@@ -977,7 +1275,9 @@ init -5 python in mas_sprites:
             new_acs - acs we are adding
             acs_loc - acs location to wear this acs
         """
-        pass
+        # abort if current hair not compatible wtih CAS
+        if not is_hairacs_compatible(moni_chr.hair, new_acs):
+            temp_space["abort"] = True
 
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
@@ -1044,6 +1344,8 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
+
+        # if clothes had a desired ribbon, restore to previous
         desired_ribbon = prev_cloth.getprop("desired-ribbon")
         if (
                 desired_ribbon is not None
@@ -1055,11 +1357,7 @@ init -5 python in mas_sprites:
                 moni_chr.remove_acs(ACS_MAP[desired_ribbon])
 
             else:
-                _acs_wear_if_wearing_acs(
-                    moni_chr,
-                    ACS_MAP[desired_ribbon],
-                    temp_ribbon
-                )
+                moni_chr.wear_acs(temp_ribbon)
 
 
     def clothes_entry_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -1072,7 +1370,11 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
-        pass
+        if prev_cloth.hasprop("baked outfit"):
+            # a baked outfit causes selector issues. we need to re-evaluate
+            # certain cases.
+            _hair_unlock_select_if_needed()
+            store.mas_selspr._validate_group_topics()
 
 
     def clothes_entry_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -1085,18 +1387,24 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
+        outfit_mode = temp_space.get("outfit_mode", False)
+
+        # if clothes has a desired ribbon, change to it if outfit mode
         desired_ribbon = new_cloth.getprop("desired-ribbon")
         if (
-                desired_ribbon is not None
+                outfit_mode
+                and desired_ribbon is not None
                 and desired_ribbon in ACS_MAP
                 and moni_chr.is_wearing_hair_with_exprop("ribbon")
         ):
             prev_ribbon = moni_chr.get_acs_of_type("ribbon")
+            if prev_ribbon is None:
+                prev_ribbon = moni_chr.get_acs_of_exprop("ribbon-like")
+
             if prev_ribbon != store.mas_acs_ribbon_blank:
                 temp_storage["hair.ribbon"] = prev_ribbon
 
             moni_chr.wear_acs(ACS_MAP[desired_ribbon])
-
     
     
     def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
@@ -1110,7 +1418,10 @@ init -5 python in mas_sprites:
             prev_hair - current hair
             new_hair - hair we are changing to
         """
-        pass
+        all_acs = moni_chr.get_acs()
+        for acs in all_acs:
+            if not is_hairacs_compatible(new_hair, acs):
+                moni_chr.remove_acs(acs)
 
 
     def hair_exit_pst_change(temp_space, moni_chr, prev_hair, new_hair):
@@ -1173,20 +1484,47 @@ init -5 python in mas_sprites:
             elif new_hair.hasprop("ribbon-off"):
                 # take ribbon off for this hairstyle
                 _acs_ribbon_save_and_remove(moni_chr)
+                _acs_ribbon_like_save_and_remove(_moni_chr)
 
             if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
                 # unlock selector for ribbons if you have more than one
                 store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
             # also change name of the ribbon select prompt
-            if moni_chr.is_wearing_acs_type("ribbon"):
+            if moni_chr.is_wearing_ribbon():
                 store.mas_selspr.set_prompt("ribbon", "change")
+
             else:
                 store.mas_selspr.set_prompt("ribbon", "wear")
 
         else:
             # new hair not enabled for ribbon
             _acs_ribbon_save_and_remove(moni_chr)
+            _acs_ribbon_like_save_and_remove(moni_chr)
+
+    # hook function helpers
+
+    def is_hairacs_compatible(hair, acs):
+        """
+        Checks if the given hair is compatible with the given acs
+
+        IN:
+            hair - hair to check
+            acs - acs to check
+        """
+        # first check for required hair prop
+        req_hair_prop = acs.getprop(EXP_A_RQHP, None)
+        if req_hair_prop is not None and not hair.hasprop(req_hair_prop):
+            return False
+
+        # then chceck exclusions
+        excl_hair_props = acs.getprop(EXP_A_EXCLHP, None)
+        if excl_hair_props is not None:
+            for excl_hair_prop in excl_hair_props:
+                if hair.hasprop(excl_hair_prop):
+                    return False
+
+        return True
 
 
     # sprite maker functions
@@ -3245,6 +3583,9 @@ init -2 python:
             ASE_ACS,
         )
 
+        # state tuple size
+        STATE_SIZE = 11
+
         def __init__(self):
             """
             Constructor
@@ -3325,7 +3666,6 @@ init -2 python:
             # set to True to allow ACS overriding
             self._override_rec_layer = False
 
-
         def __get_acs(self, acs_type):
             """
             Returns the accessory list associated with the given type
@@ -3338,6 +3678,125 @@ init -2 python:
             """
             return self.acs.get(acs_type, None)
 
+        def _same_state_acs(self, a1, a2):
+            """
+            Compares given acs lists as acs objects
+
+            NOTE: order does not matter
+
+            IN:
+                a1 - list of acs objects to compare
+                a2 - list of acs objects to compare
+
+            RETURNS: True if the same, False if not
+            """
+            # quick chec
+            if len(a1) != len(a2):
+                return False
+
+            # make a list of names for comparison
+            a2_names = [acs.name for acs in a2]
+
+            # now do comparison
+            same_count = 0
+            for a1_acs in a1:
+                if a1_acs.name in a2_names:
+                    same_count += 1
+                else:
+                    return False
+
+            return len(a2_names) == same_count
+
+        def _same_state_acs_prims(self, a1, a2):
+            """
+            Compares given acs lists as primitive data.
+
+            NOTE: order does not matter
+
+            IN:
+                a1 - list of acs names to compare
+                a2 - list of acs names to compare
+
+            RETURNS: True if the same, False if not
+            """
+            # quick check
+            if len(a1) != len(a2):
+                return False
+
+            same_count = 0
+            for a1_name in a1:
+                if a1_name in a2:
+                    same_count += 1
+                else:
+                    return False
+
+            return len(a2) == same_count
+
+        def _same_state(self, data):
+            """
+            Compares the given state as objects
+
+            IN:
+                data - previous object state
+
+            RETURNS: True if the same, False if not
+            """
+            # object data is sprite objects, but we compare names
+
+            # get current monikas state
+            curr_state = self.save_state(True, True, True, False)
+
+            # first compare size
+            if len(data) != len(curr_state):
+                return False
+
+            # clothes
+            if data[0].name != curr_state[0].name:
+                return False
+
+            # hair
+            if data[1].name != curr_state[1].name:
+                return False
+
+            # acs lists
+            for index in range(2, len(data)):
+                if not self._same_state_acs(data[index], curr_state[index]):
+                    return False
+
+            return True
+
+        def _same_state_prims(self, data):
+            """
+            Compares the given state as primitives
+
+            IN:
+                data - previous primitive state
+
+            RETURNS: True if the same, False if not
+            """
+            # primtiive data is stored as names
+
+            # get current monika's state
+            curr_state = self.save_state(True, True, True, True)
+
+            # first compare state size
+            if len(data) != len(curr_state):
+                return False
+
+            # clothes
+            if data[0] != curr_state[0]:
+                return False
+
+            # hair
+            if data[1] != curr_state[1]:
+                return False
+
+            # acs lists
+            for index in range(2, len(data)):
+                if not self._same_state_acs_prims(data[index], curr_state[index]):
+                    return False
+
+            return True
 
         def _load(self,
                 _clothes_name,
@@ -3476,7 +3935,13 @@ init -2 python:
                 return allow_none
             return val in MASMonika.SPL_LAYERS
 
-        def change_clothes(self, new_cloth, by_user=None, startup=False):
+        def change_clothes(
+                self,
+                new_cloth,
+                by_user=None,
+                startup=False,
+                outfit_mode=False
+        ):
             """
             Changes clothes to the given cloth. also sets the persistent
             force clothes var to by_user, if its not None
@@ -3489,6 +3954,11 @@ init -2 python:
                 startup - True if we are loading on startup, False if not
                     When True, we dont respect locking
                     (Default: False)
+                outfit_mode - True means we should change hair/acs if it 
+                    completes the outfit. False means we should not.
+                    NOTE: this does NOT affect hair/acs that must change for
+                        consistency purposes.
+                    (Default: False)
             """
             if self.lock_clothes and not startup:
                 return
@@ -3497,6 +3967,7 @@ init -2 python:
             temp_space = {
                 "by_user": by_user,
                 "startup": startup,
+                "outfit_mode": outfit_mode
             }
 
             prev_cloth = self.clothes
@@ -3509,8 +3980,16 @@ init -2 python:
                 new_cloth
             )
 
+            # abort if asked
+            if temp_space.get("abort", False):
+                return
+
             # exit point
-            self.clothes.exit(self, new_clothes=new_cloth)
+            self.clothes.exit(
+                self,
+                new_clothes=new_cloth,
+                outfit_mode=outfit_mode
+            )
 
             # post exit, pre change
             store.mas_sprites.clothes_exit_pst_change(
@@ -3532,7 +4011,11 @@ init -2 python:
             )
 
             # entry point
-            self.clothes.entry(self, prev_clothes=prev_cloth)
+            self.clothes.entry(
+                self,
+                prev_clothes=prev_cloth,
+                outfit_mode=outfit_mode
+            )
 
             # post entry point
             store.mas_sprites.clothes_entry_pst_change(
@@ -3577,6 +4060,10 @@ init -2 python:
                 prev_hair,
                 new_hair
             )
+
+            # abort if asked
+            if temp_space.get("abort", False):
+                return
 
             # exit point
             self.hair.exit(self, new_hair=new_hair)
@@ -3637,6 +4124,21 @@ init -2 python:
             """
             self.change_clothes(new_cloth, by_user=by_user, startup=startup)
             self.change_hair(new_hair, by_user=by_user, startup=startup)
+
+
+        def get_acs(self):
+            """
+            Gets all acs objects currently worn by Monika
+
+            RETURNS: list of all acs objects being worn
+            """
+            acs_items = []
+            for acs_name in self.acs_list_map:
+                acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if acs is not None:
+                    acs_items.append(acs)
+
+            return acs_items
 
 
         def get_acs_of_exprop(self, exprop, get_all=False):
@@ -3772,6 +4274,24 @@ init -2 python:
 
             return False
 
+        def is_wearing_acs_with_mux(self, acs_type):
+            """
+            Checks if currently wearing any ACS with the given acs_type in its
+            mux type
+
+            IN:
+                acs_type - acceessory type to check
+            """
+            for acs_name in self.acs_list_map:
+                acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if (
+                        acs
+                        and acs.mux_type is not None
+                        and acs_type in acs.mux_type
+                ):
+                    return True
+
+            return False
 
         def is_wearing_acs_in(self, accessory, acs_type):
             """
@@ -3815,6 +4335,19 @@ init -2 python:
             RETURNS: True if wearing hair with the exprop, False if not
             """
             return self.hair.hasprop(exprop)
+
+
+        def is_wearing_ribbon(self):
+            """
+            Checks if we are currently wearing a ribbon or ribbon-like ACS
+
+            RETURNS: True if wearing ACS with ribbon type or ACS with
+                ribbon-like ex prop
+            """
+            return (
+                self.is_wearing_acs_type("ribbon") 
+                or self.is_wearing_acs_with_exprop("ribbon-like")
+            )
 
 
         def load(self, startup=False):
@@ -3969,6 +4502,10 @@ init -2 python:
                     acs_type
                 )
 
+                # abort removal if we were told to abort
+                if temp_space.get("abort", False):
+                    return
+
                 # run programming point
                 accessory.exit(self)
 
@@ -4071,6 +4608,18 @@ init -2 python:
             self.reset_clothes(by_user)
             self.reset_hair(by_user)
 
+        def restore(self, _data, as_prims=False):
+            """
+            Restores monika to a previous state. This will reset outfit and
+            clear ACS before loading.
+
+            IN:
+                _data - see load_state
+                as_prims - see load_state
+            """
+            self.reset_outfit()
+            self.remove_all_acs()
+            self.load_state(_data, as_prims=as_prims)
 
         def save(self, force_hair=False, force_clothes=False, force_acs=False):
             """
@@ -4136,6 +4685,21 @@ init -2 python:
                 force_acs
             )
 
+
+        def same_state(self, data, as_prims=False):
+            """
+            compares if the given state is the same as current monika
+
+            IN:
+                data - data to compare
+                as_prims - True if prims, False if not
+
+            RETURNS: True if same state, False if not
+            """
+            if as_prims:
+                return self._same_state_prims(data)
+
+            return self._same_state(data)
 
         def save_state(self,
                 force_hair=False,
@@ -4279,6 +4843,10 @@ init -2 python:
                     accessory,
                     acs_type
                 )
+
+                # abort wearing if we were told to abort
+                if temp_space.get("abort", False):
+                    return
 
                 # run mutual exclusion for acs
                 if accessory.mux_type is not None:
@@ -5597,6 +6165,11 @@ init -2 python:
                     "" - sprite does not have any arm version for this pose
                     "*" - sprite has both "-0" and "-1" version, and both
                         should be used for this pose
+            dlg_desc - user friendly way to describe this accessory in dialogue
+                Think "black bow" or "silver earrings"
+            dlg_plur - True if the dlg_desc should be used in the plural 
+                sense, like "these silver earrings", False if not, like:
+                "this black bow"
 
         SEE MASSpriteBase for inherited properties
         """
@@ -5616,6 +6189,7 @@ init -2 python:
                 mux_type=None,
                 ex_props={},
                 arm_split=None,
+                dlg_data=None,
             ):
             """
             MASAccessory constructor
@@ -5659,6 +6233,9 @@ init -2 python:
                     (Default: empty dict)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
 
             """
             super(MASAccessory, self).__init__(
@@ -5677,6 +6254,12 @@ init -2 python:
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.arm_split = arm_split
+            
+            if dlg_data is not None and len(dlg_data) == 2:
+                self.dlg_desc, self.dlg_plur = dlg_data
+            else:
+                self.dlg_desc = None
+                self.dlg_plur = None
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -5973,7 +6556,6 @@ init -2 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
-
         def get_hair(self, hair):
             """
             Given a hair type, grabs the available mapping for this hair type
@@ -5986,13 +6568,37 @@ init -2 python:
             """
             return self.hair_map.get(hair, self.hair_map.get("all", hair))
 
-
         def has_hair_map(self):
             """
             RETURNS: True if we have a mapping to check, False otherwise
             """
             return len(self.hair_map) > 0
 
+        @staticmethod
+        def by_exprop(exprop, value=True):
+            """
+            Gets all clothes that have the given exprop.
+
+            IN:
+                exprop - exprop to look for
+                value - value the exprop should be. Set to None to ignore.
+
+            RETURNS: list of MASClothes objects with the given exprop and value
+            """
+            clothes = []
+
+            for c_name in store.mas_sprites.CLOTH_MAP:
+                clothing = store.mas_sprites.CLOTH_MAP[c_name]
+                if (
+                        clothing.hasprop(exprop)
+                        and (
+                            value is None
+                            or value == clothing.getprop(exprop)
+                        )
+                ):
+                    clothes.append(clothing)
+
+            return clothes
 
         def _build_loadstrs(self):
             """
@@ -6563,7 +7169,7 @@ image monika 6ATL_lookleftright:
 image monika ATL_0_to_upset:
 
     # 1 time this part
-    "monika 1esc"
+    "monika 2esc"
     5.0
 
     # repeat this part
@@ -6571,7 +7177,7 @@ image monika ATL_0_to_upset:
         # select image
         block:
             choice 0.95:
-                "monika 1esc"
+                "monika 2esc"
             choice 0.05:
                 "monika 5tsc"
 
@@ -6785,8 +7391,9 @@ image monika ATL_love_too_enam_plus:
 image monika idle = ConditionSwitch(
     "mas_isMoniBroken(lower=True)", "monika 6ckc",
     "mas_isMoniDis()", "monika 6ATL_lookleftright",
-    "mas_isMoniUpset()", "monika 2efc",
-    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+#    "mas_isMoniUpset()", "monika 2efc"
+#    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+    "mas_isBelowZero()", "monika ATL_0_to_upset",
     "mas_isMoniHappy()", "monika 1eua",
     "mas_isMoniAff()", "monika ATL_affectionate",
     "mas_isMoniEnamored()", "monika ATL_enamored",
