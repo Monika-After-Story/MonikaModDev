@@ -4296,6 +4296,23 @@ init -10 python:
     def mas_pbdayCapGainAff(amount):
         mas_capGainAff(amount, "_mas_player_bday_date_aff_gain", 25)
 
+    def mas_player_bday_seen_surprise():
+        """
+        checks to see if we've ever seen the surprise open door greet before
+        RETURNS True if we have
+        """
+        label_list = [
+            'mas_player_bday_listen',
+            'mas_player_bday_knock_no_listen',
+            'mas_player_bday_opendoor'
+        ]
+
+        for bday_label in label_list:
+            if renpy.seen_label(bday_label):
+                return True
+
+        return False
+
 init -11 python:
     def mas_player_bday_curr(_date=None):
         """
@@ -4391,6 +4408,7 @@ label mas_player_bday_autoload_check:
             and persistent._mas_player_confirmed_bday
             and mas_isMoniNormal(higher=True)
             and not persistent._mas_player_bday_spent_time
+            and (not mas_player_bday_seen_surprise() or renpy.random.randint(1,4) == 1)
             and not mas_isD25()
             and not mas_isO31()
             and not mas_isF14()
@@ -4682,6 +4700,38 @@ label mas_player_bday_ret_on_bday:
     m 3eub "Happy Birthday, [player]!"
     m 3hub "Ahaha!"
     m 3etc "Why do I feel like I'm forgetting something..."
+    m 3hua "Oh! Your cake!"
+    call mas_player_bday_cake
+    return
+
+# for subsequent birthdays
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_player_bday_no_surprise",
+            conditional = (
+                "mas_player_bday_seen_surprise()"
+            )
+            action = EV_ACT_PUSH,
+            start_date = datetime.datetime.combine(mas_player_bday_curr(), datetime.time(hour=3)),
+            end_date = mas_player_bday_curr() + datetime.timedelta(days=1)
+            years = [],
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        skipCalendar=True
+    )
+
+label mas_player_bday_ret_on_bday:
+    m 1hua "Ehehe..."
+    m 1huu "..."
+    m 2tsu ".{w=0.5}.{w=0.5}.{nw}"
+    $ mas_surpriseBdayShowVisuals()
+    $ persistent._mas_player_bday_decor = True
+    m 3eub "Happy Birthday, [player]!"
+    m 3hub "Ahaha!"
+    m 3etc "..."
+    m "Why do I feel like I'm forgetting something..."
     m 3hua "Oh! Your cake!"
     call mas_player_bday_cake
     return
