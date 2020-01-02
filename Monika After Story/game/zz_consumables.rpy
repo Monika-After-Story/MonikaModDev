@@ -988,7 +988,7 @@ init 5 python:
     )
 
 label mas_finished_prepping(consumable):
-    $ current_food = MASConsumable._getCurrentDrink()
+    $ current_food = MASConsumable._getCurrentFood()
     call mas_consumables_generic_finished_prepping(current_food)
     return
 
@@ -1008,7 +1008,7 @@ init 5 python:
 
 label mas_finished_eating:
     #Get the current drink and see how we should act here
-    $ current_food = MASConsumable._getCurrentDrink()
+    $ current_food = MASConsumable._getCurrentFood()
     call mas_consumables_generic_finish_having(current_food)
     return
 
@@ -1023,7 +1023,7 @@ init 5 python:
     )
 
 label mas_get_food:
-    $ current_food = MASConsumable._getCurrentDrink()
+    $ current_food = MASConsumable._getCurrentFood()
     call mas_consumables_generic_get(current_food)
     return
 #END: Generic food evs
