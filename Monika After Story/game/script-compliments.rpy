@@ -666,9 +666,19 @@ label mas_compliment_lookuptoyou_2:
 
 label mas_compliment_lookuptoyou_3:
     $ thanks_quip = renpy.substitute(renpy.random.choice(store.mas_compliments.thanking_quips))
+    $ should_tease = persistent._mas_pm_height is not None and renpy.random.randint(1,5) == 1
+
+    if should_tease and persistent._mas_pm_height < mas_height_monika:
+        m 1rksdlb "{cps=*2}Well yeah, I'm taller than you...{/cps}{nw}"
+        $ _history_list.pop()
+
     m 1hubfb "[thanks_quip]"
     m 3hubfa "Hearing you say that never fails to make me smile!"
-    m 3hubfb "I'll always look up to you too, [player]!"
-    m 1ekbfa "I love you~"
-    return
+    m 3hubfb "I'll always look up to you too!"
 
+    if should_tease and persistent._mas_pm_height > mas_height_monika:
+        m 1rkbfu "{cps=*2}Just like when we kiss...{/cps}{nw}"
+        $ _history_list.pop()
+
+    m 1ekbfa "I love you, [player]~"
+    return
