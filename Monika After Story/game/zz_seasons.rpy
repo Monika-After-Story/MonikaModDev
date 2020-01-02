@@ -131,7 +131,7 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_snowmen", "EVE", derandom=True)
 
         # disable hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
+        store.mas_getConsumableDrink("hotchoc").disable()
 
         # unhibernate islands greet
         if not renpy.seen_label("greeting_ourreality"):
@@ -147,7 +147,7 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
         
         # disbale hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
+        store.mas_getConsumableDrink("hotchoc").disable()
 
 
     def _pp_fall():
@@ -155,7 +155,7 @@ init 10 python in mas_seasons:
         Programming point for fall
         """
         # disbale hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
+        store.mas_getConsumableDrink("hotchoc").disable()
 
 
     def _pp_winter():
@@ -182,9 +182,8 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
         store.mas_hideEVL("monika_mountain", "EVE", derandom=True)
 
-        # enable hotchoc if it has been given
-        if store.persistent._mas_c_hotchoc_been_given:
-            store.persistent._mas_acs_enable_hotchoc = True
+        # enable hotchoc
+        store.mas_getConsumableDrink("hotchoc").enable()
 
         # want to ensure first time we see the islands they are dead and covered in snow
         store.mas_lockEVL("greeting_ourreality", "GRE")

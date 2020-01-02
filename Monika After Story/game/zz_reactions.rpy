@@ -1458,7 +1458,7 @@ label mas_reaction_gift_coffee:
         m "Thank you so much, [player]!"
 
         #If we're currently brewing/drinking anything, we don't do this now
-        if MASConsumableDrink._getCurrentDrink():
+        if MASConsumable._getCurrentDrink():
             m 3eua "I'll be sure to have some later!"
         else:
             m "Why don't I go ahead and make a cup right now?"
@@ -1529,7 +1529,7 @@ label mas_reaction_hotchocolate:
         m 1hub "Thanks again, [player]!"
 
         #If we're currently brewing/drinking anything, we don't do this now
-        if MASConsumableDrink._getCurrentDrink():
+        if MASConsumable._getCurrentDrink():
             m 3eua "I'll be sure to have some later!"
         else:
             $ curr_zoom = store.mas_sprites.zoom_level

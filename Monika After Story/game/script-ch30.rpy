@@ -1703,7 +1703,7 @@ label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
 
     #Runtime checks to see if we should have a consumable
-    $ MASConsumableDrink._checkDrink()
+    $ MASConsumable._checkConsumables()
     return
 
 # label for things that should run about once per day
@@ -1925,10 +1925,10 @@ label ch30_reset:
     #Do startup checks
 
     #First we check for use during absence
-    $ MASConsumableDrink._absentUse()
+    $ MASConsumable._absentUse()
 
     #Now we check if we should drink
-    $ MASConsumableDrink._checkDrink(startup=True)
+    $ MASConsumable._checkConsumables(startup=True)
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
@@ -1991,14 +1991,14 @@ label ch30_reset:
 
         #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
         if store.mas_globals.returned_home_this_sesh:
-            MASConsumableDrink._reset()
+            MASConsumable._reset()
 
         #Store this because we may need to reset this
         mug_acs = monika_chr.get_acs_of_type("mug")
 
         #If we're not currently drinking something but still have the acs out, let's remove that
         #NOTE: This is used in the case of crashes
-        if not MASConsumableDrink._isDrinking() and mug_acs:
+        if not MASConsumable._isHaving(mas_consumables.TYPE_DRINK) and mug_acs:
             monika_chr.remove_acs(mug_acs)
 
     # make sure nothing the player has derandomed is now random
