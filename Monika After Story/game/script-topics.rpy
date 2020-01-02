@@ -13264,12 +13264,12 @@ init 5 python:
     )
 
 label monika_writing_idle:
-    m 1eub "Oh! You're going to go write?"
-    m 1hub "That's amazing to hear, [player]!"
-    m 3eua "I'm glad to hear that you're working to improve your skills."
-    m 3eub "Maybe once you've got some writing done, you could share it with me! I'd love to read some of your writing, [player]."
-    m 1eub "For now, though, I'll let you get to it! Just let me know when you're done writing."
-    m 1hua "I'll be here~"
+    m 1eub "Oh! You're going to go write something?"
+    m 1hua "That makes me so glad!"
+    m 3eua "Maybe someday you could share it with me, {nw}"
+    extend 3hua "I'd love to read your work, [player]!"
+    m 3eua "Anyway, just let me know when you're done."
+    m 1hua "I'll be waiting right here for you~"
 
     #Set up the callback label
     $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
@@ -13280,15 +13280,16 @@ label monika_writing_idle:
 label monika_writing_idle_callback:
     python:
         wb_quips = [
-            "So, what else did you want to do today?",
+            "What else did you want to do today?",
             "Is there anything else you wanted to do today?",
             "What else should we do today?",
+            "Welcome back!"
         ]
 
         wb_quip = renpy.random.choice(wb_quips)
 
-    m 1hub "Are you done writing, [player]?"
-    m 1eua "[wb_quip]"
+    m 1eua "Done writing, [player]?"
+    m 1eub "[wb_quip]"
     return
 
 init 5 python:
