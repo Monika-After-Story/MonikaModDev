@@ -9108,12 +9108,14 @@ init 5 python:
 
 label monika_metamorphosis:
     m 1eua "Hey [player], have you ever read {i}The Metamorphosis{/i}?"
-    m 4eku "It's a psychological novella that narrates the story of it's protagonist, who one day wakes up at morning, and finds himself transformed into a huge insect!"
-    m 4esu "The whole plot revolves around his daily situation, trying to adapt himself to the all the consequences of having such a new body."
-    m 3eku "And although it's not the happiest story, I would recommend you reading it. It's the type of books that really makes you think outside the box."
-    m 3eub "So if you ever have the time and chance to read it you should totally do it!"
-    m 3eua "Perhaps...we could even read it together."
-    m 1hublb "I don't mind reading it again if it's with you this time, my love~"
+    m 4eub "It's a psychological novella that narrates the story of Gregor Samsa, who one morning wakes up and finds himself transformed into a huge insect!"
+    m 4euc "The plot revolves around his daily situation, trying to get used to his new body."
+    m 3eua "What's interesting about the story is that it places a lot on emphasis on the absurd or irrational."
+    m 3hksdlb "For example, Gregor, being the sole financial supporter, is more concerned about losing his job than he is about his condition!"
+    m 1rksdla "But that's not to say the plot isn't unsettling..."
+    m 1eksdlc "At first his parents and sister try to accommodate him, {w=0.5}but they quickly start loathing their situation."
+    m "The protagonist changes from being a necessity to a liability, to the point where his own family wishes for him to die."
+    m 1eua "It's a very interesting read, if you're ever in the mood."
     return
 
 init 5 python:
