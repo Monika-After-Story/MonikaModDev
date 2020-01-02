@@ -932,9 +932,9 @@ init 5 python:
         )
     )
 
-label mas_finished_brewing(consumable):
+label mas_finished_brewing:
     $ current_drink = MASConsumable._getCurrentDrink()
-    call mas_consumables_generic_finished_prepping(current_drink)
+    call mas_consumables_generic_finished_prepping(consumable=current_drink)
     return
 
 
@@ -954,7 +954,7 @@ init 5 python:
 label mas_finished_drinking:
     #Get the current drink and see how we should act here
     $ current_drink = MASConsumable._getCurrentDrink()
-    call mas_consumables_generic_finish_having(current_drink)
+    call mas_consumables_generic_finish_having(consumable=current_drink)
     return
 
 ##Get drink
@@ -970,7 +970,7 @@ init 5 python:
 
 label mas_get_drink:
     $ current_drink = MASConsumable._getCurrentDrink()
-    call mas_consumables_generic_get(current_drink)
+    call mas_consumables_generic_get(consumable=current_drink)
     return
 #END: Generic drink evs
 
@@ -987,9 +987,9 @@ init 5 python:
         )
     )
 
-label mas_finished_prepping(consumable):
+label mas_finished_prepping:
     $ current_food = MASConsumable._getCurrentFood()
-    call mas_consumables_generic_finished_prepping(current_food)
+    call mas_consumables_generic_finished_prepping(consumable=current_food)
     return
 
 
@@ -1009,7 +1009,7 @@ init 5 python:
 label mas_finished_eating:
     #Get the current drink and see how we should act here
     $ current_food = MASConsumable._getCurrentFood()
-    call mas_consumables_generic_finish_having(current_food)
+    call mas_consumables_generic_finish_having(consumable=current_food)
     return
 
 init 5 python:
@@ -1024,7 +1024,7 @@ init 5 python:
 
 label mas_get_food:
     $ current_food = MASConsumable._getCurrentFood()
-    call mas_consumables_generic_get(current_food)
+    call mas_consumables_generic_get(consumable=current_food)
     return
 #END: Generic food evs
 

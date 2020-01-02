@@ -1504,7 +1504,7 @@ label mas_reaction_hotchocolate:
     m 3hua "Thank you, [player]!"
     $ mas_receivedGift("mas_reaction_hotchocolate")
 
-    $ hotchoc = mas_getConsumableDrink("hotchocolate")
+    $ hotchoc = mas_getConsumableDrink("hotchoc")
 
     if hotchoc.enabled() and hotchoc.hasServing():
         $ mas_giftCapGainAff(0.5)
