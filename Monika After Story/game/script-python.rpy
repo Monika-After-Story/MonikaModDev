@@ -621,7 +621,7 @@ label monika_ptod_tip006:
     m 1hua "Python is able to find the symbol in the lookup table and won't give us an error."
     
     m 1eua "The variables we created are all {i}integer{/i} types."
-    m "We didn't have to explicity say that those variables were integers because Python does dynamic typing."
+    m "We didn't have to explicitly say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
     m "Other languages, like C or Java, require types to be defined with the variable."
     m "Dynamic typing enables variables in Python to change types during execution,"
@@ -811,7 +811,7 @@ label monika_ptod_tip009:
     call mas_wx_cmd("bool(-1)")
     m 3eua "All non-zero integers have a truth value of {b}True{/b}."
     call mas_wx_cmd("bool(0)")
-    m 3eub "Zero, on the otherhand, has a truth value of {b}False{/b}."
+    m 3eub "Zero, on the other hand, has a truth value of {b}False{/b}."
 
     m 1eua "Floats follow the same rules as integers:"
     call mas_wx_cmd("bool(10.02)")
