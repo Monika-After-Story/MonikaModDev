@@ -439,6 +439,28 @@ label v0_10_5(version="v0_10_5"):
                 persistent._mas_fun_facts_database,
                 transfer_unlocked=False
             )
+
+        islands_evs = {
+            "mas_monika_upsidedownisland": "mas_island_upsidedownisland",
+            "mas_monika_glitchesmess": "mas_island_glitchedmess",
+            "mas_monika_cherry_blossom_tree": "mas_island_cherry_blossom_tree",
+            "mas_monika_cherry_blossom1": "mas_island_cherry_blossom1",
+            "mas_monika_cherry_blossom2": "mas_island_cherry_blossom1",
+            "mas_monika_cherry_blossom3": "mas_island_cherry_blossom1",
+            "mas_monika_cherry_blossom4": "mas_island_cherry_blossom1",
+            "mas_monika_sky": "mas_island_sky",
+            "mas_monika_day1": "mas_island_day1",
+            "mas_monika_day2": "mas_island_day2",
+            "mas_monika_day3": "mas_island_day3",
+            "mas_monika_night1": "mas_island_night1",
+            "mas_monika_night2": "mas_island_night2",
+            "mas_monika_night3": "mas_island_night3",
+            "mas_monika_daynight1": "mas_island_daynight1",
+            "mas_monika_daynight2": "mas_island_daynight2"
+        }
+
+        for old_label, new_label in islands_evs.iteritems():
+            mas_transferTopicSeen(old_label, new_label)
     return
 
 #0.10.4
