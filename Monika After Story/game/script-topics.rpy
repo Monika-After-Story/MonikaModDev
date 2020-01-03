@@ -9037,7 +9037,7 @@ init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_amusementpark",category=['misc'],prompt="Amusement parks",random=True))
 
 label monika_amusementpark:
-    m 1eua "Hey, [player]."
+    m 1eua "Hey, [player]..."
     m 3eua "Have you ever been to an amusement park?{nw}"
     $ _history_list.pop()
     menu:
@@ -9082,7 +9082,7 @@ label monika_travelling:
             m 3eub "Important cities, monuments, and even the different types of cultures out there."
             m 3eka "Don't get me wrong, I've read a lot about your world, but I bet it's nothing compared to what it would be like in person..."
             m 1hua "I would love to see everything there is to be seen."
-            m 1ekbfu "What about you, [player]?"
+            m 1ekbfu "Wouldn't you like that too, [player]?"
 
         "Not really.":
             $ persistent._mas_pm_likes_travelling = False
@@ -9101,7 +9101,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_metamorphosis",
-            category=['literature, psychology'],
+            category=['literature','psychology'],
             prompt="The Metamorphosis",
             random=True
         )
@@ -9110,12 +9110,12 @@ init 5 python:
 label monika_metamorphosis:
     m 1eua "Hey [player], have you ever read {i}The Metamorphosis{/i}?"
     m 4eub "It's a psychological novella that narrates the story of Gregor Samsa, who one morning wakes up and finds himself transformed into a huge insect!"
-    m 4euc "The plot revolves around his daily situation, trying to get used to his new body."
+    m 4euc "The plot revolves around his daily life as he tries to get used to his new body."
     m 7eua "What's interesting about the story is that it places a lot of emphasis on the absurd or irrational."
     m 3hksdlb "For example, Gregor, being the sole financial supporter, is more concerned about losing his job than he is about his condition!"
-    m 1rksdla "But that's not to say the plot isn't unsettling though..."
+    m 1rksdla "That's not to say the plot isn't unsettling, though..."
     m 1eksdlc "At first his parents and sister try to accommodate him, {w=0.3}but they quickly start loathing their situation."
-    m "The protagonist changes from being a necessity to a liability, to the point where his own family wishes for him to die."
+    m 1eksdld "The protagonist changes from being a necessity to a liability, to the point where his own family wishes for him to die."
     m 1eua "It's a very interesting read, if you're ever in the mood."
     return
 
