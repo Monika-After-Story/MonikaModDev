@@ -2104,13 +2104,13 @@ label call_next_event:
             if "love" in ret_items:
                 $ mas_ILY()
 
-            if "prompt" in ret_items:
-                jump prompt_menu
-
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 $ mas_clearNotifs()
                 jump _quit
+
+            if "prompt" in ret_items:
+                jump prompt_menu
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
