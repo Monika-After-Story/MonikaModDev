@@ -973,6 +973,7 @@ init -810 python:
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
 
             # lifestyle / music
+            "_mas_pm_plays_instrument": "pm.lifestyle.play_instrument",
             "_mas_pm_play_jazz": "pm.lifestyle.music.play_jazz",
 
             # lifestyle / smoking
@@ -1067,6 +1068,7 @@ init -810 python:
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
             "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
+            "_mas_pm_likes_rain": "pm.likes.rain",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
