@@ -1739,3 +1739,26 @@ image monika 6wuo_static = DynamicDisplayable(
     arms="down"
 )
 
+image monika 7dua_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    arms="downleftpointright"
+)
+
+image monika 7eua_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    arms="downleftpointright",
+    head="a",
+    left="1l",
+    right="2r"
+)
+

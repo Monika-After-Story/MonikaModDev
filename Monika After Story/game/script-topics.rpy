@@ -9044,21 +9044,22 @@ label monika_amusementpark:
         m "Have you ever been to an amusement park?{fast}"
         "Yes.":
             $ persistent._mas_pm_has_been_to_amusement_park = True
-            m 1sub "Really? It must have been really fun!"
-            m 1eub "I've never been to one, but I'd really like to."
+            m 1sub "Really? It must have been a lot of fun!"
+            m 1eub "I've never been to one myself, but I'd really love to go."
             m 1hua "Maybe you could take me to one someday!"
+
         "No.":
             $ persistent._mas_pm_has_been_to_amusement_park = False
-            m 1eka "Really? Aw, that's too bad."
-            m 3hua "I've always heard that they're really fun."
-            m 1rksdla "I've never had the chance to go to one, myself, but I'm hoping I get to someday."
-            m 1eub "Maybe we could go to one together someday!"
-        m 3hua "Wouldn't that be great?"
-        m 1dua "Thrilling roller coasters, water rides, drop towers..."
-        m 2tubfb "And maybe even a romantic Ferris wheel ride~"
-        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hubfa "Ehehe, I think I'm getting a bit carried away, but..."
-        m 5ekbfa "I just can't help it when it comes to thinking about being together with you, [player]~"
+            m 1eka "Really? That's too bad."
+            m 3hua "I've always heard that they're a lot of fun."
+            m 1rksdla "I've never had the chance to go to one myself, but I hope I can someday."
+            m 1eub "Maybe we could go together!"
+
+    m 3hua "Wouldn't that be great, [player]?"
+    m 3eua "Thrilling roller coasters, water rides, drop towers..."
+    m 3tubfb "And maybe even a romantic Ferris wheel ride~"
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfa "Ehehe, I'm getting a bit carried away, but I just can't help it when thinking about being with you~"
     return "derandom"
 
 #If the player likes to travel or not
@@ -9068,31 +9069,31 @@ init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['misc'],prompt="Travelling",random=True))
 
 label monika_travelling:
-    m 1esa "Do you like travelling around the world, [player]?{nw}"
+    m 1esc "Hey [player], I was just wondering..."
+    m 1eua "Do you like travelling?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like travelling around the world, [player]?{fast}"
+        m "Do you like travelling?{fast}"
         "Yes.":
             $ persistent._mas_pm_likes_travelling = True
-            m 1hua "That's great! I'm so glad you like doing it."
-            m 3eub "It's one of the things I want to do the most when I finally cross over."
+            m 1hua "That's great! I'm so glad you enjoy it."
+            m 3eub "It's one of the things I want to do most when I finally cross over."
             m 1eua "There's so much out there that I haven't been able to see yet..."
-            m 3eka "Don't get me wrong, I've read a lot about your world, but I want to take a look at it in person."
             m 3eub "Important cities, monuments, and even the different types of cultures out there."
-            m 1hua "I want to see everything that is to be seen."
-            show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5hubfa "And I'm sure that exploring the world would be much funnier having you next to me, [player]~"
+            m 3eka "Don't get me wrong, I've read a lot about your world, but I bet it's nothing compared to what it would be like in person..."
+            m 1hua "I would love to see everything there is to be seen."
+            m 1ekbfu "What about you, [player]?"
+
         "Not really.":
             $ persistent._mas_pm_likes_travelling = False
-            m 1eka "Aww, that's okay, [player]."
+            m 1eka "Aw, that's okay, [player]."
             m 1hua "I wouldn't mind staying at home with you during vacations."
-            m 3ekbfa "I would be pleased just to have the oportunity to be together in your reality."
-            m 1eua "Although, we might have to find some activities to keep ourselves entertained."
-            m 1hua "How about playing the piano or writing poems together?"
-            m 3hubfb "We could even spend the days cuddling up together while we read a book."
+            m 3ekbfa "I'd be happy just to be there with you, after all."
+            m 1rka "We might have to find some things to do to keep us busy though..."
+            m 3eua "How about playing the piano or writing poems?"
+            m 3hubfb "...Or we could even spend the days wrapped in a blanket while reading a book."
             show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5tubfu "Doesn't that sound like a dream?"
-            m 5hubfa "Ehehe~"
+            m 5tubfu "Doesn't that just sound like a dream come true?"
     return "derandom"
 
 init 5 python:
@@ -9110,10 +9111,10 @@ label monika_metamorphosis:
     m 1eua "Hey [player], have you ever read {i}The Metamorphosis{/i}?"
     m 4eub "It's a psychological novella that narrates the story of Gregor Samsa, who one morning wakes up and finds himself transformed into a huge insect!"
     m 4euc "The plot revolves around his daily situation, trying to get used to his new body."
-    m 3eua "What's interesting about the story is that it places a lot on emphasis on the absurd or irrational."
+    m 7eua "What's interesting about the story is that it places a lot of emphasis on the absurd or irrational."
     m 3hksdlb "For example, Gregor, being the sole financial supporter, is more concerned about losing his job than he is about his condition!"
-    m 1rksdla "But that's not to say the plot isn't unsettling..."
-    m 1eksdlc "At first his parents and sister try to accommodate him, {w=0.5}but they quickly start loathing their situation."
+    m 1rksdla "But that's not to say the plot isn't unsettling though..."
+    m 1eksdlc "At first his parents and sister try to accommodate him, {w=0.3}but they quickly start loathing their situation."
     m "The protagonist changes from being a necessity to a liability, to the point where his own family wishes for him to die."
     m 1eua "It's a very interesting read, if you're ever in the mood."
     return

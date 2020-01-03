@@ -2312,3 +2312,17 @@ image monika 6wuo:
         0.06
         repeat
 
+image monika 7eua:
+    block:
+        "monika 7eua_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 7dua_static"
+        0.06
+        repeat
+
