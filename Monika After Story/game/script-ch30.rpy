@@ -1709,7 +1709,7 @@ label ch30_hour:
 label ch30_day:
     python:
         #Undo ev actions if needed
-        MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+        MASUndoActionRule.check_persistent_rules()
         #And also strip dates
         MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 
@@ -2007,7 +2007,7 @@ label ch30_reset:
                 persistent.event_list.pop(index)
 
     #Now we undo actions for evs which need them undone
-    $ MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+    $ MASUndoActionRule.check_persistent_rules()
     #And also strip dates
     $ MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 
