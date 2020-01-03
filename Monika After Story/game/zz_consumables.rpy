@@ -1126,6 +1126,14 @@ label mas_consumables_generic_finish_having(consumable):
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
+    #Only have one left
+    elif not get_more and consumable.getStock() == 1:
+        call mas_consumables_generic_critical_low(consumable=consumable)
+
+    #Running out
+    elif not get_more and consumable.getStock() <= 10:
+        call mas_consumables_generic_running_out(consumable=consumable)
+
     else:
         m 1eua "Okay, what else should we do today?"
     return
@@ -1175,4 +1183,18 @@ label mas_consumables_generic_finished_prepping(consumable):
 
     else:
         m 1eua "Okay, what else should we do today?"
+    return
+
+label mas_consumables_generic_running_out(consumable):
+    $ amt_left = consumable.getStock()
+    m 1euc "By the way, [player]..."
+    m 3eud "I just wanted to let you know I only have about [amt_left] [consumable.container]s left of [consumable.disp_name] left."
+    m 1eka "You wouldn't mind getting some more for me, would you?"
+    return
+
+label mas_consumables_generic_critical_low(consumable):
+    m 1euc "Hey, [player]..."
+    m 3eua "I only have about one [consumable.container] of [consumable.disp_name] left."
+    m 3eka "Would you mind getting me some more sometime?"
+    m 1hua "Thanks~"
     return
