@@ -347,17 +347,19 @@ screen mas_extramenu_area():
         # close button
         textbutton _("Close"):
             area (61, 594, 120, 35)
-            style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+            style mas_ui.hkb_button_style
             action Jump("mas_extra_menu_close")
 
         # zoom control
         frame:
             area (195, 450, 80, 255)
-            background Frame(mas_getTimeFile("mod_assets/frames/trans_pink2pxborder100.png"), left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+            background Frame(mas_ui.exm_frame, left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
             vbox:
                 spacing 2
                 label "Zoom":
-                    style ("hkb_button_text" if not mas_globals.dark_mode else "hkb_dark_button_text")
+                    text_style mas_ui.hkb_button_text_style
+                    xalign 0.5
+
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"
@@ -371,3 +373,16 @@ screen mas_extramenu_area():
                     style "mas_adjust_vbar"
                     xalign 0.5
                 $ store.mas_sprites.adjust_zoom()
+
+        # TODO: frame for nose boop control
+        # TODO: only have available if certain affection + 
+        #   (Definitely not below normal)
+#        frame:
+#            area (280, 450, 80, 120)
+#            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+#
+#            vbox:
+#                spacing 2
+#                
+#                label "Boop":
+#                    style "hkb_button_text"

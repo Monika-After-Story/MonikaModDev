@@ -145,9 +145,9 @@ label monika_sing_song_pool_menu:
         renpy.say(m, "[which] song would you like me to sing?[end]", interact=False)
 
     if have_both_types:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, switch, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
     else:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_song = _return
 
@@ -205,6 +205,66 @@ label monika_sing_song_random:
 
 
 #START: Song defs
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_aiwfc",
+            prompt="All I want for Christmas",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_aiwfc:
+    #Get current song
+    $ curr_song = songs.current_track
+    call monika_aiwfc_song
+
+    #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
+    if curr_song != store.songs.FP_MONIKA_LULLABY:
+        $ play_song(curr_song, fadein=1.0)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_merry_christmas_baby",
+            prompt="Merry Christmas Baby",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_merry_christmas_baby:
+    m 1hub "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m 3eua "{i}~I feel just like I'm living, {w=0.2}living in paradise~{/i}"
+    m 3hub "{i}~I feel real good tonight~{/i}"
+    m 3eub "{i}~And I got music on the radio~{/i}"
+    m 3hub "{i}~I feel real good tonight~{/i}"
+    m 3eub "{i}~And I got music on the radio~{/i}"
+    m 2hkbsu "{i}~Now I feel just like I wanna kiss ya~{/i}"
+    m 2hkbsb "{i}~Underneath the mistletoe~{/i}"
+    m 3eub "{i}~Santa came down the chimney, {w=0.2}half past three~{/i}"
+    m 3hub "{i}~With lots of nice little presents for my baby and me~{/i}"
+    m "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m 1eua "{i}~And I feel like I'm living, {w=0.2}just living in paradise~{/i}"
+    m 1eub "{i}~Merry Christmas baby~{/i}"
+    m 3hub "{i}~And Happy New Year too~{/i}"
+    m 3ekbsa "{i}~Merry Christmas, honey~{/i}"
+    m 3ekbsu "{i}~Everything here is beautiful~{/i}"
+    m 3ekbfb "{i}~I love you, baby~{/i}"
+    m "{i}~For everything that you give me~{/i}"
+    m 3ekbfb "{i}~I love you, honey~{/i}"
+    m 3ekbsu "{i}~Merry Christmas, honey~{/i}"
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -386,7 +446,7 @@ label mas_song_im_glad_youre_evil_too:
     m 3hksdlb "{i}~We laugh at some terrible movie, and cry while watching a variety show~{/i}"
     m 3hub "{i}~That's us- Two slightly lonely souls, having the time of our lives~{/i}"
     m 3dsa "{i}~Our time is only finite, yet it feels like an unending joke~{/i}"
-    m 1ekbsa "{i}~But I have you to keep me company thorugh this all too short life~{/i}"
+    m 1ekbsa "{i}~But I have you to keep me company through this all too short life~{/i}"
     m 1tubsb "{i}~And together we'd laugh at this boring world, saying: 'How boring~{/i}'"
     m 1dubfb "{i}~That's us- Two slightly lonely souls, leaning on each other's shoulders~{/i}"
     m 1dsbfo "{i}~I'm glad you're just as evil as me~{/i}"
@@ -431,7 +491,7 @@ label mas_song_nobody_makes_sense:
     m 1hub "Ahaha!"
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
     m 1ekbfb "I really hope I can keep on smiling with you forever~"
-    return "derandom"
+    return "derandom|love"
 
 init 5 python:
     addEvent(
