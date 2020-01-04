@@ -195,7 +195,71 @@ init python:
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
 
+init 7 python:
+    def mas_transferTopicData(
+        new_topic_evl,
+        old_topic_evl,
+        old_topic_ev_db,
+        transfer_unlocked=True,
+        transfer_shown_count=True,
+        transfer_seen_data=True,
+        transfer_last_seen=True,
+        erase_topic=True
+    ):
+        """
+        Transfers topic data from ev to ev
 
+        IN:
+            new_topic_evl - new topic's eventlabel
+            old_topic_evl - old topic's eventlabel
+            old_topic_ev_db - event database containing the old topic
+            transfer_unlocked - whether or not we should transfer the unlocked property of the old topic
+            (Default: True)
+            transfer_shown_count - whether or not we should transfer the shown_count property of the old topic
+            (Default: True)
+            transfer_seen_data - whether or not we should transfer the _seen_ever state of the old topic
+            (Default: True)
+            transfer_last_seen - whether or not we should transfer the last_seen property of the old topic
+            (Default: True)
+            erase_topic - whether or not we should erase this topic after transferring data
+            (Defualt: True)
+        """
+        #Build new ev
+        new_ev = mas_getEV(new_topic_evl)
+
+        #if old ev exists in the evdb, then we need to build it and get it
+        if old_topic_evl in old_topic_ev_db:
+            old_ev = Event(
+                old_topic_ev_db,
+                old_topic_evl
+            )
+        else:
+            old_ev = None
+
+        if new_ev is not None and old_ev is not None:
+            if transfer_unlocked:
+                #If old ev is unlocked, we want the new one to be too
+                new_ev.unlocked = old_ev.unlocked
+
+            if transfer_shown_count:
+                #Match the shown counts
+                new_ev.shown_count += old_ev.shown_count
+
+            if (
+                transfer_last_seen
+                and old_ev.last_seen is not None
+                and (new_ev.last_seen is None or new_ev.last_seen <= old_ev.last_seen)
+            ):
+                #For potential unstable users, last seen should be accurate
+                new_ev.last_seen = old_ev.last_seen
+
+            if transfer_seen_data:
+                #Now transfer the seen data
+                mas_transferTopicSeen(old_topic_evl, new_topic_evl)
+
+            #And erase this topic if we need to
+            if erase_topic:
+                mas_eraseTopic(old_topic_evl, old_topic_ev_db)
 
 
 # this needs to run post script-topics
@@ -304,6 +368,109 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.5
+label v0_10_5(version="v0_10_5"):
+    python:
+        #Fix 922 stuff once and for all
+        ev = mas_getEV("mas_bday_surprise_party_hint")
+        if ev:
+            ev.start_date = mas_monika_birthday - datetime.timedelta(days=7)
+            ev.end_date = mas_monika_birthday - datetime.timedelta(days=2)
+            ev.action = EV_ACT_RANDOM
+
+        ev = mas_getEV("mas_bday_pool_happy_bday")
+        if ev:
+            ev.start_date = mas_monika_birthday
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.action = EV_ACT_UNLOCK
+
+        ev = mas_getEV("mas_bday_spent_time_with")
+        if ev:
+            ev.start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(20))
+            ev.end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+            ev.conditional = "mas_recognizedBday()"
+            ev.action = EV_ACT_QUEUE
+
+        ev = mas_getEV("mas_bday_postbday_notimespent")
+        if ev:
+            ev.start_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=8)
+            ev.conditional = (
+                "not mas_recognizedBday() "
+                "and not persistent._mas_bday_gone_over_bday"
+            )
+            ev.action = EV_ACT_PUSH
+
+        #Give fun facts label names
+        fun_facts_evls = {
+            #Good facts
+            "mas_fun_facts_1": "mas_fun_fact_librocubiculartist",
+            "mas_fun_facts_2": "mas_fun_fact_menu_currency",
+            "mas_fun_facts_3": "mas_fun_fact_love_you",
+            "mas_fun_facts_4": "mas_fun_fact_morpheus",
+            "mas_fun_facts_5": "mas_fun_fact_otter_hand_holding",
+            "mas_fun_facts_6": "mas_fun_fact_chess",
+            "mas_fun_facts_7": "mas_fun_fact_struck_by_lightning",
+            "mas_fun_facts_8": "mas_fun_fact_honey",
+            "mas_fun_facts_9": "mas_fun_fact_vincent_van_gone",
+            "mas_fun_facts_10": "mas_fun_fact_king_snakes",
+            "mas_fun_facts_11": "mas_fun_fact_strength",
+            "mas_fun_facts_12": "mas_fun_fact_reindeer_eyes",
+            "mas_fun_facts_13": "mas_fun_fact_bananas",
+            "mas_fun_facts_14": "mas_fun_fact_pens",
+            "mas_fun_facts_15": "mas_fun_fact_density",
+            "mas_fun_facts_16": "mas_fun_fact_binky",
+            "mas_fun_facts_17": "mas_fun_fact_windows_games",
+            "mas_fun_facts_18": "mas_fun_fact_mental_word_processing",
+            "mas_fun_facts_19": "mas_fun_fact_I_am",
+            "mas_fun_facts_20": "mas_fun_fact_low_rates",
+
+            #Bad facts
+            "mas_bad_facts_1": "mas_bad_fact_10_percent",
+            "mas_bad_facts_2": "mas_bad_fact_taste_areas",
+            "mas_bad_facts_3": "mas_bad_fact_antivaxx",
+            "mas_bad_facts_4": "mas_bad_fact_tree_moss",
+        }
+
+        for old_evl, new_evl in fun_facts_evls.iteritems():
+            mas_transferTopicData(
+                new_evl,
+                old_evl,
+                persistent._mas_fun_facts_database,
+                transfer_unlocked=False
+            )
+
+        islands_evs = {
+            "mas_monika_upsidedownisland": "mas_island_upsidedownisland",
+            "mas_monika_glitchesmess": "mas_island_glitchedmess",
+            "mas_monika_cherry_blossom_tree": "mas_island_cherry_blossom_tree",
+            "mas_monika_cherry_blossom1": "mas_island_cherry_blossom1",
+            "mas_monika_cherry_blossom2": "mas_island_cherry_blossom2",
+            "mas_monika_cherry_blossom3": "mas_island_cherry_blossom3",
+            "mas_monika_cherry_blossom4": "mas_island_cherry_blossom4",
+            "mas_monika_sky": "mas_island_sky",
+            "mas_monika_day1": "mas_island_day1",
+            "mas_monika_day2": "mas_island_day2",
+            "mas_monika_day3": "mas_island_day3",
+            "mas_monika_night1": "mas_island_night1",
+            "mas_monika_night2": "mas_island_night2",
+            "mas_monika_night3": "mas_island_night3",
+            "mas_monika_daynight1": "mas_island_daynight1",
+            "mas_monika_daynight2": "mas_island_daynight2"
+        }
+
+        for old_label, new_label in islands_evs.iteritems():
+            mas_transferTopicSeen(old_label, new_label)
+
+        #Fix these persist vars
+        persistent._mas_pm_plays_instrument = persistent.instrument
+        persistent._mas_pm_likes_rain = persistent._mas_likes_rain
+
+        #And delete the old
+        del persistent.instrument
+        del persistent._mas_likes_rain
+    return
+
 #0.10.4
 label v0_10_4(version="v0_10_4"):
     python:
@@ -417,9 +584,11 @@ label v0_10_4(version="v0_10_4"):
         if ev:
             ev.random = not mas_isWinter()
 
-        ev = mas_getEV("monika_mountain")
-        if ev:
-            ev.random = not mas_isWinter()
+        #Only do this if the topic hasn't been answered yet
+        if persistent._mas_pm_would_like_mt_peak is None:
+            ev = mas_getEV("monika_mountain")
+            if ev:
+                ev.random = not mas_isWinter()
 
         #Run weather unlocks
         mas_weather_snow.unlocked=True
@@ -434,7 +603,6 @@ label v0_10_4(version="v0_10_4"):
             if not persistent._mas_aff_before_fresh_start:
                 persistent._mas_aff_before_fresh_start = mas_HistLookup("aff.before_fresh_start", 2018)
     return
-
 
 #0.10.3
 label v0_10_3(version="v0_10_3"):
