@@ -371,6 +371,36 @@ label v0_3_1(version=version): # 0.3.1
 #0.10.5
 label v0_10_5(version="v0_10_5"):
     python:
+        #Fix 922 stuff once and for all
+        ev = mas_getEV("mas_bday_surprise_party_hint")
+        if ev:
+            ev.start_date = mas_monika_birthday - datetime.timedelta(days=7)
+            ev.end_date = mas_monika_birthday - datetime.timedelta(days=2)
+            ev.action = EV_ACT_RANDOM
+
+        ev = mas_getEV("mas_bday_pool_happy_bday")
+        if ev:
+            ev.start_date = mas_monika_birthday
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.action = EV_ACT_UNLOCK
+
+        ev = mas_getEV("mas_bday_spent_time_with")
+        if ev:
+            ev.start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(20))
+            ev.end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+            ev.conditional = "mas_recognizedBday()"
+            ev.action = EV_ACT_QUEUE
+
+        ev = mas_getEV("mas_bday_postbday_notimespent")
+        if ev:
+            ev.start_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=8)
+            ev.conditional = (
+                "not mas_recognizedBday() "
+                "and not persistent._mas_bday_gone_over_bday"
+            )
+            ev.action = EV_ACT_PUSH
+
         #Give fun facts label names
         fun_facts_evls = {
             #Good facts
@@ -409,6 +439,28 @@ label v0_10_5(version="v0_10_5"):
                 persistent._mas_fun_facts_database,
                 transfer_unlocked=False
             )
+
+        islands_evs = {
+            "mas_monika_upsidedownisland": "mas_island_upsidedownisland",
+            "mas_monika_glitchesmess": "mas_island_glitchedmess",
+            "mas_monika_cherry_blossom_tree": "mas_island_cherry_blossom_tree",
+            "mas_monika_cherry_blossom1": "mas_island_cherry_blossom1",
+            "mas_monika_cherry_blossom2": "mas_island_cherry_blossom2",
+            "mas_monika_cherry_blossom3": "mas_island_cherry_blossom3",
+            "mas_monika_cherry_blossom4": "mas_island_cherry_blossom4",
+            "mas_monika_sky": "mas_island_sky",
+            "mas_monika_day1": "mas_island_day1",
+            "mas_monika_day2": "mas_island_day2",
+            "mas_monika_day3": "mas_island_day3",
+            "mas_monika_night1": "mas_island_night1",
+            "mas_monika_night2": "mas_island_night2",
+            "mas_monika_night3": "mas_island_night3",
+            "mas_monika_daynight1": "mas_island_daynight1",
+            "mas_monika_daynight2": "mas_island_daynight2"
+        }
+
+        for old_label, new_label in islands_evs.iteritems():
+            mas_transferTopicSeen(old_label, new_label)
 
         #Fix these persist vars
         persistent._mas_pm_plays_instrument = persistent.instrument
@@ -532,9 +584,11 @@ label v0_10_4(version="v0_10_4"):
         if ev:
             ev.random = not mas_isWinter()
 
-        ev = mas_getEV("monika_mountain")
-        if ev:
-            ev.random = not mas_isWinter()
+        #Only do this if the topic hasn't been answered yet
+        if persistent._mas_pm_would_like_mt_peak is None:
+            ev = mas_getEV("monika_mountain")
+            if ev:
+                ev.random = not mas_isWinter()
 
         #Run weather unlocks
         mas_weather_snow.unlocked=True
@@ -549,7 +603,6 @@ label v0_10_4(version="v0_10_4"):
             if not persistent._mas_aff_before_fresh_start:
                 persistent._mas_aff_before_fresh_start = mas_HistLookup("aff.before_fresh_start", 2018)
     return
-
 
 #0.10.3
 label v0_10_3(version="v0_10_3"):

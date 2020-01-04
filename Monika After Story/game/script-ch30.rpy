@@ -1853,6 +1853,9 @@ label ch30_reset:
     if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
         $ pushEvent("mas_change_to_def",skipeval=True)
 
+    if not mas_hasSpecialOutfit():
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
+
     #### END SPRITES
 
     ## accessory hotfixes
