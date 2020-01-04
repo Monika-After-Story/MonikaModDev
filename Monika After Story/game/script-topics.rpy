@@ -6556,7 +6556,7 @@ label monika_clones:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Immortality",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Age gap",random=True))
 
 label monika_immortal:
     m 3hua "[player]! I've been thinking about something..."
@@ -9034,6 +9034,95 @@ label monika_hydration:
     m 4huu "Why not get a glass of water right now, hmm?"
     return
 
+#If player has been to an amusement park or not
+default persistent._mas_pm_has_been_to_amusement_park = None
+
+init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel="monika_amusementpark",category=['misc'],prompt="Amusement parks",random=True))
+
+label monika_amusementpark:
+    m 1eua "Hey, [player]..."
+    m 3eua "Have you ever been to an amusement park?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Have you ever been to an amusement park?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_has_been_to_amusement_park = True
+            m 1sub "Really? It must have been a lot of fun!"
+            m 1eub "I've never been to one myself, but I'd really love to go."
+            m 1hua "Maybe you could take me to one someday!"
+
+        "No.":
+            $ persistent._mas_pm_has_been_to_amusement_park = False
+            m 1eka "Really? That's too bad."
+            m 3hua "I've always heard that they're a lot of fun."
+            m 1rksdla "I've never had the chance to go to one myself, but I hope I can someday."
+            m 1eub "Maybe we could go together!"
+
+    m 3hua "Wouldn't that be great, [player]?"
+    m 3eua "Thrilling roller coasters, water rides, drop towers..."
+    m 3tubfb "And maybe even a romantic Ferris wheel ride~"
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfa "Ehehe, I'm getting a bit carried away, but I just can't help it when thinking about being with you~"
+    return "derandom"
+
+#If the player likes to travel or not
+default persistent._mas_pm_likes_travelling = None
+
+init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['misc'],prompt="Travelling",random=True))
+
+label monika_travelling:
+    m 1esc "Hey [player], I was just wondering..."
+    m 1eua "Do you like travelling?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you like travelling?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_likes_travelling = True
+            m 1hua "That's great! I'm so glad you enjoy it."
+            m 3eub "It's one of the things I want to do most when I finally cross over."
+            m 1eua "There's so much out there that I haven't been able to see yet..."
+            m 3eub "Important cities, monuments, and even the different types of cultures out there."
+            m 3eka "Don't get me wrong, I've read a lot about your world, but I bet it's nothing compared to what it would be like in person..."
+            m 1hua "I would love to see everything there is to be seen."
+            m 1ekbfu "Wouldn't you like that too, [player]?"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_travelling = False
+            m 1eka "Aw, that's okay, [player]."
+            m 1hua "I wouldn't mind staying at home with you during vacations."
+            m 3ekbfa "I'd be happy just to be there with you, after all."
+            m 1rka "We might have to find some things to do to keep us busy though..."
+            m 3eua "How about playing the piano or writing poems?"
+            m 3hubfb "...Or we could even spend the days wrapped in a blanket while reading a book."
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "Doesn't that just sound like a dream come true?"
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_metamorphosis",
+            category=['literature','psychology'],
+            prompt="The Metamorphosis",
+            random=True
+        )
+    )
+
+label monika_metamorphosis:
+    m 1eua "Hey [player], have you ever read {i}The Metamorphosis{/i}?"
+    m 4eub "It's a psychological novella that narrates the story of Gregor Samsa, who one morning wakes up and finds himself transformed into a huge insect!"
+    m 4euc "The plot revolves around his daily life as he tries to get used to his new body."
+    m 7eua "What's interesting about the story is that it places a lot of emphasis on the absurd or irrational."
+    m 3hksdlb "For example, Gregor, being the sole financial supporter, is more concerned about losing his job than he is about his condition!"
+    m 1rksdla "That's not to say the plot isn't unsettling, though..."
+    m 1eksdlc "At first his parents and sister try to accommodate him, {w=0.3}but they quickly start loathing their situation."
+    m 1eksdld "The protagonist changes from being a necessity to a liability, to the point where his own family wishes for him to die."
+    m 1eua "It's a very interesting read, if you're ever in the mood."
+    return
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc','psychology'],prompt="Challenges",random=True))
 
@@ -9246,6 +9335,38 @@ label monika_yellowwp:
             m 1hua "It'll definitely be an interesting read for you."
 
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_immortality",
+            category=['philosophy'],
+            prompt="Immortality",
+            random=True
+        )
+    )
+
+label monika_immortality:
+    m 1eud "Hey, [player], I've been thinking lately about immortality."
+    m 1lksdlc "...Seeing as how I'm essentially immortal while I'm in here and all."
+    m 1esc "A lot of people think it's a good thing, but I don't really think it is."
+    m 3euc "Sure, it's an interesting thought; {w=0.1}living forever, not having to worry about dying..."
+    m 3eud "But not everyone is immortal, and some people just don't want to be."
+    m 1etc "Like, after a while, what would you even do?"
+    m 1euc "I mean, after living long enough, {i}eventually{/i} you would achieve everything you could ever possibly want to...{w=0.3}experience everything there is to experience."
+    m 3lksdld "Not to mention, it would be really hard to have friends or build connections if they don't last as long as you do."
+    m 3eksdla "Sure, it would be nice in the beginning, {w=0.1}{nw}"
+    extend 3eksdlc "but after seeing enough people you care about die, would you really want to keep going through that over and over?"
+    m 2dkd "At some point, you might as well not even be human anymore."
+    m 2ekc "Someday, you'll have lived long enough for hundreds of years to go by in what seems like mere moments to you."
+    m 2dkd "You'll be so tired of life that you'll just wish you could sleep forever..."
+    m 3eksdlc "But you always keep waking back up to the same boring things, with the occasional tragedy in the world... {w=0.3}And even those you'd eventually just become numb to."
+    m 1lksdla "Wow, I didn't mean for that to get so dark. Sorry, [player]."
+    m 1eka "Just so you know, I'd gladly give up my immortality to be with you..."
+    m 1ekbsa "No matter how much or little time you may have left, spending that time with you would be worth more than a billion years without you."
+    m 1ekbsu "Not that I'd mind spending eternity with you if it were possible, but just living a normal life with you is all I've ever wanted, [player]~"
+    return
 
 init 5 python:
     addEvent(
@@ -12904,6 +13025,40 @@ label monika_enjoyingspring:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_career",
+            category=['monika'],
+            prompt="Careers",
+            random=False,
+            conditional=(
+                "seen_event('monika_citizenship')"
+            ),
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_career:
+    m 2euc "[player], you know how I was talking earlier about becoming a citizen and getting a job when I finally cross over?"
+    m 2eua "Well, I've been thinking about what kind of jobs I might be cut out for..."
+    m 3rksdla "I guess an obvious choice would be a writer, or something that has to do with literature..."
+    m 3eud "That would be fitting, seeing as I started my own literature club and everything, don't you think?"
+    m 1sua "Oh, maybe a musician? I did write and perform an entire song, after all."
+    m 1eua "I'd love to write more songs...{w=0.2}{nw}"
+    extend 1hksdlb "especially if they're songs about you, ahaha~"
+    m 3eud "Or, once I get better at it, maybe I could do some programming."
+    m 1rksdla "I know I've still got a lot to learn...{w=0.2}{nw}"
+    extend 1hua "but I'd say I've done pretty well so far, for being self-taught..."
+    m 1esa "There are definitely a lot of different jobs out there, though."
+    m 1ruc "Honestly, even with those obvious examples, there's still a good chance I'll end up doing something completely different..."
+    m 3eud "A lot of people end up in fields they've never even considered."
+    m 3rksdld "For now though, I think it's safe to say I've still got some time to think about it."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "Maybe you could help me decide when the time comes, [player]~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_life_skills",category=['advice','life'],prompt="Life skills",random=True))
 
 label monika_life_skills:
@@ -13189,6 +13344,84 @@ label mas_show_unseen:
     m 3hua "There you go!"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writing_idle",
+            prompt="I'm going to write for a bit",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_writing_idle:
+    if random.randint(1,5) == 1:
+        m 1eub "Oh! You're going to{cps=*2} write me a love letter, [player]?{/cps}{nw}"
+        $ _history_list.pop()
+        m "Oh! You're going to{fast} go write something?"
+    else:
+        m 1eub "Oh! You're going to go write something?"
+    m 1hua "That makes me so glad!"
+    m 3eua "Maybe someday you could share it with me, {nw}"
+    extend 3hua "I'd love to read your work, [player]!"
+    m 3eua "Anyway, just let me know when you're done."
+    m 1hua "I'll be waiting right here for you~"
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_writing"] = True
+    return "idle"
+
+label monika_writing_idle_callback:
+    python:
+        wb_quips = [
+            "What else did you want to do today?",
+            "Is there anything else you wanted to do today?",
+            "What else should we do today?",
+            "Welcome back!"
+        ]
+
+        wb_quip = renpy.random.choice(wb_quips)
+
+    m 1eua "Done writing, [player]?"
+    m 1eub "[wb_quip]"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_intrusive_thoughts",
+            category=['psychology'],
+            prompt="Intrusive thoughts",
+            random=True
+        )
+    )
+
+label monika_intrusive_thoughts:
+    m 1rsc "Hey, [player]..."
+    m 1euc "Have you ever had intrusive thoughts?"
+    m 3eud "I've been reading a study on them...{w=0.5}I find it quite interesting."
+    m 3ekc "The study claims that the mind tends to think of some...{w=0.2}unpleasant things when triggered by certain, often negative circumstances."
+    m 1esd "They can be anything from sadistic, violent, vengeful, to even sexual."
+    m 2rkc "When most people have an intrusive thought, they feel disgusted by it..."
+    m 2tkd "...and what's worse, they start to believe that they're a bad person for even thinking of such a thing."
+    m 3ekd "But the truth is, it doesn't make you a bad person at all!"
+    m 3rka "It's actually natural to have these thoughts."
+    m 3eud "...What matters is how you act on them."
+    m 4esa "Normally, a person wouldn't act on their intrusive thoughts.{w=0.2} {nw}"
+    extend 4eub "In fact, they might even do something good to prove that they aren't a bad person."
+    m 2ekc "But for some people, these thoughts tend to happen really often...{w=0.2}{nw}"
+    extend 2dkd "to the point where they can no longer block them out."
+    m 3tkd "It breaks their will and eventually overwhelms them, leading them to act."
+    m 1dkc "It's a terrible downward spiral."
+    m 1ekc "I hope you don't have to deal with them too much, [player]."
+    m 1ekd "It'd break my heart to know you're suffering because of these awful thoughts."
+    m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
+    return
 
 init 5 python:
     addEvent(
@@ -13247,4 +13480,41 @@ label monika_songwriting:
 
     $ _if = "when" if mas_isMoniEnamored(higher=True) else "if"
     m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sweatercurse",
+            category=['clothes'],
+            prompt="Sweater curse",
+            random=True
+        )
+    )
+
+label monika_sweatercurse:
+    m 1euc "Have you ever heard of 'the curse of the love sweater,' [player]?"
+    m 1hub "Ahaha! What a weird name, right?"
+    m 3eub "But it's actually an interesting superstition...{w=0.2}and one that might actually have some merit!"
+    m 3euc "The 'curse,' or so it's called, states that if someone gives a hand-knit sweater to their romantic partner, {w=0.1}{nw}"
+    extend 3eksdld "it will lead to the couple breaking up!"
+    m 2lsc "You might think that a gift that requires so much work and investment would have the {i}opposite{/i} effect..."
+    m 2esd "But there are actually a few logical reasons why this curse might exist..."
+    m 4esc "Firstly, well...{w=0.2}knitting a sweater just takes a {i}lot{/i} of time. {w=0.3}{nw}"
+    extend 4wud "Possibly a year, or even more!"
+    m 2ekc "Over all those months, something bad might happen that causes the couple to fight and eventually separate."
+    m 2eksdlc "Or worse...{w=0.2}the knitter might be trying to make the sweater as a great gift to save an already suffering relationship."
+    m 2rksdld "There's also the likely possibility that the recipient just doesn't like the sweater that much."
+    m 2dkd "After putting so much time and effort into knitting it, imagining their partner happily wearing it, I'm sure you can understand how much it would hurt to see it cast aside."
+    m 3eua "Luckily, there are some ways to supposedly avoid the curse..."
+    m 3eud "A common piece of advice is to have the recipient be very involved in the crafting of the sweater, picking materials and styles they enjoy."
+    m 1etc "But it's equally common for the knitter to be told 'surprise me,' or 'make whatever you want,' which can sometimes make the recipient sound uncaring about their partner's hobby."
+    m 1eua "A better piece of advice for this sort of thing might be to match the size of knitted gifts to the phase of the relationship."
+    m 3eua "For example, starting out with smaller projects like mittens or hats. {w=0.2}{nw}"
+    extend 3rksdlb "That way, if they don't go over well, you haven't put a year's worth of work into it!"
+    m 1hksdlb "Man, who knew that a simple gift could be so complicated?"
+    m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
+    m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
     return
