@@ -1709,7 +1709,7 @@ label ch30_hour:
 label ch30_day:
     python:
         #Undo ev actions if needed
-        MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+        MASUndoActionRule.check_persistent_rules()
         #And also strip dates
         MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 
@@ -1852,6 +1852,9 @@ label ch30_reset:
     # change back to def if we aren't wearing def at Normal-
     if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
         $ pushEvent("mas_change_to_def",skipeval=True)
+
+    if not mas_hasSpecialOutfit():
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
 
     #### END SPRITES
 
@@ -2007,7 +2010,7 @@ label ch30_reset:
                 persistent.event_list.pop(index)
 
     #Now we undo actions for evs which need them undone
-    $ MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+    $ MASUndoActionRule.check_persistent_rules()
     #And also strip dates
     $ MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 

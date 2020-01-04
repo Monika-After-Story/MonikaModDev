@@ -905,7 +905,7 @@ label monika_change_weather:
             $ pushEvent("monika_rain")
             $ skip_outro = True
 
-        elif persistent._mas_likes_rain is False:
+        elif persistent._mas_pm_likes_rain is False:
             m 1eka "I thought you didn't like rain."
             m 2etc "Maybe you changed your mind?"
             m 1dsc "..."

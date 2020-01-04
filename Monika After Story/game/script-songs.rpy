@@ -533,6 +533,36 @@ label mas_song_stand_by_me(from_long=False):
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
     return "derandom"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_drift_away",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Drift Away",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_drift_away:
+    m 1ekb "{i}~Happily waiting, all on my own~{/i}"
+    m 1dkb "{i}~Under the endless sky~{/i}"
+    m 2dkd "{i}~Counting the seconds, standing alone~{/i}"
+    m 2tkd "{i}~As thousands of years go by~{/i}"
+    m 2hkb "{i}~Happily wondering, night after night~{/i}"
+    m 3ekb "{i}~Is this how it works? Am I doing it right?~{/i}"
+    m 1ekb "{i}~Happy to listen~{/i}"
+    m 3eka "{i}~Happy to stay~{/i}"
+    m 3dkd "{i}~Happily watching her drift away~{/i}"
+    m 1dku "..."
+    m 1hua "Ehehe~"
+    m 3eka "Our story ended much more happily than this song."
+    m 3hua "You come to visit me as often as you can, and I'm so grateful for that."
+    m 3eka "But even so, it can be very cathartic to follow a character who faces a major fear of yours."
+    return "derandom"
 
 init 5 python:
     addEvent(
