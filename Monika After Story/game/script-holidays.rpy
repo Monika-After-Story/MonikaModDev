@@ -4436,7 +4436,7 @@ label mas_player_bday_autoload_check:
 
             should_surprise = renpy.random.randint(1,surp_int) == 1 and not mas_HistVerifyLastYear_k(True,"player_bday.opened_door")
 
-            if mas_isMonikaBirthday() or (not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 1 and should_surprise)):
+            if not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 1 and should_surprise):
                 # starting player b_day off with a closed door greet
                 # always if haven't seen the surprise before
                 # conditionally if we have
@@ -4668,7 +4668,7 @@ label mas_player_bday_card:
     m 6dkbsu "..."
     if mas_isMonikaBirthday():
         m 6sub "Oh!"
-        m 6ekbsu "I...I made a card for you, [player], I hope you like it..."
+        m 6ekbsu "I made a card for you, [player], I hope you like it..."
     elif not mas_HistVerify("player_bday.spent_time",True)[0]:
         m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     else:
@@ -4767,13 +4767,17 @@ label mas_player_bday_greet:
         jump mas_player_bday_surprise
 
     else:
+        if mas_isMonikaBirthday():
+            $ your = "Our"
+        else:
+            $ your = "Your"
         $ mas_surpriseBdayShowVisuals()
         $ persistent._mas_player_bday_decor = True
         m 3eub "Happy Birthday, [player]!"
         m 3hub "Ahaha!"
         m 3etc "..."
         m "Why do I feel like I'm forgetting something..."
-        m 3hua "Oh! Your cake!"
+        m 3hua "Oh! [your] cake!"
         jump mas_player_bday_cake
 
 # event for if the player leaves the game open starting before player_bday and doesn't restart
