@@ -4770,7 +4770,6 @@ label mas_player_bday_greet:
         m "Why do I feel like I'm forgetting something..."
         m 3hua "Oh! Your cake!"
         jump mas_player_bday_cake
-    return
 
 # event for if the player leaves the game open starting before player_bday and doesn't restart
 # moni eventually gives up on the surprise
