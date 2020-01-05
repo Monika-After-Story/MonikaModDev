@@ -103,6 +103,30 @@ init 11 python in mas_poems:
             if poem.is_seen()
         ]
 
+    def getRandomPoem(category,unseen=True):
+        """
+        Gets a random poem from the specified category
+        IN:
+            category:
+                category to search for
+
+            unseen:
+                whether or not we only want unseen poems
+                defaults to True 
+
+        OUT:
+            A random poem
+        """
+        unseen_poem_amt = len(getPoemsByCategory(category, unseen=True))
+        total_poem_amt = len(getPoemsByCategory(category, unseen=False))
+        poem_num = renpy.random.randint(0,total_poem_amt-1)
+        if unseen:
+            if unseen_poem_amt > 0:
+                poem_num = renpy.random.randint(0,unseen_poem_amt-1)
+            else:
+                unseen = False
+
+        return getPoemsByCategory(category, unseen=unseen)[poem_num]
 
 init 10 python:
     class MASPoem:
