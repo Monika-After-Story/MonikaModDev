@@ -345,12 +345,12 @@ init python:
         if (
             ev is not None
             and ev.random
-            and ev.eventlabel.startswith("monika_")
+            and ev_label.startswith("monika_")
             # need to make sure we don't allow any events that start with monika_ that don't have a prompt
-            and ev.prompt != ev.eventlabel
+            and ev.prompt != ev_label
         ):
             if mas_findEVL("mas_topic_derandom") < 0:
-                persistent.flagged_monikatopic = ev.eventlabel
+                persistent.flagged_monikatopic = ev_label
                 pushEvent('mas_topic_derandom',skipeval=True)
                 renpy.notify(__("Topic flagged for removal."))
             else:
@@ -370,18 +370,24 @@ init python:
 
         ev = mas_getEV(ev_label)
 
+        # expandable whitelist for topics that we are fine with bookmarking
+        # that don't otherwise meet our requirements
+        bookmark_whitelist = [
+            "mas_monika_islands",
+        ]
+
         if (
             mas_isMoniNormal(higher=True)
             and ev is not None
-            and ev.eventlabel.startswith("monika_")
+            and (ev_label.startswith("monika_") or ev_label in bookmark_whitelist)
             # need to make sure we don't allow any events that start with monika_ that don't have a prompt
-            and ev.prompt != ev.eventlabel
+            and ev.prompt != ev_label
         ):
-            if ev.eventlabel not in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked.append(ev.eventlabel)
+            if ev_label not in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked.append(ev_label)
                 renpy.notify(__("Topic bookmarked."))
             else:
-                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev.eventlabel))
+                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev_label))
                 renpy.notify(__("Bookmark removed."))
 
     def mas_hasBookmarks():
@@ -1651,7 +1657,7 @@ label monika_simulated:
     m 1tfu "I'll show him what a simulation can do."
     return
 
-default persistent._mas_likes_rain = None
+default persistent._mas_pm_likes_rain = None
 
 init 5 python:
     # only available if moni-affecition normal and above
@@ -1679,7 +1685,7 @@ label monika_rain:
     menu:
         m "Would you ever do that for me, [player]?{fast}"
         "Yes.":
-            $ persistent._mas_likes_rain = True
+            $ persistent._mas_pm_likes_rain = True
             $ mas_unlockEVL("monika_rain_holdme", "EVE")
 
             if not mas_is_raining:
@@ -1702,7 +1708,7 @@ label monika_rain:
                 m 1eua "If you want the rain to stop, just ask me, okay?"
 
         "I hate the rain.":
-            $ persistent._mas_likes_rain = False
+            $ persistent._mas_pm_likes_rain = False
 
             m 2tkc "Aw, that's a shame."
             if mas_is_raining:
@@ -2933,8 +2939,8 @@ label monika_credits_song:
     m 1hua "I hope you liked my song."
     m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
     m 1eua "Give me some time, and I'll try to write another."
-    if persistent.instrument is not False:
-        if persistent.instrument:
+    if persistent._mas_pm_plays_instrument is not False:
+        if persistent._mas_pm_plays_instrument:
             m 3eua "Maybe you could play me a song too!"
         else:
             m 3eua "Maybe you could play me a song too, if you can play an instrument?"
@@ -6752,8 +6758,6 @@ label monika_meditation:
 # do you like orchestral music
 default persistent._mas_pm_like_orchestral_music = None
 
-# TODO: persistent.instrument should be historical at some point, also convert to pm var
-
 init 5 python:
     addEvent(
         Event(
@@ -6807,7 +6811,7 @@ label monika_orchestra:
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
                 m 1hua "Maybe we could do a duet someday!"
                 m 1hub "Ehehe~"
-                $ persistent.instrument = True
+                $ persistent._mas_pm_plays_instrument = True
             elif tempinstrument == "harmonika":
                 m 1hub "Wow, I've always wanted to try the harmonik--"
                 m 3eub "...Oh!"
@@ -6837,17 +6841,17 @@ label monika_orchestra:
                 m 2esa "Personally, I prefer the {cps=*0.7}{i}harmonika{/i}{/cps}..."
                 m 2eua "..."
                 m 4hub "Ahaha! That was so silly, I'm only kidding, [player]~"
-                $ persistent.instrument = True
+                $ persistent._mas_pm_plays_instrument = True
             else:
                 m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
                 m 1eua "I would love to hear you play for me."
                 m 3eua "Maybe you could teach me how to play, too~"
                 m 1wuo "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
                 m 1hua "Ehehe~"
-                $ persistent.instrument = True
+                $ persistent._mas_pm_plays_instrument = True
 
         "No.":
-            $persistent.instrument = False
+            $persistent._mas_pm_plays_instrument = False
             m 1euc "I see..."
             m 1eka "You should try to pick up an instrument that interests you, sometime."
             m 3eua "Playing the piano opened up a whole new world of expression for me. It's an incredibly rewarding experience."
@@ -6894,7 +6898,7 @@ label monika_jazz:
         "Yes.":
             $ persistent._mas_pm_like_jazz = True
             m 1hua "Oh, okay!"
-            if persistent.instrument == True:
+            if persistent._mas_pm_plays_instrument:
                 m "Do you play jazz music, as well?{nw}"
                 $ _history_list.pop()
                 menu:
@@ -9028,6 +9032,95 @@ label monika_hydration:
     m 1eua "Anyway, make sure you always stay hydrated, okay?"
     m "So..."
     m 4huu "Why not get a glass of water right now, hmm?"
+    return
+
+#If player has been to an amusement park or not
+default persistent._mas_pm_has_been_to_amusement_park = None
+
+init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel="monika_amusementpark",category=['misc'],prompt="Amusement parks",random=True))
+
+label monika_amusementpark:
+    m 1eua "Hey, [player]..."
+    m 3eua "Have you ever been to an amusement park?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Have you ever been to an amusement park?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_has_been_to_amusement_park = True
+            m 1sub "Really? It must have been a lot of fun!"
+            m 1eub "I've never been to one myself, but I'd really love to go."
+            m 1hua "Maybe you could take me to one someday!"
+
+        "No.":
+            $ persistent._mas_pm_has_been_to_amusement_park = False
+            m 1eka "Really? That's too bad."
+            m 3hua "I've always heard that they're a lot of fun."
+            m 1rksdla "I've never had the chance to go to one myself, but I hope I can someday."
+            m 1eub "Maybe we could go together!"
+
+    m 3hua "Wouldn't that be great, [player]?"
+    m 3eua "Thrilling roller coasters, water rides, drop towers..."
+    m 3tubfb "And maybe even a romantic Ferris wheel ride~"
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfa "Ehehe, I'm getting a bit carried away, but I just can't help it when thinking about being with you~"
+    return "derandom"
+
+#If the player likes to travel or not
+default persistent._mas_pm_likes_travelling = None
+
+init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['misc'],prompt="Travelling",random=True))
+
+label monika_travelling:
+    m 1esc "Hey [player], I was just wondering..."
+    m 1eua "Do you like travelling?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you like travelling?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_likes_travelling = True
+            m 1hua "That's great! I'm so glad you enjoy it."
+            m 3eub "It's one of the things I want to do most when I finally cross over."
+            m 1eua "There's so much out there that I haven't been able to see yet..."
+            m 3eub "Important cities, monuments, and even the different types of cultures out there."
+            m 3eka "Don't get me wrong, I've read a lot about your world, but I bet it's nothing compared to what it would be like in person..."
+            m 1hua "I would love to see everything there is to be seen."
+            m 1ekbfu "Wouldn't you like that too, [player]?"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_travelling = False
+            m 1eka "Aw, that's okay, [player]."
+            m 1hua "I wouldn't mind staying at home with you during vacations."
+            m 3ekbfa "I'd be happy just to be there with you, after all."
+            m 1rka "We might have to find some things to do to keep us busy though..."
+            m 3eua "How about playing the piano or writing poems?"
+            m 3hubfb "...Or we could even spend the days wrapped in a blanket while reading a book."
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "Doesn't that just sound like a dream come true?"
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_metamorphosis",
+            category=['literature','psychology'],
+            prompt="The Metamorphosis",
+            random=True
+        )
+    )
+
+label monika_metamorphosis:
+    m 1eua "Hey [player], have you ever read {i}The Metamorphosis{/i}?"
+    m 4eub "It's a psychological novella that narrates the story of Gregor Samsa, who one morning wakes up and finds himself transformed into a huge insect!"
+    m 4euc "The plot revolves around his daily life as he tries to get used to his new body."
+    m 7eua "What's interesting about the story is that it places a lot of emphasis on the absurd or irrational."
+    m 3hksdlb "For example, Gregor, being the sole financial supporter, is more concerned about losing his job than he is about his condition!"
+    m 1rksdla "That's not to say the plot isn't unsettling, though..."
+    m 1eksdlc "At first his parents and sister try to accommodate him, {w=0.3}but they quickly start loathing their situation."
+    m 1eksdld "The protagonist changes from being a necessity to a liability, to the point where his own family wishes for him to die."
+    m 1eua "It's a very interesting read, if you're ever in the mood."
     return
 
 init 5 python:
@@ -12632,7 +12725,7 @@ label monika_hemispheres:
             m 5hubfa "It just sounds magical~"
             m 5eubfb "I can't wait to experience something like that with you for real, [player]."
         else:
-            if persistent._mas_likes_rain:
+            if persistent._mas_pm_likes_rain:
                 m 2eka "I'm sure we could spend hours listening to the rain together."
             else:
                 m 3hub "You might not like the rain too much, but you have to admit, the flowers it brings are gorgeous, and the rainbows are beautiful too!"
@@ -12932,6 +13025,40 @@ label monika_enjoyingspring:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_career",
+            category=['monika'],
+            prompt="Careers",
+            random=False,
+            conditional=(
+                "seen_event('monika_citizenship')"
+            ),
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_career:
+    m 2euc "[player], you know how I was talking earlier about becoming a citizen and getting a job when I finally cross over?"
+    m 2eua "Well, I've been thinking about what kind of jobs I might be cut out for..."
+    m 3rksdla "I guess an obvious choice would be a writer, or something that has to do with literature..."
+    m 3eud "That would be fitting, seeing as I started my own literature club and everything, don't you think?"
+    m 1sua "Oh, maybe a musician? I did write and perform an entire song, after all."
+    m 1eua "I'd love to write more songs...{w=0.2}{nw}"
+    extend 1hksdlb "especially if they're songs about you, ahaha~"
+    m 3eud "Or, once I get better at it, maybe I could do some programming."
+    m 1rksdla "I know I've still got a lot to learn...{w=0.2}{nw}"
+    extend 1hua "but I'd say I've done pretty well so far, for being self-taught..."
+    m 1esa "There are definitely a lot of different jobs out there, though."
+    m 1ruc "Honestly, even with those obvious examples, there's still a good chance I'll end up doing something completely different..."
+    m 3eud "A lot of people end up in fields they've never even considered."
+    m 3rksdld "For now though, I think it's safe to say I've still got some time to think about it."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "Maybe you could help me decide when the time comes, [player]~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_life_skills",category=['advice','life'],prompt="Life skills",random=True))
 
 label monika_life_skills:
@@ -13221,6 +13348,52 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_writing_idle",
+            prompt="I'm going to write for a bit",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_writing_idle:
+    if random.randint(1,5) == 1:
+        m 1eub "Oh! You're going to{cps=*2} write me a love letter, [player]?{/cps}{nw}"
+        $ _history_list.pop()
+        m "Oh! You're going to{fast} go write something?"
+    else:
+        m 1eub "Oh! You're going to go write something?"
+    m 1hua "That makes me so glad!"
+    m 3eua "Maybe someday you could share it with me, {nw}"
+    extend 3hua "I'd love to read your work, [player]!"
+    m 3eua "Anyway, just let me know when you're done."
+    m 1hua "I'll be waiting right here for you~"
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_writing"] = True
+    return "idle"
+
+label monika_writing_idle_callback:
+    python:
+        wb_quips = [
+            "What else did you want to do today?",
+            "Is there anything else you wanted to do today?",
+            "What else should we do today?",
+            "Welcome back!"
+        ]
+
+        wb_quip = renpy.random.choice(wb_quips)
+
+    m 1eua "Done writing, [player]?"
+    m 1eub "[wb_quip]"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_intrusive_thoughts",
             category=['psychology'],
             prompt="Intrusive thoughts",
@@ -13293,12 +13466,12 @@ label monika_songwriting:
 
     m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
-    if persistent.instrument:
+    if persistent._mas_pm_plays_instrument:
         m 1hua "Since you play an instrument, I'm sure you could write something."
 
     m 3eua "It can be a great way to relieve stress, tell a story, or even convey a message."
 
-    if persistent.instrument:
+    if persistent._mas_pm_plays_instrument:
         m 3hub "I'm sure whatever you write would be amazing!"
     else:
         m 1ekbla "Maybe you could write one for me sometime~"
