@@ -5079,7 +5079,7 @@ init 20 python:
     poem_pbday_2 = MASPoem(
         poem_id = "poem_pbday_2",
         category = "pbday",
-        prompt = "Test",
+        prompt = "Your Day",
         title = " My dearest [player],",
         text = """\
  Any day with you is a happy day.
