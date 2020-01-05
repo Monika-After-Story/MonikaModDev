@@ -4429,7 +4429,7 @@ label mas_player_bday_autoload_check:
 
             should_surprise = renpy.random.randint(1,surp_int) == 1 and not mas_HistVerifyLastYear_k(True,"player_bday.opened_door")
 
-            if not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 1 and should_surprise):
+            if mas_isMonikaBirthday() or (not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 1 and should_surprise)):
                 # starting player b_day off with a closed door greet
                 # always if haven't seen the surprise before
                 # conditionally if we have
