@@ -4667,8 +4667,6 @@ label mas_player_bday_card:
     else:
         m 6ekbsu "I made a card for you, [player]. I hope you like it..."
 
-    $ p_bday_month = mas_player_bday_curr().month
-
     call mas_showpoem(mas_poems.getRandomPoem("pbday"))
 
     if mas_isMoniEnamored(higher=True):
