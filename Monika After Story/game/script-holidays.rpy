@@ -4431,6 +4431,8 @@ label mas_player_bday_autoload_check:
 
             if not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 1 and should_surprise):
                 # starting player b_day off with a closed door greet
+                # always if haven't seen the surprise before
+                # conditionally if we have
                 selected_greeting = "i_greeting_monikaroom"
                 mas_skip_visuals = True
 
