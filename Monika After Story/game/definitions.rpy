@@ -1,6 +1,11 @@
 define persistent.demo = False
 define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
+define config.replay_movie_sprites = False #Fix masks
+#Fix menu textbox issues
+define config.menu_showed_window = True
+define config.window_auto_show = ["say"]
+define config.window_auto_hide = ["scene", "call screen"]
 
 init 1 python:
     persistent.steam = "steamapps" in config.basedir.lower()

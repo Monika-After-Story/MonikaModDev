@@ -61,8 +61,6 @@ init -1 python in mas_globals:
     last_day = None
     # numbr of the day we last ran ch30_day
 
-    previous_weath = None
-
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -353,16 +351,17 @@ init python:
         """
         Draws the appropriate masks according to the current state of the
         game.
-
         IN:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
-
         ASSUMES:
             morning_flag
             mas_is_raining
             mas_is_snowing
         """
+        # hide the existing mask
+        renpy.hide("rm")
+
         # get current weather masks
         mask = mas_current_weather.sp_window(morning_flag)
 
@@ -371,12 +370,7 @@ init python:
             mask += "_fb"
 
         # now show the mask
-        if store.mas_globals.previous_weath != mask:
-            # hide the existing mask
-            renpy.hide("rm")
-            renpy.show(mask, tag="rm")
-            store.mas_globals.previous_weath = mask
-
+        renpy.show(mask, tag="rm")
 
         if dissolve_masks:
             renpy.with_statement(Dissolve(1.0))
