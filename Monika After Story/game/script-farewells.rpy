@@ -990,19 +990,32 @@ label bye_going_somewhere_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
+        $ ellipsis_count = 1
+        $ give_me_a_second = "Give me a second to get ready."
 
     elif promise.done():
         # i/o thread is done!
+        $ _history_list.pop()
+        m "Give me a second to get ready...{fast}{nw}"
         jump bye_going_somewhere_rtg
+
     else:
         #clean up the history list so only one "give me a second..." should show up
+        if ellipsis_count == 3:
+            $ ellipsis_count = 1
+            $ give_me_a_second = "Give me a second to get ready."
+
+        else:
+            $ ellipsis_count += 1
+            $ give_me_a_second += '.'
+
         $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
     menu:
-        m "Give me a second to get ready.{fast}"
+        m "[give_me_a_second]{fast}"
         "Wait, wait!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
