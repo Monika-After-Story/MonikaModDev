@@ -4267,6 +4267,8 @@ default persistent._mas_player_bday_left_on_bday = False
 default persistent._mas_player_bday_date_aff_gain = 0
 # did we celebrate player bday with Moni
 default persistent._mas_player_bday_spent_time = False
+# did we get the surprise variant of the event?
+default persistent._mas_player_bday_saw_surprise = False
 
 init -10 python:
     def mas_isplayer_bday(_date=None, use_date_year=False):
@@ -4343,6 +4345,7 @@ init -810 python:
             "_mas_player_bday_opened_door": "player_bday.opened_door",
             "_mas_player_bday_date": "player_bday.date",
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
+            "_mas_player_bday_saw_surprise": "player_bday.saw_surprise",
         },
         use_year_before=True,
         # NOTE: the start and end dt needs to be chnaged depending on the
@@ -4421,32 +4424,38 @@ label mas_player_bday_autoload_check:
         ):
 
         python:
+            # first we determine if we want to run a surprise greeting this year
             this_year = datetime.date.today().year
             years_checked = range(this_year-10,this_year)
             times_ruined = 0
+            surp_int = 3
 
             for y in years_checked:
                 if y in mas_HistVerify("player_bday.opened_door",True)[1]:
                     times_ruined +=1
 
-            if times_ruined > 2:
+            if times_ruined == 1:
+                surp_int = 6
+            elif times_ruined == 2:
                 surp_int = 10
-            else:
-                surp_int = 5
+            elif times_ruined > 2
+                surp_int = 50
 
-            should_surprise = renpy.random.randint(1,surp_int) == 1 and not mas_HistVerifyLastYear_k(True,"player_bday.opened_door")
+            should_surprise = renpy.random.randint(1,surp_int) == 1 and not mas_HistVerifyLastYear_k(True,"player_bday.saw_surprise")
 
-            if not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 1 and should_surprise):
+            if not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 3 and should_surprise):
                 # starting player b_day off with a closed door greet
                 # always if haven't seen the surprise before
                 # conditionally if we have
                 selected_greeting = "i_greeting_monikaroom"
                 mas_skip_visuals = True
+                persistent._mas_player_bday_saw_surprise = True
 
             else:
                 selected_greeting = "mas_player_bday_greet"
                 if should_surprise:
                     mas_skip_visuals = True
+                    persistent._mas_player_bday_saw_surprise = True
 
             # need this so we don't get any strange force quit dlg after the greet
             persistent.closed_self = True
