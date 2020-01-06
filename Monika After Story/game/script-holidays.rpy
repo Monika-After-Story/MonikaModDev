@@ -4438,7 +4438,7 @@ label mas_player_bday_autoload_check:
                 surp_int = 6
             elif times_ruined == 2:
                 surp_int = 10
-            elif times_ruined > 2
+            elif times_ruined > 2:
                 surp_int = 50
 
             should_surprise = renpy.random.randint(1,surp_int) == 1 and not mas_HistVerifyLastYear_k(True,"player_bday.saw_surprise")
