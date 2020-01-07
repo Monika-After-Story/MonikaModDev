@@ -4305,23 +4305,6 @@ init -10 python:
     def mas_pbdayCapGainAff(amount):
         mas_capGainAff(amount, "_mas_player_bday_date_aff_gain", 25)
 
-    def mas_player_bday_seen_surprise():
-        """
-        checks to see if we've ever seen the surprise open door greet before
-        RETURNS True if we have
-        """
-        label_list = [
-            'mas_player_bday_listen',
-            'mas_player_bday_knock_no_listen',
-            'mas_player_bday_opendoor'
-        ]
-
-        for bday_label in label_list:
-            if renpy.seen_label(bday_label):
-                return True
-
-        return False
-
 init -11 python:
     def mas_player_bday_curr(_date=None):
         """
@@ -4443,7 +4426,7 @@ label mas_player_bday_autoload_check:
 
             should_surprise = renpy.random.randint(1,surp_int) == 1 and not mas_HistVerifyLastYear_k(True,"player_bday.saw_surprise")
 
-            if not mas_player_bday_seen_surprise() or (mas_getAbsenceLength().total_seconds()/3600 < 3 and should_surprise):
+            if not mas_HistVerify("player_bday.saw_surprise",True)[0] or (mas_getAbsenceLength().total_seconds()/3600 < 3 and should_surprise):
                 # starting player b_day off with a closed door greet
                 # always if haven't seen the surprise before
                 # conditionally if we have
