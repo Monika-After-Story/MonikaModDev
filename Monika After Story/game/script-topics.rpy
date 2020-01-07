@@ -13293,7 +13293,6 @@ label mas_topic_unbookmark:
     $ topic_choice = _return
 
     if not topic_choice:
-        m 1eua "Okay, [player]."
         $ pushEvent('mas_bookmarks',skipeval=True)
 
     else:

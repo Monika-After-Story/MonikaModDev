@@ -2248,6 +2248,8 @@ label prompt_menu:
 
     elif madechoice == "bookmarks":
         call mas_bookmarks
+        if _return == "prompt":
+            $ _return = False
 
     elif madechoice == "prompt":
         call prompts_categories(True) from _call_prompts_categories
@@ -2467,8 +2469,8 @@ label mas_bookmarks:
         bookmarkedlist = mas_get_player_bookmarks()
 
         bookmarkedlist.sort()
-        remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)
-        return_prompt_back = ("Nevermind.", False, False, False, 0)
+        remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, 'mas_topic_unbookmark', False, False, 20)
+        return_prompt_back = ("Nevermind.", "prompt", False, False, 0)
 
     show monika at t21
     call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
