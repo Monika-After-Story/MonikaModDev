@@ -2110,6 +2110,7 @@ label call_next_event:
                 jump _quit
 
             if "prompt" in ret_items:
+                show monika idle
                 jump prompt_menu
 
         # loop over until all events have been called
