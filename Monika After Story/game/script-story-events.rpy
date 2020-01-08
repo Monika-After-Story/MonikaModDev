@@ -739,6 +739,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_CRASHED],
             rules=ev_rules,
         ),
+        restartBlacklist=True,
         code="GRE"
     )
 
@@ -1320,7 +1321,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_brewing",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
@@ -1378,7 +1380,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_drinking",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
