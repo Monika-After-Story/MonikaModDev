@@ -13272,49 +13272,6 @@ label mas_topic_rerandom:
     $ persistent._mas_current_season = store.mas_seasons._seasonalCatchup(persistent._mas_current_season)
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topic_unbookmark",prompt="I'd like to remove a bookmark.",unlocked=False,rules={"no unlock":None}))
-
-label mas_topic_unbookmark:
-    python:
-        bookmarkslist = mas_get_player_bookmarks()
-
-        bookmarkslist.sort()
-        return_prompt_back = ("Nevermind.", False, False, False, 20)
-
-    show monika 1eua at t21
-    if len(bookmarkslist) > 1:
-        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
-    else:
-        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
-
-    call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
-
-    $ topic_choice = _return
-
-    if not topic_choice:
-        $ pushEvent('mas_bookmarks',skipeval=True)
-
-    else:
-        show monika at t11
-        $ persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(topic_choice))
-        m 1eua "Okay, [player]..."
-
-        if len(bookmarkslist) > 1:
-            m 1eka "Are there any other bookmarks you want to remove?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Are there any other bookmarks you want to remove?{fast}"
-                "Yes.":
-                    jump mas_topic_unbookmark
-                "No.":
-                    m 3eua "Okay."
-                    $ pushEvent('mas_bookmarks',skipeval=True)
-
-        else:
-            m 3hua "All done!"
-    return
-
 default persistent._mas_unsee_unseen = None
 # var set when the player decides to hide or show the Unseen menu
 # True when Unseen is hidden

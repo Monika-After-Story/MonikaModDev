@@ -669,11 +669,11 @@ init python:
 
     def mas_get_player_bookmarks():
         """
-        Gets topics which are bookmarked by the player (in gen-scrollable-menu format)
+        Gets topics which are bookmarked by the player 
         Also cleans events which no longer exist
 
         OUT:
-            List of bookmarked topics in mas_gen_scrollable_menu form
+            List of bookmarked topics as evs
         """
         bookmarkedlist = []
 
@@ -688,7 +688,7 @@ init python:
 
             #Otherwise, we add it to the menu item list
             elif ev.unlocked and ev.checkAffection(mas_curr_affection):
-                bookmarkedlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+                bookmarkedlist.append(ev)
 
         return bookmarkedlist
 
