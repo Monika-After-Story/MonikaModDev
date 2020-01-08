@@ -2465,22 +2465,20 @@ init 5 python:
 label mas_bookmarks:
     show monika idle
     python:
-        # local function that generats indexed based list
-        def gen_bk_disp(bke):
+        # local function that generats indexed based list for bookmarks
+        def gen_bk_disp(bkpl):
             return [
-                (
-                    renpy.substitute(bookmarks_ev[index].prompt),
-                    index,
-                    False,
-                    False
-                ) 
-                for index in range(len(bookmarks_ev))
+                (bkpl[index][0], index, False, False)
+                for index in range(len(bkpl))
             ]
 
-        # generate ev list and index list
-        bookmarks_ev = mas_get_player_bookmarks()
-        bookmarks_ev.sort(key=Event.getSortPrompt)
-        bookmarks_disp = gen_bk_disp(bookmarks_ev)
+        # generate list of propmt/label tuples of bookmarks
+        bookmarks_pl = [ 
+            (renpy.substitute(ev.prompt), ev.eventlabel)
+            for ev in mas_get_player_bookmarks()
+        ]
+        bookmarks_pl.sort()
+        bookmarks_disp = gen_bk_disp(bookmarks_pl)
 
         remove_bookmark = (
             "I'd like to remove a bookmark.",
@@ -2495,7 +2493,7 @@ label mas_bookmarks:
 label mas_bookmarks_loop:
     
     # sanity check for bookmark data
-    if len(bookmarks_ev) < 1 or len(bookmarks_ev) != len(bookmarks_disp):
+    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
         # ensure that we have at least 1 bookmark to deal with and the evs and
         # display lists are the same size
         return False
@@ -2512,14 +2510,14 @@ label mas_bookmarks_loop:
     elif topic_choice < 0:
         # prompt for bookmarks to remove
         # no need to regen since we know we have the list already
-        call mas_bookmarks_unbookmark(bookmarks_ev, bookmarks_disp, gen_bk_disp)
+        call mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, gen_bk_disp)
 
         # the disp list might have been regenerated
         $ bookmarks_disp = _return
 
-    elif 0 <= topic_choice < len(bookmarks_ev):
+    elif 0 <= topic_choice < len(bookmarks_pl):
         # get selected label and push
-        $ sel_evl = bookmarks_ev[topic_choice].eventlabel
+        $ sel_evl = bookmarks_pl[topic_choice][1]
         show monika at t11
         $ pushEvent(sel_evl, skipeval=True)
         return True
@@ -2533,16 +2531,16 @@ label mas_bookmarks_loop:
 #   regen - function used to regenerate bookmarks_disp
 #
 # IN/OUT:
-#   bookmarks_ev - list of available bookmark events
+#   bookmarks_pl - list of available bookmark events
 #       items are removed as they are unbookmarked
 #
 # RETURNS: list of displayable menu bookmarks. migtht be regenerated.
-label mas_bookmarks_unbookmark(bookmarks_ev, bookmarks_disp, regen):
+label mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, regen):
     pass
 
 label mas_bookmarks_unbookmark_loop:
 
-    if len(bookmarks_ev) < 1 or len(bookmarks_ev) != len(bookmarks_disp):
+    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
         # ensure that we have at least 1 bookmark to deal with and the evs and
         # display lists are the same size
         return []
@@ -2566,22 +2564,22 @@ label mas_bookmarks_unbookmark_loop:
         return bookmarks_disp
 
     # sanity check the selected topic choice
-    if topic_choice < len(bookmarks_ev):
+    if topic_choice < len(bookmarks_pl):
         # a topic was selected
 
         python:
             # get the label that was selected
-            sel_evl = bookmarks_ev[topic_choice].eventlabel
+            sel_evl = bookmarks_pl[topic_choice][1]
 
             # remove the bookmark from persist (if in it)
             if sel_evl in persistent._mas_player_bookmarked:
                 persistent._mas_player_bookmarked.remove(sel_evl)
 
             # remove from teh ev list
-            bookmarks_ev.pop(topic_choice)
+            bookmarks_pl.pop(topic_choice)
 
             # re-generate bookmarks disp
-            bookmarks_disp = regen(bookmarks_ev)
+            bookmarks_disp = regen(bookmarks_pl)
         
         show monika at t11
         m 1eua "Okay, [player]..."
