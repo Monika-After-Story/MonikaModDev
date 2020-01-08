@@ -2452,8 +2452,10 @@ label prompts_categories(pool=True):
                 $ current_category.pop()
 
         else: # event picked
-            $picked_event = True
-            $pushEvent(_return)
+            $ picked_event = True
+            #So we don't push garbage
+            if _return is not False:
+                $ pushEvent(_return)
 
     return _return
 
