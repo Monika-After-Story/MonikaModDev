@@ -2545,7 +2545,7 @@ label mas_bookmarks_unbookmark_loop:
     if len(bookmarks_ev) < 1 or len(bookmarks_ev) != len(bookmarks_disp):
         # ensure that we have at least 1 bookmark to deal with and the evs and
         # display lists are the same size
-        return
+        return []
 
     $ unbookmark_back = ("Nevermind.", -1, False, False, 20)
 
