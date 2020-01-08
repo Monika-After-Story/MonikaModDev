@@ -2594,9 +2594,11 @@ label mas_bookmarks_unbookmark_loop:
                     pass # returns to start of loop
                 "No.":
                     m 3eua "Okay."
+                    show monika idle
                     return bookmarks_disp
         else:
             m 3hua "All done!"
+            show monika idle
             return bookmarks_disp
 
     jump mas_bookmarks_unbookmark_loop
