@@ -354,7 +354,7 @@ label mas_mood_angry:
     m 1esc "You may end up saying or doing things you may regret later."
     m 1lksdld "And I'd hate for you to say something you really don't mean to me."
     m 3eua "Let's try a few things that I do to calm myself first, [player]."
-    m 3eub "Hopefully they work for you as they do for me."
+    m 3eub "Hopefully they work for you as well as they do for me."
     m 1eua "First, try taking a few deep breaths and slowly counting to 10."
     m 3euc "If that doesn't work, if you can, retreat to somewhere calm until you clear your mind."
     m 1eud "If you're still feeling angry after that, do what I'd do as a last resort!"
