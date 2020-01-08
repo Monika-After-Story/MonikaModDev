@@ -2575,9 +2575,8 @@ label mas_bookmarks_unbookmark_loop:
             if sel_evl in persistent._mas_player_bookmarked:
                 persistent._mas_player_bookmarked.remove(sel_evl)
 
-            # remove from teh ev and disp lists
+            # remove from teh ev list
             bookmarks_ev.pop(topic_choice)
-            bookmarks_disp.pop(topic_choice)
 
             # re-generate bookmarks disp
             bookmarks_disp = regen(bookmarks_ev)
