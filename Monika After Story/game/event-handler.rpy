@@ -2511,6 +2511,7 @@ label mas_bookmarks_loop:
         # prompt for bookmarks to remove
         # no need to regen since we know we have the list already
         call mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, gen_bk_disp)
+        show monika idle
 
         # the disp list might have been regenerated
         $ bookmarks_disp = _return
@@ -2594,11 +2595,9 @@ label mas_bookmarks_unbookmark_loop:
                     pass # returns to start of loop
                 "No.":
                     m 3eua "Okay."
-                    show monika idle
                     return bookmarks_disp
         else:
             m 3hua "All done!"
-            show monika idle
             return bookmarks_disp
 
     jump mas_bookmarks_unbookmark_loop
