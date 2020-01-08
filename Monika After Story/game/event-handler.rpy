@@ -2535,6 +2535,8 @@ label mas_bookmarks_loop:
 # IN/OUT:
 #   bookmarks_ev - list of available bookmark events
 #       items are removed as they are unbookmarked
+#
+# RETURNS: list of displayable menu bookmarks. migtht be regenerated.
 label mas_bookmarks_unbookmark(bookmarks_ev, bookmarks_disp, regen):
     pass
 
