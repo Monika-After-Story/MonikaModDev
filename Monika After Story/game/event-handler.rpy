@@ -2531,7 +2531,7 @@ label mas_bookmarks_loop:
 #   regen - function used to regenerate bookmarks_disp
 #
 # IN/OUT:
-#   bookmarks_pl - list of available bookmark events
+#   bookmarks_pl - list of available bookmark prompt/label tuples
 #       items are removed as they are unbookmarked
 #
 # RETURNS: list of displayable menu bookmarks. migtht be regenerated.
