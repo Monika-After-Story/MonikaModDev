@@ -30,7 +30,7 @@ init python in mas_consumables:
     #Dict of dicts:
     #consumable_map = {
     #   0: {"consumable_id": MASConsumable},
-    #   1: {"consumable_id": MASConsumableFood}
+    #   1: {"consumable_id": MASConsumable}
     #}
     consumable_map = dict()
 
@@ -48,6 +48,7 @@ init 10 python:
             start_end_tuple_list - list of (start_hour, end_hour) tuples
             acs - MASAccessory to display for the consumable
             split_list - list of split hours
+            should_restock_warn - whether or not Monika should warn the player that she's running out of this consumable
             late_entry_list - list of integers storing the hour which would be considered a late entry
             max_re_serve - amount of times Monika can get a re-serving of this consumable
             cons_chance - likelihood of Monika to keep having this consumable
@@ -62,15 +63,20 @@ init 10 python:
         """
 
         #Constants:
+        #Drink prep/finish drink/get drink eventlabels
         BREW_FINISH_EVL = "mas_finished_brewing"
         DRINK_FINISH_EVL = "mas_finished_drinking"
         DRINK_GET_EVL = "mas_get_drink"
 
+        #Food prep/finish eat/get food eventlabels
         PREP_FINISH_EVL = "mas_finished_prepping"
         FOOD_FINISH_EVL = "mas_finished_eating"
         FOOD_GET_EVL = "mas_get_food"
 
         DEF_DONE_CONS_TD = datetime.timedelta(hours=2)
+
+        LOW_STOCK_AMT = 10
+        LOW_CRITICAL_STOCK_AMT = 1
 
         def __init__(
             self,
@@ -81,6 +87,7 @@ init 10 python:
             start_end_tuple_list,
             acs,
             split_list,
+            should_restock_warn=True,
             late_entry_list=None,
             max_re_serve=None,
             cons_chance=80,
@@ -109,7 +116,13 @@ init 10 python:
 
                 start_end_tuple_list - list of tuples storing (start_hour, end_hour)
 
+                should_restock_warn - should Monika warn the player that this needs to be restocked?
+                    (Default: True)
+
                 late_entry_list - list of times storing when we should load in with a consumable already out
+                    If None, the start times from the start_end_tuple_list are assumed
+                    NOTE: must be the same length as start_end_tuple_list
+                    (Default: None)
 
                 max_re_serve - amount of times Monika can get a refill of this consumable
                     (Default: None)
@@ -172,6 +185,7 @@ init 10 python:
 
             self.container=container
             self.split_list=split_list
+            self.should_restock_warn=should_restock_warn
             self.prep_low=prep_low
             self.prep_high=prep_high
 
@@ -296,6 +310,28 @@ init 10 python:
                     - The amount of servings left for the consumable
             """
             return persistent._mas_consumable_map[self.consumable_id]["servings_left"]
+
+        def isLow(self):
+            """
+            Checks if we're running low on a consumable
+
+            OUT:
+                boolean:
+                    - True if we're less than or equal to the LOW_STOCK_AMT value
+                    - False otherwise
+            """
+            return self.getStock() <= MASConsumable.LOW_STOCK_AMT
+
+        def isCriticalLow(self):
+            """
+            Checks if we're critically low on a consumable
+
+            OUT:
+                boolean:
+                    - True if we're less than or equal to the LOW_CRITICAL_STOCK_AMT value
+                    - False otherwise
+            """
+            return self.getStock() <= MASConsumable.LOW_CRITICAL_STOCK_AMT
 
         def use(self, amount=1):
             """
@@ -548,6 +584,36 @@ init 10 python:
                 self.done_cons_until = None
                 return True
             return False
+
+        @staticmethod
+        def _getLowCons(_type, critical=False):
+            """
+            Gets a list of all consumable which Monika is low on (and should warn about)
+
+            IN:
+                _type - Type of consumables to get a low list for
+                critical - Whether the list should be only those Monika is critically low on
+                    (Default: False)
+
+            OUT:
+                list of all consumables Monika is low on (or critical on)
+            """
+            if _type not in store.mas_consumables.consumable_map:
+                return []
+
+            if critical:
+                return [
+                    cons
+                    for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                    if cons.should_restock_warn and cons.isCriticalLow()
+                ]
+
+            else:
+                return [
+                    cons
+                    for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                    if cons.should_restock_warn and cons.isLow()
+                ]
 
         @staticmethod
         def _reset():
@@ -887,7 +953,7 @@ init 10 python:
             consumable_id - consumable to get
 
         OUT:
-            MASConsumableFood object if found, None otherwise
+            MASConsumable object if found, None otherwise
         """
         return mas_getConsumable(
             store.mas_consumables.TYPE_FOOD,
@@ -1127,11 +1193,11 @@ label mas_consumables_generic_finish_having(consumable):
         m 1hua "Back!{w=1.5}{nw}"
 
     #Only have one left
-    elif not get_more and consumable.getStock() == 1:
+    elif not get_more and consumable.isCriticalLow():
         call mas_consumables_generic_critical_low(consumable=consumable)
 
     #Running out
-    elif not get_more and consumable.getStock() <= 10:
+    elif not get_more and consumable.isLow():
         call mas_consumables_generic_running_out(consumable=consumable)
 
     else:
@@ -1188,7 +1254,12 @@ label mas_consumables_generic_finished_prepping(consumable):
 label mas_consumables_generic_running_out(consumable):
     $ amt_left = consumable.getStock()
     m 1euc "By the way, [player]..."
-    m 3eud "I just wanted to let you know I only have about [amt_left] [consumable.container]s left of [consumable.disp_name] left."
+
+    if amt_left > 0:
+        m 3eud "I just wanted to let you know I only have about [amt_left] [consumable.container]s left of [consumable.disp_name] left."
+    else:
+        m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name]."
+
     m 1eka "You wouldn't mind getting some more for me, would you?"
     return
 
