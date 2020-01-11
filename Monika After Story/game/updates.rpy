@@ -470,6 +470,9 @@ label v0_10_5(version="v0_10_5"):
         del persistent.instrument
         del persistent._mas_likes_rain
 
+        # remove bookmarks unbookmark topic
+        mas_eraseTopic("mas_topic_unbookmark")
+
         # need to create data for new var persistent._mas_player_bday_saw_surprise for previous years
 
         seen_bday_surprise = False

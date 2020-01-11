@@ -10,32 +10,32 @@ define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 # IMAGES-----------
 # hangman
 image hm_6 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_6.png",
-    "True", "mod_assets/hangman/hm_6.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_6.png",
+    "True", "mod_assets/games/hangman/hm_6.png"
 )
 image hm_5 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_5.png",
-    "True", "mod_assets/hangman/hm_5.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_5.png",
+    "True", "mod_assets/games/hangman/hm_5.png"
 )
 image hm_4 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_4.png",
-    "True", "mod_assets/hangman/hm_4.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_4.png",
+    "True", "mod_assets/games/hangman/hm_4.png"
 )
 image hm_3 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_3.png",
-    "True", "mod_assets/hangman/hm_3.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_3.png",
+    "True", "mod_assets/games/hangman/hm_3.png"
 )
 image hm_2 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_2.png",
-    "True", "mod_assets/hangman/hm_2.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_2.png",
+    "True", "mod_assets/games/hangman/hm_2.png"
 )
 image hm_1 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_1.png",
-    "True", "mod_assets/hangman/hm_1.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_1.png",
+    "True", "mod_assets/games/hangman/hm_1.png"
 )
 image hm_0 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_0.png",
-    "True", "mod_assets/hangman/hm_0.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_0.png",
+    "True", "mod_assets/games/hangman/hm_0.png"
 )
 
 # sayori
@@ -45,9 +45,9 @@ image hm_s:
         # this block handles images
         block:
             choice:
-                "mod_assets/hangman/hm_s1.png"
+                "mod_assets/games/hangman/hm_s1.png"
             choice:
-                "mod_assets/hangman/hm_s2.png"
+                "mod_assets/games/hangman/hm_s2.png"
 
         # this block makes the image flicker
         # the numbers are times to display
@@ -73,12 +73,12 @@ image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horiz
 image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
 image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYORI_SCALE)
 
-#image hm_s1 = "mod_assets/hangman/hm_s1.png"
-#image hm_s2 = "mod_assets/hangman/hm_s2.png"
+#image hm_s1 = "mod_assets/games/hangman/hm_s1.png"
+#image hm_s2 = "mod_assets/games/hangman/hm_s2.png"
 
 # frame
-image hm_frame = "mod_assets/hangman/hm_frame.png"
-image hm_frame_dark = "mod_assets/hangman/hm_frame_d.png"
+image hm_frame = "mod_assets/games/hangman/hm_frame.png"
+image hm_frame_dark = "mod_assets/games/hangman/hm_frame_d.png"
 
 # TRANSFORMS
 transform hangman_board:
@@ -213,8 +213,8 @@ init -1 python in mas_hangman:
 
 
     # file names
-    NORMAL_LIST = "mod_assets/MASpoemwords.txt"
-    HARD_LIST = "mod_assets/1000poemwords.txt"
+    NORMAL_LIST = "mod_assets/games/hangman/MASpoemwords.txt"
+    HARD_LIST = "mod_assets/games/hangman/1000poemwords.txt"
 
     # hangman game text
     game_name = "Hangman"

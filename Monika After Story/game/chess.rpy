@@ -502,14 +502,14 @@ init:
                 renpy.Displayable.__init__(self)
 
                 # Some displayables we use.
-                self.pieces_image = Image("mod_assets/chess_pieces.png")
-                self.board_image = Image("mod_assets/chess_board.png")
-                self.piece_highlight_red_image = Image("mod_assets/piece_highlight_red.png")
-                self.piece_highlight_green_image = Image("mod_assets/piece_highlight_green.png")
-                self.piece_highlight_yellow_image = Image("mod_assets/piece_highlight_yellow.png")
-                self.piece_highlight_magenta_image = Image("mod_assets/piece_highlight_magenta.png")
-                self.move_indicator_player = Image("mod_assets/move_indicator_player.png")
-                self.move_indicator_monika = Image("mod_assets/move_indicator_monika.png")
+                self.pieces_image = Image("mod_assets/games/chess/chess_pieces.png")
+                self.board_image = Image("mod_assets/games/chess/chess_board.png")
+                self.piece_highlight_red_image = Image("mod_assets/games/chess/piece_highlight_red.png")
+                self.piece_highlight_green_image = Image("mod_assets/games/chess/piece_highlight_green.png")
+                self.piece_highlight_yellow_image = Image("mod_assets/games/chess/piece_highlight_yellow.png")
+                self.piece_highlight_magenta_image = Image("mod_assets/games/chess/piece_highlight_magenta.png")
+                self.move_indicator_player = Image("mod_assets/games/chess/move_indicator_player.png")
+                self.move_indicator_monika = Image("mod_assets/games/chess/move_indicator_monika.png")
                 self.player_move_prompt = Text(_("It's your turn, [player]!"), size=36)
                 self.num_turns = 0
                 self.surrendered = False
@@ -673,15 +673,15 @@ init:
                     startupinfo = subprocess.STARTUPINFO()
                     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     if is_64_bit:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe',startupinfo)
+                        self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x64.exe',startupinfo)
                     else:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe',startupinfo)
+                        self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x32.exe',startupinfo)
                 elif platform.system() == 'Linux' and is_64_bit:
-                    os.chmod(config.basedir + '/game/mod_assets/stockfish_8_linux_x64',0755)
-                    self.stockfish = open_stockfish('mod_assets/stockfish_8_linux_x64')
+                    os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_linux_x64',0755)
+                    self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_linux_x64')
                 elif platform.system() == 'Darwin' and is_64_bit:
-                    os.chmod(config.basedir + '/game/mod_assets/stockfish_8_macosx_x64',0755)
-                    self.stockfish = open_stockfish('mod_assets/stockfish_8_macosx_x64')
+                    os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_macosx_x64',0755)
+                    self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_macosx_x64')
 
                 # Set Monika's parameters
                 self.stockfish.stdin.write("setoption name Skill Level value %d\n" % (persistent.chess_strength))

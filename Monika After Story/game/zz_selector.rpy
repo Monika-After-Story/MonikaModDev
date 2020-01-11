@@ -3196,7 +3196,8 @@ init 5 python:
             pool=True,
             unlocked=True,
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 default persistent._mas_setting_ocb = False
@@ -3264,9 +3265,6 @@ label monika_clothes_select:
         # user hit cancel
         m 1eka "Oh, alright."
 
-    # closing
-    m 1eub "If you want me to wear different clothes, just ask, okay?"
-
     return
 
 # selector for event days with special outfits for normal and upset people
@@ -3281,7 +3279,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_event_clothes_select:
@@ -3329,9 +3328,6 @@ label monika_event_clothes_select:
     if not _return:
         # user hit cancel
         m 1eka "Oh, alright."
-
-    # closing
-    m 1eub "If you want me to change back, just ask, okay?"
 
     if store.monika_chr.clothes == store.mas_clothes_def and not store.mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
@@ -3410,7 +3406,8 @@ init 5 python:
             pool=True,
             unlocked=False,
             rules={"no unlock": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_hair_select:
@@ -3436,9 +3433,6 @@ label monika_hair_select:
         # user hit cancel
         m 1eka "Oh, alright."
 
-    # closing
-    m 1eub "If you want my hair in a different style, just ask, okay?"
-
     return
 
 ##### End monika hair topics
@@ -3454,7 +3448,8 @@ init 5 python:
             pool=True,
             unlocked=False,
             rules={"no unlock": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_ribbon_select:
@@ -3499,7 +3494,6 @@ label monika_ribbon_select:
         m 1eka "Oh, alright."
 
     $ store.mas_selspr.set_prompt("ribbon", "change")
-    m 1eka "If you want me to change my hair tie, just ask, okay?"
 
     return
 #### End Ribbon change topic
@@ -3516,7 +3510,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_hairclip_select:
@@ -3538,10 +3533,8 @@ label monika_hairclip_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type('left-hair-clip'):
         $ store.mas_selspr.set_prompt("left-hair-clip", "change")
-        m 1eka "If you want me to change my hairclip, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
-        m 1eka "If you want me to wear a hairclip again, just ask, okay?"
 
     return
 
@@ -3560,7 +3553,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_hairflower_select:
@@ -3589,10 +3583,8 @@ label monika_hairflower_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("left-hair-flower"):
         $ store.mas_selspr.set_prompt("left-hair-flower", "change")
-        m 1eka "If you want me to change the flower, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("left-hair-flower", "wear")
-        m 1eka "If you want me to wear a flower, just ask, okay?"
 
     return
 
@@ -3610,7 +3602,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_choker_select:
@@ -3632,10 +3625,8 @@ label monika_choker_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("choker"):
         $ store.mas_selspr.set_prompt("choker", "change")
-        m 1eka "If you want me to change my choker, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("choker", "wear")
-        m 1eka "If you want me to wear a choker, just ask, okay?"
 
     return
 
