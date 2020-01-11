@@ -382,7 +382,8 @@ init -1 python:
                 ev=None,
                 skip_visual=False,
                 random_chance=0,
-                setup_label=None
+                setup_label=None,
+                override_type=False
             ):
             """
             IN:
@@ -398,6 +399,9 @@ init -1 python:
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
                     (Default: None)
+                override_type - True will let this greeting override type
+                    checks during selection, False will not
+                    (Default: False)
 
             RETURNS:
                 a dict containing the specified rules
@@ -416,7 +420,8 @@ init -1 python:
                 EV_RULE_GREET_RANDOM: (
                     skip_visual,
                     random_chance,
-                    setup_label
+                    setup_label,
+                    override_type,
                 )
             }
 
@@ -461,6 +466,22 @@ init -1 python:
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
 
+        @staticmethod
+        def should_override_type(ev=None, rule=None):
+            """
+            IN:
+                ev - the event to evaluate, gets priority
+                rule - the MASGreetingRule to evaluate
+
+            RETURNS: True if the rule should override types, false if not
+            """
+            if ev:
+                rule = ev.rules.get(EV_RULE_GREET_RANDOM, None)
+
+            if rule is not None and len(rule) > 3:
+                return rule[3]
+
+            return False
 
         @staticmethod
         def should_skip_visual(event=None, rule=None):
@@ -735,12 +756,12 @@ init python:
             #Step 1, verify that our start/end dates are datetime.datetimes or datetime.dates
             if type(start_date) is not datetime.datetime and type(start_date) is not datetime.date:
                 raise Exception(
-                    "{0} is not a valid start_date".format(start_date)
+                    "{0} is not a valid start_date (eventlabel: {1})".format(start_date, evl)
                 )
 
             if type(end_date) is not datetime.datetime and type(start_date) is not datetime.date:
                 raise Exception(
-                    "{0} is not a valid end_date".format(end_date)
+                    "{0} is not a valid end_date (eventlabel: {1})".format(end_date, evl)
                 )
 
             #Step 2, we need to turn datetime.date into datetime.datetime
@@ -815,14 +836,12 @@ init python:
                 True if we are past the stored end date and we need to
             """
             #NOTE: This should be used AFTER init 7
-            dates = persistent._mas_undo_action_rules.get(ev.eventlabel)
+            _start_date, _end_date = persistent._mas_undo_action_rules.get(ev.eventlabel, (None, None))
 
-            if not ev or not dates:
-                #This ev doesn't exist and/or it doesn't exist in the rules dict, so no point checking this
-                return False
-
-            #Since these exist, let's unpack for easy usage
-            _start_date, _end_date = dates
+            #Check for invalid data
+            if not ev or not _start_date or not _end_date:
+                #This ev doesn't exist and/or it doesn't exist in the rules dict. We should set this to be removed
+                return None
 
             #Need to turn
             _now = datetime.datetime.now()
@@ -836,27 +855,37 @@ init python:
             if _end_date < _now:
                 _start_date = ev.start_date
                 _end_date = ev.end_date
+
+                #We return none here
+                if not _start_date or not _end_date:
+                    return None
+
                 MASUndoActionRule.adjust_rule(ev, _start_date, _end_date)
+
                 #We're now past the dates and need to undo the action
                 return True
             #We're still not at the date or we're within the dates, so we cannot go
             return False
 
         @staticmethod
-        def check_persistent_rules(per_rules):
+        def check_persistent_rules():
             """
             Applies rules from persistent dict
 
             NOTE: uses mas_getEV
-
-            IN:
-                per_rules - persistent dict/list to get rules from
             """
-            for ev_label in per_rules:
+            for ev_label in persistent._mas_undo_action_rules.keys():
                 ev = mas_getEV(ev_label)
-                if ev is not None and MASUndoActionRule.evaluate_rule(ev):
+                #Since we can have differing returns, we store this to use later
+                should_undo = MASUndoActionRule.evaluate_rule(ev)
+
+                #If we do have the dates and we're out of the time period, we undo the action
+                if ev is not None and should_undo:
                     Event._undoEVAction(ev)
 
+                #If this is None, we need to pop due to bad data
+                elif should_undo is None:
+                    persistent._mas_undo_action_rules.pop(ev_label)
 
     class MASStripDatesRule(object):
         """

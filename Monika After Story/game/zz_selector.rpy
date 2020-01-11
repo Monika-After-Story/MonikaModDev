@@ -1783,8 +1783,30 @@ init -1 python:
 
         elif allow_lock:
             store.mas_selspr.lock_prompt(group)
-            
 
+    def mas_hasUnlockedClothesWithExprop(exprop, value=None):
+        """
+        Checks if we have unlocked clothes with a specific exprop
+
+        IN:
+            exprop - exprop to look for
+            value - value the exprop should be. Set to None to ignore.
+            (Default: None)
+
+        OUT:
+            boolean:
+                True if we have unlocked clothes with the exprop + value provided
+                False otherwise
+        """
+        clothes_with_exprop = MASClothes.by_exprop(exprop, value)
+
+        if not clothes_with_exprop:
+            return False
+
+        for clothes in clothes_with_exprop:
+            if mas_SELisUnlocked(clothes):
+                return True
+        return False
 
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
@@ -2043,8 +2065,9 @@ init -1 python:
             """
             if selected:
                 color = mas_ui.light_button_text_hover_color
+                
             else:
-                color = mas_ui.light_button_text_idle_color
+                color = mas_globals.button_text_idle_color
 
             return Text(
                 _text,
@@ -2729,7 +2752,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
             if mailbox.read_outfit_checkbox_visible():
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
-                    style "check_button"
+                    style mas_ui.st_cbx_style
                     activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocb"),
@@ -3173,7 +3196,8 @@ init 5 python:
             pool=True,
             unlocked=True,
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 default persistent._mas_setting_ocb = False
@@ -3241,9 +3265,6 @@ label monika_clothes_select:
         # user hit cancel
         m 1eka "Oh, alright."
 
-    # closing
-    m 1eub "If you want me to wear different clothes, just ask, okay?"
-
     return
 
 # selector for event days with special outfits for normal and upset people
@@ -3258,7 +3279,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_event_clothes_select:
@@ -3306,9 +3328,6 @@ label monika_event_clothes_select:
     if not _return:
         # user hit cancel
         m 1eka "Oh, alright."
-
-    # closing
-    m 1eub "If you want me to change back, just ask, okay?"
 
     if store.monika_chr.clothes == store.mas_clothes_def and not store.mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
@@ -3387,7 +3406,8 @@ init 5 python:
             pool=True,
             unlocked=False,
             rules={"no unlock": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_hair_select:
@@ -3413,9 +3433,6 @@ label monika_hair_select:
         # user hit cancel
         m 1eka "Oh, alright."
 
-    # closing
-    m 1eub "If you want my hair in a different style, just ask, okay?"
-
     return
 
 ##### End monika hair topics
@@ -3431,7 +3448,8 @@ init 5 python:
             pool=True,
             unlocked=False,
             rules={"no unlock": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_ribbon_select:
@@ -3440,6 +3458,16 @@ label monika_ribbon_select:
 #        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
+
+        # remove non-compatible acs
+        for index in range(len(use_acs)-1, -1, -1):
+            if (
+                not store.mas_sprites.is_hairacs_compatible(
+                    monika_chr.hair,
+                    use_acs[index].get_sprobj()
+                )
+            ):
+                use_acs.pop(index)
         
         # make sure ot use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
@@ -3466,7 +3494,6 @@ label monika_ribbon_select:
         m 1eka "Oh, alright."
 
     $ store.mas_selspr.set_prompt("ribbon", "change")
-    m 1eka "If you want me to change my hair tie, just ask, okay?"
 
     return
 #### End Ribbon change topic
@@ -3483,7 +3510,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_hairclip_select:
@@ -3505,10 +3533,8 @@ label monika_hairclip_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type('left-hair-clip'):
         $ store.mas_selspr.set_prompt("left-hair-clip", "change")
-        m 1eka "If you want me to change my hairclip, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
-        m 1eka "If you want me to wear a hairclip again, just ask, okay?"
 
     return
 
@@ -3527,7 +3553,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_hairflower_select:
@@ -3556,10 +3583,8 @@ label monika_hairflower_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("left-hair-flower"):
         $ store.mas_selspr.set_prompt("left-hair-flower", "change")
-        m 1eka "If you want me to change the flower, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("left-hair-flower", "wear")
-        m 1eka "If you want me to wear a flower, just ask, okay?"
 
     return
 
@@ -3577,7 +3602,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_choker_select:
@@ -3599,10 +3625,8 @@ label monika_choker_select:
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("choker"):
         $ store.mas_selspr.set_prompt("choker", "change")
-        m 1eka "If you want me to change my choker, just ask, okay?"
     else:
         $ store.mas_selspr.set_prompt("choker", "wear")
-        m 1eka "If you want me to wear a choker, just ask, okay?"
 
     return
 

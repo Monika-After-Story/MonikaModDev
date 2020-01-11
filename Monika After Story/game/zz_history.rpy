@@ -369,6 +369,71 @@ init -850 python:
         """
         return store.mas_history.verify(".".join(keys), _verify, years_list)
 
+    def mas_HistWasFirstValueIn(_verify, year, *keys):
+        """
+        Checks if the first year that _verify was found for the keys provided in history
+        matches the year provided
+
+        IN:
+            _verify - Value to check for
+            year - year to match
+            *keys - string pieces to make a key for history
+
+        OUT:
+            boolean:
+                - True if the first year matches the year provided
+                - False otherwise
+        """
+        return mas_HistGetFirstYearOfValue(_verify, *keys) == year
+
+    def mas_HistGetFirstYearOfValue(_verify, *keys):
+        """
+        Gets the first year which has the entry of _verify in the keys provided
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            If there's a point where the value we're checking for is found, we return the first year that is met.
+            If not found, we return None
+        """
+        archive_value = mas_HistVerify_k([],_verify, *keys)
+
+        #If we actually have the value we're looking for, we get the first year
+        if archive_value[0]:
+            return archive_value[1][0]
+        return None
+
+    def mas_HistVerifyAll_k(_verify, *keys):
+        """
+        Checks if the value of _verify for the keys is in history at any point
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces at all
+                - False otherwise
+        """
+        return mas_HistVerify_k([],_verify, *keys)[0]
+
+    def mas_HistVerifyLastYear_k(_verify, *keys):
+        """
+        Checks history for the value of _verify in the key provided last year
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces last year
+                - False otherwise
+        """
+        return mas_HistVerify_k([datetime.date.today().year-1], _verify, *keys)[0]
 
     ## MASHistorySaver stuff
     
@@ -908,6 +973,7 @@ init -810 python:
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
 
             # lifestyle / music
+            "_mas_pm_plays_instrument": "pm.lifestyle.play_instrument",
             "_mas_pm_play_jazz": "pm.lifestyle.music.play_jazz",
 
             # lifestyle / smoking
@@ -932,9 +998,15 @@ init -810 python:
 
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
+            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
+            "_mas_pm_has_been_to_amusement_park": "pm.actions.been_to_amusement_park",
+
+            # actions / d25
+            "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
+
+            # actions / nye-nyd
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
-            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
             # actions / games
             "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
@@ -952,6 +1024,8 @@ init -810 python:
             "_mas_pm_longest_held_monika": "pm.actions.monika.longest_held_time",
             "_mas_pm_total_held_monika": "pm.actions.monika.total_held_time",
             "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
+            "_mas_pm_got_a_fresh_start": "pm.actions.monika.got_fresh_start",
+            "_mas_pm_failed_fresh_start": "pm.actions.monika.failed_fresh_start",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -999,6 +1073,8 @@ init -810 python:
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
             "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
+            "_mas_pm_likes_rain": "pm.likes.rain",
+            "_mas_pm_likes_travelling": "pm.likes.travelling",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1081,6 +1157,6 @@ init -810 python:
         {
             "_mas_aff_before_fresh_start": "aff.before_fresh_start"
         },
-        use_year_before=True
+        use_year_before=True,
+        dont_reset=True
     ))
-

@@ -938,6 +938,7 @@ python early:
             #   full_copy - True means we create a new dict with deepcopies of
             #       the events. False will only copy references
             #       (Default: False)
+            #       DEPRECATEDE
             #
             #   FILTERING RULES: (recommend to use **kwargs)
             #   NOTE: None means we ignore that filtering rule
@@ -3919,6 +3920,19 @@ init -985 python:
             defval=datetime.datetime.now()
         )
 
+    def mas_isFirstSeshPast(_date):
+        """
+        Checks if the first session is past the given date
+
+        IN:
+            _date - datetime.date to check against
+
+        OUT:
+            boolean:
+                - True if first sesh is past given date
+                - False otherwise
+        """
+        return mas_getFirstSesh().date() > _date
 
     def mas_getLastSeshEnd():
         """
@@ -5047,6 +5061,117 @@ init 2 python:
         rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
 
         return rpyCheckStation.getPackageList(".rpy")
+
+    def mas_is18Over(_date=None):
+        """
+        Checks if player is over 18
+
+        IN:
+            _date - date to check
+            If None, today is assumed.
+            Default: None
+
+        OUT:
+            boolean:
+                - True if player is over 18
+                - False otherwise
+        """
+        #If we don't have player bday, we assume not.
+        if not persistent._mas_player_bday:
+            return False
+
+        return mas_getPlayerAge(_date) >= 18
+
+    def mas_getPlayerAge(_date=None):
+        """
+        Gets the player age
+
+        IN:
+            _date - the datetime.date to get the player age at
+
+        OUT:
+            integer representing the player's current age or None if we don't have player's bday
+        """
+        if not persistent._mas_player_bday:
+            return 0
+
+        elif _date is None:
+            _date = datetime.date.today()
+
+        year_bday = mas_player_bday_curr(_date)
+        _years = year_bday.year - persistent._mas_player_bday.year
+
+        if _date < year_bday:
+            _years -= 1
+
+        return _years
+
+    def mas_canShowRisque(aff_thresh=2000):
+        """
+        Checks if we can show something risque
+
+        Conditions for this:
+            1. We're not in sensitive mode
+            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            3. Player is over 18
+            4. Aff condition (raw)
+
+        IN:
+            aff_thresh:
+                - Raw affection value to be greater than or equal to
+
+        OUT:
+            boolean:
+                - True if the above conditions are satisfied
+                - False if not
+        """
+        return (
+            not persistent._mas_sensitive_mode
+            and persistent._mas_first_kiss is not None
+            and mas_is18Over()
+            and _mas_getAffection() >= aff_thresh
+        )
+
+    def mas_timePastSince(timekeeper, passed_time, _now=None):
+        """
+        Checks if a certain amount of time has passed since the time in the timekeeper
+        IN:
+            timekeeper:
+                variable holding the time we last checked whatever it restricts
+                (can be datetime.datetime or datetime.date)
+
+            passed_time:
+                datetime.timedelta of the amount of time which should
+                have passed since the last check in order to return True
+
+            _now:
+                time to check against (If none, now is assumed, (Default: None))
+        OUT:
+            boolean:
+                - True if it has been passed_time units past timekeeper
+                - False otherwise
+        """
+        if timekeeper is None:
+            return True
+
+        elif _now is None:
+            _now = datetime.datetime.now()
+
+        #If our timekeeper is holding a datetime.date, we need to convert it to a datetime.datetime
+        if not isinstance(timekeeper, datetime.datetime):
+            timekeeper = datetime.datetime.combine(timekeeper, datetime.time())
+
+        return timekeeper + passed_time <= _now
+
+    def mas_pastOneDay(timekeeper, _now=None):
+        """
+        One day time past version of mas_timePastSince()
+
+        IN:
+            timekeeper - variable holding the time since last event
+            _now - time to check against (Default: None)
+        """
+        return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -6560,7 +6685,7 @@ style jpn_text:
 # functions related to ily2
 init python:
     def mas_passedILY(pass_time, check_time=None):
-        '''
+        """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
@@ -6570,18 +6695,55 @@ init python:
 
         RETURNS:
             boolean indicating if we are within the time limit
-        '''
+        """
         if check_time is None:
             check_time = datetime.datetime.now()
         return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
-        '''
+        """
         Sets persistent._mas_last_monika_ily (the last time Monika said ily) to a given time
         IN:
             set_time - the time we want to set persistent._mas_last_monika_ily to
                 defaults to datetime.datetime.now()
-        '''
+        """
         if set_time is None:
             set_time = datetime.datetime.now()
         persistent._mas_last_monika_ily = set_time
+
+    def mas_shouldKiss(chance, cooldown=datetime.timedelta(hours=1), special_day_bypass=False):
+        """
+        Checks if Monika should give the player a random kiss
+
+        CONDITIONS:
+            1. Enamored+ affection
+            2. Player already had their first kiss with Monika
+            3. Random chance that changes depending on the chance and special_day_bypass vars
+            4. Enough time has passed since the last kiss
+
+        IN:
+            chance:
+                the chance to receive a kiss from Monika
+            cooldown:
+                a datetime.timedelta representing the amount of time after the
+                last kiss the next random kiss will be allowed
+                (Default: 1 hour)
+            special_day_bypass:
+                whether a special day should bypass the chance (Default=False)
+
+        OUT:
+            boolean:
+                - True if the above conditions are met
+                - False otherwise
+        """
+        should_kiss = (
+            renpy.random.randint(1, chance) == 1
+            or (special_day_bypass and mas_isSpecialDay())
+            )
+
+        return (
+            mas_isMoniEnamored(higher=True)
+            and persistent._mas_first_kiss
+            and should_kiss
+            and mas_timePastSince(persistent._mas_last_kiss, cooldown)
+        )

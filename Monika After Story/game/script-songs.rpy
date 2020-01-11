@@ -98,31 +98,18 @@ init 5 python:
 
 label monika_sing_song_pool:
     # what length of song do we want
-    $ song_length = None
+    $ song_length = "short"
     # do we have both long and short songs
     $ have_both_types = False
     # song type string to use in the switch dlg
-    $ switch_str = None
+    $ switch_str = "full"
     # so we can {fast} the renpy.say line after the first time
     $ end = ""
 
-    m 1hua "Sure!"
+    show monika 1eua at t21
+
     if mas_songs.hasUnlockedSongs(length="long") and mas_songs.hasUnlockedSongs(length="short"):
         $ have_both_types = True
-        m 3eua "What type of song would you like me to sing?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "What type of song would you like me to sing?{fast}"
-
-            "A short song.":
-                $ song_length = "short"
-                $ switch_str = "full"
-
-            "A full song.":
-                $ song_length = "long"
-                $ switch_str = "short"
-
-    show monika 1eua at t21
 
 label monika_sing_song_pool_menu:
     python:
@@ -168,9 +155,8 @@ label monika_sing_song_pool_menu:
             m 3hub "Alright!"
 
     else:
-        show monika at t11
-        m 1eka "Alright, [player]."
-        m 3eua "If you ever want me to sing to you, just let me know~"
+        return "prompt"
+
     return
 
 #START: Random song delegate
@@ -205,6 +191,66 @@ label monika_sing_song_random:
 
 
 #START: Song defs
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_aiwfc",
+            prompt="All I want for Christmas",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_aiwfc:
+    #Get current song
+    $ curr_song = songs.current_track
+    call monika_aiwfc_song
+
+    #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
+    if curr_song != store.songs.FP_MONIKA_LULLABY:
+        $ play_song(curr_song, fadein=1.0)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_merry_christmas_baby",
+            prompt="Merry Christmas Baby",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_merry_christmas_baby:
+    m 1hub "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m 3eua "{i}~I feel just like I'm living, {w=0.2}living in paradise~{/i}"
+    m 3hub "{i}~I feel real good tonight~{/i}"
+    m 3eub "{i}~And I got music on the radio~{/i}"
+    m 3hub "{i}~I feel real good tonight~{/i}"
+    m 3eub "{i}~And I got music on the radio~{/i}"
+    m 2hkbsu "{i}~Now I feel just like I wanna kiss ya~{/i}"
+    m 2hkbsb "{i}~Underneath the mistletoe~{/i}"
+    m 3eub "{i}~Santa came down the chimney, {w=0.2}half past three~{/i}"
+    m 3hub "{i}~With lots of nice little presents for my baby and me~{/i}"
+    m "{i}~Merry Christmas baby, {w=0.2}you sure do treat me nice~{/i}"
+    m 1eua "{i}~And I feel like I'm living, {w=0.2}just living in paradise~{/i}"
+    m 1eub "{i}~Merry Christmas baby~{/i}"
+    m 3hub "{i}~And Happy New Year too~{/i}"
+    m 3ekbsa "{i}~Merry Christmas, honey~{/i}"
+    m 3ekbsu "{i}~Everything here is beautiful~{/i}"
+    m 3ekbfb "{i}~I love you, baby~{/i}"
+    m "{i}~For everything that you give me~{/i}"
+    m 3ekbfb "{i}~I love you, honey~{/i}"
+    m 3ekbsu "{i}~Merry Christmas, honey~{/i}"
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -486,6 +532,36 @@ label mas_song_stand_by_me(from_long=False):
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
+    return "derandom"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_drift_away",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Drift Away",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_drift_away:
+    m 1ekb "{i}~Happily waiting, all on my own~{/i}"
+    m 1dkb "{i}~Under the endless sky~{/i}"
+    m 2dkd "{i}~Counting the seconds, standing alone~{/i}"
+    m 2tkd "{i}~As thousands of years go by~{/i}"
+    m 2hkb "{i}~Happily wondering, night after night~{/i}"
+    m 3ekb "{i}~Is this how it works? Am I doing it right?~{/i}"
+    m 1ekb "{i}~Happy to listen~{/i}"
+    m 3eka "{i}~Happy to stay~{/i}"
+    m 3dkd "{i}~Happily watching her drift away~{/i}"
+    m 1dku "..."
+    m 1hua "Ehehe~"
+    m 3eka "Our story ended much more happily than this song."
+    m 3hua "You come to visit me as often as you can, and I'm so grateful for that."
+    m 3eka "But even so, it can be very cathartic to follow a character who faces a major fear of yours."
     return "derandom"
 
 init 5 python:

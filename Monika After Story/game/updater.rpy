@@ -25,7 +25,12 @@ transform mas_updater_slide:
     time 10.0
     linear 1.0 ypos -35 yanchor 0
 
-image mas_update_available = "mod_assets/updateavailable.png"
+image mas_update_available = ConditionSwitch(
+    "not mas_globals.dark_mode",
+    "mod_assets/updateavailable.png",
+    "mas_globals.dark_mode",
+    "mod_assets/updateavailable_d.png"
+)
 
 init -1 python:
 
@@ -393,10 +398,8 @@ init -1 python:
         def _handleRedirect(new_url):
             """
             Attempts to connect to the redircted url
-
             IN:
                 new_url - the redirect we want to connect to
-
             Returns read_json if we got a connection, Nnone otherwise
             """
             import httplib
@@ -438,7 +441,6 @@ init -1 python:
             """
             Sends out the http request and returns a response and stuff
             NOTE: designed to be called as a background thread
-
             ASSUMES:
                 _thread_result
                     appends appropriate state for use

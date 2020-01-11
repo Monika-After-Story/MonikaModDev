@@ -613,7 +613,7 @@ init 5 python:
 label unlock_piano:
     m 2hua "Hey! I've got something exciting to tell you!"
     m 2eua "I've finally added a piano to the room for us to use, [player]."
-    if not persistent.instrument:
+    if not persistent._mas_pm_plays_instrument:
         m 3hub "I really want to hear you play!"
         m 3eua "It might seem overwhelming at first, but at least give it a try."
         m 3hua "After all, we all start somewhere."
@@ -646,7 +646,8 @@ label random_limit_reached:
             "No point in trying to say everything right away...",
             "I hope you've enjoyed listening to everything I was thinking about today...",
             "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you too much."
+            "I hope I didn't bore you too much.",
+            "You don't mind if I think about what to say next, do you?"
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1eka "[limit_quip]"
@@ -696,7 +697,7 @@ init 5 python:
                 "is_running(['monikai.exe']) and " +
                 "not seen_event('mas_monikai_detected')"
             ),
-            action=EV_ACT_PUSH
+            action=EV_ACT_QUEUE
         )
     )
 
@@ -738,6 +739,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_CRASHED],
             rules=ev_rules,
         ),
+        restartBlacklist=True,
         code="GRE"
     )
 
@@ -1319,7 +1321,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_brewing",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
@@ -1377,7 +1380,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_drinking",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
@@ -1799,7 +1803,7 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
  
     else:
@@ -1808,7 +1812,7 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
 
     $ persistent._mas_player_bday = selected_date
@@ -2015,7 +2019,15 @@ label mas_change_to_def:
 #   IN:
 #       outfit - the MASClothes object to change outfit to
 #           If None is passed, the uniform is used
-label mas_clothes_change(outfit=None, outfit_mode=False):
+#       outfit_mode - does this outfit have and accompanying outfit_mode
+#           Defaults to False
+#       exp - the expression we want monika to use when she reveals the outfit
+#           Defaults to monika 2eua
+#       restore_zoom - do we want to restore to player preffered zoom after changing
+#           Defaults to True
+#       unlock - True unlocks the outfit's selectable (if it exists)
+#           Defaults to False
+label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True, unlock=False):
     # use def as the default outfit to change to
     if outfit is None:
         $ outfit = mas_clothes_def
@@ -2033,15 +2045,19 @@ label mas_clothes_change(outfit=None, outfit_mode=False):
         $ monika_chr.reset_hair()
 
     $ monika_chr.change_clothes(outfit, outfit_mode=outfit_mode)
+    if unlock:
+        $ store.mas_selspr.unlock_clothes(outfit)
+        $ store.mas_selspr.save_selectables()
     $ monika_chr.save()
     $ renpy.save_persistent()
 
     pause 4.0
-    show monika 2eua zorder MAS_MONIKA_Z at i11 with dissolve
+    $ renpy.show(exp, zorder=MAS_MONIKA_Z, at_list=[i11])
     hide emptydesk
 
-    pause 0.5
-    call monika_zoom_transition (curr_zoom, 1.0)
+    if restore_zoom:
+        pause 0.5
+        call monika_zoom_transition(curr_zoom, 1.0)
     return
 
 init 5 python:
