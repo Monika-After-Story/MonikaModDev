@@ -67,7 +67,7 @@ init python:
             persistent._seen_ever.pop(topicID)
 
 
-    def mas_eraseTopic(topicID, per_eventDB):
+    def mas_eraseTopic(topicID, per_eventDB=persistent.event_database):
         """
         Erases an event from both lockdb and Event database
         This should also handle lockdb data as well.

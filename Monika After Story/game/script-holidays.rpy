@@ -5083,7 +5083,7 @@ init 20 python:
  Any day with you is a happy day.
  One where I'm free,
  One where all my troubles are gone,
- One where my all of dreams come true.
+ One where all of my dreams come true.
  
  But today is not any day,
  Today is special; today is your day.
