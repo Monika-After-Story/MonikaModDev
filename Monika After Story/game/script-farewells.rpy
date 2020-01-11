@@ -153,8 +153,8 @@ label mas_farewell_start:
         call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)
 
         if not _return:
-            # user its nevermind
-            return
+            # nevermind
+            return _return
 
         if _return != -1:
             # push teh selected event

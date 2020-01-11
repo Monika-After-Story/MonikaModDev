@@ -86,9 +86,12 @@ label monika_compliments:
     if _return:
         $ mas_gainAffection()
         $ pushEvent(_return)
+        # move her back to center
+        show monika at t11
 
-    # move her back to center
-    show monika at t11
+    else:
+        return "prompt"
+
     return
 
 # Compliments start here

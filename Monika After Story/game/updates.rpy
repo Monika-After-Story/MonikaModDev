@@ -469,6 +469,9 @@ label v0_10_5(version="v0_10_5"):
         #And delete the old
         del persistent.instrument
         del persistent._mas_likes_rain
+
+        # remove bookmarks unbookmark topic
+        mas_eraseTopic("mas_topic_unbookmark")
     return
 
 #0.10.4
