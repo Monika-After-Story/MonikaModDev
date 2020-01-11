@@ -1192,6 +1192,7 @@ init 5 python:
             unlocked=False,
             rules=ev_rules,
         ),
+        restartBlacklist=True,
         code="GRE"
     )
 

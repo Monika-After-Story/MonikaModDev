@@ -1867,7 +1867,8 @@ init 5 python:
             unlocked=True,
             rules={"no unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 default persistent._mas_called_moni_a_bad_name = False
