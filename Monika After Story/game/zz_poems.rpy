@@ -119,12 +119,14 @@ init 11 python in mas_poems:
         """
         unseen_poem_amt = len(getPoemsByCategory(category, unseen=True))
         total_poem_amt = len(getPoemsByCategory(category, unseen=False))
-        poem_num = renpy.random.randint(0,total_poem_amt-1)
+        sel_poem_len = total_poem_amt-1
+
         if unseen:
             if unseen_poem_amt > 0:
-                poem_num = renpy.random.randint(0,unseen_poem_amt-1)
+                sel_poem_len = unseen_poem_amt-1
             else:
                 unseen = False
+        poem_num = renpy.random.randint(0, sel_poem_len)
 
         return getPoemsByCategory(category, unseen=unseen)[poem_num]
 

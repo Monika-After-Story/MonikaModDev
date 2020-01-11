@@ -4410,12 +4410,9 @@ label mas_player_bday_autoload_check:
             # first we determine if we want to run a surprise greeting this year
             this_year = datetime.date.today().year
             years_checked = range(this_year-10,this_year)
-            times_ruined = 0
             surp_int = 3
 
-            for y in years_checked:
-                if y in mas_HistVerify("player_bday.opened_door",True)[1]:
-                    times_ruined +=1
+            times_ruined = len(mas_HistVerify("player_bday.opened_door", True, *years_checked)[1])
 
             if times_ruined == 1:
                 surp_int = 6
