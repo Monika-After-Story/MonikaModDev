@@ -1816,6 +1816,7 @@ label mas_bday_player_bday_select_select:
             )
 
     $ persistent._mas_player_bday = selected_date
+    $ mas_poems.paper_cat_map["pbday"] = "mod_assets/poem_assets/poem_pbday_" + str(store.persistent._mas_player_bday.month) + ".png"
     $ store.mas_player_bday_event.correct_pbday_mhs(selected_date)
     $ store.mas_history.saveMHSData()
     $ renpy.save_persistent()
