@@ -671,11 +671,11 @@ label mas_random_ask:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics.'"
-            # TODO: this really should be a smug or wink face
-            m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
-            $ _history_list.pop()
-            m "That tells me when {fast}you just want to quietly spend time with me."
+            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
+            if mas_isMoniUpset(lower=True):
+                m 1esc "That tells me when you're bored of me."
+            else:
+                m 1eka "That tells me when you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
         "No.":
@@ -1651,7 +1651,7 @@ label monika_rpy_files:
                         call mas_rpy_file_delete
 
                         m 2hua "There we go!"
-                        m 2esa "Be sure next time to install a version without the source code. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
+                        m 2esa "Be sure to install a version without the source code next time. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
                         $ persistent._mas_pm_has_rpy = False
                         hide screen mas_py_console_teaching
                         show monika at t11
