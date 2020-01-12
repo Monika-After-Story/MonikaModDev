@@ -1437,7 +1437,8 @@ init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_gift_coffee:
-    m 1hub "Oh, coffee!"
+    m 1wub "Oh!{w=0.2} {nw}"
+    extend 3hub "Coffee!"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
     if persistent._mas_coffee_been_given:
