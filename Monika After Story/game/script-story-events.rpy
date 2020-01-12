@@ -671,7 +671,7 @@ label mas_random_ask:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics.'"
+            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
             if mas_isMoniUpset(lower=True):
                 m 1esc "That tells me when you're bored of me."
             else:
