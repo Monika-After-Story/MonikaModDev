@@ -2779,7 +2779,7 @@ label mas_d25_spider_tinsel:
     m 2dkc "And so, on Christmas Eve, Amy and her children went to bed knowing they would have a bare tree on Christmas morning."
     m 2eua "However, the spiders living in the hut heard the sobs of the children and decided they would not leave the Christmas tree bare."
     m 3eua "So the spiders created beautiful webs on the Christmas tree, decorating it with elegant and beautiful silky patterns."
-    m 3eub "When the children woke up early on Christmas morning, they were jumping with excitemet!"
+    m 3eub "When the children woke up early on Christmas morning, they were jumping with excitement!"
     m "They went to their mother and woke her up, exclaiming, 'Mother! You have to come see the Christmas tree! It's so beautiful!'"
     m 1wud "As Amy woke and stood in front of the tree, she was truly amazed at the sight before her eyes."
     m "Then, one of the children opened the window to let the sun shine in..."
@@ -2789,7 +2789,7 @@ label mas_d25_spider_tinsel:
     m 3tuu "Well, I guess we know now why Amy likes spiders..."
     m 3hub "Ahaha! I'm only kidding!"
     m 1eka "Isn't that such a sweet and wonderful story, [player]?"
-    m "I think it's a really interesting take on why tinsel is used as decoration on Christmas tree."
+    m "I think it's a really interesting take on why tinsel is used as decoration on Christmas trees."
     m 3eud "I also read that Ukrainians often decorate their Christmas tree with spider web ornaments, believing they will bring them good fortune for the upcoming year."
     m 3eub "So I guess if you ever find a spider living in your Christmas tree, don't kill it and maybe it'll bring you good luck in the future!"
     return "derandom|no_unlock"
@@ -3750,7 +3750,7 @@ label monika_nye_year_review:
     $ persistent._mas_nye_spent_nye = True
     $ spent_an_event = False
 
-    $ placeholder_and = "and"
+    $ placeholder_and = "and "
     #Starting with an overview based on time
     if store.mas_anni.anniCount() >= 1:
         m 2eka "You know, [player], we really have been through a lot together."
@@ -3771,7 +3771,7 @@ label monika_nye_year_review:
 
     else:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
-        $ placeholder_and = "but"
+        $ placeholder_and = ""
 
 
     # then a bit based on affection
@@ -3780,13 +3780,13 @@ label monika_nye_year_review:
         m "I'm just really,{w=0.5} really happy to have been with you this year."
 
     elif mas_isMoniEnamored():
-        m 2eka "...[placeholder_and] I'm so happy I got to spend that time with you, [player]."
+        m 2eka "...[placeholder_and]I'm so happy I got to spend that time with you, [player]."
 
     elif mas_isMoniAff():
-        m 2eka "...[placeholder_and] I've really enjoyed our time together."
+        m 2eka "...[placeholder_and]I've really enjoyed our time together."
 
     else:
-        m 2euc "...[placeholder_and] the time we spent together has been fun."
+        m 2euc "...[placeholder_and]the time we spent together has been fun."
 
 
     m 3eua "Anyway, I think it would be nice to just reflect on all that we've been through together this past year."
@@ -3871,7 +3871,7 @@ label monika_nye_year_review:
     if store.mas_anni.pastThreeMonths():
         if mas_isMoniHappy(higher=True):
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eka "I really can't just believe how much has changed since we've been together..."
+            m 5eka "I really can't believe just how much has changed since we've been together..."
         else:
             m 2eka "I really hope we can get further in our relationship, [player]..."
     else:
