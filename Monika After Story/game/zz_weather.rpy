@@ -834,11 +834,6 @@ init 5 python:
     )
 
 label monika_change_weather:
-
-    m 1hua "Sure!"
-
-label monika_change_weather_loop:
-
     show monika 1eua at t21
 
     $ renpy.say(m, "What kind of weather would you like?", interact=False)
@@ -876,15 +871,12 @@ label monika_change_weather_loop:
 
     $ sel_weather = _return
 
-    show monika at t11
-
     # return value False? then return
     if sel_weather is False:
-        m 1eka "Oh, alright."
-        m "If you want to change the weather, just ask, okay?"
-        return
+        return "prompt"
 
     elif sel_weather == "auto":
+        show monika at t11
         if mas_weather.force_weather:
             m 1hub "Sure!"
             m 1dsc "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
@@ -892,17 +884,16 @@ label monika_change_weather_loop:
             #Set to false and return since nothing more needs to be done
             $ mas_weather.force_weather = False
             m 1eua "There we go!"
-            m 1eka "If you want me to change the weather, just ask. Okay?"
         else:
             m 1hua "That's the current weather, silly."
             m "Try again~"
-            jump monika_change_weather_loop
+            jump monika_change_weather
         return
 
     if sel_weather == mas_current_weather and mas_weather.force_weather:
         m 1hua "That's the current weather, silly."
         m "Try again~" 
-        jump monika_change_weather_loop
+        jump monika_change_weather
 
     $ skip_outro = False
     $ skip_leadin = False
@@ -914,7 +905,7 @@ label monika_change_weather_loop:
             $ pushEvent("monika_rain")
             $ skip_outro = True
 
-        elif persistent._mas_likes_rain is False:
+        elif persistent._mas_pm_likes_rain is False:
             m 1eka "I thought you didn't like rain."
             m 2etc "Maybe you changed your mind?"
             m 1dsc "..."
@@ -923,6 +914,7 @@ label monika_change_weather_loop:
     # TODO: maybe react to snow?
 
     if not skip_leadin:
+        show monika at t11
         m 1eua "Alright!"
         m 1dsc "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
 
@@ -931,6 +923,5 @@ label monika_change_weather_loop:
 
     if not skip_outro:
         m 1eua "There we go!"
-        m "If you want to change the weather again, just ask me, okay?"
 
     return

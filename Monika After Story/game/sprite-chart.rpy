@@ -413,7 +413,7 @@ init -100 python in mas_sprites:
         ),
         "left-hair-flower": ACSTemplate(
             "left-hair-flower",
-            mux_type=["left-hair-flower", "left-hair-flower-ear"],
+            mux_type=["left-hair-flower", "left-hair-flower-ear", "front-hair-flower-crown"],
             ex_props={
                 EXP_A_LHSEL: True
             }

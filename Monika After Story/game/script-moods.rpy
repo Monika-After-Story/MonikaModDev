@@ -320,7 +320,7 @@ label mas_mood_tired:
         m 1eka "If you're tired, maybe you should go lie down for a while?"
         m 1eua "Getting enough sleep on a daily basis is very important to your overall health."
         m 3euc "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
-        m 3hua "It can really mess with your health, [player]."
+        m 3ekd "It can really mess with your health, [player]..."
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
 
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
@@ -354,7 +354,7 @@ label mas_mood_angry:
     m 1esc "You may end up saying or doing things you may regret later."
     m 1lksdld "And I'd hate for you to say something you really don't mean to me."
     m 3eua "Let's try a few things that I do to calm myself first, [player]."
-    m 3eub "Hopefully they work for you as they do for me."
+    m 3eub "Hopefully they work for you as well as they do for me."
     m 1eua "First, try taking a few deep breaths and slowly counting to 10."
     m 3euc "If that doesn't work, if you can, retreat to somewhere calm until you clear your mind."
     m 1eud "If you're still feeling angry after that, do what I'd do as a last resort!"

@@ -613,7 +613,7 @@ init 5 python:
 label unlock_piano:
     m 2hua "Hey! I've got something exciting to tell you!"
     m 2eua "I've finally added a piano to the room for us to use, [player]."
-    if not persistent.instrument:
+    if not persistent._mas_pm_plays_instrument:
         m 3hub "I really want to hear you play!"
         m 3eua "It might seem overwhelming at first, but at least give it a try."
         m 3hua "After all, we all start somewhere."
@@ -671,11 +671,11 @@ label mas_random_ask:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics.'"
-            # TODO: this really should be a smug or wink face
-            m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
-            $ _history_list.pop()
-            m "That tells me when {fast}you just want to quietly spend time with me."
+            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
+            if mas_isMoniUpset(lower=True):
+                m 1esc "That tells me when you're bored of me."
+            else:
+                m 1eka "That tells me when you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
         "No.":
@@ -739,6 +739,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_CRASHED],
             rules=ev_rules,
         ),
+        restartBlacklist=True,
         code="GRE"
     )
 
@@ -1320,7 +1321,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_brewing",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
@@ -1378,7 +1380,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_drinking",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
@@ -1648,7 +1651,7 @@ label monika_rpy_files:
                         call mas_rpy_file_delete
 
                         m 2hua "There we go!"
-                        m 2esa "Be sure next time to install a version without the source code. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
+                        m 2esa "Be sure to install a version without the source code next time. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
                         $ persistent._mas_pm_has_rpy = False
                         hide screen mas_py_console_teaching
                         show monika at t11
@@ -1800,7 +1803,7 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
  
     else:
@@ -1809,10 +1812,11 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
 
     $ persistent._mas_player_bday = selected_date
+    $ mas_poems.paper_cat_map["pbday"] = "mod_assets/poem_assets/poem_pbday_" + str(store.persistent._mas_player_bday.month) + ".png"
     $ store.mas_player_bday_event.correct_pbday_mhs(selected_date)
     $ store.mas_history.saveMHSData()
     $ renpy.save_persistent()
