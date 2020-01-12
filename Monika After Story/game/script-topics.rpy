@@ -4315,7 +4315,7 @@ label monika_fanfiction:
     m 3eua "Personally, I think it's a better way of writing."
     m 3eud "There's more freedom."
     m 1rsc "Letting your mind wander to create some...{w=0.5}{nw}"
-    extend 1rksdla "Interesting stories."
+    extend 1rksdla "interesting stories."
     m 1euc "[player], I'm curious."
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
