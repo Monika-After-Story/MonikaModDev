@@ -5552,28 +5552,27 @@ label mas_f14_monika_spent_time_with:
         m 1rkbsb "Also, I...{w=1}made something for you, [player]!"
 
     if not mas_isBelowZero():
-        if poem_vday_1.is_seen():
-            m 1ekbsa "Here, let me show it to you."
+        m 1ekbsa "Here, let me show it to you."
 
-            call mas_showpoem(poem_vday_2)
-
-            m "You really are everything to me, [player]~"
-            if mas_isMoniEnamored(higher=True):
-                if persistent._mas_first_kiss is None:
-                    jump mas_f14_first_kiss
-                else:
-                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
-
-        else:
-            m 1ekbsa "Here, let me show it to you."
+        #NOTE: The first two f14 poems will always be in order and the same. Everything after is randomly selected
+        if not poem_vday_1.is_seen():
             call mas_showpoem(poem_vday_1)
             m "I really mean that, [player]..."
             m 3ekbsa "In you I found everything I could ever hope for~"
-            if mas_isMoniEnamored(higher=True):
-                if persistent._mas_first_kiss is None:
-                    jump mas_f14_first_kiss
-                else:
-                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
+
+        elif not poem_vday_2.is_seen():
+            call mas_showpoem(poem_vday_2)
+            m "You really are everything to me, [player]~"
+
+        else:
+            call mas_showpoem(mas_poems.getRandomPoem("f14"))
+
+
+        if mas_isMoniEnamored(higher=True):
+            if persistent._mas_first_kiss is None:
+                jump mas_f14_first_kiss
+            else:
+                call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
 
         m 1ekbfa "Thank you for always being by my side."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
@@ -5583,11 +5582,11 @@ label mas_f14_monika_spent_time_with:
     else:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
-
     return
 
 label mas_f14_first_kiss:
         m 1ektpu "I honestly don't know what I would do without you."
+        #NOTE: Thinking of dissolving into pose 6 here. Might look cleaner. Thoughts?
         m 6dktuu "..."
         window hide
         menu:
@@ -5805,6 +5804,29 @@ init 20 python:
 """
 
     #" # I need this to keep syntax highlighting on vim
+    )
+
+    #TODO: review this poem to ensure proper moni-style
+    poem_vday_3 = MASPoem(
+        poem_id="poem_f14_3",
+        category="f14",
+        prompt="You",
+        title=" My dearest [player],",
+        text="""\
+ Boxes of chocolates, hearts, and cards colored ruby red
+ Roses in my hair with petals as soft as silk
+
+ None of it would feel complete without you
+
+ You, the one who has stuck by my side,
+ You, the one who has given me your heart,
+ The heart worth more than all the chocolate in the world, all the roses on earth
+
+ The love I feel cannot be overstated.
+
+ Forever Your Valentine,
+ Monika
+"""
     )
 
 
