@@ -1869,7 +1869,7 @@ label greeting_japan:
         m 4hub "Watashi ha itsumademo anata no mono desu!"
         m 2hksdlb "Sorry if that didn't make sense!"
         m 3eua "You know what that means, [player]?"
-        m 4ekbfa "It means '{i}I'll be yours forever{/i}'~"
+        m 4ekbfa "It means {i}'I'll be yours forever'~{/i}"
         return
     
     m 4hub "Watashi wa itsumademo anata no mono desu!"
@@ -1880,7 +1880,7 @@ label greeting_japan:
         m 4ekbfa "I'll still be yours forever~"
     else:
         m 3eua "Remember what that means, [player]?"
-        m 4ekbfa "'{i}I'll be yours forever{/i}'~"
+        m 4ekbfa "{i}'I'll be yours forever'~{/i}"
     return
 
 init 5 python:
