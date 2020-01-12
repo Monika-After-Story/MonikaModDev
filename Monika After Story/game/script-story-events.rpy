@@ -675,7 +675,7 @@ label mas_random_ask:
             if mas_isMoniUpset(lower=True):
                 m 1esc "That tells me when you're bored of me."
             else:
-                m "That tells me when you just want to quietly spend time with me."
+                m 1eka "That tells me when you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
         "No.":
