@@ -2789,7 +2789,7 @@ label mas_d25_spider_tinsel:
     m 3tuu "Well, I guess we know now why Amy likes spiders..."
     m 3hub "Ahaha! I'm only kidding!"
     m 1eka "Isn't that such a sweet and wonderful story, [player]?"
-    m "I think it's a really interesting take on why tinsel is used as a decoration on Christmas trees."
+    m "I think it's a really interesting take on why tinsel is used as decoration on Christmas trees."
     m 3eud "I also read that Ukrainians often decorate their Christmas tree with spider web ornaments, believing they will bring them good fortune for the upcoming year."
     m 3eub "So I guess if you ever find a spider living in your Christmas tree, don't kill it and maybe it'll bring you good luck in the future!"
     return "derandom|no_unlock"
