@@ -67,7 +67,7 @@ init python:
             persistent._seen_ever.pop(topicID)
 
 
-    def mas_eraseTopic(topicID, per_eventDB):
+    def mas_eraseTopic(topicID, per_eventDB=persistent.event_database):
         """
         Erases an event from both lockdb and Event database
         This should also handle lockdb data as well.
@@ -472,6 +472,58 @@ label v0_10_5(version="v0_10_5"):
 
         # remove bookmarks unbookmark topic
         mas_eraseTopic("mas_topic_unbookmark")
+
+        # need to create data for new var persistent._mas_player_bday_saw_surprise for previous years
+
+        seen_bday_surprise = False
+        # list of labels that mean we have seen a surprise
+        bday_list = [
+            'mas_player_bday_listen',
+            'mas_player_bday_knock_no_listen',
+            'mas_player_bday_opendoor',
+            'mas_player_bday_surprise'
+        ]
+
+        # determine if we have ever seen a surprise
+        for bday_label in bday_list:
+            if renpy.seen_label(bday_label):
+                seen_bday_surprise = True
+
+        if seen_bday_surprise:
+            # list of events to use so we know what years we did not see a surprise
+            other_bday_list = [
+                'mas_player_bday_ret_on_bday',
+                'mas_player_bday_no_restart',
+                'mas_player_bday_upset_minus',
+                'mas_player_bday_other_holiday'
+            ]
+
+            # surprise year blacklist to store years we could not have seen a surprise
+            years_list = []
+
+            # get every year we could not have seen a surprise, and add it to the surprise year blacklist
+            for other_bday_label in other_bday_list:
+                if mas_getEV(other_bday_label) is not None and mas_getEV(other_bday_label).last_seen is not None:
+                    years_list.append(mas_getEV(other_bday_label).last_seen.year)
+
+            # if we got a confirmed bday on bday party, add the year to the blacklist
+            if persistent._mas_player_bday is not None and persistent._mas_player_confirmed_bday:
+                bdate_ev = mas_getEV('mas_birthdate')
+                if bdate_ev is not None and bdate_ev.last_seen is not None:
+                    seen_date = bdate_ev.last_seen.date()
+                    if seen_date == mas_player_bday_curr().replace(year=seen_date.year):
+                        years_list.append(seen_date.year)
+
+            # if spent_time is currently True and this year is not in our surprise year black list, we set saw_surprise to True
+            if persistent._mas_player_bday_spent_time and datetime.date.today().year not in years_list:
+                persistent._mas_player_bday_saw_surprise = True
+
+            spent_time_hist = mas_HistVerify("player_bday.spent_time",True)
+            # here we check years we celebrated with Monika against the surprise year blacklist and adjust history accordingly
+            if spent_time_hist[0]:
+                for year in spent_time_hist[1]:
+                    if year not in years_list:
+                        persistent._mas_history_archives[year]["player_bday.saw_surprise"] = True
     return
 
 #0.10.4

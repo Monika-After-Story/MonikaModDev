@@ -2779,7 +2779,7 @@ label mas_d25_spider_tinsel:
     m 2dkc "And so, on Christmas Eve, Amy and her children went to bed knowing they would have a bare tree on Christmas morning."
     m 2eua "However, the spiders living in the hut heard the sobs of the children and decided they would not leave the Christmas tree bare."
     m 3eua "So the spiders created beautiful webs on the Christmas tree, decorating it with elegant and beautiful silky patterns."
-    m 3eub "When the children woke up early on Christmas morning, they were jumping with excitemet!"
+    m 3eub "When the children woke up early on Christmas morning, they were jumping with excitement!"
     m "They went to their mother and woke her up, exclaiming, 'Mother! You have to come see the Christmas tree! It's so beautiful!'"
     m 1wud "As Amy woke and stood in front of the tree, she was truly amazed at the sight before her eyes."
     m "Then, one of the children opened the window to let the sun shine in..."
@@ -2789,7 +2789,7 @@ label mas_d25_spider_tinsel:
     m 3tuu "Well, I guess we know now why Amy likes spiders..."
     m 3hub "Ahaha! I'm only kidding!"
     m 1eka "Isn't that such a sweet and wonderful story, [player]?"
-    m "I think it's a really interesting take on why tinsel is used as decoration on Christmas tree."
+    m "I think it's a really interesting take on why tinsel is used as decoration on Christmas trees."
     m 3eud "I also read that Ukrainians often decorate their Christmas tree with spider web ornaments, believing they will bring them good fortune for the upcoming year."
     m 3eub "So I guess if you ever find a spider living in your Christmas tree, don't kill it and maybe it'll bring you good luck in the future!"
     return "derandom|no_unlock"
@@ -3750,7 +3750,7 @@ label monika_nye_year_review:
     $ persistent._mas_nye_spent_nye = True
     $ spent_an_event = False
 
-    $ placeholder_and = "and"
+    $ placeholder_and = "and "
     #Starting with an overview based on time
     if store.mas_anni.anniCount() >= 1:
         m 2eka "You know, [player], we really have been through a lot together."
@@ -3771,7 +3771,7 @@ label monika_nye_year_review:
 
     else:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
-        $ placeholder_and = "but"
+        $ placeholder_and = ""
 
 
     # then a bit based on affection
@@ -3780,13 +3780,13 @@ label monika_nye_year_review:
         m "I'm just really,{w=0.5} really happy to have been with you this year."
 
     elif mas_isMoniEnamored():
-        m 2eka "...[placeholder_and] I'm so happy I got to spend that time with you, [player]."
+        m 2eka "...[placeholder_and]I'm so happy I got to spend that time with you, [player]."
 
     elif mas_isMoniAff():
-        m 2eka "...[placeholder_and] I've really enjoyed our time together."
+        m 2eka "...[placeholder_and]I've really enjoyed our time together."
 
     else:
-        m 2euc "...[placeholder_and] the time we spent together has been fun."
+        m 2euc "...[placeholder_and]the time we spent together has been fun."
 
 
     m 3eua "Anyway, I think it would be nice to just reflect on all that we've been through together this past year."
@@ -3871,7 +3871,7 @@ label monika_nye_year_review:
     if store.mas_anni.pastThreeMonths():
         if mas_isMoniHappy(higher=True):
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eka "I really can't just believe how much has changed since we've been together..."
+            m 5eka "I really can't believe just how much has changed since we've been together..."
         else:
             m 2eka "I really hope we can get further in our relationship, [player]..."
     else:
@@ -4267,6 +4267,8 @@ default persistent._mas_player_bday_left_on_bday = False
 default persistent._mas_player_bday_date_aff_gain = 0
 # did we celebrate player bday with Moni
 default persistent._mas_player_bday_spent_time = False
+# did we get the surprise variant of the event?
+default persistent._mas_player_bday_saw_surprise = False
 
 init -10 python:
     def mas_isplayer_bday(_date=None, use_date_year=False):
@@ -4326,6 +4328,7 @@ init -810 python:
             "_mas_player_bday_opened_door": "player_bday.opened_door",
             "_mas_player_bday_date": "player_bday.date",
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
+            "_mas_player_bday_saw_surprise": "player_bday.saw_surprise",
         },
         use_year_before=True,
         # NOTE: the start and end dt needs to be chnaged depending on the
@@ -4402,11 +4405,41 @@ label mas_player_bday_autoload_check:
             and not mas_isO31()
             and not mas_isF14()
         ):
-        # starting player b_day off with a closed door greet
-        $ mas_skip_visuals = True
-        $ selected_greeting = "i_greeting_monikaroom"
-        # need this so we don't get any strange force quit dlg after the greet
-        $ persistent.closed_self = True
+
+        python:
+            # first we determine if we want to run a surprise greeting this year
+            this_year = datetime.date.today().year
+            years_checked = range(this_year-10,this_year)
+            surp_int = 3
+
+            times_ruined = len(mas_HistVerify("player_bday.opened_door", True, *years_checked)[1])
+
+            if times_ruined == 1:
+                surp_int = 6
+            elif times_ruined == 2:
+                surp_int = 10
+            elif times_ruined > 2:
+                surp_int = 50
+
+            should_surprise = renpy.random.randint(1,surp_int) == 1 and not mas_HistVerifyLastYear_k(True,"player_bday.saw_surprise")
+
+            if not mas_HistVerify("player_bday.saw_surprise",True)[0] or (mas_getAbsenceLength().total_seconds()/3600 < 3 and should_surprise):
+                # starting player b_day off with a closed door greet
+                # always if haven't seen the surprise before
+                # conditionally if we have
+                selected_greeting = "i_greeting_monikaroom"
+                mas_skip_visuals = True
+                persistent._mas_player_bday_saw_surprise = True
+
+            else:
+                selected_greeting = "mas_player_bday_greet"
+                if should_surprise:
+                    mas_skip_visuals = True
+                    persistent._mas_player_bday_saw_surprise = True
+
+            # need this so we don't get any strange force quit dlg after the greet
+            persistent.closed_self = True
+
         jump ch30_post_restartevent_check
 
     elif not mas_isplayer_bday():
@@ -4436,12 +4469,18 @@ label mas_player_bday_opendoor:
         $ your = "our"
     else:
         $ your = "your"
+
+    if mas_HistVerify("player_bday.opened_door",True)[0]:
+        $ now = "{i}again{/i}"
+    else:
+        $ now = "now"
+
     m "[player]!"
     m "You didn't knock!"
     if not persistent._mas_bday_visuals:
         m "I was just going to start setting up [your] birthday party, but I didn't have time before you came in!"
     m "..."
-    m "Well...{w=1}the surprise is ruined now, but.{w=0.5}.{w=0.5}.{nw}"
+    m "Well...{w=1}the surprise is ruined [now], but.{w=0.5}.{w=0.5}.{nw}"
     $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     pause 1.0
@@ -4530,8 +4569,14 @@ label mas_player_bday_opendoor_listened:
         $ your = "our"
     else:
         $ your = "your"
+
+    if mas_HistVerify("player_bday.opened_door",True)[0]:
+        $ knock = "knock, {w=0.5}{i}again{/i}."
+    else:
+        $ knock = "knock!"
+
     m "[player]!"
-    m "You didn't knock!"
+    m "You didn't [knock]"
     if persistent._mas_bday_visuals:
         m "I wanted to surprise you, but I wasn't ready when you came in!"
         m "Anyway..."
@@ -4593,7 +4638,7 @@ label mas_player_bday_cake:
     m 6hkbsu "..."
     if mas_isMonikaBirthday():
         m 6eksdla "Well, seeing as you can't really eat this cake, and I don't want to be rude and eat it in front of you..."
-    else:
+    elif not mas_HistVerify("player_bday.spent_time",True)[0]:
         m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
         m 6eksdla "This is all rather silly, isn't it?"
     if mas_isMonikaBirthday():
@@ -4612,13 +4657,13 @@ label mas_player_bday_card:
     m 6dkbsu "..."
     if mas_isMonikaBirthday():
         m 6sub "Oh!"
-        m 6ekbsu "I...I made a card for you, [player], I hope you like it..."
-    else:
+        m 6ekbsu "I made a card for you, [player], I hope you like it..."
+    elif not mas_HistVerify("player_bday.spent_time",True)[0]:
         m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
+    else:
+        m 6ekbsu "I made a card for you, [player]. I hope you like it..."
 
-    $ p_bday_month = mas_player_bday_curr().month
-
-    call mas_showpoem(poem_pbday)
+    call mas_showpoem(mas_poems.getRandomPoem("pbday"))
 
     if mas_isMoniEnamored(higher=True):
         if persistent._mas_first_kiss is None:
@@ -4692,6 +4737,37 @@ label mas_player_bday_ret_on_bday:
     m 3hua "Oh! Your cake!"
     call mas_player_bday_cake
     return
+
+# for subsequent birthdays
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="mas_player_bday_greet",
+            unlocked=False
+        ),
+        code="GRE"
+    )
+
+label mas_player_bday_greet:
+    if should_surprise:
+        scene black
+        pause 5.0
+        jump mas_player_bday_surprise
+
+    else:
+        if mas_isMonikaBirthday():
+            $ your = "Our"
+        else:
+            $ your = "Your"
+        $ mas_surpriseBdayShowVisuals()
+        $ persistent._mas_player_bday_decor = True
+        m 3eub "Happy Birthday, [player]!"
+        m 3hub "Ahaha!"
+        m 3etc "..."
+        m "Why do I feel like I'm forgetting something..."
+        m 3hua "Oh! [your] cake!"
+        jump mas_player_bday_cake
 
 # event for if the player leaves the game open starting before player_bday and doesn't restart
 # moni eventually gives up on the surprise
@@ -4978,7 +5054,7 @@ label return_home_post_player_bday:
 
 # birthday card/poem for player
 init 20 python:
-    poem_pbday = MASPoem(
+    poem_pbday_1 = MASPoem(
         poem_id = "poem_pbday_1",
         category = "pbday",
         prompt = "The One",
@@ -4989,6 +5065,30 @@ init 20 python:
  The one I can't live without.
  I hope your day is as special as you make every day for me.
  Thank you so much for being you.
+
+ Happy Birthday, sweetheart
+
+ Forever yours,
+ Monika
+"""
+    #" # I need this to keep syntax highlighting on vim
+    )
+
+    poem_pbday_2 = MASPoem(
+        poem_id = "poem_pbday_2",
+        category = "pbday",
+        prompt = "Your Day",
+        title = " My dearest [player],",
+        text = """\
+ Any day with you is a happy day.
+ One where I'm free,
+ One where all my troubles are gone,
+ One where all of my dreams come true.
+ 
+ But today is not any day,
+ Today is special; today is your day.
+ A day I can appreciate you even more for what you do.
+ A day I hope I make your dreams come true too.
 
  Happy Birthday, sweetheart
 

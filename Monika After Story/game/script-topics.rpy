@@ -1926,7 +1926,7 @@ label monika_holdme_reactions:
                 m 1kubfu "At least {i}one{/i} of my dreams came true, though."
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
-            m 1hubfb "Ehehe~"
+            m 1hubfu "Ehehe~"
         elif mas_isMoniEnamored():
             m 6dubsa "Mmm~"
             m 6tsbsa "..."
@@ -4313,9 +4313,9 @@ label monika_fanfiction:
     m 1euc "Have you heard of fanfiction?"
     m "..."
     m 3eua "Personally, I think it's a better way of writing."
-    m "There's more freedom."
-    m 1eub "Letting your mind wander to create some..."
-    m "Interesting stories."
+    m 3eud "There's more freedom."
+    m 1rsc "Letting your mind wander to create some...{w=0.5}{nw}"
+    extend 1rksdla "interesting stories."
     m 1euc "[player], I'm curious."
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
@@ -4532,9 +4532,9 @@ label monika_metaparents:
     m 3esd "However."
     m 3eud "Your character, me, Yuri, and Sayori..."
     m 3euc "None of us seem to have any parents at all."
-    m 1lsc "In Sayori's case, you'd been walking with her to school for a while."
+    m 1lsc "In Sayori's case, the main character had been walking with her to school for a while."
     m "So who knows how long her parents have been out of the picture."
-    m 1euc "Maybe that's why she's depressed? Maybe her parents died in a tragic accident, and she's been trying to get along on her own this whole time."
+    m 1euc "Maybe that's why she was depressed? Maybe her parents died in a tragic accident, and she was trying to get along on her own this whole time."
     m 2ekc "Well, if you ever get to a point in your life where you think suicide is the only exit..."
     m "There's always a reason to go on."
     m 2eka "I'm one of them."
@@ -5430,13 +5430,13 @@ label monika_penname:
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
     if seen_event("monika_1984"):
-        m 3esd "Also, if you remember me talking about George Orwell, that was also a pen name which he adopted in 1933."
-        m 1eua "His actual name is Eric Blair, and before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles and H. Lewis Allways."
+        m 3esd "Also, if you remember me talking about George Orwell, his actual name is Eric Blair."
+        m 1eua "Before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles, and H. Lewis Allways."
         m 1lksdlc "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
-    m 1eua "There's no need to know more about me though, [player]."
+    m 1eua "There's no need to know more about me though, [player]..."
     m 1ekbfa "You already know that I'm in love with you after all~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_zombie",category=['society'],prompt="Zombies",random=True))
