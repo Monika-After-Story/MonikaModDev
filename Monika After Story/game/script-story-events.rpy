@@ -2083,3 +2083,61 @@ label mas_blazerless_intro:
         m 3eka "But if you miss my blazer, just ask and I'll put it back on."
 
     return "no_unlock"
+
+# fixes a rare case for unstable players that were able to confirm a birthdate with an invalid year
+label mas_birthdate_year_redux:
+    $ prev_bday = persistent._mas_player_bday
+    m 2eksdld "Uh [player]..."
+    m 2rksdlc "I have something to ask you, and it's kind of embarrassing..."
+    m 2eksdlc "You know when you told me your birthdate?"
+    m 2rksdld "Well, I think I messed up the year you were born somehow."
+    m 2eksdla "So, if you wouldn't mind telling me again..."
+    # fall thru
+
+label mas_birthdate_year_redux_select:
+    python:
+        end_year = datetime.date.today().year - 5
+        beg_year = end_year - 95
+
+        yearrange = range(beg_year,end_year)
+        yearrange.reverse()
+
+        yearmenu=[]
+        for y in yearrange:
+            yearmenu.append([str(y),y,False,False])
+
+    show monika 2eua at t21
+    $ renpy.say(m,"What year were you born?", interact=False)
+    call screen mas_gen_scrollable_menu(yearmenu,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
+
+    show monika 3eua at t11
+    m "Okay [player], you were born in [_return]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Okay [player], you were born in [_return]?{fast}"
+
+        "Yes.":
+            m "Are you {i}sure{/i} you were born in [_return]?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are you {i}sure{/i} you were born in [_return]?{fast}"
+
+                "Yes.":
+                    m 3hua "Okay, then it's settled!"
+                    $ persistent._mas_player_bday = datetime.date(_return,prev_bday.month,prev_bday.day)
+                    $ store.mas_player_bday_event.correct_pbday_mhs(selected_date)
+                    $ store.mas_history.saveMHSData()
+                    $ renpy.save_persistent()
+
+                "No.":
+                    call mas_birthdate_year_redux_no
+
+        "No.":
+            call mas_birthdate_year_redux_no
+
+    return
+
+label mas_birthdate_year_redux_no:
+    m 2ekd "Oh, okay..."
+    m 2eka "Try again, [player]."
+    jump mas_birthdate_year_redux_select
