@@ -9,10 +9,10 @@ install:
     - cd ..
 
       # renpy
-    - wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
-    - tar xf renpy-6.99.12.4-sdk.tar.bz2
-    - rm renpy-6.99.12.4-sdk.tar.bz2
-    - mv renpy-6.99.12.4-sdk renpy
+    - wget https://www.renpy.org/dl/7.1.1/renpy-7.1.1-sdk.tar.bz2
+    - tar xf renpy-7.1.1-sdk.tar.bz2
+    - rm renpy-7.1.1-sdk.tar.bz2
+    - mv renpy-7.1.1-sdk renpy
 
       # mas build
     - wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
