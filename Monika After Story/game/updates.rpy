@@ -373,6 +373,12 @@ label v0_10_6(version="v0_10_6"):
     python:
         #NOTE: Because of a crash in the last update script, this part was not guaranteed to run for everyone.
         #Therefore we're running it again
+        if persistent._mas_likes_rain:
+            del persistent._mas_likes_rain
+
+        # remove bookmarks unbookmark topic
+        mas_eraseTopic("mas_topic_unbookmark")
+
         seen_bday_surprise = False
         # list of labels that mean we have seen a surprise
         bday_list = [
