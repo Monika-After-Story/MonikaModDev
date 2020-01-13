@@ -2086,7 +2086,6 @@ label mas_blazerless_intro:
 
 # fixes a rare case for unstable players that were able to confirm a birthdate with an invalid year
 label mas_birthdate_year_redux:
-    $ prev_bday = persistent._mas_player_bday
     m 2eksdld "Uh [player]..."
     m 2rksdlc "I have something to ask you, and it's kind of embarrassing..."
     m 2eksdlc "You know when you told me your birthdate?"
@@ -2124,8 +2123,8 @@ label mas_birthdate_year_redux_select:
 
                 "Yes.":
                     m 3hua "Okay, then it's settled!"
-                    $ persistent._mas_player_bday = datetime.date(_return,prev_bday.month,prev_bday.day)
-                    $ store.mas_player_bday_event.correct_pbday_mhs(selected_date)
+                    $ persistent._mas_player_bday = persistent._mas_player_bday.replace(year=_return)
+                    $ store.mas_player_bday_event.correct_pbday_mhs(persistent._mas_player_bday)
                     $ store.mas_history.saveMHSData()
                     $ renpy.save_persistent()
 
