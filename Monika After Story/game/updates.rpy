@@ -431,7 +431,7 @@ label v0_10_6(version="v0_10_6"):
 
         # add a delayed action to push birthday fix if required
         birthdate_ev = mas_getEV("mas_birthdate")
-        bday = mas_player_bday_curr()
+        bday = persistent._mas_player_bday
         if (
                 birthdate_ev is not None
                 and birthdate_ev.last_seen is not None
