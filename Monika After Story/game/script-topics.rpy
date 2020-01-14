@@ -6756,8 +6756,11 @@ label monika_meditation:
 
     return "derandom|love"
 
-# do you like orchestral music
+#Do you like orchestral music?
 default persistent._mas_pm_like_orchestral_music = None
+
+#Do you play an instrument?
+default persistent._mas_pm_plays_instrument = None
 
 init 5 python:
     addEvent(
@@ -6793,7 +6796,7 @@ label monika_orchestra:
     m "If you ever want me to play for you..."
     m 3hua "You can always select my song in the music menu~"
 
-#First encounter with topic:
+    #First encounter with topic:
     m "What about you, [player]? Do you play an instrument?{nw}"
     $ _history_list.pop()
     menu:
