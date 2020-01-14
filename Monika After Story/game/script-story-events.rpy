@@ -2084,6 +2084,21 @@ label mas_blazerless_intro:
 
     return "no_unlock"
 
+init -876 python in mas_delact:
+
+    def _mas_birthdate_bad_year_fix_action(ev=None):
+        store.queueEvent("mas_birthdate_year_redux")
+        return True
+
+    def _mas_birthdate_bad_year_fix():
+        return store.MASDelayedAction.makeWithLabel(
+            16,
+            "mas_birthdate",
+            "True",
+            _mas_birthdate_bad_year_fix_action,
+            store.MAS_FC_IDLE_ONCE
+        )
+
 # fixes a rare case for unstable players that were able to confirm a birthdate with an invalid year
 label mas_birthdate_year_redux:
     m 2eksdld "Uh [player]..."

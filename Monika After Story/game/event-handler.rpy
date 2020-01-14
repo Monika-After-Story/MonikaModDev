@@ -930,6 +930,7 @@ init -875 python in mas_delact:
 #        13: _mas_f14_monika_vday_cliches_reset,
 #        14: _mas_f14_monika_vday_chocolates_reset,
 #        15: _mas_f14_monika_vday_origins_reset,
+        16: _mas_birthdate_bad_year_fix,
     }
 
 
