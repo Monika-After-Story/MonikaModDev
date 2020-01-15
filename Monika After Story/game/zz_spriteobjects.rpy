@@ -1297,6 +1297,36 @@ init -1 python:
         ],
     )
 
+    ### Valentine's Lingerie
+    ## vday_lingerie
+    # valentines outfit which shows a lot of skin
+    #Thanks Orca
+    mas_clothes_vday_lingerie = MASClothes(
+        "vday_lingerie",
+        "vday_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        stay_on_start=True,
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_vday_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_vday_lingerie,
+        "Valentine's Lingerie",
+        "vday_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        #TODO: ME (Not this time)
+        select_dlg=None#[
+        #    "",
+        #],
+    )
 
 init -1 python:
     # ACCESSORIES (SPR130)
