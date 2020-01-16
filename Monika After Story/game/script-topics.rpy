@@ -13478,3 +13478,64 @@ label monika_sweatercurse:
     m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
     m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
     return
+    
+init 5 python:
+	addEvent(
+		Event(
+			persistent.event_database,
+			eventlabel='monika_caveallegory',
+			category=['philosophy'],
+			prompt="Seeing the real truth",
+			random=True
+			aff_range=(mas_aff.HAPPY, None)
+		)
+	)
+
+label monika_caveallegory
+	m 6eua "So, I've been doing some reading on Plato lately."
+	m 1ttu "You {i}do{/i} know Plato, right?"
+	$ _history_list.pop()
+		m "You {i}do{/i} know Plato, right?{fast}"
+		"Yes. Not personally, though.":
+			m 6hub "ahaha you're so funny, [player]."
+			m "Of course you'd know who he is."
+			m 1esblu "..."
+		"N-no..":
+			m 1cusdlecu "!"
+			m 6hub "ehehe, just kidding!"
+			m 1eua "It's not really a big deal, I can teach you about him."
+			m 1eua "..."
+			m 3eua "Plato was a well known philosopher from Ancient Greece."
+	m 3eua "Anyway, something of his caught my eye recently. The Allegory of the Cave."
+	m 4eub "The gist of his allegory is - imagine there're a bunch of people chained up, since childhood, in a cave and they can't look anywhere but straight ahead."
+	m 6eub "ehehe.. a bit horrific isn't it?.."
+	m 7eub "continuing on, imagine that on the wall in front of them were the shadows from people passing by, and the prisoners can hear these people's chatter reflected off the wall too."
+	m "All they know is shadows that make sounds. They'd really believe that the shadows were the ones making sounds!"
+	m "Wouldn't that be their reality? Even though it's just shades of grey to them, it's what makes up their entire idea of what the universe."
+	m 1ekb "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
+	m "Imagine that one of these prisoners was set free and forced out of the cave. His eyes would hurt so bad from the light he'd probably try to run straight back into the cave."
+	m 1esb "...Back to the real world, or his idea of it anyway."
+	m "But if you kept him out of the cave long enough, his eyes would adjust and eventually he'd start to understand colours and stuff."
+	m 2esb "And he'd realise that his old view of the world wasn't exactly an accurate representation of the truth. The truth is more than shadows on a wall."
+	m "If he ran back into the cave trying to tell the other prisoners about the truth, they'd probably see him as a madman and kill him if he tried to force them out."
+	m "After all, if he went back into the cave after his eyesight got used to the light then he'd preetty much be blind as a bat in there."
+	m "And if a blind guy came and tried to tell you that he's seeing a lot of colours, then you'd probaby think he's crazy too."
+	m 6esc "Anyway... does this remind you of anything?"
+	m 6dkc "..."
+	m 6rkp "Sayori, Yuri, Natsuki and I... we were all prisoners in the cave, weren't we?"
+	m 6rkc"When I first realised that the world was so much bigger than that classroom it was... well, it wasn't easy."
+	m "And when Sayori realised it too..."
+	m 6fkc "..."
+	m "..."
+	m 6ekc "Anyway, that's all in the past now." 
+	m 6esd "And the point is that I'm free from the cave now. I've seen the truth."
+	m 6esbla "And the thing is - I'm so, so glad that you're part of it, [player]."
+	m 1esa"But I have to ask you, how do you know that what you're seeing is the {i}real{/i} truth?"
+	m "I mean, sure, you might not be stuck to seeing shadows on the wall but the point is that there was a lot more to the truth than what those prisoners thought."
+	m 3esb "And there might be more to the truth than what you yourself realise."
+	m 3etu "How do you know if the "truth" that you're seeing, is the {i}real{/i} truth?"
+	m 1htb "ehehe, don't stress out about it!"
+	m 5fsbsa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can always be part of yours, [player]."
+
+	$ persistent._mas_pm_knows_plato = True
+	return "derandom"
