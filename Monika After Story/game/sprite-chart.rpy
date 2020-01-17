@@ -371,6 +371,10 @@ init -100 python in mas_sprites:
     ]
     # default mux tyoes for left hair flower-baesd items
 
+    DEF_MUX_HAT = [
+        "front-hair-flower-crown"
+    ] + DEF_MUX_HS + DEF_MUX_RB
+
     # maps ACS types to their ACS template
     ACS_DEFS = {
         "bow": ACSTemplate(
@@ -396,6 +400,17 @@ init -100 python in mas_sprites:
                 "bare neck": True
             }
         ),
+        "front-hair-flower-crown": ACSTemplate(
+            "front-hair-flower-crown",
+            mux_type=DEF_MUX_LHFE,
+            ex_props={
+                "front-hair-crown": True,
+            },
+        ),
+        "hat": ACSTemplate(
+            "hat",
+            mux_type=DEF_MUX_HAT
+        ),
         "headband": ACSTemplate(
             "headband",
             mux_type=DEF_MUX_HB
@@ -417,13 +432,6 @@ init -100 python in mas_sprites:
             ex_props={
                 EXP_A_LHSEL: True
             }
-        ),
-        "front-hair-flower-crown": ACSTemplate(
-            "front-hair-flower-crown",
-            mux_type=DEF_MUX_LHFE,
-            ex_props={
-                "front-hair-crown": True,
-            },
         ),
         "left-hair-flower-ear": ACSTemplate(
             "left-hair-flower-ear",

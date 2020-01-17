@@ -417,95 +417,20 @@ init -2 python in mas_sprites:
         """
         Entry programming point for marisa clothes
         """
-        # TODO: handle other promise ring types
-        temp_storage["clothes.marisa"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2="marisa",
-            p3="3",
-            p4=None,
-            p5=None,
-            p6=None
-        )
-        wearing_promise_ring = _moni_chr.is_wearing_acs(
-            store.mas_acs_promisering
-        )
+        outfit_mode = kwargs.get("outfit_mode", False)
 
-        # hide hair down select
-#        store.mas_lockEVL("monika_hair_select", "EVE")
-
-        # hide hairdown greeting
-#        store.mas_lockEVL("greeting_hairdown", "GRE")
-
-        # wearing marisa clothes means we wear custom blank ribbon if we are
-        # wearing a ribbon
-        _acs_ribbon_save_and_remove(_moni_chr)
-        _acs_ribbon_like_save_and_remove(_moni_chr)
-#        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-#        if (
-#                prev_ribbon is not None 
-#                and prev_ribbon != store.mas_acs_ribbon_blank
-#            ):
-#            temp_storage["hair.ribbon"] = prev_ribbon
-#            #_moni_chr.wear_acs(store.mas_acs_ribbon_blank)
-#            _moni_chr.remove_acs(prev_ribbon)
-
-        # lock hair so we dont get ribbon issues
-        _moni_chr.lock_hair = True
-
-        #### hair acs
-        _acs_save_and_remove_exprop(
-            _moni_chr,
-            "left-hair-strand-eye-level",
-            "acs.left-hair-strand-eye-level",
-            True
-        )
-
-        #### end acs stuff
-
-        # remove ear rose
-        _moni_chr.remove_acs(store.mas_acs_ear_rose)
-
-        _clothes_baked_entry(_moni_chr)
-
-        # re-add promise wring if it was worn
-        if wearing_promise_ring:
-            _moni_chr.wear_acs(store.mas_acs_promisering)
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_downtiedstrand)
+            _moni_chr.wear_acs(store.mas_acs_marisa_strandbow)
+            _moni_chr.wear_acs(store.mas_acs_marisa_witchhat)
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
         """
         Exit programming point for marisa clothes
         """
-        marisa_map = temp_storage.get("clothes.marisa", None)
-        if marisa_map is not None:
-            store.mas_acs_promisering.pose_map = marisa_map
-
-        # unlock hair down select, if needed
-#        _hair_unlock_select_if_needed()
-
-        # unlock hair down greeting if not unlocked
-#        if not store.mas_SELisUnlocked(mas_hair_down, 1):
-#            store.mase_unlockEVL("greeting_hairdown", "GRE")
-
-        # wear previous ribbon if we have any in storage
-        _acs_wear_if_in_tempstorage_s(_moni_chr, "hair.ribbon")
-#        _acs_wear_if_wearing_type(
-#            _moni_chr,
-#            "ribbon",
-#            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
-#        )
-
-        # unlock hair
-        _moni_chr.lock_hair = False
-
-        # wear hairclips we were previously wearing (in session only)
-        # NOTE: we assume this list only contains hairclips. This is NOT true.
-        # TODO: add additional topic unlocks as needed.
-        _acs_wear_if_in_tempstorage(
-            _moni_chr,
-            "acs.left-hair-strand-eye-level"
-        )
+        _moni_chr.remove_acs(store.mas_acs_marisa_strandbow)
+        _moni_chr.remove_acs(store.mas_acs_marisa_witchhat)
 
 
     def _clothes_orcaramelo_hatsune_miku_entry(_moni_chr, **kwargs):
@@ -767,7 +692,16 @@ init -2 python in mas_sprites:
         if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
             _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
+    def _acs_marisa_witchhat_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for marisa witchhat acs
+        """
+        store.mas_lockEVL("monika_ribbon_select", "EVE")
 
+    def _acs_marisa_witchhat_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for marisa witchhat acs
+        """
 init -1 python:
     # HAIR (SPR110)
     # Hairs are representations of image objects with propertes
@@ -858,6 +792,30 @@ init -1 python:
         "hair",
         select_dlg=[
             "Feels nice to let my hair down..."
+        ]
+    )
+
+    ### DOWNTIED
+    ## downtiedstrand
+    # Hair is down but with a tied strand
+    # Thanks Orca
+    mas_hair_downtiedstrand = MASHair(
+        "downtiedstrand",
+        "downtiedstrand",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+    )
+    store.mas_sprites.init_hair(mas_hair_downtiedstrand)
+    store.mas_selspr.init_selectable_hair(
+        mas_hair_downtiedstrand,
+        "Down (Tied strand)",
+        "downtiedstrand",
+        "hair",
+        select_dlg=[
+            "Feels nice to let my hair down...",
+            "Looks cute, don't you think?"
         ]
     )
 
@@ -1035,28 +993,26 @@ init -1 python:
         "marisa",
         "marisa",
         MASPoseMap(
-            mpm_type=MASPoseMap.MPM_TYPE_FB,
-            default="steepling",
-            use_reg_for_l=True,
-            p1="steepling",
-            p2="crossed",
-            p3="restleftpointright",
-            p4="pointright",
-            p5="steepling",
-            p6="down",
-            p7="restleftpointright"
+            default=True,
+            use_reg_for_l=True
         ),
-        fallback=True,
-        hair_map={
-            "all": "custom"
-        },
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True,
+            p1=store.mas_sprites.use_bpam(1),
+            p2=MASPoseArms(both=("crossed", True, False)),
+            p3=store.mas_sprites.use_bpam(3),
+            p4=store.mas_sprites.use_bpam(4),
+            p5=MASPoseArms(
+                left=("def", False, True),
+                right=("def", True, False)
+            ),
+            p6=store.mas_sprites.use_bpam(6),
+            p7=store.mas_sprites.use_bpam(7)
+        ),
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_marisa_entry,
-        exit_pp=store.mas_sprites._clothes_marisa_exit,
-        ex_props={
-            "forced hair": True,
-            "baked outfit": True,
-        }
+        exit_pp=store.mas_sprites._clothes_marisa_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
     store.mas_selspr.init_selectable_clothes(
@@ -1516,6 +1472,45 @@ init -1 python:
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_twinsquares)
+
+    ### Marisa Strandbow
+    ## marisa_strandbow
+    # Bow to go on Moni's hair strand in the Marisa outfit
+    # Thanks SovietSpartan/Orca
+    mas_acs_marisa_strandbow = MASAccessory(
+        "marisa_strandbow",
+        "marisa_strandbow",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="strandbow",
+        # muxtype handled by defaults
+        ex_props={
+            "required-hair-prop": "braidstrand"
+        },
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_marisa_strandbow)
+
+    ### Marisa witchhat
+    ## marisa_witchhat
+    # Hat for Moni's Marisa costume
+    # Thanks SovietSpartan/Orca
+    mas_acs_marisa_witchhat = MASAccessory(
+        "marisa_witchhat",
+        "marisa_witchhat",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="hat",
+        # muxtype handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_marisa_witchhat)
 
     ### Holly Hairclip
     ## holly_hairclip
