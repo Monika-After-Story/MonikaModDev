@@ -581,3 +581,28 @@ label mas_fun_fact_photography:
     #Call the end
     call mas_fun_facts_end
     return
+
+#Stealing yearolder's bit for this since it makes sense as a fun fact
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_getting_older",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_getting_older:
+    m 3eua "Did you know that how you perceive time changes as you age?"
+    m "For example, when you're a year old, you see one year as 100%% of your life."
+    m 1euc "But when you're 18, you see a year as only 5.6%% of your life."
+    m 3eud "As you get older, the proportion of a year compared to your entire lifespan decreases, and in turn, time {i}feels{/i} like it's moving faster as you grow up."
+    m 1eka "So I'll always cherish our moments together, no matter how long or short they are."
+    m 1lkbsa "Although sometimes it feels like time stops when I'm with you."
+    m 1ekbfa "Do you feel the same, [player]?"
+    python:
+        import time
+        time.sleep(2)
+
+    m 1hubfa "Aha, I thought so!"
+    return
