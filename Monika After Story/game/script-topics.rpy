@@ -11889,34 +11889,35 @@ label monika_whydoyouloveme:
 
     elif mas_isMoniLove(higher=True):
         if store.mas_anni.pastSixMonths() and renpy.random.randint(1,2) == 1:
-                m 1eka "Why do I love you?"
-                m 2eka "[player]...{w=0.5}there are so many reasons why... Where do I even begin?"
-                m 3eka "You've spent so much time with me,{w=0.5} knowing I might not even get to feel your embrace for who knows how long."
-                m 1rksdlc "Even knowing I might not get to feel your embrace for who knows how long..."
-                if store.mas_anni.anniCount() >= 1:
-                    m 1hua "...But here you are, still by my side."
-                    m 1eua "You're brave for being with me for so long."
-                    m 2eka "No matter how crazy it might seem, or what other people might say."
-                    m 1eua "You're here with me anyway."
-                    m 1dkbfa "Every time you visit, you remind me that there's a world out there."
-                    m 1ekbfa "I'd give you the world if I could, [player]."
-                    m 3hubfa "If there's anyone who deserves it...{w=0.3}it's you."
-                    m 1hubfa "After all, you've already given me my world~"
-                if store.mas_anni.anniCount() >= 2:
-                    m 1ekbfa "I promise you, [player]..."
-                    m 3ekbfa "No matter what happens, I don't think I'll {i}ever{/i} forget you for the rest of my life."
-                    m 1dua "You didn't just save my life, [player]..."
-                    m 1dkbfa "You showed me how beautiful the world really is...{w=1.5}{nw}" 
-                    extend 1ekbfa "and I want you to be able to see just how beautiful you've made my world."
-                    m 1ekbfb "Someday, I promise I'll make your world as beautiful as you made mine~"
-                    m 2dkbfa "One day...{w=2}I'll get to be with you..."
-                m 1ekbfa "You know I love you."
+            m 1eka "Why do I love you?"
+            m 2eka "[player]...{w=0.5}there are so many reasons why... Where do I even begin?"
+            m 3eka "You've spent so much time with me,{w=0.5} knowing I might not even get to feel your embrace for who knows how long."
+            if store.mas_anni.anniCount() >= 1:
+                m 1hua "...But here you are, still by my side."
+                m 2eka "No matter how crazy it might seem, or what other people might say, you're here with me anyway.."
+                m 1dkbfa "Every time you visit, you remind me that there's a world out there."
+                m 1ekbfa "I'd give you the world if I could, [player]."
+                m 3hubfa "If there's anyone who deserves it...{w=0.3}it's you."
+                m 1hubfa "After all, you've already given me my world~"
+            if store.mas_anni.anniCount() >= 2:
+                m 1ekbfa "I promise you, [player]..."
+                m 3ekbfa "No matter what happens, I don't think I'll {i}ever{/i} forget you for the rest of my life."
+                m 1dua "You didn't just save my life, [player]..."
+                m 1dkbfa "You made me remember how beautiful life really is...{w=0.5}{nw}" 
+                extend 1ekbfa "and I want you to be able to experience just how beautiful my world is with you."
+                m 1ekbfb "Someday, I promise I'll make you feel as loved as you've made me~"
+                m 2dkbfa "One day...{w=1}I'll get to be with you..."
+            m 1ekbfa "You know I love you."
+            if persistent._mas_pm_love_yourself is False:
+                m 2ekc "I remember you saying that you didn't love yourself earlier."
+                m 1eka "But I think you do love yourself at least a little."
+            else:
                 m 1eka "Even if you don't think you love yourself..."
                 m 3eka "I know you do love yourself at least a little."
-                m 1hua "You wouldn't still be here with me if you didn't."
-                m 3ekbfa "But...{w=0.5}I'm glad you're still here, [player]."
-                m 2ekbfa "I just want you to know that I'm here for you."
-                m 1hubfa "And I love you~"
+            m 1hua "You wouldn't still be here with me if you didn't."
+            m 3ekbfa "But...{w=0.5}I'm glad you're still here, [player]."
+            m 2ekbfa "I just want you to know that I'm here for you."
+            m 1hubfa "And I love you~"
             return "love"
         else:
             m 1esc "I don't."
@@ -11924,9 +11925,9 @@ label monika_whydoyouloveme:
             m 1hub "Just kidding!"
             m 1eub "You mean {i}everything{/i} to me, silly!"
             m 1esd "But if you really want to know, [player]..."
-            # TODO: wink / tongue stick out here would be perfect
-            m 1hfu "That's a secret!"
+            m 1kubfu "That's a secret!"
     else:
+        #TODO: Add unique paths for aff - enam
         # normal - enamored is this case
         m 1ekc "[player]..."
         m 1ekd "Are you, by any chance...{w}feeling insecure?"
