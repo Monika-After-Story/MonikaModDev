@@ -446,6 +446,13 @@ label v0_10_6(version="v0_10_6"):
             if renpy.seen_label("v0_9_0") and seen_year - bday.year < 5:
                 mas_addDelayedAction(16)
 
+        #Try/Excepting this just in case
+        try:
+            del persistent._mas_mood_bday_last
+            del persistent._mas_mood_bday_lies
+            del persistent._mas_mood_bday_locked
+        except:
+            pass
     return
 
 #0.10.5
