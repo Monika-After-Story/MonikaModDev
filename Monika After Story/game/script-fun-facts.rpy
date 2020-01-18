@@ -55,7 +55,7 @@ label monika_fun_facts_open:
             m 3hua "That last one was pretty interesting after all!"
         else:
             m 2rksdlb "I know the last one wasn't great...but I'm sure this next one will be better."
-    m 2dsc "Now, let's see..."
+    m 2dsc "Now, let's see.{w=0.5}.{w=0.5}.{nw}"
 
     python:
         unseen_fact_evls = mas_fun_facts.getUnseenFactsEVL()
