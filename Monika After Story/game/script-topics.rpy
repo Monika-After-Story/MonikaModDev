@@ -13485,7 +13485,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_allegory_of_the_cave",
             category=['philosophy'],
-            prompt="Seeing the real truth",
+            prompt="Allegory of the Cave",
             random=True
         )
     )
