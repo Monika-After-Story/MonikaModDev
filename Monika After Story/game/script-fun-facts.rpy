@@ -27,20 +27,6 @@ init -10 python in mas_fun_facts:
         """
         return fun_fact_db.keys()
 
-    def hasUnseenFacts():
-        """
-        Checks to see if we've got unseen fun facts
-        (Checks if we have any facts which are unlocked)
-
-        OUT:
-            boolean:
-                - True if we have unseen facts
-                - False otherwise
-        """
-        for fun_fact_ev in fun_fact_db.itervalues():
-            if not fun_fact_ev.unlocked:
-                return True
-        return False
 
 #Whether or not the last fun fact seen was a good fact
 default persistent._mas_funfactfun = True
@@ -72,9 +58,9 @@ label monika_fun_facts_open:
     m 2dsc "Now, let's see..."
 
     python:
-        if mas_fun_facts.hasUnseenFacts():
-            fact_evl_list = mas_fun_facts.getUnseenFactsEVL()
-
+        unseen_fact_evls = mas_fun_facts.getUnseenFactsEVL()
+        if len(unseen_fact_evls) > 0:
+            fact_evl_list = unseen_fact_evls
         else:
             fact_evl_list = mas_fun_facts.getAllFactsEVL()
 
@@ -614,7 +600,7 @@ label mas_fun_fact_getting_older:
     m 1ekbfa "Do you feel the same, [player]?"
     python:
         import time
-        time.sleep(2)
+        time.sleep(5)
 
     m 1hubfa "Aha, I thought so!"
     return
