@@ -8,6 +8,9 @@ init -10 python in mas_fun_facts:
     def getUnseenFactsEVL():
         """
         Gets all unseen (locked) fun facts as eventlabels
+
+        OUT:
+            List of all unseen fun fact eventlabels
         """
         return [
             fun_fact_evl
@@ -18,6 +21,9 @@ init -10 python in mas_fun_facts:
     def getAllFactsEVL():
         """
         Gets all fun facts regardless of unlocked as eventlabels
+
+        OUT:
+            List of all fun fact eventlabels
         """
         return fun_fact_db.keys()
 
@@ -25,10 +31,16 @@ init -10 python in mas_fun_facts:
         """
         Checks to see if we've got unseen fun facts
         (Checks if we have any facts which are unlocked)
+
+        OUT:
+            boolean:
+                - True if we have unseen facts
+                - False otherwise
         """
         for fun_fact_ev in fun_fact_db.itervalues():
             if not fun_fact_ev.unlocked:
                 return True
+        return False
 
 #Whether or not the last fun fact seen was a good fact
 default persistent._mas_funfactfun = True
