@@ -429,6 +429,11 @@ label v0_10_6(version="v0_10_6"):
                     if year not in years_list:
                         persistent._mas_history_archives[year]["player_bday.saw_surprise"] = True
 
+        #Give unseen fun facts the unlocked prop
+        for ev in mas_fun_facts.fun_fact_db.itervalues():
+            if ev.shown_count:
+                ev.unlocked = True
+
         # add a delayed action to push birthday fix if required
         birthdate_ev = mas_getEV("mas_birthdate")
         bday = persistent._mas_player_bday
