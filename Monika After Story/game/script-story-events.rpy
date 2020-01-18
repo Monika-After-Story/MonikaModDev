@@ -2138,10 +2138,19 @@ label mas_birthdate_year_redux_select:
 
                 "Yes.":
                     m 3hua "Okay, then it's settled!"
-                    $ persistent._mas_player_bday = persistent._mas_player_bday.replace(year=_return)
-                    $ store.mas_player_bday_event.correct_pbday_mhs(persistent._mas_player_bday)
-                    $ store.mas_history.saveMHSData()
-                    $ renpy.save_persistent()
+                    python:
+                        persistent._mas_player_bday = persistent._mas_player_bday.replace(year=_return)
+                        store.mas_player_bday_event.correct_pbday_mhs(persistent._mas_player_bday)
+                        store.mas_history.saveMHSData()
+                        renpy.save_persistent()
+
+                        # update calendar
+                        store.mas_calendar.addRepeatable_d(
+                            "player-bday",
+                            "Your Birthday",
+                            persistent._mas_player_bday,
+                            range(persistent._mas_player_bday.year,MASCalendar.MAX_VIEWABLE_YEAR)
+                        )
 
                 "No.":
                     call mas_birthdate_year_redux_no
