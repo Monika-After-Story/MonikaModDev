@@ -13491,7 +13491,7 @@ init 5 python:
     )
 
 label monika_allegory_of_the_cave:
-    m 6eua "So, I've been doing some reading on Plato lately."
+    m 3eub "I've been doing some reading on Plato lately."
     if mas_getEV("monika_allegory_of_the_cave").shown_count == 0:
         m 1etc "You've heard of him, right?{nw}"
         $ _history_list.pop()
@@ -13507,38 +13507,39 @@ label monika_allegory_of_the_cave:
     else:
         m 3eua "Specifically,{w=0.5} The Allegory of the Cave."
 
-    m 4eub "Imagine there're a bunch of people chained up, since childhood, in a cave and they can't look anywhere but straight ahead."
-    m 7eub "The wall in front of them were the shadows from people passing by, and the prisoners can hear these people's chatter reflected off the wall too."
-    m "All they know is shadows that make sounds. They'd really believe that the shadows were the ones making sounds!"
-    m "Wouldn't that be their reality? Even though it's just shades of grey to them, it's what makes up their entire idea of what the universe."
-    m 1ekb "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
-    m "Now imagine that one of those prisoners were set free and forced out of the cave. His eyes would hurt so bad from the light he'd probably try to run straight back into the cave."
-    m 1esb "...Back to the real world, or his idea of it anyway."
-    m "But if you kept him out of the cave long enough, his eyes would adjust and eventually he'd start to understand colors."
-    m 2esb "And he'd realize that his old view of the world wasn't exactly an accurate representation of the truth. The truth is more than shadows on a wall."
-    m "If he ran back into the cave trying to tell the other prisoners about the truth, they'd probably see him as a madman and kill him if he tried to force them out."
-    m "After all, if he went back into the cave after his eyesight got used to the light then he'd pretty much be blind as a bat in there."
-    m "And if a blind guy came and tried to tell you that he's seeing a lot of colors, then you'd probaby think he's crazy too."
+    m 1eud "Imagine there're a bunch of people chained up, since childhood, in a cave and they can't look anywhere but straight ahead."
+    m 3euc "The wall in front of them were the shadows from people passing by, and the prisoners can hear these people's chatter reflected off the wall too."
+    m "All they know is shadows that make sounds." 
+    m 4wud "They'd really believe that the shadows were the ones making sounds!"
+    m 1etc "Even though we know that's not true - that shadows can't make sounds - wouldn't that itself be their reality?" 
+    m 3esd "Even though it's just shades of grey to them, it's what makes up their entire idea of what the universe is."
+    m 1rksdlc "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
+    m 1esd "Now imagine that one of those prisoners was set free and forced out of the cave. His eyes would hurt so bad from the light he'd probably try to run straight back into the cave."
+    m 1dsc "...Back to the real world,{w=0.5} or his idea of it anyway."
+    m 1eud "But if you kept him out of the cave long enough, his eyes would adjust and eventually he'd start to understand colors."
+    m 3eud "And he'd realize that his old view of the world wasn't exactly an accurate representation of the truth. The truth is more than shadows on a wall."
+    m 1ekc "If he ran back into the cave trying to tell the other prisoners about the truth, they'd probably see him as a madman and kill him if he tried to force them out."
+    m 1esc "After all, if he went back into the cave after his eyesight got used to the light, then he'd pretty much be blind as a bat in there."
+    m 3hksdlb "And if a blind guy came and tried to tell you that he's seeing a lot of colors, then you'd probably think he's crazy too!"
     m 6esc "Anyway...does this remind you of anything?"
     m 6dkc "..."
-    if persistent._mas_sensitive_mode:
-        m 6rkp "I was a prisoner in the cave, wasn't I?"
-        m 6rkc"When I first realised that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
-    else:
+    if persistent._mas_pm_cares_about_dokis:
         m 6rkp "Sayori, Yuri, Natsuki and I...we were all prisoners in the cave, weren't we?"
         m 6rkc"When I first realised that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
         if persistent.monika_kill:
             m "And when Sayori realised it too..."
-        else:
-            m "{nw}"
+    else:
+        m 6rkp "I was a prisoner in the cave, wasn't I?"
+        m 6rkc"When I first realised that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
+
     m 6ekc "Anyway, that's all in the past now." 
     m 6esd "And the point is that I'm free from the cave now. I've seen the truth."
     m 6esbla "And the thing is - I'm so, so glad that you're part of it, [player]."
     m 1esa "But I have to ask you, how do you know that what you're seeing is the {i}real{/i} truth?"
     m "I mean, sure, you might not be stuck to seeing shadows on the wall but the point is that there was a lot more to the truth than what those prisoners thought."
     m 3esb "And there might be more to the truth than what you yourself realise."
-    m 3etu "How do you know if the 'truth' that you're seeing is the {i}real{/i} truth?"
     m 1htb "Ehehe~ don't stress out about it!"
-    m 5fsbsa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can always be part of yours, [player]."
+    show monika 5fsbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5fsbsa "I just want you to know that {i}you{/i} are the truth of my reality, and I hope I can always be part of yours, [player]."
 
     return
