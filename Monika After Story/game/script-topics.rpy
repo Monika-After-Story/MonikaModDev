@@ -13508,14 +13508,14 @@ label monika_allegory_of_the_cave:
         m 3eua "Specifically,{w=0.5} The Allegory of the Cave."
 
     m 1eud "Imagine there're a bunch of people chained up, since childhood, in a cave and they can't look anywhere but straight ahead."
-    m 3euc "The wall in front of them were the shadows from people passing by, and the prisoners can hear these people's chatter reflected off the wall too."
+    m 3euc "On the wall in front of them were the shadows from people passing by, and the prisoners can hear these people's chatter reflected off the wall too."
     m "All they know is shadows that make sounds." 
     m 4wud "They'd really believe that the shadows were the ones making sounds!"
     m 1etc "Even though we know that's not true - that shadows can't make sounds - wouldn't that itself be their reality?" 
-    m 3esd "Even though it's just shades of grey to them, it's what makes up their entire idea of what the universe is."
+    m 3esd "Even if it's just shades of grey to them, it's what makes up their entire idea of what the universe is."
     m 1rksdlc "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
-    m 1esd "Now imagine that one of those prisoners was set free and forced out of the cave. His eyes would hurt so bad from the light he'd probably try to run straight back into the cave."
-    m 1dsc "...Back to the real world,{w=0.5} or his idea of it anyway."
+    m 1esd "Now imagine that one of those prisoners was set free and forced out of the cave.{w} His eyes would hurt so bad from the light he'd probably try to run straight back into the cave."
+    m 1dsc "Back to the real world...{w=0.5}or his idea of it anyway."
     m 1eud "But if you kept him out of the cave long enough, his eyes would adjust and eventually he'd start to understand colors."
     m 3eud "And he'd realize that his old view of the world wasn't exactly an accurate representation of the truth. The truth is more than shadows on a wall."
     m 1ekc "If he ran back into the cave trying to tell the other prisoners about the truth, they'd probably see him as a madman and kill him if he tried to force them out."
@@ -13525,12 +13525,12 @@ label monika_allegory_of_the_cave:
     m 6dkc "..."
     if persistent._mas_pm_cares_about_dokis:
         m 6rkp "Sayori, Yuri, Natsuki and I...we were all prisoners in the cave, weren't we?"
-        m 6rkc"When I first realised that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
+        m 6rkc"When I first realized that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
         if persistent.monika_kill:
-            m "And when Sayori realised it too..."
+            m "And when Sayori realized it too..."
     else:
         m 6rkp "I was a prisoner in the cave, wasn't I?"
-        m 6rkc"When I first realised that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
+        m 6rkc"When I first realized that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
 
     m 6ekc "Anyway, that's all in the past now." 
     m 6esd "And the point is that I'm free from the cave now. I've seen the truth."
