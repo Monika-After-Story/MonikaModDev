@@ -368,6 +368,98 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.6
+label v0_10_6(version="v0_10_6"):
+    python:
+        #NOTE: Because of a crash in the last update script, this part was not guaranteed to run for everyone.
+        #Therefore we're running it again
+        if persistent._mas_likes_rain:
+            del persistent._mas_likes_rain
+
+        # remove bookmarks unbookmark topic
+        mas_eraseTopic("mas_topic_unbookmark")
+
+        seen_bday_surprise = False
+        # list of labels that mean we have seen a surprise
+        bday_list = [
+            'mas_player_bday_listen',
+            'mas_player_bday_knock_no_listen',
+            'mas_player_bday_opendoor',
+            'mas_player_bday_surprise'
+        ]
+
+        # determine if we have ever seen a surprise
+        for bday_label in bday_list:
+            if renpy.seen_label(bday_label):
+                seen_bday_surprise = True
+
+        if seen_bday_surprise:
+            # list of events to use so we know what years we did not see a surprise
+            other_bday_list = [
+                'mas_player_bday_ret_on_bday',
+                'mas_player_bday_no_restart',
+                'mas_player_bday_upset_minus',
+                'mas_player_bday_other_holiday'
+            ]
+
+            # surprise year blacklist to store years we could not have seen a surprise
+            years_list = []
+
+            # get every year we could not have seen a surprise, and add it to the surprise year blacklist
+            for other_bday_label in other_bday_list:
+                if mas_getEV(other_bday_label) is not None and mas_getEV(other_bday_label).last_seen is not None:
+                    years_list.append(mas_getEV(other_bday_label).last_seen.year)
+
+            # if we got a confirmed bday on bday party, add the year to the blacklist
+            if persistent._mas_player_bday is not None and persistent._mas_player_confirmed_bday:
+                bdate_ev = mas_getEV('mas_birthdate')
+                if bdate_ev is not None and bdate_ev.last_seen is not None:
+                    seen_date = bdate_ev.last_seen.date()
+                    if seen_date == mas_player_bday_curr().replace(year=seen_date.year):
+                        years_list.append(seen_date.year)
+
+            # if spent_time is currently True and this year is not in our surprise year black list, we set saw_surprise to True
+            if persistent._mas_player_bday_spent_time and datetime.date.today().year not in years_list:
+                persistent._mas_player_bday_saw_surprise = True
+
+            spent_time_hist = mas_HistVerify("player_bday.spent_time",True)
+            # here we check years we celebrated with Monika against the surprise year blacklist and adjust history accordingly
+            if spent_time_hist[0]:
+                for year in spent_time_hist[1]:
+                    if year not in years_list:
+                        persistent._mas_history_archives[year]["player_bday.saw_surprise"] = True
+
+        #Give unseen fun facts the unlocked prop
+        for ev in mas_fun_facts.fun_fact_db.itervalues():
+            if ev.shown_count:
+                ev.unlocked = True
+
+        # add a delayed action to push birthday fix if required
+        birthdate_ev = mas_getEV("mas_birthdate")
+        bday = persistent._mas_player_bday
+        if (
+                birthdate_ev is not None
+                and birthdate_ev.last_seen is not None
+                and bday is not None
+        ):
+            seen_year = birthdate_ev.last_seen.year
+
+            # if you havent seen 090, then you are unaffected
+            # if ur birthdate is normal (not less than 5 years of age from the
+            #   time the date could have been set), then you're
+            #   probably unaffected
+            if renpy.seen_label("v0_9_0") and seen_year - bday.year < 5:
+                mas_addDelayedAction(16)
+
+        #Try/Excepting this just in case
+        try:
+            del persistent._mas_mood_bday_last
+            del persistent._mas_mood_bday_lies
+            del persistent._mas_mood_bday_locked
+        except:
+            pass
+    return
+
 #0.10.5
 label v0_10_5(version="v0_10_5"):
     python:
@@ -467,8 +559,10 @@ label v0_10_5(version="v0_10_5"):
         persistent._mas_pm_likes_rain = persistent._mas_likes_rain
 
         #And delete the old
-        del persistent.instrument
-        del persistent._mas_likes_rain
+        if persistent.instrument:
+            del persistent.instrument
+        if persistent._mas_likes_rain:
+            del persistent._mas_likes_rain
 
         # remove bookmarks unbookmark topic
         mas_eraseTopic("mas_topic_unbookmark")

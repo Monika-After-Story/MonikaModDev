@@ -5,8 +5,27 @@ init -10 python in mas_fun_facts:
     #The fun facts db
     fun_fact_db = {}
 
-    TYPE_GOOD = "good"
-    TYPE_BAD = "bad"
+    def getUnseenFactsEVL():
+        """
+        Gets all unseen (locked) fun facts as eventlabels
+
+        OUT:
+            List of all unseen fun fact eventlabels
+        """
+        return [
+            fun_fact_evl
+            for fun_fact_evl, ev in fun_fact_db.iteritems()
+            if not ev.unlocked
+        ]
+
+    def getAllFactsEVL():
+        """
+        Gets all fun facts regardless of unlocked as eventlabels
+
+        OUT:
+            List of all fun fact eventlabels
+        """
+        return fun_fact_db.keys()
 
 
 #Whether or not the last fun fact seen was a good fact
@@ -36,31 +55,24 @@ label monika_fun_facts_open:
             m 3hua "That last one was pretty interesting after all!"
         else:
             m 2rksdlb "I know the last one wasn't great...but I'm sure this next one will be better."
-    m 2dsc "Now, let's see..."
+    m 2dsc "Now, let's see.{w=0.5}.{w=0.5}.{nw}"
 
     python:
-        #Determines if it is a bad fact, 10% chance.
-        if renpy.random.randint(1,100) <= 10:
-            list_facts = [
-                eventlabel
-                for eventlabel, event in store.mas_fun_facts.fun_fact_db.iteritems()
-                if store.mas_fun_facts.TYPE_BAD in event.category
-            ]
-
+        unseen_fact_evls = mas_fun_facts.getUnseenFactsEVL()
+        if len(unseen_fact_evls) > 0:
+            fact_evl_list = unseen_fact_evls
         else:
-            list_facts = [
-                eventlabel
-                for eventlabel, event in store.mas_fun_facts.fun_fact_db.iteritems()
-                if store.mas_fun_facts.TYPE_GOOD in event.category
-            ]
+            fact_evl_list = mas_fun_facts.getAllFactsEVL()
 
-        #Now we push the fact
-        pushEvent(renpy.random.choice(list_facts))
+        #Now we push and unlock the fact
+        fun_fact_evl = renpy.random.choice(fact_evl_list)
+        mas_unlockEVL(fun_fact_evl, "FFF")
+        pushEvent(fun_fact_evl)
     return
 
 #Most labels end here
 label mas_fun_facts_end:
-    m 1hub "I hope you enjoyed another session of 'Learning with Monika!'"
+    m 3hub "I hope you enjoyed another session of 'Learning with Monika!'"
     $ persistent._mas_funfactfun = True
     return
 
@@ -77,7 +89,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_librocubiculartist",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -99,7 +110,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_menu_currency",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -121,7 +131,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_love_you",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -143,7 +152,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_morpheus",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -165,7 +173,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_otter_hand_holding",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -187,7 +194,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_chess",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -230,7 +236,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_struck_by_lightning",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -252,7 +257,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_honey",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -275,7 +279,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_vincent_van_gone",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -301,7 +304,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_king_snakes",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -322,7 +324,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_strength",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -344,7 +345,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_reindeer_eyes",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -365,7 +365,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_bananas",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -395,7 +394,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_pens",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -417,7 +415,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_density",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -440,7 +437,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_binky",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -463,7 +459,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_windows_games",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -486,7 +481,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_mental_word_processing",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -509,7 +503,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_I_am",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -530,7 +523,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_low_rates",
-            category=[store.mas_fun_facts.TYPE_GOOD],
         ),
         code="FFF"
     )
@@ -550,7 +542,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_desert",
-            category=[store.mas_fun_facts.TYPE_GOOD]
         ),
         code="FFF"
     )
@@ -573,7 +564,6 @@ init 5 python:
         Event(
             persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_photography",
-            category=[store.mas_fun_facts.TYPE_GOOD]
         ),
         code="FFF"
     )
@@ -590,94 +580,27 @@ label mas_fun_fact_photography:
     call mas_fun_facts_end
     return
 
-
-#START: Bad facts
+#Stealing yearolder's bit for this since it makes sense as a fun fact
 init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_fact_10_percent",
-            category=[store.mas_fun_facts.TYPE_BAD],
+            eventlabel="mas_fun_fact_getting_older",
         ),
         code="FFF"
     )
 
-label mas_bad_fact_10_percent:
-    m 1eub "Did you know th--"
-    m 1wud "..."
-    m 2efw "T-this isn't a true fact at all!"
-    m 2dfc "'Humans only use 10 percent of their brain.'"
-    m 2lfd "Ugh, such nonsense."
-    m 4tfc "People don't really believe this, do they?"
-    #Call the end
-    call mas_bad_facts_end
-    return
+label mas_fun_fact_getting_older:
+    m 3eua "Did you know that how you perceive time changes as you age?"
+    m "For example, when you're a year old, you see one year as 100%% of your life."
+    m 1euc "But when you're 18, you see a year as only 5.6%% of your life."
+    m 3eud "As you get older, the proportion of a year compared to your entire lifespan decreases, and in turn, time {i}feels{/i} like it's moving faster as you grow up."
+    m 1eka "So I'll always cherish our moments together, no matter how long or short they are."
+    m 1lkbsa "Although sometimes it feels like time stops when I'm with you."
+    m 1ekbfa "Do you feel the same, [player]?"
+    python:
+        import time
+        time.sleep(5)
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_fact_taste_areas",
-            category=[store.mas_fun_facts.TYPE_BAD],
-        ),
-        code="FFF"
-    )
-
-label mas_bad_fact_taste_areas:
-    m 2ekc "Hm? This doesn't sound right..."
-    m 2tkd "It says here that different areas of the tongue taste different flavors."
-    m 2tfd "One area for bitter tastes, another for sweet..."
-    m 2dfd "{i}*sigh*{/i}{w} For the love of--"
-    m 2rfd "--only children would believe this."
-    #Call the end
-    call mas_bad_facts_end
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_fact_antivaxx",
-            category=[store.mas_fun_facts.TYPE_BAD],
-        ),
-        code="FFF"
-    )
-
-label mas_bad_fact_antivaxx:
-    m 2dsc "{i}*inhale*{/i}"
-    m 2dsd "{i}*exhale*{/i}"
-    m 2esc "'Vaccines cause autism...'"
-    m "Just wow."
-    m "That's not even funny, and if they're serious, it's long since been disproven."
-    m 2dsc "I really don't like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."
-    m 2lksdlc "I hope no one actually believes this..."
-    #Call the end
-    call mas_bad_facts_end
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_fact_tree_moss",
-            category=[store.mas_fun_facts.TYPE_BAD],
-        ),
-        code="FFF"
-    )
-
-label mas_bad_fact_tree_moss:
-    m 2dkc "...Oh."
-    m 2rkc "I'm not even sure it's worth telling you this one, [player]."
-    m 2dkc "It says here that moss only grows on the north side of trees, but I know that it's only a myth."
-    m 2ekd "A very popular one too!"
-    m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there'll be moss there too."
-    m 2efd "But relying on that kind of logic is dangerous!"
-    m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in."
-    m "Plus even if it wasn't like that, the trick would only work in the Northern Hemisphere."
-    m 2wfc "Anyone within the Southern Hemisphere would have it growing facing south."
-    m 2dfc "..."
-    m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
-    m 2dkc "I would hate for something to happen to you, especially because of false information like this..."
-    #Call the end
-    call mas_bad_facts_end
+    m 1hubfa "Aha, I thought so!"
     return

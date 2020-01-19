@@ -1801,35 +1801,6 @@ label ch30_reset:
                 ):
                 mas_unlockGame(game_name)
 
-    # reset mas mood bday
-    python:
-        if (
-                persistent._mas_mood_bday_last
-                and persistent._mas_mood_bday_last < today
-            ):
-            persistent._mas_mood_bday_last = None
-            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
-            if mood_ev:
-                mood_ev.unlocked = True
-
-    # enabel snowing if its winter
-#    python:
-#        # TODO: snowing should also be controlled if you like it or not
-#        if mas_isWinter():
-#            if mas_is_snowing and not mas_weather_snow.unlocked:
-#                mas_weather_snow.unlocked = True
-#                store.mas_weather.saveMWData()
-#
-#                mas_unlockEVL("monika_change_weather", "EVE")
-#                renpy.save_persistent()
-#        mas_is_snowing = mas_isWinter()
-#        if mas_is_snowing:
-#
-#            mas_lockEVL("monika_rain_start", "EVE")
-#            mas_lockEVL("monika_rain_stop", "EVE")
-#            mas_lockEVL("mas_monika_islands", "EVE")
-#            mas_lockEVL("monika_rain", "EVE")
-#            mas_lockEVL("greeting_ourreality", "GRE")
 
     #### SPRITES
 
