@@ -368,6 +368,17 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.7
+label v0_10_7(version="v0_10_7"):
+    python:
+        #Transfer the OG vday content stuff to history so we can be done with it forever
+        if renpy.seen_label("monika_valentines_start"):
+            persistent._mas_history_archives[2018]["f14.actions.spent_f14"] = True
+
+        #Fix the conditional on this event
+        f14_spent_time_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if f14_spent_time_ev:
+            f14_spent_time_ev.conditional = "persistent._mas_f14_spent_f14"
 #0.10.6
 label v0_10_6(version="v0_10_6"):
     python:

@@ -1507,13 +1507,16 @@ python early:
             IN:
                 ev - event to undo ev action for
             """
-            if ev.action == EV_ACT_UNLOCK:
+            if ev.action in [EV_ACT_UNLOCK, EV_ACT_POOL]:
+                #NOTE: Pool is tied here because generally if we're undoing the pooling of a topic, we want to lock it
                 ev.unlocked = False
+
             elif ev.action == EV_ACT_RANDOM:
                 ev.random = False
                 #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
                 if "no rmallEVL" not in ev.rules:
                     mas_rmallEVL(ev.eventlabel)
+
             #NOTE: we don't add the rest since there's no reason to undo those.
 
 
