@@ -9207,7 +9207,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_yellowwp",
             category=['literature'],
-            prompt="Yellow Wallpaper",
+            prompt="The Yellow Wallpaper",
             random=True
         )
     )
