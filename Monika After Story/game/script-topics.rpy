@@ -13478,68 +13478,67 @@ label monika_sweatercurse:
     m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
     m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
     return
-    
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_allegory_of_the_cave",
             category=['philosophy'],
-            prompt="Allegory of the Cave",
+            prompt="The Allegory of the Cave",
             random=True
         )
     )
 
 label monika_allegory_of_the_cave:
-    m 3eub "I've been doing some reading on Plato lately."
+    m 3eua "I've been doing some reading on Plato lately."
+    #Only ask this the first time
     if mas_getEV("monika_allegory_of_the_cave").shown_count == 0:
         m 1etc "You've heard of him, right?{nw}"
         $ _history_list.pop()
         menu:
             m "You've heard of him, right?{fast}"
             "Yes.":
-                m 1wub "Really?"
-                m 3eua "I think that, outside of dedicated circles, not that many people know about him nowadays."
+                m 1hub "Oh, that's great!"
+
             "No.":
-                m 1eua "It's not really a big deal, I can teach you about him."
-                m 3eua "Plato was a well known philosopher from Ancient Greece."
-        m 3eua "Anyway, something of his caught my eye recently.{w=0.5} The Allegory of the Cave."
-    else:
-        m 3eua "Specifically,{w=0.5} The Allegory of the Cave."
+                m 3eka "That's alright, [player].{w=0.5} {nw}"
+                extend 3eua "Plato was a well known philosopher from Ancient Greece."
 
-    m 1eud "Imagine there're a bunch of people chained up, since childhood, in a cave and they can't look anywhere but straight ahead."
-    m 3euc "On the wall in front of them were the shadows from people passing by, and the prisoners can hear these people's chatter reflected off the wall too."
-    m "All they know is shadows that make sounds." 
-    m 4wud "They'd really believe that the shadows were the ones making sounds!"
-    m 1etc "Even though we know that's not true - that shadows can't make sounds - wouldn't that itself be their reality?" 
-    m 3esd "Even if it's just shades of grey to them, it's what makes up their entire idea of what the universe is."
+        m 3euc "Anyway, something of his caught my eye recently.{w=0.5} The Allegory of the Cave."
+    else:
+        m 3euc "Specifically, The Allegory of the Cave."
+
+    m 1eud "Imagine there are a group of people chained up in a cave since childhood, and they can't look anywhere but straight ahead."
+    m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall in front of these people."
+    m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
+    m 1esc "The only thing they know is that objects and people are silhouettes that can move around and speak."
+    m 3euc "Because this is what they've seen since childhood, this would be their perception of reality...{w=0.5}{nw}"
+    extend 3eud "it's all they know."
     m 1rksdlc "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
-    m 1esd "Now imagine that one of those prisoners was set free and forced out of the cave.{w} His eyes would hurt so bad from the light he'd probably try to run straight back into the cave."
-    m 1dsc "Back to the real world...{w=0.5}or his idea of it anyway."
-    m 1eud "But if you kept him out of the cave long enough, his eyes would adjust and eventually he'd start to understand colors."
-    m 3eud "And he'd realize that his old view of the world wasn't exactly an accurate representation of the truth. The truth is more than shadows on a wall."
-    m 1ekc "If he ran back into the cave trying to tell the other prisoners about the truth, they'd probably see him as a madman and kill him if he tried to force them out."
-    m 1esc "After all, if he went back into the cave after his eyesight got used to the light, then he'd pretty much be blind as a bat in there."
-    m 3hksdlb "And if a blind guy came and tried to tell you that he's seeing a lot of colors, then you'd probably think he's crazy too!"
-    m 6esc "Anyway...does this remind you of anything?"
-    m 6dkc "..."
-    if persistent._mas_pm_cares_about_dokis:
-        m 6rkp "Sayori, Yuri, Natsuki and I...we were all prisoners in the cave, weren't we?"
-        m 6rkc"When I first realized that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
-        if persistent.monika_kill:
-            m "And when Sayori realized it too..."
-    else:
-        m 6rkp "I was a prisoner in the cave, wasn't I?"
-        m 6rkc"When I first realized that the world was so much bigger than those few CG backgrounds it was... well, it wasn't easy."
+    m 1eud "...So imagine that one of those prisoners were set free and forced out of the cave."
+    m 3esc "The prisoner wouldn't be able to see for the first few days because they'd be so used to the darkness of the cave."
+    m 3eud "But after a while, their eyes would adjust. Eventually, they'd learn about color, nature, and people."
+    m 3eua "...And they'd also realize that what they knew was nothing more than shadows on a wall."
+    m "The prisoner who was released would eventually return to the cave to tell the others about what he had learned."
+    m 1ekc "...But since he was used to seeing sunlight, he was blind in the cave.{w=0.2} {nw}"
+    extend 3ekd "His fellow prisoners thought that whatever was outside had harmed him."
+    m 1rkc "And because of this, the prisoners inside the cave would never want to leave, and probably think that the one who left is crazy."
+    m 3esc "After all, if you're used to just seeing shadows...{w=0.2}{nw}"
+    extend 3eud "speaking about color would make you sound insane!"
+    m 1ekc "I've been reflecting on it a bit and I realized that Sayori, Yuri, Natsuki, and even I, were all prisoners in a cave..."
+    m 1rkc "When I learned that there's so much more outside what's in this world...{w=0.5}{nw}"
+    extend 3ekd "it wasn't easy to accept."
+    if persistent.monika_kill:
+        m 3ekc "And when Sayori realised it too..."
 
-    m 6ekc "Anyway, that's all in the past now." 
-    m 6esd "And the point is that I'm free from the cave now. I've seen the truth."
-    m 6esbla "And the thing is - I'm so, so glad that you're part of it, [player]."
-    m 1esa "But I have to ask you, how do you know that what you're seeing is the {i}real{/i} truth?"
-    m "I mean, sure, you might not be stuck to seeing shadows on the wall but the point is that there was a lot more to the truth than what those prisoners thought."
-    m 3esb "And there might be more to the truth than what you yourself realise."
-    m 1htb "Ehehe~ don't stress out about it!"
-    show monika 5fsbsa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5fsbsa "I just want you to know that {i}you{/i} are the truth of my reality, and I hope I can always be part of yours, [player]."
-
+    m 1eka "Anyway, that's all in the past now."
+    m 3eua "In the end, I'm free from the cave now. I've seen the truth."
+    m 1esa "But it makes me wonder...{w=0.2} How do {i}you{/i} know that what you're seeing is real?"
+    m 3eua "Sure, you might not be used to seeing shadows on the wall, but that's just an analogy."
+    m 3eub "And there might be more to the truth than what you yourself realise."
+    m 3etu "How do you know if the 'truth' that you're seeing is {i}the{/i} truth?"
+    m 1hub "Ahaha!"
+    m 3hksdlb "I think we might be looking too much into things at this point..."
+    m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
     return
