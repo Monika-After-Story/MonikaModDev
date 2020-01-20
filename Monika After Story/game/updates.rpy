@@ -379,6 +379,11 @@ label v0_10_7(version="v0_10_7"):
         f14_spent_time_ev = mas_getEV("mas_f14_monika_spent_time_with")
         if f14_spent_time_ev:
             f14_spent_time_ev.conditional = "persistent._mas_f14_spent_f14"
+
+        vday_spent_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if vday_spent_ev:
+            vday_spent_ev.start_date = datetime.datetime.combine(mas_f14, datetime.time(hour=18))
+            vday_spent_ev.end_date = datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=3))
 #0.10.6
 label v0_10_6(version="v0_10_6"):
     python:

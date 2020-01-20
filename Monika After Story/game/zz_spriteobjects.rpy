@@ -1202,7 +1202,7 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            "lingerie": True
+            "lingerie": "d25"
         },
         entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
         exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
@@ -1309,6 +1309,9 @@ init -1 python:
             use_reg_for_l=True,
         ),
         stay_on_start=True,
+        ex_props={
+            "lingerie": True
+        },
         pose_arms=MASPoseMap(
             default=None,
             use_reg_for_l=True

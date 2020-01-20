@@ -116,6 +116,34 @@ init -1 python:
 
         return _date in persistent._mas_event_clothes_map
 
+# Global labels
+label mas_lingerie_intro(holiday_str,lingerie_choice):
+    m 1ekbfa "..."
+    m "Also, [player]..."
+    m 3ekbfsdla "There's...{w=1}s-something I want to show you."
+    m 2rkbfsdla "I've been wanting to do this for a while now actually, but...{w=1}well it's kind of embarrassing..."
+    m "..."
+    m 2hkbfsdlb "Oh gosh, I'm super nervous, ahaha!"
+    m 2rkbfsdlc "It's just I've never--{nw}"
+    m 2dkbfsdlc "Ah, okay, time to stop stalling and just do it."
+    m 2ekbfsdla "Just give me a few seconds, [player]."
+    call mas_clothes_change(outfit=lingerie_choice, outfit_mode=True, exp="monika 2rkbfsdlu", restore_zoom=False, unlock=True)
+    pause 3.0
+    m 2ekbfsdlb "Ahaha, [player]...{w=1}you're staring..."
+    m 2ekbfu "Well...{w=1}do you like what you see?"
+    m 1lkbfa "I've never really...{w=1}worn anything like this before."
+    m "...At least not that anyone's seen."
+
+    if mas_hasUnlockedClothesWithExprop("bikini"):
+        m 3hkbfb "Ahaha, what am I saying, you've seen me in a bikini before, which is essentially the same thing..."
+        m 2rkbfa "...Though for some reason this just feels...{w=0.5}{i}different{/i}."
+
+    m 2ekbfa "Anyway, something about being with you on [holiday_str] seems really romantic, you know?"
+    m "It just felt like the perfect time for the next step in our relationship."
+    m 2rkbfsdlu "Now I know that we can't really--{nw}"
+    m 3hubfb "Ah! Nevermind, ahaha!"
+    return
+
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -2926,36 +2954,18 @@ label mas_d25_monika_christmas_eve:
 
     if (
         mas_canShowRisque()
-        and not mas_selspr.get_sel_clothes(mas_clothes_santa_lingerie).unlocked
+        and not mas_SELisUnlocked(mas_clothes_santa_lingerie)
     ):
-        m 5ekbfa "..."
-        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m "..."
-        m "Also, [player]..."
-        m 3ekbfsdla "There's...{w=1}s-something I want to show you."
-        m 2rkbfsdla "I've been wanting to do this for a while now actually, but...{w=1}well it's kind of embarrassing..."
-        m "..."
-        m 2hkbfsdlb "Oh gosh, I'm super nervous, ahaha!"
-        m 2rkbfsdlc "It's just I've never--{nw}"
-        m 2dkbfsdlc "Ah, okay, time to stop stalling and just do it."
-        m 2ekbfsdla "Just give me a few seconds, [player]."
-        call mas_clothes_change(outfit=mas_clothes_santa_lingerie, outfit_mode=True, exp="monika 2rkbfsdlu", restore_zoom=False, unlock=True)
-        pause 3.0
-        m 2ekbfsdlb "Ahaha, [player]...{w=1}you're staring..."
-        m 2ekbfu "Well...{w=1}do you like what you see?"
-        m 1lkbfa "I've never really...{w=1}worn anything like this before."
-        m "...At least not that anyone's seen."
+        if mas_hasUnlockedClothesWithExprop("lingerie"):
+            # TODO: write dialogue for if player has already seen other lingerie
+            pass
 
-        if mas_hasUnlockedClothesWithExprop("bikini"):
-            m 3hkbfb "Ahaha, what am I saying, you've seen me in a bikini before, which is essentially the same thing..."
-            m 2rkbfa "...Though for some reason this just feels...{w=0.5}{i}different{/i}."
-
-        m 2ekbfa "Anyway, something about being with you tonight on Christmas Eve seems really romantic, you know?"
-        m "It just felt like the perfect time for the next step in our relationship."
-        m 2rkbfsdlu "Now I know that we can't really--{nw}"
-        m 3hubfb "Ah! Nevermind, ahaha!"
-        m 1ekbfa "Just know that I love you very, very much, [player]~"
-        return "love"
+        else:
+            m 5ekbfa "..."
+            show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            call mas_lingerie_intro(holiday_str="Christmas Eve",lingerie_choice=mas_clothes_santa_lingerie)
+            m 1ekbfa "Just know that I love you very, very much, [player]~"
+            $ mas_ILY()
     return
 
 init 5 python:
@@ -5148,18 +5158,8 @@ init -810 python:
 
 label mas_f14_autoload_check:
     python:
-        #Since it's possible player didn't see this, we need to derandom it manually.
-        mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
-            #Set f14 mode
             persistent._mas_f14_in_f14_mode = True
-
-            #Set up the holiday clothes and put them in the event map
-            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-            mas_addClothesToHolidayMap(mas_clothes_sundress_white)
-
-            #Now change into them and save all of that
             monika_chr.change_clothes(mas_clothes_sundress_white, False)
             monika_chr.save()
             renpy.save_persistent()
@@ -5253,6 +5253,7 @@ init 5 python:
     )
 
 label mas_f14_monika_valentines_intro:
+    $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
     m 3eub "It's Valentine's Day!"
@@ -5260,11 +5261,13 @@ label mas_f14_monika_valentines_intro:
     m "I guess every day we're together is already a celebration of our love, but there's something that's really special about Valentine's Day."
     m 1eua "Anyway..."
     if not mas_anni.pastOneMonth() or mas_isMoniNormal():
-        m 2rka "Even though I know we aren't too far in our relationship..."
+        m 3rka "Even though I know we aren't too far in our relationship..."
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I just want you to know that I'm always here for you."
         m 5eka "Even if your heart gets broken..."
-        m 5ekbla "I'll always be here to fix it for you. Okay, [player]?"
+        m 5ekbsa "I'll always be here to fix it for you. Okay, [player]?"
+        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m "..."
 
     else:
         m 1eub "We've been together for a while now..."
@@ -5272,41 +5275,139 @@ label mas_f14_monika_valentines_intro:
         m 1dubsu "You always make me feel so loved."
         m "I'm really happy I'm your girlfriend, [player]."
 
-    if not persistent._mas_f14_in_f14_mode:
+    # returning from a date or getting lingerie
+    if not persistent._mas_f14_in_f14_mode or mas_canShowRisque():
         $ persistent._mas_f14_in_f14_mode = True
-        m 3wub "Oh!"
-        m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
-        $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
-        call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+        # first time seeing any lingerie
+        if mas_SELisUnlocked(mas_clothes_sundress_white) and mas_canShowRisque() and not mas_hasUnlockedClothesWithExprop("lingerie"):
+            call mas_lingerie_intro(holiday_str="Valentine's Day",lingerie_choice=mas_clothes_vday_lingerie)
 
-        m 1eua "..."
-        m 2eksdla "..."
-        m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
-        m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
+        # first time seeing sundress or non-first time seeing lingerie
+        elif not mas_SELisUnlocked(mas_clothes_sundress_white) or (mas_canShowRisque() and mas_hasLockedClothesWithExprop("lingerie",True)):
+            m 3wub "Oh!"
+            m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
+            # lingerie
+            if mas_SELisUnlocked(mas_clothes_sundress_white) and mas_canShowRisque() and not mas_SELisUnlocked(mas_clothes_vday_lingerie):
+                call mas_clothes_change(outfit=mas_clothes_vday_lingerie, outfit_mode=True, exp="monika 2rkbsu", restore_zoom=False, unlock=True)
+                pause 2.0
+                show monika 2ekbsu
+                pause 2.0
+                show monika 2tkbsu
+                pause 2.0
+                m 2tfbsu "[player]...{w=0.5} You're staring..."
+                m 2hubsb "Ahaha!"
+                m 2eubsb "I guess you approve of my outfit choice..."
+                m 2tkbsu "Rather fitting for a romantic holiday like Valentine's Day, don't you think?"
+                m 2rkbssdla "I have to say, I was pretty nervous the first time I wore something like this..."
+                m 2hubsb "But now that I've done it before, I really enjoy dressing like this for you!"
+                m 3tkbsu "I hope you enjoy it too~"
+
+            # sundress
+            elif not mas_SELisUnlocked(mas_clothes_sundress_white):
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                m 2eua "..."
+                m 2eksdla "..."
+                m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
+                m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
+                call mas_f14_sun_dress_outro
+
+        # not getting lingerie, already have seen sundress
+        else:
+            # don't currently have access to sundress or wearing inappropraite outfit for f14
+            if (
+                monika_chr.clothes != mas_clothes_sundress_white
+                and (
+                    monika_chr.is_wearing_clothes_with_exprop("costume")
+                    or monika_chr.clothes == mas_clothes_def
+                    or monika_chr.clothes == mas_clothes_blazerless
+                    or mas_isMoniEnamored(lower=True)
+                )
+            ):
+                m 3wud "Oh!"
+                m 3hub "I should probably go change into something a little more appropriate, ahaha!"
+                m 3eua "I'll be right back."
+
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+
+                m 2eub "Ah, that's much better!"
+                m 3hua "I just love this dress, don't you?"
+                m 3eka "It will always hold a special place in my heart on Valentine's Day..."
+                m 1fkbsu "Just like you~"
+
+            # no change of clothes path
+            else:
+                # not wearing sundress
+                if not monika_chr.clothes == mas_clothes_sundress_white:
+                    m 1wud "Oh..."
+                    m 1eka "Do you want me to change into my white sundress, [player]?"
+                    m 3hua "I've always kinda considered that my Valentine's Day outfit."
+                    m 3eka "But if you'd rather me keep wearing what I have on now, that's okay too..."
+                    m 1hub "Maybe we can start a new tradition, ahaha!"
+                    m 1eua "So, do you want me to put on the white sundress?{nw}"
+                    $ _history_list.pop()
+
+                    menu:
+                        m "So, do you want me to put on the white sundress?{fast}"
+                        "Yes.":
+                            m 3hub "Okay!"
+                            m 3eua "I'll be right back."
+                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                            m 2hub "There we go!"
+                            m 3eua "Something about wearing this dress on Valentine's Day just feels right."
+                            m 1eua "..."
+
+                        "No.":
+                            m 1eka "Okay, [player]."
+                            m 3hua "This {i}is{/i} a really nice outfit..."
+                            m 3eka "And besides, it doesn't matter what I'm wearing..."
+
+                call mas_f14_intro_generic
+
+    # not returning from a date, not getting lingerie
     else:
-        pause 2.0
-        show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
-        m 2rfc "..."
-        m 2efc "You know, [player]...{w=0.5}it's not polite to stare...."
-        m 2tfc "..."
-        m 2tsu "..."
-        m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
+        # already have sundress unlocked
+        if mas_SELisUnlocked(mas_clothes_sundress_white):
+            call mas_f14_intro_generic
 
-    m 1rkbsa "I've always dreamt of a date with you while wearing this..."
-    m 1eksdlb "I know it's kind of silly now that I think about it!"
-    m 1ekbfa "...But just imagine if we went to a cafe together."
-    m 1rksdlb "I think there's a picture of something like that somewhere actually..."
-    m 1ekb "Maybe we could make it happen for real!"
-    m 3ekbsa "Would you take me out today?"
-    m 1hksdlb "It's fine if you can't, I'm just happy to be with you."
-    m 1ekbfa "I love you so much."
-    m 1ekbfb "Happy Valentine's Day, [player]~"
+        # first time getting sundress
+        else:
+            $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            pause 2.0
+            show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
+            m 2rfc "..."
+            m 2efc "You know, [player]...{w=0.5}it's not polite to stare...."
+            m 2tfc "..."
+            m 2tsu "..."
+            m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
+            call mas_f14_sun_dress_outro
+
+    m 1fkbfu "I love you so much."
+    m 1hkbfb "Happy Valentine's Day, [player]~"
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
 
     return "rebuild_ev|love"
+
+# common flow for first time sundress
+label mas_f14_sun_dress_outro:
+    m 1rksdla "I've always dreamt of a date with you while wearing this..."
+    m 1eksdlb "I know it's kind of silly now that I think about it!"
+    m 1ekbsa "...But just imagine if we went to a cafe together."
+    m 1rksdlb "I think there's a picture of something like that somewhere actually..."
+    m 1hub "Maybe we could make it happen for real!"
+    m 3ekbsa "Would you take me out today?"
+    m 1hkbssdlb "It's fine if you can't, I'm just happy to be with you."
+    return
+
+# used for when we have no new outfits to change into
+label mas_f14_intro_generic:
+    m 1ekbsa "I'm just so grateful you are spending time with me today."
+    m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
+    m 3ekbsa "I don't care if we go on a romantice date, or just spend the day together here..."
+    m 1fkbsu "It really doesn't matter to me as long as we're together."
+    return
 
 #######################[HOL050] TOPICS
 
@@ -5487,8 +5588,8 @@ init 5 python:
             conditional="persistent._mas_f14_spent_f14",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL,None),
-            start_date=datetime.datetime.combine(mas_f14, datetime.time(hour=20)),
-            end_date=datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=1)),
+            start_date=datetime.datetime.combine(mas_f14, datetime.time(hour=18)),
+            end_date=datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=3)),
             years=[]
         ),
         skipCalendar=True
@@ -5536,6 +5637,7 @@ label mas_f14_monika_spent_time_with:
     else:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
+    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
     return
 
 label mas_f14_first_kiss:
@@ -5569,6 +5671,7 @@ label mas_f14_first_kiss:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
+                $ mas_rmallEVL("mas_f14_monika_spent_time_with")
                 return
 
 
@@ -5803,7 +5906,6 @@ label greeting_returned_home_f14:
     python:
         time_out = store.mas_dockstat.diffCheckTimes()
 
-
     if time_out < mas_five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
@@ -5832,6 +5934,9 @@ label greeting_returned_home_f14:
         call return_home_post_player_bday
 
     $ persistent._mas_f14_on_date = False
+
+    if not mas_F14() and not mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
+        $ pushEvent("mas_f14_monika_spent_time_with",skipeval=True)
     return
 
 # if we went on a date pre-f14 and returned in the time period mas_f14_no_time_spent event runs

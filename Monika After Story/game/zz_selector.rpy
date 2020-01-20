@@ -1808,6 +1808,30 @@ init -1 python:
                 return True
         return False
 
+    def mas_hasLockedClothesWithExprop(exprop, value=None):
+        """
+        Checks if we have locked clothes with a specific exprop
+
+        IN:
+            exprop - exprop to look for
+            value - value the exprop should be. Set to None to ignore.
+            (Default: None)
+
+        OUT:
+            boolean:
+                True if we have locked clothes with the exprop + value provided
+                False otherwise
+        """
+        clothes_with_exprop = MASClothes.by_exprop(exprop, value)
+
+        if not clothes_with_exprop:
+            return False
+
+        for clothes in clothes_with_exprop:
+            if not mas_SELisUnlocked(clothes):
+                return True
+        return False
+
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
         """
