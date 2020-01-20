@@ -5257,21 +5257,21 @@ label mas_f14_monika_valentines_intro:
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
     m 3eub "It's Valentine's Day!"
-    m 1ekbfa "A day where we celebrate our love for each other..."
-    m "I guess every day we're together is already a celebration of our love, but there's something that's really special about Valentine's Day."
-    m 1eua "Anyway..."
+    m 1ekbsa "A day where we celebrate our love for each other..."
+    m 3rkbsa "I guess every day we're together is already a celebration of our love...{w=0.3}{nw}"
+    extend 3ekbsa "but there's something that's really special about Valentine's Day."
     if not mas_anni.pastOneMonth() or mas_isMoniNormal():
         m 3rka "Even though I know we aren't too far in our relationship..."
-        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I just want you to know that I'm always here for you."
         m 5eka "Even if your heart gets broken..."
         m 5ekbsa "I'll always be here to fix it for you. Okay, [player]?"
         show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-        m "..."
+        m 1ekbsa "..."
 
     else:
-        m 1eub "We've been together for a while now..."
-        m 1eka "...and I really love the time we spend together."
+        m 1eub "We've been together for a while now...{w=0.2}{nw}"
+        extend 1eka "and I really love the time we spend together."
         m 1dubsu "You always make me feel so loved."
         m "I'm really happy I'm your girlfriend, [player]."
 
@@ -5284,19 +5284,26 @@ label mas_f14_monika_valentines_intro:
             call mas_lingerie_intro(holiday_str="Valentine's Day",lingerie_choice=mas_clothes_vday_lingerie)
 
         # first time seeing sundress or non-first time seeing lingerie
-        elif not mas_SELisUnlocked(mas_clothes_sundress_white) or (mas_canShowRisque() and mas_hasLockedClothesWithExprop("lingerie",True)):
+        elif (
+            not mas_SELisUnlocked(mas_clothes_sundress_white)
+            or (mas_canShowRisque() and mas_hasLockedClothesWithExprop("lingerie",True))
+        ):
             m 3wub "Oh!"
             m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
             # lingerie
-            if mas_SELisUnlocked(mas_clothes_sundress_white) and mas_canShowRisque() and not mas_SELisUnlocked(mas_clothes_vday_lingerie):
+            if (
+                mas_SELisUnlocked(mas_clothes_sundress_white)
+                and mas_canShowRisque()
+                and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
+            ):
                 call mas_clothes_change(outfit=mas_clothes_vday_lingerie, outfit_mode=True, exp="monika 2rkbsu", restore_zoom=False, unlock=True)
                 pause 2.0
                 show monika 2ekbsu
                 pause 2.0
                 show monika 2tkbsu
                 pause 2.0
-                m 2tfbsu "[player]...{w=0.5} You're staring..."
+                m 2tfbsu "[player]...{w=0.5} You're staring{w=0.5}...again."
                 m 2hubsb "Ahaha!"
                 m 2eubsb "I guess you approve of my outfit choice..."
                 m 2tkbsu "Rather fitting for a romantic holiday like Valentine's Day, don't you think?"
@@ -5334,7 +5341,7 @@ label mas_f14_monika_valentines_intro:
                 m 2eub "Ah, that's much better!"
                 m 3hua "I just love this dress, don't you?"
                 m 3eka "It will always hold a special place in my heart on Valentine's Day..."
-                m 1fkbsu "Just like you~"
+                m 1ekbsu "Just like you~" #TODO: Revert to soft eyes once they're changed
 
             # no change of clothes path
             else:
@@ -5383,7 +5390,7 @@ label mas_f14_monika_valentines_intro:
             m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
             call mas_f14_sun_dress_outro
 
-    m 1fkbfu "I love you so much."
+    m 1ekbfu "I love you so much." #TODO: Revert to soft eyes once they're changed
     m 1hkbfb "Happy Valentine's Day, [player]~"
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
@@ -5406,7 +5413,7 @@ label mas_f14_intro_generic:
     m 1ekbsa "I'm just so grateful you are spending time with me today."
     m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
     m 3ekbsa "I don't care if we go on a romantice date, or just spend the day together here..."
-    m 1fkbsu "It really doesn't matter to me as long as we're together."
+    m 1ekbsu "It really doesn't matter to me as long as we're together." #TODO: Revert to soft eyes once they're changed
     return
 
 #######################[HOL050] TOPICS

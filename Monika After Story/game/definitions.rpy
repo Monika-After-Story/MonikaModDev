@@ -5064,6 +5064,7 @@ init 2 python:
         IN:
             _date - date to check
             If None, today is assumed.
+            (Default: None)
 
         OUT:
             boolean:
@@ -5082,6 +5083,7 @@ init 2 python:
 
         IN:
             _date - the datetime.date to get the player age at
+            (Default: None)
 
         OUT:
             integer representing the player's current age or None if we don't have player's bday
@@ -5100,7 +5102,7 @@ init 2 python:
 
         return _years
 
-    def mas_canShowRisque(aff_thresh=2000,grace=None):
+    def mas_canShowRisque(aff_thresh=2000, grace=None):
         """
         Checks if we can show something risque
 

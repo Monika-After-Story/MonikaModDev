@@ -1214,7 +1214,7 @@ init -1 python:
     store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
     store.mas_selspr.init_selectable_clothes(
         mas_clothes_santa_lingerie,
-        "Santa Lingerie",
+        "Lingerie (Santa)",
         "santa_lingerie",
         "clothes",
         visible_when_locked=False,
@@ -1320,15 +1320,15 @@ init -1 python:
     store.mas_sprites.init_clothes(mas_clothes_vday_lingerie)
     store.mas_selspr.init_selectable_clothes(
         mas_clothes_vday_lingerie,
-        "Valentine's Lingerie",
+        "Lingerie (Pink Lace)",
         "vday_lingerie",
         "clothes",
         visible_when_locked=False,
         hover_dlg=None,
         #TODO: ME (Not this time)
-        select_dlg=None#[
-        #    "",
-        #],
+        select_dlg=[
+            "Ehehe~",
+        ]
     )
 
 init -1 python:
