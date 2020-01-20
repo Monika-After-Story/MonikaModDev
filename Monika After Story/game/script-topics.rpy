@@ -13391,3 +13391,42 @@ label monika_sweatercurse:
     m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
     m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dual_perspectives",
+            category=['philosophy'],
+            prompt="Dual perspectives",
+            conditional="seen_event('monika_allegory_of_the_cave')",
+            random=True
+        )
+    )
+
+label monika_dual_perspectives:
+    m 1eua "Why do we have two eyes instead of one, [player]?{w=0.5} It's because with two eyes we can properly gauge depth and distance."
+    m 1eub "If we had just one eye, we'd be bumping into stuff a lot more often.{w=0.5} I tried walking around earlier with one eye closed and I kicked stuff with my foot a few times, ahaha."
+    m 3eub "Anyway, two eyes work because when we focus on an object the line of sight for each eye intersects and we can pinpoint the location and distance that our subject is."
+    m "Let's note that our eyes have to be apart for this to work -{w=0.5} if we had them in the exact same spot it'd be the same as having just one eye!"
+    m 1eua "And this got me thinking...{w=0.5}if we need two eyes to properly perceive the world around us, to see {i}the truth{/i} in other words, does this also apply to how we perceive non-physical things?"
+    m "Like, when we form an opinion on something, shouldn't we consider the issue from the perspectives that we are {i}for it,{/i} and also that we're {i}against it?{/i}" 
+    m 3eub "Maybe the 'line of sight' for these two perspectives will coincide and we can see the actual truth for what it is!"
+    m 3esb "Otherwise, if we just took one side on the issue without considering the other then it'd kind of be the same as only having one eye, you know?"
+    m 3eub "Of course, having a third perspective, or a third eye, would be even better - but I think that two should be enough for now."
+    m 4eub "Actually, to me, it seems that Plato used this approach to construct his Socratic dialogues."
+    m 2eua "Have you read Plato's Republic, by chance?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Have you read Plato's Republic, by chance?{fast}"
+        "Certainly!":
+            m 5esbla "Wow, [player]!{w=0.5}{nw}"
+            m "I'm glad you're interested in his works!{w=0.5} I wonder if it's because I brought it up earlier?"
+        "N-No..":
+            m 2eua "Although it's popular among philosophers and in scholarly circles, I suppose it's not something everyone's clamoring to read in this day and age. So you're not alone there."
+    m 1eua "In 'The Republic', Plato presents the dialogues that his mentor Socrates had with his contemporaries as they took opposing sides in a debate to define 'justice'."
+    m 3eua "Whether or not these dialogues actually occured, I'm sure Plato had both sides of the debates in his mind as he wrote 'The Republic' in his search for the truth of 'justice'."
+    m 1eub "If you haven't already been using this method then maybe you can try it sometime, [player]!" 
+    m 3kub "Don't go trying to 'turn a blind eye' on me now ehehe~."
+
+    return
