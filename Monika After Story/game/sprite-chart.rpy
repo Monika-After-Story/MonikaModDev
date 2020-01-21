@@ -5904,7 +5904,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             self.__sp_type = -1
             self.name = name
@@ -5919,6 +5919,7 @@ init -2 python:
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
 
+            #sets the ex_props to an empty dict if ex_props is None
             if ex_props is None:
                 self.ex_props = {}
             else:
@@ -6093,7 +6094,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
                 name,
@@ -6234,7 +6235,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
                 dlg_data - tuple of the following format:
@@ -6411,7 +6412,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -6532,7 +6533,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 pose_arms - MASPoseMap object represneting the arm layers
                     for poses. If None is passed, we assume use the base
                     layers as a guide
