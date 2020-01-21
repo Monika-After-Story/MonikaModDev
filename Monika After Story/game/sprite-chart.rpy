@@ -5878,7 +5878,7 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteBase constructor
@@ -5914,11 +5914,15 @@ init -2 python:
             self.pose_map = pose_map
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
-            self.ex_props = ex_props
             self.is_custom = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
+
+            if ex_props is None:
+                self.ex_props = {}
+            else:
+                self.ex_props = ex_props
 
 
         def __eq__(self, other):
@@ -6061,7 +6065,7 @@ init -2 python:
                 fallback=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -6187,7 +6191,7 @@ init -2 python:
                 exit_pp=None,
                 acs_type=None,
                 mux_type=None,
-                ex_props={},
+                ex_props=None,
                 arm_split=None,
                 dlg_data=None,
             ):
@@ -6377,7 +6381,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 split=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASHair constructor
@@ -6494,7 +6498,7 @@ init -2 python:
                 hair_map={},
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={},
+                ex_props=None,
                 pose_arms=None
             ):
             """
