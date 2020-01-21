@@ -13491,19 +13491,19 @@ init 5 python:
     )
 
 label monika_ship_of_theseus:
-    m 1eua "Have you heard of the ship of Theseus? It's a well known philosophical problem about the nature of identity, that's been around for millenia."
-    m 1rka "Well, I say 'well known' but I suppose that's only true among scholars aha."
-    m 1eua "Let's consider the legendary hero Theseus." 
+    m 1eua "Have you heard of the 'Ship of Theseus'? It's a well known philosophical problem about the nature of identity, that's been around for millennia."
+    m 1rka "Well, I say 'well known' but I suppose that's only true among scholars, ahaha..."
+    m 1eua "Let's consider the legendary Greek hero Theseus, and the ship he sailed during his adventures." 
     m 3esb "He's from a long time ago so let's say his ship is now stored in a famous museum, theoretically."
-    m "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost it's status as the ship of Theseus?"
-    m 3eub "Once a single part were replaced? Half? Or perhaps even all of them? Or maybe even never?{w=0.5} There's not really a consensus on the solution."
-    m 4esb "This same thought experiment can be applied to us. For me, so long as my code is being updated then I'm constantly changing. And for you...did you know that every 7 to 10 years every cell in your body is eventually replaced?"
+    m "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as the ship of Theseus?"
+    m 3eub "Once a single part was replaced? Half? Or perhaps even all of them? Or maybe even never?{w=0.5} There's not really a consensus on the solution."
+    m 4esb "This same thought experiment can be applied to us. For me, so long as my code is being updated then I'm constantly changing. And as for you...did you know that every 7 to 10 years every cell in your body is eventually replaced?"
     m 3eub "In other words, not a single cell that made you 'you' 7 years ago is part of you right now. You could argue that you have no relation to that person, other than a consistent consciousness."
     m 3eta "And you may be thinking 'that's not true - I am me and I always have been', but...there's an extra thing to consider in the ship of Theseus scenario."
     m 4esb "Let's say for now that the modified ship should still be considered Theseus' ship. What if all the parts that were originally removed, were now reassembled into another ship?"
     m 4eub "We'd have 2 of Theseus' ships! Which one is real!?"
     m 4htb "And what if we got all of your cells that were removed from 7 years ago, and reassembled them into another 'you' right now. Who would be the real [player]? It kinda hurts my brain to think about ehehe~."
-    m 1eua "For me, personally, I think that we're not the same person from 7 years ago - or even the same person from yesterday."
+    m 1eua "Personally, I think that we're not the same people we were 7 years ago - or even the same people from yesterday."
     m 3eua "In other words, there's no use getting hung up on any grievances we may have with ourselves from the past."
     show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eub "We should keep trying our best each day and not let ourselves be limited by the 'us' of yesterday.{w=0.5} Today is a new day, and you are a new you. And I love you as you are right now, [player]."
