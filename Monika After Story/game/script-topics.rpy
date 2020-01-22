@@ -13507,6 +13507,6 @@ label monika_ship_of_theseus:
     m 1eua "Personally, I think that we're not the same people we were 7 years ago - or even the same people from yesterday."
     m 3eua "In other words, there's no use getting hung up on any grievances we may have with past selves."
     show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eub "We should keep trying our best each day and not let ourselves be limited by the 'us' of yesterday.{w=0.5} Today is a new day, and you are a new you. And I love you as you are right now, [player]."
+    m 5eub "We should keep trying our best each day and not let ourselves be limited by who we were yesterday.{w=0.5} Today is a new day, and you are a new you. And I love you as you are right now, [player]."
 
     return
