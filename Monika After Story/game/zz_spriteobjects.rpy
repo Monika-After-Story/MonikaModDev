@@ -1414,7 +1414,7 @@ init -1 python:
     ### HAIRTIES BRACELET (BROWN)
     ## hairties_bracelet_brown
     # The bracelet Monika wore in the vday outfit
-    # thanks EntonyEscX
+    # thanks Velius
     mas_acs_hairties_bracelet_brown = MASAccessory(
         "hairties_bracelet_brown",
         "hairties_bracelet_brown",
