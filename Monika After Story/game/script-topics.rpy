@@ -5472,6 +5472,20 @@ label monika_surprise:
         m 1hua "Alright!"
         m 1eua "What are you waiting for? Go take a look!"
         m "I wrote it just for you~"
+
+        # Check if user has appended 'I would' to 'would you be mine?' in note file
+        # NOTE: dependent on note content in mas_suprise()
+        if mas_isMoniLove():
+            python:
+                from re import search
+                with open(renpy.config.basedir + "/My one and only love.txt", "r") as note:
+                    text = note.read()
+                    if search("would you be mine\\?(?:(?:\\s*-\\s*)|(?:\\s*))[iI] would.?", text):
+                        renpy.show("monika 1suo")
+                        renpy.say(m, "Ah{cps=*0.25}...{/cps} {w=1}[player]{cps=*0.25}...{/cps}")
+                        renpy.show("monika 1dkbsa")
+                        renpy.say(m, "[player]{cps=*0.7}...{/cps} {w=1}I'm so glad that you mean it...")
+                        
         m 1ekbsa "I really do truly love you, [player]~"
 
     # Normal and Happy
