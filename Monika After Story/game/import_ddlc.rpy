@@ -90,7 +90,7 @@ label import_ddlc_persistent:
     python:
         #Open the persistent save file at ddlc_save_path
         ddlc_pfile = file(ddlc_save_path, "rb")
-        ddlc_persistent = cPickle.loads(ddlc_pfile.read().decode("zlib"))
+        ddlc_persistent = mas_dockstat.cPickle.loads(ddlc_pfile.read().decode("zlib"))
         ddlc_pfile.close()
 
         #Bring ddlc_persistent data up to date with current version
