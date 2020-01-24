@@ -5341,7 +5341,7 @@ label mas_f14_monika_valentines_intro:
                 m 2eub "Ah, that's much better!"
                 m 3hua "I just love this dress, don't you?"
                 m 3eka "It will always hold a special place in my heart on Valentine's Day..."
-                m 1ekbsu "Just like you~" #TODO: Revert to soft eyes once they're changed
+                m 1fkbsu "Just like you~"
 
             # no change of clothes path
             else:
@@ -5390,8 +5390,8 @@ label mas_f14_monika_valentines_intro:
             m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
             call mas_f14_sun_dress_outro
 
-    m 1ekbfu "I love you so much." #TODO: Revert to soft eyes once they're changed
-    m 1hkbfb "Happy Valentine's Day, [player]~"
+    m 1fkbfu "I love you so much."
+    m 1hubfb "Happy Valentine's Day, [player]~"
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
 
@@ -5413,7 +5413,7 @@ label mas_f14_intro_generic:
     m 1ekbsa "I'm just so grateful you are spending time with me today."
     m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
     m 3ekbsa "I don't care if we go on a romantice date, or just spend the day together here..."
-    m 1ekbsu "It really doesn't matter to me as long as we're together." #TODO: Revert to soft eyes once they're changed
+    m 1fkbsu "It really doesn't matter to me as long as we're together."
     return
 
 #######################[HOL050] TOPICS
