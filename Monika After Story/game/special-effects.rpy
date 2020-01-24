@@ -191,7 +191,7 @@ default persistent._mas_last_kiss = None
 #     fade_duration - time in seconds spent fading the screen into black
 #         (Default: 1.0)
 label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
-        initial_exp="6dubfd", mid_exp="6tkbfu", final_exp="6ekbfa", fade_duration=1.0):
+        initial_exp="6dubfd", mid_exp="6fkbfa", final_exp="6ekbfa", fade_duration=1.0):
     # Note: the hardcoded constants work to give the focus on lips
     # effect these were calculated based on max/min values of the zoom
 
