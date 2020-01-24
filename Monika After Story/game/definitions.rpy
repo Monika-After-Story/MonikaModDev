@@ -6462,6 +6462,9 @@ define mas_monika_twitter_handle = "lilmonix3"
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
 
+#Amount of times player has reloaded in ddlc
+default persistent._mas_ddlc_reload_count = 0
+
 init python:
     startup_check = False
     try:
