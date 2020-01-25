@@ -13396,37 +13396,30 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_dual_perspectives",
+            eventlabel="monika_socratic_method",
             category=['philosophy'],
-            prompt="Dual perspectives",
+            prompt="The Socratic Method",
             conditional="seen_event('monika_allegory_of_the_cave')",
             random=True
         )
     )
 
-label monika_dual_perspectives:
-    m 1eua "Why do we have two eyes instead of one, [player]?{w=0.5} It's because with two eyes we can properly gauge depth and distance."
-    m 1eub "If we had just one eye, we'd be bumping into stuff a lot more often.{w=0.5} I tried walking around earlier with one eye closed and I kicked stuff with my foot a few times, ahaha."
-    m 3eub "Anyway, two eyes work because when we focus on an object the line of sight for each eye intersects and we can pinpoint the location and distance that our subject is."
-    m "Let's note that our eyes have to be apart for this to work -{w=0.5} if we had them in the exact same spot it'd be the same as having just one eye!"
-    m 1eua "And this got me thinking...{w=0.5}if we need two eyes to properly perceive the world around us, to see {i}the truth{/i} in other words, does this also apply to how we perceive non-physical things?"
-    m "Like, when we form an opinion on something, shouldn't we consider the issue from the perspectives that we are {i}for it,{/i} and also that we're {i}against it?{/i}" 
-    m 3eub "Maybe the 'line of sight' for these two perspectives will coincide and we can see the actual truth for what it is!"
-    m 3esb "Otherwise, if we just took one side on the issue without considering the other then it'd kind of be the same as only having one eye, you know?"
-    m 3eub "Of course, having a third perspective, or a third eye, would be even better - but I think that two should be enough for now."
-    m 4eub "Actually, to me, it seems that Plato used this approach to construct his Socratic dialogues."
-    m 2eua "Have you read Plato's Republic, by chance?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Have you read Plato's Republic, by chance?{fast}"
-        "Certainly!":
-            m 5esbla "Wow, [player]!{w=0.5}{nw}"
-            m "I'm glad you're interested in his works!{w=0.5} I wonder if it's because I brought it up earlier?"
-        "N-No..":
-            m 2eua "Although it's popular among philosophers and in scholarly circles, I suppose it's not something everyone's clamoring to read in this day and age. So you're not alone there."
-    m 1eua "In 'The Republic', Plato presents the dialogues that his mentor Socrates had with his contemporaries as they took opposing sides in a debate to define 'justice'."
-    m 3eua "Whether or not these dialogues actually occured, I'm sure Plato had both sides of the debates in his mind as he wrote 'The Republic' in his search for the truth of 'justice'."
-    m 1eub "If you haven't already been using this method then maybe you can try it sometime, [player]!" 
-    m 3kub "Don't go trying to 'turn a blind eye' on me now ehehe~."
+label monika_socratic_method:
+    m 1eua "Do you remember that time we talked about Plato's 'Allegory of the Cave'?{w=0.5} I've been thinking about what I said to you."
+    m 3eub "'How do you know if the 'truth' that you're seeing is {i}the{/i} truth?'"
+    m 3ekb "I was racking my brain for a bit earlier while trying to come up with a good answer."
+    m 2rka "Well,{w=0.3} I still don't really have one yet ahaha...{w=0.5}{nw}"
+    extend 3eub "but,{w=0.3} I did realise something useful, [player]!"
+    m 4eub "Plato's works are mostly written as Socratic dialogues. Plato himself doesn't appear in them - instead, he wrote about his mentor Socrates having debates with others."
+    m 4esb "The participants of these debates were trying to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
+    m 3esb "And I started to think: 'What was Plato's mindset while writing?'"
+    m "Plato himself was on a quest for the truth. That much is obvious or else he wouldn't have written so much on the topic! ahaha!"
+    m 3eub "And even though, {i}technically{/i}, Socrates was the one having these debates with others, Plato too was having these debates within himself while he wrote about them!"
+    m 1eua "Taking all sides of a debate - I think that'd be pretty useful in realizing the truth."
+    m 3eua "I guess it's kind of like how two eyes are better than one - having two eyes in separate spots lets us properly see the the world, the truth, in other words."
+    m "Two eyes in different spots...like two dfferent perspectives of the same debate."
+    m 3esa "If we had just one eye, it'd be a bit harder to see reality for what it is since we couldn't judge depth or distance as well."
+    m 3esb "And that'd be like taking only one side in a debate. If we took another perspective to cross-reference with the first then we'd be able to see the truth a lot more clearly!"
+    m 1eub "What do you think, [player]? If you haven't already been using the Socratic method, then maybe you can try it sometime!"
 
     return
