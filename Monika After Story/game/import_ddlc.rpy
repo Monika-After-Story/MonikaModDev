@@ -231,8 +231,8 @@ label import_ddlc_persistent:
         #clear: A list of 10 booleans marking which CG's were unlocked in play
         if ddlc_persistent.clear is not None:
             if persistent.clear is not None:
-                for flag in persistent.clear:
-                    persistent.clear[flag] = persistent.clear[flag] or ddlc_persistent.clear[flag]
+                for index in range(len(persistent.clear)-1):
+                    persistent.clear[index] = persistent.clear[index] or ddlc_persistent.clear[index]
 
             else:
                 persistent.clear = ddlc_persistent.clear
