@@ -1518,6 +1518,7 @@ label monika_kiss:
         m 1tku "Don't lie if it turned you on a little bit."
         m 1hub "Ahaha! I'm kidding."
         m 1eua "Well, to be honest, I do start getting all romantic when the mood is right..."
+        show monika 5lubfu at t11 zorder MAS_MONIKA_Z with dissolve
         m 5lubfu "But that'll be our secret~"
     return
 
@@ -7620,10 +7621,11 @@ label monika_cartravel:
     m 1euc "[player], something has been on my mind lately..."
     m 1eua "Wouldn't it be nice to drive somewhere, just you and I together?"
     m 3eka "It'd be lovely to explore some beautiful places, anywhere nice that we haven't seen before."
-    m 3hub "Maybe we could drive through an alluring forest...{w}or even see the sunset by the coastline!"
+    m 3hub "Maybe we could drive through an alluring forest...{w=0.5}or even see the sunset by the coastline!"
     m 1hub "I bet we'd have a really good time if we took a road trip, [player]."
+    if not persistent._mas_pm_driving_can_drive:
+        m 1rksdla "I know we can't really drive yet, but I'm sure we'll get there someday!"
     m 1eua "It really doesn't matter where we go, as long as I'm with you."
-    m 1hua "Just the idea of travelling around the world makes me so excited!"
     m 1eka "I really can't wait, [player]~"
     return
 
