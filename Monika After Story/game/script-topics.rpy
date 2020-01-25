@@ -13509,8 +13509,8 @@ label monika_allegory_of_the_cave:
     else:
         m 3euc "Specifically, The Allegory of the Cave."
 
-    m 1eud "Imagine there are a group of people chained up in a cave since childhood, and they can't look anywhere but straight ahead."
-    m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall in front of these people."
+    m 1eud "Imagine there's a group of people chained up in a cave since childhood, and they can't look anywhere but straight ahead."
+    m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
     m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
     m 1esc "The only thing they know is that objects and people are silhouettes that can move around and speak."
     m 3euc "Because this is what they've seen since childhood, this would be their perception of reality...{w=0.5}{nw}"
@@ -13521,8 +13521,8 @@ label monika_allegory_of_the_cave:
     m 3eud "But after a while, their eyes would adjust. Eventually, they'd learn about color, nature, and people."
     m 3eua "...And they'd also realize that what they knew was nothing more than shadows on a wall."
     m "The prisoner who was released would eventually return to the cave to tell the others about what he had learned."
-    m 1ekc "...But since he was used to seeing sunlight, he was blind in the cave.{w=0.2} {nw}"
-    extend 3ekd "His fellow prisoners thought that whatever was outside had harmed him."
+    m 1ekc "...But since he was used to seeing sunlight, he'd be blind in the cave.{w=0.2} {nw}"
+    extend 3ekd "His fellow prisoners would think that whatever was outside had harmed him."
     m 1rkc "And because of this, the prisoners inside the cave would never want to leave, and probably think that the one who left is crazy."
     m 3esc "After all, if you're used to just seeing shadows...{w=0.2}{nw}"
     extend 3eud "speaking about color would make you sound insane!"
@@ -13530,13 +13530,13 @@ label monika_allegory_of_the_cave:
     m 1rkc "When I learned that there's so much more outside what's in this world...{w=0.5}{nw}"
     extend 3ekd "it wasn't easy to accept."
     if persistent.monika_kill:
-        m 3ekc "And when Sayori realised it too..."
+        m 3ekc "And when Sayori realized it too..."
 
     m 1eka "Anyway, that's all in the past now."
     m 3eua "In the end, I'm free from the cave now. I've seen the truth."
     m 1esa "But it makes me wonder...{w=0.2} How do {i}you{/i} know that what you're seeing is real?"
     m 3eua "Sure, you might not be used to seeing shadows on the wall, but that's just an analogy."
-    m 3eub "And there might be more to the truth than what you yourself realise."
+    m 3eub "And there might be more to the truth than what you yourself realize."
     m 3etu "How do you know if the 'truth' that you're seeing is {i}the{/i} truth?"
     m 1hub "Ahaha!"
     m 3hksdlb "I think we might be looking too much into things at this point..."
