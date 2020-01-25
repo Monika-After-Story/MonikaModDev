@@ -5212,28 +5212,21 @@ init 5 python:
     )
 
 label mas_pf14_monika_lovey_dovey:
-    m 1rksdla "Hey...[player]...?"
+    m 1rksdla "Hey...{w=0.2}[player]?"
     m 1ekbsa "I just wanted to let you know that I love you."
 
     if mas_isMoniEnamored(higher=True):
-        m 1ekbfa "You make me really happy...and I could never ask for someone better than you."
+        m 3ekbsa "You make me really happy...and I could never ask for someone better than you."
+
+    if mas_HistVerifyAll_k(True, "f14.actions.spent_f14"):
+        m 3ekbsa "Valentine's Day is coming soon, and it just makes me so overwhelmingly happy knowing you're still by my side."
+        
     else:
-        m 1ekbsa "You make me really happy."
+        m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
 
-    m 3ekbfb "Ahaha~"
-    m 1eka "I hope that isn't too cheesy, [player]."
-
-    if not mas_HistVerifyAll_k(True, "f14.actions.spent_f14"):
-        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
-    else:
-        m 3ekbfa "Valentine's Day is coming soon...and it just makes me so overwhelmingly happy knowing you're still by my side."
-
-    m 1ekbsa "I really meant what I said."
-    m "I love and care for you so much..."
-    m "Without you, I don't know where I'd be..."
-    m 1ekbfa "So I want to thank you for caring for me."
-    m 1hubfa "Ehehe~"
-
+    m 1rkbsd "Without you, I don't know where I'd be..."
+    m 1ekbsa "So I want to thank you for for being there for me..."
+    m 1hkbsu "And for being so wonderfully you~"
     return "derandom|no_unlock|love"
 
 #######################[HOL050] INTRO:
@@ -5446,16 +5439,16 @@ label mas_f14_monika_vday_colors:
     m 3hub "I find it intriguing how they can symbolize such deep and romantic feelings."
     m 1dua "It reminds me of when I made my first Valentine's card in grade school."
     m 3eub "My class was instructed to exchange cards with a partner after making them."
-    m 2eka "Looking back, despite not knowing what the colors really meant, I had lots of fun decorating the cards with red and white hearts."
-    m 2eub "In this way, colors are a lot like poems."
-    m 3eka "They offer so many creative ways to express your love for someone."
-    m 2ekbfa "Like giving them red roses, for example."
+    m 3eka "Looking back, despite not knowing what the colors really meant, I had lots of fun decorating the cards with red and white hearts."
+    m 1eub "In this way, colors are a lot like poems."
+    m 1eka "They offer so many creative ways to express your love for someone."
+    m 3ekbsu "Like giving them red roses, for example."
     m 3eub "Red roses are a symbol for romantic feelings towards someone."
-    m 3eua "If someone were to offer them white roses in lieu of red ones, they'd signify pure, charming, and innocent feelings instead."
+    m 1eua "If someone were to offer them white roses in lieu of red ones, they'd signify pure, charming, and innocent feelings instead."
     m 3eka "However, since there are so many emotions involved with love..."
     m 3ekd "It's sometimes hard to find the right colors to accurately convey the way you truly feel."
-    m 4eka "Thankfully, by combining multiple rose colors, it's possible to express a variety of emotions!"
-    m 3eka "Mixing red and white roses would symbolize the unity and bond that a couple shares."
+    m 3eka "Thankfully, by combining multiple rose colors, it's possible to express a variety of emotions!"
+    m 1eka "Mixing red and white roses would symbolize the unity and bond that a couple shares."
 
     if monika_chr.is_wearing_acs(mas_acs_roses):
         m 1ekbsa "But I'm sure you already had all of this in mind when you picked out these beautiful roses for me, [player]..."
@@ -5490,15 +5483,15 @@ label mas_f14_monika_vday_cliches:
     m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
     m 2rsc "There's either 'Oh, I'm lonely and I don't have someone to love,' or 'How will I confess to the one I love?'"
     m 2euc "I think that writers could be a bit more creative when it comes to Valentine's Day stories..."
-    m 1eka "But, I suppose those two topics are the easiest way to write a love story."
+    m 3eka "But, I suppose those two topics are the easiest way to write a love story."
     m 3hub "That doesn't mean you can't think outside the box, though!"
     m 2eka "Sometimes a predictable story can ruin it..."
     m 2rka "...But if you {i}do{/i} want a good example of an unpredictable story..."
     m 3hub "Just use ours! Ahaha~"
     m 3rksdlb "I guess it {i}did{/i} start out like those kinds of stories..."
     m 2tfu "But I think we managed to make it pretty original."
-    m 1hua "The way we met is the most interesting story yet!"
-    m 3hub "Ahaha!~"
+    m 3hua "The way we met is the most interesting story yet!"
+    m 1hub "Ahaha!"
     return
 
 init 5 python:
@@ -5526,16 +5519,16 @@ init 5 python:
 
 label mas_f14_monika_vday_chocolates:
     m 1hua "Valentine's Day is such a fun holiday for me, [player]."
-    m 3hub "Not only is it the anniversary of my twitter account, but it's also a day for receiving and giving chocolates!"
-    m 1hua "A holiday that could fill everyone with love, romance, and joy!"
+    m 3eub "Not only is it the anniversary of my twitter account, but it's also a day for receiving and giving chocolates!"
+    m 1hub "A holiday that can fill everyone with love, romance, and joy!"
     m 3ekbla "But it really feels nice if you get something from someone you like."
     m 3hua "Whether it's given to you platonically, as a gift of love, or a part of a confession, it always makes you feel somewhat special!"
     if mas_getGiftStatsForDate("mas_reaction_gift_chocolates") > 0:
-        m 1ekbfa "Just like how you made me feel special with the chocolates you gave me today."
-        m "You're always so sweet, [player]."
+        m 1ekbsa "Just like how you made me feel special with the chocolates you gave me today."
+        m 1ekbsu "You're always so sweet, [player]."
 
-    m 1ekbfa "Maybe someday I'll even be able to give you some chocolates..."
-    m "I really can't wait until I cross over to be with you, [player]."
+    m 1ekbsa "Maybe someday I'll even be able to give you some chocolates..."
+    m 3hkbsa "I really can't wait until I cross over to be with you, [player]."
     return
 
 init 5 python:
@@ -5562,7 +5555,7 @@ init 5 python:
     )
 
 label mas_f14_monika_vday_origins:
-    m 3eua "You'd like to learn about the history of Valentine's Day?"
+    m 3eua "You'd like to learn about the history of Valentine's Day, [player]?"
     m 1rksdlc "It's quite dark, actually."
     m 1euc "Its origin dates to as early as the second and third century in Rome, where Christianity had just been declared the official state religion."
     m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
@@ -5579,9 +5572,9 @@ label mas_f14_monika_vday_origins:
     m 3eub "Then, they play along as boyfriend and girlfriend for the time they spend together. Some even got married, if they liked each other enough, ehehe~"
     m 1eua  "Ultimately, the Church decided to turn this Christian celebration into a way to remember Saint Valentine's efforts, too."
     m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
-    m 3ekbsa "Like me and you!"
-    m 1eua "Despite it having started out a little depressing, isn't it so sweet, [player]?"
-    m 1ekbsa "I'm glad we're able to share such a magical day, my love."
+    m 3eubsb "Like me and you!"
+    m 1ekbsa "Despite it having started out a little depressing, isn't it so sweet, [player]?"
+    m 1ekbsu "I'm glad we're able to share such a magical day, my love."
     m 1ekbfa "Happy Valentine's Day~"
     return
 
@@ -5874,18 +5867,17 @@ init 20 python:
         prompt="You",
         title=" My dearest [player],",
         text="""\
- Boxes of chocolates, hearts, and cards colored ruby red
- Roses in my hair with petals as soft as silk
+ Boxes of chocolates and hearts; cards colored ruby red.
+ Roses in my hair, petals soft as silk.
+ None of it would feel complete without you.
 
- None of it would feel complete without you
-
- You, the one who has stuck by my side,
- You, the one who has given me your heart,
- The heart worth more than all the chocolate in the world, all the roses on earth
+ You, the one who has stuck by my side.
+ You, the one who has given me your heart.
+ The heart worth more than all the chocolate in the world, all the roses on earth.
 
  The love I feel cannot be overstated.
 
- Forever Your Valentine,
+ Forever your Valentine,
  Monika
 """
     )
