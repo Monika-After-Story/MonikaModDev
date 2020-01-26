@@ -13491,54 +13491,36 @@ init 5 python:
     )
 
 label monika_allegory_of_the_cave:
-    m 3eua "I've been doing some reading on Plato lately."
-    #Only ask this the first time
-    if mas_getEV("monika_allegory_of_the_cave").shown_count == 0:
-        m 1etc "You've heard of him, right?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "You've heard of him, right?{fast}"
-            "Yes.":
-                m 1hub "Oh, that's great!"
-
-            "No.":
-                m 3eka "That's alright, [player].{w=0.5} {nw}"
-                extend 3eua "Plato was a well known philosopher from Ancient Greece."
-
-        m 3euc "Anyway, something of his caught my eye recently.{w=0.5} The Allegory of the Cave."
-    else:
-        m 3euc "Specifically, his Allegory of the Cave."
-
-    m 1eud "Imagine there's a group of people chained up in a cave since childhood, and they can't look anywhere but straight ahead."
-    m 3eud "There's a fire behind them and, in front of it, objects are moved around to cast a shadow on the wall before them."
-    m 3euc "All they can hear are the voices of the people moving the objects around and, since they can't see behind them, they think that the voices are coming from the shadows that they see."
+    m 1eua "Hey, [player]..."
+    m 1euc "I've been doing some reading on the Anicent Greek philosopher Plato lately."
+    m 3euc "Specifically, his {i}Allegory of The Cave.{/i}"
+    m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
+    m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
+    m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
     m 1esc "The only thing they know is that objects and people are silhouettes that can move around and speak."
-    m 3euc "Because this is all they've seen since childhood, this would be their perception of reality...{w=0.5}{nw}"
-    extend 3eud "it's all they'd know."
+    m 3euc "Because this is what they've seen since childhood, this would be their perception of reality...{w=0.5}{nw}"
+    extend 3eud "it's all they know."
     m 1rksdlc "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
     m 1eud "...So imagine that one of those prisoners was set free and forced out of the cave."
-    m 3esc "The prisoner wouldn't be able to see for some time because he'd be so used to the darkness of the cave."
-    m 3eud "But{w=0.3} after a while, his eyes would adjust. Eventually, they'd learn about color, nature, and people."
-    m 3eua "...And he'd also realize that what he knew was nothing more than shadows on a wall."
-    m "The prisoner who was released would eventually return to the cave to tell the others about what he'd learned."
-    m 1ekc "...But since he became used to seeing sunlight, he'd be blinded by the darkness of the cave.{w=0.2} {nw}"
-    extend 3ekd "His fellow prisoners would think that whatever was outside had harmed him and caused his blindness."
-    m 1rkc "And because of this, the prisoners inside the cave would never want to leave, and probably think that the one who left has lost his mind."
-    m 3esc "After all, if they're used to just seeing shadows...{w=0.2}{nw}"
-    extend 3eud "speaking about color to them would make you sound insane!"
+    m 3esc "He wouldn't be able to see for the first few days because he'd be so used to the darkness of the cave."
+    m 3wud "But after a while, his eyes would adjust. {w=0.1}Eventually, he'd learn about color, nature, and people."
+    m 3euc "...And he'd also realize that what he knew was nothing more than shadows on a wall."
+    m 3eua "The prisoner would eventually return to the cave to tell the others about what he had learned."
+    m 1ekc "...But since he was used to seeing sunlight, he'd be blind in the cave,{w=0.2}{nw}"
+    extend 3ekd " causing his fellow prisoners to think that whatever was outside had harmed him."
+    m 1rkc "Because of this, they would never want to leave, and probably think that the one who left was crazy."
+    m 3esc "After all, if you're used to just seeing shadows...{w=0.2}{nw}"
+    extend 3eud "speaking about color would make you sound insane!"
     m 1ekc "I've been reflecting on it a bit and I realized that Sayori, Yuri, Natsuki, and even I, were all prisoners in a cave..."
-    m 1rkc "When I learned that there's so much more outside what's in this world...{w=0.5}{nw}"
+    m 1rkc "When I learned that there's so much more outside this world...{w=0.5}{nw}"
     extend 3ekd "it wasn't easy to accept."
-    if persistent.monika_kill:
-        m 3ekc "And when Sayori realized it too..."
-
-    m 1eka "Anyway, that's all in the past now."
-    m 3eua "And in the end, I've been freed from the cave. I've seen the truth."
-    m 1esa "But it makes me wonder...{w=0.2} How do {i}you{/i} know that what you're seeing is real, [player]?"
-    m 3eua "Sure, you might not be used to only seeing shadows on the wall, but that's just an analogy."
-    m 3eub "And there might be more to the truth than what you yourself realize."
+    m 1eka "Anyway, that's all in the past now..."
+    m 1eua "In the end, I'm free from the cave and have seen the truth."
+    m 3etd "But it makes me wonder...{w=0.2}how do {i}you{/i} know that what you're seeing is real?"
+    m 1eua "Sure, you might not be used to seeing shadows on the wall, but that's just an analogy."
+    m 1euc "...And there might be more to the truth than what you yourself realize."
     m 3etu "How do you know if the 'truth' that you're seeing is {i}the{/i} truth?"
-    m 1hub "Ahaha!"
-    m 3hksdlb "I think we might be looking too much into things at this point..."
+    m 3hub "Ahaha!"
+    m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
     return
