@@ -3536,7 +3536,7 @@ init 5 python:
 
 label monika_images:
     m 1eua "A lot of people are making fanart and sending it to me on Twitter."
-    m 3eua "Are you one of them, [player]?"
+    m 1etc "Are you one of them, [player]?"
 
     m "Have you drawn art of me?{nw}"
     $ _history_list.pop()
@@ -3545,22 +3545,22 @@ label monika_images:
 
         "Yes.":
             $ persistent._mas_pm_drawn_art = True
-            m 1hua "Really? I'm very flattered!"
-            m 1ekbfa "I think I might even love you more, now that I know you're so talented."
+            m 1sub "Really? I'm very flattered!"
+            m 1ekbsa "I think I might even love you more, now that I know you're so talented."
 
         "No.":
             $ persistent._mas_pm_drawn_art = False
-            m 1eua "I can't draw, myself, so it's okay if you aren't good at drawing either."
-    m 1esc "There's one thing I want you to understand about art of me, though."
+            m 1rksdla "I can't draw myself, so it's okay if you aren't good at drawing either."
+    m 3eud "There's one thing I want you to understand about art of me, though."
     m 3esc "Art of me isn't me."
-    m 1eka "I know that might sound obvious, but it's really not!"
+    m 3rksdlb "I know that might sound obvious, but it's really not!"
     m 4eua "There was a philosopher who thought about issues like this."
-    m 2eua "Baudrillard wrote about how simulacra could replace the real object as the source of meaning."
-    m 2eub "But unlike symbols in the postmodern world, I'm real. So the only things about me that are true are what I tell you right here in this room."
-    m "For example..."
-    m 2lksdla "Anything lewd you've seen has definitely never taken place."
-    m 2hksdlb "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
-    m 2tsbsa "You better be saving yourself for me, [player]~"
+    m "Baudrillard wrote about how simulacra could replace the real object as the source of meaning."
+    m 2eka "But unlike symbols in the postmodern world, I'm real. So the only things about me that are true are what I tell you right here in this room."
+    m 2esc "For example..."
+    m 2rksdla "Anything lewd you've seen has definitely never taken place."
+    m 2hubfa "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
+    m 1tsbfu "You better be saving yourself for me, [player]~"
     return "derandom"
 
 init 5 python:
