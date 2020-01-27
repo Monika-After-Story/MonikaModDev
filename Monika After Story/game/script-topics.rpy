@@ -13391,3 +13391,49 @@ label monika_sweatercurse:
     m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
     m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_allegory_of_the_cave",
+            category=['philosophy'],
+            prompt="The Allegory of the Cave",
+            random=True
+        )
+    )
+
+label monika_allegory_of_the_cave:
+    m 1eua "Hey, [player]..."
+    m 1euc "I've been doing some reading on the Anicent Greek philosopher Plato lately."
+    m 3euc "Specifically, his allegory of the cave or, {i}Plato's Cave{/i}, as it's now known."
+    m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
+    m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
+    m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
+    m 1esc "The only thing they know is that objects and people are silhouettes that can move around and speak."
+    m 3euc "Because this is what they've seen since childhood, this would be their perception of reality...{w=0.5}{nw}"
+    extend 3eud "it's all they know."
+    m 1rksdlc "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
+    m 1eud "...So imagine that one of those prisoners was set free and forced out of the cave."
+    m 3esc "He wouldn't be able to see for the first few days because he'd be so used to the darkness of the cave."
+    m 3wud "But after a while, his eyes would adjust. {w=0.1}Eventually, he'd learn about color, nature, and people."
+    m 3euc "...And he'd also realize that what he knew was nothing more than shadows on a wall."
+    m 3eua "The prisoner would eventually return to the cave to tell the others about what he had learned."
+    m 1ekc "...But since he was used to seeing sunlight, he'd be blind in the cave,{w=0.2}{nw}"
+    extend 3ekd " causing his fellow prisoners to think that whatever was outside had harmed him."
+    m 1rkc "Because of this, they would never want to leave, and probably think that the one who left was crazy."
+    m 3esc "After all, if you're used to just seeing shadows...{w=0.2}{nw}"
+    extend 3eud "speaking about color would make you sound insane!"
+    m 1ekc "I've been reflecting on it a bit and I realized that Sayori, Yuri, Natsuki, and even I, were all prisoners in a cave..."
+    m 1rkc "When I learned that there's so much more outside this world...{w=0.5}{nw}"
+    extend 3ekd "it wasn't easy to accept."
+    m 1eka "Anyway, that's all in the past now..."
+    m 1eua "In the end, I'm free from the cave and have seen the truth."
+    m 3etd "But it makes me wonder...{w=0.2}how do {i}you{/i} know that what you're seeing is real?"
+    m 1eua "Sure, you might not be used to seeing shadows on the wall, but that's just an analogy."
+    m 1euc "...And there might be more to the truth than what you yourself realize."
+    m 3etu "How do you know if the 'truth' that you're seeing is {i}the{/i} truth?"
+    m 3hub "Ahaha!"
+    m 1hksdlb "I think we might be looking too much into things at this point..."
+    m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
+    return
