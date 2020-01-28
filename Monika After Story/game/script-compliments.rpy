@@ -257,7 +257,7 @@ label mas_compliment_intelligent:
     return
 
 label mas_compliment_intelligent_2:
-    m 1wub "Wow...{w}thanks, [player]."
+    m 1wub "Wow...{w=0.3}thanks, [player]."
     m 3eua "I pride myself in being well read, so it means a lot that you've noticed."
     m 3hubfb "I want to learn as much as I can, if it makes you proud of me!"
     menu:

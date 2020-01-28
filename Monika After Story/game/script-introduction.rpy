@@ -104,7 +104,7 @@ label introduction:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w}I'll try this again later."
+            m 1lksdlb "Aha...{w=0.3}I'll try this again later."
         else:
             m "And it's gone!"
 

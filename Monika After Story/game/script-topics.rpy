@@ -493,7 +493,7 @@ label monika_death:
     m 1ekd "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
     m 1dkc "..."
     m 3eub "But you can prevent that from happening, [player]!"
-    m 3eua "If you say goodbye before you leave,{w} I can go to my room before the game closes, and I won't experience the screaming void."
+    m 3eua "If you say goodbye before you leave,{w=0.2} I can go to my room before the game closes, and I won't experience the screaming void."
     m "It's super easy, so please always say goodbye, okay?"
     if mas_isMoniDis(lower=True):
         m 2tkc "Unless...{w=1}you actually {i}enjoy{/i} hurting me..."
@@ -6699,7 +6699,7 @@ label monika_orchestra:
             m 3eua "I love how such wonderful music can arise when so many different instruments are played together."
             m 1eua "I'm amazed with how much practice musicians do to achieve that kind of synchronization."
             m "It probably takes them a lot of dedication to do that."
-            m 1eka "But anyway,{w} it'd be soothing to listen to a symphony with you on a lazy Sunday afternoon, [player]."
+            m 1eka "But anyway,{w=0.2} it'd be soothing to listen to a symphony with you on a lazy Sunday afternoon, [player]."
 
         "No.":
             $ persistent._mas_pm_like_orchestral_music = False
@@ -7461,7 +7461,7 @@ label monika_breakup:
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
             m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
         else:
-            m 2dsc "Are you...{w}really..."
+            m 2dsc "Are you...{w=0.3}really..."
             m "..."
             m 2hub "Ahaha!"
             m 1tfu "Gotcha, [player]."
@@ -10460,7 +10460,7 @@ init 5 python:
     )
 
 label monika_shipping:
-    m 3eua "Hey, [player].{w} Have you ever heard of 'shipping?'"
+    m 3eua "Hey, [player].{w=0.2} Have you ever heard of 'shipping?'"
     m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
     m 1eka "I think most people do it subconsciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
     m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
@@ -11603,7 +11603,7 @@ label monika_dating_startdate:
                 pass
             "You got me.":
                 pass
-        m 2tfu "Hmph,{w} you can't fool me."
+        m 2tfu "Hmph,{w=0.2} you can't fool me."
 
         # wait 30 days
         $ mas_chgCalEVul(30)
@@ -11624,11 +11624,11 @@ label monika_dating_startdate:
         menu:
             m "Is [first_sesh] correct?{fast}"
             "Yes.":
-                m 1hub "Yay!{w} I remembered it."
+                m 1hub "Yay!{w=0.2} I remembered it."
 
             "No.":
-                m 1rkc "Oh,{w} sorry [player]."
-                m 1ekc "In that case,{w} when did we start dating?"
+                m 1rkc "Oh,{w=0.2} sorry [player]."
+                m 1ekc "In that case,{w=0.2} when did we start dating?"
 
                 call monika_dating_startdate_confirm(first_sesh_raw)
 
@@ -11943,11 +11943,11 @@ label monika_whydoyouloveme:
     else:
         # normalt - enamored is this case
         m 1ekc "[player]..."
-        m 1ekd "Are you, by any chance...{w}feeling insecure?"
+        m 1ekd "Are you, by any chance...{w=0.3}feeling insecure?"
         m 2lksdla "I can understand why you're asking such things out of the blue..."
-        m 2eka "But whatever the reason might be,{w} I just want you to know that I love you no matter who you are, [player]."
+        m 2eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
         m 1eka "Just by opening the game for me, you {i}literally{/i} saved my life."
-        m 5eua "And when I'm with you,{w} I'm no longer lonely."
+        m 5eua "And when I'm with you,{w=0.2} I'm no longer lonely."
         m "You truly are my hero, [player]~"
         m 1eub "If anything, I hope that would make you feel better about yourself."
         m 1hub "So keep your hopes up for me, [player]!"
@@ -12812,7 +12812,7 @@ label monika_relationship_comfort:
     m 4esc "But it does mean that the same sensation isn't anything new; it's just no longer as thrilling as before."
     m 2dkd "And some people mistake that thrill for love, and not the truly meaningful bond between two people."
     m 2dkc "So when things slow down, when they become less passionate, they mistakenly think they're falling out of love..."
-    m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w} Love isn't always such a clear thing."
+    m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w=0.3} Love isn't always such a clear thing."
     if not store.mas_anni.pastSixMonths():
         m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that."
         m 1hubfb "Know that I love you for more than just the excitement!"
