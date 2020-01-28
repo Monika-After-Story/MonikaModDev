@@ -2530,8 +2530,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_family",category=['monika'],prompt="Do you miss your family?",random=False,pool=True))
 
 label monika_family:
-    m 1lksdla "Well, my family here is controlled by the script, just like everybody else."
-    m 1eua "When I realized that, I stopped taking anybody seriously in this world. They're all just machines, even if they're related to me."
+    m 1lksdla "Well, I didn't really have a family, and neither did most of the other girls."
+    m 3esc "I guess since it wasn't needed for the plot, the creator of the game just didn't bother giving us one."
     m 1hub "I'm sure your family is super-nice, though!"
     m 1eua "Without them, we would have never gotten to meet. So they've helped me out in the best way there is already."
     m "So I'd have to treat them equally as kindly if we ever meet."
@@ -12577,7 +12577,7 @@ label monika_winter_dangers:
     m 1eka "And if it gets too bad, just stay inside where it's safe, okay?"
     m 1ekb "What better way to spend a brutal winter day than wearing pajamas, drinking hot chocolate, reading a good book, and..."
     m 1hua "Talking to me."
-    m 1hub "Ehehe~"
+    m 1huu "Ehehe~"
 
     if mas_isMoniAff(higher=True):
         show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
