@@ -13502,11 +13502,11 @@ label monika_ship_of_theseus:
     m 3eub "In other words, not a single cell that made you 'you' 7 years ago is part of you right now. You could argue that you have no relation to that person, other than a consistent consciousness."
     m 3eta ".{w=0.3}.{w=0.3}.{w=0.3}There's also an extra thing to consider."
     m 4esb "Let's say for now that the modified ship should still be considered Theseus' ship. What if all the parts that were originally removed, were now reassembled into another ship?"
-    m 4eub "We'd have 2 of Theseus' ships! Which one is real!?"
+    m 4eub "We'd have 2 of Theseus' ships! Which one's the true one!?"
     m 4htb "And what if we got all of the cells that made up your body 7 years ago, and reassembled them into another 'you' right now? Who would be the real [player]?"
     m 1eua "Personally, I think that we're not the same people we were 7 years ago - or even the same people from yesterday."
-    m 3eua "In other words, there's no use getting hung up on any grievances we may have with past selves."
-    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    m 3eua "In other words, there's no use getting hung up on any grievances we may have with our past selves."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "We should keep trying our best each day and not let ourselves be limited by who we were yesterday."
     m 5eub "Today is a new day, and you are a new you. And I love you as you are right now, [player]."
 
