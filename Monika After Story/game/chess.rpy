@@ -1814,9 +1814,10 @@ label mas_chess_savegame:
             m "You can open this file in PGN viewers."
 
             if game_result == "*": # ongoing game
-                m 1lksdlb "It's possible to edit this file and change the outcome of the game,{w=0.5} but I'm sure you wouldn't do that."
+                m 1lksdlb "It's possible to edit this file and change the outcome of the game...{w=0.5} {nw}"
+                extend 1tsu "but I'm sure you wouldn't do that."
 
-                m 1eka "Right, [player]?{nw}"
+                m 1tku "Right, [player]?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Right, [player]?{fast}"

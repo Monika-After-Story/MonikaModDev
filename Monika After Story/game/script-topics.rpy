@@ -9267,7 +9267,7 @@ init 5 python:
     )
 
 label monika_immortality:
-    m 1eud "Hey, [player], I've been thinking lately about immortality."
+    m 1eud "Hey, [player], I've been thinking about immortality lately."
     m 1lksdlc "...Seeing as how I'm essentially immortal while I'm in here and all."
     m 1esc "A lot of people think it's a good thing, but I don't really think it is."
     m 3euc "Sure, it's an interesting thought; {w=0.1}living forever, not having to worry about dying..."
