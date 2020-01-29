@@ -13408,7 +13408,7 @@ label monika_socratic_method:
     m 1eua "Do you remember that time we talked about Plato's 'Allegory of the Cave'?{w=0.5} I've been thinking about what I said to you."
     m 3eub "'How do you know if the 'truth' that you're seeing is {i}the{/i} truth?'"
     m 3ekb "I was racking my brain for a bit earlier while trying to come up with a good answer."
-    m 2rka "Well,{w=0.3} I still don't really have one yet, ahaha...{w=0.5}{nw}"
+    m 1rka "Well,{w=0.3} I still don't really have one yet, ahaha...{w=0.5}{nw}"
     extend 3eub "but,{w=0.3} I did realise something useful, [player]!"
     m 4eub "Plato's works are mostly written as Socratic dialogues. Plato himself doesn't appear in them - instead, he wrote about his mentor Socrates having debates with others."
     m 4esb "The participants of these debates were trying to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
