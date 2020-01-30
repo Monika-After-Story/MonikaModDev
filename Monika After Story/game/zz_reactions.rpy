@@ -1284,19 +1284,23 @@ label mas_reaction_gift_generic_sprite_json:
             python:
                 acs_quips = [
                     "I really appreciate it!",
-                    "it's amazing!",
-                    "I just love it!",
-                    "it's wonderful!"
+                    "[its] amazing!",
+                    "I just love [item_ref]!",
+                    "[its] wonderful!"
                 ]
-                acs_quip = renpy.random.choice(acs_quips)
 
-            # we have a complete description, so use it here
-            if spr_obj.dlg_plur:
-                $ sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
-                $ item_ref = "them"
-            else:
-                $ sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
-                $ item_ref = "it"
+                # we have a complete description, so use it here
+                if spr_obj.dlg_plur:
+                    sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
+                    item_ref = "them"
+                    its = "they're"
+
+                else:
+                    sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
+                    item_ref = "it"
+                    its = "it's"
+
+                acs_quip = renpy.substitute(renpy.random.choice(acs_quips))
 
             m 1hua "Thanks for [sprite_str], [acs_quip]"
             m 3hub "I can't wait to try [item_ref] on!"
