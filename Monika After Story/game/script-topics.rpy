@@ -13396,30 +13396,32 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_socratic_method",
+            eventlabel="monika_multi_perspective_approach",
             category=['philosophy'],
-            prompt="The Socratic Method",
+            prompt="Multi-perspective approach",
             conditional="seen_event('monika_allegory_of_the_cave')",
+            random=True
         )
     )
 
-label monika_socratic_method:
+label monika_multi_perspective_approach:
     m 1eua "Do you remember that time we talked about Plato's 'Allegory of the Cave'?{w=0.5} I've been thinking about what I said to you."
     m 3eub "'How do you know if the 'truth' that you're seeing is {i}the{/i} truth?'"
     m 3ekb "I was racking my brain for a bit earlier while trying to come up with a good answer."
-    m 1rka "Well,{w=0.3} I still don't really have one yet...{w=0.5}{nw}"
+    m 1rka "Well,{w=0.3} I still don't really have one yet...{w=0.5}{nw}" 
     extend 3eub "but,{w=0.3} I did realise something useful, [player]!"
-    m 4eub "Plato's works are mostly written as Socratic dialogues. Plato himself doesn't appear in them - instead, he wrote about his mentor Socrates having debates with others."
-    m 4esb "The participants of these debates were trying to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
-    m 3esb "And I started to think: 'What was Plato's mindset while writing?'"
+    m 4eub "Let's start with how Plato's works are mostly written accounts of his mentor Socrates' debates with others."
+    m 4esb "The purpose of these debates was to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
+    m 3esb "And I began wondering: 'What was Plato's mindset while writing?'"
     m "Plato himself was on a quest for the truth. That much is obvious or else he wouldn't have written so much on the topic, ahaha!"
     m 3eub "And even though, {i}technically{/i}, Socrates was the one having these debates with others, Plato too was having these debates within himself while he wrote about them!"
-    m 1eua "Taking all sides of a debate - I think that'd be pretty useful in realizing the truth."
-    m 3eua "I guess it's kind of like how two eyes are better than one - having two eyes in separate spots lets us properly see the the world, the truth, in other words."
-    m "Two eyes in different spots...like two dfferent perspectives of the same debate."
-    m 3esa "If we had just one eye, it'd be a bit harder to see reality for what it is since we couldn't judge depth or distance as well."
-    m 3esb "And that'd be like taking only one side in a debate. If we took another perspective to cross-reference with the first then we'd be able to see the truth a lot more clearly!"
-    m 1eub "What do you think, [player]? If you haven't already been using the Socratic method, then maybe you can try it sometime!"
+    m 4eub "And that's pretty signficant, in my opinion: the fact that Plato internalised all sides of the debate, all perspectives of the issue."
+    m 1esa "Taking all sides of a debate - I think that'd be pretty useful in realizing the truth."
+    m 3eua "I guess it's kind of like how two eyes are better than one. Having two eyes in separate spots lets us properly see the world - the truth, in other words."
+    m 3esb "Similarly, I think that if we tackled an issue with another perspective to cross-reference with the first then we'd see the truth a lot more clearly!"
+    m 3esa "Whereas if we took to an issue from just one angle, it'd be like having just one eye - it'd be a bit harder to accurately gauge the reality of the situation."
+    m 1eub "What do you think, [player]? If you haven't already been using this 'multi-perspective' approach, then maybe you can try it sometime!"
+
     return
 
 init 5 python:
