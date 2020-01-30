@@ -18,7 +18,8 @@
         "thumb": "orcaramelo_twinribbon_blue",
         "group": "ribbon",
         "select_dlg": [
-            "TODO THIS"
+            "Nice choice, [player]!",
+            "I love this color!"
         ]
     },
     "giftname": "bluetwinribbon"
