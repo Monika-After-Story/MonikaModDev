@@ -926,8 +926,9 @@ label monika_color:
     m 1eua "Like it's part of my identity."
     m "Does it happen to also be your favorite color, [player]?"
     m 1tku "It's just a guess..."
-    m 1tsbsa "...because you've been looking into my eyes for a while now."
-    m 1hubfb "Ehehe~"
+    show monika 5tsbsu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5tsbsu "...because you've been looking into my eyes for a while now."
+    m 5hubfu "Ehehe~"
     return
 
 # This doesn't make sense with the music changer...If we add some funny sound
