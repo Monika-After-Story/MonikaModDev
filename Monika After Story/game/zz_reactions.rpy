@@ -2284,7 +2284,7 @@ label mas_reaction_gift_acs_velius94_ribbon_ruby:
     return
 
 label mas_reaction_gift_acs_velius94_ribbon_wine:
-    call mas_reaction_json_ribbon_base("velius94_ribbon_wine", "wine", "mas_reaction_gift_acs_velius94_ribbon_wine")
+    call mas_reaction_json_ribbon_base("velius94_ribbon_wine", "wine colored", "mas_reaction_gift_acs_velius94_ribbon_wine")
     return
 
 #specific to this, since we need to verify if the player actually gave a ribbon.
