@@ -385,6 +385,15 @@ label v0_10_7(version="v0_10_7"):
             vday_spent_ev.start_date = datetime.datetime.combine(mas_f14, datetime.time(hour=18))
             vday_spent_ev.end_date = datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=3))
 
+        #Fix the vday origins event
+        vday_origins_ev = mas_getEV('mas_f14_monika_vday_origins')
+        if vday_origins_ev:
+            vday_origins_ev.action = EV_ACT_UNLOCK
+            vday_origins_ev.pool = True
+            #Just make sure it's locked (provided not on f14, in case people update on f14)
+            if not mas_isF14():
+                vday_origins_ev.unlocked=False
+
         #Give d25 randoms their actions back
         mistletoe_ev = mas_getEV("mas_d25_monika_mistletoe")
         carolling_ev = mas_getEV("mas_d25_monika_carolling")

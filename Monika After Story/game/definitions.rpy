@@ -1507,8 +1507,7 @@ python early:
             IN:
                 ev - event to undo ev action for
             """
-            if ev.action in [EV_ACT_UNLOCK, EV_ACT_POOL]:
-                #NOTE: Pool is tied here because generally if we're undoing the pooling of a topic, we want to lock it
+            if ev.action == EV_ACT_UNLOCK:
                 ev.unlocked = False
 
             elif ev.action == EV_ACT_RANDOM:
