@@ -3,7 +3,7 @@
 # Adding custom Piano Songs:
 # Piano songs can be added by creating a json file in the piano_songs
 # folder. Stock piano songs (which are shipped in official release) should be
-# in mod_assets/piano/songs/
+# in mod_assets/games/piano/songs/
 #
 # NOTE: Errors in PianoNote JSONS are logged to "pnm.txt"
 #  gameplay will not crash even if piano note matches are formatted
@@ -387,7 +387,7 @@ init -3 python in mas_piano_keys:
         renpy.config.basedir + "/piano_songs/"
     )
     stock_pnml_basedir = os.path.normcase(
-        renpy.config.basedir + "/game/mod_assets/piano/songs/"
+        renpy.config.basedir + "/game/mod_assets/games/piano/songs/"
     )
     no_pnml_basedir = False
     try:
@@ -2251,20 +2251,20 @@ init 810 python:
         ZZFP_C6 = "mod_assets/sounds/piano_keys/C6.ogg"
 
         # piano images
-        ZZPK_IMG_BACK = "mod_assets/piano/board.png"
-        ZZPK_IMG_KEYS = "mod_assets/piano/piano.png"
+        ZZPK_IMG_BACK = "mod_assets/games/piano/board.png"
+        ZZPK_IMG_KEYS = "mod_assets/games/piano/piano.png"
 
         # lyrical bar
-        ZZPK_LYR_BAR = "mod_assets/piano/lyrical_bar.png"
+        ZZPK_LYR_BAR = "mod_assets/games/piano/lyrical_bar.png"
 
         # overlay, white
-        ZZPK_W_OVL_LEFT = "mod_assets/piano/ovl/ivory_left.png"
-        ZZPK_W_OVL_RIGHT = "mod_assets/piano/ovl/ivory_right.png"
-        ZZPK_W_OVL_CENTER = "mod_assets/piano/ovl/ivory_center.png"
-        ZZPK_W_OVL_PLAIN = "mod_assets/piano/ovl/ivory_plain.png"
+        ZZPK_W_OVL_LEFT = "mod_assets/games/piano/ovl/ivory_left.png"
+        ZZPK_W_OVL_RIGHT = "mod_assets/games/piano/ovl/ivory_right.png"
+        ZZPK_W_OVL_CENTER = "mod_assets/games/piano/ovl/ivory_center.png"
+        ZZPK_W_OVL_PLAIN = "mod_assets/games/piano/ovl/ivory_plain.png"
 
         # overlay black
-        ZZPK_B_OVL_PLAIN = "mod_assets/piano/ovl/ebony.png"
+        ZZPK_B_OVL_PLAIN = "mod_assets/games/piano/ovl/ebony.png"
 
         # offsets for rendering
         ZZPK_IMG_BACK_X = 5

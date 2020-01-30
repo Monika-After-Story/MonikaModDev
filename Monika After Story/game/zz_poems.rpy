@@ -103,6 +103,32 @@ init 11 python in mas_poems:
             if poem.is_seen()
         ]
 
+    def getRandomPoem(category,unseen=True):
+        """
+        Gets a random poem from the specified category
+        IN:
+            category:
+                category to search for
+
+            unseen:
+                whether or not we only want unseen poems
+                defaults to True 
+
+        OUT:
+            A random poem
+        """
+        unseen_poem_amt = len(getPoemsByCategory(category, unseen=True))
+        total_poem_amt = len(getPoemsByCategory(category, unseen=False))
+        sel_poem_len = total_poem_amt-1
+
+        if unseen:
+            if unseen_poem_amt > 0:
+                sel_poem_len = unseen_poem_amt-1
+            else:
+                unseen = False
+        poem_num = renpy.random.randint(0, sel_poem_len)
+
+        return getPoemsByCategory(category, unseen=unseen)[poem_num]
 
 init 10 python:
     class MASPoem:
@@ -249,8 +275,6 @@ init 5 python:
 
 
 label monika_showpoem:
-    m 1hub "Sure!"
-
     show monika 1eua at t21
     python:
         #We'll store the base DDLC poems here
@@ -273,9 +297,7 @@ label monika_showpoem:
     $ _poem = _return
 
     if not _poem:
-        m 1eka "Alright [player]."
-        m 3eua "If you ever want to read one of my poems, just ask okay?"
-        return
+        return "prompt"
 
     show monika 3hua at t11
     m 3hua "Alright!"

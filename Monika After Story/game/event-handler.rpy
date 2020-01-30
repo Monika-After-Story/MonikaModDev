@@ -930,6 +930,7 @@ init -875 python in mas_delact:
 #        13: _mas_f14_monika_vday_cliches_reset,
 #        14: _mas_f14_monika_vday_chocolates_reset,
 #        15: _mas_f14_monika_vday_origins_reset,
+        16: _mas_birthdate_bad_year_fix,
     }
 
 
@@ -1020,17 +1021,7 @@ init -1 python in evhand:
     LAST_SEEN_DELTA = datetime.timedelta(hours=6)
 
     # restart topic blacklist
-    # TODO: consider an addEvent param instead
-    RESTART_BLKLST = [
-        "mas_crashed_start",
-        "monika_affection_nickname",
-        "mas_coffee_finished_brewing",
-        "mas_coffee_finished_drinking",
-        "monikaroom_will_change",
-        "monika_hair_select",
-        "monika_clothes_select",
-        "monika_rain_holdme",
-    ]
+    RESTART_BLKLST = []
 
     # idle topic whitelist
     IDLE_WHITELIST = [
@@ -1291,6 +1282,7 @@ init python:
             event,
             eventdb=None,
             skipCalendar=False,
+            restartBlacklist=False,
             code="EVE"
         ):
         #
@@ -1335,6 +1327,10 @@ init python:
         # NOTE: this covers time travel
         if not store.evhand.isYearsetBlacklisted(event.eventlabel):
             Event._verifyAndSetDatesEV(event)
+
+        # check whether we should add the event in the restart blacklist
+        if restartBlacklist:
+            evhand.RESTART_BLKLST.append(event.eventlabel)
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
@@ -2109,6 +2105,10 @@ label call_next_event:
                 $ mas_clearNotifs()
                 jump _quit
 
+            if "prompt" in ret_items:
+                show monika idle
+                jump prompt_menu
+
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
             jump call_next_event
@@ -2253,20 +2253,24 @@ label prompt_menu:
 
     elif madechoice == "love":
         $ pushEvent("monika_love",skipeval=True)
+        $ _return = True
 
     elif madechoice == "love_too":
         $ pushEvent("monika_love_too",skipeval=True)
+        $ _return = True
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
-        if not _return:
-            jump prompt_menu
 
     elif madechoice == "goodbye":
         call mas_farewell_start from _call_select_farewell
 
     else: #nevermind
         $_return = None
+
+    # check explicitly for False here due to how farewells return
+    if _return is False:
+        jump prompt_menu
 
 label prompt_menu_end:
 
@@ -2283,15 +2287,16 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    $ nvm_text = "That's enough for now."
+    $ nvm_text = "Nevermind."
 
     $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
 
     call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
 
-    $pushEvent(_return)
+    if _return:
+        $ pushEvent(_return)
 
-    return
+    return _return
 
 label prompts_categories(pool=True):
 
@@ -2443,30 +2448,155 @@ label prompts_categories(pool=True):
                 $ current_category.pop()
 
         else: # event picked
-            $picked_event = True
-            $pushEvent(_return)
+            $ picked_event = True
+            #So we don't push garbage
+            if _return is not False:
+                $ pushEvent(_return)
 
-    return
+    return _return
 
 # sets up the bookmarks menu
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no unlock":None}))
+    # NOTE: do not use this as an ev.
 
 label mas_bookmarks:
     show monika idle
     python:
-        bookmarkedlist = mas_get_player_bookmarks()
+        # local function that generats indexed based list for bookmarks
+        def gen_bk_disp(bkpl):
+            return [
+                (bkpl[index][0], index, False, False)
+                for index in range(len(bkpl))
+            ]
 
-        bookmarkedlist.sort()
-        remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)
-        return_prompt_back = ("Nevermind.", False, False, False, 0)
+        # generate list of propmt/label tuples of bookmarks
+        bookmarks_pl = [ 
+            (renpy.substitute(ev.prompt), ev.eventlabel)
+            for ev in mas_get_player_bookmarks()
+        ]
+        bookmarks_pl.sort()
+        bookmarks_disp = gen_bk_disp(bookmarks_pl)
+
+        remove_bookmark = (
+            "I'd like to remove a bookmark.",
+            -1,
+            False,
+            False,
+            20
+        )
+        return_prompt_back = ("Nevermind.", -2, False, False, 0)
+
+
+label mas_bookmarks_loop:
+    
+    # sanity check for bookmark data
+    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
+        # ensure that we have at least 1 bookmark to deal with and the evs and
+        # display lists are the same size
+        return False
 
     show monika at t21
-    call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
-    show monika at t11
+    call screen mas_gen_scrollable_menu(bookmarks_disp,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
 
     $ topic_choice = _return
 
-    if topic_choice:
-        $ pushEvent(topic_choice,skipeval=True)
-    return
+    if topic_choice < -1:
+        # nevermind was selected
+        return False
+
+    elif topic_choice < 0:
+        # prompt for bookmarks to remove
+        # no need to regen since we know we have the list already
+        call mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, gen_bk_disp)
+        show monika idle
+
+        # the disp list might have been regenerated
+        $ bookmarks_disp = _return
+
+    elif 0 <= topic_choice < len(bookmarks_pl):
+        # get selected label and push
+        $ sel_evl = bookmarks_pl[topic_choice][1]
+        show monika at t11
+        $ pushEvent(sel_evl, skipeval=True)
+        return True
+
+    jump mas_bookmarks_loop
+
+
+# unbookmark flow
+# IN:
+#   bookmarks_disp - list of displayable menu bookmarks.
+#   regen - function used to regenerate bookmarks_disp
+#
+# IN/OUT:
+#   bookmarks_pl - list of available bookmark prompt/label tuples
+#       items are removed as they are unbookmarked
+#
+# RETURNS: list of displayable menu bookmarks. migtht be regenerated.
+label mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, regen):
+    pass
+
+label mas_bookmarks_unbookmark_loop:
+
+    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
+        # ensure that we have at least 1 bookmark to deal with and the evs and
+        # display lists are the same size
+        return []
+
+    $ unbookmark_back = ("Nevermind.", -1, False, False, 20)
+
+    show monika 1eua at t21
+
+    # decicde which prompt
+    if len(bookmarks_disp) > 1:
+        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
+    else:
+        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
+
+    call screen mas_gen_scrollable_menu(bookmarks_disp, (evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, unbookmark_back)
+
+    $ topic_choice = _return
+
+    if topic_choice < 0:
+        # -1 is nevermind
+        return bookmarks_disp
+
+    # sanity check the selected topic choice
+    if topic_choice < len(bookmarks_pl):
+        # a topic was selected
+
+        python:
+            # get the label that was selected
+            sel_evl = bookmarks_pl[topic_choice][1]
+
+            # remove the bookmark from persist (if in it)
+            if sel_evl in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked.remove(sel_evl)
+
+            # remove from teh ev list
+            bookmarks_pl.pop(topic_choice)
+
+            # re-generate bookmarks disp
+            bookmarks_disp = regen(bookmarks_pl)
+        
+        show monika at t11
+        m 1eua "Okay, [player]..."
+
+        # prompt for more unbookmarks if we have any left
+        if len(bookmarks_disp) > 0:
+            m 1eka "Are there any other bookmarks you want to remove?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are there any other bookmarks you want to remove?{fast}"
+                "Yes.":
+                    pass # returns to start of loop
+                "No.":
+                    m 3eua "Okay."
+                    return bookmarks_disp
+        else:
+            m 3hua "All done!"
+            return bookmarks_disp
+
+    jump mas_bookmarks_unbookmark_loop
+
