@@ -13,6 +13,9 @@
     "mux_type": [
         "ribbon"
     ],
+    "ex_props": {
+        "s-type": true
+    },
     "stay_on_start": true,
     "select_info": {
         "display_name": "Ribbon (Sapphire, s-type)",
