@@ -5160,12 +5160,13 @@ label mas_f14_autoload_check:
     python:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            monika_chr.change_clothes(mas_clothes_sundress_white, False)
+            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
             monika_chr.save()
             renpy.save_persistent()
 
         elif not mas_isF14():
             #We want to lock all the extra topics
+            #NOTE: vday origins is handled by undo action rules
             mas_lockEVL("mas_f14_monika_vday_colors","EVE")
             mas_lockEVL("mas_f14_monika_vday_cliches","EVE")
             mas_lockEVL("mas_f14_monika_vday_chocolates","EVE")
@@ -5860,7 +5861,6 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    #TODO: review this poem to ensure proper moni-style
     poem_vday_3 = MASPoem(
         poem_id="poem_f14_3",
         category="f14",

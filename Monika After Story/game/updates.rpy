@@ -385,6 +385,15 @@ label v0_10_7(version="v0_10_7"):
             vday_spent_ev.start_date = datetime.datetime.combine(mas_f14, datetime.time(hour=18))
             vday_spent_ev.end_date = datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=3))
 
+        #Give d25 randoms their actions back
+        mistletoe_ev = mas_getEV("mas_d25_monika_mistletoe")
+        carolling_ev = mas_getEV("mas_d25_monika_carolling")
+
+        if mistletoe_ev:
+            mistletoe_ev.action = EV_ACT_RANDOM
+
+        if carolling_ev:
+            carolling_ev.action = EV_ACT_RANDOM
     return
 
 #0.10.6

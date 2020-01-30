@@ -1325,9 +1325,9 @@ init -1 python:
         "clothes",
         visible_when_locked=False,
         hover_dlg=None,
-        #TODO: ME (Not this time)
         select_dlg=[
             "Ehehe~",
+            "Do you like what you see, [player]?"
         ]
     )
 
