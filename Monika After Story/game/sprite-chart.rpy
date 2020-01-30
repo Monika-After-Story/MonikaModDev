@@ -5878,7 +5878,7 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteBase constructor
@@ -5904,7 +5904,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             self.__sp_type = -1
             self.name = name
@@ -5914,11 +5914,16 @@ init -2 python:
             self.pose_map = pose_map
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
-            self.ex_props = ex_props
             self.is_custom = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
+
+            #sets the ex_props to an empty dict if ex_props is None
+            if ex_props is None:
+                self.ex_props = {}
+            else:
+                self.ex_props = ex_props
 
 
         def __eq__(self, other):
@@ -6061,7 +6066,7 @@ init -2 python:
                 fallback=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -6089,7 +6094,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
                 name,
@@ -6187,7 +6192,7 @@ init -2 python:
                 exit_pp=None,
                 acs_type=None,
                 mux_type=None,
-                ex_props={},
+                ex_props=None,
                 arm_split=None,
                 dlg_data=None,
             ):
@@ -6230,7 +6235,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
                 dlg_data - tuple of the following format:
@@ -6377,7 +6382,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 split=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASHair constructor
@@ -6407,7 +6412,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -6494,7 +6499,7 @@ init -2 python:
                 hair_map={},
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={},
+                ex_props=None,
                 pose_arms=None
             ):
             """
@@ -6528,7 +6533,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 pose_arms - MASPoseMap object represneting the arm layers
                     for poses. If None is passed, we assume use the base
                     layers as a guide
