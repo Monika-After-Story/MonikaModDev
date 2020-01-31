@@ -669,11 +669,11 @@ init python:
 
     def mas_get_player_bookmarks():
         """
-        Gets topics which are bookmarked by the player (in gen-scrollable-menu format)
+        Gets topics which are bookmarked by the player 
         Also cleans events which no longer exist
 
         OUT:
-            List of bookmarked topics in mas_gen_scrollable_menu form
+            List of bookmarked topics as evs
         """
         bookmarkedlist = []
 
@@ -688,7 +688,7 @@ init python:
 
             #Otherwise, we add it to the menu item list
             elif ev.unlocked and ev.checkAffection(mas_curr_affection):
-                bookmarkedlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+                bookmarkedlist.append(ev)
 
         return bookmarkedlist
 
@@ -1712,7 +1712,7 @@ label ch30_hour:
 label ch30_day:
     python:
         #Undo ev actions if needed
-        MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+        MASUndoActionRule.check_persistent_rules()
         #And also strip dates
         MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 
@@ -1804,35 +1804,6 @@ label ch30_reset:
                 ):
                 mas_unlockGame(game_name)
 
-    # reset mas mood bday
-    python:
-        if (
-                persistent._mas_mood_bday_last
-                and persistent._mas_mood_bday_last < today
-            ):
-            persistent._mas_mood_bday_last = None
-            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
-            if mood_ev:
-                mood_ev.unlocked = True
-
-    # enabel snowing if its winter
-#    python:
-#        # TODO: snowing should also be controlled if you like it or not
-#        if mas_isWinter():
-#            if mas_is_snowing and not mas_weather_snow.unlocked:
-#                mas_weather_snow.unlocked = True
-#                store.mas_weather.saveMWData()
-#
-#                mas_unlockEVL("monika_change_weather", "EVE")
-#                renpy.save_persistent()
-#        mas_is_snowing = mas_isWinter()
-#        if mas_is_snowing:
-#
-#            mas_lockEVL("monika_rain_start", "EVE")
-#            mas_lockEVL("monika_rain_stop", "EVE")
-#            mas_lockEVL("mas_monika_islands", "EVE")
-#            mas_lockEVL("monika_rain", "EVE")
-#            mas_lockEVL("greeting_ourreality", "GRE")
 
     #### SPRITES
 
@@ -1855,6 +1826,9 @@ label ch30_reset:
     # change back to def if we aren't wearing def at Normal-
     if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
         $ pushEvent("mas_change_to_def",skipeval=True)
+
+    if not mas_hasSpecialOutfit():
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
 
     #### END SPRITES
 
@@ -2020,7 +1994,7 @@ label ch30_reset:
                 persistent.event_list.pop(index)
 
     #Now we undo actions for evs which need them undone
-    $ MASUndoActionRule.check_persistent_rules(persistent._mas_undo_action_rules)
+    $ MASUndoActionRule.check_persistent_rules()
     #And also strip dates
     $ MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
 

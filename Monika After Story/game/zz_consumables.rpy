@@ -586,9 +586,27 @@ init 10 python:
             return False
 
         @staticmethod
-        def _getLowCons(_type, critical=False):
+        def _getLowCons(critical=False):
             """
-            Gets a list of all consumable which Monika is low on (and should warn about)
+            Gets a list of all consumables which Monika is low on, regardless of type (and should warn about)
+
+            IN:
+                - critical - Whether this list should only be populated by items Monika is critically low on or not
+                    (Default: False)
+
+            OUT:
+                list of all consumables Monika is low on (or critical on)
+            """
+            low_cons = []
+            for _type in store.mas_consumables.consumable_map.iterkeys():
+                low_cons += MASConsumable._getLowConsType(_type, critical)
+
+            return low_cons
+
+        @staticmethod
+        def _getLowConsType(_type, critical=False):
+            """
+            Gets a list of all consumables (of the provided type) which Monika is low on (and should warn about)
 
             IN:
                 _type - Type of consumables to get a low list for
@@ -596,7 +614,7 @@ init 10 python:
                     (Default: False)
 
             OUT:
-                list of all consumables Monika is low on (or critical on)
+                list of all consumables of the provided type Monika is low on (or critical on)
             """
             if _type not in store.mas_consumables.consumable_map:
                 return []
@@ -911,6 +929,45 @@ init 10 python:
 #END: MASConsumable class
 
     #START: Global functions
+    def mas_generateShoppingList(low_cons_list=None):
+        """
+        Generates a list of consumables we're low on in the form of a 'shopping list'
+        and exports it to the characters folder
+
+        IN:
+            low_cons_list - List of MASConsumable objects that we're low on
+            If None, we get it here
+            (Default: None)
+        """
+        #First, get all the consumables we're low on if not provided
+        if low_cons_list is None:
+            low_cons_list = MASConsumable._getLowCons()
+
+        START_TEXT = (
+            "Hi, [player],\n"
+            "Just letting you know I'm running low on a couple things.\n"
+            "You wouldn't mind getting some more for me, would you?\n\n"
+            "Here's a list of some of the things I'm running out of:\n"
+        )
+
+        MID_TEXT = ""
+
+        END_TEXT = (
+            "Thanks, [player]~"
+        )
+
+        for cons in low_cons:
+            MID_TEXT += "- {0}\n".format(cons.disp_name.capitalize())
+
+        MID_TEXT += "\n"
+
+        shopping_list = open(renpy.config.basedir + "/characters/shopping_list.txt", "w")
+        shopping_list.write(
+            renpy.substitute(START_TEXT + MID_TEXT + END_TEXT)
+        )
+
+        shopping_list.close()
+
     def mas_getConsumable(consumable_type, consumable_id):
         """
         Gets a consumable object by type and id
@@ -995,14 +1052,14 @@ init 5 python:
             eventlabel="mas_finished_brewing",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label mas_finished_brewing:
     $ current_drink = MASConsumable._getCurrentDrink()
     call mas_consumables_generic_finished_prepping(consumable=current_drink)
     return
-
 
 ###Drinking done
 init 5 python:
@@ -1014,7 +1071,8 @@ init 5 python:
             eventlabel="mas_finished_drinking",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label mas_finished_drinking:
@@ -1031,7 +1089,8 @@ init 5 python:
             eventlabel="mas_get_drink",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label mas_get_drink:
@@ -1050,7 +1109,8 @@ init 5 python:
             eventlabel="mas_finished_prepping",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label mas_finished_prepping:
@@ -1069,7 +1129,8 @@ init 5 python:
             eventlabel="mas_finished_eating",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label mas_finished_eating:
@@ -1085,7 +1146,8 @@ init 5 python:
             eventlabel="mas_get_food",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 label mas_get_food:
@@ -1191,6 +1253,13 @@ label mas_consumables_generic_finish_having(consumable):
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
+        if (
+            mas_inEVL("mas_consumables_generic_queued_running_out")
+            and mas_timePastSince(
+                mas_getEV("mas_consumables_generic_queued_running_out"), datetime.timedelta(days=7)
+            )
+        ):
+            $ queueEvent("mas_consumables_generic_running_out")
 
     #Only have one left
     elif not get_more and consumable.isCriticalLow():
@@ -1268,4 +1337,38 @@ label mas_consumables_generic_critical_low(consumable):
     m 3eua "I only have about one [consumable.container] of [consumable.disp_name] left."
     m 3eka "Would you mind getting me some more sometime?"
     m 1hua "Thanks~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_consumables_generic_queued_running_out",
+            rules={"skip alert": None}
+        ),
+        restartBlacklist=True
+    )
+
+label mas_consumables_generic_queued_running_out:
+    #Firstly, let's get what we're low on.
+    $ low_cons = MASConsumable._getLowCons()
+
+    m 1esc "By the way, [player]..."
+    if len(low_cons) > 2:
+        $ mas_generateShoppingList(low_cons)
+        m 3rksdla "I've been running out of a few things in here..."
+        m 3eua "So I hope you don't mind, but I left you a list of things in the characters folder."
+        $ them = "them"
+    else:
+        python:
+            items_running_out_of = ""
+            if len(low_cons) == 2:
+                items_running_out_of = "{0} and {1}".format(low_cons[0].disp_name, low_cons[1].disp_name)
+            else:
+                items_running_out_of = low_cons[0].disp_name
+
+        m 3rksdla "I'm running out of [items_running_out_of]."
+        $ them = "some more"
+
+    m 1eka "You wouldn't mind getting [them] for me, would you?"
     return

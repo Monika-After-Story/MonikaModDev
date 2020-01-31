@@ -704,7 +704,7 @@ init -11 python in mas_filereacts:
         """
         if store.mas_isMonikaBirthday():
             return "mas_reaction_gift_starter_bday"
-        elif store.mas_isD25Gift():
+        elif store.mas_isD25() or store.mas_isD25Pre():
             return "mas_reaction_gift_starter_d25"
         elif store.mas_isF14():
             return "mas_reaction_gift_starter_f14"
@@ -1182,7 +1182,7 @@ label mas_reaction_gift_starter_d25:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A present? For me?"
-    if mas_getGiftStatsRange(mas_d25g_start,mas_d25+datetime.timedelta(days=1))[0] == 0:
+    if mas_getGiftStatsRange(mas_d25c_start, mas_d25 + datetime.timedelta(days=1))[0] == 0:
         m 1eka "You really didn't have to get me anything for Christmas..."
         m 3hua "But I'm so happy that you did!"
     else:
@@ -1433,9 +1433,8 @@ init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_gift_coffee:
-    m 1euc "Hmm?"
-
-    m 1euc "Oh,{w} is this coffee?"
+    m 1wub "Oh!{w=0.2} {nw}"
+    extend 3hub "Coffee!"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
     $ coffee = mas_getConsumableDrink("coffee")
@@ -1455,11 +1454,12 @@ label mas_reaction_gift_coffee:
         $ mas_giftCapGainAff(5)
 
         m 1hua "Now I can finally make some!"
-        m "Thank you so much, [player]!"
+        m 1hub "Thank you so much, [player]!"
 
         #If we're currently brewing/drinking anything, we don't do this now
         if MASConsumable._getCurrentDrink():
             m 3eua "I'll be sure to have some later!"
+
         else:
             m "Why don't I go ahead and make a cup right now?"
 
@@ -1486,7 +1486,7 @@ label mas_reaction_gift_coffee:
             # monika back on screen
             m 1eua "I'll let that brew for a few minutes."
 
-            $ coffee.brew()
+            $ coffee.prepare()
         $ coffee.enable()
 
     #Stock some coffee
@@ -1531,6 +1531,7 @@ label mas_reaction_hotchocolate:
         #If we're currently brewing/drinking anything, we don't do this now
         if MASConsumable._getCurrentDrink():
             m 3eua "I'll be sure to have some later!"
+
         else:
             $ curr_zoom = store.mas_sprites.zoom_level
             call monika_zoom_transition_reset(1.0)
@@ -1549,7 +1550,7 @@ label mas_reaction_hotchocolate:
 
             m 1hua "There, it'll be ready in a few minutes."
 
-            $ hotchoc.brew()
+            $ hotchoc.prepare()
         $ hotchoc.enable()
 
     #Stock up some hotchocolate
@@ -1794,6 +1795,11 @@ label mas_reaction_candy:
 
     $ mas_receivedGift("mas_reaction_candy")
     $ gift_ev = mas_getEV("mas_reaction_candy")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
@@ -1855,6 +1861,11 @@ label mas_reaction_candycorn:
 
     $ mas_receivedGift("mas_reaction_candycorn") # while technically she didn't accept this one counts
     $ gift_ev = mas_getEV("mas_reaction_candycorn")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     # allow multi gifts
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
@@ -1892,16 +1903,17 @@ label mas_reaction_fudge:
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
 
-default persistent._mas_d25_already_gifted_cookies = False
 
 init 5 python:
-    if store.mas_isD25Gift():
+    if store.mas_isD25Pre():
         addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_christmascookies:
     $ times_cookies_given = mas_getGiftStatsForDate("mas_reaction_christmascookies")
-    if times_cookies_given == 0 and not persistent._mas_d25_already_gifted_cookies:
-        $ persistent._mas_d25_already_gifted_cookies = True
+
+    #First time cookies gifted this year
+    if times_cookies_given == 0 and not persistent._mas_d25_gifted_cookies:
+        $ persistent._mas_d25_gifted_cookies = True
         $ mas_giftCapGainAff(3)
         m 3hua "Christmas cookies!"
         m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
@@ -1909,7 +1921,7 @@ label mas_reaction_christmascookies:
         m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
         m 3hua "Thank you, [player]~"
 
-    elif times_cookies_given == 1:
+    elif times_cookies_given == 1 or (times_cookies_given == 0 and persistent._mas_d25_gifted_cookies):
         m 1wuo "...another batch of Christmas cookies!"
         m 3wuo "That's a whole lot of cookies, [player]!"
         m 3rksdlb "I'm going to be eating cookies forever, ahaha!"
@@ -1921,13 +1933,18 @@ label mas_reaction_christmascookies:
 
     $ mas_receivedGift("mas_reaction_christmascookies")
     $ gift_ev = mas_getEV("mas_reaction_christmascookies")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     # allow multi gifts
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
 
 init 5 python:
-    if store.mas_isD25Gift():
+    if store.mas_isD25Pre():
         addReaction("mas_reaction_candycane", "candycane", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_candycane:
@@ -1952,6 +1969,11 @@ label mas_reaction_candycane:
 
     $ mas_receivedGift("mas_reaction_candycane")
     $ gift_ev = mas_getEV("mas_reaction_candycane")
+
+    #Since this ev can be none, we need to make sure it exists before accessing its attributes
+    if not gift_ev:
+        return
+
     $ store.mas_filereacts.delete_file(gift_ev.category)
     #weird not to have her see the gift file that's in the characters folder.
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)

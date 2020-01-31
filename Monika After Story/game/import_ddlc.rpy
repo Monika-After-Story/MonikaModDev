@@ -3,14 +3,14 @@
 # Handling of individual variables can be handled by changing the settings below.
 init python:
     def dumpPersistentToFile(dumped_persistent,dumppath):
-    #
-    # Prints a file containing each dictionary element of a persistent variable
-    #
-    # IN:
-    #   @param dumped_persistent - a renpy persistent variable
-    #   @param dumppath - a file path to the text file to be created. Must be a valid write location
-    #
-        dumped_persistent=vars(dumped_persistent)
+        """
+        Prints a file containing each dictionary element of a persistent variable
+
+        IN:
+            dumped_persistent - a renpy persistent variable
+            dumppath - a file path to the text file to be created. Must be a valid write location
+        """
+        dumped_persistent = vars(dumped_persistent)
 
         fo = open(dumppath, "w")
 
@@ -20,10 +20,9 @@ init python:
         fo.close()
 
 label import_ddlc_persistent_in_settings:
-
     $ mas_RaiseShield_core()
 
-    call import_ddlc_persistent from _call_import_ddlc_persistent_1
+    call import_ddlc_persistent
 
     if store.mas_globals.dlg_workflow:
         # current in dialogue workflow, we should only enable the escape
@@ -34,14 +33,12 @@ label import_ddlc_persistent_in_settings:
     else:
         # otherwise, reenable core interactions
         $ mas_DropShield_core()
-
     return
 
 label import_ddlc_persistent:
     python:
-        from renpy.loadsave import dump, loads
-
-        import glob
+        #NOTE: import glob alone causes a LOT of lag. We're just importing what we need here
+        from glob import glob
 
         # Check for saves in platform-specific location.
         if renpy.macintosh:
@@ -59,17 +56,18 @@ label import_ddlc_persistent:
             rv = "~/.renpy/"
             check_path = os.path.expanduser(rv)
 
-        save_path=glob.glob(check_path + 'DDLC/persistent')
-        if not save_path:
-            save_path=glob.glob(check_path + 'DDLC-*/persistent')
+        ddlc_save_path = glob(check_path + 'DDLC/persistent')
+        if not ddlc_save_path:
+            ddlc_save_path = glob(check_path + 'DDLC-*/persistent')
 
-    $quick_menu = False
+    $ quick_menu = False
     scene black
     with Dissolve(1.0)
-    #If you found a DDLC save to import
-    if save_path:
-        $save_path=save_path[0]
-        "Save data for Doki Doki Literature Club was found at [save_path]."
+
+    #We have something to import
+    if ddlc_save_path:
+        $ ddlc_save_path = ddlc_save_path[0]
+        "Save data for Doki Doki Literature Club was found at [ddlc_save_path]."
         menu:
             "Would you like to import Doki Doki Literature Club save data into [config.name]?\n(DDLC will not be affected)"
             "Yes, import DDLC save data.":
@@ -78,60 +76,47 @@ label import_ddlc_persistent:
             "No, do not import.":
                 pause 0.3
                 return
+
+    #Nothing to import
     else:
-        #Tell the player that the save wasn't found
-        $quick_menu = False
         "Save data from Doki Doki Literature Club could not be found."
         menu:
             "Save data will not be imported at this time."
             "Okay":
                 pause 0.3
-                pass
-        return
+                return
 
-    #Open the persistent save file as old_persistent
+    #Open the persistent save file as ddlc_persistent
     python:
-        from renpy.loadsave import dump, loads
+        #Open the persistent save file at ddlc_save_path
+        ddlc_pfile = file(ddlc_save_path, "rb")
+        ddlc_persistent = mas_dockstat.cPickle.loads(ddlc_pfile.read().decode("zlib"))
+        ddlc_pfile.close()
 
-        #open the persistent save file at save_path
-        f=file(save_path,"rb")
-        s=f.read().decode("zlib")
-        f.close()
-
-        old_persistent=loads(s)
-
-        #Bring old_persistent data up to date with current version
+        #Bring ddlc_persistent data up to date with current version
         renpy.call_in_new_context("vv_updates_topics") # init the updates lists
-        old_persistent = updateTopicIDs("v030",old_persistent)
-        old_persistent = updateTopicIDs("v031",old_persistent)
-        old_persistent = updateTopicIDs("v032",old_persistent)
-        old_persistent = updateTopicIDs("v033",old_persistent)
+        ddlc_persistent = updateTopicIDs("v030", ddlc_persistent)
+        ddlc_persistent = updateTopicIDs("v031", ddlc_persistent)
+        ddlc_persistent = updateTopicIDs("v032", ddlc_persistent)
+        ddlc_persistent = updateTopicIDs("v033", ddlc_persistent)
         clearUpdateStructs()
 
-        #dumpPersistentToFile(old_persistent,basedir + '/old_persistent.txt')
-
     #Check if previous MAS data exists
-    default merge_previous=False
     if persistent.first_run:
         label .save_merge_or_replace:
         menu:
-            "Previous Monika After Story save data has also been found.\nReplace or merge with DDLC save data?"
+            "Previous Monika After Story save data has also been found.\nWould you like to merge with DDLC save data?"
             "Merge save data.":
-                $merge_previous=True #Time to merge data
+                pass
 
-            "Delete After Story data.":
-                menu:
-                    "Monika After Story data will be deleted. This cannot be undone. Are you sure?"
-                    "Yes":
-                        m "You really haven't changed. Have you?"
-                    "No":
-                        jump .save_merge_or_replace
             "Cancel.":
                 "DDLC data can be imported later in the Settings menu."
                 return
 
 
     python:
+        #NOTE: WE ALWAYS ATTEMPT TO MERGE PERSISTENTS, OVERWRITING ONLY IF OLD DATA DOES NOT EXIST
+
         #These are all of the persistent variables from a DDLC save
         ##Unimportant/unused variables
         #_achievement_progress #Achievements not yet implemented. Might change in the future
@@ -177,172 +162,115 @@ label import_ddlc_persistent:
         #Not to be confused with the firstrun file found in the install folder
         #first_run
 
-        #######################
-        ##Important variables##
-        #######################
-        #Renpy defined list of every menu choice the player has made.
-        #Format: dict with (keys) with file name, choice picked (value) Boolean for if chosen
-        #Example: ((u'D:\\Documents\\DDLC\\DDLC/game/script-ch1.rpy', 1469568700, 980), u'Natsuki.'): True
-        if merge_previous is True and old_persistent._chosen is not None and persistent._chosen is not None:
-            persistent._chosen.update(old_persistent._chosen)
-        elif old_persistent._chosen is not None:
-            persistent._chosen=old_persistent._chosen
+        #START: Utility transfer functions
+        def _updatePersistentDict(key, old_persistent, new_persistent):
+            """
+            Merges the old persistent dict at the key provided into the new persistent
 
-        #Renpy defined list of all audio heard in the game
-        #Format: dict with (keys) song paths from basedir (value) Boolean for if played
-        #Example: u'bgm/heartbeat.ogg': True
-        if merge_previous is True and old_persistent._seen_audio is not None and persistent._seen_audio is not None:
-            persistent._seen_audio.update(old_persistent._seen_audio)
-        elif old_persistent._seen_audio is not None:
-            persistent._seen_audio=old_persistent._seen_audio
+            IN:
+                key - key to update
+                old_persistent - persistent to copy data from
+                new_persistent - persistent to copy data to
 
-        #Renpy defined list of all seen files and labels
-        #Format: dict with (keys) label or file seen (value) Boolean for if seen
-        #Example: (u'D:\\Documents\\DDLC\\DDLC/game/script-poemresponses.rpy', 1469568838, 692): True
-        #Example: u'ch20_main2': True
-        if merge_previous is True and old_persistent._seen_ever is not None and persistent._seen_ever is not None:
-            persistent._seen_ever.update(old_persistent._seen_ever)
-        elif old_persistent._seen_ever is not None:
-            persistent._seen_ever=old_persistent._seen_ever
+            NOTE: Should only be used to update dicts
+            """
 
-        #Renpy defined list of all seen images
-        #Format: dict with (keys) file path (value) Boolean for if seen
-        #Example: (u'yuri', u'2m'): True
-        if merge_previous is True and old_persistent._chosen is not None and persistent._chosen is not None:
-            persistent._seen_images.update(old_persistent._seen_images)
-        elif old_persistent._chosen is not None:
-            persistent._seen_images=old_persistent._seen_images
+            if old_persistent.__dict__[key] is not None:
+                if new_persistent.__dict__[key] is not None:
+                    new_persistent.__dict__[key].update(old_persistent.__dict__[key])
 
-        #Renpy translates, not sure what this does, but likely works in concert with _seen_ever for renpy.seen_label()
-        #Format: set with keys that look like renpy labels followed by some hash
-        #Example: u'ch40_main_496daacd'
-        if merge_previous is True and old_persistent._seen_translates is not None and persistent._seen_translates is not None:
-            persistent._seen_translates.update(old_persistent._seen_translates)
-        elif old_persistent._seen_translates is not None:
-            persistent._seen_translates=old_persistent._seen_translates
+                else:
+                    new_persistent.__dict__[key] = old_persistent.__dict__[key]
 
-        #clear
-        #A list of 10 booleans marking which CG's were unlocked in play
-        #For reference order is the same as the numbering in images/cg
-        if merge_previous is True and old_persistent.clear is not None and persistent.clear is not None:
-            for flag in persistent.clear:
-                persistent.clear[flag] = persistent.clear[flag] or old_persistent.clear[flag]
-        elif old_persistent.clear is not None:
-            persistent.clear=old_persistent.clear
+        def _updatePersistentBool(key, old_persistent, new_persistent):
+            """
+            Merges bools from the old persistent at the key provided into the new persistent
 
-        #clearall
-        #This boolean simply says if the "perfect endging" was unlocked
-        if merge_previous is True and old_persistent.clearall is not None and persistent.clearall is not None:
-            persistent.clearall = persistent.clearall or old_persistent.clearall
-        elif old_persistent.clearall is not None:
-            persistent.clearall=old_persistent.clearall
+            IN:
+                key - key to update
+                old_persistent - persistent to copy data from
+                new_persistent - persistent to copy data to
 
-        #deleted_saves
-        #Deletes save files, set to True after Sayori hangs herself
-        #old_persistent.deleted_saves
+            NOTE: Should only be used to update bools
+            """
+            if old_persistent.__dict__[key] is not None:
+                if new_persistent.__dict__[key] is not None:
+                    new_persistent.__dict__[key] = new_persistent.__dict__[key] or old_persistent.__dict__[key]
 
-        #ghost_menu & seen_ghost_menu
-        #There's a 1 in 64 chance Easter Egg of a ghost menu showing up in act 2
-        if merge_previous is True and old_persistent.ghost_menu is not None and persistent.ghost_menu is not None:
-            persistent.ghost_menu=persistent.ghost_menu or old_persistent.ghost_menu
-            persistent.seen_ghost_menu=persistent.seen_ghost_menu or old_persistent.seen_ghost_menu
-        elif old_persistent.ghost_menu is not None:
-            persistent.ghost_menu=old_persistent.ghost_menu
-            persistent.seen_ghost_menu = old_persistent.seen_ghost_menu
+                else:
+                    new_persistent.__dict__[key] = old_persistent.__dict__[key]
 
-        #monika_kill
-        #Has monika died? (Had her character file deleted in act 3)
-        if merge_previous is True and old_persistent.monika_kill is not None and persistent.monika_kill is not None:
-            persistent.monika_kill = persistent.monika_kill or old_persistent.monika_kill
-        elif old_persistent.monika_kill is not None:
-            persistent.monika_kill=old_persistent.monika_kill
 
-        #monika_reload
-        #How many times have you restarted in chapter 30 (spaceroom scene)
-        if merge_previous is True and old_persistent.monika_reload is not None and persistent.monika_reload is not None:
-            persistent.monika_reload = persistent.monika_reload + old_persistent.monika_reload
-        elif old_persistent.monika_reload is not None:
-            persistent.monika_reload=old_persistent.monika_reload
+        #START: Transfers
+        #_seen_ever: A dict storing all the labels we've seen through the game
+        _updatePersistentDict("_seen_ever", ddlc_persistent, persistent)
 
-        #monikatopics
-        #A list with numbers for the random topics in Act 3 that Monika can talk about
-        #The numbers line up with the ch30_## labels at the end of ch30
-        #old_persistent.monikatopics #Deprecated in Monika After Story 0.4.0
+        #_seen_audio: A dict storing all the audio we've heard through the game
+        _updatePersistentDict("_seen_audio", ddlc_persistent, persistent)
 
-        #playername
-        #What name did the player set for the main character at the start of the game
-        if merge_previous is True and persistent.playername is not "" and old_persistent.playername is not None and persistent.playername is not None:
-            if persistent.playername == old_persistent.playername:
-                persistent.playername
+        #_seen_images: A dict storing all images the player has seen
+        _updatePersistentDict("_seen_images", ddlc_persistent, persistent)
+
+        #clearall: Whether or not the player has achieved the perfect ending
+        _updatePersistentBool("clearall", ddlc_persistent, persistent)
+
+        #monika_kill: Whether or not the player has deleted Monika's character file in act 3
+        _updatePersistentBool("monika_kill", ddlc_persistent, persistent)
+
+        #tried_skip: Whether or not the player has tried to skip Monika's dialogue in act 3
+        _updatePersistentBool("tried_skip", ddlc_persistent, persistent)
+
+        #monika_reload: How many times the player has reloaded into ch30
+        if ddlc_persistent.monika_reload is not None:
+            if persistent.monika_reload is not None:
+                persistent._mas_ddlc_reload_count = persistent.monika_reload + ddlc_persistent.monika_reload
+
             else:
-                renpy.call_in_new_context('merge_unmatched_names')
-        elif old_persistent.playername is not None:
-            persistent.playername=old_persistent.playername
-        player=persistent.playername
+                persistent._mas_ddlc_reload_count = ddlc_persistent.monika_reload
 
-        #playthrough
-        #Marks which act the game is on
-        #0 = intro, 1 = Sayori was just deleted, 2 = Act 2 without Sayori, 3 = Spaceroom Act 3, 4 = Post spaceroom finale
-        if merge_previous is True and old_persistent.playthrough is not None and persistent.playthrough is not None:
-            if persistent.playthrough >= old_persistent.playthrough:
-                persistent.playthrough
+        #clear: A list of 10 booleans marking which CG's were unlocked in play
+        if ddlc_persistent.clear is not None:
+            if persistent.clear is not None:
+                for index in range(len(persistent.clear)-1):
+                    persistent.clear[index] = persistent.clear[index] or ddlc_persistent.clear[index]
+
             else:
-                persistent.playthrough = old_persistent.playthrough
-        elif old_persistent.playthrough is not None:
-            persistent.playthrough = old_persistent.playthrough
+                persistent.clear = ddlc_persistent.clear
 
-        #seen_eyes
-        #Marks if the player saw an easter egg in Act 2 poem game with eyes (1 in 6 chance)
-        if merge_previous is True and old_persistent.seen_eyes is not None and persistent.seen_eyes is not None:
-            persistent.seen_eyes = persistent.seen_eyes or old_persistent.seen_eyes
-        elif old_persistent.seen_eyes is not None:
-            persistent.seen_eyes=old_persistent.seen_eyes
+        #playername: Player's name for the MC in ddlc
+        if ddlc_persistent.playername:
+            if persistent.playername and persistent.playername != ddlc_persistent.playername:
+                renpy.call_in_new_context("merge_unmatched_names")
 
-        #seen_sticker
-        #Marks if the player saw an easter egg in Act 2 poem game where Monika's sticker jumped off screen
-        if merge_previous is True and old_persistent.seen_sticker is not None and persistent.seen_sticker is not None:
-            persistent.seen_sticker = persistent.seen_sticker or old_persistent.seen_sticker
-        elif old_persistent.seen_sticker is not None:
-            persistent.seen_sticker=old_persistent.seen_sticker
+            else:
+                persistent.playername = ddlc_persistent.playername
 
-        #special_poems
-        #Which special poems did the player unlock
-        if merge_previous is True and old_persistent.special_poems is not None and persistent.special_poems is not None:
-            persistent.special_poems = persistent.special_poems + old_persistent.special_poems
-        elif old_persistent.special_poems is not None:
-            persistent.special_poems=old_persistent.special_poems
+        player = persistent.playername
 
-        #steam
-        #Steam version of the DDLC?
-        #There's no real way to merge this, so just use the old version
-        # NOTE: we cannot do this because it interferes with a topic
-        #persistent.steam=old_persistent.steam
+        #playthrough: What act did we leave off on? (0: intro, 1: act 1, 2: act 2, 3: act 3, 4: act 4)
+        #NOTE: We only carry this over if we've gone farther on the ddlc persist than the current persist
+        if ddlc_persistent.playthrough is not None:
+            if (
+                persistent.playthrough is not None
+                and persistent.playthrough < ddlc_persistent.playthrough
+            ):
+                persistent.playthrough = ddlc_persistent.playthrough
 
-        #tried_skip
-        #Did the player try to skip Monika's dialogue in Act 3?
-        if merge_previous is True and old_persistent.tried_skip is not None and persistent.tried_skip is not None:
-            persistent.tried_skip = persistent.tried_skip or old_persistent.tried_skip
-        elif old_persistent.tried_skip is not None:
-            persistent.tried_skip=old_persistent.tried_skip
+            else:
+                persistent.playthrough = ddlc_persistent.playthrough
 
-        #yuri_kill
-        #Did yuri stab herself?
-        if merge_previous is True and old_persistent.yuri_kill is not None and persistent.yuri_kill is not None:
-            persistent.yuri_kill = persistent.yuri_kill or old_persistent.yuri_kill
-        elif old_persistent.yuri_kill is not None:
-            persistent.yuri_kill=old_persistent.yuri_kill
+        #Cleanup excess garbage
+        __mas__memoryCleanup()
 
-        #dumpPersistentToFile(persistent,basedir + '/merged_persistent.txt')
+        #Mark that we've merged
         persistent.has_merged = True
-
     return
 
 label merge_unmatched_names:
     menu:
-        "Save file names do not match. Which would you like to keep?"
-        "[old_persistent.playername]":
-            $persistent.playername=old_persistent.playername
+        "Player names do not match. Which would you like to keep?"
+        "[ddlc_persistent.playername]":
+            $ persistent.playername = ddlc_persistent.playername
         "[persistent.playername]":
-            $persistent.playername
-
+            $ persistent.playername
     return
