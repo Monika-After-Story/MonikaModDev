@@ -459,7 +459,6 @@ init -100 python in mas_sprites:
             mux_type=DEF_MUX_RB,
             ex_props={
                 EXP_A_RBL: True,
-                EXP_A_EXCLHP: DEF_EXP_TT_EXCL,
             }
         ),
         "twin-ribbons": ACSTemplate(
