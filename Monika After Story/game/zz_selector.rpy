@@ -207,6 +207,9 @@ init -20 python:
             select_dlg - list text to display everytime you select this sprite
                 (after the first time)
             selected - True if this item is selected, False if not
+            disabled_type - disable type to use in the displayable in selector.
+                NOTE: this property may be set by the selector labels.
+                Do NOT expect this property to be respected if set manually.
         """
 
 
@@ -259,6 +262,7 @@ init -20 python:
             self.first_select_dlg = first_select_dlg
             self.select_dlg = select_dlg
             self.selected = False
+            self.disable_type = store.mas_selspr.DISB_NONE
 
             # by default
             # NOTE: only ACS can override this
@@ -592,6 +596,21 @@ init -10 python in mas_selspr:
         "Just what I was thinking!",
         "Just what I had in mind!"
     ]
+
+    # disable constants
+    DISB_NONE = 0
+    DISB_HAIR_BC_CLOTH = 1
+
+    # disable select dlg quips
+    disable_sel_dlg_quips = {
+        DISB_NONE: None,
+        DISB_HAIR_BC_CLOTH: [
+            (
+                "I cannot change my hair to that style because it is "
+                "incompatible with my clothes."
+            ),
+        ],
+    }
 
 
     def selectable_key(selectable):
@@ -1814,7 +1833,7 @@ init -1 python:
         Custom button for the selectable items.
         """
         import pygame
-        from store.mas_selspr import MB_DISP
+        from store.mas_selspr import MB_DISP, DISB_NONE, DISB_HAIR_BC_CLOTH
 
         # constnats
         THUMB_DIR = "mod_assets/thumbs/"
@@ -1841,13 +1860,13 @@ init -1 python:
         )
         MOUSE_WHEEL = (4, 5)
 
-
         def __init__(self,
                 _selectable,
                 select_map,
                 viewport_bounds,
-                mailbox={},
-                multi_select=False
+                mailbox=None,
+                multi_select=False,
+                disable_type=store.mas_selspr.DISB_NONE
             ):
             """
             Constructor for this displayable
@@ -1864,18 +1883,27 @@ init -1 python:
                     [4]: border size
                 mailbox - dict to send messages to outside from this
                     displayable.
-                    (Default: {})
+                    (Default: None)
                 multi_select - True means we can select more than one item.
                     False otherwise
                     (Default: False)
+                disable_type - pass in a disable constant to disable this item
+                    for the specified reason.
+                    (Default: 0 - DISB_NONE)
             """
             super(MASSelectableImageButtonDisplayable, self).__init__()
 
+            if mailbox is None:
+                self.mailbox = {}
+            else:
+                self.mailbox = mailbox
+
             self.selectable = _selectable
             self.select_map = select_map
-            self.mailbox = mailbox
             self.multi_select = multi_select
             self.been_selected = False
+            self.disable_type = disable_type
+            self.disabled = disable_type != self.DISB_NONE
 
             # if this is a remover, we don't use the thumb
             if self.selectable.remover:
@@ -2240,7 +2268,6 @@ init -1 python:
                 at
             )
 
-
         def _render_top_frame(self, hover, st, at):
             """
             Renders the top renders, returns a list of the renders in order of
@@ -2268,7 +2295,6 @@ init -1 python:
 
             return [_main_piece]
 
-
         def _render_top_frame_piece(self, piece, st, at):
             """
             Renders a top frame piece. No Text, please
@@ -2280,7 +2306,6 @@ init -1 python:
                 st,
                 at
             )
-
 
         def _select(self):
             """
@@ -2363,6 +2388,19 @@ init -1 python:
                     self.selectable.first_select_dlg
                 )
             )
+
+        def _send_disabled_select_text(self):
+            """
+            Sends disabled select text to mailbox
+
+            ASSUMES we are disabled
+            """
+            sendable_txts = store.mas_selspr.disable_sel_dlg_quips.get(
+                self.disable_type,
+                None
+            )
+            if sendable_txts:
+                self._send_msg_disp_text(self._rand_select_dlg(sendable_txts))
 
         def _send_generic_select_text(self):
             """
@@ -2586,16 +2624,24 @@ init -1 python:
 
                     elif ev.button == 1:
                         # left click
-                        if not self.locked and self._is_over_me(x, y):
-                            self._select()
-                            renpy.redraw(self, 0)
+                        if self._is_over_me(x, y):
+                            if self.disabled:
+                                renpy.play(
+                                    gui.activate_sound_glitch,
+                                    channel="sound"
+                                )
+                                self._send_disabled_select_text()
+                            
+                            elif not self.locked:
+                                self._select()
+                                renpy.redraw(self, 0)
 
 #                        elif self.selected and not self.multi_select:
 #                            self.selected = False
 #                            renpy.redraw(self, 0)
 
             # apply hover dialogue logic if not selected
-            if not self.selected and not self.locked:
+            if not self.selected and not self.locked and not self.disabled:
                 self._hover()
 
             if self.end_interaction:
@@ -2616,13 +2662,24 @@ init -1 python:
                 self._setup_display_name(st, at)
 
                 # now save the render cache
-                if self.locked:
-                    _locked_bot_renders = [
-                        self._render_bottom_frame_piece(
+                if self.locked or self.disabled:
+                    if self.locked:
+                        thumb_render = self._render_bottom_frame_piece(
                             self.locked_thumb,
                             st,
                             at
                         ),
+                    else:
+                        # disabled
+                        thumb_render = self._render_bottom_frame_piece(
+                            self.thumb,
+                            st,
+                            at
+                        )
+
+                    # otherwise, locked and disabled is basically the same
+                    _locked_bot_renders = [
+                        thumb_render,
                         self._render_bottom_frame_piece(
                             self.thumb_overlay_locked,
                             st,
@@ -2664,7 +2721,7 @@ init -1 python:
                 self.first_render = False
 
             # now which renders are we going to select
-            if self.locked:
+            if self.locked or self.disabled:
                 _suffix = ""
             elif self.hovered or self.selected:
                 _suffix = "_hover"
@@ -2833,13 +2890,15 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #       (Default: False)
 #   remover_name - name to use for the remover.
 #       (Default: None)
+#   disable_type - type to use with disabled items.
+#       (Default: 0 - DISB_NONE)
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
 
     python:
         if not store.mas_selspr.valid_select_type(select_type):
@@ -3143,9 +3202,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, disable_type)
 
     return _return
 
@@ -3156,9 +3215,9 @@ label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unloc
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, disable_type)
 
     if _return:
         # user hit confirm
@@ -3172,9 +3231,9 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, disable_type)
 
     if _return:
         # user hit confirm
@@ -3338,64 +3397,6 @@ label monika_event_clothes_select:
 #### ends Monika clothes topic
 
 ##### monika hair topics [MONHAIR]
-# TODO: as we introduce addiotinal hair types, we need to change the dialogue
-# for these.
-
-#init 5 python:
-    # NOTE: this event is DEPRECATED
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_hair_ponytail",
-#            category=["monika"],
-#            prompt="Can you tie your hair into a ponytail?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None}
-#        )
-#    )
-
-label monika_hair_ponytail:
-    m 1eua "Sure thing!"
-    m "Just give me a second."
-    show monika 1dsc
-    pause 1.0
-
-    # this should auto lock/unlock stuff
-    $ monika_chr.reset_hair()
-
-    m 3hub "All done!"
-    m 1eua "If you want me to let my hair down, just ask, okay?"
-
-    return
-
-#init 5 python:
-    # NOTE: this is DEPRECATED
-    # TODO: remove this event after version 0.8.10
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_hair_down",
-#            category=["monika"],
-#            prompt="Can you let your hair down?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None}
-#        )
-#    )
-
-label monika_hair_down:
-    m 1eua "Sure thing, [player]."
-    m "Just give me a moment."
-    show monika 1dsc
-    pause 1.0
-
-    $ monika_chr.change_hair(mas_hair_down)
-
-    m 3hub "And it's down!"
-    m 1eua "If you want my hair in a ponytail again, just ask away, [player]~"
-
-    return
 
 init 5 python:
     addEvent(
@@ -3419,6 +3420,10 @@ label monika_hair_select:
             "Which hairstyle would you like me to wear?"
         )
         sel_map = {}
+
+        # process hair
+        # for hair_item in sorted_hair:
+          #TODO check compat  
 
     # initial dialogue
     m 1hua "Sure!"
