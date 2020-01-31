@@ -1345,8 +1345,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_consumables_generic_queued_running_out",
             rules={"skip alert": None}
-        ),
-        restartBlacklist=True
+        )
     )
 
 label mas_consumables_generic_queued_running_out:
