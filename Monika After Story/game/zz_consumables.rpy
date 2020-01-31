@@ -1343,8 +1343,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_consumables_generic_queued_running_out",
-            rules={"skip alert": None}
+            eventlabel="mas_consumables_generic_queued_running_out"
         )
     )
 
