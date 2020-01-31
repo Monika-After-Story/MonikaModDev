@@ -10120,7 +10120,19 @@ label monika_grad_speech:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_idle_game",category=['be right back'],prompt="I'm going to game for a bit",random=False,pool=True,unlocked=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_game",
+            category=['be right back'],
+            prompt="I'm going to game for a bit",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+    #BRBs should be seen
+    persistent._seen_ever["monika_idle_game"] = True
 
 label monika_idle_game:
     m 1eud "Oh, you're going to play another game?"
@@ -10398,6 +10410,9 @@ init 5 python:
             unlocked=True
         )
     )
+
+    #BRBs should be seen
+    persistent._seen_ever["monika_brb_idle"] = True
 
 label monika_brb_idle:
     if mas_isMoniAff(higher=True):
@@ -13228,6 +13243,9 @@ init 5 python:
             unlocked=True
         )
     )
+
+    #BRBs should be seen
+    persistent._seen_ever["monika_writing_idle"] = True
 
 label monika_writing_idle:
     if random.randint(1,5) == 1:
