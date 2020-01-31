@@ -2594,8 +2594,9 @@ init -1 python:
 #                            renpy.redraw(self, 0)
 
             # apply hover dialogue logic if not selected
-            if not self.selected and not self.locked:
-                self._hover()
+            # NOTE: keep around in case of accessibility concerns.
+            #if not self.selected and not self.locked:
+            #    self._hover()
 
             if self.end_interaction:
                 self.end_interaction = False
