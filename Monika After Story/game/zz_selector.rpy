@@ -2094,15 +2094,16 @@ init -1 python:
                 renpy.play(gui.hover_sound, channel="sound")
 
                 # send out hover dlg
-                if self.selectable.hover_dlg is not None:
-                    self._send_hover_text()
-                    self.end_interaction = True
-
-                else:
-                    self.mailbox.send_disp_fast()
-
-                # always reset on a hover
-                self.end_interaction = True
+                # NOTE: keep in case we want hover text again
+#                if self.selectable.hover_dlg is not None:
+#                    self._send_hover_text()
+#                    self.end_interaction = True
+#
+#                else:
+#                    self.mailbox.send_disp_fast()
+#
+#                # always reset on a hover
+#                self.end_interaction = True
 
 
         def _hypen_render_split(self, line, lines_list, st, at, tokens=None):
@@ -2594,9 +2595,8 @@ init -1 python:
 #                            renpy.redraw(self, 0)
 
             # apply hover dialogue logic if not selected
-            # NOTE: keep around in case of accessibility concerns.
-            #if not self.selected and not self.locked:
-            #    self._hover()
+            if not self.selected and not self.locked:
+                self._hover()
 
             if self.end_interaction:
                 self.end_interaction = False
