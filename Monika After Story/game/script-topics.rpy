@@ -13418,7 +13418,7 @@ label monika_multi_perspective_approach:
     m 4eub "And that's pretty signficant, in my opinion: the fact that Plato internalised all sides of the debate, all perspectives of the issue."
     m 1esa "Taking all sides of a debate - I think that'd be pretty useful in realizing the truth."
     m 3eua "I guess it's kind of like how two eyes are better than one. Having two eyes in separate spots lets us properly see the world - the truth, in other words."
-    m 3esb "Similarly, I think that if we tackled an issue with another perspective to cross-reference with the first then we'd see the truth a lot more clearly!"
+    m 3esb "Likewise, I think that if we tackled an issue with another perspective to cross-reference with the first then we'd see the truth a lot more clearly!"
     m 3esa "Whereas if we took to an issue from just one angle, it'd be like having just one eye - it'd be a bit harder to accurately gauge the reality of the situation."
     m 1eub "What do you think, [player]? If you haven't already been using this 'multi-perspective' approach, then maybe you can try it sometime!"
 
@@ -13437,8 +13437,8 @@ init 5 python:
 
 label monika_allegory_of_the_cave:
     m 1eua "Hey, [player]..."
-    m 1euc "I've been doing some reading on the Anicent Greek philosopher Plato lately."
-    m 3euc "Specifically, his allegory of the cave or, {i}Plato's Cave{/i}, as it's now known."
+    m 1euc "I've been doing some reading on the Ancient Greek philosopher Plato lately."
+    m 3euc "Specifically, his allegory of the cave - or {i}Plato's Cave{/i} - as it's now known."
     m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
     m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
     m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
