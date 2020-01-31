@@ -57,7 +57,7 @@ define pong_angle_last_shot = 0.0
 
 init:
 
-    image bg pong field = "mod_assets/pong_field.png"
+    image bg pong field = "mod_assets/games/pong/pong_field.png"
 
     python:
         import random
@@ -70,16 +70,16 @@ init:
                 renpy.Displayable.__init__(self)
 
                 # Some displayables we use.
-                self.paddle = Image("mod_assets/pong.png")
-                self.ball = Image("mod_assets/pong_ball.png")
+                self.paddle = Image("mod_assets/games/pong/pong.png")
+                self.ball = Image("mod_assets/games/pong/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
                 self.monika = Text(_("Monika"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
                 # Sounds used.
                 self.playsounds = True
-                self.soundboop = "mod_assets/pong_boop.wav"
-                self.soundbeep = "mod_assets/pong_beep.wav"
+                self.soundboop = "mod_assets/sounds/pong_sounds/pong_boop.wav"
+                self.soundbeep = "mod_assets/sounds/pong_sounds/pong_beep.wav"
 
                 # The sizes of some of the images.
                 self.PADDLE_WIDTH = 8
@@ -873,6 +873,9 @@ label mas_pong_dlg_sorry_assuming:
 
             #Set this var so Monika knows you're ready to play again
             $ mas_pong_taking_break = True
+
+            #Dissolve into idle poses
+            show monika idle with dissolve
             jump ch30_loop
 
         "No.":
