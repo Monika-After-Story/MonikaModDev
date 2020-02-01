@@ -338,6 +338,21 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a hair style is a twintails style
 
+    EXP_H_RQCP = "required-clothes-prop"
+    # v: string
+    # marks that a hair style requires clothes with the value'd prop to be worn
+
+    EXP_H_EXCLCP = "excluded-clothes-props"
+    # v: list of strings
+    # marks that a hair style requires clothes with none of hte value'd props
+    # to be worn
+
+    # ---- CLOTHES ----
+
+    EXP_C_BRS = "bare-right-shoulder"
+    # v: ignored
+    # marks that a clothing item has a bare right shoulder
+
     # --- default exprops ---
     DEF_EXP_TT_EXCL = [EXP_H_TT]
 
@@ -1511,17 +1526,44 @@ init -5 python in mas_sprites:
         IN:
             hair - hair to check
             acs - acs to check
+
+        RETURNS: True if hair+acs is compatible, False if not
         """
         # first check for required hair prop
         req_hair_prop = acs.getprop(EXP_A_RQHP, None)
         if req_hair_prop is not None and not hair.hasprop(req_hair_prop):
             return False
 
-        # then chceck exclusions
+        # then check exclusions
         excl_hair_props = acs.getprop(EXP_A_EXCLHP, None)
         if excl_hair_props is not None:
             for excl_hair_prop in excl_hair_props:
                 if hair.hasprop(excl_hair_prop):
+                    return False
+
+        return True
+
+
+    def is_clotheshair_compatible(clothes, hair):
+        """
+        Checks if the given clothes is compatible with the given hair
+
+        IN:
+            clothes - clothes to check
+            hair - hair to check
+
+        RETURNS: True if clothes+hair is comaptible, False if not
+        """
+        # first check for required clothes prop
+        req_cloth_prop = hair.getprop(EXP_H_RQCP, None)
+        if req_cloth_prop is not None and not clothes.hasprop(req_cloth_prop):
+            return False
+
+        # then check exclusions
+        excl_cloth_props = hair.getprop(EXP_H_EXCLCP, None)
+        if excl_cloth_props is not None:
+            for excl_cloth_prop in excl_cloth_props:
+                if clothes.hasprop(excl_cloth_prop):
                     return False
 
         return True

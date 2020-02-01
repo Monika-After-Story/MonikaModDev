@@ -2377,6 +2377,15 @@ init -1 python:
             # always reset interaction if something has been selected
             self.end_interaction = True
 
+        def _select_disabled(self):
+            """
+            Called when selecting a disabled item.
+            """
+            renpy.play(gui.activate_sound_glitch, channel="sound")
+            self._send_disabled_select_text()
+            self.mailbox.send_disp_fast()
+            self.end_interaction = True
+
         def _send_first_select_text(self):
             """
             Sends first select text to mailbox
@@ -2626,11 +2635,7 @@ init -1 python:
                         # left click
                         if self._is_over_me(x, y):
                             if self.disabled:
-                                renpy.play(
-                                    gui.activate_sound_glitch,
-                                    channel="sound"
-                                )
-                                self._send_disabled_select_text()
+                                self._select_disabled()
                             
                             elif not self.locked:
                                 self._select()
@@ -2890,15 +2895,13 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #       (Default: False)
 #   remover_name - name to use for the remover.
 #       (Default: None)
-#   disable_type - type to use with disabled items.
-#       (Default: 0 - DISB_NONE)
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
     python:
         if not store.mas_selspr.valid_select_type(select_type):
@@ -2983,7 +2986,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                     item,
                     select_map,
                     viewport_bounds,
-                    mailbox
+                    mailbox,
+                    False, # TODO: multi-select
+                    item.disable_type
                 )
                 for item in items
                 if item.unlocked
@@ -2995,7 +3000,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                     item,
                     select_map,
                     viewport_bounds,
-                    mailbox
+                    mailbox,
+                    False, # TODO: multi-select
+                    item.disable_type
                 )
                 for item in items
             ]
@@ -3202,9 +3209,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, disable_type)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     return _return
 
@@ -3215,9 +3222,9 @@ label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unloc
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
+label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, disable_type)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     if _return:
         # user hit confirm
@@ -3231,9 +3238,9 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, disable_type=0):
+label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, disable_type)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     if _return:
         # user hit confirm
@@ -3422,8 +3429,17 @@ label monika_hair_select:
         sel_map = {}
 
         # process hair
-        # for hair_item in sorted_hair:
-          #TODO check compat  
+        for hair_sel in sorted_hair:
+            if (
+                    store.mas_sprites.is_clotheshair_compatible(
+                        monika_chr.clothes,
+                        hair_sel.get_sprobj()
+                    )
+            ):
+                hair_sel.disable_type = store.mas_selspr.DISB_NONE
+
+            else:
+                hair_sel.disable_type = store.mas_selspr.DISB_HAIR_BC_CLOTH
 
     # initial dialogue
     m 1hua "Sure!"
