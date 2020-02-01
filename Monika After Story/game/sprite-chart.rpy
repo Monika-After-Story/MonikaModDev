@@ -1420,6 +1420,12 @@ init -5 python in mas_sprites:
                 temp_storage["hair.ribbon"] = prev_ribbon
 
             moni_chr.wear_acs(ACS_MAP[desired_ribbon])
+
+        # if current hair is incompatible, swap to def. 
+        # NOTE: we will enforce def has a hairstyle that all clothing
+        #   items MUST work with.
+        if not is_clotheshair_compatible(new_cloth, moni_chr.hair):
+            moni_chr.reset_hair(False)
     
     
     def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
