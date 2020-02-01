@@ -3222,8 +3222,6 @@ label monika_lovecounter_aff:
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
-default persistent._mas_last_monika_ily = None
-
 label monika_ilym_fight_start:
     #Do setup here
     python:
@@ -3297,6 +3295,8 @@ label monika_ilym_fight_loop:
 
     jump monika_lovecounter_aff
 
+
+default persistent._mas_last_monika_ily = None
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no unlock": None}))
 
