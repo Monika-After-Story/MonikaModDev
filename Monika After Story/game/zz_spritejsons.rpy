@@ -1611,16 +1611,17 @@ init 189 python in mas_sprites_json:
 
         # now for list based
         if "hover_dlg" in select_info:
-            if not _validate_iterstr(
-                select_info,
-                save_obj,
-                "hover_dlg",
-                False,
-                True,
-                msg_log,
-                indent_lvl + 1
-            ):
-                return False
+            select_info.pop("hover_dlg")
+#            if not _validate_iterstr(
+#                select_info,
+#                save_obj,
+#                "hover_dlg",
+#                False,
+#                True,
+#                msg_log,
+#                indent_lvl + 1
+#            ):
+#                return False
 
         if "select_dlg" in select_info:
             if not _validate_iterstr(

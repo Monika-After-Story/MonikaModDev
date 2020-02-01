@@ -261,3 +261,55 @@ label dev_selector_acs_ribbons_test:
 
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_selector_hair_disabled",
+            category=["dev"],
+            prompt="TEST SELECTOR (disabling hair bc clothes)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_selector_hair_disabled:
+    python:
+        hdown_sel = store.mas_selspr.get_sel_hair(mas_hair_down)
+        hdown_sel_lstat = hdown_sel.unlocked
+        hdown_sel.unlocked = True
+        hdown_sel.disable_type = store.mas_selspr.DISB_HAIR_BC_CLOTH
+
+        unlock_map = {}
+        sorted_hair = store.mas_selspr.HAIR_SEL_SL
+        for item in sorted_hair:
+            unlock_map[item.name] = item.unlocked
+            item.unlocked = True
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hairstyle would you like me to wear?"
+        )
+        sel_map = {}
+
+    m 1eua "first reset outfit"
+    $ current_state = monika_chr.save_state(True, True, True)
+    $ monika_chr.reset_outfit()
+    $ monika_chr.remove_all_acs()
+
+    m 1eua "I will disable hair down for no reason"
+
+    call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
+
+    # undo unlocks
+    python:
+        for item in sorted_hair:
+            item.unlocked = unlock_map[item.name]
+
+        hdown_sel.unlocked = hdown_sel_lstat
+
+    m 6eua "now restore outfit"
+    $ monika_chr.restore(current_state)
+    m 1eua "done"
+
+    return
