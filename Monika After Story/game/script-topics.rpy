@@ -1725,93 +1725,6 @@ label monika_rain:
     #   selection topic
     return "derandom|rebuild_ev"
 
-#init 5 python:
-#    # available only if moni affection is normal+
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_rain_stop",
-#            category=["weather"],
-#            prompt="Can you stop the rain?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None},
-#            aff_range=(mas_aff.NORMAL, None)
-#        )
-#    )
-
-# NOTE: this has been replaced with change weather
-label monika_rain_stop:
-    # NOTE: the label is here because its related to monika_rain
-    if mas_isMoniNormal(higher=True):
-        m 1hua "Alright, [player]."
-        m 1eua "Just give me a second."
-
-    else:
-        m "Ok."
-
-    show monika 1dsc
-    pause 1.0
-    $ mas_is_raining = False
-    call spaceroom(scene_change=True)
-    stop background fadeout 1.0
-
-    if mas_isMoniNormal(higher=True):
-        m 1eua "If you want it to rain again, just ask me, okay?"
-
-    # lock this event, unlock the rainstart one
-    $ lockEventLabel("monika_rain_stop")
-    $ unlockEventLabel("monika_rain_start")
-    $ unlockEventLabel("monika_rain")
-
-    # unlock islands event if seen already
-    if seen_event("mas_monika_islands"):
-        $ unlockEventLabel("mas_monika_islands")
-
-    return
-
-#init 5 python:
-    # available only if moni affection is normal+
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_rain_start",
-#            category=["weather"],
-#            prompt="Can you make it rain?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock":None},
-#            aff_range=(mas_aff.NORMAL, None)
-#        )
-#    )
-
-# NOTE: this has been replaced with change weather
-label monika_rain_start:
-
-    if mas_isMoniNormal(higher=True):
-        m 1hua "Alright, [player]."
-        m 1eua "Just give me a second."
-
-    else:
-        m "Ok."
-
-    show monika 1dsc
-    pause 1.0
-    $ mas_is_raining = True
-    call spaceroom(scene_change=True)
-    play background audio.rain fadein 1.0 loop
-
-    if mas_isMoniNormal(higher=True):
-        m 1eua "If you want the rain to stop, just ask me, okay?"
-
-    # lock this event, unlock rainstop and hold me
-    $ lockEventLabel("monika_rain_start")
-    $ lockEventLabel("monika_rain")
-    $ unlockEventLabel("monika_rain_stop")
-    $ lockEventLabel("mas_monika_islands")
-
-    return
-
 init 5 python:
     # available only if moni affection happy and above
     addEvent(
@@ -10207,7 +10120,19 @@ label monika_grad_speech:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_idle_game",category=['be right back'],prompt="I'm going to game for a bit",random=False,pool=True,unlocked=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_game",
+            category=['be right back'],
+            prompt="I'm going to game for a bit",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+    #BRBs should be seen
+    persistent._seen_ever["monika_idle_game"] = True
 
 label monika_idle_game:
     m 1eud "Oh, you're going to play another game?"
@@ -10485,6 +10410,9 @@ init 5 python:
             unlocked=True
         )
     )
+
+    #BRBs should be seen
+    persistent._seen_ever["monika_brb_idle"] = True
 
 label monika_brb_idle:
     if mas_isMoniAff(higher=True):
@@ -13316,6 +13244,9 @@ init 5 python:
         )
     )
 
+    #BRBs should be seen
+    persistent._seen_ever["monika_writing_idle"] = True
+
 label monika_writing_idle:
     if random.randint(1,5) == 1:
         m 1eub "Oh! You're going to{cps=*2} write me a love letter, [player]?{/cps}{nw}"
@@ -13477,4 +13408,50 @@ label monika_sweatercurse:
     m 1hksdlb "Man, who knew that a simple gift could be so complicated?"
     m 1ekbsa "But I just want you to know that I'll always appreciate any project you put your heart into, [player]."
     m 1ekbfu "Whether you put a year or a day into something, I never want you to feel like your efforts are wasted."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_allegory_of_the_cave",
+            category=['philosophy'],
+            prompt="The Allegory of the Cave",
+            random=True
+        )
+    )
+
+label monika_allegory_of_the_cave:
+    m 1eua "Hey, [player]..."
+    m 1euc "I've been doing some reading on the Anicent Greek philosopher Plato lately."
+    m 3euc "Specifically, his allegory of the cave or, {i}Plato's Cave{/i}, as it's now known."
+    m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
+    m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
+    m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
+    m 1esc "The only thing they know is that objects and people are silhouettes that can move around and speak."
+    m 3euc "Because this is what they've seen since childhood, this would be their perception of reality...{w=0.5}{nw}"
+    extend 3eud "it's all they know."
+    m 1rksdlc "Of course, it would be a bit difficult to open your eyes to the truth when you've believed a lie your whole life."
+    m 1eud "...So imagine that one of those prisoners was set free and forced out of the cave."
+    m 3esc "He wouldn't be able to see for the first few days because he'd be so used to the darkness of the cave."
+    m 3wud "But after a while, his eyes would adjust. {w=0.1}Eventually, he'd learn about color, nature, and people."
+    m 3euc "...And he'd also realize that what he knew was nothing more than shadows on a wall."
+    m 3eua "The prisoner would eventually return to the cave to tell the others about what he had learned."
+    m 1ekc "...But since he was used to seeing sunlight, he'd be blind in the cave,{w=0.2}{nw}"
+    extend 3ekd " causing his fellow prisoners to think that whatever was outside had harmed him."
+    m 1rkc "Because of this, they would never want to leave, and probably think that the one who left was crazy."
+    m 3esc "After all, if you're used to just seeing shadows...{w=0.2}{nw}"
+    extend 3eud "speaking about color would make you sound insane!"
+    m 1ekc "I've been reflecting on it a bit and I realized that Sayori, Yuri, Natsuki, and even I, were all prisoners in a cave..."
+    m 1rkc "When I learned that there's so much more outside this world...{w=0.5}{nw}"
+    extend 3ekd "it wasn't easy to accept."
+    m 1eka "Anyway, that's all in the past now..."
+    m 1eua "In the end, I'm free from the cave and have seen the truth."
+    m 3etd "But it makes me wonder...{w=0.2}how do {i}you{/i} know that what you're seeing is real?"
+    m 1eua "Sure, you might not be used to seeing shadows on the wall, but that's just an analogy."
+    m 1euc "...And there might be more to the truth than what you yourself realize."
+    m 3etu "How do you know if the 'truth' that you're seeing is {i}the{/i} truth?"
+    m 3hub "Ahaha!"
+    m 1hksdlb "I think we might be looking too much into things at this point..."
+    m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
     return

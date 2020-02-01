@@ -429,6 +429,35 @@ label v0_10_6(version="v0_10_6"):
                     if year not in years_list:
                         persistent._mas_history_archives[year]["player_bday.saw_surprise"] = True
 
+        #Give unseen fun facts the unlocked prop
+        for ev in mas_fun_facts.fun_fact_db.itervalues():
+            if ev.shown_count:
+                ev.unlocked = True
+
+        # add a delayed action to push birthday fix if required
+        birthdate_ev = mas_getEV("mas_birthdate")
+        bday = persistent._mas_player_bday
+        if (
+                birthdate_ev is not None
+                and birthdate_ev.last_seen is not None
+                and bday is not None
+        ):
+            seen_year = birthdate_ev.last_seen.year
+
+            # if you havent seen 090, then you are unaffected
+            # if ur birthdate is normal (not less than 5 years of age from the
+            #   time the date could have been set), then you're
+            #   probably unaffected
+            if renpy.seen_label("v0_9_0") and seen_year - bday.year < 5:
+                mas_addDelayedAction(16)
+
+        #Try/Excepting this just in case
+        try:
+            del persistent._mas_mood_bday_last
+            del persistent._mas_mood_bday_lies
+            del persistent._mas_mood_bday_locked
+        except:
+            pass
     return
 
 #0.10.5
