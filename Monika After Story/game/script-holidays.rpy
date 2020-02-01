@@ -5936,7 +5936,7 @@ label greeting_returned_home_f14:
 
     $ persistent._mas_f14_on_date = False
 
-    if not mas_F14() and not mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
+    if not mas_isF14() and not mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
         $ pushEvent("mas_f14_monika_spent_time_with",skipeval=True)
     return
 
