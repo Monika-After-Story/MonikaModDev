@@ -5,7 +5,6 @@
 #   - persistent._mas_acs_enable_hotchoc
 #   - persistent._mas_c_hotchoc_been_given
 #TODO: Stock existing users with some coffee/hotchoc
-#TODO: Generic food labels
 
 default persistent._mas_current_consumable = {
     0: {
