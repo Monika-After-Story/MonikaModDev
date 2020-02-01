@@ -3225,51 +3225,59 @@ label monika_lovecounter_aff:
 default persistent._mas_last_monika_ily = None
 
 label monika_ilym_fight_start:
-    $ ilym_times_till_win = renpy.random.randint(6,10)
-    $ ilym_count = 0
-    $ ilym_quip = renpy.substitute("I love you more, [player]!")
-    m 3hubfb "[ilym_quip]{nw}"
-    jump monika_ilym_fight
+    #Do setup here
+    python:
+        #Set up how many times we have to say it to win
+        ilym_times_till_win = renpy.random.randint(6,10)
+        #Current count
 
-label monika_ilym_fight:
+        ilym_count = 0
+
+        #Initial quip
+        ilym_quip = renpy.substitute("I love you more, [player]!")
+
+        #Setup lists for the quips during the loop
+        #First half of the ilym quip
+        ilym_no_quips = [
+            "No, ",
+            "Not a chance, [player] ",
+            "Nope, ",
+            "No{w=0.1} no{w=0.1} no{w=0.1}, ",
+            "No way, [player]. ",
+            "That's impossible...{w=0.3}"
+        ]
+
+        #Second half of the ilym quip
+        ilym_quips = [
+            "I love you waaaaaaaaay more!",
+            "I definitely love you more!",
+            "I love you more!",
+            "I love you way more!"
+        ]
+
+        #And the expressions we'll use for the line
+        ilym_exprs = [
+            "1tubfb",
+            "3tubfb",
+            "1tubfu",
+            "3tubfu",
+            "1hubfb",
+            "3hubfb",
+            "1tkbfu"
+        ]
+    #FALL THROUGH
+
+label monika_ilym_fight_loop:
+    $ renpy.show("monika " + renpy.random.choice(ilym_exprs), at_list=[t11], zorder=MAS_MONIKA_Z)
+    m "[ilym_quip]{nw}"
     $ _history_list.pop()
     menu:
         m "[ilym_quip]{fast}"
         "No, I love you more!":
             if ilym_count < ilym_times_till_win:
-                python:
-                    ilym_no_quips = [
-                        "No, ",
-                        "Not a chance, [player] ",
-                        "Nope, ",
-                        "No{w=0.1} no{w=0.1} no{w=0.1}, ",
-                        "No way, [player]. ",
-                        "That's impossible...{w=0.3}"
-                    ]
-
-                    ilym_quips = [
-                        "I love you waaaaaaaaay more!",
-                        "I definitely love you more!",
-                        "I love you more!",
-                        "I love you way more!"
-                    ]
-
-                    ilym_quip = renpy.substitute(renpy.random.choice(ilym_no_quips) + renpy.random.choice(ilym_quips))
-
-                $ ilym_exprs = [
-                    "1tubfb",
-                    "3tubfb",
-                    "1tubfu",
-                    "3tubfu",
-                    "1hubfb",
-                    "3hubfb",
-                    "1tkbfu"
-                ]
-
-                $ renpy.show("monika " + renpy.random.choice(ilym_exprs), at_list=[t11], zorder=MAS_MONIKA_Z)
-                m "[ilym_quip]{nw}"
+                $ ilym_quip = renpy.substitute(renpy.random.choice(ilym_no_quips) + renpy.random.choice(ilym_quips))
                 $ ilym_count += 1
-                jump monika_ilym_fight
+                jump monika_ilym_fight_loop
 
             else:
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
