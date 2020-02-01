@@ -605,10 +605,9 @@ init -10 python in mas_selspr:
     disable_sel_dlg_quips = {
         DISB_NONE: None,
         DISB_HAIR_BC_CLOTH: [
-            (
-                "I cannot change my hair to that style because it is "
-                "incompatible with my clothes."
-            ),
+            "That hairstyle doesn't really work with my clothes.",
+            "I don't think this hairstyle really works with this outfit.",
+            "That hairstyle doesn't really work with this outfit."
         ],
     }
 
