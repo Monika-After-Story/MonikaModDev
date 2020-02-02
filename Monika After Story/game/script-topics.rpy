@@ -3238,7 +3238,7 @@ label monika_ilym_fight_start:
         #First half of the ilym quip
         ilym_no_quips = [
             "No, ",
-            "Not a chance, [player] ",
+            "Not a chance, [player]. ",
             "Nope, ",
             "No,{w=0.1} no,{w=0.1} no,{w=0.1} ",
             "No way, [player]. ",
@@ -3246,6 +3246,8 @@ label monika_ilym_fight_start:
         ]
 
         #Second half of the ilym quip
+        #NOTE: These should always start with I because the first half can end in either a comma or a period
+        #I is the only word we can use to satisfy both of these.
         ilym_quips = [
             "I love you waaaaaaaaay more!",
             "I definitely love you more!",
