@@ -1441,7 +1441,7 @@ label mas_reaction_gift_coffee:
     extend 3hub "Coffee!"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
-    $ coffee = mas_getConsumableDrink("coffee")
+    $ coffee = mas_getConsumable("coffee")
 
     if coffee.enabled() and coffee.hasServing():
         $ mas_giftCapGainAff(0.5)
@@ -1508,7 +1508,7 @@ label mas_reaction_hotchocolate:
     m 3hua "Thank you, [player]!"
     $ mas_receivedGift("mas_reaction_hotchocolate")
 
-    $ hotchoc = mas_getConsumableDrink("hotchoc")
+    $ hotchoc = mas_getConsumable("hotchoc")
 
     if hotchoc.enabled() and hotchoc.hasServing():
         $ mas_giftCapGainAff(0.5)

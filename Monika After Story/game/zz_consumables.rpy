@@ -19,6 +19,15 @@ default persistent._mas_current_consumable = {
     }
 }
 
+#Dict of dicts:
+#{
+#   "consumable_id": {
+#       "enabled": True/False,
+#       "times_had": int,
+#       "servings_left": int
+#   },
+#   ...
+#}
 default persistent._mas_consumable_map = dict()
 
 init python in mas_consumables:
@@ -309,6 +318,16 @@ init 10 python:
                     - The amount of servings left for the consumable
             """
             return persistent._mas_consumable_map[self.consumable_id]["servings_left"]
+
+        def getAmountHad(self):
+            """
+            Gets the amount of servings Monika has had of the consumable
+
+            OUT:
+                integer:
+                    - The amount of times Monika has had the consumable
+            """
+            return persistent._mas_consumable_map[self.consumable_id]["times_had"]
 
         def isLow(self):
             """
@@ -853,7 +872,6 @@ init 10 python:
                 If there's no consumable out by _type, None is returned
             """
             return mas_getConsumable(
-                _type,
                 persistent._mas_current_consumable[_type]["id"]
             )
 
@@ -967,14 +985,11 @@ init 10 python:
 
         shopping_list.close()
 
-    def mas_getConsumable(consumable_type, consumable_id):
+    def mas_getConsumable(consumable_id):
         """
         Gets a consumable object by type and id
 
         IN:
-            consumable_type - Type of consumable to look for:
-                0 - Drink
-                1 - Food
             consumable_id - id of the consumable
 
         OUT:
@@ -982,39 +997,10 @@ init 10 python:
                 If found, MASConsumable
                 If not found, None
         """
-        if consumable_type not in mas_consumables.consumable_map:
-            return
-        return store.mas_consumables.consumable_map[consumable_type].get(consumable_id)
-
-    def mas_getConsumableDrink(consumable_id):
-        """
-        Gets the consumable drink by id.
-
-        IN:
-            consumable_id - consumable to get
-
-        OUT:
-            MASConsumable object if found, None otherwise
-        """
-        return mas_getConsumable(
-            store.mas_consumables.TYPE_DRINK,
-            consumable_id
-        )
-
-    def mas_getConsumableFood(consumable_id):
-        """
-        Gets the consumable food by id.
-
-        IN:
-            consumable_id - consumable to get
-
-        OUT:
-            MASConsumable object if found, None otherwise
-        """
-        return mas_getConsumable(
-            store.mas_consumables.TYPE_FOOD,
-            consumable_id
-        )
+        for consumable_type in store.mas_consumables.consumable_map.keys():
+            if consumable_id in store.mas_consumables.consumable_map[consumable_type]:
+                return store.mas_consumables.consumable_map[consumable_type][consumable_id]
+        return
 
 #START: consumable drink defs:
 init 11 python:
@@ -1025,8 +1011,8 @@ init 11 python:
         container="cup",
         start_end_tuple_list=[(5, 12)],
         acs=mas_acs_mug,
-        split_list=[9],
-        late_entry_list=[7]
+        split_list=[11],
+        late_entry_list=[10]
     )
 
     MASConsumable(
@@ -1034,10 +1020,10 @@ init 11 python:
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="hot chocolate",
         container="cup",
-        start_end_tuple_list=[(19,22)],
+        start_end_tuple_list=[(16,23)],
         acs=mas_acs_hotchoc_mug,
-        split_list=[21],
-        late_entry_list=[20]
+        split_list=[22],
+        late_entry_list=[19]
     )
 
 #START: Finished brewing/drinking evs
