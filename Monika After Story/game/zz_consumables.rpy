@@ -1253,9 +1253,9 @@ label mas_consumables_generic_finish_having(consumable):
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
         if (
-            mas_inEVL("mas_consumables_generic_queued_running_out")
+            not mas_inEVL("mas_consumables_generic_queued_running_out")
             and mas_timePastSince(
-                mas_getEV("mas_consumables_generic_queued_running_out"), datetime.timedelta(days=7)
+                mas_getEV("mas_consumables_generic_queued_running_out").last_seen, datetime.timedelta(days=7)
             )
         ):
             $ queueEvent("mas_consumables_generic_running_out")
