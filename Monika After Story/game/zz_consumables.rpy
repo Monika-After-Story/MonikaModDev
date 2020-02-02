@@ -1258,7 +1258,7 @@ label mas_consumables_generic_finish_having(consumable):
                 mas_getEV("mas_consumables_generic_queued_running_out").last_seen, datetime.timedelta(days=7)
             )
         ):
-            $ queueEvent("mas_consumables_generic_running_out")
+            $ queueEvent("mas_consumables_generic_queued_running_out")
 
     #Only have one left
     elif not get_more and consumable.isCriticalLow():
