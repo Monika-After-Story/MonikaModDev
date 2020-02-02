@@ -1284,19 +1284,23 @@ label mas_reaction_gift_generic_sprite_json:
             python:
                 acs_quips = [
                     "I really appreciate it!",
-                    "it's amazing!",
-                    "I just love it!",
-                    "it's wonderful!"
+                    "[its] amazing!",
+                    "I just love [item_ref]!",
+                    "[its] wonderful!"
                 ]
-                acs_quip = renpy.random.choice(acs_quips)
 
-            # we have a complete description, so use it here
-            if spr_obj.dlg_plur:
-                $ sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
-                $ item_ref = "them"
-            else:
-                $ sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
-                $ item_ref = "it"
+                # we have a complete description, so use it here
+                if spr_obj.dlg_plur:
+                    sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
+                    item_ref = "them"
+                    its = "they're"
+
+                else:
+                    sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
+                    item_ref = "it"
+                    its = "it's"
+
+                acs_quip = renpy.substitute(renpy.random.choice(acs_quips))
 
             m 1hua "Thanks for [sprite_str], [acs_quip]"
             m 3hub "I can't wait to try [item_ref] on!"
@@ -2237,6 +2241,79 @@ label mas_reaction_gift_acs_anonymioo_ribbon_transexualpride:
     call mas_reaction_json_ribbon_base("anonymioo_ribbon_transexualpride","transexual-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transexualpride")
     return
 
+# velius94
+
+label mas_reaction_gift_acs_velius94_ribbon_platinum:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_platinum", "platinum", "mas_reaction_gift_acs_velius94_ribbon_platinum")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_pink:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_pink", "pink", "mas_reaction_gift_acs_velius94_ribbon_pink")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_peach:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_peach", "peach", "mas_reaction_gift_acs_velius94_ribbon_peach")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_green:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_green", "green", "mas_reaction_gift_acs_velius94_ribbon_green")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_emerald:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_emerald", "emerald", "mas_reaction_gift_acs_velius94_ribbon_emerald")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_gray:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_gray", "gray", "mas_reaction_gift_acs_velius94_ribbon_gray")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_blue:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_blue", "blue", "mas_reaction_gift_acs_velius94_ribbon_blue")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_def:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_def", "white", "mas_reaction_gift_acs_velius94_ribbon_def")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_black:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_black", "black", "mas_reaction_gift_acs_velius94_ribbon_black")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_dark_purple:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_dark_purple", "dark purple", "mas_reaction_gift_acs_velius94_ribbon_dark_purple")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_yellow:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_yellow", "yellow", "mas_reaction_gift_acs_velius94_ribbon_yellow")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_red:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_red", "red", "mas_reaction_gift_acs_velius94_ribbon_red")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_sapphire:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_sapphire", "sapphire", "mas_reaction_gift_acs_velius94_ribbon_sapphire")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_teal:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_teal", "teal", "mas_reaction_gift_acs_velius94_ribbon_teal")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_silver:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_silver", "silver", "mas_reaction_gift_acs_velius94_ribbon_silver")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_light_purple:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_light_purple", "light purple", "mas_reaction_gift_acs_velius94_ribbon_light_purple")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_ruby:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_ruby", "ruby", "mas_reaction_gift_acs_velius94_ribbon_ruby")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_wine:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_wine", "wine colored", "mas_reaction_gift_acs_velius94_ribbon_wine")
+    return
 
 #specific to this, since we need to verify if the player actually gave a ribbon.
 default persistent._mas_current_gifted_ribbons = 0
