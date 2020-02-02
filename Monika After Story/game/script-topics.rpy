@@ -3240,7 +3240,7 @@ label monika_ilym_fight_start:
             "No, ",
             "Not a chance, [player] ",
             "Nope, ",
-            "No{w=0.1} no{w=0.1} no{w=0.1}, ",
+            "No,{w=0.1} no,{w=0.1} no,{w=0.1} ",
             "No way, [player]. ",
             "That's impossible...{w=0.3}"
         ]
@@ -3279,7 +3279,7 @@ label monika_ilym_fight_loop:
 
             else:
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5hubfb "Alright, alright, you win ahaha~"
+                m 5hubfb "Alright, alright, you win. Ahaha~"
 
         "Alright.":
             if ilym_count == 0:
