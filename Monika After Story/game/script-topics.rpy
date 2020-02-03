@@ -854,8 +854,8 @@ label monika_saved:
     else:
         m 1tfu "Let's be honest, the club members really don't count for something like that."
 
-    m 3eua "I mean, a lot of people say that they only write for themselves..."
-    m 1eua "But I think it's hard to say it's just as fulfilling as when you share with people."
+    m 3eua "I mean, a lot of people say that they only write for themselves...{w=0.2}{nw}"
+    extend 1eua "But I think it's hard to say it's just as fulfilling as when you share with people."
     m "Even if it takes time to find the right people to share with."
     m 3eub "Like, remember how it was for Yuri?"
     m "She didn't share her writing with anyone for a really long time."
