@@ -5137,7 +5137,7 @@ init 2 python:
                 have passed since the last check in order to return True
 
             inexact:
-                True if we should use precision of hours, minutes, seconds, and microseconds, False otherwise
+                True if we should not use precision of hours, minutes, seconds, and microseconds, False otherwise
                 (Should we bother about hours, minutes, and seconds when we calculate the comparison time)
                 (Default: True)
 
