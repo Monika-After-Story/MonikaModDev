@@ -13533,3 +13533,65 @@ label monika_allegory_of_the_cave:
     m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_toxin_puzzle",
+            category=['philosophy'],
+            prompt="The Toxin Puzzle",
+            random=True
+        )
+    )
+
+label monika_toxin_puzzle:
+    m 1esa "I came across an interesting thought experiment while doing some reading the other day...{w=0.2} It's called 'Kavka's Toxin Puzzle'.{w} Shall I read the premise to you? We can discuss it after~"
+    m 3esb "{i}An eccentric billionaire places before you a vial of toxin that, if you drink it, will make you painfully ill for a day, but will not threaten your life or have any lasting effects.{/i}"
+    m "{i}The billionaire will pay you one million dollars tomorrow morning if, at midnight tonight, you intend to drink the toxin tomorrow afternoon.{/i}"
+    m 4esb "{i}He emphasizes that you need not drink the toxin to receive the money; in fact, the money will already be in your bank account hours before the time for drinking it arrives, if you succeed.{/i}"
+    m 3eub "{i}All you have to do is.{w=0.2}.{w=0.2}.{w=0.2} intend at midnight tonight to drink the stuff tomorrow afternoon. You are perfectly free to change your mind after receiving the money and not drink the toxin.{/i}"
+    m 1esa "...I think it's a pretty thought-provoking concept." 
+    m 2eta " Well, [player]? What do you think?{w=0.5} Do you reckon you'd be able to get the million dollars?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Well, [player]? What do you think? Do you reckon you'd be able to get the million dollars?{fast}"
+        "Yes.":
+            m 2etu "Really? Ok then, let's see about that..."
+            m 2etb "Because now I'm offering you a million dollars, and what you have to do is-{w=0.5} ahaha! Just kidding."
+            m 1ekb "But do you really think that you could get the money? It may be a bit harder than you think."
+        "No.":
+            m 1ekb "I felt the same way about myself. It's pretty complicated ahaha!"
+    m 3esa "After all, it may be easy at first glance. All you have to do is drink something that would make you quite uncomfortable."
+    m "But it gets tricky after midnight - {i}after{/i} you've been guaranteed the money." 
+    m 3esb "At that point there's pretty much no reason to drink the painful toxin - so why would you do it?"
+    m "And of course, if that thought process crossed your mind before 12, then the money wouldn't be so guaranteed anymore."
+    m 1eua "After all, when midnight comes, can you really {i}intend{/i} to drink the toxin, if you know that you're probably not going to drink it?"
+    m "While dissecting the scenario, it's been pointed out by scholars that it's both rational for someone to drink, and to not drink, the toxin. In other words, it's a paradox."
+    m 4eua "To elaborate, come midnight, you have to really believe that you're going to drink the toxin. You can't entertain any thoughts of not drinking the toxin - therefore, it'd be logical to drink it."
+    m 4eub "But if midnight passes and you've already been guaranteed the money, it'd be illogical to punish yourself for quite literally no reason. Therefore, it's logical to not drink it!"
+    m 1rud"I wonder how we'd react if this situation really happened..."
+    m 3eua "Actually, while mulling the scenario over earlier, I started to approach the topic from a different angle.{w=0.5} Would you like to hear my thoughts on it?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Actually, while mulling the scenario over earlier, I started to approach the topic from a different angle. Would you like to hear my thoughts on it?{fast}"
+        "Yes.":
+            m 1eua "Great!{w=0.5} Thanks, [player], I really love getting the chance to talk about some philosophy with you!~"
+            m "Alright, where was I..."
+        "No.":
+            m 1eua "That's okay. Maybe some other time then."
+            return
+    m 3esa "Although it's not the focus of the scenario, I think we can also see it as asking the question of 'how important is a person's word?'"
+    m "Have you ever told someone you'd do something, when it was going to benefit you too, only for the situation to change and you weren't happy to do it anymore?"
+    m 1eua "Did you still end up helping them out? Or did you just say 'sayonara!' and leave them to fend for themselves?"
+    m 3esa "If you just left them there, I'm sure you drew their ire for some time."
+    m 3eua "On the other hand, if you still helped them out I'm sure you got their gratitude!{w=0.5} I guess you could compare that to the million dollar prize in the original scenario."
+    m 3eub "Although some might say that a million dollars would be a {i}bit{/i} more handy than a simple 'thanks!' ahaha!"
+    m 1eua "In all seriousness though, I think that someone's gratitude can be invaluable. Both for you and for them."
+    m 3eub "And you never know, in some situations their thanks might prove to be more useful than even a huge sum of money."
+    m 3eua "So I think it's important to stick to our word, {i}within reason{/i} of course; in some cases it may not be helpful to anyone if you rigidly stuck to your word."
+    m "That's why it's important to use your head when it comes to these kinds of things."
+    show monika 3kub at t11 zorder MAS_MONIKA_Z with dissolve
+    m 3kub "Anyway, to sum it all up: let's strive to keep our promises, [player]!"
+
+    return
