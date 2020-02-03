@@ -3015,7 +3015,7 @@ label monika_natsuki:
     return "derandom"
 
 init 5 python:
-        addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
 
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
@@ -3146,6 +3146,9 @@ label monika_love:
             m 1hubfa "The only words I know that come close are..."
             m 1hubfb "I love you too, [player]! More than I can ever express!"
 
+        elif mas_isMoniEnamored(higher=True) and renpy.random.randint(1,50) == 1:
+            jump monika_ilym_fight_start
+
         else:
             # Default response if not a counter based response.
             m 3hubfb "I love you too, [player]!"
@@ -3219,10 +3222,85 @@ label monika_lovecounter_aff:
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
-default persistent._mas_last_monika_ily = None
+label monika_ilym_fight_start:
+    #Do setup here
+    python:
+        #Set up how many times we have to say it to win
+        ilym_times_till_win = renpy.random.randint(6,10)
+        #Current count
 
+        ilym_count = 0
+
+        #Initial quip
+        ilym_quip = renpy.substitute("I love you more, [player]!")
+
+        #Setup lists for the quips during the loop
+        #First half of the ilym quip
+        ilym_no_quips = [
+            "No, ",
+            "Not a chance, [player]. ",
+            "Nope, ",
+            "No,{w=0.1} no,{w=0.1} no,{w=0.1} ",
+            "No way, [player]. ",
+            "That's impossible...{w=0.3}"
+        ]
+
+        #Second half of the ilym quip
+        #NOTE: These should always start with I because the first half can end in either a comma or a period
+        #I is the only word we can use to satisfy both of these.
+        ilym_quips = [
+            "I love you waaaaaaaaay more!",
+            "I definitely love you more!",
+            "I love you more!",
+            "I love you way more!"
+        ]
+
+        #And the expressions we'll use for the line
+        ilym_exprs = [
+            "1tubfb",
+            "3tubfb",
+            "1tubfu",
+            "3tubfu",
+            "1hubfb",
+            "3hubfb",
+            "1tkbfu"
+        ]
+    #FALL THROUGH
+
+label monika_ilym_fight_loop:
+    $ renpy.show("monika " + renpy.random.choice(ilym_exprs), at_list=[t11], zorder=MAS_MONIKA_Z)
+    m "[ilym_quip]{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[ilym_quip]{fast}"
+        "No, I love you more!":
+            if ilym_count < ilym_times_till_win:
+                $ ilym_quip = renpy.substitute(renpy.random.choice(ilym_no_quips) + renpy.random.choice(ilym_quips))
+                $ ilym_count += 1
+                jump monika_ilym_fight_loop
+
+            else:
+                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5hubfb "Alright, alright, you win. Ahaha~"
+
+        "Alright.":
+            if ilym_count == 0:
+                m 2hkbsb "Ahaha, giving up already, [player]?~"
+                m 2rkbssdla "I guess it is a pretty silly thing to do though..."
+                m 2hkbsb "But, I couldn't help but try it, ahaha~"
+
+            else:
+                if renpy.random.randint(1,2) == 1:
+                    m 1hubfu "Ehehe, I win!~"
+                else:
+                    m 1hubfb "Ahaha, told you so!~"
+
+    jump monika_lovecounter_aff
+
+
+default persistent._mas_last_monika_ily = None
 init 5 python:
-        addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no unlock": None}))
+    addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no unlock": None}))
 
 label monika_love_too:
     window hide
