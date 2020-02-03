@@ -1533,7 +1533,7 @@ label mas_reaction_hotchocolate:
         m 1hub "Thanks again, [player]!"
 
         #If we're currently brewing/drinking anything, we don't do this now
-        if MASConsumable._getCurrentDrink():
+        if not mas_isWinter() or MASConsumable._getCurrentDrink():
             m 3eua "I'll be sure to have some later!"
 
         else:
@@ -1555,7 +1555,9 @@ label mas_reaction_hotchocolate:
             m 1hua "There, it'll be ready in a few minutes."
 
             $ hotchoc.prepare()
-        $ hotchoc.enable()
+
+        if mas_isWinter():
+            $ hotchoc.enable()
 
     #Stock up some hotchocolate
     $ hotchoc.restock()

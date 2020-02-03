@@ -148,17 +148,13 @@ init 10 python in mas_seasons:
         
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
-        
-        # disbale hot choc
-        store.mas_getConsumable("hotchoc").disable()
 
 
     def _pp_fall():
         """
         Programming point for fall
         """
-        # disbale hot choc
-        store.mas_getConsumable("hotchoc").disable()
+        pass
 
 
     def _pp_winter():
