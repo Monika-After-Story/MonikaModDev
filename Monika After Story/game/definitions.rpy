@@ -5124,7 +5124,7 @@ init 2 python:
             and _mas_getAffection() >= aff_thresh
         )
 
-    def mas_timePastSince(timekeeper, passed_time, inexact=True, _now=None):
+    def mas_timePastSince(timekeeper, passed_time, inexact=False, _now=None):
         """
         Checks if a certain amount of time has passed since the time in the timekeeper
         IN:
@@ -5139,7 +5139,7 @@ init 2 python:
             inexact:
                 True if we should not use precision of hours, minutes, seconds, and microseconds, False otherwise
                 (Should we bother about hours, minutes, and seconds when we calculate the comparison time)
-                (Default: True)
+                (Default: False)
 
             _now:
                 time to check against (If none, now is assumed, (Default: None))
