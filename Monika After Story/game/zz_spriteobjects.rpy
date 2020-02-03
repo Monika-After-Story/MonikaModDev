@@ -931,7 +931,10 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
-        stay_on_start=True
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BRS: True,
+        }
     )
     store.mas_sprites.init_clothes(mas_clothes_blackdress)
     store.mas_selspr.init_selectable_clothes(
@@ -1055,6 +1058,7 @@ init -1 python:
             "desired-hair-prop": "twintails",
             "costume": True,
             "cosplay": True,
+            store.mas_sprites.EXP_C_BRS: True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_orcaramelo_hatsune_miku)
@@ -1164,7 +1168,8 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            "lingerie": True
+            "lingerie": True,
+            store.mas_sprites.EXP_C_BRS: True,
         },
         entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
         exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
@@ -1209,7 +1214,10 @@ init -1 python:
         pose_arms=MASPoseMap(
             default=None,
             use_reg_for_l=True
-        )
+        ),
+        ex_props={
+            store.mas_sprites.EXP_C_BRS: True,
+        }
     )
     store.mas_sprites.init_clothes(mas_clothes_dress_newyears)
     store.mas_selspr.init_selectable_clothes(
@@ -1243,7 +1251,10 @@ init -1 python:
         pose_arms=MASPoseMap(
             default=None,
             use_reg_for_l=True
-        )
+        ),
+        ex_props={
+            store.mas_sprites.EXP_C_BRS: True,
+        }
     )
     store.mas_sprites.init_clothes(mas_clothes_sundress_white)
     store.mas_selspr.init_selectable_clothes(
