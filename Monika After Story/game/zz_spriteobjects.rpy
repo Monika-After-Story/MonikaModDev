@@ -806,6 +806,9 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
+        ex_props={
+            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_BRS,
+        }
     )
     store.mas_sprites.init_hair(mas_hair_downtiedstrand)
     store.mas_selspr.init_selectable_hair(
@@ -1012,7 +1015,10 @@ init -1 python:
         ),
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_marisa_entry,
-        exit_pp=store.mas_sprites._clothes_marisa_exit
+        exit_pp=store.mas_sprites._clothes_marisa_exit,
+        ex_props={
+            store.mas_sprites.EXP_C_BRS: True,
+        }
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
     store.mas_selspr.init_selectable_clothes(

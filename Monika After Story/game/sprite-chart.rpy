@@ -1460,6 +1460,11 @@ init -5 python in mas_sprites:
             prev_hair - current hair
             new_hair - hair we are changing to
         """
+        # abort if current clothes is not comaptible with new hair
+        if not is_clotheshair_compatible(moni_chr.clothes, new_hair):
+            temp_space["abort"] = True
+            return
+
         all_acs = moni_chr.get_acs()
         for acs in all_acs:
             if not is_hairacs_compatible(new_hair, acs):
