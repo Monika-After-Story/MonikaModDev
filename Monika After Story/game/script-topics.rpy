@@ -11979,7 +11979,7 @@ label monika_stoicism:
     m 2eud "For example, let's say you failed an important exam at school, or missed a project deadline at work."
     m 2esd "What would you do, [player]?"
     m 4esd "Would you panic? Become really depressed and give up trying? Or will you get angry over it and blame others?"
-    m 1eua "I don't know what you would do, but maybe you can take after stoics and keep your emotions in check!"
+    m 1eub "I don't know what you would do, but maybe you can take after stoics and keep your emotions in check!"
     m 1eka "Although the situation is less than ideal, there's really no practical reason to expend more energy into something that you can't control."
     m 4eua "You should focus on what you can change."
     m "Maybe study harder for your next exam, get tutoring, and ask your teacher for extra credit."
