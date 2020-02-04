@@ -5198,7 +5198,7 @@ init 2 python:
             timekeeper - variable holding the time since last event
             _now - time to check against (Default: None)
         """
-        return mas_timePastSince(timekeeper, datetime.timedelta(days=1), inexact, _now)
+        return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
