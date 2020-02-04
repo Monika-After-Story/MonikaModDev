@@ -548,6 +548,41 @@ python early:
             self.start_date = None
             self.end_date = None
 
+        def timePassedSinceLastSeen_d(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, in terms of datetime.date
+            (Excludes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+            """
+            if self.last_seen is not None:
+                last_seen_date = self.last_seen.date()
+
+            return mas_timePastSince(last_seen_date, time_passed, _now)
+
+        def timePassedSinceLastSeen_dt(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, precise to datetime.datetime
+            (Includes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+            """
+            return mas_timePastSince(self.last_seen, time_passed, _now)
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -5124,7 +5159,7 @@ init 2 python:
             and _mas_getAffection() >= aff_thresh
         )
 
-    def mas_timePastSince(timekeeper, passed_time, inexact=False, _now=None):
+    def mas_timePastSince(timekeeper, passed_time, _now=None):
         """
         Checks if a certain amount of time has passed since the time in the timekeeper
         IN:
@@ -5135,11 +5170,6 @@ init 2 python:
             passed_time:
                 datetime.timedelta of the amount of time which should
                 have passed since the last check in order to return True
-
-            inexact:
-                True if we should not use precision of hours, minutes, seconds, and microseconds, False otherwise
-                (Should we bother about hours, minutes, and seconds when we calculate the comparison time)
-                (Default: False)
 
             _now:
                 time to check against (If none, now is assumed, (Default: None))
@@ -5158,20 +5188,14 @@ init 2 python:
         if not isinstance(timekeeper, datetime.datetime):
             timekeeper = datetime.datetime.combine(timekeeper, datetime.time())
 
-        #If we converted from datetime.date to datetime.datetime, this is already inexact
-        #so we only check this if we'd originally passed in a timekeeper with a datetime.datetime
-        elif inexact:
-            timekeeper = timekeeper.replace(hour=0, minute=0, second=0, microsecond=0)
-
         return timekeeper + passed_time <= _now
 
-    def mas_pastOneDay(timekeeper, inexact=True, _now=None):
+    def mas_pastOneDay(timekeeper, _now=None):
         """
         One day time past version of mas_timePastSince()
 
         IN:
             timekeeper - variable holding the time since last event
-            inexact - True if we should not be precise to hours, minutes, seconds, and microseconds. False otherwise (Default: True)
             _now - time to check against (Default: None)
         """
         return mas_timePastSince(timekeeper, datetime.timedelta(days=1), inexact, _now)
