@@ -564,6 +564,8 @@ python early:
             """
             if self.last_seen is not None:
                 last_seen_date = self.last_seen.date()
+            else:
+                last_seen_date = None
 
             return mas_timePastSince(last_seen_date, time_passed, _now)
 
