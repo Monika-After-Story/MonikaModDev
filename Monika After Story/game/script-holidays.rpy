@@ -5226,7 +5226,7 @@ label mas_pf14_monika_lovey_dovey:
         m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
 
     m 1rkbsd "Without you, I don't know where I'd be..."
-    m 1ekbsa "So I want to thank you for for being there for me..."
+    m 1ekbsa "So I want to thank you for being there for me..."
     m 1hkbsu "And for being so wonderfully you~"
     return "derandom|no_unlock|love"
 
