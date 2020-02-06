@@ -622,6 +622,9 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
+        if mas_ui.has_submod_settings:
+            textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
+
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
@@ -2453,3 +2456,46 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
+#Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
+screen submods():
+    tag menu
+
+    use game_menu(("Submods"), scroll="viewport"):
+
+        default tooltip = Tooltip("")
+
+        viewport id "scrollme":
+            scrollbars "vertical"
+            mousewheel True
+            draggable True
+
+            vbox:
+                style_prefix mas_ui.cbx_style_prefix
+                box_wrap False
+                xmaximum 1000
+                xfill True
+
+                for submod in sorted(store.mas_submod_utils.submod_map.values(), key=lambda x: x.name):
+                    if submod.settings_pane:
+                        label submod.name yanchor 0 xalign 0
+                        hbox:
+                            box_wrap False
+                            spacing 20
+                            xmaximum 1000
+
+                            text "v{}".format(submod.version) yanchor 0 xalign 0 style mas_ui.mm_tt_style
+                            text "by {}".format(submod.author) yanchor 0 xalign 0 style mas_ui.mm_tt_style
+
+                        vbox:
+                            box_wrap False
+                            xfill True
+                            xmaximum 1000
+                            text submod.description
+                        $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
+
+        vbar value YScrollValue("scrollme")
+
+    text tooltip.value:
+        xalign 0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
