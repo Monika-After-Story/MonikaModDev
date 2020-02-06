@@ -561,6 +561,8 @@ python early:
                 boolean:
                     - True if the amount of time provided has passed since we've last seen this event
                     - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
             """
             if self.last_seen is not None:
                 last_seen_date = self.last_seen.date()
@@ -582,6 +584,8 @@ python early:
                 boolean:
                     - True if the amount of time provided has passed since we've last seen this event
                     - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
             """
             return mas_timePastSince(self.last_seen, time_passed, _now)
 
