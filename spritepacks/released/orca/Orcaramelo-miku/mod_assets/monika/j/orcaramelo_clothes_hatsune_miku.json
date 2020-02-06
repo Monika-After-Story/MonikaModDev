@@ -16,7 +16,8 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "desired-hair-prop": "twintails"
+        "desired-hair-prop": "twintails",
+        "bare-right-shoulder": true
     },
     "select_info": {
         "display_name": "Hatsune Miku",

@@ -640,11 +640,10 @@ label greeting_o31_orcaramelo_hatsune_miku:
     else:
         call spaceroom(scene_change=True, dissolve_all=True)
 
-    #TODO: When Miku is no longer official, adjust dlg to reflect it having been gifted
     m 3hub "Welcome back, [player]!"
     m 1eua "So...{w=0.5}what do you think?"
-    m 1eub "I worked really hard on this costume, but I think it was worth it."
-    m 3eub "I especially like how the headset turned out!"
+    m 3eua "I think this costume really suits me."
+    m 3eub "I especially love how the headset looks too!"
     m 1rksdla "Though I can't say it's too comfortable for moving around..."
     m 3tsu "So don't expect me to give you a performance today, [player]!"
     m 1hub "Ahaha~"
