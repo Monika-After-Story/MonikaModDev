@@ -961,6 +961,9 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BRS: True
+        },
         pose_arms=MASPoseMap(
             default=None,
             use_reg_for_l=True,
