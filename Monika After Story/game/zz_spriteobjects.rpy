@@ -808,6 +808,7 @@ init -1 python:
         ),
         ex_props={
             store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_BRS,
+            "tiedstrand": True,
         }
     )
     store.mas_sprites.init_hair(mas_hair_downtiedstrand)
@@ -1508,7 +1509,7 @@ init -1 python:
         acs_type="strandbow",
         # muxtype handled by defaults
         ex_props={
-            "required-hair-prop": "braidstrand"
+            "required-hair-prop": "tiedstrand"
         },
         rec_layer=MASMonika.AFH_ACS
     )
