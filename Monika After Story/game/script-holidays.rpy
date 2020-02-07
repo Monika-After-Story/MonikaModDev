@@ -957,6 +957,8 @@ label bye_trick_or_treat_rtg:
         return "quit"
 
     # otherwise, failure in generation
+    #Fix tt count
+    $ persistent._mas_o31_tt_count -= 1
     m 1ekc "Oh no..."
     m 1rksdlb "I wasn't able to turn myself into a file."
 

@@ -2185,7 +2185,8 @@ label mas_dockstat_ready_to_go(moni_chksum):
         # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
         # NOTE: callers must handle the dialogue for this
 
@@ -2204,15 +2205,18 @@ label mas_dockstat_first_time_goers:
 
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
-
-    # we are not leaving
-    $ persistent._mas_dockstat_going_to_leave = False
-
     # we should abort the promise (this lets spaceroom idle abort, as well)
     $ store.mas_dockstat.abort_gen_promise = True
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    #FALL THROUGH
+
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
+    # we are not leaving
+    $ persistent._mas_dockstat_going_to_leave = False
 
     # we are not leaving and need to reset these
     if persistent._mas_player_bday_left_on_bday:
