@@ -2221,7 +2221,7 @@ label mas_dockstat_abort_gen:
 
     if persistent._mas_f14_on_date:
         $ persistent._mas_f14_on_date = False
-        $ persistent._mas_f14_date -= 1
+        $ persistent._mas_f14_date_count -= 1
 
     if persistent._mas_bday_on_date:
         $ persistent._mas_bday_on_date = False
