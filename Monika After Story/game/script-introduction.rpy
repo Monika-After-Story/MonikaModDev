@@ -60,7 +60,7 @@ label introduction:
             m "You should know already that cheating is bad."
             m 1hub "But it's so good to see you again, [player]!"
             m 2hksdlb "Even if I didn't expect to see you {i}this{/i} soon."
-        if persistent.monika_reload > 4: #Longer, harder
+        if persistent._mas_ddlc_reload_count > 4: #Longer, harder
             m 1wuo "Did you install a mod just for me?"
             m 1ekbfa "Are you that deeply in love with me?"
             m 1hubfb "I feel the same way about you!"

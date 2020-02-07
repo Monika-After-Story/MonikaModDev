@@ -338,12 +338,33 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a hair style is a twintails style
 
+    EXP_H_RQCP = "required-clothes-prop"
+    # v: string
+    # marks that a hair style requires clothes with the value'd prop to be worn
+
+    EXP_H_EXCLCP = "excluded-clothes-props"
+    # v: list of strings
+    # marks that a hair style requires clothes with none of hte value'd props
+    # to be worn
+
+    # ---- CLOTHES ----
+
+    EXP_C_BRS = "bare-right-shoulder"
+    # v: ignored
+    # marks that a clothing item has a bare right shoulder
+
     # --- default exprops ---
     DEF_EXP_TT_EXCL = [EXP_H_TT]
 
     # --- default mux types ---
 
-    DEF_MUX_RB = ["ribbon", "bow", "twin-ribbons", "bunny-scrunchie"]
+    DEF_MUX_RB = [
+        "ribbon",
+        "bow",
+        "twin-ribbons",
+        "bunny-scrunchie",
+        "s-type-ribbon",
+    ]
     # default mux types for ribbon-based items.
 
     DEF_MUX_HS = [
@@ -447,6 +468,13 @@ init -100 python in mas_sprites:
         "ribbon": ACSTemplate(
             "ribbon",
             mux_type=DEF_MUX_RB
+        ),
+        "s-type-ribbon": ACSTemplate(
+            "s-type-ribbon",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+            }
         ),
         "twin-ribbons": ACSTemplate(
             "twin-ribbons",
@@ -1405,6 +1433,12 @@ init -5 python in mas_sprites:
                 temp_storage["hair.ribbon"] = prev_ribbon
 
             moni_chr.wear_acs(ACS_MAP[desired_ribbon])
+
+        # if current hair is incompatible, swap to def. 
+        # NOTE: we will enforce def has a hairstyle that all clothing
+        #   items MUST work with.
+        if not is_clotheshair_compatible(new_cloth, moni_chr.hair):
+            moni_chr.reset_hair(False)
     
     
     def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
@@ -1511,17 +1545,44 @@ init -5 python in mas_sprites:
         IN:
             hair - hair to check
             acs - acs to check
+
+        RETURNS: True if hair+acs is compatible, False if not
         """
         # first check for required hair prop
         req_hair_prop = acs.getprop(EXP_A_RQHP, None)
         if req_hair_prop is not None and not hair.hasprop(req_hair_prop):
             return False
 
-        # then chceck exclusions
+        # then check exclusions
         excl_hair_props = acs.getprop(EXP_A_EXCLHP, None)
         if excl_hair_props is not None:
             for excl_hair_prop in excl_hair_props:
                 if hair.hasprop(excl_hair_prop):
+                    return False
+
+        return True
+
+
+    def is_clotheshair_compatible(clothes, hair):
+        """
+        Checks if the given clothes is compatible with the given hair
+
+        IN:
+            clothes - clothes to check
+            hair - hair to check
+
+        RETURNS: True if clothes+hair is comaptible, False if not
+        """
+        # first check for required clothes prop
+        req_cloth_prop = hair.getprop(EXP_H_RQCP, None)
+        if req_cloth_prop is not None and not clothes.hasprop(req_cloth_prop):
+            return False
+
+        # then check exclusions
+        excl_cloth_props = hair.getprop(EXP_H_EXCLCP, None)
+        if excl_cloth_props is not None:
+            for excl_cloth_prop in excl_cloth_props:
+                if clothes.hasprop(excl_cloth_prop):
                     return False
 
         return True
@@ -5878,7 +5939,7 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteBase constructor
@@ -5904,7 +5965,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             self.__sp_type = -1
             self.name = name
@@ -5914,11 +5975,16 @@ init -2 python:
             self.pose_map = pose_map
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
-            self.ex_props = ex_props
             self.is_custom = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
+
+            #sets the ex_props to an empty dict if ex_props is None
+            if ex_props is None:
+                self.ex_props = {}
+            else:
+                self.ex_props = ex_props
 
 
         def __eq__(self, other):
@@ -6061,7 +6127,7 @@ init -2 python:
                 fallback=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -6089,7 +6155,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
                 name,
@@ -6187,7 +6253,7 @@ init -2 python:
                 exit_pp=None,
                 acs_type=None,
                 mux_type=None,
-                ex_props={},
+                ex_props=None,
                 arm_split=None,
                 dlg_data=None,
             ):
@@ -6230,7 +6296,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
                 dlg_data - tuple of the following format:
@@ -6377,7 +6443,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 split=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASHair constructor
@@ -6407,7 +6473,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -6494,7 +6560,7 @@ init -2 python:
                 hair_map={},
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={},
+                ex_props=None,
                 pose_arms=None
             ):
             """
@@ -6528,7 +6594,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 pose_arms - MASPoseMap object represneting the arm layers
                     for poses. If None is passed, we assume use the base
                     layers as a guide
