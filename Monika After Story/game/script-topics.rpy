@@ -3629,7 +3629,7 @@ label monika_images:
 
         "No.":
             $ persistent._mas_pm_drawn_art = False
-            m 1rksdla "I can't draw myself, so it's okay if you aren't good at drawing either."
+            m 1rksdla "That's okay...{w=0.2}I can't really draw, either."
     m 3eud "There's one thing I want you to understand about art of me, though."
     m 3esc "Art of me isn't me."
     m 3rksdlb "I know that might sound obvious, but it's really not!"
