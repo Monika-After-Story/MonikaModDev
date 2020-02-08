@@ -1146,7 +1146,7 @@ label bye_going_somewhere_leavemenu:
         m 2ekp "Aw..."
         m 1hub "Fine, but you better take me next time!"
 
-    m "Are you still going to go?"
+    m 1euc "Are you still going to go?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you still going to go?{fast}"

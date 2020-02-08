@@ -1550,11 +1550,13 @@ python early:
             """
             if ev.action == EV_ACT_UNLOCK:
                 ev.unlocked = False
+
             elif ev.action == EV_ACT_RANDOM:
                 ev.random = False
                 #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
                 if "no rmallEVL" not in ev.rules:
                     mas_rmallEVL(ev.eventlabel)
+
             #NOTE: we don't add the rest since there's no reason to undo those.
 
 
@@ -5102,7 +5104,7 @@ init 2 python:
         IN:
             _date - date to check
             If None, today is assumed.
-            Default: None
+            (Default: None)
 
         OUT:
             boolean:
@@ -5121,6 +5123,7 @@ init 2 python:
 
         IN:
             _date - the datetime.date to get the player age at
+            (Default: None)
 
         OUT:
             integer representing the player's current age or None if we don't have player's bday
@@ -5139,7 +5142,7 @@ init 2 python:
 
         return _years
 
-    def mas_canShowRisque(aff_thresh=2000):
+    def mas_canShowRisque(aff_thresh=2000, grace=None):
         """
         Checks if we can show something risque
 
@@ -5152,16 +5155,25 @@ init 2 python:
         IN:
             aff_thresh:
                 - Raw affection value to be greater than or equal to
+            grace:
+                - a grace period passed in as a timedelta
+                  defaults to 1 week
 
         OUT:
             boolean:
                 - True if the above conditions are satisfied
                 - False if not
         """
+
+        if grace is None:
+            grace = datetime.timedelta(weeks=1)
+
+        _date = datetime.date.today() + grace
+
         return (
             not persistent._mas_sensitive_mode
             and persistent._mas_first_kiss is not None
-            and mas_is18Over()
+            and mas_is18Over(_date)
             and _mas_getAffection() >= aff_thresh
         )
 
