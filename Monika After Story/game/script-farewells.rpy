@@ -557,7 +557,7 @@ label bye_prompt_sleep:
                     pass
                 "[_cantsee_b]":
                     pass
-            m "I thought so.{w} Go get some rest, [player]."
+            m "I thought so.{w=0.2} Go get some rest, [player]."
             if mas_isMoniNormal(higher=True):
                 m 2ekc "I wouldn't want you to get sick."
                 m 1eka "Sleep earlier next time, okay?"
@@ -1139,14 +1139,14 @@ label bye_going_somewhere_leavemenu:
         m 1lksdld "That's okay, I guess."
 
     elif mas_isMoniHappy(lower=True):
-        m 1ekd "Oh,{w} all right. Maybe next time?"
+        m 1ekd "Oh,{w=0.3} all right. Maybe next time?"
 
     else:
         # otherwise affection and higher:
         m 2ekp "Aw..."
         m 1hub "Fine, but you better take me next time!"
 
-    m "Are you still going to go?"
+    m 1euc "Are you still going to go?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you still going to go?{fast}"

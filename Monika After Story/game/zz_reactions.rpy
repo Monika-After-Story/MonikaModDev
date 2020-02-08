@@ -1284,19 +1284,23 @@ label mas_reaction_gift_generic_sprite_json:
             python:
                 acs_quips = [
                     "I really appreciate it!",
-                    "it's amazing!",
-                    "I just love it!",
-                    "it's wonderful!"
+                    "[its] amazing!",
+                    "I just love [item_ref]!",
+                    "[its] wonderful!"
                 ]
-                acs_quip = renpy.random.choice(acs_quips)
 
-            # we have a complete description, so use it here
-            if spr_obj.dlg_plur:
-                $ sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
-                $ item_ref = "them"
-            else:
-                $ sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
-                $ item_ref = "it"
+                # we have a complete description, so use it here
+                if spr_obj.dlg_plur:
+                    sprite_str = "these " + renpy.substitute(spr_obj.dlg_desc)
+                    item_ref = "them"
+                    its = "they're"
+
+                else:
+                    sprite_str = "this " + renpy.substitute(spr_obj.dlg_desc)
+                    item_ref = "it"
+                    its = "it's"
+
+                acs_quip = renpy.substitute(renpy.random.choice(acs_quips))
 
             m 1hua "Thanks for [sprite_str], [acs_quip]"
             m 3hub "I can't wait to try [item_ref] on!"
@@ -1494,11 +1498,8 @@ label mas_reaction_quetzal_plush:
         $ mas_giftCapGainAff(10)
         m 1wud "Oh!"
 
-        #Wear mid plush if chocs out
-        if monika_chr.is_wearing_acs(mas_acs_heartchoc):
-            $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
-        else:
-            $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+        #Wear plush
+        $ monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         $ persistent._mas_acs_enable_quetzalplushie = True
         m 1sub "It's a quetzal!"
@@ -1516,12 +1517,6 @@ label mas_reaction_quetzal_plush:
             m 3ekbsa "You always seem to know how to make me smile."
 
         m 1hub "Thank you again, [player]~"
-
-        #Remove mid plush
-        if monika_chr.is_wearing_acs(mas_acs_heartchoc):
-            m 1rksdlb "Ah, my desk is getting kind of crowded, ahaha!"
-            m 3eksdla "I'm just going to put this away for now so it doesn't accidentally get knocked off."
-            $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
 
     else:
         m 1rksdlb "You already gave me a quetzal plushie, [player]."
@@ -2213,6 +2208,79 @@ label mas_reaction_gift_acs_anonymioo_ribbon_transexualpride:
     call mas_reaction_json_ribbon_base("anonymioo_ribbon_transexualpride","transexual-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transexualpride")
     return
 
+# velius94
+
+label mas_reaction_gift_acs_velius94_ribbon_platinum:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_platinum", "platinum", "mas_reaction_gift_acs_velius94_ribbon_platinum")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_pink:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_pink", "pink", "mas_reaction_gift_acs_velius94_ribbon_pink")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_peach:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_peach", "peach", "mas_reaction_gift_acs_velius94_ribbon_peach")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_green:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_green", "green", "mas_reaction_gift_acs_velius94_ribbon_green")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_emerald:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_emerald", "emerald", "mas_reaction_gift_acs_velius94_ribbon_emerald")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_gray:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_gray", "gray", "mas_reaction_gift_acs_velius94_ribbon_gray")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_blue:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_blue", "blue", "mas_reaction_gift_acs_velius94_ribbon_blue")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_def:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_def", "white", "mas_reaction_gift_acs_velius94_ribbon_def")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_black:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_black", "black", "mas_reaction_gift_acs_velius94_ribbon_black")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_dark_purple:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_dark_purple", "dark purple", "mas_reaction_gift_acs_velius94_ribbon_dark_purple")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_yellow:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_yellow", "yellow", "mas_reaction_gift_acs_velius94_ribbon_yellow")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_red:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_red", "red", "mas_reaction_gift_acs_velius94_ribbon_red")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_sapphire:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_sapphire", "sapphire", "mas_reaction_gift_acs_velius94_ribbon_sapphire")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_teal:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_teal", "teal", "mas_reaction_gift_acs_velius94_ribbon_teal")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_silver:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_silver", "silver", "mas_reaction_gift_acs_velius94_ribbon_silver")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_light_purple:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_light_purple", "light purple", "mas_reaction_gift_acs_velius94_ribbon_light_purple")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_ruby:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_ruby", "ruby", "mas_reaction_gift_acs_velius94_ribbon_ruby")
+    return
+
+label mas_reaction_gift_acs_velius94_ribbon_wine:
+    call mas_reaction_json_ribbon_base("velius94_ribbon_wine", "wine colored", "mas_reaction_gift_acs_velius94_ribbon_wine")
+    return
 
 #specific to this, since we need to verify if the player actually gave a ribbon.
 default persistent._mas_current_gifted_ribbons = 0
@@ -2425,18 +2493,18 @@ label mas_reaction_gift_chocolates:
                 m 1lkbfa "I know I mentioned visiting a chocolate store together someday..."
                 m 1hkbfa "But while we can't really do that just yet, getting some chocolates as a gift from you, well..."
             m 3ekbfa "It means a lot getting these from you."
+
         elif renpy.seen_label('monika_date'):
             m 3rka "I know I mentioned visiting a chocolate store together someday..."
             m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
             m 1ekc "I really wish we could share them though..."
             m 3rksdlb "But until that day comes, I'll just have to enjoy them for both of us, ahaha!"
             m 3hua "Thank you, [player]~"
-            call mas_remove_choc
+
         else:
             m 3hub "I love chocolates!"
             m 1eka "And getting some from you means a lot to me."
             m 1hub "Thanks, [player]!"
-            call mas_remove_choc
 
     else:
         $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
@@ -2458,7 +2526,6 @@ label mas_reaction_gift_chocolates:
             else:
                 m 1hua "Thanks for the chocolates, [player]!"
                 m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
-                call mas_remove_choc
 
         elif times_chocs_given == 1:
             $ monika_chr.wear_acs(mas_acs_heartchoc)
@@ -2466,16 +2533,21 @@ label mas_reaction_gift_chocolates:
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
             m 1hub "...but I'm not complaining!"
-            call mas_remove_choc
+
         elif times_chocs_given == 2:
             m 1ekd "[player]..."
             m 3eka "I think you've given me enough chocolates today."
             m 1rksdlb "Three boxes is too much, and I haven't even finished the first one yet!"
             m 1eka "Save them for another time, okay?"
+
         else:
             m 2tfd "[player]!"
             m 2tkc "I already told you I've had enough chocolates for one day, but you keep trying to give me even more..."
             m 2eksdla "Please...{w=1}just save them for another day."
+
+    #If we're wearing the chocs, we'll remove them here
+    if monika_chr.is_wearing_acs(mas_acs_heartchoc):
+        call mas_remove_choc
 
     #pop from reacted map
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)

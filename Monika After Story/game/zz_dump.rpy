@@ -2,7 +2,6 @@
 
 init 999 python:
 
-
     def mas_eventDataDump():
         """
         Data dump for purely events stats
@@ -312,6 +311,18 @@ init 999 python:
             ))
 
 
-    if persistent._mas_unstable_mode:
+    def mas_dataDumpFlag():
+        """
+        Checks if the data dump flag (file) exists
+        """
+        try:
+            return os.path.isfile(
+                os.path.normcase(renpy.config.basedir + "/givedata.txt")
+            )
+        except:
+            return False
+
+
+    if persistent._mas_unstable_mode or mas_dataDumpFlag():
         mas_unstableDataDump()
 
