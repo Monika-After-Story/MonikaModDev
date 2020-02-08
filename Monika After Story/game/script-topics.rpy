@@ -12704,16 +12704,21 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_vr",category=['technology'],prompt="Virtual reality",random=True))
 
 label monika_vr:
-    m 4eua "[player], do you know about those virtual reality headsets that are out there in the market?"
-    m 4euu "VR immerses you into a virtual world, different from your actual surroundings."
-    m 4huu "You should try it yourself to get what I'm saying"
-    m 1ekc "Too bad you can't enter my reality with it..."
-    m 1dkc "That would mean that you could be so much closer to me..."
-    m 3esu "Although, I would prefer to enter your world to be right beside you~"
-    m 3esu "So you better prepare yourself for that day, [player]"
-    m 3kub "The day I get to join your world, we are going to do lots of fun stuff!"
-    show monika 5lublu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5lublu "I can't wait for it~"
+    m 3eua "[player], do you know about those virtual reality headsets that are out there in your world?"
+    m 3eub "VR immerses you into a virtual world, different from your actual surroundings."
+    m 1hub "It might take some getting used to at first, but it can be really fun!"
+    m 4eua "It also has practical uses such as training people in a simulated environment and rehabilitation."
+    m 2rksdla "Some people have even simulated weddings in VR..."
+    m 1eka "It's still a pretty new technology, so not everything can be in VR yet."
+    m 1ekc "Too bad my reality doesn't come in VR..."
+    m 1dkc "Then, we could be so much closer..."
+    m 3hub "Although, maybe one day, we could both meet up in some reality between our worlds!"
+    m 1rksdla "Virtual reality is probably pretty complicated though, so I don't know if I could make a headset work from here."
+    m 1hua "Maybe we'll get it to work one day though."
+    m 3hubfa "So you better prepare yourself for that day, [player]~"
+    m 1hubfb "The day we can be in the same world, we're going to do tons of fun stuff!"
+    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfu "I can't wait for it~"
     return
 
 init 5 python:
