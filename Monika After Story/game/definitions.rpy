@@ -548,6 +548,47 @@ python early:
             self.start_date = None
             self.end_date = None
 
+        def timePassedSinceLastSeen_d(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, in terms of datetime.date
+            (Excludes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            if self.last_seen is not None:
+                last_seen_date = self.last_seen.date()
+            else:
+                last_seen_date = None
+
+            return mas_timePastSince(last_seen_date, time_passed, _now)
+
+        def timePassedSinceLastSeen_dt(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, precise to datetime.datetime
+            (Includes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            return mas_timePastSince(self.last_seen, time_passed, _now)
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -6473,6 +6514,9 @@ define mas_monika_twitter_handle = "lilmonix3"
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
+
+#Amount of times player has reloaded in ddlc
+default persistent._mas_ddlc_reload_count = 0
 
 init python:
     startup_check = False
