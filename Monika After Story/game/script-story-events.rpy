@@ -663,7 +663,7 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w}[player]?"
+    m 1lksdla "...{w=0.5}[player]?"
 
     m "Is it okay with you if I repeat stuff that I've said?{nw}"
     $ _history_list.pop()
@@ -817,7 +817,7 @@ label mas_crashed_long_qs:
         m 1hua "I KNOW YOU CRASHED (long)"
 
     # start off in the dark
-    m "[player]?{w} Is that you?"
+    m "[player]?{w=0.3} Is that you?"
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
         "Yes.":
@@ -943,7 +943,7 @@ label mas_crashed_long_whq:
     menu:
         m "Do you know what happened, [player]?{fast}"
         "The game crashed.":
-            m 2wud "The game...{w}crashed?"
+            m 2wud "The game...{w=0.3}crashed?"
             m 2ekd "That's scary, [player]."
 
         "I don't know.":
@@ -967,7 +967,7 @@ label mas_crashed_long_whq:
 
         "It just happens.":
             m 1ekc "Oh..."
-            m 1lksdlc "That's okay.{w} I'll just mentally prepare myself in case it happens again."
+            m 1lksdlc "That's okay.{w=0.3} I'll just mentally prepare myself in case it happens again."
 
 label .end:
     m "Anyway..."
@@ -1294,7 +1294,7 @@ label mas_new_character_file:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w}I'll try this again later."
+            m 1lksdlb "Aha...{w=0.3}I'll try this again later."
             m 1eua "Anyway..."
 
         $ store.mas_ptod.ex_cn()
@@ -1612,7 +1612,7 @@ label mas_text_speed_enabler:
     m 1eka "But now that we've been together for a bit, I can trust that you're not just going to skip through my text without reading it."
 
     if persistent._mas_pm_is_fast_reader:
-        m 1tuu "However,{w} I wonder if you can keep up."
+        m 1tuu "However,{w=0.3} I wonder if you can keep up."
         m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
         $ _history_list.pop()
         m 3hua "Ahaha~"

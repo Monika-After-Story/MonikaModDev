@@ -368,6 +368,43 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.7
+label v0_10_7(version="v0_10_7"):
+    python:
+        #Transfer the OG vday content stuff to history so we can be done with it forever
+        if renpy.seen_label("monika_valentines_start"):
+            persistent._mas_history_archives[2018]["f14.actions.spent_f14"] = True
+
+        #Fix the conditional on this event
+        f14_spent_time_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if f14_spent_time_ev:
+            f14_spent_time_ev.conditional = "persistent._mas_f14_spent_f14"
+
+        vday_spent_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if vday_spent_ev:
+            vday_spent_ev.start_date = datetime.datetime.combine(mas_f14, datetime.time(hour=18))
+            vday_spent_ev.end_date = datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=3))
+
+        #Fix the vday origins event
+        vday_origins_ev = mas_getEV('mas_f14_monika_vday_origins')
+        if vday_origins_ev:
+            vday_origins_ev.action = EV_ACT_UNLOCK
+            vday_origins_ev.pool = True
+            #Just make sure it's locked (provided not on f14, in case people update on f14)
+            if not mas_isF14():
+                vday_origins_ev.unlocked=False
+
+        #Give d25 randoms their actions back
+        mistletoe_ev = mas_getEV("mas_d25_monika_mistletoe")
+        carolling_ev = mas_getEV("mas_d25_monika_carolling")
+
+        if mistletoe_ev:
+            mistletoe_ev.action = EV_ACT_RANDOM
+
+        if carolling_ev:
+            carolling_ev.action = EV_ACT_RANDOM
+    return
+
 #0.10.6
 label v0_10_6(version="v0_10_6"):
     python:
