@@ -13038,38 +13038,31 @@ label monika_enjoyingspring:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_japanesefood",category=['misc'],prompt="Japanese food",random=True))
-
-label monika_japanesefood:
-    m 2eua "Hey [player], have you ever eaten some kind of Japanese food?"
-    m 2eua "There's a lot of variety when talking about that kind of stuff."
-    m 3eua "For example, you might know about typical ones like sushi, or ramen"
-    m 3eua "But did you know that there are actually a lot more of them?"
-    m 3rua "Well...I didn't realize at first, but I have been researching about it quite a bit."
-    m 3rka "They seem to also cook a lot of food based on meat, and despite being a vegetarian, I like their ideas."
-    m 1hsu "On the other hand, they also seem to prepare a lot of sweets made of different flavours!"
-    m 1nsu "You should check them out if you are interested about the topic~"
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_vr",category=['technology'],prompt="Virtual reality",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_vr",
+            category=['technology'],
+            prompt="Virtual reality",
+            random=True
+        )
+    )
 
 label monika_vr:
-    m 3eua "[player], do you know about those virtual reality headsets that are out there in your world?"
-    m 3eub "VR immerses you into a virtual world, different from your actual surroundings."
-    m 1hub "It might take some getting used to at first, but it can be really fun!"
-    m 4eua "It also has practical uses such as training people in a simulated environment and rehabilitation."
-    m 2rksdla "Some people have even simulated weddings in VR..."
-    m 1eka "It's still a pretty new technology, so not everything can be in VR yet."
-    m 1ekc "Too bad my reality doesn't come in VR..."
-    m 1dkc "Then, we could be so much closer..."
-    m 3hub "Although, maybe one day, we could both meet up in some reality between our worlds!"
-    m 1rksdla "Virtual reality is probably pretty complicated though, so I don't know if I could make a headset work from here."
-    m 1hua "Maybe we'll get it to work one day though."
-    m 3hubfa "So you better prepare yourself for that day, [player]~"
-    m 1hubfb "The day we can be in the same world, we're going to do tons of fun stuff!"
-    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hubfu "I can't wait for it~"
+    m 1euc "[player], do you know about virtual reality?"
+    m 1eua "VR immerses you into a completely virtual world, different from your actual surroundings."
+    m 3rksdla "While might take some getting used to...{nw}"
+    extend 3hub "it can be really fun!"
+    m 3eua "It also has practical uses like training people in simulated environments as well as rehabilitation."
+    m 1rksdla "...Some people have even simulated weddings in VR."
+    m 1euc "But since it's still a pretty new technology, not just {i}anything{/i} can be in VR yet..."
+    m 3esc "Like my reality, for example."
+    m 1dkc "It's too bad we can't use VR to meet each other..."
+    m 1eka "Well, maybe if I could make a VR system in here, we could both meet up in another reality."
+    m 1rksdlb "...But that's probably a little too complicated for me, ahaha."
+    m 3eka "Maybe we'll get it to work one day though."
+    m 1dkbfa "Even if I never get to meet in the real world...{w=0.3}{nw}"
+    extend 1ekbfu "if you could meet me halfway in VR, that would be a dream come true, [player]~"
     return
 
 init 5 python:
