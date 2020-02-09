@@ -4604,8 +4604,18 @@ init 2 python:
                 determines if the plushie will appear
                 Defualts to 4
         """
-        # do we even have plushe enabled?
-        if not persistent._mas_acs_enable_quetzalplushie or mas_isF14():
+        #3 conditions:
+
+        #1. Do we even have plushie enabled?
+        #2. Is it f14? (heartchoc gift interferes)
+        #3. Are we currently eatding something?
+
+        #If any are true, we cannot have plushie out.
+        if (
+            not persistent._mas_acs_enable_quetzalplushie
+            or mas_isF14()
+            or MASConsumable._getCurrentFood()
+        ):
             # run the plushie exit PP in case plushie is no longer enabled
             mas_acs_quetzalplushie.exit(monika_chr)
             return

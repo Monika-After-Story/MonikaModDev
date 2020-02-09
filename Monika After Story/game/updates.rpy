@@ -368,6 +368,39 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.8
+label v0_10_8(version="v0_10_8"):
+    python:
+        #Let's stock current users on some consumables (assuming they've gifted before)
+        #We'll keep it somewhat random.
+        coffee_cons = mas_getConsumable("coffee")
+        if coffee_cons and persistent._mas_acs_enable_coffee:
+            #Enable the consumable object
+            coffee_cons.enable()
+            coffee_cons.restock(renpy.randint(40, 60))
+
+            #Transfer the amount of cups had
+            persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
+
+            #Delete the old vars
+            del persistent._mas_coffee_cups_drank
+            del persistent._mas_acs_enable_coffee
+            del persistent._mas_coffee_been_given
+
+        hotchoc_cons = mas_getConsumable("hotchoc")
+        if hotchoc_cons and persistent._mas_acs_enable_hotchoc:
+            #Enable and restock
+            hotchoc_cons.enable()
+            hotchoc_cons.restock(renpy.randint(40, 60))
+
+            persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
+
+            #Delete uneeded vars
+            del persistent._mas_c_hotchoc_cups_drank
+            del persistent._mas_acs_enable_hotchoc
+            del persistent._mas_c_hotchoc_been_given
+    return
+
 #0.10.7
 label v0_10_7(version="v0_10_7"):
     python:

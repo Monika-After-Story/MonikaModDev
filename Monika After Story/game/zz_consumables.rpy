@@ -1,11 +1,3 @@
-#TODO: Update scripts to transfer given consumables (coffee/hotchoc)
-#TODO: Delete the following vars:
-#   - persistent._mas_acs_enable_coffee
-#   - persistent._mas_coffee_been_given
-#   - persistent._mas_acs_enable_hotchoc
-#   - persistent._mas_c_hotchoc_been_given
-#TODO: Stock existing users with some coffee/hotchoc
-
 default persistent._mas_current_consumable = {
     0: {
         "prep_time": None,
@@ -43,7 +35,7 @@ init python in mas_consumables:
     consumable_map = dict()
 
 
-init 10 python:
+init 5 python:
     #MASConsumable class
     class MASConsumable():
         """
@@ -795,7 +787,7 @@ init 10 python:
 
             MASConsumable.__checkingLogic(
                 _type=store.mas_consumables.TYPE_FOOD,
-                curr_cons=MASConsumable._getCurrentDrink(),
+                curr_cons=MASConsumable._getCurrentFood(),
                 startup=startup
             )
 
@@ -1003,7 +995,7 @@ init 10 python:
         return
 
 #START: consumable drink defs:
-init 11 python:
+init 6 python:
     MASConsumable(
         consumable_id="coffee",
         consumable_type=store.mas_consumables.TYPE_DRINK,
@@ -1030,7 +1022,7 @@ init 11 python:
 ##Finished brewing
 init 5 python:
     import random
-    #This event gets its params via _startupDrinkLogic()
+    #This event gets its params via _checkConsumables()
     addEvent(
         Event(
             persistent.event_database,
