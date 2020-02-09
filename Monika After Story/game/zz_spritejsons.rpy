@@ -233,9 +233,13 @@ init -21 python in mas_sprites_json:
     import store
     import store.mas_utils as mas_utils
 
+    SP_JSON_VER = 2
+    VERSION_TXT = "version"
+    # CURRENT SPRITE VERSION. Change if fundamental sprite format chagnes.
+
     # these imports are for the classes
     from store.mas_ev_data_ver import _verify_bool, _verify_str, \
-        _verify_int, _verify_list
+        _verify_int, _verify_list, _verify_dict
 
     log = mas_utils.getMASLog("log/spj")
     log_open = log.open()
@@ -308,13 +312,14 @@ init -21 python in mas_sprites_json:
         # clear msgs list
         msgs[:] = []
 
-
     ### LOG CONSTANTS
     ## Global
     READING_FILE = "reading JSON at '{0}'..."
     SP_LOADING = "loading {0} sprite object '{1}'..."
     SP_SUCCESS = "{0} sprite object '{1}' loaded successfully!"
     SP_SUCCESS_DRY = "{0} sprite object '{1}' loaded successfully! DRY RUN"
+    VER_NOT_FOUND = "version not found"
+    VER_BAD = "version mismatch. expected '{0}', found '{1}'"
 
     BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
     EXTRA_PROP = "extra property '{0}' found"
@@ -331,15 +336,31 @@ init -21 python in mas_sprites_json:
     )
     NO_GIFT = "without 'giftname', this cannot be natively unlocked"
 
+    NO_DLG_DESC = "'dlg_desc' not found, ignoring 'dlg_plural'"
+    NO_DLG_PLUR = "'dlg_plural' not found, ignoring 'dlg_desc'"
+
     ## MASPoseMap
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
     MPM_SUCCESS = "MASPoseMap '{0}' loaded successfully!"
+    MPM_BAD_TYPE = "invalid mpm_type '{0}'"
+    MPM_TYPE_MISS = "expected mpm_type in {0}, got '{1}'"
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
     MPM_FB_DEF = "in fallback mode but default not set"
     MPM_FB_DEF_L = "in fallback mode but leaning default not set"
     MPM_ACS_DEF = "acs default pose not set"
     MPM_ACS_DEF_L = "acs leaning default pose not set"
+    MPM_DEF = "default not set"
+    MPM_DEF_L = "leaning default not set"
     MPM_ACS_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
+    MPM_AS_BAD_TYPE = "property '{0}' - expected {1}, got {2}"
+    MPM_AS_EXTRA = "arm_split cannot be used with rec_layer '{0}'"
+    MPM_PA_BAD_TYPE = "property '{0}' - expected object, got {1}"
+
+    ## MASPoseArms
+    MPA_LOADING = "loading MASPoseArms in '{0}'..."
+    MPA_SUCCESS = "MASPoseArms '{0}' loaded successfully!"
+    MPA_NO_DATA = "no MASPoseArms data found"
+    MPA_BOTH_OVER = "'both' data found. 'left' and 'right' will be discarded."
 
     ## Hair Map
     HM_LOADING = "loading hair_map..."
@@ -462,11 +483,13 @@ init -21 python in mas_sprites_json:
 
         "priority": (int, _verify_int),
         "acs_type": (str, _verify_str),
+        "dlg_desc": (str, _verify_str),
+        "dlg_plural": (str, _verify_bool),
     }
     OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
     OPT_HC_SHARED_PARAM_NAMES = {
-        "fallback": (bool, _verify_bool),
+#        "fallback": (bool, _verify_bool),
     }
 
     OPT_HAIR_PARAM_NAMES = {
@@ -488,6 +511,8 @@ init -21 python in mas_sprites_json:
         "select_info",
         "split",
         "hair_map",
+        "arm_split",
+        "pose_arms",
     )
 
     # select info params
@@ -518,11 +543,70 @@ init 189 python in mas_sprites_json:
     import store.mas_sprites as sms
     import store.mas_selspr as sml
 
+    # msg log constants
+    MSG_INFO_T = 0
+    MSG_WARN_T = 1
+    MSG_ERR_T = 2
+
+    MSG_MAP = {
+        MSG_INFO_T: MSG_INFO,
+        MSG_WARN_T: MSG_WARN,
+        MSG_ERR_T: MSG_ERR
+    }
 
     # other constants
     MSG_INFO_IDD = "        [info]: {0}\n"
     MSG_WARN_IDD = "        [Warning!]: {0}\n"
     MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
+
+    # 
+    MSG_INFO_IDD = "        [info]: {0}\n"
+    MSG_WARN_IDD = "        [Warning!]: {0}\n"
+    MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
+
+
+    def parsewritelog(msg_data):
+        """
+        write log using specially formatted data.
+
+        IN:
+            msg_data - tuple of the following format:
+                [0] - log constant
+                [1] - indentation level
+                [2] - msg to write
+
+        RETURNS: True if an ERR constant was found, False if not
+        """
+        log_con, indent, msg = msg_data
+        prefix = MSG_MAP.get(log_con, None)
+        if prefix is None:
+            return True
+
+        indents = " " * (indent * 4)
+        msg = indents + prefix.format(msg)
+        writelog(msg)
+
+        return log_con == MSG_ERR_T
+
+
+    def parsewritelogs(msgs_data):
+        """
+        Write logs using specially formatted data
+
+        IN:
+            msgs_data - list of tuples of the following format:
+                [0] - log constant
+                [1] - indentation level
+                [2] - msg to write
+
+        RETURNS: True if an ERR constnat was found, False if not
+        """
+        is_bad = False
+        for msg_data in msgs_data:
+            if parsewritelog(msg_data):
+                is_bad = True
+
+        return is_bad
 
 
     def _replace_hair_map(sp_name, hair_to_replace):
@@ -791,15 +875,16 @@ init 189 python in mas_sprites_json:
         return type_val
 
 
-    def _validate_mux_type(json_obj, errs):
+    def _validate_mux_type(json_obj, msg_log, indent_lvl):
         """
         Validates mux_type of this json object
 
         IN:
             json_obj - json object to validate
+            indent_lvl - indtenation lvl to use
         
         OUT:
-            errs - list to save error messages to
+            msg_log - list to save error messages to
                 if nothing was addeed to this list, the mux_type is valid
 
         RETURNS: mux_type found. May be None
@@ -812,23 +897,31 @@ init 189 python in mas_sprites_json:
 
         if not _verify_list(mux_type):
             # not list is bad
-            errs.append(MSG_ERR_ID.format(BAD_TYPE.format(
-                "mux_type",
-                py_list,
-                type(mux_type)
-            )))
+            msg_log.append((
+                MSG_ERR_T,
+                indent_lvl,
+                BAD_TYPE.format(
+                    "mux_type",
+                    py_list,
+                    type(mux_type)
+                )
+            ))
             return None
 
         # otherwise, verify each element of this list
         for index in range(len(mux_type)):
             acs_type = mux_type[index]
             if not _verify_str(acs_type):
-                errs.append(MSG_ERR_ID.format(BAD_LIST_TYPE.format(
-                    "mux_type",
-                    index,
-                    str,
-                    type(acs_type)
-                )))
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    BAD_LIST_TYPE.format(
+                        "mux_type",
+                        index,
+                        str,
+                        type(acs_type)
+                    )
+                ))
                 # NOTE: we log these but still return the muxtype.
                 #   it is up to the caller to check for messages
                 #   to determine if the item is valid
@@ -842,8 +935,8 @@ init 189 python in mas_sprites_json:
             propname,
             required,
             allow_none,
-            errs,
-            err_base
+            msg_log,
+            indent_lvl
         ):
         """
         Validates an iterable if it consists solely of strings
@@ -855,17 +948,24 @@ init 189 python in mas_sprites_json:
             propname - property name for error messages
             required - True if this property is required, False if not
             allow_none - True if None is valid value, False if not
-            err_base - error base to use for error messages
+            indent_lvl - indentation level
 
         OUT:
             save_obj - dict to save to
-            errs - list to svae error message to
+            msg_log - list to save messages to
+
+        RETURNS: True if good, False if bad
         """
         # sanity checks
         if propname not in jobj:
             if required:
-                errs.append(err_base.format(REQ_MISS.format(propname)))
-            return
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    REQ_MISS.format(propname)
+                ))
+                return False
+            return True
 
         # prop found
         iterval = jobj.pop(propname)
@@ -873,33 +973,42 @@ init 189 python in mas_sprites_json:
         # should None be allowed
         if iterval is None:
             if not allow_none:
-                errs.append(err_base.format(BAD_TYPE.format(
-                    propname,
-                    py_list,
-                    type(iterval)
-                )))
-            return
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    BAD_TYPE.format(propname, py_list, type(iterval))
+                ))
+                return False
+            return True
 
         # okay not None
         if len(iterval) <= 0:
-            errs.append(err_base.format(EMPTY_LIST.format(propname)))
-            return
+            msg_log.append((
+                MSG_ERR_T,
+                indent_lvl,
+                EMPTY_LIST.format(propname)
+            ))
+            return False
 
         # check individual strings
+        is_bad = False
         for index in range(len(iterval)):
             item = iterval[index]
             
             if not _verify_str(item):
-                errs.append(err_base.format(BAD_LIST_TYPE.format(
-                    propname,
-                    index,
-                    str,
-                    type(item)
-                )))
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    BAD_LIST_TYPE.format(propname, index, str, type(item))
+                ))
+                is_bad = True
+
+        if is_bad:
+            return False
 
         # no errors? save data
-        if len(errs) <= 0:
-            save_obj[propname] = iterval
+        save_obj[propname] = iterval
+        return True
 
 
     def _validate_params(
@@ -907,8 +1016,8 @@ init 189 python in mas_sprites_json:
             save_obj, 
             param_dict,
             required,
-            errs,
-            err_base
+            msg_log,
+            indent_lvl,
         ):
         """
         Validates a list of parameters, while also saving said params into
@@ -920,14 +1029,17 @@ init 189 python in mas_sprites_json:
             jobj - json object to parse
             param_dict - dict of params + verification functiosn
             required - True if the given params are required, False otherwise.
-            err_base - base format string to use for errors
+            indent_lvl - indentation level to use
 
         OUT:
             save_obj - dict to save data to
-            errs - list to save error messages to
+            msg_log - log to save messages to
+
+        RETURNS: True if success, False if not
         """
         # if required, we do not accept Nones
         allow_none = not required
+        is_bad = False
 
         for param_name, verifier_info in param_dict.iteritems():
             if param_name in jobj:
@@ -936,23 +1048,34 @@ init 189 python in mas_sprites_json:
         
                 if not verifier(param_val, allow_none):
                     # failed verification
-                    errs.append(err_base.format(BAD_TYPE.format(
-                        param_name,
-                        desired_type,
-                        type(param_val)
-                    )))
+                    msg_log.append((
+                        MSG_ERR_T,
+                        indent_lvl,
+                        BAD_TYPE.format(
+                            param_name,
+                            desired_type,
+                            type(param_val)
+                        )
+                    ))
+                    is_bad = True
 
-                else:
-                    # otherwise, good, transfer the property over
-                    # and continue
-                    save_obj[param_name] = param_val
+                # otherwise, good, transfer the property over
+                # and continue
+                save_obj[param_name] = param_val
 
             elif required:
                 # this was a required param, add error
-                errs.append(err_base.format(REQ_MISS.format(param_name)))
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    REQ_MISS.format(param_name)
+                ))
+                is_bad = True
+
+        return not is_bad
 
 
-    def _validate_acs(jobj, save_obj, obj_based, errs, warns, infos):
+    def _validate_acs(jobj, save_obj, obj_based, msg_log, indent_lvl):
         """
         Validates ACS-specific properties, as well as acs pose map
 
@@ -960,81 +1083,167 @@ init 189 python in mas_sprites_json:
             - rec_layer
             - priority
             - acs_type
+            - dlg_desc
+            - dlg_plural
             - mux_type
             - pose_map
             - giftname
+            - arm_split
 
         IN:
             jobj - json object to pasrse
             obj_based - dict of object-based items
                 (contains pose_map)
+            indent_lvl - indentation lvl to use
 
         OUT:
             save_obj - dict to save data to
-            errs - list to save error messages to
-                NOTE: does NOT write errs
-            warns - list to save warning messages to
-                NOTE: MAY WRITE WARNS
-            infos - list to save info messages to
+            msg_log - list to add messages to
+
+        RETURNS: True if validation success, False if not
         """
         # validate ez to validate props
         # priority
         # acs_type
-        _validate_params(
+        # dlg_desc
+        # dlg_plural
+        if not _validate_params(
             jobj,
             save_obj,
             OPT_ACS_PARAM_NAMES,
             False,
-            errs,
-            MSG_ERR_ID
-        )
-        if len(errs) > 0:
-            return
+            msg_log,
+            indent_lvl
+        ):
+            return False
+
+        # combine dlg_desc and dlg_plur
+        if "dlg_desc" in save_obj:
+            dlg_desc = save_obj.pop("dlg_desc")
+
+            # both fields are required
+            if "dlg_plural" in save_obj:
+
+                # combine data
+                save_obj["dlg_data"] = (dlg_desc, save_obj.pop("dlg_plural"))
+
+            else:
+                # dlg_plural not found, show a warn
+                msg_log.append((MSG_WARN_T, indent_lvl, NO_DLG_PLUR))
+
+        elif "dlg_plural" in save_obj:
+            # dlg_desc was not found, just pop out dlg_plur
+            msg_log.append((MSG_WARN_T, indent_lvl, NO_DLG_DESC))
+            save_obj.pop("dlg_plural")
 
         # now for rec_layer
         if "rec_layer" in jobj:
             rec_layer = jobj.pop("rec_layer")
 
             if not store.MASMonika._verify_rec_layer(rec_layer):
-                errs.append(MSG_ERR_ID.format(BAD_ACS_LAYER.format(rec_layer)))
-                return
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    BAD_ACS_LAYER.format(rec_layer)
+                ))
+                return False
 
             # otherwise valid
             save_obj["rec_layer"] = rec_layer
 
         # now for mux_type
-        mux_type = _validate_mux_type(jobj, errs)
-        if len(errs) > 0:
-            return
+        err_log = []
+        mux_type = _validate_mux_type(jobj, err_log, indent_lvl)
+        if len(err_log) > 0:
+            msg_log.extend(err_log)
+            return False
 
         # otherwise valid
         save_obj["mux_type"] = mux_type
 
         # now for pose map
-        writelog(MSG_INFO_ID.format(MPM_LOADING.format("pose_map")))
+        msg_log.append((
+            MSG_INFO_T,
+            indent_lvl,
+            MPM_LOADING.format("pose_map")
+        ))
 
         # pose map must exist for us to reach this point.
+        # NOTE: all ACS use the IC type
+        mpm_obj = obj_based.pop("pose_map")
+        mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_IC
+        mpm_msg_log = []
         pose_map = store.MASPoseMap.fromJSON(
-            obj_based.pop("pose_map"),
-            True,
-            False,
-            errs,
-            warns
+            mpm_obj,
+            mpm_msg_log,
+            indent_lvl + 1
         )
-        if pose_map is None or len(errs) > 0:
-            writelogs(warns)
-            return
-
-        # Valid pose map!
-        # write out warns
-        writelogs(warns)
+        msg_log.extend(mpm_msg_log)
+        if pose_map is None:
+            return False
 
         # and succ
-        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("pose_map")))
+        msg_log.append((
+            MSG_INFO_T,
+            indent_lvl,
+            MPM_SUCCESS.format("pose_map")
+        ))
         save_obj["pose_map"] = pose_map
 
+        # now for arm split
+        if store.MASMonika._verify_spl_layer(rec_layer):
+            # this is an arm split layer, so we should parse it
+            if "arm_split" not in obj_based:
+                # NOTE: this is required for SPL layers
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    REQ_MISS.format("arm_split")
+                ))
+                return False
 
-    def _validate_fallbacks(jobj, save_obj, obj_based, errs, warns, infos):
+            # type checking should have occurred already
+            # now for arm split
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_LOADING.format("arm_split")
+            ))
+
+            # this posemap should be treated as arm splits
+            mpm_obj = obj_based.pop("arm_split")
+            mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_AS
+            mpm_msg_log = []
+            arm_split = store.MASPoseMap.fromJSON(
+                mpm_obj,
+                mpm_msg_log,
+                indent_lvl + 1
+            )
+            msg_log.extend(mpm_msg_log)
+            if arm_split is None:
+                return False
+
+            # succ
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_SUCCESS.format("arm_split")
+            ))
+            save_obj["arm_split"] = arm_split
+
+        elif "arm_split" in obj_based:
+            # otherwise, just warn if the property exists
+            obj_based.pop("arm_split")
+            msg_log.append((
+                MSG_WARN_T,
+                indent_lvl,
+                MPM_AS_EXTRA.format(rec_layer)
+            ))
+
+        return True
+
+
+    def _validate_fallbacks(jobj, save_obj, obj_based, msg_log, indent_lvl):
         """
         Validates fallback related properties and pose map
 
@@ -1046,51 +1255,59 @@ init 189 python in mas_sprites_json:
             jobj - json object to parse
             obj_based - dict of object-based items
                 (contains pose_map)
+            indent_lvl - indentation lvl to use
 
         OUT:
             save_obj - dict to save data to
-            errs - list to save error messages to
-            warns - list to save warning messages to
-            infos - list to save info messages to
+            msg_log - list to save messages to
+
+        RETURNS: True if success, False if not
         """
         # validate fallback
-        _validate_params(
+        if not _validate_params(
             jobj,
             save_obj,
             OPT_HC_SHARED_PARAM_NAMES,
             False,
-            errs,
-            MSG_ERR_ID
-        )
-        if len(errs) > 0:
-            return
+            msg_log,
+            indent_lvl
+        ):
+            return False
 
         # valid fallback? determine it
         fallback = save_obj.get("fallback", False)
 
         # now parse pose map
-        writelog(MSG_INFO_ID.format(MPM_LOADING.format("pose_map")))
+        msg_log.append((
+            MSG_INFO_T,
+            indent_lvl,
+            MPM_LOADING.format("pose_map")
+        ))
+        mpm_msg_log = []
         pose_map = store.MASPoseMap.fromJSON(
             obj_based.pop("pose_map"),
-            False,
-            fallback,
-            errs,
-            warns
+            mpm_msg_log,
+            indent_lvl + 1,
+            valid_types=(
+                store.MASPoseMap.MPM_TYPE_ED,
+                store.MASPoseMap.MPM_TYPE_FB
+            )
         )
-        if pose_map is None or len(errs) > 0:
-            writelogs(warns)
-            return
-
-        # valid pose map!
-        # write out warns
-        writelogs(warns)
+        msg_log.extend(mpm_msg_log)
+        if pose_map is None:
+            return False
 
         # and successful
-        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("pose_map")))
+        msg_log.append((
+            MSG_INFO_T,
+            indent_lvl,
+            MPM_SUCCESS.format("pose_map")
+        ))
         save_obj["pose_map"] = pose_map
+        return True
 
 
-    def _validate_hair(jobj, save_obj, obj_based, errs, warns, infos):
+    def _validate_hair(jobj, save_obj, obj_based, msg_log, indent_lvl):
         """
         Validates HAIR related properties
 
@@ -1101,25 +1318,24 @@ init 189 python in mas_sprites_json:
             jobj - json object to parse
             obj_based - dict of object-based items
                 (contains split)
+            indent_lvl - indentation lvl
 
         OUT:
             save_obj - dict to save data to
-            errs - list to save error messages to
-            warns - list ot save warning messages to
-            infos - list to save info messages to
+            msg_log - list to save messagse to
+
+        RETURNS: True on success, False if not
         """
-        _validate_params(
+        if not _validate_params(
             jobj,
             save_obj,
             OPT_HAIR_PARAM_NAMES,
             False,
-            errs,
-            MSG_ERR_ID
-        )
-        if len(errs) > 0:
-            return
+            msg_log,
+            indent_lvl
+        ):
+            return False
 
-        writelogs(warns)
         # otherwise, should be good I think
 
 #        # validate split
@@ -1148,6 +1364,8 @@ init 189 python in mas_sprites_json:
 #        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("split")))
 #        save_obj["split"] = split
 
+        return True
+
 
     def _validate_clothes(
             jobj,
@@ -1155,9 +1373,8 @@ init 189 python in mas_sprites_json:
             obj_based,
             sp_name,
             dry_run,
-            errs,
-            warns,
-            infos
+            msg_log,
+            indent_lvl
         ):
         """
         Validates CLOTHES related properties
@@ -1165,6 +1382,7 @@ init 189 python in mas_sprites_json:
         Props validated:
             - hair_map
             - giftname
+            - pose_arms
 
         IN:
             jobj - json object to parse
@@ -1172,83 +1390,125 @@ init 189 python in mas_sprites_json:
                 (contains split)
             sp_name - name of the clothes we are validating
             dry_run - true if we are dry running, False if not
+            indent_lvl - indentation lvl
 
         OUT:
             save_obj - dict to save data to
-            errs - list to save error messages to
-            warns - list to save warning messages to
-            infos - list to save info messages to
+            msg_log - list to save messages to
+
+        RETURNS: True if good, False if not
         """
         # giftname
-        _validate_params(
+        if not _validate_params(
             jobj,
             save_obj,
             OPT_CLOTH_PARAM_NAMES,
             False,
-            errs,
-            MSG_ERR_ID
-        )
-        if len(errs) > 0:
+            msg_log,
+            indent_lvl
+        ):
             return
 
         # validate hair_map
-        if "hair_map" not in obj_based:
-            # no hair map found, not a problem
-            return
+        if "hair_map" in obj_based:
 
-        # hair map exists, get and validate
-        writelog(MSG_INFO_ID.format(HM_LOADING))
-        hair_map = obj_based.pop("hair_map")
+            # hair map exists, get and validate
+            msg_log.append((MSG_INFO_T, indent_lvl, HM_LOADING))
+            hair_map = obj_based.pop("hair_map")
+            is_bad = False
 
-        for hair_key,hair_value in hair_map.iteritems():
-            # start with type validations
+            for hair_key,hair_value in hair_map.iteritems():
+                # start with type validations
 
-            # key
-            if _verify_str(hair_key):
-                if (
-                        not dry_run 
-                        and hair_key != "all"
-                        and hair_key not in HAIR_MAP
-                    ):
-                    _add_hair_to_verify(hair_key, hm_key_delayed_veri, sp_name)
-            else:
-                errs.append(MSG_ERR_IDD.format(HM_BAD_K_TYPE.format(
-                    hair_key,
-                    str,
-                    type(hair_key)
-                )))
+                # key
+                if _verify_str(hair_key):
+                    if (
+                            not dry_run 
+                            and hair_key != "all"
+                            and hair_key not in HAIR_MAP
+                        ):
+                        _add_hair_to_verify(
+                            hair_key,
+                            hm_key_delayed_veri,
+                            sp_name
+                        )
+                else:
+                    msg_log.append((
+                        MSG_ERR_T,
+                        indent_lvl + 1,
+                        HM_BAD_K_TYPE.format(hair_key, str, type(hair_key))
+                    ))
+                    is_bad = True
 
-            # value
-            if _verify_str(hair_value):
-                if hair_value == "custom":
-                    errs.append(MSG_ERR_IDD.format(HM_FOUND_CUST))
+                # value
+                if _verify_str(hair_value):
+                    if hair_value == "custom":
+                        msg_log.append((
+                            MSG_ERR_T,
+                            indent_lvl + 1,
+                            HM_FOUND_CUST
+                        ))
+                        is_bad = True
 
-                elif not dry_run and hair_value not in HAIR_MAP:
-                    _add_hair_to_verify(
-                        hair_value,
-                        hm_val_delayed_veri,
-                        sp_name
-                    )
+                    elif not dry_run and hair_value not in HAIR_MAP:
+                        _add_hair_to_verify(
+                            hair_value,
+                            hm_val_delayed_veri,
+                            sp_name
+                        )
 
-            else:
-                errs.append(MSG_ERR_IDD.format(HM_BAD_V_TYPE.format(
-                    hair_key,
-                    str,
-                    type(hair_value)
-                )))
+                else:
+                    msg_log.append((
+                        MSG_ERR_T,
+                        indent_lvl + 1,
+                        HM_BAD_V_TYPE.format(hair_key, str, type(hair_value))
+                    ))
+                    is_bad = True
 
-        # recommend "all" and set it to default
-        if "all" not in hair_map:
-            writelog(MSG_WARN_IDD.format(HM_MISS_ALL))
-            hair_map["all"] = "def"
+            # recommend "all" and set it to default
+            if "all" not in hair_map:
+                msg_log.append((MSG_WARN_T, indent_lvl + 1, HM_MISS_ALL))
+                hair_map["all"] = "def"
 
-        # check for no errors
-        if len(errs) > 0:
-            return
+            # check for no errors
+            if is_bad:
+                return False
 
-        # hair map loaded! verification will happen later.
-        writelog(MSG_INFO_ID.format(HM_SUCCESS))
-        save_obj["hair_map"] = hair_map
+            # hair map loaded! verification will happen later.
+            msg_log.append((MSG_INFO_T, indent_lvl, HM_SUCCESS))
+            save_obj["hair_map"] = hair_map
+
+        # validate pose arms
+        if "pose_arms" in obj_based:
+            # pose arms exists, get and validate
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_LOADING.format("pose_arms")
+            ))
+
+            # set type to pose arms
+            mpm_obj = obj_based.pop("pose_arms")
+            mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_PA
+            mpm_msg_log = []
+            pose_arms = store.MASPoseMap.fromJSON(
+                mpm_obj,
+                mpm_msg_log,
+                indent_lvl + 1
+            )
+            msg_log.extend(mpm_msg_log)
+            if pose_arms is None:
+                return False
+
+            # succ
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_SUCCESS.format("pose_arms")
+            ))
+            save_obj["pose_arms"] = pose_arms
+
+        return True
 
 
     def _validate_ex_props(jobj, save_obj, obj_based, errs, warns, infos):
@@ -1304,7 +1564,7 @@ init 189 python in mas_sprites_json:
         save_obj["ex_props"] = ex_props
 
 
-    def _validate_selectable(jobj, save_obj, obj_based, errs, warns, infos):
+    def _validate_selectable(jobj, save_obj, obj_based, msg_log, indent_lvl):
         """
         Validates selectable 
 
@@ -1315,84 +1575,79 @@ init 189 python in mas_sprites_json:
             jobj - json object to parse
             obj_based - dict of object-based items
                 (contains select_info)
+            indent_lvl - indentation level
 
         OUT:
             save_obj - dict to save data to
-            errs - list to save error messages to
-            warns - list to save warning messages to
-            infos - list to save info messages to
+            msg_log - list to write messages to
 
-        RETURNS: dict of saved select info data
+        RETURNS: True if success, false if failure
         """
-        # validate select_info
-        if "select_info" not in obj_based:
-            return
-
         # select_info exists, get and validate
-        writelog(MSG_INFO_ID.format(SI_LOADING))
+        msg_log.append((MSG_INFO_T, indent_lvl, SI_LOADING))
         select_info = obj_based.pop("select_info")
 
         # validate required
-        _validate_params(
+        if not _validate_params(
             select_info,
             save_obj,
             SEL_INFO_REQ_PARAM_NAMES,
             True,
-            errs,
-            MSG_ERR_IDD
-        )
-        if len(errs) > 0:
-            return
+            msg_log,
+            indent_lvl + 1
+        ):
+            return False
 
         # now for optional
-        _validate_params(
+        if not _validate_params(
             select_info,
             save_obj,
             SEL_INFO_OPT_PARAM_NAMES,
             False,
-            errs,
-            MSG_ERR_IDD
-        )
-        if len(errs) > 0:
-            return
+            msg_log,
+            indent_lvl + 1
+        ):
+            return False
 
         # now for list based
         if "hover_dlg" in select_info:
-
-            _validate_iterstr(
-                select_info,
-                save_obj,
-                "hover_dlg",
-                False,
-                True,
-                errs,
-                MSG_ERR_IDD
-            )
-            if len(errs) > 0:
-                return
+            select_info.pop("hover_dlg")
+#            if not _validate_iterstr(
+#                select_info,
+#                save_obj,
+#                "hover_dlg",
+#                False,
+#                True,
+#                msg_log,
+#                indent_lvl + 1
+#            ):
+#                return False
 
         if "select_dlg" in select_info:
-            
-            _validate_iterstr(
+            if not _validate_iterstr(
                 select_info,
                 save_obj,
                 "select_dlg",
                 False,
                 True,
-                errs,
-                MSG_ERR_IDD
-            )
-            if len(errs) > 0:
-                return
+                msg_log,
+                indent_lvl + 1
+            ):
+                return False
 
         # warning extra props
         for extra_prop in select_info:
-            writelog(MSG_WARN_IDD.format(EXTRA_PROP.format(extra_prop)))
+            msg_log.append((
+                MSG_WARN_T,
+                indent_lvl + 1,
+                EXTRA_PROP.format(extra_prop)
+            ))
 
         # success, lets save
-        writelog(MSG_INFO_ID.format(SI_SUCCESS))
+        msg_log.append((MSG_INFO_T, indent_lvl, SI_SUCCESS))
         
         # NOTE: item is already saved into the dict
+        return True
 
 
     def addSpriteObject(filepath):
@@ -1416,6 +1671,7 @@ init 189 python in mas_sprites_json:
         sel_params = {}
         unlock_hair = True
         giftname = None
+        indent_lvl = 0
 
         writelog("\n" + MSG_INFO.format(READING_FILE.format(filepath)))
 
@@ -1437,6 +1693,29 @@ init 189 python in mas_sprites_json:
             if jkey.startswith("__"):
                 jobj.pop(jkey)
 
+        # determine version. Versions must match SP_JSON_VER. 
+        if VERSION_TXT not in jobj:
+            # must be version 1 (aka the initial release).
+            # or just missing.
+            writelog(MSG_ERR.format(VER_NOT_FOUND))
+            return
+
+        # version text exists, check it
+        version = jobj.pop(VERSION_TXT)
+
+        # check type
+        if not _verify_int(version, allow_none=False):
+            # not valid version type, err this
+            writelog(MSG_ERR.format(VER_BAD.format(SP_JSON_VER, version)))
+            return
+
+        # check version match
+        if version != SP_JSON_VER:
+            writelog(MSG_ERR.format(VER_BAD.format(SP_JSON_VER, version)))
+            return
+
+        # otherwise we good version
+
         ## this happens in 3 steps:
         # 1. build sprite object according to the json
         #   - this includes PoseMaps
@@ -1453,16 +1732,16 @@ init 189 python in mas_sprites_json:
             return
 
         # check name and img_sit
+        msg_log = []
         _validate_params(
             jobj,
             sp_obj_params,
             REQ_SHARED_PARAM_NAMES,
             True,
-            msgs_err,
-            MSG_ERR_ID
+            msg_log,
+            indent_lvl
         )
-        if len(msgs_err) > 0:
-            writelogs(msgs_err)
+        if parsewritelogs(msg_log):
             return
 
         # save name for later
@@ -1473,6 +1752,7 @@ init 189 python in mas_sprites_json:
             SP_STR.get(sp_type),
             sp_name
         )))
+        indent_lvl = 1
 
         # check for existence of pose_map property. We will not validate until
         # later.
@@ -1483,80 +1763,84 @@ init 189 python in mas_sprites_json:
         # move object-based params out of the jobj
         for param_name in OBJ_BASED_PARAM_NAMES:
             if param_name in jobj:
-                obj_based_params[param_name] = jobj.pop(param_name)
+                obj_val = jobj.pop(param_name)
+
+                # objects must be dicts
+                if not _verify_dict(obj_val, allow_none=False):
+                    writelog(MSG_ERR_ID.format(BAD_TYPE.format(
+                        param_name,
+                        dict,
+                        type(obj_val)
+                    )))
+                    return
+
+                obj_based_params[param_name] = obj_val
 
         # validate optional shared params
+        msg_log = []
         _validate_params(
             jobj,
             sp_obj_params,
             OPT_SHARED_PARAM_NAMES,
             False,
-            msgs_err,
-            MSG_ERR_ID
+            msg_log,
+            indent_lvl
         )
-        if len(msgs_err) > 0:
-            writelogs(msgs_err)
+        if parsewritelogs(msg_log):
             return
 
         # now for specific params
         if sp_type == SP_ACS:
             # ACS
+            msg_log = []
             _validate_acs(
                 jobj,
                 sp_obj_params,
                 obj_based_params,
-                msgs_err,
-                msgs_warn,
-                msgs_info
+                msg_log,
+                indent_lvl
             )
-            if len(msgs_err) > 0:
-                writelogs(msgs_err)
+            if parsewritelogs(msg_log):
                 return
 
         else:
             # hair / clothes
+            msg_log = []
             _validate_fallbacks(
                 jobj,
                 sp_obj_params,
                 obj_based_params,
-                msgs_err,
-                msgs_warn,
-                msgs_info
+                msg_log,
+                indent_lvl
             )
-            if len(msgs_err) > 0:
-                writelogs(msgs_warn)
-                writelogs(msgs_err)
+            if parsewritelogs(msg_log):
                 return
 
             if sp_type == SP_HAIR:
+                msg_log = []
                 _validate_hair(
                     jobj,
                     sp_obj_params,
                     obj_based_params,
-                    msgs_err,
-                    msgs_warn,
-                    msgs_info
+                    msg_log,
+                    indent_lvl
                 )
-                if len(msgs_err) > 0:
-                    writelogs(msgs_warn)
-                    writelogs(msgs_err)
+                if parsewritelogs(msg_log):
                     return
 
             else:
                 # must be clothes
+                msg_log = []
                 _validate_clothes(
                     jobj,
                     sp_obj_params,
                     obj_based_params,
                     sp_name,
                     dry_run,
-                    msgs_err,
-                    msgs_warn,
-                    msgs_info
+                    msg_log,
+                    indent_lvl
                 )
-                if len(msgs_err) > 0:
-                    writelogs(msgs_warn)
-                    writelogs(msgs_err)
+                if parsewritelogs(msg_log):
                     return
 
         # back to shared acs/hair/clothes stuff
@@ -1574,18 +1858,17 @@ init 189 python in mas_sprites_json:
             return
 
         # select info if found
-        _validate_selectable(
-            jobj,
-            sel_params,
-            obj_based_params,
-            msgs_err,
-            msgs_warn,
-            msgs_info
-        )
-        if len(msgs_err) > 0:
-            writelogs(msgs_warn)
-            writelogs(msgs_err)
-            return
+        if "select_info" in obj_based_params:
+            msg_log = []
+            _validate_selectable(
+                jobj,
+                sel_params,
+                obj_based_params,
+                msg_log,
+                indent_lvl
+            )
+            if parsewritelogs(msg_log):
+                return
 
         # time to check for warnings/recommendes
 

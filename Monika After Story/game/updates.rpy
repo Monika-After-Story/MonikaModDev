@@ -67,7 +67,7 @@ init python:
             persistent._seen_ever.pop(topicID)
 
 
-    def mas_eraseTopic(topicID, per_eventDB):
+    def mas_eraseTopic(topicID, per_eventDB=persistent.event_database):
         """
         Erases an event from both lockdb and Event database
         This should also handle lockdb data as well.
@@ -195,7 +195,71 @@ init python:
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
 
+init 7 python:
+    def mas_transferTopicData(
+        new_topic_evl,
+        old_topic_evl,
+        old_topic_ev_db,
+        transfer_unlocked=True,
+        transfer_shown_count=True,
+        transfer_seen_data=True,
+        transfer_last_seen=True,
+        erase_topic=True
+    ):
+        """
+        Transfers topic data from ev to ev
 
+        IN:
+            new_topic_evl - new topic's eventlabel
+            old_topic_evl - old topic's eventlabel
+            old_topic_ev_db - event database containing the old topic
+            transfer_unlocked - whether or not we should transfer the unlocked property of the old topic
+            (Default: True)
+            transfer_shown_count - whether or not we should transfer the shown_count property of the old topic
+            (Default: True)
+            transfer_seen_data - whether or not we should transfer the _seen_ever state of the old topic
+            (Default: True)
+            transfer_last_seen - whether or not we should transfer the last_seen property of the old topic
+            (Default: True)
+            erase_topic - whether or not we should erase this topic after transferring data
+            (Defualt: True)
+        """
+        #Build new ev
+        new_ev = mas_getEV(new_topic_evl)
+
+        #if old ev exists in the evdb, then we need to build it and get it
+        if old_topic_evl in old_topic_ev_db:
+            old_ev = Event(
+                old_topic_ev_db,
+                old_topic_evl
+            )
+        else:
+            old_ev = None
+
+        if new_ev is not None and old_ev is not None:
+            if transfer_unlocked:
+                #If old ev is unlocked, we want the new one to be too
+                new_ev.unlocked = old_ev.unlocked
+
+            if transfer_shown_count:
+                #Match the shown counts
+                new_ev.shown_count += old_ev.shown_count
+
+            if (
+                transfer_last_seen
+                and old_ev.last_seen is not None
+                and (new_ev.last_seen is None or new_ev.last_seen <= old_ev.last_seen)
+            ):
+                #For potential unstable users, last seen should be accurate
+                new_ev.last_seen = old_ev.last_seen
+
+            if transfer_seen_data:
+                #Now transfer the seen data
+                mas_transferTopicSeen(old_topic_evl, new_topic_evl)
+
+            #And erase this topic if we need to
+            if erase_topic:
+                mas_eraseTopic(old_topic_evl, old_topic_ev_db)
 
 
 # this needs to run post script-topics
@@ -304,37 +368,618 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.7
+label v0_10_7(version="v0_10_7"):
+    python:
+        #Transfer the OG vday content stuff to history so we can be done with it forever
+        if renpy.seen_label("monika_valentines_start"):
+            persistent._mas_history_archives[2018]["f14.actions.spent_f14"] = True
 
-# 0.9.6
-label v0_9_6(version="v0_9_6"):
+        #Fix the conditional on this event
+        f14_spent_time_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if f14_spent_time_ev:
+            f14_spent_time_ev.conditional = "persistent._mas_f14_spent_f14"
+
+        vday_spent_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if vday_spent_ev:
+            vday_spent_ev.start_date = datetime.datetime.combine(mas_f14, datetime.time(hour=18))
+            vday_spent_ev.end_date = datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=3))
+
+        #Fix the vday origins event
+        vday_origins_ev = mas_getEV('mas_f14_monika_vday_origins')
+        if vday_origins_ev:
+            vday_origins_ev.action = EV_ACT_UNLOCK
+            vday_origins_ev.pool = True
+            #Just make sure it's locked (provided not on f14, in case people update on f14)
+            if not mas_isF14():
+                vday_origins_ev.unlocked=False
+
+        #Give d25 randoms their actions back
+        mistletoe_ev = mas_getEV("mas_d25_monika_mistletoe")
+        carolling_ev = mas_getEV("mas_d25_monika_carolling")
+
+        if mistletoe_ev:
+            mistletoe_ev.action = EV_ACT_RANDOM
+
+        if carolling_ev:
+            carolling_ev.action = EV_ACT_RANDOM
+    return
+
+#0.10.6
+label v0_10_6(version="v0_10_6"):
+    python:
+        #NOTE: Because of a crash in the last update script, this part was not guaranteed to run for everyone.
+        #Therefore we're running it again
+        if persistent._mas_likes_rain:
+            del persistent._mas_likes_rain
+
+        # remove bookmarks unbookmark topic
+        mas_eraseTopic("mas_topic_unbookmark")
+
+        seen_bday_surprise = False
+        # list of labels that mean we have seen a surprise
+        bday_list = [
+            'mas_player_bday_listen',
+            'mas_player_bday_knock_no_listen',
+            'mas_player_bday_opendoor',
+            'mas_player_bday_surprise'
+        ]
+
+        # determine if we have ever seen a surprise
+        for bday_label in bday_list:
+            if renpy.seen_label(bday_label):
+                seen_bday_surprise = True
+
+        if seen_bday_surprise:
+            # list of events to use so we know what years we did not see a surprise
+            other_bday_list = [
+                'mas_player_bday_ret_on_bday',
+                'mas_player_bday_no_restart',
+                'mas_player_bday_upset_minus',
+                'mas_player_bday_other_holiday'
+            ]
+
+            # surprise year blacklist to store years we could not have seen a surprise
+            years_list = []
+
+            # get every year we could not have seen a surprise, and add it to the surprise year blacklist
+            for other_bday_label in other_bday_list:
+                if mas_getEV(other_bday_label) is not None and mas_getEV(other_bday_label).last_seen is not None:
+                    years_list.append(mas_getEV(other_bday_label).last_seen.year)
+
+            # if we got a confirmed bday on bday party, add the year to the blacklist
+            if persistent._mas_player_bday is not None and persistent._mas_player_confirmed_bday:
+                bdate_ev = mas_getEV('mas_birthdate')
+                if bdate_ev is not None and bdate_ev.last_seen is not None:
+                    seen_date = bdate_ev.last_seen.date()
+                    if seen_date == mas_player_bday_curr().replace(year=seen_date.year):
+                        years_list.append(seen_date.year)
+
+            # if spent_time is currently True and this year is not in our surprise year black list, we set saw_surprise to True
+            if persistent._mas_player_bday_spent_time and datetime.date.today().year not in years_list:
+                persistent._mas_player_bday_saw_surprise = True
+
+            spent_time_hist = mas_HistVerify("player_bday.spent_time",True)
+            # here we check years we celebrated with Monika against the surprise year blacklist and adjust history accordingly
+            if spent_time_hist[0]:
+                for year in spent_time_hist[1]:
+                    if year not in years_list:
+                        persistent._mas_history_archives[year]["player_bday.saw_surprise"] = True
+
+        #Give unseen fun facts the unlocked prop
+        for ev in mas_fun_facts.fun_fact_db.itervalues():
+            if ev.shown_count:
+                ev.unlocked = True
+
+        # add a delayed action to push birthday fix if required
+        birthdate_ev = mas_getEV("mas_birthdate")
+        bday = persistent._mas_player_bday
+        if (
+                birthdate_ev is not None
+                and birthdate_ev.last_seen is not None
+                and bday is not None
+        ):
+            seen_year = birthdate_ev.last_seen.year
+
+            # if you havent seen 090, then you are unaffected
+            # if ur birthdate is normal (not less than 5 years of age from the
+            #   time the date could have been set), then you're
+            #   probably unaffected
+            if renpy.seen_label("v0_9_0") and seen_year - bday.year < 5:
+                mas_addDelayedAction(16)
+
+        #Try/Excepting this just in case
+        try:
+            del persistent._mas_mood_bday_last
+            del persistent._mas_mood_bday_lies
+            del persistent._mas_mood_bday_locked
+        except:
+            pass
+    return
+
+#0.10.5
+label v0_10_5(version="v0_10_5"):
+    python:
+        #Fix 922 stuff once and for all
+        ev = mas_getEV("mas_bday_surprise_party_hint")
+        if ev:
+            ev.start_date = mas_monika_birthday - datetime.timedelta(days=7)
+            ev.end_date = mas_monika_birthday - datetime.timedelta(days=2)
+            ev.action = EV_ACT_RANDOM
+
+        ev = mas_getEV("mas_bday_pool_happy_bday")
+        if ev:
+            ev.start_date = mas_monika_birthday
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.action = EV_ACT_UNLOCK
+
+        ev = mas_getEV("mas_bday_spent_time_with")
+        if ev:
+            ev.start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(20))
+            ev.end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+            ev.conditional = "mas_recognizedBday()"
+            ev.action = EV_ACT_QUEUE
+
+        ev = mas_getEV("mas_bday_postbday_notimespent")
+        if ev:
+            ev.start_date = mas_monika_birthday + datetime.timedelta(days=1)
+            ev.end_date = mas_monika_birthday + datetime.timedelta(days=8)
+            ev.conditional = (
+                "not mas_recognizedBday() "
+                "and not persistent._mas_bday_gone_over_bday"
+            )
+            ev.action = EV_ACT_PUSH
+
+        #Give fun facts label names
+        fun_facts_evls = {
+            #Good facts
+            "mas_fun_facts_1": "mas_fun_fact_librocubiculartist",
+            "mas_fun_facts_2": "mas_fun_fact_menu_currency",
+            "mas_fun_facts_3": "mas_fun_fact_love_you",
+            "mas_fun_facts_4": "mas_fun_fact_morpheus",
+            "mas_fun_facts_5": "mas_fun_fact_otter_hand_holding",
+            "mas_fun_facts_6": "mas_fun_fact_chess",
+            "mas_fun_facts_7": "mas_fun_fact_struck_by_lightning",
+            "mas_fun_facts_8": "mas_fun_fact_honey",
+            "mas_fun_facts_9": "mas_fun_fact_vincent_van_gone",
+            "mas_fun_facts_10": "mas_fun_fact_king_snakes",
+            "mas_fun_facts_11": "mas_fun_fact_strength",
+            "mas_fun_facts_12": "mas_fun_fact_reindeer_eyes",
+            "mas_fun_facts_13": "mas_fun_fact_bananas",
+            "mas_fun_facts_14": "mas_fun_fact_pens",
+            "mas_fun_facts_15": "mas_fun_fact_density",
+            "mas_fun_facts_16": "mas_fun_fact_binky",
+            "mas_fun_facts_17": "mas_fun_fact_windows_games",
+            "mas_fun_facts_18": "mas_fun_fact_mental_word_processing",
+            "mas_fun_facts_19": "mas_fun_fact_I_am",
+            "mas_fun_facts_20": "mas_fun_fact_low_rates",
+
+            #Bad facts
+            "mas_bad_facts_1": "mas_bad_fact_10_percent",
+            "mas_bad_facts_2": "mas_bad_fact_taste_areas",
+            "mas_bad_facts_3": "mas_bad_fact_antivaxx",
+            "mas_bad_facts_4": "mas_bad_fact_tree_moss",
+        }
+
+        for old_evl, new_evl in fun_facts_evls.iteritems():
+            mas_transferTopicData(
+                new_evl,
+                old_evl,
+                persistent._mas_fun_facts_database,
+                transfer_unlocked=False
+            )
+
+        islands_evs = {
+            "mas_monika_upsidedownisland": "mas_island_upsidedownisland",
+            "mas_monika_glitchesmess": "mas_island_glitchedmess",
+            "mas_monika_cherry_blossom_tree": "mas_island_cherry_blossom_tree",
+            "mas_monika_cherry_blossom1": "mas_island_cherry_blossom1",
+            "mas_monika_cherry_blossom2": "mas_island_cherry_blossom2",
+            "mas_monika_cherry_blossom3": "mas_island_cherry_blossom3",
+            "mas_monika_cherry_blossom4": "mas_island_cherry_blossom4",
+            "mas_monika_sky": "mas_island_sky",
+            "mas_monika_day1": "mas_island_day1",
+            "mas_monika_day2": "mas_island_day2",
+            "mas_monika_day3": "mas_island_day3",
+            "mas_monika_night1": "mas_island_night1",
+            "mas_monika_night2": "mas_island_night2",
+            "mas_monika_night3": "mas_island_night3",
+            "mas_monika_daynight1": "mas_island_daynight1",
+            "mas_monika_daynight2": "mas_island_daynight2"
+        }
+
+        for old_label, new_label in islands_evs.iteritems():
+            mas_transferTopicSeen(old_label, new_label)
+
+        #Fix these persist vars
+        persistent._mas_pm_plays_instrument = persistent.instrument
+        persistent._mas_pm_likes_rain = persistent._mas_likes_rain
+
+        #And delete the old
+        if persistent.instrument:
+            del persistent.instrument
+        if persistent._mas_likes_rain:
+            del persistent._mas_likes_rain
+
+        # remove bookmarks unbookmark topic
+        mas_eraseTopic("mas_topic_unbookmark")
+
+        # need to create data for new var persistent._mas_player_bday_saw_surprise for previous years
+
+        seen_bday_surprise = False
+        # list of labels that mean we have seen a surprise
+        bday_list = [
+            'mas_player_bday_listen',
+            'mas_player_bday_knock_no_listen',
+            'mas_player_bday_opendoor',
+            'mas_player_bday_surprise'
+        ]
+
+        # determine if we have ever seen a surprise
+        for bday_label in bday_list:
+            if renpy.seen_label(bday_label):
+                seen_bday_surprise = True
+
+        if seen_bday_surprise:
+            # list of events to use so we know what years we did not see a surprise
+            other_bday_list = [
+                'mas_player_bday_ret_on_bday',
+                'mas_player_bday_no_restart',
+                'mas_player_bday_upset_minus',
+                'mas_player_bday_other_holiday'
+            ]
+
+            # surprise year blacklist to store years we could not have seen a surprise
+            years_list = []
+
+            # get every year we could not have seen a surprise, and add it to the surprise year blacklist
+            for other_bday_label in other_bday_list:
+                if mas_getEV(other_bday_label) is not None and mas_getEV(other_bday_label).last_seen is not None:
+                    years_list.append(mas_getEV(other_bday_label).last_seen.year)
+
+            # if we got a confirmed bday on bday party, add the year to the blacklist
+            if persistent._mas_player_bday is not None and persistent._mas_player_confirmed_bday:
+                bdate_ev = mas_getEV('mas_birthdate')
+                if bdate_ev is not None and bdate_ev.last_seen is not None:
+                    seen_date = bdate_ev.last_seen.date()
+                    if seen_date == mas_player_bday_curr().replace(year=seen_date.year):
+                        years_list.append(seen_date.year)
+
+            # if spent_time is currently True and this year is not in our surprise year black list, we set saw_surprise to True
+            if persistent._mas_player_bday_spent_time and datetime.date.today().year not in years_list:
+                persistent._mas_player_bday_saw_surprise = True
+
+            spent_time_hist = mas_HistVerify("player_bday.spent_time",True)
+            # here we check years we celebrated with Monika against the surprise year blacklist and adjust history accordingly
+            if spent_time_hist[0]:
+                for year in spent_time_hist[1]:
+                    if year not in years_list:
+                        persistent._mas_history_archives[year]["player_bday.saw_surprise"] = True
+    return
+
+#0.10.4
+label v0_10_4(version="v0_10_4"):
+    python:
+        # erase monika scary stories
+        mas_eraseTopic("monika_scary_stories", persistent.event_database)
+
+        if renpy.seen_label("monika_aiwfc"):
+            #Need to swap out for song variant
+            mas_unlockEVL("mas_song_aiwfc", "SNG")
+            mas_lockEVL("monika_aiwfc", "EVE")
+            aiwfc_ev = mas_getEV("monika_aiwfc")
+
+            if aiwfc_ev:
+                aiwfc_ev.action = EV_ACT_QUEUE
+                aiwfc_ev.pool = False
+
+                #Since we know the normal ev exists, let's also add shown couns
+                aiwfc_sng_ev = mas_getEV("mas_song_aiwfc")
+                if aiwfc_sng_ev:
+                    aiwfc_sng_ev.shown_count += aiwfc_ev.shown_count
+                    aiwfc_sng_ev.last_seen = aiwfc_ev.last_seen
+
+                    #Now reset the last seen of the aiwfc_ev
+                    aiwfc_ev.last_seen = None
+
+        #Fix d25 intro conditionals for player bday
+        ev = mas_getEV("mas_d25_monika_holiday_intro")
+        if ev:
+            ev.conditional=(
+                "not persistent._mas_d25_started_upset "
+                "and mas_isD25Outfit() "
+                "and not mas_isplayer_bday() "
+                "and not persistent._mas_d25_intro_seen"
+            )
+
+        ev = mas_getEV("mas_d25_monika_holiday_intro_upset")
+        if ev:
+            ev.conditional=(
+                "not persistent._mas_d25_intro_seen "
+                "and persistent._mas_d25_started_upset "
+                "and mas_isD25Outfit() "
+                "and not mas_isplayer_bday()"
+            )
+            ev.action = EV_ACT_QUEUE
+
+        islands_ev = store.mas_getEV("mas_monika_islands")
+        if (
+                islands_ev is not None
+                and islands_ev.shown_count > 0
+            ):
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+        ev = mas_getEV("mas_d25_postd25_notimespent")
+        if ev:
+            ev.end_date = mas_d25p + datetime.timedelta(days=6)
+
+        ev = mas_getEV("mas_d25_monika_christmas")
+        if ev:
+            ev.conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and not mas_lastSeenInYear('mas_d25_monika_christmas')"
+            )
+
+        #Handle poem seens
+        #NOTE: f14 makes the assumption that you were > 0 aff.
+        #There is no way to be sure if you actually saw it (since normal aff covers from -34 to -1 as well)
+
+        #If you got first kiss on d25, you got the poem too
+        if persistent._mas_first_kiss and persistent._mas_first_kiss.date().replace(year=mas_d25.year) == mas_d25:
+            persistent._mas_poems_seen["poem_d25_1"] = 1
+
+        #If you saw the old vday label, you got the poem
+        if renpy.seen_label("monika_valentines_start"):
+            persistent._mas_poems_seen["poem_f14_1"] = 1
+
+            #If you also saw the new vday label this year, then you saw the second one too
+            if mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
+                persistent._mas_poems_seen["poem_f14_2"] = 1
+
+        #Otherwise if we only saw this one, we got the first one
+        elif mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
+            persistent._mas_poems_seen["poem_f14_1"] = 1
+
+        #If you saw either of these two labels, you saw the player bday card
+        if renpy.seen_label("mas_player_bday_cake") or renpy.seen_label("mas_player_bday_card"):
+            persistent._mas_poems_seen["poem_pbday_1"] = 1
+
+        # change these from QUEUE to PUSH since we want these post_greet
+        push_list = [
+            "mas_d25_monika_christmas_eve",
+            "mas_nye_monika_nyd",
+            "mas_f14_no_time_spent",
+            "mas_bday_postbday_notimespent"
+        ]
+
+        for ev_label in push_list:
+            ev = mas_getEV(ev_label)
+            if ev:
+                ev.action = EV_ACT_PUSH
+
+        ev = mas_getEV("mas_monikai_detected")
+        if ev:
+            ev.action = EV_ACT_QUEUE
+
+        #Change these rands accordingly to season
+        ev = mas_getEV("monika_backpacking")
+        if ev:
+            ev.random = not mas_isWinter()
+
+        ev = mas_getEV("monika_outdoors")
+        if ev:
+            ev.random = not mas_isWinter()
+
+        #Only do this if the topic hasn't been answered yet
+        if persistent._mas_pm_would_like_mt_peak is None:
+            ev = mas_getEV("monika_mountain")
+            if ev:
+                ev.random = not mas_isWinter()
+
+        #Run weather unlocks
+        mas_weather_snow.unlocked=True
+        mas_weather_thunder.unlocked=True
+        mas_weather.saveMWData()
+
+        #We need to add fresh start to hist
+        if persistent._mas_pm_got_a_fresh_start:
+            persistent._mas_history_archives[2018]["pm.actions.monika.got_fresh_start"] = True
+
+            #We also need to pull the affection we had before out of the historical archives
+            if not persistent._mas_aff_before_fresh_start:
+                persistent._mas_aff_before_fresh_start = mas_HistLookup("aff.before_fresh_start", 2018)
+    return
+
+#0.10.3
+label v0_10_3(version="v0_10_3"):
+    python:
+        #Convert fav/derand dicts to lists based on their keys if needed
+        if isinstance(persistent._mas_player_bookmarked, dict):
+            persistent._mas_player_bookmarked = persistent._mas_player_bookmarked.keys()
+
+        if isinstance(persistent._mas_player_derandomed, dict):
+            persistent._mas_player_derandomed = persistent._mas_player_derandomed.keys()
+
+    return
+
+#0.10.2
+label v0_10_2(version="v0_10_2"):
+    python:
+        # o31 set marisa/rin worn checks
+        # NOTE: name is used incase of costume removal in future
+        if renpy.seen_label("greeting_o31_marisa"):
+            mas_o31SetCostumeWorn_n("marisa", 2018)
+        if renpy.seen_label("greeting_o31_rin"):
+            mas_o31SetCostumeWorn_n("rin", 2018)
+
+        #Songs framework changed, need to transfer ev data to new evs
+        ev_label_list = [
+            ("monika_song_lover_boy", "mas_song_lover_boy"),
+            ("monika_song_need_you", "mas_song_need_you"),
+            ("monika_song_i_will", "mas_song_i_will"),
+            ("monika_song_belong_together", "mas_song_belong_together"),
+            ("monika_song_your_song", "mas_song_your_song"),
+            ("monika_song_with_you", "mas_song_with_you"),
+            ("monika_song_dream", "mas_song_dream"),
+        ]
+
+        for old_ev_label, new_ev_label in ev_label_list:
+            new_ev = mas_getEV(new_ev_label)
+            #if old ev exists in the evdb, then we need to form it and get it
+            if old_ev_label in persistent.event_database:
+                old_ev = Event(
+                    persistent.event_database,
+                    old_ev_label
+                )
+            else:
+                old_ev = None
+
+            if new_ev is not None and old_ev is not None:
+                #If old ev is unlocked, we want the new one to be too
+                new_ev.unlocked = old_ev.unlocked
+
+                #Match the shown counts
+                new_ev.shown_count += old_ev.shown_count
+
+                #We also want to derandom the new songs if old ones are seen
+                if old_ev.shown_count > 0:
+                    new_ev.random = False
+
+                #For potential unstable users, last seen should be accurate
+                if old_ev.last_seen is not None and (new_ev.last_seen is None or new_ev.last_seen <= old_ev.last_seen):
+                    new_ev.last_seen = old_ev.last_seen
+
+                #Now transfer the seen data
+                mas_transferTopicSeen(old_ev_label, new_ev_label)
+
+                #And erase this topic
+                mas_eraseTopic(old_ev_label, persistent.event_database)
+
+        if 'monika_clothes_select' in persistent._seen_ever:
+            persistent._seen_ever['monika_event_clothes_select'] = True
+
+        trick_treat = mas_getEV('bye_trick_or_treat')
+        if trick_treat is not None:
+            trick_treat.unlocked = False
+            trick_treat.start_date = mas_o31
+            trick_treat.end_date = mas_o31+datetime.timedelta(days=1)
+            trick_treat.action = action=EV_ACT_UNLOCK
+            trick_treat.years = []
+
+
+        #Also need to push D25 start dates back
+        d25_ev_label_list = [
+            ("mas_d25_monika_holiday_intro", mas_d25),
+            ("mas_d25_monika_holiday_intro_upset", mas_d25p),
+            ("mas_d25_monika_carolling", mas_d25p),
+            ("mas_d25_monika_mistletoe", mas_d25p),
+            ("monika_aiwfc", mas_d25p)
+        ]
+
+        for ev_label, end_date in d25_ev_label_list:
+            ev = mas_getEV(ev_label)
+
+            if ev:
+                ev.start_date = mas_d25c_start
+                ev.end_date = end_date
+                #Adjust undo action rule
+                MASUndoActionRule.adjust_rule(
+                    ev,
+                    datetime.datetime.combine(mas_d25c_start, datetime.time()),
+                    ev.end_date
+                )
+    return
+
+#0.10.1
+label v0_10_1(version="v0_10_1"):
+    #Fix 922 time spent vars if we're not post 922 (so these vars aren't set when they shouldn't be)
+    if datetime.date.today() < mas_monika_birthday:
+       $ persistent._mas_bday_no_time_spent = True
+       $ persistent._mas_bday_no_recognize = True
+
+    #Fix all of the topics which are now having actions undone (conditional updates)
     python:
         ev_label_list = [
-            ("monika_whatwatching","mas_wrs_youtube"),
-            ("monika_lookingat","mas_wrs_r34m"),
-            ("monika_monikamoddev","mas_wrs_monikamoddev")
+            #D25
+            ("mas_d25_monika_holiday_intro", "not persistent._mas_d25_started_upset"),
+            ("mas_d25_monika_holiday_intro_upset", "persistent._mas_d25_started_upset"),
+            ("mas_d25_monika_christmas", "persistent._mas_d25_in_d25_mode"),
+            ("mas_d25_monika_carolling", "persistent._mas_d25_in_d25_mode"),
+            ("mas_d25_monika_mistletoe", "persistent._mas_d25_in_d25_mode"),
+            ("monika_aiwfc", "persistent._mas_d25_in_d25_mode"),
+
+            #F14
+            ("mas_pf14_monika_lovey_dovey", None),
+            ("mas_f14_monika_valentines_intro", None),
+            ("mas_f14_no_time_spent", "not persistent._mas_f14_spent_f14"),
+
+            #922
+            ("mas_bday_spent_time_with", "mas_recognizedBday()"),
+            ("mas_bday_postbday_notimespent", "not mas_recognizedBday() and not persistent._mas_bday_gone_over_bday"),
+            ("mas_bday_surprise_party_hint", None),
+            ("mas_bday_pool_happy_bday", None),
+        ]
+
+        for ev_label, conditional in ev_label_list:
+            ev = mas_getEV(ev_label)
+
+            if ev:
+                ev.conditional = conditional
+
+
+        #Make sure this ev has an action if it was removed
+        mas_getEV("mas_bday_postbday_notimespent").action=EV_ACT_QUEUE
+
+        #Fix conditionals for pbday
+        cond_str = " and not mas_isMonikaBirthday() "
+
+        ev_list_1 = [
+            ("mas_player_bday_upset_minus", cond_str),
+            ('mas_player_bday_ret_on_bday', cond_str),
+            ('mas_player_bday_no_restart', cond_str)
+        ]
+
+        for ev_label, conditional in ev_list_1:
+            ev = mas_getEV(ev_label)
+
+            if ev and ev.conditional:
+                ev.conditional += conditional
+
+    return
+
+# 0.10.0
+label v0_10_0(version="v0_10_0"):
+    python:
+        ev_label_list = [
+            ("monika_whatwatching","mas_wrs_youtube", persistent._mas_windowreacts_database),
+            ("monika_lookingat","mas_wrs_r34m", persistent._mas_windowreacts_database),
+            ("monika_monikamoddev","mas_wrs_monikamoddev", persistent._mas_windowreacts_database),
+            ("mas_scary_story_o_tei","mas_story_o_tei", persistent._mas_story_database)
         ]
         #NOTE:
-        #We only really want the shown count and last seen. Nothing else mattress
-        for old_ev_label, new_ev_label in ev_label_list:
+        #We only really want the shown count and last seen (and unlocked for the stories). Nothing else mattress
+        for old_ev_label, new_ev_label, ev_db in ev_label_list:
             ev = mas_getEV(new_ev_label)
-            if old_ev_label in persistent._mas_windowreacts_database:
+            if old_ev_label in ev_db:
                 old_ev = Event(
-                    persistent._mas_windowreacts_database,
+                    ev_db,
                     old_ev_label
                 )
             else:
                 old_ev = None
 
             if ev is not None and old_ev is not None:
+                ev.unlocked = old_ev.unlocked
+
                 ev.shown_count += old_ev.shown_count
 
-                if ev.last_seen is None or ev.last_seen <= old_ev.last_seen:
+                if old_ev.last_seen is not None and (ev.last_seen is None or ev.last_seen <= old_ev.last_seen):
                     ev.last_seen = old_ev.last_seen
 
                 mas_transferTopicSeen(old_ev_label, new_ev_label)
 
                 # erase this topic
-                mas_eraseTopic(old_ev_label, persistent.event_database)
+                mas_eraseTopic(old_ev_label, ev_db)
 
         # this doesn't need to be locked by default anymore with the new greet code
         if not renpy.seen_label("greeting_tears"):
@@ -344,6 +989,67 @@ label v0_9_6(version="v0_9_6"):
         family_ev = mas_getEV("monika_family")
         if family_ev is not None:
             family_ev.pool = True
+
+        # keep this from showing until we've talked about music
+        concert_ev = mas_getEV("monika_concerts")
+        if concert_ev is not None and concert_ev.shown_count == 0:
+            concert_ev.random = False
+            concert_ev.conditional = (
+                "renpy.seen_label('monika_jazz') "
+                "and renpy.seen_label('monika_orchestra') "
+                "and renpy.seen_label('monika_rock') "
+                "and renpy.seen_label('monika_vocaloid') "
+                "and renpy.seen_label('monika_rap')"
+            )
+            concert_ev.action = EV_ACT_RANDOM
+
+        # MHS checking
+        mhs_922 = store.mas_history.getMHS("922")
+        if (
+                mhs_922 is not None 
+                and mhs_922.trigger.month == 9
+                and mhs_922.trigger.day == 30
+        ):
+            mhs_922.setTrigger(datetime.datetime(2020, 1, 6))
+            mhs_922.use_year_before = True
+
+        mhs_pbday = store.mas_history.getMHS("player_bday")
+        if (
+                mhs_pbday is not None
+                and mhs_pbday.trigger.month == 1
+                and mhs_pbday.trigger.day == 1
+                and persistent._mas_player_bday is not None
+        ):
+            store.mas_player_bday_event.correct_pbday_mhs(
+                persistent._mas_player_bday
+            )
+
+            now_dt = datetime.datetime.now()
+            trig_now = mhs_pbday.trigger.replace(year=now_dt.year)
+            if trig_now < now_dt:
+                # this means the trigger should have ran this year, so we need
+                # to save this data with a false trigger year
+                mhs_pbday.trigger = trig_now
+                mhs_pbday.save() # this should reset trigger to correct date
+                renpy.save_persistent()
+
+        mhs_o31 = store.mas_history.getMHS("o31")
+        if (
+                mhs_o31 is not None
+                and mhs_o31.trigger.month == 11
+                and mhs_o31.trigger.day == 2
+        ):
+            mhs_o31.setTrigger(datetime.datetime(2020, 1, 6))
+            mhs_o31.use_year_before = True
+
+        # always save mhs
+        store.mas_history.saveMHSData()
+
+        # unlock clothes select
+        clothes_sel_ev = mas_getEV("monika_clothes_select")
+        if clothes_sel_ev is not None:
+            clothes_sel_ev.unlocked = True
+            
     return
 
 # 0.9.5
@@ -630,11 +1336,6 @@ label v0_8_14(version="v0_8_14"):
         rain_ev = mas_getEV("monika_rain")
         if rain_ev is not None and not rain_ev.random:
             rain_ev.unlocked = True
-
-        # unlock thunder if you spent time on o31
-        if store.mas_o31_event.spentO31():
-            mas_weather_thunder.unlocked = True
-            store.mas_weather.saveMWData()
 
     return
 

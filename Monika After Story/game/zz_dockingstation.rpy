@@ -46,12 +46,62 @@ init -900 python in mas_ics:
 
     # rain with frame
     islands_rwf = (
-        "6e13efca7df89d7627f0e9f7b696ec110b40e88b82e70ce1249335246597eab4"
+        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
     )
 
     # rain without frame
     islands_rwof = (
-        "435fc21d818dc77b46c93e94c8976eb0702c83b9aa6c4043067f42e8827f27d6"
+        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
+    )
+
+    # night rain with frame
+    islands_nrwf = (
+        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
+    )
+
+    # night rain without frame
+    islands_nrwof = (
+        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
+    )
+
+    # overcast with frame
+    islands_owf = (
+        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
+    )
+
+    # overcast without frame
+    islands_owof = (
+        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
+    )
+
+    # night overcast with frame
+    islands_nowf = (
+        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
+    )
+
+    # night overcast without frame
+    islands_nowof = (
+        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
+    )
+
+    # snow with frame
+    islands_swf = (
+        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
+    )
+
+    # snow without frame
+    islands_swof = (
+        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
+    )
+
+    # night snow with frame
+    islands_nswf = (
+        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
+    )
+
+    # night snow without frame
+    islands_nswof = (
+        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
     )
 
     # islands dict to map filenames to checksums and real filenames
@@ -64,31 +114,18 @@ init -900 python in mas_ics:
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof),
-#        "rwf": ("rain_with_frame.png", islands_rwf),
-#        "rwof": ("rain_without_frame.png", islands_rwof)
-    }
-
-    ########################## SURPRISE BDAY PARTY ############################
-    # cake
-    sbp_cake = (
-        "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
-    )
-
-    # banners
-    sbp_banners = (
-        "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
-    )
-
-    # balloons
-    sbp_balloons = (
-        "eda87e74b8dc9d5082a0f2a7d5202dc0e7b96ec36cbaebc98eb046584834b8e9"
-    )
-
-    # surprise bday party dicts to map filenames to checksums
-    sbp_map = {
-        "cake": sbp_cake,
-        "banners": sbp_banners,
-        "balloons": sbp_balloons
+        "rwf": ("rain_with_frame.png", islands_rwf),
+        "rwof": ("rain_without_frame.png", islands_rwof),
+        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
+        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
+        "owf": ("overcast_with_frame.png", islands_owf),
+        "owof": ("overcast_without_frame.png", islands_owof),
+        "nowf": ("night_overcast_with_frame.png", islands_nowf),
+        "nowof": ("night_overcast_without_frame.png", islands_nowof),
+        "swf": ("snow_with_frame.png", islands_swf),
+        "swof": ("snow_without_frame.png", islands_swof),
+        "nswf": ("night_snow_with_frame.png", islands_nswf),
+        "nswof": ("night_snow_without_frame.png", islands_nswof)
     }
 
     #################################### O31 ##################################
@@ -309,6 +346,7 @@ init -45 python:
         def getPackageList(self, ext_filter=""):
             """
             Gets a list of the packages in the docking station.
+            We also ensure that the item retrieved is not a folder.
 
             IN:
                 ext_filter - extension filter to use when getting list.
@@ -329,6 +367,7 @@ init -45 python:
                 package
                 for package in os.listdir(self.station)
                 if package.endswith(ext_filter)
+                and not os.path.isdir(self._trackPackage(package))
             ]
 
 
@@ -962,10 +1001,10 @@ init -45 python:
 
             return None
 
-
         def __check_access(self, package_path, check_read):
             """
-            Checks access of the file at package_path
+            Checks access of the file at package_path.
+            Also ensures that the file is not actually is folder.
 
             NOTE:
                 will log exceptions
@@ -987,6 +1026,7 @@ init -45 python:
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
+                not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
@@ -999,17 +1039,12 @@ init -45 python:
                 return self.__bad_check_read(check_read)
 
             if check_read:
-                if not (file_ok and read_ok):
+                if not (file_ok and read_ok and not_dir):
                     return None
 
-            else:
-                if not file_ok:
-                    return False
+            return file_ok and not_dir
 
-            return True
-
-
-        def __bad_check_read(check_read):
+        def __bad_check_read(self, check_read):
             """
             Returns an appropriate failure value givne the check_read value
 
@@ -1060,11 +1095,6 @@ default persistent._mas_bday_sbp_reacted = False
 # True means we have reacted to the surprise birthday party.
 # NOTE: we need to consider how we want to do this in future bdays. probably
 # may do historical when we can
-
-# this will act historial until we have better data poitns
-default persistent._mas_bday_sbp_found_cake = False
-default persistent._mas_bday_sbp_found_banners = False
-default persistent._mas_bday_sbp_found_balloons = False
 
 
 init -500 python in mas_dockstat:
@@ -1272,9 +1302,6 @@ init 200 python in mas_dockstat:
     # we set these during init phase if we found a monika
     retmoni_status = None
     retmoni_data = None
-
-    # and these are set for bday related stuff
-    retsbp_status = None
 
 
     def _buildMetaDataList(_outbuffer):
@@ -1491,161 +1518,6 @@ init 200 python in mas_dockstat:
                     package.close()
 
         return on_fail
-
-
-# NOTE: actually we dont need this
-#    def o31ShowVignette(moni_chksum):
-#        """
-#        Sets vignette flag to appropriate value depending on whether or not
-#        user returns monika from an overnight outing.
-#
-#        IN:
-#            moni_chksum - checksum created when taking monika out
-#        """
-#        # not in o31? no show vignette
-#        if not store.mas_isO31():
-#            store.mas_globals.show_vignette = False
-#            return
-#
-#        # we already setup o31 mode? keep showing the vignette
-#        if store.persistent._mas_o31_in_o31_mode:
-#            store.mas_globals.show_vignette = True
-#            return
-#
-#        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check
-#        checkout_time, checkin_time = getCheckTimes(moni_chksum)
-#
-#        if
-
-
-
-    def surpriseBdayCheck(dockstat):
-        """
-        Checks for surprise party files in the given docking station.
-        Returns a bit set of surprise party states
-
-        Also sets the dockstat retsbp status var
-
-        IN:
-            dockstat - the docking station to check surprise party files
-
-        RETURNS:
-            MAS_SBP bit constants
-        """
-        global retsbp_status
-        if not store.mas_isMonikaBirthday():
-            retsbp_status = MAS_SBP_NONE
-            return MAS_SBP_NONE
-
-        ret_val = (
-            packageCheck(
-                dockstat,
-                "cake",
-                mas_ics.sbp_cake,
-                MAS_SBP_CAKE,
-                0,
-                False
-            )
-            | packageCheck(
-                dockstat,
-                "banners",
-                mas_ics.sbp_banners,
-                MAS_SBP_BANR,
-                0,
-                False
-            )
-            | packageCheck(
-                dockstat,
-                "balloons",
-                mas_ics.sbp_balloons,
-                MAS_SBP_BLON,
-                0,
-                False
-            )
-        )
-
-        if ret_val == 0:
-            retsbp_status = MAS_SBP_NONE
-            return MAS_SBP_NONE
-
-        retsbp_status = ret_val
-        return ret_val
-
-
-    def surpriseBdayShowVisuals(_status=None, bday_bypass=False):
-        """
-        Checks status and shows bday visuals if we need to
-
-        IN:
-            _status - status to use when checking. If None, we check status
-                ourselves.
-                (Default: None)
-            bday_bypass - set to True to bypass birthday check
-                (Defalt: False)
-        """
-        if not bday_bypass and not store.mas_isMonikaBirthday():
-            return
-
-        if _status is None:
-            _status = surpriseBdayCheck(store.mas_docking_station)
-
-        if (_status & MAS_SBP_NONE) > 0:
-            surpriseBdayHideVisuals()
-            return
-
-        # otherwise we have visuals to show
-        if (
-                (_status & MAS_SBP_CAKE) > 0
-                and not store.persistent._mas_bday_sbp_reacted
-            ):
-            store.persistent._mas_bday_sbp_found_cake = True
-            renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-        else:
-            renpy.hide("mas_bday_cake")
-
-        if (_status & MAS_SBP_BANR) > 0:
-            store.persistent._mas_bday_sbp_found_banners = True
-            renpy.show("mas_bday_banners", zorder=7)
-        else:
-            renpy.hide("mas_bday_banners")
-
-        if (_status & MAS_SBP_BLON) > 0:
-            store.persistent._mas_bday_sbp_found_balloons = True
-            renpy.show("mas_bday_balloons", zorder=8)
-        else:
-            renpy.hide("mas_bday_balloons")
-
-
-    def surpriseBdayHideVisuals():
-        """
-        Hides all visuals for surprise party
-        """
-        renpy.hide("mas_bday_cake")
-        renpy.hide("mas_bday_banners")
-        renpy.hide("mas_bday_balloons")
-
-
-    def surpriseBdayIsCake():
-        """
-        Returns true if cake was found, False otherwise
-        """
-        return (retsbp_status & MAS_SBP_CAKE) > 0
-
-
-    def surpriseBdayIsBanners():
-        """
-        Returns true if banners were found, false otherwise
-        """
-        return (retsbp_status & MAS_SBP_BANR) > 0
-
-
-    def surpriseBdayIsBalloon():
-        """
-        Returns true if balloon was found, false otherwise
-        """
-        return (retsbp_status & MAS_SBP_BLON) > 0
-
 
     def generateMonika(dockstat):
         """
@@ -2291,7 +2163,18 @@ label mas_dockstat_ready_to_go(moni_chksum):
     if can_moni_leave:
         # file successfully made
         # monika can leave
-        if len(persistent._mas_dockstat_checkout_log) == 0:
+        #If bday + aff+, we use this fare
+        if (
+            mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
+            and not mas_SELisUnlocked(mas_clothes_blackdress)
+        ):
+            if len(persistent._mas_dockstat_checkout_log) == 0:
+                #We change Moni's outfit here because she just got ready
+                $ monika_chr.change_clothes(mas_clothes_blackdress)
+                call mas_dockstat_first_time_goers
+            call mas_bday_bd_outro
+
+        elif len(persistent._mas_dockstat_checkout_log) == 0:
             call mas_dockstat_first_time_goers
 
         else:
@@ -2302,7 +2185,8 @@ label mas_dockstat_ready_to_go(moni_chksum):
         # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
         # NOTE: callers must handle the dialogue for this
 
@@ -2311,7 +2195,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
 label mas_dockstat_first_time_goers:
     m 3eua "I'm now in the file 'monika' in your characters folder."
-    m "After I shutdown the game, you can move me wherever you like."
+    m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
 
     m 1eua "And lastly..."
@@ -2321,29 +2205,44 @@ label mas_dockstat_first_time_goers:
 
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
-
-    # we are not leaving
-    $ persistent._mas_dockstat_going_to_leave = False
-
     # we should abort the promise (this lets spaceroom idle abort, as well)
     $ store.mas_dockstat.abort_gen_promise = True
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
 
-    # we are not leaving on player_bday and need to reset these
+    #FALL THROUGH
+
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
+    # we are not leaving
+    $ persistent._mas_dockstat_going_to_leave = False
+
+    # we are not leaving and need to reset these
     if persistent._mas_player_bday_left_on_bday:
         $ persistent._mas_player_bday_left_on_bday = False
         $ persistent._mas_player_bday_date -= 1
 
     if persistent._mas_f14_on_date:
         $ persistent._mas_f14_on_date = False
-        $ persistent._mas_f14_date -= 1
+        $ persistent._mas_f14_date_count -= 1
+
+    if persistent._mas_bday_on_date:
+        $ persistent._mas_bday_on_date = False
+        $ persistent._mas_bday_date_count -= 1
     return
 
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
+    #NOTE: this needs to be done prior to a spaceroom call otherwise it doesn't update
+    #Make sure O31 effects show
+    if persistent._mas_o31_in_o31_mode:
+        $ mas_globals.show_vignette = True
+        #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+        if mas_current_weather != mas_weather_thunder:
+            $ mas_changeWeather(mas_weather_thunder, True)
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
@@ -2354,21 +2253,19 @@ label mas_dockstat_empty_desk:
     show emptydesk zorder ed_zorder at i11
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
-        $ store.mas_d25_event.showD25Visuals()
+        $ store.mas_d25ShowVisuals()
 
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
 
-    if persistent._mas_player_bday_decor:
-        $ store.mas_player_bday_event.show_player_bday_Visuals()
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-    # NOTE: STOP PUTTING IFS BEFORE THIS ELSE. I believe we decided that this
-    #   else statment is supposed to be paired with (i.e. mutally exclusive)
-    #   to the if statement regarding the player's bday decor.
-    #   Dont be screwing this up by shoving if statemetns randomly in places.
-    else:
-        # show birthday visuals?
-        $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
+    #NOTE: elif'd so we don't try and show two types of visuals here
+    elif persistent._mas_player_bday_decor:
+        $ store.mas_surpriseBdayShowVisuals()
+
 
 label mas_dockstat_empty_desk_preloop:
 
@@ -2391,7 +2288,9 @@ label mas_dockstat_empty_desk_from_empty:
     $ renpy.pause(1.0, hard=True)
 
     # check for surprise visuals
-    $ store.mas_dockstat.surpriseBdayShowVisuals()
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
     # check for monika
     if promise.done():
@@ -2463,7 +2362,6 @@ label mas_dockstat_different_monika:
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
     $ renpy.hide("mas_roses")
-    show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
     hide emptydesk
@@ -2475,7 +2373,6 @@ label mas_dockstat_found_monika_from_empty:
 
 # found our monika
 label mas_dockstat_found_monika:
-
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
@@ -2486,19 +2383,9 @@ label mas_dockstat_found_monika:
         $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
-        if (
-                (store.mas_dockstat.retsbp_status
-                    & store.mas_dockstat.MAS_SBP_NONE) == 0
-                and not persistent._mas_bday_sbp_reacted
-            ):
-            # TODO: consider if this forced greeting should be changed to
-            #   work with new rules. Would have conditional and more prob
-            selected_greeting = "mas_bday_surprise_party_reaction"
-
-        else:
-            selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
-                persistent._mas_greeting_type
-            ).eventlabel
+        selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
+            persistent._mas_greeting_type
+        ).eventlabel
 
         # TODO: consider running the greeting setup label?
 
@@ -2514,19 +2401,12 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-        # o31 re-entry checks
-        if mas_isO31() and persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_globals.show_vignette = True
+        #Force progressive to disabled for o31
+        $ mas_changeWeather(mas_weather_thunder, True)
 
-            # setup thunder
-            if persistent._mas_likes_rain:
-                mas_weather_thunder.unlocked = True
-                store.mas_weather.saveMWData()
-            mas_changeWeather(mas_weather_thunder)
-
-        # d25 re-entry checks
-        if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
-            #mas_is_snowing = True
-            pass
+    elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
+        call mas_d25_season_exit
 
     jump ch30_post_exp_check

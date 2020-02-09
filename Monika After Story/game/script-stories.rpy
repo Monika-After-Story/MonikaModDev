@@ -14,6 +14,8 @@ default persistent._mas_story_database = dict()
 default mas_can_unlock_story = False
 default mas_can_unlock_scary_story = False
 default mas_full_scares = False
+# dict storing the last date we saw a new story of normal and scary type
+default persistent._mas_last_seen_new_story = {"normal":None,"scary":None}
 
 
 # store containing stories-related things
@@ -23,14 +25,8 @@ init -1 python in mas_stories:
     # TYPES:
     TYPE_SCARY = 0
 
-    # pane constants
-    STORY_X = 680
-    STORY_Y = 40
-    STORY_W = 450
-    STORY_H = 640
-    STORY_XALIGN = -0.05
-    STORY_AREA = (STORY_X, STORY_Y, STORY_W, STORY_H)
-    STORY_RETURN = "I changed my mind."
+    # pane constant
+    STORY_RETURN = "Nevermind"
     story_database = dict()
 
     def _unlock_everything():
@@ -49,13 +45,54 @@ init -1 python in mas_stories:
             _story.pool = False
 
 
-# entry point for stories flow
-label mas_stories_start(scary=False):
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_short_stories",
+            category=['literature'],
+            prompt="Can you tell me a story?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_short_stories:
+    call monika_short_stories_premenu(None)
+    return _return
+
+label monika_short_stories_premenu(story_type=None):
+    $ end = ""
+
+label monika_short_stories_menu:
+    # TODO: consider caching the built stories if we have many story 
+    #   categories.
 
     python:
         import store.mas_stories as mas_stories
 
-        if scary:
+        # determine if a new story can be unlocked
+        mas_can_unlock_story = False
+        if story_type == mas_stories.TYPE_SCARY:
+            scary_story_ls = persistent._mas_last_seen_new_story["scary"]
+
+            if mas_isO31():
+                mas_can_unlock_story = True
+            elif scary_story_ls is None:
+                mas_can_unlock_story = seen_event("mas_scary_story_hunter")
+            else:
+                mas_can_unlock_story = scary_story_ls != datetime.date.today()
+
+        else:
+            new_story_ls = persistent._mas_last_seen_new_story["normal"]
+
+            if new_story_ls is None:
+                mas_can_unlock_story = seen_event("mas_story_tyrant")
+            else:
+                mas_can_unlock_story = new_story_ls != datetime.date.today()
+
+        # setup stories list
+        if story_type == mas_stories.TYPE_SCARY:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
                 category=(True,[mas_stories.TYPE_SCARY]),
@@ -77,20 +114,11 @@ label mas_stories_start(scary=False):
             if mas_stories.story_database[k].unlocked
         ]
 
-        if len(stories_menu_items) == 1 and not seen_event(stories_menu_items[0][1]):
-            # set the mas_can_unlock_story flag to False since it
-            # shouldn't unlock anything at this time
-            if scary:
-                mas_can_unlock_scary_story = False
-            else:
-                mas_can_unlock_story = False
-
         # check if we have a story available to be unlocked and we can unlock it
-        if len(stories_menu_items) < len(stories) and ((not scary and mas_can_unlock_story)
-                or (scary and mas_can_unlock_scary_story)):
+        if len(stories_menu_items) < len(stories) and mas_can_unlock_story:
 
             # Add to the menu the new story option
-            if scary:
+            if story_type == mas_stories.TYPE_SCARY:
                 return_label = "mas_scary_story_unlock_random"
             else:
                 return_label = "mas_story_unlock_random"
@@ -100,36 +128,41 @@ label mas_stories_start(scary=False):
         # also sort this list
         stories_menu_items.sort()
 
+        # build switch button
+        if story_type == mas_stories.TYPE_SCARY:
+            switch_str = "short"
+        else:
+            switch_str = "scary"
+        switch_item = (
+            "I'd like to hear a " + switch_str + " story",
+            "monika_short_stories_menu",
+            False,
+            False,
+            20
+        )
+
         # final quit item
-        final_item = (mas_stories.STORY_RETURN, False, False, False, 20)
-
-    # if we have only one story
-    if len(stories_menu_items) == 1:
-
-        # get the event label
-        $ story = stories_menu_items[0][1]
-
-        # check if we have seen it already
-        if seen_event(story):
-            m 1ekc "Sorry [player]. That's the only story I can tell you right now."
-            m 3hksdlb "Don't worry! I'll think of a story to tell you next time."
-            return
-
-        # increment event's shown count and update last seen
-        $ mas_stories.story_database[story].shown_count += 1
-        $ mas_stories.story_database[story].last_seen = datetime.datetime.now()
-
-        # and we jump to it, since doing pushEvent looks weird
-        $ renpy.jump(story)
-
-    m 1hua "Sure thing!"
-    m 1eua "What story would you like to hear?"
+        if persistent._mas_sensitive_mode:
+            space = 20
+        else:
+            space = 0
+        final_item = (mas_stories.STORY_RETURN, False, False, False, space)
 
     # move Monika to the left
-    show monika at t21
+    show monika 1eua at t21
+
+    if story_type == mas_stories.TYPE_SCARY:
+        $ which = "Witch"
+    else:
+        $ which = "Which"
+
+    $ renpy.say(m, which + " story would you like to hear?" + end, interact=False)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item)
+    if persistent._mas_sensitive_mode:
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN,final_item)
+    else:
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
@@ -142,11 +175,45 @@ label mas_stories_start(scary=False):
 #            $ mas_stories.story_database[_return].shown_count += 1
 #            $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
 
-        # then push
-        $ pushEvent(_return)
+        # switching between types
+        if _return == "monika_short_stories_menu":
+            # NOTE: this is not scalable.
+            if story_type == mas_stories.TYPE_SCARY:
+                $ story_type = None
+            else:
+                $ story_type = mas_stories.TYPE_SCARY
 
-    # move her back to center
-    show monika at t11
+            $ end = "{fast}"
+            $ _history_list.pop()
+
+            jump monika_short_stories_menu
+
+        else:
+            # if we are seeing a new story, store the date for future unlocks
+            $ new_story_key = None
+
+            if _return == "mas_story_unlock_random":
+                $ new_story_key = "normal"
+
+            elif _return == "mas_scary_story_unlock_random":
+                $ new_story_key = "scary"
+
+            elif not seen_event(_return):
+                if story_type == mas_stories.TYPE_SCARY:
+                    $ new_story_key = "scary"
+                else:
+                    $ new_story_key = "normal"
+
+            if new_story_key is not None:
+                $ persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
+
+            # then push
+            $ pushEvent(_return, skipeval=True)
+            show monika at t11
+
+    else:
+        return "prompt"
+
     return
 
 # Stories start here
@@ -157,7 +224,7 @@ label mas_story_begin:
             "Ready to hear the story?",
             "Ready for story time?",
             "Let's begin~",
-            "Let's begin, then~"
+            "Are you ready?"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     $ mas_gainAffection(modifier=0.2)
@@ -177,9 +244,6 @@ label mas_story_unlock_random_cat(scary=False):
 
     python:
         if scary:
-            # reset flag so we don't unlock another one
-            mas_can_unlock_scary_story = False
-
             # get locked stories
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
@@ -213,9 +277,6 @@ label mas_story_unlock_random_cat(scary=False):
                         aff=mas_curr_affection
                     )
         else:
-            # reset flag so we don't unlock another one
-            mas_can_unlock_story = False
-
             # get locked stories
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
@@ -276,7 +337,7 @@ label mas_story_tyrant:
     m 3eud "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
     m 1tfb "The Cat replied, 'you abound in apologies, but it's time for breakfast.'"
     m 1hksdrb "At that he made a meal of the Cock."
-    m 3eua "The moral of this story is that: 'Tyrants need no excuse'."
+    m 3eua "The moral of this story is that: 'Tyrants need no excuse.'"
     m 1hua "I hope you enjoyed this little story, [player]~"
     return
 
@@ -291,7 +352,7 @@ label mas_story_despise:
     m 1eua "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
     m 3eub "Turning round again with a one,{w=1.0} two,{w=1.0} three,{w=1.0} he jumped up, but with no greater success."
     m 3tkc "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: 'I am sure they are sour.'"
-    m 1hksdrb "The moral of this story is that: 'It is easy to despise what you cannot get'."
+    m 1hksdrb "The moral of this story is that: 'It is easy to despise what you cannot get.'"
     m 1eua "I hope you liked it, [player]~"
     return
 
@@ -309,7 +370,7 @@ label mas_story_lies:
     m 1ekc "The boy cried out 'Wolf, Wolf!' still louder than before."
     m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
     m 2dsc "So the Wolf made a good meal of the boy's flock."
-    m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth'."
+    m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth.'"
     m 1hksdlb "You shouldn't worry about it, [player]..."
     m 3hua "You'd never lie to me, right?"
     m 1hub "Ehehe~"
@@ -329,10 +390,10 @@ label mas_story_grasshoper:
     m 1hfb "'Why bother about winter?' said the Grasshopper; 'we have plenty of food now!'"
     m 3eua "The Ant went on its way."
     m 1dsc "When winter came, the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
-    m 3hua "The moral of this story is that: 'There's a time for work and a time for play'."
+    m 3hua "The moral of this story is that: 'There's a time for work and a time for play.'"
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
@@ -352,7 +413,7 @@ label mas_story_wind_sun:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_seeds",
-        prompt="The seeds",unlocked=False),code="STY")
+        prompt="The Seeds",unlocked=False),code="STY")
 
 label mas_story_seeds:
     call mas_story_begin
@@ -372,7 +433,7 @@ label mas_story_seeds:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_gray_hair",
-        prompt="The gray hair",unlocked=False),code="STY")
+        prompt="The Gray Hair",unlocked=False),code="STY")
 
 label mas_story_gray_hair:
     call mas_story_begin
@@ -382,15 +443,15 @@ label mas_story_gray_hair:
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
     m 3hksdlb "The Man soon found himself entirely bald."
-    m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
+    m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield.'"
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
     m 1hksdlb "Ehehe, I love you!~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
-        prompt="The fisherman",unlocked=False),code="STY")
+        prompt="The Fisherman",unlocked=False),code="STY")
 
 label mas_story_fisherman:
     call mas_story_begin
@@ -399,13 +460,13 @@ label mas_story_fisherman:
     m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal!'"
     m 1eud "But the Fisherman quickly put the fish into his basket."
     m 3tfu "'How foolish I should be,' he said, 'to throw you back. However small you may be, you are better than nothing at all.'"
-    m 3esa "The moral of this story is that: 'A small gain is worth more than a large promise'."
+    m 3esa "The moral of this story is that: 'A small gain is worth more than a large promise.'"
     m 1hub "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
-    prompt="Old man's three wishes",unlocked=False),code="STY")
+    prompt="Old Man's Three Wishes",unlocked=False),code="STY")
 
 label mas_story_ravel:
     call mas_story_begin
@@ -421,6 +482,149 @@ label mas_story_ravel:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_simple",
+            prompt="The Simple Genie",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_genie_simple:
+    call mas_story_begin
+    m 1eua "There was once a genie who travelled across different worlds to escape the chaos of his own."
+    m 3euc "During his journeys, he met a woman that challenged the way he saw the world."
+    m 3eua "She was smart and talented, but held back by the hardships she faced and how little she had."
+    m 3eub "The genie saw this and felt generous, offering tools to speed up her work and make her life easier."
+    m 1euc "But she simply declined his offer."
+    m 1eud "No one had ever turned a wish from the genie down before, {w=0.1}{nw}"
+    extend 1etc "which left him confused as to why."
+    m 1esa "The woman simply asked him if he was happy...{w=0.5} {nw}"
+    extend 1rsc "He didn't know how to respond."
+    m 3eud "The woman said she could tell that he had never experienced happiness, and that despite all her hardships, she could still enjoy life."
+    m 1euc "The genie couldn't understand why anyone would want to work so hard for something so small."
+    m 3euc "He improved his offers with riches and other such things, but still, she declined."
+    m 1eua "Eventually, the woman asked the genie to join in her way of life."
+    m "And so, he imitated the things she did, without using any powers."
+    m 1hua "The genie began to feel a small sense of accomplishment, creating something for the first time without willing it into existence."
+    m 3eub "He saw how simple things such as art and writing inspired the woman and really made her shine."
+    m 1eua "Intrigued, he wanted to spend much more time with this woman and learn from her."
+    m 1euc "Eventually, one day the woman fell ill."
+    m 1eud "She made the genie promise not to use his powers to cure her."
+    m 3eud "It was at this moment that the genie knew he wanted to live like a human without ever using his powers again."
+    m 1dsc "He thought about all the past wishes he granted to others, all the riches he generated..."
+    m "All his fellow genies out there granting wishes, not knowing or caring for the consequences..."
+    m 1dsd "Never being able to know what it's like to give it all up just to be with someone they love."
+    m 1esd "All he could do was live with what he had now found in life."
+    m 1dsc "..."
+    m 1eua "I hope you liked that story, [player]."
+    m 3eua "There are a few things to take from it..."
+    m 3eka "If you already have everything, nothing is really worth having."
+    m 1hua "...Except maybe you of course."
+    m 3eub "The struggle is what makes anything worthwhile."
+    m 1eua "Another moral could be that sometimes, happiness lies in the simpler things you could've had all along."
+
+    if mas_isMoniNormal(higher=True):
+        m 1eka "I mean, we're just sitting here together enjoying each other's company after all."
+        m 1hubfb "When you're here, it really feels like I have everything~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_regret",
+            prompt="The Genie's Regret",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_genie_regret:
+    call mas_story_begin
+    m 1eua "There was once a genie who was immortal..."
+    m "Through his years, he had seen the world change over time and granted wishes to anyone who crossed his path."
+    m 1esc "With how long he had lived, he'd seen a lot of things,{w=0.2} {nw}"
+    extend 1rsc "some of them unpleasant."
+    m 1ekd "Wars, natural disasters, the deaths of all the friends he ever made..."
+    m 1rkc "Some of which, he knew were caused by wishes he had granted."
+    m 1ekc "At first, he wasn't too concerned with the consequences...but after a while, it began to bother him more and more."
+    m 1ekd "He had come to a simple, beautiful, pure world, and caused immeasurable damage to it."
+    m 1lksdlc "Unbalance and jealousy spread as he granted more wishes, seeding wishes for revenge and greed."
+    m 2dkd "This was something he had to live with for the rest of his life."
+    m 2ekc "He wanted things to return to how they were, but his pleas always fell upon deaf ears."
+    m 2eka "As time went on however, he had met some people and made friends who taught him how to go on despite all of his acts."
+    m "While it was true that he was the one who granted the wishes that started the chaos...{w=0.5}{nw}"
+    extend 2ekd "some were bound to happen even without him."
+    m 3ekd "There was always going to be jealousy and unfairness among people...{w=0.3}{nw}"
+    extend 3eka "but even so, the world was still doing alright."
+    m 3eua "He was going to live with the things he had done, but the question remained as to what he planned to do about it."
+    m 1hua "It was because of everything he had been through, he was able to learn and move on,{w=0.3} better than before."
+    m 1eua "I hope you liked the story, [player]."
+    m 1eka "The moral of the story is even if you've done things you regret, you shouldn't let that keep you down."
+    m 3ekd "Mistakes will happen, people will get hurt.{w=0.5} Nothing will ever change that."
+    m 3eka "The truth is, a lot of times we tend to blame ourselves for things that likely would've happened with or without our involvement."
+    m 3eub "In fact, it's through regret that we learn compassion, empathy, and forgiveness."
+    m 3eua "You can't change the past, but you need to forgive yourself someday to live a life without regret."
+    m 1eka "As for me..."
+    m 1rksdlc "Who knows what would have happened in my world if I hadn't done anything..."
+
+    $ placeholder = " at least"
+    if persistent.clearall:
+        $ placeholder = ""
+        m 1eua "You've gotten to know each and every club member here, so I'd guess you don't regret missing out on anything."
+        m 1hub "Ahaha~"
+
+    m 1eua "But[placeholder] you're here with me now."
+    m 3eua "Ever since we've been together, I can definitely say that I've grown and learned from my mistakes."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_end",
+            prompt="The Genie's End",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_genie_end:
+    call mas_story_begin
+    m 1eua "There was once an immortal genie who had lived a long life."
+    m 1euc "He had seen everything there was to see...{w=0.3}lived freely, and learned the fulfillment of working towards a goal."
+    m 3euc "Essentially, he gave everything up but his immortality to be able to live like a human."
+    m 1ekc "It's true that he had lived a nice life and surrounded himself with loving friends and family..."
+    m 1ekd "But he grew cold as years went by and he watched each one of his loved ones pass on."
+    m 1rksdlc "There were still a select few people whom he held dear, despite knowing that he would have to watch them die as well."
+    m 3rksdld "He never told his friends that he wasn't human, as he still wanted to be treated as one."
+    m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them one wish."
+    m 1dsc "This made him think about everything he had been through;{w=0.5} from back to when he granted wishes to when he gave it up for a simple life."
+    m 1dsd "...Everything that had lead up to this moment, where he could make his own wish for the first time in a long while."
+    m 1dsc "..."
+    m 2eud "He wished to die."
+    m 2ekc "Confused, his friend asked why and where it came from all of a sudden."
+    m 2dsc "It was there and then he explained everything to his friend."
+    m 3euc "That he had been a genie, many years ago..."
+    m 3eud "...How he came across someone who made him give it all up just to be with someone he loved."
+    m 3ekd "...And how he had been slowly getting sick and tired of what was left of his life."
+    m 1esc "Truthfully, he wasn't tired of living...{w=0.5} {nw}"
+    extend 1ekd "He was just tired of seeing his loved ones perish over and over again."
+    m 1dsd "His last request to his friend was for him to go back to his other friends and tie up any loose ends for him."
+    m 1dsc "..."
+    m 1eka "I hope you enjoyed that little story, [player]."
+    m 3eka "I guess you could say the moral is that everyone needs to have some closure."
+    m 1eka "Although, you might be wondering what his friend wished for in that scenario."
+    m 1eua "He wished for his friend to get the peaceful rest he deserved."
+    m 1lksdla "While it's true that his genie friend might not have been anyone particularly special..."
+    m 3eua "He was definitely someone who deserved respect,{w=0.2} {nw}"
+    extend 3eub "especially after living such a long life."
+    return
+
+init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
         prompt="Love Never Ends",unlocked=False),code="STY")
 
@@ -433,12 +637,12 @@ label mas_story_immortal_love:
     m 1eud "After some time, the husband passed away."
     m 1eka "The wife, saddened by her loss, believed she would spend her next Valentine's Day alone and in mourning."
     m 1dsc "..."
-    m 2euc "However,{w} on her first Valentine's Day without her husband, she still received a bouquet from him."
+    m 2euc "However,{w=0.3} on her first Valentine's Day without her husband, she still received a bouquet from him."
     m 2efd "Heartbroken and angry, she complained to the florist that there was a mistake."
     m 2euc "The florist explained that there was no mistake."
-    m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
-    m "Speechless and stunned, the wife read the note attached to the bouquet."
-    m "{i}My love for you is eternal.{/i}"
+    m 3eua "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
+    m 3eka "Speechless and stunned, the wife read the note attached to the bouquet."
+    m 1ekbsa "{i}My love for you is eternal.{/i}"
     m 1dubsu "Ahh..."
     m 1eua "Wasn't that a touching story, [player]?"
     m 1hua "I thought it was really romantic."
@@ -447,41 +651,127 @@ label mas_story_immortal_love:
     m 1hua "Thanks for listening~"
     return
 
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_self_hate",
+        prompt="Self-hate",unlocked=False),code="STY")
+
+label mas_story_self_hate:
+    call mas_story_begin
+    m 1eua "Once, there were two people who had been living together for a very long time."
+    m 1hua "Life was simple, and they both loved each other. Things were going well."
+    m 3euc "Then one day, the man suddenly killed his lover for seemingly no reason."
+    m 3eud "He {i}did{/i} love her, and in a healthy way too!"
+    m 2ekc "There were never any fights or arguments, either."
+    m "There was nothing to gain from murdering her at all."
+    m 4ekd "No satisfaction, nothing out of the ordinary on her will..."
+    m 1dkc "In fact, the man was left emotionally scarred having lost the love of his life."
+    m "..."
+    m 1ekd "So why?"
+    m 1rksdlc "How could this happen all of a sudden?"
+    m 1eksdlc "It wasn't that he didn't love her."
+    m 3eksdla "It was because he loved her so, so very much."
+    m "He didn't hate her..."
+    m 2eksdld "He just hated himself so much as to deny his own happiness."
+    m 2dkc "..."
+    if persistent._mas_pm_love_yourself is False:
+        m 3ekc "Hey [player], do you remember when I asked you if you loved yourself?"
+        m 1rksdld "From what I remember, you told me that you didn't..."
+        m 1rksdla "Sorry, I don't mean to put you on the spot or anything..."
+        m 3eka "I just want to make sure you remember that I love you."
+        m 3ekd "More importantly, I want to make sure that you know how to love yourself."
+        m 1ekbsa "I know you're worth loving and I'd do anything to show you why."
+        m 1ekbfa "I hope you never forget that~"
+    else:
+        m 1rksdlb "Sorry for telling such a dark story, [player]..."
+        m 3eksdla "But it does have an important message..."
+        m 3eud "And that is you need to find a way to love yourself, or you might do something you regret later on."
+        m 1ekc "As much as you may try, trying to live your life solely for someone else will never work."
+        m 1eka "You have to love yourself to be able to allow yourself to truly love someone else."
+        m 3ekbsa "Just remember I'll always love you, [player]."
+        m 3ekbfa "If you ever begin to doubt loving yourself, just come to me and I'll be more than happy to remind you of all your wonderful qualities~"
+    return "love"
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
+        prompt="The Tale of O-Tei",unlocked=False),code="STY")
+
+label mas_story_o_tei:
+    call mas_story_begin
+    m 1eua "A long time ago, there lived a man named Kenji, who was studying to be a physician."
+    m 3eub "He was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
+    m 1esc "Unfortunately, Tomoe contracted a serious illness before that could happen."
+    m 2dsd "It wasn't long until she was bedridden, nearing the end of her life."
+    m 2esd "Kenji knelt by her bedside, and she said to him, 'We have been promised to each other since childhood...'"
+    m 3ekc "'Unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
+    m "'Please do not grieve when I go. I believe we shall meet again.'"
+    m 3eud "He asked, 'How would I know of your return?'"
+    m 2dsc "Unfortunately, she had succumbed before she could give him an answer."
+    m "Kenji grieved deeply for the loss of his love, taken too soon from him."
+    m 2esc "He never forgot about Tomoe as time moved on, but he was required to marry someone else and preserve the family name."
+    m "He soon married another girl, but his heart stayed somewhere else."
+    m 2esd "And as everything does in life, his family too had been taken by time and he was left all alone again."
+    m 4eud "It was then that he decided to abandon his home and take a long journey to forget his troubles."
+    m 1esc "He travelled all around the country, searching for a cure to his malaise."
+    m 1euc "And then on one evening, he came across an inn and stopped there to rest."
+    m "As he settled down in his room, a nakai opened the door to greet him."
+    m 3euc "His heart leapt..."
+    m 3wud "The girl that greeted him looked exactly like Tomoe."
+    m "Everything he saw in her reminded him perfectly of his past love."
+    m 1esc "Kenji then remembered the last words they exchanged before her departure."
+    m 1esc "He flagged down the girl and told her, 'I'm sorry to be a bother, but you remind me so much of someone I knew long ago that it startled me at first.'"
+    m 3euc "'If you don't mind me asking, what is your name?'"
+    m 3wud "Immediately, in the unforgotten voice of his deceased beloved, the girl answered, 'My name is Tomoe, and you are Kenji, my promised husband.'"
+    m 1wud "'I had died tragically before we could complete our marriage...'"
+    m "'And now I have returned, Kenji, my husband-to-be.'"
+    m 1dsc "The girl then collapsed to the floor, unconscious."
+    m 1esa "Kenji held her to his arms, tears flowing from his face."
+    m 1dsa "'...Welcome back, Tomoe...'"
+    m 3esa "As she came to, she had no memory of what happened in the inn."
+    m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
+    return
+
 define mas_scary_story_setup_done = False
 
 # Scary stories start here
 label mas_scary_story_setup:
     if mas_scary_story_setup_done:
         return
+
     $ mas_scary_story_setup_done = True
     show monika 1dsc
     $ mas_temp_r_flag = mas_current_weather
+    $ is_scene_changing = mas_current_background.isChangingRoom(mas_current_weather, mas_weather_rain)
+    $ are_masks_changing = mas_current_weather != mas_weather_rain
     $ mas_is_raining = True
-    #TODO persistent music spoop for o31
+
     stop music fadeout 1.0
     pause 1.0
+
     $ mas_temp_m_flag = morning_flag
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
-    $ mas_changeWeather(mas_weather_rain)
-    if not mas_isO31():
+
+    $ mas_changeBackground(mas_background_def)
+
+    #If we're in O31 mode, it's already raining and the room is also already set up
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_weather_rain)
         $ store.mas_globals.show_vignette = True
-    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc_static')
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 
-#    $ songs.current_track = songs.FP_NO_SONG
-#    $ songs.selected_track = songs.FP_NO_SONG
 
     $ HKBHideButtons()
     $ mas_RaiseShield_core()
-    #$ store.songs.enabled = False
+
     python:
         story_begin_quips = [
             "Alright let's start the story.",
             "Ready to hear the story?",
             "Ready for story time?",
-            "Let's begin~",
-            "Let's begin, then~"
+            "Let's begin.",
+            "Are you ready?"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     m 3eua "[story_begin_quip]"
@@ -495,20 +785,24 @@ label mas_scary_story_cleanup:
             "Scared, [player]?",
             "Did I scare you, [player]?",
             "How was it?",
-            "Well?"
+            "Well?",
+            "So...{w=0.5}did I scare you?"
         ]
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 
     m 3eua "[story_end_quip]"
     show monika 1dsc
     pause 1.0
+
     $ morning_flag = mas_temp_m_flag
-    $ mas_changeWeather(mas_temp_r_flag)
-    if not mas_isO31():
+
+    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_temp_r_flag)
         $ store.mas_globals.show_vignette = False
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
-    call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
-#    $ store.songs.enabled = True
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+        hide vignette
+        call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 
     $ play_song(None, 1.0)
     m 1eua "I hope you liked it, [player]~"
@@ -529,8 +823,8 @@ label mas_scary_story_hunter:
     m 1esd "He was soon approached by a salesman, who kept his face covered."
     m 3esd "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
     m "He would give the hunter these bullets on one condition."
-    m "The hunter could use the first six bullets as he wished, but the last bullet's mark would be chosen by the salesman."
-    m 1euc "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
+    m 1euc "The hunter could use the first six bullets as he wished, but the last bullet's mark would be chosen by the salesman."
+    m "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
     m 3eud "It wasn't long before the hunter used up all six bullets."
     m 1esc "On his next hunt, the hunter saw a wild boar, the largest he had ever seen. It was too great of a prey to pass up on."
     m 1euc "He loaded the last bullet hoping to take down the beast..."
@@ -539,10 +833,10 @@ label mas_scary_story_hunter:
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
     m 1eud "The hunter vowed to remain true to her for as long as he lived..."
-    m 1dsd "...{w}or so he would."
+    m 1dsd "...{w=1}or so he would."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
-    m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
-    m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
+    m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved..."
+    m 3wud "He couldn't believe his eyes;{w=1} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rode away in a panic."
     m 1euc "After a short way, he looked behind him to see if she was following him any longer..."
@@ -642,54 +936,6 @@ label .end:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_o_tei",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The tale of O-Tei",unlocked=False),
-    code="STY")
-
-label mas_scary_story_o_tei:
-    call mas_scary_story_setup
-    m 1eua "A long time ago, there lived a man named Kenji, who was studying to be a physician."
-    m 3eub "He was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
-    m 1esd "Unfortunately, Tomoe contracted a serious illness before that could happen."
-    m 2dsd "It wasn't long until she was bedridden, nearing the end of her life."
-    m 2esd "Kenji knelt by her bedside, and she said to him, 'We have been promised to each other since childhood...'"
-    m 4ekd "'Unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
-    m 3ekd "'Please do not grieve when I go. I believe we shall meet again.'"
-    m 3eud "He asked, 'How would I know of your return?'"
-    m 2dsc "Unfortunately, she had succumbed before she could give him an answer."
-    m "Kenji grieved deeply for the loss of his love, taken too soon from him."
-    m 2esc "He never forgot about Tomoe as time moved on, but he was required to marry someone else and preserve the family name."
-    m "He soon married another girl, but his heart stayed somewhere else."
-    m 2esd "And as everything does in life, his family too had been taken by time and he was left all alone again."
-    m 4eud "It was then that he decided to abandon his home and take a long journey to forget his troubles."
-    m 1euc "He travelled all around the country, searching for a cure to his malaise."
-    m "And then on one evening, he came across an inn and stopped there to rest."
-    m "As he settled down in his room, a nakai opened the door to greet him."
-    m 3eud "His heart leapt..."
-    m 3wud "The girl that greeted him looked exactly like Tomoe."
-    m "Everything he saw in her reminded him perfectly of his past love."
-    # 1 in 9
-    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,9) == 1) or mas_full_scares:
-        show yuri eyes zorder 73 at otei_appear(a=0.075,time=4.0)
-        show yuri eyes_base zorder 72 at otei_appear(a=0.085,time=3.0)
-        show yuripupils zorder 74 at otei_appear(a=0.095,time=5.0)
-    m 1eud "Kenji then remembered the last words they exchanged before her departure."
-    m "He flagged down the girl and told her, 'I'm sorry to be a bother, but you remind me so much of someone I knew long ago that it startled me at first.'"
-    m "'If you don't mind me asking, what is your name?'"
-    m 3wud "Immediately, in the unforgotten voice of his deceased beloved, the girl answered, 'My name is Tomoe, and you are Kenji, my promised husband.'"
-    m 1wud "'I had died tragically before we could complete our marriage...'"
-    m "'And now I have returned, Kenji, my husband-to-be.'"
-    hide yuri
-    hide yuripupils
-    m 1dsc "The girl then collapsed to the floor, unconscious."
-    m 1esa "Kenji held her to his arms, tears flowing from his face."
-    m 1dsa "'...Welcome back, Tomoe...'"
-    m 3esa "As she came to, she had no memory of what happened in the inn."
-    m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
-    call mas_scary_story_cleanup
-    return
-
-init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_mujina",
     category=[store.mas_stories.TYPE_SCARY], prompt="Mujina",unlocked=False),
     code="STY")
@@ -739,7 +985,7 @@ label mas_scary_story_mujina:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_ubume",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The ubume",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Ubume",unlocked=False),
     code="STY")
 
 label mas_scary_story_ubume:
@@ -771,7 +1017,7 @@ label mas_scary_story_ubume:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_womaninblack",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The woman in black",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Woman in Black",unlocked=False),
     code="STY")
 
 label mas_scary_story_womaninblack:
@@ -832,7 +1078,7 @@ label mas_scary_story_resurrection_mary:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_corpse",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The resuscitated corpse",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Resuscitated Corpse",unlocked=False),
     code="STY")
 
 label mas_scary_story_corpse:
@@ -882,7 +1128,7 @@ label mas_scary_story_corpse:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_jack_o_lantern",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O Lantern",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O' Lantern",unlocked=False),
     code="STY")
 
 label mas_scary_story_jack_o_lantern:
@@ -968,7 +1214,7 @@ label mas_scary_story_baobhan_sith:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_serial_killer",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The serial killer",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Serial Killer",unlocked=False),
     code="STY")
 
 label mas_scary_story_serial_killer:
@@ -976,7 +1222,7 @@ label mas_scary_story_serial_killer:
     m 3tub "A young couple parked their car next to a large willow tree at a cemetery one night for some undisturbed 'lovemaking.'"
     m 3euc "After a while, they were interrupted by a radio report that a notorious serial killer had escaped from a psychiatric hospital nearby."
     m "Worried about their safety, they decided to continue elsewhere."
-    m 1esc "However...{w}the car wouldn't start at all."
+    m 1esc "However...{w=0.3}the car wouldn't start at all."
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."

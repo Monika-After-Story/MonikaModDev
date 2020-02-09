@@ -3,7 +3,7 @@
 # Adding custom Piano Songs:
 # Piano songs can be added by creating a json file in the piano_songs
 # folder. Stock piano songs (which are shipped in official release) should be
-# in mod_assets/piano/songs/
+# in mod_assets/games/piano/songs/
 #
 # NOTE: Errors in PianoNote JSONS are logged to "pnm.txt"
 #  gameplay will not crash even if piano note matches are formatted
@@ -332,7 +332,7 @@ label mas_piano_hb_prac:
         m 1eksdla "Ehehe, trying the Birthday Song on your birthday, [player]?"
         m 3hua "Keep trying, I know you can do it!"
     else:
-        m 1eua "You're practing the Birthday Song?"
+        m 1eua "You're practicing the Birthday Song?"
         m 3hua "I know you can do it, [player]!"
     return
 
@@ -387,7 +387,7 @@ init -3 python in mas_piano_keys:
         renpy.config.basedir + "/piano_songs/"
     )
     stock_pnml_basedir = os.path.normcase(
-        renpy.config.basedir + "/game/mod_assets/piano/songs/"
+        renpy.config.basedir + "/game/mod_assets/games/piano/songs/"
     )
     no_pnml_basedir = False
     try:
@@ -399,7 +399,7 @@ init -3 python in mas_piano_keys:
     # menu constants
     MENU_X = 680
     MENU_Y = 40
-    MENU_W = 450
+    MENU_W = 560
     MENU_H = 640
     MENU_XALIGN = -0.05
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
@@ -2251,20 +2251,20 @@ init 810 python:
         ZZFP_C6 = "mod_assets/sounds/piano_keys/C6.ogg"
 
         # piano images
-        ZZPK_IMG_BACK = "mod_assets/piano/board.png"
-        ZZPK_IMG_KEYS = "mod_assets/piano/piano.png"
+        ZZPK_IMG_BACK = "mod_assets/games/piano/board.png"
+        ZZPK_IMG_KEYS = "mod_assets/games/piano/piano.png"
 
         # lyrical bar
-        ZZPK_LYR_BAR = "mod_assets/piano/lyrical_bar.png"
+        ZZPK_LYR_BAR = "mod_assets/games/piano/lyrical_bar.png"
 
         # overlay, white
-        ZZPK_W_OVL_LEFT = "mod_assets/piano/ovl/ivory_left.png"
-        ZZPK_W_OVL_RIGHT = "mod_assets/piano/ovl/ivory_right.png"
-        ZZPK_W_OVL_CENTER = "mod_assets/piano/ovl/ivory_center.png"
-        ZZPK_W_OVL_PLAIN = "mod_assets/piano/ovl/ivory_plain.png"
+        ZZPK_W_OVL_LEFT = "mod_assets/games/piano/ovl/ivory_left.png"
+        ZZPK_W_OVL_RIGHT = "mod_assets/games/piano/ovl/ivory_right.png"
+        ZZPK_W_OVL_CENTER = "mod_assets/games/piano/ovl/ivory_center.png"
+        ZZPK_W_OVL_PLAIN = "mod_assets/games/piano/ovl/ivory_plain.png"
 
         # overlay black
-        ZZPK_B_OVL_PLAIN = "mod_assets/piano/ovl/ebony.png"
+        ZZPK_B_OVL_PLAIN = "mod_assets/games/piano/ovl/ebony.png"
 
         # offsets for rendering
         ZZPK_IMG_BACK_X = 5
@@ -2346,93 +2346,93 @@ init 810 python:
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
             # button shit
-            button_idle = Image("mod_assets/hkb_idle_background.png")
-            button_hover = Image("mod_assets/hkb_hover_background.png")
-            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
+            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
+            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
 
             # button text
             button_done_text_idle = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_done_text_hover = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_cancel_text_idle = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_cancel_text_hover = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_reset_text_idle = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_reset_text_hover = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_resetall_text_idle = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_resetall_text_hover = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_config_text_idle = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_config_text_hover = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_quit_text_idle = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_quit_text_hover = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
