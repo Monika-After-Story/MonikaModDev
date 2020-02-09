@@ -1241,9 +1241,7 @@ label mas_consumables_generic_finish_having(consumable):
         #Let's queue this weekly if we've got something we're low on
         if (
             not mas_inEVL("mas_consumables_generic_queued_running_out")
-            and mas_timePastSince(
-                mas_getEV("mas_consumables_generic_queued_running_out").last_seen, datetime.timedelta(days=7)
-            )
+            and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
             and len(MASConsumable._getLowCons()) > 0
         ):
             $ queueEvent("mas_consumables_generic_queued_running_out")
