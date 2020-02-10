@@ -90,8 +90,6 @@ init 5 python:
             prompt="Can you sing me a song?",
             category=["music"],
             pool=True,
-            conditional="store.mas_songs.hasUnlockedSongs()",
-            action=EV_ACT_UNLOCK,
             aff_range=(mas_aff.NORMAL,None),
             rules={"no unlock": None}
         )
@@ -173,6 +171,9 @@ init 5 python:
     )
 
 label monika_sing_song_random:
+    #Unlock pool delegate
+    $ mas_unlockEVL("monika_sing_song_pool", "EVE")
+
     #We only want short songs in random. Long songs should be unlocked by default or have another means to unlock
     #Like a "preview" version of it which unlocks the full song in the pool delegate
     if mas_songs.hasRandomSongs():

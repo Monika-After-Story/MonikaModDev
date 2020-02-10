@@ -371,8 +371,13 @@ label v0_3_1(version=version): # 0.3.1
 #0.10.8
 label v0_10_8(version="v0_10_8"):
     python:
-        if not mas_songs.hasUnlockedSongs():
-            mas_lockEVL("monika_sing_song_pool", "EVE")
+        #Fix the song pool delegate
+        song_pool_ev = mas_getEV("monika_sing_song_pool")
+        if song_pool_ev:
+            song_pool_ev.conditional = None
+            song_pool_ev.action = None
+            if not mas_songs.hasUnlockedSongs():
+                song_pool_ev.unlocked = False
 
     return
 
