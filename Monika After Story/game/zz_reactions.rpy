@@ -1578,7 +1578,11 @@ label mas_reaction_quetzal_plush:
         m 1wud "Oh!"
 
         #Wear plush
-        $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+        #If we're eating something, the plush space is taken and we'll want to wear center
+        if MASConsumable._getCurrentFood():
+            $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+        else:
+            $ monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         $ persistent._mas_acs_enable_quetzalplushie = True
         m 1sub "It's a quetzal!"
@@ -1594,6 +1598,10 @@ label mas_reaction_quetzal_plush:
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
             m 3ekbsa "You always seem to know how to make me smile."
+
+        if MASConsumable._getCurrentFood():
+            m 3rksdla "My desk is getting a little full though..."
+            m 1eka "I'll just put this away for now."
 
         m 1hub "Thank you again, [player]~"
 
@@ -2505,7 +2513,10 @@ label mas_reaction_gift_chocolates:
 
     if not persistent._mas_given_chocolates_before:
         $ persistent._mas_given_chocolates_before = True
-        $ monika_chr.wear_acs(mas_acs_heartchoc)
+
+        #If we're eating something already, that takes priority over the acs
+        if not MASConsumable._getCurrentFood():
+            $ monika_chr.wear_acs(mas_acs_heartchoc)
 
         $ mas_giftCapGainAff(5)
 
@@ -2536,7 +2547,9 @@ label mas_reaction_gift_chocolates:
         $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
         if times_chocs_given == 0:
             #We want this to show up where she accepts the chocs
-            $ monika_chr.wear_acs(mas_acs_heartchoc)
+            #Same as before, we don't want these to show up if we're already eating
+            if not MASConsumable._getCurrentFood():
+                $ monika_chr.wear_acs(mas_acs_heartchoc)
 
             $ mas_giftCapGainAff(3 if mas_isSpecialDay() else 1)
 
