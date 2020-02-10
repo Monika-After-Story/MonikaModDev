@@ -2567,7 +2567,10 @@ label mas_reaction_gift_chocolates:
                 m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
 
         elif times_chocs_given == 1:
-            $ monika_chr.wear_acs(mas_acs_heartchoc)
+            #Same here
+            if not MASConsumable._getCurrentFood():
+                $ monika_chr.wear_acs(mas_acs_heartchoc)
+
             m 1eka "More chocolates, [player]?"
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
