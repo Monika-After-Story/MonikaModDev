@@ -368,6 +368,14 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.8
+label v0_10_8(version="v0_10_8"):
+    python:
+        if not mas_songs.hasUnlockedSongs():
+            mas_lockEVL("monika_sing_song_pool", "EVE")
+
+    return
+
 #0.10.7
 label v0_10_7(version="v0_10_7"):
     python:

@@ -92,7 +92,8 @@ init 5 python:
             pool=True,
             conditional="store.mas_songs.hasUnlockedSongs()",
             action=EV_ACT_UNLOCK,
-            aff_range=(mas_aff.NORMAL,None)
+            aff_range=(mas_aff.NORMAL,None),
+            rules={"no unlock": None}
         )
     )
 
