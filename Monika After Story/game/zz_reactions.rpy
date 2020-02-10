@@ -1570,14 +1570,14 @@ init 5 python:
     addReaction("mas_reaction_gift_thermos_mug", "justmonikathermos", is_good=True)
 
 label mas_reaction_gift_thermos_mug:
-    call mas_thermos_mug_handler(mas_acs_thermos_mug, "Just Monika")
+    call mas_thermos_mug_handler(mas_acs_thermos_mug, "Just Monika", "justmonikathermos")
     return
 
 #Whether or not we've given Monika a thermos before
 default persistent._mas_given_thermos_before = False
 
 #Thermos handler
-label mas_thermos_mug_handler(thermos_acs, disp_name):
+label mas_thermos_mug_handler(thermos_acs, disp_name, giftname):
     if mas_SELisUnlocked(thermos_acs):
         m 1eksdla "[player]..."
         m 1rksdlb "I already have this thermos, ahaha..."
@@ -1597,6 +1597,8 @@ label mas_thermos_mug_handler(thermos_acs, disp_name):
     $ mas_selspr.unlock_acs(thermos_acs)
     #Save selectables
     $ mas_selspr.save_selectables()
+    #And delete the gift file
+    $ mas_filereacts.delete_file(giftname)
     return
 
 ##END: Consumable related gifts
