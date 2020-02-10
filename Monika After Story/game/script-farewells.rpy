@@ -1046,7 +1046,7 @@ label bye_going_somewhere_rtg:
 
             #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
             renpy.pause(1.0, hard=True)
-        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
 
         #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
