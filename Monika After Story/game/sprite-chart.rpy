@@ -455,7 +455,7 @@ init -100 python in mas_sprites:
         ),
         "mug": ACSTemplate(
             "mug",
-            mux_type=["mug"],
+            mux_type=["mug", "thermos-mug"],
         ),
         "necklace": ACSTemplate(
             "necklace",

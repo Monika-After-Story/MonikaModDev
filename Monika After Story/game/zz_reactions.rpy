@@ -1566,7 +1566,40 @@ label mas_reaction_hotchocolate:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-##END: Consumables gifts
+init 5 python:
+    addReaction("mas_reaction_gift_thermos_mug", "justmonikathermos", is_good=True)
+
+label mas_reaction_gift_thermos_mug:
+    call mas_thermos_mug_handler(mas_acs_thermos_mug, "Just Monika")
+    return
+
+#Whether or not we've given Monika a thermos before
+default persistent._mas_given_thermos_before = False
+
+#Thermos handler
+label mas_thermos_mug_handler(thermos_acs, disp_name):
+    if mas_SELisUnlocked(thermos_acs):
+        m 1eksdla "[player]..."
+        m 1rksdlb "I already have this thermos, ahaha..."
+
+    elif persistent._mas_given_thermos_before:
+        m 1wud "Oh!{w=0.3} Another thermos!"
+        m 1hua "And it's a [disp_name] one this time."
+        m 1hub "Thanks so much, [player], I can't wait to use it!"
+
+    else:
+        m 1wud "Oh!{w=0.3} A [disp_name] thermos!"
+        m 1hua "Now I can bring something to drink when we go out together~"
+        m 1hub "Thanks so much, [player]!"
+        $ persistent._mas_given_thermos_before = True
+
+    #Now unlock the acs
+    $ mas_selspr.unlock_acs(thermos_acs)
+    #Save selectables
+    $ mas_selspr.save_selectables()
+    return
+
+##END: Consumable related gifts
 
 init 5 python:
     addReaction("mas_reaction_quetzal_plush", "quetzalplushie", is_good=True)

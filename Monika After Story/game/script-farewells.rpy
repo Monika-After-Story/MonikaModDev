@@ -1038,12 +1038,11 @@ label bye_going_somewhere_rtg:
             current_drink = MASConsumable._getCurrentDrink()
             if current_drink and current_drink.portable:
                 #We have a current drink. Let's get all accessories of this type so we can essentially spritepack them
-                thermoses = [
-                    thermos_acs
-                    for thermos_acs in store.mas_sprites.ACS_MAP.itervalues()
-                    if thermos_acs.acs_type == "thermos-mug"
-                ]
-                monika_chr.wear_acs(renpy.random.choice(thermoses))
+                thermoses = [thermos.get_sprobj() for thermos in mas_selspr.filter_acs(True, "thermos-mug")]
+
+                #If we have an unlocked thermos, we'll use it here
+                if thermoses:
+                    monika_chr.wear_acs(renpy.random.choice(thermoses))
 
             #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
             renpy.pause(1.0, hard=True)

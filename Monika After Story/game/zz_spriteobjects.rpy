@@ -1389,6 +1389,12 @@ init -1 python:
         acs_type="thermos-mug"
     )
     store.mas_sprites.init_acs(mas_acs_thermos_mug)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_thermos_mug,
+        "Thermos (Just Monika)",
+        "thermos_justmonika",
+        "thermos-mug"
+    )
 
     ### ROSE EAR ACCESSORY
     ## ear_rose
