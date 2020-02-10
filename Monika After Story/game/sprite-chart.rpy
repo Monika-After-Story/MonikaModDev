@@ -476,6 +476,10 @@ init -100 python in mas_sprites:
                 EXP_A_RBL: True,
             }
         ),
+        "thermos-mug": ACSTemplate(
+            "thermos-mug",
+            mux_type=["mug", "thermos-mug"]
+        ),
         "twin-ribbons": ACSTemplate(
             "twin-ribbons",
             mux_type=DEF_MUX_RB,

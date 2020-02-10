@@ -48,6 +48,7 @@ init 5 python:
             start_end_tuple_list - list of (start_hour, end_hour) tuples
             acs - MASAccessory to display for the consumable
             split_list - list of split hours
+            portable - NOTE: Only for drinks, whether or not Monika can take this with her when taking her somewhere
             should_restock_warn - whether or not Monika should warn the player that she's running out of this consumable
             late_entry_list - list of integers storing the hour which would be considered a late entry
             max_re_serve - amount of times Monika can get a re-serving of this consumable
@@ -87,6 +88,7 @@ init 5 python:
             start_end_tuple_list,
             acs,
             split_list,
+            portable=False,
             should_restock_warn=True,
             late_entry_list=None,
             max_re_serve=None,
@@ -116,6 +118,13 @@ init 5 python:
 
                 start_end_tuple_list - list of tuples storing (start_hour, end_hour)
 
+                acs - MASAccessory object for this consumable
+
+                split_list - list of split hours for prepping
+
+                portable - NOTE: for drinks only. True if Monika can take this with her when going out
+                    (Default: False)
+
                 should_restock_warn - should Monika warn the player that this needs to be restocked?
                     (Default: True)
 
@@ -126,10 +135,6 @@ init 5 python:
 
                 max_re_serve - amount of times Monika can get a refill of this consumable
                     (Default: None)
-
-                acs - MASAccessory object for this consumable
-
-                split_list - list of split hours for prepping
 
                 cons_chance - chance for Monika to continue having this consumable
                     (Default: 80/100)
@@ -168,6 +173,7 @@ init 5 python:
             self.disp_name=disp_name
             self.start_end_tuple_list=start_end_tuple_list
             self.acs=acs
+            self.portable=portable
             self.cons_chance=cons_chance
             self.cons_low=cons_low
             self.cons_high=cons_high
@@ -1003,6 +1009,7 @@ init 6 python:
         container="cup",
         start_end_tuple_list=[(5, 12)],
         acs=mas_acs_mug,
+        portable=True,
         split_list=[11],
         late_entry_list=[10]
     )
@@ -1014,6 +1021,7 @@ init 6 python:
         container="cup",
         start_end_tuple_list=[(16,23)],
         acs=mas_acs_hotchoc_mug,
+        portable=True,
         split_list=[22],
         late_entry_list=[19]
     )

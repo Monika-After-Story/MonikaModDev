@@ -1374,6 +1374,22 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_mug)
 
+    ### THERMOS MUG
+    ## thermos_mug
+    # Thermos Monika uses to bring warm drinks with her when going out with the player
+    # Thanks JMO
+    mas_acs_thermos_mug = MASAccessory(
+        "thermos_mug",
+        "thermos_mug",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="thermos-mug"
+    )
+    store.mas_sprites.init_acs(mas_acs_thermos_mug)
+
     ### ROSE EAR ACCESSORY
     ## ear_rose
     # rose that is placed on Monika's ear

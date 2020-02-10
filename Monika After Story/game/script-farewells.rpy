@@ -990,48 +990,33 @@ label bye_going_somewhere_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
-        $ ellipsis_count = 1
-        $ give_me_a_second = "Give me a second to get ready."
+        m 1eua "Give me a second to get ready."
+        hide monika with dissolve
 
     elif promise.done():
         # i/o thread is done!
-        $ _history_list.pop()
-        m "Give me a second to get ready...{fast}{nw}"
         jump bye_going_somewhere_rtg
-
-    else:
-        #clean up the history list so only one "give me a second..." should show up
-        if ellipsis_count == 3:
-            $ ellipsis_count = 1
-            $ give_me_a_second = "Give me a second to get ready."
-
-        else:
-            $ ellipsis_count += 1
-            $ give_me_a_second += '.'
-
-        $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
     menu:
-        m "[give_me_a_second]{fast}"
-        "Wait, wait!":
+        "Wait a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
     # fall thru to the wait wait flow
-    show monika 1ekc
     menu:
         m "What is it?"
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
+            show monika 1ekc at t11 zorder MAS_MONIKA_Z with dissolve
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
             # if we get here, we should jump back to the top so we can
             # continue waiting
-            m 2hub "Oh, good! Let me finish getting ready."
+            m "Oh, good! Let me finish getting ready."
 
     # by default, continue looping
     jump bye_going_somewhere_iowait
@@ -1048,6 +1033,21 @@ label bye_going_somewhere_rtg:
             persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
                 store.mas_greetings.TYPE_GENERIC_RET
             )
+
+            #If we had a drink out that's portable, let's wear that now
+            current_drink = MASConsumable._getCurrentDrink()
+            if current_drink and current_drink.portable:
+                #We have a current drink. Let's get all accessories of this type so we can essentially spritepack them
+                thermoses = [
+                    thermos_acs
+                    for thermos_acs in store.mas_sprites.ACS_MAP.itervalues()
+                    if thermos_acs.acs_type == "thermos-mug"
+                ]
+                monika_chr.wear_acs(renpy.random.choice(thermoses))
+
+            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
+            renpy.pause(1.0, hard=True)
+        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
 
         #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
