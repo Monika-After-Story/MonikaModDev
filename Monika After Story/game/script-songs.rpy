@@ -620,6 +620,7 @@ label mas_song_rewrite_the_stars:
     m 3ekbfb "{i}~So why don't we rewrite the stars~{/i}"
     m 2ekbfa "{i}~Maybe the world could be ours~{/i}"
     m 2dkbfa "{i}~Tonight~{/i}"
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "The world feels like ours every time I'm with you [player]~"
     m 5hubfa "I love you so much!"
     return "love"
