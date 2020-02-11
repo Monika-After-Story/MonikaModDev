@@ -376,8 +376,7 @@ label v0_10_8(version="v0_10_8"):
         if song_pool_ev:
             song_pool_ev.conditional = None
             song_pool_ev.action = None
-            if not mas_songs.hasUnlockedSongs():
-                song_pool_ev.unlocked = False
+            song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
 
     return
 
