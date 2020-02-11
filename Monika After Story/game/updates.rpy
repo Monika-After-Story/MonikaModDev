@@ -368,6 +368,18 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.8
+label v0_10_8(version="v0_10_8"):
+    python:
+        #Fix the song pool delegate
+        song_pool_ev = mas_getEV("monika_sing_song_pool")
+        if song_pool_ev:
+            song_pool_ev.conditional = None
+            song_pool_ev.action = None
+            song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
+
+    return
+
 #0.10.7
 label v0_10_7(version="v0_10_7"):
     python:

@@ -90,9 +90,8 @@ init 5 python:
             prompt="Can you sing me a song?",
             category=["music"],
             pool=True,
-            conditional="store.mas_songs.hasUnlockedSongs()",
-            action=EV_ACT_UNLOCK,
-            aff_range=(mas_aff.NORMAL,None)
+            aff_range=(mas_aff.NORMAL,None),
+            rules={"no unlock": None}
         )
     )
 
@@ -176,11 +175,14 @@ label monika_sing_song_random:
     #Like a "preview" version of it which unlocks the full song in the pool delegate
     if mas_songs.hasRandomSongs():
         python:
+            #Unlock pool delegate
+            mas_unlockEVL("monika_sing_song_pool", "EVE")
+
             rand_song = renpy.random.choice(mas_songs.getRandomSongs())
             pushEvent(rand_song, skipeval=True, notify=True)
             mas_unlockEVL(rand_song, "SNG")
 
-            # unlock the long version of the song
+            #Unlock the long version of the song
             mas_unlockEVL(rand_song+"_long","SNG")
 
     #We have no songs! let's pull back the shown count for this and derandom
