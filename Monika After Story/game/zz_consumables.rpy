@@ -651,9 +651,13 @@ init 5 python:
                 ]
 
         @staticmethod
-        def _reset():
+        def _reset(_type=None):
             """
             Resets the events for the consumable and resets the current consumable(s)
+
+            IN:
+                _type - Type of consumable to reset events for
+                    (If None, all types are reset. Default: None)
             """
             def cons_reset(consumable):
                 """
@@ -694,8 +698,11 @@ init 5 python:
                 }
 
             #Get current consumables and reset
-            cons_reset(MASConsumable._getCurrentDrink())
-            cons_reset(MASConsumable._getCurrentFood())
+            if _type == 0 or _type is None:
+                cons_reset(MASConsumable._getCurrentDrink())
+
+            if _type ==1 or _type is None:
+                cons_reset(MASConsumable._getCurrentFood())
 
         @staticmethod
         def _getCurrentDrink():
@@ -904,7 +911,7 @@ init 5 python:
                         and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
                     )
                 ):
-                    MASConsumable._reset()
+                    MASConsumable._reset(_type)
                 return
 
             #If we're currently prepping/having anything, we don't need to do anything else
@@ -919,7 +926,7 @@ init 5 python:
 
             #Time to C O N S U M E
             #First, clear vars so we start fresh
-            MASConsumable._reset()
+            MASConsumable._reset(_type)
 
             #First, should we even have this?
             if cons.shouldHave():
