@@ -487,30 +487,6 @@ init 5 python:
                 and self.isDrinkTime(_time)
             )
 
-        def isStillCons(self, type, _now=None):
-            """
-            Checks if we're still having something
-
-            IN:
-                type - Type of consumable to check for
-                    0 - Drink
-                    1 - Food
-
-                _now - datetime.datetime object representing current time
-                    If none, now is assumed
-                    (Default: None)
-
-            OUT:
-                boolean:
-                    - True if we're still having something
-                    - False otdherwise
-            """
-            if _now is None:
-                _now = datetime.datetime.now()
-
-            _time = persistent._mas_current_consumable[self.consumable_type]["consume_time"]
-            return _time is not None and _now < _time
-
         def isConsTime(self, _now=None):
             """
             Checks if we're in the time range for this consumable
@@ -600,6 +576,31 @@ init 5 python:
                 self.done_cons_until = None
                 return True
             return False
+
+        @staticmethod
+        def _isStillCons(self, _type, _now=None):
+            """
+            Checks if we're still having something
+
+            IN:
+                _type - Type of consumable to check for
+                    0 - Drink
+                    1 - Food
+
+                _now - datetime.datetime object representing current time
+                    If none, now is assumed
+                    (Default: None)
+
+            OUT:
+                boolean:
+                    - True if we're still having something
+                    - False otdherwise
+            """
+            if _now is None:
+                _now = datetime.datetime.now()
+
+            _time = persistent._mas_current_consumable[_type]["consume_time"]
+            return _time is not None and _now < _time
 
         @staticmethod
         def _getLowCons(critical=False):
@@ -732,8 +733,10 @@ init 5 python:
                     - False otherwise
             """
             return (
-                persistent._mas_current_consumable[_type]["id"]
-                and persistent._mas_current_consumable[_type]["consume_time"]
+                bool(
+                    persistent._mas_current_consumable[_type]["id"]
+                    and persistent._mas_current_consumable[_type]["consume_time"]
+                )
             )
 
         @staticmethod
@@ -897,7 +900,7 @@ init 5 python:
                 if (
                     MASConsumable._isHaving(_type)
                     and (
-                        not curr_cons.isStillCons(_type)
+                        not MASConsumable._isStillCons(_type)
                         and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
                     )
                 ):
