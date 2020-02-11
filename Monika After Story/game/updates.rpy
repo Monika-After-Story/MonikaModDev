@@ -382,7 +382,7 @@ label v0_10_8(version="v0_10_8"):
         if coffee_cons and persistent._mas_acs_enable_coffee:
             #Enable the consumable object
             coffee_cons.enable()
-            coffee_cons.restock(renpy.randint(40, 60))
+            coffee_cons.restock(renpy.random.randint(40, 60))
 
             #Transfer the amount of cups had
             persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
@@ -396,7 +396,7 @@ label v0_10_8(version="v0_10_8"):
         if hotchoc_cons and persistent._mas_acs_enable_hotchoc:
             #Enable and restock
             hotchoc_cons.enable()
-            hotchoc_cons.restock(renpy.randint(40, 60))
+            hotchoc_cons.restock(renpy.random.randint(40, 60))
 
             persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
 
@@ -404,6 +404,14 @@ label v0_10_8(version="v0_10_8"):
             safeDel("_mas_c_hotchoc_cups_drank")
             safeDel("_mas_acs_enable_hotchoc")
             safeDel("_mas_c_hotchoc_been_given")
+
+        #Fix the song pool delegate
+        song_pool_ev = mas_getEV("monika_sing_song_pool")
+        if song_pool_ev:
+            song_pool_ev.conditional = None
+            song_pool_ev.action = None
+            song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
+
     return
 
 #0.10.7

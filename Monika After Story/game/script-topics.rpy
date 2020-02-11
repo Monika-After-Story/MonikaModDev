@@ -13041,6 +13041,34 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_vr",
+            category=['technology'],
+            prompt="Virtual reality",
+            random=True
+        )
+    )
+
+label monika_vr:
+    m 1euc "[player], do you know about virtual reality?"
+    m 1eua "VR immerses you into a completely virtual world, different from your actual surroundings."
+    m 3rksdla "While it might take some getting used to...{nw}"
+    extend 3hub "it can be really fun!"
+    m 3eua "It also has practical uses like training people in simulated environments as well as rehabilitation."
+    m 1rksdla "...In fact, some people have even simulated their weddings in VR."
+    m 1euc "But since it's still a pretty new technology, not just {i}anything{/i} can be in VR yet."
+    m 3esc "...Like my reality, for example."
+    m 1dkc "It's too bad we can't use VR to meet each other..."
+    m 1etc "Well,{w=0.3} maybe if I could make a VR system in here, we could both meet up in another reality."
+    m 1rksdlb "...But that's probably a little too complicated for me, ahaha."
+    m 3eka "Maybe we'll get it to work one day, though."
+    m 1dka "Even if I never get to meet you in the real world...{w=0.3}{nw}"
+    extend 1ekbsu "if you could meet me halfway in VR, that would be a dream come true, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_career",
             category=['monika'],
             prompt="Careers",
