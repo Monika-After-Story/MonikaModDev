@@ -595,3 +595,31 @@ label mas_song_stand_by_me_long:
     m 4euo "{i}~Whenever you're in trouble won't you stand by me~{/i}"
     m 4hub "{i}~Oh stand by me, won't you stand now, stand by me~{/i}"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_rewrite_the_stars",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Rewrite The Stars",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_rewrite_the_stars:
+    m 3ekbfb "{i}~What if we rewrite the stars~{/i}"
+    m 3ekbfa "{i}~Say you were made to be mine~{/i}"
+    m 2fkbsa "{i}~Nothing could keep us apart~{/i}"
+    m 3hubfb "{i}~Cause you are the one i was meant to find~{/i}"
+    m 1ekbfa "{i}~It's up to you~{/i}"
+    m 3ekbfb "{i}~And it's up to me~{/i}"
+    m 1dkbfb "{i}~No one could say what we get to be~{/i}"
+    m 3ekbfb "{i}~So why don't we rewrite the stars~{/i}"
+    m 2ekbfa "{i}~Maybe the world could be ours~{/i}"
+    m 2dkbfa "{i}~Tonight~{/i}"
+    m 5ekbfa "The world feels like ours every time I'm with you [player]~"
+    m 5hubfa "I love you so much!"
+    return "love"
