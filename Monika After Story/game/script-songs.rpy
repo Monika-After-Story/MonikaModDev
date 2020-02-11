@@ -610,17 +610,17 @@ init 5 python:
     )
 
 label mas_song_rewrite_the_stars:
-    m 3ekbfb "{i}~What if we rewrite the stars~{/i}"
-    m 3ekbfa "{i}~Say you were made to be mine~{/i}"
-    m 2fkbsa "{i}~Nothing could keep us apart~{/i}"
-    m 3hubfb "{i}~Cause you are the one i was meant to find~{/i}"
-    m 1ekbfa "{i}~It's up to you~{/i}"
-    m 3ekbfb "{i}~And it's up to me~{/i}"
-    m 1dkbfb "{i}~No one could say what we get to be~{/i}"
-    m 3ekbfb "{i}~So why don't we rewrite the stars~{/i}"
-    m 2ekbfa "{i}~Maybe the world could be ours~{/i}"
-    m 2dkbfa "{i}~Tonight~{/i}"
-    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ekbfa "The world feels like ours every time I'm with you [player]~"
-    m 5hubfa "I love you so much!"
+    m 1dsd "{i}~What if we rewrite the stars~{/i}"
+    m 3dubsb "{i}~Say you were made to be mine~{/i}"
+    m 3dubso "{i}~Nothing could keep us apart~{/i}"
+    m 3ekbfu "{i}~Cause you are the one I was meant to find~{/i}"
+    m 1ekbsb "{i}~It's up to you~{/i}"
+    m 3ekbsb "{i}~And it's up to me~{/i}"
+    m 1duu "{i}~No one could say what we get to be~{/i}"
+    m 3ekb "{i}~So why don't we rewrite the stars~{/i}"
+    m 3hubsa "{i}~Maybe the world could be ours~{/i}"
+    m 1duo "{i}~Tonight~{/i}"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "The world really feels like it's ours when I'm with you [player]~"
+    m 5ekbfu "I love you so much."
     return "derandom|love"
