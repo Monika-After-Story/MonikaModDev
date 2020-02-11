@@ -578,7 +578,7 @@ init 5 python:
             return False
 
         @staticmethod
-        def _isStillCons(self, _type, _now=None):
+        def _isStillCons(_type, _now=None):
             """
             Checks if we're still having something
 
