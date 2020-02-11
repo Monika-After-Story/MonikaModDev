@@ -991,6 +991,7 @@ label bye_going_somewhere_iowait:
     if first_pass:
         $ first_pass = False
         m 1eua "Give me a second to get ready."
+        show emptydesk at i11 zorder 9
         hide monika with dissolve
 
     elif promise.done():
@@ -1011,6 +1012,7 @@ label bye_going_somewhere_iowait:
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
             show monika 1ekc at t11 zorder MAS_MONIKA_Z with dissolve
+            hide emptydesk
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
@@ -1046,11 +1048,16 @@ label bye_going_somewhere_rtg:
 
             #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
             renpy.pause(1.0, hard=True)
+
         show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+        hide emptydesk
 
         #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
+
+    show monika 1ekc at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
 
     # otherwise, we failed, so monika should tell player
     m 1ekc "Oh no..."
