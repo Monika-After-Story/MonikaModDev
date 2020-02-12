@@ -140,97 +140,9 @@ label gender_redo_same:
     m 5hua "I want you to be who you want to be while you're in this room."
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
-label preferredname:
-    m 1euc "I've been wondering about your name."
-    m 1esa "Is '[player]' really your name?"
-    if renpy.windows and currentuser.lower() == player.lower():
-        m 3esa "I mean, it's the same as your computer's name..."
-        m 1eua "You're using '[currentuser]' and '[player].'"
-        m "Either that or you must really like that pseudonym."
-
-    m "Do you want me to call you something else?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you want me to call you something else?{fast}"
-        "Yes.":
-            $ done = False
-            m 1hua "Ok, just type 'Nevermind' if you change your mind, [player]."
-            while not done:
-                #Could add an elif that takes off special characters
-                $ tempname = renpy.input("Tell me, what is it.",length=20).strip(' \t\n\r')
-                $ lowername = tempname.lower()
-                if lowername == "nevermind":
-                    m 1ekc "Oh I see."
-                    m 1eka "Well, just tell me whenever you want to be called something else, [player]."
-                    $ done = True
-                elif lowername == "":
-                    m 1dsc "..."
-                    m 1hksdlb "You have to give me a name, [player]!"
-                    m 1eka "I swear you're just so silly sometimes."
-                    m "Try again!"
-                elif lowername == player.lower():
-                    m 1dsc "..."
-                    m 1hksdlb "That's the same name you have right now, silly!"
-                    m 1eka "Try again~"
-                elif lowername == mas_monika_twitter_handle:
-                    m 2esc "..."
-                    # TODO: actaully have dialog here
-                else:
-                    # sayori name check
-                    if tempname.lower() == "sayori":
-                        call sayori_name_scare from _call_sayori_name_scare
-                    elif (
-                            persistent.playername.lower() == "sayori"
-                            and not persistent._mas_sensitive_mode
-                        ):
-                        $ songs.initMusicChoices()
-
-                    python:
-
-                        persistent.mcname = player
-                        mcname = player
-                        persistent.playername = tempname
-                        player = tempname
-
-                    if lowername == "monika":
-                        m 1tkc "Really?"
-                        m "That's the same as mine!"
-                        m 1tku "Well..."
-                        m "Either it really is your name or you're playing a joke on me."
-                        m 1hua "But it's fine by me if that's what you want me to call you~"
-                    else:
-                        m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
-                    $ done = True
-        "No.":
-            m 1eka "Oh... Okay then, if you say so."
-            m 3eka "Just tell me if you change your mind, [player]."
-            $ done = True
-
-    #Unlock prompt to change name again
-    $ mas_showEVL("monika_changename","EVE",unlock=True,_pool=True)
-    $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
-    return
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_changename",
-            category=['you','misc'],
-            prompt="Can you change my name?",
-            unlocked=False
-        )
-    ) #This needs to be unlocked by the random name change event
-
-label monika_changename:
-
+#Player nickname filter lists
+label mas_player_name_init_filter_lists:
     python:
-        import re
-
         bad_nickname_list = [
             "annoying",
             "anus",
@@ -443,63 +355,159 @@ label monika_changename:
             "superwoman",
             "bobba",
         ]
+
         awkward_quips = [
             "I don't really feel...{w=0.5} comfortable calling you that all the time.",
             "That is...{w=0.5} not something I would like to call you [player].",
             "Not that its bad but...",
             "Are you trying to embarrass me [player]?"
         ]
+
         bad_quips = [
             "[player]...{w=0.5}why would you even consider calling yourself that?",
             "[player]...{w=0.5}why would I ever call you that?",
             "I couldn't ever call you anything like that [player].",
             "What? Please [player],{w=0.5} don't call yourself bad names."
         ]
+
         good_quips = [
             "Thats a wonderfull name.",
             "I like that alot...",
             "I like that name.",
             "Oh! thats a great name."
         ]
+    return
 
-    m 1eua "You want to change your name?{nw}"
+label mas_player_name_enter_name_loop(menu_str, input_prompt):
+    $ import re
+
+    m 1eua "[menu_str]{nw}"
     $ _history_list.pop()
     menu:
-        m "You want to change your name?{fast}"
+        m "[menu_str]{fast}"
         "Yes.":
             m 1eua "Just type 'nevermind' if you change your mind."
             $ done = False
             while not done:
-                $ tempname = renpy.input("What do you want me to call you?",length=20).strip(' \t\n\r')
+                $ tempname = renpy.input("[input_prompt]", length=20).strip(' \t\n\r')
                 $ lowername = tempname.lower()
                 if lowername == "nevermind":
-                    m 1tfx "[player]!"
-                    m 2tku "Please stop teasing me~"
-                    m 1hub "I really do want to know what you want me to call you!"
-                    m 3hksdlb "I won't judge no matter how ridiculous it might be."
-                    m 2eka "So don't be shy and just tell me, [player]~"
+                    m 1ekc "Oh I see."
+                    m 1eka "Well, just tell me whenever you want to be called something else, [player]."
                     $ done = True
+
                 elif lowername == "":
-                    m 2hua "..."
-                    m 4hksdlb "You have to give me a name, [player]!"
-                    m 1eka "I swear you're just so silly sometimes."
+                    m 1eksdla "..."
+                    m 3rksdlb "You have to give me a name to call you, [player]..."
                     m 1eua "Try again!"
+
                 elif lowername == player.lower():
                     m 2hua "..."
                     m 4hksdlb "That's the same name you have right now, silly!"
                     m 1eua "Try again~"
+
                 elif lowername in awkward_nickname_list:
                     $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
                     m 1rksdlb "[awkward_quip]"
                     m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+
                 elif lowername in bad_nickname_list:
                     $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
                     m 1ekd "[bad_quip]"
                     m 3eka "Please pick a nicer name for yourself, okay?"
+
                 else:
                     # sayori name check
                     if tempname.lower() == "sayori":
-                        call sayori_name_scare from _call_sayori_name_scare_1
+                        call sayori_name_scare
+
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
+                        $ songs.initMusicChoices()
+
+                    python:
+                        persistent.mcname = player
+                        mcname = player
+                        persistent.playername = tempname
+                        player = tempname
+
+                    if lowername == "monika":
+                        m 1tkc "Really?"
+                        m "That's the same as mine!"
+                        m 1tku "Well..."
+                        m "Either it really is your name or you're playing a joke on me."
+                        m 1hua "But it's fine by me if that's what you want me to call you~"
+
+                    elif lowername in good_nickname_list:
+                        $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
+                        m 1sub "[good_quip]"
+                        m 3esa "Ok then! From now on, I'll call you '{i}[player]{/i}'."
+                        m 1hsb "Ehehe~"
+                        $ done = True
+
+                    else:
+                        m 1eub "Ok then!"
+                        m 3eub "From now on, I'll call you '{i}[player]{/i}'."
+                        $ done = True
+
+        "No.":
+            m 1ekc "Oh, I see..."
+            m 1eka "You don't have to be embarrassed, [player]."
+            m 1eua "Just let me know if you had a change of heart, okay?"
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="preferredname",
+            conditional="get_level()>=16 and not seen_event('preferredname')",
+            action=EV_ACT_QUEUE
+        )
+    ) #This needs to be unlocked by the random name change event
+
+label preferredname:
+    m 1euc "I've been wondering about your name."
+    m 1esa "Is '[player]' really your name?"
+    if renpy.windows and currentuser.lower() == player.lower():
+        m 3esa "I mean, it's the same as your computer's name..."
+        m 1eua "You're using '[currentuser]' and '[player].'"
+        m "Either that or you must really like that pseudonym."
+
+    m "Do you want me to call you something else?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you want me to call you something else?{fast}"
+        "Yes.":
+            $ done = False
+            m 1hua "Ok, just type 'Nevermind' if you change your mind, [player]."
+            while not done:
+                #Could add an elif that takes off special characters
+                $ tempname = renpy.input("Tell me, what is it.",length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
+                    m 1ekc "Oh I see."
+                    m 1eka "Well, just tell me whenever you want to be called something else, [player]."
+                    $ done = True
+                elif lowername == "":
+                    m 1dsc "..."
+                    m 1hksdlb "You have to give me a name, [player]!"
+                    m 1eka "I swear you're just so silly sometimes."
+                    m "Try again!"
+                elif lowername == player.lower():
+                    m 1dsc "..."
+                    m 1hksdlb "That's the same name you have right now, silly!"
+                    m 1eka "Try again~"
+                elif lowername == mas_monika_twitter_handle:
+                    m 2esc "..."
+                    # TODO: actaully have dialog here
+                else:
+                    # sayori name check
+                    if tempname.lower() == "sayori":
+                        call sayori_name_scare from _call_sayori_name_scare
                     elif (
                             persistent.playername.lower() == "sayori"
                             and not persistent._mas_sensitive_mode
@@ -519,16 +527,110 @@ label monika_changename:
                         m 1tku "Well..."
                         m "Either it really is your name or you're playing a joke on me."
                         m 1hua "But it's fine by me if that's what you want me to call you~"
+                    else:
+                        m 1eub "Ok then!"
+                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
+                    $ done = True
+        "No.":
+            m 1eka "Oh... Okay then, if you say so."
+            m 3eka "Just tell me if you change your mind, [player]."
+            $ done = True
+
+    #Unlock prompt to change name again
+    $ mas_showEVL("monika_changename","EVE",unlock=True,_pool=True)
+    $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_changename",
+            category=['you','misc'],
+            prompt="Can you change my name?",
+            unlocked=False
+        )
+    ) #This needs to be unlocked by the random name change event
+
+label monika_changename:
+    call mas_player_name_enter_name_loop("You want to change your name?", "What do you want me to call you?")
+    $ import re
+
+    m 1eua "You want to change your name?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "You want to change your name?{fast}"
+        "Yes.":
+            m 1eua "Just type 'nevermind' if you change your mind."
+            $ done = False
+            while not done:
+                $ tempname = renpy.input("What do you want me to call you?",length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
+                    m 1tfx "[player]!"
+                    m 2tku "Please stop teasing me~"
+                    m 1hub "I really do want to know what you want me to call you!"
+                    m 3hksdlb "I won't judge no matter how ridiculous it might be."
+                    m 2eka "So don't be shy and just tell me, [player]~"
+                    $ done = True
+
+                elif lowername == "":
+                    m 2hua "..."
+                    m 4hksdlb "You have to give me a name, [player]!"
+                    m 1eka "I swear you're just so silly sometimes."
+                    m 1eua "Try again!"
+
+                elif lowername == player.lower():
+                    m 2hua "..."
+                    m 4hksdlb "That's the same name you have right now, silly!"
+                    m 1eua "Try again~"
+
+                elif lowername in awkward_nickname_list:
+                    $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
+                    m 1rksdlb "[awkward_quip]"
+                    m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+
+                elif lowername in bad_nickname_list:
+                    $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
+                    m 1ekd "[bad_quip]"
+                    m 3eka "Please pick a nicer name for yourself, okay?"
+
+                else:
+                    # sayori name check
+                    if tempname.lower() == "sayori":
+                        call sayori_name_scare from _call_sayori_name_scare_1
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
+                        $ songs.initMusicChoices()
+
+                    python:
+                        persistent.mcname = player
+                        mcname = player
+                        persistent.playername = tempname
+                        player = tempname
+
+                    if lowername == "monika":
+                        m 1tkc "Really?"
+                        m "That's the same as mine!"
+                        m 1tku "Well..."
+                        m "Either it really is your name or you're playing a joke on me."
+                        m 1hua "But it's fine by me if that's what you want me to call you~"
+
                     elif lowername in good_nickname_list:
                         $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                         m 1sub "[good_quip]"
                         m 3esa "Ok then! From now on, I'll call you '{i}[player]{/i}'."
                         m 1hsb "ehehe~"
                         $ done = True
+
                     else:
                         m 1eub "Ok then!"
                         m 3eub "From now on, I'll call you '{i}[player]{/i}'."
                         $ done = True
+
         "No.":
             m 1ekc "Oh, I see..."
             m 1eka "You don't have to be embarrassed, [player]."
