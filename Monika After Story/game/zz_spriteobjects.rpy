@@ -1482,7 +1482,6 @@ init -1 python:
         stay_on_start=False,
         acs_type="chocs",
         mux_type=["left-desk-acs"],
-        #Can't mux this since this has special handling via programming points
         entry_pp=store.mas_sprites._acs_heartchoc_entry,
         exit_pp=store.mas_sprites._acs_heartchoc_exit
     )
@@ -1654,9 +1653,6 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="plush_q",
-
-        # NOTE: this shouldn't be muxed with heart choc as heart choc 
-        #   needs to add mid version of this
         mux_type=["plush_mid", "left-desk-acs"],
         entry_pp=store.mas_sprites._acs_quetzalplushie_entry,
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit
