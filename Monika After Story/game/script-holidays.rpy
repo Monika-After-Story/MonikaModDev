@@ -1835,10 +1835,10 @@ label mas_d25_gift_starter:
 label mas_d25_gift_connector:
     python:
         d25_gift_quips = [
-            "Next one!",
-            "Oh, there's another one here!",
-            "Now let me open this one!",
-            "I'll open this one next!"
+            _("Next one!"),
+            _("Oh, there's another one here!"),
+            _("Now let me open this one!"),
+            _("I'll open this one next!")
         ]
 
         picked_quip = random.choice(d25_gift_quips)

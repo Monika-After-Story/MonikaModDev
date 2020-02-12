@@ -3,34 +3,30 @@ init 100 python:
     layout.UNSTABLE = store.mas_layout.UNSTABLE
 
 init -1 python:
-    layout.QUIT_YES = "Please don't close the game on me!"
-    layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
+    layout.QUIT_YES = _("Please don't close the game on me!")
+    layout.QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
 
     # tooltips
-    layout.MAS_TT_SENS_MODE = (
-        "Sensitive mode removes content that may be disturbing, offensive, "
-        " or considered tasteless."
+    layout.MAS_TT_SENS_MODE = _(
+        "Sensitive mode removes content that may be disturbing, offensive, or considered tasteless."
     )
-    layout.MAS_TT_UNSTABLE = (
-        "Unstable mode downloads updates from the experimental unstable "
-        "branch of development. It is HIGHLY recommended to make a backup "
-        "of your persistents before enabling this mode."
+    layout.MAS_TT_UNSTABLE = _(
+        "Unstable mode downloads updates from the experimental unstable branch of development. It is HIGHLY recommended to make a backup of your persistents before enabling this mode."
     )
-    layout.MAS_TT_REPEAT = (
+    layout.MAS_TT_REPEAT = _(
         "Enable this to let Monika repeat topics that you have already seen."
     )
-    layout.MAS_TT_NOTIF = (
+    layout.MAS_TT_NOTIF = _(
         "Enabling this will let Monika use your system's notifications and check if MAS is your active window "
     )
-    layout.MAS_TT_NOTIF_SOUND = (
+    layout.MAS_TT_NOTIF_SOUND = _(
         "If enabled, a custom notification sound will play for Monika's notifications "
     )
-    layout.MAS_TT_G_NOTIF = (
+    layout.MAS_TT_G_NOTIF = _(
         "Enables notifications for the selected group."
     )
-    layout.MAS_TT_ACTV_WND = (
-        "Enabling this will allow Monika to see your active window "
-        "and offer some comments based on what you're doing."
+    layout.MAS_TT_ACTV_WND = _(
+        "Enabling this will allow Monika to see your active window and offer some comments based on what you're doing."
     )
 
 
@@ -42,30 +38,27 @@ init python in mas_layout:
 
     QUIT_YES = store.layout.QUIT_YES
     QUIT_NO = store.layout.QUIT_NO
-    QUIT = "Leaving without saying goodbye, [player]?"
-    UNSTABLE = (
-        "WARNING: Enabling unstable mode will download updates from the " +
-        "experimental unstable branch. It is HIGHLY recommended to make a " +
-        "backup of your persistents before enabling this mode. Please report " +
-        "issues found here with an [[UNSTABLE] tag."
+    QUIT = _("Leaving without saying goodbye, [player]?")
+    UNSTABLE = _(
+        "WARNING: Enabling unstable mode will download updates from the experimental unstable branch. It is HIGHLY recommended to make a backup of your persistents before enabling this mode. Please report issues found here with an [[UNSTABLE] tag."
     )
 
     # quit yes messages affection scaled
-    QUIT_YES_BROKEN = "You could at least pretend that you care."
-    QUIT_YES_DIS = ":("
-    QUIT_YES_AFF = "T_T [player]..."
+    QUIT_YES_BROKEN = _("You could at least pretend that you care.")
+    QUIT_YES_DIS = _(":(")
+    QUIT_YES_AFF = _("T_T [player]...")
 
     # quit no messages affection scaled
-    QUIT_NO_BROKEN = "{i}Now{/i} you listen?"
-    QUIT_NO_UPSET = "Thanks for being considerate, [player]."
-    QUIT_NO_HAPPY = ":)"
-    QUIT_NO_AFF_G = "Good [boy]."
-    QUIT_NO_AFF_GL = "Good. :)"
-    QUIT_NO_LOVE = "<3 u"
+    QUIT_NO_BROKEN = _("{i}Now{/i} you listen?")
+    QUIT_NO_UPSET = _("Thanks for being considerate, [player].")
+    QUIT_NO_HAPPY = _(":)")
+    QUIT_NO_AFF_G = _("Good [boy].")
+    QUIT_NO_AFF_GL = _("Good. :)")
+    QUIT_NO_LOVE = _("<3 u")
 
     # quit messages affection scaled
-    QUIT_BROKEN = "Just go."
-    QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
+    QUIT_BROKEN = _("Just go.")
+    QUIT_AFF = _("Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!")
 
     if store.persistent.gender == "M" or store.persistent.gender == "F":
         _usage_quit_aff = QUIT_NO_AFF_G
@@ -2452,4 +2445,3 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         text "{0}\n\n{1}".format(renpy.substitute(_poem.title), renpy.substitute(_poem.text)) style _styletext
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
-

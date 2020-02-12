@@ -220,11 +220,11 @@ label monika_short_stories_menu:
 label mas_story_begin:
     python:
         story_begin_quips = [
-            "Alright, let's start the story.",
-            "Ready to hear the story?",
-            "Ready for story time?",
-            "Let's begin~",
-            "Are you ready?"
+            _("Alright, let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin~"),
+            _("Are you ready?")
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     $ mas_gainAffection(modifier=0.2)
@@ -767,11 +767,11 @@ label mas_scary_story_setup:
 
     python:
         story_begin_quips = [
-            "Alright let's start the story.",
-            "Ready to hear the story?",
-            "Ready for story time?",
-            "Let's begin.",
-            "Are you ready?"
+            _("Alright let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin."),
+            _("Are you ready?")
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     m 3eua "[story_begin_quip]"
@@ -782,11 +782,11 @@ label mas_scary_story_cleanup:
 
     python:
         story_end_quips = [
-            "Scared, [player]?",
-            "Did I scare you, [player]?",
-            "How was it?",
-            "Well?",
-            "So...{w=0.5}did I scare you?"
+            _("Scared, [player]?"),
+            _("Did I scare you, [player]?"),
+            _("How was it?"),
+            _("Well?"),
+            _("So...{w=0.5}did I scare you?")
         ]
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 

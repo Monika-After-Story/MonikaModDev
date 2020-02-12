@@ -962,9 +962,9 @@ label pick_a_game:
 
         # hangman text
         if persistent._mas_sensitive_mode:
-            _hangman_text = "Word Guesser"
+            _hangman_text = _("Word Guesser")
         else:
-            _hangman_text = "Hangman"
+            _hangman_text = _("Hangman")
 
         # decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
