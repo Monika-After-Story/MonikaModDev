@@ -3,6 +3,9 @@
 # Contains also a store named mas_calendar which includes helper functions
 # to add Events to the calendar
 
+# Format used for calendar display
+define DATE_DISPLAY_FORMAT = "\t  \t  \t  \t  \t  \t  \t  {0}\n{1}\n{2}\n{3}"
+
 init -1 python:
 
     import json
@@ -85,9 +88,6 @@ init -1 python:
         # Day names constant array
         DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday"]
-
-        # Format used for calendar display
-        DATE_DISPLAY_FORMAT = "\t  \t  \t  \t  \t  \t  \t  {0}\n{1}\n{2}\n{3}"
 
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
@@ -309,7 +309,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 # Generate as buttons the day names
 
                 button_day_text = Text(
-                    day,
+                    "{#weekday}" + day,
                     font=gui.default_font,
                     size=17,
                     color=self.TEXT_DAY_COLOR,
@@ -482,7 +482,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # constant month and year text labels
             self.text_current_month = Text(
-                self.MONTH_NAMES[self.selected_month],
+                "{#month}" + self.MONTH_NAMES[self.selected_month],
                 font=gui.default_font,
                 size=21,
                 color=self.TEXT_DAY_COLOR,
@@ -594,7 +594,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                             ret_val = current_date
 
                     day_button_text = Text(
-                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), event_labels[0], event_labels[1], third_label),
+                        DATE_DISPLAY_FORMAT.format(str(current_date.day), __(event_labels[0]), __(event_labels[1]), __(third_label)),
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
                         color=self.TEXT_DAY_COLOR,
