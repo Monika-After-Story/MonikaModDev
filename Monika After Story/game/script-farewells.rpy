@@ -991,6 +991,12 @@ label bye_going_somewhere_iowait:
     if first_pass:
         $ first_pass = False
         m 1eua "Give me a second to get ready."
+
+        #Get zooms and reset to normal
+        $ curr_zoom = store.mas_sprites.zoom_level
+        call monika_zoom_transition_reset(1.0)
+
+        #Get Moni off screen
         show emptydesk at i11 zorder 9
         hide monika with dissolve
 
@@ -1011,8 +1017,15 @@ label bye_going_somewhere_iowait:
         m "What is it?"
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
+
+            #Show Monika again
             show monika 1ekc at t11 zorder MAS_MONIKA_Z with dissolve
             hide emptydesk
+
+            #Reset zooms
+            $ renpy.pause(0.5, hard=True)
+            call monika_zoom_transition(curr_zoom, 1.0)
+
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
@@ -1052,9 +1065,17 @@ label bye_going_somewhere_rtg:
         show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
         hide emptydesk
 
-        #Otherwise we just use the normal outro
+        #And reset zoom
+        $ renpy.pause(0.5, hard=True)
+        call monika_zoom_transition(curr_zoom, 1.0)
+
+        #Use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
+
+    #Reset zoom again
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
 
     show monika 1ekc at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
