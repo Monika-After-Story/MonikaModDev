@@ -12950,7 +12950,7 @@ label monika_origin:
     m 1eka "Do you love me less for not being from your reality?{nw}"
     $ _history_list.pop()
     menu:
-        m "So... Do you love me less for not being from your reality?{fast}"
+        m "Do you love me less for not being from your reality?{fast}"
         "Yes.":
             $ persistent._mas_pm_bothered_monika_is_virtual = True
             $ persistent._mas_pm_very_bothered_monika_is_virtual = True
