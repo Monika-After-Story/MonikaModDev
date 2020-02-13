@@ -1110,8 +1110,8 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            "lingerie": True,
             store.mas_sprites.EXP_C_BRS: True,
+            "lingerie": "d25"
         },
         entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
         exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
@@ -1123,7 +1123,7 @@ init -1 python:
     store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
     store.mas_selspr.init_selectable_clothes(
         mas_clothes_santa_lingerie,
-        "Santa Lingerie",
+        "Lingerie (Santa)",
         "santa_lingerie",
         "clothes",
         visible_when_locked=False,
@@ -1212,6 +1212,39 @@ init -1 python:
         ],
     )
 
+    ### Valentine's Lingerie
+    ## vday_lingerie
+    # valentines outfit which shows a lot of skin
+    #Thanks Orca
+    mas_clothes_vday_lingerie = MASClothes(
+        "vday_lingerie",
+        "vday_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        stay_on_start=True,
+        ex_props={
+            "lingerie": True
+        },
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_vday_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_vday_lingerie,
+        "Lingerie (Pink Lace)",
+        "vday_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Ehehe~",
+            "Do you like what you see, [player]?"
+        ]
+    )
 
 init -1 python:
     # ACCESSORIES (SPR130)
@@ -1296,7 +1329,7 @@ init -1 python:
     ### HAIRTIES BRACELET (BROWN)
     ## hairties_bracelet_brown
     # The bracelet Monika wore in the vday outfit
-    # thanks EntonyEscX
+    # thanks Velius
     mas_acs_hairties_bracelet_brown = MASAccessory(
         "hairties_bracelet_brown",
         "hairties_bracelet_brown",
