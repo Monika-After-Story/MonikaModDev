@@ -2039,6 +2039,8 @@ label greeting_stillsick:
             jump greeting_stillsickrest
         "No.":
             jump greeting_stillsicknorest
+        "I'm already resting.":
+            jump greeting_stillsickresting
 
 label greeting_stillsickrest:
     if mas_isMoniNormal(higher=True):
@@ -2069,6 +2071,22 @@ label greeting_stillsicknorest:
     else:
         m 2ekc "Fine."
         m 2tkc "You never seem to want to listen to me, so why would I expect now to be any different."
+
+    return
+    
+label greeting_stillsickresting:
+    m 1eka "Oh, that's a relief to hear, [player]."
+    m 3eka "I hope you're keeping yourself warm though."
+    if mas_isMoniNormal(higher=True):
+        m 1dku "Maybe snuggled in a warm blanket with a nice hot cup of tea."
+        m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbsa"...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
+        m 5hua "Ehehe~"
+
+    else:
+        m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
+        m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
 
     return
 
