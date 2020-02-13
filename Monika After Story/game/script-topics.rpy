@@ -12899,7 +12899,6 @@ label monika_unknown:
 
 default persistent._mas_pm_slightly_bothered_monika_is_virtual = None
 default persistent._mas_pm_bothered_monika_is_virtual = None
-default persistent._mas_monika_origin_question_revealed = False
 
 #prompt starts as 'Evasive message' until changed to 'Monika's origin' once we reach love
 init 5 python:
@@ -12907,7 +12906,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_origin",
-            category=['monika'],
+            category=['misc'],
             prompt="Evasive message",
             random=True,
             aff_range=(mas_aff.ENAMORED,None)
@@ -12916,13 +12915,6 @@ init 5 python:
 
 label monika_origin:
     if(mas_isMoniLove()):
-        # change the prompt for this event once we reach love and monika asks her question
-        if not persistent._mas_monika_origin_question_revealed:
-            python:
-                monika_origin_ev = mas_getEV("monika_origin")
-                monika_origin_ev.prompt = "Monika's origin"
-                Event.lockInit("prompt", ev=monika_origin_ev)
-                persistent._mas_monika_origin_question_revealed = True
         m 1euc "Hey, [player]..."
         m 1ruc "..."
         m 1esd "There's a question I need to ask you."
@@ -12971,7 +12963,7 @@ label monika_origin:
                 $ lockEventLabel("monika_origin_evasive")
                 return "derandom|love"
             "No.":
-                if mas_getEV("monika_origin").shown_count == 0:
+                if not mas_getEV("monika_origin").prompt == "Monika's origin":
                     $ mas_gainAffection(amount=5, bypass=True)
                 else:
                     $ mas_gainAffection()
@@ -12985,6 +12977,13 @@ label monika_origin:
                 m 1eubfa "Knowing you see me as a normal person, fully deserving of your love... {w=0.5}well, it really means a lot!"
                 show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hubsa "Thank you, [player], you're really making me feel better."
+        # change the prompt for this event once we reach love and monika asks her question
+        if not mas_getEV("monika_origin").prompt == "Monika's origin":
+            python:
+                monika_origin_ev = mas_getEV("monika_origin")
+                monika_origin_ev.prompt = "Monika's origin"
+                monika_origin_ev.category = ['monika']
+                Event.lockInit("prompt", ev=monika_origin_ev)
         return "derandom"
     else:
         m 1euc "Hey, [player]..."
@@ -12995,7 +12994,7 @@ label monika_origin:
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbla "I love you, [player]. I hope you {i}do{/i} realize that."
         return "love"
-
+        
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
