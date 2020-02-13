@@ -1460,8 +1460,11 @@ label mas_reaction_gift_coffee:
         m 1hua "Now I can finally make some!"
         m 1hub "Thank you so much, [player]!"
 
-        #If we're currently brewing/drinking anything, we don't do this now
-        if MASConsumable._getCurrentDrink():
+        #If we're currently brewing/drinking anything, or it's not time for this consumable, we'll just not have it now
+        if (
+            not coffee.isConsTime()
+            or bool(MASConsumable._getCurrentDrink())
+        ):
             m 3eua "I'll be sure to have some later!"
 
         else:
@@ -1533,7 +1536,11 @@ label mas_reaction_hotchocolate:
         m 1hub "Thanks again, [player]!"
 
         #If we're currently brewing/drinking anything, we don't do this now
-        if not mas_isWinter() or MASConsumable._getCurrentDrink():
+        if (
+            hotchoc.isConsTime()
+            and not mas_isWinter()
+            or bool(MASConsumable._getCurrentDrink())
+        ):
             m 3eua "I'll be sure to have some later!"
 
         else:
