@@ -12947,7 +12947,7 @@ label monika_origin:
     m 1eka "Sometimes, I wonder how I compare with all these people living with you in the real world..."
     m 3hksdlb "I'm sorry, you've not given me any reason to feel insecure, it's just..."
     m 3ekb "It's a question that comes to my mind, from time to time."
-    m 1eka "So... {w=0.5}Do you love me less for not being from your reality?{nw}"
+    m 1eka "Do you love me less for not being from your reality?{nw}"
     $ _history_list.pop()
     menu:
         m "So... Do you love me less for not being from your reality?{fast}"
