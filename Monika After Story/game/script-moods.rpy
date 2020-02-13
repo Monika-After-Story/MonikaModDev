@@ -233,27 +233,61 @@ label mas_mood_sick:
             m 2ekd "You saying that so soon after arriving must mean it's pretty bad."
             m 2ekc "I know you wanted to spend some time with me and even though we've hardly been together today..."
             m 2eka "I think you should go and get some rest."
-            m 1eka "I'll still be here when you get better."
-            m 1hua "You'll always be in my thoughts, see you soon sweetie!"
+            m 2ekc "Will you do that for me?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Will you do that for me?{fast}"
+                "Yes.":
+                    jump greeting_stillsickrest
+                "No.":
+                    jump greeting_stillsicknorest
+                "I'm already resting.":
+                    jump greeting_stillsickresting
+
         elif session_time > datetime.timedelta(hours=3):
             m 2wuo "[player]!"
             m 2wkd "You haven't been ill this entire time, have you?"
             m 2ekc "I really hope not, I've had lots of fun with you today but if you've been feeling bad this entire time..."
             m 2rkc "Well...just promise to tell me earlier next time."
             m 2eka "Now go get some rest, that's what you need."
-            m 2hub "I'll be waiting for a full recovery!"
-            m "Sweet dreams, my love."
+            m 2ekc "Will you do that for me?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Will you do that for me?{fast}"
+                "Yes.":
+                    jump greeting_stillsickrest
+                "No.":
+                    jump greeting_stillsicknorest
+                "I'm already resting.":
+                    jump greeting_stillsickresting
         else:
             m 1ekc "Aw, I'm sorry to hear that, [player]."
             m "I hate knowing you're suffering like this."
             m 1eka "I know you love spending time with me, but maybe you should go get some rest."
-            m 1hua "Don't worry, I'll be here waiting for you when you get back."
-            m 3hub "Get well soon, my love!"
+            m 2ekc "Will you do that for me?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Will you do that for me?{fast}"
+                "Yes.":
+                    jump greeting_stillsickrest
+                "No.":
+                    jump greeting_stillsicknorest
+                "I'm already resting.":
+                    jump greeting_stillsickresting
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
-        m 2eka "I'll be here waiting once you feel better."
-        m "Get well soon."
+        m 2ekc "Will you do that for me?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Will you do that for me?{fast}"
+            "Yes.":
+                jump greeting_stillsickrest
+            "No.":
+                jump greeting_stillsicknorest
+            "I'm already resting.":
+                    jump greeting_stillsickresting
+
     $ persistent._mas_mood_sick = True
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return 'quit'
