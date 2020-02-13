@@ -2081,7 +2081,7 @@ label greeting_stillsickresting:
         m 1dku "Maybe snuggled in a warm blanket with a nice hot cup of tea."
         m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
         show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbsa"...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
+        m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
         m 5hua "Ehehe~"
 
     else:
