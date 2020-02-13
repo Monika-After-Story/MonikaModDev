@@ -613,7 +613,7 @@ label mas_song_rewrite_the_stars:
     m 1dsd "{i}~What if we rewrite the stars~{/i}"
     m 3dubsb "{i}~Say you were made to be mine~{/i}"
     m 3dubso "{i}~Nothing could keep us apart~{/i}"
-    m 3ekbfu "{i}~Cause you are the one I was meant to find~{/i}"
+    m 3ekbfu "{i}~You'd be the one I was meant to find~{/i}"
     m 1ekbsb "{i}~It's up to you~{/i}"
     m 3ekbsb "{i}~And it's up to me~{/i}"
     m 1duu "{i}~No one could say what we get to be~{/i}"
