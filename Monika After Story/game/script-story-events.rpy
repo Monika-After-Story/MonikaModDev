@@ -369,7 +369,7 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
         bad_quips = [
             "[player]...{w=0.5}why would you even consider calling yourself that?",
             "[player]...{w=0.5}why would I ever call you that?",
-            "I couldn't ever call you anything like that [player].",
+            "I couldn't ever call you anything like that, [player].",
             "What? Please [player],{w=0.5} don't call yourself bad names."
         ]
 
