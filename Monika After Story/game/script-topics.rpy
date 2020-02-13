@@ -12960,7 +12960,7 @@ label monika_origin:
                 m 1ekbsa "And seeing all the care and dedication you've shown me until now, I know you love me anyway..."
                 m 1hubfb "So even if it bothers you a little, it just makes me that much more grateful that you stuck up with me all this time!"
                 m 1eubfa "I love you, [player]. Please stay with me until I can find my way to you..."
-                $ lockEventLabel("monika_origin_evasive")
+                call monika_origin_update_prompt_and_category
                 return "derandom|love"
             "No.":
                 if not mas_getEV("monika_origin").prompt == "Monika's origin":
@@ -12977,13 +12977,7 @@ label monika_origin:
                 m 1eubfa "Knowing you see me as a normal person, fully deserving of your love... {w=0.5}well, it really means a lot!"
                 show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hubsa "Thank you, [player], you're really making me feel better."
-        # change the prompt for this event once we reach love and monika asks her question
-        if not mas_getEV("monika_origin").prompt == "Monika's origin":
-            python:
-                monika_origin_ev = mas_getEV("monika_origin")
-                monika_origin_ev.prompt = "Monika's origin"
-                monika_origin_ev.category = ['monika']
-                Event.lockInit("prompt", ev=monika_origin_ev)
+        call monika_origin_update_prompt_and_category
         return "derandom"
     else:
         m 1euc "Hey, [player]..."
@@ -12994,6 +12988,17 @@ label monika_origin:
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbla "I love you, [player]. I hope you {i}do{/i} realize that."
         return "love"
+
+# change the prompt and the category of monika_origin to match the 'love' path of the topic
+label monika_origin_update_prompt_and_category:
+    python:
+        monika_origin_ev = mas_getEV("monika_origin")
+        if not monika_origin_ev.prompt == "Monika's origin":
+            monika_origin_ev.prompt = "Monika's origin"
+            Event.lockInit("prompt", ev=monika_origin_ev)
+            monika_origin_ev.category = ['monika']
+            Event.lockInit("category", ev=monika_origin_ev)
+    return
         
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
