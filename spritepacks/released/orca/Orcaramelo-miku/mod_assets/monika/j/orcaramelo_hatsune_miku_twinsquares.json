@@ -18,6 +18,7 @@
     "stay_on_start": true,
     "ex_props": {
         "twin-ribbon": true,
-        "ribbon-like": true
+        "ribbon-like": true,
+        "required-hair-prop": "twintails"
     }
 }

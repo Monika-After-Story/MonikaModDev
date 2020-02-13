@@ -440,23 +440,38 @@ init -2 python in mas_sprites:
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
-            # swap to twintails if found. if no twin tails, abort.
-            # TODO: add handling for no twin tails when spritepack
-            _moni_chr.change_hair(store.mas_hair_orcaramelo_twintails)
-            _moni_chr.wear_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
-            _moni_chr.wear_acs(
-                store.mas_acs_orcaramelo_hatsune_miku_twinsquares
+            # swap to bun braid if found. if not, dont wear acs.
+            twintails = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "orcaramelo_twintails"
             )
+            if twintails is not None:
+                _moni_chr.change_hair(twintails)
+
+                # find acs and wear for this outfit
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_hatsune_miku_headset"
+                )
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_hatsune_miku_twinsquares"
+                )
 
 
     def _clothes_orcaramelo_hatsune_miku_exit(_moni_chr, **kwargs):
         """
         Exit pp for orcaramelo miku
         """
-        #outfit_mode = kwargs.get("outfit_mode", False)
-
-        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_headset)
-        _moni_chr.remove_acs(store.mas_acs_orcaramelo_hatsune_miku_twinsquares)
+        # find and remove acs if found
+        _acs_remove_if_found(
+            _moni_chr,
+            "orcaramelo_hatsune_miku_headset"
+        )
+        _acs_remove_if_found(
+            _moni_chr,
+            "orcaramelo_hatsune_miku_twinsquares"
+        )
 
 
     def _clothes_orcaramelo_sakuya_izayoi_entry(_moni_chr, **kwargs):
@@ -494,8 +509,6 @@ init -2 python in mas_sprites:
         """
         Exit pp for orcaramelo sakuya
         """
-        #outfit_mode = kwargs.get("outfit_mode", False)
-
         # find and remove acs if found
         _acs_remove_if_found(
             _moni_chr,
@@ -692,16 +705,6 @@ init -2 python in mas_sprites:
         if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
             _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
-    def _acs_marisa_witchhat_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for marisa witchhat acs
-        """
-        store.mas_lockEVL("monika_ribbon_select", "EVE")
-
-    def _acs_marisa_witchhat_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for marisa witchhat acs
-        """
 init -1 python:
     # HAIR (SPR110)
     # Hairs are representations of image objects with propertes
@@ -821,32 +824,6 @@ init -1 python:
             "Feels nice to let my hair down...",
             "Looks cute, don't you think?"
         ]
-    )
-
-    # TODO: transfer this to spritepack after marisa + rin remade
-    ### TWINTAILS
-    ## orcaramelo_twintails
-    # twin tails for miku outfit
-    # thanks orca
-    mas_hair_orcaramelo_twintails = MASHair(
-        "orcaramelo_twintails",
-        "orcaramelo_twintails",
-        MASPoseMap(
-            default=True,
-            l_default=True
-        ),
-        ex_props={
-            "ribbon": True,
-            "twintails": True,
-        }
-    )
-    store.mas_sprites.init_hair(mas_hair_orcaramelo_twintails)
-    store.mas_selspr.init_selectable_hair(
-        mas_hair_orcaramelo_twintails,
-        "Twintails",
-        "orcaramelo_twintails",
-        "hair",
-        visible_when_locked=False
     )
 
     ### CUSTOM
@@ -1037,45 +1014,6 @@ init -1 python:
         hover_dlg=None,
         select_dlg=[
             "Just an ordinary costume, ~ze."
-        ]
-    )
-
-    # TODO: transfer this to sprite pack after marisa+rin remade
-    ### MIKU (HATSUNE) COSTUME
-    ## orcaramelo_hatsune_miku
-    # Miku outfit. Temporarily included in main build until marisa+rin are
-    # done.
-    # thanks orca
-    mas_clothes_orcaramelo_hatsune_miku = MASClothes(
-        "orcaramelo_hatsune_miku",
-        "orcaramelo_hatsune_miku",
-
-        # NOTE: this posemap is not reflective of what the json is.
-        MASPoseMap(
-            default=True,
-            l_default=True
-        ),
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_orcaramelo_hatsune_miku_entry,
-        exit_pp=store.mas_sprites._clothes_orcaramelo_hatsune_miku_exit,
-        ex_props={
-            "desired-hair-prop": "twintails",
-            "costume": True,
-            "cosplay": True,
-            store.mas_sprites.EXP_C_BRS: True,
-        }
-    )
-    store.mas_sprites.init_clothes(mas_clothes_orcaramelo_hatsune_miku)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_orcaramelo_hatsune_miku,
-        "Hatsune Miku",
-        "orcaramelo_hatsune_miku",
-        "clothes",
-        visible_when_locked=False,
-        select_dlg=[
-            "The first sound of the future!",
-            "Ready for the stage!",
-            "Only missing a leek..."
         ]
     )
 
@@ -1450,49 +1388,6 @@ init -1 python:
         )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
-
-    # TODO: transfer this to spritepack after marisa + rin remade
-    ### HEADSET
-    ## orcaramelo_hatsune_miku_headset
-    # headset for miku outfit.
-    # thanks orca
-    mas_acs_orcaramelo_hatsune_miku_headset = MASAccessory(
-        "orcaramelo_hatsune_miku_headset",
-        "orcaramelo_hatsune_miku_headset",
-        MASPoseMap(
-            default="0",
-            l_default="5"
-        ),
-        stay_on_start=True,
-        acs_type="headset",
-        # mux type handled by defaults
-        rec_layer=MASMonika.AFH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_headset)
-
-    # TODO: transfer this to spritepack after marisa + rin remade
-    ### TWIN SQUARES
-    ## orcaramelo_hatsune_miku_twinsquares
-    # the square things miku wears. Dont know what to call them.
-    # thanks orca
-    mas_acs_orcaramelo_hatsune_miku_twinsquares = MASAccessory(
-        "orcaramelo_hatsune_miku_twinsquares",
-        "orcaramelo_hatsune_miku_twinsquares",
-        MASPoseMap(
-            default="0",
-            l_default="5"
-        ),
-        stay_on_start=True,
-        acs_type="twin-ribbons",
-        # muxtype handled by defaults
-        ex_props={
-            "twin-ribbon": True,
-            "ribbon-like": True,
-            "required-hair-prop": "twintails",
-        },
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_orcaramelo_hatsune_miku_twinsquares)
 
     ### Marisa Strandbow
     ## marisa_strandbow
