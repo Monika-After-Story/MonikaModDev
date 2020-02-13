@@ -1963,6 +1963,9 @@ label ch30_reset:
         #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
         if store.mas_globals.returned_home_this_sesh:
             MASConsumable._reset()
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
 
         #Store this because we may need to reset this
         mug_acs = monika_chr.get_acs_of_type("mug")

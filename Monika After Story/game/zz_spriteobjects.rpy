@@ -1385,7 +1385,6 @@ init -1 python:
             default="0",
             use_reg_for_l=True
         ),
-        stay_on_start=True,
         acs_type="thermos-mug"
     )
     store.mas_sprites.init_acs(mas_acs_thermos_mug)

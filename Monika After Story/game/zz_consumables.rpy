@@ -1365,3 +1365,33 @@ label mas_consumables_generic_queued_running_out:
 
     m 1eka "You wouldn't mind getting [them] for me, would you?"
     return
+
+label mas_consumables_remove_thermos:
+    #We just want to be able to push this directly
+    if not monika_chr.is_wearing_acs_type("thermos-mug"):
+        return
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1eua "I'm going to put this thermos away. I'll be right back.{w=1}{nw}"
+
+    else:
+        m 1eua "Give me a second [player], I'm going to put this thermos away."
+
+    hide monika with dissolve
+    pause 5.0
+
+    #Remove the current thermos
+    $ monika_chr.remove_acs(monika_chr.get_acs_of_type("thermos-mug"))
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m "Okay, what else should we do today?"
+    return
