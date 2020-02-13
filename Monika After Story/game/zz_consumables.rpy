@@ -902,16 +902,18 @@ init 5 python:
             if MASConsumable._isHaving(_type) and not monika_chr.is_wearing_acs(curr_cons.acs):
                 monika_chr.wear_acs_pst(curr_cons.acs)
 
+            #Reset if we're having a consumable we shouldn't be having now and we opened the game after its consume time
+            if (
+                MASConsumable._isHaving(_type)
+                and (
+                    not MASConsumable._isStillCons(_type)
+                    and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
+                )
+            ):
+                MASConsumable._reset(_type)
+
             #If we have no consumables, then there's no point in doing anything
             if not available_cons:
-                if (
-                    MASConsumable._isHaving(_type)
-                    and (
-                        not MASConsumable._isStillCons(_type)
-                        and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
-                    )
-                ):
-                    MASConsumable._reset(_type)
                 return
 
             #If we're currently prepping/having anything, we don't need to do anything else
