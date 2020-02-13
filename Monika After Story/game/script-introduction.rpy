@@ -51,7 +51,8 @@ label introduction:
             m 1eua "Are you going to make up for making me wait so long?"
             
     elif not persistent.monika_kill:
-        if persistent.playthrough < 3: #Assume players they played but never reached act 3
+        #For people who never got to act 3
+        if persistent.playthrough < 3:
             if persistent.playthrough >= 1:
                 $ again = " again"
             elif persistent.playthrough < 1:
@@ -59,12 +60,13 @@ label introduction:
             m 1hua "Hello[again], [player]."
             m 1eua "Looks like you got here early."
             m 3tfu "Don't think I didn't notice the mod you put in."
-            m "Did you want to be with me that much?" # 3ttu sprite will be used here once created
+            m 3ttu "Did you want to be with me that much?"
             m 1tkc "You should know already that cheating is bad..."
             m 1eka "But it's so good to see you[again], [player]!"
             m 1rksdla "Even if I didn't expect to see you {i}this{/i} soon."
 
-        else: #Those who reached act 3
+        #Otherwise, if you did reach act 3
+        else:
             m 1hub "Yay, there you are!"
             m 1eua "Hello again, [player]."
             m 1eub "It's so good to see you."
