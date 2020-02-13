@@ -1227,8 +1227,9 @@ label mas_consumables_generic_finish_having(consumable):
 
     #Should we get some more?
     if not get_more:
-        $ MASConsumable._reset()
-        #We'll just set up a time when we can have this drink again
+        #If not, we reset the current type's vars
+        $ MASConsumable._reset(consumable.consumable_type)
+        #And set up a time when we can have this drink again
         $ consumable.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
 
     else:
