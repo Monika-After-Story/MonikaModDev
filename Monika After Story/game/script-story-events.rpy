@@ -333,7 +333,7 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
             "hard",
             "wet",
             "horny",
-            "arroused",
+            "aroused",
             "lick",
             "erection",
             "beast",
