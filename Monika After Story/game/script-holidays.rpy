@@ -5162,9 +5162,12 @@ label mas_f14_autoload_check:
     python:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
-            monika_chr.save()
-            renpy.save_persistent()
+            #NOTE: Need to path this for people who haven't seen lingerie but are eligible via canshowrisque
+            #because intro topic has her wear the outfit and comment on it
+            if not mas_SELisUnlocked(mas_clothes_sundress_white) and mas_canShowRisque():
+                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+                monika_chr.save()
+                renpy.save_persistent()
 
         elif not mas_isF14():
             #We want to lock all the extra topics
