@@ -361,7 +361,7 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
 
         awkward_quips = [
             "I don't really feel...{w=0.5}comfortable calling you that all the time.",
-            "That is...{w=0.5}not something I would like to call you, [player].",
+            "That's...{w=0.5}not something I would like to call you, [player].",
             "Not that it's bad but...",
             "Are you trying to embarrass me, [player]?"
         ]
