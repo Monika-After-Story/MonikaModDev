@@ -13504,7 +13504,7 @@ init 5 python:
 
 label monika_allegory_of_the_cave:
     m 1eua "Hey, [player]..."
-    m 1euc "I've been doing some reading on the Anicent Greek philosopher Plato lately."
+    m 1euc "I've been doing some reading on the Ancient Greek philosopher Plato lately."
     m 3euc "Specifically, his allegory of the cave or, {i}Plato's Cave{/i}, as it's now known."
     m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
     m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
