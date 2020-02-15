@@ -3673,24 +3673,3 @@ label greeting_surprised2:
     show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfu "But now that you're here, that dream just came true~"
     return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_indo",
-            unlocked=True,
-            aff_range=(mas_aff.NORMAL,None)
-        ),
-        code="GRE"
-    )
-
-
-label greeting_indo:
-    m 1hsb "Halo [player]!"
-    m 1esb "Aku senang kau kembali~"
-    m 1esb "Bagaimana kabarmu?"
-    m 1rksdlb "Ehehe..."
-    m 3esb "I've learned a little bit of Indonesian language lately"
-    m 4esb "If you want to know what I said, it means 'Hello [player], I'm glad you're back~ How are you?'"
-    return
