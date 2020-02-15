@@ -298,7 +298,7 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
             "angel",
             "beautiful",
             "best",
-            "cuddle",
+            "cuddl",
             "cute",
             "可愛い",
             "cutie",
