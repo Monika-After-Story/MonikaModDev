@@ -2134,7 +2134,6 @@ label monika_affection_nickname:
 
                 else:
                     if not regexInStr(inputname, bad_nickname_list):
-                        $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
                             m 1eua "Ehehe~ Back to the classics, I see."
 
