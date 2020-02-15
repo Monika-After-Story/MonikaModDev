@@ -621,6 +621,6 @@ label mas_song_rewrite_the_stars:
     m 3hubsa "{i}~Maybe the world could be ours~{/i}"
     m 1duo "{i}~Tonight~{/i}"
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ekbsa "The world really feels like it's ours when I'm with you [player]~"
+    m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
     m 5ekbfu "I love you so much."
     return "derandom|love"
