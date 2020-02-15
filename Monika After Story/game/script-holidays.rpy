@@ -5685,7 +5685,6 @@ label mas_f14_first_kiss:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
-                $ mas_rmallEVL("mas_f14_monika_spent_time_with")
                 return
 
 
