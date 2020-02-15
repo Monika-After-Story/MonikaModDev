@@ -994,7 +994,7 @@ label bye_going_somewhere_iowait:
 
         #Get zooms and reset to normal if need be
         $ curr_zoom = store.mas_sprites.zoom_level
-        if not curr_zoom == store.mas_sprites.default_zoom_level:
+        if curr_zoom != store.mas_sprites.default_zoom_level:
             call monika_zoom_transition_reset(1.0)
 
         #Get Moni off screen
@@ -1054,7 +1054,7 @@ label bye_going_somewhere_rtg:
         hide emptydesk
 
         #And reset zoom if we need to
-        if not curr_zoom == store.mas_sprites.zoom_level:
+        if curr_zoom != store.mas_sprites.zoom_level:
             $ renpy.pause(0.5, hard=True)
             call monika_zoom_transition(curr_zoom, 1.0)
 
@@ -1067,7 +1067,7 @@ label bye_going_somewhere_rtg:
     hide emptydesk
 
     #Reset zoom again
-    if not curr_zoom == store.mas_sprites.zoom_level:
+    if curr_zoom != store.mas_sprites.zoom_level:
         $ renpy.pause(0.5, hard=True)
         call monika_zoom_transition(curr_zoom, 1.0)
 

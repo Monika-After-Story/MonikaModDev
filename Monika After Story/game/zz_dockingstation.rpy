@@ -2205,8 +2205,9 @@ label mas_dockstat_first_time_goers:
     hide emptydesk
 
     #Reset zoom again
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    if curr_zoom != store.mas_sprites.zoom_level:
+        $ renpy.pause(0.5, hard=True)
+        call monika_zoom_transition(curr_zoom, 1.0)
 
     m 3eua "I'm now in the file 'monika' in your characters folder."
     m "After I shut down the game, you can move me wherever you like."

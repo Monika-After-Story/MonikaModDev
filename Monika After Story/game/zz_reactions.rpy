@@ -1487,8 +1487,9 @@ label mas_reaction_gift_coffee:
             hide emptydesk
 
             # 1 second wait so dissolve is complete before zooming
-            $ renpy.pause(0.5, hard=True)
-            call monika_zoom_transition(curr_zoom, 1.0)
+            if curr_zoom != store.mas_sprites.zoom_level:
+                $ renpy.pause(0.5, hard=True)
+                call monika_zoom_transition(curr_zoom, 1.0)
 
             # monika back on screen
             m 1eua "I'll let that brew for a few minutes."
@@ -1544,11 +1545,13 @@ label mas_reaction_hotchocolate:
             m 3eua "I'll be sure to have some later!"
 
         else:
+            m 3eua "In fact, I think I'll make some right now!"
+
             $ curr_zoom = store.mas_sprites.zoom_level
             call monika_zoom_transition_reset(1.0)
             show emptydesk at i11 zorder 9
 
-            m 3eua "In fact, I think I'll make some right now!"
+
 
             hide monika with dissolve
             pause 5.0
@@ -1556,8 +1559,9 @@ label mas_reaction_hotchocolate:
             hide emptydesk
 
             # 1 second wait so dissolve is complete before zooming
-            $ renpy.pause(0.5, hard=True)
-            call monika_zoom_transition(curr_zoom, 1.0)
+            if curr_zoom != store.mas_sprites.zoom_level:
+                $ renpy.pause(0.5, hard=True)
+                call monika_zoom_transition(curr_zoom, 1.0)
 
             m 1hua "There, it'll be ready in a few minutes."
 
