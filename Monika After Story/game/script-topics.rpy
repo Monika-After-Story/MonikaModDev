@@ -12597,7 +12597,7 @@ label monika_cozy:
     m 1rksdla "Those who get cold hands really appreciate that feeling..."
     m 1eua "It's like feeling a loved one's embrace~"
     m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
-    m 1hub "Finally able to whip out your winter fashion set is always a nice feeling."
+    m 1hub "Finally being able to whip out your winter fashion set is always a nice feeling."
     m 3eua "But you know what the best way to warm yourself up is?"
     m 3eka "Cuddling with the one you love in front of the fireplace~"
     m "Just sitting there under a warm blanket, sharing a hot beverage."
