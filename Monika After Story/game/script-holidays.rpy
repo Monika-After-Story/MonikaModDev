@@ -5316,7 +5316,7 @@ label mas_f14_monika_valentines_intro:
 
             # sundress
             elif not mas_SELisUnlocked(mas_clothes_sundress_white):
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
                 m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
@@ -5339,7 +5339,7 @@ label mas_f14_monika_valentines_intro:
                 m 3hub "I should probably go change into something a little more appropriate, ahaha!"
                 m 3eua "I'll be right back."
 
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
 
                 m 2eub "Ah, that's much better!"
                 m 3hua "I just love this dress, don't you?"
@@ -5363,7 +5363,7 @@ label mas_f14_monika_valentines_intro:
                         "Yes.":
                             m 3hub "Okay!"
                             m 3eua "I'll be right back."
-                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                             m 2hub "There we go!"
                             m 3eua "Something about wearing this dress on Valentine's Day just feels right."
                             m 1eua "..."
