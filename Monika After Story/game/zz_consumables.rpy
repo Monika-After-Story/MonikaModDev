@@ -1012,6 +1012,24 @@ init 5 python:
                 return store.mas_consumables.consumable_map[consumable_type][consumable_id]
         return
 
+    def mas_useThermos():
+        """
+        Gets Monika to put her drink into a thermos when taking her somewhere if it is eligible 
+        """
+        #Firstly, if we're already wearing a thermos, we should do nothing
+        if monika_chr.is_wearing_acs_type("thermos-mug"):
+            return
+
+        #Otherwise, if we have a drink out that's portable, let's put it in a thermos so we can take it when we leave
+        current_drink = MASConsumable._getCurrentDrink()
+        if current_drink and current_drink.portable:
+            #We have a current drink. Let's get all accessories of this type so we can essentially spritepack them
+            thermoses = [thermos.get_sprobj() for thermos in mas_selspr.filter_acs(True, "thermos-mug")]
+
+            #If we have an unlocked thermos, we'll use it here
+            if thermoses:
+                monika_chr.wear_acs(renpy.random.choice(thermoses))
+
 #START: consumable drink defs:
 init 6 python:
     MASConsumable(

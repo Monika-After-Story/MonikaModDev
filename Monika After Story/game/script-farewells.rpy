@@ -992,9 +992,10 @@ label bye_going_somewhere_iowait:
         $ first_pass = False
         m 1eua "Give me a second to get ready."
 
-        #Get zooms and reset to normal
+        #Get zooms and reset to normal if need be
         $ curr_zoom = store.mas_sprites.zoom_level
-        call monika_zoom_transition_reset(1.0)
+        if curr_zoom == store.mas_sprites.default_zoom_level:
+            call monika_zoom_transition_reset(1.0)
 
         #Get Moni off screen
         show emptydesk at i11 zorder 9
@@ -1049,36 +1050,26 @@ label bye_going_somewhere_rtg:
                 store.mas_greetings.TYPE_GENERIC_RET
             )
 
-            #If we had a drink out that's portable, let's wear that now
-            current_drink = MASConsumable._getCurrentDrink()
-            if current_drink and current_drink.portable:
-                #We have a current drink. Let's get all accessories of this type so we can essentially spritepack them
-                thermoses = [thermos.get_sprobj() for thermos in mas_selspr.filter_acs(True, "thermos-mug")]
-
-                #If we have an unlocked thermos, we'll use it here
-                if thermoses:
-                    monika_chr.wear_acs(renpy.random.choice(thermoses))
-
-            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
-            renpy.pause(1.0, hard=True)
-
         show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
         hide emptydesk
 
-        #And reset zoom
-        $ renpy.pause(0.5, hard=True)
-        call monika_zoom_transition(curr_zoom, 1.0)
+        #And reset zoom if we need to
+        if not curr_zoom == store.mas_sprites.zoom_level:
+            $ renpy.pause(0.5, hard=True)
+            call monika_zoom_transition(curr_zoom, 1.0)
 
         #Use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
 
-    #Reset zoom again
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
 
     show monika 1ekc at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
+
+    #Reset zoom again
+    if not curr_zoom == store.mas_sprites.zoom_level:
+        $ renpy.pause(0.5, hard=True)
+        call monika_zoom_transition(curr_zoom, 1.0)
 
     # otherwise, we failed, so monika should tell player
     m 1ekc "Oh no..."

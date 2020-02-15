@@ -893,7 +893,7 @@ label bye_trick_or_treat_iowait:
     show screen mas_background_timed_jump(4, "bye_trick_or_treat_iowait")
     menu:
         m "Give me a second to get ready.{fast}"
-        "Wait, wait!":
+        "Wait a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
