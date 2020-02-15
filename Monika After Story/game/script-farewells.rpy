@@ -994,7 +994,7 @@ label bye_going_somewhere_iowait:
 
         #Get zooms and reset to normal if need be
         $ curr_zoom = store.mas_sprites.zoom_level
-        if curr_zoom == store.mas_sprites.default_zoom_level:
+        if not curr_zoom == store.mas_sprites.default_zoom_level:
             call monika_zoom_transition_reset(1.0)
 
         #Get Moni off screen
