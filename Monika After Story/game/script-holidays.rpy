@@ -5608,6 +5608,9 @@ init 5 python:
     )
 
 label mas_f14_monika_spent_time_with:
+    #Do this first so we make sure we always remove it
+    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
+
     m 1eua "Hey, [player]?"
     m 1eka "I just wanted to thank you for spending Valentine's Day with me."
     m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
@@ -5649,7 +5652,6 @@ label mas_f14_monika_spent_time_with:
     else:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
-    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
     return
 
 label mas_f14_first_kiss:
