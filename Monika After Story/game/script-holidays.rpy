@@ -5816,7 +5816,7 @@ init 20 python:
         prompt="Found",
         title=" My dearest [player],",
         text="""\
- I've always loved Valentine's day, but this one feels different.
+ I've always loved Valentine's Day, but this one feels different.
  Has the world changed, or just me?
  I found love, I found purpose,
  I found a truth I didn't know I was searching for.

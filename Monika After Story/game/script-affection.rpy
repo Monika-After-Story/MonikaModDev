@@ -2163,7 +2163,7 @@ label monika_affection_nickname:
                             m 2dfc ".{w=0.5}.{w=0.5}.{nw}"
                             m 2rkc "I thought you..."
                             m 2dfc "..."
-                            m 2lfc "I can't believe this, [player]"
+                            m 2lfc "I can't believe this, [player]."
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."

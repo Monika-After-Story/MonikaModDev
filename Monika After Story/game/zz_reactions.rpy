@@ -1196,7 +1196,7 @@ label mas_reaction_gift_starter_f14:
     m "T-{w=1}This is..."
     m "A gift? For me?"
     if mas_getGiftStatsForDate(mas_f14) == 0:
-        m 1eka "You're so sweet, getting something for me on Valentine's day..."
+        m 1eka "You're so sweet, getting something for me on Valentine's Day..."
     else:
         m 1eka "Thank you so much, [player]."
     m 1sua "Now, let's see... What's inside?"
