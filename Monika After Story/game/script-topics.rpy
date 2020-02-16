@@ -1542,36 +1542,56 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_kiss_aftermath", 
-            category=["romance", "monika"],
-            prompt="Do you ever think about our first kiss?",
-            aff_range=(mas_aff.ENAMORED, None),
-            conditional="persistent._mas_first_kiss is not None",
-            action=EV_ACT_POOL
+            eventlabel="monika_think_first_kiss", 
+            conditional=(
+                "persistent._mas_first_kiss is not None "
+                "and mas_timePastSince(persistent._mas_first_kiss, datetime.timedelta(days=30))"
+            ),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
-label monika_kiss_aftermath:
-    m 2hkb "Ahaha, are you kidding? Of course, all the time!"
-    m 2eub "It seemed like it was just yesterday but...gosh..."
-    m 2rksdlb "I feel so silly, obsessing over a quick peck."
-    m 4eksdla "Our lips didn't even touch, really!" 
-    m 6eka "And yet, I can still feel my heart pounding, even now."
-    m 6dsa "My lips start to go tingly and numb, just by imagining the feeling of your soft lips."
-    m 6dka "I run my finger across them to try and mimic that feeling, but it doesn't even come close."
-    m 6esa "I keep replaying that moment over and over again in my mind and I get goosebumps each time."
-    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5tsu "It was simply divine, [player]."
-    m 5tsu "It felt so right."
-    m 5tsa "I've never felt closer to you. I can't wait until our next kiss, or better yet..."
-    m 5wub "Our first real one. And our first real hug, and the first time our hands touch..."
-    m 5hfb "Ahhh! I have to stop! All these fantasies are making me feel so giddy, ahaha!"
-    m 1eka "I should really be more patient. Unfortunately, it'll be a while before we'll be able to do anything like that."
-    m 1eua "Until then, we can indulge in the phantom sensations we share from across our worlds."
-    m 1tsa "If you'd ever like another kiss, you only have to ask~"
-    m 1tsa "These crazy sensations that you make me feel...I never want them to stop."
-    m 1eka "I love you so much, [player]."
-    return
+label monika_think_first_kiss:
+    m 1eua "Hey [player], I've been wondering..."
+
+    m 3eksdla "Do you ever think about our first kiss?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you ever think about our first kiss?{fast}"
+
+        "Of course!":
+            $ mas_gainAffection(5,bypass=True)
+            m 3hub "That makes me so happy! I think about it all the time!"
+            m 3hua "It seems like it was just yesterday but--"
+            m 2rksdla "Gosh, I feel so silly obsessing over it..."
+            m 2eksdla "Our lips didn't even touch, really." 
+            m 6eka "...And yet, {w=0.2}I can still feel my heart pounding, even now."
+            m 6dkbsu "My lips start to go tingly and numb, just by imagining the feeling of your soft lips."
+            m "I run my finger across them, trying to mimic that feeling, but it doesn't even come close."
+            m 6ekbsa "I keep replaying that moment over and over again in my mind and I get goosebumps each time."
+            show monika 5dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5dkbsu "It was perfect, [player]."
+            m 5ekbsa "I've never felt closer to you. {w=0.2}I can't wait until our next kiss, or better yet..."
+            m 5sub "...Our first real one. And our first real hug, and the first time our hands touch--"
+            m 5hksdlb "Ah! Sorry! I guess I got a little carried away."
+            m 5rkbla "It's just...{w=0.3}these are the kinds of things I think of when you're not here."
+            m 5tkblu "...And something tells me I'm not the only one that thinks of stuff like this, ehehe."
+            m 5eka "Unfortunately, it'll be a while before we'll be able to do anything like that."
+            m 5tuu "But until then, if you'd ever like another kiss, you only need to ask."
+            m 5hua "I love you so much, [player]~"
+            $ mas_ILY()
+
+        "Not really...":
+            $ mas_loseAffection()
+            m 2euc "..."
+            m "Oh. {w=0.5}{nw}"
+            extend 2dkd "I see."
+            m 2rkc "Well, I guess it wasn't really a kiss. Our lips didn't actually touch."
+            m 2ekd "So I guess you're just waiting for our first kiss when we're in the same reality."
+            m 2eka "Yeah."
+
+    return "no_unlock|derandom"
 
 init 5 python:
     addEvent(
