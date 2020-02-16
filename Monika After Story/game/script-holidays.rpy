@@ -5249,13 +5249,20 @@ init 5 python:
             action=EV_ACT_PUSH,
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
-            aff_range=(mas_aff.NORMAL,None),
             years=[]
         ),
         skipCalendar=True
     )
 
 label mas_f14_monika_valentines_intro:
+    #Prevent nts stuff for upset- since they don't get the rest of the event.
+    if mas_isMoniUpset(lower=True):
+        $ persistent._mas_f14_spent_f14 = True
+        if not mas_isMoniBroken():
+            m 6eka "By the way [player], I just wanted to say happy Valentine's Day."
+            m "I hope you have a good day."
+        return
+
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
