@@ -647,9 +647,11 @@ init -5 python in mas_sprites:
     PREFIX_EYEG = "eyebags" + ART_DLM
     PREFIX_BLUSH = "blush" + ART_DLM
     PREFIX_TABLE = "table" + ART_DLM
+    PREFIX_CHAIR = "chair" + ART_DLM
 
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
+    SHADOW_SUFFIX = ART_DLM + "s"
     FHAIR_SUFFIX  = ART_DLM + "front"
     BHAIR_SUFFIX = ART_DLM + "back"
     FILE_EXT = ".png"
@@ -2383,6 +2385,29 @@ init -5 python in mas_sprites:
             _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix, bcode)
 
 
+    def _ms_chair(sprite_list, loc_str, chair, n_suffix):
+        """
+        Adds chair string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            chair - type of chair
+            n_suffix - night suffix to use
+        """
+        sprite_list.extend((
+            ",",
+            loc_str,
+            ',"',
+            T_MAIN,
+            PREFIX_CHAIR,
+            chair,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
     def _ms_emote(sprite_list, loc_str, emote, n_suffix, f_prefix):
         """
         Adds emote string
@@ -2908,34 +2933,36 @@ init -5 python in mas_sprites:
         # NOTE: render order (new):
         #   1. pre-acs - every acs that should render before anything
         #   2. back-hair - back portion of hair (split mode)
-        #   3. bbh-acs - acs between Body and Back Hair
-        #   4. base-0 - the base back part of body
-        #   5. bse-acs - between base and body-0
-        #   6. body-0 - the back part of body (no arms in split mode)
-        #   7. table - the table/desk
-        #   8. bba-acs - acs between Body and Back Arms
-        #   9. arms-base-0 - the base back part of arm
-        #   10. ase-acs-0 - between base arms and clothes, back part
-        #   11. arms-0 - the back part of arms
-        #   12. bab-acs - acs between Back Arms and Body-1
-        #   13. base-1 - the base front part of body
-        #   14. bse-acs - between base and body-1
-        #   15. body-1 - the front part of body (boobs)
-        #   16. bfh-acs - acs between Body and Front Hair
-        #   17. face-pre - pre front hair facial expressions
-        #   18. front-hair - front portion of hair (split mode)
-        #   19. afh-acs - acs betweem Arms and Front Hair
-        #   20. face - facial expressions
-        #   21. mid-acs - acs between face and front arms
-        #   22. arms-base-1 - the base front part of arms
-        #   23. ase-acs-1 - between base arms and clothes, front part
-        #   24. arms-1 - front arms
-        #   25. pst-acs - acs after everything
+        #   3. chair - chair sprite
+        #   4. bbh-acs - acs between Body and Back Hair
+        #   5. base-0 - the base back part of body
+        #   6. bse-acs - between base and body-0
+        #   7. body-0 - the back part of body (no arms in split mode)
+        #   8. table - the table/desk
+        #   9. bba-acs - acs between Body and Back Arms
+        #   10. arms-base-0 - the base back part of arm
+        #   11. ase-acs-0 - between base arms and clothes, back part
+        #   12. arms-0 - the back part of arms
+        #   13. bab-acs - acs between Back Arms and Body-1
+        #   14. base-1 - the base front part of body
+        #   15. bse-acs - between base and body-1
+        #   16. body-1 - the front part of body (boobs)
+        #   17. bfh-acs - acs between Body and Front Hair
+        #   18. face-pre - pre front hair facial expressions
+        #   19. front-hair - front portion of hair (split mode)
+        #   20. afh-acs - acs betweem Arms and Front Hair
+        #   21. face - facial expressions
+        #   22. mid-acs - acs between face and front arms
+        #   23. arms-base-1 - the base front part of arms
+        #   24. ase-acs-1 - between base arms and clothes, front part
+        #   25. arms-1 - front arms
+        #   26. pst-acs - acs after everything
 
         # NOTE: render order (baked)
         #   1. pre-acs - every acs that should render before anything
-        #   *2. body - baked body
-        #   7. table - the table/desk
+        #   3 chair - chair sprite
+        #   *4. body - baked body
+        #   8. table - the table/desk
         #   3. bbh-acs - acs between Body and Back hair
         #   16. bfh-acs - acs between body and front hair
         #   18. afh-acs - acs between front hair and arms
@@ -2967,6 +2994,8 @@ init -5 python in mas_sprites:
         )
 
         if is_baked:
+
+            _ms_chair(sprite_str_list, loc_build_str, chair, n_suffix)
             
             # *2. body
             _ms_body(
@@ -3381,7 +3410,7 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_table(sprite_list, loc_str, table, n_suffix):
+    def _ms_table(sprite_list, loc_str, table, with_shadow, n_suffix):
         """
         Adds table string 
 
@@ -3389,9 +3418,9 @@ init -5 python in mas_sprites:
             sprite_list - list to add sprite strings to
             loc_str - location string
             table - type of table
+            with_shadow - True will add shadow, false will not
             n_suffix - night suffix to use
         """
-        # NOTE: testing without I COMP since we only have 1 image
         sprite_list.extend((
             ",",
             loc_str, 
@@ -3403,6 +3432,20 @@ init -5 python in mas_sprites:
             FILE_EXT,
             '"'
         ))
+
+        if with_shadow:
+            sprite_list.extend((
+                ",",
+                loc_str,
+                ',"',
+                T_MAIN,
+                PREFIX_TABLE,
+                table,
+                SHADOW_SUFFIX,
+                n_suffix,
+                FILE_EXT,
+                '"'
+            ))
 
 
     def _ms_tears(sprite_list, loc_str, tears, n_suffix, f_prefix):
@@ -3726,6 +3769,10 @@ init -2 python:
 
             # set to True to allow ACS overriding
             self._override_rec_layer = False
+
+            # determines if empty desk will be shown or not
+            self.empty_desk = False
+
 
         def __get_acs(self, acs_type):
             """
