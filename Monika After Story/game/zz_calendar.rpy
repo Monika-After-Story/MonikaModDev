@@ -223,7 +223,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             super(renpy.Displayable, self).__init__()
 
             # The calendar background
-            self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png")
+            self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")
 
             # Can we select dates?
             self.can_select_date = select_date
@@ -261,25 +261,25 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # button backgrounds
             button_close = Image(
-                "mod_assets/calendar/calendar_close.png"
+                ("mod_assets/calendar/calendar_close.png" if morning_flag else "mod_assets/calendar/calendar_close-n.png")
             )
             button_close_hover = Image(
-                "mod_assets/calendar/calendar_close_hover.png"
+                ("mod_assets/calendar/calendar_close_hover.png" if morning_flag else "mod_assets/calendar/calendar_close_hover-n.png")
             )
             button_day_name = Image(
-                "mod_assets/calendar/calendar_day_name_bg.png"
+                ("mod_assets/calendar/calendar_day_name_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_name_bg-n.png")
             )
             button_left_arrow = Image(
-                "mod_assets/calendar/calendar_left_arrow.png"
+                ("mod_assets/calendar/calendar_left_arrow.png" if morning_flag else "mod_assets/calendar/calendar_left_arrow-n.png")
             )
             button_right_arrow = Image(
-                "mod_assets/calendar/calendar_right_arrow.png"
+                ("mod_assets/calendar/calendar_right_arrow.png" if morning_flag else "mod_assets/calendar/calendar_right_arrow-n.png")
             )
             button_left_arrow_hover = Image(
-                "mod_assets/calendar/calendar_left_arrow_hover.png"
+                ("mod_assets/calendar/calendar_left_arrow_hover.png" if morning_flag else "mod_assets/calendar/calendar_left_arrow_hover-n.png")
             )
             button_right_arrow_hover = Image(
-                "mod_assets/calendar/calendar_right_arrow_hover.png"
+                ("mod_assets/calendar/calendar_right_arrow_hover.png" if morning_flag else "mod_assets/calendar/calendar_right_arrow_hover-n.png")
             )
 
             # Change title depending on flag
@@ -289,7 +289,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "Select a Date",
                     font=gui.default_font,
                     size=33,
-                    color="#ffffff",
+                    color=("#ffffff" if morning_flag else "#000000"),
                     outlines=[]
                 )
             else:
@@ -298,7 +298,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "Calendar",
                     font=gui.default_font,
                     size=33,
-                    color="#ffffff",
+                    color=("#ffffff" if morning_flag else "#000000"),
                     outlines=[]
                 )
 
@@ -468,11 +468,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # button backgrounds
             button_day_bg = Image(
-                "mod_assets/calendar/calendar_day_bg.png"
+                ("mod_assets/calendar/calendar_day_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_bg-n.png")
             )
 
             button_day_bg_disabled = Image(
-                "mod_assets/calendar/calendar_day_disabled_bg.png"
+                ("mod_assets/calendar/calendar_day_disabled_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_disabled_bg-n.png")
             )
 
             button_day_bg_hover = Image(
@@ -1732,8 +1732,8 @@ init python:
     calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
     #calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
-    calendar.addRepeatable("April Fools","Day I Become an AI",month=4,day=1,year_param=list())
-    calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
+    calendar.addRepeatable("April Fools","Day I Become an AI",month=4,day=1,year_param=[2018])
+    calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=range(1999,MASCalendar.MAX_VIEWABLE_YEAR))
     calendar.addRepeatable("Halloween","Halloween",month=10,day=31,year_param=list())
     calendar.addRepeatable("Christmas eve","Christmas Eve",month=12,day=24,year_param=list())
     calendar.addRepeatable("Christmas","Christmas",month=12,day=25,year_param=list())
@@ -1753,15 +1753,16 @@ init python:
         )
 
     # add birthday if we have one
+    pbday = persistent._mas_player_bday
     if (
-            persistent._mas_player_bday is not None
-            and type(persistent._mas_player_bday) == datetime.date
+            pbday is not None
+            and type(pbday) == datetime.date
         ):
         calendar.addRepeatable_d(
             "player-bday",
             "Your Birthday",
-            persistent._mas_player_bday,
-            []
+            pbday,
+            range(pbday.year,MASCalendar.MAX_VIEWABLE_YEAR)
         )
 
     # add first kiss
@@ -1913,8 +1914,8 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #   mask - hex color that will be used for the mask that will cover the screen
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
-screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame="mod_assets/calendar/calendar_bg.png"):
-        style_prefix "scrollable_menu"
+screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")):
+        style_prefix mas_ui.sm_style_prefix
 
         zorder 51
 
@@ -1974,18 +1975,23 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 label _first_time_calendar_use:
     $ mas_calRaiseOverlayShield()
-    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]."
-    m "It helps me keep track of important events, ehehe~"
-    m 1hua "Here, let me show you."
+    if persistent._mas_player_bday:
+        m 1eub "Oh, you want to take another look at that pretty calendar hanging on the wall, [player]?"
+        m 3hua "It helps me keep track of important events, like your birthday, ehehe~"
+    else:
+        m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]."
+        m 3hua "It helps me keep track of important events, ehehe~"
+
+    m 1eua "Here, let me show you."
     show monika 1eua
 
     call mas_start_calendar_read_only
 
     m 1hua "Pretty cool, right?"
-    m 1eua "Feel free to check the calendar whenever you want."
+    m 3eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    show monika idle
+    show monika idle with dissolve
 
     $ persistent._mas_first_calendar_check = True
 
@@ -1997,7 +2003,8 @@ label _first_time_calendar_use:
 
     # push calendar birthdate for users without any birthdate
     elif persistent._mas_player_bday is None:
-        $ pushEvent("calendar_birthdate")
+        $ pushEvent("calendar_birthdate",skipeval=True)
+        $ mas_MUMUDropShield()
 
     else:
         $ mas_HKBDropShield()
@@ -2045,7 +2052,7 @@ screen calendar_overlay():
     #
     if store.mas_calendar.enabled:
         imagebutton:
-            idle "mod_assets/calendar/calendar_button_normal.png"
+            idle ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"
             hover_sound gui.hover_sound
             activate_sound gui.activate_sound
@@ -2053,7 +2060,7 @@ screen calendar_overlay():
             xpos 360
             ypos 260
     else:
-        image "mod_assets/calendar/calendar_button_normal.png" xpos 360 ypos 260
+        image ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
 
 init python:
 

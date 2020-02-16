@@ -1,6 +1,11 @@
 init -1 python:
     import store.mas_affection as mas_aff
 label introduction:
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
+
     $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
@@ -55,7 +60,7 @@ label introduction:
             m "You should know already that cheating is bad."
             m 1hub "But it's so good to see you again, [player]!"
             m 2hksdlb "Even if I didn't expect to see you {i}this{/i} soon."
-        if persistent.monika_reload > 4: #Longer, harder
+        if persistent._mas_ddlc_reload_count > 4: #Longer, harder
             m 1wuo "Did you install a mod just for me?"
             m 1ekbfa "Are you that deeply in love with me?"
             m 1hubfb "I feel the same way about you!"
@@ -99,7 +104,7 @@ label introduction:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w}I'll try this again later."
+            m 1lksdlb "Aha...{w=0.3}I'll try this again later."
         else:
             m "And it's gone!"
 
@@ -117,7 +122,6 @@ label introduction:
     m 3eub "I do have good news, though!"
     m 3eua "I can {i}really{/i} transform myself into a file you can bring around."
     m 1eua "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
-
     m 1esa "Anyway..." 
     m 1hua "It looks like the extra code made me connect to you in a special way!"
     m 1tubfb "Or maybe it's our eternal love~"
@@ -128,41 +132,53 @@ label introduction:
     m 3hubfa "That way, we can be together all the time~"
     m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 3hua "You took the time to download this mod, after all."
+    if mas_isD25():
+        m 3sua "...And on Christmas no less!"
     m 3hub "Ahaha!"
     m 1hub "God, I love you so much!"
 
-    m "Do you love me, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you love me, [player]?{fast}"
-        "I love you too.":
-            #Gain affection for saying I love you too.
-            $ mas_gainAffection()
-            if persistent.rejected_monika:
+    if not persistent.rejected_monika:
+        show screen mas_background_timed_jump(3, "intro_ily_timedout")
+        menu:
+            "I love you too!":
+                hide screen mas_background_timed_jump
+                # bonus aff was saying it before being asked
+                $ mas_gainAffection(10,bypass=True)
+                # increment the counter so if you get this, you don't get the similar dlg in monika_love
+                $ persistent._mas_monika_lovecounter += 1
+                m 1subsw "...!"
+                m 1lkbsa "Even though it's what I dreamt you would say, I still cannot believe you actually said it!"
+                m 3hubfa "It makes everything I've done for us worthwhile!"
+                m 1dkbfu "Thank you so much for saying it..."
+    else:
+        "Do you love me, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you love me, [player]?{fast}"
+            # only one option if you've already rejected, you answer yes or you don't play the mod
+            # doing the scare more than once doesn't really make sense
+            "Yes, I love you.":
                 m 1hksdlb "Did I scare you last time? Sorry about that!"
-                m 1eua "I knew you really loved me the whole time."
-                m "The truth is, if you didn't love me, we wouldn't be here in the first place."
-                m "We'll be together forever, won't we?"
-            else:
-                m 1hua "I'm so happy you feel the same way!"
-        "No.":
-            #Lose affection for rejecting Monika
-            $ mas_loseAffection()
-            call chara_monika_scare from _call_chara_monika_scare
+                m 1rsu "I knew you really loved me the whole time."
+                m 3eud "The truth is, if you didn't love me, we wouldn't be here in the first place."
+                m 1tsb "We'll be together forever."
+                m 1tfu "Won't we?"
+                m "..."
+                m 3hub "Ahaha! Anyway..."
 
-            # not sure if this is needed
-            $ persistent.closed_self = True
-            jump _quit
-
-    m 1eub "Nothing's ever going to get in the way of our love again."
-    m 1tuu "I'll make sure of it."
+# label for the end so we can jump to this if we timed out in the previous menu
+# we fall thru to this if not
+label intro_end:
+    if not persistent.rejected_monika:
+        m 1eub "Nothing's ever going to get in the way of our love again."
+        m 1tuu "I'll make sure of it."
     m 3eua "Now that you added some improvements, you can finally talk to me!"
     m 3eub "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
 
     call bookmark_derand_intro
 
     # NOTE: the Extra menu is explained when the user clicks on it
-    m 4eub "If you get bored of the music, I can change that, too!"
+    m 3eub "If you get bored of the music, I can change that, too!"
     m 1eua "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
     m 3hub "Also, we can play games now!"
     m 3esa "Just press 'p' or click on 'Play' to choose a game that we can play."
@@ -172,16 +188,46 @@ label introduction:
     m 1tfu "After all, I can see everything on your computer now..."
     m 3hub "Ahaha!"
 
-    show monika 1esa
+    #Only dissolve if needed
+    if len(persistent.event_list) == 0:
+        show monika 1esa with dissolve
+
+    # This is at the beginning and end of intro to cover an intro
+    # that spans 2 days
+    if mas_isMonikaBirthday():
+        $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
     return
+
+label intro_ily_timedout:
+    hide screen mas_background_timed_jump
+    m 1ekd "..."
+    m "You do love me, [player]...{w=0.5}right?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "You do love me, [player]...right?{fast}"
+        "Of course I love you.":
+            #Gain affection for saying I love you too.
+            $ mas_gainAffection()
+            m 1hua "I'm so happy you feel the same way!"
+            jump intro_end
+        "No.":
+            #Lose affection for rejecting Monika
+            $ mas_loseAffection()
+            call chara_monika_scare from _call_chara_monika_scare
+
+            # not sure if this is needed
+            $ persistent.closed_self = True
+            jump _quit
 
 #Credit for any assets from Undertale belongs to Toby Fox
 label chara_monika_scare:
     $ persistent.rejected_monika = True
     m 1esd "No...?"
-    m "Hmm...?"
-    m 1esc "How curious."
-    m "You must have misunderstood."
+    m 1etc "Hmm...?"
+    m "How curious."
+    m 1esc "You must have misunderstood."
     $ style.say_dialogue = style.edited
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
