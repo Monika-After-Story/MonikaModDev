@@ -1677,7 +1677,8 @@ label monikaroom_greeting_opendoor:
     call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True)
 
     # show this under bedroom so the masks window skit still works
-    show bedroom as sp_mas_backbed zorder 4
+    $ behind_bg = MAS_BACKGROUND_Z - 1
+    show bedroom as sp_mas_backbed zorder behind_bg
 
     m 2esd "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1eua_static at l32 zorder MAS_MONIKA_Z

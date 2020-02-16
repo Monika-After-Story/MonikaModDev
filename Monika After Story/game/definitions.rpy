@@ -10,7 +10,7 @@ python early:
     me = singleton.SingleInstance()
     # define the zorders
     MAS_MONIKA_Z = 10
-    MAS_BACKGROUND_Z =5
+    MAS_BACKGROUND_Z = 3
 
     # this is now global
     import datetime
