@@ -5260,7 +5260,7 @@ label mas_f14_monika_valentines_intro:
         $ persistent._mas_f14_spent_f14 = True
         if not mas_isMoniBroken():
             m 6eka "By the way [player], I just wanted to say happy Valentine's Day."
-            m "I hope you have a good day."
+            m "Thanks for visiting me, I hope you have a good day."
         return
 
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
