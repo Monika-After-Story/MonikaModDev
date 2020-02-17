@@ -231,6 +231,65 @@ label dev_sp_obj_pp_test_sp_select:
     jump dev_sp_obj_pp_test_sp_select
 
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_empty_desk_test",
+            category=["dev"],
+            prompt="TEST EMPTY DESK",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_empty_desk_test:
+    m 1eua "I will test empty desk"
+    m 2eua "First i will wear the plush"
+    $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+    m 1eua "then i will show the empty desk but behind me"
+    show emptydesk at i11 zorder 9
+    m 1eua "now i will fade away"
+    hide monika with dissolve
+    m 1eua "i should be gone, but asc should be there"
+    m 2eua "now i will appear"
+    $ renpy.show("monika 1eua", tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
+    $ renpy.with_statement(dissolve)
+    m 1eua "I am back"
+    hide emptydesk
+    m 1eua "i hid the empty desk"
+    $ monika_chr.remove_acs(mas_acs_quetzalplushie)
+    m 2eua "plush gone"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_empty_desk_test_labels",
+            category=["dev"],
+            prompt="TEST EMPTY DESK (using transition labels)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_empty_desk_test_labels:
+    m 1eua "I will test empty desk with transition labels"
+    m 2eua "First i will wear the plush"
+    $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+
+    m 1eua "now i will hide"
+    call mas_transition_to_emptydesk
+
+    m "i am gone. but i will return with crossed arms and a diff exp"
+    call mas_transition_from_emptydesk("monika 2tfu")
+
+    m "i am here, but now to remove plush"
+    $ monika_chr.remove_acs(mas_acs_quetzalplushie)
+    m 2eua "plush gone"
+    return
+
 ## dev functions for mas sprites that WILL cause exceptions
 
 init -2 python in mas_sprites:
