@@ -2232,6 +2232,10 @@ define mas_in_finalfarewell_mode = False
 
 # prepwork for the finalfarewell
 label mas_finalfarewell_start:
+    # always reset to default appearance and zoom
+    $ monika_chr.reset_outfit()
+    $ store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk zorder MAS_MONIKA_Z at i11
     show mas_finalnote_idle zorder 11

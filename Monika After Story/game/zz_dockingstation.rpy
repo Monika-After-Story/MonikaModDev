@@ -2246,11 +2246,11 @@ label mas_dockstat_empty_desk:
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
-    # empty desk should be a zorder lower so we can pop monika over it
-    $ ed_zorder = MAS_MONIKA_Z - 1
+    # if empty desk, always reset zoom.
     $ store.mas_sprites.reset_zoom()
+    $ store.mas_sprites.show_empty_desk()
+
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
-    show emptydesk zorder ed_zorder at i11
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25ShowVisuals()
@@ -2343,11 +2343,9 @@ label mas_dockstat_different_monika:
     $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
-    show monika 1ekd zorder MAS_MONIKA_Z at t11
+    call mas_transition_from_emptydesk("monika 1ekd")
 
-    # 1 line of dialgoue before we remove the empty desk
     m "[player]?"
-    hide emptydesk
 
     m "Wait, you're not [player]."
 
