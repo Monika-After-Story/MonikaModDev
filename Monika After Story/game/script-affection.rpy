@@ -2234,6 +2234,7 @@ define mas_in_finalfarewell_mode = False
 label mas_finalfarewell_start:
     # always reset to default appearance and zoom
     $ monika_chr.reset_outfit()
+    $ monika_chr.remove_all_acs()
     $ store.mas_sprites.reset_zoom()
 
     call spaceroom(hide_monika=True, scene_change=True)
