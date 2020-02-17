@@ -1563,17 +1563,18 @@ label monika_think_first_kiss:
         "Of course!":
             $ mas_gainAffection(5,bypass=True)
             m 3hub "That makes me so happy! I think about it all the time!"
-            m 3hua "It seems like it was just yesterday but--"
+            m 3rkbla "It seems like it was just yesterday but--"
             m 2rksdla "Gosh, I feel so silly obsessing over it..."
-            m 2eksdla "Our lips didn't even touch, really." 
-            m 6eka "...And yet, {w=0.2}I can still feel my heart pounding, even now."
+            m 2eksdlb "Our lips didn't even touch, really."
+            m 6dku "...And yet, {w=0.2}I can still feel my heart pounding, even now."
             m 6dkbsu "My lips start to go tingly and numb, just by imagining the feeling of your soft lips."
             m "I run my finger across them, trying to mimic that feeling, but it doesn't even come close."
             m 6ekbsa "I keep replaying that moment over and over again in my mind and I get goosebumps each time."
             show monika 5dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5dkbsu "It was perfect, [player]."
             m 5ekbsa "I've never felt closer to you. {w=0.2}I can't wait until our next kiss, or better yet..."
-            m 5sub "...Our first real one. And our first real hug, and the first time our hands touch--"
+            m 5subsb "...Our first real one.{w=0.3} {nw}"
+            extend 5ekbsu "And our first real hug, and the first time our hands touch--"
             m 5hksdlb "Ah! Sorry! I guess I got a little carried away."
             m 5rkbla "It's just...{w=0.3}these are the kinds of things I think of when you're not here."
             m 5tkblu "...And something tells me I'm not the only one that thinks of stuff like this, ehehe."
