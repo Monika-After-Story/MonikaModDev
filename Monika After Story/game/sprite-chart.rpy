@@ -7155,7 +7155,7 @@ init -2 python:
             spr_str_list,
             loc_b_str,
             character.tablechair.table,
-            character.tablechair.has_shadow,
+            False,
             n_sfx
         )
 
