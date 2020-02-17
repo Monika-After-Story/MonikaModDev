@@ -288,6 +288,7 @@ label dev_empty_desk_test_labels:
     m "i am here, but now to remove plush"
     $ monika_chr.remove_acs(mas_acs_quetzalplushie)
     m 2eua "plush gone"
+    m "try with zoom"
     return
 
 ## dev functions for mas sprites that WILL cause exceptions

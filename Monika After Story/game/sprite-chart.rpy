@@ -4364,6 +4364,26 @@ init -2 python:
             return acs_items
 
 
+        def get_acs_by_desk(self, flag_value=True):
+            """
+            Returns all acs that have a keep_on_desk flag set to flag_value
+
+            IN:
+                flag_value - flag value to check for
+                    (Default: True)
+
+            RETURNS: list of ACS objects with a keep_on_desk flag set to 
+                flag_value
+            """
+            acs_items = []
+            for acs_name in self.acs_list.map:
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.keep_on_desk == flag_value:
+                    acs_items.append(_acs)
+            
+            return acs_items
+
+
         def get_acs_of_exprop(self, exprop, get_all=False):
             """
             Gets the acs objects currently being work of a given ex prop
