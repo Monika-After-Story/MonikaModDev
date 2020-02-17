@@ -1344,12 +1344,14 @@ label mas_coffee_finished_brewing:
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
+    $ mas_acs_mug.keep_on_desk = False
     $ monika_chr.wear_acs_pst(mas_acs_mug)
     $ persistent._mas_coffee_brew_time = None
     $ mas_drinkCoffee()
     $ renpy.pause(4.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1396,6 +1398,7 @@ label mas_coffee_finished_drinking:
         m 1eua "Hold on a moment."
 
     # monika is off screen
+    $ mas_acs_mug.keep_on_desk = False
     call mas_transition_to_emptydesk
 
     # wrap these statemetns so we can properly add / remove the mug
@@ -1411,6 +1414,7 @@ label mas_coffee_finished_drinking:
     $ renpy.pause(4.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1452,12 +1456,14 @@ label mas_c_hotchoc_finished_brewing:
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
+    $ mas_acs_hotchoc_mug.keep_on_desk = False
     $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
     $ persistent._mas_c_hotchoc_brew_time = None
     $ mas_drinkHotChoc()
     $ renpy.pause(4.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_hotchoc_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1504,6 +1510,7 @@ label mas_c_hotchoc_finished_drinking:
         m 1eua "Hold on a moment."
 
     # monika is off screen
+    $ mas_acs_hotchoc_mug.keep_on_desk = False
     call mas_transition_to_emptydesk
 
     # wrap these statemetns so we can properly add / remove the mug
@@ -1520,6 +1527,7 @@ label mas_c_hotchoc_finished_drinking:
     $ renpy.pause(4.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_hotchoc_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
