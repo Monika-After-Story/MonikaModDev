@@ -233,9 +233,15 @@ init -101 python in mas_sprites:
             acs_type - the acs type associated with this template
             mux_type - the default mux type list for this template
             ex_props - default exprops dict for this template
+            keep_on_desk - default keep on desk flag for this templat
         """
 
-        def __init__(self, acs_type, mux_type=None, ex_props=None):
+        def __init__(self, 
+                acs_type,
+                mux_type=None,
+                ex_props=None,
+                keep_on_desk=None
+        ):
             """
             Constructor
 
@@ -247,10 +253,14 @@ init -101 python in mas_sprites:
                 ex_props - the ex_props we want to use as default. Ignored if
                     None.
                     (Default: None)
+                keep_on_desk - the keep_on_desk flag we want to use as default.
+                    Ignored if None.
+                    (Default: None)
             """
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.ex_props = ex_props
+            self.keep_on_desk = keep_on_desk
 
         def _apply_ex_props(self, acs):
             """
@@ -269,6 +279,20 @@ init -101 python in mas_sprites:
 
             else:
                 acs.ex_props.update(self.ex_props)
+
+        def _apply_keep_on_desk(self, acs):
+            """
+            Applies keep_on_desk defaults to the given ACS.
+
+            acs_type is NOT checked.
+
+            IN:
+                acs- acs to modify
+            """
+            if self.keep_on_desk is None:
+                return
+
+            acs.keep_on_desk = self.keep_on_desk
 
         def _apply_mux_type(self, acs):
             """
@@ -296,6 +320,7 @@ init -101 python in mas_sprites:
             """
             if self.acs_type == acs.acs_type:
                 self._apply_ex_props(acs)
+                self._apply_keep_on_desk(acs)
                 self._apply_mux_type(acs)
 
 
@@ -450,6 +475,7 @@ init -100 python in mas_sprites:
         "mug": ACSTemplate(
             "mug",
             mux_type=["mug"],
+            keep_on_desk=True
         ),
         "necklace": ACSTemplate(
             "necklace",
