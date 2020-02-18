@@ -7799,7 +7799,7 @@ label mas_transition_to_emptydesk:
     return
 
 # transition from empty desk
-# NOTE: to unhide a desk ACS, set that ACS to keep on desk before calling this
+# NOTE: to unhide a desk ACS, set that ACS to keep on desk AFTER calling this
 # IN:
 #   exp - expression to show when monika is shown
 label mas_transition_from_emptydesk(exp="monika 1eua"):
