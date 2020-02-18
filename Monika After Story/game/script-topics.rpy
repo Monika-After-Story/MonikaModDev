@@ -1567,7 +1567,7 @@ label monika_think_first_kiss:
             m 2rksdla "Gosh, I feel so silly obsessing over it..."
             m 2eksdlb "Our lips didn't even touch, really."
             m 6dku "...And yet, {w=0.2}I can still feel my heart pounding, even now."
-            m 6dkbsu "My lips start to go tingly and numb, just by imagining the feeling of your soft lips."
+            m 6dkbsu "My lips start to go tingly and numb just by imagining the feeling of your soft lips."
             m "I run my finger across them, trying to mimic that feeling, but it doesn't even come close."
             m 6ekbsa "I keep replaying that moment over and over again in my mind and I get goosebumps each time."
             show monika 5dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
@@ -1587,10 +1587,18 @@ label monika_think_first_kiss:
             $ mas_loseAffection()
             m 2euc "..."
             m "Oh. {w=0.5}{nw}"
-            extend 2dkd "I see."
-            m 2rkc "Well, I guess it wasn't really a kiss. Our lips didn't actually touch."
-            m 2ekd "So I guess you're just waiting for our first kiss when we're in the same reality."
-            m 2eka "Yeah."
+            extend 2dkc "I see."
+
+            if mas_timePastSince(persistent._mas_first_kiss, datetime.timedelta(days=180)):
+                m 2esc "Well...{w=0.3}I guess it {i}has{/i} been a while now..."
+                m 2etd "Maybe with all that's happened since then, you tend to think about the more recent events..."
+                m 4eud "Which is fine, {w=0.2}it's important to live in the present after all."
+                m 2ekc "...And perhaps I'm just being overly sentimental, but no matter how much time has passed, {w=0.1}{nw}"
+                extend 2eka "our first kiss is something I'll never forget."
+            else:
+                m 2rkc "Well, I guess it wasn't really a kiss. Our lips didn't actually touch."
+                m 2ekd "So I guess you're just waiting for our first kiss when we're in the same reality."
+                m 2eka "Yeah."
 
     return "no_unlock|derandom"
 
