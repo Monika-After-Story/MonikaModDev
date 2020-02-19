@@ -2243,6 +2243,15 @@ label mas_dockstat_empty_desk:
         if mas_current_weather != mas_weather_thunder:
             $ mas_changeWeather(mas_weather_thunder, True)
 
+
+    # TODO: else this with the o31 mode
+    # set weather here
+    # TODO: run the yet-to-be-made weather alg running function etc
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
+        $ skip_setting_weather = True
+
     # reset zoom before showing spaceroom
     $ store.mas_sprites.reset_zoom()
 
@@ -2276,13 +2285,6 @@ label mas_dockstat_empty_desk_preloop:
     $ disable_esc()
     $ mas_enable_quit()
     $ promise = mas_dockstat.monikafind_promise
-
-    # set weather here
-    $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None:
-        $ mas_changeWeather(set_to_weather)
-        $ skip_setting_weather = True
-
 
 label mas_dockstat_empty_desk_from_empty:
 

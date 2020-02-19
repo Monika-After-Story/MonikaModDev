@@ -1393,6 +1393,9 @@ label ch30_post_exp_check:
     $ mas_startup_song()
 
     # rain check
+    # TODO: the weather progression alg needs to run here
+    # TODO: we actually might want to move this to preloop visual
+    #   setup as that makes more sense.
     if not mas_weather.force_weather and not skip_setting_weather:
         $ set_to_weather = mas_shouldRain()
         if set_to_weather is not None:
@@ -1445,6 +1448,10 @@ label ch30_preloop:
 label ch30_loop:
     $ quick_menu = True
 
+    # TODO: make these functions so docking station can run weather alg
+    # on start.
+    # TODO: consider a startup version of those functions so that
+    #   we can run the regular shouldRain alg if prgoression is disabled
     python:
         should_dissolve_masks = (
             mas_weather.weatherProgress()
@@ -1463,6 +1470,9 @@ label ch30_loop:
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
+
+# TODO: add label here to allow startup to hook past weather 
+# TODO: move quick_menu to here
 
     # updater check in here just because
     if not mas_checked_update:
