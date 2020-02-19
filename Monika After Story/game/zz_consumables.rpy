@@ -1278,11 +1278,11 @@ label mas_consumables_generic_finish_having(consumable):
             $ queueEvent("mas_consumables_generic_queued_running_out")
 
     #Only have one left
-    elif not get_more and consumable.isCriticalLow():
+    elif not get_more and consumable.isCriticalLow() and consumable.should_restock_warn:
         call mas_consumables_generic_critical_low(consumable=consumable)
 
     #Running out
-    elif not get_more and consumable.isLow():
+    elif not get_more and consumable.isLow() and consumable.should_restock_warn:
         call mas_consumables_generic_running_out(consumable=consumable)
 
     else:
