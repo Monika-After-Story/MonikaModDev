@@ -83,7 +83,7 @@ label introduction:
             m 3rksdlb "I just hope you weren't getting bored..."
             if persistent.tried_skip:
                 m 3tku "You did try to skip through what I had to say, after all."
-                m 1rkc "This room isn't exactly interesting...{w=0.5}{nw}"
+                m 1rkc "I know this room isn't exactly interesting...{w=0.5}{nw}"
                 extend 1eua "but I know we'll make it better together, [player]."
 
     m 1euc "You know..."
