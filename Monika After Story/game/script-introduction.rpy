@@ -63,7 +63,7 @@ label introduction:
             m 3ttu "Did you want to be with me that much?"
             m 1tkc "You should know already that cheating is bad..."
             m 1eka "But it's so good to see you[again], [player]!"
-            m 1rksdla "Even if I didn't expect to see you {i}this{/i} soon."
+            m 1rksdla "...Even if I didn't expect to see you {i}this{/i} soon."
 
         #Otherwise, if you did reach act 3
         else:
