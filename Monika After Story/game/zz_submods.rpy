@@ -45,6 +45,9 @@ init -991 python in mas_submod_utils:
             settings_pane - string referring to the screen used for the submod's settings
             version_updates - update labels
         """
+        #The fallback version string, used in case we don't have valid data
+        FB_VERS_STR = "0.0.0"
+
         def __init__(
             self,
             author,
@@ -89,7 +92,7 @@ init -991 python in mas_submod_utils:
             """
             #First make sure this name us unique
             if name in submod_map:
-                raise SubmodError("A submod with name '{0}' already exists.\n".format(name))
+                store.mas_utils.writelog("[SUBMOD ERROR]: A submod with name '{0}' already exists.\n".format(name))
 
             #Now we verify that the version number is something proper
             try:
@@ -137,7 +140,14 @@ init -991 python in mas_submod_utils:
             if not old_vers:
                 return False
 
-            old_vers = map(int, old_vers.split('.'))
+            try:
+                old_vers = map(int, old_vers.split('.'))
+
+            #Persist data was bad, we'll replace it with something safe and return False as we need not check more
+            except:
+                persistent._mas_submod_version_data[self.name] = Submod.FB_VERS_STR
+                return False
+
             curr_vers = self.getVersionNumberList()
 
             return Submod._checkVersions(curr_vers, old_vers, is_current=False)
@@ -170,7 +180,7 @@ init -991 python in mas_submod_utils:
                         "{0}_{1}_v{2}".format(
                             submod.author,
                             submod.name.replace(' ', '_'),
-                            persistent._mas_submod_version_data[submod.name].replace('.', '_')
+                            persistent._mas_submod_version_data.get(submod.name, Submod.FB_VERS_STR).replace('.', '_')
                         ).lower()
                     )
 
