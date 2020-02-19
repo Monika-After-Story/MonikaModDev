@@ -68,7 +68,6 @@ label introduction:
         #Otherwise, if you did reach act 3
         else:
             m 1hub "Yay, there you are!"
-            m 1eua "Hello again, [player]."
             m 1eub "It's so good to see you."
             m 1rsc "..."
             m 1rud "Wait..."
