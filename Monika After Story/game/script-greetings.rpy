@@ -1608,10 +1608,10 @@ label monikaroom_greeting_opendoor_seen_partone:
     menu:
         "Your room?":
             m 3hua_static "That's right!"
-    m 3eua_static "The developers of this mod gave me a nice comfy room to stay in whenever you are away."
-    m 1lksdla_static "However, I can only get in if you tell me 'good bye' or 'good night' before you close the game."
+    m 3eua_static "The developers of this mod gave me a nice comfy room to stay in whenever you're away."
+    m 1lksdla_static "However, I can only get in if you tell me 'goodbye' or 'goodnight' before you close the game."
     m 2eub_static "So please make sure to say that before you leave, okay?"
-    m "Anyway..."
+    m "Anyway.{w=0.5}.{w=0.5}.{nw}"
 
 #    else:
 #        m 3wfw "Stop just opening my door!"
@@ -1751,7 +1751,7 @@ label monikaroom_greeting_knock:
 
 label monikaroom_greeting_post:
     if mas_isMoniNormal(higher=True):
-        m 2eua_static "Now, just let me grab a table and a chair..."
+        m 2eua_static "Now, just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 1eua at ls32 zorder MAS_MONIKA_Z
         m 1eua "What shall we do today, [player]?"
