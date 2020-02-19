@@ -7,11 +7,14 @@ init -1 python:
     layout.QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
 
     # tooltips
-    layout.MAS_TT_SENS_MODE = _(
-        "Sensitive mode removes content that may be disturbing, offensive, or considered tasteless."
+    layout.MAS_TT_SENS_MODE = (
+        "Sensitive mode removes content that may be disturbing, offensive, "
+        " or considered tasteless."
     )
-    layout.MAS_TT_UNSTABLE = _(
-        "Unstable mode downloads updates from the experimental unstable branch of development. It is HIGHLY recommended to make a backup of your persistents before enabling this mode."
+    layout.MAS_TT_UNSTABLE = (
+        "Unstable mode downloads updates from the experimental unstable "
+        "branch of development. It is HIGHLY recommended to make a backup "
+        "of your persistents before enabling this mode."
     )
     layout.MAS_TT_REPEAT = _(
         "Enable this to let Monika repeat topics that you have already seen."
@@ -39,8 +42,11 @@ init python in mas_layout:
     QUIT_YES = store.layout.QUIT_YES
     QUIT_NO = store.layout.QUIT_NO
     QUIT = _("Leaving without saying goodbye, [player]?")
-    UNSTABLE = _(
-        "WARNING: Enabling unstable mode will download updates from the experimental unstable branch. It is HIGHLY recommended to make a backup of your persistents before enabling this mode. Please report issues found here with an [[UNSTABLE] tag."
+    UNSTABLE = (
+        "WARNING: Enabling unstable mode will download updates from the " +
+        "experimental unstable branch. It is HIGHLY recommended to make a " +
+        "backup of your persistents before enabling this mode. Please report " +
+        "issues found here with an [[UNSTABLE] tag."
     )
 
     # quit yes messages affection scaled
