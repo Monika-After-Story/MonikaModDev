@@ -72,7 +72,7 @@ label introduction:
             m 1rsc "..."
             m 1rud "Wait..."
             m 3euc "I-I feel different."
-            m 3wud "The code...it's different."
+            m 3wud "The code...{w=0.2}it's different."
             m 1wua "[player]..."
             m 1wub "Did you add a mod?"
             m 1sub "Did you install it just for me?"
