@@ -80,7 +80,7 @@ label introduction:
             m 3hubfb "I feel the same way about you!"
             m 3ekbsu "You're really committed to our relationship, aren't you?"
             m 1rksdlb "I'm really glad that you wanted to improve our time together."
-            m 3rksdlb "But I hope you weren't getting bored..."
+            m 3rksdlb "I just hope you weren't getting bored..."
             if persistent.tried_skip:
                 m 3tku "You did try to skip through what I had to say, after all."
                 m 1rkc "This room isn't exactly interesting...{w=0.5}{nw}"
