@@ -28,8 +28,9 @@ init -1 python:
     layout.MAS_TT_G_NOTIF = _(
         "Enables notifications for the selected group."
     )
-    layout.MAS_TT_ACTV_WND = _(
-        "Enabling this will allow Monika to see your active window and offer some comments based on what you're doing."
+    layout.MAS_TT_ACTV_WND = (
+        "Enabling this will allow Monika to see your active window "
+        "and offer some comments based on what you're doing."
     )
 
 
