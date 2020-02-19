@@ -2238,7 +2238,6 @@ label mas_finalfarewell_start:
     $ store.mas_sprites.reset_zoom()
 
     call spaceroom(hide_monika=True, scene_change=True)
-    show emptydesk zorder MAS_MONIKA_Z at i11
     show mas_finalnote_idle zorder 11
 
     python:

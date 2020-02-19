@@ -754,7 +754,13 @@ init 1 python:
 #       NOTE: must be string
 #       NOTE: if passed in, it will override the current background night_bg
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None):
+#   show_emptydesk - behavior is determined by `hide_monika`
+#       if hide_monika is True - True will show emptydesk and False will do
+#           nothing.
+#       if hide_monika is False - True will do nothing and False will hide
+#           emptydesk after Monika is shown.
+#       (Default: True)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True):
 
     with None
 
@@ -793,7 +799,11 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
             mas_darkMode(not persistent._mas_dark_mode_enabled)
 
         ## are we hiding monika
-        if not hide_monika:
+        if hide_monika:
+            if show_emptydesk:
+                store.mas_sprites.show_empty_desk()
+
+        else:
             if force_exp is None:
 #                force_exp = "monika idle"
                 if dissolve_all:
@@ -861,6 +871,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ mas_drawSpaceroomMasks(dissolve_all)
     elif dissolve_all:
         $ renpy.with_statement(Dissolve(1.0))
+
+    # hide emptydesk if monika is visible
+    if not hide_monika and not show_emptydesk:
+        hide emptydesk
 
     return
 
@@ -1090,6 +1104,10 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
     $ mas_skip_visuals = False
+
+    # set flag to True to prevent ch30 from running weather alg
+    $ skip_setting_weather = False
+
     $ mas_cleanEventList()
 
     # set the gender
@@ -1375,9 +1393,10 @@ label ch30_post_exp_check:
     $ mas_startup_song()
 
     # rain check
-    $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None and not mas_weather.force_weather:
-        $ mas_changeWeather(set_to_weather)
+    if not mas_weather.force_weather and not skip_setting_weather:
+        $ set_to_weather = mas_shouldRain()
+        if set_to_weather is not None:
+            $ mas_changeWeather(set_to_weather)
 
     # FALL THROUGH
 

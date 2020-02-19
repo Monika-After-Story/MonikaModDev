@@ -516,7 +516,6 @@ label greeting_o31_marisa:
         # ASSUMING:
         #   vignette should be enabled.
         call spaceroom(hide_monika=True, scene_change=True)
-        $ store.mas_sprites.show_empty_desk()
 
     else:
         # ASSUMING:
@@ -588,7 +587,6 @@ label greeting_o31_rin:
 
     # ASSUME vignette
     call spaceroom(hide_monika=True, scene_change=True)
-    $ store.mas_sprites.show_empty_desk()
 
     m "Ugh, I hope I got these braids right."
     m "Why does this costume have to be so complicated...?"
@@ -651,7 +649,6 @@ init 5 python:
 label greeting_o31_orcaramelo_hatsune_miku:
     if not persistent._mas_o31_relaunch:
         call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-        $ store.mas_sprites.show_empty_desk()
         #moni is off-screen
         m "{i}~Don't forget my voice~{/i}"
         m "{i}~My signal crosses dimensions~{/i}"
@@ -691,7 +688,6 @@ init 5 python:
 
 label greeting_o31_orcaramelo_sakuya_izayoi:
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-    $ store.mas_sprites.show_empty_desk()
 
     #moni is off-screen
     if not persistent._mas_o31_relaunch:
@@ -4471,7 +4467,7 @@ label mas_player_bday_opendoor:
     $ persistent._mas_player_bday_opened_door = True
     if persistent._mas_bday_visuals:
         $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True, show_emptydesk=False)
     $ mas_disable_quit()
     if mas_isMonikaBirthday():
         $ your = "our"
@@ -4571,7 +4567,7 @@ label mas_player_bday_opendoor_listened:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     $ mas_disable_quit()
     if mas_isMonikaBirthday():
         $ your = "our"

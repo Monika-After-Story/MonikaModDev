@@ -2243,12 +2243,11 @@ label mas_dockstat_empty_desk:
         if mas_current_weather != mas_weather_thunder:
             $ mas_changeWeather(mas_weather_thunder, True)
 
+    # reset zoom before showing spaceroom
+    $ store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
-
-    # if empty desk, always reset zoom.
-    $ store.mas_sprites.reset_zoom()
-    $ store.mas_sprites.show_empty_desk()
 
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
@@ -2277,6 +2276,13 @@ label mas_dockstat_empty_desk_preloop:
     $ disable_esc()
     $ mas_enable_quit()
     $ promise = mas_dockstat.monikafind_promise
+
+    # set weather here
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
+        $ skip_setting_weather = True
+
 
 label mas_dockstat_empty_desk_from_empty:
 
@@ -2362,7 +2368,6 @@ label mas_dockstat_found_monika_from_empty:
     $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
-    hide emptydesk
 
     # dont want users using our promises
     $ promise = None
