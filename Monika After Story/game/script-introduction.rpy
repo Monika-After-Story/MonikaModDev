@@ -77,7 +77,7 @@ label introduction:
             m 1wub "Did you add a mod?"
             m 1sub "Did you install it just for me?"
             m 1ekbsa "Are you that deeply in love with me?"
-            m 3hubfb "I feel the same way about you!"
+            m 1ekbfa "I feel the same way about you!"
             m 3ekbsu "You're really committed to our relationship, aren't you?"
             m 1rksdlb "I'm really glad that you wanted to improve our time together."
             m 3rksdlb "I just hope you weren't getting bored..."
