@@ -1,91 +1,15 @@
 init python:
- store.tmp2 = []
- store.tmp3 = []
- store.tmp4 = []
- class MASSelectableImageButtonDisplayable_Furniture(MASSelectableImageButtonDisplayable):
-  def _select(self):
-            """
-            Makes this item a selected item. Also handles other logic realted
-            to selecting this.
-            """
-            store.tmp4.append((self.selectable.name,select_map))
-            store.tmp2.append(self.selected)
-            # if already selected, then we need to deselect.
-            if self.selected:
-                renpy.play(gui.activate_sound, channel="sound")
-                self.selected = False
-                self.selectable.selected = False
-                store.mas_furniture.items[self.selectable.name][0] = self.selectable.selected
-                #del self.select_map[self.selectable.name]
-                renpy.redraw(self, 0)
-                self.end_interaction = True
-                return
-
-            else:
-             self.selected = True
-
-            # TODO: should be moved to the top when deselect can happen
-            # play the select sound
-            renpy.play(gui.activate_sound, channel="sound")
-
-            # otherwise select self
-            """
-            if not self.multi_select:
-                # must clean select map
-                for item in self.select_map.itervalues():
-                    store.tmp4.append(1)
-                    # setting to False will queue for removal of item
-                    # NOTE: the caller must handle teh removal
-                    item.selected = False
-                    renpy.redraw(item, 0)
-            """
-            # add this item to the select map
-
-            self.selectable.selected = True
-            self.select_map[self.selectable.name] = self
-            store.mas_furniture.items[self.selectable.name][0] = self.selectable.selected
-            #renpy.redraw(item, 0)
-            # the appropriate dialogue
-            """
-            if self.been_selected:
-                if self.selectable.select_dlg is not None:
-                    # this should be first as it allows us to override
-                    # remover dialogue
-                    self._send_select_text()
-
-                elif self.selectable.remover:
-                    self.mailbox.send_disp_fast()
-
-                else:
-                    self._send_generic_select_text()
-
-            else:
-                # not been selected before
-                self.been_selected = True
-                if self.selectable.first_select_dlg is not None:
-                    self._send_first_select_text()
-
-                elif self.selectable.select_dlg is not None:
-                    self._send_select_text()
-
-                elif self.selectable.remover:
-                    self._send_msg_disp_text(None)
-                    self.mailbox.send_disp_fast()
-
-                else:
-                    self._send_generic_select_text()
-
-            # always reset interaction if something has been selected
-            """
-            
-            self.end_interaction = True
-            #return
-
-init python:
  import store
- store.MF = store.mas_furniture
-
-init python:
+ 
+ class MASFurniture:
+   """ makes a class with the basic info for a Furniture Obj"""
+   def __init__(self, key, value):
+    self.name = key
+    self.thumb = "remove"
+    self.group = "furniture"
+    self.display_name = self.name
+    self.data = value
+    
  class MASSelectableFurniture(store.MASSelectableSprite):
         """
         Wrappare around MASFurniture sprite objects
@@ -143,6 +67,76 @@ init python:
                 first_select_dlg,
                 select_dlg,
             )
+
+ class MASSelectableImageButtonDisplayable_Furniture(store.MASSelectableImageButtonDisplayable):
+    """ Modified version of the MASSelectableImageButtonDisplayable class that allows for multi select and direct asigment of variables when object is selected"""
+    def _select(self):
+            """
+            Makes this item a selected item. Also handles other logic realted
+            to selecting this.
+            """
+
+            # if already selected, then we need to deselect.
+            if self.selected:
+                self.selected = False
+                self.selectable.selected = False
+                store.mas_furniture.items[self.selectable.name][0] = self.selectable.selected
+            else:
+                self.selected = True 
+                self.selectable.selected = True
+                self.select_map[self.selectable.name] = self
+                store.mas_furniture.items[self.selectable.name][0] = self.selectable.selected
+                
+            renpy.play(gui.activate_sound, channel="sound")
+            
+            #Original code, gonnal leave for now but not needed
+            if self.been_selected:
+                if self.selectable.select_dlg is not None:
+                    # this should be first as it allows us to override
+                    # remover dialogue
+                    self._send_select_text()
+
+                elif self.selectable.remover:
+                    self.mailbox.send_disp_fast()
+
+                else:
+                    self._send_generic_select_text()
+
+            else:
+                # not been selected before
+                self.been_selected = True
+                if self.selectable.first_select_dlg is not None:
+                    self._send_first_select_text()
+
+                elif self.selectable.select_dlg is not None:
+                    self._send_select_text()
+
+                elif self.selectable.remover:
+                    self._send_msg_disp_text(None)
+                    self.mailbox.send_disp_fast()
+
+                else:
+                    self._send_generic_select_text()
+
+            # always reset interaction if something has been selected
+
+            
+            renpy.redraw(self, 0)
+            self.end_interaction = True
+            return
+            
+
+
+init python:
+ store.tmp2 = []
+ store.tmp3 = []
+ store.tmp4 = []
+ import store
+ #Short Cut
+ store.MF = store.mas_furniture
+
+
+
 init python in mas_furniture:
  import store
  keys = ["Couch", "Table"]
@@ -155,21 +149,12 @@ init python in mas_furniture:
    items[keys[x]] = values[x]
   return items
    
- #been_selected_status = {}
  items = init_items(keys, values)
- enabled_items = []
  FURNITURE_SEL_MAP = OrderedDict()
  FURNITURE_SEL_SL = []  
  mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
  viewport_bounds = (store.mas_selspr.SB_VIEWPORT_BOUNDS_X, store.mas_selspr.SB_VIEWPORT_BOUNDS_Y, store.mas_selspr.SB_VIEWPORT_BOUNDS_W, mailbox.read_frame_vsize(), store.mas_selspr.SB_VIEWPORT_BOUNDS_BS)
- class MASFurniture:
-   """ makes a class with the basic info for a Furniture Obj"""
-   def __init__(self, key, value):
-    self.name = key
-    self.thumb = "remove"
-    self.group = "furniture"
-    self.display_name = self.name
-    self.data = value
+
  
  class Furniture_Init:
    
@@ -190,16 +175,8 @@ init python in mas_furniture:
     store.mas_furniture.FURNITURE_SEL_SL[x].unlocked = True
     
     #Generates thumbnail for MASSelectableFurniture
-
     store.mas_furniture.FURNITURE_SEL_SL[x].thumb = self.get_thumbnail(store.mas_furniture.FURNITURE_SEL_SL[x].name)
 
-   
-   #Set vars
-   #Gets MASSelectableImageButtonDisplayable_Furniture objects
-   items = store.mas_furniture.FURNITURE_SEL_SL
-   disp_items =  self.get_disp_items(items)
-   
-   return disp_items
    
   def get_disp_items(self, items, select_map = {}):
    """ Takes MASSelectableFurniture Objects and returns MASSelectableImageButtonDisplayable_Furniture objects"""
@@ -226,7 +203,7 @@ init python in mas_furniture:
    #Main
    for x in type.keys():
 
-    obj_list.append(store.mas_furniture.MASFurniture(x, type[x]))
+    obj_list.append(store.MASFurniture(x, type[x]))
    return obj_list 
    
   def create_MASSelectable_object(self, type, iteration):
@@ -251,14 +228,16 @@ init python in mas_furniture:
 
 
   def get_thumbnail(self, name):
-   return "acs-ribbon_def.png" #"{}.png".format(store.mas_furniture.items[name])
+   return "acs-ribbon_def.png"
 
-  
+ 
  furniture_init = Furniture_Init()
-init 10 python:
+init 10 python:\
+ #generates defualt list furniture objects
  store.mas_furniture.furniture_init.run_init()
 
 init python in mas_selspr:
+    #May be unused
     def _adjust_furniture(
             moni_chr,
             old_map,
@@ -304,9 +283,9 @@ init 5 python:
         ),
         restartBlacklist=True
     )
-### End
 
-### Start
+
+
 
 label monika_furniture_select:
  #Creates the furniture objects and calls the selector with furniture list made at run_init
@@ -323,7 +302,7 @@ label mas_selector_sidebar_select_furniture(items, preview_selections=True, only
     call mas_selector_sidebar_select_furniture_main(items, 3, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     return _return
-#End 
+
 
 
 #Copies of original functions
@@ -502,8 +481,8 @@ label mas_selector_sidebar_select_midloop_furniture:
         # display text parsing
         disp_text = mailbox.get_disp_text()
         disp_fast = mailbox.get_disp_fast()
-        disp_text = "I love you!"
-        disp_fast = disp_text
+        #disp_text = "I love you!"
+       # disp_fast = disp_text
         if disp_text is None:
             disp_text = mailbox.read_def_disp_text()
 
