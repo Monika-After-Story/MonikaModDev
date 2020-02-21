@@ -210,7 +210,7 @@ init python in mas_furniture:
    """Passes MASFurniture Obj to create_MASSelectable_object which creates MASSelectableFurniture objects
    IN:
    obj_list: list
-   list of Outfit_Obj's
+   list of Furniture_Obj's
    """
    i = 0
    for x in obj_list:
