@@ -1502,3 +1502,28 @@ label bye_prompt_housework:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_restart",
+            unlocked=True,
+            prompt="I'm going to restart.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_restart:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Alright, [player]."
+        m 1eub "Come back soon!"
+    elif mas_isMoniUpset() or mas_isMoniDis():
+        m 2euc "Alright."
+    else:
+        m 6ckc "..."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART
+    return 'quit'
