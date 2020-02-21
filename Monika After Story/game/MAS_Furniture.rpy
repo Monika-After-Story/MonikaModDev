@@ -232,7 +232,7 @@ init python in mas_furniture:
 
  
  furniture_init = Furniture_Init()
-init 10 python:\
+init 10 python:
  #generates defualt list furniture objects
  store.mas_furniture.furniture_init.run_init()
 
@@ -294,10 +294,7 @@ label monika_furniture_select:
  
 label mas_selector_sidebar_select_furniture(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
     #Calls the selector for the furniture items = furniture objects
-    python:
-     return_check = store.MF.furniture_init.run_init()
-     while len(return_check) != len(store.MF.items):
-      pass
+    $store.MF.furniture_init.run_init()
     show furniture zorder 5
     call mas_selector_sidebar_select_furniture_main(items, 3, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
