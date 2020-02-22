@@ -351,6 +351,10 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a hair style is a tied strand style
 
+    EXP_H_NT = "no-tails"
+    # v: ignored
+    # marks that a hair style has no tails. By default we assume ponytail.
+
     # ---- CLOTHES ----
 
     EXP_C_BRS = "bare-right-shoulder"
@@ -370,7 +374,9 @@ init -100 python in mas_sprites:
     # marks that a clothing item is lingerie
 
     # --- default exprops ---
+
     DEF_EXP_TT_EXCL = [EXP_H_TT]
+    # twin tail exclusions
 
     # --- default mux types ---
 
@@ -1307,12 +1313,27 @@ init -5 python in mas_sprites:
         return sprite_map.get(sprite_name, None)
 
 
-    # special mas monika functions (hooks)
+##### special mas monika functions (hooks)
     # NOTE: set flag "abort" to True in prechange points to prevent 
     #   change/add/removal. This is dependent on the specific hook.
     #   ACS: only wear_mux_pre_change and rm_exit_pre_change
     #   HAIR: hair_exit_pre_change
     #   CLOTHES: clothes_exit_pre_change
+    # NOTE: available temp_space flags by type:
+    #   ACS:
+    #       abort - see above
+    #       acs_list - list of acs Monika is currently wearing
+    #
+    #   HAIR:
+    #       abort - see above
+    #       by_user - True if set by the user, False if not
+    #       startup - True if we are in startup flow, false if not
+    #
+    #   CLOTHES:
+    #       abort - see above
+    #       by_user - same as hair
+    #       startup - same as hair
+    #       outfit_mode - True if in outfit mode, False if not
 
     def acs_rm_exit_pre_change(temp_space, moni_chr, rm_acs, acs_loc):
         """
