@@ -1543,9 +1543,9 @@ label ch30_post_mid_loop_eval:
                         1, store.mas_globals.lightning_s_chance
                     ) == 1
                 ):
-                show mas_lightning_s zorder 4
+                show mas_lightning_s zorder 2
             else:
-                show mas_lightning zorder 4
+                show mas_lightning zorder 2
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
