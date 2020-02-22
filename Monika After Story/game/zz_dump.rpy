@@ -309,13 +309,16 @@ init 999 python:
             #Consumables stuff
             for consumable_id in persistent._mas_consumable_map.keys():
                 consumable = mas_getConsumable(consumable_id)
-                _var_data_file.write(
-                    "{0}S OF {1} HAD: {2}\n".format(
-                    consumable.container.upper(),
-                    consumable.disp_name.upper(),
-                    consumable.getAmountHad()
+
+                #Need to account for consumables which were removed
+                if consumable:
+                    _var_data_file.write(
+                        "{0}S OF {1} HAD: {2}\n".format(
+                        consumable.container.upper(),
+                        consumable.disp_name.upper(),
+                        consumable.getAmountHad()
+                        )
                     )
-                )
 
 
     def mas_dataDumpFlag():

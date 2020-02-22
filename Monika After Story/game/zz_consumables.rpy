@@ -835,7 +835,7 @@ init 5 python:
 
             for cons in consumables:
                 if cons.prepable():
-                    calculate_and_use(consumable=cons, servings=7, days_absent=_days)
+                    calculate_and_use(consumable=cons, servings=random.randint(3,5), days_absent=_days)
                 else:
                     calculate_and_use(consumable=cons, servings=4, days_absent=_days)
 
@@ -932,16 +932,17 @@ init 5 python:
 
             #First, should we even have this?
             if cons.shouldHave():
-                #If we prepare, we prep for 7 chages worth (to acct for multiple servings)
+                #If we prepare, we prep using 3-5 chages worth (to acct for multiple servings)
                 if cons.prepable():
-                    cons.use(amount=7)
+                    cons.use(amount=random.randint(3,5))
 
                 #Otherwise, if it's a non-prepable, just one
                 else:
                     cons.use()
 
                 #Are we loading in after the time? If so, we should already have the cons out. No prep, just have
-                if startup and cons.isLateEntry():
+                #Though we'll not guarantee this to add a degree of realism/variance (80% chance she'll start with it out)
+                if startup and cons.isLateEntry() and random.randint(1, 100) <= 80:
                     cons.have(skip_leadin=True)
 
                 else:
