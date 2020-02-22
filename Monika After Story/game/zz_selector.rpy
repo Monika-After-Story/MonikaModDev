@@ -54,6 +54,12 @@ init -100 python in mas_selspr:
             "change": "Can you change your hairstyle?",
             # TODO: min-items
         },
+        "hat": {
+            "_ev": "monika_hat_select",
+            "_min-items": 1,
+            "change": "Can you change your hat?",
+            "wear": "Can you wear a hat?",
+        },
         "left-hair-clip": {
             "_ev": "monika_hairclip_select",
             "_min-items": 1,
@@ -3098,7 +3104,8 @@ label mas_selector_sidebar_select_midloop:
 
         #Clear repeated lines
         if prev_line != disp_text:
-            _history_list.pop()
+            if len(_history_list) > 0:
+                _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
 
@@ -3130,7 +3137,8 @@ label mas_selector_sidebar_select_restore:
 
         #Clear repeated lines
         if prev_line != disp_text:
-            _history_list.pop()
+            if len(_history_list) > 0:
+                _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
 
@@ -3263,6 +3271,63 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
         $ persistent._mas_force_clothes = True
 
     return _return
+
+
+# generic sidebar-based ACS select
+# standardized code for ACS selections. If you need custom filtering,
+# DONT use this.
+# NOTE: this will always show remover (for now)
+# NOTE: this wil only show unlocked ACS.
+#
+# IN:
+#   acs_type - acs type of the ACS we want to show
+#   launch_exp - the expression to use when saying "Sure [player]!" before
+#       showing the selector.
+#       (Default: monika 1eua)
+#   idle_exp - the expression to use while the selector is runing.
+#       if None is passed in, we use the launch exp.
+#       (Default: None)
+#   sel_group - the selector group to use. 
+#       if None, we use the acs_type
+#       (Default: None)
+#   idle_dlg - dialogue shown while selector is running and nothing has been
+#       hovered/selected. 
+#       if None, we use acs_type, which might be yuck:
+#       "Which <acs_type> would you like me to wear?"
+#       (Default: None)
+label mas_selector_generic_sidebar_select_acs(acs_type, launch_exp="monika 1eua", idle_exp=None, sel_group=None, idle_dlg=None):
+    python:
+        # initial setup
+        if sel_group is None:
+            sel_group = acs_type
+        if idle_dlg is None:
+            idle_dlg = "Which {0} would you like me to wear?".format(acs_type)
+
+        # filter for acs
+        use_acs = store.mas_selspr.filter_acs(True, group=sel_group)
+
+        # setup mailbox and select map
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(idle_dlg)
+        sel_map = {}
+
+    $ renpy.show(launch_exp)
+    m "Sure [player]!"
+
+    if idle_exp is not None and idle_exp != launch_exp:
+        $ renpy.show(idle_exp)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type(acs_type):
+        $ store.mas_selspr.set_prompt(acs_type, "change")
+    else:
+        $ store.mas_selspr.set_prompt(acs_type, "wear")
+
+    return
 
 
 ########################## SELECTOR TOPICS ####################################
@@ -3553,27 +3618,7 @@ init 5 python:
     )
 
 label monika_hairclip_select:
-    python:
-        use_acs = store.mas_selspr.filter_acs(True, group="left-hair-clip")
-
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which hairclip would you like me to wear?"
-        )
-        sel_map = {}
-
-    m 1eua "Sure [player]!"
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
-
-    if not _return:
-        m 1eka "Oh, alright."
-
-    # set the appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type('left-hair-clip'):
-        $ store.mas_selspr.set_prompt("left-hair-clip", "change")
-    else:
-        $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
-
+    call mas_selector_generic_sidebar_select_acs("left-hair-clip", idle_dlg="Which hairclip would you like me to wear?")
     return
 
 
@@ -3645,30 +3690,33 @@ init 5 python:
     )
 
 label monika_choker_select:
-    python:
-        use_acs = store.mas_selspr.filter_acs(True, group="choker")
-
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which choker would you like me to wear?"
-        )
-        sel_map = {}
-
-    m 6eua "Sure [player]!"
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
-
-    if not _return:
-        m 1eka "Oh, alright."
-
-    # set the appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type("choker"):
-        $ store.mas_selspr.set_prompt("choker", "change")
-    else:
-        $ store.mas_selspr.set_prompt("choker", "wear")
-
+    call mas_selector_generic_sidebar_select_acs("choker", idle_exp="monika 6eua")
     return
 
 #### End choker
+
+#### hat
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hat_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("hat", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True
+    )
+
+label monika_hat_select:
+    call mas_selector_generic_sidebar_select_acs("hat")
+    return
+
+#### end hat
 
 
 ############### END SELECTOR TOPICS ###########################################

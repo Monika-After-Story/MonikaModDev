@@ -377,40 +377,59 @@ init -100 python in mas_sprites:
     DEF_MUX_RB = [
         "ribbon",
         "bow",
-        "twin-ribbons",
         "bunny-scrunchie",
+        "hat",
         "s-type-ribbon",
+        "twin-ribbons",
     ]
     # default mux types for ribbon-based items.
 
     DEF_MUX_HS = [
         "headset",
-        "headphones",
         "earphones",
+        "hat",
         "headband",
-        "left-hair-flower-ear"
+        "headphones",
+        "left-hair-flower-ear",
     ]
     # default mux types for headset-based items
 
-    DEF_MUX_HB = ["headband", "headset", "headphones"]
+    DEF_MUX_HB = [
+        "headband",
+        "hat"
+        "headphones",
+        "headset",
+    ]
     # default mux types for headband-based items
 
     DEF_MUX_LHC = ["left-hair-clip"]
     # default mux types for left hair clip-based items
 
     DEF_MUX_LHFE = [
+        "left-hair-flower-ear",
+        "earphones",
+        "front-hair-flower-crown",
+        "hat",
         "headset",
         "headphones",
-        "earphones",
-        "left-hair-flower-ear",
         "left-hair-flower",
-        "front-hair-flower-crown"
     ]
     # default mux tyoes for left hair flower-baesd items
 
     DEF_MUX_HAT = [
+        "hat",
+        "bow",
+        "bunny-scrunchie",
+        "earphones",
         "front-hair-flower-crown"
-    ] + DEF_MUX_HS + DEF_MUX_RB
+        "headband",
+        "headphones",
+        "headset",
+        "left-hair-flower",
+        "ribbon",
+        "s-type-ribbon",
+        "twin-ribbons",
+    ]
     # default mux types for hats
 
     # maps ACS types to their ACS template

@@ -429,7 +429,12 @@ init -2 python in mas_sprites:
         """
         Exit programming point for marisa clothes
         """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
         _moni_chr.remove_acs(store.mas_acs_marisa_strandbow)
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_marisa_witchhat)
 
 
     def _clothes_orcaramelo_hatsune_miku_entry(_moni_chr, **kwargs):
