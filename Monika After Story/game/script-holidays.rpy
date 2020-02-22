@@ -284,7 +284,7 @@ init -10 python:
             return anything.
         """
         if selection_pool is None:
-            selection_pool = MASClothes.by_exprop("costume")
+            selection_pool = MASClothes.by_exprop("costume", "o31")
 
         # set to true if monika is wearing a costume right now
         wearing_costume = False

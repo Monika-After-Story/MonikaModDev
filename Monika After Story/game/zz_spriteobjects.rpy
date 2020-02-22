@@ -1002,6 +1002,7 @@ init -1 python:
         exit_pp=store.mas_sprites._clothes_marisa_exit,
         ex_props={
             store.mas_sprites.EXP_C_BRS: True,
+            "costume": "o31"
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
@@ -1021,6 +1022,7 @@ init -1 python:
     ## rin
     # Neko costume based on Rin
     # thanks SovietSpartan
+    #TODO: Add costume exprop + value once this is fixed
     mas_clothes_rin = MASClothes(
         "rin",
         "rin",
@@ -1079,7 +1081,7 @@ init -1 python:
         entry_pp=store.mas_sprites._clothes_santa_entry,
         exit_pp=store.mas_sprites._clothes_santa_exit,
         ex_props={
-            "costume": True
+            "costume": "d25"
         },
     )
     store.mas_sprites.init_clothes(mas_clothes_santa)
