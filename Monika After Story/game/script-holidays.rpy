@@ -511,8 +511,9 @@ init 5 python:
     )
 
 label greeting_o31_marisa:
-    # with marisa, we should also unlock the hat
+    # with marisa, we should also unlock the hat and the hair style
     $ store.mas_selspr.unock_acs(mas_acs_marisa_witchhat)
+    $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
     # decoded CG means that we start with monika offscreen
     if store.mas_o31_event.o31_cg_decoded:

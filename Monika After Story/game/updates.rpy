@@ -382,6 +382,7 @@ label v0_10_8(version="v0_10_8"):
         if mas_o31CostumeWorn(mas_clothes_marisa):
             store.mas_selspr.unlock_clothes(mas_clothes_marisa)
             store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
+            store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
     return
 
