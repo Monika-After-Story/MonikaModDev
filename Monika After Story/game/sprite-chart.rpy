@@ -347,11 +347,27 @@ init -100 python in mas_sprites:
     # marks that a hair style requires clothes with none of hte value'd props
     # to be worn
 
+    EXP_H_TS = "tiedstrand"
+    # v: ignored
+    # marks that a hair style is a tied strand style
+
     # ---- CLOTHES ----
 
     EXP_C_BRS = "bare-right-shoulder"
     # v: ignored
     # marks that a clothing item has a bare right shoulder
+
+    EXP_C_COST = "costume"
+    # v: costume type as string (o31, d25, etc..)
+    # marks that a clothing item is a costume
+
+    EXP_C_COSP = "cosplay"
+    # v: ignored
+    # marks that a clothing item is a cosplay outfit
+
+    EXP_C_LING = "lingerie"
+    # v: ignored
+    # marks that a clothing item is lingerie
 
     # --- default exprops ---
     DEF_EXP_TT_EXCL = [EXP_H_TT]
@@ -395,6 +411,7 @@ init -100 python in mas_sprites:
     DEF_MUX_HAT = [
         "front-hair-flower-crown"
     ] + DEF_MUX_HS + DEF_MUX_RB
+    # default mux types for hats
 
     # maps ACS types to their ACS template
     ACS_DEFS = {
@@ -449,7 +466,11 @@ init -100 python in mas_sprites:
         ),
         "left-hair-flower": ACSTemplate(
             "left-hair-flower",
-            mux_type=["left-hair-flower", "left-hair-flower-ear", "front-hair-flower-crown"],
+            mux_type=[
+                "left-hair-flower",
+                "left-hair-flower-ear",
+                "front-hair-flower-crown"
+            ],
             ex_props={
                 EXP_A_LHSEL: True
             }

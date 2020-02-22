@@ -430,7 +430,6 @@ init -2 python in mas_sprites:
         Exit programming point for marisa clothes
         """
         _moni_chr.remove_acs(store.mas_acs_marisa_strandbow)
-        _moni_chr.remove_acs(store.mas_acs_marisa_witchhat)
 
 
     def _clothes_orcaramelo_hatsune_miku_entry(_moni_chr, **kwargs):
@@ -811,7 +810,7 @@ init -1 python:
         ),
         ex_props={
             store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_BRS,
-            "tiedstrand": True,
+            store.mas_sprites.EXP_H_TS: True,
         }
     )
     store.mas_sprites.init_hair(mas_hair_downtiedstrand)
@@ -1002,7 +1001,8 @@ init -1 python:
         exit_pp=store.mas_sprites._clothes_marisa_exit,
         ex_props={
             store.mas_sprites.EXP_C_BRS: True,
-            "costume": "o31"
+            store.mas_sprites.EXP_C_COST: "o31",
+            store.mas_sprites.EXP_C_COSP: True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
@@ -1227,7 +1227,7 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            "lingerie": True
+            store.mas_sprites.EXP_C_LING: True,
         },
         pose_arms=MASPoseMap(
             default=None,
@@ -1439,7 +1439,7 @@ init -1 python:
         acs_type="strandbow",
         # muxtype handled by defaults
         ex_props={
-            "required-hair-prop": "tiedstrand"
+            store.mas_sprites.EXP_A_RQHP: store.mas_sprites.EXP_H_TS,
         },
         rec_layer=MASMonika.AFH_ACS
     )
@@ -1462,6 +1462,16 @@ init -1 python:
         rec_layer=MASMonika.AFH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_marisa_witchhat)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_marisa_witchhat,
+        "Witch Hat", # TODO: add (Marisa) if we ever add another witch hat
+        "marisa_witchhat",
+        "hat",
+        select_dlg=[
+            "TODO: ZE",
+        ]
+    )
+
 
     ### Holly Hairclip
     ## holly_hairclip
