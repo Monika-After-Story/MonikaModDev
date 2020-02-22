@@ -3167,7 +3167,7 @@ label monika_love:
                 "You're the best partner I could ever ask for!",
                 "My future is brighter with you in it.",
                 "You're everything I could ever hope for.",
-                "You make my heart skip a beat everytime I think about you!",
+                "You make my heart skip a beat every time I think about you!",
                 "I'll always be here for you!",
                 "I'll never hurt or betray you.",
                 "Our adventure has only just begun!",
@@ -12601,7 +12601,7 @@ label monika_cozy:
     m 3eua "But you know what the best way to warm yourself up is?"
     m 3eka "Cuddling with the one you love in front of the fireplace~"
     m "Just sitting there under a warm blanket, sharing a hot beverage."
-    m 1hua "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather every day!"
+    m 1hua "Ah, if I got to feel your warmth every time we cuddle, I'd wish for cold weather every day!"
     m 1eka "I'd never let you go once I got a hold of you, [player]~"
     return
 
@@ -12652,7 +12652,8 @@ init 5 python:
 
 label monika_winter_dangers:
     m 1hua "Isn't winter a beautiful time of year, [player]?"
-    m 3eka "The glistening, white snow, the bright and colorful lights~"
+    if mas_isD25Season():
+        m 3eka "The glistening, white snow, the bright and colorful lights~"
     m 3hub "I just love it."
     if persistent._mas_pm_gets_snow is False:
         #explicitly using False here so we don't grab None people who haven't

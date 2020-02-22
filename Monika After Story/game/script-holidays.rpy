@@ -2336,8 +2336,12 @@ init 5 python:
 
 label mas_d25_monika_christmaslights:
     m 1euc "Hey, [player]..."
-    m 1lua "I've been spending a lot of time looking at the lights in here..."
-    m 3eua "They're very pretty, aren't they?"
+    if mas_isD25Season():
+        m 1lua "I've been spending a lot of time looking at the lights in here..."
+        m 3eua "They're very pretty, aren't they?"
+    else:
+        m 1lua "I was just thinking back to Christmas, with all the lights that were hanging in here..."
+        m 3eua "They were really pretty, right?"
     m 1eka "Christmas lights bring such a warm, cozy vibe during the harshest, coldest season...{w=0.5}{nw}"
     extend 3hub "and there's a lot of different types too!"
     m 3eka "It sounds like a dream come true to go on a walk with you on a cold winter night, [player]."
