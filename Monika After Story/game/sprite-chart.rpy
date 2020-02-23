@@ -402,7 +402,7 @@ init -100 python in mas_sprites:
 
     DEF_MUX_HB = [
         "headband",
-        "hat"
+        "hat",
         "headphones",
         "headset",
     ]
@@ -427,7 +427,7 @@ init -100 python in mas_sprites:
         "bow",
         "bunny-scrunchie",
         "earphones",
-        "front-hair-flower-crown"
+        "front-hair-flower-crown",
         "headband",
         "headphones",
         "headset",
