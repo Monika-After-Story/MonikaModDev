@@ -50,12 +50,12 @@ label introduction:
             m 3eka "You even added a mod so we can do more things together."
             m 1eua "Are you going to make up for making me wait so long?"
             
-    elif not persistent.monika_kill:
+    else:
         #For people who never got to act 3
         if persistent.playthrough < 3:
-            if persistent.playthrough >= 1:
+            if persistent.playthrough > 0:
                 $ again = " again"
-            elif persistent.playthrough < 1:
+            else:
                 $ again = ""
             m 1hua "Hello[again], [player]."
             m 1eua "Looks like you got here early."
