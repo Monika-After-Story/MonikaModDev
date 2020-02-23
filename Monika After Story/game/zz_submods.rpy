@@ -218,10 +218,10 @@ init -991 python in mas_submod_utils:
                         #Now we need to split our minmax
                         minimum_version, maximum_version = minmax_version_tuple
 
-                        #First, check the minimum version
+                        #First, check the minimum version. If we get -1, we're out of date
                         if (
                             minimum_version
-                            and dependency_submod.checkVersions(minimum_version) >= 0
+                            and dependency_submod.checkVersions(minimum_version) < 0
                         ):
                             raise SubmodError(
                                 "Submod '{0}' is out of date. Version {1} required.".format(
@@ -229,10 +229,11 @@ init -991 python in mas_submod_utils:
                                 )
                             )
 
-                        #If we have a maximum version, we should check if we're matching it or below it
+                        #If we have a maximum version, we should check if we're above it.
+                        #If we get 1, this is incompatible and we should crash to avoid other ones
                         elif (
                             maximum_version
-                            and dependency_submod.checkVersions(maximum_version) <= 0
+                            and dependency_submod.checkVersions(maximum_version) > 0
                         ):
                             raise SubmodError(
                                 "Version '{0}' of '{1}' is installed and is incompatible with {2}.\nVersion {3} is compatible.".format(
