@@ -1480,7 +1480,10 @@ init -1 python:
         "marisa_witchhat",
         "hat",
         select_dlg=[
-            "TODO: ZE",
+            "Ze~",
+            "Tea time, tea time. Even if we have coffee, it's tea time. Ehehe~",
+            "Eye of newt, toe of frog...",
+            "Now where did I leave that broom..."            
         ]
     )
 
