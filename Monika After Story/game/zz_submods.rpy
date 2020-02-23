@@ -197,9 +197,9 @@ init -991 python in mas_submod_utils:
                     submod.updateFrom(
                         "{0}_{1}_v{2}".format(
                             submod.author,
-                            submod.name.replace(' ', '_'),
+                            submod.name,
                             persistent._mas_submod_version_data.get(submod.name, Submod.FB_VERS_STR).replace('.', '_')
-                        ).lower()
+                        ).lower().replace(' ', '_')
                     )
 
                 #Even if this hasn't updated, we should adjust its value to reflect the correct version
