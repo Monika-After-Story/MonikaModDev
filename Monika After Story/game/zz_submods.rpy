@@ -149,9 +149,7 @@ init -991 python in mas_submod_utils:
                 persistent._mas_submod_version_data[self.name] = Submod.FB_VERS_STR
                 return False
 
-            curr_vers = self.getVersionNumberList()
-
-            return Submod._checkVersions(curr_vers, old_vers, is_current=False)
+            return self.checkVersions(old_vers) == 1
 
         def updateFrom(self, version):
             """
@@ -167,6 +165,25 @@ init -991 python in mas_submod_utils:
                 if renpy.has_label(updateTo) and not renpy.seen_label(updateTo):
                     renpy.call_in_new_context(updateTo, updateTo)
                 version = self.version_updates[version]
+
+        def checkVersions(self, comparative_vers):
+            """
+            Generic version checker for submods
+
+            IN:
+                curr_vers - current installed version of the submod as a list
+                comparative_vers - the version we're comparing to (or need the current version to be at or greater than) as a list
+
+            OUT:
+                integer:
+                    - (-1) if the current version number is less than the comparitive version
+                    - 0 if the current version is the same as the comparitive version
+                    - 1 if the current version is greater than the comparitive version
+            """
+            return store.mas_utils.compareVersionLists(
+                self.getVersionNumberList(),
+                comparative_vers
+            )
 
         @staticmethod
         def _checkUpdates():
@@ -204,7 +221,7 @@ init -991 python in mas_submod_utils:
                         #First, check the minimum version
                         if (
                             minimum_version
-                            and not Submod._checkVersions(dependency_submod.version, minimum_version)
+                            and dependency_submod.checkVersions(minimum_version) >= 0
                         ):
                             raise SubmodError(
                                 "Submod '{0}' is out of date. Version {1} required.".format(
@@ -212,10 +229,10 @@ init -991 python in mas_submod_utils:
                                 )
                             )
 
-                        #If we have a maximum version, we should check if we're surpassing it
+                        #If we have a maximum version, we should check if we're matching it or below it
                         elif (
                             maximum_version
-                            and Submod._checkVersions(dependency_submod.version, maximum_version, is_current=False)
+                            and dependency_submod.checkVersions(maximum_version) <= 0
                         ):
                             raise SubmodError(
                                 "Version '{0}' of '{1}' is installed and is incompatible with {2}.\nVersion {3} is compatible.".format(
@@ -245,57 +262,6 @@ init -991 python in mas_submod_utils:
             """
             return submod_map.get(name)
 
-        @staticmethod
-        def _checkVersions(curr_vers, comparitive_vers, is_current=True):
-            """
-            Generic version checker for submods
-
-            IN:
-                curr_vers - current installed version of the submod as a list
-                comparitive_vers - the version we're comparing to (or need the current version to be at or greater than) as a list
-                is_current - True if it's okay for the comparitive version to be the same as the current. False otherwise.
-                    (Default: True)
-
-            OUT:
-                boolean:
-                    - True if the version number is greater than the comparitive version (or equal if is_current is True)
-                    - False otherwise
-            """
-            #First, we check if the lists are the same. If so, we're the same version
-            if comparitive_vers == curr_vers:
-                if is_current:
-                    return True
-                return False
-
-            #Otherwise, we need to do a bit of work
-            #Firstly, we need to make the lengths of the two lists equal
-            def fixVersionListLen(smaller_vers_list, larger_vers_list):
-                """
-                Adjusts the smaller version list to be the same length as the larger version list for easy comparison
-
-                OUT:
-                    adjusted version list
-
-                NOTE: fills missing indeces with 0's
-                """
-                for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                    smaller_vers_list.append(0)
-                return smaller_vers_list
-
-            if len(comparitive_vers) > len(curr_vers):
-                curr_vers = fixVersionListLen(curr_vers, comparitive_vers)
-
-            elif len(curr_vers) > len(comparitive_vers):
-                comparitive_vers = fixVersionListLen(comparitive_vers, curr_vers)
-
-            #Now we iterate and check the version numbers sequentially from left to right
-            for index in range(len(curr_vers)):
-                if curr_vers[index] > comparitive_vers[index]:
-                    return True
-
-            #If we never found something greater, then we didn't update, and we actually rolled back
-            return False
-
     #END: Submod class
     def isSubmodInstalled(name, version=None):
         """
@@ -314,5 +280,5 @@ init -991 python in mas_submod_utils:
         submod = Submod._getSubmod(name)
 
         if submod and version:
-            return Submod._checkVersions(submod.version, version)
+            return submod.checkVersions(version) >= 0
         return bool(submod)
