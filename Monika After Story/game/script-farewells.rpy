@@ -1527,3 +1527,4 @@ label bye_prompt_restart:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART
     return 'quit'
+    
