@@ -1519,10 +1519,10 @@ label bye_prompt_restart:
     if mas_isMoniNormal(higher=True):
         m 1eua "Alright, [player]."
         m 1eub "Come back soon!"
-    elif mas_isMoniUpset() or mas_isMoniDis():
-        m 2euc "Alright."
-    else:
+    elif mas_isMoniBroken():
         m 6ckc "..."
+    else:
+        m 2euc "Alright."
 
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART

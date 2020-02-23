@@ -3690,8 +3690,8 @@ label greeting_back_from_restart:
     if mas_isMoniNormal(higher=True):
         m 1hub "Welcome back, [player]!"
         m 1eua "What else should we do today?"
-    elif mas_isMoniUpset() or mas_isMoniDis():
-        m 1eud "Oh, you're back."
-    else:
+    elif mas_isMoniBroken():
         m 6ckc "..."
+    else:
+        m 1eud "Oh, you're back."
     return
