@@ -52,6 +52,7 @@ init -1 python in mas_greetings:
     TYPE_GAME = "game"
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
+    TYPE_RESTART = "restart"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -3672,4 +3673,25 @@ label greeting_surprised2:
     extend 3rkbsa "You just caught me daydreaming a bit."
     show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfu "But now that you're here, that dream just came true~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_restart",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_RESTART],
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_restart:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Welcome back, [player]!"
+        m 1eua "What else should we do today?"
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+    else:
+        m 1eud "Oh, you're back."
     return
