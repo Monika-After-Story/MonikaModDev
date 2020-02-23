@@ -210,6 +210,20 @@ init -991 python in mas_submod_utils:
             """
             Checks to see if the dependencies for this submod are met
             """
+            def parseVersions(version):
+                """
+                Parses a string version number to list format.
+
+                IN:
+                    version - version string to parse
+
+                OUT:
+                    list() - representing the parsed version number
+
+                NOTE: Does not handle errors as to get here, formats must be correct regardless
+                """
+                return map(int, version.split('.'))
+
             for submod in submod_map.itervalues():
                 for dependency, minmax_version_tuple in submod.dependencies.iteritems():
                     dependency_submod = Submod._getSubmod(dependency)
@@ -221,11 +235,11 @@ init -991 python in mas_submod_utils:
                         #First, check the minimum version. If we get -1, we're out of date
                         if (
                             minimum_version
-                            and dependency_submod.checkVersions(minimum_version) < 0
+                            and dependency_submod.checkVersions(parseVersions(minimum_version)) < 0
                         ):
                             raise SubmodError(
-                                "Submod '{0}' is out of date. Version {1} required.".format(
-                                    dependency_submod.name, minimum_version
+                                "Submod '{0}' is out of date. Version {1} required for {2}. Installed version is {3}".format(
+                                    dependency_submod.name, minimum_version, submod.name, dependency_submod.version
                                 )
                             )
 
@@ -233,7 +247,7 @@ init -991 python in mas_submod_utils:
                         #If we get 1, this is incompatible and we should crash to avoid other ones
                         elif (
                             maximum_version
-                            and dependency_submod.checkVersions(maximum_version) > 0
+                            and dependency_submod.checkVersions(parseVersions(maximum_version)) > 0
                         ):
                             raise SubmodError(
                                 "Version '{0}' of '{1}' is installed and is incompatible with {2}.\nVersion {3} is compatible.".format(
