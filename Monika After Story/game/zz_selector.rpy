@@ -635,9 +635,13 @@ init -10 python in mas_selspr:
             "That hairstyle doesn't really work with my clothes.",
             "I don't think this hairstyle really works with this outfit.",
             "That hairstyle doesn't really work with this outfit."
+            "I think this hairstyle works better with a different outfit."
         ],
         DISB_ACS_BC_HAIR: [
-            "That accessory doesn't really work with my hair.",
+            "That doesn't really work with my hair.",
+            "I don't think this really works with my hairstyle.",
+            "This might work with a different hairstyle.",
+            "I don't really think this goes with my hair."
         ],
     }
 
