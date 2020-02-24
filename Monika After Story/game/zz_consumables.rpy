@@ -640,14 +640,14 @@ init 5 python:
                 return [
                     cons
                     for cons in store.mas_consumables.consumable_map[_type].itervalues()
-                    if cons.should_restock_warn and cons.isCriticalLow()
+                    if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow()
                 ]
 
             else:
                 return [
                     cons
                     for cons in store.mas_consumables.consumable_map[_type].itervalues()
-                    if cons.should_restock_warn and cons.isLow()
+                    if cons.enabled() and cons.should_restock_warn and cons.isLow()
                 ]
 
         @staticmethod

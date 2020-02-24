@@ -992,6 +992,12 @@ label bye_going_somewhere_iowait:
         $ first_pass = False
         m 1eua "Give me a second to get ready."
 
+        #Prepare the current drink to be removed if needed
+        python:
+            current_drink = MASConsumable._getCurrentDrink()
+            if current_drink and current_drink.portable:
+                current_drink.acs.keep_on_desk = False
+
         #Get Moni off screen
         call mas_transition_to_emptydesk
 
