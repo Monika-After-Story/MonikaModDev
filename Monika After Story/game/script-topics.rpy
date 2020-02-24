@@ -7596,6 +7596,9 @@ label monika_breakup:
         m 1tku "You can't fool me, [player]."
         m 1tua "Especially with something {i}that{/i} predictable, ehehe~"
 
+        # sub 1 from the shown_count so we don't end up counting this path toward locking the topic
+        $ mas_getEV("monika_breakup").shown_count -= 1
+
     else:
         #Lose affection for bringing this up.
         $ mas_loseAffection(reason=1)
