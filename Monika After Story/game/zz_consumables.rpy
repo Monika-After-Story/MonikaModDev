@@ -1029,7 +1029,9 @@ init 5 python:
 
             #If we have an unlocked thermos, we'll use it here
             if thermoses:
-                monika_chr.wear_acs(renpy.random.choice(thermoses))
+                thermos = renpy.random.choice(thermoses)
+                thermos.keep_on_desk = False
+                monika_chr.wear_acs(thermos)
 
 #START: consumable drink defs:
 init 6 python:
@@ -1174,12 +1176,6 @@ label mas_get_food:
 
 #START: Generic consumable labels
 label mas_consumables_generic_get(consumable):
-    #Moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1eua "I'm going to get a [consumable.container] of [consumable.disp_name]. I'll be right back.{w=1}{nw}"
 
@@ -1188,19 +1184,17 @@ label mas_consumables_generic_get(consumable):
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
-    # wrap these statemetns so we can properly add / remove the mug
-    $ renpy.pause(1.0, hard=True)
-    $ monika_chr.wear_acs_pst(consumable.acs)
-    $ renpy.pause(4.0, hard=True)
+    # wrap these statemetns so we can properly add/remove the consumable
+    python:
+        renpy.pause(1.0, hard=True)
+        consumable.acs.keep_on_desk = False
+        monika_chr.wear_acs_pst(consumable.acs)
+        renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ consumable.acs.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1218,12 +1212,6 @@ label mas_consumables_generic_finish_having(consumable):
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my [consumable.disp_name]."
 
-    #Moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_more:
             #It's drinking time
@@ -1239,34 +1227,32 @@ label mas_consumables_generic_finish_having(consumable):
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    $ consumable.acs.keep_on_desk = False
+    call mas_transition_to_emptydesk
 
     # wrap these statemetns so we can properly add / remove the acs
-    $ renpy.pause(1.0, hard=True)
+    python:
+        renpy.pause(1.0, hard=True)
 
-    #Should we get some more?
-    if not get_more:
-        #If not, we reset the current type's vars
-        $ MASConsumable._reset(consumable.consumable_type)
-        #And set up a time when we can have this drink again
-        $ consumable.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
+        #Should we get some more?
+        if not get_more:
+            #If not, we reset the current type's vars
+            MASConsumable._reset(consumable.consumable_type)
+            #And set up a time when we can have this drink again
+            consumable.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
 
-    else:
-        $ consumable.have()
-        $ consumable.re_serve()
+        else:
+            consumable.have()
+            consumable.re_serve()
 
-        #Non-prepables are per refill, so they'll run out a bit faster
-        if not consumable.prepable():
-            $ consumable.use()
+            #Non-prepables are per refill, so they'll run out a bit faster
+            if not consumable.prepable():
+                consumable.use()
 
-    $ renpy.pause(4.0, hard=True)
+        renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ consumable.acs.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1294,13 +1280,6 @@ label mas_consumables_generic_finished_prepping(consumable):
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, my [consumable.disp_name] is ready."
 
-    #Moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    #This line is here so it looks better when we hide monika
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         #Idle pauses and then progresses on its own
         m 1eua "I'm going to grab some [consumable.disp_name]. I'll be right back.{w=1}{nw}"
@@ -1308,27 +1287,28 @@ label mas_consumables_generic_finished_prepping(consumable):
     else:
         m 1eua "Hold on a moment."
 
-    #Monika is off screen
-    hide monika with dissolve
+    #Monika goes offscreen
+    call mas_transition_to_emptydesk
 
     #Transition stuffs
-    $ renpy.pause(1.0, hard=True)
+    python:
+        renpy.pause(1.0, hard=True)
 
-    #Wear drink acs
-    $ monika_chr.wear_acs_pst(consumable.acs)
-    #Reset prep time
-    $ persistent._mas_current_consumable[consumable.consumable_type]["prep_time"] = None
-    #Start drinking
-    $ consumable.have()
+        #Make sure drink is still gone
+        consumable.acs.keep_on_desk = False
+        #Now wear drink acs
+        monika_chr.wear_acs_pst(consumable.acs)
 
-    $ renpy.pause(4.0, hard=True)
+        #Reset prep time
+        persistent._mas_current_consumable[consumable.consumable_type]["prep_time"] = None
+        #Start drinking
+        consumable.have()
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
+        renpy.pause(4.0, hard=True)
 
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    #And bring Moni back
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ consumable.acs.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1399,17 +1379,15 @@ label mas_consumables_remove_thermos:
     else:
         m 1eua "Give me a second [player], I'm going to put this thermos away."
 
-    hide monika with dissolve
-    pause 5.0
+    $ thermos = monika_chr.get_acs_of_type("thermos-mug")
+    $ thermos.keep_on_desk = False
+    call mas_transition_to_emptydesk
 
     #Remove the current thermos
-    $ monika_chr.remove_acs(monika_chr.get_acs_of_type("thermos-mug"))
+    $ monika_chr.remove_acs(thermos)
+    $ thermos.keep_on_desk = True
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"

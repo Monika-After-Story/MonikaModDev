@@ -869,7 +869,7 @@ label .afterdontjoke:
 
     # turn on the lights
     play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
 
     return
 
@@ -1759,8 +1759,7 @@ label mas_change_to_def:
 #           Defaults to False
 #       exp - the expression we want monika to use when she reveals the outfit
 #           Defaults to monika 2eua
-#       restore_zoom - do we want to restore to player preffered zoom after changing
-#           Defaults to True
+#       restore_zoom - unused
 #       unlock - True unlocks the outfit's selectable (if it exists)
 #           Defaults to False
 label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True, unlock=False):
@@ -1770,11 +1769,7 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
 
     window hide
 
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset (1.0)
-    show emptydesk zorder 9 at i11
-
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     #If we're going to def or blazerless from a costume, we reset hair too
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
@@ -1788,12 +1783,8 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
     $ renpy.save_persistent()
 
     pause 4.0
-    $ renpy.show(exp, zorder=MAS_MONIKA_Z, at_list=[i11])
-    hide emptydesk
+    call mas_transition_from_emptydesk(exp)
 
-    if restore_zoom:
-        pause 0.5
-        call monika_zoom_transition(curr_zoom, 1.0)
     return
 
 init 5 python:

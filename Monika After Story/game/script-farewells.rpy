@@ -992,14 +992,8 @@ label bye_going_somewhere_iowait:
         $ first_pass = False
         m 1eua "Give me a second to get ready."
 
-        #Get zooms and reset to normal if need be
-        $ curr_zoom = store.mas_sprites.zoom_level
-        if curr_zoom != store.mas_sprites.default_zoom_level:
-            call monika_zoom_transition_reset(1.0)
-
         #Get Moni off screen
-        show emptydesk at i11 zorder 9
-        hide monika with dissolve
+        call mas_transition_to_emptydesk
 
     elif promise.done():
         # i/o thread is done!
@@ -1020,12 +1014,7 @@ label bye_going_somewhere_iowait:
             call mas_dockstat_abort_gen
 
             #Show Monika again
-            show monika 1ekc at t11 zorder MAS_MONIKA_Z with dissolve
-            hide emptydesk
-
-            #Reset zooms
-            $ renpy.pause(0.5, hard=True)
-            call monika_zoom_transition(curr_zoom, 1.0)
+            call mas_transition_from_emptydesk("monika 1ekc")
 
             jump bye_going_somewhere_leavemenu
 
@@ -1050,26 +1039,14 @@ label bye_going_somewhere_rtg:
                 store.mas_greetings.TYPE_GENERIC_RET
             )
 
-        show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-        hide emptydesk
-
-        #And reset zoom if we need to
-        if curr_zoom != store.mas_sprites.zoom_level:
-            $ renpy.pause(0.5, hard=True)
-            call monika_zoom_transition(curr_zoom, 1.0)
+        call mas_transition_from_emptydesk("monika 1eua")
 
         #Use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
 
 
-    show monika 1ekc at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    #Reset zoom again
-    if curr_zoom != store.mas_sprites.zoom_level:
-        $ renpy.pause(0.5, hard=True)
-        call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1ekc")
 
     # otherwise, we failed, so monika should tell player
     m 1ekc "Oh no..."
@@ -1519,4 +1496,29 @@ label bye_prompt_housework:
         m 6ckc "..."
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_restart",
+            unlocked=True,
+            prompt="I'm going to restart.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_restart:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Alright, [player]."
+        m 1eub "See you soon!"
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+    else:
+        m 2euc "Alright."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART
     return 'quit'

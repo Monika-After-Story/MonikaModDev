@@ -516,7 +516,6 @@ label greeting_o31_marisa:
         # ASSUMING:
         #   vignette should be enabled.
         call spaceroom(hide_monika=True, scene_change=True)
-        show emptydesk at i11 zorder 9
 
     else:
         # ASSUMING:
@@ -588,7 +587,6 @@ label greeting_o31_rin:
 
     # ASSUME vignette
     call spaceroom(hide_monika=True, scene_change=True)
-    show emptydesk at i11 zorder 9
 
     m "Ugh, I hope I got these braids right."
     m "Why does this costume have to be so complicated...?"
@@ -620,9 +618,8 @@ label greeting_o31_rin:
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
-        show monika 1eua at t11 zorder MAS_MONIKA_Z
+        call mas_transition_from_emptydesk("monika 1eua")
         m 1hub "Hi, [player]!"
-        hide emptydesk
         m 3hub "Do you like my costume?"
 
     # regular dialogue
@@ -652,7 +649,6 @@ init 5 python:
 label greeting_o31_orcaramelo_hatsune_miku:
     if not persistent._mas_o31_relaunch:
         call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-        show emptydesk at i11 zorder 9
         #moni is off-screen
         m "{i}~Don't forget my voice~{/i}"
         m "{i}~My signal crosses dimensions~{/i}"
@@ -661,9 +657,7 @@ label greeting_o31_orcaramelo_hatsune_miku:
         m "Oh!{w=0.5} Seems like someone's heard me."
 
         #show moni now
-        hide emptydesk
-        show monika 3hub at i11 zorder MAS_MONIKA_Z
-        with dissolve
+        call mas_transition_from_emptydesk("monika 3hub")
 
     else:
         call spaceroom(scene_change=True, dissolve_all=True)
@@ -694,7 +688,7 @@ init 5 python:
 
 label greeting_o31_orcaramelo_sakuya_izayoi:
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-    show emptydesk at i11 zorder 9
+
     #moni is off-screen
     if not persistent._mas_o31_relaunch:
         m "..."
@@ -711,9 +705,7 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
         m "Ahaha! How was that impression?"
 
     #show moni now
-    hide emptydesk
-    show monika 3hub at i11 zorder MAS_MONIKA_Z
-    with dissolve
+    call mas_transition_from_emptydesk("monika 3hub")
 
     m 3hub "Welcome back!"
     m 3eub "What do you think of my costume choice?"
@@ -4475,7 +4467,7 @@ label mas_player_bday_opendoor:
     $ persistent._mas_player_bday_opened_door = True
     if persistent._mas_bday_visuals:
         $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True, show_emptydesk=False)
     $ mas_disable_quit()
     if mas_isMonikaBirthday():
         $ your = "our"
@@ -4575,7 +4567,7 @@ label mas_player_bday_opendoor_listened:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     $ mas_disable_quit()
     if mas_isMonikaBirthday():
         $ your = "our"
@@ -4713,12 +4705,13 @@ label mas_player_bday_card:
     return
 
 label mas_monika_gets_cake:
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
+
     $ renpy.pause(3.0, hard=True)
     $ renpy.show("mas_bday_cake_player", zorder=store.MAS_MONIKA_Z+1)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
+
+    call mas_transition_from_emptydesk("monika 6esa")
+
     $ renpy.pause(0.5, hard=True)
     return
 
@@ -6865,9 +6858,9 @@ label mas_bday_bd_outro:
     $ mas_addClothesToHolidayMap(mas_clothes_blackdress)
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
 
-    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    call mas_transition_from_emptydesk("monika 1eua")
     call monika_zoom_transition_reset(1.0)
-    #NOTE: we don't restore the zoom here because we want to show off the outfit
+    #NOTE: We change the zoom here because we want to show off the outfit.
 
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"
@@ -7103,13 +7096,11 @@ label mas_monika_cake_on_player_bday:
     return
 
 label mas_HideCake(cake_type,reset_zoom=True):
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
     $ renpy.hide(cake_type)
     with dissolve
     $ renpy.pause(3.0, hard=True)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
+    call mas_transition_from_emptydesk("monika 6esa")
     $ renpy.pause(1.0, hard=True)
     if reset_zoom:
         call monika_zoom_transition(mas_temp_zoom_level,1.0)
