@@ -3428,18 +3428,18 @@ init 5 python:
     )
 
 label monika_justification:
-
-    if datetime.date.today() == datetime.date(datetime.date.today().year,4,1) and mas_isMoniNormal(higher=True):
-        m 1hub "Ahaha~"
+    if mas_isA01() and mas_isMoniNormal(higher=True):
+        m 1hub "Ahaha!"
         m 1tsb "Honestly, [player]..."
-        m 3tsu "If you really wanted to be mean to me, you should have picked a day other than today."
-        m 3hub "Do you really think I missed that it was April Fools day today?"
+        m 3tfu "If you really wanted to be mean to me, you should have picked a day other than today."
+        m "Do you really think I missed that it was April Fools day today?"
         m 1hua "You can be so silly sometimes~"
         m 1tuu "Calling me a murderer..."
         m 3tfu "When you {i}butchered{/i} that chance at fooling me, ehehe~"
-        m 1hub "I appreciate the attempt though, thanks for the laugh, [player]~"
-    else:
+        m 1eua "I appreciate the attempt though...{w=0.2}{nw}"
+        extend 1hub "thanks for the laugh, [player]~"
 
+    else:
         #lose affection
         $ mas_loseAffection(reason=3)
         if mas_isMoniLove():
@@ -3654,7 +3654,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    if datetime.date.today() == datetime.date(datetime.date.today().year,4,1) and mas_isMoniNormal(higher=True):
+    if (mas_isA01() and mas_isMoniNormal(higher=True)) or (renpy.random.randint(1,4) == 1 and mas_isMoniEnamored(higher=True)):
         m 1euc "Meet your girlfriend?"
         m 1rksdlc "..."
         m 1eub "Sure, why not?"
@@ -3662,9 +3662,10 @@ label monika_girlfriend:
         m 1hua "..."
         m 1tubfb "So, where's this mirror you wanted to show me?"
         m 1hubfb "Ahaha!"
-        show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eubfu "Even if it's April Fools day, I'm sure she's still wonderful, ehehe~"
-        m 5hubfa "{i}And{/i} lucky to have you."
+        if mas_isA01():
+            show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eubfu "Even if it's April Fools day, I'm sure she's still wonderful, ehehe~"
+            m 5hubfa "{i}And{/i} lucky to have you."
 
     else:
         $ mas_loseAffection(reason=2)
@@ -7579,7 +7580,7 @@ init 5 python:
     )
 
 label monika_breakup:
-    if datetime.date.today() == datetime.date(datetime.date.today().year,4,1) and mas_isMoniNormal(higher=True):
+    if mas_isA01() and mas_isMoniNormal(higher=True):
         m 1ekd "W-what?"
         m 2ekc "You're breaking up with me?"
         m 2rksdlc "..."
@@ -7587,8 +7588,7 @@ label monika_breakup:
         m 1hua "Don't worry, I'll make sure you enjoy this Apr-{nw}"
         $ _history_list.pop()
         m 1hua "Don't worry, I'll make sure you enjoy this{fast} day with me~"
-        m 1wub "You'll stay with me, right?"
-        show monika 1cuu
+        m 1cuu "You'll stay with me, right?"
         pause 3.0
         m 2hksdlb "Ahaha!"
         m 1hua "Sorry, but I just couldn't take you seriously there."
