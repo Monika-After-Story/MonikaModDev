@@ -409,7 +409,14 @@ init -100 python in mas_sprites:
         "left-hair-flower",
         "front-hair-flower-crown"
     ]
-    # default mux tyoes for left hair flower-baesd items
+    # default mux types for left hair flower-baesd items
+
+    DEF_MUX_LD = [
+        "plush_q",
+        "chocs",
+        "plate"
+    ]
+    # default mux types for left-desk related items (namely foods)
 
     # maps ACS types to their ACS template
     ACS_DEFS = {
@@ -482,6 +489,14 @@ init -100 python in mas_sprites:
             mux_type=["necklace"],
             ex_props={
                 "bare collar": True,
+            }
+        ),
+        "plate": ACSTemplate(
+            "plate",
+            mux_type=DEF_MUX_LD,
+            keep_on_desk=True,
+            ex_props={
+                "left-desk-acs": True
             }
         ),
         # ring

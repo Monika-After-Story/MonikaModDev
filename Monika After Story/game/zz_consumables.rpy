@@ -34,6 +34,9 @@ init python in mas_consumables:
     #}
     consumable_map = dict()
 
+#NOTE: For consumables, to make things both consistent and easier to deal with, the following rules should be applied to the acs:
+#1. Drinks always go on Monika's right
+#2. Foods always go on Monika's left
 
 init 5 python:
     #MASConsumable class
@@ -1183,10 +1186,10 @@ label mas_consumables_generic_get(consumable):
         m 1eua "I'm going to get a [consumable.container] of [consumable.disp_name]."
         m 1eua "Hold on a moment."
 
-    # monika is off screen
+    #Monika is off screen
     call mas_transition_to_emptydesk
 
-    # wrap these statemetns so we can properly add/remove the consumable
+    #Wrap these statements so we can properly add/remove the consumable
     python:
         renpy.pause(1.0, hard=True)
         consumable.acs.keep_on_desk = False
@@ -1226,11 +1229,11 @@ label mas_consumables_generic_finish_having(consumable):
 
         m 1eua "Hold on a moment."
 
-    # monika is off screen
+    #Monika is off screen
     $ consumable.acs.keep_on_desk = False
     call mas_transition_to_emptydesk
 
-    # wrap these statemetns so we can properly add / remove the acs
+    #Wrap these statemetns so we can properly add / remove the acs
     python:
         renpy.pause(1.0, hard=True)
 
