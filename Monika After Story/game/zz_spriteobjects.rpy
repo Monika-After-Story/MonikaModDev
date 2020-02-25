@@ -1656,7 +1656,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="plush_q",
-        mux_type=["plush_mid", "plate"],
+        mux_type=["plush_mid"] + store.mas_sprites.DEF_MUX_LD,
         entry_pp=store.mas_sprites._acs_quetzalplushie_entry,
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit,
         keep_on_desk=True

@@ -1625,6 +1625,7 @@ label mas_reaction_quetzal_plush:
         if MASConsumable._getCurrentFood():
             m 3rksdla "My desk is getting a little full though..."
             m 1eka "I'll just put this away for now."
+            $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
 
         m 1hub "Thank you again, [player]~"
 
