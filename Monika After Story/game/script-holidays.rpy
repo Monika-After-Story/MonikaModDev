@@ -5568,7 +5568,7 @@ label mas_f14_monika_vday_origins:
     m 3esc "Another version of the story is that Roman soldiers weren't allowed to be married, so by marrying people Valentine was saving them from conscription into the army."
     m 1dsd "Either way, Valentine was caught and sentenced to death."
     m 1euc "While in jail, he befriended the jailer's daughter and cured her blindness. Some say he even fell in love with her."
-    m 3euc "Unfortunately, this wasn't enough to save him. But before he died, he sent a letter to her, which he signed, "Your Valentine.""
+    m 3euc "Unfortunately, this wasn't enough to save him. But before he died, he sent a letter to her, which he signed, 'Your Valentine.'"
     m 1dsc "He was executed on February 14, 269 AD, and later canonized as a saint."
     m 3eua "To this day, it's still traditional to sign love letters with "Your Valentine!""
     m 3eud "Oh, but wait, there's more!"
