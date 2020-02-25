@@ -1761,8 +1761,8 @@ init python:
         calendar.addRepeatable_d(
             "player-bday",
             _("Your Birthday"),
-            persistent._mas_player_bday,
-            []
+            pbday,
+            range(pbday.year,MASCalendar.MAX_VIEWABLE_YEAR)
         )
 
     # add first kiss
