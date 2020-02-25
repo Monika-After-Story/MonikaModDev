@@ -116,6 +116,13 @@ init -1 python:
 
         return _date in persistent._mas_event_clothes_map
 
+init -10 python:
+    def mas_isA01(_date=None):
+        if _date is None:
+            _date = datetime.date.today()
+
+        return _date == datetime.date(_date.year,4,1)
+
 # Global labels
 label mas_lingerie_intro(holiday_str,lingerie_choice):
     m 1ekbfa "..."
