@@ -1325,7 +1325,7 @@ label mas_consumables_generic_running_out(consumable):
     m 1euc "By the way, [player]..."
 
     if amt_left > 0:
-        m 3eud "I just wanted to let you know I only have about [amt_left] [consumable.container]s left of [consumable.disp_name] left."
+        m 3eud "I just wanted to let you know I only have about [amt_left] [consumable.container]s of [consumable.disp_name] left."
     else:
         m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name]."
 
