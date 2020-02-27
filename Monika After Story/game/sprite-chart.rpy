@@ -5727,7 +5727,8 @@ init -2 python:
                 right=right_data,
                 both=both_data
             )
-                            
+                    
+
         def build_arms(
                 self, 
                 sprite_list,

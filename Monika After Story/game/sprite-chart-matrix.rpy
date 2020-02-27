@@ -26,12 +26,24 @@ init -4 python in mas_sprites:
     #   here. 
     #   [0] - should be the filter code. 
     #   [1] - should be pre/post (0 or 1)
-    #   [2] should be lean
+    #   [2] - should be leanpose
     #   [3+] remaining values dependent on type:
     #       * pre - only blush
     #       * post - all values except blush
     # value:
-    #   image maniuplator object
+    #   image maniuplator object or None if no facial expression for this
+    #   combo.
+
+    cache_arms = {}
+    # the arms cache. This includes clothes and base sprites.
+    # key:
+    #   tuple containing strings.
+    #   [0] - filter code
+    #   [1] - base code
+    #   [2] - clothing type, "base" for base arms
+    #   [3] - leanpose
+    # value:
+    #   image manipulator object OR None if no arms needed for this combo
 
     cache_body = {}
     # the body cache. This includes clothes and base sprites.
@@ -72,10 +84,144 @@ init -4 python in mas_sprites:
     #   image manipulator object
 
 
-    def _get_imc(im_cache, img_key, flt, img_str):
+    def _add_mpa_imc(
+            im_list, 
+            mpa,
+            pfx_list,
+            flt,
+            bcode,
+            clothing,
+            leanpose
+    ):
         """
-        Gets an image manipulator from the given cache, generates if not
-        found.
+        Adds an image manipulator for MASPoseArms, if needed.
+
+        IN:
+            mpa - MASPoseArms to get image manipulator for
+            pfx_list - prefix list to generate image string with
+            sfx_list - suffix list to generate image string with
+            flt - filter code to use
+            bcode - base code to use
+            clothing - clothing to use
+            leanpose - leanpose to use
+
+        OUT:
+            im_list - list to add image manipulator to if needed
+        """
+        img_key = (flt, bcode, clothing, leanpose)
+        if img_key in cache_arms:
+            if cache_arms[img_key] is not None:
+                im_list.append(cache_arms[img_key])
+
+            return
+
+        elif flt != "day":
+            # try checking for day version
+            day_key = _dayify(img_key)
+            if day_key in cache_arms:
+                if cache_arms[day_key] is None:
+                    # no image for this key, let the main key know
+                    cache_arms[img_key] = None
+
+                else:
+                    # otherwise generate from day image
+                    im_list.append(_gar_imc(
+                        cache_arms,
+                        img_key,
+                        flt,
+                        cache_arms[day_key]
+                    ))
+
+                return
+
+        # sfx list is always the same
+        sfx_list = (ART_DLM, bcode, FILE_EXT)
+
+        # TODO: change this when we change to 3 layred arms
+        use_front = bcode == "1"
+
+        # NOTE: we are trying to limit branching as much as possible
+        # so this code will likely have repeats
+
+        # otherwise need to generate the new arms (maybe)
+        if mpa.both is not None:
+            # need to generate for the both case
+
+            # but check based on bcode
+            if use_front:
+                if mpa.both_front is not None:
+                    im_list.append(_gar_imc(
+                        cache_arms,
+                        img_key,
+                        flt,
+                        "".join(pfx_list + (mpa.both,) + sfx_list)
+                    ))
+                    return
+
+            elif mpa.both_back is not None:
+                im_list.append(_gar_imc(
+                    cache_arms,
+                    img_key,
+                    flt,
+                    "".join(pfx_list + (mpa.both,) + sfx_list)
+                ))
+                return
+
+            # otherwise, we dont need to use any image here.
+            cache_arms[img_key] = None
+            return
+
+        # we might need to generate for left and right
+        lstr = None
+        rstr = None
+        if mpa.left is not None:
+            if use_front:
+                if mpa.left_front is not None:
+                    lstr = "".join(pfx_list + (mpa.left,) + sfx_list)
+
+            elif mpa.left_back is not None:
+                lstr = "".join(pfx_list + (mpa.left,) + sfx_list)
+
+        if mpa.right is not None:
+            if use_front:
+                if mpa.right_front is not None:
+                    rstr = "".join(pfx_list + (mpa.right,) + sfx_list)
+
+            elif mpa.right_back is not None
+                rstr = "".join(pfx_list + (mpa.right,) + sfx_list)
+
+        # now generate im compsite if needed
+        if lstr:
+            if rstr:
+                # need composite
+                im_list.append(_gar_imc(
+                    cache_arms,
+                    img_key,
+                    flt,
+                    store.im.Composite((1280, 850),
+                        (0, 0), lstr,
+                        (0, 0), rstr
+                    )
+                ))
+
+            else:
+                # just left arm
+                im_list.append(_gar_imc(cache_arms, img_key, flt, lstr))
+
+        elif rstr:
+            # just right arm
+            im_list.append(_gar_imc(cache_arms, img_key, flt, rstr))
+
+        else:
+            # no arms at all
+            cache_arms[img_key] = None
+
+
+    def _cgetg_imc(im_cache, img_key, flt, img_str):
+        """
+        Checks the given cache for the image manipulator,
+        GETs the image manipulator if found, 
+        Generates if not found.
 
         IN:
             im_cache - image manipulator cache to use
@@ -83,24 +229,122 @@ init -4 python in mas_sprites:
             flt - filter to use if generate
             img_str - image string or manipulator to use if gneerate
 
+        OUT:
+            im_cache - may have the new image manipulator added to it
+
         RETURNS: image manipulator to use
         """
         if img_key in im_cache:
             return im_cache[img_key]
 
+        if flt != "day":
+            return _gdar_imc(im_cache, img_key, flt, img_str)
+
+        return _gar_imc(im_cache, img_key, flt, img_str)
+
+
+    def _dayify(img_key):
+        """
+        Dayifies the given image key.
+        DAying simply replaces the filter portion of the key with "day"
+
+        IN:
+            img_key - image key to dayify
+
+        RETURNS: dayified key
+        """
+        img_key_list = list(img_key)
+        img_key_list[0] = "day"
+        return tuple(img_key_list)
+
+
+    def _gar_imc(im_cache, img_key, flt, img_str):
+        """
+        Generates an image manipulator
+        Adds it to the cache
+        Returns the image manip
+
+        IN:
+            img_key - key to use
+            flt - filter to use
+            img_str - image string ot manipulator to use
+
+        OUT:
+            im_cache - cache to add image manipulator to
+
+        RETURNS: the new image manipulator
+        """
         new_im = _gen_im(flt, img_str)
         im_cache[img_key] = new_im
         return new_im
 
 
+    def _gdar_imc(im_cache, img_key, flt, img_str):
+        """
+        Generates an image manipulator, checking for a
+        Day image first.
+        Adds it to the cache
+        Returns the image manip
+
+        IN:
+            img_key - key to use
+            flt - filter to use
+            img_str - image string ot manipulator to use
+
+        OUT:
+            im_cache - cache to add image manipulator to
+
+        RETURNS: the new image manipulator
+        """
+        # try checking for day cache before generating
+        day_img_key = _dayify(img_key)
+        if day_img_key in im_cache:
+            # if we have day, we can apply filter to it
+            new_im = im_cache[day_img_key]
+
+        else:
+            # otherwise, we should make sure a day image is set
+            new_im = _gar_imc(im_cache, day_img_key, "day", img_str)
+
+        # then generate with the day image
+        return _gar_imc(im_cache, img_key, flt, new_im)
+
+
+    def _gdgar_imc(im_cache, img_key, flt, img_str):
+        """
+        Generates a 
+        Day image manipulator, then 
+        Generates the desired image manipulator,
+        Adds both to their respective caches
+        Returns the image manipulator
+
+        IN:
+            img_key - key to use
+            flt - filter to use
+            img_str - image string ot manipulator to use
+
+        OUT:
+            im_cache - cache to add image manipulator to
+
+        RETURNS: the new image manipulator
+        """
+        # always generate day first
+        #day_key = _dayify(
+        # TODO: maybe not worth dayifying and just having caller pass in day
+        #   key
+        day_im = _gar_imc(im_cache, _dayify(
+
+
     def _gen_im(flt, img_str):
         """
-        Generates an image maniuplator
+        GENerates an image maniuplator
         NOTE: always assumes we have an available filter.
 
         IN:
             flt - filter to use
             img_str - image path or manipulator to use
+
+        RETURNS: generated image manipulator
         """
         return store.im.MatrixColor(img_str, FILTER_DICT[flt])
 
@@ -177,7 +421,7 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_get_imc(cache_acs, (flt, img_str), flt, img_str))
+        im_list.append(_cgetg_imc(cache_acs, (flt, img_str), flt, img_str))
 
 
     def _im_accessory_list(
@@ -221,6 +465,200 @@ init -4 python in mas_sprites:
             )
 
 
+    def _im_arms_base_nh(im_list, bpose, leanpose, flt, bcode):
+        """
+        Adds arms base image manipulator
+        (equiv to _ms_arms_nh_up_base)
+
+        IN:
+            bpose - MASPoseArms to use
+            leanpose - leanpose to use
+            flt - filter to use
+            bcode - base code to use
+
+        OUT:
+            im_list - list to add image manipulators to
+        """
+        _add_mpa_imc(
+            im_list,
+            bpose,
+            (
+                B_MAIN,
+                PREFIX_ARMS,
+            ),
+            flt,
+            "base",
+            leanpose
+        )
+
+
+    def _im_arms_base_lean_nh(im_list, bpose, lean, leanpose, flt, bcode):
+        """
+        Adds arms base lean image manipulator
+        (eqiv to _ms_arms_nh_leaning_base)
+
+        IN:
+            bpose - MASPoseArms to use
+            lean - type of lean
+            leanpose - leanpose to use
+            flt - filter to use
+            bcode - base code to use
+
+        OUT:
+            im_list - list to add image manipulators to
+        """
+        _add_mpa_imc(
+            im_list,
+            bpose,
+            (
+                B_MAIN,
+                PREFIX_ARMS_LEAN,
+                lean,
+                ART_DLM,
+            ),
+            flt,
+            "base",
+            leanpose
+        )
+
+
+    def _im_arms_nh(im_list, apose, clothing, leanpose, flt, bcode):
+        """
+        Adds arms image manipulator
+        (equiv to _ms_arms_nh_up_arms)
+
+        IN:
+            apose - MASPoseARms to use
+            clothing - type of clothing
+            leanpose - leanpose to use
+            flt - filter to use
+            bcode - base code to use
+
+        OUT:
+            im_list - list to add image manipulators to
+        """
+        _add_mpa_imc(
+            im_list,
+            apose,
+            (
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS,
+            ),
+            flt,
+            clothing,
+            leanpose
+        )
+
+
+    def _im_arms_lean_nh(im_list, apose, clothing, lean, leanpose, flt, bcode):
+        """
+        Adds arms lean image manipulator
+        (equiv to _ms_arms_nh_leaning_arms)
+
+        IN:
+            apose - MASPoseArms to use
+            clothing - type of clothing
+            lean - type of lean
+            leanpose - leanpose to use
+            flt - filter to use
+            bcode - base code to use
+
+        OUT:
+            im_list - list to add image manipulators to
+        """
+        _add_mpa_imc(
+            im_list,
+            apose,
+            (
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS_LEAN,
+                lean,
+                ART_DLM,
+            ),
+            flt,
+            clothing,
+            leanpose
+        )
+
+
+    def _im_arms_nh_wbase(
+            im_list,
+            bpose,
+            apose,
+            clothing,
+            acs_ase_list,
+            leanpose,
+            lean,
+            flt,
+            bcode
+    ):
+        """
+        Adds arms manipulators, no hair, with baes
+
+        IN:
+            bpose - MASPoseArms for base
+            apose - MASPoseArms for outfit
+            clothing - type of clothing
+            acs_ase_list - acs between arms-base-0 and arms-0
+            leanpose - leanpose to pass to accessorylist
+            lean - lean to use
+            flt - filter to use
+            bcode - base code to use
+
+        OUT:
+            im_list - list to add image manipulators to
+        """
+        if lean:
+            # arms-base-0
+            _im_arms_base_lean_nh(im_list, bpose, lean, leanpose, flt, bcode)
+
+            # acs-ase
+            _im_accessory_list(
+                im_list,
+                acs_ase_list,
+                flt,
+                True,
+                leanpose,
+                arm_state=bcode,
+                lean=lean
+            )
+
+            if apose is not None:
+                # arms-0
+                _im_arms_lean_nh(
+                    im_list,
+                    apose,
+                    clothing,
+                    lean,
+                    leanpose,
+                    flt,
+                    bcode
+                )
+
+        else:
+            # arms-base-0
+            _im_arms_base_nh(im_list, bpose, leanpose, flt, bcode)
+
+            # acs-ase
+            _im_accessory_list(
+                im_list,
+                acs_ase_list,
+                flt,
+                True,
+                leanpose,
+                arm_state=bcode,
+                lean=lean
+            )
+
+            if apose is not None:
+                # arms-0
+                _im_arms_nh(im_list, apose, clothing, leanpose, flt, bcode)
+
+
     def _im_base_body_nh(im_list, flt, bcode):
         """
         Adds base body image manipulators, no hair
@@ -240,7 +678,7 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_get_imc(cache_body, (flt, img_str), flt, img_str))
+        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
     
 
     def _im_base_body_lean_nh(im_list, lean, flt, bcode):
@@ -265,7 +703,7 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_get_imc(cache_body, (flt, img_str), flt, img_str))
+        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
 
 
     def _im_body_nh(im_list, clothing, flt, bcode):
@@ -291,7 +729,7 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_get_imc(cache_body, (flt, img_str), flt, img_str))
+        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
 
 
     def _im_body_lean_nh(im_list, clothing, lean, flt, bcode):
@@ -319,7 +757,7 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_get_imc(cache_body, (flt, img_str), flt, img_str))
+        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
 
 
     def _im_body_nh_wbase(
@@ -398,7 +836,192 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_get_imc(cache_tc, (flt, 1, chair), flt, img_str))
+        im_list.append(_cgetg_imc(cache_tc, (flt, 1, chair), flt, img_str))
+
+
+    def _im_face(
+            im_list,
+            eyes,
+            eyebrows,
+            nose,
+            mouth,
+            flt,
+            fpfx,
+            leanpose,
+            sweat,
+            tears,
+            emote
+        ):
+        """
+        Adds face image manipulators
+
+        IN:
+            eyes - type of eyes
+            eyebrows - type of eyebrows
+            nose - type of nose
+            mouth - type of mouth
+            flt - filter to use
+            fpfx - face prefix to use
+            leanpose - leanpose to use
+            sweat - type of sweat drop
+            tears - type of tears
+            emote - type of emote
+
+        OUT:
+            im_list - list to add image manipulators to
+        """
+        img_key = (
+            flt,
+            1,
+            leanpose,
+            eyes,
+            eyebrows,
+            nose,
+            mouth,
+            sweat,
+            tears,
+            emote
+        )
+        if img_key in cache_face:
+            im_list.append(cache_face[img_key])
+            return
+
+        elif flt != "day":
+            # try using day key
+            day_key = _dayify(img_key)
+            if day_key in cache_face:
+                im_list.append(_gar_imc(
+                    cache_face,
+                    img_key,
+                    flt,
+                    cache_face[day_key]
+                ))
+                return
+
+        # othewise need to generate
+
+        # we will always have at least four images to composite
+        img_str_list = [
+            (0, 0),
+            "".join((
+                F_T_MAIN,
+                fpfx,
+                PREFIX_EYES,
+                eyes,
+                FILE_EXT,
+            )),
+            (0, 0),
+            "".join((
+                F_T_MAIN,
+                fpfx,
+                PREFIX_EYEB,
+                eyebrows,
+                FILE_EXT,
+            )),
+            (0, 0),
+            "".join((
+                F_T_MAIN,
+                fpfx,
+                PREFIX_NOSE,
+                nose,
+                FILE_EXT,
+            )),
+            (0, 0),
+            "".join((
+                F_T_MAIN,
+                fpfx,
+                PREFIX_MOUTH,
+                mouth,
+                FILE_EXT,
+            )),
+        ]
+
+        # check for others
+        if sweat:
+            img_str_list.extend(
+                (0,0),
+                "".join((
+                    F_T_MAIN,
+                    fpfx,
+                    PREFIX_SWEAT,
+                    sweat,
+                    FILE_EXT,
+                ))
+            )
+
+        if tears:
+            img_str_list.extend(
+                (0, 0),
+                "".join((
+                    F_T_MAIN,
+                    fpfx,
+                    PREFIX_TEARS,
+                    tears,
+                    FILE_EXT,
+                ))
+            )
+
+        if emote:
+            img_str_list.extend(
+                (0, 0),
+                "".join((
+                    F_T_MAIN,
+                    fpfx,
+                    PREFIX_EMOTE,
+                    emote,
+                    FILE_EXT,
+                ))
+            )
+
+        # generate imComposite
+        im_list.append(_gar_imc(
+            cache_face,
+            img_key,
+            flt, 
+            store.im.Composite((1280, 850), *img_str_list)
+        ))
+
+
+    def _im_face_pre(im_list, flt, fpfx, leanpose, blush):
+        """
+        Adds face image manipulators that go before hair
+
+        IN:
+            flt - filter to use
+            fpfx - face prefix to use
+            leanpose - leanpose to use
+            blush - type of blush
+
+        OUT:
+            im_list - list to add image manipulators to
+        """
+        img_key = (flt, 0, leanpose, blush)
+        if img_key in cache_face:
+            if cache_face[img_key] is not None:
+                im_list.append(cache_face[img_ley])
+
+            return
+
+        # NOTE: since theres only 1 thing here, we wont do anything fancy
+
+        # otherwise, time to generate the im
+        if blush:
+            im_list.append(_gar_imc(
+                cache_face,
+                img_key,
+                flt, 
+                "".join((
+                    F_T_MAIN,
+                    fpfx,
+                    PREFIX_BLUSH,
+                    blush,
+                    FILE_EXT
+                ))
+            ))
+            return
+
+        # otherwise nothing here
+        cache_face[img_key] = None
 
    
     def _im_hair(im_list, hair, flt, hair_sfx, lean):
@@ -434,7 +1057,7 @@ init -4 python in mas_sprites:
                 FILE_EXT,
             ))
 
-        im_list.append(_get_imc(cache_hair, (flt, img_str), flt, img_str))
+        im_list.append(_cgetg_imc(cache_hair, (flt, img_str), flt, img_str))
 
 
     def _im_table(im_list, table, show_shadow, flt):
