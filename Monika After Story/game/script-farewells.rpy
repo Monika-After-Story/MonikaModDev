@@ -537,7 +537,7 @@ label bye_prompt_sleep:
             m 6ekc "I'll see you after you get some rest...{w=1}hopefully."
 
         else:
-            6ckc "..."
+            m 6ckc "..."
 
     elif 5 <= curr_hour < 12:
         # you probably stayed up the whole night
