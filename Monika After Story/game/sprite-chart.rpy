@@ -166,6 +166,7 @@ image monika g2:
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
+image night_filter = Solid("#20101897", xsize=1280, ysize=850)
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
@@ -610,8 +611,10 @@ init -5 python in mas_sprites:
     LOC_STAND = "(960, 960)"
 
     # composite stuff
-    I_COMP = "LiveComposite"
-    L_COMP = "LiveComposite"
+    #I_COMP = "LiveComposite"
+    #L_COMP = "LiveComposite"
+    I_COMP = "im.Composite"
+    L_COMP = "im.Composite"
     TRAN = "Transform"
 
     # zoom
@@ -640,7 +643,7 @@ init -5 python in mas_sprites:
     y_step = 20
 
     # adding optimized initial parts of the sprite string
-    PRE_SPRITE_STR = TRAN + "(" + L_COMP + "("
+    PRE_SPRITE_STR = L_COMP + "("
 
     # Prefixes for files
     PREFIX_TORSO = "torso" + ART_DLM
@@ -1275,6 +1278,13 @@ init -5 python in mas_sprites:
         RETURNS location string for the sprite
         """
         return "".join(("(", str(adjust_x), ",", str(adjust_y), ")"))
+
+
+    def build_loc_val():
+        """
+        RETURNS location tuple for a sprite
+        """
+        return (adjust_x, adjust_y)
 
 
     def get_sprite(sprite_type, sprite_name):
@@ -2951,7 +2961,7 @@ init -5 python in mas_sprites:
                 (Default: False)
 
         RETURNS:
-            sitting stirng
+            sitting string
         """
         # get sprite string data
         loc_build_str, n_suffix, sprite_str_list = _pre_ms_setup(isnight)
@@ -3314,8 +3324,8 @@ init -5 python in mas_sprites:
             lean=lean
         )
 
-        # zoom
-        _ms_zoom(sprite_str_list)
+        # final paren
+        sprite_str_list.append(")")
 
         return "".join(sprite_str_list)
 
@@ -3676,7 +3686,7 @@ init -5 python in mas_sprites:
 
 
     def _ms_zoom(sprite_list):
-        """
+        """DEPRECATED
         Adds zoom to sprite string
 
         IN:
@@ -7122,7 +7132,8 @@ init -2 python:
                 eyes,
                 nose,
                 mouth,
-                not morning_flag,
+                #not morning_flag,
+                False,
                 acs_pre_list,
                 acs_bbh_list,
                 acs_bse_list,
@@ -7146,6 +7157,21 @@ init -2 python:
                 show_shadow=character.tablechair.has_shadow
             )
 
+            # create the sprite
+            sprite = eval(cmd)
+
+            # mask night filter if needed
+            if not morning_flag:
+                loc = store.mas_sprites.build_loc_val()
+                mask = AlphaMask("night_filter", sprite)
+                sprite = LiveComposite((1280, 850),
+                    loc, sprite,
+                    loc, mask
+                )
+
+            # finally apply zoom 
+            return Transform(sprite, zoom=store.mas_sprites.value_zoom),None
+
         else:
         # TODO: this is missing img_stand checks
         # TODO change this to an elif and else the custom stnading mode
@@ -7161,6 +7187,7 @@ init -2 python:
 
 #        else:
             # custom standing mode
+
 
         return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
 
@@ -7215,10 +7242,23 @@ init -2 python:
             "steepling"
         )
 
-        # zoom
-        store.mas_sprites._ms_zoom(spr_str_list)
+        # final paren
+        spr_str_list.append(")")
 
-        return eval("".join(spr_str_list)), None 
+        # generate sprite
+        sprite = eval("".join(spr_str_list))
+
+        # apply night filter 
+        if not morning_flag:
+            loc = store.mas_sprites.build_loc_val()
+            mask = AlphaMask("night_filter", sprite)
+            sprite = LiveComposite((1280, 850),
+                loc, sprite,
+                loc, mask
+            )
+
+        # finally appyl zoom and return
+        return Transform(sprite, zoom=store.mas_sprites.value_zoom), None 
 
 
 init -1 python in mas_sprites:
