@@ -167,7 +167,6 @@ image monika g2:
 define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
-image night_filter = im.matrix.tint(0.59, 0.49, 0.55)
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
