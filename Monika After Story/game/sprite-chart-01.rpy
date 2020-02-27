@@ -2904,6 +2904,16 @@ image monika 3tsu_static = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3ttu_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    arms="restleftpointright"
+)
+
 image monika 3tua_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,

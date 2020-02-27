@@ -6190,6 +6190,20 @@ image monika 3tsu:
         0.06
         repeat
 
+image monika 3ttu:
+    block:
+        "monika 3ttu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dtu_static"
+        0.06
+        repeat
+
 image monika 3tua:
     block:
         "monika 3tua_static"
@@ -6987,4 +7001,3 @@ image monika 4lfx:
         "monika 4dfx_static"
         0.06
         repeat
-
