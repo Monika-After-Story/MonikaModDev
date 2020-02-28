@@ -90,9 +90,8 @@ init 5 python:
             prompt="Can you sing me a song?",
             category=["music"],
             pool=True,
-            conditional="store.mas_songs.hasUnlockedSongs()",
-            action=EV_ACT_UNLOCK,
-            aff_range=(mas_aff.NORMAL,None)
+            aff_range=(mas_aff.NORMAL,None),
+            rules={"no unlock": None}
         )
     )
 
@@ -176,11 +175,14 @@ label monika_sing_song_random:
     #Like a "preview" version of it which unlocks the full song in the pool delegate
     if mas_songs.hasRandomSongs():
         python:
+            #Unlock pool delegate
+            mas_unlockEVL("monika_sing_song_pool", "EVE")
+
             rand_song = renpy.random.choice(mas_songs.getRandomSongs())
             pushEvent(rand_song, skipeval=True, notify=True)
             mas_unlockEVL(rand_song, "SNG")
 
-            # unlock the long version of the song
+            #Unlock the long version of the song
             mas_unlockEVL(rand_song+"_long","SNG")
 
     #We have no songs! let's pull back the shown count for this and derandom
@@ -595,3 +597,32 @@ label mas_song_stand_by_me_long:
     m 4euo "{i}~Whenever you're in trouble won't you stand by me~{/i}"
     m 4hub "{i}~Oh stand by me, won't you stand now, stand by me~{/i}"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_rewrite_the_stars",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Rewrite The Stars",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_rewrite_the_stars:
+    m 1dsd "{i}~What if we rewrite the stars~{/i}"
+    m 3dubsb "{i}~Say you were made to be mine~{/i}"
+    m 3dubso "{i}~Nothing could keep us apart~{/i}"
+    m 3ekbfu "{i}~You'd be the one I was meant to find~{/i}"
+    m 1ekbsb "{i}~It's up to you~{/i}"
+    m 3ekbsb "{i}~And it's up to me~{/i}"
+    m 1duu "{i}~No one could say what we get to be~{/i}"
+    m 3ekb "{i}~So why don't we rewrite the stars~{/i}"
+    m 3hubsa "{i}~Maybe the world could be ours~{/i}"
+    m 1duo "{i}~Tonight~{/i}"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
+    m 5ekbfu "I love you so much."
+    return "derandom|love"
