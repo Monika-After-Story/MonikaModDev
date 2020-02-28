@@ -3990,9 +3990,25 @@ init -985 python:
         return store.mas_globals.tt_detected
 
 
+init -101 python:
+    import os
+
+    # TODO: we should move this to utils at some point.
+    def is_file_present(filename):
+        if not filename.startswith("/"):
+            filename = "/" + filename
+
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
+
+
 init -1 python:
     import datetime # for mac issues i guess.
-    import os
+
     if "mouseup_3" in config.keymap['game_menu']:
         config.keymap['game_menu'].remove('mouseup_3')
     if "mouseup_3" not in config.keymap["hide_windows"]:
@@ -4043,17 +4059,6 @@ init -1 python:
 
         # otherwise, not found
         return False
-
-    def is_file_present(filename):
-        if not filename.startswith("/"):
-            filename = "/" + filename
-
-        filepath = renpy.config.basedir + filename
-
-        try:
-            return os.access(os.path.normcase(filepath), os.F_OK)
-        except:
-            return False
 
 
     def is_apology_present():

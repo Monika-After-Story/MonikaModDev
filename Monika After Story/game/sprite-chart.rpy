@@ -327,6 +327,10 @@ init -101 python in mas_sprites:
 
 init -100 python in mas_sprites:
 
+    # disable im
+    disable_im = True
+    
+
     # --- exprops ---
 
     # ---- ACS ----
@@ -610,11 +614,13 @@ init -5 python in mas_sprites:
     LOC_Z = "(0, 0)"
     LOC_STAND = "(960, 960)"
 
+    LOC_W = 1280
+    LOC_H = 850
+    LOC_WH = (1280, 850)
+
     # composite stuff
-    #I_COMP = "LiveComposite"
-    #L_COMP = "LiveComposite"
-    I_COMP = "im.Composite"
-    L_COMP = "im.Composite"
+    I_COMP = "LiveComposite"
+    L_COMP = "LiveComposite"
     TRAN = "Transform"
 
     # zoom
@@ -643,7 +649,7 @@ init -5 python in mas_sprites:
     y_step = 20
 
     # adding optimized initial parts of the sprite string
-    PRE_SPRITE_STR = L_COMP + "("
+    PRE_SPRITE_STR = TRAN + "(" + LCOMP + "("
 
     # Prefixes for files
     PREFIX_TORSO = "torso" + ART_DLM
@@ -3325,7 +3331,8 @@ init -5 python in mas_sprites:
         )
 
         # final paren
-        sprite_str_list.append(")")
+        #sprite_str_list.append(")")
+        _ms_zoom(sprite_str_list)
 
         return "".join(sprite_str_list)
 
@@ -7133,8 +7140,7 @@ init -2 python:
                 eyes,
                 nose,
                 mouth,
-                #not morning_flag,
-                False,
+                not morning_flag,
                 acs_pre_list,
                 acs_bbh_list,
                 acs_bse_list,
@@ -7158,21 +7164,23 @@ init -2 python:
                 show_shadow=character.tablechair.has_shadow
             )
 
+            # NOTE: if we need to support old sprite string without
+            #   using the night sprites, we need to use this code
+            #   as well as pass isnight as False to the _ms_sitting function
             # create the sprite
-            sprite = eval(cmd)
+            #sprite = eval(cmd)
 
             # mask night filter if needed
-            if not morning_flag:
-                sprite = im.MatrixColor(sprite, night_filter)
-                #loc = store.mas_sprites.build_loc_val()
-                #mask = AlphaMask("night_filter", sprite)
-                #sprite = LiveComposite((1280, 850),
-                #    loc, sprite,
-                #    loc, mask
-                #)
+            #if not morning_flag:
+             #   loc = store.mas_sprites.build_loc_val()
+             #   mask = AlphaMask("night_filter", sprite)
+             #   sprite = LiveComposite(store.mas_sprites.LOC_WH,
+             #       loc, sprite,
+             #       loc, mask
+             #   )
 
             # finally apply zoom 
-            return Transform(sprite, zoom=store.mas_sprites.value_zoom),None
+            #return Transform(sprite, zoom=store.mas_sprites.value_zoom),None
 
         else:
         # TODO: this is missing img_stand checks
@@ -7245,22 +7253,24 @@ init -2 python:
         )
 
         # final paren
-        spr_str_list.append(")")
+        #spr_str_list.append(")")
+        store.mas_sprites._ms_zoom(spr_str_list)
 
         # generate sprite
-        sprite = eval("".join(spr_str_list))
+        #sprite = eval("".join(spr_str_list))
 
         # apply night filter 
-        if not morning_flag:
-            loc = store.mas_sprites.build_loc_val()
-            mask = AlphaMask("night_filter", sprite)
-            sprite = LiveComposite((1280, 850),
-                loc, sprite,
-                loc, mask
-            )
+        #if not morning_flag:
+        #    loc = store.mas_sprites.build_loc_val()
+        #    mask = AlphaMask("night_filter", sprite)
+        #    sprite = LiveComposite(store.mas_sprites.LOC_WH,
+        #        loc, sprite,
+        #        loc, mask
+        #    )
 
         # finally appyl zoom and return
-        return Transform(sprite, zoom=store.mas_sprites.value_zoom), None 
+        #return Transform(sprite, zoom=store.mas_sprites.value_zoom), None 
+        return eval("".join(spr_str_list)), None
 
 
 init -1 python in mas_sprites:
@@ -7333,10 +7343,16 @@ init -1 python in mas_sprites:
 define monika_chr = MASMonika()
 
 # empty desk should be defined after MASMonika
-image emptydesk = DynamicDisplayable(
-    mas_drawemptydesk,
-    character=monika_chr
-)
+if store.mas_sprites.disable_im:
+    image emptydesk = DynamicDisplayable(
+        mas_drawemptydesk,
+        character=monika_chr
+    )
+else:
+     image emptydesk = DynamicDisplayable(
+        mas_drawemptydesk_im,
+        character=monika_chr
+    )   
 
 
 #### IMAGE START (IMG030)
