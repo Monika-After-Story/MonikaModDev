@@ -856,7 +856,7 @@ def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
             df_choice = menutils.menu(menu_sdf, defindex=1)
 
             # if no choice was made here (or we aborted), then quit
-            if choice is None:
+            if df_choice is None:
                 return
 
             # otherwise set and quit loop
