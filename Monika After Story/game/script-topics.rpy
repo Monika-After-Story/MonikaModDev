@@ -1120,7 +1120,7 @@ label monika_tea:
     m 4eua "Coffee can be nice with books too, you know?"
     m 4rsc "Then again..."
 
-    if persistent._mas_acs_enable_coffee:
+    if mas_getConsumable("coffee").enabled():
         m 1hua "I can just make coffee whenever I want to, thanks to you."
 
     else:
@@ -7422,14 +7422,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_coffee",category=['misc'],prompt="Coffee intake",random=True))
 
 label monika_coffee:
-    if renpy.seen_label('monika_tea') and not persistent._mas_acs_enable_coffee:
+    $ coffee_enabled = mas_getConsumable("coffee").enabled()
+    if renpy.seen_label('monika_tea') and not coffee_enabled:
         m 3eua "Have you been drinking coffee lately, [player]?"
         m 2tfu "I hope it's not just to make me jealous, ehehe~"
     m 2eua "Coffee is such a nice thing to have when you need a little pep of energy."
     m 3hua "Whether it's hot or cold, coffee is always nice."
     m 4eua "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
     m 3eka "It's funny how a drink for giving you energy became a treat for you to enjoy."
-    if persistent._mas_acs_enable_coffee:
+    if coffee_enabled:
         m 1hua "I'm glad I get to enjoy it now, thanks to you~"
     else:
         m 1hub "Maybe if I had some coffee, I could finally drink some! Ahaha~"
@@ -11657,7 +11658,7 @@ label monika_players_control:
         m 1ekbsa "Or a beautiful promise ring."
         show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5esbfa "Oh, wouldn't that be a dream come true."
-    if not persistent._mas_acs_enable_coffee:
+    if not mas_getConsumable("coffee").enabled():
         m 1wuo "You could even add in a cup of coffee to the game for me!"
         m 1eka "That would be lovely."
         m 1hksdrb "But I imagine your coding skills are just as good as mine."
