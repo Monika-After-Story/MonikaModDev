@@ -368,6 +368,24 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.8
+label v0_10_8(version="v0_10_8"):
+    python:
+        #Update conditions for the greetings
+        new_greetings_conditions = {
+            "greeting_back2": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=20))",
+            "greeting_back3": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
+            "greeting_visit3": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
+            "greeting_back5": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
+            "greeting_visit4": "not store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=9))",
+            "greeting_visit9": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=1))"
+        }
+
+        for gr_label, conditional in new_greetings_conditions.iteritems():
+            mas_getEV(gr_label).conditional = conditional
+
+    return
+
 #0.10.7
 label v0_10_7(version="v0_10_7"):
     python:

@@ -508,6 +508,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back2",
+            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=20))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -517,8 +518,6 @@ init 5 python:
 label greeting_back2:
     m 1eua "Hello, dear."
     m 1ekbfa "I was starting to miss you terribly. It's so good to see you again!"
-
-    # TODO: consider actually changing based on time out
     m 1hubfa "Don't make me wait so long next time, ehehe~"
     return
 
@@ -527,6 +526,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back3",
+            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -579,6 +579,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit3",
+            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -596,6 +597,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back5",
+            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -613,6 +615,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit4",
+            conditional="not store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=9))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -716,6 +719,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit9",
+            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=1))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
