@@ -2933,6 +2933,7 @@ label monika_credits_song:
         m 1hua "I hope you liked my song."
 
 
+
         if persistent.monika_kill:
             $ ending = "couldn't let you go without telling you how I honestly felt about you"
         else:
