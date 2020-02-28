@@ -869,7 +869,7 @@ label .afterdontjoke:
 
     # turn on the lights
     play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
 
     return
 
@@ -1331,13 +1331,6 @@ label mas_coffee_finished_brewing:
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, coffee's done."
 
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    # this line is here so we dont it looks better when we hide monika
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         # idle pauses
         m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
@@ -1346,22 +1339,19 @@ label mas_coffee_finished_brewing:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
+    $ mas_acs_mug.keep_on_desk = False
     $ monika_chr.wear_acs_pst(mas_acs_mug)
     $ persistent._mas_coffee_brew_time = None
     $ mas_drinkCoffee()
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1393,12 +1383,6 @@ label mas_coffee_finished_drinking:
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my coffee."
 
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
             # its currently morning, monika should get another drink
@@ -1414,7 +1398,8 @@ label mas_coffee_finished_drinking:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    $ mas_acs_mug.keep_on_desk = False
+    call mas_transition_to_emptydesk
 
     # wrap these statemetns so we can properly add / remove the mug
     $ renpy.pause(1.0, hard=True)
@@ -1428,12 +1413,8 @@ label mas_coffee_finished_drinking:
 
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1463,13 +1444,6 @@ label mas_c_hotchoc_finished_brewing:
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, my hot chocolate is ready."
 
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    # this line is here so we dont it looks better when we hide monika
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
 
@@ -1477,22 +1451,19 @@ label mas_c_hotchoc_finished_brewing:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
+    $ mas_acs_hotchoc_mug.keep_on_desk = False
     $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
     $ persistent._mas_c_hotchoc_brew_time = None
     $ mas_drinkHotChoc()
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_hotchoc_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1524,12 +1495,6 @@ label mas_c_hotchoc_finished_drinking:
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my hot chocolate."
 
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
             # its currently morning, monika should get another drink
@@ -1545,7 +1510,8 @@ label mas_c_hotchoc_finished_drinking:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    $ mas_acs_hotchoc_mug.keep_on_desk = False
+    call mas_transition_to_emptydesk
 
     # wrap these statemetns so we can properly add / remove the mug
     $ renpy.pause(1.0, hard=True)
@@ -1560,12 +1526,8 @@ label mas_c_hotchoc_finished_drinking:
 
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_hotchoc_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -2024,8 +1986,7 @@ label mas_change_to_def:
 #           Defaults to False
 #       exp - the expression we want monika to use when she reveals the outfit
 #           Defaults to monika 2eua
-#       restore_zoom - do we want to restore to player preffered zoom after changing
-#           Defaults to True
+#       restore_zoom - unused
 #       unlock - True unlocks the outfit's selectable (if it exists)
 #           Defaults to False
 label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True, unlock=False):
@@ -2035,11 +1996,7 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
 
     window hide
 
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset (1.0)
-    show emptydesk zorder 9 at i11
-
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     #If we're going to def or blazerless from a costume, we reset hair too
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
@@ -2053,12 +2010,8 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
     $ renpy.save_persistent()
 
     pause 4.0
-    $ renpy.show(exp, zorder=MAS_MONIKA_Z, at_list=[i11])
-    hide emptydesk
+    call mas_transition_from_emptydesk(exp)
 
-    if restore_zoom:
-        pause 0.5
-        call monika_zoom_transition(curr_zoom, 1.0)
     return
 
 init 5 python:

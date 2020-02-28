@@ -371,6 +371,13 @@ label v0_3_1(version=version): # 0.3.1
 #0.10.8
 label v0_10_8(version="v0_10_8"):
     python:
+        #Fix the song pool delegate
+        song_pool_ev = mas_getEV("monika_sing_song_pool")
+        if song_pool_ev:
+            song_pool_ev.conditional = None
+            song_pool_ev.action = None
+            song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
+
         #Update conditions for the greetings
         new_greetings_conditions = {
             "greeting_back": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
@@ -382,7 +389,6 @@ label v0_10_8(version="v0_10_8"):
             "greeting_visit4": "not store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=9))",
             "greeting_visit9": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=1))"
         }
-
         for gr_label, conditional in new_greetings_conditions.iteritems():
             mas_getEV(gr_label).conditional = conditional
 
