@@ -49,7 +49,7 @@ init -4 python in mas_sprites:
     #   here. 
     #   [0] - should be the filter code. 
     #   [1] - should be pre/post (0 or 1)
-    #   [2] - should be leanpose
+    #   [2] - type of lean
     #   [3+] remaining values dependent on type:
     #       * pre - only blush
     #       * post - all values except blush
@@ -105,6 +105,24 @@ init -4 python in mas_sprites:
     #   [3] - 0 for no shadow, 1 for shadow (ignored for chairs)
     # value:
     #   image manipulator object
+
+
+    def _a2c(im_cache, img_key, im_obj):
+        """
+        Adds an image manipulator to the given cache
+
+        IN:
+            img_key - image key to use
+            im_obj - image manipulator to save
+
+        OUT:
+            im_cache - cache to svae image manipultor to
+        """
+        # NOTE: no render
+        #im_cache[img_key] = im_obj
+
+        # NOTE: with render
+        im_cache[img_key] = im_obj.load()
 
 
     def _add_mpa_imc(
@@ -384,6 +402,7 @@ init -4 python in mas_sprites:
 
         RETURNS: generated image manipulator
         """
+        # NOTE: no render
         return store.im.MatrixColor(img_str, FILTERS[flt])
 
 
@@ -926,7 +945,7 @@ init -4 python in mas_sprites:
             mouth,
             flt,
             fpfx,
-            leanpose,
+            lean,
             sweat,
             tears,
             emote
@@ -941,7 +960,7 @@ init -4 python in mas_sprites:
             mouth - type of mouth
             flt - filter to use
             fpfx - face prefix to use
-            leanpose - leanpose to use
+            lean - type of lean to use
             sweat - type of sweat drop
             tears - type of tears
             emote - type of emote
@@ -952,7 +971,7 @@ init -4 python in mas_sprites:
         img_key = (
             flt,
             1,
-            leanpose,
+            lean,
             eyes,
             eyebrows,
             nose,
@@ -1063,20 +1082,20 @@ init -4 python in mas_sprites:
         ))
 
 
-    def _im_face_pre(im_list, flt, fpfx, leanpose, blush):
+    def _im_face_pre(im_list, flt, fpfx, lean, blush):
         """
         Adds face image manipulators that go before hair
 
         IN:
             flt - filter to use
             fpfx - face prefix to use
-            leanpose - leanpose to use
+            lean - type of lean to use
             blush - type of blush
 
         OUT:
             im_list - list to add image manipulators to
         """
-        img_key = (flt, 0, leanpose, blush)
+        img_key = (flt, 0, lean, blush)
         day_key = None
         if img_key in cache_face:
             if cache_face[img_key] is not None:
@@ -1438,7 +1457,7 @@ init -4 python in mas_sprites:
         )
 
         # 18. face-pre
-        _im_face_pre(im_list, flt, fpfx, leanpose, blush)
+        _im_face_pre(im_list, flt, fpfx, lean, blush)
 
         # 19. front-hair
         _im_hair(im_list, hair, flt, FHAIR_SUFFIX, lean)
@@ -1462,7 +1481,7 @@ init -4 python in mas_sprites:
             mouth,
             flt,
             fpfx,
-            leanpose,
+            lean,
             sweat,
             tears,
             emote

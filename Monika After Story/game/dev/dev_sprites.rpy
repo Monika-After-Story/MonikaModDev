@@ -74,6 +74,49 @@ init 100 python:
         abc.close()
 
 
+    def mas_matrix_cache_report():
+        def _cache_report_one(cache, name, cache_log):
+            # header
+            cache_log.write("\n\n==================================\n")
+            cache_log.write("# Logging cache for {0}\n".format(name))
+            cache_log.write("==================================\n")
+
+            # output elements
+            for img_key in cache:
+                cache_log.write("{0}: {1}\n".format(img_key, cache[img_key]))
+
+        with open("cache_report.log", "w") as cache_log:
+            # write each caceh out
+            _cache_report_one(store.mas_sprites.cache_face, "FACE", cache_log)
+            _cache_report_one(store.mas_sprites.cache_arms, "ARMS", cache_log)
+            _cache_report_one(store.mas_sprites.cache_body, "BODY", cache_log)
+            _cache_report_one(store.mas_sprites.cache_hair, "HAIR", cache_log)
+            _cache_report_one(store.mas_sprites.cache_acs, "ACS", cache_log)
+            _cache_report_one(store.mas_sprites.cache_tc, "TableChair", cache_log)
+
+            # summary report
+            cache_log.write("\n\n---- Size Summary ----\n")
+            cache_log.write("Face: {0}\n".format(
+                len(store.mas_sprites.cache_face)
+            ))
+            cache_log.write("Arms: {0}\n".format(
+                len(store.mas_sprites.cache_arms)
+            ))
+            cache_log.write("Body: {0}\n".format(
+                len(store.mas_sprites.cache_body)
+            ))
+            cache_log.write("Hair: {0}\n".format(
+                len(store.mas_sprites.cache_hair)
+            ))
+            cache_log.write("ACS: {0}\n".format(
+                len(store.mas_sprites.cache_acs)
+            ))
+            cache_log.write("TableChair: {0}\n".format(
+                len(store.mas_sprites.cache_tc)
+            ))
+            
+
+
 init 5 python:
     addEvent(
         Event(
