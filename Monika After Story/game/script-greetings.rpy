@@ -331,6 +331,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back",
+            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
@@ -543,6 +544,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back4",
+            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=10))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),

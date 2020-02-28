@@ -373,8 +373,10 @@ label v0_10_8(version="v0_10_8"):
     python:
         #Update conditions for the greetings
         new_greetings_conditions = {
+            "greeting_back": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
             "greeting_back2": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=20))",
             "greeting_back3": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
+            "greeting_back4": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=10))",
             "greeting_visit3": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
             "greeting_back5": "store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
             "greeting_visit4": "not store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=9))",
