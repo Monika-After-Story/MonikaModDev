@@ -649,7 +649,7 @@ init -5 python in mas_sprites:
     y_step = 20
 
     # adding optimized initial parts of the sprite string
-    PRE_SPRITE_STR = TRAN + "(" + LCOMP + "("
+    PRE_SPRITE_STR = TRAN + "(" + L_COMP + "("
 
     # Prefixes for files
     PREFIX_TORSO = "torso" + ART_DLM

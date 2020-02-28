@@ -18,7 +18,7 @@ init -4 python in mas_sprites:
     FLT_NIGHT = "night"
 
     # filter dict
-    filters = {
+    FILTERS = {
         FLT_DAY: store.im.matrix.identity(),
         FLT_NIGHT: store.im.matrix.tint(0.59, 0.49, 0.55),
     }
@@ -173,7 +173,7 @@ init -4 python in mas_sprites:
 
             # but check based on bcode
             if use_front:
-                if mpa.both_front is not None:
+                if mpa.both_front:
                     im_list.append(_gdgar_imc(
                         cache_arms,
                         img_key,
@@ -183,7 +183,7 @@ init -4 python in mas_sprites:
                     ))
                     return
 
-            elif mpa.both_back is not None:
+            elif mpa.both_back:
                 im_list.append(_gdgar_imc(
                     cache_arms,
                     img_key,
@@ -203,18 +203,18 @@ init -4 python in mas_sprites:
         rstr = None
         if mpa.left is not None:
             if use_front:
-                if mpa.left_front is not None:
+                if mpa.left_front:
                     lstr = "".join(pfx_list + (mpa.left,) + sfx_list)
 
-            elif mpa.left_back is not None:
+            elif mpa.left_back:
                 lstr = "".join(pfx_list + (mpa.left,) + sfx_list)
 
         if mpa.right is not None:
             if use_front:
-                if mpa.right_front is not None:
+                if mpa.right_front:
                     rstr = "".join(pfx_list + (mpa.right,) + sfx_list)
 
-            elif mpa.right_back is not None
+            elif mpa.right_back:
                 rstr = "".join(pfx_list + (mpa.right,) + sfx_list)
 
         # now generate im compsite if needed
@@ -384,7 +384,7 @@ init -4 python in mas_sprites:
 
         RETURNS: generated image manipulator
         """
-        return store.im.MatrixColor(img_str, FILTER_DICT[flt])
+        return store.im.MatrixColor(img_str, FILTERS[flt])
 
 
     def _gen_im_disp(im_list):
@@ -401,8 +401,9 @@ init -4 python in mas_sprites:
         # TODO: we could even cache this. See mas_drawmonika_im
 
         # fiirst setup the Fixed disp
+        props = {}
         props.setdefault("style", "image_placement")
-        disp = store.Fixed(
+        disp = renpy.display.layout.Fixed(
             xmaximum=LOC_W,
             ymaximum=LOC_H,
             xminimum=LOC_W,
@@ -412,7 +413,7 @@ init -4 python in mas_sprites:
 
         # now add the image manips
         for img_man in im_list:
-            disp.add(store.Position(
+            disp.add(renpy.display.layout.Position(
                 img_man,
                 xpos=adjust_x,
                 xanchor=0,
@@ -461,7 +462,7 @@ init -4 python in mas_sprites:
             # for this pose. Weird, but maybe it happens?
             return
 
-        if issitting:
+        if is_sitting:
             acs_str = acs.img_sit
 
         elif acs.img_stand:
@@ -561,6 +562,7 @@ init -4 python in mas_sprites:
                 PREFIX_ARMS,
             ),
             flt,
+            bcode,
             "base",
             leanpose
         )
@@ -591,6 +593,7 @@ init -4 python in mas_sprites:
                 ART_DLM,
             ),
             flt,
+            bcode,
             "base",
             leanpose
         )
@@ -621,6 +624,7 @@ init -4 python in mas_sprites:
                 PREFIX_ARMS,
             ),
             flt,
+            bcode,
             clothing,
             leanpose
         )
@@ -654,6 +658,7 @@ init -4 python in mas_sprites:
                 ART_DLM,
             ),
             flt,
+            bcode,
             clothing,
             leanpose
         )
@@ -1013,7 +1018,7 @@ init -4 python in mas_sprites:
 
         # check for others
         if sweat:
-            img_str_list.extend(
+            img_str_list.extend((
                 (0,0),
                 "".join((
                     F_T_MAIN,
@@ -1022,10 +1027,10 @@ init -4 python in mas_sprites:
                     sweat,
                     FILE_EXT,
                 ))
-            )
+            ))
 
         if tears:
-            img_str_list.extend(
+            img_str_list.extend((
                 (0, 0),
                 "".join((
                     F_T_MAIN,
@@ -1034,10 +1039,10 @@ init -4 python in mas_sprites:
                     tears,
                     FILE_EXT,
                 ))
-            )
+            ))
 
         if emote:
-            img_str_list.extend(
+            img_str_list.extend((
                 (0, 0),
                 "".join((
                     F_T_MAIN,
@@ -1046,7 +1051,7 @@ init -4 python in mas_sprites:
                     emote,
                     FILE_EXT,
                 ))
-            )
+            ))
 
         # generate imComposite
         im_list.append(_gdgar_imc(
@@ -1075,7 +1080,7 @@ init -4 python in mas_sprites:
         day_key = None
         if img_key in cache_face:
             if cache_face[img_key] is not None:
-                im_list.append(cache_face[img_ley])
+                im_list.append(cache_face[img_key])
 
             return
 
@@ -1218,7 +1223,7 @@ init -4 python in mas_sprites:
             new_im = table_str
 
         # add to cache and list
-        im_list.append(_gdgar(cache_tc, img_key, flt, new_im, day_key))
+        im_list.append(_gdgar_imc(cache_tc, img_key, flt, new_im, day_key))
         
 
 # main sprite compilation
@@ -1393,7 +1398,7 @@ init -4 python in mas_sprites:
             arms_pose,
             clothing,
             acs_ase_list,
-            lean,
+            leanpose,
             lean,
             flt,
             "0"
@@ -1482,14 +1487,14 @@ init -4 python in mas_sprites:
             arms_pose,
             clothing,
             acs_ase_list,
-            lean,
+            leanpose,
             lean,
             flt,
             "1"
         )
 
         # 26. pst-acs
-         _im_accessory_list(
+        _im_accessory_list(
             im_list,
             acs_pst_list,
             flt,
