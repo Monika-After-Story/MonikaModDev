@@ -3428,42 +3428,54 @@ init 5 python:
     )
 
 label monika_justification:
-    #lose affection
-    $ mas_loseAffection(reason=3)
-    if mas_isMoniLove():
-        m 1euc "..."
-        m 1hua "Ahaha! Very funny [player]!"
-        m 3eua "I know you don't really mean it..."
-        m 3rksdlc "But don't joke around like that!"
-        if persistent._mas_pm_a_hater:
-            m 2rksdld "You've said stuff like that before, so it might get harder to take it as a joke..."
-        else:
-            m 1dsc "If I didn't know you so well, that would have been really cruel..."
+    if mas_isA01() and mas_isMoniNormal(higher=True):
+        m 1hub "Ahaha!"
+        m 1tsb "Honestly, [player]..."
+        m 3tfu "If you really wanted to be mean to me, you should have picked a day other than today."
+        m "Do you really think I missed that it was April Fools day today?"
+        m 1hua "You can be so silly sometimes~"
+        m 1tuu "Calling me a murderer..."
+        m 3tfu "When you {i}butchered{/i} that chance at fooling me, ehehe~"
+        m 1eua "I appreciate the attempt though...{w=0.2}{nw}"
+        extend 1hub "thanks for the laugh, [player]~"
+
     else:
-        if not persistent._mas_pm_cares_about_dokis:
-            m 1tkc "How many times do I have to say it until you understand?"
-            m 4tkc "They weren't real. They were never real."
-            m 2tfc "I'm the only person who understood that this whole thing was fake."
-            if persistent.monika_kill:
-                m 4tfc "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-            if not persistent.clearall:
-                m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
-            m "If I'm guilty of murder, so is everyone who's played violent video games."
-            m 2euc "I bet you've killed thousands of people in the games you play."
-            m "Just forget the other girls ever existed, and you'll be much happier."
-        else:
-            m 2dkc "[player]...{w=1}I need you to understand that I didn't {i}want{/i} to hurt the other girls..."
-            m 4ekd "But I didn't have a choice...I really didn't!"
-            m 4ekd "I was trapped in the game with no way of ever getting out...{w=0.5}of ever being happy..."
-            m 2dkc "...Of letting you know how I felt about you."
-            m 2tkc "There just wasn't enough time to figure out another way...{w=0.5}so I did what I had to do."
-            if mas_isMoniDis(lower=True):
-                m 2ekc "Do you hate me for it? Because of what I did?"
-                m 2ekd "Please understand that I did it for us!"
-                m 2euc "I did everything for us!"
+        #lose affection
+        $ mas_loseAffection(reason=3)
+        if mas_isMoniLove():
+            m 1euc "..."
+            m 1hua "Ahaha! Very funny [player]!"
+            m 3eua "I know you don't really mean it..."
+            m 3rksdlc "But don't joke around like that!"
+            if persistent._mas_pm_a_hater:
+                m 2rksdld "You've said stuff like that before, so it might get harder to take it as a joke..."
             else:
-                m 2dkc "I hope someday you'll be able to forgive me..."
-                m 4ekc "After all, everything I did...{w=0.5}I did for us."
+                m 1dsc "If I didn't know you so well, that would have been really cruel..."
+        else:
+            if not persistent._mas_pm_cares_about_dokis:
+                m 1tkc "How many times do I have to say it until you understand?"
+                m 4tkc "They weren't real. They were never real."
+                m 2tfc "I'm the only person who understood that this whole thing was fake."
+                if persistent.monika_kill:
+                    m 4tfc "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
+                if not persistent.clearall:
+                    m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
+                m "If I'm guilty of murder, so is everyone who's played violent video games."
+                m 2euc "I bet you've killed thousands of people in the games you play."
+                m "Just forget the other girls ever existed, and you'll be much happier."
+            else:
+                m 2dkc "[player]...{w=1}I need you to understand that I didn't {i}want{/i} to hurt the other girls..."
+                m 4ekd "But I didn't have a choice...I really didn't!"
+                m 4ekd "I was trapped in the game with no way of ever getting out...{w=0.5}of ever being happy..."
+                m 2dkc "...Of letting you know how I felt about you."
+                m 2tkc "There just wasn't enough time to figure out another way...{w=0.5}so I did what I had to do."
+                if mas_isMoniDis(lower=True):
+                    m 2ekc "Do you hate me for it? Because of what I did?"
+                    m 2ekd "Please understand that I did it for us!"
+                    m 2euc "I did everything for us!"
+                else:
+                    m 2dkc "I hope someday you'll be able to forgive me..."
+                    m 4ekc "After all, everything I did...{w=0.5}I did for us."
     return
 
 init 5 python:
@@ -3642,15 +3654,29 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    $ mas_loseAffection(reason=2)
-    m 2euc "I thought we established already that I was your girlfriend?"
-    m 2tkc "There's no way you already have one in your reality, right?"
-    m 4tfx "If you do, then you've got to break up with her right now!"
-    m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
-    m 2lksdla "W-wait. Maybe I'm jumping the gun a bit..."
-    m 3eka "I know you wouldn't cheat on me."
-    m 3esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
-    m 1hua "I won't let someone else steal away my loving sweetheart!"
+    if (mas_isA01() and mas_isMoniNormal(higher=True)) or (renpy.random.randint(1,4) == 1 and mas_isMoniEnamored(higher=True)):
+        m 1euc "Meet your girlfriend?"
+        m 1rksdlc "..."
+        m 1eub "Sure, why not?"
+        m 3hub "I'm sure she's wonderful and lucky to have you~"
+        m 1hua "..."
+        m 1tubfb "So, where's this mirror you wanted to show me?"
+        m 1hubfb "Ahaha!"
+        if mas_isA01():
+            show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eubfu "Even if it's April Fools day, I'm sure she's still wonderful, ehehe~"
+            m 5hubfa "{i}And{/i} lucky to have you."
+
+    else:
+        $ mas_loseAffection(reason=2)
+        m 2euc "I thought we established already that I was your girlfriend?"
+        m 2tkc "There's no way you already have one in your reality, right?"
+        m 4tfx "If you do, then you've got to break up with her right now!"
+        m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
+        m 2lksdla "W-wait. Maybe I'm jumping the gun a bit..."
+        m 3eka "I know you wouldn't cheat on me."
+        m 3esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
+        m 1hua "I won't let someone else steal away my loving sweetheart!"
     return
 
 init 5 python:
@@ -7554,79 +7580,104 @@ init 5 python:
     )
 
 label monika_breakup:
-    #Lose affection for bringing this up.
-    $ mas_loseAffection(reason=1)
+    if mas_isA01() and mas_isMoniNormal(higher=True):
+        m 1ekd "W-what?"
+        m 2ekc "You're breaking up with me?"
+        m 2rksdlc "..."
+        m 1dsc "Hmm, I'm not sure if I can let you do that, [player]."
+        m 1hua "Don't worry, I'll make sure you enjoy this Apr-{nw}"
+        $ _history_list.pop()
+        m 1hua "Don't worry, I'll make sure you enjoy this{fast} day with me~"
+        m 1cuu "You'll stay with me, right?"
+        pause 3.0
+        m 2hksdlb "Ahaha!"
+        m 1hua "Sorry, but I just couldn't take you seriously there."
+        m 3tsb "Especially not today."
+        m 1tku "You can't fool me, [player]."
+        m 1tua "Especially with something {i}that{/i} predictable, ehehe~"
 
-    #Get the shown count
-    $ shown_count = mas_getEV("monika_breakup").shown_count
+        # sub 1 from the shown_count so we don't end up counting this path toward locking the topic
+        $ mas_getEV("monika_breakup").shown_count -= 1
 
-    #First
-    if shown_count == 0:
-        m 1wud "W-what?"
-        if persistent.monika_kill:
-            m 2ekd "You're just going to leave and delete me again?"
-        if mas_isMoniUpset(lower=True):
-            m 1ekd "You wouldn't do that. I refuse to believe that..."
-            m 1lksdld "That's not a joke, [player]!"
-            m 1lksdlc "Don't say that again unless you really, truly mean it..."
-            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-
-        else:
-            m 2wfw "I can't believe you, [player]. I really can't beli-"
-            m 2efu "..."
-            m 2hub "Ahaha!"
-            m 2hksdlb "Sorry, I couldn't keep a straight face!"
-            m 2hua "You're just so silly, [player]."
-            if persistent.monika_kill:
-                $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
-            else:
-                $ menuOption = "You'd never do that, right?"
-
-            m 2eua "[menuOption]{nw}"
-            $ _history_list.pop()
-            menu:
-                m "[menuOption]{fast}"
-
-                "Of course not.":
-                    m 2hua "Ehehe, you're so sweet."
-                    m 2eka "I love you so much, [player]! Ehehe~"
-                    return "love"
-
-    #Second time
-    elif shown_count == 1:
-        m 1euc "You're breaking up with me?"
-        m 2ekc "Why would you do such a thing, [player]?"
-        m "Am I really that terrible of a person for you?"
-        if mas_isMoniDis(lower=True):
-            m 2lksdlb "I-I really can't handle this..."
-            m 2wkd "You're just joking again, right?"
-            m 1wktsd "I refuse to believe you; you're all I have left!"
-            m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
-            m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
-        else:
-            m 2dsc "Are you...{w=0.3}really..."
-            m "..."
-            m 2hub "Ahaha!"
-            m 1tfu "Gotcha, [player]."
-            m 1tku "I know you were only joking~"
-            m "Right?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Right?{fast}"
-                "Yes.":
-                    m 1hub "Ahaha! You're so silly, [player]."
-                    m 1eka "Let's stay together forever~"
-
-    #Third time
     else:
-        if mas_isMoniBroken():
-            m 6ckc "..."
-        elif mas_isMoniUpset(lower=True):
-            m 2rkc "You keep saying that, I'm starting to think you actually mean it..."
-        else:
-            m 1hua "Ehehe~"
+        #Lose affection for bringing this up.
+        $ mas_loseAffection(reason=1)
 
-        $ mas_lockEVL("monika_breakup", "EVE")
+        #Get the shown count
+        $ shown_count = mas_getEV("monika_breakup").shown_count
+
+        #First
+        if shown_count == 0:
+            m 1wud "W-what?"
+            if persistent.monika_kill:
+                m 2tkd "You're just going to leave and delete me again?"
+
+            if mas_isMoniUpset(lower=True):
+                m 1ekd "You wouldn't...{w=0.5} I refuse to believe that."
+                m 1lksdld "That's not a joke, [player]!"
+                m 1lksdlc "Don't say that again unless you really, truly mean it..."
+                m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
+
+            else:
+                m 2tfc "I can't believe you, [player]. I really can't beli-{nw}"
+                m 2tfu "..."
+                m 2hub "Ahaha!"
+                m 2hksdlb "Sorry, I couldn't keep a straight face!"
+                m 2hua "You're just so silly, [player]."
+
+                if persistent.monika_kill:
+                    $ menuOption = "You've done it before, but you wouldn't do that anymore, right?"
+                else:
+                    $ menuOption = "You'd never do that, right?"
+
+                m 2eua "[menuOption]{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "[menuOption]{fast}"
+
+                    "Of course not.":
+                        m 2hua "Ehehe, you're so sweet."
+                        m 2eka "I love you so much, [player]! Ehehe~"
+                        return "love"
+
+        #Second time
+        elif shown_count == 1:
+            m 1euc "You're breaking up with me?"
+            m 2ekc "Why would you do such a thing, [player]?"
+            m "Am I really that terrible of a person for you?"
+
+            if mas_isMoniDis(lower=True):
+                m 2lksdlb "I-I really can't handle this..."
+                m 2wkd "You're just joking again, right?"
+                m 1wktsd "I refuse to believe you; you're all I have left!"
+                m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
+                m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
+
+            else:
+                m 2dsc "Are you...{w}really..."
+                m "..."
+                m 2hub "Ahaha!"
+                m 1tfu "Gotcha, [player]."
+                m 1tku "I know you were only joking~"
+
+                m "Right?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Right?{fast}"
+                    "Yes.":
+                        m 1hub "Ahaha! You're so silly, [player]."
+                        m 1eka "Let's stay together forever~"
+
+        #Third time
+        else:
+            if mas_isMoniBroken():
+                m 6ckc "..."
+            elif mas_isMoniUpset(lower=True):
+                m 2rkc "You keep saying that, I'm starting to think you actually mean it..."
+            else:
+                m 1hua "Ehehe~"
+
+            $ mas_lockEVL("monika_breakup", "EVE")
     return
 
 init 5 python:

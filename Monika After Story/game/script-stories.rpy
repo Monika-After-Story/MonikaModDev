@@ -843,7 +843,7 @@ label mas_scary_story_hunter:
     m 1wkd "...and to his horror,{w=1} he saw that she had gained on him significantly."
     m 3wkd "In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
     m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
-    show emptydesk at i11 zorder 9
+    $ store.mas_sprites.show_empty_desk()
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
     if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,10) == 1) or mas_full_scares:

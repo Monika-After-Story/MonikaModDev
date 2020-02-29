@@ -1370,7 +1370,8 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="mug",
-        mux_type=["mug"]
+        mux_type=["mug"],
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
 
@@ -1461,7 +1462,8 @@ init -1 python:
         acs_type="chocs",
         #Can't mux this since this has special handling via programming points
         entry_pp=store.mas_sprites._acs_heartchoc_entry,
-        exit_pp=store.mas_sprites._acs_heartchoc_exit
+        exit_pp=store.mas_sprites._acs_heartchoc_exit,
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_heartchoc)
 
@@ -1478,7 +1480,8 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="mug",
-        mux_type=["mug"]
+        mux_type=["mug"],
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_hotchoc_mug)
 
@@ -1636,7 +1639,8 @@ init -1 python:
         #   needs to add mid version of this
         mux_type=["plush_mid"],
         entry_pp=store.mas_sprites._acs_quetzalplushie_entry,
-        exit_pp=store.mas_sprites._acs_quetzalplushie_exit
+        exit_pp=store.mas_sprites._acs_quetzalplushie_exit,
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
 
@@ -1653,7 +1657,8 @@ init -1 python:
         ),
         priority=12,
         stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry
+        entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry,
+        keep_on_desk=True
     )
 
     ### QUETZAL PLUSHIE (CENTER)
@@ -1669,6 +1674,7 @@ init -1 python:
         stay_on_start=False,
         acs_type="plush_mid",
         mux_type=["plush_q"],
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
 
@@ -1685,7 +1691,8 @@ init -1 python:
         ),
         priority=11,
         stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
+        entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry,
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie_santahat)
 
@@ -2290,12 +2297,9 @@ init -1 python:
         priority=11,
         stay_on_start=False,
         acs_type="flowers",
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_roses)
-
-#### TABLE SPRITE OBJECTS (SPR140)
-# tables are inserted between 
-# TODO: this will be done later
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever

@@ -1597,7 +1597,7 @@ label monikaroom_greeting_opendoor_seen_partone:
     $ mas_disable_quit()
 
 #    scene bg bedroom
-    call spaceroom(start_bg="bedroom",hide_monika=True, scene_change=True, dissolve_all=True)
+    call spaceroom(start_bg="bedroom",hide_monika=True, scene_change=True, dissolve_all=True, show_emptydesk=False)
     pause 0.2
     show monika 1esc at l21 zorder MAS_MONIKA_Z
     pause 1.0
@@ -1658,7 +1658,7 @@ label monikaroom_greeting_opendoor_post2:
 #    else:
 #        m 3eua "Let me fix this scene up."
     m 1dsc "...{w=1.5}{nw}"
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     show monika 4eua_static zorder MAS_MONIKA_Z at i11
     m "Tada!"
 #    if renpy.seen_label("monikaroom_greeting_opendoor_post2"):
@@ -1675,10 +1675,11 @@ label monikaroom_greeting_opendoor:
     $ monika_chr.reset_outfit(False)
     $ monika_chr.wear_acs(mas_acs_ribbon_def)
 
-    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True)
+    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False)
 
     # show this under bedroom so the masks window skit still works
-    show bedroom as sp_mas_backbed zorder 4
+    $ behind_bg = MAS_BACKGROUND_Z - 1
+    show bedroom as sp_mas_backbed zorder behind_bg
 
     m 2esd "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1eua_static at l32 zorder MAS_MONIKA_Z
@@ -1746,7 +1747,7 @@ label monikaroom_greeting_knock:
                 if persistent.seen_monika_in_room:
                     m "Thanks for knocking."
 
-            call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True)
+            call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=False)
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 
