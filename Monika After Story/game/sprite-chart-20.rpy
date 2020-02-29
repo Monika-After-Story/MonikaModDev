@@ -6638,6 +6638,20 @@ image monika 4eka:
         0.06
         repeat
 
+image monika 4ekb:
+    block:
+        "monika 4ekb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 4dkb_static"
+        0.06
+        repeat
+
 image monika 4ekbfa:
     block:
         "monika 4ekbfa_static"
@@ -6974,30 +6988,3 @@ image monika 4lfu:
         0.06
         repeat
 
-image monika 4lfw:
-    block:
-        "monika 4lfw_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfw_static"
-        0.06
-        repeat
-
-image monika 4lfx:
-    block:
-        "monika 4lfx_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfx_static"
-        0.06
-        repeat
