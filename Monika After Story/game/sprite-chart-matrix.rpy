@@ -1,5 +1,5 @@
 # sprite generation using matrix for night sprites
-
+# TODO: look at adding a highlight option to ACS/Clothes/Hair
 
 init -99 python in mas_sprites:
     # NOTE: this must be after -100 and -101
@@ -12,6 +12,9 @@ init -99 python in mas_sprites:
 
 # this should be after sprite-chart's initialization
 init -4 python in mas_sprites:
+    # NOTE: render_key
+
+    Y_OFFSET = -130
 
     # filter enums
     FLT_DAY = "day"
@@ -54,8 +57,7 @@ init -4 python in mas_sprites:
     #       * pre - only blush
     #       * post - all values except blush
     # value:
-    #   image maniuplator object or None if no facial expression for this
-    #   combo.
+    #   surf object containing render, or None if should not be rendered
 
     cache_arms = {}
     # the arms cache. This includes clothes and base sprites.
@@ -66,7 +68,7 @@ init -4 python in mas_sprites:
     #   [2] - clothing type, "base" for base arms
     #   [3] - leanpose
     # value:
-    #   image manipulator object OR None if no arms needed for this combo
+    #   surf object containing render, or None if should not be rendered
 
     cache_body = {}
     # the body cache. This includes clothes and base sprites.
@@ -75,7 +77,7 @@ init -4 python in mas_sprites:
     #   [0] - should be the filter code.
     #   [1] - shoud be image path
     # value:
-    #   image maniuplator object
+    #   surf object containing render, or None if should not be rendered
 
     cache_hair = {}
     # the hair cache
@@ -84,16 +86,18 @@ init -4 python in mas_sprites:
     #   [0] - should be the filter code.
     #   [1] - should be image path
     # value:
-    #   image manipulator object
+    #   surf object containing render, or None if should not be rendered
     
     cache_acs = {}
     # the ACS cache
     # key:
     #   tuple containing strings. 
     #   [0] - should be the filter code.
-    #   [1] - second should be image path.
+    #   [1] - acs name (id)
+    #   [3] - poseid
+    #   [4] - arm code
     # value:
-    #   image manipulator object
+    #   surf object containing render, or None if should not be rendered
 
     cache_tc = {}
     # the tablechair cache
@@ -104,29 +108,96 @@ init -4 python in mas_sprites:
     #   [2] - table/chair type
     #   [3] - 0 for no shadow, 1 for shadow (ignored for chairs)
     # value:
-    #   image manipulator object
+    #   surf object containing render, or None if should not be rendered
 
 
-    def _a2c(im_cache, img_key, im_obj):
+    class MASMonikaRender(renpy.Displayable):
         """
-        Adds an image manipulator to the given cache
+        custom rendering class for MASMonika. This does caching and rendering
+        at the same time.
 
-        IN:
-            img_key - image key to use
-            im_obj - image manipulator to save
-
-        OUT:
-            im_cache - cache to svae image manipultor to
+        PROPERTIES:
+            render_keys - list of tuples of the following format:
+                [0] - key of an image to generate. used to check cache
+                [1] - reference to the cache this image is located in
+                [2] - ImageBase to build the image, IF NOT IN CACHE.
+                    This should be set to None if we are sure a surf
+                    object is in the cache.
+            xpos - xposition to blit objects with
+            ypos - yposition to blit objects with
+            width - width to render objects with
+            height - height to render objects with
+            flt - filter we are using (string)
         """
-        # NOTE: no render
-        #im_cache[img_key] = im_obj
 
-        # NOTE: with render
-        im_cache[img_key] = im_obj.load()
+        def __init__(self, render_keys, flt, xpos, ypos, width, height):
+            """
+            Constructor for a MASMOnikaRender object
+
+            IN:
+                render_keys - image keys and ImageBase if needed. 
+                    See props.
+                flt - filter we are using (string)
+                xpos - xposition to blit objects with
+                ypos - yposition to blit objects with
+                width - width to render objects with
+                height - height to render objects with
+            """
+            super(renpy.Displayable, self).__init__()
+            self.render_keys = render_keys
+            self.xpos = xpos
+            self.ypos = ypos
+            self.width = width
+            self.height = height
+            self.flt = flt
+
+        def _render_surf(self, render_key, st, at):
+            """
+            Retrieves surf image from cache, or renders if needed
+
+            IN:
+                render_key - tuple of the following format:
+                    [0] - key of image to generate
+                    [1] - cache surf image should be in
+                    [2] - ImageBase to build the image
+                st - renpy related
+                at - renpy related
+
+            RETURNS: rendered surf image to use
+            """
+            img_key, img_cache, img_base = render_key
+            if img_key in img_cache:
+                return img_cache[img_key]
+
+            # otherwise render this bitch
+            new_surf = renpy.render(
+                store.mas_sprites._gen_im(self.flt, img_base),
+                self.width,
+                self.height,
+                st, at
+            )
+            img_cache[img_key] = new_surf
+            return new_surf
+
+        def render(self, width, height, st, at):
+            """
+            Render function
+            """
+            renders = [
+                self._render_surf(render_key, st, at)
+                for render_key in self.render_keys
+            ]
+
+            # blit all
+            rv = renpy.Render(width, height)
+            for render in renders:
+                rv.blit(render, (self.xpos, self.ypos + Y_OFFSET))
+
+            return rv
 
 
-    def _add_mpa_imc(
-            im_list, 
+    def _add_mpa_rk(
+            rk_list, 
             mpa,
             pfx_list,
             flt,
@@ -135,10 +206,10 @@ init -4 python in mas_sprites:
             leanpose
     ):
         """
-        Adds an image manipulator for MASPoseArms, if needed.
+        Adds render key for MASPoseArms, if needed.
 
         IN:
-            mpa - MASPoseArms to get image manipulator for
+            mpa - MASPoseArms to make render key for
             pfx_list - prefix list to generate image string with
             sfx_list - suffix list to generate image string with
             flt - filter code to use
@@ -147,33 +218,22 @@ init -4 python in mas_sprites:
             leanpose - leanpose to use
 
         OUT:
-            im_list - list to add image manipulator to if needed
+            rk_list - render key list to add render keys to
         """
         img_key = (flt, bcode, clothing, leanpose)
         day_key = None
         if img_key in cache_arms:
             if cache_arms[img_key] is not None:
-                im_list.append(cache_arms[img_key])
+                rk_list.append((img_key, cache_arms, None))
 
             return
 
-        elif flt != "day":
-            # try checking for day version
+        elif flt != FLT_DAY:
+            # try checking if day version is None
             day_key = _dayify(img_key)
-            if day_key in cache_arms:
-                if cache_arms[day_key] is None:
-                    # no image for this key, let the main key know
-                    cache_arms[img_key] = None
-
-                else:
-                    # otherwise generate from day image
-                    im_list.append(_gar_imc(
-                        cache_arms,
-                        img_key,
-                        flt,
-                        cache_arms[day_key]
-                    ))
-
+            if cache_arms.get(day_key, True) is None:
+                # no image for this key, let the main key know
+                cache_arms[img_key] = None
                 return
 
         # sfx list is always the same
@@ -192,22 +252,22 @@ init -4 python in mas_sprites:
             # but check based on bcode
             if use_front:
                 if mpa.both_front:
-                    im_list.append(_gdgar_imc(
-                        cache_arms,
+                    rk_list.append((
                         img_key,
-                        flt,
-                        "".join(pfx_list + (mpa.both,) + sfx_list),
-                        day_key
+                        cache_arms,
+                        store.Image(
+                            "".join(pfx_list + (mpa.both,) + sfx_list)
+                        ),
                     ))
                     return
 
             elif mpa.both_back:
-                im_list.append(_gdgar_imc(
-                    cache_arms,
+                rk_list.append((
                     img_key,
-                    flt,
-                    "".join(pfx_list + (mpa.both,) + sfx_list),
-                    day_key
+                    cache_arms,
+                    store.Image(
+                        "".join(pfx_list + (mpa.both,) + sfx_list)
+                    ),
                 ))
                 return
 
@@ -239,61 +299,24 @@ init -4 python in mas_sprites:
         if lstr:
             if rstr:
                 # need composite
-                im_list.append(_gdgar_imc(
-                    cache_arms,
+                rk_list.append((
                     img_key,
-                    flt,
-                    store.im.Composite((1280, 850),
-                        (0, 0), lstr,
-                        (0, 0), rstr
-                    ),
-                    day_key
+                    cache_arms,
+                    store.im.Composite(LOC_WH, (0, 0), lstr, (0, 0), rstr)
                 ))
 
             else:
                 # just left arm
-                im_list.append(_gdgar_imc(
-                    cache_arms,
-                    img_key,
-                    flt,
-                    lstr,
-                    day_key
-                ))
+                rk_list.append((img_key, cache_arms, store.Image(lstr)))
 
         elif rstr:
             # just right arm
-            im_list.append(_gdgar_imc(cache_arms, img_key, flt, rstr, day_key))
+            rk_list.append((img_key, cache_arms, store.Image(rstr)))
 
         else:
             # no arms at all
             cache_arms[img_key] = None
             cache_arms[day_key] = None
-
-
-    def _cgetg_imc(im_cache, img_key, flt, img_str):
-        """
-        Checks the given cache for the image manipulator,
-        GETs the image manipulator if found, 
-        Generates if not found.
-
-        IN:
-            im_cache - image manipulator cache to use
-            img_key - key to use
-            flt - filter to use if generate
-            img_str - image string or manipulator to use if gneerate
-
-        OUT:
-            im_cache - may have the new image manipulator added to it
-
-        RETURNS: image manipulator to use
-        """
-        if img_key in im_cache:
-            return im_cache[img_key]
-
-        if flt != "day":
-            return _gdar_imc(im_cache, img_key, flt, img_str)
-
-        return _gar_imc(im_cache, img_key, flt, img_str)
 
 
     def _dayify(img_key):
@@ -307,113 +330,33 @@ init -4 python in mas_sprites:
         RETURNS: dayified key
         """
         img_key_list = list(img_key)
-        img_key_list[0] = "day"
+        img_key_list[0] = FLT_DAY
         return tuple(img_key_list)
 
 
-    def _gar_imc(im_cache, img_key, flt, img_str):
-        """
-        Generates an image manipulator
-        Adds it to the cache
-        Returns the image manip
-
-        IN:
-            img_key - key to use
-            flt - filter to use
-            img_str - image string ot manipulator to use
-
-        OUT:
-            im_cache - cache to add image manipulator to
-
-        RETURNS: the new image manipulator
-        """
-        new_im = _gen_im(flt, img_str)
-        im_cache[img_key] = new_im
-        return new_im
-
-
-    def _gdar_imc(im_cache, img_key, flt, img_str):
-        """
-        Generates an image manipulator, checking for a
-        Day image first.
-        Adds it to the cache
-        Returns the image manip
-
-        IN:
-            img_key - key to use
-            flt - filter to use
-            img_str - image string ot manipulator to use
-
-        OUT:
-            im_cache - cache to add image manipulator to
-
-        RETURNS: the new image manipulator
-        """
-        # try checking for day cache before generating
-        day_img_key = _dayify(img_key)
-        if day_img_key in im_cache:
-            # if we have day, we can apply filter to it
-            new_im = im_cache[day_img_key]
-
-        else:
-            # otherwise, we should make sure a day image is set
-            new_im = _gar_imc(im_cache, day_img_key, "day", img_str)
-
-        # then generate with the day image
-        return _gar_imc(im_cache, img_key, flt, new_im)
-
-
-    def _gdgar_imc(im_cache, img_key, flt, img_str, day_key):
-        """
-        Generates a 
-        Day image manipulator, then 
-        Generates the desired image manipulator,
-        Adds both to their respective caches
-        Returns the image manipulator
-
-        IN:
-            img_key - key to use
-            flt - filter to use
-            img_str - image string ot manipulator to use
-            day_key - day key to use
-                pass in None to just do regular gar
-
-        OUT:
-            im_cache - cache to add image manipulator to
-
-        RETURNS: the new image manipulator
-        """
-        if day_key is None:
-            return _gar_imc(im_cache, img_key, flt, img_str)
-
-        # otherwise genreate day first, then the desired one
-        day_im = _gar_imc(im_cache, day_key, "day", img_str)
-        return _gar_imc(im_cache, img_key, flt, day_im)
-    
-
-    def _gen_im(flt, img_str):
+    def _gen_im(flt, img_base):
         """
         GENerates an image maniuplator
         NOTE: always assumes we have an available filter.
 
         IN:
             flt - filter to use
-            img_str - image path or manipulator to use
+            img_base - image path or manipulator to use
 
-        RETURNS: generated image manipulator
+        RETURNS: generated render key
         """
         # NOTE: no render
-        return store.im.MatrixColor(img_str, FILTERS[flt])
+        return store.im.MatrixColor(img_base, FILTERS[flt])
 
 
-    def _gen_im_disp(im_list):
-        """
+    def _gen_im_disp(rk_list):
+        """DEPRECATED
         Generates a LiveComposite (which is just a Fixed) displayable given a 
-        list of image manipulators. This uses the positions defined by
+        list of render keys. This uses the positions defined by
         zoom. (adjustx, adjusty)
 
         IN:
-            im_list - list of image manipulators we generated
+            rk_list - list of render keys we generated
 
         RETURNS: displayable to use
         """
@@ -431,7 +374,7 @@ init -4 python in mas_sprites:
         )
 
         # now add the image manips
-        for img_man in im_list:
+        for img_man in rk_list:
             disp.add(renpy.display.layout.Position(
                 img_man,
                 xpos=adjust_x,
@@ -443,23 +386,21 @@ init -4 python in mas_sprites:
         return disp
 
 
-    # im-based sprite maker functions
-    def _im_accessory(
-            im_list,
+    # rk-based sprite maker functions
+    def _rk_accessory(
+            rk_list,
             acs,
             flt,
-            is_sitting,
             arm_state,
             leanpose=None,
             lean=None
     ):
         """
-        Adds accessory image manipulator
+        Adds accessory render key if needed
 
         IN:
             acs - MASAccessory object
             flt - filter to apply
-            is_sitting - True will use sitting pic, False will not
             arm_state - "0" for arms-base-0, "1" for arms-base-1, None for
                 neither
             leanpose - current pose
@@ -468,7 +409,7 @@ init -4 python in mas_sprites:
                 (Default: None)
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         # pose map check
         # Since None means we dont show, we are going to assume that the
@@ -476,64 +417,86 @@ init -4 python in mas_sprites:
         poseid = acs.pose_map.get(leanpose, None)
         arm_codes = acs.get_arm_split_code(leanpose)
 
-        if poseid is None:
-            # a None here means we should shouldnt' even show this acs
-            # for this pose. Weird, but maybe it happens?
-            return
-
-        if is_sitting:
-            acs_str = acs.img_sit
-
-        elif acs.img_stand:
-            acs_str = acs.img_stand
-
-        else:
-            # standing string is null or None
-            return
-
+        # determine arm code
         if arm_state is not None:
             
             if arm_state in arm_codes:
                 arm_code = ART_DLM + arm_state
             else:
                 # we should not render
-                return
+                arm_code = None
 
         else:
             arm_code = ""
 
-        img_str = "".join((
-            A_T_MAIN,
-            PREFIX_ACS,
-#        ))
-#        acs_lean_mode(sprite_list, lean)
-#        sprite_list.extend((
-            acs_str,
-            ART_DLM,
-            poseid,
-            arm_code,
-            FILE_EXT,
+        # now we can generate the key and check cache
+        img_key = (flt, acs.name, poseid, arm_code)
+        day_key = None
+        if img_key in cache_acs:
+            if cache_acs[img_key] is not None:
+                rk_list.append((img_key, cache_acs, None))
+
+            return
+
+        elif flt != FLT_DAY:
+            # check of day version is none
+            day_key = _dayify(img_key)
+            if cache_acs.get(day_key, True) is None:
+                # no image for this key, let main key know
+                cache_acs[img_key] = None
+                return
+
+        # now check other acs-related elements that may stop render
+        if poseid is None or arm_code is None:
+            # a None here means we should shouldnt' even show this acs
+            # for this pose. Weird, but maybe it happens?
+            cache_acs[img_key] = None
+            cache_acs[day_key] = None
+            return
+
+        # otherwise we should prepare the render key
+
+        # always use sitting image for now
+        #
+        #if is_sitting:
+        #    acs_str = acs.img_sit
+        #
+        #elif acs.img_stand:
+        #    acs_str = acs.img_stand
+        #
+        #else:
+        #    # standing string is null or None
+        #    return
+
+        rk_list.append((
+            img_key,
+            cache_acs,
+            store.Image("".join((
+                A_T_MAIN,
+                PREFIX_ACS,
+                acs.img_sit,
+                ART_DLM,
+                poseid,
+                arm_code,
+                FILE_EXT,
+            )))
         ))
 
-        im_list.append(_cgetg_imc(cache_acs, (flt, img_str), flt, img_str))
 
-
-    def _im_accessory_list(
-            im_list,
+    def _rk_accessory_list(
+            rk_list,
             acs_list,
             flt,
-            is_sitting,
             leanpose=None,
             arm_state=None,
             lean=None
     ):
         """
-        Adds accessory image manipulators for a list of accessories
+        Adds accessory render keys for a list of accessories
 
         IN:
             acs_list - list of MASAccessory objects, in order of rendering
             flt - filter to use
-            is_sitting - True will use sitting pic, false will not
             arm_state - set to "0" or "1" if we are rendering acs between
                 base arms and arm ouftits
             leanpose - arms pose for we are currently rendering
@@ -542,26 +505,25 @@ init -4 python in mas_sprites:
                 (Default: None)
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         if len(acs_list) == 0:
             return
 
         for acs in acs_list:
-            _im_accessory(
-                im_list,
+            _rk_accessory(
+                rk_list,
                 acs,
                 flt,
-                is_sitting,
                 arm_state,
                 leanpose,
                 lean=lean
             )
 
 
-    def _im_arms_base_nh(im_list, bpose, leanpose, flt, bcode):
+    def _rk_arms_base_nh(rk_list, bpose, leanpose, flt, bcode):
         """
-        Adds arms base image manipulator
+        Adds arms base render keys
         (equiv to _ms_arms_nh_up_base)
 
         IN:
@@ -571,10 +533,10 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
-        _add_mpa_imc(
-            im_list,
+        _add_mpa_rk(
+            rk_list,
             bpose,
             (
                 B_MAIN,
@@ -587,9 +549,9 @@ init -4 python in mas_sprites:
         )
 
 
-    def _im_arms_base_lean_nh(im_list, bpose, lean, leanpose, flt, bcode):
+    def _rk_arms_base_lean_nh(rk_list, bpose, lean, leanpose, flt, bcode):
         """
-        Adds arms base lean image manipulator
+        Adds arms base lean render key
         (eqiv to _ms_arms_nh_leaning_base)
 
         IN:
@@ -600,10 +562,10 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
-        _add_mpa_imc(
-            im_list,
+        _add_mpa_rk(
+            rk_list,
             bpose,
             (
                 B_MAIN,
@@ -618,9 +580,9 @@ init -4 python in mas_sprites:
         )
 
 
-    def _im_arms_nh(im_list, apose, clothing, leanpose, flt, bcode):
+    def _rk_arms_nh(rk_list, apose, clothing, leanpose, flt, bcode):
         """
-        Adds arms image manipulator
+        Adds arms render key
         (equiv to _ms_arms_nh_up_arms)
 
         IN:
@@ -631,10 +593,10 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
-        _add_mpa_imc(
-            im_list,
+        _add_mpa_rk(
+            rk_list,
             apose,
             (
                 C_MAIN,
@@ -649,9 +611,9 @@ init -4 python in mas_sprites:
         )
 
 
-    def _im_arms_lean_nh(im_list, apose, clothing, lean, leanpose, flt, bcode):
+    def _rk_arms_lean_nh(rk_list, apose, clothing, lean, leanpose, flt, bcode):
         """
-        Adds arms lean image manipulator
+        Adds arms lean render key
         (equiv to _ms_arms_nh_leaning_arms)
 
         IN:
@@ -663,10 +625,10 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
-        _add_mpa_imc(
-            im_list,
+        _add_mpa_rk(
+            rk_list,
             apose,
             (
                 C_MAIN,
@@ -683,8 +645,8 @@ init -4 python in mas_sprites:
         )
 
 
-    def _im_arms_nh_wbase(
-            im_list,
+    def _rk_arms_nh_wbase(
+            rk_list,
             bpose,
             apose,
             clothing,
@@ -695,7 +657,7 @@ init -4 python in mas_sprites:
             bcode
     ):
         """
-        Adds arms manipulators, no hair, with baes
+        Adds arms render keys, no hair, with baes
 
         IN:
             bpose - MASPoseArms for base
@@ -708,18 +670,17 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         if lean:
             # arms-base-0
-            _im_arms_base_lean_nh(im_list, bpose, lean, leanpose, flt, bcode)
+            _rk_arms_base_lean_nh(rk_list, bpose, lean, leanpose, flt, bcode)
 
             # acs-ase
-            _im_accessory_list(
-                im_list,
+            _rk_accessory_list(
+                rk_list,
                 acs_ase_list,
                 flt,
-                True,
                 leanpose,
                 arm_state=bcode,
                 lean=lean
@@ -727,8 +688,8 @@ init -4 python in mas_sprites:
 
             if apose is not None:
                 # arms-0
-                _im_arms_lean_nh(
-                    im_list,
+                _rk_arms_lean_nh(
+                    rk_list,
                     apose,
                     clothing,
                     lean,
@@ -739,14 +700,13 @@ init -4 python in mas_sprites:
 
         else:
             # arms-base-0
-            _im_arms_base_nh(im_list, bpose, leanpose, flt, bcode)
+            _rk_arms_base_nh(rk_list, bpose, leanpose, flt, bcode)
 
             # acs-ase
-            _im_accessory_list(
-                im_list,
+            _rk_accessory_list(
+                rk_list,
                 acs_ase_list,
                 flt,
-                True,
                 leanpose,
                 arm_state=bcode,
                 lean=lean
@@ -754,12 +714,12 @@ init -4 python in mas_sprites:
 
             if apose is not None:
                 # arms-0
-                _im_arms_nh(im_list, apose, clothing, leanpose, flt, bcode)
+                _rk_arms_nh(rk_list, apose, clothing, leanpose, flt, bcode)
 
 
-    def _im_base_body_nh(im_list, flt, bcode):
+    def _rk_base_body_nh(rk_list, flt, bcode):
         """
-        Adds base body image manipulators, no hair
+        Adds base body render keys, no hair
         (equiv of _ms_torso_nh_base)
 
         IN:
@@ -767,7 +727,7 @@ init -4 python in mas_sprites:
             bcode- base code to use
 
         OUT:
-            im_list - list to add image manipulators to 
+            rk_list - list to add render keys to 
         """
         img_str = "".join((
             B_MAIN,
@@ -776,12 +736,12 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
+        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
     
 
-    def _im_base_body_lean_nh(im_list, lean, flt, bcode):
+    def _rk_base_body_lean_nh(rk_list, lean, flt, bcode):
         """
-        Adds base body lean image manipulators, no hair
+        Adds base body lean render keys, no hair
         (equivalent of _ms_torsoleaning_nh_base)
 
         IN:
@@ -790,7 +750,7 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         img_str = "".join((
             B_MAIN,
@@ -801,12 +761,12 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
+        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
 
 
-    def _im_body_nh(im_list, clothing, flt, bcode):
+    def _rk_body_nh(rk_list, clothing, flt, bcode):
         """
-        Adds body image manipulators, no hair
+        Adds body render keys, no hair
         (equiv of _ms_torso_nh)
 
         IN:
@@ -815,7 +775,7 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         img_str = "".join((
             C_MAIN,
@@ -827,12 +787,12 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
+        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
 
 
-    def _im_body_lean_nh(im_list, clothing, lean, flt, bcode):
+    def _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode):
         """
-        Adds body leaning image manipulators, no hair
+        Adds body leaning render keys, no hair
         (equiv of _ms_torsoleaning_nh)
 
         IN:
@@ -842,7 +802,7 @@ init -4 python in mas_sprites:
             bcode - base code to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         img_str = "".join((
             C_MAIN,
@@ -855,11 +815,11 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_cgetg_imc(cache_body, (flt, img_str), flt, img_str))
+        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
 
 
-    def _im_body_nh_wbase(
-            im_list,
+    def _rk_body_nh_wbase(
+            rk_list,
             clothing,
             acs_bse_list,
             bcode,
@@ -868,7 +828,7 @@ init -4 python in mas_sprites:
             lean=None
     ):
         """
-        Adds body image manipulators, including base and bse acs, no hair
+        Adds body render keys, including base and bse acs, no hair
 
         IN:
             clothing - type of clothing
@@ -879,53 +839,51 @@ init -4 python in mas_sprites:
             lean - type of lean
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         if lean:
             # base-0
-            _im_base_body_lean_nh(im_list, lean, flt, bcode)
+            _rk_base_body_lean_nh(rk_list, lean, flt, bcode)
 
             # acs_bse
-            _im_accessory_list(
-                im_list,
+            _rk_accessory_list(
+                rk_list,
                 acs_bse_list,
-                True,
                 leanpose,
                 arm_state=bcode,
                 lean=lean
             )
 
             # body-0
-            _im_body_lean_nh(im_list, clothing, lean, flt, bcode)
+            _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode)
 
         else:
             # base-0
-            _im_base_body_nh(im_list, flt, bcode)
+            _rk_base_body_nh(rk_list, flt, bcode)
 
             # acs_bse
-            _im_accessory_list(
-                im_list,
+            _rk_accessory_list(
+                rk_list,
                 acs_bse_list,
-                True,
                 leanpose,
                 arm_state=bcode,
                 lean=lean
             )
 
             # body-0
-            _im_body_nh(im_list, clothing, flt, bcode)
+            _rk_body_nh(rk_list, clothing, flt, bcode)
 
 
-    def _im_chair(im_list, chair, flt):
+    def _rk_chair(rk_list, chair, flt):
         """
-        Adds chair manipulator
+        Adds chair render key
 
         IN:
             chair - type of chair
             flt - filter to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         img_str = "".join((
             T_MAIN,
@@ -934,11 +892,11 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        im_list.append(_cgetg_imc(cache_tc, (flt, 1, chair), flt, img_str))
+        rk_list.append(((flt, 1, chair), cache_tc, store.Image(img_str)))
 
 
-    def _im_face(
-            im_list,
+    def _rk_face(
+            rk_list,
             eyes,
             eyebrows,
             nose,
@@ -951,7 +909,7 @@ init -4 python in mas_sprites:
             emote
         ):
         """
-        Adds face image manipulators
+        Adds face render keys
 
         IN:
             eyes - type of eyes
@@ -966,7 +924,7 @@ init -4 python in mas_sprites:
             emote - type of emote
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         img_key = (
             flt,
@@ -982,19 +940,16 @@ init -4 python in mas_sprites:
         )
         day_key = None
         if img_key in cache_face:
-            im_list.append(cache_face[img_key])
+            if cache_face[img_key] is not None:
+                rk_list.append((img_key, cache_face, None))
             return
 
-        elif flt != "day":
+        elif flt != FLT_DAY:
             # try using day key
             day_key = _dayify(img_key)
-            if day_key in cache_face:
-                im_list.append(_gar_imc(
-                    cache_face,
-                    img_key,
-                    flt,
-                    cache_face[day_key]
-                ))
+            if cache_face.get(day_key, True) is None:
+                # no image for this key, let main key know
+                cache_face[img_key] = None
                 return
 
         # othewise need to generate
@@ -1073,18 +1028,16 @@ init -4 python in mas_sprites:
             ))
 
         # generate imComposite
-        im_list.append(_gdgar_imc(
-            cache_face,
+        rk_list.append((
             img_key,
-            flt, 
+            cache_face,
             store.im.Composite((1280, 850), *img_str_list),
-            day_key
         ))
 
 
-    def _im_face_pre(im_list, flt, fpfx, lean, blush):
+    def _rk_face_pre(rk_list, flt, fpfx, lean, blush):
         """
-        Adds face image manipulators that go before hair
+        Adds face render keys that go before hair
 
         IN:
             flt - filter to use
@@ -1093,51 +1046,38 @@ init -4 python in mas_sprites:
             blush - type of blush
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         img_key = (flt, 0, lean, blush)
         day_key = None
         if img_key in cache_face:
             if cache_face[img_key] is not None:
-                im_list.append(cache_face[img_key])
+                rk_list.append((img_key, cache_face, None))
 
             return
 
-        elif flt != "day":
+        elif flt != FLT_DAY:
             # try checking for day version
             day_key = _dayify(img_key)
-            if day_key in cache_face:
-                if cache_face[day_key] is None:
-                    # no image for this key, let the main key know
-                    cache_face[img_key] = None
-
-                else:
-                    # otherwse generate from day
-                    im_list.append(_gar_imc(
-                        cache_face,
-                        img_key,
-                        flt,
-                        cache_face[day_key]
-                    ))
-
+            if cache_face.get(day_key, True) is None:
+                # no image for this key, let the main key know
+                cache_face[img_key] = None
                 return
 
         # NOTE: since theres only 1 thing here, we wont do anything fancy
 
         # otherwise, time to generate the im
         if blush:
-            im_list.append(_gdgar_imc(
+            rk_list.append((
+                img_key, 
                 cache_face,
-                img_key,
-                flt, 
-                "".join((
+                store.Image("".join((
                     F_T_MAIN,
                     fpfx,
                     PREFIX_BLUSH,
                     blush,
                     FILE_EXT
-                )),
-                day_key
+                ))),
             ))
             return
 
@@ -1146,9 +1086,9 @@ init -4 python in mas_sprites:
         cache_face[day_key] = None
 
    
-    def _im_hair(im_list, hair, flt, hair_sfx, lean):
+    def _rk_hair(rk_list, hair, flt, hair_sfx, lean):
         """
-        Adds hair manipulator
+        Adds hair render key
 
         IN:
             hair - type of hair
@@ -1157,7 +1097,7 @@ init -4 python in mas_sprites:
             lean - tyoe of lean
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         if lean:
             img_str = "".join((
@@ -1179,12 +1119,12 @@ init -4 python in mas_sprites:
                 FILE_EXT,
             ))
 
-        im_list.append(_cgetg_imc(cache_hair, (flt, img_str), flt, img_str))
+        rk_list.append(((flt, img_str), cache_hair, store.Image(img_str)))
 
 
-    def _im_table(im_list, table, show_shadow, flt):
+    def _rk_table(rk_list, table, show_shadow, flt):
         """
-        Adds table manipulator
+        Adds table render key
 
         IN:
             table - type of table
@@ -1192,25 +1132,12 @@ init -4 python in mas_sprites:
             flt filter to use
 
         OUT:
-            im_list - list to add image manipulators to
+            rk_list - list to add render keys to
         """
         img_key = (flt, 0, table, int(show_shadow))
-        day_key = None
         if img_key in cache_tc:
-            im_list.append(cache_tc[img_key])
+            rk_list.append((img_key, cache_tc, None))
             return
-
-        elif flt != "day":
-            # try checking for day version
-            day_key = _dayify(img_key)
-            if day_key in cache_tc:
-                im_list.append(_gar_imc(
-                    cache_tc,
-                    img_key,
-                    flt,
-                    cache_tc[day_key]
-                ))
-                return
 
         # otherwise, we need to create the table sprite, maybe with shadow
         table_str = "".join((
@@ -1239,15 +1166,15 @@ init -4 python in mas_sprites:
 
         else:
             # no shadow, so just table
-            new_im = table_str
+            new_im = store.Image(table_str)
 
         # add to cache and list
-        im_list.append(_gdgar_imc(cache_tc, img_key, flt, new_im, day_key))
+        rk_list.append((img_key, cache_tc, new_im))
         
 
 # main sprite compilation
 
-    def _im_sitting(
+    def _rk_sitting(
             clothing,
             hair,
             base_pose,
@@ -1280,7 +1207,7 @@ init -4 python in mas_sprites:
             show_shadow
     ):
         """
-        Creates a list of image manipulators in order of desired render.
+        Creates a list of render keys in order of desired render.
 
         IN:
             clothing - type of clothing
@@ -1322,7 +1249,7 @@ init -4 python in mas_sprites:
             chair - type of chair
             show_shadow - True will show shadow, false will not
 
-        RETURNS: list of image manipulators
+        RETURNS: list of render keys
         """
         # NOTE: render order
         #   1. pre-acs - every acs that should render before anything
@@ -1354,39 +1281,37 @@ init -4 python in mas_sprites:
 
         # initial values
         fpfx = face_lean_mode(lean)
-        im_list = []
+        rk_list = []
 
         # 1. pre-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_pre_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
 
         # 2. back hair
-        _im_hair(im_list, hair, flt, BHAIR_SUFFIX, lean)
+        _rk_hair(rk_list, hair, flt, BHAIR_SUFFIX, lean)
 
         # 3. bbh-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_bbh_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
 
         # 4. chair
-        _im_chair(im_list, chair, flt)
+        _rk_chair(rk_list, chair, flt)
 
         # 5. base-0
         # 6. bse-acs-0
         # 7. body-0
-        _im_body_nh_wbase(
-            im_list,
+        _rk_body_nh_wbase(
+            rk_list,
             clothing,
             acs_bse_list,
             "0",
@@ -1396,14 +1321,13 @@ init -4 python in mas_sprites:
         )
 
         # 8. table
-        _im_table(im_list, table, show_shadow, flt)
+        _rk_table(rk_list, table, show_shadow, flt)
 
         # 9. bba-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_bba_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
@@ -1411,8 +1335,8 @@ init -4 python in mas_sprites:
         # 10. arms-base-0
         # 11. ase-acs-0
         # 12. arms-0
-        _im_arms_nh_wbase(
-            im_list,
+        _rk_arms_nh_wbase(
+            rk_list,
             base_pose,
             arms_pose,
             clothing,
@@ -1424,11 +1348,10 @@ init -4 python in mas_sprites:
         )
 
         # 13. bab-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_bab_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
@@ -1436,8 +1359,8 @@ init -4 python in mas_sprites:
         # 14. base-1
         # 15. bse-acs-1
         # 16. body-1
-        _im_body_nh_wbase(
-            im_list,
+        _rk_body_nh_wbase(
+            rk_list,
             clothing,
             acs_bse_list,
             "1",
@@ -1447,34 +1370,32 @@ init -4 python in mas_sprites:
         )
 
         # 17. bfh-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_bfh_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
 
         # 18. face-pre
-        _im_face_pre(im_list, flt, fpfx, lean, blush)
+        _rk_face_pre(rk_list, flt, fpfx, lean, blush)
 
         # 19. front-hair
-        _im_hair(im_list, hair, flt, FHAIR_SUFFIX, lean)
+        _rk_hair(rk_list, hair, flt, FHAIR_SUFFIX, lean)
 
         # 20. afh-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_afh_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
 
         # 21. face
-        _im_face(
-            im_list,
+        _rk_face(
+            rk_list,
             eyes,
             eyebrows,
             nose,
@@ -1488,11 +1409,10 @@ init -4 python in mas_sprites:
         )
 
         # 22. mid-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_mid_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
@@ -1500,8 +1420,8 @@ init -4 python in mas_sprites:
         # 23. arms-base-1
         # 24. ase-acs-1
         # 25. arms-1
-        _im_arms_nh_wbase(
-            im_list,
+        _rk_arms_nh_wbase(
+            rk_list,
             base_pose,
             arms_pose,
             clothing,
@@ -1513,22 +1433,21 @@ init -4 python in mas_sprites:
         )
 
         # 26. pst-acs
-        _im_accessory_list(
-            im_list,
+        _rk_accessory_list(
+            rk_list,
             acs_pst_list,
             flt,
-            True,
             leanpose,
             lean=lean
         )
 
-        return im_list
+        return rk_list
 
 
 init -2 python:
 
 
-    def mas_drawmonika_im(
+    def mas_drawmonika_rk(
             st,
             at,
             character,
@@ -1556,7 +1475,7 @@ init -2 python:
             single=None
         ):
         """
-        Draws monika dynamically, using image manipulators
+        Draws monika dynamically, using render keys
         See mas_drawmonika for more info.
 
         IN:
@@ -1625,45 +1544,52 @@ init -2 python:
         # determine filter to use
         flt = store.mas_sprites._decide_filter()
 
-        # generate sprite displayable (and image manips)
-        sprite = store.mas_sprites._gen_im_disp(store.mas_sprites._im_sitting(
-            character.clothes.img_sit,
-            pose_data[3].img_sit,
-            pose_data[4],
-            pose_data[5],
-            eyebrows,
-            eyes,
-            nose,
-            mouth,
+        # generate sprite displayable
+        sprite = store.mas_sprites.MASMonikaRender(
+            store.mas_sprites._rk_sitting(
+                character.clothes.img_sit,
+                pose_data[3].img_sit,
+                pose_data[4],
+                pose_data[5],
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                flt,
+                acs_pre_list,
+                acs_bbh_list,
+                acs_bse_list,
+                acs_bba_list,
+                acs_ase_list,
+                acs_bab_list,
+                acs_bfh_list,
+                acs_afh_list,
+                acs_mid_list,
+                acs_pst_list,
+                pose_data[1],
+                pose_data[0],
+                pose_data[2],
+                eyebags,
+                sweat,
+                blush,
+                tears,
+                emote,
+                character.tablechair.table,
+                character.tablechair.chair,
+                character.tablechair.has_shadow
+            ),
             flt,
-            acs_pre_list,
-            acs_bbh_list,
-            acs_bse_list,
-            acs_bba_list,
-            acs_ase_list,
-            acs_bab_list,
-            acs_bfh_list,
-            acs_afh_list,
-            acs_mid_list,
-            acs_pst_list,
-            pose_data[1],
-            pose_data[0],
-            pose_data[2],
-            eyebags,
-            sweat,
-            blush,
-            tears,
-            emote,
-            character.tablechair.table,
-            character.tablechair.chair,
-            character.tablechair.has_shadow
-        ))
+            store.mas_sprites.adjust_x,
+            store.mas_sprites.adjust_y,
+            store.mas_sprites.LOC_W,
+            store.mas_sprites.LOC_H
+        )
 
         # finally apply zoom 
         return Transform(sprite, zoom=store.mas_sprites.value_zoom), None
 
 
-    def mas_drawemptydesk_im(st, at, character):
+    def mas_drawemptydesk_rk(st, at, character):
         """
         draws the table dynamically. includes ACS that should stay on desk.
         NOTE: uses image manips.
@@ -1683,35 +1609,42 @@ init -2 python:
         ]
 
         # prepare image manips
-        im_list = []
+        rk_list = []
 
         # decide the filter
         flt = store.mas_sprites._decide_filter()
         
         # now build the chair
-        store.mas_sprites._im_chair(im_list, character.tablechair.chair, flt)
+        store.mas_sprites._rk_chair(rk_list, character.tablechair.chair, flt)
 
         # then the able
-        store.mas_sprites._im_table(
-            im_list,
+        store.mas_sprites._rk_table(
+            rk_list,
             character.tablechair.table,
-            False.
+            False,
             flt
         )
 
         # then the pst acs we got
-        store.mas_sprites._im_accessorylist(
-            im_list,
+        store.mas_sprites._rk_accessory_list(
+            rk_list,
             acs_pst_list,
             flt,
-            True,
             "steepling"
         )
 
         # generate sprite displayable
-        sprite = store.mas_sprites._gen_im_disp(im_list)
+        sprite = store.mas_sprites.MASMonikaRender(
+            rk_list,
+            flt,
+            store.mas_sprites.adjust_x,
+            store.mas_sprites.adjust_y,
+            store.mas_sprites.LOC_W,
+            store.mas_sprites.LOC_H
+        )
 
         # finally appyl zoom and return
         return Transform(sprite, zoom=store.mas_sprites.value_zoom), None 
+
 
 

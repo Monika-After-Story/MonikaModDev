@@ -1,7 +1,7 @@
 # definitions of sprite objects
 
 DRAW_MONIKA = "mas_drawmonika"
-DRAW_MONIKA_IM = "mas_drawmonika_im"
+DRAW_MONIKA_IM = "mas_drawmonika_rk"
 
 draw_function = DRAW_MONIKA_IM
 

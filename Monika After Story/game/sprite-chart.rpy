@@ -7350,7 +7350,7 @@ if store.mas_sprites.disable_im:
     )
 else:
      image emptydesk = DynamicDisplayable(
-        mas_drawemptydesk_im,
+        mas_drawemptydesk_rk,
         character=monika_chr
     )   
 

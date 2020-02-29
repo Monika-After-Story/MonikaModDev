@@ -1043,8 +1043,14 @@ menu_lstc = [
 
 menu_sdf = [
     ("Set Draw Function", "Option: "),
-    ("Image Manipulators (mas_drawmonika_im)", spr_module.DRAW_MONIKA_IM),
-    ("Sprite Strings (mas_drawmonika)", spr_module.DRAW_MONIKA),
+    (
+        "Image Manipulators (" + spr_module.DRAW_MONIKA_IM + ")",
+        spr_module.DRAW_MONIKA_IM
+    ),
+    (
+        "Sprite Strings (" + spr_module.DRAW_MONIKA + ")",
+        spr_module.DRAW_MONIKA
+    ),
 ]
 
 # strings
