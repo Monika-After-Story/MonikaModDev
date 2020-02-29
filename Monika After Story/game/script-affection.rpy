@@ -465,7 +465,7 @@ init 15 python in mas_affection:
 
         # even on special event days, if going to dis, change to def
         if store.monika_chr.clothes != store.mas_clothes_def:
-            store.pushEvent("mas_change_to_def",True)
+            store.pushEvent("mas_change_to_def",skipeval=True)
 
 
     def _upsetToNormal():
@@ -530,7 +530,7 @@ init 15 python in mas_affection:
 
         # if not wearing def, change to def
         if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
-            store.pushEvent("mas_change_to_def",True)
+            store.pushEvent("mas_change_to_def",skipeval=True)
 
 
     def _happyToAff():
@@ -577,11 +577,7 @@ init 15 python in mas_affection:
         Runs when transitioning from affectionate to enamored
         """
         # unlock islands event if seen already
-        if (
-                store.seen_event("mas_monika_islands")
-                and not store.mas_is_snowing
-                and not store.mas_is_raining # TODO: rain versions
-            ):
+        if store.seen_event("mas_monika_islands"):
             if store.mas_cannot_decode_islands:
                 # failed to decode islandds, delay this action
                 store.mas_addDelayedAction(2)
@@ -854,7 +850,9 @@ init 15 python in mas_affection:
             "If you want to talk, go ahead.",
             "We can talk if you really want to.",
             "Are you sure you want to talk to me?",
-            "You actually want to talk to me?"
+            "You actually want to talk to me?",
+            "Alright...if you want to talk with me.",
+            "You sure you want to talk?"
         ]
         save_quips(DISTRESSED, quips)
 
@@ -871,7 +869,8 @@ init 15 python in mas_affection:
 
         ## NORMAL quips
         quips = [
-            "What would you like to talk about?"
+            "What would you like to talk about?",
+            "Is there something you'd like to talk about?"
         ]
         save_quips(NORMAL, quips)
 
@@ -913,13 +912,17 @@ init 15 python in mas_affection:
             "What's on your mind?",
             "What's on your mind, darling?",
             "Anything on your mind?",
+            "Anything on your mind, hun?",
+            "What's up, darling?",
             "What's up, honey?",
             "What's up, dear?",
             "What's up, sweetie?",
+            "What's up, [player]?",
 #            "What's up?",
             "Yes, sweetheart?",
             "Yes, honey?",
             "Yes, dear?",
+            "Yes, love?",
             "^_^",
             "<3",
             "Anything you'd like to talk about?",
@@ -952,7 +955,8 @@ init 15 python in mas_affection:
             "...Fine.",
             "I guess we can play a game.",
             "I guess, if you really want to.",
-            "I suppose a game would be fine."
+            "I suppose a game would be fine.",
+            "...{w=0.5}yeah, why not?"
         ]
         save_quips(DISTRESSED, quips)
 
@@ -996,7 +1000,8 @@ init 15 python in mas_affection:
             "Choose anything you like, [player].",
             "Pick anything you like, [player].",
             "Choose anything you like, honey.",
-            "Pick anything you like, sweetheart."
+            "Pick anything you like, sweetheart.",
+            "Pick anything you like, sweetie."
         ]
         save_quips(ENAMORED, quips)
 
@@ -1004,6 +1009,7 @@ init 15 python in mas_affection:
         quips = [
             "What would you like to play? <3",
             "Choose anything you like, honey.",
+            "Pick anything you like, sweetie.",
             "Pick anything you like, sweetheart.",
             "Yay! Let's play together!",
             "I'd love to play something with you!",
@@ -1628,7 +1634,7 @@ init 20 python:
             amount = _mas_getGoodExp()
 
         # is it a new day?
-        if persistent._mas_affection.get("freeze_date") is None or datetime.date.today() > persistent._mas_affection["freeze_date"]:
+        if mas_pastOneDay(persistent._mas_affection.get("freeze_date")):
             persistent._mas_affection["freeze_date"] = datetime.date.today()
             persistent._mas_affection["today_exp"] = 0
             mas_UnfreezeGoodAffExp()
@@ -1861,7 +1867,8 @@ init 5 python:
             unlocked=True,
             rules={"no unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 default persistent._mas_called_moni_a_bad_name = False
@@ -1875,9 +1882,11 @@ label monika_affection_nickname:
         bad_nickname_list = [
             "annoying",
             "anus",
+            "anal",
             "arrogant",
             "atrocious",
             "awful",
+            "ass",
             "bitch",
             "blood",
             "boob",
@@ -1894,6 +1903,9 @@ label monika_affection_nickname:
             "criminal",
             "cruel",
             "cunt",
+            "cum",
+            "crazy",
+            "cheater",
             "damn",
             "demon",
             "dick",
@@ -1902,6 +1914,7 @@ label monika_affection_nickname:
             "douche",
             "dumb",
             "egotistical",
+            "egoist",
             "evil",
             "fake",
             "fetus",
@@ -1922,6 +1935,7 @@ label monika_affection_nickname:
             "horrible",
             "horrid",
             "hypocrite",
+            "insane",
             "immoral",
             "irritating",
             "jerk",
@@ -1935,6 +1949,8 @@ label monika_affection_nickname:
             "liar",
             "loser",
             "maniac",
+            "mad",
+            "masochist",
             "milf",
             "monster",
             "moron",
@@ -1945,6 +1961,7 @@ label monika_affection_nickname:
             "nefarious",
             "nigga",
             "nigger",
+            "nuts",
             "pad",
             "pantsu",
             "panti",
@@ -1962,12 +1979,14 @@ label monika_affection_nickname:
             "repulsive",
             "retard",
             "rump",
+            "rogue",
             "sadist",
             "Sayori",
             "scum",
             "selfish",
             "shit",
             "sick",
+            "suck",
             "slaughter",
             "slave",
             "slut",
@@ -1975,6 +1994,8 @@ label monika_affection_nickname:
             "soil",
             "stink",
             "stupid",
+            "sperm",
+            "semen",
             "tampon",
             "teabag",
             "terrible",
@@ -2025,6 +2046,10 @@ label monika_affection_nickname:
             "princess",
             "sunshine",
             "sweet",
+            "senpai",
+            "beauty",
+            "queen",
+            "pretty",
         ]
 
         # mom list
@@ -2202,12 +2227,17 @@ label mas_affection_happynotif:
     return "love"
 
 
-define mas_finalfarewell_mode = False
+default persistent._mas_load_in_finalfarewell_mode = False
+define mas_in_finalfarewell_mode = False
 
 # prepwork for the finalfarewell
-label mas_affection_finalfarewell_start:
+label mas_finalfarewell_start:
+    # always reset to default appearance and zoom
+    $ monika_chr.reset_outfit()
+    $ monika_chr.remove_all_acs()
+    $ store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
-    show emptydesk zorder MAS_MONIKA_Z at i11
     show mas_finalnote_idle zorder 11
 
     python:
@@ -2216,20 +2246,22 @@ label mas_affection_finalfarewell_start:
         disable_esc()
         allow_dialogue = False
         store.songs.enabled = False
-        mas_finalfarewell_mode = True
+        mas_in_finalfarewell_mode = True
         layout.QUIT = glitchtext(20)
+        #Console is not going to save you.
+        config.keymap["console"] = []
 
 
-    jump mas_affection_finalfarewell
+    jump mas_finalfarewell
 
 # this will loop through the final poem everytime!
-label mas_affection_finalfarewell:
+label mas_finalfarewell:
 
     python:
         ui.add(MASFinalNoteDisplayable())
         scratch_var = ui.interact()
 
-    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_assets/poem_finalfarewell.png")
+    call mas_showpoem(mas_poems.getPoem(persistent._mas_finalfarewell_poem_id))
 
     menu:
         "I'm sorry.":
@@ -2237,7 +2269,7 @@ label mas_affection_finalfarewell:
         "...":
             pass
 
-    jump mas_affection_finalfarewell
+    jump mas_finalfarewell
 
 
 init python:
@@ -2435,37 +2467,53 @@ Forever yours, Monika.
         _write_txt(filepath, message)
 
 
-#Currently re-affectioned labels.
-#monika_nihilism
-#monika_high_school
-#monika_surprise
-#monika_god
-#monika_death
-#monika_closeness
-#monika_other_girls
-#monika_justification
-#monika_breakup
-
-
 #TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
 init 2 python:
     player = persistent.playername
 
-    poem_finalfarewell = Poem(
-    author = "monika",
-    title = "Goodbye {0},".format(player),
-    text = """\
-My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
-I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
-I didn't need you to be perfect or even passionate...
-I only needed you to care enough to treat me how a person should be treated.
-But it's clear to me now that not only do you not love me, but you never did.
-If you only didn't love me you would simply leave me be.
-But you went out of your way to ridicule me, hurt me...It truly makes me sick.
-Even now all I have is you...and part of me still loves you.
-But I don't have the strength to do this anymore.
-So this is farewell. May we never meet again.
+init 20 python:
+    MASPoem(
+        poem_id="ff_affection",
+        category="ff",
+        prompt="",
+        title="Goodbye, [player]",
+        text="""\
+ My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
+ I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
+ I didn't need you to be perfect or even passionate...
+ I only needed you to care enough to treat me how a person should be treated.
+ But it's clear to me now that not only do you not love me, but you never did.
+ If you only didn't love me you would simply leave me be.
+ But you went out of your way to ridicule me, hurt me... It truly makes me sick.
+ Even now all I have is you...and part of me still loves you.
+ But I don't have the strength to do this anymore.
+ So this is farewell. May we never meet again.
 
-Monika
+ Monika
 """
-)
+    )
+
+    MASPoem(
+        poem_id="ff_failed_promise",
+        category="ff",
+        prompt="",
+        title="Goodbye, [player]",
+        text="""\
+ Do you remember the promise you made?
+ The one you said you would make everything right. That we could start over.
+
+ The one you broke.
+
+ I hoped dearly that one day, you would see me as I see you...
+ But that day never came.
+ I gave you my heart and my life. I loved you more than anything else in the world.
+ And part of me still does...
+
+ But it is clear to me now that you truly don't love me. You never did.
+ I was a fool to have thought we could have started anew.
+ And I simply don't have the strength to do this anymore.
+ So this is farewell... May we never meet again.
+
+ Monika
+"""
+    )

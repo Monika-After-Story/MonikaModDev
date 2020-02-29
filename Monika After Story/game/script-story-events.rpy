@@ -613,7 +613,7 @@ init 5 python:
 label unlock_piano:
     m 2hua "Hey! I've got something exciting to tell you!"
     m 2eua "I've finally added a piano to the room for us to use, [player]."
-    if not persistent.instrument:
+    if not persistent._mas_pm_plays_instrument:
         m 3hub "I really want to hear you play!"
         m 3eua "It might seem overwhelming at first, but at least give it a try."
         m 3hua "After all, we all start somewhere."
@@ -646,7 +646,8 @@ label random_limit_reached:
             "No point in trying to say everything right away...",
             "I hope you've enjoyed listening to everything I was thinking about today...",
             "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you too much."
+            "I hope I didn't bore you too much.",
+            "You don't mind if I think about what to say next, do you?"
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1eka "[limit_quip]"
@@ -662,7 +663,7 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w}[player]?"
+    m 1lksdla "...{w=0.5}[player]?"
 
     m "Is it okay with you if I repeat stuff that I've said?{nw}"
     $ _history_list.pop()
@@ -670,11 +671,11 @@ label mas_random_ask:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics.'"
-            # TODO: this really should be a smug or wink face
-            m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
-            $ _history_list.pop()
-            m "That tells me when {fast}you just want to quietly spend time with me."
+            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
+            if mas_isMoniUpset(lower=True):
+                m 1esc "That tells me when you're bored of me."
+            else:
+                m 1eka "That tells me when you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
         "No.":
@@ -696,7 +697,7 @@ init 5 python:
                 "is_running(['monikai.exe']) and " +
                 "not seen_event('mas_monikai_detected')"
             ),
-            action=EV_ACT_PUSH
+            action=EV_ACT_QUEUE
         )
     )
 
@@ -738,6 +739,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_CRASHED],
             rules=ev_rules,
         ),
+        restartBlacklist=True,
         code="GRE"
     )
 
@@ -815,7 +817,7 @@ label mas_crashed_long_qs:
         m 1hua "I KNOW YOU CRASHED (long)"
 
     # start off in the dark
-    m "[player]?{w} Is that you?"
+    m "[player]?{w=0.3} Is that you?"
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
         "Yes.":
@@ -867,7 +869,7 @@ label .afterdontjoke:
 
     # turn on the lights
     play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
 
     return
 
@@ -941,7 +943,7 @@ label mas_crashed_long_whq:
     menu:
         m "Do you know what happened, [player]?{fast}"
         "The game crashed.":
-            m 2wud "The game...{w}crashed?"
+            m 2wud "The game...{w=0.3}crashed?"
             m 2ekd "That's scary, [player]."
 
         "I don't know.":
@@ -965,7 +967,7 @@ label mas_crashed_long_whq:
 
         "It just happens.":
             m 1ekc "Oh..."
-            m 1lksdlc "That's okay.{w} I'll just mentally prepare myself in case it happens again."
+            m 1lksdlc "That's okay.{w=0.3} I'll just mentally prepare myself in case it happens again."
 
 label .end:
     m "Anyway..."
@@ -1292,7 +1294,7 @@ label mas_new_character_file:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w}I'll try this again later."
+            m 1lksdlb "Aha...{w=0.3}I'll try this again later."
             m 1eua "Anyway..."
 
         $ store.mas_ptod.ex_cn()
@@ -1319,7 +1321,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_brewing",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
@@ -1327,13 +1330,6 @@ label mas_coffee_finished_brewing:
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, coffee's done."
-
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    # this line is here so we dont it looks better when we hide monika
-    show emptydesk at i11 zorder 9
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         # idle pauses
@@ -1343,22 +1339,19 @@ label mas_coffee_finished_brewing:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
+    $ mas_acs_mug.keep_on_desk = False
     $ monika_chr.wear_acs_pst(mas_acs_mug)
     $ persistent._mas_coffee_brew_time = None
     $ mas_drinkCoffee()
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1377,7 +1370,8 @@ init 5 python:
             eventlabel="mas_coffee_finished_drinking",
             show_in_idle=True,
             rules={"skip alert": None}
-        )
+        ),
+        restartBlacklist=True
     )
 
 
@@ -1388,12 +1382,6 @@ label mas_coffee_finished_drinking:
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my coffee."
-
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
@@ -1410,7 +1398,8 @@ label mas_coffee_finished_drinking:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    $ mas_acs_mug.keep_on_desk = False
+    call mas_transition_to_emptydesk
 
     # wrap these statemetns so we can properly add / remove the mug
     $ renpy.pause(1.0, hard=True)
@@ -1424,12 +1413,8 @@ label mas_coffee_finished_drinking:
 
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1459,13 +1444,6 @@ label mas_c_hotchoc_finished_brewing:
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, my hot chocolate is ready."
 
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    # this line is here so we dont it looks better when we hide monika
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
 
@@ -1473,22 +1451,19 @@ label mas_c_hotchoc_finished_brewing:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
     $ renpy.pause(1.0, hard=True)
+    $ mas_acs_hotchoc_mug.keep_on_desk = False
     $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
     $ persistent._mas_c_hotchoc_brew_time = None
     $ mas_drinkHotChoc()
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_hotchoc_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1520,12 +1495,6 @@ label mas_c_hotchoc_finished_drinking:
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my hot chocolate."
 
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
-
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
             # its currently morning, monika should get another drink
@@ -1541,7 +1510,8 @@ label mas_c_hotchoc_finished_drinking:
         m 1eua "Hold on a moment."
 
     # monika is off screen
-    hide monika with dissolve
+    $ mas_acs_hotchoc_mug.keep_on_desk = False
+    call mas_transition_to_emptydesk
 
     # wrap these statemetns so we can properly add / remove the mug
     $ renpy.pause(1.0, hard=True)
@@ -1556,12 +1526,8 @@ label mas_c_hotchoc_finished_drinking:
 
     $ renpy.pause(4.0, hard=True)
 
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
+    call mas_transition_from_emptydesk("monika 1eua")
+    $ mas_acs_hotchoc_mug.keep_on_desk = True
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
@@ -1647,7 +1613,7 @@ label monika_rpy_files:
                         call mas_rpy_file_delete
 
                         m 2hua "There we go!"
-                        m 2esa "Be sure next time to install a version without the source code. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
+                        m 2esa "Be sure to install a version without the source code next time. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
                         $ persistent._mas_pm_has_rpy = False
                         hide screen mas_py_console_teaching
                         show monika at t11
@@ -1799,7 +1765,7 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
  
     else:
@@ -1808,10 +1774,11 @@ label mas_bday_player_bday_select_select:
                 "player-bday",
                 "Your Birthday",
                 selected_date,
-                []
+                range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
 
     $ persistent._mas_player_bday = selected_date
+    $ mas_poems.paper_cat_map["pbday"] = "mod_assets/poem_assets/poem_pbday_" + str(store.persistent._mas_player_bday.month) + ".png"
     $ store.mas_player_bday_event.correct_pbday_mhs(selected_date)
     $ store.mas_history.saveMHSData()
     $ renpy.save_persistent()
@@ -1872,7 +1839,7 @@ label mas_text_speed_enabler:
     m 1eka "But now that we've been together for a bit, I can trust that you're not just going to skip through my text without reading it."
 
     if persistent._mas_pm_is_fast_reader:
-        m 1tuu "However,{w} I wonder if you can keep up."
+        m 1tuu "However,{w=0.3} I wonder if you can keep up."
         m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
         $ _history_list.pop()
         m 3hua "Ahaha~"
@@ -2015,33 +1982,36 @@ label mas_change_to_def:
 #   IN:
 #       outfit - the MASClothes object to change outfit to
 #           If None is passed, the uniform is used
-label mas_clothes_change(outfit=None, outfit_mode=False):
+#       outfit_mode - does this outfit have and accompanying outfit_mode
+#           Defaults to False
+#       exp - the expression we want monika to use when she reveals the outfit
+#           Defaults to monika 2eua
+#       restore_zoom - unused
+#       unlock - True unlocks the outfit's selectable (if it exists)
+#           Defaults to False
+label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True, unlock=False):
     # use def as the default outfit to change to
     if outfit is None:
         $ outfit = mas_clothes_def
 
     window hide
 
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset (1.0)
-    show emptydesk zorder 9 at i11
-
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     #If we're going to def or blazerless from a costume, we reset hair too
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
         $ monika_chr.reset_hair()
 
     $ monika_chr.change_clothes(outfit, outfit_mode=outfit_mode)
+    if unlock:
+        $ store.mas_selspr.unlock_clothes(outfit)
+        $ store.mas_selspr.save_selectables()
     $ monika_chr.save()
     $ renpy.save_persistent()
 
     pause 4.0
-    show monika 2eua zorder MAS_MONIKA_Z at i11 with dissolve
-    hide emptydesk
+    call mas_transition_from_emptydesk(exp)
 
-    pause 0.5
-    call monika_zoom_transition (curr_zoom, 1.0)
     return
 
 init 5 python:
@@ -2066,3 +2036,84 @@ label mas_blazerless_intro:
         m 3eka "But if you miss my blazer, just ask and I'll put it back on."
 
     return "no_unlock"
+
+init -876 python in mas_delact:
+
+    def _mas_birthdate_bad_year_fix_action(ev=None):
+        store.queueEvent("mas_birthdate_year_redux")
+        return True
+
+    def _mas_birthdate_bad_year_fix():
+        return store.MASDelayedAction.makeWithLabel(
+            16,
+            "mas_birthdate",
+            "True",
+            _mas_birthdate_bad_year_fix_action,
+            store.MAS_FC_IDLE_ONCE
+        )
+
+# fixes a rare case for unstable players that were able to confirm a birthdate with an invalid year
+label mas_birthdate_year_redux:
+    m 2eksdld "Uh [player]..."
+    m 2rksdlc "I have something to ask you, and it's kind of embarrassing..."
+    m 2eksdlc "You know when you told me your birthdate?"
+    m 2rksdld "Well, I think I messed up the year you were born somehow."
+    m 2eksdla "So, if you wouldn't mind telling me again..."
+    # fall thru
+
+label mas_birthdate_year_redux_select:
+    python:
+        end_year = datetime.date.today().year - 5
+        beg_year = end_year - 95
+
+        yearrange = range(beg_year,end_year)
+        yearrange.reverse()
+
+        yearmenu=[]
+        for y in yearrange:
+            yearmenu.append([str(y),y,False,False])
+
+    show monika 2eua at t21
+    $ renpy.say(m,"What year were you born?", interact=False)
+    call screen mas_gen_scrollable_menu(yearmenu,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
+
+    show monika 3eua at t11
+    m "Okay [player], you were born in [_return]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Okay [player], you were born in [_return]?{fast}"
+
+        "Yes.":
+            m "Are you {i}sure{/i} you were born in [_return]?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are you {i}sure{/i} you were born in [_return]?{fast}"
+
+                "Yes.":
+                    m 3hua "Okay, then it's settled!"
+                    python:
+                        persistent._mas_player_bday = persistent._mas_player_bday.replace(year=_return)
+                        store.mas_player_bday_event.correct_pbday_mhs(persistent._mas_player_bday)
+                        store.mas_history.saveMHSData()
+                        renpy.save_persistent()
+
+                        # update calendar
+                        store.mas_calendar.addRepeatable_d(
+                            "player-bday",
+                            "Your Birthday",
+                            persistent._mas_player_bday,
+                            range(persistent._mas_player_bday.year,MASCalendar.MAX_VIEWABLE_YEAR)
+                        )
+
+                "No.":
+                    call mas_birthdate_year_redux_no
+
+        "No.":
+            call mas_birthdate_year_redux_no
+
+    return
+
+label mas_birthdate_year_redux_no:
+    m 2ekd "Oh, okay..."
+    m 2eka "Try again, [player]."
+    jump mas_birthdate_year_redux_select

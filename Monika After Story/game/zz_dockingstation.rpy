@@ -46,12 +46,62 @@ init -900 python in mas_ics:
 
     # rain with frame
     islands_rwf = (
-        "6e13efca7df89d7627f0e9f7b696ec110b40e88b82e70ce1249335246597eab4"
+        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
     )
 
     # rain without frame
     islands_rwof = (
-        "435fc21d818dc77b46c93e94c8976eb0702c83b9aa6c4043067f42e8827f27d6"
+        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
+    )
+
+    # night rain with frame
+    islands_nrwf = (
+        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
+    )
+
+    # night rain without frame
+    islands_nrwof = (
+        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
+    )
+
+    # overcast with frame
+    islands_owf = (
+        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
+    )
+
+    # overcast without frame
+    islands_owof = (
+        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
+    )
+
+    # night overcast with frame
+    islands_nowf = (
+        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
+    )
+
+    # night overcast without frame
+    islands_nowof = (
+        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
+    )
+
+    # snow with frame
+    islands_swf = (
+        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
+    )
+
+    # snow without frame
+    islands_swof = (
+        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
+    )
+
+    # night snow with frame
+    islands_nswf = (
+        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
+    )
+
+    # night snow without frame
+    islands_nswof = (
+        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
     )
 
     # islands dict to map filenames to checksums and real filenames
@@ -64,31 +114,18 @@ init -900 python in mas_ics:
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof),
-#        "rwf": ("rain_with_frame.png", islands_rwf),
-#        "rwof": ("rain_without_frame.png", islands_rwof)
-    }
-
-    ########################## SURPRISE BDAY PARTY ############################
-    # cake
-    sbp_cake = (
-        "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
-    )
-
-    # banners
-    sbp_banners = (
-        "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
-    )
-
-    # balloons
-    sbp_balloons = (
-        "eda87e74b8dc9d5082a0f2a7d5202dc0e7b96ec36cbaebc98eb046584834b8e9"
-    )
-
-    # surprise bday party dicts to map filenames to checksums
-    sbp_map = {
-        "cake": sbp_cake,
-        "banners": sbp_banners,
-        "balloons": sbp_balloons
+        "rwf": ("rain_with_frame.png", islands_rwf),
+        "rwof": ("rain_without_frame.png", islands_rwof),
+        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
+        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
+        "owf": ("overcast_with_frame.png", islands_owf),
+        "owof": ("overcast_without_frame.png", islands_owof),
+        "nowf": ("night_overcast_with_frame.png", islands_nowf),
+        "nowof": ("night_overcast_without_frame.png", islands_nowof),
+        "swf": ("snow_with_frame.png", islands_swf),
+        "swof": ("snow_without_frame.png", islands_swof),
+        "nswf": ("night_snow_with_frame.png", islands_nswf),
+        "nswof": ("night_snow_without_frame.png", islands_nswof)
     }
 
     #################################### O31 ##################################
@@ -309,6 +346,7 @@ init -45 python:
         def getPackageList(self, ext_filter=""):
             """
             Gets a list of the packages in the docking station.
+            We also ensure that the item retrieved is not a folder.
 
             IN:
                 ext_filter - extension filter to use when getting list.
@@ -329,6 +367,7 @@ init -45 python:
                 package
                 for package in os.listdir(self.station)
                 if package.endswith(ext_filter)
+                and not os.path.isdir(self._trackPackage(package))
             ]
 
 
@@ -962,10 +1001,10 @@ init -45 python:
 
             return None
 
-
         def __check_access(self, package_path, check_read):
             """
-            Checks access of the file at package_path
+            Checks access of the file at package_path.
+            Also ensures that the file is not actually is folder.
 
             NOTE:
                 will log exceptions
@@ -987,6 +1026,7 @@ init -45 python:
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
+                not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
@@ -999,17 +1039,12 @@ init -45 python:
                 return self.__bad_check_read(check_read)
 
             if check_read:
-                if not (file_ok and read_ok):
+                if not (file_ok and read_ok and not_dir):
                     return None
 
-            else:
-                if not file_ok:
-                    return False
+            return file_ok and not_dir
 
-            return True
-
-
-        def __bad_check_read(check_read):
+        def __bad_check_read(self, check_read):
             """
             Returns an appropriate failure value givne the check_read value
 
@@ -2150,7 +2185,8 @@ label mas_dockstat_ready_to_go(moni_chksum):
         # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
         # NOTE: callers must handle the dialogue for this
 
@@ -2169,15 +2205,18 @@ label mas_dockstat_first_time_goers:
 
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
-
-    # we are not leaving
-    $ persistent._mas_dockstat_going_to_leave = False
-
     # we should abort the promise (this lets spaceroom idle abort, as well)
     $ store.mas_dockstat.abort_gen_promise = True
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    #FALL THROUGH
+
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
+    # we are not leaving
+    $ persistent._mas_dockstat_going_to_leave = False
 
     # we are not leaving and need to reset these
     if persistent._mas_player_bday_left_on_bday:
@@ -2186,7 +2225,7 @@ label mas_dockstat_abort_gen:
 
     if persistent._mas_f14_on_date:
         $ persistent._mas_f14_on_date = False
-        $ persistent._mas_f14_date -= 1
+        $ persistent._mas_f14_date_count -= 1
 
     if persistent._mas_bday_on_date:
         $ persistent._mas_bday_on_date = False
@@ -2204,17 +2243,25 @@ label mas_dockstat_empty_desk:
         if mas_current_weather != mas_weather_thunder:
             $ mas_changeWeather(mas_weather_thunder, True)
 
+
+    # TODO: else this with the o31 mode
+    # set weather here
+    # TODO: run the yet-to-be-made weather alg running function etc
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
+        $ skip_setting_weather = True
+
+    # reset zoom before showing spaceroom
+    $ store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
-    # empty desk should be a zorder lower so we can pop monika over it
-    $ ed_zorder = MAS_MONIKA_Z - 1
-    $ store.mas_sprites.reset_zoom()
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
-    show emptydesk zorder ed_zorder at i11
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
-        $ store.mas_d25_event.showD25Visuals()
+        $ store.mas_d25ShowVisuals()
 
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
@@ -2304,11 +2351,9 @@ label mas_dockstat_different_monika:
     $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
-    show monika 1ekd zorder MAS_MONIKA_Z at t11
+    call mas_transition_from_emptydesk("monika 1ekd")
 
-    # 1 line of dialgoue before we remove the empty desk
     m "[player]?"
-    hide emptydesk
 
     m "Wait, you're not [player]."
 
@@ -2325,7 +2370,6 @@ label mas_dockstat_found_monika_from_empty:
     $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
-    hide emptydesk
 
     # dont want users using our promises
     $ promise = None
@@ -2334,7 +2378,6 @@ label mas_dockstat_found_monika_from_empty:
 
 # found our monika
 label mas_dockstat_found_monika:
-
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
@@ -2368,9 +2411,7 @@ label mas_dockstat_found_monika:
         #Force progressive to disabled for o31
         $ mas_changeWeather(mas_weather_thunder, True)
 
-    # d25 re-entry checks
-    if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
-        #mas_is_snowing = True
-        pass
+    elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
+        call mas_d25_season_exit
 
     jump ch30_post_exp_check

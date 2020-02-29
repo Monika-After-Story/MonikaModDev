@@ -23,7 +23,12 @@ transform mas_updater_slide:
     time 10.0
     linear 1.0 ypos -35 yanchor 0
 
-image mas_update_available = "mod_assets/updateavailable.png"
+image mas_update_available = ConditionSwitch(
+    "not mas_globals.dark_mode",
+    "mod_assets/updateavailable.png",
+    "mas_globals.dark_mode",
+    "mod_assets/updateavailable_d.png"
+)
 
 init -1 python:
 
@@ -391,10 +396,8 @@ init -1 python:
         def _handleRedirect(new_url):
             """
             Attempts to connect to the redircted url
-
             IN:
                 new_url - the redirect we want to connect to
-
             Returns read_json if we got a connection, Nnone otherwise
             """
             import httplib
@@ -436,7 +439,6 @@ init -1 python:
             """
             Sends out the http request and returns a response and stuff
             NOTE: designed to be called as a background thread
-
             ASSUMES:
                 _thread_result
                     appends appropriate state for use
@@ -881,10 +883,10 @@ init -894 python:
 
 label mas_updater_steam_issue:
     show monika at t11
-    m 1eub "[player]!{w} I see you're using Steam."
+    m 1eub "[player]!{w=0.2} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
+    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w=0.2} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 

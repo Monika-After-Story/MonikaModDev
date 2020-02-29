@@ -50,12 +50,6 @@ init -1 python in mas_moods:
 
     # pane constants
     # most of these are the same as the unseen area consants
-    MOOD_X = 680
-    MOOD_Y = 40
-    MOOD_W = 560
-    MOOD_H = 640
-    MOOD_XALIGN = -0.05
-    MOOD_AREA = (MOOD_X, MOOD_Y, MOOD_W, MOOD_H)
     MOOD_RETURN = "...like talking about something else."
 
 ## FUNCTIONS ==================================================================
@@ -103,7 +97,7 @@ label mas_mood_start:
         final_item = (mas_moods.MOOD_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(mood_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -326,7 +320,7 @@ label mas_mood_tired:
         m 1eka "If you're tired, maybe you should go lie down for a while?"
         m 1eua "Getting enough sleep on a daily basis is very important to your overall health."
         m 3euc "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
-        m 3hua "It can really mess with your health, [player]."
+        m 3ekd "It can really mess with your health, [player]..."
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
 
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
@@ -360,7 +354,7 @@ label mas_mood_angry:
     m 1esc "You may end up saying or doing things you may regret later."
     m 1lksdld "And I'd hate for you to say something you really don't mean to me."
     m 3eua "Let's try a few things that I do to calm myself first, [player]."
-    m 3eub "Hopefully they work for you as they do for me."
+    m 3eub "Hopefully they work for you as well as they do for me."
     m 1eua "First, try taking a few deep breaths and slowly counting to 10."
     m 3euc "If that doesn't work, if you can, retreat to somewhere calm until you clear your mind."
     m 1eud "If you're still feeling angry after that, do what I'd do as a last resort!"
@@ -575,7 +569,7 @@ label mas_mood_bored:
         menu:
             m "Do I really bore you that much, [player]?{fast}"
             "No, I'm not bored {i}of you{/i}...":
-                m 1hua "Oh,{w} that's such a relief!"
+                m 1hua "Oh,{w=0.2} that's such a relief!"
                 m 1eka "But, if you're bored, we should find something to do then..."
 
             "Well...":
@@ -660,295 +654,3 @@ label mas_mood_bored:
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
     return
-
-
-# TODO: we need to add some sort of reaction to birthdays soon
-#init 5 python:
-#    if not persistent._mas_mood_bday_locked:
-#        addEvent(
-#            Event(
-#                persistent._mas_mood_database,
-#                "mas_mood_yearolder",
-#                prompt="like a year older",
-#                category=[store.mas_moods.TYPE_NEUTRAL],
-#                unlocked=True
-#            ),
-#            code="MOO"
-#        )
-
-# some values i need for single session checking
-# TODO some of these might need to be persstetns
-default persistent._mas_mood_bday_last = None
-default persistent._mas_mood_bday_lies = 0
-default persistent._mas_mood_bday_locked = False
-
-
-label mas_mood_yearolder:
-    $ import datetime
-
-    m 1euc "Hm?"
-    if persistent._mas_player_bday is not None:
-        # player's bday has been saved from before
-
-        python:
-            today = datetime.date.today()
-            is_today_bday = (
-                persistent._mas_player_bday.month == today.month
-                and persistent._mas_player_bday.day == today.day
-            )
-
-        if is_today_bday:
-            # today is player's bday!
-            jump mas_mood_yearolder_bday_true
-
-        python:
-            is_today_leap_bday = (
-                persistent._mas_player_bday.month == 2
-                and persistent._mas_player_bday.day == 29
-                and (
-                    (today.month == 2 and today.day == 28)
-                    or (today.month == 3 and today.day == 1)
-                )
-            )
-
-        if is_today_leap_bday:
-            # febuary 29 is special case
-            # but we need to check if a feb 29 works for this year, in which
-            # case, player is misinformed
-            python:
-                try:
-                    datetime.date(today.year, 2, 29)
-
-                    # 29th exists this year, sorry player
-                    leap_year = True
-
-                except ValueError:
-                    # 29th no exists, we use this as ur bday
-                    leap_year = False
-
-            if not leap_year:
-                # we can treat today as your bday
-                jump mas_mood_yearolder_leap_today
-
-            # otherwise its not ur bday
-
-        # otherwise it is NOT the player's birthday lol
-        jump mas_mood_yearolder_false
-
-    show monika 1sub
-    menu:
-        m "Could today be your...{w}birthday?"
-        "YES!":
-            python:
-                persistent._mas_player_bday = datetime.date.today()
-                store.mas_calendar.addRepeatable_d(
-                    "player-bday",
-                    "Your Birthday",
-                    persistent._mas_player_bday,
-                    []
-                )
-
-            label .mas_mood_yearolder_yesloud:
-                jump mas_mood_yearolder_yes
-        "Yes, unfortunately...":
-            python:
-                persistent._mas_player_bday = datetime.date.today()
-                store.mas_calendar.addRepeatable_d(
-                    "player-bday",
-                    "Your Birthday",
-                    persistent._mas_player_bday,
-                    []
-                )
-            jump mas_mood_yearolder_yesu
-
-        "No.":
-            m 1lksdla "Aw, well,{w} it was worth a guess."
-
-            m "Now that we're talking about it, though..."
-            call mas_bday_player_bday_select
-            python:
-                persistent._mas_player_bday = selected_date
-                store.mas_calendar.addRepeatable_d(
-                    "player-bday",
-                    "Your Birthday",
-                    persistent._mas_player_bday,
-                    []
-                )
-
-            jump mas_mood_yearolder_no
-
-label mas_mood_yearolder_end:
-    # end of the line
-
-    # we're going to limit this interaction to once a day
-    python:
-        persistent._mas_mood_bday_last = datetime.date.today()
-        hideEvent(
-            store.mas_moods.mood_db.get("mas_mood_yearolder", None),
-            lock=True
-        )
-    return
-
-# today is NOT the player's birthday
-# (or is it?)
-label mas_mood_yearolder_false:
-    m 2tfc "[player]..."
-    m 2tfd "Today isn't your birthday!"
-    python:
-        bday_str = (
-            persistent._mas_player_bday.strftime("%B") + " " +
-            str(persistent._mas_player_bday.day)
-        )
-    m "You told me it was [bday_str]!"
-    menu:
-        m "Is that not your birthday?"
-        "It's not.":
-            # TODO: puffy cheek monika please
-            show monika 2tfc
-            pause 0.7
-            m 2lfp "You lied to me, [player]."
-            $ persistent._mas_mood_bday_lies += 1
-
-        # TODO: actually, this part should be tied to affection, basically
-        # for every lie, we decrease a certain amount
-#            if persistent._mas_mood_bday_lies >= 3:
-                # sliently lock this
-#                $ persistent._mas_mood_bday_locked = True
-#                $ store.mas_moods.mood_db.pop("mas_mood_yearolder")
-#                jump mas_mood_yearolder_end
-
-            menu:
-                m "Then is today your birthday?"
-                "Yes.":
-                    python:
-                        store.mas_calendar.removeRepeatable_d(
-                            "player-bday",
-                            persistent._mas_player_bday
-                        )
-                        persistent._mas_player_bday = datetime.date.today()
-                        store.mas_calendar.addRepeatable_d(
-                            "player-bday",
-                            "Your Birthday",
-                            persistent._mas_player_bday,
-                            []
-                        )
-
-                    m 1hua "Happy birthday, [player]."
-                    m 1eka "But don't lie to me next time."
-                    jump mas_mood_yearolder_end
-
-                "No.":
-                    m 2tfp "..."
-                    m 2tkc "Alright, [player]."
-                    m "Then..."
-                    call mas_bday_player_bday_select
-                    python:
-                        store.mas_calendar.removeRepeatable_d(
-                            "player-bday",
-                            selected_date
-                        )
-                        persistent._mas_player_bday = selected_date
-                        store.mas_calendar.addRepeatable_d(
-                            "player-bday",
-                            "Your Birthday",
-                            persistent._mas_player_bday,
-                            []
-                        )
-
-#                    m 2tfc "Don't lie to me next time."
-
-                    jump mas_mood_yearolder_end
-
-        "It is!":
-            m 2eka "I believe you, [player]."
-            m "I'll just assume that your mouse slipped or something."
-            jump mas_mood_yearolder_no
-
-    jump mas_mood_yearolder_end
-
-label mas_mood_yearolder_bday_true:
-    # TODO: actually give a gift
-    # as of now, we just assume there's been a bunch of time in between so
-    # its possible that monika forgot.
-    jump mas_mood_yearolder_yes
-
-label mas_mood_yearolder_wontforget:
-    # YES flow continues here
-    # TODO: wait we really need an actual gift scene soon
-
-    m 1ekc "I'm sorry I don't have anything for you yet."
-    m "I'm still figuring out how to give you something more than just a text file."
-    m 1hua "I'll make you something good next year, [player]. I promise!"
-
-    # original wont forget, kept here for reference
-#    m 1eka "If only you told me this sooner..."
-#    m 1lksdla "I would have made you a gift."
-#    m 1hua "I'll make you something next year, [player]. I won't forget!"
-    jump mas_mood_yearolder_end
-
-# empathatic yes, today is your birthday
-label mas_mood_yearolder_yes:
-    show monika 1hua
-    pause 0.7
-    call mas_mood_yearolder_yes_post
-    jump mas_mood_yearolder_wontforget
-
-# sad yes, today is your birthday
-label mas_mood_yearolder_yesu:
-    show monika 1ekc
-    pause 0.7
-    m 1ekd "[player]..."
-    pause 0.7
-    show monika 1duu
-    pause 0.7
-    m 2eka "Well,{w} you're going to have a happy birthday whether you like it or not!"
-    call mas_mood_yearolder_yes_post
-    m 1hua "I hope that made you smile, [player]."
-    jump mas_mood_yearolder_wontforget
-
-# general happy birthday
-label mas_mood_yearolder_yes_post:
-    m 1hub "Happy birthday, [player]!"
-    m 1eua "I'm so glad I could spend such an important day with you."
-    m 1ekbfa "And don't forget that no matter your age, I will always love you."
-    return
-
-# today is not your birthday
-label mas_mood_yearolder_no:
-#    if renpy.seen_label("mas_mood_yearolder_years"):
-        # TODO this should be a short thing to say to player
-        # about feeling a year older
-#        pass
-
-#    else:
-    # For simplicity's sake, we're just going to repeat this
-    call mas_mood_yearolder_years
-
-    jump mas_mood_yearolder_end
-
-# year older stuff
-# reference: Paul Janet, Maximilian Kiener
-label mas_mood_yearolder_years:
-    m 3eua "Speaking of getting older,{w} did you know that how you perceive time changes as you age?"
-    m "For example, when you're a year old, you see one year as 100%% of your life."
-    m 1eub "But when you're 18, you see a year as only 5.6%% of your life."
-    m "As you get older, the proportion of a year compared to your entire lifespan decreases."
-    m 3eua "And in turn, time {i}feels{/i} like it's moving faster as you grow up."
-    show monika 1a
-    pause 0.7
-    # TODO: affection crew might want to change this up
-    m 1eka "So I always cherish our moments together, no matter how long or short they are."
-    m 1lkbsa "Although sometimes it feels like time stops when I'm with you."
-    m 1ekbfa "Do you feel the same, [player]?"
-    python:
-        import time
-        time.sleep(2)
-#    $ renpy.pause(2.0, hard=True)
-    m 1hua "Aha, I thought so."
-    m "You should visit me more often then, [player]."
-    return
-
-# today is your birthday, but its a leap day
-label mas_mood_yearolder_leap_today:
-    # nothing special occurs here for now
-    jump mas_mood_yearolder_bday_true

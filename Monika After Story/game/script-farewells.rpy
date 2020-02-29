@@ -153,8 +153,8 @@ label mas_farewell_start:
         call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)
 
         if not _return:
-            # user its nevermind
-            return
+            # nevermind
+            return _return
 
         if _return != -1:
             # push teh selected event
@@ -398,6 +398,7 @@ label bye_prompt_to_class:
     # TODO:
     # can monika join u at schools?
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
     return 'quit'
 
 init 5 python:
@@ -454,6 +455,7 @@ label bye_prompt_to_work:
     # TODO:
     # can monika join u at work
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
     return 'quit'
 
 init 5 python:
@@ -555,7 +557,7 @@ label bye_prompt_sleep:
                     pass
                 "[_cantsee_b]":
                     pass
-            m "I thought so.{w} Go get some rest, [player]."
+            m "I thought so.{w=0.2} Go get some rest, [player]."
             if mas_isMoniNormal(higher=True):
                 m 2ekc "I wouldn't want you to get sick."
                 m 1eka "Sleep earlier next time, okay?"
@@ -623,7 +625,7 @@ label bye_prompt_sleep:
 
     # TODO:
     #   join monika sleeping?
-
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
@@ -753,7 +755,7 @@ label bye_goodnight:
     if mas_isMoniNormal(higher=True):
         m 1eua "Goodnight, [player]."
         m 1eka "I'll see you tomorrow, okay?"
-        m 3eka "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+        m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
         m 1ekbfa "I love you~"
 
     elif mas_isMoniUpset():
@@ -802,7 +804,7 @@ label bye_long_absence:
             $ persistent._mas_absence_choice = "days"
             m 1eub "Oh!"
             m 1hua "Nowhere near as long as I feared then."
-            m 3rksdla "Geez, you really did worry me..."
+            m 3rksdla "Jeez, you really did worry me..."
             m 3esa "Don't worry about me though [player]."
             m "I can cope waiting that long with ease."
             m 3eka "I'll still miss you greatly though."
@@ -988,19 +990,32 @@ label bye_going_somewhere_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
+        $ ellipsis_count = 1
+        $ give_me_a_second = "Give me a second to get ready."
 
     elif promise.done():
         # i/o thread is done!
+        $ _history_list.pop()
+        m "Give me a second to get ready...{fast}{nw}"
         jump bye_going_somewhere_rtg
+
     else:
         #clean up the history list so only one "give me a second..." should show up
+        if ellipsis_count == 3:
+            $ ellipsis_count = 1
+            $ give_me_a_second = "Give me a second to get ready."
+
+        else:
+            $ ellipsis_count += 1
+            $ give_me_a_second += '.'
+
         $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
     menu:
-        m "Give me a second to get ready.{fast}"
+        m "[give_me_a_second]{fast}"
         "Wait, wait!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
@@ -1058,7 +1073,6 @@ label bye_going_somewhere_rtg:
             m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
             m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
             $ mas_gainAffection()
-
     return
 
 
@@ -1125,14 +1139,14 @@ label bye_going_somewhere_leavemenu:
         m 1lksdld "That's okay, I guess."
 
     elif mas_isMoniHappy(lower=True):
-        m 1ekd "Oh,{w} all right. Maybe next time?"
+        m 1ekd "Oh,{w=0.3} all right. Maybe next time?"
 
     else:
         # otherwise affection and higher:
         m 2ekp "Aw..."
         m 1hub "Fine, but you better take me next time!"
 
-    m "Are you still going to go?"
+    m 1euc "Are you still going to go?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you still going to go?{fast}"
@@ -1189,7 +1203,7 @@ label bye_prompt_game:
                     m 1hubfb "Yay!"
                 else:
                     m 2eka "Okay..."
-                jump monika_idle_game
+                jump monika_idle_game.skip_intro
             "No.":
                 if mas_isMoniNormal(higher=True):
                     m 2ekc "Aww..."
@@ -1244,7 +1258,10 @@ label bye_prompt_game:
         m 1eka "Going off to play another game, [player]?"
         m 3hub "Good luck and have fun!"
         m 3eka "Don't forget to come back soon~"
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GAME
+    #24 hour time cap because greeting handles up to 18 hours
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(days=1)
     return 'quit'
 
 init 5 python:
@@ -1280,6 +1297,7 @@ default persistent._mas_pm_ate_late_times = 0
 
 label bye_prompt_eat:
     $ _now = datetime.datetime.now().time()
+
     if mas_isMNtoSR(_now):
         $ persistent._mas_pm_ate_late_times += 1
         if mas_isMoniNormal(higher=True):
@@ -1288,7 +1306,7 @@ label bye_prompt_eat:
             m 1eka "Are you planning on having a midnight snack?"
             m 3rksdlb "If I were you, I'd find something to eat a little earlier, ahaha..."
             m 3rksdla "Of course...{w=1}I'd also try to be in bed by now..."
-            if renpy.random.randint(1,25) == 1 and mas_isMoniLove(higher=True):
+            if mas_is18Over() and mas_isMoniLove(higher=True) and renpy.random.randint(1,25) == 1:
                 m 2tubfu "You know, if I were there, maybe we could have a bit of both..."
                 show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."
@@ -1303,9 +1321,14 @@ label bye_prompt_eat:
             m 4ekc "You should really go to bed, you know."
             m 4eud "...Try to go straight to bed when you're finished."
             m 2euc "Anyway, I guess I'll see you tomorrow..."
+
+        #NOTE: Due to the greet of this having an 18 hour limit, we use a 20 hour cap
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
         $ persistent.mas_late_farewell = True
 
     else:
+        #NOTE: Since everything but snack uses the same time, we'll set it here
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=3)
         menu:
             "Breakfast.":
                 if mas_isSRtoN(_now):
@@ -1428,6 +1451,9 @@ label bye_prompt_eat:
                     else:
                         m 2euc "Feeling hungry?"
                         m 2eud "Enjoy your snack."
+
+                #Snack gets a shorter time than full meal
+                $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=30)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_EAT
     return 'quit'
 
@@ -1474,4 +1500,30 @@ label bye_prompt_housework:
     else:
         m 6ckc "..."
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_restart",
+            unlocked=True,
+            prompt="I'm going to restart.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_restart:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Alright, [player]."
+        m 1eub "See you soon!"
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+    else:
+        m 2euc "Alright."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART
     return 'quit'
