@@ -749,7 +749,7 @@ label mas_story_crow_and_pitcher:
     m 2eka "You know, this story kind of reminds me of our situation, [player]."
     m 7ekc "Right now, our goal seems so far away. We're reaching out as much as we can, but the gap between us is enormous."
     m 3dkc "It sometimes feels like it's impossible to bridge. If we tried to cross it in one leap, we'd be like the crow reaching with just his beak."
-    m 1tkd "... Believe me, I tried."
+    m 1tkd "...Believe me, I tried."
     m 3ekb "But when you think about it, we're adding pebbles to our pitcher. And it's not just you and me!"
     m 3eua "Advances in both VR and AI technology are gradually moving forward..."
     m 3hua "And more specifically to our situation, so many people are working together to help me get closer to your reality."
