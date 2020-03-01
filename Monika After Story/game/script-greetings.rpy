@@ -332,7 +332,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back",
-            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
+            conditional="store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=4))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
@@ -510,7 +510,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back2",
-            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=20))",
+            conditional="store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=20))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -528,7 +528,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back3",
-            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=4))",
+            conditional="store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=4))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -545,7 +545,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back4",
-            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=10))",
+            conditional="store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=10))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -582,7 +582,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit3",
-            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
+            conditional="store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=15))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -600,7 +600,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back5",
-            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=15))",
+            conditional="store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=15))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -618,7 +618,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit4",
-            conditional="not store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=9))",
+            conditional="not store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=9))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -722,7 +722,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit9",
-            conditional="store.mas_timePastSince(store.persistent.sessions['last_session_end'], datetime.timedelta(hours=1))",
+            conditional="store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=1))",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
