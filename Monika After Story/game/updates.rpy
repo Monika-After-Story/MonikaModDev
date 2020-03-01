@@ -380,14 +380,14 @@ label v0_10_8(version="v0_10_8"):
 
         #Update conditions for the greetings
         new_greetings_conditions = {
-            "greeting_back": "store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=4))",
-            "greeting_back2": "store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=20))",
-            "greeting_back3": "store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=4))",
-            "greeting_back4": "store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=10))",
-            "greeting_visit3": "store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=15))",
-            "greeting_back5": "store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=15))",
-            "greeting_visit4": "not store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=9))",
-            "greeting_visit9": "store.mas_timePastSince(store.mas_getLastSeshEnd(), datetime.timedelta(hours=1))"
+            "greeting_back": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=12)",
+            "greeting_back2": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=20)",
+            "greeting_back3": "store.mas_getAbsenceLength() >= datetime.timedelta(days=1)",
+            "greeting_back4": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=10)",
+            "greeting_visit3": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=15)",
+            "greeting_back5": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=15)",
+            "greeting_visit4": "store.mas_getAbsenceLength() <= datetime.timedelta(hours=3)",
+            "greeting_visit9": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=1)"
         }
         for gr_label, conditional in new_greetings_conditions.iteritems():
             gr_ev = mas_getEV(gr_label)
