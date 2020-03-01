@@ -618,7 +618,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit4",
-            conditional="store.mas_getAbsenceLength() <= datetime.timedelta(hours=3))",
+            conditional="store.mas_getAbsenceLength() <= datetime.timedelta(hours=3)",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
