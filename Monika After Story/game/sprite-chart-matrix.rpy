@@ -57,7 +57,7 @@ init -4 python in mas_sprites:
     #       * pre - only blush
     #       * post - all values except blush
     # value:
-    #   surf object containing render, or None if should not be rendered
+    #   image manip containing render, or None if should not be rendered
 
     cache_arms = {}
     # the arms cache. This includes clothes and base sprites.
@@ -68,7 +68,7 @@ init -4 python in mas_sprites:
     #   [2] - clothing type, "base" for base arms
     #   [3] - leanpose
     # value:
-    #   surf object containing render, or None if should not be rendered
+    #   image manip containing render, or None if should not be rendered
 
     cache_body = {}
     # the body cache. This includes clothes and base sprites.
@@ -77,7 +77,7 @@ init -4 python in mas_sprites:
     #   [0] - should be the filter code.
     #   [1] - shoud be image path
     # value:
-    #   surf object containing render, or None if should not be rendered
+    #   image manip containing render, or None if should not be rendered
 
     cache_hair = {}
     # the hair cache
@@ -86,7 +86,7 @@ init -4 python in mas_sprites:
     #   [0] - should be the filter code.
     #   [1] - should be image path
     # value:
-    #   surf object containing render, or None if should not be rendered
+    #   image manip containing render, or None if should not be rendered
     
     cache_acs = {}
     # the ACS cache
@@ -97,7 +97,7 @@ init -4 python in mas_sprites:
     #   [3] - poseid
     #   [4] - arm code
     # value:
-    #   surf object containing render, or None if should not be rendered
+    #   image manip containing render, or None if should not be rendered
 
     cache_tc = {}
     # the tablechair cache
@@ -108,7 +108,7 @@ init -4 python in mas_sprites:
     #   [2] - table/chair type
     #   [3] - 0 for no shadow, 1 for shadow (ignored for chairs)
     # value:
-    #   surf object containing render, or None if should not be rendered
+    #   image manip containing render, or None if should not be rendered
 
 
     class MASMonikaRender(renpy.Displayable):
@@ -123,6 +123,9 @@ init -4 python in mas_sprites:
                 [2] - ImageBase to build the image, IF NOT IN CACHE.
                     This should be set to None if we are sure a surf
                     object is in the cache.
+            rendered_surface - the render for this displayable.
+                If we our render is called more than once, then this is
+                reutrned.
             xpos - xposition to blit objects with
             ypos - yposition to blit objects with
             width - width to render objects with
@@ -145,6 +148,7 @@ init -4 python in mas_sprites:
             """
             super(renpy.Displayable, self).__init__()
             self.render_keys = render_keys
+            self.rendered_surface = None
             self.xpos = xpos
             self.ypos = ypos
             self.width = width
@@ -165,38 +169,47 @@ init -4 python in mas_sprites:
 
             RETURNS: rendered surf image to use
             """
-            img_key, img_cache, img_base = render_key
-            if img_key in img_cache:
-                return img_cache[img_key]
-
-            # otherwise render this bitch
-            #new_surf = renpy.render(
-            #    store.mas_sprites._gen_im(self.flt, img_base),
-            #    self.width,
-            #    self.height,
-            #    st, at
-            #)
-            new_surf = renpy.display.im.load_surface(
-                store.mas_sprites._gen_im(self.flt, img_base)
+            # render this bitch
+            new_surf = renpy.render(
+                store.mas_sprites._cgen_im(self.flt, render_key),
+                self.width,
+                self.height,
+                st, at
             )
-            img_cache[img_key] = new_surf
+
+            #new_surf = renpy.display.im.load_surface(
+            #    store.mas_sprites._gen_im(self.flt, img_base)
+            #)
             return new_surf
 
         def render(self, width, height, st, at):
             """
             Render function
             """
-            renders = [
-                self._render_surf(render_key, st, at)
+            if self.rendered_surface is None:
+                renders = [
+                    self._render_surf(render_key, st, at)
+                    for render_key in self.render_keys
+                ]
+
+                # blit all
+                rv = renpy.Render(width, height)
+                for render in renders:
+                    rv.blit(render, (self.xpos, self.ypos + Y_OFFSET))
+
+                self.rendered_surface = rv
+
+            return self.rendered_surface
+
+        def visit(self):
+            """
+            Returns a list of displayables we obtain
+            NOTE: will also save to our cache
+            """
+            return [
+                store.mas_sprites._cgen_im(self.flt, render_key)
                 for render_key in self.render_keys
             ]
-
-            # blit all
-            rv = renpy.Render(width, height)
-            for render in renders:
-                rv.blit(render, (self.xpos, self.ypos + Y_OFFSET))
-
-            return rv
 
 
     def _add_mpa_rk(
@@ -320,6 +333,28 @@ init -4 python in mas_sprites:
             # no arms at all
             cache_arms[img_key] = None
             cache_arms[day_key] = None
+
+
+    def _cgen_im(flt, render_key):
+        """
+        Checks cache for an im, 
+        GENerates the im if not found
+
+        IN:
+            flt - filter to use
+            render_key - render key to cache check/gen for (see
+                MASMonikaRender class for more info)
+
+        RETURNS: Image Manipulator for this render
+        """
+        img_key, img_cache, img_base = render_key
+        if img_key in img_cache:
+            return img_cache[img_key]
+
+        # generate the im and cache it
+        new_im = _gen_im(flt, img_base)
+        img_cache[img_key] = new_im
+        return new_im
 
 
     def _dayify(img_key):
