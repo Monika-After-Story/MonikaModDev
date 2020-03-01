@@ -170,11 +170,14 @@ init -4 python in mas_sprites:
                 return img_cache[img_key]
 
             # otherwise render this bitch
-            new_surf = renpy.render(
-                store.mas_sprites._gen_im(self.flt, img_base),
-                self.width,
-                self.height,
-                st, at
+            #new_surf = renpy.render(
+            #    store.mas_sprites._gen_im(self.flt, img_base),
+            #    self.width,
+            #    self.height,
+            #    st, at
+            #)
+            new_surf = renpy.display.im.load_surface(
+                store.mas_sprites._gen_im(self.flt, img_base)
             )
             img_cache[img_key] = new_surf
             return new_surf

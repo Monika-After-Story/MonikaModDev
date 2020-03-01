@@ -75,7 +75,12 @@ init 100 python:
 
 
     def mas_matrix_cache_report():
-        def _cache_report_one(cache, name, cache_log):
+        mb_size = 1000.0
+        sum_line = "{0}: {1} - {2:.3f} KB\n"
+
+        def _cro(cache, name, cache_log):
+            cache_size = 0
+
             # header
             cache_log.write("\n\n==================================\n")
             cache_log.write("# Logging cache for {0}\n".format(name))
@@ -83,36 +88,52 @@ init 100 python:
 
             # output elements
             for img_key in cache:
-                cache_log.write("{0}: {1}\n".format(img_key, cache[img_key]))
+                item = cache[img_key]
+                cache_log.write("{0}: {1}\n".format(img_key, item))
+                cache_size += sys.getsizeof(item)
+
+            return cache_size
 
         with open("cache_report.log", "w") as cache_log:
             # write each caceh out
-            _cache_report_one(store.mas_sprites.cache_face, "FACE", cache_log)
-            _cache_report_one(store.mas_sprites.cache_arms, "ARMS", cache_log)
-            _cache_report_one(store.mas_sprites.cache_body, "BODY", cache_log)
-            _cache_report_one(store.mas_sprites.cache_hair, "HAIR", cache_log)
-            _cache_report_one(store.mas_sprites.cache_acs, "ACS", cache_log)
-            _cache_report_one(store.mas_sprites.cache_tc, "TableChair", cache_log)
+            sz_face = _cro(store.mas_sprites.cache_face, "FACE", cache_log)
+            sz_arms = _cro(store.mas_sprites.cache_arms, "ARMS", cache_log)
+            sz_body = _cro(store.mas_sprites.cache_body, "BODY", cache_log)
+            sz_hair = _cro(store.mas_sprites.cache_hair, "HAIR", cache_log)
+            sz_acs = _cro(store.mas_sprites.cache_acs, "ACS", cache_log)
+            sz_tc = _cro(store.mas_sprites.cache_tc, "TableChair", cache_log)
 
             # summary report
             cache_log.write("\n\n---- Size Summary ----\n")
-            cache_log.write("Face: {0}\n".format(
-                len(store.mas_sprites.cache_face)
+            cache_log.write(sum_line.format(
+                "Face",
+                len(store.mas_sprites.cache_face),
+                sz_face / mb_size
             ))
-            cache_log.write("Arms: {0}\n".format(
-                len(store.mas_sprites.cache_arms)
+            cache_log.write(sum_line.format(
+                "Arms",
+                len(store.mas_sprites.cache_arms),
+                sz_arms / mb_size
             ))
-            cache_log.write("Body: {0}\n".format(
-                len(store.mas_sprites.cache_body)
+            cache_log.write(sum_line.format(
+                "Body",
+                len(store.mas_sprites.cache_body),
+                sz_body / mb_size
             ))
-            cache_log.write("Hair: {0}\n".format(
-                len(store.mas_sprites.cache_hair)
+            cache_log.write(sum_line.format(
+                "Hair",
+                len(store.mas_sprites.cache_hair),
+                sz_hair / mb_size
             ))
-            cache_log.write("ACS: {0}\n".format(
-                len(store.mas_sprites.cache_acs)
+            cache_log.write(sum_line.format(
+                "ACS",
+                len(store.mas_sprites.cache_acs),
+                sz_acs / mb_size
             ))
-            cache_log.write("TableChair: {0}\n".format(
-                len(store.mas_sprites.cache_tc)
+            cache_log.write(sum_line.format(
+                "TableChair",
+                len(store.mas_sprites.cache_tc),
+                sz_tc / mb_size
             ))
             
 
