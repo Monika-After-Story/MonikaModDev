@@ -1516,9 +1516,14 @@ label mas_reaction_hotchocolate:
         m 1hua "Thanks again, [player]~"
 
     else:
-        $ mas_giftCapGainAff(3)
+        python:
+            mas_giftCapGainAff(3)
+            those = "these" if not morning_flag and mas_isWinter() else "those"
+
         m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
-        m 2rksdla "...Especially on those cold, winter nights."
+
+
+        m 2rksdla "...Especially on [those] cold, winter nights."
         m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
         m 3ekbfa "...Doesn't that sound so romantic?"
         m 1dkbfa "..."
