@@ -1009,7 +1009,7 @@ label bye_going_somewhere_iowait:
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
     menu:
-        "Wait a second!":
+        "Hold on a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 

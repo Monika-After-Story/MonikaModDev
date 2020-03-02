@@ -976,7 +976,7 @@ init 5 python:
 
         START_TEXT = (
             "Hi, [player],\n"
-            "Just letting you know I'm running low on a couple things.\n"
+            "Just letting you know I'm running low on a couple of things.\n"
             "You wouldn't mind getting some more for me, would you?\n\n"
             "Here's a list of what I'm running out of:\n"
         )
