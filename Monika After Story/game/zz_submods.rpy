@@ -149,7 +149,7 @@ init -991 python in mas_submod_utils:
                 persistent._mas_submod_version_data[self.name] = Submod.FB_VERS_STR
                 return False
 
-            return self.checkVersions(old_vers) == 1
+            return self.checkVersions(old_vers) > 0
 
         def updateFrom(self, version):
             """
