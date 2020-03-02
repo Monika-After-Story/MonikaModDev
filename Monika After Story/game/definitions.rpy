@@ -10,7 +10,7 @@ python early:
     me = singleton.SingleInstance()
     # define the zorders
     MAS_MONIKA_Z = 10
-    MAS_BACKGROUND_Z =5
+    MAS_BACKGROUND_Z = 3
 
     # this is now global
     import datetime
@@ -547,6 +547,47 @@ python early:
             """
             self.start_date = None
             self.end_date = None
+
+        def timePassedSinceLastSeen_d(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, in terms of datetime.date
+            (Excludes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            if self.last_seen is not None:
+                last_seen_date = self.last_seen.date()
+            else:
+                last_seen_date = None
+
+            return mas_timePastSince(last_seen_date, time_passed, _now)
+
+        def timePassedSinceLastSeen_dt(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, precise to datetime.datetime
+            (Includes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            return mas_timePastSince(self.last_seen, time_passed, _now)
 
         @staticmethod
         def getSortPrompt(ev):
@@ -1509,11 +1550,13 @@ python early:
             """
             if ev.action == EV_ACT_UNLOCK:
                 ev.unlocked = False
+
             elif ev.action == EV_ACT_RANDOM:
                 ev.random = False
                 #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
                 if "no rmallEVL" not in ev.rules:
                     mas_rmallEVL(ev.eventlabel)
+
             #NOTE: we don't add the rest since there's no reason to undo those.
 
 
@@ -5115,7 +5158,7 @@ init 2 python:
         IN:
             _date - date to check
             If None, today is assumed.
-            Default: None
+            (Default: None)
 
         OUT:
             boolean:
@@ -5134,6 +5177,7 @@ init 2 python:
 
         IN:
             _date - the datetime.date to get the player age at
+            (Default: None)
 
         OUT:
             integer representing the player's current age or None if we don't have player's bday
@@ -5152,7 +5196,7 @@ init 2 python:
 
         return _years
 
-    def mas_canShowRisque(aff_thresh=2000):
+    def mas_canShowRisque(aff_thresh=2000, grace=None):
         """
         Checks if we can show something risque
 
@@ -5165,16 +5209,25 @@ init 2 python:
         IN:
             aff_thresh:
                 - Raw affection value to be greater than or equal to
+            grace:
+                - a grace period passed in as a timedelta
+                  defaults to 1 week
 
         OUT:
             boolean:
                 - True if the above conditions are satisfied
                 - False if not
         """
+
+        if grace is None:
+            grace = datetime.timedelta(weeks=1)
+
+        _date = datetime.date.today() + grace
+
         return (
             not persistent._mas_sensitive_mode
             and persistent._mas_first_kiss is not None
-            and mas_is18Over()
+            and mas_is18Over(_date)
             and _mas_getAffection() >= aff_thresh
         )
 

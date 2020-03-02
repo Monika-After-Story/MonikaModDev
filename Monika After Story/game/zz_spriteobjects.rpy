@@ -1202,7 +1202,7 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            "lingerie": True
+            "lingerie": "d25"
         },
         entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
         exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
@@ -1214,7 +1214,7 @@ init -1 python:
     store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
     store.mas_selspr.init_selectable_clothes(
         mas_clothes_santa_lingerie,
-        "Santa Lingerie",
+        "Lingerie (Santa)",
         "santa_lingerie",
         "clothes",
         visible_when_locked=False,
@@ -1297,6 +1297,39 @@ init -1 python:
         ],
     )
 
+    ### Valentine's Lingerie
+    ## vday_lingerie
+    # valentines outfit which shows a lot of skin
+    #Thanks Orca
+    mas_clothes_vday_lingerie = MASClothes(
+        "vday_lingerie",
+        "vday_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        stay_on_start=True,
+        ex_props={
+            "lingerie": True
+        },
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_vday_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_vday_lingerie,
+        "Lingerie (Pink Lace)",
+        "vday_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Ehehe~",
+            "Do you like what you see, [player]?"
+        ]
+    )
 
 init -1 python:
     # ACCESSORIES (SPR130)
@@ -1337,7 +1370,8 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="mug",
-        mux_type=["mug"]
+        mux_type=["mug"],
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
 
@@ -1381,7 +1415,7 @@ init -1 python:
     ### HAIRTIES BRACELET (BROWN)
     ## hairties_bracelet_brown
     # The bracelet Monika wore in the vday outfit
-    # thanks EntonyEscX
+    # thanks Velius
     mas_acs_hairties_bracelet_brown = MASAccessory(
         "hairties_bracelet_brown",
         "hairties_bracelet_brown",
@@ -1428,7 +1462,8 @@ init -1 python:
         acs_type="chocs",
         #Can't mux this since this has special handling via programming points
         entry_pp=store.mas_sprites._acs_heartchoc_entry,
-        exit_pp=store.mas_sprites._acs_heartchoc_exit
+        exit_pp=store.mas_sprites._acs_heartchoc_exit,
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_heartchoc)
 
@@ -1445,7 +1480,8 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="mug",
-        mux_type=["mug"]
+        mux_type=["mug"],
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_hotchoc_mug)
 
@@ -1603,7 +1639,8 @@ init -1 python:
         #   needs to add mid version of this
         mux_type=["plush_mid"],
         entry_pp=store.mas_sprites._acs_quetzalplushie_entry,
-        exit_pp=store.mas_sprites._acs_quetzalplushie_exit
+        exit_pp=store.mas_sprites._acs_quetzalplushie_exit,
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
 
@@ -1620,7 +1657,8 @@ init -1 python:
         ),
         priority=12,
         stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry
+        entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry,
+        keep_on_desk=True
     )
 
     ### QUETZAL PLUSHIE (CENTER)
@@ -1636,6 +1674,7 @@ init -1 python:
         stay_on_start=False,
         acs_type="plush_mid",
         mux_type=["plush_q"],
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
 
@@ -1652,7 +1691,8 @@ init -1 python:
         ),
         priority=11,
         stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
+        entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry,
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie_santahat)
 
@@ -2257,12 +2297,9 @@ init -1 python:
         priority=11,
         stay_on_start=False,
         acs_type="flowers",
+        keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_roses)
-
-#### TABLE SPRITE OBJECTS (SPR140)
-# tables are inserted between 
-# TODO: this will be done later
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever

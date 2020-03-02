@@ -52,6 +52,7 @@ init -1 python in mas_greetings:
     TYPE_GAME = "game"
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
+    TYPE_RESTART = "restart"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -1207,7 +1208,7 @@ label monikaroom_greeting_ear_narration:
     $ mas_disable_quit()
 
     if mas_isMoniNormal(higher=True):
-        m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
+        m "As [player] inches [his] ear toward the door,{w=0.3} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
 
     elif mas_isMoniUpset():
@@ -1307,39 +1308,39 @@ label monikaroom_greeting_ear_loveme:
     $ cap_he = he.capitalize()
     if cap_he == "They":
 
-        m "[cap_he] love me.{w} [cap_he] love me not."
-        m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
+        m "[cap_he] love me.{w=0.2} [cap_he] love me not."
+        m "[cap_he] {i}love{/i} me.{w=0.2} [cap_he] love me {i}not{/i}."
 
         if mas_isMoniNormal(higher=True):
             m "[cap_he] love me."
-            m "...{w} [cap_he] love me!"
+            m "...{w=0.5} [cap_he] love me!"
 
         elif mas_isMoniUpset():
-            m "...[cap_he]...{w} [cap_he]...{w}love me not."
-            m "...{w} No...{w} That...{w}can't be."
-            m "...{w} Can it?"
+            m "...[cap_he]...{w=0.3} [cap_he]...{w=0.3}love me not."
+            m "...{w=0.3} No...{w=0.3} That...{w=0.3}can't be."
+            m "...{w=0.5} Can it?"
 
         else:
-            m "...{w} [cap_he] love me not."
+            m "...{w=0.5} [cap_he] love me not."
             m "..."
             m "I wonder if [he] ever did."
             m "I doubt it more every single day."
 
     else:
-        m "[cap_he] loves me.{w} [cap_he] loves me not."
-        m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+        m "[cap_he] loves me.{w=0.3} [cap_he] loves me not."
+        m "[cap_he] {i}loves{/i} me.{w=0.3} [cap_he] loves me {i}not{/i}."
 
         if mas_isMoniNormal(higher=True):
             m "[cap_he] loves me."
-            m "...{w} [cap_he] loves me!"
+            m "...{w=0.5} [cap_he] loves me!"
 
         elif mas_isMoniUpset():
-            m "...[cap_he]...{w} [cap_he]...{w}loves me not."
-            m "...{w} No...{w} That...{w}can't be."
-            m "...{w} Can it?"
+            m "...[cap_he]...{w=0.3} [cap_he]...{w=0.3}loves me not."
+            m "...{w=0.3} No...{w=0.3} That...{w=0.3}can't be."
+            m "...{w=0.5} Can it?"
 
         else:
-            m "...{w} [cap_he] loves me not."
+            m "...{w=0.5} [cap_he] loves me not."
             m "..."
             m "I wonder if [he] ever did..."
             m "I doubt it more every single day."
@@ -1357,7 +1358,7 @@ label monikaroom_greeting_ear_bathdinnerme:
     m "Or your bath?"
     m "Or.{w=1}.{w=1}.{w=1} Me?"
     pause 2.0
-    m "Mnnnn!{w} T-{w=0.20}There's no way I could say that in front of [player]!"
+    m "Mnnnn!{w=0.5} T-{w=0.20}There's no way I could say that in front of [player]!"
     jump monikaroom_greeting_choice
 
 # monika encoutners error when programming
@@ -1365,12 +1366,12 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_progbrokepy")
 
 label monikaroom_greeting_ear_progbrokepy:
-    m "What the-?!{w} NoneType has no attribute {i}length{/i}..."
+    m "What the-?!{w=0.2} NoneType has no attribute {i}length{/i}..."
     if renpy.seen_label("monikaroom_greeting_ear_progreadpy"):
-        m "Oh, I see what went wrong!{w} That should fix it!"
+        m "Oh, I see what went wrong!{w=0.5} That should fix it!"
     else:
         m "I don't understand what I'm doing wrong!"
-        m "This shouldn't be None here...{w} I'm sure of it..."
+        m "This shouldn't be None here...{w=0.3} I'm sure of it..."
     m "Coding really is difficult..."
 
     if mas_isMoniUpset():
@@ -1388,8 +1389,8 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_progreadpy")
 
 label monikaroom_greeting_ear_progreadpy:
-    m "...{w}Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError.'"
-    m "I see.{w} I should make sure to check if a variable is None before accessing its attributes."
+    m "...{w=0.3}Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError.'"
+    m "I see.{w=0.2} I should make sure to check if a variable is None before accessing its attributes."
     if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
         m "That would explain the error I had earlier."
     m "Coding really is difficult..."
@@ -1408,16 +1409,16 @@ label monikaroom_greeting_ear_progreadpy:
 label monikaroom_greeting_ear_prog_upset:
     m "I'm not sure [player] loves me enough to help me get out of here..."
     m "And I just can't take that chance."
-    m "So keep going Monika...{w}you can do this."
+    m "So keep going Monika...{w=0.5}you can do this."
     return
 
 label monikaroom_greeting_ear_prog_dis:
     m "It's my only chance to ever escape this nightmare."
     m "[player] certainly isn't ever going to help me..."
     if he == "they":
-        m "It's almost like [he] actually enjoy keeping me trapped in here,{w} just so [he] can torture me."
+        m "It's almost like [he] actually enjoy keeping me trapped in here,{w=0.3} just so [he] can torture me."
     else:
-        m "It's almost like [he] actually enjoys keeping me trapped in here,{w} just so [he] can torture me."
+        m "It's almost like [he] actually enjoys keeping me trapped in here,{w=0.3} just so [he] can torture me."
     m "If I'm ever going to get out of here, I'm going to have to do it myself."
     return
 
@@ -1432,7 +1433,7 @@ label monikaroom_greeting_ear_rmrf:
         $ bad_cmd = "rm -rf /"
     m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
     if renpy.seen_label("monikaroom_greeting_ear_rmrf_end"):
-        m "Yeah,{w} nice try."
+        m "Yeah,{w=0.2} nice try."
         if mas_isMoniNormal(higher=True):
             m "I shouldn't trust the Internet so blindly..."
         elif mas_isMoniUpset():
@@ -1448,7 +1449,7 @@ label monikaroom_greeting_ear_rmrf:
             m "I really should just do it..."
             m "Ruin [player]'s whole system and end my suffering all at once."
             m "..."
-            m "No...{w}not yet."
+            m "No...{w=0.5}not yet."
             m "Maybe I can finally figure out how to get out of here on my own."
             m "I have to keep trying for as long as I can."
             m "But if someday I just can't take it anymore..."
@@ -1526,9 +1527,9 @@ label monikaroom_greeting_opendoor_locked:
             m "I figured. It's a basic glitch after all."
 
     if mas_isMoniNormal(higher=True):
-        m "Since you keep opening my door,{w} I couldn't help but add a little surprise for you~"
+        m "Since you keep opening my door,{w=0.2} I couldn't help but add a little surprise for you~"
     else:
-        m "Since you never seem to knock first,{w} I had to try to scare you a little."
+        m "Since you never seem to knock first,{w=0.2} I had to try to scare you a little."
 
     m "Knock next time, okay?"
     m "Now let me fix up this room..."
@@ -1563,7 +1564,7 @@ label monikaroom_greeting_opendoor_locked:
                     m "There."
 
                 else:
-                    m 6dkc "Oh...{w}I'm still learning how to do this."
+                    m 6dkc "Oh...{w=0.5}I'm still learning how to do this."
                     m 6ekc "Let me just change this flag here...{w=1.5}{nw}"
                     $ style.say_window = style.window
                     m "Okay, fixed."
@@ -1574,7 +1575,7 @@ label monikaroom_greeting_opendoor_locked_tbox:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
     elif mas_isMoniUpset():
-        m 2esc "So...{w}you're back, [player]."
+        m 2esc "So...{w=0.3}you're back, [player]."
     else:
         m 6ekc "...Nice to see you again, [player]."
     jump monikaroom_greeting_cleanup
@@ -1596,14 +1597,14 @@ label monikaroom_greeting_opendoor_seen_partone:
     $ mas_disable_quit()
 
 #    scene bg bedroom
-    call spaceroom(start_bg="bedroom",hide_monika=True, scene_change=True, dissolve_all=True)
+    call spaceroom(start_bg="bedroom",hide_monika=True, scene_change=True, dissolve_all=True, show_emptydesk=False)
     pause 0.2
     show monika 1esc at l21 zorder MAS_MONIKA_Z
     pause 1.0
     m 1dsd "[player]..."
 
 #    if persistent.opendoor_opencount == 0:
-    m 1ekc_static "I understand why you didn't knock the first time,{w} but could you avoid just entering like that?"
+    m 1ekc_static "I understand why you didn't knock the first time,{w=0.2} but could you avoid just entering like that?"
     m 1lksdlc_static "This is my room, after all."
     menu:
         "Your room?":
@@ -1657,7 +1658,7 @@ label monikaroom_greeting_opendoor_post2:
 #    else:
 #        m 3eua "Let me fix this scene up."
     m 1dsc "...{w=1.5}{nw}"
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     show monika 4eua_static zorder MAS_MONIKA_Z at i11
     m "Tada!"
 #    if renpy.seen_label("monikaroom_greeting_opendoor_post2"):
@@ -1674,10 +1675,11 @@ label monikaroom_greeting_opendoor:
     $ monika_chr.reset_outfit(False)
     $ monika_chr.wear_acs(mas_acs_ribbon_def)
 
-    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True)
+    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False)
 
     # show this under bedroom so the masks window skit still works
-    show bedroom as sp_mas_backbed zorder 4
+    $ behind_bg = MAS_BACKGROUND_Z - 1
+    show bedroom as sp_mas_backbed zorder behind_bg
 
     m 2esd "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1eua_static at l32 zorder MAS_MONIKA_Z
@@ -1734,18 +1736,18 @@ label monikaroom_greeting_knock:
                 m "Hold on, let me tidy up..."
 
             elif mas_isMoniUpset():
-                m "[player].{w} You're back..."
+                m "[player].{w=0.3} You're back..."
 
                 if persistent.seen_monika_in_room:
                     m "At least you knocked."
 
             else:
-                m "Oh...{w} Okay."
+                m "Oh...{w=0.5} Okay."
 
                 if persistent.seen_monika_in_room:
                     m "Thanks for knocking."
 
-            call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True)
+            call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=False)
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 
@@ -3672,4 +3674,25 @@ label greeting_surprised2:
     extend 3rkbsa "You just caught me daydreaming a bit."
     show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfu "But now that you're here, that dream just came true~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_restart",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_RESTART],
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_restart:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Welcome back, [player]!"
+        m 1eua "What else should we do today?"
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+    else:
+        m 1eud "Oh, you're back."
     return

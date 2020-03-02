@@ -2185,7 +2185,8 @@ label mas_dockstat_ready_to_go(moni_chksum):
         # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
         # NOTE: callers must handle the dialogue for this
 
@@ -2204,15 +2205,18 @@ label mas_dockstat_first_time_goers:
 
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
-
-    # we are not leaving
-    $ persistent._mas_dockstat_going_to_leave = False
-
     # we should abort the promise (this lets spaceroom idle abort, as well)
     $ store.mas_dockstat.abort_gen_promise = True
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    #FALL THROUGH
+
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
+    # we are not leaving
+    $ persistent._mas_dockstat_going_to_leave = False
 
     # we are not leaving and need to reset these
     if persistent._mas_player_bday_left_on_bday:
@@ -2221,7 +2225,7 @@ label mas_dockstat_abort_gen:
 
     if persistent._mas_f14_on_date:
         $ persistent._mas_f14_on_date = False
-        $ persistent._mas_f14_date -= 1
+        $ persistent._mas_f14_date_count -= 1
 
     if persistent._mas_bday_on_date:
         $ persistent._mas_bday_on_date = False
@@ -2239,14 +2243,22 @@ label mas_dockstat_empty_desk:
         if mas_current_weather != mas_weather_thunder:
             $ mas_changeWeather(mas_weather_thunder, True)
 
+
+    # TODO: else this with the o31 mode
+    # set weather here
+    # TODO: run the yet-to-be-made weather alg running function etc
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
+        $ skip_setting_weather = True
+
+    # reset zoom before showing spaceroom
+    $ store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
-    # empty desk should be a zorder lower so we can pop monika over it
-    $ ed_zorder = MAS_MONIKA_Z - 1
-    $ store.mas_sprites.reset_zoom()
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
-    show emptydesk zorder ed_zorder at i11
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25ShowVisuals()
@@ -2339,11 +2351,9 @@ label mas_dockstat_different_monika:
     $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
-    show monika 1ekd zorder MAS_MONIKA_Z at t11
+    call mas_transition_from_emptydesk("monika 1ekd")
 
-    # 1 line of dialgoue before we remove the empty desk
     m "[player]?"
-    hide emptydesk
 
     m "Wait, you're not [player]."
 
@@ -2360,7 +2370,6 @@ label mas_dockstat_found_monika_from_empty:
     $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
-    hide emptydesk
 
     # dont want users using our promises
     $ promise = None
