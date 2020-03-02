@@ -69,24 +69,39 @@ init -1 python in songs:
             direct = -1
 
         # volume checks
-        new_vol = getVolume(channel)+(direct*vol_bump)
-        if new_vol < 0.0:
-            new_vol = 0.0
-        elif new_vol > 1.0:
-            new_vol = 1.0
+        new_vol = _sanitizeVolume(getUserVolume(channel)+(direct*vol_bump))
+        setUserVolume(new_vol, channel)
 
-        renpy.music.set_volume(new_vol, channel=channel)
 
     def getVolume(channel):
-        #
-        # Gets the volume of the given audio channel
-        #
-        # IN:
-        #   channel - the audio channel to get the volume for
-        #
-        # RETURNS:
-        #   The volume of the given audio channel (as a double/float)
-        return renpy.audio.audio.get_channel(channel).actual_volume
+        """
+        Gets the volume of the given audio channel.
+        NOTE: gets the real volume, not user-defined slider volume.
+
+        IN:
+            channel - audio channel to get volume for (string)
+
+        RETURNS: volume of the audio channel as double/float
+        """
+        return renpy.audio.audio.get_channel(channel).context.secondary_volume
+
+
+    def getUserVolume(channel):
+        """
+        Gets user-defined slider volume of the given channel.
+        NOTE: this is indepenent of the actual channel volume. 
+            Using set_volume will NOT affect this.
+
+        IN:
+            channel - audio channel to get volume for (string)
+
+        RETURNS: value of the user slider for the audio channel (double/float)
+        """
+        return renpy.game.preferences.volumes.get(
+            renpy.audio.audio.get_channel(channel).mixer,
+            0.0
+        )
+
 
     def getPlayingMusicName():
         #
@@ -178,6 +193,38 @@ init -1 python in songs:
 
         # separte the music choices into pages
         music_pages = __paginate(music_choices)
+
+
+    def setUserVolume(value, channel):
+        """
+        Sets user volume to the given value. 
+        NOTE: this does a preference edit, so there's no delay options.
+        NOTE: this changes mixer volume, so it may affect other channels.
+
+        IN:
+            value - value to set volume to. Should be between 0.0 and 1.0.
+            channel - channel to set.  
+        """
+        chan = renpy.audio.audio.get_channel(channel)
+        if chan.mixer in renpy.game.preferences.volumes:
+            renpy.game.preferences.volumes[chan.mixer] = _sanitizeVolume(value)
+
+
+    def _sanitizeVolume(value):
+        """
+        Santizes the given value as if it were a volume.
+        NOTE: does not check if its a number.
+
+        IN:
+            value - value to sanitize
+
+        RETURNS: valid volume value
+        """
+        if value < 0.0:
+            return 0.0
+        elif value > 1.0:
+            return 1.0
+        return value
 
 
     def __paginate(music_list):
@@ -980,7 +1027,7 @@ init python:
             mute_enabled - True means we are allowed to mute.
                 False means we are not
         """
-        curr_volume = songs.getVolume("music")
+        curr_volume = songs.getUserVolume("music")
         # sayori cannot mute
         if (
                 curr_volume > 0.0 
@@ -991,9 +1038,9 @@ init python:
                 and mute_enabled
             ):
             songs.music_volume = curr_volume
-            renpy.music.set_volume(0.0, channel="music")
+            songs.setUserVolume(0.0, "music")
         else:
-            renpy.music.set_volume(songs.music_volume, channel="music")
+            songs.setUserVolume(songs.music_volume, "music")
 
 
     def play_song(song, fadein=0.0, loop=True, set_per=False):

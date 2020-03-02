@@ -16,11 +16,11 @@ install:
 
       # mas build
     - wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
-    - mkdir mas072
-    - unzip mas.zip -d mas072
+    - mkdir mas0105
+    - unzip mas.zip -d mas0105
 
     # copy over files from game/
-    - cp -Rf MonikaModDev/Monika\ After\ Story/* mas072/
+    - cp -Rf MonikaModDev/Monika\ After\ Story/* mas0105/
 
 # environment to handle alsa issues
 env:
@@ -29,4 +29,4 @@ env:
 # command to check syntax
 script: 
     - python MonikaModDev/tools/travis.py
-    - cd renpy && ./renpy.sh "../mas072/" lint && ./renpy.sh launcher distribute "../mas072/"
+    - cd renpy && ./renpy.sh "../mas0105/" lint && ./renpy.sh launcher distribute "../mas0105/"

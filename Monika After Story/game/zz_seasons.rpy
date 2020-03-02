@@ -119,7 +119,10 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
         store.mas_showEVL("monika_outdoors", "EVE", _random=True)
         store.mas_showEVL("monika_backpacking", "EVE", _random=True)
-        store.mas_showEVL("monika_mountain", "EVE", _random=True)
+
+        #Since this is a player model topic, we only rerandom if we need to
+        if store.persistent._mas_pm_would_like_mt_peak is None:
+            store.mas_showEVL("monika_mountain", "EVE", _random=True)
 
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)

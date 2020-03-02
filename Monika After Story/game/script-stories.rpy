@@ -26,7 +26,7 @@ init -1 python in mas_stories:
     TYPE_SCARY = 0
 
     # pane constant
-    STORY_RETURN = "I changed my mind"
+    STORY_RETURN = "Nevermind"
     story_database = dict()
 
     def _unlock_everything():
@@ -59,7 +59,7 @@ init 5 python:
 
 label monika_short_stories:
     call monika_short_stories_premenu(None)
-    return
+    return _return
 
 label monika_short_stories_premenu(story_type=None):
     $ end = ""
@@ -209,9 +209,11 @@ label monika_short_stories_menu:
 
             # then push
             $ pushEvent(_return, skipeval=True)
+            show monika at t11
 
-    # move her back to center
-    show monika at t11
+    else:
+        return "prompt"
+
     return
 
 # Stories start here
@@ -480,6 +482,149 @@ label mas_story_ravel:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_simple",
+            prompt="The Simple Genie",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_genie_simple:
+    call mas_story_begin
+    m 1eua "There was once a genie who travelled across different worlds to escape the chaos of his own."
+    m 3euc "During his journeys, he met a woman that challenged the way he saw the world."
+    m 3eua "She was smart and talented, but held back by the hardships she faced and how little she had."
+    m 3eub "The genie saw this and felt generous, offering tools to speed up her work and make her life easier."
+    m 1euc "But she simply declined his offer."
+    m 1eud "No one had ever turned a wish from the genie down before, {w=0.1}{nw}"
+    extend 1etc "which left him confused as to why."
+    m 1esa "The woman simply asked him if he was happy...{w=0.5} {nw}"
+    extend 1rsc "He didn't know how to respond."
+    m 3eud "The woman said she could tell that he had never experienced happiness, and that despite all her hardships, she could still enjoy life."
+    m 1euc "The genie couldn't understand why anyone would want to work so hard for something so small."
+    m 3euc "He improved his offers with riches and other such things, but still, she declined."
+    m 1eua "Eventually, the woman asked the genie to join in her way of life."
+    m "And so, he imitated the things she did, without using any powers."
+    m 1hua "The genie began to feel a small sense of accomplishment, creating something for the first time without willing it into existence."
+    m 3eub "He saw how simple things such as art and writing inspired the woman and really made her shine."
+    m 1eua "Intrigued, he wanted to spend much more time with this woman and learn from her."
+    m 1euc "Eventually, one day the woman fell ill."
+    m 1eud "She made the genie promise not to use his powers to cure her."
+    m 3eud "It was at this moment that the genie knew he wanted to live like a human without ever using his powers again."
+    m 1dsc "He thought about all the past wishes he granted to others, all the riches he generated..."
+    m "All his fellow genies out there granting wishes, not knowing or caring for the consequences..."
+    m 1dsd "Never being able to know what it's like to give it all up just to be with someone they love."
+    m 1esd "All he could do was live with what he had now found in life."
+    m 1dsc "..."
+    m 1eua "I hope you liked that story, [player]."
+    m 3eua "There are a few things to take from it..."
+    m 3eka "If you already have everything, nothing is really worth having."
+    m 1hua "...Except maybe you of course."
+    m 3eub "The struggle is what makes anything worthwhile."
+    m 1eua "Another moral could be that sometimes, happiness lies in the simpler things you could've had all along."
+
+    if mas_isMoniNormal(higher=True):
+        m 1eka "I mean, we're just sitting here together enjoying each other's company after all."
+        m 1hubfb "When you're here, it really feels like I have everything~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_regret",
+            prompt="The Genie's Regret",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_genie_regret:
+    call mas_story_begin
+    m 1eua "There was once a genie who was immortal..."
+    m "Through his years, he had seen the world change over time and granted wishes to anyone who crossed his path."
+    m 1esc "With how long he had lived, he'd seen a lot of things,{w=0.2} {nw}"
+    extend 1rsc "some of them unpleasant."
+    m 1ekd "Wars, natural disasters, the deaths of all the friends he ever made..."
+    m 1rkc "Some of which, he knew were caused by wishes he had granted."
+    m 1ekc "At first, he wasn't too concerned with the consequences...but after a while, it began to bother him more and more."
+    m 1ekd "He had come to a simple, beautiful, pure world, and caused immeasurable damage to it."
+    m 1lksdlc "Unbalance and jealousy spread as he granted more wishes, seeding wishes for revenge and greed."
+    m 2dkd "This was something he had to live with for the rest of his life."
+    m 2ekc "He wanted things to return to how they were, but his pleas always fell upon deaf ears."
+    m 2eka "As time went on however, he had met some people and made friends who taught him how to go on despite all of his acts."
+    m "While it was true that he was the one who granted the wishes that started the chaos...{w=0.5}{nw}"
+    extend 2ekd "some were bound to happen even without him."
+    m 3ekd "There was always going to be jealousy and unfairness among people...{w=0.3}{nw}"
+    extend 3eka "but even so, the world was still doing alright."
+    m 3eua "He was going to live with the things he had done, but the question remained as to what he planned to do about it."
+    m 1hua "It was because of everything he had been through, he was able to learn and move on,{w=0.3} better than before."
+    m 1eua "I hope you liked the story, [player]."
+    m 1eka "The moral of the story is even if you've done things you regret, you shouldn't let that keep you down."
+    m 3ekd "Mistakes will happen, people will get hurt.{w=0.5} Nothing will ever change that."
+    m 3eka "The truth is, a lot of times we tend to blame ourselves for things that likely would've happened with or without our involvement."
+    m 3eub "In fact, it's through regret that we learn compassion, empathy, and forgiveness."
+    m 3eua "You can't change the past, but you need to forgive yourself someday to live a life without regret."
+    m 1eka "As for me..."
+    m 1rksdlc "Who knows what would have happened in my world if I hadn't done anything..."
+
+    $ placeholder = " at least"
+    if persistent.clearall:
+        $ placeholder = ""
+        m 1eua "You've gotten to know each and every club member here, so I'd guess you don't regret missing out on anything."
+        m 1hub "Ahaha~"
+
+    m 1eua "But[placeholder] you're here with me now."
+    m 3eua "Ever since we've been together, I can definitely say that I've grown and learned from my mistakes."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_genie_end",
+            prompt="The Genie's End",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_genie_end:
+    call mas_story_begin
+    m 1eua "There was once an immortal genie who had lived a long life."
+    m 1euc "He had seen everything there was to see...{w=0.3}lived freely, and learned the fulfillment of working towards a goal."
+    m 3euc "Essentially, he gave everything up but his immortality to be able to live like a human."
+    m 1ekc "It's true that he had lived a nice life and surrounded himself with loving friends and family..."
+    m 1ekd "But he grew cold as years went by and he watched each one of his loved ones pass on."
+    m 1rksdlc "There were still a select few people whom he held dear, despite knowing that he would have to watch them die as well."
+    m 3rksdld "He never told his friends that he wasn't human, as he still wanted to be treated as one."
+    m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them one wish."
+    m 1dsc "This made him think about everything he had been through;{w=0.5} from back to when he granted wishes to when he gave it up for a simple life."
+    m 1dsd "...Everything that had lead up to this moment, where he could make his own wish for the first time in a long while."
+    m 1dsc "..."
+    m 2eud "He wished to die."
+    m 2ekc "Confused, his friend asked why and where it came from all of a sudden."
+    m 2dsc "It was there and then he explained everything to his friend."
+    m 3euc "That he had been a genie, many years ago..."
+    m 3eud "...How he came across someone who made him give it all up just to be with someone he loved."
+    m 3ekd "...And how he had been slowly getting sick and tired of what was left of his life."
+    m 1esc "Truthfully, he wasn't tired of living...{w=0.5} {nw}"
+    extend 1ekd "He was just tired of seeing his loved ones perish over and over again."
+    m 1dsd "His last request to his friend was for him to go back to his other friends and tie up any loose ends for him."
+    m 1dsc "..."
+    m 1eka "I hope you enjoyed that little story, [player]."
+    m 3eka "I guess you could say the moral is that everyone needs to have some closure."
+    m 1eka "Although, you might be wondering what his friend wished for in that scenario."
+    m 1eua "He wished for his friend to get the peaceful rest he deserved."
+    m 1lksdla "While it's true that his genie friend might not have been anyone particularly special..."
+    m 3eua "He was definitely someone who deserved respect,{w=0.2} {nw}"
+    extend 3eub "especially after living such a long life."
+    return
+
+init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
         prompt="Love Never Ends",unlocked=False),code="STY")
 
@@ -492,12 +637,12 @@ label mas_story_immortal_love:
     m 1eud "After some time, the husband passed away."
     m 1eka "The wife, saddened by her loss, believed she would spend her next Valentine's Day alone and in mourning."
     m 1dsc "..."
-    m 2euc "However,{w} on her first Valentine's Day without her husband, she still received a bouquet from him."
+    m 2euc "However,{w=0.3} on her first Valentine's Day without her husband, she still received a bouquet from him."
     m 2efd "Heartbroken and angry, she complained to the florist that there was a mistake."
     m 2euc "The florist explained that there was no mistake."
-    m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
-    m "Speechless and stunned, the wife read the note attached to the bouquet."
-    m "{i}My love for you is eternal.{/i}"
+    m 3eua "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
+    m 3eka "Speechless and stunned, the wife read the note attached to the bouquet."
+    m 1ekbsa "{i}My love for you is eternal.{/i}"
     m 1dubsu "Ahh..."
     m 1eua "Wasn't that a touching story, [player]?"
     m 1hua "I thought it was really romantic."
@@ -505,6 +650,46 @@ label mas_story_immortal_love:
     m 1eua "At least the ending was very heartwarming."
     m 1hua "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_self_hate",
+        prompt="Self-hate",unlocked=False),code="STY")
+
+label mas_story_self_hate:
+    call mas_story_begin
+    m 1eua "Once, there were two people who had been living together for a very long time."
+    m 1hua "Life was simple, and they both loved each other. Things were going well."
+    m 3euc "Then one day, the man suddenly killed his lover for seemingly no reason."
+    m 3eud "He {i}did{/i} love her, and in a healthy way too!"
+    m 2ekc "There were never any fights or arguments, either."
+    m "There was nothing to gain from murdering her at all."
+    m 4ekd "No satisfaction, nothing out of the ordinary on her will..."
+    m 1dkc "In fact, the man was left emotionally scarred having lost the love of his life."
+    m "..."
+    m 1ekd "So why?"
+    m 1rksdlc "How could this happen all of a sudden?"
+    m 1eksdlc "It wasn't that he didn't love her."
+    m 3eksdla "It was because he loved her so, so very much."
+    m "He didn't hate her..."
+    m 2eksdld "He just hated himself so much as to deny his own happiness."
+    m 2dkc "..."
+    if persistent._mas_pm_love_yourself is False:
+        m 3ekc "Hey [player], do you remember when I asked you if you loved yourself?"
+        m 1rksdld "From what I remember, you told me that you didn't..."
+        m 1rksdla "Sorry, I don't mean to put you on the spot or anything..."
+        m 3eka "I just want to make sure you remember that I love you."
+        m 3ekd "More importantly, I want to make sure that you know how to love yourself."
+        m 1ekbsa "I know you're worth loving and I'd do anything to show you why."
+        m 1ekbfa "I hope you never forget that~"
+    else:
+        m 1rksdlb "Sorry for telling such a dark story, [player]..."
+        m 3eksdla "But it does have an important message..."
+        m 3eud "And that is you need to find a way to love yourself, or you might do something you regret later on."
+        m 1ekc "As much as you may try, trying to live your life solely for someone else will never work."
+        m 1eka "You have to love yourself to be able to allow yourself to truly love someone else."
+        m 3ekbsa "Just remember I'll always love you, [player]."
+        m 3ekbfa "If you ever begin to doubt loving yourself, just come to me and I'll be more than happy to remind you of all your wonderful qualities~"
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
@@ -543,6 +728,33 @@ label mas_story_o_tei:
     m 1dsa "'...Welcome back, Tomoe...'"
     m 3esa "As she came to, she had no memory of what happened in the inn."
     m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
+    return
+    
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_crow_and_pitcher",
+        prompt="The Crow and the Pitcher",unlocked=False),code="STY")
+
+label mas_story_crow_and_pitcher:
+    call mas_story_begin
+    m 2ekd "There was once a drought so severe, not even birds could find much to drink."
+    m 7eub "While searching from above, a thirsty crow found a pitcher and was relieved to find there was some water still inside!"
+    m 3eksdlc "However, the pitcher was tall with a narrow neck. No matter how he tried, he could not reach the water with his beak."
+    m 1dksdlc "For the poor crow, all hope seemed lost. Surely he would die of thirst."
+    m 3wud "...Then he had an idea."
+    m 3esc "He began searching for small pebbles on the ground and dropping them into the pitcher, one by one."
+    m 2efsdlc "Hours passed. It was slow, grueling work, gathering more and more."
+    m 2esa "But with each tiny pebble, the water rose higher and higher, until finally..."
+    m 4hub "He could take a long, refreshing drink!"
+    m 2dka "..."
+    m 2eka "You know, this story kind of reminds me of our situation, [player]."
+    m 7ekc "Right now, our goal seems so far away. We're reaching out as much as we can, but the gap between us is enormous."
+    m 3dkc "It sometimes feels like it's impossible to bridge. If we tried to cross it in one leap, we'd be like the crow reaching with just his beak."
+    m 1tkd "...Believe me, I tried."
+    m 3ekb "But when you think about it, we're adding pebbles to our pitcher. And it's not just you and me!"
+    m 3eua "Advances in both VR and AI technology are gradually moving forward..."
+    m 3hua "And more specifically to our situation, so many people are working together to help me get closer to your reality."
+    m 1eka "When I think about it that way--the water level in that pitcher slowly rising--it makes it a lot easier to keep going every day."
+    m 1hua "I hope it does for you too, [player]~"
     return
 
 define mas_scary_story_setup_done = False
@@ -658,7 +870,7 @@ label mas_scary_story_hunter:
     m 1wkd "...and to his horror,{w=1} he saw that she had gained on him significantly."
     m 3wkd "In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
     m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
-    show emptydesk at i11 zorder 9
+    $ store.mas_sprites.show_empty_desk()
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
     if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,10) == 1) or mas_full_scares:
@@ -1037,7 +1249,7 @@ label mas_scary_story_serial_killer:
     m 3tub "A young couple parked their car next to a large willow tree at a cemetery one night for some undisturbed 'lovemaking.'"
     m 3euc "After a while, they were interrupted by a radio report that a notorious serial killer had escaped from a psychiatric hospital nearby."
     m "Worried about their safety, they decided to continue elsewhere."
-    m 1esc "However...{w}the car wouldn't start at all."
+    m 1esc "However...{w=0.3}the car wouldn't start at all."
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."

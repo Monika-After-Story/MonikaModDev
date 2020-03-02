@@ -973,6 +973,7 @@ init -810 python:
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
 
             # lifestyle / music
+            "_mas_pm_plays_instrument": "pm.lifestyle.play_instrument",
             "_mas_pm_play_jazz": "pm.lifestyle.music.play_jazz",
 
             # lifestyle / smoking
@@ -997,10 +998,15 @@ init -810 python:
 
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
+            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
+            "_mas_pm_has_been_to_amusement_park": "pm.actions.been_to_amusement_park",
+
+            # actions / d25
+            "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
+
+            # actions / nye-nyd
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
-            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
-            "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
 
             # actions / games
             "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
@@ -1067,6 +1073,8 @@ init -810 python:
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
             "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
+            "_mas_pm_likes_rain": "pm.likes.rain",
+            "_mas_pm_likes_travelling": "pm.likes.travelling",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1152,4 +1160,3 @@ init -810 python:
         use_year_before=True,
         dont_reset=True
     ))
-

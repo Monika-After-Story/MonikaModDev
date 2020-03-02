@@ -34,7 +34,7 @@ init -1 python in mas_compliments:
         "Aww, [player]~",
         "Thanks, [player]!",
         "You always flatter me, [player]."
-        ]
+    ]
 
 
 # entry point for compliments flow
@@ -86,9 +86,12 @@ label monika_compliments:
     if _return:
         $ mas_gainAffection()
         $ pushEvent(_return)
+        # move her back to center
+        show monika at t11
 
-    # move her back to center
-    show monika at t11
+    else:
+        return "prompt"
+
     return
 
 # Compliments start here
@@ -254,7 +257,7 @@ label mas_compliment_intelligent:
     return
 
 label mas_compliment_intelligent_2:
-    m 1wub "Wow...{w}thanks, [player]."
+    m 1wub "Wow...{w=0.3}thanks, [player]."
     m 3eua "I pride myself in being well read, so it means a lot that you've noticed."
     m 3hubfb "I want to learn as much as I can, if it makes you proud of me!"
     menu:
@@ -633,4 +636,52 @@ label mas_compliment_bestgirl:
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "But if you ask me, you made the right choice."
     m 5hubfa "...and I'll be forever grateful that you did~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_lookuptoyou",
+            prompt="I look up to you!",
+            unlocked=True
+        ),
+        code="CMP",
+    )
+
+label mas_compliment_lookuptoyou:
+    if not renpy.seen_label("mas_compliment_lookuptoyou_2"):
+        call mas_compliment_lookuptoyou_2
+    else:
+        call mas_compliment_lookuptoyou_3
+    #Both paths return love, so we combine that here
+    return "love"
+
+label mas_compliment_lookuptoyou_2:
+    $ mas_gainAffection(3, bypass=True)
+    m 1wud "You...{w=0.5}you do?"
+    m 1ekbsa "[player], that's really sweet of you to say..."
+    m 3ekbsa "It makes me really happy to know I'm someone you look up to."
+    m 3ekbfa "The truth is, I've always looked up to {i}you{/i}, [player]..."
+    m 3hubfa "But if you really feel that way, I'll do my best to continue to be someone you look up to."
+    m 1ekbfa "I love you so much~"
+    return
+
+label mas_compliment_lookuptoyou_3:
+    $ thanks_quip = renpy.substitute(renpy.random.choice(store.mas_compliments.thanking_quips))
+    $ should_tease = persistent._mas_pm_height is not None and renpy.random.randint(1,5) == 1
+
+    if should_tease and persistent._mas_pm_height < mas_height_monika:
+        m 1rksdlb "{cps=*2}Well yeah, I'm taller than you...{/cps}{nw}"
+        $ _history_list.pop()
+
+    m 1hubfb "[thanks_quip]"
+    m 3hubfa "Hearing you say that never fails to make me smile!"
+    m 3hubfb "I'll always look up to you too!"
+
+    if should_tease and persistent._mas_pm_height > mas_height_monika:
+        m 1rkbfu "{cps=*2}Just like when we kiss...{/cps}{nw}"
+        $ _history_list.pop()
+
+    m 1ekbfa "I love you, [player]~"
     return

@@ -2241,7 +2241,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 null height 20
 
                 if cat_length == 0:
-                    textbutton _("That's enough for now.") action Return(False)
+                    textbutton _("Nevermind.") action Return(False)
                 elif cat_length > 1:
                     textbutton _("Go Back") action Return(-1)
 
@@ -2269,7 +2269,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
                     null height 20
 
-                    textbutton _("That's enough for now.") action Return(False)
+                    textbutton _("Nevermind.") action Return(False)
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
