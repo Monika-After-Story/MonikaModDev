@@ -1,6 +1,108 @@
 # sprite generation using matrix for night sprites
 # TODO: look at adding a highlight option to ACS/Clothes/Hair
 
+python early:
+# Custom filter renderable
+
+# uncomment this if you want syntax highlighting support on vim
+#init -1 python:
+
+    class MASFilterable(renpy.Displayable):
+        """
+        Special displayable that adjusts its image based on filter.
+        Also includes surface caching, if desired.
+
+        PROPERTIES:
+            rendered_surface - render for this displayable. Can be used for
+                caching.
+            flt - filter we last used
+        """
+
+        def __init__(self, 
+                focus=None,
+                default=False,
+                style='default',
+                _args=None,
+                **properties
+        ):
+            """
+            Constructor
+
+            IN:
+                All params are passed to Displayable
+            """
+            super(renpy.Displayable, self).__init__(
+                focus=focus,
+                default=default,
+                style=style
+                _args=_args
+                **properties
+            )
+            self.rendered_surface = None
+            self.flt = None
+
+        # NOTE: extended classes should impelement the render function.
+
+
+    # TODO: use this wwith standard sprites. (think ConditionSwitch with
+    #   morning flag. NOTE: wait until room deco as that is where this will
+    #   actually matter.
+    class MASFilterableSprite(MASFilterable):
+        """
+        Basic filterable sprite that changes for filter.
+        This has NO x/y support
+
+        PROPERTIES:
+            img_obj - the Image object represnting this sprite
+        """
+
+        def __init__(self,
+                image_path
+                focus=None,
+                default=False,
+                style='default',
+                _args=None,
+                **properties
+        ):
+            """
+            Constructor
+
+            IN:
+                image_path - image path (or Image) of the sprite to use
+                remaining properties are sent to Displayable
+            """
+            super(MASFilterable, self).__init__(
+                focus=focus,
+                default=default,
+                style=style,
+                _args=_args,
+                **properties
+            )
+            self.img_obj = Image(image_path)
+
+        def render(self, width, height, st, at):
+            curr_flt = store.mas_sprites._decide_filter()
+            if curr_flt != self.flt or self.rendered_surface is None:
+                # need new render
+                self.flt = curr_flt
+
+                # prepare filtered image
+                new_img = store.mas_sprites._gen_im(self.flt, self.img_obj)
+
+                # render and blit
+                render = renpy.render(new_img, width, height, st, at)
+                rv = renpy.Render(width, height)
+                rv.blit(render, (0, 0))
+
+                # save
+                self.rendered_surface = rv
+
+            return self.rendered_surface
+
+        def visit(self):
+            return [self.img_obj]
+
+
 init -99 python in mas_sprites:
     # NOTE: this must be after -100 and -101
 
@@ -111,10 +213,16 @@ init -4 python in mas_sprites:
     #   image manip containing render, or None if should not be rendered
 
 
-    class MASMonikaRender(renpy.Displayable):
+    class MASMonikaRender(store.MASFilterable):
         """
         custom rendering class for MASMonika. This does caching and rendering
         at the same time.
+
+        INHERED PROPS:
+            rendered_surface - the render for this displayable.
+                If we our render is called more than once, then this is
+                reutrned.
+            flt - filter we are using (string)
 
         PROPERTIES:
             render_keys - list of tuples of the following format:
@@ -123,14 +231,10 @@ init -4 python in mas_sprites:
                 [2] - ImageBase to build the image, IF NOT IN CACHE.
                     This should be set to None if we are sure a surf
                     object is in the cache.
-            rendered_surface - the render for this displayable.
-                If we our render is called more than once, then this is
-                reutrned.
             xpos - xposition to blit objects with
             ypos - yposition to blit objects with
             width - width to render objects with
             height - height to render objects with
-            flt - filter we are using (string)
         """
 
         def __init__(self, render_keys, flt, xpos, ypos, width, height):
@@ -146,7 +250,7 @@ init -4 python in mas_sprites:
                 width - width to render objects with
                 height - height to render objects with
             """
-            super(renpy.Displayable, self).__init__()
+            super(store.MASFilterable, self).__init__()
             self.render_keys = render_keys
             self.rendered_surface = None
             self.xpos = xpos
