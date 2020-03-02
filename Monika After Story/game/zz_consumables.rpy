@@ -978,7 +978,7 @@ init 5 python:
             "Hi, [player],\n"
             "Just letting you know I'm running low on a couple things.\n"
             "You wouldn't mind getting some more for me, would you?\n\n"
-            "Here's a list of some of the things I'm running out of:\n"
+            "Here's a list of what I'm running out of:\n"
         )
 
         MID_TEXT = ""
@@ -1325,7 +1325,7 @@ label mas_consumables_generic_running_out(consumable):
     m 1euc "By the way, [player]..."
 
     if amt_left > 0:
-        m 3eud "I just wanted to let you know I only have about [amt_left] [consumable.container]s of [consumable.disp_name] left."
+        m 3eud "I just wanted to let you know I only have [amt_left] [consumable.container]s of [consumable.disp_name] left."
     else:
         m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name]."
 
@@ -1334,7 +1334,7 @@ label mas_consumables_generic_running_out(consumable):
 
 label mas_consumables_generic_critical_low(consumable):
     m 1euc "Hey, [player]..."
-    m 3eua "I only have about one [consumable.container] of [consumable.disp_name] left."
+    m 3eua "I only have one [consumable.container] of [consumable.disp_name] left."
     m 3eka "Would you mind getting me some more sometime?"
     m 1hua "Thanks~"
     return
