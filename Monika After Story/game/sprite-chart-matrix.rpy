@@ -118,6 +118,10 @@ init -4 python in mas_sprites:
 
     Y_OFFSET = -130
 
+    # TODO: please consider ways we can get submods to add their own filtesr
+    #   likely via APIs that they can use to add filters.
+    #   We should also move filter definitions to -99. 
+
     # filter enums
     FLT_DAY = "day"
     FLT_NIGHT = "night"
@@ -1587,6 +1591,70 @@ init -4 python in mas_sprites:
 
 
 init -2 python:
+
+    class MASFilterMap(object):
+        """
+        The FilterMap connects filters to values
+
+        PROPERTIES:
+            map - dict containg filter to string map
+                key: filter constant
+                value: string or, None if no highlight
+        """
+        import store.mas_sprites_json as msj
+
+        def __init__(self, default=None, **filter_pairs):
+            """
+            Constructor
+
+            IN:
+                default - default code to apply to all filters
+                    (Default: None)
+                **filter_pairs - filter=val args to use. invalid filters are
+                    ignored.
+                    See FILTERS dict. Example:
+                        day=None
+                        night="0"
+            """
+            self.map = {}
+
+            # check existing filter keys and apply defaults
+            for flt in store.mas_sprites.FILTERS:
+                if flt in filter_pairs:
+                    self.map[flt] = filter_pairs[flt]
+
+                else:
+                    self.map[flt] = default
+
+        def get(self, flt, defval=None):
+            """
+            Gets value from map based on filter
+
+            IN:
+                flt - filter to lookup
+                defval - default value to reutrn if filter not found
+                    (Default: None)
+
+            RETURNS: value for given filter
+            """
+            return self.map.get(flt, defval)
+
+        @classmethod
+        def fromJSON(cls, json_obj, msg_log, ind_lvl):
+            """
+            Builds a MASFilterMap given a JSON format of it
+
+            IN:
+                json_obj - JSOn object to parse
+                ind_lvl - indent lvl
+
+            OUT:
+                msg_log - list to add messages to
+
+            RETURNS: MASFilterMap object build using the JSON, or None if
+                failed
+            """
+            # TODO:
 
 
     def mas_drawmonika_rk(

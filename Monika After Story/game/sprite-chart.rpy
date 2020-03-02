@@ -170,6 +170,7 @@ define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffi
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
+# TODO: plan for night filtering these
 image mas_roses = ConditionSwitch(
     "morning_flag", "mod_assets/monika/a/acs-roses-0.png",
     "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
@@ -5792,6 +5793,124 @@ init -2 python:
                     )
 
 
+    class MASHighlightMap(object):
+        """
+        Maps arbitrary keys to MASFilterMap objects
+
+        PROPERTIES:
+            None. Use provided functions to manipulate the map.
+        """
+        __KEY_ALL = "*"
+
+        def __init__(self, keys, default=None):
+            """
+            Constructor
+
+            IN:
+                keys - iterable of keys that we are allowed to use.
+                    NOTE: the default catch all key of "*" (KEY_ALL) does NOt
+                    need to be in here.
+                default - value to use as the default/catch all object. This
+                    is assigned to the KEY_ALL key.
+            """
+            self.__map = { self.__KEY_ALL: default }
+
+            # remove keyall
+            key_list = list(keys)
+            if self.__KEY_ALL in key_list:
+                key_list.remove(self.__KEY_ALL)
+
+            # remove duplicate
+            self.__valid_keys = tuple(set(key_list))
+
+        def _add_key(self, new_key, new_value=None):
+            """
+            Adds a key to the valid keys list. Also adds a value if desired
+            NOTE: this is not intended to be done wildly. Please do not
+            make a habit of adding keys after construction. 
+            NOTE: do not use this to add values. if the given key already 
+            exists, the value is ignored.
+
+            IN:
+                new_key - new key to add
+                new_value - new value to associate with this key 
+                    (Default: None)
+            """
+            if new_key not in self.__valid_keys and new_key != self.__KEY_ALL:
+                key_list = list(self.__valid_keys)
+                key_list.append(new_key)
+                self.__valid_keys = tuple(key_list)
+                self.add(new_key, new_value)
+
+        def add(self, key, value):
+            """
+            Adds value to map.
+            NOTE: type is enforced here. If the given item is NOT a 
+            MASFilterMap or None, it is ignored.
+            NOTE: this will NOT set the default even if KEY_ALL is passed in
+
+            IN:
+                key - key to store item to
+                value - value to add
+                    if None is passed, this is equivalent to clear
+            """
+            if value is None:
+                self.clear(key)
+                return
+
+            if key == self.__KEY_ALL or key not in self.__valid_keys:
+                return
+
+            if value is not None and not isinstance(value, MASFilterMap):
+                return
+
+            # otherwise valid to add
+            self.__map[key] = value
+
+        def clear(self, key):
+            """
+            Clears value with the given key.
+            NOTE: will NOT clear the default even if KEY_ALL is passed in
+
+            IN:
+                key - key to clear with
+            """
+            if key != self.__KEY_ALL and key in self.__map:
+                self.__map.pop(key)
+
+        def get(self, key):
+            """
+            Gets value wth the given key.
+
+            IN:
+                key - key of item to get
+
+            RETURNS: MASFilterMap object, or None if not found
+            """
+            if key in self.__map:
+                return self.__map[key]
+
+            # otherwise return default
+            return self.__map.get(self.__KEY_ALL, None)
+
+        def keys(self):
+            """
+            gets keys in this map
+
+            RETURNS: tuple of keys
+            """
+            return self.__valid_keys
+
+        def setdefault(self, value):
+            """
+            Sets the default value
+
+            IN:
+                value - value to use as default
+            """
+            if value is None or isinstance(value, MASFilterMap):
+                self.__map[self.__KEY_ALL] = value
+
     # pose map helps map poses to an image
     class MASPoseMap(renpy.store.object):
         """
@@ -5845,12 +5964,18 @@ init -2 python:
         # each pose is a string that determines the code to use
         # NOTE: somewhat identical to FB mode in data held
 
+        MPM_TYPE_HL = 5
+        # highlight mode
+        # each pose is a MASFilterMap object that determines what highlight
+        # code to use.
+
         MPM_TYPES = (
             MPM_TYPE_ED,
             MPM_TYPE_FB,
             MPM_TYPE_AS,
             MPM_TYPE_PA,
-            MPM_TYPE_IC
+            MPM_TYPE_IC,
+            MPM_TYPE_HL
         )
 
         MPM_AS_DATA = ("0", "1", "", "*")
@@ -6215,9 +6340,10 @@ init -2 python:
                 NOTE: this is called before the item is removed from MASMonika
             is_custom - True if this is a custom object. False if not.
                 NOTE: this must be set AFTER object creation
+            hl_map - MASHighlightMap object.
+                None means no highlights for this sprite
         """
         import store.mas_sprites_json as msj
-
 
         def __init__(self,
                 name,
@@ -6227,7 +6353,8 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props=None
+                ex_props=None,
+                hl_map=None,
             ):
             """
             MASSpriteBase constructor
@@ -6254,6 +6381,8 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
+                hl_map - MASHighlightMap object to use
+                    (Default: None)
             """
             self.__sp_type = -1
             self.name = name
@@ -6264,6 +6393,7 @@ init -2 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.is_custom = False
+            self.hl_map = hl_map
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
@@ -6274,7 +6404,6 @@ init -2 python:
             else:
                 self.ex_props = ex_props
 
-
         def __eq__(self, other):
             """
             Equality override
@@ -6284,7 +6413,6 @@ init -2 python:
 
             return NotImplemented
 
-
         def __ne__(self, other):
             """
             Not equal override
@@ -6293,7 +6421,6 @@ init -2 python:
             if result is NotImplemented:
                 return result
             return not result
-
 
         def addprop(self, prop):
             """
@@ -6316,7 +6443,6 @@ init -2 python:
             if self.entry_pp is not None:
                 self.entry_pp(_monika_chr, **kwargs)
 
-
         def exit(self, _monika_chr, **kwargs):
             """
             Calls the exit programming point if it exists
@@ -6328,7 +6454,6 @@ init -2 python:
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
 
-
         def getprop(self, prop, defval=None):
             """
             Gets the exprop
@@ -6338,7 +6463,6 @@ init -2 python:
                 defval - default value to return if prop not found
             """
             return self.ex_props.get(prop, defval)
-
     
         def gettype(self):
             """
@@ -6348,14 +6472,12 @@ init -2 python:
             """
             return self.__sp_type
 
-
         def hasprogpoints(self):
             """
             RETURNS: true if this sprite object has at least 1 non-null prog
                 point, False otherwise
             """
             return self.entry_pp is not None or self.exit_pp is not None
-
 
         def hasprop(self, prop):
             """
@@ -6367,7 +6489,6 @@ init -2 python:
             RETURNS: True if this sprite object has the ex_prop, False if not
             """
             return prop in self.ex_props
-
 
         def rmprop(self, prop):
             """
@@ -6383,7 +6504,6 @@ init -2 python:
                 return True
 
             return False
-
 
         @staticmethod
         def sortkey(sprite_base):
@@ -6415,7 +6535,8 @@ init -2 python:
                 fallback=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props=None
+                ex_props=None,
+                hl_map=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -6444,6 +6565,8 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
+                hl_map - MASHighlightMap object to use
+                    (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
                 name,
@@ -6453,7 +6576,8 @@ init -2 python:
                 stay_on_start,
                 entry_pp,
                 exit_pp,
-                ex_props
+                ex_props,
+                hl_map
             )
             self.__sp_type = -2
 
@@ -6526,10 +6650,15 @@ init -2 python:
                 "this black bow"
             keep_on_desk - Set to True to keep the ACS on the desk when monika
                 leaves, False if not
+            hl_map - uses MASHighlightMap with the keys associated with
+                arm_split values. See arm_split for more info.
 
         SEE MASSpriteBase for inherited properties
         """
 
+        __MHM_KEYS = ("0", "1")
+        # valid MAShlightMap keys for this object
+        # also known as the arm codes
 
         def __init__(self,
                 name,
@@ -6595,7 +6724,6 @@ init -2 python:
                     [1] - boolean value for dlg_plur
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
-
             """
             super(MASAccessory, self).__init__(
                 name,
@@ -6605,7 +6733,8 @@ init -2 python:
                 stay_on_start,
                 entry_pp,
                 exit_pp,
-                ex_props
+                ex_props,
+                MASHighlightMap(self.__MHM_KEYS)
             )
             self.__rec_layer = rec_layer
             self.__sp_type = store.mas_sprites_json.SP_ACS
@@ -6653,7 +6782,7 @@ init -2 python:
 
             # valid arm code (or not empty string)
             if arm_code == "*":
-                return ("0", "1")
+                return self.__MHM_KEYS
 
             return (arm_code, )
 
@@ -6665,6 +6794,14 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
+
+        def hl_keys(self):
+            """
+            Returns keys used for MASHighlightMap.
+
+            RETURNS: keys used for all MASHighlightMaps for MASAccessories.
+            """
+            return self.__MHM_KEYS
 
         def _build_loadstrs(self):
             """
@@ -6720,12 +6857,15 @@ init -2 python:
             split - MASPoseMap object that determins if a pose has split hair
                 or not.
                 if a pose has True, it is split. False or None means no split.
+            hl_map - uses MASHighlightMap with "front"/"back" as keys
 
         SEE MASSpriteFallbackBase for inherited properties
 
         POSEMAP explanations:
             Use an empty string to
         """
+
+        __MHM_KEYS = ("front", "back")
 
         def __init__(self,
                 name,
@@ -6778,7 +6918,8 @@ init -2 python:
                 fallback,
                 entry_pp,
                 exit_pp,
-                ex_props
+                ex_props,
+                MASHighlightMap(self.__MHM_KEYS)
             )
             self.__sp_type = store.mas_sprites_json.SP_HAIR
 
@@ -6822,6 +6963,14 @@ init -2 python:
                     )
 
             return loadstrs
+
+        def hl_keys(self):
+            """
+            Returns keys used for MASHighlightMap.
+
+            RETURNS: keys used for all MASHighlightMaps for MASHair objects
+            """
+            return self.__MHM_KEYS
 
 
     class MASClothes(MASSpriteFallbackBase):
