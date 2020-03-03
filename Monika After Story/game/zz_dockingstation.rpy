@@ -2415,3 +2415,195 @@ label mas_dockstat_found_monika:
         call mas_d25_season_exit
 
     jump ch30_post_exp_check
+
+#START: GENERALIZED MONIKA IO LABELS
+
+#IOSTART LABEL
+#Use this to begin monika file generation
+#REQUIRES THE FOLLOWING GLOBAL VARIABLE TO BE SET TO ALLOW CUSTOM FLOWS
+# - mas_farewells.dockstat_iowait_label
+#   If not set, the generic iowait label is assumed
+label mas_dockstat_iostart:
+    show monika 2dsc
+    python:
+        persistent._mas_dockstat_going_to_leave = True
+        first_pass = True
+
+        # launch I/O thread
+        promise = store.mas_dockstat.monikagen_promise
+        promise.start()
+
+    #Jump to the iowait label
+    if renpy.has_label(mas_farewells.dockstat_iowait_label):
+        jump expression mas_farewells.dockstat_iowait_label
+    #If the one passed in wasn't valid, then we'll use the generic iowait
+    jump mas_dockstat_generic_iowait
+
+
+#GENERIC IOWAIT LABEL
+##NOTE: REQUIRES THE FOLLOWING GLOBAL VARIABLES FOR CUSTOM FLOWS
+# - mas_farewells.dockstat_rtg_label
+# - mas_farewells.dockstat_cancel_dlg_label
+#NOTE: If any of these are None (as they default), generic labels are assumed
+label mas_dockstat_generic_iowait:
+    hide screen mas_background_timed_jump
+
+    # we want to display the menu first to give users a chance to quit
+    if first_pass:
+        $ first_pass = False
+        $ ellipsis_count = 1
+        $ give_me_a_second = "Give me a second to get ready."
+
+    elif promise.done():
+        # i/o thread is done!
+        $ _history_list.pop()
+        m "Give me a second to get ready...{fast}{nw}"
+
+        #We're ready to go. Let's jump to the rtg label
+        if renpy.has_label(mas_farewells.dockstat_rtg_label):
+            jump expression mas_farewells.dockstat_rtg_label
+        #Otherwise, we don't have a valid label and need to jump to a generic ready to go
+        jump mas_dockstat_generic_rtg
+
+    else:
+        #clean up the history list so only one "give me a second..." should show up
+        if ellipsis_count == 3:
+            $ ellipsis_count = 1
+            $ give_me_a_second = "Give me a second to get ready."
+
+        else:
+            $ ellipsis_count += 1
+            $ give_me_a_second += '.'
+
+        $ _history_list.pop()
+
+    # display menu options
+    # 4 seconds seems decent enough for waiting.
+    show screen mas_background_timed_jump(4, "mas_dockstat_generic_iowait")
+    menu:
+        m "[give_me_a_second]{fast}"
+        "Wait, wait!":
+            hide screen mas_background_timed_jump
+            $ persistent._mas_dockstat_cm_wait_count += 1
+
+    # fall thru to the wait wait flow
+    show monika 1ekc
+    menu:
+        m "What is it?"
+        "Actually, I can't take you right now.":
+            call mas_dockstat_abort_gen
+            if renpy.has_label(mas_farewells.dockstat_cancel_dlg_label):
+                jump expression mas_farewells.dockstat_cancel_dlg_label
+            #Fallback to generic cancel
+            jump mas_dockstat_generic_cancel
+
+        "Nothing.":
+            # if we get here, we should jump back to the top so we can
+            # continue waiting
+            m 2hub "Oh, good! Let me finish getting ready."
+
+    # by default, continue looping
+    jump mas_dockstat_generic_iowait
+
+
+#GENERIC RTG LABEL
+#FOR CUSTOM FLOWS, REQUIRES THE FOLLOWING GLOBAL VARIABLE:
+# - mas_farewells.dockstat_failed_io_still_going_ask_label
+#If not set, the generic label will be used
+label mas_dockstat_generic_rtg:
+    # io thread should be done by now
+    $ moni_chksum = promise.get()
+    $ promise = None # clear promise so we dont have any issues elsewhere
+    call mas_dockstat_ready_to_go(moni_chksum)
+    if _return:
+        python:
+            persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
+                store.mas_greetings.TYPE_GENERIC_RET
+            )
+
+        #Otherwise we just use the normal outro
+        m 1eua "I'm ready to go."
+        return "quit"
+
+    # otherwise, we failed, so monika should tell player
+    m 1ekc "Oh no..."
+    m 1lksdlb "I wasn't able to turn myself into a file."
+    m "I think you'll have to go on without me this time."
+    m 1ekc "Sorry, [player]."
+
+    if renpy.has_label(mas_farewells.dockstat_failed_io_still_going_ask_label):
+        jump expression mas_farewells.dockstat_failed_io_still_going_ask_label
+    #Use generic to fallback
+    jump mas_dockstat_generic_failed_io_still_going_ask
+
+
+#GENERIC DOCKSTAT CANCEL LABEL
+#Used when the player tells Monika they can't take her out
+#REQUIRES THE FOLLOWING GLOBAL VARIABLE TO BE ASSIGNED IF YOU WANT CUSTOM FLOWS:
+# - mas_farewells.dockstat_cancelled_still_going_ask_label
+label mas_dockstat_generic_cancel:
+    if mas_isMoniDis(lower=True):
+        m 1tkc "..."
+        m 1tkd "I knew it.{nw}"
+        $ _history_list.pop()
+        m 1lksdld "That's okay, I guess."
+
+    elif mas_isMoniHappy(lower=True):
+        m 1ekd "Oh,{w=0.3} all right. Maybe next time?"
+
+    else:
+        # otherwise affection and higher:
+        m 2ekp "Aw..."
+        m 1hub "Fine, but you better take me next time!"
+
+    if renpy.has_label(mas_farewells.dockstat_cancelled_still_going_ask_label):
+        jump expression mas_farewells.dockstat_cancelled_still_going_ask_label
+    #Otherwise we use the generic still going ask as a fallback
+    jump mas_dockstat_generic_cancelled_still_going_ask
+
+#GENERIC CANCELLED STILL GOING ASK
+#Used when we cancel dockstat, this is where Monika asks you if you're still going
+label mas_dockstat_generic_cancelled_still_going_ask:
+    m 1euc "Are you still going to go?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you still going to go?{fast}"
+        "Yes.":
+            if mas_isMoniNormal(higher=True):
+                m 2eka "All right. I'll be right here waiting for you, as usual..."
+                m 2hub "So hurry back! I love you, [player]!"
+
+            else:
+                # otherwise, upset and below
+                m 2tfd "...Fine."
+
+            return "quit"
+
+        "No.":
+            if mas_isMoniNormal(higher=True):
+                m 2eka "...Thank you."
+                m "It means a lot that you're going to spend more time with me since I can't come along."
+                m 3ekb "Please just go about your day whenever you need to, though. I wouldn't want to make you late!"
+
+            else:
+                # otherwise, upset and below
+                m 2lud "All right, then..."
+    return
+
+#GENERIC FAILED IO STILL GOING ASK
+#Used when Monika fails to turn herself into a file. This is where Monika asks you if you're still going
+label mas_dockstat_generic_failed_io_still_going_ask:
+    m "Are you still going to go?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you still going to go?{fast}"
+        "Yes.":
+            m 2eka "I understand. You have things to do, after all..."
+            m 2hub "Be safe out there! I'll be right here waiting for you!"
+            return "quit"
+
+        "No.":
+            m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
+            m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
+            $ mas_gainAffection()
+    return

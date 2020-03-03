@@ -13,6 +13,25 @@
 default persistent.mas_late_farewell = False
 
 init -1 python in mas_farewells:
+    #The label used for the "let me get ready" phase of the io generation
+    #(Used by the iostart label)
+    dockstat_iowait_label = None
+
+    #The label containing dialogue for when Monika is ready to go out.
+    #(Used by the generic iowait label)
+    dockstat_rtg_label = None
+
+    #The label containing dialogue used for when you tell Monika you can't take her with you
+    #(Used in the generic iowait label)
+    dockstat_cancel_dlg_label = None
+
+    #The label used which contains the menu where Monika asks the player if they're still going to go
+    #(Used if you cancel dockstat gen)
+    dockstat_cancelled_still_going_ask_label = None
+
+    #The label used which contains the menu where Monika asks the player if they're still going to go
+    #(Used in the generic rtg label if we failed to generate a file)
+    dockstat_failed_io_still_going_ask_label = None
 
     # custom farewell functions
     def selectFarewell():
@@ -971,109 +990,7 @@ label bye_going_somewhere:
         jump bye_going_somewhere_normalplus_flow
 
 label bye_going_somewhere_post_aff_check:
-    pass
-
-label bye_going_somewhere_iostart:
-    # NOTE: jump back to this label to begin io generation
-
-    show monika 2dsc
-    $ persistent._mas_dockstat_going_to_leave = True
-    $ first_pass = True
-
-    # launch I/O thread
-    $ promise = store.mas_dockstat.monikagen_promise
-    $ promise.start()
-
-label bye_going_somewhere_iowait:
-    hide screen mas_background_timed_jump
-
-    # we want to display the menu first to give users a chance to quit
-    if first_pass:
-        $ first_pass = False
-        $ ellipsis_count = 1
-        $ give_me_a_second = "Give me a second to get ready."
-
-    elif promise.done():
-        # i/o thread is done!
-        $ _history_list.pop()
-        m "Give me a second to get ready...{fast}{nw}"
-        jump bye_going_somewhere_rtg
-
-    else:
-        #clean up the history list so only one "give me a second..." should show up
-        if ellipsis_count == 3:
-            $ ellipsis_count = 1
-            $ give_me_a_second = "Give me a second to get ready."
-
-        else:
-            $ ellipsis_count += 1
-            $ give_me_a_second += '.'
-
-        $ _history_list.pop()
-
-    # display menu options
-    # 4 seconds seems decent enough for waiting.
-    show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
-    menu:
-        m "[give_me_a_second]{fast}"
-        "Wait, wait!":
-            hide screen mas_background_timed_jump
-            $ persistent._mas_dockstat_cm_wait_count += 1
-
-    # fall thru to the wait wait flow
-    show monika 1ekc
-    menu:
-        m "What is it?"
-        "Actually, I can't take you right now.":
-            call mas_dockstat_abort_gen
-            jump bye_going_somewhere_leavemenu
-
-        "Nothing.":
-            # if we get here, we should jump back to the top so we can
-            # continue waiting
-            m 2hub "Oh, good! Let me finish getting ready."
-
-    # by default, continue looping
-    jump bye_going_somewhere_iowait
-
-
-label bye_going_somewhere_rtg:
-
-    # io thread should be done by now
-    $ moni_chksum = promise.get()
-    $ promise = None # clear promise so we dont have any issues elsewhere
-    call mas_dockstat_ready_to_go(moni_chksum)
-    if _return:
-        python:
-            persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
-                store.mas_greetings.TYPE_GENERIC_RET
-            )
-
-        #Otherwise we just use the normal outro
-        m 1eua "I'm ready to go."
-        return "quit"
-
-    # otherwise, we failed, so monika should tell player
-    m 1ekc "Oh no..."
-    m 1lksdlb "I wasn't able to turn myself into a file."
-    m "I think you'll have to go on without me this time."
-    m 1ekc "Sorry, [player]."
-
-    # ask if player is still going to leave
-    m "Are you still going to go?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Are you still going to go?{fast}"
-        "Yes.":
-            m 2eka "I understand. You have things to do, after all..."
-            m 2hub "Be safe out there! I'll be right here waiting for you!"
-            return "quit"
-
-        "No.":
-            m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
-            m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
-            $ mas_gainAffection()
-    return
+    jump mas_dockstat_iostart
 
 
 label bye_going_somewhere_normalplus_flow:

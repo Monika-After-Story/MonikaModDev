@@ -864,13 +864,9 @@ label bye_trick_or_treat:
         m 1eub "I bet we'll get lots of candy!"
         m 1ekbfa "And even if we don't, just spending the evening with you is enough for me~"
 
-    show monika 2dsc
-    $ persistent._mas_dockstat_going_to_leave = True
-    $ first_pass = True
-
-    # launch I/O thread
-    $ promise = store.mas_dockstat.monikagen_promise
-    $ promise.start()
+    #Setup the dockstat stuff
+    $ mas_farewells.dockstat_iowait_label = "bye_trick_or_treat_iowait"
+    jump mas_dockstat_iostart
 
 label bye_trick_or_treat_iowait:
     hide screen mas_background_timed_jump
