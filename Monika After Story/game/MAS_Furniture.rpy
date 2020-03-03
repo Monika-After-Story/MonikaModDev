@@ -9,6 +9,7 @@ init python:
     self.group = "furniture"
     self.display_name = self.name
     self.data = value
+     
     
  class MASSelectableFurniture(store.MASSelectableSprite):
         """
@@ -31,11 +32,73 @@ init python:
                 first_select_dlg=None,
                 select_dlg=None
             ):
+                           
+            #Original
+            self.name = _sprite_object.name
+            self.display_name = display_name
+            self.thumb = thumb + ".png"
+            self.group = group
+            self.unlocked = False
+            self.visible_when_locked = visible_when_locked
+            self.hover_dlg = hover_dlg
+            self.first_select_dlg = first_select_dlg
+            self.select_dlg = select_dlg
+            self.selected = False
+            self.disable_type = store.mas_selspr.DISB_NONE
+
+            # by default
+            # NOTE: only ACS can override this
+            self.remover = False
+            
+            #New vars
+            self.data = _sprite_object.data
+            self.visible = self.data[0]
+            self.img_name = self.data[1]
+            self.sub_objects_present = self.data[3]
+
+            self.size = (1280, 720)
+            self.loc_str = (0,0)
+            self.l_comp_str = "renpy.display.layout.LiveComposite("
+            self.init_str = "{}{}".format(self.l_comp_str, self.size)
+            self.path = 'mod_assets/location/spaceroom/furniture/'
+            self.img_end_str = ".png"
+            sprite_str_list = [self.init_str]
+            self.sub_object_img = None
+            self.full_composite_img = None
+            if self.sub_objects_present:
+                if self.sub_object_img:
+                    pass
+                else:
+                    self.sub_objects = self.data[4]
+                    self.sub_object_img = self.sub_object_composite(self.sub_objects)
+            #checks for img to not rerender
+            if self.full_composite_img:
+                pass
+            else:
+                self.full_composite_img = self.full_composite()
+            
+        def sub_object_composite(self, sub_objects):
+            keys = sub_objects.keys()
+            sprite_str_list = [self.init_str]
+            for x in range(len(sub_objects)):
+                sprite_str_list.append(',{},"{}{}{}"'.format(self.loc_str, self.path, self.sub_objects[keys[x]],self.img_end_str))
+            sprite_str_list.append(")")
+            result_sub_objects = "".join(sprite_str_list)
+            return eval(result_sub_objects)
+            
+        def full_composite(self):
+            sprite_str_list = [self.init_str]
+            if self.sub_object_img:
+               full_composite = renpy.display.layout.LiveComposite(self.size, self.loc_str, '{}{}{}'.format(self.path, self.img_name, self.img_end_str), self.loc_str, self.sub_object_img)
+            else:
+               full_composite = renpy.display.layout.LiveComposite(self.size, self.loc_str, self.sub_object_img)
+            return full_composite
+            
             """
             MASSelectableClothes constructor
 
             IN:
-                _sprite_object - MASSelectableFurniture object to build this selectable
+                _sprite_object - MASFurniture object to build this selectable
                     sprite object with.
                 display_name - name to show on the selectable screen
                 thumb - thumbnail to use on the select screen
@@ -55,19 +118,10 @@ init python:
                     (Default: None)
             """
             #if type(_sprite_object) != MASFurniture:
-            #   raise Exception("not a furniture: {0}".format(group))
+            #   raise Exception("not a outfit: {0}".format(group))
 
-            super(store.MASSelectableFurniture, self).__init__(
-                _sprite_object,
-                display_name,
-                thumb,
-                group,
-                visible_when_locked,
-                hover_dlg,
-                first_select_dlg,
-                select_dlg,
-            )
 
+            
  class MASSelectableImageButtonDisplayable_Furniture(store.MASSelectableImageButtonDisplayable):
     """ Modified version of the MASSelectableImageButtonDisplayable class that allows for multi select and direct asigment of variables when object is selected"""
     def _select(self):
@@ -140,7 +194,8 @@ init python:
 init python in mas_furniture:
  import store
  keys = ["Couch", "Table"]
- values = [[False, "couch"], [False, "table"]]
+ #Format [   = False, img_name = string, select_dlg = []  Sub_object = False, Sub_object_data: [[Name, img_name]]
+ values = [ [False, "Couch", ["Its a couch"], True, {"Left Pillow" : "Left_pillow", "Right Pillow": "Right_pillow"}] , [ False, "Table", ["Its a table"], True, {"Book" : "Book", "Magizines": "Magizines", "Pen": "Pen", "Reading_Glasses" : "Reading_Glasses"} ] ]
  from collections import OrderedDict 
  def init_items(keys, values):
   from collections import OrderedDict 
@@ -175,9 +230,9 @@ init python in mas_furniture:
     store.mas_furniture.FURNITURE_SEL_SL[x].unlocked = True
     
     #Generates thumbnail for MASSelectableFurniture
+
     store.mas_furniture.FURNITURE_SEL_SL[x].thumb = self.get_thumbnail(store.mas_furniture.FURNITURE_SEL_SL[x].name)
 
-   
   def get_disp_items(self, items, select_map = {}):
    """ Takes MASSelectableFurniture Objects and returns MASSelectableImageButtonDisplayable_Furniture objects"""
    disp_items = [store.MASSelectableImageButtonDisplayable_Furniture(item, select_map , viewport_bounds, mailbox) for item in items]
@@ -218,7 +273,8 @@ init python in mas_furniture:
         display_name = type.display_name
         thumb = type.thumb
         group = type.group
-        new_sel_type = store.MASSelectableFurniture(type, display_name, thumb, group,)
+        data = type.data
+        new_sel_type = store.MASSelectableFurniture(type, display_name, thumb, group, select_dlg = data[2])
         
         #Set external
         store.mas_furniture.FURNITURE_SEL_MAP[type.name] = new_sel_type
@@ -226,6 +282,8 @@ init python in mas_furniture:
         store.mas_furniture.FURNITURE_SEL_SL.insert(iteration, new_sel_type)
 
 
+                          
+                                                  
 
   def get_thumbnail(self, name):
    return "acs-ribbon_def.png"
@@ -244,33 +302,46 @@ init python in mas_selspr:
             new_map,
             select_type = 3,
             use_old=False
+                             
         ):
         store.tmp = new_map, old_map
+                            
+
         # determine which map to change to
         if use_old:
             select_map = old_map
+
         else:
             select_map = new_map
             
         """
         for item in select_map.itervalues():
-
                 try:
                     store.MF.items[new_map.keys()[0]][0] =  new_map.values()[0].selected
                 except Exception as e:
                     pass
+                                               
+                                                                              
+                              
+
                 try:
                     store.MF.items[old_map.keys()[0]][0] =  old_map.values()[0].selected
+
                 except Exception as e:
                     pass
+
                 return # quit early since you can only have 1 clothes
         """
+                                      
+
+
 
 
 ### Start lables and actual menu items
 init 5 python:
     """Init to add furniture selector list to apperance game menu"""
     store.mas_selspr.PROMPT_MAP["furniture"] = {"_ev": "monika_furniture_select", "change": "Can you change your furniture?",}
+                                            
     addEvent(
         Event(
             persistent.event_database,
@@ -283,7 +354,9 @@ init 5 python:
         ),
         restartBlacklist=True
     )
+       
 
+         
 
 
 
@@ -291,14 +364,17 @@ label monika_furniture_select:
  #Creates the furniture objects and calls the selector with furniture list made at run_init
  call mas_selector_sidebar_select_furniture(store.mas_furniture.FURNITURE_SEL_SL)
  return
+
  
 label mas_selector_sidebar_select_furniture(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
     #Calls the selector for the furniture items = furniture objects
     $store.MF.furniture_init.run_init()
-    show furniture zorder 5
+    #show furniture zorder 5
+    $renpy.show_screen("drag_test", _layer = "master")
     call mas_selector_sidebar_select_furniture_main(items, 3, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
     return _return
+     
 
 
 
@@ -454,12 +530,12 @@ label mas_selector_sidebar_select_loop_furniture:
         )
         """
         if preview_selections:
-
             store.mas_selspr._adjust_furniture(
                 monika_chr,
                 old_select_map,
                 select_map,
                 select_type,
+                                                                  
             )
             
             old_select_map = dict(select_map)
@@ -702,7 +778,7 @@ screen mas_selector_sidebar_furniture(items, mailbox, confirm, cancel, restore, 
 
 
 init python in mas_furniture:
- 
+  
  def furniture_composite(st,at):
 
   size = (1280, 720)
@@ -712,15 +788,17 @@ init python in mas_furniture:
   path = '"mod_assets/location/spaceroom/furniture/'
   end = ".png"
   sprite_str_list = [init]
-  mf = store.MF.items
-  keys = mf.keys()  
+  mf_items = store.MF.items
+  keys = mf_items.keys()  
   
   sprite_str_list = [init]
-  for x in range(len(mf)):
-   if mf[keys[x]][0]:
-    sprite_str_list.append(',{},{}{}{}"'.format(loc_str, path, mf[keys[x]][1],end))
+  for x in range(len(mf_items)):
+   if mf_items[keys[x]][0]:
+    sprite_str_list.append(',{},{}{}{}"'.format(loc_str, path, store.MF.FURNITURE_SEL_MAP[keys[x]].img_name, end))
+    if store.MF.FURNITURE_SEL_MAP[keys[x]].sub_objects_present:
+     sprite_str_list.append(',{}, store.MF.FURNITURE_SEL_MAP["{}"].sub_object_img'.format(loc_str, keys[x]))
   sprite_str_list.append(")")
-
+  
   result_furniture = "".join(sprite_str_list)
   store.tmp5 = result_furniture
   return eval(result_furniture),None
@@ -728,3 +806,36 @@ init python in mas_furniture:
 #image couch = LiveComposite((1280,720), (0,0), "mod_assets/thumbs/Couch.png")
 image furniture = DynamicDisplayable(store.mas_furniture.furniture_composite)
 
+
+init 20 python:
+ store.drag_list = [Drag(drag_name = MF.FURNITURE_SEL_SL[0].name, d = MF.FURNITURE_SEL_SL[0].full_composite_img, drag_offscreen =True, draggable = True),Drag(drag_name = MF.FURNITURE_SEL_SL[1].name, d = MF.FURNITURE_SEL_SL[1].full_composite_img, drag_offscreen =True, draggable = True)]
+
+
+init python:
+
+ def drag_change(drags, drop):
+  store.tmp = drags
+  #drag_child.positions[0] = tuple([drags[0].x, drags[0].y])
+  return    
+  
+ def add_drags(drags, draggroup):
+  for x in range(len(drags)):
+   current_drag_name = drags[x].drag_name
+   if store.mas_furniture.items.get(current_drag_name)[0] == True:
+    draggroup.add(drags[x])
+   else:
+    pass
+  return
+ 
+ 
+ def drag_test (**kwargs): 
+  import store
+  #ui.text("{}".format(drag_list.child))
+  DG = ui.draggroup()
+  add_drags(store.drag_list, DG)
+  ui.close()
+  return
+ renpy.define_screen("drag_test", drag_test, zorder = "5")
+ 
+init 100 python:
+    config.layers = ['background', 'master', 'transient', 'screens', 'overlay' ]
