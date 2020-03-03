@@ -2444,6 +2444,7 @@ label mas_dockstat_iostart:
 ##NOTE: REQUIRES THE FOLLOWING GLOBAL VARIABLES FOR CUSTOM FLOWS
 # - mas_farewells.dockstat_rtg_label
 # - mas_farewells.dockstat_cancel_dlg_label
+# - mas_farewells.dockstat_wait_menu_label
 #NOTE: If any of these are None (as they default), generic labels are assumed
 label mas_dockstat_generic_iowait:
     hide screen mas_background_timed_jump
@@ -2487,6 +2488,35 @@ label mas_dockstat_generic_iowait:
             $ persistent._mas_dockstat_cm_wait_count += 1
 
     # fall thru to the wait wait flow
+    if renpy.has_label(mas_farewells.dockstat_wait_menu_label):
+        call expression mas_farewells.dockstat_wait_menu_label
+    else:
+        #Otherwise fallback to this label
+        call mas_dockstat_generic_wait_label
+
+    #If we returned True, that means we cancelled
+    if _return:
+        #We need to clear all the vars in case we go dockstat again
+        python:
+            mas_farewells.dockstat_iowait_label = None
+            mas_farewells.dockstat_rtg_label = None
+            mas_farewells.dockstat_cancel_dlg_label = None
+            mas_farewells.dockstat_wait_menu_label = None
+            mas_farewells.dockstat_cancelled_still_going_ask_label = None
+            mas_farewells.dockstat_failed_io_still_going_ask_label = None
+
+        #And now, we return what the generic label would have returned, that is if it's a string.
+        if isinstance(_return, unicode):
+            return _return
+        #This means we got a boolean and we can't return it because the event handler requires strings
+        return
+
+    # by default, continue looping
+    jump mas_dockstat_generic_iowait
+
+
+#GENERIC WAIT LABEL
+label mas_dockstat_generic_wait_label:
     show monika 1ekc
     menu:
         m "What is it?"
@@ -2501,9 +2531,7 @@ label mas_dockstat_generic_iowait:
             # if we get here, we should jump back to the top so we can
             # continue waiting
             m 2hub "Oh, good! Let me finish getting ready."
-
-    # by default, continue looping
-    jump mas_dockstat_generic_iowait
+            return
 
 
 #GENERIC RTG LABEL
@@ -2588,7 +2616,7 @@ label mas_dockstat_generic_cancelled_still_going_ask:
             else:
                 # otherwise, upset and below
                 m 2lud "All right, then..."
-    return
+            return True
 
 #GENERIC FAILED IO STILL GOING ASK
 #Used when Monika fails to turn herself into a file. This is where Monika asks you if you're still going
@@ -2606,4 +2634,4 @@ label mas_dockstat_generic_failed_io_still_going_ask:
             m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
             m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
             $ mas_gainAffection()
-    return
+            return

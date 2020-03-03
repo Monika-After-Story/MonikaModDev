@@ -865,33 +865,11 @@ label bye_trick_or_treat:
         m 1ekbfa "And even if we don't, just spending the evening with you is enough for me~"
 
     #Setup the dockstat stuff
-    $ mas_farewells.dockstat_iowait_label = "bye_trick_or_treat_iowait"
+    $ mas_farewells.dockstat_wait_menu_label = "bye_trick_or_treat_wait_wait"
+    $ mas_farewells.dockstat_rtg_label = "bye_trick_or_treat_rtg"
     jump mas_dockstat_iostart
 
-label bye_trick_or_treat_iowait:
-    hide screen mas_background_timed_jump
-
-    # display menu so users can quit
-    if first_pass:
-        $ first_pass = False
-
-    elif promise.done():
-        # i/o thread is done
-        jump bye_trick_or_treat_rtg
-
-    else:
-        #clean up the history list so only one "give me a second..." should show up
-        $ _history_list.pop()
-
-    # display menu options
-    # 4 seconds seems decent enough for waiting
-    show screen mas_background_timed_jump(4, "bye_trick_or_treat_iowait")
-    menu:
-        m "Give me a second to get ready.{fast}"
-        "Wait, wait!":
-            hide screen mas_background_timed_jump
-            $ persistent._mas_dockstat_cm_wait_count += 1
-
+label bye_trick_or_treat_wait_wait:
     # wait wait flow
     show monika 1ekc
     menu:
@@ -901,7 +879,7 @@ label bye_trick_or_treat_iowait:
 
             m 3hub "Ahaha, I told you!"
             m 1eka "Let's wait 'til evening, okay?"
-            return
+            return True
 
         "You're right, it's too late." if too_late_to_go:
             call mas_dockstat_abort_gen
@@ -917,7 +895,7 @@ label bye_trick_or_treat_iowait:
                 m "It sucks that we couldn't go trick or treating this year."
                 m 4eka "Let's just make sure we can next time, okay?"
 
-            return
+            return True
 
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
@@ -930,13 +908,11 @@ label bye_trick_or_treat_iowait:
             else:
                 m 1eua "Let me know if we can go, okay?"
 
-            return
+            return True
 
         "Nothing.":
             m 2eua "Okay, let me finish getting ready."
-
-    # always loop
-    jump bye_trick_or_treat_iowait
+            return
 
 label bye_trick_or_treat_rtg:
     # iothread is done

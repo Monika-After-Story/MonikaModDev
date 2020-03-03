@@ -25,6 +25,10 @@ init -1 python in mas_farewells:
     #(Used in the generic iowait label)
     dockstat_cancel_dlg_label = None
 
+    #The label used to contain the menu in which Monika asks what's wrong
+    #(Used when you click the wait button during iowait)
+    dockstat_wait_menu_label = None
+
     #The label used which contains the menu where Monika asks the player if they're still going to go
     #(Used if you cancel dockstat gen)
     dockstat_cancelled_still_going_ask_label = None
