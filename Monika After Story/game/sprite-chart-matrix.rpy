@@ -1654,6 +1654,7 @@ init -2 python:
             RETURNS: MASFilterMap object build using the JSON, or None if
                 failed
             """
+            return None
             # TODO:
 
 

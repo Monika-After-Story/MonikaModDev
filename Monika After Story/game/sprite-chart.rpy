@@ -5333,35 +5333,96 @@ init -2 python:
 
     class MASPoseArms(object):
         """
-        representation of a pose's arms. This is to simplify pose management
+        Base class for a pose's arms. Extending classes should override
+        the following:
+            build_loadstrs
+            get
+            fromJSON - as static
 
-        Each pose is either a both or a left/right combo.
-        Both represntes both arms as a single image, left/right are obviously
-        separate layers for each arm. 
+        Each pose consists of a layered combination. 
+        NOTE: we re using spaced layers so we can insert more if needed.
+        0 - bottom layer. after body-0 but before table. Primary bottom layer.
+        5 - middle layer. after table but before body-1.
+        10 - top layer. after body-1.
 
-        If both/left/right is set as a tuple with a string item as the first
-        item, the pose is assumed to have an image layer associated with
-        this pose. 
-
-        If both/left/right is set to None, the pose is assumed to NOT have
-        any image layers associated with this pose.
+        Each implementing class should include the string used to tag the arm
+        type, as well as a mapping for each tag.
+        The mapping should be a dict of the following format:
+            key: layered combination code (see above) (as int)
+            value: string to suffix to the tag for the image
 
         PROPERTIES:
-            both - string name used if a pose has both arms as a layer
-                set to None to not use this. This also takes priority.
-            both_front - True if both has a front layer (1)
-            both_back - True if both has a back layer (0)
-            left - string name used if pose has a left arm as a layer
-                set to None to not use this. Not used if both is set.
-            left_front - True if left has a front layer (1)
-            left_back - True if left has a back layer (0)
-            right - string name used if pose has a back arm as a layer
-                set to None to not use this. Not used if both is set.
-            right_front - True if right has a front layer (1)
-            right_back - True if right has a back layer (0)
+            None. Implementing classes should define their own props.
+
+        CONSTANTS:
+            _MPA_KEYS - tuple of standard pose arm keys to be implemented
+                by all pose arms.
         """
         import store.mas_sprites_json as msj
 
+        _MPA_KEYS = (0, 5, 10)
+
+        def __init__(self):
+            """
+            Constructor
+            """
+            pass
+
+        def build_loadstrs(self):
+            """
+            Builds list of strings for this pose arms
+
+            NOTE: must be implemented by extending classes
+            """
+            raise NotImplementedError
+
+        def clean_map(self, mapping):
+            """
+            cleans the given map, ensuring it contains only valid layer
+            keys. No errors are logged.
+            """
+            for map_key in mapping.keys():
+                if map_key not in self._MPA_KEYS:
+                    mapping.pop(map_key)
+
+        def get(self, layer_code):
+            """
+            Gets the layer string for a layer code.
+
+            RETURNS: layer string to use for a given layer code, or None if
+                no layer string associated with the given layer code.
+            """
+            raise NotImplementedError
+
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl):
+            """
+            Builds a MASPoseArms object given a JSON format of it
+
+            IN:
+                json_obj - json object to parse
+                ind_lvl - indent level
+
+            OUT:
+                msg_log - list to save messages to
+
+            RETURNS: MASPoseArms object built using the JSON, or 
+                None if failed
+            """
+            # TODO: try with Both, then try with l/r
+            return None
+
+
+    class MASPoseArmBoth(MASPoseArms):
+        """
+        PoseArms when a pose shows both arms with one image
+
+        PROPERTIES:
+            both - string tag of the image to use
+            bmap - mapping of layers to image code for the both arm type
+        """
+
+        # TODO: remove these
         J_NAME_BOTH = (
             "both",
             "bback",
@@ -5380,36 +5441,79 @@ init -2 python:
             "rfront",
         )
 
-        def __init__(self, left=None, right=None, both=None):
+        def __init__(self, both, bmap):
             """
             constructor.
-            Each item below should be a tuple:
-                [0] - string name of the arm/arms
-                [1] - True if has back, False if not
-                [2] - True if has front, False if not
 
             IN:
-                left - left arm to use
-                    "left-" is prfixed to the arm string
-                right - right arm to use
-                    "right-" is prefixed to the arm string
-                both - both arms to use
+                both - name of string tag to use for both arms
+                bmap - mapping dict to use for mapping layers and arm codes.
             """
-            self._init_props()
+            self.both = both
+            self.clean_map(bmap)
+            self.bmap = bmap
 
-            if both is not None:
-                self.both, self.both_back, self.both_front = both
+        def build_loadstrs(self):
+            """
+            See MASPoseArms.build_loadstrs
+            """
+            # TODO
+            return []
 
-            else:
-                if left is not None:
-                    self.left, self.left_back, self.left_front = left
-                    self.left = store.mas_sprites.PREFIX_ARMS_LEFT + self.left
+        def get(self, layer_code):
+            """
+            See MASPoseArms.get
+            """
+            return self.bmap.get(layer_code, None)
 
-                if right is not None:
-                    self.right, self.right_back, self.right_front = right
-                    self.right = (
-                        store.mas_sprites.PREFIX_ARMS_RIGHT + self.right
-                    )
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl):
+            """
+            See MASPoseArms.fromJSON
+            """
+            return None
+
+
+    class MASPoseArmsLR(MASPoseArms):
+        """
+        PoseArms when a pose shows left and right arms with two images
+
+        PROPERTIES:
+            left - string tag of the left arm image to use
+                may be None if no left arm to use
+            lmap - mapping of layers to image code for left arm
+                may be None if no left arm to use
+            right - string tag of right arm image to use
+                may be None if no right arm to use
+            rmap - mapping of layers to image code for right arm
+                may be None if no right arm to use
+        """
+
+        def __init__(self, left, lmap, right, rmap):
+            """
+            Constructor
+            NOTE: input args are explicit on purpose. Keep it consistent with
+            MASPoseArmsBoth and prevent weird arm states.
+
+            IN:
+                left - name of string tag to use for left arm
+                lmap - mapping dict to use for mapping left arm layers and
+                    arm codes
+                right - name of string tag to use for right arm
+                rmap - mapping dict to use for mapping right arm layers and
+                    arm codes
+            """
+            self.left = left
+            if left is not None:
+                self.clean_map(lmap)
+            self.lmap = lmap
+
+            self.right = right
+            if right is not None:
+                self.clean_map(rmap)
+            self.rmap = rmap
+
+        # TODO other functions
 
         @staticmethod
         def _add_if_needed(
@@ -5498,20 +5602,6 @@ init -2 python:
                         )
 
             return load_list
-
-        def _init_props(self):
-            """
-            Initializes props
-            """
-            self.both = None
-            self.both_front = None
-            self.both_back = None
-            self.left = None
-            self.left_front = None
-            self.left_back = None
-            self.right = None
-            self.right_front = None
-            self.right_back = None
 
         @staticmethod
         def build_arms_sp_str(
@@ -6638,8 +6728,10 @@ init -2 python:
                 This accepts the following values for poses;
                     "0" - sprite has "-0" version, and should be used for
                         arms-0 for this pose
-                    "1" - sprite has "-1" version, and should be used for
-                        arms-1 for this pose
+                    "5" - sprite has "-5" version, and should be used for
+                        arms-5 for this pose
+                    "10" - sprite has "-10" version, and should be used for
+                        arms-10
                     "" - sprite does not have any arm version for this pose
                     "*" - sprite has both "-0" and "-1" version, and both
                         should be used for this pose
@@ -6656,7 +6748,7 @@ init -2 python:
         SEE MASSpriteBase for inherited properties
         """
 
-        __MHM_KEYS = ("0", "1")
+        __MHM_KEYS = ("0", "5", "10")
         # valid MAShlightMap keys for this object
         # also known as the arm codes
 
@@ -6987,11 +7079,13 @@ init -2 python:
                 are not found.
             pose_arms - MASPoseMap object representing the arm layers used
                 for poses
+            hl_map - uses MASHighlightMap with "0"/"1" as keys
 
         SEE MASSpriteFallbackBase for inherited properties
         """
         import store.mas_sprites as mas_sprites
 
+        _MHM_KEYS = (0, 1)
 
         def __init__(self,
                 name,
@@ -7082,6 +7176,14 @@ init -2 python:
             RETURNS: True if we have a mapping to check, False otherwise
             """
             return len(self.hair_map) > 0
+
+        def hl_keys(self):
+            """
+            Returns keys used for MASHighlightMap.
+
+            RETURNS: keys used for all MASHighlightMaps for MASHair objects
+            """
+            return self.__MHM_KEYS
 
         @staticmethod
         def by_exprop(exprop, value=True):
