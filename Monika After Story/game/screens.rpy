@@ -2429,7 +2429,7 @@ init python:
             return renpy.Render(width, height)
 
         def event(self, ev, x, y, st):
-            if ev.type == pygame.MOUSEBUTTONDOWN:
+            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
                 return True
 
             raise renpy.IgnoreEvent()
@@ -2452,4 +2452,3 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         text "{0}\n\n{1}".format(renpy.substitute(_poem.title), renpy.substitute(_poem.text)) style _styletext
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
-
