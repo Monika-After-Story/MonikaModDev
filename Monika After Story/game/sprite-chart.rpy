@@ -684,6 +684,7 @@ init -5 python in mas_sprites:
     SHADOW_SUFFIX = ART_DLM + "s"
     FHAIR_SUFFIX  = ART_DLM + "front"
     BHAIR_SUFFIX = ART_DLM + "back"
+    HLITE_SUFFIX = ART_DLM + "h"
     FILE_EXT = ".png"
 
     # other const
@@ -5352,7 +5353,7 @@ init -2 python:
             value: string to suffix to the tag for the image
 
         PROPERTIES:
-            None. Implementing classes should define their own props.
+            None
 
         CONSTANTS:
             _MPA_KEYS - tuple of standard pose arm keys to be implemented
@@ -5370,9 +5371,14 @@ init -2 python:
 
         def build_loadstrs(self):
             """
-            Builds list of strings for this pose arms
+            Builds list of all strings for this pose arms. Used for testing
+            loadability
+            NOTE: will NOt include arm prefixes
 
             NOTE: must be implemented by extending classes
+
+            RETURNS: list of strings containing partial filenames for all 
+                possible pose arms this may have.
             """
             raise NotImplementedError
 
@@ -5380,17 +5386,35 @@ init -2 python:
             """
             cleans the given map, ensuring it contains only valid layer
             keys. No errors are logged.
+
+            IN:
+                mapping - mapping to clean
             """
             for map_key in mapping.keys():
                 if map_key not in self._MPA_KEYS:
                     mapping.pop(map_key)
 
-        def get(self, layer_code):
+        def get(self, layer_code, flt):
             """
-            Gets the layer string for a layer code.
+            Generats tag names + suffixes (including highlights) to use for a
+            given layer code and filter. Each tag name is a tuple of strings
+            that can be joined to build the full tag name.
+            Tag names are the parts of the filename after the arms prefix
+            NOTE: this does NOT include file extensions.
 
-            RETURNS: layer string to use for a given layer code, or None if
-                no layer string associated with the given layer code.
+            IN:
+                layer_code - layer code to fetch tag names for
+                flt - filter to get hl for 
+                    pass in None to ignore filters entirely
+
+            RETURNS: list of tuples. tuple format is as follows:
+                [0] - tuple of strings containing: 
+                    tag name + suffix to use for a given layer code. (get)
+                [1] - tuple of strings containing:
+                    tag name + suffix + hlite suffix + hlcode to use for
+                    a given layer code
+                    NOTE: will be an empty list if no hlite to apply
+                this list may be empty if no tag names to use
             """
             raise NotImplementedError
 
@@ -5410,68 +5434,142 @@ init -2 python:
                 None if failed
             """
             # TODO: try with Both, then try with l/r
-            return None
+            raise NotImplementedError
 
 
-    class MASPoseArmBoth(MASPoseArms):
+    class MASPoseArmsBoth(MASPoseArms):
         """
         PoseArms when a pose shows both arms with one image
 
         PROPERTIES:
             both - string tag of the image to use
-            bmap - mapping of layers to image code for the both arm type
+            bmap - mapping of layer existence to image code
+                key: image layer code
+                value: True if exists, False if not
+            hl_bmap - MASHighlightMap with MASPoseArms._MPA_KEYS
         """
 
-        # TODO: remove these
-        J_NAME_BOTH = (
-            "both",
-            "bback",
-            "bfront",
-        )
-
-        J_NAME_LEFT = (
-            "left",
-            "lback",
-            "lfront",
-        )
-
-        J_NAME_RIGHT = (
-            "right",
-            "rback",
-            "rfront",
-        )
-
-        def __init__(self, both, bmap):
+        def __init__(self, both, bmap, bhl_data):
             """
             constructor.
 
             IN:
                 both - name of string tag to use for both arms
-                bmap - mapping dict to use for mapping layers and arm codes.
+                bmap - mapping dict to use to map layer existence. Format:
+                    key: image layer code
+                    value: True if exists, False if not
+                bhl_data - highlight map data. tuple of the following format:
+                    [0] - default highlight to use. Pass in None to not set
+                        a default
+                    [1] - highlight mapping to use. Format:
+                        key: see MASPoseArms._MPA_KEYS
+                        value: MASFilterMap object, or None if no highlight
+                    pass in None if no highlights should be used at all
             """
+            super(MASPoseArmsBoth, self).__init__()
             self.both = both
             self.clean_map(bmap)
             self.bmap = bmap
+
+            # setup hl data
+            if bhl_data is not None:
+                hl_def, hl_mapping = bhl_data
+                self.hl_bmap = MASHighlightMap(self._MPA_KEYS, default=hl_def)
+                self.hl_bmap.apply(hl_mapping)
+            else:
+                self.hl_bmap = None
 
         def build_loadstrs(self):
             """
             See MASPoseArms.build_loadstrs
             """
-            # TODO
-            return []
+            if not self.both:
+                return []
 
-        def get(self, layer_code):
+            fnames = []
+
+            # now add arms based on layer codes
+            for layer_code in self._MPA_KEYS:
+                # NOTE: we only add an arm + hlite if it exists for a layer
+                # code
+
+                # NOTE: we ignore filter here because we will generate
+                # tags for all filters at once
+                tag_names = self.get(layer_code, None)
+                if len(tag_names) > 0:
+
+                    # build main part of filename, with layer code
+                    fname = tag_names[0][0]
+
+                    # add extension for standard file
+                    fname_ext = list(fname)
+                    fname_ext.append(store.mas_sprites.FILE_EXT)
+
+                    # add extension file to regular filenames
+                    fnames.append("".join(fname_ext))
+
+                    # now check for hlite. This should use main part of
+                    # filename as a prefix
+                    if self.hl_bmap is not None:
+
+                        # grab filter map for this layer
+                        mfm = self.hl_bmap.get(layer_code)
+                        if mfm is not None:
+                            # prepare highlight name
+                            hlname = list(fname)
+                            hlname.append(store.mas_sprites.HLITE_SUFFIX)
+
+                            # loop over mfm values
+                            for hlcode in mfm.unique_values():
+                                hlname_ext = list(hlname)
+                                hlname_ext.append(hlcode)
+                                hlname_ext.append(store.mas_sprites.FILE_EXT)
+                                
+                                # add to filenames
+                                fnames.append("".join(hlname_ext))
+
+            return fnames
+
+        def get(self, layer_code, flt):
             """
             See MASPoseArms.get
             """
-            return self.bmap.get(layer_code, None)
+            if not self.both:
+                return []
+
+            # should this item exist on this layer code?
+            if not self.bmap.get(layer_code, False):
+                return []
+
+            # we should exist, now generate the tagname as tuple
+            tag = (
+                self.both,
+                store.mas_sprites.ART_DLM,
+                str(layer_code)
+            )
+
+            # check for hlite code
+            hlcode = MASHighlightMap.o_fltget(self.hl_bmap, layer_code, flt)
+            if not hlcode:
+                return [(tag, [])]
+
+            # otherwise valid hlcode found. Build the hl tag
+            hl_tag = list(tag)
+            hl_tag.extend((
+                store.mas_sprites.HLITE_SUFFIX,
+                hlcode
+            ))
+
+            # and return result
+            return [(tag, tuple(hl_tag))]
 
         @staticmethod
         def fromJSON(json_obj, msg_log, ind_lvl):
             """
             See MASPoseArms.fromJSON
             """
-            return None
+            # TODO
+            raise NotImplementedError
 
 
     class MASPoseArmsLR(MASPoseArms):
@@ -5481,39 +5579,305 @@ init -2 python:
         PROPERTIES:
             left - string tag of the left arm image to use
                 may be None if no left arm to use
-            lmap - mapping of layers to image code for left arm
+            lmap - mapping of left arm layer existance
+                key: image layer code
+                value: True if exists, False if not
+                may be None if no left arm to use
+            hl_lmap - MASHighlightMap for left map with MASPoseARms._MPA_KEYS
                 may be None if no left arm to use
             right - string tag of right arm image to use
                 may be None if no right arm to use
-            rmap - mapping of layers to image code for right arm
+            rmap - mapping of right arm layer existence
+                key: image layer code
+                values: True if eixsts False if not
+                may be None if no right arm to use
+            hl_rmap - MASHighlightMap for right map with MASPoseArms._MPA_KEYS
                 may be None if no right arm to use
         """
 
-        def __init__(self, left, lmap, right, rmap):
+        def __init__(self,
+                lean,
+                left,
+                lmap,
+                lhl_data,
+                right,
+                rmap,
+                rhl_data
+        ):
             """
             Constructor
             NOTE: input args are explicit on purpose. Keep it consistent with
             MASPoseArmsBoth and prevent weird arm states.
 
             IN:
+                lean - lean type of this pose. Pass in None if no lean
                 left - name of string tag to use for left arm
-                lmap - mapping dict to use for mapping left arm layers and
-                    arm codes
+                lmap - mapping dict to use for mapping left arm layers exist
+                    key: image layer code
+                    value: True if exists, False if not
+                lhl_data - highlight map data. tuple of the following format:
+                    [0] - default highlight to use. Pass in None to not set
+                        a default
+                    [1] - highlight mapping to use. Format:
+                        key: see MASPoseArms._MPA_KEYS
+                        value: MASFilterMap object, or None if no highlight
+                    pass in None if no highlights should be used at all
                 right - name of string tag to use for right arm
-                rmap - mapping dict to use for mapping right arm layers and
-                    arm codes
+                rmap - mapping dict to use for mapping right arm layers exist
+                    key: image layer code
+                    value: True if exists, False if not
+                rhl_data - highlight map data. tuple of the following format:
+                    [0] - default highlight to use. Pass in None to not set
+                        a default
+                    [1] - highlight mapping to use. Format:
+                        key: see MASPoseArms._MPA_KEYS
+                        value: MASFilterMap object, or None if no highlight
+                    pass in None if no highlights should be used at all
             """
-            self.left = left
-            if left is not None:
-                self.clean_map(lmap)
-            self.lmap = lmap
+            super(MASPoseArmsLR, self).__init__(lean)
 
-            self.right = right
-            if right is not None:
-                self.clean_map(rmap)
-            self.rmap = rmap
+            # setup left arm
+            self.left, self.lmap, self.hl_lmap = self._parse(
+                left,
+                lmap,
+                lhl_data
+            )
 
-        # TODO other functions
+            # setup right arm
+            self.right, self.rmap, self.hl_rmap = self._parse(
+                right,
+                rmap,
+                rhl_data
+            )
+
+        def __build_fnames(self, fnames, tag_str, layer_code, tag_hl_map):
+            """
+            Generates fnames from tag string
+
+            IN:
+                tag_str - already generated tag string to use
+                layer_code - layer code to generate fnames for
+                tag_hl_map - MASHighlightMap object assocaited with tag_str
+
+            OUT:
+                fnames - list to add fnames to 
+            """
+            # add extension
+            fname_ext = list(tag_str)
+            fname_ext.append(store.mas_sprites.FILE_EXT)
+            fnames.append("".join(fname_ext))
+
+            # now check for hlite
+            if tag_hl_map is not None:
+                
+                # grab filter
+                mfm = tag_hl_map.get(layer_code)
+                if mfm is not None:
+                    # prepare highlight name
+                    hlname = list(tag_str)
+                    hlname.append(store.mas_sprites.HLITE_SUFFIX)
+
+                    # loop over mfm values
+                    for hlcode in mfm.unique_values():
+                        hlname_ext = list(hlname)
+                        hlname_ext.append(hlcode)
+                        hlname_ext.append(store.mas_sprites.FILE_EXT)
+
+                        # add to filenames
+                        fnames.append("".join(hl_name_ext))
+
+        def __get_hltag(self, tag, hl_map, layer_code, flt):
+            """
+            Gets the hltag to use based on highlight map, layer code, and 
+            filter.
+
+            IN: 
+                tag - tag to generate hl_tag with
+                hl_map - MASHighlightMap to check
+                layer_code - layer code to generate hltag for
+                flt - filter to generate hltag for
+
+            RETURNS: tuple of strings, which joined, will generate the hl
+                tag. OR empty list if no hlight found.
+            """
+            hlcode = MASHighlightMap.o_fltget(hl_map, layer_code, flt)
+            if hlcode:
+                hl_tag = list(tag)
+                hl_tag.extend((
+                    store.mas_sprites.HLITE_SUFFIX,
+                    hlcode
+                ))
+                return tuple(hl_tag)
+
+            return []
+
+        def __get_left(self, layer_code, flt):
+            """
+            Gets left side of a MASPoseArms. Assumes is exist.
+            NOTE: if left side does not exist for this MASPoseArms, this
+                output is undefined.
+
+            IN:
+                layer_code - layer code to generate left side for
+                flt - flter to generate left side for
+
+            RETURNS: tuple of the following format:
+                [0] - tuple of strings containing tag data
+                [1] - tuple of strings containing hlite tag data, if found
+            """
+            tag = (
+                store.mas_sprites.PREFIX_ARMS_LEFT,
+                self.left,
+                store.mas_sprites.ART_DLM,
+                str(layer_code),
+            )
+
+            return (tag, self.__get_hltag(tag, self.hl_lmap, layer_code, flt))
+
+        def __get_right(self, layer_code, flt):
+            """
+            Gets right side of a MASPoseArms. Assumes is exist.
+            NOTE: if right side does not exist for this MASPoseArms, this
+                output is undefined.
+
+            IN:
+                layer_code - layer code to generate right side for
+                flt - flter to generate right side for
+
+            RETURNS: tuple of the following format:
+                [0] - tuple of strings containing tag data
+                [1] - tuple of strings containing hlite tag data, if found
+            """
+            tag = (
+                store.mas_sprites.PREFIX_ARMS_RIGHT,
+                self.right,
+                store.mas_sprites.ART_DLM,
+                str(layer_code),
+            )
+
+            return (tag, self.__get_hltag(tag, self.hl_rmap, layer_code, flt))
+
+        def __has_left(self, layer_code):
+            """
+            Checks if the left side of this MASPoseArms exists for a given
+            layer code.
+
+            IN:
+                layer_code - layer code to check
+
+            RETURNS: True if left side exists, False if not
+            """
+            return self.left and self.lmap.get(layer_code, False)
+
+        def __has_right(self, layer_code):
+            """
+            Checks if the right side of this MASPoseArms exists for a given
+            layer code.
+
+            IN:
+                layer_code - layer code to check
+
+            RETURNS: True if right side exists, False if not
+            """
+            return self.right and self.rmap.get(layer_code, False)
+
+        def _parse(self, tag, tag_map, tag_hl_data):
+            """
+            Parses tag data and determines mapping and hl mappings to use
+
+            IN:
+                tag - string tag related to other tag data
+                tag_map - the mapping dict for mapping tag arm layer exist
+                    key: image layer code
+                    value: True if exists, False ifn ot
+                tag_hl_data - highlight map data related to the tag. format:
+                    [0] - default highlight to use, pass in none to not set
+                        a default
+                    [1] - highlight mapping to use. Format:
+                        key: see MASPoseArms._MPA_KEYS
+                        value: MASFilterMap object, or None if no highlight
+                    pass in None if no highlights should be used at all
+
+            RETURNS: tuple of the following format: (each item may be None)
+                [0] - tag 
+                [1] - tag map to use
+                [2] - tag MASHighlightMap to use
+            """
+            if tag is None:
+                return (None, None, None)
+
+            # otherwise parse data a bit
+            self.clean_map(tag_map)
+
+            # check hl map exist
+            if tag_hl_data is None:
+                return (tag, tag_map, None)
+
+            # parse hl map
+            hl_def, hl_mapping = tag_hl_data
+            tag_hl_map = MASHighlightMap(self._MPA_KEYS, default=hl_def)
+            tag_hl_map.apply(hl_mapping)
+            return (tag, tag_map, tag_hl_map)
+
+        def build_loadstrs(self):
+            """
+            See MASPoseArms.build_loadstrs
+            """
+            if not self.left and not self.right:
+                return []
+
+            fnames = []
+            
+            # now add arms based on layer codes
+            for layer_code in self._MPA_KEYS:
+                # NOTE: only add if exist for layer
+
+                # NOTE: ignore fitlers because we gen all at once
+                if self.__has_left(layer_code):
+                    ldata = self.__get_left(layer_code, None)
+                    self.__build_fnames(
+                        fnames,
+                        ldata[0][0],
+                        layer_code,
+                        self.hl_lmap
+                    )
+
+                if self.__has_right(layer_code):
+                    rdata = self.__get_right(layer_code, None)
+                    self.__build_fnames(
+                        fanmes,
+                        rdata[0][0],
+                        layer_code,
+                        self.hl_rmap
+                    )
+
+            return fnames
+
+        def get(self, layer_code, flt):
+            """
+            See MASPoseARms.get
+            """
+            tags = []
+
+            # starting with left side
+            if self.__has_left(layer_code):
+                tags.append(self.__get_left(layer_code, flt))
+
+            # now right side, simliar to left
+            if self.__has_right(layer_code):
+                tags.append(self.__get_right(layer_code, flt))
+
+            return tags
+
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl):
+            """
+            See MASPoseArms.fromJSON
+            """
+            # TODO
+            raise NotImplementedError
+
+    class REMOVE(object):
 
         @staticmethod
         def _add_if_needed(
@@ -5887,6 +6251,9 @@ init -2 python:
         """
         Maps arbitrary keys to MASFilterMap objects
 
+        NOTE: this can iterated over to retrieve all objects in here
+            EXCEPT for the default.
+
         PROPERTIES:
             None. Use provided functions to manipulate the map.
         """
@@ -5912,6 +6279,15 @@ init -2 python:
 
             # remove duplicate
             self.__valid_keys = tuple(set(key_list))
+
+        def __iter__(eslf):
+            """
+            Iterator object (generator)
+            """
+            for key in self.__valid_keys:
+                item = self.get(key)
+                if item is not None:
+                    yield item
 
         def _add_key(self, new_key, new_value=None):
             """
@@ -5957,6 +6333,19 @@ init -2 python:
             # otherwise valid to add
             self.__map[key] = value
 
+        def apply(self, mapping):
+            """
+            Applies the given dict mapping to this MASHighlightMap.
+            NOTE: will not add invalid keys.
+
+            IN:
+                mapping - dict of the following format:
+                    key: valid key for this map
+                    value: MASFitlerMap object or None
+            """
+            for key in mapping:
+                self.add(key, mapping[key])
+
         def clear(self, key):
             """
             Clears value with the given key.
@@ -5967,6 +6356,28 @@ init -2 python:
             """
             if key != self.__KEY_ALL and key in self.__map:
                 self.__map.pop(key)
+
+        def fltget(self, key, flt, defval=None):
+            """
+            Combines getting from here and getting the resulting MASFilterMap
+            object.
+
+            IN:
+                key - key to get from this map
+                flt - filter to get from associated MASFitlerMap, if found
+                defval - default value to return if no flt value could be
+                    found.
+                    (Default: None)
+
+            RETURNS: value in the MASFilterMap associated with the given
+                flt, using the MASFilterMap associated with the given key.
+                or defval if no valid MASfilterMap or value found.
+            """
+            mfm = self.get(key)
+            if mfm is None:
+                return defval
+
+            return mfm.get(flt, defval=defval)
 
         def get(self, key):
             """
@@ -5981,6 +6392,14 @@ init -2 python:
                 return self.__map[key]
 
             # otherwise return default
+            return self.getdef()
+
+        def getdef(self):
+            """
+            Gets the default value
+
+            RETURNS: MASFilterMap object, or NOne if not found
+            """
             return self.__map.get(self.__KEY_ALL, None)
 
         def keys(self):
@@ -6000,6 +6419,26 @@ init -2 python:
             """
             if value is None or isinstance(value, MASFilterMap):
                 self.__map[self.__KEY_ALL] = value
+
+        @staticmethod
+        def o_fltget(mhm, key, flt, defval=None):
+            """
+            Similar to fltget, but on a MASHighlightMap object.
+            NOTE: does None checks of mhm and flt.
+
+            IN:
+                mhm - MASHighlightMap object to run fltget on
+                key - key to get MASFilterMap from mhm
+                flt - filter to get from associated MASFilterMap
+                defval - default value to return if no flt value could be found
+                    (Default: None)
+
+            RETURNS: See fltget
+            """
+            if mhm is None or flt is None
+                return defval
+
+            return mhm.fltget(key, flt, defval=defval)
 
     # pose map helps map poses to an image
     class MASPoseMap(renpy.store.object):
@@ -6444,7 +6883,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 ex_props=None,
-                hl_map=None,
+                hl_data=None,
             ):
             """
             MASSpriteBase constructor
@@ -6471,7 +6910,13 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                hl_map - MASHighlightMap object to use
+                hl_data - highlight map data. tuple of the following format:
+                        [0] - default highlight to use. Pass in None to not
+                            set a default.
+                        [1] - highlight mapping to use
+                        [2] - highlight map keys to use
+                    if None is passed in, then we assume no highlight should
+                    be created.
                     (Default: None)
             """
             self.__sp_type = -1
@@ -6483,7 +6928,6 @@ init -2 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.is_custom = False
-            self.hl_map = hl_map
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
@@ -6493,6 +6937,14 @@ init -2 python:
                 self.ex_props = {}
             else:
                 self.ex_props = ex_props
+
+            # setup highlight map
+            if hl_data is None:
+                self.hl_map = None
+            else:
+                hl_def, hl_mapping, hl_keys = hl_data
+                self.hl_map = MASHighlightMap(hl_keys, default=hl_def)
+                self.hl_map.apply(hl_mapping)
 
         def __eq__(self, other):
             """
@@ -6626,7 +7078,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 ex_props=None,
-                hl_map=None
+                hl_data=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -6655,7 +7107,13 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                hl_map - MASHighlightMap object to use
+                hl_data - highlight map data. tuple of the following format:
+                        [0] - default highlight to use. Pass in None to not
+                            set a default.
+                        [1] - highlight mapping to use
+                        [2] - highlight map keys to use
+                    if None is passed in, then we assume no highlight should
+                    be created.
                     (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
@@ -6667,7 +7125,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                hl_map
+                hl_data
             )
             self.__sp_type = -2
 
@@ -6767,7 +7225,8 @@ init -2 python:
                 ex_props=None,
                 arm_split=None,
                 dlg_data=None,
-                keep_on_desk=False
+                keep_on_desk=False,
+                hl_mapping=None
             ):
             """
             MASAccessory constructor
@@ -6811,12 +7270,28 @@ init -2 python:
                     (Default: None)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
+                    (Default: None)
                 dlg_data - tuple of the following format:
                     [0] - string to use for dlg_desc
                     [1] - boolean value for dlg_plur
+                    (Default: None)
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
+                    (Default: False)
+                hl_data - highlight map data. tuple of the following format:
+                        [0] - default highlight to use. Pass in None to not
+                            set a default.
+                        [1] - highlight mapping to use. Format:
+                            key: see arm_split property
+                            value: MASFilterMap object, or None if no highlight
+                    if None is passed in, then we assume no highlight should
+                    be created.
+                    (Default: None)
             """
+            # setup hl map
+            if hl_data is not None:
+                hl_data = (self.__MHM_KEYS, hl_data[0], hl_data[1])
+
             super(MASAccessory, self).__init__(
                 name,
                 img_sit,
@@ -6826,7 +7301,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                MASHighlightMap(self.__MHM_KEYS)
+                hl_data
             )
             self.__rec_layer = rec_layer
             self.__sp_type = store.mas_sprites_json.SP_ACS
@@ -6841,10 +7316,6 @@ init -2 python:
             else:
                 self.dlg_desc = None
                 self.dlg_plur = None
-
-            # this is for "Special Effects" like a scar or a wound, that
-            # shouldn't be removed by undressing.
-#            self.can_strip=can_strip
 
         @staticmethod
         def get_priority(acs):
@@ -7000,7 +7471,20 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
+                hl_data - highlight map data. tuple of the following format:
+                        [0] - default highlight to use. Pass in None to not
+                            set a default.
+                        [1] - highlight mapping to use. Format:
+                            key: see hl_map property
+                            value: MASFilterMap object, or None if no highlight
+                    if None is passed in, then we assume no highlight should
+                    be created.
+                    (Default: None)
             """
+            # setup hl map
+            if hl_data is not None:
+                hl_data = (self.__MHM_KEYS, hl_data[0], hl_data[1])
+
             super(MASHair, self).__init__(
                 name,
                 img_sit,
@@ -7011,7 +7495,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                MASHighlightMap(self.__MHM_KEYS)
+                hl_data
             )
             self.__sp_type = store.mas_sprites_json.SP_HAIR
 
@@ -7019,7 +7503,6 @@ init -2 python:
                 raise Exception("split MUST be PoseMap")
 
             self.split = split
-
 
         def _build_loadstrs(self):
             """
@@ -7085,7 +7568,7 @@ init -2 python:
         """
         import store.mas_sprites as mas_sprites
 
-        _MHM_KEYS = (0, 1)
+        __MHM_KEYS = (0, 1)
 
         def __init__(self,
                 name,
@@ -7136,7 +7619,20 @@ init -2 python:
                     for poses. If None is passed, we assume use the base
                     layers as a guide
                     (Default: None)
+                hl_data - highlight map data. tuple of the following format:
+                        [0] - default highlight to use. Pass in None to not
+                            set a default.
+                        [1] - highlight mapping to use. Format:
+                            key: see hl_map property
+                            value: MASFilterMap object, or None if no highlight
+                    if None is passed in, then we assume no highlight should
+                    be created.
+                    (Default: None)
             """
+            # setup hl map
+            if hl_data is not None:
+                hl_data = (self.__MHM_KEYS, hl_data[0], hl_data[1])
+
             super(MASClothes, self).__init__(
                 name,
                 img_sit,
@@ -7146,7 +7642,8 @@ init -2 python:
                 fallback,
                 entry_pp,
                 exit_pp,
-                ex_props
+                ex_props,
+                hl_data
             )
             self.__sp_type = store.mas_sprites_json.SP_CLOTHES
 

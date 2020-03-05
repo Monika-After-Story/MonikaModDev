@@ -1639,6 +1639,20 @@ init -2 python:
             """
             return self.map.get(flt, defval)
 
+        def unique_values(self):
+            """
+            Gets all unique non-None values in this filter map
+
+            RETURNS: list of all non-NOne and unique values in this filter
+                map
+            """
+            vals = []
+            for key in self.map:
+                if self.map[key] not in vals:
+                    vals.append(self.map[key])
+
+            return vals
+
         @classmethod
         def fromJSON(cls, json_obj, msg_log, ind_lvl):
             """
