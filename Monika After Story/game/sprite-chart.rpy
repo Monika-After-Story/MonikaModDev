@@ -5280,21 +5280,39 @@ init -2 python:
                 This will be used in bulding the table sprite string
             chair - chair tag associated with tihs table chair combo
                 This will be used in building the chair sprite string
+            hl_map - MASHighlightMap associated with this table chair
         """
         from store.mas_sprites import TC_GEN, PREFIX_TABLE, SHADOW_SUFFIX, NIGHT_SUFFIX
+        __MHM_KEYS = ("t", "c")
 
-        def __init__(self, table, chair):
+        def __init__(self, table, chair, hl_data=None):
             """
             constructor
 
             IN:
                 table - table tag to use 
                 chair - chair tag to use
+                hl_data - highlight mapping data. format:
+                    [0] - default highilght to use. Pass in None to not set
+                        a default.
+                    [1] - highlight mapping to use. Format:
+                        key: "t" for table, "c" for chair
+                        value: MASFilterMap object, or None if no highlight
+                    pass in None if no highlights shoudl be used at all
             """
             self.table = table
             self.chair = chair
             self.has_shadow = False
             self.prepare()
+
+            if hl_data is None:
+                self.hl_map = None
+            else:
+                self.hl_map = MASHighlightMap.create_from_mapping(
+                    self.__MHM_KEYS,
+                    hl_data[0],
+                    hl_data[1]
+                )
 
         def prepare(self):
             """
@@ -5306,12 +5324,6 @@ init -2 python:
                     self.table,
                     self.SHADOW_SUFFIX,
                     ""
-                ))
-                and renpy.loadable(self.TC_GEN.format(
-                    self.PREFIX_TABLE,
-                    self.table,
-                    self.SHADOW_SUFFIX,
-                    self.NIGHT_SUFFIX
                 ))
             )
 
@@ -5473,9 +5485,11 @@ init -2 python:
 
             # setup hl data
             if bhl_data is not None:
-                hl_def, hl_mapping = bhl_data
-                self.hl_bmap = MASHighlightMap(self._MPA_KEYS, default=hl_def)
-                self.hl_bmap.apply(hl_mapping)
+                self.hl_bmap = MASHighlightMap.create_from_mapping(
+                    self._MPA_KEYS,
+                    bhl_data[0],
+                    bhl_data[1]
+                )
             else:
                 self.hl_bmap = None
 
@@ -5814,9 +5828,11 @@ init -2 python:
                 return (tag, tag_map, None)
 
             # parse hl map
-            hl_def, hl_mapping = tag_hl_data
-            tag_hl_map = MASHighlightMap(self._MPA_KEYS, default=hl_def)
-            tag_hl_map.apply(hl_mapping)
+            tag_hl_map = MASHighlightMap(
+                self._MPA_KEYS,
+                tag_hl_data[0],
+                tag_hl_data[1]
+            )
             return (tag, tag_map, tag_hl_map)
 
         def build_loadstrs(self):
@@ -6421,6 +6437,22 @@ init -2 python:
                 self.__map[self.__KEY_ALL] = value
 
         @staticmethod
+        def create_from_mapping(hl_keys, hl_def, hl_mapping):
+            """
+            Creates a MASHighlightMap using keys/default/mapping
+
+            IN:
+                hl_keys - list of keys to use
+                hl_def - default highlight to use. Can be None
+                hl_mapping - mapping to use.
+
+            RETURNS: created MASHighlightMap
+            """
+            mhm = MASHighlightMap(hl_keys, default=hl_def)
+            mhm.apply(hl_mapping)
+            return mhm
+
+        @staticmethod
         def o_fltget(mhm, key, flt, defval=None):
             """
             Similar to fltget, but on a MASHighlightMap object.
@@ -6494,9 +6526,9 @@ init -2 python:
         # NOTE: somewhat identical to FB mode in data held
 
         MPM_TYPE_HL = 5
-        # highlight mode
-        # each pose is a MASFilterMap object that determines what highlight
-        # code to use.
+        # highlight map mode
+        # each pose is a MASHighlightMap object holding highlight mappings
+        # for a pose
 
         MPM_TYPES = (
             MPM_TYPE_ED,
@@ -6604,6 +6636,7 @@ init -2 python:
 
             RETURNS: True if verified, False if not
             """
+            # TODO: fix this
             return value in MASPoseMap.MPM_AS_DATA
 
         def get(self, pose, defval):
@@ -6942,9 +6975,11 @@ init -2 python:
             if hl_data is None:
                 self.hl_map = None
             else:
-                hl_def, hl_mapping, hl_keys = hl_data
-                self.hl_map = MASHighlightMap(hl_keys, default=hl_def)
-                self.hl_map.apply(hl_mapping)
+                self.hl_map = MASHighlightMap.create_from_mapping(
+                    hl_data[2],
+                    hl_data[0],
+                    hl_data[1]
+                )
 
         def __eq__(self, other):
             """
@@ -7200,8 +7235,8 @@ init -2 python:
                 "this black bow"
             keep_on_desk - Set to True to keep the ACS on the desk when monika
                 leaves, False if not
-            hl_map - uses MASHighlightMap with the keys associated with
-                arm_split values. See arm_split for more info.
+            mpm_hl_map - MASPoseMap of MASHighlightMap objects where the keys
+                are arm_split values. See arm_split for more info.
 
         SEE MASSpriteBase for inherited properties
         """
@@ -7226,7 +7261,7 @@ init -2 python:
                 arm_split=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                hl_mapping=None
+                mpm_hl_data=None
             ):
             """
             MASAccessory constructor
@@ -7278,20 +7313,19 @@ init -2 python:
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
                     (Default: False)
-                hl_data - highlight map data. tuple of the following format:
+                mpm_hl_data - mpm-based highlight map data: complex structure
+                    of the following format:
+                    key: See MASPoseMap.CONS_PARAM_NAMES
+                    value: tuple of the following format:
                         [0] - default highlight to use. Pass in None to not
-                            set a default.
+                            set a default (MASFilterMap object)
                         [1] - highlight mapping to use. Format:
                             key: see arm_split property
-                            value: MASFilterMap object, or None if no highlight
-                    if None is passed in, then we assume no highlight should
-                    be created.
+                            value: MASFitlerMap object, or None if no highlight
+                        if None is set, then assume no highlight for this pose
+                    if NOne passed in here, then assume no highlight at all.
                     (Default: None)
             """
-            # setup hl map
-            if hl_data is not None:
-                hl_data = (self.__MHM_KEYS, hl_data[0], hl_data[1])
-
             super(MASAccessory, self).__init__(
                 name,
                 img_sit,
@@ -7300,8 +7334,7 @@ init -2 python:
                 stay_on_start,
                 entry_pp,
                 exit_pp,
-                ex_props,
-                hl_data
+                ex_props
             )
             self.__rec_layer = rec_layer
             self.__sp_type = store.mas_sprites_json.SP_ACS
@@ -7316,6 +7349,33 @@ init -2 python:
             else:
                 self.dlg_desc = None
                 self.dlg_plur = None
+
+            # setup hl map
+            if mpm_hl_data is None:
+                self.mpm_hl_map = None
+
+            else:
+                # generate mpm params
+                params = {}
+
+                # consits of a dict with param name keys
+                for param in MASPoseMap.CONS_PARAM_NAMES:
+                    # get the data
+                    hl_data = mpm_hl_data.get(param, None)
+                    if hl_data is None:
+                        params[param] = None
+
+                    else:
+                        # otherwise have hl data maybe
+                        params[param] = MASHighlightMap.create_from_mapping(
+                            self.__MHM_KEYS,
+                            hl_data[0],
+                            hl_data[1]
+                        )
+
+                # now generate the mpm if we have any args
+                if len(params) > 0:
+                    self.mpm_hl_map = MASPoseMap(**params)
 
         @staticmethod
         def get_priority(acs):
@@ -7483,7 +7543,7 @@ init -2 python:
             """
             # setup hl map
             if hl_data is not None:
-                hl_data = (self.__MHM_KEYS, hl_data[0], hl_data[1])
+                hl_data = (hl_data[0], hl_data[1], self.__MHM_KEYS)
 
             super(MASHair, self).__init__(
                 name,
@@ -7631,7 +7691,7 @@ init -2 python:
             """
             # setup hl map
             if hl_data is not None:
-                hl_data = (self.__MHM_KEYS, hl_data[0], hl_data[1])
+                hl_data = (hl_data[0], hl_data[1], self.__MHM_KEYS)
 
             super(MASClothes, self).__init__(
                 name,

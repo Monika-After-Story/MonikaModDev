@@ -147,74 +147,94 @@ init -4 python in mas_sprites:
 
         return FLT_NIGHT
 
+    # cache ids
+    CI_FACE = 1 # NOTE: we should not use highlights for this
+    CI_ARMS = 2
+    CI_BODY = 3
+    CI_HAIR = 4
+    CI_ACS = 5
+    CI_TC = 6
+    CI_HL = 7
+
     # several caches for images
 
-    cache_face = {}
-    # the facial expression cache. Facial expressions are the most likely
-    # things to overlap across clothing, hair, and ACS, so we should cache them
-    # together to maximize performance
-    # key:
-    #   tuple containing all sprite strings that may be used. None is fine
-    #   here. 
-    #   [0] - should be the filter code. 
-    #   [1] - should be pre/post (0 or 1)
-    #   [2] - type of lean
-    #   [3+] remaining values dependent on type:
-    #       * pre - only blush
-    #       * post - all values except blush
-    # value:
-    #   image manip containing render, or None if should not be rendered
+    CACHE_TABLE = {
+        CI_FACE: {},
+        # the facial expression cache. Facial expressions are the most likely
+        # things to overlap across clothing, hair, and ACS, so we should cache 
+        # them together to maximize performance
+        # key:
+        #   tuple containing all sprite strings that may be used. None is fine
+        #   here. 
+        #   [0] - should be the filter code. 
+        #   [1] - should be pre/post (0 or 1)
+        #   [2] - type of lean
+        #   [3+] remaining values dependent on type:
+        #       * pre - only blush
+        #       * post - all values except blush
+        # value:
+        #   image manip containing render, or None if should not be rendered
 
-    cache_arms = {}
-    # the arms cache. This includes clothes and base sprites.
-    # key:
-    #   tuple containing strings.
-    #   [0] - filter code
-    #   [1] - base code
-    #   [2] - clothing type, "base" for base arms
-    #   [3] - leanpose
-    # value:
-    #   image manip containing render, or None if should not be rendered
+        CI_ARMS: {},
+        # the arms cache. This includes clothes and base sprites.
+        # key:
+        #   tuple containing strings.
+        #   [0] - filter code
+        #   [1] - base code
+        #   [2] - clothing type, "base" for base arms
+        #   [3] - leanpose
+        # value:
+        #   image manip containing render, or None if should not be rendered
 
-    cache_body = {}
-    # the body cache. This includes clothes and base sprites.
-    # key:
-    #   tuple containing strings. 
-    #   [0] - should be the filter code.
-    #   [1] - shoud be image path
-    # value:
-    #   image manip containing render, or None if should not be rendered
+        CI_BODY: {},
+        # the body cache. This includes clothes and base sprites.
+        # key:
+        #   tuple containing strings. 
+        #   [0] - should be the filter code.
+        #   [1] - shoud be image path
+        # value:
+        #   image manip containing render, or None if should not be rendered
 
-    cache_hair = {}
-    # the hair cache
-    # key:
-    #   tuple containing strings. 
-    #   [0] - should be the filter code.
-    #   [1] - should be image path
-    # value:
-    #   image manip containing render, or None if should not be rendered
-    
-    cache_acs = {}
-    # the ACS cache
-    # key:
-    #   tuple containing strings. 
-    #   [0] - should be the filter code.
-    #   [1] - acs name (id)
-    #   [3] - poseid
-    #   [4] - arm code
-    # value:
-    #   image manip containing render, or None if should not be rendered
+        CI_HAIR: {},
+        # the hair cache
+        # key:
+        #   tuple containing strings. 
+        #   [0] - should be the filter code.
+        #   [1] - should be image path
+        # value:
+        #   image manip containing render, or None if should not be rendered
+   
+        CI_ACS: {},
+        # the ACS cache
+        # key:
+        #   tuple containing strings. 
+        #   [0] - should be the filter code.
+        #   [1] - acs name (id)
+        #   [3] - poseid
+        #   [4] - arm code
+        # value:
+        #   image manip containing render, or None if should not be rendered
 
-    cache_tc = {}
-    # the tablechair cache
-    # key:
-    #   tuple containing strings
-    #   [0] - should be the filter code
-    #   [1] - should be either table/chair (0, 1)
-    #   [2] - table/chair type
-    #   [3] - 0 for no shadow, 1 for shadow (ignored for chairs)
-    # value:
-    #   image manip containing render, or None if should not be rendered
+        CI_TC: {},
+        # the tablechair cache
+        # key:
+        #   tuple containing strings
+        #   [0] - should be the filter code
+        #   [1] - should be either table/chair (0, 1)
+        #   [2] - table/chair type
+        #   [3] - 0 for no shadow, 1 for shadow (ignored for chairs)
+        # value:
+        #   image manip containing render, or None if should not be rendered
+
+        CI_HL: {},
+        # the highlight cache
+        # key:
+        #   tuple containing:
+        #   [0] - cache ID - determines what sprite this highlight is for
+        #   [1+] - the sprite's key
+        # value:
+        #   Image object, or None if should not be rendered
+    }
 
 
     class MASMonikaRender(store.MASFilterable):
@@ -231,10 +251,12 @@ init -4 python in mas_sprites:
         PROPERTIES:
             render_keys - list of tuples of the following format:
                 [0] - key of an image to generate. used to check cache
-                [1] - reference to the cache this image is located in
+                [1] - cache ID of the cache to use
                 [2] - ImageBase to build the image, IF NOT IN CACHE.
                     This should be set to None if we are sure a surf
                     object is in the cache.
+                [3] - ImageBase to build the highlight. Set to None if no
+                    no highlight or in cache.
             xpos - xposition to blit objects with
             ypos - yposition to blit objects with
             width - width to render objects with
@@ -263,6 +285,46 @@ init -4 python in mas_sprites:
             self.height = height
             self.flt = flt
 
+        def _l_render_hl(self, render_list, render_key, st, at):
+            """
+            Retrieves highlight image from cache, or renders if needed
+
+            IN:
+                render_key - tuple of the following format
+                    [0] - key of image to generate
+                    [1] - cache ID of the cache to use
+                    [2] - ImageBase to build the image
+                    [3] - ImageBase to build the highlight
+                st - renpy related
+                at - renpy related
+
+            OUT:
+                render_list - list to add render to, if needed
+            """
+            # NOTE: face will never have highlight (for now)
+            if render_key[1] == store.mas_sprites.CI_FACE:
+                return None
+
+            # add cache id to front for highlight key
+            hl_key = list(render_key[0])
+            hl_key.insert(0, render_key[1])
+
+            # check highlight cache
+            img_base = store.mas_sprites._cs_im(
+                hl_key,
+                store.mas_sprites.CI_HL,
+                render_key[3]
+            )
+
+            if img_base is not None:
+                render_list.append(renpy.render(
+                    img_base,
+                    self.width,
+                    self.height,
+                    st, at
+                ))
+
+
         def _render_surf(self, render_key, st, at):
             """
             Retrieves surf image from cache, or renders if needed
@@ -270,8 +332,9 @@ init -4 python in mas_sprites:
             IN:
                 render_key - tuple of the following format:
                     [0] - key of image to generate
-                    [1] - cache surf image should be in
+                    [1] - cache ID of the cache to use
                     [2] - ImageBase to build the image
+                    [3] - ImageBase to build the highlight
                 st - renpy related
                 at - renpy related
 
@@ -279,7 +342,12 @@ init -4 python in mas_sprites:
             """
             # render this bitch
             new_surf = renpy.render(
-                store.mas_sprites._cgen_im(self.flt, render_key),
+                store.mas_sprites._cgen_im(
+                    self.flt,
+                    render_key[0],
+                    render_key[1],
+                    render_key[2]
+                ),
                 self.width,
                 self.height,
                 st, at
@@ -295,10 +363,10 @@ init -4 python in mas_sprites:
             Render function
             """
             if self.rendered_surface is None:
-                renders = [
-                    self._render_surf(render_key, st, at)
-                    for render_key in self.render_keys
-                ]
+                renders = []
+                for render_key in self.render_keys:
+                    renders.append(self._render_surf(render_key, st, at))
+                    self._l_render_hl(renders, render_key, st, at)
 
                 # blit all
                 rv = renpy.Render(width, height)
@@ -344,6 +412,7 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - render key list to add render keys to
         """
+        # TODO: fix because of new pos rules
         img_key = (flt, bcode, clothing, leanpose)
         day_key = None
         if img_key in cache_arms:
@@ -443,26 +512,48 @@ init -4 python in mas_sprites:
             cache_arms[day_key] = None
 
 
-    def _cgen_im(flt, render_key):
+    def _cgen_im(flt, key, cid, img_base):
         """
         Checks cache for an im, 
         GENerates the im if not found
 
         IN:
             flt - filter to use
-            render_key - render key to cache check/gen for (see
-                MASMonikaRender class for more info)
+            key - key of the image
+            cid - cache ID of the cache to use
+            img_base - ImageBase to build the image
 
         RETURNS: Image Manipulator for this render
         """
-        img_key, img_cache, img_base = render_key
-        if img_key in img_cache:
-            return img_cache[img_key]
+        img_cache = _gc(cid)
+        if key in img_cache:
+            return img_cache[key]
 
         # generate the im and cache it
         new_im = _gen_im(flt, img_base)
-        img_cache[img_key] = new_im
+        img_cache[key] = new_im
         return new_im
+
+
+    def _cs_im(key, cid, img_base):
+        """
+        Checks cache for an im
+        Stores the img_base if not found
+
+        IN:
+            key - key of the image
+            cid - cache ID of the cache to use
+            img_base - ImageBase to build the image
+
+        RETURNS: ImageBase
+        """
+        img_cache = _gc(cid)
+        if key in img_cache:
+            return img_cache[key]
+
+        # store then return
+        img_cache[key] = img_base
+        return img_base
 
 
     def _dayify(img_key):
@@ -478,6 +569,19 @@ init -4 python in mas_sprites:
         img_key_list = list(img_key)
         img_key_list[0] = FLT_DAY
         return tuple(img_key_list)
+
+
+    def _gc(cid):
+        """
+        Gets the
+        Cache
+
+        IN:
+            cid - cache ID of the cache to get
+
+        RETURNS: cache, or empty dict if cache not found
+        """
+        return CACHE_TABLE.get(cid, {})
 
 
     def _gen_im(flt, img_base):
@@ -537,7 +641,7 @@ init -4 python in mas_sprites:
             rk_list,
             acs,
             flt,
-            arm_state,
+            arm_split,
             leanpose=None,
             lean=None
     ):
@@ -547,8 +651,8 @@ init -4 python in mas_sprites:
         IN:
             acs - MASAccessory object
             flt - filter to apply
-            arm_state - "0" for arms-base-0, "1" for arms-base-1, None for
-                neither
+            arm_split - see MASAccessory.arm_split for codes. None for no 
+                codes at all.
             leanpose - current pose
                 (Default: None)
             lean - type of lean
@@ -557,6 +661,8 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
+        # TODO: fix for new render key
+
         # pose map check
         # Since None means we dont show, we are going to assume that the
         # accessory should not be shown if the pose key is missing.
@@ -564,10 +670,10 @@ init -4 python in mas_sprites:
         arm_codes = acs.get_arm_split_code(leanpose)
 
         # determine arm code
-        if arm_state is not None:
+        if arm_split is not None:
             
-            if arm_state in arm_codes:
-                arm_code = ART_DLM + arm_state
+            if arm_split in arm_codes:
+                arm_code = ART_DLM + arm_split
             else:
                 # we should not render
                 arm_code = None
@@ -577,13 +683,15 @@ init -4 python in mas_sprites:
 
         # now we can generate the key and check cache
         img_key = (flt, acs.name, poseid, arm_code)
+        cache_acs = _gc(CI_ACS)
         day_key = None
         if img_key in cache_acs:
             if cache_acs[img_key] is not None:
-                rk_list.append((img_key, cache_acs, None))
+                rk_list.append((img_key, CI_ACS, None, None))
 
             return
 
+        # TODO: left off here
         elif flt != FLT_DAY:
             # check of day version is none
             day_key = _dayify(img_key)
@@ -634,7 +742,7 @@ init -4 python in mas_sprites:
             acs_list,
             flt,
             leanpose=None,
-            arm_state=None,
+            arm_split=None,
             lean=None
     ):
         """
@@ -643,8 +751,9 @@ init -4 python in mas_sprites:
         IN:
             acs_list - list of MASAccessory objects, in order of rendering
             flt - filter to use
-            arm_state - set to "0" or "1" if we are rendering acs between
-                base arms and arm ouftits
+            arm_split - set to MASAccessory.arm_split code if we are rendering
+                arm_split-affected ACS. If None, we use standard algs.
+                (Default: None)
             leanpose - arms pose for we are currently rendering
                 (Default: None)
             lean - type of lean
@@ -661,7 +770,7 @@ init -4 python in mas_sprites:
                 rk_list,
                 acs,
                 flt,
-                arm_state,
+                arm_split,
                 leanpose,
                 lean=lean
             )
@@ -1348,16 +1457,15 @@ init -4 python in mas_sprites:
             blush,
             tears,
             emote,
-            table,
-            chair,
+            tablechair,
             show_shadow
     ):
         """
         Creates a list of render keys in order of desired render.
 
         IN:
-            clothing - type of clothing
-            hair - type of hair
+            clothing - MASClothes object
+            hair - MASHair object
             base_pose - MASPoseArms for base
             arms_pose - MASPoseArms for outfit
             eyebrows - type of eyebrows
@@ -1391,8 +1499,7 @@ init -4 python in mas_sprites:
             blush - type of blush
             tears - type of tears
             emote - type of emote
-            table - type of table
-            chair - type of chair
+            tablechair - MASTableChair object
             show_shadow - True will show shadow, false will not
 
         RETURNS: list of render keys
@@ -1772,8 +1879,8 @@ init -2 python:
         # generate sprite displayable
         sprite = store.mas_sprites.MASMonikaRender(
             store.mas_sprites._rk_sitting(
-                character.clothes.img_sit,
-                pose_data[3].img_sit,
+                character.clothes,
+                pose_data[3],
                 pose_data[4],
                 pose_data[5],
                 eyebrows,
@@ -1799,8 +1906,7 @@ init -2 python:
                 blush,
                 tears,
                 emote,
-                character.tablechair.table,
-                character.tablechair.chair,
+                character.tablechair
                 character.tablechair.has_shadow
             ),
             flt,
