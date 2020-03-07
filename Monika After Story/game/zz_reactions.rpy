@@ -1457,26 +1457,16 @@ label mas_reaction_gift_coffee:
         m 1hua "Now I can finally make some!"
         m 1hub "Thank you so much, [player]!"
         m 3eua "Why don't I go ahead and make a cup right now?"
-
-        $ curr_zoom = store.mas_sprites.zoom_level
-        call monika_zoom_transition_reset(1.0)
-        show emptydesk at i11 zorder 9
-
         m 1eua "I'd like to share the first with you, after all."
 
         # monika is off screen
-        hide monika with dissolve
+        call mas_transition_to_emptydesk
         pause 2.0
         m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
         m "Ah, there it is!{w=2}{nw}"
         pause 5.0
         m "And there we go!{w=2}{nw}"
-        show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-        hide emptydesk
-
-        # 1 second wait so dissolve is complete before zooming
-        $ renpy.pause(0.5, hard=True)
-        call monika_zoom_transition(curr_zoom, 1.0)
+        call mas_transition_from_emptydesk()
 
         # monika back on screen
         m 1eua "I'll let that brew for a few minutes."
@@ -1816,20 +1806,11 @@ label mas_reaction_hotchocolate:
         if persistent._mas_coffee_cup_done is not None:
             m 3eua "I'll be sure to have some later!"
         else:
-            $ curr_zoom = store.mas_sprites.zoom_level
-            call monika_zoom_transition_reset(1.0)
-            show emptydesk at i11 zorder 9
-
             m 3eua "In fact, I think I'll make some right now!"
 
-            hide monika with dissolve
+            call mas_transition_to_emptydesk
             pause 5.0
-            show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-            hide emptydesk
-
-            # 1 second wait so dissolve is complete before zooming
-            $ renpy.pause(0.5, hard=True)
-            call monika_zoom_transition(curr_zoom, 1.0)
+            call mas_transition_from_emptydesk("monika 1eua")
 
             m 1hua "There, it'll be ready in a few minutes."
 

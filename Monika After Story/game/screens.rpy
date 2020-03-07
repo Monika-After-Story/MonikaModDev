@@ -2429,7 +2429,7 @@ init python:
             return renpy.Render(width, height)
 
         def event(self, ev, x, y, st):
-            if ev.type == pygame.MOUSEBUTTONDOWN:
+            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
                 return True
 
             raise renpy.IgnoreEvent()
