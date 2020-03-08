@@ -8242,7 +8242,7 @@ init -1 python in mas_sprites:
         store.MASPoseArms.LAYER_BOT: True,
     }
     RIGHT_RESTPOINT = {
-        store.MASPoseArms.LAYER_MID: True,
+        store.MASPoseArms.LAYER_TOP: True,
     }
 
     # initialization of the base arms poes map
@@ -8261,7 +8261,6 @@ init -1 python in mas_sprites:
         POSES[1]: store.MASPoseArmsBoth(
             "crossed",
             {
-                store.MASPoseArms.LAYER_BOT: True,
                 store.MASPoseArms.LAYER_MID: True,
                 store.MASPoseArms.LAYER_TOP: True,
             },
