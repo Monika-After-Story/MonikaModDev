@@ -21,9 +21,14 @@ init python in mas_scheduling:
     # value: average checkout time for type
     AVERAGE_T_CHECKOUT = dict()
 
-    #Dict storing the standard deviation
+    #Dict storing the standard deviation timedelta for time out
+    # key: type
+    # value: standard deviation timedelta for the time out
     STD_DEV_TD_OUT = dict()
 
+    #Dict storing the standard deviation timedelta for checkout time
+    # key: type
+    # value: standard deviation timedelta for checkout time
     STD_DEV_TD_CHECKOUT = dict()
 
     __BASE_TIME_LOG = {
@@ -253,7 +258,7 @@ init python in mas_scheduling:
 
     def getStandardDeviaton(_type):
         """
-        Sets the standard deviation global variables
+        Gets the standard deviation for the checkout type provided (for both checkout time and time out)
 
         IN:
             _type:
