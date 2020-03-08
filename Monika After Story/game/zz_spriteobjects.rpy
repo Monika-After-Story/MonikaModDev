@@ -1001,13 +1001,16 @@ init -1 python:
             default=None,
             use_reg_for_l=True,
             p1=store.mas_sprites.use_bpam(1),
-            p2=MASPoseArms(both=("crossed", True, False)),
+            p2=MASPoseArmsBoth(
+                "crossed",
+                {
+                    MASPoseArms.LAYER_MID: True
+                },
+                None
+            ),
             p3=store.mas_sprites.use_bpam(3),
             p4=store.mas_sprites.use_bpam(4),
-            p5=MASPoseArms(
-                left=("def", False, True),
-                right=("def", True, True)
-            ),
+            p5=store.mas_sprites.use_bpam(5),
             p6=store.mas_sprites.use_bpam(6),
             p7=store.mas_sprites.use_bpam(7)
         )
