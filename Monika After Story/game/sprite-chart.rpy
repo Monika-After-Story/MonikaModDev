@@ -679,11 +679,15 @@ init -5 python in mas_sprites:
     PREFIX_TABLE = "table" + ART_DLM
     PREFIX_CHAIR = "chair" + ART_DLM
 
+    # keys
+    FHAIR = "front"
+    BHAIR = "back"
+
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
     SHADOW_SUFFIX = ART_DLM + "s"
-    FHAIR_SUFFIX  = ART_DLM + "front"
-    BHAIR_SUFFIX = ART_DLM + "back"
+    FHAIR_SUFFIX  = ART_DLM + FHAIR
+    BHAIR_SUFFIX = ART_DLM + BHAIR
     HLITE_SUFFIX = ART_DLM + "h"
     FILE_EXT = ".png"
 
@@ -6437,6 +6441,34 @@ init -2 python:
                 self.__map[self.__KEY_ALL] = value
 
         @staticmethod
+        def convert_mpm(hl_keys, mpm):
+            """
+            Converts hl mappings in a MASPoseMap to MASHighlightMAp objects
+
+            IN:
+                hl_keys - highlight keys to use
+                mpm - MASPoseMap object to convert
+            """
+            if mpm is None:
+                return
+
+            # first, build modify pargs map
+            pargs = {}
+            for param in MASPoseMap.P_PARAM_NAMES:
+                hl_data = mpm.get(MASPoseMap.pn2lp(param), None)
+                if hl_data is None:
+                    pargs[param] = None
+                else:
+                    pargs[param] = MASHighlightMap.create_from_mapping(
+                        hl_keys,
+                        hl_data[0],
+                        hl_data[1]
+                    )
+
+            # then modify the mpm
+            mpm._modify(**pargs)
+
+        @staticmethod
         def create_from_mapping(hl_keys, hl_def, hl_mapping):
             """
             Creates a MASHighlightMap using keys/default/mapping
@@ -6477,6 +6509,9 @@ init -2 python:
         """
         The Posemap helps connect pose names to images
 
+        NOTE: the internal maps are public, but should be converted to
+            private.
+
         This is done via a dict containing pose names and where they
         map to.
 
@@ -6485,19 +6520,32 @@ init -2 python:
         from store.mas_sprites import POSES, L_POSES
         import store.mas_sprites_json as msj
 
+        # pargs 
+        # NOTE: order MUST be same as POSES
+        PARAM_NAMES = (
+            "p1", # steeplnig
+            "p2", # crossed
+            "p3", # restleftpointright
+            "p4", # pointright
+
+            "p6", # down
+            "p7", # downleftpointright
+        )
+
+        # NOTE: order MUST be same as L_POSES
+        L_PARAM_NAMES = (
+            "p5", # LEAN - def|def
+        )
+
+        P_PARAM_NAMES = tuple(list(PARAM_NAMES) + list(L_PARAM_NAMES))
 
         # all params
-        CONS_PARAM_NAMES = (
-            "default", 
-            "l_default",
-#            "use_reg_for_l",
-            "p1",
-            "p2",
-            "p3",
-            "p4",
-            "p5",
-            "p6",
-            "p7",
+        CONS_PARAM_NAMES = tuple(
+            [
+                "default", 
+                "l_default",
+    #            "use_reg_for_l",
+            ] + P_PARAM_NAMES
         )
 
         MPM_TYPE_ED = 0
@@ -6539,6 +6587,7 @@ init -2 python:
             MPM_TYPE_HL
         )
 
+        # TODO :remove
         MPM_AS_DATA = ("0", "1", "", "*")
 
         def __init__(self,
@@ -6548,13 +6597,7 @@ init -2 python:
                 default=None,
                 l_default=None,
                 use_reg_for_l=False,
-                p1=None,
-                p2=None,
-                p3=None,
-                p4=None,
-                p5=None,
-                p6=None,
-                p7=None
+                **pargs
             ):
             """
             Constructor
@@ -6572,46 +6615,94 @@ init -2 python:
                 use_reg_for_l - if True and default is not None and l_default
                     is None, then we use the default instead of l_default
                     when rendering for lean poses
-                p1 - pose id to use for pose 1
-                    - steepling
-                p2 - pose id to use for pose 2
-                    - crossed
-                p3 - pose id to use for pose 3
-                    - restleftpointright
-                p4 - pose id to use for pose 4
-                    - pointright
-                p5 - pose id to use for pose 5
-                    - LEAN: def|def
-                p6 - pose id to use for pose 6
-                    - down
-                p7 - pose id to use for pose 7
-                    - downleftpointright
+                **pargs - the remaining name value pairs are checked in param
+                    names. Each apply to specific pose. 
+                    (See MASPoseArms.PARAM_NAMES and L_PARAM_NAMES)
             """
-            self.map = {
-                self.POSES[0]: p1,
-                self.POSES[1]: p2,
-                self.POSES[2]: p3,
-                self.POSES[3]: p4,
-                self.POSES[4]: p6,
-                self.POSES[5]: p7,
-            }
-            self.l_map = {
-                self.L_POSES[0]: p5
-            }
-            self.use_reg_for_l = use_reg_for_l
+            # setup maps
+            poses, lposes = self.__listify(pargs)
 
-            self.__set_posedefs(self.map, default)
-            if use_reg_for_l and l_default is None and default is not None:
-                self.__set_posedefs(self.l_map, default)
-            else:
-                self.__set_posedefs(self.l_map, l_default)
+            self.map = {}
+            for index in range(len(self.POSES)):
+                self.map[self.POSES[index]] = poses[index]
+
+            self.l_map = {}
+            for index in range(len(self.L_POSES)):
+                self.l_map[self.L_POSES[index]] = lposes[index]
+
+            # setup defaults
+            self.__default = default
+            self.__l_default = l_default
+            self.use_reg_for_l = use_reg_for_l
+            self.__set_defaults()
 
             # use all map for quick pose lookup
             self.__all_map = {}
-            self.__all_map.update(self.map)
-            self.__all_map.update(self.l_map)
+            self.__sync_all()
 
             self._mpm_type = mpm_type
+
+        def __associate(self, pargs):
+            """
+            Associates the given pargs (retrieved from **pargs) and with
+            index values related to POSES and L_POSES
+
+            IN:
+                pargs - dict retrieved from a **pargs var
+
+            RETURNS: tuple of the following format:
+                [0] - POSES associations. List of tuples:
+                    [0] - index to map
+                    [1] - parg value to map to
+                [1] - L_POSES associations. List of tuples:
+                    [0] - index to map
+                    [1] - parg value to map to
+            """
+            return (
+                [
+                    (index, pargs[self.PARAM_NAMES[index]])
+                    for index in range(len(self.POSES))
+                    if self.PARAM_NAMES[index] in pargs
+                ],
+                [
+                    (index, pargs[self.L_PARAM_NAMES[index]]
+                    for index in range(len(self.L_POSES))
+                    if self.L_PARAM_NAMES[index] in pargs
+                ]
+            )
+
+        def __listify(self, pargs, defval):
+            """
+            Takes the pargs and generates lists of them in the same order as
+            POSES and L_POSES.
+
+            If an item doesnt exist in pargs, None is used
+
+            IN:
+                pargs - dict retrieved from a **pargs var
+
+            RETURNS: tuple of hte following format:
+                [0] - list of pose values from pargs, in order of POSES
+                [1] - list of lean values from pargs, in order of L_POSES
+            """
+            return (
+                [ pargs.get(param, None) for param in self.PARAM_NAMES ],
+                [ pargs.get(lparam, None) for lparam in self.L_PARAM_NAMES ],
+            )
+
+        def __set_defaults(self):
+            """
+            Sets all pose defaults
+            """
+            self.__set_posedefs(self.map, self.__default)
+            if (
+                    self.use_reg_for_l
+                    and self.__l_default is None
+                    and self.__default is not None
+            ):
+                self.__set_posedefs(self.l_map, self.__default)
+            else:
+                self.__set_posedefs(self.l_map, self.__l_default)
 
         def __set_posedefs(self, pose_dict, _def):
             """
@@ -6624,6 +6715,56 @@ init -2 python:
             for k in pose_dict:
                 if pose_dict[k] is None:
                     pose_dict[k] = _def
+
+        def __sync_all(self):
+            """
+            Syncs internal all map with the internal maps
+            """
+            self.__all_map.update(self.map)
+            self.__all_map.update(self.l_map)
+
+        def _modify(self, **pargs):
+            """
+            Modifes poses based on given pargs.
+            NOTE: this can damage the sprite system if done incorrectly. 
+
+            IN:
+                **pargs - param name-value pairs. See MASPoseArms.PARAM_NAMES
+                    and MASPoseArms.L_PARAM_NAMES
+            """
+            pose_changes, lpose_changes = self.__associate(pargs)
+            for index, new_value in pose_changes:
+                self.map[self.POSES[index]] = new_value
+
+            for index, new_value in lpose_changes:
+                self.l_map[self.L_POSES[index]] = new_value
+
+            # re-set defaults if needed
+            self.__set_defaults()
+
+            # now update the all map
+            self.__sync_all()
+
+        def _transform(self, func):
+            """
+            Applies the given function to transform value in each pose
+            NOTE: this can damage the sprite system if done incorrectly
+
+            IN:
+                func - function to call for each pose. The current vlaue for
+                    each pose is passed in. The return value of this function
+                    is set to the pose.
+            """
+            for pose in self.map:
+                self.map[pose] = func(self.map[pose])
+            for lpose in self.l_map:
+                self.l_map[lpose] = func(self.map[lpose]
+
+            # set defaults if needed
+            self.__set_defaults()
+
+            # update the all map
+            self.__sync_all()
 
         @staticmethod
         def _verify_mpm_as(value, allow_none=None):
@@ -6880,6 +7021,43 @@ init -2 python:
 
             return MASPoseMap(**mpm_data)
 
+        @staticmethod
+        def lp2pn(leanpose):
+            """
+            Converts a leanpose to a PARAM NAME
+
+            IN:
+                leanpose - leanpose to convert
+
+            RETURNS: param name associated with leanpose, or "" if not valid
+            """
+            if leanpose in MASPoseMap.POSES:
+                return MASPoseMap.PARAM_NAMES[MASPoseMap.POSES.index(leanpose)]
+
+            if leanpose in MASPoseMap.L_POSES:
+                return MASPoseMap.L_PARAM_NAMES[MASPoseMap.L_POSES.index(
+                    leanpose
+                )]
+
+            return ""
+
+        @staticmethod
+        def pn2lp(name):
+            """
+            Converts a PARAM NAME to a leanpose
+
+            IN:
+                name - name of the param to convert
+
+            RETURNS: leanpose associated with param name, or "" if not valid
+            """
+            if name in MASPoseMap.PARAM_NAMES:
+                return MASPoseMap.POSES[MASPoseMap.PARAM_NAMES.index(name)]
+
+            if name in MASPoseMap.L_PARAM_NAMES:
+                return MASPoseMap.L_POSES[MASPoseMap.L_PARAM_NAMES.index(name)]
+
+            return ""
 
     # base class for MAS sprite things
     class MASSpriteBase(renpy.store.object):
@@ -6902,7 +7080,7 @@ init -2 python:
                 NOTE: this is called before the item is removed from MASMonika
             is_custom - True if this is a custom object. False if not.
                 NOTE: this must be set AFTER object creation
-            hl_map - MASHighlightMap object.
+            hl_map - MASPoseMap object that contains MASHighlightMap objects
                 None means no highlights for this sprite
         """
         import store.mas_sprites_json as msj
@@ -6916,7 +7094,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 ex_props=None,
-                hl_data=None,
+                full_hl_data=None,
             ):
             """
             MASSpriteBase constructor
@@ -6943,13 +7121,17 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                hl_data - highlight map data. tuple of the following format:
+                full_hl_data - mpm-based highlight map data: complex structure
+                    of the following format: Tuple:
+                    [0] - keys to use for MASHighlightMap objject
+                    [1] - MASPoseMap that contains tuples: None means no
+                        highlight for a pose.
                         [0] - default highlight to use. Pass in None to not
-                            set a default.
-                        [1] - highlight mapping to use
-                        [2] - highlight map keys to use
-                    if None is passed in, then we assume no highlight should
-                    be created.
+                            set a default (MASFilterMap object)
+                        [1] - highlight mapping to use. Format:
+                            key: varies by extended class
+                            value: MASFitlerMap object, or None if no highlight
+                        if None, then no highlights at all.
                     (Default: None)
             """
             self.__sp_type = -1
@@ -6972,14 +7154,11 @@ init -2 python:
                 self.ex_props = ex_props
 
             # setup highlight map
-            if hl_data is None:
+            if full_hl_data is None:
                 self.hl_map = None
             else:
-                self.hl_map = MASHighlightMap.create_from_mapping(
-                    hl_data[2],
-                    hl_data[0],
-                    hl_data[1]
-                )
+                self.hl_map = full_hl_data[1]
+                MASHighlightMap.convert_mpm(full_hl_data[0], self.hl_map)
 
         def __eq__(self, other):
             """
@@ -7030,6 +7209,29 @@ init -2 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
+
+        def gethlc(self, leanpose, flt, hl_key, defval=None):
+            """
+            Gets highlight code
+
+            IN:
+                leanpoes - leanpose to get highlight for
+                flt - filter to get highlight for
+                hl_key - highlight map key to get highlight for
+                defval - default value to return
+                    (Default: None)
+
+            RETURNS: highlight code, or None if no highlight
+            """
+            if self.hl_map is None or hl_key is None:
+                return defval
+
+            return MASHighlightMap.o_fltget(
+                self.hl_map.get(leanpose, None),
+                hl_key,
+                flt,
+                defval
+            )
 
         def getprop(self, prop, defval=None):
             """
@@ -7113,7 +7315,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 ex_props=None,
-                hl_data=None
+                full_hl_data=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -7142,13 +7344,17 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                hl_data - highlight map data. tuple of the following format:
+                full_hl_data - mpm-based highlight map data: complex structure
+                    of the following format: Tuple:
+                    [0] - keys to use for MASHighlightMap objject
+                    [1] - MASPoseMap that contains tuples: None means no
+                        highlight for a pose.
                         [0] - default highlight to use. Pass in None to not
-                            set a default.
-                        [1] - highlight mapping to use
-                        [2] - highlight map keys to use
-                    if None is passed in, then we assume no highlight should
-                    be created.
+                            set a default (MASFilterMap object)
+                        [1] - highlight mapping to use. Format:
+                            key: varies by extended class
+                            value: MASFitlerMap object, or None if no highlight
+                        if None, then no highlights at all.
                     (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
@@ -7160,7 +7366,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                hl_data
+                full_hl_data
             )
             self.__sp_type = -2
 
@@ -7235,7 +7441,7 @@ init -2 python:
                 "this black bow"
             keep_on_desk - Set to True to keep the ACS on the desk when monika
                 leaves, False if not
-            mpm_hl_map - MASPoseMap of MASHighlightMap objects where the keys
+            hl_map - MASPoseMap of MASHighlightMap objects where the keys
                 are arm_split values. See arm_split for more info.
 
         SEE MASSpriteBase for inherited properties
@@ -7261,7 +7467,7 @@ init -2 python:
                 arm_split=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                mpm_hl_data=None
+                hl_data=None
             ):
             """
             MASAccessory constructor
@@ -7313,17 +7519,14 @@ init -2 python:
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
                     (Default: False)
-                mpm_hl_data - mpm-based highlight map data: complex structure
-                    of the following format:
-                    key: See MASPoseMap.CONS_PARAM_NAMES
-                    value: tuple of the following format:
-                        [0] - default highlight to use. Pass in None to not
-                            set a default (MASFilterMap object)
-                        [1] - highlight mapping to use. Format:
-                            key: see arm_split property
-                            value: MASFitlerMap object, or None if no highlight
-                        if None is set, then assume no highlight for this pose
-                    if NOne passed in here, then assume no highlight at all.
+                hl_data -  MASPoseMap that contains tuples: None means no
+                    highlight for a pose.
+                    [0] - default highlight to use. Pass in None to not
+                        set a default (MASFilterMap object)
+                    [1] - highlight mapping to use. Format:
+                        key: see arm_split property
+                        value: MASFitlerMap object, or None if no highlight
+                    if None, then no highlights at all.
                     (Default: None)
             """
             super(MASAccessory, self).__init__(
@@ -7334,7 +7537,8 @@ init -2 python:
                 stay_on_start,
                 entry_pp,
                 exit_pp,
-                ex_props
+                ex_props,
+                (self.__MHM_KEYS, hl_data)
             )
             self.__rec_layer = rec_layer
             self.__sp_type = store.mas_sprites_json.SP_ACS
@@ -7349,33 +7553,6 @@ init -2 python:
             else:
                 self.dlg_desc = None
                 self.dlg_plur = None
-
-            # setup hl map
-            if mpm_hl_data is None:
-                self.mpm_hl_map = None
-
-            else:
-                # generate mpm params
-                params = {}
-
-                # consits of a dict with param name keys
-                for param in MASPoseMap.CONS_PARAM_NAMES:
-                    # get the data
-                    hl_data = mpm_hl_data.get(param, None)
-                    if hl_data is None:
-                        params[param] = None
-
-                    else:
-                        # otherwise have hl data maybe
-                        params[param] = MASHighlightMap.create_from_mapping(
-                            self.__MHM_KEYS,
-                            hl_data[0],
-                            hl_data[1]
-                        )
-
-                # now generate the mpm if we have any args
-                if len(params) > 0:
-                    self.mpm_hl_map = MASPoseMap(**params)
 
         @staticmethod
         def get_priority(acs):
@@ -7531,20 +7708,16 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                hl_data - highlight map data. tuple of the following format:
-                        [0] - default highlight to use. Pass in None to not
-                            set a default.
-                        [1] - highlight mapping to use. Format:
-                            key: see hl_map property
-                            value: MASFilterMap object, or None if no highlight
-                    if None is passed in, then we assume no highlight should
-                    be created.
+                hl_data -  MASPoseMap that contains tuples: None means no
+                    highlight for a pose.
+                    [0] - default highlight to use. Pass in None to not
+                        set a default (MASFilterMap object)
+                    [1] - highlight mapping to use. Format:
+                        key: "front"/"bacl"
+                        value: MASFitlerMap object, or None if no highlight
+                    if None, then no highlights at all.
                     (Default: None)
             """
-            # setup hl map
-            if hl_data is not None:
-                hl_data = (hl_data[0], hl_data[1], self.__MHM_KEYS)
-
             super(MASHair, self).__init__(
                 name,
                 img_sit,
@@ -7555,7 +7728,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                hl_data
+                (self.__MHM_KEYS, hl_data)
             )
             self.__sp_type = store.mas_sprites_json.SP_HAIR
 
@@ -7641,7 +7814,8 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 ex_props=None,
-                pose_arms=None
+                pose_arms=None,
+                hl_data=None
             ):
             """
             MASClothes constructor
@@ -7679,20 +7853,16 @@ init -2 python:
                     for poses. If None is passed, we assume use the base
                     layers as a guide
                     (Default: None)
-                hl_data - highlight map data. tuple of the following format:
-                        [0] - default highlight to use. Pass in None to not
-                            set a default.
-                        [1] - highlight mapping to use. Format:
-                            key: see hl_map property
-                            value: MASFilterMap object, or None if no highlight
-                    if None is passed in, then we assume no highlight should
-                    be created.
+                hl_data -  MASPoseMap that contains tuples: None means no
+                    highlight for a pose.
+                    [0] - default highlight to use. Pass in None to not
+                        set a default (MASFilterMap object)
+                    [1] - highlight mapping to use. Format:
+                        key: see hl_map property
+                        value: MASFitlerMap object, or None if no highlight
+                    if None, then no highlights at all.
                     (Default: None)
             """
-            # setup hl map
-            if hl_data is not None:
-                hl_data = (hl_data[0], hl_data[1], self.__MHM_KEYS)
-
             super(MASClothes, self).__init__(
                 name,
                 img_sit,
@@ -7703,7 +7873,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                hl_data
+                (self.__MHM_KEYS, hl_data)
             )
             self.__sp_type = store.mas_sprites_json.SP_CLOTHES
 

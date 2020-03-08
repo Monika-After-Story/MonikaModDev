@@ -121,6 +121,8 @@ init -4 python in mas_sprites:
     # TODO: please consider ways we can get submods to add their own filtesr
     #   likely via APIs that they can use to add filters.
     #   We should also move filter definitions to -99. 
+    # TODO: consider making the filter dict use Curryables so custom filters
+    #   can use non-Matrixcolor-based logic
 
     # filter enums
     FLT_DAY = "day"
@@ -512,6 +514,31 @@ init -4 python in mas_sprites:
             cache_arms[day_key] = None
 
 
+    def _bhli(img_list, hlcode):
+        """
+        Builds a 
+        High-
+        Light
+        Image using the base image path
+
+        IN:
+            img_list - list of strings that form the base image string
+                NOTE: we assume that the last item in this string is the 
+                FILE_EXT. This also assumes highlight codes are always inserted
+                right before the file extension.
+            hlcode - highlight code to use. Can be None.
+
+        RETURNS: Image to use for highlight, or None if no highlight.
+        """
+        if hlcode is None:
+            return None
+
+        # otherwise list copy and splice
+        hl_list = list(img_list)
+        hl_list[-1:-1] = [HLITE_SUFFIX, hlcode]
+        return store.Image("".join(hl_list))
+
+
     def _cgen_im(flt, key, cid, img_base):
         """
         Checks cache for an im, 
@@ -642,8 +669,7 @@ init -4 python in mas_sprites:
             acs,
             flt,
             arm_split,
-            leanpose=None,
-            lean=None
+            leanpose=None
     ):
         """
         Adds accessory render key if needed
@@ -655,14 +681,10 @@ init -4 python in mas_sprites:
                 codes at all.
             leanpose - current pose
                 (Default: None)
-            lean - type of lean
-                (Default: None)
 
         OUT:
             rk_list - list to add render keys to
         """
-        # TODO: fix for new render key
-
         # pose map check
         # Since None means we dont show, we are going to assume that the
         # accessory should not be shown if the pose key is missing.
@@ -691,7 +713,6 @@ init -4 python in mas_sprites:
 
             return
 
-        # TODO: left off here
         elif flt != FLT_DAY:
             # check of day version is none
             day_key = _dayify(img_key)
@@ -708,32 +729,23 @@ init -4 python in mas_sprites:
             cache_acs[day_key] = None
             return
 
-        # otherwise we should prepare the render key
-
-        # always use sitting image for now
-        #
-        #if is_sitting:
-        #    acs_str = acs.img_sit
-        #
-        #elif acs.img_stand:
-        #    acs_str = acs.img_stand
-        #
-        #else:
-        #    # standing string is null or None
-        #    return
-
+        # build img list minus file extensions
+        img_list = [
+            A_T_MAIN,
+            PREFIX_ACS,
+            acs.img_sit,
+            ART_DLM,
+            poseid,
+            arm_code,
+            FILE_EXT,
+        ]
+      
+        # finally add the render key
         rk_list.append((
             img_key,
             cache_acs,
-            store.Image("".join((
-                A_T_MAIN,
-                PREFIX_ACS,
-                acs.img_sit,
-                ART_DLM,
-                poseid,
-                arm_code,
-                FILE_EXT,
-            )))
+            store.Image("".join(img_list)),
+            _bhli(img_list, acs.gethlc(leanpose, flt, arm_split))
         ))
 
 
@@ -742,8 +754,7 @@ init -4 python in mas_sprites:
             acs_list,
             flt,
             leanpose=None,
-            arm_split=None,
-            lean=None
+            arm_split=None
     ):
         """
         Adds accessory render keys for a list of accessories
@@ -755,8 +766,6 @@ init -4 python in mas_sprites:
                 arm_split-affected ACS. If None, we use standard algs.
                 (Default: None)
             leanpose - arms pose for we are currently rendering
-                (Default: None)
-            lean - type of lean
                 (Default: None)
 
         OUT:
@@ -771,8 +780,7 @@ init -4 python in mas_sprites:
                 acs,
                 flt,
                 arm_split,
-                leanpose,
-                lean=lean
+                leanpose
             )
 
 
@@ -1129,25 +1137,42 @@ init -4 python in mas_sprites:
             _rk_body_nh(rk_list, clothing, flt, bcode)
 
 
-    def _rk_chair(rk_list, chair, flt):
+    def _rk_chair(rk_list, mtc, flt):
         """
         Adds chair render key
 
         IN:
-            chair - type of chair
+            mtc - MASTableChair object
             flt - filter to use
 
         OUT:
             rk_list - list to add render keys to
         """
-        img_str = "".join((
+        # check cache
+        img_key = (flt, 1, mtc.chair)
+        cache_tc = _gc(CID_TC)
+        if img_key in cache_tc:
+            rk_list.append((img_key, CID_TC, None, None))
+            return
+
+        # otherwise build it
+        img_list = (
             T_MAIN,
             PREFIX_CHAIR,
-            chair,
+            mtc.chair,
             FILE_EXT,
-        ))
+        )
+        img_str = "".join(img_list)
 
-        rk_list.append(((flt, 1, chair), cache_tc, store.Image(img_str)))
+        rk_list.append((
+            img_key,
+            CID_TC,
+            store.Image(img_str),
+            _bhli(
+                img_list,
+                store.MASHighlightMap.o_fltget(mtc.hl_map, "c", flt)
+            )
+        ))
 
 
     def _rk_face(
@@ -1341,40 +1366,60 @@ init -4 python in mas_sprites:
         cache_face[day_key] = None
 
    
-    def _rk_hair(rk_list, hair, flt, hair_sfx, lean):
+    def _rk_hair(rk_list, hair, flt, hair_key, lean):
         """
         Adds hair render key
 
         IN:
-            hair - type of hair
+            hair - MASHair object
             flt - filter to use
-            hair_sfx - hair suffix to use (front/back)
+            hair_key - hair key to use (front/back)
             lean - tyoe of lean
 
         OUT:
             rk_list - list to add render keys to
         """
+        # build img str
         if lean:
-            img_str = "".join((
+            img_list = (
                 H_MAIN,
                 PREFIX_HAIR_LEAN,
                 lean,
                 ART_DLM,
-                hair,
-                hair_sfx,
+                hair.img_sit,
+                ART_DLM,
+                hair_key,
                 FILE_EXT,
-            ))
+            )
 
         else:
-            img_str = "".join((
+            img_list = (
                 H_MAIN,
                 PREFIX_HAIR,
-                hair,
-                hair_sfx,
+                hair.img_sit,
+                ART_DLM,
+                hair_key,
                 FILE_EXT,
-            ))
+            )
 
-        rk_list.append(((flt, img_str), cache_hair, store.Image(img_str)))
+        # genreate string for key check
+        img_str = "".join(img_list)
+
+        # key check
+        img_key = (flt, img_str)
+        cache_hair = _gc(CID_HAIR)
+        if img_key in cache_hair:
+            rk_list.append((img_key, CID_HAIR, None, None)):
+            return
+
+        # otherwise need to build ImageBase
+        # determine highlight if any
+        rk_list.append((
+            img_key,
+            CID_HAIR,
+            store.Image(img_str),
+            _bhli(img_list, hair.gethlc(leanpose, flt, hair_key))
+        ))
 
 
     def _rk_table(rk_list, table, show_shadow, flt):
@@ -1537,28 +1582,18 @@ init -4 python in mas_sprites:
         rk_list = []
 
         # 1. pre-acs
-        _rk_accessory_list(
-            rk_list,
-            acs_pre_list,
-            flt,
-            leanpose,
-            lean=lean
-        )
+        _rk_accessory_list(rk_list, acs_pre_list, flt, leanpose)
 
         # 2. back hair
-        _rk_hair(rk_list, hair, flt, BHAIR_SUFFIX, lean)
+        _rk_hair(rk_list, hair, flt, BHAIR, lean)
 
         # 3. bbh-acs
-        _rk_accessory_list(
-            rk_list,
-            acs_bbh_list,
-            flt,
-            leanpose,
-            lean=lean
-        )
+        _rk_accessory_list(rk_list, acs_bbh_list, flt, leanpose)
 
         # 4. chair
-        _rk_chair(rk_list, chair, flt)
+        _rk_chair(rk_list, tablechair, flt)
+
+        # TODO: left off here
 
         # 5. base-0
         # 6. bse-acs-0
