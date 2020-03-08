@@ -7,6 +7,7 @@ init 10 python:
 init python in mas_scheduling:
     import datetime
     import store
+    import math
 
     ##GLOBAL VARIABLES
 
@@ -19,6 +20,11 @@ init python in mas_scheduling:
     # key: type
     # value: average checkout time for type
     AVERAGE_T_CHECKOUT = dict()
+
+    #Dict storing the standard deviation
+    STD_DEV_TD_OUT = dict()
+
+    STD_DEV_TD_CHECKOUT = dict()
 
     __BASE_TIME_LOG = {
             0: [],
@@ -132,7 +138,7 @@ init python in mas_scheduling:
 
         #And log this checkout
         store.persistent._mas_player_sesh_log[_type][_now.weekday()].append((
-            _now,
+            _now.time(),
             None
         ))
 
@@ -156,7 +162,6 @@ init python in mas_scheduling:
         #If the checkin time isn't None, that means the last session had a crash and we didn't check out properly
         if _out_timedelta is not None:
             return
-
 
         #Complete the log and add our checkin time
         store.persistent._mas_player_sesh_log[_type][_weekday][-1] = (_checkout_time, store.mas_getAbsenceLength())
@@ -194,13 +199,116 @@ init python in mas_scheduling:
 
         return avg_checkout, avg_timeout
 
-    def calculateDailyAverages():
+    def calculateDailyAverages(weekday=None):
         """
         Sets the global variables for checkout time averages and time out timedelta averages
+
+        IN:
+            weekday:
+                if provided, will calculate the daily averages (and set the global variables accordingly)
+                to the average checkout time and average time out globals for the weekday provided
+                If not provided, the current day of the week is assumed
+                (Default: None)
+
+        TODO: Ignore additions to checkin/out if the times fall within the standard deviation, plus purge if list is too big
+        storing average elsewhere
         """
         global AVERAGE_TD_OUT
         global AVERAGE_T_CHECKOUT
+        global STD_DEV_TD_OUT
+        global STD_DEV_TD_CHECKOUT
 
         curr_weekday = datetime.datetime.now().weekday()
         for _type in store.persistent._mas_player_sesh_log:
             AVERAGE_T_CHECKOUT[_type], AVERAGE_TD_OUT[_type] = averageTimes(_type, curr_weekday)
+            STD_DEV_TD_CHECKOUT[_type], STD_DEV_TD_OUT[_type] = getStandardDeviaton(_type)
+
+    def isWithinAverage(_type, _now=None):
+        """
+        Checks if the time provided is within the average recorded period
+
+        IN:
+            _type:
+                Type of checkout we want to check
+
+            _now:
+                The time to check if within the average period (datetime.datetime)
+                If None, now is assumed
+
+        TODO: Fix this for using datetime.time and datetime.timedelta
+        """
+        global AVERAGE_T_CHECKOUT
+        global AVERAGE_TD_OUT
+
+        if _type not in store.persistent._mas_player_sesh_log:
+            return False
+
+        elif _now is None:
+            _now = datetime.datetime.now()
+
+        _checkout_average = AVERAGE_T_CHECKOUT[_type]
+        _timeout_average = AVERAGE_TD_OUT[_type]
+
+        return _checkout_average <= _now <= _checkout_average + _timeout_average
+
+    def getStandardDeviaton(_type):
+        """
+        Sets the standard deviation global variables
+
+        IN:
+            _type:
+                type of checkout to get the standard deviation for
+
+        OUT:
+            Tuple:
+                [0] - Standard deviation timedelta for checkout time
+                [1] - Standard deviation timedelta for return home time
+        """
+        global AVERAGE_T_CHECKOUT
+        global AVERAGE_TD_OUT
+
+        def toDatetime(_time):
+            """
+            Parses a datetime.time object into datetime.datetime object
+
+            IN:
+                _time:
+                    datetime.time object to convert
+
+            OUT:
+                datetime.datetime object representing the parsed passed in time
+
+            NOTE: yyyy/mm/dd will all be set to 1 as we only care about the hh/mm values
+            """
+            return datetime.datetime.combine(
+                datetime.datetime(1,1,1),
+                _time
+            )
+
+        if _type not in store.persistent._mas_player_sesh_log:
+            return datetime.timedelta()
+
+        #Get current weekday
+        weekday = datetime.datetime.now().weekday()
+
+        s_chOut = 0
+        s_tOut = 0
+        seshs = store.persistent._mas_player_sesh_log[_type][weekday]
+
+        #Before we do anything, we need to verify we have actual values so we don't have a zero division error
+        if not seshs:
+            return datetime.timedelta(), datetime.timedelta()
+
+        #Now let's isolate functions and calculate. First the sigma
+        for sesh in seshs:
+            #The sum of [(sesh[0] - avg_checkout_time)^2]
+            s_chOut += math.pow((toDatetime(sesh[0]) - toDatetime(AVERAGE_T_CHECKOUT[_type])).total_seconds(), 2)
+
+            #The sum of [(sesh[1] - avg_timedelta_out)^2]
+            s_tOut += math.pow(sesh[1].total_seconds() - AVERAGE_TD_OUT[_type].total_seconds(), 2)
+
+        #Get N
+        amt_entries = len(store.persistent._mas_player_sesh_log[_type][weekday])
+
+        #Finish both ends of this and square root the sigma function divided by N
+        return datetime.timedelta(seconds=math.sqrt(s_chOut/amt_entries)), datetime.timedelta(seconds=math.sqrt(s_tOut/amt_entries))
