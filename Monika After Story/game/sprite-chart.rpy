@@ -5358,7 +5358,11 @@ init -2 python:
         """
         import store.mas_sprites_json as msj
 
-        _MPA_KEYS = (0, 5, 10)
+        LAYER_BOT = 0
+        LAYER_MID = 1
+        LAYER_TOP = 10
+
+        _MPA_KEYS = (LAYER_BOT, LAYER_MID, LAYER_TOP)
 
         def __init__(self):
             """
@@ -5595,7 +5599,6 @@ init -2 python:
         """
 
         def __init__(self,
-                lean,
                 left,
                 lmap,
                 lhl_data,
@@ -5609,7 +5612,6 @@ init -2 python:
             MASPoseArmsBoth and prevent weird arm states.
 
             IN:
-                lean - lean type of this pose. Pass in None if no lean
                 left - name of string tag to use for left arm
                 lmap - mapping dict to use for mapping left arm layers exist
                     key: image layer code
@@ -5633,7 +5635,7 @@ init -2 python:
                         value: MASFilterMap object, or None if no highlight
                     pass in None if no highlights should be used at all
             """
-            super(MASPoseArmsLR, self).__init__(lean)
+            super(MASPoseArmsLR, self).__init__()
 
             # setup left arm
             self.left, self.lmap, self.hl_lmap = self._parse(
@@ -8234,43 +8236,95 @@ init -2 python:
 
 
 init -1 python in mas_sprites:
+
+    # combined arms
+    LEFT_DOWN = {
+        store.MASPoseArms.LAYER_BOT: True,
+    }
+    RIGHT_RESTPOINT = {
+        store.MASPoseArms.LAYER_MID: True,
+    }
+
     # initialization of the base arms poes map
     base_pose_arms_map = {
         
         # steepling
-        POSES[0]: store.MASPoseArms(both=("steepling", False, True)),
+        POSES[0]: store.MASPoseArmsBoth(
+            "steepling",
+            {
+                store.MASPoseArms.LAYER_TOP: True
+            },
+            None
+        ),
 
         # crossed
-        POSES[1]: store.MASPoseArms(both=("crossed", True, True)),
+        POSES[1]: store.MASPoseArmsBoth(
+            "crossed",
+            {
+                store.MASPoseArms.LAYER_BOT: True,
+                store.MASPoseArms.LAYER_MID: True,
+                store.MASPoseArms.LAYER_TOP: True,
+            },
+            None
+        ),
 
         # restleftpointright
-        POSES[2]: store.MASPoseArms(
-            left=("rest", False, True),
-            right=("restpoint", False, True)
+        POSES[2]: store.MASPoseArmsLR(
+            "rest",
+            {
+                store.MASPoseArms.LAYER_TOP: True
+            },
+            None,
+            "restpoint",
+            RIGHT_RESTPOINT,
+            None
         ),
 
         # point right
-        POSES[3]: store.MASPoseArms(
-            left=("down", True, False),
-            right=("point", True, False)
+        POSES[3]: store.MASPoseArmsLR(
+            "down",
+            LEFT_DOWN,
+            None,
+            "point",
+            {
+                store.MASPoseArms.LAYER_BOT: True
+            },
+            None
         ),
 
         # leaning def
-        L_POSES[0]: store.MASPoseArms(
-            left=("def", False, True),
-            right=("def", True, True)
-        ),
+        L_POSES[0]: store.MASPoseArmsLR(
+            "def",
+            {
+                store.MASPoseArms.LAYER_TOP: True
+            },
+            None,
+            "def",
+            {
+                store.MASPoseArms.LAYER_MID: True,
+                store.MASPoseARms.LAYER_TOP: True,
+            },
+            None
+        )
 
         # down
-        POSES[4]: store.MASPoseArms(
-            left=("down", True, False),
-            right=("down", True, False)
+        POSES[4]: store.MASPoseArmsLR(
+            "down",
+            LEFT_DOWN,
+            None,
+            "down",
+            LEFT_DOWN,
+            None
         ),
 
         # downleftpointright
-        POSES[5]: store.MASPoseArms(
-            left=("down", True, False),
-            right=("restpoint", False, True)
+        POSES[5]: store.MASPoseArmsLR(
+            "down",
+            LEFT_DOWN,
+            None,
+            "restpoint",
+            RIGHT_RESTPOINT,
+            None
         ),
     }
 
