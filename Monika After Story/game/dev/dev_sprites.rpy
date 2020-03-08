@@ -94,48 +94,34 @@ init 100 python:
 
             return cache_size
 
+        # build temp dict for this
+        names = (
+            "Face",
+            "Arms",
+            "Body",
+            "Hair",
+            "ACS",
+            "TableChair",
+            "Highlight",
+        )
+        name_map = {}
+        for index in range(len(names)):
+            name_map[names[index]] = store.mas_sprites._gc(index+1)
+
         with open("cache_report.log", "w") as cache_log:
             # write each caceh out
-            sz_face = _cro(store.mas_sprites.cache_face, "FACE", cache_log)
-            sz_arms = _cro(store.mas_sprites.cache_arms, "ARMS", cache_log)
-            sz_body = _cro(store.mas_sprites.cache_body, "BODY", cache_log)
-            sz_hair = _cro(store.mas_sprites.cache_hair, "HAIR", cache_log)
-            sz_acs = _cro(store.mas_sprites.cache_acs, "ACS", cache_log)
-            sz_tc = _cro(store.mas_sprites.cache_tc, "TableChair", cache_log)
+            size_map = {}
+            for name in names:
+                size_map[name] = _cro(name_map[name], name, cache_log)
 
             # summary report
             cache_log.write("\n\n---- Size Summary ----\n")
-            cache_log.write(sum_line.format(
-                "Face",
-                len(store.mas_sprites.cache_face),
-                sz_face / mb_size
-            ))
-            cache_log.write(sum_line.format(
-                "Arms",
-                len(store.mas_sprites.cache_arms),
-                sz_arms / mb_size
-            ))
-            cache_log.write(sum_line.format(
-                "Body",
-                len(store.mas_sprites.cache_body),
-                sz_body / mb_size
-            ))
-            cache_log.write(sum_line.format(
-                "Hair",
-                len(store.mas_sprites.cache_hair),
-                sz_hair / mb_size
-            ))
-            cache_log.write(sum_line.format(
-                "ACS",
-                len(store.mas_sprites.cache_acs),
-                sz_acs / mb_size
-            ))
-            cache_log.write(sum_line.format(
-                "TableChair",
-                len(store.mas_sprites.cache_tc),
-                sz_tc / mb_size
-            ))
-            
+            for name in names:
+                cache_log.write(sum_line.format(
+                    name,
+                    len(name_map[name]),
+                    size_map[name] / mb_size
+                ))
 
 
 init 5 python:

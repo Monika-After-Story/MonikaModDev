@@ -34,8 +34,8 @@ python early:
             super(renpy.Displayable, self).__init__(
                 focus=focus,
                 default=default,
-                style=style
-                _args=_args
+                style=style,
+                _args=_args,
                 **properties
             )
             self.rendered_surface = None
@@ -57,7 +57,7 @@ python early:
         """
 
         def __init__(self,
-                image_path
+                image_path,
                 focus=None,
                 default=False,
                 style='default',
@@ -150,18 +150,18 @@ init -4 python in mas_sprites:
         return FLT_NIGHT
 
     # cache ids
-    CI_FACE = 1 # NOTE: we should not use highlights for this
-    CI_ARMS = 2
-    CI_BODY = 3
-    CI_HAIR = 4
-    CI_ACS = 5
-    CI_TC = 6
-    CI_HL = 7
+    CID_FACE = 1 # NOTE: we should not use highlights for this
+    CID_ARMS = 2
+    CID_BODY = 3
+    CID_HAIR = 4
+    CID_ACS = 5
+    CID_TC = 6
+    CID_HL = 7
 
     # several caches for images
 
     CACHE_TABLE = {
-        CI_FACE: {},
+        CID_FACE: {},
         # the facial expression cache. Facial expressions are the most likely
         # things to overlap across clothing, hair, and ACS, so we should cache 
         # them together to maximize performance
@@ -177,7 +177,7 @@ init -4 python in mas_sprites:
         # value:
         #   image manip containing render, or None if should not be rendered
 
-        CI_ARMS: {},
+        CID_ARMS: {},
         # the arms cache. This includes clothes and base sprites.
         # key:
         #   tuple containing strings.
@@ -188,7 +188,7 @@ init -4 python in mas_sprites:
         # value:
         #   image manip containing render, or None if should not be rendered
 
-        CI_BODY: {},
+        CID_BODY: {},
         # the body cache. This includes clothes and base sprites.
         # key:
         #   tuple containing strings. 
@@ -197,7 +197,7 @@ init -4 python in mas_sprites:
         # value:
         #   image manip containing render, or None if should not be rendered
 
-        CI_HAIR: {},
+        CID_HAIR: {},
         # the hair cache
         # key:
         #   tuple containing strings. 
@@ -206,7 +206,7 @@ init -4 python in mas_sprites:
         # value:
         #   image manip containing render, or None if should not be rendered
    
-        CI_ACS: {},
+        CID_ACS: {},
         # the ACS cache
         # key:
         #   tuple containing strings. 
@@ -217,7 +217,7 @@ init -4 python in mas_sprites:
         # value:
         #   image manip containing render, or None if should not be rendered
 
-        CI_TC: {},
+        CID_TC: {},
         # the tablechair cache
         # key:
         #   tuple containing strings
@@ -228,7 +228,7 @@ init -4 python in mas_sprites:
         # value:
         #   image manip containing render, or None if should not be rendered
 
-        CI_HL: {},
+        CID_HL: {},
         # the highlight cache
         # key:
         #   tuple containing:
@@ -304,17 +304,16 @@ init -4 python in mas_sprites:
                 render_list - list to add render to, if needed
             """
             # NOTE: face will never have highlight (for now)
-            if render_key[1] == store.mas_sprites.CI_FACE:
+            if render_key[1] == store.mas_sprites.CID_FACE:
                 return None
 
             # add cache id to front for highlight key
-            hl_key = list(render_key[0])
-            hl_key.insert(0, render_key[1])
+            hl_key = (render_key[1],) + render_key[0]
 
             # check highlight cache
             img_base = store.mas_sprites._cs_im(
                 hl_key,
-                store.mas_sprites.CI_HL,
+                store.mas_sprites.CID_HL,
                 render_key[3]
             )
 
@@ -385,7 +384,12 @@ init -4 python in mas_sprites:
             NOTE: will also save to our cache
             """
             return [
-                store.mas_sprites._cgen_im(self.flt, render_key)
+                store.mas_sprites._cgen_im(
+                    self.flt,
+                    render_key[0],
+                    render_key[1],
+                    render_key[2]
+                )
                 for render_key in self.render_keys
             ]
 
@@ -670,11 +674,11 @@ init -4 python in mas_sprites:
 
         # now we can generate the key and check cache
         img_key = (flt, acs.name, poseid, arm_code)
-        cache_acs = _gc(CI_ACS)
+        cache_acs = _gc(CID_ACS)
         day_key = None
         if img_key in cache_acs:
             if cache_acs[img_key] is not None:
-                rk_list.append((img_key, CI_ACS, None, None))
+                rk_list.append((img_key, CID_ACS, None, None))
 
             return
 
@@ -708,7 +712,7 @@ init -4 python in mas_sprites:
         # finally add the render key
         rk_list.append((
             img_key,
-            cache_acs,
+            CID_ACS,
             store.Image("".join(img_list)),
             _bhli(img_list, acs.gethlc(leanpose, flt, arm_split))
         ))
@@ -956,7 +960,7 @@ init -4 python in mas_sprites:
             rk_list.append((img_key, CID_BODY, None, None))
             return
 
-        rk_list.append((img_key, CID_BODY, store.Image(img_str))
+        rk_list.append((img_key, CID_BODY, store.Image(img_str), None))
     
 
     def _rk_base_body_lean_nh(rk_list, lean, flt, bcode):
@@ -987,10 +991,10 @@ init -4 python in mas_sprites:
             rk_list.append((img_key, CID_BODY, None, None))
             return
 
-        rk_list.append((img_key, CID_BODY, store.Image(img_str))
+        rk_list.append((img_key, CID_BODY, store.Image(img_str), None))
 
 
-    def _rk_body_nh(rk_list, clothing, flt, bcode):
+    def _rk_body_nh(rk_list, clothing, flt, bcode, leanpose):
         """
         Adds body render keys, no hair
         (equiv of _ms_torso_nh)
@@ -999,6 +1003,7 @@ init -4 python in mas_sprites:
             clothing - MASClothes object
             flt - filter to use
             bcode - base code to use
+            leanpose - leanpose to use
 
         OUT:
             rk_list - list to add render keys to
@@ -1025,11 +1030,11 @@ init -4 python in mas_sprites:
             img_key,
             CID_BODY,
             store.Image(img_str),
-            _bhli(img_list, clothes.gethlc(leanpose, flt, bcode)),
+            _bhli(img_list, clothing.gethlc(leanpose, flt, bcode)),
         ))
 
 
-    def _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode):
+    def _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode, leanpose):
         """
         Adds body leaning render keys, no hair
         (equiv of _ms_torsoleaning_nh)
@@ -1039,6 +1044,7 @@ init -4 python in mas_sprites:
             lean - type of lean
             flt - filter to use
             bcode - base code to use
+            leanpose - leanpose to use
 
         OUT:
             rk_list - list to add render keys to
@@ -1060,7 +1066,7 @@ init -4 python in mas_sprites:
         img_key = (flt, img_str)
         cache_body = _gc(CID_BODY)
         if img_key in cache_body:
-            rk_list.append(img_key, CID_BODY, None, None))
+            rk_list.append((img_key, CID_BODY, None, None))
             return
 
         # otherwise need to build ImageBase
@@ -1068,7 +1074,7 @@ init -4 python in mas_sprites:
             img_key,
             CID_BODY,
             store.Image(img_str),
-            _bhli(img_list, clothes.gethlc(leanpose, flt, bcode))
+            _bhli(img_list, clothing.gethlc(leanpose, flt, bcode))
         ))
 
 
@@ -1103,7 +1109,7 @@ init -4 python in mas_sprites:
             _rk_accessory_list(rk_list, acs_bse_list, leanpose, bcode)
 
             # body-0
-            _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode)
+            _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode, leanpose)
 
         else:
             # base-0
@@ -1113,7 +1119,7 @@ init -4 python in mas_sprites:
             _rk_accessory_list(rk_list, acs_bse_list, leanpose, bcode)
 
             # body-0
-            _rk_body_nh(rk_list, clothing, flt, bcode)
+            _rk_body_nh(rk_list, clothing, flt, bcode, leanpose)
 
 
     def _rk_chair(rk_list, mtc, flt):
@@ -1349,7 +1355,7 @@ init -4 python in mas_sprites:
         cache_face[day_key] = None
 
    
-    def _rk_hair(rk_list, hair, flt, hair_key, lean):
+    def _rk_hair(rk_list, hair, flt, hair_key, leanpose, lean):
         """
         Adds hair render key
 
@@ -1357,6 +1363,7 @@ init -4 python in mas_sprites:
             hair - MASHair object
             flt - filter to use
             hair_key - hair key to use (front/back)
+            leanpose - leanpose to use
             lean - tyoe of lean
 
         OUT:
@@ -1416,7 +1423,7 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
-        img_key = (flt, 0, table.table, int(show_shadow))
+        img_key = (flt, 0, tablechair.table, int(show_shadow))
         if img_key in _gc(CID_TC):
             rk_list.append((img_key, CID_TC, None, None))
             return
@@ -1425,7 +1432,7 @@ init -4 python in mas_sprites:
         table_list = (
             T_MAIN,
             PREFIX_TABLE,
-            table,
+            tablechair.table,
             FILE_EXT,
         )
         table_str = "".join(table_list)
@@ -1436,7 +1443,7 @@ init -4 python in mas_sprites:
             shdw_list = (
                 T_MAIN,
                 PREFIX_TABLE,
-                table,
+                tablechair.table,
                 SHADOW_SUFFIX,
                 FILE_EXT,
             )
@@ -1592,7 +1599,7 @@ init -4 python in mas_sprites:
         _rk_accessory_list(rk_list, acs_pre_list, flt, leanpose)
 
         # 2. back hair
-        _rk_hair(rk_list, hair, flt, BHAIR, lean)
+        _rk_hair(rk_list, hair, flt, BHAIR, leanpose, lean)
 
         # 3. bbh-acs
         _rk_accessory_list(rk_list, acs_bbh_list, flt, leanpose)
@@ -1679,7 +1686,7 @@ init -4 python in mas_sprites:
         _rk_face_pre(rk_list, flt, fpfx, lean, blush)
 
         # 24. front-hair
-        _rk_hair(rk_list, hair, flt, FHAIR, lean)
+        _rk_hair(rk_list, hair, flt, FHAIR, leanpose, lean)
 
         # 25. afh-acs
         _rk_accessory_list(rk_list, acs_afh_list, flt, leanpose)
@@ -1936,7 +1943,7 @@ init -2 python:
                 blush,
                 tears,
                 emote,
-                character.tablechair
+                character.tablechair,
                 character.tablechair.has_shadow
             ),
             flt,

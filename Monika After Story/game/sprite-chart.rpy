@@ -5358,9 +5358,9 @@ init -2 python:
         """
         import store.mas_sprites_json as msj
 
-        LAYER_BOT = 0
-        LAYER_MID = 1
-        LAYER_TOP = 10
+        LAYER_BOT = "0"
+        LAYER_MID = "5"
+        LAYER_TOP = "10"
 
         _MPA_KEYS = (LAYER_BOT, LAYER_MID, LAYER_TOP)
 
@@ -6482,7 +6482,7 @@ init -2 python:
 
             RETURNS: See fltget
             """
-            if mhm is None or flt is None
+            if mhm is None or flt is None:
                 return defval
 
             return mhm.fltget(key, flt, defval=defval)
@@ -6523,13 +6523,11 @@ init -2 python:
         P_PARAM_NAMES = tuple(list(PARAM_NAMES) + list(L_PARAM_NAMES))
 
         # all params
-        CONS_PARAM_NAMES = tuple(
-            [
-                "default", 
-                "l_default",
-    #            "use_reg_for_l",
-            ] + P_PARAM_NAMES
-        )
+        CONS_PARAM_NAMES = (
+            "default", 
+            "l_default",
+#            "use_reg_for_l",
+        ) + P_PARAM_NAMES
 
         MPM_TYPE_ED = 0
         # enable/disbale mode
@@ -6544,7 +6542,6 @@ init -2 python:
         MPM_TYPE_AS = 2
         # arm split mode
         # each pose should contain one of the following strings:
-        #   "0", "1", "", "*"
         # See MASAccessory for more info
 
         MPM_TYPE_PA = 3
@@ -6648,13 +6645,13 @@ init -2 python:
                     if self.PARAM_NAMES[index] in pargs
                 ],
                 [
-                    (index, pargs[self.L_PARAM_NAMES[index]]
+                    (index, pargs[self.L_PARAM_NAMES[index]])
                     for index in range(len(self.L_POSES))
                     if self.L_PARAM_NAMES[index] in pargs
                 ]
             )
 
-        def __listify(self, pargs, defval):
+        def __listify(self, pargs):
             """
             Takes the pargs and generates lists of them in the same order as
             POSES and L_POSES.
@@ -6741,7 +6738,7 @@ init -2 python:
             for pose in self.map:
                 self.map[pose] = func(self.map[pose])
             for lpose in self.l_map:
-                self.l_map[lpose] = func(self.map[lpose]
+                self.l_map[lpose] = func(self.map[lpose])
 
             # set defaults if needed
             self.__set_defaults()
@@ -7661,7 +7658,8 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 split=None,
-                ex_props=None
+                ex_props=None,
+                hl_data=None
             ):
             """
             MASHair constructor
@@ -8301,10 +8299,10 @@ init -1 python in mas_sprites:
             "def",
             {
                 store.MASPoseArms.LAYER_MID: True,
-                store.MASPoseARms.LAYER_TOP: True,
+                store.MASPoseArms.LAYER_TOP: True,
             },
             None
-        )
+        ),
 
         # down
         POSES[4]: store.MASPoseArmsLR(

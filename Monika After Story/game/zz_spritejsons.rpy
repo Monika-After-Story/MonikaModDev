@@ -248,7 +248,7 @@ init -21 python in mas_sprites_json:
     import store
     import store.mas_utils as mas_utils
 
-    SP_JSON_VER = 2
+    SP_JSON_VER = 3
     VERSION_TXT = "version"
     # CURRENT SPRITE VERSION. Change if fundamental sprite format chagnes.
 
