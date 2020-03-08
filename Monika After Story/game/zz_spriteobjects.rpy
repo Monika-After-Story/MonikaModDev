@@ -1440,12 +1440,12 @@ init -1 python:
         rec_layer=MASMonika.ASE_ACS,
         arm_split=MASPoseMap(
             default="",
-            p1="1",
-            p2="0",
-            p3="1",
+            p1="10",
+            p2="5",
+            p3="10",
             p4="0",
-            p5="1",
-            p7="1",
+            p5="10",
+            p7="10",
         )
     )
     store.mas_sprites.init_acs(mas_acs_hairties_bracelet_brown)
