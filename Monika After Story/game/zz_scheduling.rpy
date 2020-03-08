@@ -31,6 +31,7 @@ init python in mas_scheduling:
     # value: standard deviation timedelta for checkout time
     STD_DEV_TD_CHECKOUT = dict()
 
+    #Dict representing the base storage for each type
     __BASE_TIME_LOG = {
             0: [],
             1: [],
@@ -90,6 +91,9 @@ init python in mas_scheduling:
                 The type of checkout
             weekday:
                 The weekday we want to get the checkout list for
+
+        OUT:
+            list of time objects of each checkout for the type provided on the weekday provided
         """
         if _type not in store.persistent._mas_player_sesh_log:
             return list()
@@ -111,6 +115,9 @@ init python in mas_scheduling:
                 The type of checkout
             weekday:
                 The weekday we want to get the time out list for
+
+        OUT:
+            list of timedeltas of each time out for the type provided on the weekday provided
         """
         if _type not in store.persistent._mas_player_sesh_log:
             return list()
@@ -122,6 +129,29 @@ init python in mas_scheduling:
             time_out_list.append(sesh[1])
 
         return time_out_list
+
+    def __toDatetime(_time, _now=None):
+        """
+        Parses a datetime.time object into datetime.datetime object
+
+        IN:
+            _time:
+                datetime.time object to convert
+            _now:
+                If provided, will generate a combined datetime using the current time
+                (Default: None)
+        OUT:
+            datetime.datetime object representing the parsed passed in time
+
+        NOTE: yyyy/mm/dd will all be set to 1 if _now is None as we only care about the hh/mm values
+        """
+        if _now is None:
+            _now = datetime.datetime(1, 1, 1)
+
+        return datetime.datetime.combine(
+            _now,
+            _time
+        )
 
     def checkout(_type="general"):
         """
@@ -153,6 +183,8 @@ init python in mas_scheduling:
     def checkin():
         """
         Used to check the user back in (complete the log)
+
+        NOTE: Will do nothing if we don't have a proper last_checkout
         """
         #First, let's make sure we have a last entry
         if not store.persistent._mas_last_checkout:
@@ -173,7 +205,7 @@ init python in mas_scheduling:
 
     def averageTimes(_type, weekday):
         """
-        Averages the datetimes.
+        Averages the datetime.time and datetime.timedelta objects for the type and weekday provided
 
         IN:
             _type:
@@ -235,12 +267,10 @@ init python in mas_scheduling:
         IN:
             _type:
                 Type of checkout we want to check
-
             _now:
                 The time to check if within the average period (datetime.datetime)
                 If None, now is assumed
-
-        TODO: Fix this for using datetime.time and datetime.timedelta
+                (Default: None)
         """
         global AVERAGE_T_CHECKOUT
         global AVERAGE_TD_OUT
@@ -251,10 +281,71 @@ init python in mas_scheduling:
         elif _now is None:
             _now = datetime.datetime.now()
 
-        _checkout_average = AVERAGE_T_CHECKOUT[_type]
+        _checkout_average_dt = __toDatetime(AVERAGE_T_CHECKOUT[_type], _now)
         _timeout_average = AVERAGE_TD_OUT[_type]
 
-        return _checkout_average <= _now <= _checkout_average + _timeout_average
+        return _checkout_average_dt <= _now <= _checkout_average_dt + _timeout_average
+
+    def isWithinStandardDeviationCheckout(_type, _now=None):
+        """
+        Checks if the time provided is within the checkout standard deviation
+
+        IN:
+            _type:
+                Type of checkout to test
+            _now:
+                The time to check if within the standard deviation (datetime.datetime)
+                If None, now is assumed
+                (Default: None)
+
+        OUT:
+            Boolean:
+                True if we're within the standard deviation for checkout
+                False otherwise
+        """
+        global AVERAGE_T_CHECKOUT
+        global STD_DEV_TD_CHECKOUT
+
+        if _type not in store.persistent._mas_player_sesh_log:
+            return False
+
+        elif _now is None:
+            _now = datetime.datetime.now()
+
+        _checkout_average_dt = __toDatetime(AVERAGE_T_CHECKOUT[_type], _now)
+
+        return _checkout_average_dt - STD_DEV_TD_CHECKOUT[_type] <= _now <= _checkout_average_dt + STD_DEV_TD_CHECKOUT[_type]
+
+    def isWithinStandardDeviationCheckin(_type, _now=None):
+        """
+        Checks if the time provided is within the standard deviation for time out
+
+        IN:
+            _type:
+                Type of checkout to test
+            _now:
+                The time to check if within the standard deviation (datetime.datetime)
+                If None, now is assumed
+                (Default: None)
+
+        OUT:
+            Boolean:
+                True if we're within the standard deviation for time out
+                False otherwise
+        """
+        global AVERAGE_T_CHECKOUT
+        global AVERAGE_TD_OUT
+        global STD_DEV_TD_OUT
+
+        if _type not in store.persistent._mas_player_sesh_log:
+            return False
+
+        elif _now is None:
+            _now = datetime.datetime.now()
+
+        _checkin_average_dt = __toDatetime(AVERAGE_T_CHECKOUT[_type]) + AVERAGE_TD_OUT
+
+        return _checkin_average_dt - STD_DEV_TD_OUT[_type] <= _now <= _checkin_average_dt + STD_DEV_TD_OUT[_type]
 
     def getStandardDeviaton(_type):
         """
@@ -271,24 +362,6 @@ init python in mas_scheduling:
         """
         global AVERAGE_T_CHECKOUT
         global AVERAGE_TD_OUT
-
-        def toDatetime(_time):
-            """
-            Parses a datetime.time object into datetime.datetime object
-
-            IN:
-                _time:
-                    datetime.time object to convert
-
-            OUT:
-                datetime.datetime object representing the parsed passed in time
-
-            NOTE: yyyy/mm/dd will all be set to 1 as we only care about the hh/mm values
-            """
-            return datetime.datetime.combine(
-                datetime.datetime(1,1,1),
-                _time
-            )
 
         if _type not in store.persistent._mas_player_sesh_log:
             return datetime.timedelta()
@@ -307,7 +380,7 @@ init python in mas_scheduling:
         #Now let's isolate functions and calculate. First the sigma
         for sesh in seshs:
             #The sum of [(sesh[0] - avg_checkout_time)^2]
-            s_chOut += math.pow((toDatetime(sesh[0]) - toDatetime(AVERAGE_T_CHECKOUT[_type])).total_seconds(), 2)
+            s_chOut += math.pow((__toDatetime(sesh[0]) - __toDatetime(AVERAGE_T_CHECKOUT[_type])).total_seconds(), 2)
 
             #The sum of [(sesh[1] - avg_timedelta_out)^2]
             s_tOut += math.pow(sesh[1].total_seconds() - AVERAGE_TD_OUT[_type].total_seconds(), 2)
