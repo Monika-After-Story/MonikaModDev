@@ -378,6 +378,9 @@ label v0_10_8(version="v0_10_8"):
             song_pool_ev.action = None
             song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
 
+        # clear out the bab list as its been replaced
+        persistent._mas_acs_bab_list = None
+
     return
 
 #0.10.7

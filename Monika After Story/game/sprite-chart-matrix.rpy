@@ -396,7 +396,7 @@ init -4 python in mas_sprites:
             pfx_list,
             flt,
             bcode,
-            clothing,
+            clothing_t,
             leanpose
     ):
         """
@@ -405,21 +405,21 @@ init -4 python in mas_sprites:
         IN:
             mpa - MASPoseArms to make render key for
             pfx_list - prefix list to generate image string with
-            sfx_list - suffix list to generate image string with
             flt - filter code to use
             bcode - base code to use
-            clothing - clothing to use
+            clothing - type of clothing to use
             leanpose - leanpose to use
 
         OUT:
             rk_list - render key list to add render keys to
         """
-        # TODO: fix because of new pos rules
-        img_key = (flt, bcode, clothing, leanpose)
+        # check cache
+        img_key = (flt, bcode, clothing_t, leanpose)
+        cache_arms = _gc(CID_ARMS)
         day_key = None
         if img_key in cache_arms:
             if cache_arms[img_key] is not None:
-                rk_list.append((img_key, cache_arms, None))
+                rk_list.append((img_key, CID_ARMS, None, None))
 
             return
 
@@ -431,87 +431,52 @@ init -4 python in mas_sprites:
                 cache_arms[img_key] = None
                 return
 
-        # sfx list is always the same
-        sfx_list = (ART_DLM, bcode, FILE_EXT)
-
-        # TODO: change this when we change to 3 layred arms
-        use_front = bcode == "1"
-
-        # NOTE: we are trying to limit branching as much as possible
-        # so this code will likely have repeats
-
-        # otherwise need to generate the new arms (maybe)
-        if mpa.both is not None:
-            # need to generate for the both case
-
-            # but check based on bcode
-            if use_front:
-                if mpa.both_front:
-                    rk_list.append((
-                        img_key,
-                        cache_arms,
-                        store.Image(
-                            "".join(pfx_list + (mpa.both,) + sfx_list)
-                        ),
-                    ))
-                    return
-
-            elif mpa.both_back:
-                rk_list.append((
-                    img_key,
-                    cache_arms,
-                    store.Image(
-                        "".join(pfx_list + (mpa.both,) + sfx_list)
-                    ),
-                ))
-                return
-
-            # otherwise, we dont need to use any image here.
+        # get arm data
+        arm_data = mpa.get(bcode, flt)
+        if len(arm_data) == 0:
+            # no arms to render
             cache_arms[img_key] = None
             cache_arms[day_key] = None
             return
 
-        # we might need to generate for left and right
-        lstr = None
-        rstr = None
-        if mpa.left is not None:
-            if use_front:
-                if mpa.left_front:
-                    lstr = "".join(pfx_list + (mpa.left,) + sfx_list)
+        # if only 1 item , then dont need to composite
+        if len(arm_data) < 2:
+            img_tup, hl_tup = arm_data[0]
 
-            elif mpa.left_back:
-                lstr = "".join(pfx_list + (mpa.left,) + sfx_list)
+            # geneate image base
+            img_base = store.Image("".join(pfx_list + img_tup + (FILE_EXT,)))
 
-        if mpa.right is not None:
-            if use_front:
-                if mpa.right_front:
-                    rstr = "".join(pfx_list + (mpa.right,) + sfx_list)
-
-            elif mpa.right_back:
-                rstr = "".join(pfx_list + (mpa.right,) + sfx_list)
-
-        # now generate im compsite if needed
-        if lstr:
-            if rstr:
-                # need composite
-                rk_list.append((
-                    img_key,
-                    cache_arms,
-                    store.im.Composite(LOC_WH, (0, 0), lstr, (0, 0), rstr)
-                ))
-
+            # determine highlight
+            if len(hl_tup) > 0:
+                hl_img = store.Image("".join(pfx_list + hl_tup + (FILE_EXT,)))
             else:
-                # just left arm
-                rk_list.append((img_key, cache_arms, store.Image(lstr)))
+                hl_img = None
 
-        elif rstr:
-            # just right arm
-            rk_list.append((img_key, cache_arms, store.Image(rstr)))
+            rk_list.append((img_key, CID_ARMS, img_base, hl_img))
+            return
 
+        # more than 1 item, need to composite
+        arm_comp_args = [LOC_WH]
+        hl_comp_args = [LOC_WH]
+
+        for arm in arm_data:
+            img_tup, hl_tup = arm
+            arm_comp_args.append((0, 0))
+            arm_comp_args.append("".join(pfx_list + img_tup + (FILE_EXT,)))
+
+            if len(hl_tup) > 0:
+                hl_comp_args.append((0, 0))
+                hl_comp_args.append("".join(pfx_list + hl_tup + (FILE_EXT,)))
+
+        # now generate composites
+        img_comp = store.im.Composite(*arm_comp_args)
+        if len(hl_comp_args) > 1:
+            hl_comp = store.im.Composite(*hl_comp_args)
         else:
-            # no arms at all
-            cache_arms[img_key] = None
-            cache_arms[day_key] = None
+            hl_comp = None
+
+        # and add results
+        rk_list.append((img_key, CID_ARMS, img_comp, hl_comp))
 
 
     def _bhli(img_list, hlcode):
@@ -850,7 +815,7 @@ init -4 python in mas_sprites:
 
         IN:
             apose - MASPoseARms to use
-            clothing - type of clothing
+            clothing - MASClothes object
             leanpose - leanpose to use
             flt - filter to use
             bcode - base code to use
@@ -863,13 +828,13 @@ init -4 python in mas_sprites:
             apose,
             (
                 C_MAIN,
-                clothing,
+                clothing.img_sit,
                 "/",
                 PREFIX_ARMS,
             ),
             flt,
             bcode,
-            clothing,
+            clothing.img_sit,
             leanpose
         )
 
@@ -881,7 +846,7 @@ init -4 python in mas_sprites:
 
         IN:
             apose - MASPoseArms to use
-            clothing - type of clothing
+            clothing - MASClothes object
             lean - type of lean
             leanpose - leanpose to use
             flt - filter to use
@@ -895,7 +860,7 @@ init -4 python in mas_sprites:
             apose,
             (
                 C_MAIN,
-                clothing,
+                clothing.img_sit,
                 "/",
                 PREFIX_ARMS_LEAN,
                 lean,
@@ -903,7 +868,7 @@ init -4 python in mas_sprites:
             ),
             flt,
             bcode,
-            clothing,
+            clothing.img_sit,
             leanpose
         )
 
@@ -925,7 +890,7 @@ init -4 python in mas_sprites:
         IN:
             bpose - MASPoseArms for base
             apose - MASPoseArms for outfit
-            clothing - type of clothing
+            clothing - MASClothes object
             acs_ase_list - acs between arms-base-0 and arms-0
             leanpose - leanpose to pass to accessorylist
             lean - lean to use
@@ -940,14 +905,7 @@ init -4 python in mas_sprites:
             _rk_arms_base_lean_nh(rk_list, bpose, lean, leanpose, flt, bcode)
 
             # acs-ase
-            _rk_accessory_list(
-                rk_list,
-                acs_ase_list,
-                flt,
-                leanpose,
-                arm_state=bcode,
-                lean=lean
-            )
+            _rk_accessory_list(rk_list, acs_ase_list, flt, leanpose, bcode)
 
             if apose is not None:
                 # arms-0
@@ -966,14 +924,7 @@ init -4 python in mas_sprites:
             _rk_arms_base_nh(rk_list, bpose, leanpose, flt, bcode)
 
             # acs-ase
-            _rk_accessory_list(
-                rk_list,
-                acs_ase_list,
-                flt,
-                leanpose,
-                arm_state=bcode,
-                lean=lean
-            )
+            _rk_accessory_list(rk_list, acs_ase_list, flt, leanpose, bcode)
 
             if apose is not None:
                 # arms-0
@@ -999,7 +950,13 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
+        # cache check
+        img_key = (flt, img_str)
+        if img_key in _gc(CID_BODY):
+            rk_list.append((img_key, CID_BODY, None, None))
+            return
+
+        rk_list.append((img_key, CID_BODY, store.Image(img_str))
     
 
     def _rk_base_body_lean_nh(rk_list, lean, flt, bcode):
@@ -1024,7 +981,13 @@ init -4 python in mas_sprites:
             FILE_EXT,
         ))
 
-        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
+        # cache check
+        img_key = (flt, img_str)
+        if img_key in _gc(CID_BODY):
+            rk_list.append((img_key, CID_BODY, None, None))
+            return
+
+        rk_list.append((img_key, CID_BODY, store.Image(img_str))
 
 
     def _rk_body_nh(rk_list, clothing, flt, bcode):
@@ -1033,24 +996,37 @@ init -4 python in mas_sprites:
         (equiv of _ms_torso_nh)
 
         IN:
-            clothing - type of clothing
+            clothing - MASClothes object
             flt - filter to use
             bcode - base code to use
 
         OUT:
             rk_list - list to add render keys to
         """
-        img_str = "".join((
+        img_list = (
             C_MAIN,
-            clothing,
+            clothing.img_sit,
             "/",
             NEW_BODY_STR,
             ART_DLM,
             bcode,
             FILE_EXT,
-        ))
+        )
+        img_str = "".join(img_list)
 
-        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
+        # cache check
+        img_key = (flt, img_str)
+        if img_key in _gc(CID_BODY):
+            rk_list.append((img_key, CID_BODY, None, None))
+            return
+
+        # otherwise build ImageBase
+        rk_list.append((
+            img_key,
+            CID_BODY,
+            store.Image(img_str),
+            _bhli(img_list, clothes.gethlc(leanpose, flt, bcode)),
+        ))
 
 
     def _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode):
@@ -1059,7 +1035,7 @@ init -4 python in mas_sprites:
         (equiv of _ms_torsoleaning_nh)
 
         IN:
-            clothing - type of clothing
+            clothing - MASClothes object
             lean - type of lean
             flt - filter to use
             bcode - base code to use
@@ -1067,18 +1043,33 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
-        img_str = "".join((
+        # build img str
+        img_list = (
             C_MAIN,
-            clothing,
+            clothing.img_sit,
             "/",
             PREFIX_BODY_LEAN,
             lean,
             ART_DLM,
             bcode,
             FILE_EXT,
-        ))
+        )
+        img_str = "".join(img_list)
 
-        rk_list.append(((flt, img_str), cache_body, store.Image(img_str)))
+        # key check
+        img_key = (flt, img_str)
+        cache_body = _gc(CID_BODY)
+        if img_key in cache_body:
+            rk_list.append(img_key, CID_BODY, None, None))
+            return
+
+        # otherwise need to build ImageBase
+        rk_list.append((
+            img_key,
+            CID_BODY,
+            store.Image(img_str),
+            _bhli(img_list, clothes.gethlc(leanpose, flt, bcode))
+        ))
 
 
     def _rk_body_nh_wbase(
@@ -1094,7 +1085,7 @@ init -4 python in mas_sprites:
         Adds body render keys, including base and bse acs, no hair
 
         IN:
-            clothing - type of clothing
+            clothing - MASClothes object
             acs_bse_list - acs between base-0 and body-0
             bcode - base code to use
             flt - filter to use
@@ -1109,13 +1100,7 @@ init -4 python in mas_sprites:
             _rk_base_body_lean_nh(rk_list, lean, flt, bcode)
 
             # acs_bse
-            _rk_accessory_list(
-                rk_list,
-                acs_bse_list,
-                leanpose,
-                arm_state=bcode,
-                lean=lean
-            )
+            _rk_accessory_list(rk_list, acs_bse_list, leanpose, bcode)
 
             # body-0
             _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode)
@@ -1125,13 +1110,7 @@ init -4 python in mas_sprites:
             _rk_base_body_nh(rk_list, flt, bcode)
 
             # acs_bse
-            _rk_accessory_list(
-                rk_list,
-                acs_bse_list,
-                leanpose,
-                arm_state=bcode,
-                lean=lean
-            )
+            _rk_accessory_list(rk_list, acs_bse_list, leanpose, bcode)
 
             # body-0
             _rk_body_nh(rk_list, clothing, flt, bcode)
@@ -1219,9 +1198,10 @@ init -4 python in mas_sprites:
             emote
         )
         day_key = None
+        cache_face = _gc(CID_FACE)
         if img_key in cache_face:
             if cache_face[img_key] is not None:
-                rk_list.append((img_key, cache_face, None))
+                rk_list.append((img_key, CID_FACE, None, None))
             return
 
         elif flt != FLT_DAY:
@@ -1310,8 +1290,9 @@ init -4 python in mas_sprites:
         # generate imComposite
         rk_list.append((
             img_key,
-            cache_face,
+            CID_FACE,
             store.im.Composite((1280, 850), *img_str_list),
+            None
         ))
 
 
@@ -1330,9 +1311,10 @@ init -4 python in mas_sprites:
         """
         img_key = (flt, 0, lean, blush)
         day_key = None
+        cache_face = _gc(CID_FACE)
         if img_key in cache_face:
             if cache_face[img_key] is not None:
-                rk_list.append((img_key, cache_face, None))
+                rk_list.append((img_key, CID_FACE, None, None))
 
             return
 
@@ -1350,7 +1332,7 @@ init -4 python in mas_sprites:
         if blush:
             rk_list.append((
                 img_key, 
-                cache_face,
+                CID_FACE,
                 store.Image("".join((
                     F_T_MAIN,
                     fpfx,
@@ -1358,6 +1340,7 @@ init -4 python in mas_sprites:
                     blush,
                     FILE_EXT
                 ))),
+                None,
             ))
             return
 
@@ -1409,54 +1392,55 @@ init -4 python in mas_sprites:
         img_key = (flt, img_str)
         cache_hair = _gc(CID_HAIR)
         if img_key in cache_hair:
-            rk_list.append((img_key, CID_HAIR, None, None)):
+            rk_list.append((img_key, CID_HAIR, None, None))
             return
 
         # otherwise need to build ImageBase
-        # determine highlight if any
         rk_list.append((
             img_key,
             CID_HAIR,
             store.Image(img_str),
-            _bhli(img_list, hair.gethlc(leanpose, flt, hair_key))
+            _bhli(img_list, hair.gethlc(leanpose, flt, hair_key)),
         ))
 
 
-    def _rk_table(rk_list, table, show_shadow, flt):
+    def _rk_table(rk_list, tablechair, show_shadow, flt):
         """
         Adds table render key
 
         IN:
-            table - type of table
+            table - MASTableChair object
             show_shadow - True if shadow should be included, false if not
             flt filter to use
 
         OUT:
             rk_list - list to add render keys to
         """
-        img_key = (flt, 0, table, int(show_shadow))
-        if img_key in cache_tc:
-            rk_list.append((img_key, cache_tc, None))
+        img_key = (flt, 0, table.table, int(show_shadow))
+        if img_key in _gc(CID_TC):
+            rk_list.append((img_key, CID_TC, None, None))
             return
 
         # otherwise, we need to create the table sprite, maybe with shadow
-        table_str = "".join((
+        table_list = (
             T_MAIN,
             PREFIX_TABLE,
             table,
             FILE_EXT,
-        ))
+        )
+        table_str = "".join(table_list)
 
         # in this case, we may need to use im.Composite
         if show_shadow:
             # need to make shadow
-            shdw_str = "".join((
+            shdw_list = (
                 T_MAIN,
                 PREFIX_TABLE,
                 table,
                 SHADOW_SUFFIX,
                 FILE_EXT,
-            ))
+            )
+            shdw_str = "".join(shdw_list)
 
             new_im = _gen_im(flt, store.im.Composite(
                 (1280, 850),
@@ -1464,12 +1448,24 @@ init -4 python in mas_sprites:
                 (0, 0), shdw_str
             ))
 
+            # determine highlight
+            hl_img = _bhli(
+                shdw_list,
+                store.MASHighlightMap.o_fltget(tablechair.hl_map, "ts", flt)
+            )
+
         else:
             # no shadow, so just table
             new_im = store.Image(table_str)
 
-        # add to cache and list
-        rk_list.append((img_key, cache_tc, new_im))
+            # determine highlight
+            hl_img = _bhli(
+                table_list,
+                store.MASHighlightMap.o_fltget(tablechair.hl_map, "t", flt)
+            )
+
+        # add to list
+        rk_list.append((img_key, CID_TC, new_im, hl_img))
         
 
 # main sprite compilation
@@ -1489,7 +1485,9 @@ init -4 python in mas_sprites:
             acs_bse_list,
             acs_bba_list,
             acs_ase_list,
-            acs_bab_list,
+            acs_bat_list,
+            acs_mat_list,
+            acs_mab_list,
             acs_bfh_list,
             acs_afh_list,
             acs_mid_list,
@@ -1527,8 +1525,12 @@ init -4 python in mas_sprites:
                 body and back arms
             acs_ase_list - sorted list of MASAccessories to draw between base
                 arms and outfit
-            acs_bab_list - sorted list of MASAccessories to draw between
-                back arms and boobs
+            acs_bat_list - sorted list of MASAccessories to draw between back
+                arms and table
+            acs_mat_list - sorted list of MASAccessories to draw between
+                middle arms and table
+            acs_mab_list - sorted list of MASAccessories to draw between
+                middle arms and boobs
             acs_bfh_list - sorted list of MASAccessories to draw between boobs
                 and front hair
             acs_afh_list - sorted list of MASAccessories to draw between front
@@ -1557,25 +1559,30 @@ init -4 python in mas_sprites:
         #   5. base-0 - the base back part of body
         #   6. bse-acs - between base and body-0
         #   7. body-0 - the back part of body (no arms in split mode)
-        #   8. table - the table/desk
-        #   9. bba-acs - acs between Body and Back Arms
-        #   10. arms-base-0 - the base back part of arm
-        #   11. ase-acs-0 - between base arms and clothes, back part
-        #   12. arms-0 - the back part of arms
-        #   13. bab-acs - acs between Back Arms and Body-1
-        #   14. base-1 - the base front part of body
-        #   15. bse-acs - between base and body-1
-        #   16. body-1 - the front part of body (boobs)
-        #   17. bfh-acs - acs between Body and Front Hair
-        #   18. face-pre - pre front hair facial expressions
-        #   19. front-hair - front portion of hair (split mode)
-        #   20. afh-acs - acs betweem Arms and Front Hair
-        #   21. face - facial expressions
-        #   22. mid-acs - acs between face and front arms
-        #   23. arms-base-1 - the base front part of arms
-        #   24. ase-acs-1 - between base arms and clothes, front part
-        #   25. arms-1 - front arms
-        #   26. pst-acs - acs after everything
+        #   8. bba-acs - acs between Body and Back Arms
+        #   9. arms-base-0 - the base back part of arm
+        #   10. ase-acs-0 - between base arms and clothes, back part
+        #   11. arms-0 - the back part of arms
+        #   12. bat-acs - acs between Back Arms and Table
+        #   13. table - the table/desk
+        #   14. mat-acs acs between Middle Arms and Table
+        #   15. arms-base-5 - the base middle part of arm
+        #   16. ase-acs-5 - between base arms and clothes, middle part
+        #   17. arms-5 - the middle part of arms
+        #   18. mab-acs - acs between Middle Arms and Body-1
+        #   19. base-1 - the base front part of body
+        #   20. bse-acs - between base and body-1
+        #   21. body-1 - the front part of body (boobs)
+        #   22. bfh-acs - acs between Body and Front Hair
+        #   23. face-pre - pre front hair facial expressions
+        #   24. front-hair - front portion of hair (split mode)
+        #   25. afh-acs - acs betweem Arms and Front Hair
+        #   26. face - facial expressions
+        #   27. mid-acs - acs between face and front arms
+        #   28. arms-base-10 - the base front part of arms
+        #   29. ase-acs-10 - between base arms and clothes, front part
+        #   30. arms-10 - front arms
+        #   31. pst-acs - acs after everything
 
         # initial values
         fpfx = face_lean_mode(lean)
@@ -1593,8 +1600,6 @@ init -4 python in mas_sprites:
         # 4. chair
         _rk_chair(rk_list, tablechair, flt)
 
-        # TODO: left off here
-
         # 5. base-0
         # 6. bse-acs-0
         # 7. body-0
@@ -1608,21 +1613,12 @@ init -4 python in mas_sprites:
             lean=lean
         )
 
-        # 8. table
-        _rk_table(rk_list, table, show_shadow, flt)
+        # 8. bba-acs
+        _rk_accessory_list(rk_list, acs_bba_list, flt, leanpose)
 
-        # 9. bba-acs
-        _rk_accessory_list(
-            rk_list,
-            acs_bba_list,
-            flt,
-            leanpose,
-            lean=lean
-        )
-
-        # 10. arms-base-0
-        # 11. ase-acs-0
-        # 12. arms-0
+        # 9. arms-base-0
+        # 10. ase-acs-0
+        # 11. arms-0
         _rk_arms_nh_wbase(
             rk_list,
             base_pose,
@@ -1635,18 +1631,37 @@ init -4 python in mas_sprites:
             "0"
         )
 
-        # 13. bab-acs
-        _rk_accessory_list(
+        # 12. bat-acs
+        _rk_accessory_list(rk_list, acs_bat_list, flt, leanpose)
+
+        # 13. table
+        _rk_table(rk_list, tablechair, show_shadow, flt)
+
+        # TODO: add acs layer here (MAT - middle arms and table)
+        # 14. mat-acs
+        _rk_accessory_list(rk_list, acs_mat_list, flt, leanpose)
+
+        # 15. arms-base-5
+        # 16. ase-acs-5
+        # 17. arms-5
+        _rk_arms_nh_wbase(
             rk_list,
-            acs_bab_list,
-            flt,
+            base_pose,
+            arms_pose,
+            clothing,
+            acs_ase_list,
             leanpose,
-            lean=lean
+            lean,
+            flt,
+            "5"
         )
 
-        # 14. base-1
-        # 15. bse-acs-1
-        # 16. body-1
+        # 18. mab-acs
+        _rk_accessory_list(rk_list, acs_mab_list, flt, leanpose)
+
+        # 19. base-1
+        # 20. bse-acs-1
+        # 21. body-1
         _rk_body_nh_wbase(
             rk_list,
             clothing,
@@ -1657,31 +1672,19 @@ init -4 python in mas_sprites:
             lean=lean
         )
 
-        # 17. bfh-acs
-        _rk_accessory_list(
-            rk_list,
-            acs_bfh_list,
-            flt,
-            leanpose,
-            lean=lean
-        )
+        # 22. bfh-acs
+        _rk_accessory_list(rk_list, acs_bfh_list, flt, leanpose)
 
-        # 18. face-pre
+        # 23. face-pre
         _rk_face_pre(rk_list, flt, fpfx, lean, blush)
 
-        # 19. front-hair
-        _rk_hair(rk_list, hair, flt, FHAIR_SUFFIX, lean)
+        # 24. front-hair
+        _rk_hair(rk_list, hair, flt, FHAIR, lean)
 
-        # 20. afh-acs
-        _rk_accessory_list(
-            rk_list,
-            acs_afh_list,
-            flt,
-            leanpose,
-            lean=lean
-        )
+        # 25. afh-acs
+        _rk_accessory_list(rk_list, acs_afh_list, flt, leanpose)
 
-        # 21. face
+        # 26. face
         _rk_face(
             rk_list,
             eyes,
@@ -1696,18 +1699,12 @@ init -4 python in mas_sprites:
             emote
         )
 
-        # 22. mid-acs
-        _rk_accessory_list(
-            rk_list,
-            acs_mid_list,
-            flt,
-            leanpose,
-            lean=lean
-        )
+        # 27. mid-acs
+        _rk_accessory_list(rk_list, acs_mid_list, flt, leanpose)
 
-        # 23. arms-base-1
-        # 24. ase-acs-1
-        # 25. arms-1
+        # 28. arms-base-1
+        # 29. ase-acs-1
+        # 30. arms-1
         _rk_arms_nh_wbase(
             rk_list,
             base_pose,
@@ -1717,17 +1714,11 @@ init -4 python in mas_sprites:
             leanpose,
             lean,
             flt,
-            "1"
+            "10"
         )
 
-        # 26. pst-acs
-        _rk_accessory_list(
-            rk_list,
-            acs_pst_list,
-            flt,
-            leanpose,
-            lean=lean
-        )
+        # 31. pst-acs
+        _rk_accessory_list(rk_list, acs_pst_list, flt, leanpose)
 
         return rk_list
 
@@ -1891,7 +1882,9 @@ init -2 python:
         acs_bse_list = character.acs.get(MASMonika.BSE_ACS, [])
         acs_bba_list = character.acs.get(MASMonika.BBA_ACS, [])
         acs_ase_list = character.acs.get(MASMonika.ASE_ACS, [])
-        acs_bab_list = character.acs.get(MASMonika.BAB_ACS, [])
+        acs_bat_list = character.acs.get(MASMonika.BAT_ACS, [])
+        acs_mat_list = character.acs.get(MASMonika.MAT_ACS, [])
+        acs_mab_list = character.acs.get(MASMonika.MAB_ACS, [])
         acs_bfh_list = character.acs.get(MASMonika.BFH_ACS, [])
         acs_afh_list = character.acs.get(MASMonika.AFH_ACS, [])
         acs_mid_list = character.acs.get(MASMonika.MID_ACS, [])
@@ -1928,7 +1921,9 @@ init -2 python:
                 acs_bse_list,
                 acs_bba_list,
                 acs_ase_list,
-                acs_bab_list,
+                acs_bat_list,
+                acs_mat_list,
+                acs_mab_list,
                 acs_bfh_list,
                 acs_afh_list,
                 acs_mid_list,
@@ -1981,12 +1976,12 @@ init -2 python:
         flt = store.mas_sprites._decide_filter()
         
         # now build the chair
-        store.mas_sprites._rk_chair(rk_list, character.tablechair.chair, flt)
+        store.mas_sprites._rk_chair(rk_list, character.tablechair, flt)
 
         # then the able
         store.mas_sprites._rk_table(
             rk_list,
-            character.tablechair.table,
+            character.tablechair,
             False,
             flt
         )
