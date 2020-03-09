@@ -640,7 +640,7 @@ label greeting_visit5:
     m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
     show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
+    m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ahaha~"
     return
 
 init 5 python:
