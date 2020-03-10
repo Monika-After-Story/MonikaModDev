@@ -363,7 +363,9 @@ init -4 python in mas_sprites:
             """
             Render function
             """
-            if self.rendered_surface is None:
+            curr_flt = store.mas_sprites._decide_filter()
+            if self.rendered_surface is None or curr_flt != self.flt:
+                self.flt = curr_flt
                 renders = []
                 for render_key in self.render_keys:
                     renders.append(self._render_surf(render_key, st, at))
@@ -383,15 +385,12 @@ init -4 python in mas_sprites:
             Returns a list of displayables we obtain
             NOTE: will also save to our cache
             """
-            return [
-                store.mas_sprites._cgen_im(
-                    self.flt,
-                    render_key[0],
-                    render_key[1],
-                    render_key[2]
-                )
-                for render_key in self.render_keys
-            ]
+            self.flt = store.mas_sprites._decide_filter()
+            disp_list = []
+            for render_key in self.render_keys:
+                store.mas_sprites._cgha_im(disp_list, self.flt, render_key)
+
+            return disp_list
 
 
     def _add_mpa_rk(
@@ -531,6 +530,53 @@ init -4 python in mas_sprites:
         return new_im
 
 
+    def _cgha_im(render_list, flt, render_key):
+        """
+        Checks cache of an image
+        Generates the im if not found, and sets
+        Highlight if needed.
+        Adds IMs to the given render list
+
+        NOTE: should only be used by the visit function
+
+        IN:
+            flt - filter to use
+            render_key - tuple of the following format:
+                [0] - key of the image to generate
+                [1] - cache ID of the cahce to use
+                [2] - ImageBase to build the image
+                [3] - ImageBase to build the highlight
+            st - renpy related
+            at - renpy related
+
+        OUT:
+            render_list - list to add IMs to
+        """
+        img_key, cid, img_base, hl_base = render_key
+        img_cache = _gc(cid)
+        hl_key = _hlify(img_key, cid)
+        if img_key in img_cache:
+            render_list.append(img_base)
+
+            # check for highlight
+            # NOTE: if the img key exists in the cache, then we know for sure
+            #   that the highlight must be in the cache already
+            hl_base = _gc(CID_HL).get(hl_key, None)
+            if hl_base is not None:
+                render_list.append(hl_base)
+            return
+
+        # otherwise, we need to generate the im (and maybe hl) and cache it
+        new_im = _gen_im(flt, img_base)
+        img_cache[img_key] = new_im
+        render_list.append(new_im)
+
+        # check for highlight
+        _gc(CID_HL)[hl_key] = hl_base
+        if hl_base is not None:
+            render_list.append(hl_base)
+
+
     def _cs_im(key, cid, img_base):
         """
         Checks cache for an im
@@ -630,6 +676,20 @@ init -4 python in mas_sprites:
             ))
 
         return disp
+
+
+    def _hlify(key, cid):
+        """
+        Highlightifies the given key.
+        Highlightifying is just prefixing the key with the cid
+
+        IN:
+            key - key to highlightify
+            cid - cid to use when highlighting
+
+        RETURNS: highlightified key
+        """
+        return (cid,) + key
 
 
     # rk-based sprite maker functions

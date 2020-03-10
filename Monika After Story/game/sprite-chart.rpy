@@ -4725,7 +4725,7 @@ init -2 python:
 
             # acs
             for index in range(len(self.REC_LAYERS)):
-                self._load_acs_obj(data[index+2], self.REC_LAYERS[index])
+                self._load_acs_obj(_data[index+2], self.REC_LAYERS[index])
 
         def reset_all(self, by_user=None):
             """
@@ -5815,7 +5815,7 @@ init -2 python:
                 return (tag, tag_map, None)
 
             # parse hl map
-            tag_hl_map = MASHighlightMap(
+            tag_hl_map = MASHighlightMap.create_from_mapping(
                 self._MPA_KEYS,
                 tag_hl_data[0],
                 tag_hl_data[1]
@@ -6344,7 +6344,7 @@ init -2 python:
             IN:
                 mapping - dict of the following format:
                     key: valid key for this map
-                    value: MASFitlerMap object or None
+                    value: MASFilterMap object or None
             """
             for key in mapping:
                 self.add(key, mapping[key])
@@ -6367,7 +6367,7 @@ init -2 python:
 
             IN:
                 key - key to get from this map
-                flt - filter to get from associated MASFitlerMap, if found
+                flt - filter to get from associated MASFilterMap, if found
                 defval - default value to return if no flt value could be
                     found.
                     (Default: None)
@@ -7110,7 +7110,7 @@ init -2 python:
                             set a default (MASFilterMap object)
                         [1] - highlight mapping to use. Format:
                             key: varies by extended class
-                            value: MASFitlerMap object, or None if no highlight
+                            value: MASFilterMap object, or None if no highlight
                         if None, then no highlights at all.
                     (Default: None)
             """
@@ -7333,7 +7333,7 @@ init -2 python:
                             set a default (MASFilterMap object)
                         [1] - highlight mapping to use. Format:
                             key: varies by extended class
-                            value: MASFitlerMap object, or None if no highlight
+                            value: MASFilterMap object, or None if no highlight
                         if None, then no highlights at all.
                     (Default: None)
             """
@@ -7390,17 +7390,348 @@ init -2 python:
 
 
     # instead of clothes, these are accessories
-    class MASAccessory(MASSpriteBase):
+    class MASAccessoryBase(MASSpriteBase):
         """
-        MASAccesory objects
+        MASAccesory base objects
 
         PROPERTIES:
-            rec_layer - recommended layer to place this accessory
             priority - render priority. Lower is rendered first
             acs_type - an optional type to help organize acs
             mux_type - list of acs types that we shoudl treat
                 as mutally exclusive with this type. Basically if this acs is
                 worn, all acs with a type in this property are removed.
+            dlg_desc - user friendly way to describe this accessory in dialogue
+                Think "black bow" or "silver earrings"
+            dlg_plur - True if the dlg_desc should be used in the plural 
+                sense, like "these silver earrings", False if not, like:
+                "this black bow"
+            keep_on_desk - Set to True to keep the ACS on the desk when monika
+                leaves, False if not
+            hl_map - MASPoseMap of MASHighlightMap objects. Key implementation
+                varies.
+
+        SEE MASSpriteBase for inherited properties
+        """
+
+        # Accessory Sprite Object types
+
+        ASO_REG = 1
+        # regular accessory
+
+        ASO_SPLIT = 2
+        # split accessory type
+
+        ASO_TYPES = (
+            ASO_REG,
+            ASO_SPLIT
+        )
+
+        def __init__(self,
+                aso_type,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                rec_layer=MASMonika.PST_ACS,
+                priority=10,
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None,
+                acs_type=None,
+                mux_type=None,
+                ex_props=None,
+                arm_split=None,
+                dlg_data=None,
+                keep_on_desk=False,
+                full_hl_data=None
+            ):
+            """
+            MASAccessory constructor
+
+            IN:
+                aso_type - Accessory Sprite Object type
+                name - name of this accessory
+                img_sit - file name of the sitting image
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - file name of the standing image
+                    IF this is not passed in, we assume the standing version
+                        has no accessory.
+                    (Default: "")
+                rec_layer - recommended layer to place this accessory
+                    (Must be one the ACS types in MASMonika)
+                    (Default: MASMonika.PST_ACS)
+                priority - render priority. Lower is rendered first
+                    (Default: 10)
+                stay_on_start - True means the accessory is saved for next
+                    startup. False means the accessory is dropped on next
+                    startup.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                acs_type - type, for ease of organization of acs
+                    This works with mux type to determine if an ACS can work
+                    with another ACS.
+                    (Default: None)
+                mux_type - list of acs types that should be
+                    mutually exclusive with this acs.
+                    this works with acs_type to determine if this works with
+                    other ACS.
+                    (Default: None)
+                ex_props - dict of additional properties to apply to this
+                    sprite object.
+                    (Default: None)
+                arm_split - MASPoseMap object for determining arm splits. See
+                    property list above for more info.
+                    (Default: None)
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
+                    (Default: None)
+                keep_on_desk - determines if ACS should be shown if monika 
+                    leaves
+                    (Default: False)
+                full_hl_data - mpm-based highlight map data: complex structure
+                    of the following format: Tuple:
+                    [0] - keys to use for MASHighlightMap objject
+                    [1] - MASPoseMap that contains tuples: None means no
+                        highlight for a pose.
+                        [0] - default highlight to use. Pass in None to not
+                            set a default (MASFilterMap object)
+                        [1] - highlight mapping to use. Format:
+                            key: varies by extended class
+                            value: MASFilterMap object, or None if no highlight
+                        if None, then no highlights at all.
+                    (Default: None)
+            """
+            super(MASAccessoryBase, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start,
+                entry_pp,
+                exit_pp,
+                ex_props,
+                full_hl_data,
+            )
+            self.aso_type = aso_type
+            self.__rec_layer = rec_layer
+            self.__sp_type = store.mas_sprites_json.SP_ACS
+            self.priority=priority
+            self.acs_type = acs_type
+            self.mux_type = mux_type
+            self.arm_split = arm_split
+            self.keep_on_desk = keep_on_desk
+            
+            if dlg_data is not None and len(dlg_data) == 2:
+                self.dlg_desc, self.dlg_plur = dlg_data
+            else:
+                self.dlg_desc = None
+                self.dlg_plur = None
+
+        @staticmethod
+        def get_priority(acs):
+            """
+            Gets the priority of the given accessory
+
+            This is for sorting
+            """
+            return acs.priority
+
+        def get_arm_split_code(self, poseid):
+            """DEPRECATED
+            NOTE: we are keeping this around for compatiblity purposes
+
+            IN:
+                poseid - ignored
+
+            RETURNS: empty list
+            """
+            return []
+
+        def get_rec_layer(self):
+            """
+            Returns the recommended layer ofr this accessory
+
+            RETURNS:
+                recommend MASMOnika accessory type for this accessory
+            """
+            return self.__rec_layer
+
+        def hl_keys(self):
+            """
+            Returns keys used for MASHighlightMap.
+
+            RETURNS: keys used for all MASHighlightMaps for MASAccessories.
+            """
+            return []
+
+
+        def _build_loadstrs(self):
+            """
+            Builds list of strings for this sprite object that represent the
+            image paths that this sprite object would use.
+
+            RETURNS: list of strings 
+            """
+            # TODO: fix this for new arm layouts
+            loadstrs = []
+
+            # loop over MASPoseMap for pose ids
+            for pose in store.mas_sprites.ALL_POSES:
+                poseid = self.pose_map.get(pose, "")
+
+                if len(poseid) > 0:
+                    prefix = store.mas_sprites.BS_ACS.format(
+                        self.img_sit,
+                        poseid
+                    )
+
+                    arm_codes = self.get_arm_split_code(pose)
+                    if len(arm_codes) < 1:
+
+                        # add both day and night versions
+                        # no arm code
+                        store.mas_sprites.alt_night(loadstrs, prefix)
+
+                    else:
+                        # add all arm versions (max 2)
+                        for arm_code in arm_codes:
+                            arm_prefix = (
+                                prefix
+                                + store.mas_sprites.ART_DLM
+                                + arm_code
+                            )
+
+                            # no arm code
+                            store.mas_sprites.alt_night(
+                                loadstrs,
+                                arm_prefix
+                            )
+
+            return loadstrs
+
+    
+    class MASAccessory(MASAccessoryBase):
+        """
+        Standard MASAccessory object.
+
+        PROPERTIES:
+            hl_map - MASPoseMap of MASHighlightMap objects that does not
+                care about keys. Only default is used here.
+
+        See MASAccessoryBase for inherited properties.
+        """
+
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                rec_layer=MASMonika.PST_ACS,
+                priority=10,
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None,
+                acs_type=None,
+                mux_type=None,
+                ex_props=None,
+                dlg_data=None,
+                keep_on_desk=False,
+                hl_data=None
+        ):
+            """
+            Constructor.
+
+            IN:
+                name - name of this accessory
+                img_sit - file name of the sitting image
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - file name of the standing image
+                    IF this is not passed in, we assume the standing version
+                        has no accessory.
+                    (Default: "")
+                rec_layer - recommended layer to place this accessory
+                    (Must be one the ACS types in MASMonika)
+                    (Default: MASMonika.PST_ACS)
+                priority - render priority. Lower is rendered first
+                    (Default: 10)
+                stay_on_start - True means the accessory is saved for next
+                    startup. False means the accessory is dropped on next
+                    startup.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                acs_type - type, for ease of organization of acs
+                    This works with mux type to determine if an ACS can work
+                    with another ACS.
+                    (Default: None)
+                mux_type - list of acs types that should be
+                    mutually exclusive with this acs.
+                    this works with acs_type to determine if this works with
+                    other ACS.
+                    (Default: None)
+                ex_props - dict of additional properties to apply to this
+                    sprite object.
+                    (Default: None)
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
+                    (Default: None)
+                keep_on_desk - determines if ACS should be shown if monika 
+                    leaves
+                    (Default: False)
+                hl_data - MASPoseMap that contains tuples: None means no 
+                    highlight for a pose.
+                    [0] - default highlight to use. Pass in None to not set
+                        a default (MASFilterMap object)
+                    [1] - ignored
+                    if None, then no highlights at all.
+                    (Default: None)
+            """
+            # clean hldata
+            if hl_data is not None:
+                hl_data = ([], (hl_data[0], None))
+
+            super(MASAccessory, self).__init__(
+                self.ASO_REG,
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                rec_layer,
+                priority,
+                stay_on_start,
+                entry_pp,
+                exit_pp,
+                acs_type,
+                mux_type,
+                ex_props,
+                None,
+                dlg_data,
+                keep_on_desk,
+                hl_data
+            )
+
+    
+    class MASSplitAccessory(MASAccessoryBase):
+        """
+        MASSplitAccessory object. For accessories that should be placeable
+        at split layers (ASE/BSE)
+
+        PROPERTIES:
             arm_split - MASPoseMap determining which arm position the ACS 
                 should be visible in. This only applies to ACS that are
                 intended to be used in a BSE or ASE ACS layer. 
@@ -7415,17 +7746,10 @@ init -2 python:
                         arms-10
                     "" - sprite does not have any arm split for this pose
                     "*" - sprite has an arm split for all poses.
-            dlg_desc - user friendly way to describe this accessory in dialogue
-                Think "black bow" or "silver earrings"
-            dlg_plur - True if the dlg_desc should be used in the plural 
-                sense, like "these silver earrings", False if not, like:
-                "this black bow"
-            keep_on_desk - Set to True to keep the ACS on the desk when monika
-                leaves, False if not
             hl_map - MASPoseMap of MASHighlightMap objects where the keys
                 are arm_split values. See arm_split for more info.
 
-        SEE MASSpriteBase for inherited properties
+        See MASAccessoryBase for inherited propeties
         """
 
         __MHM_KEYS = ("0", "1", "5", "10")
@@ -7500,49 +7824,35 @@ init -2 python:
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
                     (Default: False)
-                hl_data -  MASPoseMap that contains tuples: None means no
+                hl_data - MASPoseMap that contains tuples: None means no
                     highlight for a pose.
                     [0] - default highlight to use. Pass in None to not
                         set a default (MASFilterMap object)
                     [1] - highlight mapping to use. Format:
                         key: see arm_split property
-                        value: MASFitlerMap object, or None if no highlight
+                        value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
             """
-            super(MASAccessory, self).__init__(
+            super(MASSplitAccessory, self).__init__(
+                self.ASO_SPLIT,
                 name,
                 img_sit,
                 pose_map,
                 img_stand,
+                rec_layer,
+                priority,
                 stay_on_start,
                 entry_pp,
                 exit_pp,
+                acs_type,
+                mux_type,
                 ex_props,
+                arm_split,
+                dlg_data,
+                keep_on_desk,
                 (self.__MHM_KEYS, hl_data)
             )
-            self.__rec_layer = rec_layer
-            self.__sp_type = store.mas_sprites_json.SP_ACS
-            self.priority=priority
-            self.acs_type = acs_type
-            self.mux_type = mux_type
-            self.arm_split = arm_split
-            self.keep_on_desk = keep_on_desk
-            
-            if dlg_data is not None and len(dlg_data) == 2:
-                self.dlg_desc, self.dlg_plur = dlg_data
-            else:
-                self.dlg_desc = None
-                self.dlg_plur = None
-
-        @staticmethod
-        def get_priority(acs):
-            """
-            Gets the priority of the given accessory
-
-            This is for sorting
-            """
-            return acs.priority
 
         def get_arm_split_code(self, poseid):
             """
@@ -7567,15 +7877,6 @@ init -2 python:
 
             return (arm_code, )
 
-        def get_rec_layer(self):
-            """
-            Returns the recommended layer ofr this accessory
-
-            RETURNS:
-                recommend MASMOnika accessory type for this accessory
-            """
-            return self.__rec_layer
-
         def hl_keys(self):
             """
             Returns keys used for MASHighlightMap.
@@ -7583,50 +7884,6 @@ init -2 python:
             RETURNS: keys used for all MASHighlightMaps for MASAccessories.
             """
             return self.__MHM_KEYS
-
-        def _build_loadstrs(self):
-            """
-            Builds list of strings for this sprite object that represent the
-            image paths that this sprite object would use.
-
-            RETURNS: list of strings 
-            """
-            loadstrs = []
-
-            # loop over MASPoseMap for pose ids
-            for pose in store.mas_sprites.ALL_POSES:
-                poseid = self.pose_map.get(pose, "")
-
-                if len(poseid) > 0:
-                    prefix = store.mas_sprites.BS_ACS.format(
-                        self.img_sit,
-                        poseid
-                    )
-
-                    arm_codes = self.get_arm_split_code(pose)
-                    if len(arm_codes) < 1:
-
-                        # add both day and night versions
-                        # no arm code
-                        store.mas_sprites.alt_night(loadstrs, prefix)
-
-                    else:
-                        # add all arm versions (max 2)
-                        for arm_code in arm_codes:
-                            arm_prefix = (
-                                prefix
-                                + store.mas_sprites.ART_DLM
-                                + arm_code
-                            )
-
-                            # no arm code
-                            store.mas_sprites.alt_night(
-                                loadstrs,
-                                arm_prefix
-                            )
-
-            return loadstrs
-
 
     class MASHair(MASSpriteFallbackBase):
         """
@@ -7696,7 +7953,7 @@ init -2 python:
                         set a default (MASFilterMap object)
                     [1] - highlight mapping to use. Format:
                         key: "front"/"bacl"
-                        value: MASFitlerMap object, or None if no highlight
+                        value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
             """
@@ -7841,7 +8098,7 @@ init -2 python:
                         set a default (MASFilterMap object)
                     [1] - highlight mapping to use. Format:
                         key: see hl_map property
-                        value: MASFitlerMap object, or None if no highlight
+                        value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
             """
