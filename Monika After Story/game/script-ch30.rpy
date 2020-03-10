@@ -1767,13 +1767,16 @@ label ch30_day:
         ):
             persistent._mas_filereacts_reacted_map = dict()
 
-        # Check if we are entering d25 season at upset-
+        #Check if we are entering d25 season at upset-
         if (
             not persistent._mas_d25_intro_seen
             and mas_isD25Outfit()
             and mas_isMoniUpset(lower=True)
         ):
             persistent._mas_d25_started_upset = True
+
+        #Setup the daily averages again
+        mas_scheduling.calculateDailyAverages()
     return
 
 
