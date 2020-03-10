@@ -363,4 +363,7 @@ label quit:
         if not persistent._mas_dockstat_going_to_leave:
             store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
+        #checkout
+        if not store.mas_scheduling.isBlacklistedType():
+            store.mas_scheduling.checkout(persistent._mas_greeting_type)
     return

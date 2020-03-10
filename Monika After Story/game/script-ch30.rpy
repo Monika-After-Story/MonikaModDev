@@ -2037,4 +2037,11 @@ label ch30_reset:
         and not mas_globals.returned_home_this_sesh
     ):
         $ mas_d25SilentReactToGifts()
+
+
+    #Set up the averages
+    $ mas_scheduling.calculateDailyAverages()
+
+    #And check back in
+    $ mas_scheduling.checkin()
     return
