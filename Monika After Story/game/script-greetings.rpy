@@ -50,7 +50,11 @@ init -1 python in mas_greetings:
     TYPE_LONG_ABSENCE = "long_absence"
     TYPE_SICK = "sick"
     TYPE_GAME = "game"
-    TYPE_EAT = "eat"
+    TYPE_EAT_BREAKFAST = "eat_breakfast"
+    TYPE_EAT_LUNCH = "eat_lunch"
+    TYPE_EAT_DINNER = "eat_dinner"
+    TYPE_EAT_SNACK = "eat_snack"
+    TYPE_EAT_GENERIC = "eat_generic"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
 
@@ -3580,7 +3584,13 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back_from_eat",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_EAT],
+            category=[
+                store.mas_greetings.TYPE_EAT_BREAKFAST,
+                store.mas_greetings.TYPE_EAT_LUNCH,
+                store.mas_greetings.TYPE_EAT_DINNER,
+                store.mas_greetings.TYPE_EAT_SNACK,
+                store.mas_greetings.TYPE_EAT_GENERIC
+            ],
         ),
         code="GRE"
     )

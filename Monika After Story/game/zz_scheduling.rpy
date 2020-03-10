@@ -54,6 +54,7 @@ init python in mas_scheduling:
         store.mas_greetings.TYPE_LONG_ABSENCE,
         store.mas_greetings.TYPE_SICK,
         store.mas_greetings.TYPE_GAME,
+        store.mas_greetings.TYPE_EAT_GENERIC,
         store.mas_greetings.TYPE_RESTART,
         store.mas_greetings.TYPE_GO_SOMEWHERE,
         store.mas_greetings.TYPE_GENERIC_RET,
@@ -483,7 +484,7 @@ init python in mas_scheduling:
 
         #Verify type
         if _type not in store.persistent._mas_player_sesh_log:
-            return dateimt.timedelta(), datetime.timedelta()
+            return datetime.timedelta(), datetime.timedelta()
 
         #Get the current weekday
         weekday = datetime.datetime.now().weekday()
@@ -493,7 +494,7 @@ init python in mas_scheduling:
 
         #Avoid a zero-division error
         if not sqrt_amt_entries:
-            return dateimt.timedelta(), datetime.timedelta()
+            return datetime.timedelta(), datetime.timedelta()
 
         #Now calculate the standard errors
         std_err_chkout = datetime.timedelta(seconds=(STD_DEV_TD_CHECKOUT[_type].total_seconds()/sqrt_amt_entries))
