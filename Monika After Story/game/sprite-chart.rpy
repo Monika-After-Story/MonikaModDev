@@ -366,50 +366,96 @@ init -100 python in mas_sprites:
     # marks that a hair style requires clothes with none of hte value'd props
     # to be worn
 
+    EXP_H_TS = "tiedstrand"
+    # v: ignored
+    # marks that a hair style is a tied strand style
+
+    EXP_H_NT = "no-tails"
+    # v: ignored
+    # marks that a hair style has no tails. By default we assume ponytail.
+
     # ---- CLOTHES ----
 
     EXP_C_BRS = "bare-right-shoulder"
     # v: ignored
     # marks that a clothing item has a bare right shoulder
 
+    EXP_C_COST = "costume"
+    # v: costume type as string (o31, d25, etc..)
+    # marks that a clothing item is a costume
+
+    EXP_C_COSP = "cosplay"
+    # v: ignored
+    # marks that a clothing item is a cosplay outfit
+
+    EXP_C_LING = "lingerie"
+    # v: ignored
+    # marks that a clothing item is lingerie
+
     # --- default exprops ---
+
     DEF_EXP_TT_EXCL = [EXP_H_TT]
+    # twin tail exclusions
 
     # --- default mux types ---
 
     DEF_MUX_RB = [
         "ribbon",
         "bow",
-        "twin-ribbons",
         "bunny-scrunchie",
+        "hat",
         "s-type-ribbon",
+        "twin-ribbons",
     ]
     # default mux types for ribbon-based items.
 
     DEF_MUX_HS = [
         "headset",
-        "headphones",
         "earphones",
+        "hat",
         "headband",
-        "left-hair-flower-ear"
+        "headphones",
+        "left-hair-flower-ear",
     ]
     # default mux types for headset-based items
 
-    DEF_MUX_HB = ["headband", "headset", "headphones"]
+    DEF_MUX_HB = [
+        "headband",
+        "hat",
+        "headphones",
+        "headset",
+    ]
     # default mux types for headband-based items
 
     DEF_MUX_LHC = ["left-hair-clip"]
     # default mux types for left hair clip-based items
 
     DEF_MUX_LHFE = [
+        "left-hair-flower-ear",
+        "earphones",
+        "front-hair-flower-crown",
+        "hat",
         "headset",
         "headphones",
-        "earphones",
-        "left-hair-flower-ear",
         "left-hair-flower",
-        "front-hair-flower-crown"
     ]
     # default mux tyoes for left hair flower-baesd items
+
+    DEF_MUX_HAT = [
+        "hat",
+        "bow",
+        "bunny-scrunchie",
+        "earphones",
+        "front-hair-flower-crown",
+        "headband",
+        "headphones",
+        "headset",
+        "left-hair-flower",
+        "ribbon",
+        "s-type-ribbon",
+        "twin-ribbons",
+    ]
+    # default mux types for hats
 
     # maps ACS types to their ACS template
     ACS_DEFS = {
@@ -436,6 +482,17 @@ init -100 python in mas_sprites:
                 "bare neck": True
             }
         ),
+        "front-hair-flower-crown": ACSTemplate(
+            "front-hair-flower-crown",
+            mux_type=DEF_MUX_LHFE,
+            ex_props={
+                "front-hair-crown": True,
+            },
+        ),
+        "hat": ACSTemplate(
+            "hat",
+            mux_type=DEF_MUX_HAT
+        ),
         "headband": ACSTemplate(
             "headband",
             mux_type=DEF_MUX_HB
@@ -453,17 +510,14 @@ init -100 python in mas_sprites:
         ),
         "left-hair-flower": ACSTemplate(
             "left-hair-flower",
-            mux_type=["left-hair-flower", "left-hair-flower-ear", "front-hair-flower-crown"],
+            mux_type=[
+                "left-hair-flower",
+                "left-hair-flower-ear",
+                "front-hair-flower-crown"
+            ],
             ex_props={
                 EXP_A_LHSEL: True
             }
-        ),
-        "front-hair-flower-crown": ACSTemplate(
-            "front-hair-flower-crown",
-            mux_type=DEF_MUX_LHFE,
-            ex_props={
-                "front-hair-crown": True,
-            },
         ),
         "left-hair-flower-ear": ACSTemplate(
             "left-hair-flower-ear",
@@ -1291,12 +1345,27 @@ init -5 python in mas_sprites:
         return sprite_map.get(sprite_name, None)
 
 
-    # special mas monika functions (hooks)
+##### special mas monika functions (hooks)
     # NOTE: set flag "abort" to True in prechange points to prevent 
     #   change/add/removal. This is dependent on the specific hook.
     #   ACS: only wear_mux_pre_change and rm_exit_pre_change
     #   HAIR: hair_exit_pre_change
     #   CLOTHES: clothes_exit_pre_change
+    # NOTE: available temp_space flags by type:
+    #   ACS:
+    #       abort - see above
+    #       acs_list - list of acs Monika is currently wearing
+    #
+    #   HAIR:
+    #       abort - see above
+    #       by_user - True if set by the user, False if not
+    #       startup - True if we are in startup flow, false if not
+    #
+    #   CLOTHES:
+    #       abort - see above
+    #       by_user - same as hair
+    #       startup - same as hair
+    #       outfit_mode - True if in outfit mode, False if not
 
     def acs_rm_exit_pre_change(temp_space, moni_chr, rm_acs, acs_loc):
         """
@@ -1484,6 +1553,11 @@ init -5 python in mas_sprites:
             prev_hair - current hair
             new_hair - hair we are changing to
         """
+        # abort if current clothes is not comaptible with new hair
+        if not is_clotheshair_compatible(moni_chr.clothes, new_hair):
+            temp_space["abort"] = True
+            return
+
         all_acs = moni_chr.get_acs()
         for acs in all_acs:
             if not is_hairacs_compatible(new_hair, acs):

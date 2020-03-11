@@ -2290,11 +2290,13 @@ label _mas_reaction_ribbon_helper(label):
 label mas_reaction_new_ribbon:
     python:
         def _ribbon_prepare_hair():
-            # TODO: need to identifiy what outfits work with ponytail
-            # and what do not
+            if monika_chr.hair.hasprop("ribbon"):
+                # first check for ribbon prop
+                return
+
+            # no ribbon prop means we should change
             if (
-                    monika_chr.clothes == mas_clothes_marisa
-                    or monika_chr.clothes == mas_clothes_rin
+                    monika_chr.clothes == mas_clothes_rin
                 ):
                 if mas_isD25Outfit():
                     monika_chr.change_outfit(
