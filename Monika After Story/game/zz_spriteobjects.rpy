@@ -1482,7 +1482,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="chocs",
-        mux_type=["left-desk-acs"],
+        mux_type=[store.mas_sprites.EXP_A_LD],
         entry_pp=store.mas_sprites._acs_heartchoc_entry,
         exit_pp=store.mas_sprites._acs_heartchoc_exit,
         keep_on_desk=True

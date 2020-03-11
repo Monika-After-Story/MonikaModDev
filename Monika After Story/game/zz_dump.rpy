@@ -313,9 +313,10 @@ init 999 python:
                 #Need to account for consumables which were removed
                 if consumable:
                     _var_data_file.write(
-                        "{0}S OF {1} HAD: {2}\n".format(
+                        "{0}S OF {1} {2}: {3}\n".format(
                         consumable.container.upper(),
                         consumable.disp_name.upper(),
+                        "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
                         consumable.getAmountHad()
                         )
                     )

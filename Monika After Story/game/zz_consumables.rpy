@@ -46,6 +46,7 @@ init 5 python:
 
         PROPERTIES:
             consumable_id - id of the consumable
+            consumable_type - Type of consumable this is
             disp_name - friendly name for this consumable
             container - the container of this consumable (cup, mug, glass, bottle, etc)
             start_end_tuple_list - list of (start_hour, end_hour) tuples
@@ -56,10 +57,10 @@ init 5 python:
             late_entry_list - list of integers storing the hour which would be considered a late entry
             max_re_serve - amount of times Monika can get a re-serving of this consumable
             cons_chance - likelihood of Monika to keep having this consumable
-            prep_low - bottom bracket of preparation time
-            prep_high - top bracket of preparation time
-            cons_low - bottom bracket of consumable time
-            cons_high - top bracket of consumable time
+            prep_low - bottom bracket of preparation time (NOTE: Should be passed in as number of seconds)
+            prep_high - top bracket of preparation time (NOTE: Should be passed in as number of seconds)
+            cons_low - bottom bracket of consumable time (NOTE: Should be passed in as number of seconds)
+            cons_high - top bracket of consumable time (NOTE: Should be passed in as number of seconds)
             done_cons_until - the time until Monika can randomly have this consumable again
             get_cons_evl - evl to use for getting the consumable (no prep)
             finish_prep_evl - evl to use when finished preparing a consumable
@@ -143,16 +144,20 @@ init 5 python:
                     (Default: 80/100)
 
                 cons_low - low bracket for Monika to have this consumable
+                    (NOTE: Should be passed in as seconds)
                     (Default: 10 minutes)
 
                 cons_high - high bracket for Monika to have this consumable
+                    (NOTE: Should be passed in as seconds)
                     (Default: 2 hours)
 
                 prep_low - low bracket for prep time
+                    (NOTE: Should be passed in as seconds)
                     (Default: 2 minutes)
                     NOTE: If set to None, this will not be considered preppable
 
                 prep_high - high bracket for prep time
+                    (NOTE: Should be passed in as seconds)
                     (Default: 4 minutes)
                     NOTE: If set to None, this will not be considered preppable
 
@@ -461,7 +466,7 @@ init 5 python:
             #Skipping leadin? We need to set this to persistent and wear the acs for it
             if skip_leadin:
                 persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
-                monika_chr.wear_acs_pst(self.acs)
+                monika_chr.wear_acs(self.acs)
 
             #If this isn't a prepable type and we don't have a current consumable of this type, we should push the ev
             elif not self.prepable() and not MASConsumable.__getCurrentConsumable(self.consumable_type):
@@ -750,15 +755,12 @@ init 5 python:
             )
 
         @staticmethod
-        def _getConsumablesForTime(_type, _now=None):
+        def _getConsumablesForTime(_type):
             """
             Gets a list of all consumable drinks active at this time
 
             IN:
                 _type - type of consumables to get
-                _now - datetime.datetime object representing current time
-                    If None, now is assumed
-                    (Default: None)
 
             OUT:
                 list of consumable objects of _type enabled and within time range
@@ -901,10 +903,6 @@ init 5 python:
             #Verify persist data
             MASConsumable._validatePersistentData(_type)
 
-            #Wear the acs if we don't have it out for some reason
-            if MASConsumable._isHaving(_type) and not monika_chr.is_wearing_acs(curr_cons.acs):
-                monika_chr.wear_acs_pst(curr_cons.acs)
-
             #Reset if we're having a consumable we shouldn't be having now and we opened the game after its consume time
             if (
                 MASConsumable._isHaving(_type)
@@ -921,6 +919,9 @@ init 5 python:
 
             #If we're currently prepping/having anything, we don't need to do anything else
             if persistent._mas_current_consumable[_type]["id"] is not None:
+                #Wear the acs if we don't have it out for some reason
+                if MASConsumable._isHaving(_type) and not monika_chr.is_wearing_acs(curr_cons.acs):
+                    monika_chr.wear_acs(curr_cons.acs)
                 return
 
             #Otherwise, step two: what are we having?
@@ -992,12 +993,10 @@ init 5 python:
 
         MID_TEXT += "\n"
 
-        shopping_list = open(renpy.config.basedir + "/characters/shopping_list.txt", "w")
-        shopping_list.write(
-            renpy.substitute(START_TEXT + MID_TEXT + END_TEXT)
-        )
-
-        shopping_list.close()
+        with open(renpy.config.basedir + "/characters/shopping_list.txt", "w") as shopping_list:
+            shopping_list.write(
+                renpy.substitute(START_TEXT + MID_TEXT + END_TEXT)
+            )
 
     def mas_getConsumable(consumable_id):
         """
@@ -1014,7 +1013,7 @@ init 5 python:
         for consumable_type in store.mas_consumables.consumable_map.keys():
             if consumable_id in store.mas_consumables.consumable_map[consumable_type]:
                 return store.mas_consumables.consumable_map[consumable_type][consumable_id]
-        return
+        return None
 
     def mas_useThermos():
         """
@@ -1193,7 +1192,7 @@ label mas_consumables_generic_get(consumable):
     python:
         renpy.pause(1.0, hard=True)
         consumable.acs.keep_on_desk = False
-        monika_chr.wear_acs_pst(consumable.acs)
+        monika_chr.wear_acs(consumable.acs)
         renpy.pause(4.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
@@ -1300,7 +1299,7 @@ label mas_consumables_generic_finished_prepping(consumable):
         #Make sure drink is still gone
         consumable.acs.keep_on_desk = False
         #Now wear drink acs
-        monika_chr.wear_acs_pst(consumable.acs)
+        monika_chr.wear_acs(consumable.acs)
 
         #Reset prep time
         persistent._mas_current_consumable[consumable.consumable_type]["prep_time"] = None

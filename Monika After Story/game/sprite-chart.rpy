@@ -343,6 +343,10 @@ init -100 python in mas_sprites:
     # v: string
     # marks that an ACS requires a hairstyle with the value'd prop to be worn
 
+    EXP_A_LD = "left-desk-acs"
+    # v: ignored
+    # marks that this ACS is on the left side (Monika's left) of the desk
+
     EXP_A_RBL = "ribbon-like"
     # v: ignored
     # marks that an ACS is like a ribbon in function
@@ -496,7 +500,7 @@ init -100 python in mas_sprites:
             mux_type=DEF_MUX_LD,
             keep_on_desk=True,
             ex_props={
-                "left-desk-acs": True
+                EXP_A_LD: True
             }
         ),
         # ring
