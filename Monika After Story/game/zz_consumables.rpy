@@ -915,15 +915,15 @@ init 5 python:
             ):
                 MASConsumable._reset(_type)
 
-            #If we have no consumables, then there's no point in doing anything
-            if not available_cons:
-                return
-
             #If we're currently prepping/having anything, we don't need to do anything else
             if persistent._mas_current_consumable[_type]["id"] is not None:
                 #Wear the acs if we don't have it out for some reason
                 if MASConsumable._isHaving(_type) and not monika_chr.is_wearing_acs(curr_cons.acs):
                     monika_chr.wear_acs(curr_cons.acs)
+                return
+
+            #If we have no consumables, then there's no point in doing anything
+            if not available_cons:
                 return
 
             #Otherwise, step two: what are we having?
