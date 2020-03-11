@@ -121,6 +121,8 @@ init 5 python:
                 container - containment for this consumable (cup/mug/bottle/etc)
 
                 start_end_tuple_list - list of tuples storing (start_hour, end_hour)
+                    NOTE: Does NOT support midnight crossover times. If needed, requires a separate entry
+                    NOTE: end_hour is exclusive
 
                 acs - MASAccessory object for this consumable
 
