@@ -50,7 +50,7 @@ init -1 python in mas_moods:
 
     # pane constants
     # most of these are the same as the unseen area consants
-    MOOD_RETURN = "...like talking about something else."
+    MOOD_RETURN = _("...like talking about something else.")
 
 ## FUNCTIONS ==================================================================
 

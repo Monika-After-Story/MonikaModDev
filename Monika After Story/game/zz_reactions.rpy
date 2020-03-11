@@ -64,7 +64,7 @@ init -11 python in mas_filereacts:
         "GiftReactDetails",
         [
             # label corresponding to this gift react
-            "label", 
+            "label",
 
             # lowercase, no extension giftname for this gift react
             "c_gift_name",
@@ -255,7 +255,7 @@ init -11 python in mas_filereacts:
                         )
 
             labels.extend(gsp_labels)
-                    
+
         # and lastlly is generics
         if len(gen_details) > 0:
             gen_labels = []
@@ -314,7 +314,7 @@ init -11 python in mas_filereacts:
             override_react_map=False,
     ):
         """
-        Finds gifts. 
+        Finds gifts.
 
         IN:
             exclusion_list - list of giftnames to exclude from the search
@@ -355,7 +355,7 @@ init -11 python in mas_filereacts:
                 and c_gift_name not in store.persistent._mas_filereacts_stop_map
                 and (
                     override_react_map
-                    or c_gift_name not 
+                    or c_gift_name not
                         in store.persistent._mas_filereacts_reacted_map
                 )
             ):
@@ -400,7 +400,7 @@ init -11 python in mas_filereacts:
             # determine if reaction exists
             mas_gift = gifts[index]
             reaction = filereact_map.get(mas_gift, None)
-            
+
             if mas_gift is not None and reaction is not None:
 
                 # pull sprite data
@@ -451,7 +451,7 @@ init -11 python in mas_filereacts:
 
     def react_to_gifts(found_map, connect=True):
         """
-        Reacts to gifts using the standard protocol (no exclusions) 
+        Reacts to gifts using the standard protocol (no exclusions)
 
         IN:
             connect - true will apply connectors, FAlse will not
@@ -668,7 +668,7 @@ init -11 python in mas_filereacts:
 ##            generic_reacts.append(gift_starters.quip()[1])
 #
 #        # now return the list
-#        return generic_reacts 
+#        return generic_reacts
 
 
     def register_gen_grds(details):
@@ -984,7 +984,7 @@ init python:
 
         REUTRNS: tuple of the folling format:
             [0]: sprite type of the sprite
-            [1]: sprite name (id) 
+            [1]: sprite name (id)
             [2]: giftname this sprite is associated with
             [3]: True if this gift has already been given before
             [4]: sprite object (could be None even if sprite name is populated)
@@ -1041,7 +1041,7 @@ init python:
             return
 
         sp_data = (sp_type, sp_name)
-        
+
         if sp_data in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop(sp_data)
 
@@ -1283,10 +1283,10 @@ label mas_reaction_gift_generic_sprite_json:
         else:
             python:
                 acs_quips = [
-                    "I really appreciate it!",
-                    "[its] amazing!",
-                    "I just love [item_ref]!",
-                    "[its] wonderful!"
+                    _("I really appreciate it!"),
+                    _("[its] amazing!"),
+                    _("I just love [item_ref]!"),
+                    _("[its] wonderful!")
                 ]
 
                 # we have a complete description, so use it here
@@ -1316,10 +1316,10 @@ label mas_reaction_gift_generic_clothes_json(sprite_object):
         mas_giftCapGainAff(3)
         # expandable
         outfit_quips = [
-            "I think it's really cute, [player]!",
-            "I think it's amazing, [player]!",
-            "I just love it, [player]!",
-            "I think it's wonderful, [player]!"
+            _("I think it's really cute, [player]!"),
+            _("I think it's amazing, [player]!"),
+            _("I just love it, [player]!"),
+            _("I think it's wonderful, [player]!")
         ]
         outfit_quip = renpy.random.choice(outfit_quips)
 
@@ -1500,7 +1500,7 @@ label mas_reaction_quetzal_plush:
             m 1wub "How did you guess, [player]?"
             m 3eka "You must know me very well~"
             m 1eua "A quetzal would be my first choice for a pet..."
-        m 1rud "But I would never force the poor thing to stay."    
+        m 1rud "But I would never force the poor thing to stay."
         m 1hua "And now you gave me the next best thing!"
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
@@ -1910,11 +1910,11 @@ label mas_reaction_candycane:
         else:
             m 1hub "I just love the flavor of mint!"
         m 1eua "Thanks, [player]."
-    
+
     elif times_cane_given == 1:
         m 3hua "Another candy cane!"
         m 3hub "Thanks [player]!"
-    
+
     else:
         m 1eksdla "[player], I think I have enough candy canes for now."
         m 1eka "You can save them for later, alright?"
@@ -2094,7 +2094,7 @@ label mas_reaction_json_ribbon_base(ribbon_name, user_friendly_desc, helper_labe
         # giftname is the 3rd item
         if sprite_data[2] is not None:
             store.mas_filereacts.delete_file(sprite_data[2])
-            
+
         mas_finishSpriteObjInfo(sprite_data)
     return
 
@@ -2704,7 +2704,7 @@ label mas_reaction_gift_clothes_finale_jacket_brown:
         if mas_isWinter():
             m 1tuu "I won't be getting cold anytime soon because of you, [player]~"
         m 3eub "Let me go put it on! I'll be right back."
-    
+
         # try it on
         call mas_clothes_change(sprite_object)
 

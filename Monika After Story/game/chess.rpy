@@ -46,7 +46,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_NEW_GAME_VALUE = "NEWGAME"
     CHESS_MENU_NEW_GAME_ITEM = (
-        "Play New Game",
+        _("Play New Game"),
         CHESS_MENU_NEW_GAME_VALUE,
         True,
         False
@@ -54,7 +54,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_FINAL_VALUE = "NONE"
     CHESS_MENU_FINAL_ITEM = (
-        "Nevermind",
+        _("Nevermind"),
         CHESS_MENU_FINAL_VALUE,
         False,
         False,
@@ -63,7 +63,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_WAIT_VALUE = "MATTE"
     CHESS_MENU_WAIT_ITEM = (
-        "I can't make this decision right now...",
+        _("I can't make this decision right now..."),
         CHESS_MENU_WAIT_VALUE,
         False,
         False,
@@ -142,15 +142,15 @@ init 1 python in mas_chess:
 
     # ofcnot
     DLG_QF_LOST_OFCN_ENABLE = True
-    DLG_QF_LOST_OFCN_CHOICE = "Of course not!"
+    DLG_QF_LOST_OFCN_CHOICE = _("Of course not!")
 
     # maybe
     DLG_QF_LOST_MAY_ENABLE = True
-    DLG_QF_LOST_MAY_CHOICE = "Maybe..."
+    DLG_QF_LOST_MAY_CHOICE = _("Maybe...")
 
     # accident
     DLG_QF_LOST_ACDNT_ENABLE = True
-    DLG_QF_LOST_ACDNT_CHOICE = "It was an accident!"
+    DLG_QF_LOST_ACDNT_CHOICE = _("It was an accident!")
 
     ## if player is locked out of chess
     DLG_CHESS_LOCKED = "mas_chess_dlg_chess_locked"
@@ -172,14 +172,14 @@ init 1 python in mas_chess:
     # first, lets take all the text based ones and group them
     # 1q
     _monika_loses_line_quips = (
-        "Hmph.{w=0.3} You were just lucky today.",
-        "...{w=0.3}I'm just having an off day.",
-        "Ah, so you {i}are{/i} capable of winning...",
-        "I guess you're not {i}entirely{/i} terrible.",
-        "Tch-",
-        "Winning isn't everything, you know...",
-        "Ahaha,{w=0.3} I was just letting you win since you keep losing so much.",
-        "Oh, you won.{w=0.3} I should have taken this game seriously, then."
+        _("Hmph.{w=0.3} You were just lucky today."),
+        _("...{w=0.3}I'm just having an off day."),
+        _("Ah, so you {i}are{/i} capable of winning..."),
+        _("I guess you're not {i}entirely{/i} terrible."),
+        _("Tch-"),
+        _("Winning isn't everything, you know..."),
+        _("Ahaha,{w=0.3} I was just letting you win since you keep losing so much."),
+        _("Oh, you won.{w=0.3} I should have taken this game seriously, then.")
         # TODO: look into more of these
     )
 
@@ -195,8 +195,8 @@ init 1 python in mas_chess:
     # first, lets generate line quips
     # 1k expressions
     _monika_wins_line_quips = (
-        "Ahaha, do you even know how to play chess?", # use this for surrenders too
-        "Are you {i}that{/i} bad? I wasn't even taking this game seriously."
+        _("Ahaha, do you even know how to play chess?"), # use this for surrenders too
+        _("Are you {i}that{/i} bad? I wasn't even taking this game seriously.")
     )
 
     # generate label quips
@@ -211,10 +211,7 @@ init 1 python in mas_chess:
     # first, lets generate line quips
     _monika_wins_surr_line_quips = (
         _monika_wins_line_quips[0],
-        (
-            "Figures you'd give up. You're not one to see things all the " +
-            "way through."
-        ),
+        _("Figures you'd give up. You're not one to see things all the way through."),
     )
 
     # generate label quips
@@ -544,21 +541,21 @@ init:
                 # hotkey button text
                 # idle style/ disabled style:
                 button_text_save_idle = Text(
-                    "Save",
+                    _("Save"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_idle_color,
                     outlines=[]
                 )
                 button_text_giveup_idle = Text(
-                    "Give Up",
+                    _("Give Up"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_idle_color,
                     outlines=[]
                 )
                 button_text_done_idle = Text(
-                    "Done",
+                    _("Done"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_idle_color,
@@ -567,21 +564,21 @@ init:
 
                 # hover style
                 button_text_save_hover = Text(
-                    "Save",
+                    _("Save"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_hover_color,
                     outlines=[]
                 )
                 button_text_giveup_hover = Text(
-                    "Give Up",
+                    _("Give Up"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_hover_color,
                     outlines=[]
                 )
                 button_text_done_hover = Text(
-                    "Done",
+                    _("Done"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_hover_color,
@@ -1692,7 +1689,7 @@ label mas_chess_save_migration:
         # only show this if we even have multiple pgn games
         if game_count > 1:
             if renpy.seen_label("mas_chess_save_multi_dlg"):
-                $ pick_text = "You still need to pick a game to keep."
+                $ pick_text = _("You still need to pick a game to keep.")
             else:
                 label mas_chess_save_multi_dlg:
                     m 1m "So I've been thinking, [player]..."
@@ -1700,7 +1697,7 @@ label mas_chess_save_migration:
                     m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
                     m 1p "And since we have [game_count] games in progress..."
                     m 1g "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
-                    $ pick_text = "Pick a game you'd like to keep."
+                    $ pick_text = _("Pick a game you'd like to keep.")
             show monika 1e at t21
             $ renpy.say(m, pick_text, interact=False)
 
