@@ -1334,8 +1334,9 @@ python early:
 
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
-            """
-            DEPRECATED (remove when farewells is updated)
+            """DEPRECATED
+            
+            (remove when farewells is updated)
 
             Checks a single event against its repeat rules, which are evaled
             to a time.
@@ -1369,8 +1370,9 @@ python early:
 
         @staticmethod
         def checkRepeatRules(events, check_time=None):
-            """
-            DEPRECATED (remove when farewells is updated)
+            """DEPRECATED
+
+            (remove when farewells is updated)
 
             checks the event dict against repeat rules, which are evaluated
             to a time.
