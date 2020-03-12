@@ -5082,9 +5082,12 @@ init -2 python:
             """
             Wears the given accessory
 
+            NOTE: will not allow mismatching layers, unless overrides are
+                enabled.
+
             IN:
                 accessory - accessory to wear
-                acs_type - accessory type (location) to wear this accessory
+                acs_type - layer to wear the acs in.
             """
             if self.lock_acs or accessory.name in self.acs_list_map:
                 # we never wear dupes
@@ -5097,6 +5100,17 @@ init -2 python:
                     and not self._override_rec_layer
             ):
                 acs_type = accessory.get_rec_layer()
+
+            # verify aso_type is valid for the desired acs layer
+            # unless override
+            if not self._override_rec_layer:
+                if acs_type in (self.BSE_ACS, self.ASE_ACS):
+                    valid_aso_type = MASAccessoryBase.ASO_REG
+                else:
+                    valid_aso_type = MASAccessoryBase.ASO_SPLIT
+
+                if accessory.aso_type != valid_aso_type:
+                    return
 
             acs_list = self.__get_acs(acs_type)
             temp_space = {

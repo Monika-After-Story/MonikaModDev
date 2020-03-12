@@ -718,19 +718,19 @@ init -4 python in mas_sprites:
         # Since None means we dont show, we are going to assume that the
         # accessory should not be shown if the pose key is missing.
         poseid = acs.pose_map.get(leanpose, None)
-        arm_codes = acs.get_arm_split_code(leanpose)
 
-        # determine arm code
-        if arm_split is not None:
-            
-            if arm_split in arm_codes:
-                arm_code = ART_DLM + arm_split
-            else:
-                # we should not render
-                arm_code = None
+        # get arm code if needed
+        # NOTE: we can be sure that a nonsplit acs will not be used in 
+        #   a split context.
+        if arm_split is None:
+            arm_code = ""
+
+        elif arm_split in acs.get_arm_split_code(leanpose):
+            arm_code = ART_DLM + arm_split
 
         else:
-            arm_code = ""
+            # we should not render
+            arm_code = None
 
         # now we can generate the key and check cache
         img_key = (flt, acs.name, poseid, arm_code)
@@ -757,6 +757,9 @@ init -4 python in mas_sprites:
             cache_acs[img_key] = None
             cache_acs[day_key] = None
             return
+
+        # TODO: left off here
+        # TODO: add gethlc to MASAccesssory children
 
         # build img list minus file extensions
         img_list = [
