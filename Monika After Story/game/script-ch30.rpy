@@ -1377,6 +1377,9 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
+    #Now we check if we should drink
+    $ MASConsumable._checkConsumables(startup=True)
+
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
@@ -1927,10 +1930,6 @@ label ch30_reset:
                 persistent._mas_affection["freeze_date"] = today
 
     #Do startup checks
-
-    #Now we check if we should drink
-    $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
-
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
@@ -1990,20 +1989,12 @@ label ch30_reset:
         if store.mas_dockstat.retmoni_status is not None:
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
-        #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
-        if store.mas_globals.returned_home_this_sesh:
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
             MASConsumable._reset()
+
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
-
-        #Store this because we may need to reset this
-        mug_acs = monika_chr.get_acs_of_type("mug")
-
-        #If we're not currently drinking something but still have the acs out, let's remove that
-        #NOTE: This is used in the case of crashes
-        if not MASConsumable._isHaving(mas_consumables.TYPE_DRINK) and mug_acs:
-            monika_chr.remove_acs(mug_acs)
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()

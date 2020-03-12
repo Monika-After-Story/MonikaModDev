@@ -815,7 +815,19 @@ init 5 python:
             )
 
             if startup:
+                renpy.say(store.m, "g")
                 MASConsumable._absentUse()
+
+                #Now we'll check if we've got sprites out in case we've crashed
+                drink_acs = store.monika_chr.get_acs_of_exprop(store.mas_sprites.EXP_A_DRINK)
+                food_acs = store.monika_chr.get_acs_of_exprop(store.mas_sprites.EXP_A_FOOD)
+
+                #Remove if we need to
+                if not MASConsumable._isHaving(store.mas_consumables.TYPE_DRINK) and drink_acs:
+                    store.monika_chr.remove_acs(drink_acs)
+
+                if not MASConsumable._isHaving(store.mas_consumables.TYPE_FOOD) and food_acs:
+                    store.monika_chr.remove_acs(food_acs)
 
         @staticmethod
         def _absentUse():
@@ -1034,7 +1046,6 @@ init 5 python:
             #If we have an unlocked thermos, we'll use it here
             if thermoses:
                 thermos = renpy.random.choice(thermoses)
-                thermos.keep_on_desk = False
                 monika_chr.wear_acs(thermos)
 
 #START: consumable drink defs:
@@ -1384,12 +1395,10 @@ label mas_consumables_remove_thermos:
         m 1eua "Give me a second [player], I'm going to put this thermos away."
 
     $ thermos = monika_chr.get_acs_of_type("thermos-mug")
-    $ thermos.keep_on_desk = False
     call mas_transition_to_emptydesk
 
     #Remove the current thermos
     $ monika_chr.remove_acs(thermos)
-    $ thermos.keep_on_desk = True
 
     call mas_transition_from_emptydesk("monika 1eua")
 

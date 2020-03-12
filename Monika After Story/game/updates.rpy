@@ -82,8 +82,7 @@ init python:
             Event.INIT_LOCKDB.pop(topicID)
 
     def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
-        """
-        DEPREACTED
+        """DEPREACTED
 
         NOTE: This can cause data corruption. DO NOT USE.
 

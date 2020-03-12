@@ -355,6 +355,14 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that an ACS is a twin ribbon-based acs
 
+    EXP_A_FOOD = "food"
+    # v: ignored
+    # marks that this ACS is a food
+
+    EXP_A_DRINK = "drink"
+    # v: ignored
+    # marks that this ACS is a drink
+
     # ---- HAIR ----
 
     EXP_H_TT = "twintails"
@@ -486,7 +494,10 @@ init -100 python in mas_sprites:
         "mug": ACSTemplate(
             "mug",
             mux_type=["mug", "thermos-mug"],
-            keep_on_desk=True
+            keep_on_desk=True,
+            ex_props={
+                EXP_A_DRINK: True
+            }
         ),
         "necklace": ACSTemplate(
             "necklace",
@@ -500,7 +511,8 @@ init -100 python in mas_sprites:
             mux_type=DEF_MUX_LD,
             keep_on_desk=True,
             ex_props={
-                EXP_A_LD: True
+                EXP_A_LD: True,
+                EXP_A_FOOD: True
             }
         ),
         # ring
@@ -518,7 +530,7 @@ init -100 python in mas_sprites:
         "thermos-mug": ACSTemplate(
             "thermos-mug",
             mux_type=["mug", "thermos-mug"],
-            keep_on_desk=True
+            keep_on_desk=False
         ),
         "twin-ribbons": ACSTemplate(
             "twin-ribbons",
