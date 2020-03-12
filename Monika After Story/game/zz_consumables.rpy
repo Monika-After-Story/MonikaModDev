@@ -815,7 +815,6 @@ init 5 python:
             )
 
             if startup:
-                renpy.say(store.m, "g")
                 MASConsumable._absentUse()
 
                 #Now we'll check if we've got sprites out in case we've crashed
