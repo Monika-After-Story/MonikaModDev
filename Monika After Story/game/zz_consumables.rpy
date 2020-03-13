@@ -473,7 +473,7 @@ init 5 python:
             #If this isn't a prepable type and we don't have a current consumable of this type, we should push the ev
             elif not self.prepable() and not MASConsumable.__getCurrentConsumable(self.consumable_type):
                 persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
-                pushEvent(self.get_cons_evl)
+                queueEvent(self.get_cons_evl)
 
             #Increment cup count
             self.increment()
