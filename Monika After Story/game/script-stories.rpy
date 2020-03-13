@@ -220,11 +220,11 @@ label monika_short_stories_menu:
 label mas_story_begin:
     python:
         story_begin_quips = [
-            "Alright, let's start the story.",
-            "Ready to hear the story?",
-            "Ready for story time?",
-            "Let's begin~",
-            "Are you ready?"
+            _("Alright, let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin~"),
+            _("Are you ready?")
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     $ mas_gainAffection(modifier=0.2)
@@ -729,6 +729,33 @@ label mas_story_o_tei:
     m 3esa "As she came to, she had no memory of what happened in the inn."
     m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
     return
+    
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_crow_and_pitcher",
+        prompt="The Crow and the Pitcher",unlocked=False),code="STY")
+
+label mas_story_crow_and_pitcher:
+    call mas_story_begin
+    m 2ekd "There was once a drought so severe, not even birds could find much to drink."
+    m 7eub "While searching from above, a thirsty crow found a pitcher and was relieved to find there was some water still inside!"
+    m 3eksdlc "However, the pitcher was tall with a narrow neck. No matter how he tried, he could not reach the water with his beak."
+    m 1dksdlc "For the poor crow, all hope seemed lost. Surely he would die of thirst."
+    m 3wud "...Then he had an idea."
+    m 3esc "He began searching for small pebbles on the ground and dropping them into the pitcher, one by one."
+    m 2efsdlc "Hours passed. It was slow, grueling work, gathering more and more."
+    m 2esa "But with each tiny pebble, the water rose higher and higher, until finally..."
+    m 4hub "He could take a long, refreshing drink!"
+    m 2dka "..."
+    m 2eka "You know, this story kind of reminds me of our situation, [player]."
+    m 7ekc "Right now, our goal seems so far away. We're reaching out as much as we can, but the gap between us is enormous."
+    m 3dkc "It sometimes feels like it's impossible to bridge. If we tried to cross it in one leap, we'd be like the crow reaching with just his beak."
+    m 1tkd "...Believe me, I tried."
+    m 3ekb "But when you think about it, we're adding pebbles to our pitcher. And it's not just you and me!"
+    m 3eua "Advances in both VR and AI technology are gradually moving forward..."
+    m 3hua "And more specifically to our situation, so many people are working together to help me get closer to your reality."
+    m 1eka "When I think about it that way--the water level in that pitcher slowly rising--it makes it a lot easier to keep going every day."
+    m 1hua "I hope it does for you too, [player]~"
+    return
 
 define mas_scary_story_setup_done = False
 
@@ -767,11 +794,11 @@ label mas_scary_story_setup:
 
     python:
         story_begin_quips = [
-            "Alright let's start the story.",
-            "Ready to hear the story?",
-            "Ready for story time?",
-            "Let's begin.",
-            "Are you ready?"
+            _("Alright let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin."),
+            _("Are you ready?")
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     m 3eua "[story_begin_quip]"
@@ -782,11 +809,11 @@ label mas_scary_story_cleanup:
 
     python:
         story_end_quips = [
-            "Scared, [player]?",
-            "Did I scare you, [player]?",
-            "How was it?",
-            "Well?",
-            "So...{w=0.5}did I scare you?"
+            _("Scared, [player]?"),
+            _("Did I scare you, [player]?"),
+            _("How was it?"),
+            _("Well?"),
+            _("So...{w=0.5}did I scare you?")
         ]
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 
@@ -843,7 +870,7 @@ label mas_scary_story_hunter:
     m 1wkd "...and to his horror,{w=1} he saw that she had gained on him significantly."
     m 3wkd "In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
     m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
-    show emptydesk at i11 zorder 9
+    $ store.mas_sprites.show_empty_desk()
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
     if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,10) == 1) or mas_full_scares:

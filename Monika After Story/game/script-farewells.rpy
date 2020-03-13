@@ -144,10 +144,10 @@ label mas_farewell_start:
             ]
 
             # add the random selection
-            bye_prompt_list.append(("Goodbye.", -1, False, False))
+            bye_prompt_list.append((_("Goodbye."), -1, False, False))
 
             # setup the last option
-            bye_prompt_back = ("Nevermind.", False, False, False, 20)
+            bye_prompt_back = (_("Nevermind."), False, False, False, 20)
 
         # call the menu
         call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)
@@ -1467,7 +1467,7 @@ label bye_dinner_noon_to_mn:
         m 2euc "I guess it's dinner time for you."
         m 2esd "Well...{w=1}enjoy."
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -1490,7 +1490,7 @@ label bye_prompt_housework:
         m 2esc "Fine."
         m 2tsc "At least you're doing something responsible."
         m 2tfc "{cps=*2}...For once.{/cps}{nw}"
-        $ _history_list.pop()        
+        $ _history_list.pop()
         m 2esc "Goodbye."
     elif mas_isMoniDis():
         m 6ekc "I see..."
@@ -1501,4 +1501,29 @@ label bye_prompt_housework:
         m 6ckc "..."
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_restart",
+            unlocked=True,
+            prompt="I'm going to restart.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_restart:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Alright, [player]."
+        m 1eub "See you soon!"
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+    else:
+        m 2euc "Alright."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART
     return 'quit'

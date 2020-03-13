@@ -116,6 +116,13 @@ init -1 python:
 
         return _date in persistent._mas_event_clothes_map
 
+init -10 python:
+    def mas_isA01(_date=None):
+        if _date is None:
+            _date = datetime.date.today()
+
+        return _date == datetime.date(_date.year,4,1)
+
 # Global labels
 label mas_lingerie_intro(holiday_str,lingerie_choice):
     m 1ekbfa "..."
@@ -284,7 +291,7 @@ init -10 python:
             return anything.
         """
         if selection_pool is None:
-            selection_pool = MASClothes.by_exprop("costume")
+            selection_pool = MASClothes.by_exprop("costume", "o31")
 
         # set to true if monika is wearing a costume right now
         wearing_costume = False
@@ -511,12 +518,15 @@ init 5 python:
     )
 
 label greeting_o31_marisa:
+    # with marisa, we should also unlock the hat and the hair style
+    $ store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
+    $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
+
     # decoded CG means that we start with monika offscreen
     if store.mas_o31_event.o31_cg_decoded:
         # ASSUMING:
         #   vignette should be enabled.
         call spaceroom(hide_monika=True, scene_change=True)
-        show emptydesk at i11 zorder 9
 
     else:
         # ASSUMING:
@@ -588,7 +598,6 @@ label greeting_o31_rin:
 
     # ASSUME vignette
     call spaceroom(hide_monika=True, scene_change=True)
-    show emptydesk at i11 zorder 9
 
     m "Ugh, I hope I got these braids right."
     m "Why does this costume have to be so complicated...?"
@@ -620,9 +629,8 @@ label greeting_o31_rin:
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
-        show monika 1eua at t11 zorder MAS_MONIKA_Z
+        call mas_transition_from_empty_desk("monika 1eua")
         m 1hub "Hi, [player]!"
-        hide emptydesk
         m 3hub "Do you like my costume?"
 
     # regular dialogue
@@ -652,7 +660,6 @@ init 5 python:
 label greeting_o31_orcaramelo_hatsune_miku:
     if not persistent._mas_o31_relaunch:
         call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-        show emptydesk at i11 zorder 9
         #moni is off-screen
         m "{i}~Don't forget my voice~{/i}"
         m "{i}~My signal crosses dimensions~{/i}"
@@ -661,18 +668,15 @@ label greeting_o31_orcaramelo_hatsune_miku:
         m "Oh!{w=0.5} Seems like someone's heard me."
 
         #show moni now
-        hide emptydesk
-        show monika 3hub at i11 zorder MAS_MONIKA_Z
-        with dissolve
+        call mas_transition_from_emptydesk("monika 3hub")
 
     else:
         call spaceroom(scene_change=True, dissolve_all=True)
 
-    #TODO: When Miku is no longer official, adjust dlg to reflect it having been gifted
     m 3hub "Welcome back, [player]!"
     m 1eua "So...{w=0.5}what do you think?"
-    m 1eub "I worked really hard on this costume, but I think it was worth it."
-    m 3eub "I especially like how the headset turned out!"
+    m 3eua "I think this costume really suits me."
+    m 3eub "I especially love how the headset looks too!"
     m 1rksdla "Though I can't say it's too comfortable for moving around..."
     m 3tsu "So don't expect me to give you a performance today, [player]!"
     m 1hub "Ahaha~"
@@ -694,7 +698,7 @@ init 5 python:
 
 label greeting_o31_orcaramelo_sakuya_izayoi:
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-    show emptydesk at i11 zorder 9
+
     #moni is off-screen
     if not persistent._mas_o31_relaunch:
         m "..."
@@ -711,9 +715,7 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
         m "Ahaha! How was that impression?"
 
     #show moni now
-    hide emptydesk
-    show monika 3hub at i11 zorder MAS_MONIKA_Z
-    with dissolve
+    call mas_transition_from_emptydesk("monika 3hub")
 
     m 3hub "Welcome back!"
     m 3eub "What do you think of my costume choice?"
@@ -1835,10 +1837,10 @@ label mas_d25_gift_starter:
 label mas_d25_gift_connector:
     python:
         d25_gift_quips = [
-            "Next one!",
-            "Oh, there's another one here!",
-            "Now let me open this one!",
-            "I'll open this one next!"
+            _("Next one!"),
+            _("Oh, there's another one here!"),
+            _("Now let me open this one!"),
+            _("I'll open this one next!")
         ]
 
         picked_quip = random.choice(d25_gift_quips)
@@ -4475,7 +4477,7 @@ label mas_player_bday_opendoor:
     $ persistent._mas_player_bday_opened_door = True
     if persistent._mas_bday_visuals:
         $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True, show_emptydesk=False)
     $ mas_disable_quit()
     if mas_isMonikaBirthday():
         $ your = "our"
@@ -4575,7 +4577,7 @@ label mas_player_bday_opendoor_listened:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     $ mas_disable_quit()
     if mas_isMonikaBirthday():
         $ your = "our"
@@ -4713,12 +4715,13 @@ label mas_player_bday_card:
     return
 
 label mas_monika_gets_cake:
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
+
     $ renpy.pause(3.0, hard=True)
     $ renpy.show("mas_bday_cake_player", zorder=store.MAS_MONIKA_Z+1)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
+
+    call mas_transition_from_emptydesk("monika 6esa")
+
     $ renpy.pause(0.5, hard=True)
     return
 
@@ -5162,9 +5165,16 @@ label mas_f14_autoload_check:
     python:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
-            monika_chr.save()
-            renpy.save_persistent()
+            #NOTE: Need to path this for people who haven't seen lingerie but are eligible via canshowrisque
+            #because intro topic has her wear the outfit and comment on it
+            #But we do want her to change into it if we already have it unlocked for change into lingerie
+            if (
+                not mas_SELisUnlocked(mas_clothes_sundress_white) and not mas_canShowRisque()
+                or mas_SELisUnlocked(mas_clothes_sundress_white)
+            ):
+                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+                monika_chr.save()
+                renpy.save_persistent()
 
         elif not mas_isF14():
             #We want to lock all the extra topics
@@ -5242,13 +5252,20 @@ init 5 python:
             action=EV_ACT_PUSH,
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
-            aff_range=(mas_aff.NORMAL,None),
             years=[]
         ),
         skipCalendar=True
     )
 
 label mas_f14_monika_valentines_intro:
+    #Prevent nts stuff for upset- since they don't get the rest of the event.
+    if mas_isMoniUpset(lower=True):
+        $ persistent._mas_f14_spent_f14 = True
+        if not mas_isMoniBroken():
+            m 6eka "By the way [player], I just wanted to say happy Valentine's Day."
+            m "Thanks for visiting me, I hope you have a good day."
+        return
+
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -5309,7 +5326,7 @@ label mas_f14_monika_valentines_intro:
 
             # sundress
             elif not mas_SELisUnlocked(mas_clothes_sundress_white):
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
                 m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
@@ -5332,7 +5349,7 @@ label mas_f14_monika_valentines_intro:
                 m 3hub "I should probably go change into something a little more appropriate, ahaha!"
                 m 3eua "I'll be right back."
 
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
 
                 m 2eub "Ah, that's much better!"
                 m 3hua "I just love this dress, don't you?"
@@ -5356,7 +5373,7 @@ label mas_f14_monika_valentines_intro:
                         "Yes.":
                             m 3hub "Okay!"
                             m 3eua "I'll be right back."
-                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                             m 2hub "There we go!"
                             m 3eua "Something about wearing this dress on Valentine's Day just feels right."
                             m 1eua "..."
@@ -5601,6 +5618,9 @@ init 5 python:
     )
 
 label mas_f14_monika_spent_time_with:
+    #Do this first so we make sure we always remove it
+    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
+
     m 1eua "Hey, [player]?"
     m 1eka "I just wanted to thank you for spending Valentine's Day with me."
     m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
@@ -5642,7 +5662,6 @@ label mas_f14_monika_spent_time_with:
     else:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
-    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
     return
 
 label mas_f14_first_kiss:
@@ -5676,7 +5695,6 @@ label mas_f14_first_kiss:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
-                $ mas_rmallEVL("mas_f14_monika_spent_time_with")
                 return
 
 
@@ -7101,13 +7119,11 @@ label mas_monika_cake_on_player_bday:
     return
 
 label mas_HideCake(cake_type,reset_zoom=True):
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
     $ renpy.hide(cake_type)
     with dissolve
     $ renpy.pause(3.0, hard=True)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
+    call mas_transition_from_emptydesk("monika 6esa")
     $ renpy.pause(1.0, hard=True)
     if reset_zoom:
         call monika_zoom_transition(mas_temp_zoom_level,1.0)
