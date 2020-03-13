@@ -5165,9 +5165,16 @@ label mas_f14_autoload_check:
     python:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
-            monika_chr.save()
-            renpy.save_persistent()
+            #NOTE: Need to path this for people who haven't seen lingerie but are eligible via canshowrisque
+            #because intro topic has her wear the outfit and comment on it
+            #But we do want her to change into it if we already have it unlocked for change into lingerie
+            if (
+                not mas_SELisUnlocked(mas_clothes_sundress_white) and not mas_canShowRisque()
+                or mas_SELisUnlocked(mas_clothes_sundress_white)
+            ):
+                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+                monika_chr.save()
+                renpy.save_persistent()
 
         elif not mas_isF14():
             #We want to lock all the extra topics
@@ -5245,13 +5252,20 @@ init 5 python:
             action=EV_ACT_PUSH,
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
-            aff_range=(mas_aff.NORMAL,None),
             years=[]
         ),
         skipCalendar=True
     )
 
 label mas_f14_monika_valentines_intro:
+    #Prevent nts stuff for upset- since they don't get the rest of the event.
+    if mas_isMoniUpset(lower=True):
+        $ persistent._mas_f14_spent_f14 = True
+        if not mas_isMoniBroken():
+            m 6eka "By the way [player], I just wanted to say happy Valentine's Day."
+            m "Thanks for visiting me, I hope you have a good day."
+        return
+
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -5312,7 +5326,7 @@ label mas_f14_monika_valentines_intro:
 
             # sundress
             elif not mas_SELisUnlocked(mas_clothes_sundress_white):
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
                 m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
@@ -5335,7 +5349,7 @@ label mas_f14_monika_valentines_intro:
                 m 3hub "I should probably go change into something a little more appropriate, ahaha!"
                 m 3eua "I'll be right back."
 
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
 
                 m 2eub "Ah, that's much better!"
                 m 3hua "I just love this dress, don't you?"
@@ -5359,7 +5373,7 @@ label mas_f14_monika_valentines_intro:
                         "Yes.":
                             m 3hub "Okay!"
                             m 3eua "I'll be right back."
-                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                             m 2hub "There we go!"
                             m 3eua "Something about wearing this dress on Valentine's Day just feels right."
                             m 1eua "..."
@@ -5604,6 +5618,9 @@ init 5 python:
     )
 
 label mas_f14_monika_spent_time_with:
+    #Do this first so we make sure we always remove it
+    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
+
     m 1eua "Hey, [player]?"
     m 1eka "I just wanted to thank you for spending Valentine's Day with me."
     m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
@@ -5645,7 +5662,6 @@ label mas_f14_monika_spent_time_with:
     else:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
-    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
     return
 
 label mas_f14_first_kiss:
@@ -5679,7 +5695,6 @@ label mas_f14_first_kiss:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
-                $ mas_rmallEVL("mas_f14_monika_spent_time_with")
                 return
 
 
