@@ -383,8 +383,8 @@ label v0_10_8(version="v0_10_8"):
             if not coffee_cons.enabled():
                 coffee_cons.restock(renpy.random.randint(40, 60))
 
-            #Enable the consumable object
-            coffee_cons.enable()
+                #Enable the consumable object
+                coffee_cons.enable()
 
 
             #Transfer the amount of cups had
@@ -400,8 +400,8 @@ label v0_10_8(version="v0_10_8"):
             if not hotchoc_cons.enabled():
                 hotchoc_cons.restock(renpy.random.randint(40, 60))
 
-            #Enable
-            hotchoc_cons.enable()
+                #Enable
+                hotchoc_cons.enable()
 
             persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
 
