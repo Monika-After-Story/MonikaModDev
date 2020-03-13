@@ -23,6 +23,9 @@ init -1 python:
         Custom Calendar UI, can be used to display the events that are dependent
         on dates or to allow user to pick a date
 
+        # NOTE: if the user chooses more than 1 date, the output will be packed in a tuple
+        # NOTE: the user is allowed to select less dates than you asked for by pressing X,
+            you have to handle that by checking len() of the output
         """
 
         import pygame
@@ -210,23 +213,25 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
         EVENT_AREA = (EVENT_X, EVENT_Y, EVENT_W, EVENT_H)
         EVENT_RETURN = "< Go back"
 
-        def __init__(self, select_date=False):
+        def __init__(self, dates_to_select=0):
             """
             Constructor for the custom calendar.
 
             IN:
-                select_date - a boolean that indicates how this calendar is going to
-                    do, True indicates that it will select a day, False means that it
-                    will only be for displaying events.
-                    (Default: False)
+                dates_to_select - (int) how much dates, if any, the user needs to select in order to close
+                    the calendar, 0 means that the calendar will only display events (no selection).
+                    (Default: 0)
+                    NOTE: the user can close the calendar before selecting all dates by pressing X
             """
             super(renpy.Displayable, self).__init__()
 
             # The calendar background
             self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")
 
-            # Can we select dates?
-            self.can_select_date = select_date
+            # how much dates we need to select
+            self.dates_to_select = dates_to_select
+            # all selected dates go here
+            self.selected_dates = list()
             # testing
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
@@ -283,7 +288,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             )
 
             # Change title depending on flag
-            if select_date:
+            if dates_to_select:
                 self.title_position_x = self.TITLE_POSITION_X_2
                 self.text_title = Text(
                     "Select a Date",
@@ -479,6 +484,13 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 "mod_assets/calendar/calendar_day_hover_bg.png"
             )
 
+            button_day_bg_sel = Image(
+                "mod_assets/calendar/calendar_day_sel_bg.png"
+            )
+
+            button_day_bg_sel_hover = Image(
+                "mod_assets/calendar/calendar_day_sel_hover_bg.png"
+            )
 
             # constant month and year text labels
             self.text_current_month = Text(
@@ -573,7 +585,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                             third_label = event_labels[2]
                         if len(event_labels) > 3:
                             many_events = True
-                            if self.can_select_date:
+                            if self.dates_to_select:
                                 third_label = "and more events"
                             else:
                                 third_label = "(Click to see more)"
@@ -590,7 +602,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     if current_date.month == self.selected_month:
                         bg_disabled = button_day_bg
 
-                        if self.can_select_date:
+                        if self.dates_to_select:
                             ret_val = current_date
 
                     day_button_text = Text(
@@ -601,12 +613,21 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         outlines=[]
                     )
 
+                    # if we pressed the button before, we use a different sprite
+                    if ret_val in self.selected_dates:
+                        button_day_bg_temp = button_day_bg_sel
+                        button_day_bg_hover_temp = button_day_bg_sel_hover
+
+                    else:
+                        button_day_bg_temp = button_day_bg
+                        button_day_bg_hover_temp = button_day_bg_hover
+
                     day_button = MASButtonDisplayable(
                         day_button_text,
                         day_button_text,
                         day_button_text,
-                        button_day_bg,
-                        button_day_bg_hover,
+                        button_day_bg_temp,
+                        button_day_bg_hover_temp,
                         bg_disabled,
                         self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
                         initial_y + (i * self.DAY_BUTTON_HEIGHT),
@@ -618,7 +639,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     )
 
                     # if this day isn't on the current month
-                    if current_date.month != self.selected_month or (not self.can_select_date and not many_events):
+                    if current_date.month != self.selected_month or (not self.dates_to_select and not many_events):
                         # disable the button
                         day_button.disable()
 
@@ -667,6 +688,12 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             RETURNS:
                 first non-none value returned
             """
+            button_day_bg_sel = Image(
+                "mod_assets/calendar/calendar_day_sel_bg.png"
+            )
+            button_day_bg_sel_hover = Image(
+                "mod_assets/calendar/calendar_day_sel_hover_bg.png"
+            )
 
             #iterate over both lists
             for button in self.const_buttons:
@@ -677,6 +704,12 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             for button in self.day_buttons:
                 ret_val = button.event(ev, x, y, st)
                 if ret_val:
+                    # we don't chagne text so just copy it
+                    idle_text = button._button_states[0][0]
+                    hover_text = button._button_states[1][0]
+                    # change the button's sprite if the user pressed it
+                    button._button_states[0] = (idle_text, button_day_bg_sel)
+                    button._button_states[1] = (hover_text, button_day_bg_sel_hover)
                     return ret_val
 
             return None
@@ -906,7 +939,13 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     if sel_action == self.CALENDAR_CLOSE:
 
                         # this means the user selected close
-                        return ""
+                        # but they also selected some dates, return what we got
+                        if self.selected_dates:
+                            return tuple(self.selected_dates)
+
+                        # nothing was selected
+                        else:
+                            return ""
 
                     #if we have a datetime
                     # and if its larger than valid selectable
@@ -915,23 +954,32 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                             and sel_action.year >= self.MIN_SELECTABLE_YEAR
                         ):
 
-                        # return it
-                        return sel_action
+                        # we asked the user to choose more than 1 date
+                        if self.dates_to_select > 1:
+                            # add to the list of dates
+                            self.selected_dates.append(sel_action)
+                            if self.dates_to_select == len(self.selected_dates):
+                                # we collected 'em all, return as a tuple
+                                return tuple(self.selected_dates)
 
-                    if isinstance(sel_action, type(list())):
+                        # return just one date
+                        else:
+                            return sel_action
+
+                    if isinstance(sel_action, list):
                         self._showScrollableEventList(sel_action)
 
                     # check for month/year decrements and increments
                     if sel_action == self.CALENDAR_YEAR_INCREASE:
                         self._changeYear()
 
-                    if sel_action == self.CALENDAR_YEAR_DECREASE:
+                    elif sel_action == self.CALENDAR_YEAR_DECREASE:
                         self._changeYear(False)
 
-                    if sel_action == self.CALENDAR_MONTH_INCREASE:
+                    elif sel_action == self.CALENDAR_MONTH_INCREASE:
                         self._changeMonth()
 
-                    if sel_action == self.CALENDAR_MONTH_DECREASE:
+                    elif sel_action == self.CALENDAR_MONTH_DECREASE:
                         self._changeMonth(False)
 
                 # only re-render if mouse action
@@ -1866,11 +1914,11 @@ init 100 python:
 
 
 # wrap it up in a screen
-screen mas_calendar_screen(select_date=False):
+screen mas_calendar_screen(dates_to_select=0):
 
     zorder 51
 
-    add MASCalendar(select_date)
+    add MASCalendar(dates_to_select)
         #xalign 0.5
         #yalign 0.5
 
@@ -2011,12 +2059,12 @@ label _first_time_calendar_use:
         $ mas_calDropOverlayShield()
     return
 
-label _mas_start_calendar(select_date=True):
+label _mas_start_calendar(dates_to_select=1):
 
     python:
         HKBHideButtons()
 
-    call screen mas_calendar_screen(select_date)
+    call screen mas_calendar_screen(dates_to_select)
 
     python:
         HKBShowButtons()
@@ -2024,11 +2072,15 @@ label _mas_start_calendar(select_date=True):
     return _return
 
 label mas_start_calendar_read_only:
-    call _mas_start_calendar(select_date=False)
+    call _mas_start_calendar(dates_to_select=0)
     return _return
 
 label mas_start_calendar_select_date:
-    call _mas_start_calendar(select_date=True)
+    call _mas_start_calendar(dates_to_select=1)
+    return _return
+
+label mas_start_calendar_select_dates(dates_to_select=2):
+    call _mas_start_calendar(dates_to_select)
     return _return
 
 # labels for easy testing
