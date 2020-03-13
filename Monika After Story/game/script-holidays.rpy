@@ -5595,9 +5595,9 @@ label mas_f14_monika_vday_origins:
     m 1eua "Ultimately, this festival became a Christian celebration to remember Saint Valentine."
     m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
     m 3eubsb "...Like me and you!"
-    m 1ekbsa "Despite it having started out a little depressing, isn't it really sweet, [player]?"
+    m 1ekbsa "Despite it having started out a little depressing, I think it's really sweet."
     m 1ekbsu "I'm glad we're able to share such a magical day, my love."
-    m 1ekbfa "Happy Valentine's Day~"
+    m 1ekbfa "Happy Valentine's Day, [player]~"
     return
 
 #######################[HOL050] TIME SPENT
