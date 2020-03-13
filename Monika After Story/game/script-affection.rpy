@@ -2375,7 +2375,6 @@ label mas_affection_yesapology:
     m 1duu "Thank you for putting my heart at ease~"
     show monika 1esa
     $ mas_DropShield_core()
-    $ set_keymaps()
     jump ch30_preloop
 
 label mas_affection_apologydeleted:

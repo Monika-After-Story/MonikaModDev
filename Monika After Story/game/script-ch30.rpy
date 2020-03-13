@@ -920,12 +920,6 @@ label ch30_main:
     # 1 - renable core interactions
     $ mas_DropShield_core()
 
-    # 2 - hotkey buttons enabled
-    $ store.hkb_button.enabled = True
-
-    # 3 - set keymaps
-    $ set_keymaps()
-
     # now we out of intro
     $ mas_in_intro_flow = False
 
