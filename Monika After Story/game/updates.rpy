@@ -379,9 +379,13 @@ label v0_10_8(version="v0_10_8"):
         #We'll keep it somewhat random.
         coffee_cons = mas_getConsumable("coffee")
         if coffee_cons and persistent._mas_acs_enable_coffee:
+            #If this is enabled already, we don't want to restock
+            if not coffee_cons.enabled():
+                coffee_cons.restock(renpy.random.randint(40, 60))
+
             #Enable the consumable object
             coffee_cons.enable()
-            coffee_cons.restock(renpy.random.randint(40, 60))
+
 
             #Transfer the amount of cups had
             persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
@@ -393,9 +397,11 @@ label v0_10_8(version="v0_10_8"):
 
         hotchoc_cons = mas_getConsumable("hotchoc")
         if hotchoc_cons and persistent._mas_acs_enable_hotchoc:
-            #Enable and restock
+            if not hotchoc_cons.enabled():
+                hotchoc_cons.restock(renpy.random.randint(40, 60))
+
+            #Enable
             hotchoc_cons.enable()
-            hotchoc_cons.restock(renpy.random.randint(40, 60))
 
             persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
 
