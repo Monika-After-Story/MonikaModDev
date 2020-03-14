@@ -378,6 +378,12 @@ label v0_10_8(version="v0_10_8"):
             song_pool_ev.action = None
             song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
 
+        # ensure marisa + ACS is unlocked
+        if mas_o31CostumeWorn(mas_clothes_marisa):
+            store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+            store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
+            store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
+
         #Update conditions for the greetings
         new_greetings_conditions = {
             "greeting_back": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=12)",
