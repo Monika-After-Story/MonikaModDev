@@ -15,6 +15,9 @@
         "p7": true
     },
     "stay_on_start": true,
+    "ex_props": {
+        "bare-right-shoulder": true
+    },
     "select_info": {
         "display_name": "Sweater (Shoulderless)",
         "thumb": "orcaramelo_sweater_shoulderless",

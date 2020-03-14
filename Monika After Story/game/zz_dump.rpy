@@ -306,9 +306,20 @@ init 999 python:
             _var_data_file.write(config.version + "\n\n")
 
             # add data lines here
-            _var_data_file.write("CUPS OF COFFEE DRANK: {0}".format(
-                persistent._mas_coffee_cups_drank
-            ))
+            #Consumables stuff
+            for consumable_id in persistent._mas_consumable_map.keys():
+                consumable = mas_getConsumable(consumable_id)
+
+                #Need to account for consumables which were removed
+                if consumable:
+                    _var_data_file.write(
+                        "{0}S OF {1} {2}: {3}\n".format(
+                        consumable.container.upper(),
+                        consumable.disp_name.upper(),
+                        "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
+                        consumable.getAmountHad()
+                        )
+                    )
 
 
     def mas_dataDumpFlag():

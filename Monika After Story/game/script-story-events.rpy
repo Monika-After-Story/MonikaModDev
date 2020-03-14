@@ -641,13 +641,13 @@ label random_limit_reached:
 
     python:
         limit_quips = [
-            "It seems I'm at a loss on what to say.",
-            "I'm not sure what else to say, but can you just be with me a little longer?",
-            "No point in trying to say everything right away...",
-            "I hope you've enjoyed listening to everything I was thinking about today...",
-            "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you too much.",
-            "You don't mind if I think about what to say next, do you?"
+            _("It seems I'm at a loss on what to say."),
+            _("I'm not sure what else to say, but can you just be with me a little longer?"),
+            _("No point in trying to say everything right away..."),
+            _("I hope you've enjoyed listening to everything I was thinking about today..."),
+            _("Do you still enjoy spending this time with me?"),
+            _("I hope I didn't bore you too much."),
+            _("You don't mind if I think about what to say next, do you?")
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1eka "[limit_quip]"
@@ -869,7 +869,7 @@ label .afterdontjoke:
 
     # turn on the lights
     play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
 
     return
 
@@ -1308,271 +1308,6 @@ label mas_new_character_file:
     m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
     m 1hua "Doesn't that sound wonderful?"
     m 3hub "I can't wait to join you wherever you go."
-    return
-
-
-### coffee is done
-init 5 python:
-    import random
-    # this event has like no params beause its only pushed
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_coffee_finished_brewing",
-            show_in_idle=True,
-            rules={"skip alert": None}
-        ),
-        restartBlacklist=True
-    )
-
-
-label mas_coffee_finished_brewing:
-
-    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, coffee's done."
-
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    # this line is here so we dont it looks better when we hide monika
-    show emptydesk at i11 zorder 9
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        # idle pauses
-        m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
-
-    else:
-        m 1eua "Hold on a moment."
-
-    # monika is off screen
-    hide monika with dissolve
-
-    # wrap these statement so we ensure that monika is only shown once her
-    # coffee mug is ready
-    $ renpy.pause(1.0, hard=True)
-    $ monika_chr.wear_acs_pst(mas_acs_mug)
-    $ persistent._mas_coffee_brew_time = None
-    $ mas_drinkCoffee()
-    $ renpy.pause(4.0, hard=True)
-
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1hua "Back!{w=1.5}{nw}"
-
-    else:
-        m 1eua "Okay, what else should we do today?"
-    return
-
-### coffee drinking is done
-init 5 python:
-    import random
-    # this event has like no params beause its only pushed
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_coffee_finished_drinking",
-            show_in_idle=True,
-            rules={"skip alert": None}
-        ),
-        restartBlacklist=True
-    )
-
-
-label mas_coffee_finished_drinking:
-
-    # monika only gets a new cup between 6am and noon
-    $ get_new_cup = mas_isCoffeeTime()
-
-    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, I've finished my coffee."
-
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        if get_new_cup:
-            # its currently morning, monika should get another drink
-            m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
-
-        else:
-            m 1eua "I'm going to put this cup away. I'll be right back.{w=1}{nw}"
-    
-    else:
-        if get_new_cup:
-            m 1eua "I'm going to get another cup."
-
-        m 1eua "Hold on a moment."
-
-    # monika is off screen
-    hide monika with dissolve
-
-    # wrap these statemetns so we can properly add / remove the mug
-    $ renpy.pause(1.0, hard=True)
-    # decide if new coffee
-    if not get_new_cup:
-        $ monika_chr.remove_acs(mas_acs_mug)
-        $ persistent._mas_coffee_cup_done = None
-
-    else:
-        $ mas_drinkCoffee()
-
-    $ renpy.pause(4.0, hard=True)
-
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1hua "Back!{w=1.5}{nw}"
-
-    else:
-        m 1eua "Okay, what else should we do today?"
-
-    return
-
-
-### hot chocolate is done
-init 5 python:
-    import random
-    # this event has like no params beause its only pushed
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_c_hotchoc_finished_brewing",
-            show_in_idle=True,
-            rules={"skip alert": None}
-        )
-    )
-
-
-label mas_c_hotchoc_finished_brewing:
-
-    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, my hot chocolate is ready."
-
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    # this line is here so we dont it looks better when we hide monika
-    show emptydesk at i11 zorder 9
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
-
-    else:
-        m 1eua "Hold on a moment."
-
-    # monika is off screen
-    hide monika with dissolve
-
-    # wrap these statement so we ensure that monika is only shown once her
-    # coffee mug is ready
-    $ renpy.pause(1.0, hard=True)
-    $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
-    $ persistent._mas_c_hotchoc_brew_time = None
-    $ mas_drinkHotChoc()
-    $ renpy.pause(4.0, hard=True)
-
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1hua "Back!{w=1.5}{nw}"
-
-    else:
-        m 1eua "Okay, what else should we do today?"
-
-    return
-
-### coffee drinking is done
-init 5 python:
-    import random
-    # this event has like no params beause its only pushed
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_c_hotchoc_finished_drinking",
-            show_in_idle=True,
-            rules={"skip alert": None}
-        )
-    )
-
-
-label mas_c_hotchoc_finished_drinking:
-
-    # monika only gets a new cup between 6am and noon
-    $ get_new_cup = mas_isHotChocTime()
-
-    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, I've finished my hot chocolate."
-
-    #moving this here so she uses this line to 'pull her chair back'
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    show emptydesk at i11 zorder 9
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        if get_new_cup:
-            # its currently morning, monika should get another drink
-            m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
-
-        else:
-            m 1eua "I'm going to put this cup away. I'll be right back.{w=1}{nw}"
-
-    else:
-        if get_new_cup:
-            m 1eua "I'm going to get another cup."
-
-        m 1eua "Hold on a moment."
-
-    # monika is off screen
-    hide monika with dissolve
-
-    # wrap these statemetns so we can properly add / remove the mug
-    $ renpy.pause(1.0, hard=True)
-
-    # decide if new coffee
-    if not get_new_cup:
-        $ monika_chr.remove_acs(mas_acs_hotchoc_mug)
-        $ persistent._mas_c_hotchoc_cup_done = None
-
-    else:
-        $ mas_drinkHotChoc()
-
-    $ renpy.pause(4.0, hard=True)
-
-    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-
-    # 1 second wait so dissolve is complete before zooming
-    $ renpy.pause(0.5, hard=True)
-    call monika_zoom_transition(curr_zoom, 1.0)
-
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1hua "Back!{w=1.5}{nw}"
-
-    else:
-        m 1eua "Okay, what else should we do today?"
-
     return
 
 init 5 python:
@@ -2024,8 +1759,7 @@ label mas_change_to_def:
 #           Defaults to False
 #       exp - the expression we want monika to use when she reveals the outfit
 #           Defaults to monika 2eua
-#       restore_zoom - do we want to restore to player preffered zoom after changing
-#           Defaults to True
+#       restore_zoom - unused
 #       unlock - True unlocks the outfit's selectable (if it exists)
 #           Defaults to False
 label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", restore_zoom=True, unlock=False):
@@ -2035,11 +1769,7 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
 
     window hide
 
-    $ curr_zoom = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset (1.0)
-    show emptydesk zorder 9 at i11
-
-    hide monika with dissolve
+    call mas_transition_to_emptydesk
 
     #If we're going to def or blazerless from a costume, we reset hair too
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
@@ -2053,12 +1783,8 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
     $ renpy.save_persistent()
 
     pause 4.0
-    $ renpy.show(exp, zorder=MAS_MONIKA_Z, at_list=[i11])
-    hide emptydesk
+    call mas_transition_from_emptydesk(exp)
 
-    if restore_zoom:
-        pause 0.5
-        call monika_zoom_transition(curr_zoom, 1.0)
     return
 
 init 5 python:
