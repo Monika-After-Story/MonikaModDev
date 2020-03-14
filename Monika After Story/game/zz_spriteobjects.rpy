@@ -1302,6 +1302,28 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_mug)
 
+    ### THERMOS MUG
+    ## thermos_mug
+    # Thermos Monika uses to bring warm drinks with her when going out with the player
+    # Thanks JMO
+    mas_acs_thermos_mug = MASAccessory(
+        "thermos_mug",
+        "thermos_mug",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="thermos-mug"
+    )
+    store.mas_sprites.init_acs(mas_acs_thermos_mug)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_thermos_mug,
+        "Thermos (Just Monika)",
+        "thermos_justmonika",
+        "thermos-mug"
+    )
+
     ### ROSE EAR ACCESSORY
     ## ear_rose
     # rose that is placed on Monika's ear
@@ -1387,7 +1409,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="chocs",
-        #Can't mux this since this has special handling via programming points
+        mux_type=[store.mas_sprites.EXP_A_LD],
         entry_pp=store.mas_sprites._acs_heartchoc_entry,
         exit_pp=store.mas_sprites._acs_heartchoc_exit,
         keep_on_desk=True
@@ -1573,10 +1595,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="plush_q",
-
-        # NOTE: this shouldn't be muxed with heart choc as heart choc 
-        #   needs to add mid version of this
-        mux_type=["plush_mid"],
+        mux_type=["plush_mid"] + store.mas_sprites.DEF_MUX_LD,
         entry_pp=store.mas_sprites._acs_quetzalplushie_entry,
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit,
         keep_on_desk=True

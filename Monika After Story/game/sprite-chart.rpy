@@ -343,6 +343,10 @@ init -100 python in mas_sprites:
     # v: string
     # marks that an ACS requires a hairstyle with the value'd prop to be worn
 
+    EXP_A_LD = "left-desk-acs"
+    # v: ignored
+    # marks that this ACS is on the left side (Monika's left) of the desk
+
     EXP_A_RBL = "ribbon-like"
     # v: ignored
     # marks that an ACS is like a ribbon in function
@@ -350,6 +354,14 @@ init -100 python in mas_sprites:
     EXP_A_TWRB = "twin-ribbon"
     # v: ignored
     # marks that an ACS is a twin ribbon-based acs
+
+    EXP_A_FOOD = "food"
+    # v: ignored
+    # marks that this ACS is a food
+
+    EXP_A_DRINK = "drink"
+    # v: ignored
+    # marks that this ACS is a drink
 
     # ---- HAIR ----
 
@@ -439,7 +451,14 @@ init -100 python in mas_sprites:
         "headphones",
         "left-hair-flower",
     ]
-    # default mux tyoes for left hair flower-baesd items
+    # default mux types for left hair flower-baesd items
+
+    DEF_MUX_LD = [
+        "plush_q",
+        "chocs",
+        "plate"
+    ]
+    # default mux types for left-desk related items (namely foods)
 
     DEF_MUX_HAT = [
         "hat",
@@ -528,14 +547,26 @@ init -100 python in mas_sprites:
         ),
         "mug": ACSTemplate(
             "mug",
-            mux_type=["mug"],
-            keep_on_desk=True
+            mux_type=["mug", "thermos-mug"],
+            keep_on_desk=True,
+            ex_props={
+                EXP_A_DRINK: True
+            }
         ),
         "necklace": ACSTemplate(
             "necklace",
             mux_type=["necklace"],
             ex_props={
                 "bare collar": True,
+            }
+        ),
+        "plate": ACSTemplate(
+            "plate",
+            mux_type=DEF_MUX_LD,
+            keep_on_desk=True,
+            ex_props={
+                EXP_A_LD: True,
+                EXP_A_FOOD: True
             }
         ),
         # ring
@@ -549,6 +580,11 @@ init -100 python in mas_sprites:
             ex_props={
                 EXP_A_RBL: True,
             }
+        ),
+        "thermos-mug": ACSTemplate(
+            "thermos-mug",
+            mux_type=["mug", "thermos-mug"],
+            keep_on_desk=False
         ),
         "twin-ribbons": ACSTemplate(
             "twin-ribbons",

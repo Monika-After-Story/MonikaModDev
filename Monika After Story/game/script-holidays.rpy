@@ -629,7 +629,7 @@ label greeting_o31_rin:
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
-        call mas_transition_from_empty_desk("monika 1eua")
+        call mas_transition_from_emptydesk("monika 1eua")
         m 1hub "Hi, [player]!"
         m 3hub "Do you like my costume?"
 
@@ -895,7 +895,7 @@ label bye_trick_or_treat_iowait:
     show screen mas_background_timed_jump(4, "bye_trick_or_treat_iowait")
     menu:
         m "Give me a second to get ready.{fast}"
-        "Wait, wait!":
+        "Hold on a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
@@ -6882,8 +6882,10 @@ label mas_bday_bd_outro:
     $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
     $ mas_addClothesToHolidayMap(mas_clothes_blackdress)
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
-    show monika 1eua
+
+    call mas_transition_from_emptydesk("monika 1eua")
     call monika_zoom_transition_reset(1.0)
+    #NOTE: We change the zoom here because we want to show off the outfit.
 
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"
