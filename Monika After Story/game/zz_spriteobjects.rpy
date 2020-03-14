@@ -1410,7 +1410,7 @@ init -1 python:
         stay_on_start=False,
         acs_type="chocs",
         mux_type=store.mas_sprites.DEF_MUX_LD,
-        keep_on_desk=True
+        keep_on_desk=False
     )
     store.mas_sprites.init_acs(mas_acs_heartchoc)
 

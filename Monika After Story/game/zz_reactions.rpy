@@ -2645,7 +2645,6 @@ label mas_remove_choc:
     m 3hksdlb "Ahaha! I should probably put these away for now..."
     m 1rksdla "If I leave them here much longer there won't be any left to enjoy later!"
 
-    $ mas_acs_heartchoc.keep_on_desk = False
     call mas_transition_to_emptydesk
 
     python:
