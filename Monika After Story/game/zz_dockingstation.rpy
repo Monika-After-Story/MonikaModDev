@@ -2154,8 +2154,6 @@ init 205 python in mas_dockstat:
 #   true if moni can leave
 #   false otherwise
 label mas_dockstat_ready_to_go(moni_chksum):
-    show monika 2dsc
-
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
     $ can_moni_leave = moni_chksum and moni_chksum != -1
@@ -2163,6 +2161,15 @@ label mas_dockstat_ready_to_go(moni_chksum):
     if can_moni_leave:
         # file successfully made
         # monika can leave
+
+        #We'll do our actual getting ready here since this saves us needing to do it multiple times later
+        python:
+            #If we should take drink with, we do that now
+            mas_useThermos()
+
+            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
+            renpy.pause(1.0, hard=True)
+
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
@@ -2178,7 +2185,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
             call mas_dockstat_first_time_goers
 
         else:
-            m 1eua "Alright."
+            m "Alright."
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
@@ -2194,10 +2201,10 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
 
 label mas_dockstat_first_time_goers:
+    call mas_transition_from_emptydesk("monika 3eua")
     m 3eua "I'm now in the file 'monika' in your characters folder."
     m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
-
     m 1eua "And lastly..."
     m 1ekc "Please be careful with me. It's so easy to delete files after all..."
     m 1eua "Anyway..."
@@ -2452,38 +2459,31 @@ label mas_dockstat_generic_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
-        $ ellipsis_count = 1
-        $ give_me_a_second = "Give me a second to get ready."
+        m 1eua "Give me a second to get ready."
+
+        #Prepare the current drink to be removed if needed
+        python:
+            current_drink = MASConsumable._getCurrentDrink()
+            if current_drink and current_drink.portable:
+                current_drink.acs.keep_on_desk = False
+
+        #Get Moni off screen
+        call mas_transition_to_emptydesk
 
     elif promise.done():
         # i/o thread is done!
-        $ _history_list.pop()
-        m "Give me a second to get ready...{fast}{nw}"
-
         #We're ready to go. Let's jump to the rtg label
         if renpy.has_label(mas_farewells.dockstat_rtg_label):
             jump expression mas_farewells.dockstat_rtg_label
         #Otherwise, we don't have a valid label and need to jump to a generic ready to go
         jump mas_dockstat_generic_rtg
 
-    else:
-        #clean up the history list so only one "give me a second..." should show up
-        if ellipsis_count == 3:
-            $ ellipsis_count = 1
-            $ give_me_a_second = "Give me a second to get ready."
-
-        else:
-            $ ellipsis_count += 1
-            $ give_me_a_second += '.'
-
-        $ _history_list.pop()
-
     # display menu options
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "mas_dockstat_generic_iowait")
     menu:
-        m "[give_me_a_second]{fast}"
-        "Wait, wait!":
+        m "Give me a second to get ready.{fast}"
+        "Hold on a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
@@ -2517,13 +2517,17 @@ label mas_dockstat_generic_iowait:
 
 #GENERIC WAIT LABEL
 label mas_dockstat_generic_wait_label:
-    show monika 1ekc
     menu:
         m "What is it?"
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
+
+            #Show Monika again
+            call mas_transition_from_emptydesk("monika 1ekc")
+
             if renpy.has_label(mas_farewells.dockstat_cancel_dlg_label):
                 jump expression mas_farewells.dockstat_cancel_dlg_label
+
             #Fallback to generic cancel
             jump mas_dockstat_generic_cancel
 
@@ -2549,9 +2553,13 @@ label mas_dockstat_generic_rtg:
                 store.mas_greetings.TYPE_GENERIC_RET
             )
 
+        call mas_transition_from_emptydesk("monika 1eua")
+
         #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
+
+    call mas_transition_from_emptydesk("monika 1ekc")
 
     # otherwise, we failed, so monika should tell player
     m 1ekc "Oh no..."

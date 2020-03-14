@@ -22,18 +22,18 @@ init -1 python in mas_compliments:
     COMPLIMENT_H = 640
     COMPLIMENT_XALIGN = -0.15
     COMPLIMENT_AREA = (COMPLIMENT_X, COMPLIMENT_Y, COMPLIMENT_W, COMPLIMENT_H)
-    COMPLIMENT_RETURN = "Oh nevermind."
+    COMPLIMENT_RETURN = _("Oh nevermind.")
     compliment_database = dict()
 
     thanking_quips = [
-        "You're so sweet, [player].",
-        "I love it when you compliment me, [player].",
-        "Thanks for saying that again, [player]!",
-        "Thanks for telling me that again, my love!",
-        "You always make me feel special, [player].",
-        "Aww, [player]~",
-        "Thanks, [player]!",
-        "You always flatter me, [player]."
+        _("You're so sweet, [player]."),
+        _("I love it when you compliment me, [player]."),
+        _("Thanks for saying that again, [player]!"),
+        _("Thanks for telling me that again, my love!"),
+        _("You always make me feel special, [player]."),
+        _("Aww, [player]~"),
+        _("Thanks, [player]!"),
+        _("You always flatter me, [player].")
     ]
 
 

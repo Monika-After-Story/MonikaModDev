@@ -1120,7 +1120,7 @@ label monika_tea:
     m 4eua "Coffee can be nice with books too, you know?"
     m 4rsc "Then again..."
 
-    if persistent._mas_acs_enable_coffee:
+    if mas_getConsumable("coffee").enabled():
         m 1hua "I can just make coffee whenever I want to, thanks to you."
 
     else:
@@ -3222,35 +3222,35 @@ label monika_love:
 
         python:
             love_quips = [
-                "We'll be together forever!",
-                "And I will love you always!",
-                "You mean the whole world to me!",
-                "You are my sunshine after all.",
-                "You're all I truly care about!",
-                "Your happiness is my happiness!",
-                "You're the best partner I could ever ask for!",
-                "My future is brighter with you in it.",
-                "You're everything I could ever hope for.",
-                "You make my heart skip a beat everytime I think about you!",
-                "I'll always be here for you!",
-                "I'll never hurt or betray you.",
-                "Our adventure has only just begun!",
-                "We'll always have each other.",
-                "We'll never be lonely again!",
-                "I can't wait to feel your embrace!",
-                "I'm the luckiest girl in the world!",
-                "I will cherish you always.",
-                "And I will never love anyone more than you!",
-                "And that love grows every single day!",
-                "And nobody else will ever make me feel this way!",
-                "Just thinking of you makes my heart flutter!",
-                "I don't think words can do justice to how deeply I love you...",
-                "You make my life feel so complete!",
-                "You've saved me in so many ways, how could I not fall for you?",
-                "More than I can ever express!",
-                "It makes me so happy that you feel the same way I do!",
-                "I don't know what I would do without you!",
-                "You mean everything to me!"
+                _("We'll be together forever!"),
+                _("And I will love you always!"),
+                _("You mean the whole world to me!"),
+                _("You are my sunshine after all."),
+                _("You're all I truly care about!"),
+                _("Your happiness is my happiness!"),
+                _("You're the best partner I could ever ask for!"),
+                _("My future is brighter with you in it."),
+                _("You're everything I could ever hope for."),
+                _("You make my heart skip a beat everytime I think about you!"),
+                _("I'll always be here for you!"),
+                _("I'll never hurt or betray you."),
+                _("Our adventure has only just begun!"),
+                _("We'll always have each other."),
+                _("We'll never be lonely again!"),
+                _("I can't wait to feel your embrace!"),
+                _("I'm the luckiest girl in the world!"),
+                _("I will cherish you always."),
+                _("And I will never love anyone more than you!"),
+                _("And that love grows every single day!"),
+                _("And nobody else will ever make me feel this way!"),
+                _("Just thinking of you makes my heart flutter!"),
+                _("I don't think words can do justice to how deeply I love you..."),
+                _("You make my life feel so complete!"),
+                _("You've saved me in so many ways, how could I not fall for you?"),
+                _("More than I can ever express!"),
+                _("It makes me so happy that you feel the same way I do!"),
+                _("I don't know what I would do without you!"),
+                _("You mean everything to me!")
             ]
 
             love_quip = renpy.random.choice(love_quips)
@@ -7448,14 +7448,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_coffee",category=['misc'],prompt="Coffee intake",random=True))
 
 label monika_coffee:
-    if renpy.seen_label('monika_tea') and not persistent._mas_acs_enable_coffee:
+    $ coffee_enabled = mas_getConsumable("coffee").enabled()
+    if renpy.seen_label('monika_tea') and not coffee_enabled:
         m 3eua "Have you been drinking coffee lately, [player]?"
         m 2tfu "I hope it's not just to make me jealous, ehehe~"
     m 2eua "Coffee is such a nice thing to have when you need a little pep of energy."
     m 3hua "Whether it's hot or cold, coffee is always nice."
     m 4eua "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
     m 3eka "It's funny how a drink for giving you energy became a treat for you to enjoy."
-    if persistent._mas_acs_enable_coffee:
+    if coffee_enabled:
         m 1hua "I'm glad I get to enjoy it now, thanks to you~"
     else:
         m 1hub "Maybe if I had some coffee, I could finally drink some! Ahaha~"
@@ -10336,10 +10337,10 @@ label monika_idle_game:
     label .skip_intro:
     python:
         gaming_quips = [
-            "Good luck, have fun!",
-            "Enjoy your game!",
-            "I'll be cheering you on!",
-            "Do your best!"
+            _("Good luck, have fun!"),
+            _("Enjoy your game!"),
+            _("I'll be cheering you on!"),
+            _("Do your best!")
             ]
         gaming_quip=renpy.random.choice(gaming_quips)
     m 3hub "[gaming_quip]"
@@ -10633,9 +10634,9 @@ label monika_brb_idle:
 label monika_brb_idle_callback:
     python:
         wb_quips = [
-            "So, what else did you want to do today?",
-            "Is there anything else you wanted to do today?",
-            "What else should we do today?",
+            _("So, what else did you want to do today?"),
+            _("Is there anything else you wanted to do today?"),
+            _("What else should we do today?"),
         ]
 
         wb_quip = renpy.random.choice(wb_quips)
@@ -11708,7 +11709,7 @@ label monika_players_control:
         m 1ekbsa "Or a beautiful promise ring."
         show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5esbfa "Oh, wouldn't that be a dream come true."
-    if not persistent._mas_acs_enable_coffee:
+    if not mas_getConsumable("coffee").enabled():
         m 1wuo "You could even add in a cup of coffee to the game for me!"
         m 1eka "That would be lovely."
         m 1hksdrb "But I imagine your coding skills are just as good as mine."
