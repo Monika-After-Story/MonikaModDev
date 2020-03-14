@@ -2651,13 +2651,14 @@ label mas_remove_choc:
     python:
         renpy.pause(1, hard=True)
         monika_chr.remove_acs(mas_acs_heartchoc)
-
-        if monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
-            monika_chr.wear_acs(mas_acs_quetzalplushie)
-
         renpy.pause(3, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
+
+    #Now move the plush
+    if monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+        $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+
     m 1eua "So what else did you want to do today?"
     return
 
