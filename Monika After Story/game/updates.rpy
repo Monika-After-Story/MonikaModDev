@@ -378,6 +378,12 @@ label v0_10_8(version="v0_10_8"):
             song_pool_ev.action = None
             song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
 
+        # ensure marisa + ACS is unlocked
+        if mas_o31CostumeWorn(mas_clothes_marisa):
+            store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+            store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
+            store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
+
     return
 
 #0.10.7

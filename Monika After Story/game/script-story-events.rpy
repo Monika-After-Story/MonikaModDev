@@ -641,13 +641,13 @@ label random_limit_reached:
 
     python:
         limit_quips = [
-            "It seems I'm at a loss on what to say.",
-            "I'm not sure what else to say, but can you just be with me a little longer?",
-            "No point in trying to say everything right away...",
-            "I hope you've enjoyed listening to everything I was thinking about today...",
-            "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you too much.",
-            "You don't mind if I think about what to say next, do you?"
+            _("It seems I'm at a loss on what to say."),
+            _("I'm not sure what else to say, but can you just be with me a little longer?"),
+            _("No point in trying to say everything right away..."),
+            _("I hope you've enjoyed listening to everything I was thinking about today..."),
+            _("Do you still enjoy spending this time with me?"),
+            _("I hope I didn't bore you too much."),
+            _("You don't mind if I think about what to say next, do you?")
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1eka "[limit_quip]"
