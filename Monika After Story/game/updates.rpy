@@ -50,22 +50,19 @@ init 4 python:
 
 # create some functions
 init python:
-
     def removeTopicID(topicID):
-        #
-        # Removes one topic from the _seen_ever variable
-        # topics list (if it exists in either var) (persistent is also
-        # checked for existence)
-        #
-        # IN:
-        #   @param topicID - the topicID to remove
-        #
-        # ASSUMES:
-        #   persistent._seen_ever
+        """
+        Removes one topic from the _seen_ever variable topics list if it exists in either var
+        (persistent is also checked for existence)
 
+        IN:
+            topicID - the topicID to remove
+
+        ASSUMES:
+            persistent._seen_ever
+        """
         if renpy.seen_label(topicID):
             persistent._seen_ever.pop(topicID)
-
 
     def mas_eraseTopic(topicID, per_eventDB=persistent.event_database):
         """
@@ -84,9 +81,9 @@ init python:
         if topicID in Event.INIT_LOCKDB:
             Event.INIT_LOCKDB.pop(topicID)
 
-
     def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
         """DEPREACTED
+
         NOTE: This can cause data corruption. DO NOT USE.
 
         Transfers a topic's data from the old topic ID to the new one int he
@@ -111,7 +108,6 @@ init python:
         if old_topicID in Event.INIT_LOCKDB:
             Event.INIT_LOCKDB[new_topicID] = Event.INIT_LOCKDB.pop(old_topicID)
 
-
     def mas_transferTopicSeen(old_topicID, new_topicID):
         """
         Tranfers persistent seen ever data. This is separate because of complex
@@ -125,20 +121,20 @@ init python:
             persistent._seen_ever.pop(old_topicID)
             persistent._seen_ever[new_topicID] = True
 
-
     def adjustTopicIDs(changedIDs,updating_persistent=persistent):
-        #
-        # Changes labels in persistent._seen_ever
-        # to new IDs in the changedIDs dict
-        #
-        # IN:
-        #   @param oldList - the list of old Ids to change
-        #   @param changedIDs - dict of changed ids:
-        #       key -> old ID
-        #       value -> new ID
-        #
-        # ASSUMES:
-        #   persistent._seen_ever
+        """
+        Changes labels in persistent._seen_ever
+        to new IDs in the changedIDs dict
+
+        IN:
+            oldList - the list of old Ids to change
+            changedIDs - dict of changed ids:
+                key -> old ID
+                value -> new ID
+
+        ASSUMES:
+            persistent._seen_ever
+        """
 
         # now for a complicated alg that changes keys in _seen_ever
         # except its not that complicated lol
@@ -149,22 +145,18 @@ init python:
 
         return updating_persistent
 
-
-
     def updateTopicIDs(version_number,updating_persistent=persistent):
-        #
-        # Updates topic IDS between versions by performing
-        # a two step process: adjust exisitng IDS to match
-        # the new IDS, then add newIDs to the persistent
-        # randomtopics
-        #
-        # IN:
-        #   @param version_number - the version number we are
-        #       updating to
-        #
-        # ASSUMES:
-        #   persistent._seen_ever
-        #   updates.topics
+        """
+        Updates topic IDS between versions by performing a two step process: adjust exisitng IDS to match the new IDS
+        then add newIDs to the persistent randomtopics
+
+        IN:
+            version_number - the version number we are updating to
+
+        ASSUMES:
+            persistent._seen_ever
+            updates.topics
+        """
         if version_number in updates.topics:
             changedIDs = updates.topics[version_number]
 
@@ -174,17 +166,16 @@ init python:
 
         return updating_persistent
 
-
     def updateGameFrom(startVers):
-        #
-        # Updates the game, starting at the given start version
-        #
-        # IN:
-        #   @param startVers - the version number in the parsed
-        #       format ("v#####")
-        #
-        # ASSUMES:
-        #   updates.version_updates
+        """
+        Updates the game, starting at the given start version
+
+        IN:
+            startVers - the version number in the parsed format ('v#####')
+
+        ASSUMES:
+            updates.version_updates
+        """
 
         while startVers in updates.version_updates:
 
@@ -194,6 +185,19 @@ init python:
             if renpy.has_label(updateTo) and not renpy.seen_label(updateTo):
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
+
+    def safeDel(varname):
+        """
+        Safely deletes variables from persistent
+
+        IN:
+            varname - name of the variable to delete from persistent as string
+
+        NOTE: THIS SHOULD BE USED IN PLACE OF THE DEFAULT `del` KEYWORD WHEN DELETING VARIABLES FROM THE PERSISTENT
+        """
+        if varname in persistent.__dict__:
+            persistent.__dict__.pop(varname)
+
 
 init 7 python:
     def mas_transferTopicData(
@@ -371,6 +375,41 @@ label v0_3_1(version=version): # 0.3.1
 #0.10.8
 label v0_10_8(version="v0_10_8"):
     python:
+        #Let's stock current users on some consumables (assuming they've gifted before)
+        #We'll keep it somewhat random.
+        coffee_cons = mas_getConsumable("coffee")
+        if coffee_cons and persistent._mas_acs_enable_coffee:
+            #If this is enabled already, we don't want to restock
+            if not coffee_cons.enabled():
+                coffee_cons.restock(renpy.random.randint(40, 60))
+
+                #Enable the consumable object
+                coffee_cons.enable()
+
+
+            #Transfer the amount of cups had
+            persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
+
+            #Delete the old vars
+            safeDel("_mas_coffee_cups_drank")
+            safeDel("_mas_acs_enable_coffee")
+            safeDel("_mas_coffee_been_given")
+
+        hotchoc_cons = mas_getConsumable("hotchoc")
+        if hotchoc_cons and persistent._mas_acs_enable_hotchoc:
+            if not hotchoc_cons.enabled():
+                hotchoc_cons.restock(renpy.random.randint(40, 60))
+
+                #Enable
+                hotchoc_cons.enable()
+
+            persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
+
+            #Delete uneeded vars
+            safeDel("_mas_c_hotchoc_cups_drank")
+            safeDel("_mas_acs_enable_hotchoc")
+            safeDel("_mas_c_hotchoc_been_given")
+
         #Fix the song pool delegate
         song_pool_ev = mas_getEV("monika_sing_song_pool")
         if song_pool_ev:
@@ -445,7 +484,7 @@ label v0_10_6(version="v0_10_6"):
         #NOTE: Because of a crash in the last update script, this part was not guaranteed to run for everyone.
         #Therefore we're running it again
         if persistent._mas_likes_rain:
-            del persistent._mas_likes_rain
+            safeDel("_mas_likes_rain")
 
         # remove bookmarks unbookmark topic
         mas_eraseTopic("mas_topic_unbookmark")
@@ -522,13 +561,10 @@ label v0_10_6(version="v0_10_6"):
             if renpy.seen_label("v0_9_0") and seen_year - bday.year < 5:
                 mas_addDelayedAction(16)
 
-        #Try/Excepting this just in case
-        try:
-            del persistent._mas_mood_bday_last
-            del persistent._mas_mood_bday_lies
-            del persistent._mas_mood_bday_locked
-        except:
-            pass
+        #Don't need these vars
+        safeDel("_mas_mood_bday_last")
+        safeDel("_mas_mood_bday_lies")
+        safeDel("_mas_mood_bday_locked")
     return
 
 #0.10.5
@@ -629,11 +665,9 @@ label v0_10_5(version="v0_10_5"):
         persistent._mas_pm_plays_instrument = persistent.instrument
         persistent._mas_pm_likes_rain = persistent._mas_likes_rain
 
-        #And delete the old
-        if persistent.instrument:
-            del persistent.instrument
-        if persistent._mas_likes_rain:
-            del persistent._mas_likes_rain
+        #Delete old vars
+        safeDel("instrument")
+        safeDel("_mas_likes_rain")
 
         # remove bookmarks unbookmark topic
         mas_eraseTopic("mas_topic_unbookmark")

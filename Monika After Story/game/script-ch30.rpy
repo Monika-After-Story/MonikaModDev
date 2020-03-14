@@ -976,9 +976,9 @@ label pick_a_game:
 
         # hangman text
         if persistent._mas_sensitive_mode:
-            _hangman_text = "Word Guesser"
+            _hangman_text = _("Word Guesser")
         else:
-            _hangman_text = "Hangman"
+            _hangman_text = _("Hangman")
 
         # decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
@@ -1377,6 +1377,9 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
+    #Now we check if we should drink
+    $ MASConsumable._checkConsumables(startup=True)
+
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
@@ -1731,6 +1734,9 @@ label ch30_minute(time_since_check):
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+
+    #Runtime checks to see if we should have a consumable
+    $ MASConsumable._checkConsumables()
     return
 
 # label for things that should run about once per day
@@ -1844,8 +1850,7 @@ label ch30_reset:
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     ## custom sprite objects
-    python:
-        store.mas_selspr._validate_group_topics()
+    $ store.mas_selspr._validate_group_topics()
 
     # monika hair/acs
     $ monika_chr.load(startup=True)
@@ -1923,12 +1928,7 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    ## should we drink coffee?
-    $ _mas_startupCoffeeLogic()
-
-    ## shoujld we drink hot chocolate
-    $ _mas_startupHotChocLogic()
-
+    #Do startup checks
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
@@ -1966,28 +1966,22 @@ label ch30_reset:
             persistent._mas_filereacts_reacted_map = dict()
 
     # set any prompt variants for acs that can be removed here
-    python:
-        # TODO: all of these are in GRP TOPIC MAP, so we should create
-        #   a function to parse those and set appropriate prompts.
-        if not monika_chr.is_wearing_acs_type("left-hair-clip"):
-            store.mas_selspr.set_prompt("left-hair-clip", "wear")
+    $ store.mas_selspr.startup_prompt_check()
 
-        if not monika_chr.is_wearing_acs_type("left-hair-flower"):
-            store.mas_selspr.set_prompt("left-hair-flower", "wear")
-
-        if not monika_chr.is_wearing_acs_type("choker"):
-            store.mas_selspr.set_prompt("choker", "wear")
-
-        if not monika_chr.is_wearing_ribbon():
-            store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
