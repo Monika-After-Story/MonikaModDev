@@ -423,6 +423,23 @@ label v0_10_8(version="v0_10_8"):
             store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
             store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
+        #Update conditions for the greetings
+        new_greetings_conditions = {
+            "greeting_back": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=12)",
+            "greeting_back2": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=20)",
+            "greeting_back3": "store.mas_getAbsenceLength() >= datetime.timedelta(days=1)",
+            "greeting_back4": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=10)",
+            "greeting_visit3": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=15)",
+            "greeting_back5": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=15)",
+            "greeting_visit4": "store.mas_getAbsenceLength() <= datetime.timedelta(hours=3)",
+            "greeting_visit9": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=1)",
+            "greeting_hamlet": "store.mas_getAbsenceLength() >= datetime.timedelta(days=7)"
+        }
+        for gr_label, conditional in new_greetings_conditions.iteritems():
+            gr_ev = mas_getEV(gr_label)
+            if gr_ev:
+                gr_ev.conditional = conditional
+
     return
 
 #0.10.7
