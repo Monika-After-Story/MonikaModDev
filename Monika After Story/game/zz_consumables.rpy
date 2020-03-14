@@ -1202,8 +1202,15 @@ label mas_consumables_generic_get(consumable):
 
     #Wrap these statements so we can properly add/remove the consumable
     python:
+        if (
+            consumable.consumable_type == store.mas_consumables.TYPE_FOOD
+            and monika_chr.is_wearing_acs(mas_acs_quetzalplushie)
+        ):
+            mas_acs_quetzalplushie.keep_on_desk = False
+
         renpy.pause(1.0, hard=True)
         consumable.acs.keep_on_desk = False
+        monika_chr.remove_acs(mas_acs_quetzalplushie)
         monika_chr.wear_acs(consumable.acs)
         renpy.pause(4.0, hard=True)
 
