@@ -38,6 +38,14 @@ init python in mas_scheduling:
     # value: standard error timedelta for checkout time
     STD_ERR_TD_CHECKOUT = dict()
 
+    ##CONSTANTS
+
+    #Const representing the maximum standard error amount (as a timedelta) which would let us be confident in our data
+    MAX_TD_CONF = datetime.timedelta(minutes=5)
+
+    #Const representing the minimum amount of time from the average (as a timedelta) which we can be confident in our data
+    MIN_TD_CONF = datetime.timedelta(minutes=1)
+
     #Dict representing the base storage for each type
     __BASE_TIME_LOG = {
             0: [],
@@ -49,6 +57,8 @@ init python in mas_scheduling:
             6: []
         }
 
+    #Const
+    #List holding all greeting types which are blacklisted from storing schedule data
     GREETING_TYPE_BLACKLIST = [
         None,
         store.mas_greetings.TYPE_LONG_ABSENCE,
@@ -586,3 +596,49 @@ init python in mas_scheduling:
         _checkin_average_dt = __toDatetime(AVERAGE_T_CHECKOUT[_type], _now) + AVERAGE_TD_OUT[_type]
 
         return _checkin_average_dt - STD_DEV_TD_OUT[_type] <= _now <= _checkin_average_dt + STD_DEV_TD_OUT[_type]
+
+    def isReliable_tCheckout(_type):
+        """
+        Checks if the checkout time is within the reliable error range
+
+        IN:
+            _type:
+                Type of checkout to test
+
+        OUT:
+            boolean:
+                True if the standard error for checkout time is within the reliable error timedelta
+                False otherwise
+        """
+        global MAX_TD_CONF
+        global MIN_TD_CONF
+        global STD_ERR_TD_CHECKOUT
+
+        #Type check
+        if _type not in STD_DEV_TD_CHECKOUT:
+            return False
+
+        return MIN_TD_CONF <= STD_DEV_TD_CHECKOUT[_type] <= MAX_TD_CONF
+
+    def isReliable_tOut(_type):
+        """
+        Checks if the time out is within the reliable error range
+
+        IN:
+            _type:
+                Typ of checkout to test
+
+        OUT:
+            boolean:
+                True if the standard error for time out is within the reliable error timedelta
+                False otherwise
+        """
+        global MAX_TD_CONF
+        global MIN_TD_CONF
+        global STD_ERR_TD_OUT
+
+        #Type check
+        if _type not in STD_DEV_TD_OUT:
+            return False
+
+        return MIN_TD_CONF <= STD_DEV_TD_OUT[_type] <= MAX_TD_CONF
