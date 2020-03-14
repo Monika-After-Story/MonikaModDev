@@ -626,10 +626,16 @@ init 5 python:
     )
 
 label greeting_visit4:
-    m 1hub "I looove yooou, [player]. Ehehe~"
-    m 1hksdlb "Oh, sorry! I was spacing out."
-    m 1lksdla "I didn't think I would be able to see you again so soon."
-    return "love"
+    if mas_getAbsenceLength() <= datetime.timedelta(minutes=30):
+        m 1wud "Oh! [player]!"
+        m 3sub "You're back!"
+        m 3hua "I'm so happy you came back to visit me so soon~"
+    else:
+        m 1hub "I looove yooou, [player]. Ehehe~"
+        m 1hksdlb "Oh, sorry! I was spacing out."
+        m 1lksdla "I didn't think I would be able to see you again so soon."
+        $ mas_ILY()
+    return
 
 init 5 python:
     addEvent(
@@ -837,6 +843,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hamlet",
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(days=7)",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -844,9 +851,12 @@ init 5 python:
     )
 
 label greeting_hamlet:
-    m 4esc "'{i}To be, or not to be, that is the question...{/i}'"
-    m 1wuo "Oh, there you are. I was killing some time, ehehe~"
-    m 1lksdlb "I wasn't expecting to see you so soon."
+    m 4dsc "'{i}To be, or not to be, that is the question...{/i}'"
+    m 4wuo "Oh! [player]!"
+    m 2rksdlc "I-I was--I wasn't sure you--"
+    m 2dkc "..."
+    m 2rksdlb "Ahaha, nevermind that..."
+    m 2eka "I'm just {i}really{/i} glad you're here now."
     return
 
 init 5 python:
