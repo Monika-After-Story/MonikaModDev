@@ -2221,20 +2221,20 @@ label prompt_menu:
         talk_menu = []
         if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
             # show unseen if we have unseen events and the player hasn't chosen to hide it
-            talk_menu.append(("{b}Unseen{/b}", "unseen"))
+            talk_menu.append((_("{b}Unseen{/b}"), "unseen"))
         if mas_hasBookmarks():
-            talk_menu.append(("Bookmarks","bookmarks"))
-        talk_menu.append(("Hey, [m_name]...", "prompt"))
+            talk_menu.append((_("Bookmarks"),"bookmarks"))
+        talk_menu.append((_("Hey, [m_name]..."), "prompt"))
         if len(repeatable_events)>0:
-            talk_menu.append(("Repeat conversation", "repeat"))
+            talk_menu.append((_("Repeat conversation"), "repeat"))
         if _mas_getAffection() > -50:
             if mas_passedILY(pass_time=datetime.timedelta(0,10)):
-                talk_menu.append(("I love you too!","love_too"))
+                talk_menu.append((_("I love you too!"),"love_too"))
             else:
-                talk_menu.append(("I love you!", "love"))
-        talk_menu.append(("I'm feeling...", "moods"))
-        talk_menu.append(("Goodbye", "goodbye"))
-        talk_menu.append(("Nevermind","nevermind"))
+                talk_menu.append((_("I love you!"), "love"))
+        talk_menu.append((_("I'm feeling..."), "moods"))
+        talk_menu.append((_("Goodbye"), "goodbye"))
+        talk_menu.append((_("Nevermind"),"nevermind"))
 
         renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")

@@ -3378,6 +3378,17 @@ image monika 2dfp_static = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2dfsdlc_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    arms="crossed",
+    sweat="def"
+)
+
 image monika 2dfsdld_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -4309,6 +4320,17 @@ image monika 2efo_static = DynamicDisplayable(
     nose="def",
     mouth="gasp",
     arms="crossed"
+)
+
+image monika 2efsdlc_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    arms="crossed",
+    sweat="def"
 )
 
 image monika 2eft_static = DynamicDisplayable(

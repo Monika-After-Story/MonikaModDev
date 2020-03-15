@@ -116,6 +116,13 @@ init -1 python:
 
         return _date in persistent._mas_event_clothes_map
 
+init -10 python:
+    def mas_isA01(_date=None):
+        if _date is None:
+            _date = datetime.date.today()
+
+        return _date == datetime.date(_date.year,4,1)
+
 # Global labels
 label mas_lingerie_intro(holiday_str,lingerie_choice):
     m 1ekbfa "..."
@@ -284,7 +291,7 @@ init -10 python:
             return anything.
         """
         if selection_pool is None:
-            selection_pool = MASClothes.by_exprop("costume")
+            selection_pool = MASClothes.by_exprop("costume", "o31")
 
         # set to true if monika is wearing a costume right now
         wearing_costume = False
@@ -511,6 +518,10 @@ init 5 python:
     )
 
 label greeting_o31_marisa:
+    # with marisa, we should also unlock the hat and the hair style
+    $ store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
+    $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
+
     # decoded CG means that we start with monika offscreen
     if store.mas_o31_event.o31_cg_decoded:
         # ASSUMING:
@@ -618,7 +629,7 @@ label greeting_o31_rin:
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
-        call mas_transition_from_empty_desk("monika 1eua")
+        call mas_transition_from_emptydesk("monika 1eua")
         m 1hub "Hi, [player]!"
         m 3hub "Do you like my costume?"
 
@@ -662,11 +673,10 @@ label greeting_o31_orcaramelo_hatsune_miku:
     else:
         call spaceroom(scene_change=True, dissolve_all=True)
 
-    #TODO: When Miku is no longer official, adjust dlg to reflect it having been gifted
     m 3hub "Welcome back, [player]!"
     m 1eua "So...{w=0.5}what do you think?"
-    m 1eub "I worked really hard on this costume, but I think it was worth it."
-    m 3eub "I especially like how the headset turned out!"
+    m 3eua "I think this costume really suits me."
+    m 3eub "I especially love how the headset looks too!"
     m 1rksdla "Though I can't say it's too comfortable for moving around..."
     m 3tsu "So don't expect me to give you a performance today, [player]!"
     m 1hub "Ahaha~"
@@ -885,7 +895,7 @@ label bye_trick_or_treat_iowait:
     show screen mas_background_timed_jump(4, "bye_trick_or_treat_iowait")
     menu:
         m "Give me a second to get ready.{fast}"
-        "Wait, wait!":
+        "Hold on a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
@@ -1827,10 +1837,10 @@ label mas_d25_gift_starter:
 label mas_d25_gift_connector:
     python:
         d25_gift_quips = [
-            "Next one!",
-            "Oh, there's another one here!",
-            "Now let me open this one!",
-            "I'll open this one next!"
+            _("Next one!"),
+            _("Oh, there's another one here!"),
+            _("Now let me open this one!"),
+            _("I'll open this one next!")
         ]
 
         picked_quip = random.choice(d25_gift_quips)
@@ -5155,9 +5165,16 @@ label mas_f14_autoload_check:
     python:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
-            monika_chr.save()
-            renpy.save_persistent()
+            #NOTE: Need to path this for people who haven't seen lingerie but are eligible via canshowrisque
+            #because intro topic has her wear the outfit and comment on it
+            #But we do want her to change into it if we already have it unlocked for change into lingerie
+            if (
+                not mas_SELisUnlocked(mas_clothes_sundress_white) and not mas_canShowRisque()
+                or mas_SELisUnlocked(mas_clothes_sundress_white)
+            ):
+                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+                monika_chr.save()
+                renpy.save_persistent()
 
         elif not mas_isF14():
             #We want to lock all the extra topics
@@ -5235,13 +5252,20 @@ init 5 python:
             action=EV_ACT_PUSH,
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
-            aff_range=(mas_aff.NORMAL,None),
             years=[]
         ),
         skipCalendar=True
     )
 
 label mas_f14_monika_valentines_intro:
+    #Prevent nts stuff for upset- since they don't get the rest of the event.
+    if mas_isMoniUpset(lower=True):
+        $ persistent._mas_f14_spent_f14 = True
+        if not mas_isMoniBroken():
+            m 6eka "By the way [player], I just wanted to say happy Valentine's Day."
+            m "Thanks for visiting me, I hope you have a good day."
+        return
+
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -5302,7 +5326,7 @@ label mas_f14_monika_valentines_intro:
 
             # sundress
             elif not mas_SELisUnlocked(mas_clothes_sundress_white):
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
                 m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
@@ -5325,7 +5349,7 @@ label mas_f14_monika_valentines_intro:
                 m 3hub "I should probably go change into something a little more appropriate, ahaha!"
                 m 3eua "I'll be right back."
 
-                call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
 
                 m 2eub "Ah, that's much better!"
                 m 3hua "I just love this dress, don't you?"
@@ -5349,7 +5373,7 @@ label mas_f14_monika_valentines_intro:
                         "Yes.":
                             m 3hub "Okay!"
                             m 3eua "I'll be right back."
-                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True)
+                            call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                             m 2hub "There we go!"
                             m 3eua "Something about wearing this dress on Valentine's Day just feels right."
                             m 1eua "..."
@@ -5555,25 +5579,25 @@ init 5 python:
 label mas_f14_monika_vday_origins:
     m 3eua "You'd like to learn about the history of Valentine's Day, [player]?"
     m 1rksdlc "It's quite dark, actually."
-    m 1euc "Its origin dates to as early as the second and third century in Rome, where Christianity had just been declared the official state religion."
-    m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
-    m 3rsc "Marriage had been banned because it was assumed that married men made poor soldiers."
-    m 3esc "Saint Valentine decided this was unfair and helped arrange marriages in secret."
-    m 1dsd "Unfortunately, he was caught and promptly sentenced to death."
-    m 1euc "However, while in custody, Saint Valentine fell in love with the jailer's daughter."
-    m 3euc "Before his death, he sent a love letter to her signed with 'From your Valentine.'"
-    m 1dsc "He was executed on February 14, 269 AD."
-    m 3eua "Such a noble cause, don't you think?"
+    m 1euc "The legends vary, but it dates back to the third century in Rome when Christians were still persecuted by the Roman government."
+    m 3eud "Around this time, Emperor Claudius II had forbidden Christians from marrying, which a clergyman named Valentine decided was unfair."
+    m 3rsc "Against the orders of the emperor, he married Christians in secret."
+    m 3esc "Another version of the story is that Roman soldiers weren't allowed to be married, so Valentine was saving people from conscription into the army through marriage."
+    m 1dsd "Either way, Valentine was caught and sentenced to death."
+    m 1euc "While in jail, he befriended the jailer's daughter and cured her blindness. Some say he even fell in love with her."
+    m 3euc "Unfortunately, this wasn't enough to save him. But before he died, he sent a letter to her, which he signed, 'Your Valentine.'"
+    m 1dsc "He was executed on February 14, 269 AD, and later canonized as a saint."
+    m 3eua "To this day, it's still traditional to use 'Your Valentine' to sign love letters."
     m 3eud "Oh, but wait, there's more!"
-    m 4eud "The reason we celebrate such a day is because it originates from a Roman festival known as Lupercalia!"
-    m 3eua "Its original intent was to hold a friendly event where people would put their names into a box and have them chosen at random to create a couple."
-    m 3eub "Then, they play along as boyfriend and girlfriend for the time they spend together. Some even got married, if they liked each other enough, ehehe~"
-    m 1eua  "Ultimately, the Church decided to turn this Christian celebration into a way to remember Saint Valentine's efforts, too."
+    m "There's an ancient Roman festival known as Lupercalia, which was also celebrated around February 14th."
+    m 3eua "Apparently, part of the ceremony involved creating couples by having names randomly pulled out of a box."
+    m 3eub "...They would then spend time together, with some even marrying if they liked each other enough!"
+    m 1eua "Ultimately, this festival became a Christian celebration to remember Saint Valentine."
     m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
-    m 3eubsb "Like me and you!"
-    m 1ekbsa "Despite it having started out a little depressing, isn't it so sweet, [player]?"
+    m 3eubsb "...Like me and you!"
+    m 1ekbsa "Despite it having started out a little depressing, I think it's really sweet."
     m 1ekbsu "I'm glad we're able to share such a magical day, my love."
-    m 1ekbfa "Happy Valentine's Day~"
+    m 1ekbfa "Happy Valentine's Day, [player]~"
     return
 
 #######################[HOL050] TIME SPENT
@@ -5594,6 +5618,9 @@ init 5 python:
     )
 
 label mas_f14_monika_spent_time_with:
+    #Do this first so we make sure we always remove it
+    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
+
     m 1eua "Hey, [player]?"
     m 1eka "I just wanted to thank you for spending Valentine's Day with me."
     m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
@@ -5635,7 +5662,6 @@ label mas_f14_monika_spent_time_with:
     else:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
-    $ mas_rmallEVL("mas_f14_monika_spent_time_with")
     return
 
 label mas_f14_first_kiss:
@@ -5669,7 +5695,6 @@ label mas_f14_first_kiss:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
-                $ mas_rmallEVL("mas_f14_monika_spent_time_with")
                 return
 
 
@@ -6857,8 +6882,10 @@ label mas_bday_bd_outro:
     $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
     $ mas_addClothesToHolidayMap(mas_clothes_blackdress)
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
-    show monika 1eua
+
+    call mas_transition_from_emptydesk("monika 1eua")
     call monika_zoom_transition_reset(1.0)
+    #NOTE: We change the zoom here because we want to show off the outfit.
 
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"
