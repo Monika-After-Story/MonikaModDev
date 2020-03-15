@@ -1620,7 +1620,7 @@ label mas_story_friend:
     call mas_story_begin
     m 3eub "Once two friends were walking through the desert..."
     m 4esd "During some point of their journey they had an argument and one friend slapped the other one in the face!"
-    m 4ekb "The one who got slapped was hurt, but without saying anything, wrote in the sand:"
+    m 4ekb "The one who got slapped was hurt, but without saying anything wrote in the sand: 'Today my best friend slapped me in the face.'"
     m 2eub "They kept on walking until they found an oasis, where they decided to take a bath."
     m 4wuo "The one who had been slapped got stuck in the mire and started drowning, but the friend saved him."
     m 3eub "After he recovered from the near drowning, he wrote on a stone:"
