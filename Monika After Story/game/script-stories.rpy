@@ -1623,7 +1623,7 @@ label mas_story_friend:
     m 4ekb "The one who got slapped was hurt, but without saying anything wrote in the sand: 'Today my best friend slapped me in the face.'"
     m 2eub "They kept on walking until they found an oasis, where they decided to take a bath."
     m 4wuo "The one who had been slapped got stuck in the mire and started drowning, but the friend saved him."
-    m 3eub "After he recovered from the near drowning, he wrote on a stone:"
+    m 3eub "After he recovered from the near drowning, he wrote on a stone: 'Today my best friend saved my life.'"
     m 4eub "'Today my best friend saved my life.'"
     m 2eua "The friend who had slapped and saved his best friend asked him:"
     m 4eub "The other friend replied:"
