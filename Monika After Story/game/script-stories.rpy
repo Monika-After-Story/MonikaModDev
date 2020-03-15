@@ -1604,3 +1604,34 @@ label mas_scary_story_flowered_lantern_3:
     m 2wfc "And lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_friend",
+            prompt="Having A Best Friend",
+            unlocked=True
+        ),
+        code="STY"
+    )
+
+label mas_story_friend:
+    call mas_story_begin
+    m 3eub "A story tells that two friends were walking through the desert."
+    m 4esd "During some point of the journey they had an argument, and one friend slapped the other one in the face."
+    m 4ekb "The one who got slapped was hurt, but without saying anything, wrote in the sand:"
+    m 3dua "'Today my best friend slapped me in the face.'"
+    m 2eub "They kept on walking until they found an oasis, where they decided to take a bath."
+    m 4wuo "The one who had been slapped got stuck in the mire and started drowning, but the friend saved him."
+    m 3eub "After he recovered from the near drowning, he wrote on a stone:"
+    m 4eub "'Today my best friend saved my life.'"
+    m 2eua "The friend who had slapped and saved his best friend asked him:"
+    m 3esd "'After I hurt you, you wrote in the sand and now, you write on a stone, why?'"
+    m 4eub "The other friend replied:"
+    m 7eka "'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
+    m 3eub "'But!'"
+    m 4eka "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
+    m 3hua "The moral of the story is: 'Don’t value the things you have in your life. But value who you have in your life.'"
+    m 1hua "I hope you enjoyed it [player]!"
+    return
