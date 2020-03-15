@@ -104,3 +104,211 @@ label dev_acs_pose_test:
     m "Please remember to try it at different times!"
     m 1hua "We wouldn't want anything missing now, would we?"
     return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_sp_obj_pp_test",
+            category=["dev"],
+            prompt="SPRITE PROG POINT TEST",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_sp_obj_pp_test:
+    python:
+        # pull custom sprites with progpoints
+        custom_acs = [
+            acs.name
+            for acs in store.mas_sprites.ACS_MAP.values()
+            if acs.is_custom and acs.hasprogpoints()
+        ]
+        custom_hair = [
+            hair.name
+            for hair in store.mas_sprites.HAIR_MAP.values()
+            if hair.is_custom and hair.hasprogpoints()
+        ]
+        custom_clothes = [
+            clothes.name
+            for clothes in store.mas_sprites.CLOTH_MAP.values()
+            if clothes.is_custom and clothes.hasprogpoints()
+        ]
+
+        # sort these
+        custom_acs.sort()
+        custom_hair.sort()
+        custom_clothes.sort()
+
+        # now reform list for menu usage, with sprite objects
+        custom_acs = [
+            (name, store.mas_sprites.ACS_MAP[name], False, False)
+            for name in custom_acs
+        ]
+        custom_hair = [
+            (name, store.mas_sprites.HAIR_MAP[name], False, False)
+            for name in custom_hair
+        ]
+        custom_clothes = [
+            (name, store.mas_sprites.CLOTH_MAP[name], False, False)
+            for name in custom_clothes
+        ]
+
+        # create the starting menu
+        top_level_menu = [
+            ("ACS", custom_acs, False, False),
+            ("HAIR", custom_hair, False, False),
+            ("CLOTHES", custom_clothes, False, False)
+        ]
+
+        # reutrn entry
+        returner = ("Back", False, False, False, 20)
+
+        # message constants
+        ENTRY_ERR = "entry point failed!: {0}"
+        EXIT_ERR = "exit point failed!: {0}"
+
+        # save monika chr state
+        monika_state = monika_chr.save_state(True, True, True)
+
+    # FALL THROUGH
+    m 1hua "going to test prog points."
+    m 1eua "NOTE: this will {b}NOT{/b} change any of my oufits, hair, or acs."
+    m "but side effects may occur."
+
+label dev_sp_obj_pp_test_top:
+    
+    call screen mas_gen_scrollable_menu(top_level_menu, store.mas_moods.MOOD_AREA, store.mas_moods.MOOD_XALIGN, returner)
+
+    if _return is False:
+        # restore state
+        $ monika_state = monika_chr.load_state(monika_state)
+        return
+
+    $ selected_sp_list = _return
+
+label dev_sp_obj_pp_test_sp_select:
+
+    # otherwise, create menu using the given list
+    call screen mas_gen_scrollable_menu(selected_sp_list, store.mas_moods.MOOD_AREA, store.mas_moods.MOOD_XALIGN, returner)
+
+    if _return is False:
+        jump dev_sp_obj_pp_test_top
+
+    # otherwise, we have a selected sprite object, lets attempt this
+    python:
+        sp_obj_to_test = _return
+
+        kwargs = {
+            "prev_clothes": monika_chr.clothes,
+            "new_clothes": monika_chr.clothes,
+            "prev_hair": monika_chr.hair,
+            "new_hair": monika_chr.hair,
+        }
+
+        if sp_obj_to_test.entry_pp is not None:
+            try:
+                sp_obj_to_test.entry(monika_chr, **kwargs)
+                renpy.show("monika 1hua")
+                renpy.say(m, "entry passed!")
+            except Exception as e:
+                renpy.show("monika 1ektsc")
+                renpy.say(m, ENTRY_ERR.format(e))
+
+        if sp_obj_to_test.exit_pp is not None:
+            try:
+                sp_obj_to_test.exit(monika_chr, **kwargs)
+                renpy.show("monika 1hua")
+                renpy.say(m, "exit passed!")
+            except Exception as e:
+                renpy.show("monika 1ektsc")
+                renpy.say(m, EXIT_ERR.format(e))
+
+    show monika 1eua
+
+    jump dev_sp_obj_pp_test_sp_select
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_empty_desk_test",
+            category=["dev"],
+            prompt="TEST EMPTY DESK",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_empty_desk_test:
+    m 1eua "I will test empty desk"
+    m 2eua "First i will wear the plush"
+    $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+    m 1eua "then i will show the empty desk but behind me"
+    show emptydesk at i11 zorder 9
+    m 1eua "now i will fade away"
+    hide monika with dissolve
+    m 1eua "i should be gone, but asc should be there"
+    m 2eua "now i will appear"
+    $ renpy.show("monika 1eua", tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
+    $ renpy.with_statement(dissolve)
+    m 1eua "I am back"
+    hide emptydesk
+    m 1eua "i hid the empty desk"
+    $ monika_chr.remove_acs(mas_acs_quetzalplushie)
+    m 2eua "plush gone"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_empty_desk_test_labels",
+            category=["dev"],
+            prompt="TEST EMPTY DESK (using transition labels)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_empty_desk_test_labels:
+    m 1eua "I will test empty desk with transition labels"
+    m 2eua "First i will wear the plush"
+    $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+
+    m 1eua "now i will hide"
+    call mas_transition_to_emptydesk
+
+    m "i am gone. but i will return with crossed arms and a diff exp"
+    call mas_transition_from_emptydesk("monika 2tfu")
+
+    m "i am here, but now to remove plush"
+    $ monika_chr.remove_acs(mas_acs_quetzalplushie)
+    m 2eua "plush gone"
+    m "try with zoom"
+    return
+
+## dev functions for mas sprites that WILL cause exceptions
+
+init -2 python in mas_sprites:
+
+    def _hair__testingxcp_entry(_moni_chr, **kwargs):
+        raise Exception("HAIR ENTRY")
+
+    def _hair__testingxcp_exit(_moni_chr, **kwargs):
+        raise Exception("HAIR EXIT")
+
+    def _clothes__testingxcp_entry(_moni_chr, **kwargs):
+        raise Exception("CLOTHES ENTRY")
+
+    def _clothes__testingxcp_exit(_moni_chr, **kwargs):
+        raise Exception("CLOTHES EXIT")
+
+    def _acs__testingxcp_entry(_moni_chr, **kwargs):
+        raise Exception("ACS ENTRY")
+
+    def _acs__testingxcp_exit(_moni_chr, **kwargs):
+        raise Exception("ACS EXIT")

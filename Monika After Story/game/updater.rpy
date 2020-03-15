@@ -1,8 +1,18 @@
 # enabling unstable mode
 default persistent._mas_unstable_mode = False
 default persistent._mas_can_update = True
-define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
-define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
+
+# flag used so we know we just updated through the internal updater
+default persistent._mas_just_updated = False
+
+# legacy. These will be redirected to the s3 links after 090
+#define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
+#define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
+
+# new s3 links
+define mas_updater.regular = "http://d2vycydjjutzqv.cloudfront.net/updates.json"
+define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
+
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
 
@@ -13,7 +23,12 @@ transform mas_updater_slide:
     time 10.0
     linear 1.0 ypos -35 yanchor 0
 
-image mas_update_available = "mod_assets/updateavailable.png"
+image mas_update_available = ConditionSwitch(
+    "not mas_globals.dark_mode",
+    "mod_assets/updateavailable.png",
+    "mas_globals.dark_mode",
+    "mod_assets/updateavailable_d.png"
+)
 
 init -1 python:
 
@@ -113,71 +128,71 @@ init -1 python:
             )
 
             # button backs
-            button_idle = Image("mod_assets/hkb_idle_background.png")
-            button_hover = Image("mod_assets/hkb_hover_background.png")
-            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
+            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
+            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
 
             # ok button text
             button_text_ok_idle = Text(
-                "Ok",
+                _("Ok"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_ok_hover = Text(
-                "Ok",
+                _("Ok"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
             # cancel button text
             button_text_cancel_idle = Text(
-                "Cancel",
+                _("Cancel"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_cancel_hover = Text(
-                "Cancel",
+                _("Cancel"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
             # update button text
             button_text_update_idle = Text(
-                "Update",
+                _("Update"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_update_hover = Text(
-                "Update",
+                _("Update"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
             # retry button text
             button_text_retry_idle = Text(
-                "Retry",
+                _("Retry"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_retry_hover = Text(
-                "Retry",
+                _("Retry"),
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -274,42 +289,42 @@ init -1 python:
 
             # confirm text
             self._text_checking = Text(
-                "Checking for updates...",
+                _("Checking for updates..."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_update = Text(
-                "New update available!",
+                _("New update available!"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_noupdate = Text(
-                "No update found.",
+                _("No update found."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_timeout = Text(
-                "Connection timed out.",
+                _("Connection timed out."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badresponse = Text(
-                "Server returned bad response.",
+                _("Server returned bad response."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badjson = Text(
-                "Server returned bad JSON.",
+                _("Server returned bad JSON."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
@@ -377,13 +392,53 @@ init -1 python:
                 self._state = self.STATE_CHECKING
 
 
+        @staticmethod
+        def _handleRedirect(new_url):
+            """
+            Attempts to connect to the redircted url
+            IN:
+                new_url - the redirect we want to connect to
+            Returns read_json if we got a connection, Nnone otherwise
+            """
+            import httplib
+
+            _http, double_slash, url = new_url.partition("//")
+            url, single_slash, req_uri = url.partition("/")
+            read_json = None
+            h_conn = httplib.HTTPConnection(
+                url
+            )
+
+            try:
+                # make connection
+                h_conn.connect()
+
+                # get file we need
+                h_conn.request("GET", single_slash + req_uri)
+                server_response = h_conn.getresponse()
+
+                if server_response.status != 200:
+                    # we dont follow anymore redirects
+                    return None
+
+                read_json = server_response.read()
+
+            except httplib.HTTPException:
+                # we assume a timeout / connection error
+                return None
+
+            finally:
+                h_conn.close()
+
+            return read_json
+
+
         # some function here
         @staticmethod
         def _sendRequest(update_link, thread_result):
             """
             Sends out the http request and returns a response and stuff
             NOTE: designed to be called as a background thread
-
             ASSUMES:
                 _thread_result
                     appends appropriate state for use
@@ -409,13 +464,32 @@ init -1 python:
                 server_response = h_conn.getresponse()
 
                 # check status
-                if server_response.status != 200:
+                if server_response.status == 301:
+                    # redirect, pull the location header and continue
+                    new_url = server_response.getheader("location", None)
+
+                    if new_url is None:
+                        # we have to have the redirect location to continue
+                        thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                        return
+
+                    # otherwise, switch connection to the new url
+                    h_conn.close()
+                    read_json = MASUpdaterDisplayable._handleRedirect(new_url)
+
+                    if read_json is None:
+                        # redirect failed too
+                        thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                        return
+
+                elif server_response.status != 200:
                     # didnt get an OK response
                     thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
                     return
 
-                # good status, lets get the value
-                read_json = server_response.read()
+                else:
+                    # good status, lets get the value
+                    read_json = server_response.read()
 
             except httplib.HTTPException:
                 # we assume a timeout / connection error
@@ -455,9 +529,31 @@ init -1 python:
                 thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
                 return
 
+            # old version check
+            if persistent._mas_unstable_mode:
+                # rpartion the ., the last item should be build number
+                lv_build_number = store.mas_utils.tryparseint(
+                    latest_version.rpartition(".")[2],
+                    default=None
+                )
+                build_number = store.mas_utils.tryparseint(
+                    config.version.rpartition(".")[2],
+                    default=None
+                )
+                if lv_build_number is None or build_number is None:
+                    thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
+                    return
+
+                lv_is_old = lv_build_number <= build_number
+
+            else:
+                # just replcae dots with underscores, prefix v
+                parsed_version = "v" + latest_version.replace(".", "_") 
+                lv_is_old = parsed_version in store.updates.version_updates
+
             # okay we have a latest version, compare to the current version
-            if latest_version == config.version:
-                # same version
+            if latest_version == config.version or lv_is_old:
+                # same version (or version on server is older)
                 thread_result.append(MASUpdaterDisplayable.STATE_UPDATED)
 
             else:
@@ -747,16 +843,91 @@ init 10 python:
         )
         the_thread.start()
 
+# Update cleanup flow:
+init -894 python:
+
+    def _mas_getBadFiles():
+        """
+        Searches through the entire mod_assets folder for any file
+        with the '.new' extension and returns their paths
+        RETURNS:
+            a list containing the file names, list will be empty if
+            there was no 'bad' files
+        """
+        import os
+
+        return [
+            os.path.join(root, file)
+            for root, dirs, files in os.walk(os.path.join(config.gamedir,'mod_assets'))
+                for file in files
+                    if file.endswith(".new")
+            ]
+
+    def mas_cleanBadUpdateFiles():
+        """
+        Moves any file with the '.new' extension to the correct file
+        """
+        import shutil
+        files = _mas_getBadFiles()
+        for file in files:
+            shutil.move(file, file[:-4])
+
+    # if we just updated
+    if renpy.game.persistent._mas_just_updated:
+        # check if we have files to move
+        mas_cleanBadUpdateFiles()
+        # reset the flag
+        renpy.game.persistent._mas_just_updated = False
+
+
 
 label mas_updater_steam_issue:
-#    show monika at t11
-    m 1eub "[player]!{w} I see you're using Steam."
+    show monika at t11
+    m 1eub "[player]!{w=0.2} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
+    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w=0.2} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 
+label mas_updater_rpy_issue:
+    show monika at t11
+    m 2eksdla "[player]...I see you have some rpy files in your game directory."
+    if renpy.seen_label("monika_rpy_files"):
+        m 2rksdlc "I'm sure you remember when I mentioned that those files can cause problems when you update..."
+    else:
+        m 2rksdlc "Those files can cause some problems when you update..."
+
+    m 3rksdlb "So I can't run the updater while those are in there."
+    m 1eua "I can delete those for you and run the updater if you want though!"
+
+    m 1eua "Would you like me to delete them?{nw}"
+    #NOTE: no history_list.pop() here because for some reason this doesn't end up in history
+    menu:
+        m "Would you like me to delete them?{fast}"
+
+        "Yes please.":
+            m 1hua "Sure!"
+
+            #Delete files
+            call mas_rpy_file_delete
+
+            m 3hub "There we go!"
+            #Hide screen
+            hide screen mas_py_console_teaching
+            show monika at t11
+
+            #Also going to rmallEVL here
+            $ mas_rmallEVL("monika_rpy_files")
+
+            m 2dsc "Now let me just run the updater.{w=0.5}.{w=0.5}.{nw}"
+            #Run the updater
+            jump update_now
+
+        "No thanks.":
+            m 3eka "Alright [player]. If you delete them and then try to update again, I'll run the updater for you."
+
+    return
 
 label forced_update_now:
     $ mas_updater.force = True
@@ -777,7 +948,23 @@ label forced_update_now:
         else:
             # otherwise, reenable core interactions
             $ mas_DropShield_core()
+        return
 
+    #Rpy file check
+    elif mas_hasRPYFiles():
+        $ mas_RaiseShield_core()
+
+        call mas_updater_rpy_issue
+
+        if store.mas_globals.dlg_workflow:
+            # current in dialogue workflow, we should only enable the escape
+            # and music stuff
+            $ enable_esc()
+            $ mas_MUMUDropShield()
+
+        else:
+            # otherwise, reenable core interactions
+            $ mas_DropShield_core()
         return
 
 #This file goes through the actions for updating Monika After story
@@ -816,11 +1003,19 @@ label update_now:
         if updater_selection > 0:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
+            $ persistent._mas_just_updated = True #set the just updated flag
+
+            #Stop background sound and music
+            stop background
+            stop music
 
             # call quit so we can save important stuff
             call quit
             $ renpy.save_persistent()
             $ updater.update(update_link, restart=True)
+
+            #Clear any potential lingering things in tray
+            $ mas_clearNotifs()
 
             # we have to quit because calling QUIT breaks things
             jump _quit

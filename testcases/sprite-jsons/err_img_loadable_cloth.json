@@ -1,0 +1,22 @@
+{
+    "dryrun": true,
+    "type": 2,
+    "name": "test",
+    "img_sit": "filenotexist",
+    "fallback": true,
+    "pose_map": {
+        "default": "crossed",
+        "l_default": "def|def",
+        "p1": "crossed",
+        "p2": "steepling",
+        "p3": "def|def",
+        "p4": "restleftpointright",
+        "p5": "pointright",
+        "p6": "down"
+    },
+    "select_info": {
+        "display_name": "Test",
+        "thumb": "thumbnotexist",
+        "group": "test"
+    }
+}

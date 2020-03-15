@@ -1,0 +1,21 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "filenotexist",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5",
+        "p1": "1",
+        "p2": "2",
+        "p3": "3",
+        "p4": "4",
+        "p5": "5new",
+        "p6": "6"
+    },
+    "select_info": {
+        "display_name": "Test",
+        "thumb": "thumbnotexist",
+        "group": "test"
+    }
+}

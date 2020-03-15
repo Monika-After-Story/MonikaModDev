@@ -3,7 +3,7 @@
 # Adding custom Piano Songs:
 # Piano songs can be added by creating a json file in the piano_songs
 # folder. Stock piano songs (which are shipped in official release) should be
-# in mod_assets/piano/songs/
+# in mod_assets/games/piano/songs/
 #
 # NOTE: Errors in PianoNote JSONS are logged to "pnm.txt"
 #  gameplay will not crash even if piano note matches are formatted
@@ -121,11 +121,11 @@ label mas_piano_songchoice:
     $ pnml = None
 
     if len(song_list) > 0:
-        show monika 1eua
-
+        m 1eua "Did you want to play a song or play on your own, [player]?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Did you want to play a song or play on your own, [player]?"
-            "Play a song":
+            m "Did you want to play a song or play on your own, [player]?{fast}"
+            "Play a song.":
                 m "Which song?"
                 show monika at t21
                 call screen mas_gen_scrollable_menu(song_list, mas_piano_keys.MENU_AREA, mas_piano_keys.MENU_XALIGN, final_item)
@@ -154,10 +154,10 @@ label mas_piano_songchoice:
                 else:
                     jump mas_piano_songchoice
 
-            "On my own":
+            "On my own.":
                 pass
 
-            "Nevermind":
+            "Nevermind.":
                 jump mas_piano_loopend
 
     # otherwise, we default to freestyle mode
@@ -170,8 +170,7 @@ label mas_piano_setupstart:
     # pre call setup
     python:
         disable_esc()
-        store.songs.enabled = False
-        store.hkb_button.enabled = False
+        mas_MUMURaiseShield()
     stop music
 #    show text quit_label zorder 10 at piano_quit_label
 
@@ -181,8 +180,7 @@ label mas_piano_setupstart:
 
     # post call cleanup
 #    hide text quit_label
-    $ store.songs.enabled = True
-    $ store.hkb_button.enabled = True
+    $ mas_MUMUDropShield()
     $ enable_esc()
     $ mas_startup_song()
     $ pnmlSaveTuples()
@@ -200,12 +198,13 @@ label mas_piano_setupstart:
 
     # No-hits dont get to try again
     if post_piano != "mas_piano_result_none":
-        show monika 1eua
+        m 1eua "Would you like to play again?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Would you like to play again?"
-            "Yes":
+            m "Would you like to play again?{fast}"
+            "Yes.":
                 jump mas_piano_loopstart
-            "No":
+            "No.":
                 pass
 
 label mas_piano_loopend:
@@ -248,7 +247,7 @@ label mas_piano_def_fc:
 
 # default practice
 label mas_piano_def_prac:
-    m 1eua "That was nice, [player]!."
+    m 1eua "That was nice, [player]!"
     m 1eka "Make sure to practice often!"
     return
 
@@ -258,50 +257,83 @@ label mas_piano_hb_win:
     $ mas_gainAffection()
     m 1eua "Wow! You almost got it!"
     if mas_isMonikaBirthday():
-        m 1hua "Thanks for playing that for me on my birthday, [player]."
-        m 1hubfb "I'm so happy we can spend this special day sharing our love of music!"
-        m 3eub "Keep it up. I'm sure you'll play it perfectly next time."
-        return
-    m 2eub "Good job, [player]."
+        if mas_isplayer_bday():
+            m 3hub "That's so cool being able to sing along while you play that on our birthday, [player]!"
+        else:
+            m 1hua "Thanks for playing that for me on my birthday, [player]."
+            m 1hubfb "I'm so happy we can spend this special day sharing our love of music!"
+    elif mas_isplayer_bday():
+        m 3hub "Ahaha! That was really neat, [player]!"
+        m 1hua "It's always nice to have a little music to sing along with!"
+    else:
+        m 2eub "Good job, [player]."
+    m 3eub "Make sure you keep practicing. I'm sure you'll play it perfectly next time!"
     return
 
 label mas_piano_hb_fail:
     if mas_isMonikaBirthday():
         if mas_isMoniUpset(lower=True):
-            m 1dsd "Well, if you wanted to play this on my birthday..."
+            if mas_isplayer_bday():
+                $ our = "our"
+            else:
+                $ our = "my"
+            m 1dsd "Well, if you wanted to play this on [our] birthday..."
             m 3tsd "You should have practiced sooner."
-            return
-        m 1lksdla "I appreciate the thought [player]."
-        m 3eka "Even if you can't get it by the end of the day, I'm sure you'll do better next year."
-        return
-    m 1lksdla "..."
-    m 1lksdlb "You did your best, [player]..."
-    m "Even a simple song takes time to learn."
+        elif mas_isplayer_bday():
+            m 1eka "Aw, that's okay, [player]..."
+            m 3hub "It was a neat idea to try to play that on our birthday!"
+            m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!"
+        else:
+            m 1lksdla "I appreciate the thought, [player]."
+            m 3eka "Even if you can't get it by the end of the day, I'm sure you'll do better next year."
+    elif mas_isplayer_bday():
+        m 1eka "That's okay, [player]!"
+        m 3hub "It was a neat idea to play that on your birthday while I sung along!"
+        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!"
+    else:
+        m 1lksdla "..."
+        m 1lksdlb "You did your best, [player]..."
+        m "Even a simple song takes time to learn."
     return
 
 label mas_piano_hb_fc:
     $ mas_gainAffection(modifier=1.5)
     if mas_isMonikaBirthday():
-        m 1rusdlb "Ahaha! It feels weird to sing the Birthday Song for myself..."
-        m 1hub "But you did such a great job playing it!"
-        m 1ekbfa "You must have practiced really hard for me..."
-        m 1hub "I'm happy that I got to enjoy this with you~"
-        m 1hubfb "Thanks for this gift, [player]!"
-        if mas_isMoniAff(higher=True):
-            m 1ekbfa "You always make me feel special~"
-        return
-    m 1eua "Hehe, great job!"
-    m 2eub "I know that's an easy one, but you did great."
-    m 1hub "Are you going to play that for me on my Birthday?"
+        if mas_isplayer_bday():
+            m 3hub "Ahaha! That was {i}so{/i} cool!"
+            m 1eka "Singing the Birthday Song while you play it on the piano on our birthday..."
+            m 1hua "I can't imagine a better way of sharing our special day~"
+        else:
+            m 1rusdlb "Ahaha! It feels weird to sing the Birthday Song for myself..."
+            m 1hub "But you did such a great job playing it!"
+            m 1ekbfa "You must have practiced really hard for me..."
+            m 1hub "I'm happy that I got to enjoy this with you~"
+            m 1hubfb "Thanks for this gift, [player]!"
+            if mas_isMoniAff(higher=True):
+                m 1ekbfa "You always make me feel special~"
+    elif mas_isplayer_bday():
+        m 3hub "Ahaha! That was really neat, [player]!"
+        m 1hua "It's always nice to have a little music to sing along with!"
+    else:
+        m 1eua "Hehe, great job!"
+        m 2eub "I know that's an easy one, but you did great."
+        m 1hub "Are you going to play that for me on my Birthday?"
     return
 
 label mas_piano_hb_prac:
     if mas_isMonikaBirthday():
-        m 1eua "Thanks for trying to play this one on my birthday!"
-        m 1hub "I appreciate your effort!"
-        return
-    m 1eua "You're practing the Birthday Song?"
-    m "I know you can do it, [player]!"
+        if mas_isplayer_bday():
+            m 1eka "Aww, you're trying the Birthday Song on our birthday, [player]!"
+            m 3hua "Keep trying, I know you can do it!"
+        else:
+            m 1eua "Thanks for trying to play this one on my birthday!"
+            m 1hub "I appreciate your effort!"
+    elif mas_isplayer_bday():
+        m 1eksdla "Ehehe, trying the Birthday Song on your birthday, [player]?"
+        m 3hua "Keep trying, I know you can do it!"
+    else:
+        m 1eua "You're practicing the Birthday Song?"
+        m 3hua "I know you can do it, [player]!"
     return
 
 
@@ -335,7 +367,7 @@ label mas_piano_yr_fail:
 label mas_piano_yr_prac:
     m 1hua "That was really cool, [player]!"
     m 3eua "With some more practice, you'll be able to play my song perfectly."
-    m 1eka "Make sure to practice everyday for me, okay~?"
+    m 1eka "Make sure to practice everyday for me, okay?~"
     return
 
 
@@ -346,7 +378,7 @@ label mas_piano_yr_prac:
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
     import os
-    log = renpy.renpy.log.open("log/pnm")
+    log = renpy.store.mas_utils.getMASLog("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 
@@ -355,7 +387,7 @@ init -3 python in mas_piano_keys:
         renpy.config.basedir + "/piano_songs/"
     )
     stock_pnml_basedir = os.path.normcase(
-        renpy.config.basedir + "/game/mod_assets/piano/songs/"
+        renpy.config.basedir + "/game/mod_assets/games/piano/songs/"
     )
     no_pnml_basedir = False
     try:
@@ -367,7 +399,7 @@ init -3 python in mas_piano_keys:
     # menu constants
     MENU_X = 680
     MENU_Y = 40
-    MENU_W = 450
+    MENU_W = 560
     MENU_H = 640
     MENU_XALIGN = -0.05
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
@@ -2219,20 +2251,20 @@ init 810 python:
         ZZFP_C6 = "mod_assets/sounds/piano_keys/C6.ogg"
 
         # piano images
-        ZZPK_IMG_BACK = "mod_assets/piano/board.png"
-        ZZPK_IMG_KEYS = "mod_assets/piano/piano.png"
+        ZZPK_IMG_BACK = "mod_assets/games/piano/board.png"
+        ZZPK_IMG_KEYS = "mod_assets/games/piano/piano.png"
 
         # lyrical bar
-        ZZPK_LYR_BAR = "mod_assets/piano/lyrical_bar.png"
+        ZZPK_LYR_BAR = "mod_assets/games/piano/lyrical_bar.png"
 
         # overlay, white
-        ZZPK_W_OVL_LEFT = "mod_assets/piano/ovl/ivory_left.png"
-        ZZPK_W_OVL_RIGHT = "mod_assets/piano/ovl/ivory_right.png"
-        ZZPK_W_OVL_CENTER = "mod_assets/piano/ovl/ivory_center.png"
-        ZZPK_W_OVL_PLAIN = "mod_assets/piano/ovl/ivory_plain.png"
+        ZZPK_W_OVL_LEFT = "mod_assets/games/piano/ovl/ivory_left.png"
+        ZZPK_W_OVL_RIGHT = "mod_assets/games/piano/ovl/ivory_right.png"
+        ZZPK_W_OVL_CENTER = "mod_assets/games/piano/ovl/ivory_center.png"
+        ZZPK_W_OVL_PLAIN = "mod_assets/games/piano/ovl/ivory_plain.png"
 
         # overlay black
-        ZZPK_B_OVL_PLAIN = "mod_assets/piano/ovl/ebony.png"
+        ZZPK_B_OVL_PLAIN = "mod_assets/games/piano/ovl/ebony.png"
 
         # offsets for rendering
         ZZPK_IMG_BACK_X = 5
@@ -2314,93 +2346,93 @@ init 810 python:
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
             # button shit
-            button_idle = Image("mod_assets/hkb_idle_background.png")
-            button_hover = Image("mod_assets/hkb_hover_background.png")
-            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
+            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
+            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
 
             # button text
             button_done_text_idle = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_done_text_hover = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_cancel_text_idle = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_cancel_text_hover = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_reset_text_idle = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_reset_text_hover = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_resetall_text_idle = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_resetall_text_hover = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_config_text_idle = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_config_text_hover = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_quit_text_idle = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_quit_text_hover = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 

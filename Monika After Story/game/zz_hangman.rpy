@@ -10,32 +10,32 @@ define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 # IMAGES-----------
 # hangman
 image hm_6 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_6.png",
-    "True", "mod_assets/hangman/hm_6.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_6.png",
+    "True", "mod_assets/games/hangman/hm_6.png"
 )
 image hm_5 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_5.png",
-    "True", "mod_assets/hangman/hm_5.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_5.png",
+    "True", "mod_assets/games/hangman/hm_5.png"
 )
 image hm_4 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_4.png",
-    "True", "mod_assets/hangman/hm_4.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_4.png",
+    "True", "mod_assets/games/hangman/hm_4.png"
 )
 image hm_3 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_3.png",
-    "True", "mod_assets/hangman/hm_3.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_3.png",
+    "True", "mod_assets/games/hangman/hm_3.png"
 )
 image hm_2 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_2.png",
-    "True", "mod_assets/hangman/hm_2.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_2.png",
+    "True", "mod_assets/games/hangman/hm_2.png"
 )
 image hm_1 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_1.png",
-    "True", "mod_assets/hangman/hm_1.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_1.png",
+    "True", "mod_assets/games/hangman/hm_1.png"
 )
 image hm_0 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_0.png",
-    "True", "mod_assets/hangman/hm_0.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_0.png",
+    "True", "mod_assets/games/hangman/hm_0.png"
 )
 
 # sayori
@@ -45,9 +45,9 @@ image hm_s:
         # this block handles images
         block:
             choice:
-                "mod_assets/hangman/hm_s1.png"
+                "mod_assets/games/hangman/hm_s1.png"
             choice:
-                "mod_assets/hangman/hm_s2.png"
+                "mod_assets/games/hangman/hm_s2.png"
 
         # this block makes the image flicker
         # the numbers are times to display
@@ -73,11 +73,12 @@ image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horiz
 image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
 image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYORI_SCALE)
 
-#image hm_s1 = "mod_assets/hangman/hm_s1.png"
-#image hm_s2 = "mod_assets/hangman/hm_s2.png"
+#image hm_s1 = "mod_assets/games/hangman/hm_s1.png"
+#image hm_s2 = "mod_assets/games/hangman/hm_s2.png"
 
 # frame
-image hm_frame = "mod_assets/hangman/hm_frame.png"
+image hm_frame = "mod_assets/games/hangman/hm_frame.png"
+image hm_frame_dark = "mod_assets/games/hangman/hm_frame_d.png"
 
 # TRANSFORMS
 transform hangman_board:
@@ -167,8 +168,8 @@ init -1 python in mas_hangman:
     HARD_MODE = 2
 
     hm_words = {
-        EASY_MODE: list(), # easy 
-        NORM_MODE: list(), # normal 
+        EASY_MODE: list(), # easy
+        NORM_MODE: list(), # normal
         HARD_MODE: list() # hard
     }
 
@@ -210,10 +211,10 @@ init -1 python in mas_hangman:
         for word in MONI_WORDS:
             wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
 
-    
+
     # file names
-    NORMAL_LIST = "mod_assets/MASpoemwords.txt"
-    HARD_LIST = "mod_assets/1000poemwords.txt"
+    NORMAL_LIST = "mod_assets/games/hangman/MASpoemwords.txt"
+    HARD_LIST = "mod_assets/games/hangman/1000poemwords.txt"
 
     # hangman game text
     game_name = "Hangman"
@@ -224,13 +225,13 @@ init -1 python in mas_hangman:
         Does a deepcopy of the words for the given mode.
 
         Sets the hm_words dict for that mode
-        
+
         NOTE: does a list clear, so old references will still work
 
         RETURNS: the copied list of words. This is the same reference as
             hm_words's list. (empty list if mode is invalid)
         """
-        if _mode not in all_hm_words:   
+        if _mode not in all_hm_words:
             return list()
 
         # otherwise valid mode
@@ -393,21 +394,25 @@ label game_hangman:
 
 
 label mas_hangman_game_select_diff:
-
+    m "Choose a difficulty.{nw}"
+    $ _history_list.pop()
     menu:
-        m "Choose a difficulty."
-        "Easy":
+        m "Choose a difficulty.{fast}"
+        "Easy.":
             $ hangman_mode = mas_hmg.EASY_MODE
-        "Normal":
+        "Normal.":
             $ hangman_mode = mas_hmg.NORM_MODE
-        "Hard":
+        "Hard.":
             $ hangman_mode = mas_hmg.HARD_MODE
 
 label mas_hangman_game_preloop:
 
     # setup positions
     show monika at hangman_monika
-    show hm_frame at hangman_board zorder 13
+    if store.mas_globals.dark_mode:
+        show hm_frame_dark at hangman_board zorder 13
+    else:
+        show hm_frame at hangman_board zorder 13
 
     python:
         # setup constant displayabels
@@ -434,8 +439,7 @@ label mas_hangman_game_preloop:
 
 # looping location for the hangman game
 label mas_hangman_game_loop:
-    m 1eua "I'll think of a word..."
-    pause 0.7
+    m 1eua "I'll think of a word.{w=0.5}.{w=0.5}.{nw}"
 
     python:
         player_word = False
@@ -579,10 +583,7 @@ label mas_hangman_game_loop:
                 hide window_sayori
                 hide hm_s
                 show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
-                if config.developer:
-                    $ style.say_dialogue = style.normal
-                else:
-                    $ style.say_dialogue = style.default_monika
+                $ mas_resetTextSpeed()
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc
@@ -602,7 +603,7 @@ label mas_hangman_game_loop:
         if chances == 0:
             $ done = True
             if player_word:
-                m 1eka "[player],..."
+                m 1eka "[player]..."
                 m "You couldn't guess your own name?"
             m 1hua "Better luck next time~"
         elif "_" not in display_word:
@@ -695,11 +696,13 @@ label mas_hangman_game_loop:
         #TODO: grant a really tiny amount of affection?
 
     # try again?
+    m "Would you like to play again?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Would you like to play again?"
-        "Yes":
+        m "Would you like to play again?{fast}"
+        "Yes.":
             jump mas_hangman_game_loop
-        "No":
+        "No.":
             jump mas_hangman_game_end
 
     # RETURN AT END
@@ -712,6 +715,7 @@ label mas_hangman_game_end:
     hide hmg_dis_text
     hide hmg_mis_text
     hide hm_frame
+    hide hm_frame_dark
     show monika at t32
     if is_window_sayori_visible:
         show hm_s_win_leave as window_sayori at hangman_sayori_lh
