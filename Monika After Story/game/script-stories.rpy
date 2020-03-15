@@ -1624,7 +1624,7 @@ label mas_story_friend:
     m 2eub "They kept on walking until they found an oasis, where they decided to take a bath."
     m 4wuo "The one who had been slapped got stuck in the mire and started drowning, but the friend saved him."
     m 3eub "After he recovered from the near drowning, he wrote on a stone: 'Today my best friend saved my life.'"
-    m 2eua "The friend who had slapped and saved his best friend asked him:"
+    m 2eua "The friend who had slapped and saved his best friend asked him: 'After I hurt you, you wrote in the sand and now, you write on a stone, why?'"
     m 4eub "The other friend replied: 'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
     m 3eub "'But!'"
     m 4eka "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
