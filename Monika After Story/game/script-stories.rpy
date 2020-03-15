@@ -1629,5 +1629,5 @@ label mas_story_friend:
     m 3eub "'But!'"
     m 4eka "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
     m 3hua "The moral of the story is: 'Don’t value the things you have in your life. But value who you have in your life.'"
-    m 1hua "I hope you enjoyed it [player]!"
+    m 1hua "I hope you enjoyed it, [player]!"
     return
