@@ -1628,6 +1628,6 @@ label mas_story_friend:
     m 4eub "The other friend replied: 'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
     m 3eub "'But!'"
     m 4eka "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
-    m 3hua "The moral of the story is: 'Don’t value the things you have in your life. But value who you have in your life.'"
+    m 3hua "The moral of the story is: 'Do not let the shadows of your past darken the doorstep of your future. Forgive and Forget.'"
     m 1hua "I hope you enjoyed it, [player]!"
     return
