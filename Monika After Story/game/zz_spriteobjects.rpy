@@ -1419,7 +1419,7 @@ init -1 python:
     ## hairties_bracelet_brown
     # The bracelet Monika wore in the vday outfit
     # thanks Velius
-    mas_acs_hairties_bracelet_brown = MASAccessory(
+    mas_acs_hairties_bracelet_brown = MASSplitAccessory(
         "hairties_bracelet_brown",
         "hairties_bracelet_brown",
         MASPoseMap(
@@ -1492,7 +1492,7 @@ init -1 python:
     ## musicnote_necklace_gold
     # The necklace Monika wore in the vday outfit
     # thanks EntonyEscX
-    mas_acs_musicnote_necklace_gold = MASAccessory(
+    mas_acs_musicnote_necklace_gold = MASSplitAccessory(
         "musicnote_necklace_gold",
         "musicnote_necklace_gold",
         MASPoseMap(

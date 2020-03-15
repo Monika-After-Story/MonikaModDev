@@ -238,6 +238,10 @@ init -4 python in mas_sprites:
         #   Image object, or None if should not be rendered
     }
 
+    MFM_CACHE = {}
+    # MASFilterMap cache
+    # key: hash value of a MASFilterMAp
+    # value: MASFilterMap for a hash value
 
     class MASMonikaRender(store.MASFilterable):
         """
@@ -758,9 +762,6 @@ init -4 python in mas_sprites:
             cache_acs[day_key] = None
             return
 
-        # TODO: left off here
-        # TODO: add gethlc to MASAccesssory children
-
         # build img list minus file extensions
         img_list = [
             A_T_MAIN,
@@ -777,7 +778,7 @@ init -4 python in mas_sprites:
             img_key,
             CID_ACS,
             store.Image("".join(img_list)),
-            _bhli(img_list, acs.gethlc(leanpose, flt, arm_split))
+            _bhli(img_list, acs.opt_gethlc(poseid, flt, arm_split))
         ))
 
 
@@ -1169,7 +1170,7 @@ init -4 python in mas_sprites:
             _rk_base_body_lean_nh(rk_list, lean, flt, bcode)
 
             # acs_bse
-            _rk_accessory_list(rk_list, acs_bse_list, leanpose, bcode)
+            _rk_accessory_list(rk_list, acs_bse_list, flt, leanpose, bcode)
 
             # body-0
             _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode, leanpose)
@@ -1179,7 +1180,7 @@ init -4 python in mas_sprites:
             _rk_base_body_nh(rk_list, flt, bcode)
 
             # acs_bse
-            _rk_accessory_list(rk_list, acs_bse_list, leanpose, bcode)
+            _rk_accessory_list(rk_list, acs_bse_list, flt, leanpose, bcode)
 
             # body-0
             _rk_body_nh(rk_list, clothing, flt, bcode, leanpose)
@@ -1795,6 +1796,7 @@ init -4 python in mas_sprites:
 
 init -2 python:
 
+    # TODO: make MASFilterMap hashable, then setup caching
     class MASFilterMap(object):
         """
         The FilterMap connects filters to values
@@ -1819,15 +1821,31 @@ init -2 python:
                         day=None
                         night="0"
             """
-            self.map = {}
+            self.map = MASFilterMap.clean_flt_pairs(default, filter_pairs)
+            store.mas_sprites.MFM_CACHE[hash(self)] = self
 
-            # check existing filter keys and apply defaults
-            for flt in store.mas_sprites.FILTERS:
-                if flt in filter_pairs:
-                    self.map[flt] = filter_pairs[flt]
+        def __eq__(self, other):
+            """
+            Equals implementation.
+            MASFilterMaps are equal based on their internal tuple/hash var
+            """
+            if isinstance(self, other.__class__):
+                return hash(self) == hash(other)
+            return False
 
-                else:
-                    self.map[flt] = default
+        def __hash__(self):
+            """
+            Hashable implementation.
+            MASFilterMaps are uniqued based on their internal map
+            """
+            return MASFilterMap.flt_hash(self.map)
+
+        def __ne__(self, other):
+            """
+            Not equals implmentation.
+            MASFilterMaps are not equal based on their internal tuple/hash var
+            """
+            return not self.__eq__(other)
 
         def get(self, flt, defval=None):
             """
@@ -1855,6 +1873,73 @@ init -2 python:
                     vals.append(self.map[key])
 
             return vals
+
+        @staticmethod
+        def cachecreate(default=None, **filter_pairs):
+            """
+            Creates a MASFilterMap object ONLY if it is not in the filtermap
+            cache.
+
+            IN:
+                default - See constructor for MASFilterMap
+                **filter_pairs - See constructor for MASFilterMap
+
+            RETURNS: MASFilterMap object to use
+            """
+            hash_value = MASFilterMap.flt_hash(MASFilterMap.clean_flt_pairs(
+                default,
+                filter_pairs
+            ))
+
+            if hash_value in store.mas_sprites.MFM_CACHE:
+                return store.mas_sprites.MFM_CACHE[hash_value]
+
+            # otherwise generate the MFM. It will be added to teh cache in
+            #  the constructor
+            return MASFilterMap(default=default, **filter_pairs)
+
+        @staticmethod
+        def clean_flt_pairs(default, filter_pairs):
+            """
+            cleans given filter pairs, setting defaults and only using valid
+            filter keys.
+
+            IN:
+                default - default code to apply to all filters
+                filter_pairs - filter pair dict:
+                    key: filter as string
+                    value: code to use as string
+
+            RETURNS: dict with cleaned filter pairs
+            """
+            output = {}
+            
+            # cehck existing filter keys and apply defaults
+            for flt in store.mas_sprites.FILTERS:
+                output[flt] = filter_pairs.get(flt, default)
+
+            return output
+
+        @staticmethod
+        def flt_hash(flt_pairs):
+            """
+            Generates a hash based on the given filter pairs
+
+            IN:
+                flt_pairs - dict of the following format:
+                    key: filter as string
+                    value: code to use as string
+                    NOTE: default is assumed to already been set
+
+            RETURNS: hash that would be generated by a MASFilterMAp created 
+                with the given filter pairs
+            """
+            # hash a tuple of this filtermap's map's values, using None for
+            # empty spaces
+            return hash(tuple([
+                flt_pairs.get(flt, None)
+                for flt in store.mas_sprites.FILTERS
+            ]))
 
         @classmethod
         def fromJSON(cls, json_obj, msg_log, ind_lvl):
