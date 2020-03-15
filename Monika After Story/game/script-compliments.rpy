@@ -658,17 +658,17 @@ label mas_compliment_lookuptoyou_3:
 
     m 1ekbfa "I love you, [player]~"
     return
-    
-    init 5 python:
-        addEvent(
-            Event(
-                persistent._mas_compliments_database,
-                eventlabel="mas_compliment_thinking_of_you",
-                prompt="I'm always thinking about you!",
-                unlocked=True
-            ),
-            code="CMP",
-        )
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_thinking_of_you",
+            prompt="I'm always thinking about you!",
+            unlocked=True
+        ),
+        code="CMP",
+    )
 
 label mas_compliment_thinking_of_you:
     if not renpy.seen_label("mas_compliment_thinking_of_you_2"):
