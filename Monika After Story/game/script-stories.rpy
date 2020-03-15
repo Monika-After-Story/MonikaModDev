@@ -1626,7 +1626,6 @@ label mas_story_friend:
     m 3eub "After he recovered from the near drowning, he wrote on a stone:"
     m 4eub "'Today my best friend saved my life.'"
     m 2eua "The friend who had slapped and saved his best friend asked him:"
-    m 3esd "'After I hurt you, you wrote in the sand and now, you write on a stone, why?'"
     m 4eub "The other friend replied:"
     m 7eka "'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
     m 3eub "'But!'"
