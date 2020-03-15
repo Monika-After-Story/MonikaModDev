@@ -1619,7 +1619,7 @@ init 5 python:
 label mas_story_friend:
     call mas_story_begin
     m 3eub "Once two friends were walking through the desert..."
-    m 4esd "During some point of the journey they had an argument, and one friend slapped the other one in the face."
+    m 4esd "During some point of their journey they had an argument and one friend slapped the other one in the face!"
     m 4ekb "The one who got slapped was hurt, but without saying anything, wrote in the sand:"
     m 3dua "'Today my best friend slapped me in the face.'"
     m 2eub "They kept on walking until they found an oasis, where they decided to take a bath."
