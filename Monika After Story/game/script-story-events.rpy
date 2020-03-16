@@ -1719,6 +1719,28 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_gift_giving_instructs",
+            prompt="How do I give you things?",
+            category=["misc"],
+            pool=True,
+            unlocked=True,
+        )
+    )
+
+label monika_gift_giving_instructs:
+    m "You want to know how to give me things?"
+    m "Sure thing, [player]."
+    m "All you need to do is make a new file in the 'characters' folder. It can be anything."
+    m "Then, just rename it to whatever you'd like to give to me and change the file extension to '.gift' instead of what it was,{w=0.3} '.txt' for example."
+    m "I take a look in the characters folder pretty often, so I'll usually notice when you put something in there pretty quickly."
+    m "But I don't look there all the time though.{w=0.3} {nw}"
+    extend 1tuu "It'd be pretty rude of me not to pay attention to you when we're talking, after all."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="mas_change_to_def",
             unlocked=False
         )
