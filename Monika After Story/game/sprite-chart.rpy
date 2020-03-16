@@ -5494,15 +5494,18 @@ init -2 python:
             """
             pass
 
-        def build_loadstrs(self):
+        def build_loadstrs(self, prefix):
             """
             Builds list of all strings for this pose arms. Used for testing
             loadability
-            NOTE: will NOt include arm prefixes
 
             NOTE: must be implemented by extending classes
 
-            RETURNS: list of strings containing partial filenames for all 
+            IN:
+                prefix - prefix to apply to each string
+                    (Default: "")
+
+            RETURNS: list of lists of strings representing image path for all 
                 possible pose arms this may have.
             """
             raise NotImplementedError
@@ -6004,6 +6007,7 @@ init -2 python:
             # TODO
             raise NotImplementedError
 
+    # TODO: remove this
     class REMOVE(object):
 
         @staticmethod
@@ -7340,6 +7344,22 @@ init -2 python:
             """
             self.ex_props[prop] = True
 
+        def build_loadstrs(self, prefix):
+            """
+            Build list of strings representing each image that may be used
+            in this sprite.
+
+            NOTE: this should be implemented by the extending classes
+
+            IN:
+                prefix - prefix to apply to each image. should be list of
+                    strings
+                    (DEfault: "")
+            
+            RETURNS: list of lists of strings represented in this image.
+                use .join on each inner list to make the image
+            """
+            raise NotImplementedError
 
         def entry(self, _monika_chr, **kwargs):
             """
@@ -7902,6 +7922,59 @@ init -2 python:
                 ahl_data
             )
 
+        def __build_loadstrs_hl(self, prefix, poseid):
+            """
+            Builds highlight load strs for a pose
+
+            IN:
+                prefix - prefix to apply to the load strings
+                    should be a list of strings
+                poseid - pose id to find highlights for
+
+            RETURNS: list of lists of strings
+            """
+            if self.hl_map is None:
+                return []
+
+            # get filter map
+            mfm = self.hl_map.get(poseid)
+            if mfm is None:
+                return []
+
+            # get all unique filter values
+            return [
+                prefix + [
+                    store.mas_sprites.HLITE_SUFFIX
+                    hlc,
+                    store.mas_sprites.FILE_EXT
+                ]
+                for hlc in mfm.unique_values()
+            ]
+
+        def build_loadstrs(self, prefix):
+            """
+            See MASSpriteBase.build_loadstrs
+            """
+            loadstrs = []
+
+            # loop over MASPoseMap for pose ids
+            for poseid in self.pose_map.unique_values():
+                # generate new img str
+                new_img = prefix + [
+                    store.mas_sprites.PREFIX_ACS,
+                    self.img_sit,
+                    store.mas_sprites.ART_DLM,
+                    poseid,
+                ]
+
+                # add the image
+                loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
+
+                # highlights
+                loadstrs.extend(self.__build_loadstrs_hl(new_img, poseid))
+
+            return loadstrs
+
         def gethlc(self, leanpose, flt, hl_key, defval=None):
             """
             Gets highlight code.
@@ -7991,7 +8064,7 @@ init -2 python:
                 ahl_data=None
             ):
             """
-            MASAccessory constructor
+            MASSplitAccessory constructor
 
             IN:
                 name - name of this accessory
@@ -8084,6 +8157,76 @@ init -2 python:
             )
 
             self.arm_split = arm_split
+
+        def __build_loadstrs_hl(self, prefix, poseid, armcode):
+            """
+            Builds highlight load strs for a pose and arm layer
+
+            IN:
+                prefix - prefix to apply to the load strings
+                    should be a list of strings
+                poseid - pose id to find highlight for
+                armcode - arm_split code to find highlight for
+
+            RETURNS: list of lists of strings
+            """
+            if self.hl_map is None:
+                return []
+
+            # get hl map for a pose
+            mhm = self.hl_map.get(poseid)
+            if mhm is None:
+                return []
+
+            # get filter map for an arm code
+            mfm = mhm.get(armcode):
+            if mfm is None:
+                return []
+
+            # get all unique filter values
+            return [
+                prefix + [
+                    store.mas_sprites.HLITE_SUFFIX,
+                    hlc,
+                    store.mas_sprites.FILE_EXT
+                ]
+                for hlc in mfm.unique_values()
+            ]
+
+        def build_loadstrs(self, prefix):
+            """
+            See MASSpriteBase.build_loadstrs
+            """
+            loadstrs = []
+
+            # loop over MASPoseMap for pose ids
+            for poseid in self.pose_map.unique_values():
+                
+                # generate new img str
+                new_img = prefix + [
+                    store.mas_sprites.PREFIX_ACS,
+                    self.img_sit,
+                    store.mas_sprites.ART_DLM,
+                    poseid,
+                ]
+
+                # check layers
+                for armcode in self.get_arm_split_code(poseid):
+
+                    # generate arm code img str
+                    ac_img = new_img + [store.mas_sprites.ART_DLM, arm_code]
+
+                    # add that to list
+                    loadstrs.append(ac_img + [store.mas_sprites.FILE_EXT]
+
+                    # highlights
+                    loadstrs.extend(self.__build_loadstrs_hl(
+                        ac_img,
+                        poseid,
+                        armcode
+                    ))
+
+            return loadstrs
 
         def get_arm_split_code(self, poseid):
             """
@@ -8253,38 +8396,94 @@ init -2 python:
 
             self.split = split
 
-        def _build_loadstrs(self):
+        def __build_loadstrs_hl(self, prefix, leanpose, split_layer):
             """
-            Bulids list of strings for this psrite object that reprsent the
-            image paths that this sprite object wuld use.
+            Builds highlight load strs for a split layer
 
-            RETURNS: list of strings
+            IN:
+                prefix - prefix to apply to the load strings
+                    should be a list of strings
+                leanpose - leanpose to get highlight for
+                split_layer - split layre code (MHM KEY)
+                
+            RETURNS: list of lists of strings
+            """
+            if self.hl_map is None:
+                return []
+
+            # get hlmap
+            mhm = self.hl_map.get(leanpose, None)
+            if mhm is None:
+                return []
+
+            # then filter map
+            mfm = mhm.get(split_layer)
+            if mfm is None:
+                return []
+
+            return [
+                prefix + [
+                    store.mas_sprites.HLITE_SUFFIX,
+                    hlc,
+                    store.mas_sprites.FILE_EXT
+                ]
+                for hlc in mfm.unique_values()
+            ]
+
+        def build_loadstrs(self, prefix):
+            """
+            See MASSpriteBase.build_loadstrs
             """
             loadstrs = []
+
+            # NOTE: we only allow split layers, but this check is to ensure
+            #   we don't have any weirdness going on
             all_split = self.split is None
 
-            # loop over poses and only return strings for ones that
-            # are split
-            for pose in store.mas_sprites.POSES:
-                if all_split or self.split.get(pose, False):
-                    store.mas_sprites.alt_hsplit(
-                        loadstrs,
-                        store.mas_sprites.BS_HAIR_U.format(self.img_sit),
-                        True
-                    )
+            # loop over all poses
+            for pose in store.mas_sprites.ALL_POSES:
 
-            # and for leaning
-            for lpose in store.mas_sprites.L_POSES:
-                lean = lpose.partition("|")[0]
-                if all_split or self.split.get(lpose, False):
-                    store.mas_sprites.alt_hsplit(
-                        loadstrs,
-                        store.mas_sprites.BS_HAIR_L.format(
-                            lean,
-                            self.img_sit
-                        ),
-                        True
-                    )
+                # only do splits
+                if all_split or self.split.get(pose, False):
+
+                    # determine lean
+                    islean = "|" in pose
+
+                    # generate img string
+                    new_img = list(prefix)
+
+                    # determine starting prefix
+                    if islean:
+                        new_img.extend((
+                            store.mas_sprites.PREFIX_HAIR_LEAN,
+                            pose.partition("|")[0],
+                            store.mas_sprites.ART_DLM
+                        ))
+                    else:
+                        new_img.append(store.mas_sprites.PREFIX_HAIR)
+
+                    # add the tag
+                    new_img.append(self.img_sit)
+
+                    # genreate back and front images
+                    back_img = new_img + [store.mas_sprites.BHAIR_SUFFIX]
+                    front_img = new_img + [store.mas_sprites.FHAIR_SUFFIX]
+
+                    # add them to list
+                    loadstrs.append(back_img + [store.mas_sprites.FILE_EXT]
+                    loadstrs.append(front_img + [store.mas_sprites.FILE_EXT]
+
+                    # highlights
+                    loadstrs.extend(self.__build_loadstrs_hl(
+                        back_img,
+                        pose,
+                        store.mas_sprites.BHAIR
+                    ))
+                    loadstrs.extend(self.__build_loadstrs_hl(
+                        front_img,
+                        pose,
+                        store.mas_sprites.FHAIR
+                    ))
 
             return loadstrs
 
@@ -8401,6 +8600,18 @@ init -2 python:
                 for hair_name in mas_sprites.HAIR_MAP:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
+
+        def build_loadstrs(self, prefix):
+            """
+            See MASSpriteBase.build_loadstrs
+            """
+            loadstrs = []
+
+            # start with body
+
+            # loop over poses
+            #for pose in store.mas_sprites.ALL_POSES:
+                
 
         def get_hair(self, hair):
             """
