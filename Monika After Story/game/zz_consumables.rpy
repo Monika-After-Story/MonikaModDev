@@ -1404,8 +1404,11 @@ label mas_consumables_remove_thermos:
     $ thermos = monika_chr.get_acs_of_type("thermos-mug")
     call mas_transition_to_emptydesk
 
-    #Remove the current thermos
-    $ monika_chr.remove_acs(thermos)
+    python:
+        renpy.pause(3.0, hard=True)
+        #Remove the current thermos
+        monika_chr.remove_acs(thermos)
+        renpy.pause(2.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
 
