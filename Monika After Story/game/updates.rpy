@@ -440,6 +440,29 @@ label v0_10_8(version="v0_10_8"):
             if gr_ev:
                 gr_ev.conditional = conditional
 
+        new_game_unlock_conditions = {
+            "unlock_chess": (
+                "get_level()>=30 "
+                "and not seen_event('unlock_chess') "
+                "and not persistent.game_unlocks['chess']"
+            ),
+            "unlock_hangman": (
+                "get_level()>=60 "
+                "and not seen_event('unlock_hangman')"
+            ),
+            "unlock_piano": (
+                "get_level()>=100 "
+                "and not seen_event('unlock_piano')"
+            )
+        }
+
+        #Let's adjust the condtionals for game unlocks
+        for game_evl, conditional in new_game_unlock_conditions.iteritems():
+            game_unlock_ev = mas_getEV(game_evl)
+
+            #If the game has already unlocked (we've seen the label) we don't want to do anything
+            if game_unlock_ev and not renpy.seen_label(game_evl):
+                game_unlock_ev.conditional = conditional
     return
 
 #0.10.7
