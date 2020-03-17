@@ -42,7 +42,9 @@ label gender:
             call gender_neither
 
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    $ mas_showEVL("gender_redo","EVE", unlock=True, _pool=True)
+
+    #Unlock the gender redo event
+    $ mas_unlockEVL("gender_redo","EVE")
     $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
     return "love"
@@ -54,7 +56,9 @@ init 5 python:
             eventlabel="gender_redo",
             category=['you','misc'],
             prompt="Can you change my gender?",
-            unlocked=False
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
         )
     )
 
@@ -241,9 +245,9 @@ label preferredname:
             m 3eka "Just tell me if you change your mind, [player]."
             $ done = True
 
-    #Unlock prompt to change name again
-    $ mas_showEVL("monika_changename","EVE",unlock=True,_pool=True)
-    $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
+    #Unlock the name change event
+    $ mas_unlockEVL("monika_changename","EVE")
+    $ persistent._seen_ever["monika_changename"] = True
     return
 
 
@@ -254,9 +258,12 @@ init 5 python:
             eventlabel="monika_changename",
             category=['you','misc'],
             prompt="Can you change my name?",
-            unlocked=False
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
         )
-    ) #This needs to be unlocked by the random name change event
+    )
+    #NOTE: This needs to be unlocked by the random name change event
 
 label monika_changename:
     m 1eua "You want to change your name?{nw}"

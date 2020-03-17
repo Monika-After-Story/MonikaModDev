@@ -463,6 +463,16 @@ label v0_10_8(version="v0_10_8"):
             #If the game has already unlocked (we've seen the label) we don't want to do anything
             if game_unlock_ev and not renpy.seen_label(game_evl):
                 game_unlock_ev.conditional = conditional
+
+        #Fix some intro topics
+        changename_ev = mas_getEV("monika_changename")
+        if changename_ev:
+            changename_ev.pool=True
+
+        gender_redo_ev = mas_getEV("gender_redo")
+        if gender_redo_ev:
+            gender_redo_ev.pool=True
+
     return
 
 #0.10.7
