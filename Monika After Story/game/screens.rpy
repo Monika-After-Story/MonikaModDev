@@ -33,7 +33,11 @@ init -1 python:
         "and offer some comments based on what you're doing."
     )
 
-
+    _TXT_FINISHED_UPDATING = (
+        "The updates have been installed. Please reopen Monika After Story.\n\n"
+        "See the patch notes and get spritepacks {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}here{/u}{/i}{/a}.\n"
+        "Confused about some features? Take a look at our {a=https://github.com/Monika-After-Story/MonikaModDev/wiki}{i}{u}wiki page{/u}{/i}{/a}."
+    )
 
 
 init python in mas_layout:
@@ -1974,7 +1978,7 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    text _("The updates have been installed. Please reopen Monika After Story.")
+                    text _(_TXT_FINISHED_UPDATING)
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
                 elif u.state == u.CANCELLED:
