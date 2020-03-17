@@ -1706,7 +1706,7 @@ init 5 python:
                 "and not persistent._mas_filereacts_historic"
             ),
             action=EV_ACT_QUEUE,
-            random=True
+            random=not persistent._mas_filereacts_historic
         )
     )
 
@@ -1745,11 +1745,12 @@ label mas_gift_giving_instructs:
     m 1eud "Hey, [player]..."
     m 3euc "Someone left a note in the characters folder addressed to you."
     m 1ekc "Since it's for you, I haven't read it...{w=0.5}{nw}"
-    extend 1eua "but here, maybe it's important."
+    extend 1eua "but here, it might be important."
 
     call mas_showpoem(mas_chibi_note_gifting)
 
-    $ mas_stripEVL("monika_gift_giving_instructs")
+    $ mas_stripEVL("mas_gift_giving_instructs", True)
+    $ mas_hideEVL("mas_gift_giving_instructs", "EVE", derandom=True)
     return "no_unlock"
 
 init 5 python:

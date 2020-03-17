@@ -758,6 +758,9 @@ init -11 python in mas_filereacts:
             eventlabel - the event label for the gift reaction
 
         """
+        #Derandom the gift instruct EV
+        store.mas_hideEVL("mas_gift_giving_instructs", "EVE", derandom=True)
+
         # check for stats dict for today
         today = datetime.date.today()
         if not today in store.persistent._mas_filereacts_historic:
