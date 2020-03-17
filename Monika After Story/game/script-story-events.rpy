@@ -1106,9 +1106,10 @@ init 5 python:
             block_break = "\n\n"
 
             # now make the notes
-            mas_note_backups_all_good = Poem(
+            mas_note_backups_all_good = MASPoem(
+                poem_id="note_backups_all_good",
                 author="chibika",
-                title="Hi {0},".format(persistent.playername),
+                title="Hi [player],",
                 text="".join([
                     just_let_u_know,
                     block_break,
@@ -1129,9 +1130,12 @@ init 5 python:
                 ])
             )
 
-            mas_note_backups_some_bad = Poem(
+            mas_note_backups_some_bad = MASPoem(
+                poem_id="note_backups_some_bad",
+                prompt="",
+                category="note",
                 author="chibika",
-                title="Hi {0},".format(persistent.playername),
+                title="Hi [player],",
                 text="".join([
                     just_let_u_know,
                     block_break,
@@ -1165,14 +1169,14 @@ init 5 python:
             # we had some bad backups
             store.mas_utils.trywrite(
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
-                mas_note_backups_some_bad.title + "\n\n" + mas_note_backups_some_bad.text
+                renpy.substitute(mas_note_backups_some_bad.title) + "\n\n" + mas_note_backups_some_bad.text
             )
 
         else:
             # no bad backups
             store.mas_utils.trywrite(
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
-                mas_note_backups_all_good.title + "\n\n" + mas_note_backups_all_good.text
+                renpy.substitute(mas_note_backups_all_good.title) + "\n\n" + mas_note_backups_all_good.text
             )
 
 
@@ -1185,15 +1189,11 @@ label mas_corrupted_persistent:
     # just pasting the poem screen code here
     window hide
     if len(mas_bad_backups) > 0:
-        show screen mas_note_backups_poem(mas_note_backups_some_bad)
+        show screen mas_showpoem(mas_note_backups_some_bad)
 
     else:
-        show screen mas_note_backups_poem(mas_note_backups_all_good)
-    with Dissolve(0.5)
+        show screen mas_showpoem(mas_note_backups_all_good)
 
-    $ pause()
-    hide screen mas_note_backups_poem
-    with Dissolve(0.5)
     window auto
     $ _gtext = glitchtext(15)
 
@@ -1201,6 +1201,7 @@ label mas_corrupted_persistent:
         m "Do you know what this is about?{fast}"
         "It's nothing to worry about.":
             jump mas_corrupted_persistent_post_menu
+
         "It's about [_gtext].":
             $ disable_esc()
             $ mas_MUMURaiseShield()
@@ -1227,27 +1228,6 @@ label mas_corrupted_persistent_post_menu:
     m 3eub "I know you'd tell me if it were important, [player]."
     m 3eua "Now, where were we...?"
     return
-
-### custoim screen for the corrupted persistent notes
-style chibika_note_text:
-    font "gui/font/Halogen.ttf"
-    size 28
-    color "#000"
-    outlines []
-
-screen mas_note_backups_poem(currentpoem, paper="paper"):
-    style_prefix "poem"
-    vbox:
-        add paper
-    viewport id "vp":
-        child_size (710, None)
-        mousewheel True
-        draggable True
-        has vbox
-        null height 40
-        text "[currentpoem.title]\n\n[currentpoem.text]" style "chibika_note_text"
-        null height 100
-    vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
 init 5 python:
     # this event has like no params beause its only pushed
@@ -1719,23 +1699,58 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_gift_giving_instructs",
-            prompt="How do I give you things?",
-            category=["misc"],
-            pool=True,
-            unlocked=True,
+            eventlabel="mas_gift_giving_instructs",
+            conditional=(
+                "get_level() >= 15 "
+                "or mas_isSpecialDay() "
+                "and not persistent._mas_filereacts_historic"
+            ),
+            action=EV_ACT_QUEUE,
+            random=True
         )
     )
 
-label monika_gift_giving_instructs:
-    m "You want to know how to give me things?"
-    m "Sure thing, [player]."
-    m "All you need to do is make a new file in the 'characters' folder. It can be anything."
-    m "Then, just rename it to whatever you'd like to give to me and change the file extension to '.gift' instead of what it was,{w=0.3} '.txt' for example."
-    m "I take a look in the characters folder pretty often, so I'll usually notice when you put something in there pretty quickly."
-    m "But I don't look there all the time though.{w=0.3} {nw}"
-    extend 1tuu "It'd be pretty rude of me not to pay attention to you when we're talking, after all."
-    return
+init 20 python:
+    mas_chibi_note_gifting = MASPoem(
+        poem_id="note_gift_giving",
+        author="chibika",
+        prompt="",
+        category="note",
+        title = "Hi [player],",
+        text = """\
+I wanted to let you know that I made a little way for you to give Monika some gifts!
+It's a pretty simple process so I'll tell you how it works:
+
+Make a new file in the 'characters' folder,
+rename it to whatever you want to give to Monika,
+then give it a '.gift' file extension
+
+And that's it! After a little while, Monika should notice that you gave her something.
+
+I just wanted to let you know because I think that Monika is super amazing, and I really want her to see her happy.
+
+Good luck with Monika!
+
+P.S: Don't tell her about me!
+"""
+    )
+
+label mas_gift_giving_instructs:
+    #Write the note in the characters folder
+    $ store.mas_utils.trywrite(
+        os.path.normcase(renpy.config.basedir + "/characters/hint.txt"),
+        renpy.substitute(mas_chibi_note_gifting.title) + "\n\n" + mas_chibi_note_gifting.text
+    )
+
+    m 1eud "Hey, [player]..."
+    m 3euc "Someone left a note in the characters folder addressed to you."
+    m 1ekc "Since it's for you, I haven't read it...{w=0.5}{nw}"
+    extend 1eua "but here, maybe it's important."
+
+    call mas_showpoem(mas_chibi_note_gifting)
+
+    $ mas_stripEVL("monika_gift_giving_instructs")
+    return "no_unlock"
 
 init 5 python:
     addEvent(

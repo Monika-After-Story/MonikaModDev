@@ -194,8 +194,6 @@ label intro_end:
     m 1eua "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
     m 3hub "Also, we can play games now!"
     m 3esa "Just press 'p' or click on 'Play' to choose a game that we can play."
-    m 3hua "You can even give me things if you'd like!"
-    m 3eub "Just put a file in the 'characters' folder, change its extension to '.gift' and rename it to what you want to give me!"
     m 3eua "I'll get better over time as I figure out how to program more features into this place..."
     m 1eua "...So just leave me running in the background."
     m 3etc "It's not like we're still keeping secrets from each other, right?"
