@@ -5503,7 +5503,6 @@ init -2 python:
 
             IN:
                 prefix - prefix to apply to each string
-                    (Default: "")
 
             RETURNS: list of lists of strings representing image path for all 
                 possible pose arms this may have.
@@ -5609,14 +5608,14 @@ init -2 python:
             else:
                 self.hl_bmap = None
 
-        def build_loadstrs(self):
+        def build_loadstrs(self, prefix):
             """
             See MASPoseArms.build_loadstrs
             """
             if not self.both:
                 return []
 
-            fnames = []
+            loadstrs = []
 
             # now add arms based on layer codes
             for layer_code in self._MPA_KEYS:
@@ -5625,18 +5624,16 @@ init -2 python:
 
                 # NOTE: we ignore filter here because we will generate
                 # tags for all filters at once
-                tag_names = self.get(layer_code, None)
+                tag_names = self.get(layer_code, [])
                 if len(tag_names) > 0:
+                    # NOTE: since this is a both string, we always get one
 
                     # build main part of filename, with layer code
-                    fname = tag_names[0][0]
+                    new_img = list(prefix)
+                    new_img.extend(tag_names[0][0])
 
                     # add extension for standard file
-                    fname_ext = list(fname)
-                    fname_ext.append(store.mas_sprites.FILE_EXT)
-
-                    # add extension file to regular filenames
-                    fnames.append("".join(fname_ext))
+                    loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
 
                     # now check for hlite. This should use main part of
                     # filename as a prefix
@@ -5646,19 +5643,17 @@ init -2 python:
                         mfm = self.hl_bmap.get(layer_code)
                         if mfm is not None:
                             # prepare highlight name
-                            hlname = list(fname)
-                            hlname.append(store.mas_sprites.HLITE_SUFFIX)
+                            hl_img = new_img + [
+                                store.mas_sprites.HLITE_SUFFIX
+                            ]
 
                             # loop over mfm values
-                            for hlcode in mfm.unique_values():
-                                hlname_ext = list(hlname)
-                                hlname_ext.append(hlcode)
-                                hlname_ext.append(store.mas_sprites.FILE_EXT)
-                                
-                                # add to filenames
-                                fnames.append("".join(hlname_ext))
+                            loadstrs.extend([
+                                hl_img + [hlc, store.mas_sprites.FILE_EXT]
+                                for hlc in mfm.unique_values()
+                            ])
 
-            return fnames
+            return loadstrs
 
         def get(self, layer_code, flt):
             """
@@ -5778,23 +5773,30 @@ init -2 python:
                 rhl_data
             )
 
-        def __build_fnames(self, fnames, tag_str, layer_code, tag_hl_map):
+        def __build_loadstrs_ft(self,
+                    loadstrs,
+                    tag_str,
+                    layer_code,
+                    tag_hl_map
+        ):
             """
-            Generates fnames from tag string
+            Generates load strings From Tag
 
             IN:
                 tag_str - already generated tag string to use
+                    (list of strings)
                 layer_code - layer code to generate fnames for
                 tag_hl_map - MASHighlightMap object assocaited with tag_str
 
             OUT:
-                fnames - list to add fnames to 
+                loadstrs - list to add loadstrs to
             """
             # add extension
-            fname_ext = list(tag_str)
-            fname_ext.append(store.mas_sprites.FILE_EXT)
-            fnames.append("".join(fname_ext))
+            new_img = list(tag_str)
+            loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
 
+            # TODO: move this hl check to MASPoseArms as its in here and
+            #   MASPoseArmsBoth
             # now check for hlite
             if tag_hl_map is not None:
                 
@@ -5802,17 +5804,15 @@ init -2 python:
                 mfm = tag_hl_map.get(layer_code)
                 if mfm is not None:
                     # prepare highlight name
-                    hlname = list(tag_str)
-                    hlname.append(store.mas_sprites.HLITE_SUFFIX)
+                    hl_img = new_img + [store.mas_sprites.HLITE_SUFFIX]
 
                     # loop over mfm values
-                    for hlcode in mfm.unique_values():
-                        hlname_ext = list(hlname)
-                        hlname_ext.append(hlcode)
-                        hlname_ext.append(store.mas_sprites.FILE_EXT)
+                    loadstrs.extend([
+                        hl_img + [hlc, store.mas_sprites.FILE_EXT],
+                        for hlc in mfm.unique_values()
+                    ])
 
-                        # add to filenames
-                        fnames.append("".join(hl_name_ext))
+            return loadstrs
 
         def __get_hltag(self, tag, hl_map, layer_code, flt):
             """
@@ -7777,50 +7777,6 @@ init -2 python:
             """
             raise NotImplementedError
 
-        def _build_loadstrs(self):
-            """
-            Builds list of strings for this sprite object that represent the
-            image paths that this sprite object would use.
-
-            RETURNS: list of strings 
-            """
-            # TODO: fix this for new arm layouts
-            loadstrs = []
-
-            # loop over MASPoseMap for pose ids
-            for pose in store.mas_sprites.ALL_POSES:
-                poseid = self.pose_map.get(pose, "")
-
-                if len(poseid) > 0:
-                    prefix = store.mas_sprites.BS_ACS.format(
-                        self.img_sit,
-                        poseid
-                    )
-
-                    arm_codes = self.get_arm_split_code(pose)
-                    if len(arm_codes) < 1:
-
-                        # add both day and night versions
-                        # no arm code
-                        store.mas_sprites.alt_night(loadstrs, prefix)
-
-                    else:
-                        # add all arm versions (max 2)
-                        for arm_code in arm_codes:
-                            arm_prefix = (
-                                prefix
-                                + store.mas_sprites.ART_DLM
-                                + arm_code
-                            )
-
-                            # no arm code
-                            store.mas_sprites.alt_night(
-                                loadstrs,
-                                arm_prefix
-                            )
-
-            return loadstrs
-
     
     class MASAccessory(MASAccessoryBase):
         """
@@ -8674,25 +8630,10 @@ init -2 python:
             """
             # NEW:
             #   body-<type>-0.png
-            #   body-<type>-0-n.png
             #   body-<type>-1.png
-            #   body-<type>-1-n.png
             #   body-leaning-<type>-0.png
-            #   body-leaning-<type>-0-n.png
             #   body-leaning-<type>-1.png
-            #   body-leaning-<type>-1-n.png
-            #   arms-<both type>-0.png (back)
-            #   arms-<both type>-0-n.png (back)
-            #   arms-<both type>-1.png (Front)
-            #   arms-<both type>-1-n.png (Front)
-            #   arms-left-<left type>-0.png (back)
-            #   arms-left-<left type>-0-n.png (back)
-            #   arms-left-<left type>-1.png (front)
-            #   arms-left-<left type>-1-n.png (front)
-            #   arms-right-<right type>-0.png (back)
-            #   arms-right-<right type>-0-n.png (back)
-            #   arms-right-<right type>-1.png (front)
-            #   arms-right-<right type>-1-n.png (front)
+            # NOTE: arms handled by MASPoseArms
 
             to_verify = []
 
