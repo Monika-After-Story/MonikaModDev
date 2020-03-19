@@ -5494,6 +5494,69 @@ init -2 python:
             """
             pass
 
+        def _build_loadstrs_ft(self, prefix, tag, hl_map, layer_code):
+            """
+            Builds load strings for a layer code + highlight
+
+            IN:
+                prefix - prefix to apply
+                tag - tag string to use
+                hl_map - highlight map to use
+                layer_code - layer code to generate highlihgt parts for
+
+            RETURNS: list of lists of strinsg represnting image path for
+                image and highlights for a layer code
+            """
+            loadstrs = []
+
+            # generate image
+            new_img = prefix + [
+                tag,
+                store.mas_sprites.ART_DLM,
+                str(layer_code)
+            ]
+
+            # add with extension
+            loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
+
+            # generate highlights
+            loadstrs.extend(self._build_loadstrs_hlfm(
+                new_img,
+                hl_map,
+                layer_code
+            ))
+
+            return loadstrs
+
+        def _build_loadstrs_hlfm(self, prefix, hl_map, layer_code):
+            """
+            Builds load strings for a hlight from a given map
+
+            IN:
+                prefix - prefix to apply
+                hl_map - highlight map to use
+                layer_code - layer code to generate loadstrings for
+
+            RETURNS: list of lists of strings representing image path for all
+                highlights for a layer code
+            """
+            if hl_map is None:
+                return []
+
+            mfm = hl_map.get(layer_code)
+            if mfm is None:
+                return []
+
+            # generate for all unique
+            return [
+                prefix + [
+                    store.mas_sprites.HLITE_SUFFIX,
+                    hlc,
+                    store.mas_sprites.FILE_EXT
+                ]
+                for hlc in mfm.unique_values()
+            ]
+
         def build_loadstrs(self, prefix):
             """
             Builds list of all strings for this pose arms. Used for testing
@@ -5622,36 +5685,17 @@ init -2 python:
                 # NOTE: we only add an arm + hlite if it exists for a layer
                 # code
 
-                # NOTE: we ignore filter here because we will generate
-                # tags for all filters at once
-                tag_names = self.get(layer_code, [])
-                if len(tag_names) > 0:
+                if self.bmap.get(layer_code, False):
                     # NOTE: since this is a both string, we always get one
 
                     # build main part of filename, with layer code
-                    new_img = list(prefix)
-                    new_img.extend(tag_names[0][0])
-
-                    # add extension for standard file
-                    loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
-
-                    # now check for hlite. This should use main part of
-                    # filename as a prefix
-                    if self.hl_bmap is not None:
-
-                        # grab filter map for this layer
-                        mfm = self.hl_bmap.get(layer_code)
-                        if mfm is not None:
-                            # prepare highlight name
-                            hl_img = new_img + [
-                                store.mas_sprites.HLITE_SUFFIX
-                            ]
-
-                            # loop over mfm values
-                            loadstrs.extend([
-                                hl_img + [hlc, store.mas_sprites.FILE_EXT]
-                                for hlc in mfm.unique_values()
-                            ])
+                    # NOTE: this also does highlight
+                    loadstrs.extend(self._build_loadstrs_ft(
+                        prefix
+                        self.both,
+                        self.hl_bmap,
+                        layer_code
+                    ))
 
             return loadstrs
 
@@ -5775,7 +5819,7 @@ init -2 python:
 
         def __build_loadstrs_ft(self,
                     loadstrs,
-                    tag_str,
+                    prefix,
                     layer_code,
                     tag_hl_map
         ):
@@ -5783,10 +5827,9 @@ init -2 python:
             Generates load strings From Tag
 
             IN:
-                tag_str - already generated tag string to use
-                    (list of strings)
+                prefix - prefix to apply
                 layer_code - layer code to generate fnames for
-                tag_hl_map - MASHighlightMap object assocaited with tag_str
+                tag_hl_map - MASHighlightMap object assocaited with prefix
 
             OUT:
                 loadstrs - list to add loadstrs to
@@ -5795,22 +5838,12 @@ init -2 python:
             new_img = list(tag_str)
             loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
 
-            # TODO: move this hl check to MASPoseArms as its in here and
-            #   MASPoseArmsBoth
             # now check for hlite
-            if tag_hl_map is not None:
-                
-                # grab filter
-                mfm = tag_hl_map.get(layer_code)
-                if mfm is not None:
-                    # prepare highlight name
-                    hl_img = new_img + [store.mas_sprites.HLITE_SUFFIX]
-
-                    # loop over mfm values
-                    loadstrs.extend([
-                        hl_img + [hlc, store.mas_sprites.FILE_EXT],
-                        for hlc in mfm.unique_values()
-                    ])
+            loadstrs.extend(self._build_loadstrs_hlfm(
+                new_img,
+                tag_hl_map,
+                layer_code
+            ))
 
             return loadstrs
 
@@ -5949,14 +5982,16 @@ init -2 python:
             )
             return (tag, tag_map, tag_hl_map)
 
-        def build_loadstrs(self):
+        def build_loadstrs(self, prefix):
             """
             See MASPoseArms.build_loadstrs
             """
             if not self.left and not self.right:
                 return []
 
-            fnames = []
+            loadstrs = []
+            lprefix = prefix + [store.mas_sprites.PREFIX_ARMS_LEFT]
+            rprefix = prefix + [store.mas_sprites.PREFIX_ARMS_RIGHT]
             
             # now add arms based on layer codes
             for layer_code in self._MPA_KEYS:
@@ -5964,24 +5999,22 @@ init -2 python:
 
                 # NOTE: ignore fitlers because we gen all at once
                 if self.__has_left(layer_code):
-                    ldata = self.__get_left(layer_code, None)
-                    self.__build_fnames(
-                        fnames,
-                        ldata[0][0],
-                        layer_code,
-                        self.hl_lmap
-                    )
+                    loadstrs.extend(self._build_loadstrs_ft(
+                        lprefix,
+                        self.left,
+                        self.hl_lmap,
+                        layer_code
+                    ))
 
                 if self.__has_right(layer_code):
-                    rdata = self.__get_right(layer_code, None)
-                    self.__build_fnames(
-                        fanmes,
-                        rdata[0][0],
-                        layer_code,
-                        self.hl_rmap
-                    )
+                    loadstrs.extend(self._build_loadstrs_ft(
+                        rprefix,
+                        self.right,
+                        self.hl_rmap,
+                        layer_code
+                    ))
 
-            return fnames
+            return loadstrs
 
         def get(self, layer_code, flt):
             """
@@ -7251,6 +7284,20 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 ex_props=None,
+                # TODO: change this to just be HighligtMap.
+                #   NOTE: this is because we dont actually need this to be
+                #   separated by poses, it turns out we really need it to be
+                #   differientiated by the potential types
+                #   For clothes, primary sort is the type (lean or upright)
+                #       then the layer code (MHM in MHM)
+                #   For hair, primary sort is the type (lean or upright)
+                #       then the layer code (MHM in MHM)
+                #   NOTE: hair doesnt actually specificy an upright type, so
+                #       its actually different than clothes in that regard
+                #       this may change in future, but doing MHM in MHM
+                #       will keep us ready for that.
+                #   NOTE: also probably just set hl map to None here and
+                #       and let extending classes manage it entirely. 
                 full_hl_data=None,
             ):
             """
@@ -8292,6 +8339,7 @@ init -2 python:
                 exit_pp=None,
                 split=None,
                 ex_props=None,
+                # TODO: chagne hlmap again
                 hl_data=None
             ):
             """
@@ -8486,6 +8534,7 @@ init -2 python:
                 exit_pp=None,
                 ex_props=None,
                 pose_arms=None,
+                # TODO: change hl map again
                 hl_data=None
             ):
             """
@@ -8557,14 +8606,59 @@ init -2 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
+        def __build_loadstrs_hl(self, prefix, layer_code):
+            """
+            Builds loadstrs for body highlights
+
+            IN:
+                prefix - prefix to apply
+                layer_code - layer code to use
+
+            RETURNS: list of lists of strings representing image paths
+            """
+
+
         def build_loadstrs(self, prefix):
             """
             See MASSpriteBase.build_loadstrs
             """
             loadstrs = []
 
-            # start with body
+            # prefix + folder name
+            c_prefix = prefix + [
+                store.mas_sprites.C_MAIN,
+                self.img_sit,
+                "/"
+            ]
 
+            # start with body
+            # NOTE: if we have different body types, we will need to change
+            #   this
+            # TODO: hlite
+            loadstrs.append(c_prefix + [
+                store.mas_sprites.NEW_BODY_STR,
+                store.mas_sprites.ART_DLM,
+                "0",
+                store.mas_sprites.FILE_EXT
+            ])
+            loadstrs.append(c_prefix + [
+                store.mas_sprites.NEW_BODY_STR,
+                store.mas_sprites.ART_DLM,
+                "1",
+                store.mas_sprites.FILE_EXT
+            ])
+
+            # leaning check
+            for lpose in store.mas_sprites.L_POSES:
+                if self.pose_map.is_fallback():
+                    leanpose = self.pose_map.get(lpose, None)
+                    if leanpose is not None:
+                       leantype, posetype = leanpose.split("|")
+
+
+                
+                elif self.pose_map.get(lpose, False):
+                    pass
             # loop over poses
             #for pose in store.mas_sprites.ALL_POSES:
                 
