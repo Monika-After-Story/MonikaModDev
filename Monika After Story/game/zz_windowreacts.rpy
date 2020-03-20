@@ -733,7 +733,7 @@ label mas_wrs_deviantart:
         m_name,
         [
             "This is known as one of the most famous art sites, there's so much talent in here!",
-            "This makes me want to learn how to draw!",
+            "I'd love to learn how to draw someday...",
         ],
         'Window Reactions'
     )
