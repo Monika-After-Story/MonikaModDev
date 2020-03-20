@@ -702,19 +702,21 @@ init 5 python:
     )
 
 label mas_wrs_mal:
-    $ wrs_success = display_notif(
-        m_name,
-        [
-            "So you like anime and manga, [player]?",
-            "Maybe we could watch anime together someday [player]~",
-        ],
-        'Window Reactions'
-    )
+    python:
+        myanimelist_quips = [
+                "Maybe we could watch anime together someday, [player]~",
+        ]
 
-    #Unlock again if we failed
-    if not wrs_success:
-        $ mas_unlockFailedWRS('mas_wrs_mal')
-    return
+        if persistent._mas_pm_watch_mangime is None:
+            myanimelist_quips.append("So you like anime and manga, [player]?")
+
+        wrs_success = display_notif(m_name, myanimelist_quips, 'Window Reactions')
+
+        #Unlock again if we failed
+        if not wrs_success:
+            mas_unlockFailedWRS('mas_wrs_mal')
+
+        return
 
 init 5 python:
     addEvent(
