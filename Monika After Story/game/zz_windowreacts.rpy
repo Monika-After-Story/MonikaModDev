@@ -760,7 +760,7 @@ label mas_wrs_netflix:
         m_name,
         [
             "I'd love to watch a romance movie with you [player]!",
-            "Are we going to watch something today?",
+            "What are we watching today, [player]?",
             "What are you going to watch [player]?"
         ],
         'Window Reactions'
