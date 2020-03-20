@@ -1096,6 +1096,11 @@ init -5 python in mas_sprites:
         SP_CLOTHES: CLOTH_MAP
     }
 
+    # available lean types
+    LEAN_TYPES = [
+        "def"
+    ]
+
     # Numerical pose map
     NUM_POSE = {
         1: "steepling",
@@ -1144,8 +1149,30 @@ init -5 python in mas_sprites:
         "ribbon": "monika_ribbon_select"
     }
 
+    def _genLK(keys):
+        """
+        generates a tuple of keys + leanables using the given kens
+
+        Leanable Keys are keys prefixed with a lean type like: <lean>|<key>
+
+        IN:
+            keys - iterable of keys to use
+
+        RETURNS: tuple of keys + leanable keys
+        """
+        key_list = list(keys)
+        for lean in LEAN_TYPES:
+            key_list.extend([lean + "|" + key for key in keys])
+
+        return tuple(key_list)
+
+
     def _verify_uprightpose(val):
         return val in POSES
+
+
+    def _verify_lean(val):
+        return val in LEAN_TYPES:
 
 
     def _verify_leaningpose(val):
@@ -3898,9 +3925,6 @@ init -2 python:
             BSE_ACS,
             ASE_ACS,
         )
-
-        # state tuple size
-        STATE_SIZE = 11
 
         def __init__(self):
             """
@@ -7270,8 +7294,8 @@ init -2 python:
                 NOTE: this is called before the item is removed from MASMonika
             is_custom - True if this is a custom object. False if not.
                 NOTE: this must be set AFTER object creation
-            hl_map - MASPoseMap object that contains MASHighlightMap objects
-                None means no highlights for this sprite
+            hl_map - MASHighlightMap. Actual implementation may vary by extended
+                classes
         """
         import store.mas_sprites_json as msj
 
@@ -7283,7 +7307,7 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props=None,
+                ex_props=None
                 # TODO: change this to just be HighligtMap.
                 #   NOTE: this is because we dont actually need this to be
                 #   separated by poses, it turns out we really need it to be
@@ -7298,7 +7322,7 @@ init -2 python:
                 #       will keep us ready for that.
                 #   NOTE: also probably just set hl map to None here and
                 #       and let extending classes manage it entirely. 
-                full_hl_data=None,
+                full_hl_data=None
             ):
             """
             MASSpriteBase constructor
@@ -7325,17 +7349,16 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                full_hl_data - mpm-based highlight map data: complex structure
-                    of the following format: Tuple:
-                    [0] - keys to use for MASHighlightMap objject
-                    [1] - MASPoseMap that contains tuples: None means no
-                        highlight for a pose.
-                        [0] - default highlight to use. Pass in None to not
-                            set a default (MASFilterMap object)
-                        [1] - highlight mapping to use. Format:
-                            key: varies by extended class
-                            value: MASFilterMap object, or None if no highlight
-                        if None, then no highlights at all.
+                hl_data - tuple of the following format:
+                    [0] - keys to use for MASHighlightMap
+                    [1] - default value for MASHighlightMap
+                        if None, no default highlights
+                    [2] - mapping dict of the following format:
+                        key: key in [0]
+                        value: value to use for key
+                            if None, no highlight for this key
+                        if None, no mapped highlights
+                    if None, no highlights at all
                     (Default: None)
             """
             self.__sp_type = -1
@@ -7358,11 +7381,7 @@ init -2 python:
                 self.ex_props = ex_props
 
             # setup highlight map
-            if full_hl_data is None:
-                self.hl_map = None
-            else:
-                self.hl_map = full_hl_data[1]
-                MASHighlightMap.convert_mpm(full_hl_data[0], self.hl_map)
+            self.__setup_hl_map(full_hl_data)
 
         def __eq__(self, other):
             """
@@ -7381,6 +7400,30 @@ init -2 python:
             if result is NotImplemented:
                 return result
             return not result
+
+        def __setup_hl_map(self, hl_data):
+            """
+            Sets up the highlight map
+
+            IN:
+                hl_data - See constructor for description
+            """
+            if hl_data is None:
+                self.hl_map = None
+                return
+
+            # no highlght if filled with Nones
+            hl_keys, hl_def, hl_mapping = hl_data
+            if hl_def is None and hl_mapping is None:
+                self.hl_map = None
+                return
+
+            # otherwise we can generate this map
+            self.hl_map = MASHighlightMap.create_from_mapping(
+                hl_keys,
+                hl_def,
+                hl_mapping
+            )
 
         def addprop(self, prop):
             """
@@ -7430,28 +7473,21 @@ init -2 python:
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
 
-        def gethlc(self, leanpose, flt, hl_key, defval=None):
+        def gethlc(self, *args, defval=None):
             """
             Gets highlight code
 
+            NOTE: actual args and implementation should be handled by the
+                extended classes
+
             IN:
-                leanpoes - leanpose to get highlight for
-                flt - filter to get highlight for
-                hl_key - highlight map key to get highlight for
-                defval - default value to return
+                *args - whatever args an extended class wants
+                defval - the default value to return
                     (Default: None)
 
-            RETURNS: highlight code, or None if no highlight
+            RETURNS: highlight code, or defval if no highlight
             """
-            if self.hl_map is None or hl_key is None:
-                return defval
-
-            return MASHighlightMap.o_fltget(
-                self.hl_map.get(leanpose, None),
-                hl_key,
-                flt,
-                defval
-            )
+            raise NotImplementedError
 
         def getprop(self, prop, defval=None):
             """
@@ -7488,6 +7524,18 @@ init -2 python:
             RETURNS: True if this sprite object has the ex_prop, False if not
             """
             return prop in self.ex_props
+
+        def hl_keys(self):
+            """
+            Gets keys used for the MASHighlightMap
+
+            RETURNS: keys used in the primary level of this MASHighlightMap.
+            An empty list is returned if no hl map or no keys
+            """
+            if self.hl_map is None:
+                return []
+
+            return self.hl_map.keys()
 
         def rmprop(self, prop):
             """
@@ -7564,17 +7612,16 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                full_hl_data - mpm-based highlight map data: complex structure
-                    of the following format: Tuple:
-                    [0] - keys to use for MASHighlightMap objject
-                    [1] - MASPoseMap that contains tuples: None means no
-                        highlight for a pose.
-                        [0] - default highlight to use. Pass in None to not
-                            set a default (MASFilterMap object)
-                        [1] - highlight mapping to use. Format:
-                            key: varies by extended class
-                            value: MASFilterMap object, or None if no highlight
-                        if None, then no highlights at all.
+                hl_data - tuple of the following format:
+                    [0] - keys to use for MASHighlightMap
+                    [1] - default value for MASHighlightMap
+                        if None, no default highlights
+                    [2] - mapping dict of the following format:
+                        key: key in [0]
+                        value: value to use for key
+                            if None, no highlight for this key
+                        if None, no mapped highlights
+                    if None, no highlights at all
                     (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
@@ -7647,7 +7694,7 @@ init -2 python:
                 "this black bow"
             keep_on_desk - Set to True to keep the ACS on the desk when monika
                 leaves, False if not
-            hl_map - MASHighlightMap object. Keys are defined by the given
+            hl_map - MASHighlightMap object where keys are defined by the given
                 posemap. Value determined by extending classes.
 
         SEE MASSpriteBase for inherited properties
@@ -7682,7 +7729,7 @@ init -2 python:
                 ex_props=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                ahl_data=None
+                hl_data=None
             ):
             """
             MASAccessory constructor
@@ -7732,11 +7779,15 @@ init -2 python:
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
                     (Default: False)
-                ahl_data - dict-based highlight map data:
-                    key: string. should match values used in pose_map
-                    value: highlight data. Determined by extended classes. 
-                        if None, then no highlight for the key
-                    if None, then no highlight at all
+                hl_data - tuple of the following format:
+                    [0] - default value for MASHighlightMap
+                        if None, no default highlight
+                    [1] - dict-based highlight map data:
+                        key: string. should match values used in pose_map
+                        value: highlight data. Determined by extended classes. 
+                            if None, then no highlight for the key
+                        if None, then no mapped highlights
+                    if None, no highlights at all
                     (Default: None)
             """
             super(MASAccessoryBase, self).__init__(
@@ -7747,7 +7798,8 @@ init -2 python:
                 stay_on_start,
                 entry_pp,
                 exit_pp,
-                ex_props
+                ex_props,
+                MASAccessoryBase._prepare_hl_data(hl_data, pose_map)
             )
             self.aso_type = aso_type
             self.__rec_layer = rec_layer
@@ -7763,13 +7815,29 @@ init -2 python:
                 self.dlg_desc = None
                 self.dlg_plur = None
 
-            # clean highlights and create MASHighlightMap
-            if ahl_data is not None:
-                self.hl_map = MASHighlightMap.create_from_mapping(
-                    self.pose_map.unique_values(),
-                    None,
-                    ahl_data
-                )
+        @staticmethod
+        def _prepare_hl_data(hl_data, pose_map):
+            """
+            Generates hl-ready data from ahldata
+
+            IN:
+                hl_data - ahl data. See constructor for info
+                pose_map - pose map. see constructor for info
+
+            RETURNS: hl data to pass into MASSpriteBase
+            """
+            # NOTE: if pose map is None, this will crash in MASSpriteBase
+            if hl_data is None or pose_map is None:
+                return None
+
+            # splitup ahl data
+            hl_def, hl_mapping = hl_data
+
+            # pose map values are the keys
+            hl_keys = pose_map.unique_values()
+
+            # now generate the hl data
+            return (hl_keys, hl_def, hl_mapping)
 
         @staticmethod
         def get_priority(acs):
@@ -7799,22 +7867,6 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
-
-        def gethlc(self, leanpose, flt, hl_key, defval=None):
-            """
-            Gets highlight code.
-
-            NOTE: must be implemented by extended classes
-            """
-            raise NotImplementedError
-
-        def hl_keys(self):
-            """
-            Returns keys used for MASHighlightMap.
-
-            RETURNS: keys used for all MASHighlightMaps for MASAccessories.
-            """
-            return []
 
         def opt_gethlc(self, poseid, flt, arm_split, defval=None):
             """
@@ -7850,7 +7902,7 @@ init -2 python:
                 ex_props=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                ahl_data=None
+                hl_data=None
         ):
             """
             Constructor.
@@ -7899,10 +7951,14 @@ init -2 python:
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
                     (Default: False)
-                ahl_data - ACS highlight data. Format:
-                    key: values used for pose_map
-                    value: MASFilterMap to associate with that pose id
-                        None means no highlight for the pose code
+                hl_data - ACS highlight data. Format: tuple:
+                    [0] - default MASFilterMap highlight to use
+                        if None, then no default highlight
+                    [1] - dict of the following format:
+                        key: values used for pose_map
+                        value: MASFilterMap to associate with that pose id
+                            None means no highlight for the pose code
+                        if None, then no mapped highlights
                     if None, then no highlights at all
                     (Default: None)
             """
@@ -7922,7 +7978,7 @@ init -2 python:
                 ex_props,
                 dlg_data,
                 keep_on_desk,
-                ahl_data
+                hl_data
             )
 
         def __build_loadstrs_hl(self, prefix, poseid):
@@ -8064,7 +8120,7 @@ init -2 python:
                 arm_split=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                ahl_data=None
+                hl_data=None
             ):
             """
             MASSplitAccessory constructor
@@ -8116,7 +8172,7 @@ init -2 python:
                 keep_on_desk - determines if ACS should be shown if monika 
                     leaves
                     (Default: False)
-                ahl_data - highlight data. Format:
+                hl_data - highlight data. Format: 
                     key: values used for pose_map
                     value: tuple:
                         [0] - default highlight ot use. pass in None to not
@@ -8129,17 +8185,6 @@ init -2 python:
                     if None, then no highlights at all
                     (Default: None)
             """
-            # prepare ahl data
-            if ahl_data is not None:
-                for key in ahl_data:
-                    data = ahl_data[key]
-                    if data is not None:
-                        ahl_data[key] = MASHighlightMap.create_from_mapping(
-                            self.__MHM_KEYS,
-                            data[0],
-                            data[1]
-                        )
-
             super(MASSplitAccessory, self).__init__(
                 self.ASO_SPLIT,
                 name,
@@ -8156,7 +8201,7 @@ init -2 python:
                 ex_props,
                 dlg_data,
                 keep_on_desk,
-                ahl_data
+                MASSplitAccessory._prepare_hl_data(hl_data)
             )
 
             self.arm_split = arm_split
@@ -8195,6 +8240,32 @@ init -2 python:
                 ]
                 for hlc in mfm.unique_values()
             ]
+
+        @classmethod
+        def _prepare_hl_data(cls, hl_data):
+            """
+            Generates hl-ready data from ahl data for MASAccessoryBase
+                processing
+
+            IN:
+                hl_data - ahl data. See constructor for info
+
+            RETURNS: hl_data to pass into MASAccessoryBase
+            """
+            if hl_data is None:
+                return None
+
+            # for each data element, we need to generate an MHM
+            for key in hl_data:
+                data = hl_data[key]
+                if data is not None:
+                    hl_data[key] = MASHighlightMap.create_from_mapping(
+                        cls.__MHM_KEYS,
+                        data[0],
+                        data[1]
+                    )
+
+            return (None, hl_data)
 
         def build_loadstrs(self, prefix):
             """
@@ -8318,7 +8389,16 @@ init -2 python:
             split - MASPoseMap object that determins if a pose has split hair
                 or not.
                 if a pose has True, it is split. False or None means no split.
-            hl_map - uses MASHighlightMap with "front"/"back" as keys
+            hl_map - MASHighlightMap with the following format:
+                keys:
+                    "front" - front hair
+                    "back" - back hair
+                    "<lean>|front" - front hair for a leaning type
+                        NOTE: can be multiple of this format
+                    "<lean>|back" - back hair for a leaning type
+                        NOTE: can be multiple of this format
+                values:
+                    MASFilterMap objects
 
         SEE MASSpriteFallbackBase for inherited properties
 
@@ -8326,7 +8406,7 @@ init -2 python:
             Use an empty string to
         """
 
-        __MHM_KEYS = ("front", "back")
+        __MHM_KEYS = store.mas_sprites._genLK(("front", "back"))
 
         def __init__(self,
                 name,
@@ -8339,7 +8419,6 @@ init -2 python:
                 exit_pp=None,
                 split=None,
                 ex_props=None,
-                # TODO: chagne hlmap again
                 hl_data=None
             ):
             """
@@ -8371,12 +8450,13 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                hl_data -  MASPoseMap that contains tuples: None means no
-                    highlight for a pose.
-                    [0] - default highlight to use. Pass in None to not
-                        set a default (MASFilterMap object)
-                    [1] - highlight mapping to use. Format:
-                        key: "front"/"bacl"
+                hl_data - tuple of the following format:
+                    [0] - default MASFilterMap to use.
+                        NOTE: it almost certain that you do NOT want to set
+                            this
+                        If None, no default highlight
+                    [1] - mapping dict. Format:
+                        key: see hl_map property
                         value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
@@ -8391,7 +8471,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                (self.__MHM_KEYS, hl_data)
+                MASHair._prepare_hl_data(hl_data)
             )
             self.__sp_type = store.mas_sprites_json.SP_HAIR
 
@@ -8400,18 +8480,19 @@ init -2 python:
 
             self.split = split
 
-        def __build_loadstrs_hl(self, prefix, leanpose, split_layer):
+        def __build_loadstrs_hl(self, prefix, lean, split_layer):
             """
             Builds highlight load strs for a split layer
 
             IN:
                 prefix - prefix to apply to the load strings
                     should be a list of strings
-                leanpose - leanpose to get highlight for
+                lean - lean to get highlight for
                 split_layer - split layre code (MHM KEY)
                 
             RETURNS: list of lists of strings
             """
+            # TODO: left off here
             if self.hl_map is None:
                 return []
 
@@ -8433,6 +8514,25 @@ init -2 python:
                 ]
                 for hlc in mfm.unique_values()
             ]
+
+        @classmethod
+        def _prepare_hl_data(cls, hl_data):
+            """
+            Generates hl-ready data for MASSpriteBase
+
+            IN:
+                hl_data - hl data. See Constructor for info
+
+            RETURNS: hl_data to pass into MASSpriteBase
+            """
+            if hl_data is None:
+                return None
+
+            hl_def, hl_mapping = hl_data
+            if hl_def is None and hl_mapping is None:
+                return None
+
+            return (cls.__MHM_KEYS, hl_def, hl_mapping)
 
         def build_loadstrs(self, prefix):
             """
