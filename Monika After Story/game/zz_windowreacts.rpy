@@ -716,7 +716,7 @@ label mas_wrs_mal:
         if not wrs_success:
             mas_unlockFailedWRS('mas_wrs_mal')
 
-        return
+    return
 
 init 5 python:
     addEvent(
