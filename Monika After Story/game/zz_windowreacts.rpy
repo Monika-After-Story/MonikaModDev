@@ -706,7 +706,7 @@ label mas_wrs_mal:
         m_name,
         [
             "So you like anime and manga, [player]?",
-            "Let's watch anime together someday [player]~",
+            "Maybe we could watch anime together someday [player]~",
         ],
         'Window Reactions'
     )
