@@ -732,7 +732,7 @@ label mas_wrs_deviantart:
     $ wrs_success = display_notif(
         m_name,
         [
-            "This is known as one of the most famous art sites. So much talent in here!",
+            "This is known as one of the most famous art sites, there's so much talent in here!",
             "This makes me want to learn how to draw!",
         ],
         'Window Reactions'
