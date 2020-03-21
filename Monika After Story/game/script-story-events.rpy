@@ -1705,8 +1705,7 @@ init 5 python:
                 "or mas_isSpecialDay() "
                 "and not persistent._mas_filereacts_historic"
             ),
-            action=EV_ACT_QUEUE,
-            random=not persistent._mas_filereacts_historic
+            action=EV_ACT_QUEUE
         )
     )
 
@@ -1745,9 +1744,7 @@ P.S: Don't tell her about me!
     m 1ekc "Since it's for you, I haven't read it...{w=0.5}{nw}"
     extend 1eua "but I just wanted to let you know since it might be important."
 
-
     $ mas_stripEVL("mas_gift_giving_instructs", True)
-    $ mas_hideEVL("mas_gift_giving_instructs", "EVE", derandom=True)
     return "no_unlock"
 
 init 5 python:
