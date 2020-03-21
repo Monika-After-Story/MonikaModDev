@@ -645,43 +645,6 @@ init -4 python in mas_sprites:
         return store.im.MatrixColor(img_base, FILTERS[flt])
 
 
-    def _gen_im_disp(rk_list):
-        """DEPRECATED
-        Generates a LiveComposite (which is just a Fixed) displayable given a 
-        list of render keys. This uses the positions defined by
-        zoom. (adjustx, adjusty)
-
-        IN:
-            rk_list - list of render keys we generated
-
-        RETURNS: displayable to use
-        """
-        # TODO: we could even cache this. See mas_drawmonika_im
-
-        # fiirst setup the Fixed disp
-        props = {}
-        props.setdefault("style", "image_placement")
-        disp = renpy.display.layout.Fixed(
-            xmaximum=LOC_W,
-            ymaximum=LOC_H,
-            xminimum=LOC_W,
-            yminimum=LOC_H,
-            **props
-        )
-
-        # now add the image manips
-        for img_man in rk_list:
-            disp.add(renpy.display.layout.Position(
-                img_man,
-                xpos=adjust_x,
-                xanchor=0,
-                ypos=adjust_y,
-                yanchor=0
-            ))
-
-        return disp
-
-
     def _hlify(key, cid):
         """
         Highlightifies the given key.
@@ -1058,7 +1021,7 @@ init -4 python in mas_sprites:
         rk_list.append((img_key, CID_BODY, store.Image(img_str), None))
 
 
-    def _rk_body_nh(rk_list, clothing, flt, bcode, leanpose):
+    def _rk_body_nh(rk_list, clothing, flt, bcode):
         """
         Adds body render keys, no hair
         (equiv of _ms_torso_nh)
@@ -1067,7 +1030,6 @@ init -4 python in mas_sprites:
             clothing - MASClothes object
             flt - filter to use
             bcode - base code to use
-            leanpose - leanpose to use
 
         OUT:
             rk_list - list to add render keys to
@@ -1094,11 +1056,11 @@ init -4 python in mas_sprites:
             img_key,
             CID_BODY,
             store.Image(img_str),
-            _bhli(img_list, clothing.gethlc(leanpose, flt, bcode)),
+            _bhli(img_list, clothing.gethlc(bcode, None, flt)),
         ))
 
 
-    def _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode, leanpose):
+    def _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode):
         """
         Adds body leaning render keys, no hair
         (equiv of _ms_torsoleaning_nh)
@@ -1108,7 +1070,6 @@ init -4 python in mas_sprites:
             lean - type of lean
             flt - filter to use
             bcode - base code to use
-            leanpose - leanpose to use
 
         OUT:
             rk_list - list to add render keys to
@@ -1138,7 +1099,7 @@ init -4 python in mas_sprites:
             img_key,
             CID_BODY,
             store.Image(img_str),
-            _bhli(img_list, clothing.gethlc(leanpose, flt, bcode))
+            _bhli(img_list, clothing.gethlc(bcode, lean, flt))
         ))
 
 
@@ -1173,7 +1134,7 @@ init -4 python in mas_sprites:
             _rk_accessory_list(rk_list, acs_bse_list, flt, leanpose, bcode)
 
             # body-0
-            _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode, leanpose)
+            _rk_body_lean_nh(rk_list, clothing, lean, flt, bcode)
 
         else:
             # base-0
@@ -1183,7 +1144,7 @@ init -4 python in mas_sprites:
             _rk_accessory_list(rk_list, acs_bse_list, flt, leanpose, bcode)
 
             # body-0
-            _rk_body_nh(rk_list, clothing, flt, bcode, leanpose)
+            _rk_body_nh(rk_list, clothing, flt, bcode)
 
 
     def _rk_chair(rk_list, mtc, flt):
@@ -1419,7 +1380,7 @@ init -4 python in mas_sprites:
         cache_face[day_key] = None
 
    
-    def _rk_hair(rk_list, hair, flt, hair_key, leanpose, lean):
+    def _rk_hair(rk_list, hair, flt, hair_key, lean):
         """
         Adds hair render key
 
@@ -1427,7 +1388,6 @@ init -4 python in mas_sprites:
             hair - MASHair object
             flt - filter to use
             hair_key - hair key to use (front/back)
-            leanpose - leanpose to use
             lean - tyoe of lean
 
         OUT:
@@ -1471,7 +1431,7 @@ init -4 python in mas_sprites:
             img_key,
             CID_HAIR,
             store.Image(img_str),
-            _bhli(img_list, hair.gethlc(leanpose, flt, hair_key)),
+            _bhli(img_list, hair.gethlc(hair_key, lean, flt)),
         ))
 
 
@@ -1663,7 +1623,7 @@ init -4 python in mas_sprites:
         _rk_accessory_list(rk_list, acs_pre_list, flt, leanpose)
 
         # 2. back hair
-        _rk_hair(rk_list, hair, flt, BHAIR, leanpose, lean)
+        _rk_hair(rk_list, hair, flt, BHAIR, lean)
 
         # 3. bbh-acs
         _rk_accessory_list(rk_list, acs_bbh_list, flt, leanpose)
@@ -1750,7 +1710,7 @@ init -4 python in mas_sprites:
         _rk_face_pre(rk_list, flt, fpfx, lean, blush)
 
         # 24. front-hair
-        _rk_hair(rk_list, hair, flt, FHAIR, leanpose, lean)
+        _rk_hair(rk_list, hair, flt, FHAIR, lean)
 
         # 25. afh-acs
         _rk_accessory_list(rk_list, acs_afh_list, flt, leanpose)

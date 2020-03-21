@@ -4094,11 +4094,7 @@ init -2 python:
                 leanpose,
                 None
             )
-            arms_pose = self.clothes.pose_arms
-            if arms_pose is None:
-                arms_pose = base_pose
-            else:
-                arms_pose = arms_pose.get(leanpose, base_pose)
+            arms_pose = self.clothes.determine_arms(leanpose, base_pose)
 
             return (lean, leanpose, arms, hair, base_pose, arms_pose)
 
@@ -7675,6 +7671,29 @@ init -2 python:
             # otherwise check the pose
             return (self.pose_map.map.get(pose, "steepling"), None)
 
+        def get_leanpose(self, leanpose, defval=None):
+            """
+            Gets actual leanpose based on posemaps + fallback settings
+
+            IN:
+                leanpose - leanpose we are trying to get actual leanpose for
+                defval - default value to return if no leanpose
+                    (Default: None)
+                    
+
+            RETURNS: actual leanpose, or defval if not found
+            """
+            # cehck fallback
+            if self.pose_map.is_fallback():
+                return self.pose_map.get(leanpose, defval)
+
+            # check enabled
+            if self.pose_map.get(leanpose, False):
+                return leanpose
+
+            # otherwise disabled so return defval
+            return defval
+
 
     # instead of clothes, these are accessories
     class MASAccessoryBase(MASSpriteBase):
@@ -8480,30 +8499,23 @@ init -2 python:
 
             self.split = split
 
-        def __build_loadstrs_hl(self, prefix, lean, split_layer):
+        def __build_loadstrs_hl(self, prefix, hl_key):
             """
             Builds highlight load strs for a split layer
 
             IN:
                 prefix - prefix to apply to the load strings
                     should be a list of strings
-                lean - lean to get highlight for
-                split_layer - split layre code (MHM KEY)
+                hl_key - key of the hl to use
                 
             RETURNS: list of lists of strings
             """
-            # TODO: left off here
             if self.hl_map is None:
                 return []
 
-            # get hlmap
-            mhm = self.hl_map.get(leanpose, None)
+            # get filter map
+            mfm = self.hl_map.get(hl_key, None)
             if mhm is None:
-                return []
-
-            # then filter map
-            mfm = mhm.get(split_layer)
-            if mfm is None:
                 return []
 
             return [
@@ -8545,25 +8557,34 @@ init -2 python:
             all_split = self.split is None
 
             # loop over all poses
-            for pose in store.mas_sprites.ALL_POSES:
+            for leanpose in store.mas_sprites.ALL_POSES:
 
-                # only do splits
-                if all_split or self.split.get(pose, False):
+                # determine actual pose
+                actual_pose = self.get_leanpose(leanpose)
 
+                # check for valid pose
+                # and only allow splits
+                if (
+                        actual_pose
+                        and (all_split or self.split.get(actual_pose, False))
+                ):
                     # determine lean
-                    islean = "|" in pose
+                    islean = "|" in leanpose
 
                     # generate img string
                     new_img = list(prefix)
 
                     # determine starting prefix
                     if islean:
+                        lean = leanpose.partition("|")[0]
+                        hl_key = lean + "|{0}"
                         new_img.extend((
                             store.mas_sprites.PREFIX_HAIR_LEAN,
-                            pose.partition("|")[0],
+                            lean,
                             store.mas_sprites.ART_DLM
                         ))
                     else:
+                        hl_key = "{0}"
                         new_img.append(store.mas_sprites.PREFIX_HAIR)
 
                     # add the tag
@@ -8580,16 +8601,42 @@ init -2 python:
                     # highlights
                     loadstrs.extend(self.__build_loadstrs_hl(
                         back_img,
-                        pose,
-                        store.mas_sprites.BHAIR
+                        hl_key.format(store.mas_sprites.BHAIR)
                     ))
                     loadstrs.extend(self.__build_loadstrs_hl(
                         front_img,
-                        pose,
-                        store.mas_sprites.FHAIR
+                        hl_key.format(store.mas_sprites.FHAIR)
                     ))
 
             return loadstrs
+
+        def gethlc(self, hair_key, lean, flt, defval=None):
+            """
+            Gets highlight code
+
+            IN:
+                hair_key - the hair key to get hlc for (front/back)
+                lean - type of lean to get hlc for
+                flt - filter to get highlight for
+                defval - the default value to return
+                    (Default: None)
+
+            RETURNS: highlight code, or defval if no highlight
+            """
+            if self.hl_map is None:
+                return defval
+
+            if lean:
+                hl_key = "|".join((lean, hair_key))
+            else:
+                hl_key = hair_key
+
+            return MASHighlightMap.o_fltget(
+                self.hl_map,
+                hl_key,
+                flt,
+                defval
+            )
 
         def hl_keys(self):
             """
@@ -8614,13 +8661,22 @@ init -2 python:
                 are not found.
             pose_arms - MASPoseMap object representing the arm layers used
                 for poses
-            hl_map - uses MASHighlightMap with "0"/"1" as keys
+            hl_map - MASHighlightMap with the following format:
+                keys:
+                    "0" - body-0 layer
+                    "1" - body-1 layer
+                    "<lean>|0" - body-0 layer for a leaning type
+                        NOTE: can be multiple of this format
+                    "<lean>|1" - body-1 layer for a leaning type
+                        NOTE: can be multiple of this format
+                values:
+                    MASFilterMap objects
 
         SEE MASSpriteFallbackBase for inherited properties
         """
         import store.mas_sprites as mas_sprites
 
-        __MHM_KEYS = (0, 1)
+        __MHM_KEYS = store.mas_sprites._genLK(("0", "1"))
 
         def __init__(self,
                 name,
@@ -8634,7 +8690,6 @@ init -2 python:
                 exit_pp=None,
                 ex_props=None,
                 pose_arms=None,
-                # TODO: change hl map again
                 hl_data=None
             ):
             """
@@ -8673,12 +8728,13 @@ init -2 python:
                     for poses. If None is passed, we assume use the base
                     layers as a guide
                     (Default: None)
-                hl_data -  MASPoseMap that contains tuples: None means no
-                    highlight for a pose.
-                    [0] - default highlight to use. Pass in None to not
-                        set a default (MASFilterMap object)
-                    [1] - highlight mapping to use. Format:
-                        key: see hl_map property
+                hl_data - tuple of the following format:
+                    [0] - default MASFilterMap to use.
+                        NOTE: it almost certain that you do NOT want to set
+                            this
+                        If None, no default highlight
+                    [1] - mapping dict. Format:
+                        key: see hl_map proprety
                         value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
@@ -8693,7 +8749,7 @@ init -2 python:
                 entry_pp,
                 exit_pp,
                 ex_props,
-                (self.__MHM_KEYS, hl_data)
+                MASClothes._prepare_hl_data(hl_data)
             )
             self.__sp_type = store.mas_sprites_json.SP_CLOTHES
 
@@ -8706,17 +8762,52 @@ init -2 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
-        def __build_loadstrs_hl(self, prefix, layer_code):
+        def __build_loadstrs_hl(self, prefix, hl_key):
             """
             Builds loadstrs for body highlights
 
             IN:
                 prefix - prefix to apply
-                layer_code - layer code to use
+                    should be a list of strings
+                hl_key - key of the hl to use
 
             RETURNS: list of lists of strings representing image paths
             """
+            if self.hl_map is None:
+                return []
 
+            # get filter map
+            mfm = self.hl_map.get(hl_key, None)
+            if mhm is None:
+                return []
+
+            return [
+                prefix + [
+                    store.mas_sprites.HLITE_SUFFIX,
+                    hlc,
+                    store.mas_sprites.FILE_EXT
+                ]
+                for hlc in mfm.unique_values()
+            ]
+
+        @classmethod
+        def _prepare_hl_data(cls, hl_data):
+            """
+            Generates hl-ready data for MASSpriteBase
+
+            IN:
+                hl_data - hl data. See constructor for info
+
+            RETURNS: hl_data to pass into MASSpriteBase
+            """
+            if hl_data is None:
+                return None
+
+            hl_def, hl_mapping = hl_data
+            if hl_def is None and hl_mapping is None:
+                return None
+
+            return (cls.__MHM_KEYS, hl_def, hl_mapping)
 
         def build_loadstrs(self, prefix):
             """
@@ -8732,9 +8823,9 @@ init -2 python:
             ]
 
             # start with body
+            # upright first
             # NOTE: if we have different body types, we will need to change
             #   this
-            # TODO: hlite
             loadstrs.append(c_prefix + [
                 store.mas_sprites.NEW_BODY_STR,
                 store.mas_sprites.ART_DLM,
@@ -8748,20 +8839,88 @@ init -2 python:
                 store.mas_sprites.FILE_EXT
             ])
 
-            # leaning check
+            # leaning types
             for lpose in store.mas_sprites.L_POSES:
-                if self.pose_map.is_fallback():
-                    leanpose = self.pose_map.get(lpose, None)
-                    if leanpose is not None:
-                       leantype, posetype = leanpose.split("|")
 
+                # determine actual pose
+                actual_pose = self.get_leanpose(lpose)
 
+                # only accept valid poses and leanables
+                if actual_pose and "|" in actual_pose:
+                    # get lean type from pose
+                    lean, pose = actual_pose.split("|")
+
+                    # build prefix and add file
+                    l_prefix = c_prefix + [
+                        store.mas_sprites.PREFIX_BODY_LEAN,
+                        lean,
+                    ]
+                    loadstrs.append(l_prefix + [store.mas_sprites.FILE_EXT])
+
+                    # check hl map for leans
+                    loadstrs.extend(self.__build_loadstrs_hl(
+                        l_prefix + ["0"],
+                        lean + "|0"
+                    ))
+                    loadstrs.extend(self.__build_loadstrs_hl(
+                        l_prefix + ["1"],
+                        lean + "|1"
+                    ))
+
+            # now do arms
+            for leanpose in store.mas_sprites.ALL_POSES:
                 
-                elif self.pose_map.get(lpose, False):
-                    pass
-            # loop over poses
-            #for pose in store.mas_sprites.ALL_POSES:
-                
+                # determine actual pose
+                actual_pose = self.get_leanpose(leanpose)
+
+                # only do valid poses
+                if actual_pose:
+                    
+                    # determine arms
+                    arms_pose = self.determine_arms(
+                        leanpose,
+                        store.mas_sprites.base_pose_arms_map.get(
+                            leanpose,
+                            None
+                        )
+                    )
+
+                    # check if any arms to show
+                    if arms_pose is not None:
+
+                        # determine prefix
+                        if "|" in leanpose:
+                            # is leaning
+                            arm_prefix = c_prefix + [
+                                store.mas_sprites.PREFIX_ARMS_LEAN
+                            ]
+                        else:
+                            # not leaning
+                            arm_prefix = c_prefix + [
+                                store.mas_sprites.PREFIX_ARMS
+                            ]
+
+                        # add arms + hl
+                        loadstrs.extend(arms_pose.build_loadstrs(arm_prefix))
+
+            return loadstrs
+        
+        def determine_arms(self, leanpose, defval):
+            """
+            Determines arms pose to use for a given leanpose
+
+            IN:
+                leanpose - leanpose to determine arms pose for
+                defval - default value to reutrn if could not find leanpose
+
+            RETURNS: MASPoseArms object to use for this leanpose
+            """
+            # check our arms
+            if self.pose_arms is None:
+                return defval
+            
+            # otherwise use our arms but default to defval
+            return self.pose_arms.get(leanpose, defval)
 
         def get_hair(self, hair):
             """
@@ -8774,6 +8933,34 @@ init -2 python:
                 the hair mapping to use inplace for the given hair type
             """
             return self.hair_map.get(hair, self.hair_map.get("all", hair))
+
+        def gethlc(self, bcode, lean, flt, defval=None):
+            """
+            Gets highlight code
+
+            IN:
+                bcode - base code to get hlc for (0,1)
+                lean - type of lean
+                flt - filter to get highlight for
+                defval - the default value to return
+                    (Default: None)
+
+            RETURNS: highlight code, or defval is no highlight
+            """
+            if self.hl_map is None:
+                return defval
+
+            if lean:
+                hl_key = "|".join((lean, bcode))
+            else:
+                hl_key = bcode
+
+            return MASHighlightMap.o_fltget(
+                self.hl_map,
+                hl_key,
+                flt,
+                defval
+            )
 
         def has_hair_map(self):
             """
