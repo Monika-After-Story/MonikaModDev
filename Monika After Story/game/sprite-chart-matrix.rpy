@@ -243,6 +243,19 @@ init -4 python in mas_sprites:
     # key: hash value of a MASFilterMAp
     # value: MASFilterMap for a hash value
 
+
+    def _clear_caches():
+        """
+        Clears all caches
+        """
+        for cid, cache in CACHE_TABLE.iteritems():
+            for key in cache.keys():
+                cache.pop(key)
+
+        for key in MFM_CACHE.keys():
+            MFM_CACHE.pop(key)
+
+
     class MASMonikaRender(store.MASFilterable):
         """
         custom rendering class for MASMonika. This does caching and rendering

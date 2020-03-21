@@ -957,7 +957,7 @@ init -1 python:
             p2=MASPoseArmsBoth(
                 "crossed",
                 {
-                    MASPoseArms.LAYER_MID: True
+                    MASPoseArms.LAYER_MID: True,
                 },
                 None
             ),
@@ -998,12 +998,26 @@ init -1 python:
             default=None,
             use_reg_for_l=True,
             p1=store.mas_sprites.use_bpam(1),
-            p2=MASPoseArms(both=("crossed", True, False)),
+            p2=MASPoseArmsBoth(
+                "crossed",
+                {
+                    MASPoseArms.LAYER_MID: True,
+                },
+                None
+            ),
             p3=store.mas_sprites.use_bpam(3),
             p4=store.mas_sprites.use_bpam(4),
-            p5=MASPoseArms(
-                left=("def", False, True),
-                right=("def", True, False)
+            p5=MASPoseArmsLR(
+                "def",
+                {
+                    store.MASPoseArms.LAYER_TOP: True,
+                },
+                None,
+                "def",
+                {
+                    store.MASPoseArms.LAYER_MID: True,
+                },
+                None
             ),
             p6=store.mas_sprites.use_bpam(6),
             p7=store.mas_sprites.use_bpam(7)

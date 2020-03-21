@@ -1172,7 +1172,7 @@ init -5 python in mas_sprites:
 
 
     def _verify_lean(val):
-        return val in LEAN_TYPES:
+        return val in LEAN_TYPES
 
 
     def _verify_leaningpose(val):
@@ -4086,15 +4086,15 @@ init -2 python:
             #   2. If the pose_arms property contains a MASPoseMap, and the 
             #   corresponding pose in that map is None, then we assume that
             #   the clothes does NOT have layers for this pose.
-            #   3. If a both/left/right str item in a MASPoseArms is None,
-            #   then we assume that that particular piece of a posemap does
-            #   NOT have layers for this pose.
             # select MASPoseArms for baes and outfit
             base_pose = store.mas_sprites.base_pose_arms_map.get(
                 leanpose,
                 None
             )
-            arms_pose = self.clothes.determine_arms(leanpose, base_pose)
+            if self.clothes.pose_arms is None:
+                arms_pose = base_pose
+            else:
+                arms_pose = self.clothes.pose_arms.get(leanpose, None)
 
             return (lean, leanpose, arms, hair, base_pose, arms_pose)
 
@@ -5711,7 +5711,7 @@ init -2 python:
                     # build main part of filename, with layer code
                     # NOTE: this also does highlight
                     loadstrs.extend(self._build_loadstrs_ft(
-                        prefix
+                        prefix,
                         self.both,
                         self.hl_bmap,
                         layer_code
@@ -7303,21 +7303,7 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props=None
-                # TODO: change this to just be HighligtMap.
-                #   NOTE: this is because we dont actually need this to be
-                #   separated by poses, it turns out we really need it to be
-                #   differientiated by the potential types
-                #   For clothes, primary sort is the type (lean or upright)
-                #       then the layer code (MHM in MHM)
-                #   For hair, primary sort is the type (lean or upright)
-                #       then the layer code (MHM in MHM)
-                #   NOTE: hair doesnt actually specificy an upright type, so
-                #       its actually different than clothes in that regard
-                #       this may change in future, but doing MHM in MHM
-                #       will keep us ready for that.
-                #   NOTE: also probably just set hl map to None here and
-                #       and let extending classes manage it entirely. 
+                ex_props=None,
                 full_hl_data=None
             ):
             """
@@ -7345,7 +7331,7 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: None)
-                hl_data - tuple of the following format:
+                full_hl_data - tuple of the following format:
                     [0] - keys to use for MASHighlightMap
                     [1] - default value for MASHighlightMap
                         if None, no default highlights
@@ -7469,17 +7455,12 @@ init -2 python:
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
 
-        def gethlc(self, *args, defval=None):
+        def gethlc(self, *args, **kwargs):
             """
             Gets highlight code
 
             NOTE: actual args and implementation should be handled by the
                 extended classes
-
-            IN:
-                *args - whatever args an extended class wants
-                defval - the default value to return
-                    (Default: None)
 
             RETURNS: highlight code, or defval if no highlight
             """
@@ -8022,7 +8003,7 @@ init -2 python:
             # get all unique filter values
             return [
                 prefix + [
-                    store.mas_sprites.HLITE_SUFFIX
+                    store.mas_sprites.HLITE_SUFFIX,
                     hlc,
                     store.mas_sprites.FILE_EXT
                 ]
@@ -8246,7 +8227,7 @@ init -2 python:
                 return []
 
             # get filter map for an arm code
-            mfm = mhm.get(armcode):
+            mfm = mhm.get(armcode)
             if mfm is None:
                 return []
 
@@ -8310,7 +8291,7 @@ init -2 python:
                     ac_img = new_img + [store.mas_sprites.ART_DLM, arm_code]
 
                     # add that to list
-                    loadstrs.append(ac_img + [store.mas_sprites.FILE_EXT]
+                    loadstrs.append(ac_img + [store.mas_sprites.FILE_EXT])
 
                     # highlights
                     loadstrs.extend(self.__build_loadstrs_hl(
@@ -8595,8 +8576,8 @@ init -2 python:
                     front_img = new_img + [store.mas_sprites.FHAIR_SUFFIX]
 
                     # add them to list
-                    loadstrs.append(back_img + [store.mas_sprites.FILE_EXT]
-                    loadstrs.append(front_img + [store.mas_sprites.FILE_EXT]
+                    loadstrs.append(back_img + [store.mas_sprites.FILE_EXT])
+                    loadstrs.append(front_img + [store.mas_sprites.FILE_EXT])
 
                     # highlights
                     loadstrs.extend(self.__build_loadstrs_hl(
@@ -8877,13 +8858,7 @@ init -2 python:
                 if actual_pose:
                     
                     # determine arms
-                    arms_pose = self.determine_arms(
-                        leanpose,
-                        store.mas_sprites.base_pose_arms_map.get(
-                            leanpose,
-                            None
-                        )
-                    )
+                    arms_pose = self.determine_arms(leanpose)
 
                     # check if any arms to show
                     if arms_pose is not None:
@@ -8905,22 +8880,26 @@ init -2 python:
 
             return loadstrs
         
-        def determine_arms(self, leanpose, defval):
+        def determine_arms(self, leanpose):
             """
             Determines arms pose to use for a given leanpose
 
             IN:
                 leanpose - leanpose to determine arms pose for
-                defval - default value to reutrn if could not find leanpose
 
-            RETURNS: MASPoseArms object to use for this leanpose
+            RETURNS: MASPoseArms object to use for this leanpose, or None if
+                no MASPoseArms to use
             """
             # check our arms
+            # NOTE: if no arms, we always use base
             if self.pose_arms is None:
-                return defval
+                return store.mas_sprites.base_pose_arms_map.get(
+                    leanpose,
+                    None
+                )
             
-            # otherwise use our arms but default to defval
-            return self.pose_arms.get(leanpose, defval)
+            # otherwise use our arms but return None if not need to render
+            return self.pose_arms.get(leanpose, None)
 
         def get_hair(self, hair):
             """
