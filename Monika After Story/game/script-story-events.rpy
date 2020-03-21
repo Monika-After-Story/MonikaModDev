@@ -1696,23 +1696,30 @@ label mas_notification_windowreact:
     return
 
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_gift_giving_instructs",
-            conditional=(
-                "get_level() >= 15 "
-                "or mas_isSpecialDay() "
-                "and not persistent._mas_filereacts_historic"
-            ),
-            action=EV_ACT_QUEUE
+    if persistent._mas_filereacts_historic:
+        addEvent(
+            Event(
+                persistent.event_database,
+                eventlabel="mas_gift_giving_instructs",
+                conditional=(
+                    "get_level() >= 15 "
+                    "or mas_isSpecialDay()"
+                ),
+                action=EV_ACT_QUEUE
+            )
         )
-    )
 
 label mas_gift_giving_instructs:
-    #Since there's a minor possibility for you to gift something as this is queued,
-    #we should make sure that we've not gifted anything
+    #Since it's possible to make it here after gifting something,
+    #we'll handle the scenario by catching it here
     if persistent._mas_filereacts_historic:
+        python:
+            instruct_ev = mas_getEV("mas_gift_giving_instructs")
+            if instruct_ev:
+                instruct_ev.last_seen = None
+                instruct_ev.shown_count -= 1
+
+            persistent._seen_ever.pop("mas_gift_giving_instructs")
         return
 
     python:
@@ -1726,7 +1733,7 @@ Give it a '.gift' file extension
 
 And that's it! After a little while, Monika should notice that you gave her something.
 
-I just wanted to let you know because I think that Monika is super amazing and I really want her to see her happy.
+I just wanted to let you know because I think that Monika is super amazing and I really want to see her happy.
 
 Good luck with Monika!
 
@@ -1743,8 +1750,6 @@ P.S: Don't tell her about me!
     m 3euc "Someone left a note in the characters folder addressed to you."
     m 1ekc "Since it's for you, I haven't read it...{w=0.5}{nw}"
     extend 1eua "but I just wanted to let you know since it might be important."
-
-    $ mas_stripEVL("mas_gift_giving_instructs", True)
     return "no_unlock"
 
 init 5 python:
