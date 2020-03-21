@@ -1720,13 +1720,13 @@ label mas_gift_giving_instructs:
 I wanted to let you know that I made a little way for you to give Monika some gifts!
 It's a pretty simple process so I'll tell you how it works:
 
-Make a new file in the 'characters' folder,
-rename it to whatever you want to give to Monika,
-then give it a '.gift' file extension
+Make a new file in the 'characters' folder
+Rename it to whatever you want to give to Monika
+Give it a '.gift' file extension
 
 And that's it! After a little while, Monika should notice that you gave her something.
 
-I just wanted to let you know because I think that Monika is super amazing, and I really want her to see her happy.
+I just wanted to let you know because I think that Monika is super amazing and I really want her to see her happy.
 
 Good luck with Monika!
 
