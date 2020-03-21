@@ -1710,14 +1710,14 @@ init 5 python:
         )
     )
 
-init 20 python:
-    mas_chibi_note_gifting = MASPoem(
-        poem_id="note_gift_giving",
-        author="chibika",
-        prompt="",
-        category="note",
-        title = "Hi [player],",
-        text = """\
+label mas_gift_giving_instructs:
+    #Since there's a minor possibility for you to gift something as this is queued,
+    #we should make sure that we've not gifted anything
+    if persistent._mas_filereacts_historic:
+        return
+
+    python:
+        gift_instructs = """\
 I wanted to let you know that I made a little way for you to give Monika some gifts!
 It's a pretty simple process so I'll tell you how it works:
 
@@ -1733,21 +1733,18 @@ Good luck with Monika!
 
 P.S: Don't tell her about me!
 """
-    )
 
-label mas_gift_giving_instructs:
-    #Write the note in the characters folder
-    $ store.mas_utils.trywrite(
-        os.path.normcase(renpy.config.basedir + "/characters/hint.txt"),
-        renpy.substitute(mas_chibi_note_gifting.title) + "\n\n" + mas_chibi_note_gifting.text
-    )
+        #Write the note in the characters folder
+        store.mas_utils.trywrite(
+            os.path.normcase(renpy.config.basedir + "/characters/hint.txt"),
+            player + "\n\n" + gift_instructs
+        )
 
     m 1eud "Hey, [player]..."
     m 3euc "Someone left a note in the characters folder addressed to you."
     m 1ekc "Since it's for you, I haven't read it...{w=0.5}{nw}"
-    extend 1eua "but here, it might be important."
+    extend 1eua "but I just wanted to let you know since it might be important."
 
-    call mas_showpoem(mas_chibi_note_gifting)
 
     $ mas_stripEVL("mas_gift_giving_instructs", True)
     $ mas_hideEVL("mas_gift_giving_instructs", "EVE", derandom=True)
