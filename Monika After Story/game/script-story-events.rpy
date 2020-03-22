@@ -1186,7 +1186,7 @@ init 11 python:
 label mas_corrupted_persistent:
     m 1eud "Hey, [player]..."
     m 3euc "Someone left a note in the characters folder addressed to you."
-    m 1ekc "Of course, I haven't read it, since it's obviously for you...{w=0.5}{nw}"
+    m 1ekc "Of course, I haven't read it, since it's obviously for you...{w=0.3}{nw}"
     extend 1ekd "but here."
 
     # just pasting the poem screen code here
