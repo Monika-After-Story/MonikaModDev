@@ -1186,9 +1186,9 @@ init 11 python:
 label mas_corrupted_persistent:
     m 1eud "Hey, [player]..."
     m 3euc "Someone left a note in the characters folder addressed to you."
-    m 1ekc "Of course, I haven't read it, since it's obviously for you..."
-    m 1ekd "Do you know what this is about?{nw}"
-    $ _history_list.pop()
+    m 1ekc "Of course, I haven't read it, since it's obviously for you...{w=0.5}{nw}"
+    extend 1ekd "but here."
+
     # just pasting the poem screen code here
     window hide
     if len(mas_bad_backups) > 0:
@@ -1200,6 +1200,8 @@ label mas_corrupted_persistent:
     window auto
     $ _gtext = glitchtext(15)
 
+    m 1ekc "Do you know what this is about?{nw}"
+    $ _history_list.pop()
     menu:
         m "Do you know what this is about?{fast}"
         "It's nothing to worry about.":
@@ -1229,7 +1231,6 @@ label mas_corrupted_persistent_post_menu:
     m 1euc "Oh, alright."
     m 1hub "I'll try not to worry about it, then."
     m 3eub "I know you'd tell me if it were important, [player]."
-    m 3eua "Now, where were we...?"
     return
 
 init 5 python:
