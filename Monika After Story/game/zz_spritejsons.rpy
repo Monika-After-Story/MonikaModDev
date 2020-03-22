@@ -1,5 +1,5 @@
 # Module for turning json formats into sprite objects
-# NOTE: This DEPENDS on sprite-chart.rpy
+# NOTE: This DEPENDS on sprite-chart.rpy and sprite-chart-matrix.rpy
 #
 # NOTE: all JSON formats do NOT have prog points. This is a security thing.
 #   prog points will be assumed using the type of sprite object and name.
@@ -40,6 +40,12 @@
 #       - providing this will enable the object to be selected in some
 #            activities
 #       - see Selectable JSON below for more info
+#   "highlight": {Highlight object}
+#       - optional
+#       - highlights are layers added to sprites that ignore the filtering
+#           system.
+#       - implementation varies by object, so go to the specific sprite object
+#           type for more info.
 #   "dryrun": <anything>
 #       - optional
 #       - add this to dry run adding this sprite object
@@ -70,6 +76,11 @@
 #       - used in confjunction with acs_type
 #       - must be list of strings
 #       - default None
+#   "arm_split": {Pose Map object}
+#       - required if rec layer is 8/9 (BSE/ASE)
+#       - each value should be a string
+#       - See MASSplitAccessory for more info
+#       - if omitted, then this will make a regular ACS
 #   "dlg_desc": string describing this ACS for dialogue usage
 #       - optional
 #       - used in conjunction with dlg_plural
@@ -85,17 +96,10 @@
 #       - optional
 #       - must be a bool
 #       - default False
-# }
-#
-# Shared props for HAIR and CLOTHES:
-#
-# {
-#   "fallback": True if the posemap object should be treated as containing
-#       fallback codes instead of just enable/disable rules.
+#   "highlight": {Highlight object} OR {Highlight Split object}
 #       - optional
-#       - boolean
-#       - see PoseMap JSONs below for more info
-#       - default False
+#       - for split, see MASSplitAccessory.hl_map - use Highlight Split 
+#       - for regular, see MASAccessory.hl_map - use Highlight
 # }
 #
 # Shared props for ACS and CLOTHES:
@@ -116,6 +120,9 @@
 #       - if False, then custom code will be required to unlock the sprite.
 #       - if True, the sprite will unlock automatically
 #       - Default True
+#   "highlght": {Highlight object}
+#       - optional
+#       - see MASHair.hl_map for specifics
 # }
 #
 # CLOTHES only props:
@@ -130,6 +137,13 @@
 #       - Both keys and values should be strings and should match to an 
 #           existing hair ID. 
 #       - default empty dict
+#   "pose_arms": {Pose Arms object}
+#       - optional
+#       - if null, then we use the base pose as guide when determing pose
+#           arms
+#   "highlight": {Highlight object}
+#       - optional
+#       - see MASClothes.hl_map for more info
 # }
 #
 # PoseMap JSONSs
@@ -139,6 +153,11 @@
 # In general:
 #
 # {
+#   "mpm_type": type of this pose map
+#       - required IF pose_map for hair or clothes
+#       - integer
+#       - 0 if enable/disable pose map
+#       - 1 if fallback posemap
 #   "default": value to use as default for all non-leaning poses
 #       - optional
 #       - default None
@@ -175,26 +194,37 @@
 #       - optional
 #       - This is the "down" pose
 #       - default None
+#   "p7": value to use for pose 7
+#       - optional
+#       - this is the "downleftpointright" pose
+#       - default None
 # }
 #       
 # ACS (pose_map):
 #   Values should be acs ID code (string). This code is part of the filename 
 #   for an ACS. This allows you to use a specific ACS image for certain poses.
 #
+# ACS (arm_split):
+#   Values should be a ^ delimited string denoting layer codes:
+#       0 - body-0 or arms-0 layer
+#       1 - body-1 layer
+#       5 - arms-5 layer
+#       10 - arms-10 layer
+#       * - all layers
+#       "" - no layers
+#   Delimited string example: 1^5^10
+#   This allows you to split ACS that exist on split layers
+#
 # HAIR (pose_map):
-#   If fallback is True, then value should pose names (string). This is used
+#   If mpm_type is 1, then value should pose names (string). This is used
 #       to determine what pose use instead of the desired pose.
-#   If fallback is False (default), then value should be (boolean). This is
+#   If mpm_type is 0 (default), then value should be (boolean). This is
 #       used to determine if a pose should be enabled or disabled for this
 #       hair. True values will mean enabled, False means disabled.
 #       By default, poses with False values will use steepling instead.
 #
 # CLOTHES (pose_map):
 #   This functions the same as pose_map for HAIR.
-#
-# CLOTHES (hair_map):
-#   Values should be strings. because hair might be mapped to user-custom
-#   hairs, full hair validation will happen after all objects are validated
 #
 # Selectables JSON:
 #
@@ -228,8 +258,123 @@
 #       - lines are picked randomly when selected
 #       - default None
 # }
+#
+# Pose Arm JSON
+# This is a mappnig of all available arms
+# Any omitted arm means that no layers should be shown for that arm.
+# {
+#   "crossed": {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for crossed arms
+#   "left-down": {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for the left down arm
+#   "left-rest": {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for the left-rest arm
+#   "right-down": {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for the right-down arm
+#   "right-point": {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for the right point arm
+#   "right-restpoint": {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for the right-restpoint arm
+#   "steepling": {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for steepling arms
+#   "def|left-def" {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for the leaning-def-left-def arm
+#   "def|right-def" {Pose Arm Data object}
+#       - optional
+#       - pose arm data to use for the leaning-def-right-def arm
+# }
+#
+# Pose Arm Data JSON
+# {
+#   "tag": name of the arm string to use in a pose
+#       - REQUIRED
+#       - string
+#       - used in format like arms-<tag> or arms-left/right-<tag>
+#   "layers": ^ delimited string denoting layers for this arm
+#       - REQUIRED
+#       - string
+#       - available values:
+#           "*" - this arm exists on all layers
+#           "0" - this arm exists on the 0 layer
+#           "5" - this arm exists on the 5 layer
+#           "10" - this arm exists on the 10 layer
+#           "" - this arm does not exist on any layer
+#       - delimited stirng should look like: "5^10"
+#   "highlight": {Highlight object}
+#       - optional
+#       - highlights for this arm
+# }
+#
+# Highlight Split JSON
+#   Highlight split objects are only for MASSPlitAccessory (Split ACS).
+#   Keys should be the same as values used in the corresponding pose_map.
+#   Values should be {Highlight objects}
+#
+# Highlight JSON
+#   Intended values vary wildly based on object. See below the JSON for
+#   specifics
+# {
+#   "default": {Filter object}
+#       - optional
+#       - default filter to use
+#   "mapping": {object}
+#       - optional
+#       - maps keys to {Filter object}
+#       - keys will vary. See below for specifics
+# }
+#
+# ACS(highlight) - for REGULAR ACS
+#   Keys should be same as values used in the corresponding pose_map.
+#
+# HAIR(highlight)
+#   Keys:
+#       "front" - highlight for front hair layer
+#       "back" - highlight for back hair layre
+#       "def|front" - highlight for front leaning hair layer
+#       "def|back" - highlight for back leaning hair layer
+#
+# CLOTHES(highlight
+#   Keys:
+#       "0" - highlight for the body-0 layer
+#       "1" - highlight for the body-1 layer
+#       "def|0" - highlight for the body-0 leaning layer
+#       "def|1" - highlight for the body-1 leaning layer
+#
+# Pose Arm Data(highlight)
+#   Keys:
+#       "0" - highlight for the arm-0 layer
+#       "5" - highlight for the arm-5 layer
+#       "10" - highlight for the arm-10 layer
 
-# TODO :add dev label to check if prog points are executable
+# Highlight Split object values
+#   Keys:
+#       "0" - highlight for acs-0 layer
+#       "1" - highlight for acs-1 layer
+#       "5" - highlight for acs-5 layer
+#       "10" - highlight for acs-10 layer
+#
+# Filter JSON
+#   Filter objects map filters to highlight codes. Highlight codes are suffixed
+#   to the end of files (before extension) as "h<code>"
+# {
+#   "day": "highlight code to use"
+#       - optional
+#       - string
+#       - highlight code to map to day filters
+#   "night": "highlight code to use"
+#       - optional
+#       - string
+#       - highlight code to map to night filters
+# }
+
 
 default persistent._mas_sprites_json_gifted_sprites = {}
 # contains sprite gifts that have been reacted to (aka unlocked)
