@@ -1696,7 +1696,7 @@ label mas_notification_windowreact:
     return
 
 init 5 python:
-    if persistent._mas_filereacts_historic:
+    if not persistent._mas_filereacts_historic:
         addEvent(
             Event(
                 persistent.event_database,
