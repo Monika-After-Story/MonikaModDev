@@ -655,9 +655,16 @@ init 5 python:
     )
 
 label greeting_visit6:
+    $ current_time = datetime.datetime.now().time().hour
     m 1hua "Each day becomes better and better with you by my side!"
     m 1eua "That said, I'm so happy that you're finally here."
-    m "Let's have another wonderful day together."
+    if current_time >= 6 and current_time < 12:
+       $ _time = "morning"
+    elif current_time >= 18 and current_time < 24:
+       $ _time = "evening"
+    else:
+       $ _time = "day"
+    m "Let's have another wonderful [_time] together."
     return
 
 init 5 python:
@@ -1941,7 +1948,7 @@ init 5 python:
 label greeting_french:
     m 1eua "Bonjour, [player]!"
     m 1hua "Savais-tu que tu avais de beaux yeux, mon amour?"
-    m 1hub "Ehehe!"
+    m 1hub "Ahaha!"
     m 3hksdlb "I'm practicing some French. I just told you that you have very beautiful eyes~"
     m 1eka "It's such a romantic language, [player]."
     m 1hua "Maybe both of us can practice it sometime, mon amour~"
@@ -3508,7 +3515,7 @@ label greeting_back_from_game:
                     m 3eub "Wouldn't it be great to have our own little adventures anytime we wanted?"
                     m 1hub "I'm sure we'd have a lot of fun together in one of your games."
                     m 3eka "But while I can't join you, I guess you'll just have to keep me company."
-                    m 2tub "You don't mind spending time with your girlfriend...{w=1} Do you, [player]?"
+                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5} Do you, [player]?"
 
                 "No.":
                     m 2ekc "Aw, I'm sorry to hear that."

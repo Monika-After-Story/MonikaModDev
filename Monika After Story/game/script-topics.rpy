@@ -7259,7 +7259,7 @@ label monika_happiness:
     m 1lksdlc "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
     m "It would destroy me."
     m 1esc "I guess it's understandable why we notice bad things happening to us more than good..."
-    m "If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m "If people didn't react so strongly to bad things then they wouldn't have survived this long."
     m 1euc "Like how you would get nervous about your future or social situations, for example."
     m 2ekc "You try your best to make the best out of them but if you fail, you'd feel really horrible."
     m 2eka "If that ever happens to you, [player], just know I'll be here to snap you out of it!"

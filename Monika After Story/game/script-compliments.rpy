@@ -675,7 +675,7 @@ label mas_compliment_lookuptoyou_3:
         m 1rksdlb "{cps=*2}Well yeah, I'm taller than you...{/cps}{nw}"
         $ _history_list.pop()
 
-    m 1hubfb "[thanks_quip]"
+    m 1ekbfa "[thanks_quip]"
     m 3hubfa "Hearing you say that never fails to make me smile!"
     m 3hubfb "I'll always look up to you too!"
 
