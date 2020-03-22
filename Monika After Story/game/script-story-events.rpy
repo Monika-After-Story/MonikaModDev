@@ -1192,10 +1192,10 @@ label mas_corrupted_persistent:
     # just pasting the poem screen code here
     window hide
     if len(mas_bad_backups) > 0:
-        show screen mas_showpoem(mas_note_backups_some_bad)
+        call mas_showpoem(mas_note_backups_some_bad)
 
     else:
-        show screen mas_showpoem(mas_note_backups_all_good)
+        call mas_showpoem(mas_note_backups_all_good)
 
     window auto
     $ _gtext = glitchtext(15)
