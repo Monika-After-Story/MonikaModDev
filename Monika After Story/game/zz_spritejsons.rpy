@@ -40,12 +40,14 @@
 #       - providing this will enable the object to be selected in some
 #            activities
 #       - see Selectable JSON below for more info
-#   "highlight": {Highlight object}
+#   "highlight": varies
 #       - optional
 #       - highlights are layers added to sprites that ignore the filtering
 #           system.
-#       - implementation varies by object, so go to the specific sprite object
-#           type for more info.
+#       - ACS: this may be a {Highlight object} or {Highlight Split object}
+#           Split is used if an ACS has `arm_split` set
+#       - HAIR: {Highlight object}
+#       - CLOTHES: {Highlight object}
 #   "dryrun": <anything>
 #       - optional
 #       - add this to dry run adding this sprite object
@@ -96,10 +98,6 @@
 #       - optional
 #       - must be a bool
 #       - default False
-#   "highlight": {Highlight object} OR {Highlight Split object}
-#       - optional
-#       - for split, see MASSplitAccessory.hl_map - use Highlight Split 
-#       - for regular, see MASAccessory.hl_map - use Highlight
 # }
 #
 # Shared props for ACS and CLOTHES:
@@ -120,9 +118,6 @@
 #       - if False, then custom code will be required to unlock the sprite.
 #       - if True, the sprite will unlock automatically
 #       - Default True
-#   "highlght": {Highlight object}
-#       - optional
-#       - see MASHair.hl_map for specifics
 # }
 #
 # CLOTHES only props:
@@ -141,9 +136,6 @@
 #       - optional
 #       - if null, then we use the base pose as guide when determing pose
 #           arms
-#   "highlight": {Highlight object}
-#       - optional
-#       - see MASClothes.hl_map for more info
 # }
 #
 # PoseMap JSONSs
@@ -614,6 +606,12 @@ init -21 python in mas_sprites_json:
     ## with expected types and verifications, as well as msg to
     ##  show when verification fails.
     ##      (if None, we use the default bad type)
+
+    # special params
+    HLITE = "highlight"
+
+    # main params
+
     REQ_SHARED_PARAM_NAMES = {
         # type must be checked first, so its not included in this loop.
 #        "type": _verify_sptype,
@@ -674,6 +672,7 @@ init -21 python in mas_sprites_json:
         "hair_map",
         "arm_split",
         "pose_arms",
+        HLITE,
     )
 
     # select info params
@@ -685,6 +684,12 @@ init -21 python in mas_sprites_json:
 
     SEL_INFO_OPT_PARAM_NAMES = {
         "visible_when_locked": (bool, _verify_bool),
+    }
+
+    # pose arm data params
+    PAD_REQ_PARAM_NAMES = {
+        "tag": (str, _verify_str),
+        "layers": (str, _verify_str),
     }
 
     # debug param name. If the json includes this, we dont actualy add
@@ -725,6 +730,89 @@ init 189 python in mas_sprites_json:
     MSG_WARN_IDD = "        [Warning!]: {0}\n"
     MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
 
+    # pose arm functions and data
+
+    J_PAM = {}
+    # JSON-Pose-Arms-Map
+    # dict of all arm types to be used in Pose Arm JSON objects
+    # keys: arm type used in Pose Arm JSON
+    # value: pose number this arm belongs to
+
+    J_LPPAM = {}
+    # JSON-Lean-Pose-Pose-Arms-Map
+    # dict of poses mapped to J_POSE_ARM strings
+    # keys: leanpose (values of mas_sprites.NUM_POSE)
+    # values: tuple of J_PAM keys. if tuple length > 1, then is two arms.
+
+
+    def _genAD():
+        """
+        GENerates 
+        Arm
+        Data
+
+        NOTE: fills out J_PAM and J_LLPAM
+        """
+        global J_PAM
+        global J_LPPAM
+
+        # the base pose is the source of truth for all arms.
+        # in theory, each base pose should have all arms shown.
+        # from that, we can build the pose arm mappings that JSON parsing
+        # will use.
+
+        # loop over poses from NUM_POSE
+        for poseid in sms.NUM_POSE:
+
+            # leanpose is important for splitting
+            leanpose = sms.NUM_POSE[poseid]
+
+            # retrieve base pose for truth
+            bpose = sms.use_bpam(poseid)
+
+            # keys we stored in jpan for this pose
+            jpam_keys = []
+
+            # now determine what kind of PoseArms this is
+            if bpose.gettype() == MASPoseArms.TYPE_BOTH:
+
+                # for both types, the single tag is used as the key
+                # we also dont care about leans with both poses
+                tag = bpose.both
+                if tag not in J_PAM:
+                    J_PAM[tag] = poseid
+
+                jpam_keys.append(tag)
+
+            else:
+                # for LR types, both tags are individually added with prefixes
+
+                # build tags
+                ltag = "left-{0}".format(bpose.left)
+                rtag = "right-{0}".format(bpose.right)
+
+                # adjust for lean if needed
+                if "|" in leanpose:
+                    lean = leanpose.partition("|")[0]
+                    ltag = "|".join((lean, ltag))
+                    rtag = "|".join((lean, rtag))
+
+                # add tags if not exist
+                if ltag not in J_PAM:
+                    J_PAM[ltag] = poseid
+                if rtag not in J_PAM:
+                    J_PAM[rtag] = poseid
+
+                # finally add keys
+                jpam_keys.append(ltag)
+                jpam_keys.append(rtag)
+
+            # now map the leanposes to their jpam keys
+            J_LPPAM[leanpose] = tuple(jpam_keys)
+
+
+    # main functions
+
 
     def parsewritelog(msg_data):
         """
@@ -743,7 +831,7 @@ init 189 python in mas_sprites_json:
         if prefix is None:
             return True
 
-        indents = " " * (indent * 4)
+        indents = " " * (indent * 2)
         msg = indents + prefix.format(msg)
         writelog(msg)
 
@@ -1856,8 +1944,6 @@ init 189 python in mas_sprites_json:
 
         # determine version. Versions must match SP_JSON_VER. 
         if VERSION_TXT not in jobj:
-            # must be version 1 (aka the initial release).
-            # or just missing.
             writelog(MSG_ERR.format(VER_NOT_FOUND))
             return
 
@@ -1880,6 +1966,7 @@ init 189 python in mas_sprites_json:
         ## this happens in 3 steps:
         # 1. build sprite object according to the json
         #   - this includes PoseMaps
+        #   - and highlights
         # 2. build selectable (if provided)
         # 3. Init everything
         #
@@ -1951,6 +2038,7 @@ init 189 python in mas_sprites_json:
             return
 
         # now for specific params
+        # TODO: left off here
         if sp_type == SP_ACS:
             # ACS
             msg_log = []
@@ -2174,6 +2262,13 @@ init 189 python in mas_sprites_json:
                 ))
 
 
+    def initSpriteObjectProc():
+        """
+        Prepares internal data for sprite object processing
+        """
+        _genAD()
+
+
     def verifyHairs():
         """
         Verifies all hair items that we encountered
@@ -2280,6 +2375,9 @@ init 189 python in mas_sprites_json:
 
 init 190 python in mas_sprites_json:
     # NOTE: must be before 200, which is when saved selector data is loaded
+
+    # prepare the alg
+    initSpriteObjectProc()
 
     # run the alg
     addSpriteObjects()

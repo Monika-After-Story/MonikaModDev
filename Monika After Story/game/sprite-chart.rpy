@@ -5382,11 +5382,14 @@ init -2 python:
 
         _MPA_KEYS = (LAYER_BOT, LAYER_MID, LAYER_TOP)
 
-        def __init__(self):
+        TYPE_BOTH = 1
+        TYPE_LR = 2
+
+        def __init__(self, mpa_type):
             """
             Constructor
             """
-            pass
+            self.__mpa_type = mpa_type
 
         def _build_loadstrs_ft(self, prefix, tag, hl_map, layer_code):
             """
@@ -5502,6 +5505,14 @@ init -2 python:
             """
             raise NotImplementedError
 
+        def gettype(self):
+            """
+            Gets type of this MASPoseArms
+
+            RETURNS: type
+            """
+            return self.__mpa_type
+
         @staticmethod
         def fromJSON(json_obj, msg_log, ind_lvl):
             """
@@ -5550,7 +5561,7 @@ init -2 python:
                         value: MASFilterMap object, or None if no highlight
                     pass in None if no highlights should be used at all
             """
-            super(MASPoseArmsBoth, self).__init__()
+            super(MASPoseArmsBoth, self).__init__(self.TYPE_BOTH)
             self.both = both
             self.clean_map(bmap)
             self.bmap = bmap
@@ -5695,7 +5706,7 @@ init -2 python:
                         value: MASFilterMap object, or None if no highlight
                     pass in None if no highlights should be used at all
             """
-            super(MASPoseArmsLR, self).__init__()
+            super(MASPoseArmsLR, self).__init__(self.TYPE_LR)
 
             # setup left arm
             self.left, self.lmap, self.hl_lmap = self._parse(
