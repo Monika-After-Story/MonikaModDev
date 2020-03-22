@@ -1078,10 +1078,11 @@ init 5 python:
         )
     )
 
+init 11 python:
     if (
-            mas_corrupted_per
-            and not (mas_no_backups_found or mas_backup_copy_failed)
-        ):
+        mas_corrupted_per
+        and not (mas_no_backups_found or mas_backup_copy_failed)
+    ):
         mas_note_backups_all_good = None
         mas_note_backups_some_bad = None
 
@@ -1108,6 +1109,8 @@ init 5 python:
             # now make the notes
             mas_note_backups_all_good = MASPoem(
                 poem_id="note_backups_all_good",
+                prompt="",
+                category="note",
                 author="chibika",
                 title="Hi [player],",
                 text="".join([
