@@ -2270,9 +2270,6 @@ label mas_dockstat_empty_desk:
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25ShowVisuals()
 
-    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
-        $ renpy.show("mas_roses", zorder=10)
-
     if mas_confirmedParty() and mas_isMonikaBirthday():
         $ persistent._mas_bday_visuals = True
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
@@ -2374,7 +2371,6 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
-    $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
 
