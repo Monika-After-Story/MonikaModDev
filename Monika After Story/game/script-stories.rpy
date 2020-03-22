@@ -757,6 +757,37 @@ label mas_story_crow_and_pitcher:
     m 1hua "I hope it does for you too, [player]~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_friend",
+            prompt="Having A Best Friend",
+            unlocked=True
+        ),
+        code="STY"
+    )
+
+label mas_story_friend:
+    call mas_story_begin
+    m 3eua "Once two friends were walking through the desert..."
+    m 1eua  "During some point of their journey, they had an argument {nw}"
+    extend 1wud "and one friend slapped the other in the face!"
+    m 1eud "The one who got slapped was hurt, but without saying anything wrote in the sand,{w=0.1} 'Today my best friend slapped me in the face.'"
+    m 1eua "They kept on walking until they found an oasis, where they decided to take a bath."
+    m 1ekc "The one who had been slapped got stuck in the mire and started drowning,{w=0.1} {nw}"
+    extend 3wuo "but the other saved him!"
+    m 3eua "After he recovered from the near drowning, he wrote on a stone,{w=0.1} 'Today my best friend saved my life.'"
+    m 3eud "The friend who had slapped and saved his best friend asked him,{w=0.1} 'After I hurt you, you wrote in the sand and now, you write on a stone, why?'"
+    m 3eua "The other friend replied: 'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
+    m 3eub "'But!'"
+    m 3eua "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
+    m 1hua "The moral of the story is: 'Do not let the shadows of your past darken the doorstep of your future.{w=0.2} {nw}"
+    extend 3hua "Forgive and Forget.'"
+    m 1hua "I hope you enjoyed it, [player]!"
+    return
+
+#START: Scary Stories
 define mas_scary_story_setup_done = False
 
 # Scary stories start here
@@ -1603,31 +1634,4 @@ label mas_scary_story_flowered_lantern_3:
     m "Hagiwara was dead, hideously dead, and his face had the expression of uttermost agony of fear..."
     m 2wfc "And lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
-    return
-    
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_story_database,
-            eventlabel="mas_story_friend",
-            prompt="Having A Best Friend",
-            unlocked=True
-        ),
-        code="STY"
-    )
-
-label mas_story_friend:
-    call mas_story_begin
-    m 3eub "Once two friends were walking through the desert..."
-    m 4esd "During some point of their journey they had an argument and one friend slapped the other one in the face!"
-    m 4ekb "The one who got slapped was hurt, but without saying anything wrote in the sand: 'Today my best friend slapped me in the face.'"
-    m 2eub "They kept on walking until they found an oasis, where they decided to take a bath."
-    m 4wuo "The one who had been slapped got stuck in the mire and started drowning, but the friend saved him."
-    m 3eub "After he recovered from the near drowning, he wrote on a stone: 'Today my best friend saved my life.'"
-    m 2eua "The friend who had slapped and saved his best friend asked him: 'After I hurt you, you wrote in the sand and now, you write on a stone, why?'"
-    m 4eub "The other friend replied: 'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
-    m 3eub "'But!'"
-    m 4eka "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
-    m 3hua "The moral of the story is: 'Do not let the shadows of your past darken the doorstep of your future. Forgive and Forget.'"
-    m 1hua "I hope you enjoyed it, [player]!"
     return
