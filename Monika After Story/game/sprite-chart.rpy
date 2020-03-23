@@ -174,6 +174,12 @@ image mas_roses = ConditionSwitch(
     "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
 )
 
+# Monika's piano sprite
+image mas_piano = ConditionSwitch(
+    "morning_flag", "mod_assets/other/mas_piano.png",
+    "not morning_flag", "mod_assets/other/mas_piano-n.png"
+)
+
 ### bday stuff
 define mas_bday_cake_lit = False
 image mas_bday_cake_monika = ConditionSwitch(

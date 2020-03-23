@@ -2932,7 +2932,8 @@ label monika_credits_song:
             m 3eua "Oh, and I'll play the song again for you anytime you want me to."
         else:
             m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
-        m "Just hit the 'm' key at any time."
+        m "Just ask me at any time."
+        $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
     else:
         m 1eua "By the way [player], I finally finished a song I've been working on."
         m 3eua "I call it {i}Our Reality{/i}."
@@ -2940,8 +2941,102 @@ label monika_credits_song:
         call mas_song_our_reality
         m 1rkc "I hoped you liked it [player]."
         m 1rkc "I love you."
-    $ mas_unlockEVL("mas_song_our_reality", "SNG")
+        $ mas_unlockEVL("mas_song_our_reality", "SNG")
     return "no_unlock|love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monika_plays_yr",
+            category=['monika','music'],
+            prompt="Can you play 'Your Reality' for me?",
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
+
+label mas_monika_plays_yr:
+    window hide
+    $ HKBHideButtons()
+    $ mas_RaiseShield_core()
+    $ store.songs.enabled = False
+    show monika at rs32
+    hide monika
+    pause 3.0
+    show mas_piano at lps32,rps32 zorder MAS_MONIKA_Z+1
+    pause 5.0
+    show monika at ls32 zorder MAS_MONIKA_Z
+    show monika 6dsa
+    pause 2.0
+    $ play_song(store.songs.FP_YOURE_REAL)
+
+    show monika 6hua
+    $ renpy.pause(10.012)
+    show monika 6eua_static
+    $ renpy.pause(5.148)
+    show monika 6hua
+    $ renpy.pause(3.977)
+    show monika 6eua_static
+    $ renpy.pause(5.166)
+    show monika 6hua
+    $ renpy.pause(3.743)
+    show monika 6esa
+    $ renpy.pause(9.196)
+    show monika 6eka
+    $ renpy.pause(13.605)
+    show monika 6dua at t10
+    $ renpy.pause(9.437)
+    show monika 6eua_static at t11
+    $ renpy.pause(5.171)
+    show monika 6dua
+    $ renpy.pause(3.923)
+    show monika 6eua_static
+    $ renpy.pause(5.194)
+    show monika 6dua
+    $ renpy.pause(3.707)
+    show monika 6eka
+    $ renpy.pause(16.884)
+    show monika 6dua at t12
+    $ renpy.pause(20.545)
+    show monika 6eka_static at t11
+    $ renpy.pause(4.859)
+    show monika 6dka
+    $ renpy.pause(4.296)
+    show monika 6eka_static
+    $ renpy.pause(5.157)
+    show monika 6dua
+    $ renpy.pause(8.064)
+    show monika 6eka
+    $ renpy.pause(22.196)
+    show monika 6dka
+    $ renpy.pause(3.630)
+    show monika 6eka_static
+    $ renpy.pause(1.418)
+    show monika 6dka
+    $ renpy.pause(9.425)
+    show monika 5dka with dissolve
+    $ renpy.pause(5)
+
+    stop music
+    show monika 6eua at rs32
+    pause 1.0
+    hide monika
+    pause 3.0
+    hide mas_piano
+    pause 6.0
+    show monika 1eua at ls32 zorder MAS_MONIKA_Z
+
+    if store.mas_globals.dlg_workflow:
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+    else:
+        $ mas_DropShield_core()
+
+    $ HKBShowButtons()
+    window auto
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poetry",category=['literature'],prompt="Poetry",random=True))
