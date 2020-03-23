@@ -169,54 +169,6 @@ define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffi
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
-image mas_roses = ConditionSwitch(
-    "morning_flag", "mod_assets/monika/a/acs-roses-0.png",
-    "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
-)
-
-### bday stuff
-define mas_bday_cake_lit = False
-image mas_bday_cake_monika = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
-)
-
-image mas_bday_cake_player = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
-)
-
-image mas_bday_banners = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
-)
-
-image mas_bday_balloons = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
-)
-
-image mas_o31_deco = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
-    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
-)
-
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings
 # basically on startup, we evaluate each acs and add mux types and other
