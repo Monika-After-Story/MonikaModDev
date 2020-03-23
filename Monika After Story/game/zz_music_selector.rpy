@@ -160,14 +160,13 @@ init -1 python in songs:
         # [1] -> Path to song
         if not sayori:
             music_choices.append((JUST_MONIKA, FP_JUST_MONIKA))
-            if renpy.seen_label("monika_credits_song") or store.persistent.monika_kill:
-                music_choices.append((YOURE_REAL, FP_YOURE_REAL))
+            music_choices.append((YOURE_REAL, FP_YOURE_REAL))
 
-                # Shoutout to Rune0n for this wonderful piano cover!
-                music_choices.append((PIANO_COVER, FP_PIANO_COVER))
+            # Shoutout to Rune0n for this wonderful piano cover!
+            music_choices.append((PIANO_COVER, FP_PIANO_COVER))
 
-                # Shoutout to TheAloofPotato for this wonderful eurobeat version!
-                music_choices.append((YR_EUROBEAT, FP_YR_EUROBEAT))
+            # Shoutout to TheAloofPotato for this wonderful eurobeat version!
+            music_choices.append((YR_EUROBEAT, FP_YR_EUROBEAT))
 
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
             music_choices.append((MY_FEELS, FP_MY_FEELS))
