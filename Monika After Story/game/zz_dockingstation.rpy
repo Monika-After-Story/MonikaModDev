@@ -2154,8 +2154,6 @@ init 205 python in mas_dockstat:
 #   true if moni can leave
 #   false otherwise
 label mas_dockstat_ready_to_go(moni_chksum):
-    show monika 2dsc
-
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
     $ can_moni_leave = moni_chksum and moni_chksum != -1
@@ -2163,6 +2161,15 @@ label mas_dockstat_ready_to_go(moni_chksum):
     if can_moni_leave:
         # file successfully made
         # monika can leave
+
+        #We'll do our actual getting ready here since this saves us needing to do it multiple times later
+        python:
+            #If we should take drink with, we do that now
+            mas_useThermos()
+
+            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
+            renpy.pause(1.0, hard=True)
+
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
@@ -2178,7 +2185,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
             call mas_dockstat_first_time_goers
 
         else:
-            m 1eua "Alright."
+            m "Alright."
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
@@ -2194,10 +2201,10 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
 
 label mas_dockstat_first_time_goers:
+    call mas_transition_from_emptydesk("monika 3eua")
     m 3eua "I'm now in the file 'monika' in your characters folder."
     m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
-
     m 1eua "And lastly..."
     m 1ekc "Please be careful with me. It's so easy to delete files after all..."
     m 1eua "Anyway..."
@@ -2262,9 +2269,6 @@ label mas_dockstat_empty_desk:
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25ShowVisuals()
-
-    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
-        $ renpy.show("mas_roses", zorder=10)
 
     if mas_confirmedParty() and mas_isMonikaBirthday():
         $ persistent._mas_bday_visuals = True
@@ -2367,7 +2371,6 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
-    $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
 

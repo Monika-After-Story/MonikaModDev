@@ -16,14 +16,19 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "desired-hair-prop": "twintails"
+        "desired-hair-prop": "twintails",
+        "costume": "o31",
+        "cosplay": true,
+        "bare-right-shoulder": true
     },
     "select_info": {
         "display_name": "Hatsune Miku",
         "thumb": "orcaramelo_hatsune_miku",
         "group": "clothes",
         "select_dlg": [
-            "MIKU MIKU NI SHITE AGERU"
+            "The first sound of the future!",
+            "Ready for the stage!",
+            "Only missing a leek..."
         ]
     },
     "giftname": "hatsunemikucosplay"
