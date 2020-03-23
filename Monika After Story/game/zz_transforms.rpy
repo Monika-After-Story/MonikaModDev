@@ -49,14 +49,6 @@ transform rs32:
 transform rps32:
     lslide(t=4.00,x=-700)
 
-# t10 and t12 are slight movements from t11 intended for piano use
-transform t10:
-    tcommon(637)
-
-transform t12:
-    tcommon(643)
-
-
 ### transforms for chibi monika
 transform mas_chdropin(x=640, y=405, travel_time=3.00):
     ypos -300 xcenter x

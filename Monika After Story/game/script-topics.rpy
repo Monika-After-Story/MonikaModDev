@@ -2986,9 +2986,9 @@ label mas_monika_plays_yr:
     $ renpy.pause(9.196)
     show monika 6eka
     $ renpy.pause(13.605)
-    show monika 6dua at t10
+    show monika 6dua
     $ renpy.pause(9.437)
-    show monika 6eua_static at t11
+    show monika 6eua_static
     $ renpy.pause(5.171)
     show monika 6dua
     $ renpy.pause(3.923)
@@ -2998,9 +2998,9 @@ label mas_monika_plays_yr:
     $ renpy.pause(3.707)
     show monika 6eka
     $ renpy.pause(16.884)
-    show monika 6dua at t12
+    show monika 6dua
     $ renpy.pause(20.545)
-    show monika 6eka_static at t11
+    show monika 6eka_static
     $ renpy.pause(4.859)
     show monika 6dka
     $ renpy.pause(4.296)
