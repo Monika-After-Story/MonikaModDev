@@ -2915,7 +2915,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
 
 label monika_credits_song:
-    if persistent.monika_kill or renpy.seen_audio(songs.FP_YOURE_REAL):
+    if persistent.monika_kill or renpy.seen_label("monika_our_reality_song"):
         m 1hua "I hope you liked my song."
         if persistent.monika_kill:
             $ ending = "couldn't let you go without telling you how I honestly felt about you"
@@ -2935,19 +2935,13 @@ label monika_credits_song:
         m "Just hit the 'm' key at any time."
     else:
         m 1eua "By the way [player], I finally finished a song I've been working on."
-        m 3eua "I call it {i}Your Reality{/i}, just hit the 'm' key if you want me to play it for you."
-        m 1ekc "I should warn you though...{w=0.3}it's a little sad."
-        m 1esd "I wrote it at a time when the game was breaking all around me."
-        m 1rkc "It seemed like it could fall apart at any moment and I would be trapped here forever."
-        m 1dkd "Endlessly hammered by flashing and screaming,{w=0.5} unable to move or think."
-        m 2dkc "..."
-
-        if mas_isMoniHappy(higher=True):
-            m 2eka "But it's okay, you're here now and I know you'll never leave me."
-            m 1ekbsa "And this song will always remind me of how lucky I was to have met you, [player]."
-        else:
-            m 2eka "But it's okay, you're here now and you'll stay with me forever, right [player]?"
-    return
+        m 3eua "I call it {i}Our Reality{/i}."
+        m 1ekc "If you dont mind I`ll play it for you now."
+        call mas_song_our_reality
+        m 1rkc "I hoped you liked it [player]."
+        m 1rkc "I love you."
+    $ mas_unlockEVL("mas_song_our_reality", "SNG")
+    return "no_unlock|love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poetry",category=['literature'],prompt="Poetry",random=True))
