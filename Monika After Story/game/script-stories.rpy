@@ -65,8 +65,7 @@ label monika_short_stories_premenu(story_type=None):
     $ end = ""
 
 label monika_short_stories_menu:
-    # TODO: consider caching the built stories if we have many story 
-    #   categories.
+    # TODO: consider caching the built stories if we have many story categories
 
     python:
         import store.mas_stories as mas_stories
@@ -337,7 +336,7 @@ label mas_story_tyrant:
     m 3eud "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
     m 1tfb "The Cat replied, 'you abound in apologies, but it's time for breakfast.'"
     m 1hksdrb "At that he made a meal of the Cock."
-    m 3eua "The moral of this story is that: 'Tyrants need no excuse.'"
+    m 3eua "The moral of this story is, tyrants need no excuse."
     m 1hua "I hope you enjoyed this little story, [player]~"
     return
 
@@ -352,7 +351,7 @@ label mas_story_despise:
     m 1eua "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
     m 3eub "Turning round again with a one,{w=1.0} two,{w=1.0} three,{w=1.0} he jumped up, but with no greater success."
     m 3tkc "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: 'I am sure they are sour.'"
-    m 1hksdrb "The moral of this story is that: 'It is easy to despise what you cannot get.'"
+    m 1hksdrb "The moral of this story is, it's easy to despise what you cannot get."
     m 1eua "I hope you liked it, [player]~"
     return
 
@@ -370,7 +369,7 @@ label mas_story_lies:
     m 1ekc "The boy cried out 'Wolf, Wolf!' still louder than before."
     m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
     m 2dsc "So the Wolf made a good meal of the boy's flock."
-    m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth.'"
+    m 2esc "The moral of this story is, liars are not believed even when they speak the truth."
     m 1hksdlb "You shouldn't worry about it, [player]..."
     m 3hua "You'd never lie to me, right?"
     m 1hub "Ehehe~"
@@ -390,7 +389,7 @@ label mas_story_grasshoper:
     m 1hfb "'Why bother about winter?' said the Grasshopper; 'we have plenty of food now!'"
     m 3eua "The Ant went on its way."
     m 1dsc "When winter came, the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
-    m 3hua "The moral of this story is that: 'There's a time for work and a time for play.'"
+    m 3hua "The moral of this story is, there's a time for work and a time for play."
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
     return "love"
@@ -407,7 +406,7 @@ label mas_story_wind_sun:
     m 3euc "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
     m 1ekc "But the harder he blew the more closely did the traveller wrap his cloak around him, till at last the Wind had to give up in despair."
     m 1euc "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
-    m 3hua "The moral of this story is that: 'Gentleness and kind persuasion win where force and bluster fail.'"
+    m 3hua "The moral of this story is, gentleness and kind persuasion win where force and bluster fail."
     m 1hub "Hope you had fun, [player]."
     return
 
@@ -424,9 +423,9 @@ label mas_story_seeds:
     m 3rksdld "The birds paid no heed to the Swallow's words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
     m 1euc "Many birds that had despised the Swallow's advice were caught in nets made out of that very hemp."
     m 3hfu "'What did I tell you?' said the Swallow."
-    m 3hua "The moral of this story is: 'Destroy the seeds of evil before they grow up to be your ruin.'"
+    m 3hua "The moral of this story is, destroy the seeds of evil before they grow up to be your ruin."
     m 1lksdlc "..."
-    m 2dsc "I wish I could've followed that moral."
+    m 2dsc "I wish I could've followed that moral..."
     m 2lksdlc "You wouldn't have had to go through what you saw."
     m 4hksdlb "Anyway, I hope you liked the story, [player]!"
     return
@@ -443,7 +442,7 @@ label mas_story_gray_hair:
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
     m 3hksdlb "The Man soon found himself entirely bald."
-    m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield.'"
+    m 1hua "The moral of this story is, yield to all and you will soon have nothing to yield."
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
     m 1hksdlb "Ehehe, I love you!~"
@@ -460,7 +459,7 @@ label mas_story_fisherman:
     m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal!'"
     m 1eud "But the Fisherman quickly put the fish into his basket."
     m 3tfu "'How foolish I should be,' he said, 'to throw you back. However small you may be, you are better than nothing at all.'"
-    m 3esa "The moral of this story is that: 'A small gain is worth more than a large promise.'"
+    m 3esa "The moral of this story is, a small gain is worth more than a large promise."
     m 1hub "I hope you enjoyed this little story, [player]~"
     return
 
@@ -563,7 +562,7 @@ label mas_story_genie_regret:
     m 3eua "He was going to live with the things he had done, but the question remained as to what he planned to do about it."
     m 1hua "It was because of everything he had been through, he was able to learn and move on,{w=0.3} better than before."
     m 1eua "I hope you liked the story, [player]."
-    m 1eka "The moral of the story is even if you've done things you regret, you shouldn't let that keep you down."
+    m 1eka "The moral of the story is, even if you've done things you regret, you shouldn't let that keep you down."
     m 3ekd "Mistakes will happen, people will get hurt.{w=0.5} Nothing will ever change that."
     m 3eka "The truth is, a lot of times we tend to blame ourselves for things that likely would've happened with or without our involvement."
     m 3eub "In fact, it's through regret that we learn compassion, empathy, and forgiveness."
@@ -757,6 +756,37 @@ label mas_story_crow_and_pitcher:
     m 1hua "I hope it does for you too, [player]~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_friend",
+            prompt="Having A Best Friend",
+            unlocked=True
+        ),
+        code="STY"
+    )
+
+label mas_story_friend:
+    call mas_story_begin
+    m 3eua "Once two friends were walking through the desert..."
+    m 1eua  "During some point of their journey, they had an argument {nw}"
+    extend 1wud "and one friend slapped the other in the face!"
+    m 1eud "The one who got slapped was hurt, but without saying anything wrote in the sand,{w=0.1} 'Today my best friend slapped me in the face.'"
+    m 1eua "They kept on walking until they found an oasis, where they decided to take a bath."
+    m 1ekc "The one who had been slapped got stuck in the mire and started drowning,{w=0.1} {nw}"
+    extend 3wuo "but the other saved him!"
+    m 3eua "After he recovered from the near drowning, he wrote on a stone,{w=0.1} 'Today my best friend saved my life.'"
+    m 3eud "The friend who had slapped and saved his best friend asked him,{w=0.1} 'After I hurt you, you wrote in the sand and now, you write on a stone, why?'"
+    m 3eua "The other friend replied, 'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
+    m 3eub "'But!'"
+    m 3eua "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
+    m 1hua "The moral of the story is, do not let the shadows of your past darken the doorstep of your future.{w=0.2} {nw}"
+    extend 3hua "Forgive and Forget."
+    m 1hua "I hope you enjoyed it, [player]!"
+    return
+
+#START: Scary Stories
 define mas_scary_story_setup_done = False
 
 # Scary stories start here
@@ -1000,7 +1030,7 @@ label mas_scary_story_mujina:
         stop sound
         hide mujina
     else:
-        m 2tub "The salesman responded 'Oh, you mean like this?'"
+        m 2tub "The salesman responded, 'Oh, you mean like this?'"
     m 4wud "The man looked up at the salesman and saw the same horrifying emptiness from the girl."
     m "Before the merchant could get away, the void let out a high pitch screech..."
     m 1dsc "...and then there was darkness."
