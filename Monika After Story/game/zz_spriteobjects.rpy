@@ -1409,10 +1409,8 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="chocs",
-        mux_type=[store.mas_sprites.EXP_A_LD],
-        entry_pp=store.mas_sprites._acs_heartchoc_entry,
-        exit_pp=store.mas_sprites._acs_heartchoc_exit,
-        keep_on_desk=True
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
     )
     store.mas_sprites.init_acs(mas_acs_heartchoc)
 
@@ -2265,85 +2263,6 @@ init -1 python:
 ### accessory name
 # <var>
 # <var comment>
-
-### COFFEE MUG
-
-default persistent._mas_acs_enable_coffee = False
-# True enables coffee, False disables coffee
-
-default persistent._mas_coffee_been_given = False
-# True means user has given monika coffee before, False means no
-
-default persistent._mas_coffee_brew_time = None
-# datetime that coffee startd brewing. None if coffe not brewing
-
-default persistent._mas_coffee_cup_done = None
-# datetime that monika will finish her coffee. None means she isnt drinking any
-
-default persistent._mas_coffee_cups_drank = 0
-# number of cups of coffee monika has drank
-
-define mas_coffee.BREW_LOW = 2*60
-# lower bound of seconds it takes to brew some coffee
-
-define mas_coffee.BREW_HIGH = 4*60
-# upper bound of seconds it takes to brew some coffee
-
-define mas_coffee.DRINK_LOW = 10 * 60
-# lower bound of seconds it takes for monika to drink coffee
-
-define mas_coffee.DRINK_HIGH = 2 * 3600
-# upper bound of seconds it takes for monika to drink coffee
-
-define mas_coffee.BREW_CHANCE = 80
-# percent chance out of 100 that we are brewing coffee during the appropriate
-# times
-
-define mas_coffee.DRINK_CHANCE = 80
-# percent chance out of 100 that we are drinking coffee during the appropriate
-# times
-
-define mas_coffee.COFFEE_TIME_START = 5
-# hour that coffee time begins (inclusive)
-
-define mas_coffee.COFFEE_TIME_END =  12
-# hour that coffee time ends (exclusive)
-
-define mas_coffee.BREW_DRINK_SPLIT = 9
-# hour between the coffee times where brewing turns to drinking
-# from COFFEE_TIME_START to this time, brew chance is used
-# from this time to COFFEE_TIME_END, drink chance is used
-
-### HOT CHOCOLATE MUG ###
-
-# NOTE: please use consumable framework when ever that is created
-# NOTE: so we dont get dum things, use _mas_c for all future consumable-based
-#   calculations. Everything will get replcaed with a more concrete storage
-#   system in the future, anyway.
-
-default persistent._mas_acs_enable_hotchoc = False
-# True enables hot chocolate, False disables
-
-default persistent._mas_c_hotchoc_been_given = False
-# True means the user has given monika hotchoc before, False means no
-
-default persistent._mas_c_hotchoc_brew_time = None
-# datetime that hot choco started being made. None if not being made
-
-default persistent._mas_c_hotchoc_cup_done = None
-# datetime that monika will finish her hotchoc. MNone means she is not drining
-
-default persistent._mas_c_hotchoc_cups_drank = 0
-# number of cups of hotchoc monika has drank
-
-define mas_coffee.HOTCHOC_TIME_START = 19
-# hour that hotchoc time begins (inclusive)
-
-define mas_coffee.HOTCHOC_TIME_END = 22
-# hour that hotchoc time ends (exclusive)
-
-define mas_coffee.HOTCHOC_BREW_DRINK_SPLIT = 21
-# similar to coffee split, but for hotchocolate
 
 ### QUETZAL PLUSHIE ###
 default persistent._mas_acs_enable_quetzalplushie = False
