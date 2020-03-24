@@ -65,8 +65,7 @@ label monika_short_stories_premenu(story_type=None):
     $ end = ""
 
 label monika_short_stories_menu:
-    # TODO: consider caching the built stories if we have many story
-    #   categories.
+    # TODO: consider caching the built stories if we have many story categories
 
     python:
         import store.mas_stories as mas_stories
