@@ -1377,6 +1377,9 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
+    #Now we check if we should drink
+    $ MASConsumable._checkConsumables(startup=True)
+
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
@@ -1731,6 +1734,9 @@ label ch30_minute(time_since_check):
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+
+    #Runtime checks to see if we should have a consumable
+    $ MASConsumable._checkConsumables()
     return
 
 # label for things that should run about once per day
@@ -1922,12 +1928,7 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    ## should we drink coffee?
-    $ _mas_startupCoffeeLogic()
-
-    ## shoujld we drink hot chocolate
-    $ _mas_startupHotChocLogic()
-
+    #Do startup checks
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
@@ -1973,8 +1974,14 @@ label ch30_reset:
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()

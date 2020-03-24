@@ -195,6 +195,13 @@ init -810 python:
         end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
+#Images
+image mas_o31_deco = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
+    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+)
+
+#Functions
 init -10 python:
     import random
 
@@ -629,7 +636,7 @@ label greeting_o31_rin:
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
-        call mas_transition_from_empty_desk("monika 1eua")
+        call mas_transition_from_emptydesk("monika 1eua")
         m 1hub "Hi, [player]!"
         m 3hub "Do you like my costume?"
 
@@ -895,7 +902,7 @@ label bye_trick_or_treat_iowait:
     show screen mas_background_timed_jump(4, "bye_trick_or_treat_iowait")
     menu:
         m "Give me a second to get ready.{fast}"
-        "Wait, wait!":
+        "Hold on a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
@@ -6048,6 +6055,46 @@ init -810 python:
         end_dt=datetime.datetime(2020, 9, 23)
     ))
 
+### bday stuff
+
+############### [HOL060]: IMAGES
+define mas_bday_cake_lit = False
+image mas_bday_cake_monika = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
+)
+
+image mas_bday_cake_player = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
+)
+
+image mas_bday_banners = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
+)
+
+image mas_bday_balloons = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+)
+
 ############### [HOL060]: METHODS
 init -1 python:
     def mas_isMonikaBirthday(_date=None):
@@ -6882,8 +6929,10 @@ label mas_bday_bd_outro:
     $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
     $ mas_addClothesToHolidayMap(mas_clothes_blackdress)
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
-    show monika 1eua
+
+    call mas_transition_from_emptydesk("monika 1eua")
     call monika_zoom_transition_reset(1.0)
+    #NOTE: We change the zoom here because we want to show off the outfit.
 
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"

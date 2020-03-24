@@ -2456,6 +2456,13 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
+#Chibika's text style
+style chibika_note_text:
+    font "gui/font/Halogen.ttf"
+    size 28
+    color "#000"
+    outlines []
+
 #Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
 screen submods():
     tag menu

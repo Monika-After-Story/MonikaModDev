@@ -169,54 +169,6 @@ define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffi
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
-image mas_roses = ConditionSwitch(
-    "morning_flag", "mod_assets/monika/a/acs-roses-0.png",
-    "not morning_flag", "mod_assets/monika/a/acs-roses-0-n.png"
-)
-
-### bday stuff
-define mas_bday_cake_lit = False
-image mas_bday_cake_monika = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
-)
-
-image mas_bday_cake_player = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
-)
-
-image mas_bday_banners = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
-)
-
-image mas_bday_balloons = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
-)
-
-image mas_o31_deco = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
-    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
-)
-
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings
 # basically on startup, we evaluate each acs and add mux types and other
@@ -343,6 +295,10 @@ init -100 python in mas_sprites:
     # v: string
     # marks that an ACS requires a hairstyle with the value'd prop to be worn
 
+    EXP_A_LD = "left-desk-acs"
+    # v: ignored
+    # marks that this ACS is on the left side (Monika's left) of the desk
+
     EXP_A_RBL = "ribbon-like"
     # v: ignored
     # marks that an ACS is like a ribbon in function
@@ -350,6 +306,14 @@ init -100 python in mas_sprites:
     EXP_A_TWRB = "twin-ribbon"
     # v: ignored
     # marks that an ACS is a twin ribbon-based acs
+
+    EXP_A_FOOD = "food"
+    # v: ignored
+    # marks that this ACS is a food
+
+    EXP_A_DRINK = "drink"
+    # v: ignored
+    # marks that this ACS is a drink
 
     # ---- HAIR ----
 
@@ -439,7 +403,14 @@ init -100 python in mas_sprites:
         "headphones",
         "left-hair-flower",
     ]
-    # default mux tyoes for left hair flower-baesd items
+    # default mux types for left hair flower-baesd items
+
+    DEF_MUX_LD = [
+        "plush_q",
+        "chocs",
+        "plate"
+    ]
+    # default mux types for left-desk related items (namely foods)
 
     DEF_MUX_HAT = [
         "hat",
@@ -528,14 +499,26 @@ init -100 python in mas_sprites:
         ),
         "mug": ACSTemplate(
             "mug",
-            mux_type=["mug"],
-            keep_on_desk=True
+            mux_type=["mug", "thermos-mug"],
+            keep_on_desk=True,
+            ex_props={
+                EXP_A_DRINK: True
+            }
         ),
         "necklace": ACSTemplate(
             "necklace",
             mux_type=["necklace"],
             ex_props={
                 "bare collar": True,
+            }
+        ),
+        "plate": ACSTemplate(
+            "plate",
+            mux_type=DEF_MUX_LD,
+            keep_on_desk=True,
+            ex_props={
+                EXP_A_LD: True,
+                EXP_A_FOOD: True
             }
         ),
         # ring
@@ -549,6 +532,11 @@ init -100 python in mas_sprites:
             ex_props={
                 EXP_A_RBL: True,
             }
+        ),
+        "thermos-mug": ACSTemplate(
+            "thermos-mug",
+            mux_type=["mug", "thermos-mug"],
+            keep_on_desk=False
         ),
         "twin-ribbons": ACSTemplate(
             "twin-ribbons",
