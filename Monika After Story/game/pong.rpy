@@ -643,9 +643,9 @@ label mas_pong_dlg_winner:
             m 2tfd "[player]!"
 
             if persistent._mas_pm_ever_let_monika_win_on_purpose:
-                $ menu_response = "Are you letting me win on purpose again?"
+                $ menu_response = _("Are you letting me win on purpose again?")
             else:
-                $ menu_response = "Are you letting me win on purpose?"
+                $ menu_response = _("Are you letting me win on purpose?")
 
             m 2rkc "[menu_response]"
             $ _history_list.pop()

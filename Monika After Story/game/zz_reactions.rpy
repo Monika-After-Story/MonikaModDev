@@ -64,7 +64,7 @@ init -11 python in mas_filereacts:
         "GiftReactDetails",
         [
             # label corresponding to this gift react
-            "label", 
+            "label",
 
             # lowercase, no extension giftname for this gift react
             "c_gift_name",
@@ -255,7 +255,7 @@ init -11 python in mas_filereacts:
                         )
 
             labels.extend(gsp_labels)
-                    
+
         # and lastlly is generics
         if len(gen_details) > 0:
             gen_labels = []
@@ -314,7 +314,7 @@ init -11 python in mas_filereacts:
             override_react_map=False,
     ):
         """
-        Finds gifts. 
+        Finds gifts.
 
         IN:
             exclusion_list - list of giftnames to exclude from the search
@@ -355,7 +355,7 @@ init -11 python in mas_filereacts:
                 and c_gift_name not in store.persistent._mas_filereacts_stop_map
                 and (
                     override_react_map
-                    or c_gift_name not 
+                    or c_gift_name not
                         in store.persistent._mas_filereacts_reacted_map
                 )
             ):
@@ -400,7 +400,7 @@ init -11 python in mas_filereacts:
             # determine if reaction exists
             mas_gift = gifts[index]
             reaction = filereact_map.get(mas_gift, None)
-            
+
             if mas_gift is not None and reaction is not None:
 
                 # pull sprite data
@@ -451,7 +451,7 @@ init -11 python in mas_filereacts:
 
     def react_to_gifts(found_map, connect=True):
         """
-        Reacts to gifts using the standard protocol (no exclusions) 
+        Reacts to gifts using the standard protocol (no exclusions)
 
         IN:
             connect - true will apply connectors, FAlse will not
@@ -668,7 +668,7 @@ init -11 python in mas_filereacts:
 ##            generic_reacts.append(gift_starters.quip()[1])
 #
 #        # now return the list
-#        return generic_reacts 
+#        return generic_reacts
 
 
     def register_gen_grds(details):
@@ -984,7 +984,7 @@ init python:
 
         REUTRNS: tuple of the folling format:
             [0]: sprite type of the sprite
-            [1]: sprite name (id) 
+            [1]: sprite name (id)
             [2]: giftname this sprite is associated with
             [3]: True if this gift has already been given before
             [4]: sprite object (could be None even if sprite name is populated)
@@ -1041,7 +1041,7 @@ init python:
             return
 
         sp_data = (sp_type, sp_name)
-        
+
         if sp_data in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop(sp_data)
 
@@ -1283,10 +1283,10 @@ label mas_reaction_gift_generic_sprite_json:
         else:
             python:
                 acs_quips = [
-                    "I really appreciate it!",
-                    "[its] amazing!",
-                    "I just love [item_ref]!",
-                    "[its] wonderful!"
+                    _("I really appreciate it!"),
+                    _("[its] amazing!"),
+                    _("I just love [item_ref]!"),
+                    _("[its] wonderful!")
                 ]
 
                 # we have a complete description, so use it here
@@ -1316,10 +1316,10 @@ label mas_reaction_gift_generic_clothes_json(sprite_object):
         mas_giftCapGainAff(3)
         # expandable
         outfit_quips = [
-            "I think it's really cute, [player]!",
-            "I think it's amazing, [player]!",
-            "I just love it, [player]!",
-            "I think it's wonderful, [player]!"
+            _("I think it's really cute, [player]!"),
+            _("I think it's amazing, [player]!"),
+            _("I just love it, [player]!"),
+            _("I think it's wonderful, [player]!")
         ]
         outfit_quip = renpy.random.choice(outfit_quips)
 
@@ -1432,11 +1432,7 @@ label mas_reaction_gift_hairclip(hairclip_name,desc=None):
 ## End hairclip reactions
 
 
-## coffee vars
-# NOTE: this is just for reference, check sprite-chart for inits
-# persistent._mas_acs_enable_coffee
-# persistent._mas_coffee_brewing
-
+##START: Consumables gifts
 init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
@@ -1445,49 +1441,160 @@ label mas_reaction_gift_coffee:
     extend 3hub "Coffee!"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
-    if persistent._mas_coffee_been_given:
+    $ coffee = mas_getConsumable("coffee")
+
+    if coffee.enabled() and coffee.hasServing():
         $ mas_giftCapGainAff(0.5)
         m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
+
+    elif coffee.enabled() and not coffee.hasServing():
+        $ mas_giftCapGainAff(0.5)
+        m 3eub "I actually ran out of coffee, so getting more from you now is amazing!"
+        m 1hua "Thanks again, [player]~"
 
     else:
         $ mas_giftCapGainAff(5)
 
         m 1hua "Now I can finally make some!"
         m 1hub "Thank you so much, [player]!"
-        m 3eua "Why don't I go ahead and make a cup right now?"
 
-        $ curr_zoom = store.mas_sprites.zoom_level
-        call monika_zoom_transition_reset(1.0)
-        show emptydesk at i11 zorder 9
+        #If we're currently brewing/drinking anything, or it's not time for this consumable, we'll just not have it now
+        if (
+            not coffee.isConsTime()
+            or bool(MASConsumable._getCurrentDrink())
+        ):
+            m 3eua "I'll be sure to have some later!"
 
-        m 1eua "I'd like to share the first with you, after all."
+        else:
+            m 3eua "Why don't I go ahead and make a cup right now?"
+            m 1eua "I'd like to share the first with you, after all."
 
-        # monika is off screen
-        hide monika with dissolve
-        pause 2.0
-        m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
-        m "Ah, there it is!{w=2}{nw}"
-        pause 5.0
-        m "And there we go!{w=2}{nw}"
-        show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-        hide emptydesk
+            #Monika is off screen
+            call mas_transition_to_emptydesk
+            pause 2.0
+            m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
+            m "Ah, there it is!{w=2}{nw}"
+            pause 5.0
+            m "And there we go!{w=2}{nw}"
+            call mas_transition_from_emptydesk()
 
-        # 1 second wait so dissolve is complete before zooming
-        $ renpy.pause(0.5, hard=True)
-        call monika_zoom_transition(curr_zoom, 1.0)
+            #Monika back on screen
+            m 1eua "I'll let that brew for a few minutes."
 
-        # monika back on screen
-        m 1eua "I'll let that brew for a few minutes."
+            $ coffee.prepare()
+        $ coffee.enable()
 
-        $ mas_brewCoffee()
-        $ persistent._mas_acs_enable_coffee = True
-        $ persistent._mas_coffee_been_given = True
+    #Stock some coffee
+    $ coffee.restock()
 
     $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
+
+init 5 python:
+    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True, exclude_on=["d25g"])
+
+label mas_reaction_hotchocolate:
+    m 3hub "Hot chocolate!"
+    m 3hua "Thank you, [player]!"
+    $ mas_receivedGift("mas_reaction_hotchocolate")
+
+    $ hotchoc = mas_getConsumable("hotchoc")
+
+    if hotchoc.enabled() and hotchoc.hasServing():
+        $ mas_giftCapGainAff(0.5)
+        m 1wuo "It's a flavor I haven't had before."
+        m 1hua "I can't wait to try it!"
+        m "Thank you so much, [player]!"
+
+    elif hotchoc.enabled() and not hotchoc.hasServing():
+        $ mas_giftCapGainAff(0.5)
+        m 3rksdla "I'm actually out of hot chocolate, ahaha...{w=0.5} {nw}"
+        extend 3eub "So getting more from you now is amazing!"
+        m 1hua "Thanks again, [player]~"
+
+    else:
+        python:
+            mas_giftCapGainAff(3)
+            those = "these" if not morning_flag and mas_isWinter() else "those"
+
+        m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
+
+
+        m 2rksdla "...Especially on [those] cold, winter nights."
+        m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
+        m 3ekbfa "...Doesn't that sound so romantic?"
+        m 1dkbfa "..."
+        m 1hua "But for now, at least I can enjoy it here."
+        m 1hub "Thanks again, [player]!"
+
+        #If we're currently brewing/drinking anything, we don't do this now
+        if (
+            hotchoc.isConsTime()
+            and not mas_isWinter()
+            or bool(MASConsumable._getCurrentDrink())
+        ):
+            m 3eua "I'll be sure to have some later!"
+
+        else:
+            m 3eua "In fact, I think I'll make some right now!"
+
+            call mas_transition_to_emptydesk
+            pause 5.0
+            call mas_transition_from_emptydesk("monika 1eua")
+
+            m 1hua "There, it'll be ready in a few minutes."
+
+            $ hotchoc.prepare()
+
+        if mas_isWinter():
+            $ hotchoc.enable()
+
+    #Stock up some hotchocolate
+    $ hotchoc.restock()
+
+    $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+init 5 python:
+    addReaction("mas_reaction_gift_thermos_mug", "justmonikathermos", is_good=True)
+
+label mas_reaction_gift_thermos_mug:
+    call mas_thermos_mug_handler(mas_acs_thermos_mug, "Just Monika", "justmonikathermos")
+    return
+
+#Whether or not we've given Monika a thermos before
+default persistent._mas_given_thermos_before = False
+
+#Thermos handler
+label mas_thermos_mug_handler(thermos_acs, disp_name, giftname):
+    if mas_SELisUnlocked(thermos_acs):
+        m 1eksdla "[player]..."
+        m 1rksdlb "I already have this thermos, ahaha..."
+
+    elif persistent._mas_given_thermos_before:
+        m 1wud "Oh!{w=0.3} Another thermos!"
+        m 1hua "And it's a [disp_name] one this time."
+        m 1hub "Thanks so much, [player], I can't wait to use it!"
+
+    else:
+        m 1wud "Oh!{w=0.3} A [disp_name] thermos!"
+        m 1hua "Now I can bring something to drink when we go out together~"
+        m 1hub "Thanks so much, [player]!"
+        $ persistent._mas_given_thermos_before = True
+
+    #Now unlock the acs
+    $ mas_selspr.unlock_acs(thermos_acs)
+    #Save selectables
+    $ mas_selspr.save_selectables()
+    #And delete the gift file
+    $ mas_filereacts.delete_file(giftname)
+    return
+
+##END: Consumable related gifts
 
 init 5 python:
     addReaction("mas_reaction_quetzal_plush", "quetzalplushie", is_good=True)
@@ -1499,7 +1606,11 @@ label mas_reaction_quetzal_plush:
         m 1wud "Oh!"
 
         #Wear plush
-        $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+        #If we're eating something, the plush space is taken and we'll want to wear center
+        if MASConsumable._getCurrentFood():
+            $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+        else:
+            $ monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         $ persistent._mas_acs_enable_quetzalplushie = True
         m 1sub "It's a quetzal!"
@@ -1510,11 +1621,16 @@ label mas_reaction_quetzal_plush:
             m 1wub "How did you guess, [player]?"
             m 3eka "You must know me very well~"
             m 1eua "A quetzal would be my first choice for a pet..."
-        m 1rud "But I would never force the poor thing to stay."    
+        m 1rud "But I would never force the poor thing to stay."
         m 1hua "And now you gave me the next best thing!"
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
             m 3ekbsa "You always seem to know how to make me smile."
+
+        if MASConsumable._getCurrentFood():
+            m 3rksdla "My desk is getting a little full though..."
+            m 1eka "I'll just put this away for now."
+            $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
 
         m 1hub "Thank you again, [player]~"
 
@@ -1790,59 +1906,6 @@ label mas_reaction_candycorn:
     return
 
 init 5 python:
-    addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True, exclude_on=["d25g"])
-
-label mas_reaction_hotchocolate:
-    m 3hub "Hot chocolate!"
-    m 3hua "Thank you, [player]!"
-    $ mas_receivedGift("mas_reaction_hotchocolate")
-
-    if persistent._mas_c_hotchoc_been_given:
-        $ mas_giftCapGainAff(0.5)
-        m 1wuo "It's a flavor I haven't had before."
-        m 1hua "I can't wait to try it!"
-        m "Thank you so much, [player]!"
-
-    else:
-        $ mas_giftCapGainAff(3)
-        m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
-        m 2rksdla "...Especially on those cold, winter nights."
-        m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
-        m 3ekbfa "...Doesn't that sound so romantic?"
-        m 1dkbfa "..."
-        m 1hua "But for now, at least I can enjoy it here."
-        m 1hub "Thanks again, [player]!"
-
-        if persistent._mas_coffee_cup_done is not None:
-            m 3eua "I'll be sure to have some later!"
-        else:
-            $ curr_zoom = store.mas_sprites.zoom_level
-            call monika_zoom_transition_reset(1.0)
-            show emptydesk at i11 zorder 9
-
-            m 3eua "In fact, I think I'll make some right now!"
-
-            hide monika with dissolve
-            pause 5.0
-            show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
-            hide emptydesk
-
-            # 1 second wait so dissolve is complete before zooming
-            $ renpy.pause(0.5, hard=True)
-            call monika_zoom_transition(curr_zoom, 1.0)
-
-            m 1hua "There, it'll be ready in a few minutes."
-
-            $ mas_brewHotChoc()
-
-        $ persistent._mas_acs_enable_hotchoc = True
-        $ persistent._mas_c_hotchoc_been_given = True
-
-    $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
-
-init 5 python:
     addReaction("mas_reaction_fudge", "fudge", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_fudge:
@@ -1929,11 +1992,11 @@ label mas_reaction_candycane:
         else:
             m 1hub "I just love the flavor of mint!"
         m 1eua "Thanks, [player]."
-    
+
     elif times_cane_given == 1:
         m 3hua "Another candy cane!"
         m 3hub "Thanks [player]!"
-    
+
     else:
         m 1eksdla "[player], I think I have enough candy canes for now."
         m 1eka "You can save them for later, alright?"
@@ -2113,7 +2176,7 @@ label mas_reaction_json_ribbon_base(ribbon_name, user_friendly_desc, helper_labe
         # giftname is the 3rd item
         if sprite_data[2] is not None:
             store.mas_filereacts.delete_file(sprite_data[2])
-            
+
         mas_finishSpriteObjInfo(sprite_data)
     return
 
@@ -2309,11 +2372,13 @@ label _mas_reaction_ribbon_helper(label):
 label mas_reaction_new_ribbon:
     python:
         def _ribbon_prepare_hair():
-            # TODO: need to identifiy what outfits work with ponytail
-            # and what do not
+            if monika_chr.hair.hasprop("ribbon"):
+                # first check for ribbon prop
+                return
+
+            # no ribbon prop means we should change
             if (
-                    monika_chr.clothes == mas_clothes_marisa
-                    or monika_chr.clothes == mas_clothes_rin
+                    monika_chr.clothes == mas_clothes_rin
                 ):
                 if mas_isD25Outfit():
                     monika_chr.change_outfit(
@@ -2479,7 +2544,10 @@ label mas_reaction_gift_chocolates:
 
     if not persistent._mas_given_chocolates_before:
         $ persistent._mas_given_chocolates_before = True
-        $ monika_chr.wear_acs(mas_acs_heartchoc)
+
+        #If we're eating something already, that takes priority over the acs
+        if not MASConsumable._getCurrentFood():
+            $ monika_chr.wear_acs(mas_acs_heartchoc)
 
         $ mas_giftCapGainAff(5)
 
@@ -2510,7 +2578,9 @@ label mas_reaction_gift_chocolates:
         $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
         if times_chocs_given == 0:
             #We want this to show up where she accepts the chocs
-            $ monika_chr.wear_acs(mas_acs_heartchoc)
+            #Same as before, we don't want these to show up if we're already eating
+            if not MASConsumable._getCurrentFood():
+                $ monika_chr.wear_acs(mas_acs_heartchoc)
 
             $ mas_giftCapGainAff(3 if mas_isSpecialDay() else 1)
 
@@ -2528,7 +2598,10 @@ label mas_reaction_gift_chocolates:
                 m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
 
         elif times_chocs_given == 1:
-            $ monika_chr.wear_acs(mas_acs_heartchoc)
+            #Same here
+            if not MASConsumable._getCurrentFood():
+                $ monika_chr.wear_acs(mas_acs_heartchoc)
+
             m 1eka "More chocolates, [player]?"
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
@@ -2723,7 +2796,7 @@ label mas_reaction_gift_clothes_finale_jacket_brown:
         if mas_isWinter():
             m 1tuu "I won't be getting cold anytime soon because of you, [player]~"
         m 3eub "Let me go put it on! I'll be right back."
-    
+
         # try it on
         call mas_clothes_change(sprite_object)
 
