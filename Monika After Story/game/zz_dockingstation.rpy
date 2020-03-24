@@ -2210,13 +2210,25 @@ label mas_dockstat_first_time_goers:
     m 1eua "Anyway..."
     return
 
+label mas_dockstat_abort_post_show:
+    #Call this label to re-set anything needed when aborting dockstat farewells (error or by user)
+    #After Monika has returned to her desk
+    python:
+        #Restore the drink and make sure it's kept on desk again
+        _curr_drink = MASConsumable._getCurrentDrink()
+        if _curr_drink and _curr_drink.portable:
+            _curr_drink.acs.keep_on_desk = True
+
+    return
+
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
     # we should abort the promise (this lets spaceroom idle abort, as well)
-    $ store.mas_dockstat.abort_gen_promise = True
+    python:
+        store.mas_dockstat.abort_gen_promise = True
 
-    # attempt to abort the promise
-    $ store.mas_dockstat.abortGenPromise()
+        #Attempt to abort the promise
+        store.mas_dockstat.abortGenPromise()
 
     #FALL THROUGH
 
@@ -2269,9 +2281,6 @@ label mas_dockstat_empty_desk:
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25ShowVisuals()
-
-    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
-        $ renpy.show("mas_roses", zorder=10)
 
     if mas_confirmedParty() and mas_isMonikaBirthday():
         $ persistent._mas_bday_visuals = True
@@ -2374,7 +2383,6 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
-    $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
 
@@ -2524,6 +2532,7 @@ label mas_dockstat_generic_wait_label:
 
             #Show Monika again
             call mas_transition_from_emptydesk("monika 1ekc")
+            call mas_dockstat_abort_post_show
 
             if renpy.has_label(mas_farewells.dockstat_cancel_dlg_label):
                 jump expression mas_farewells.dockstat_cancel_dlg_label
@@ -2560,7 +2569,7 @@ label mas_dockstat_generic_rtg:
         return "quit"
 
     call mas_transition_from_emptydesk("monika 1ekc")
-
+    call mas_dockstat_abort_post_show
     # otherwise, we failed, so monika should tell player
     m 1ekc "Oh no..."
     m 1lksdlb "I wasn't able to turn myself into a file."
