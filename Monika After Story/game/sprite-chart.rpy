@@ -6537,7 +6537,7 @@ init -2 python:
                 # fallbacks use poses (as strings)
 
                 if cls.msj._verify_pose(prop_val, allow_none=False):
-                    mpm_data[prop_name[ = prop_val
+                    mpm_data[prop_name] = prop_val
 
                 else:
                     msg_log.append((
