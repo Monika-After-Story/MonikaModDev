@@ -357,6 +357,10 @@
 #   Filter objects map filters to highlight codes. Highlight codes are suffixed
 #   to the end of files (before extension) as "h<code>"
 # {
+#   "default": "default higlight code to use"
+#       - optional
+#       - string
+#       - highlight code to use as default
 #   "day": "highlight code to use"
 #       - optional
 #       - string
@@ -492,8 +496,8 @@ init -21 python in mas_sprites_json:
     NO_DLG_PLUR = "'dlg_plural' not found, ignoring 'dlg_desc'"
 
     ## MASPoseMap
-    MPM_LOADING = "loading MASPoseMap in '{0}'..."
-    MPM_SUCCESS = "MASPoseMap '{0}' loaded successfully!"
+    MPM_LOADING = "loading Pose Map in '{0}'..."
+    MPM_SUCCESS = "Pose Map '{0}' loaded successfully!"
     MPM_BAD_TYPE = "invalid mpm_type '{0}'"
     MPM_TYPE_MISS = "expected mpm_type in {0}, got '{1}'"
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
@@ -503,13 +507,31 @@ init -21 python in mas_sprites_json:
     MPM_ACS_DEF_L = "acs leaning default pose not set"
     MPM_DEF = "default not set"
     MPM_DEF_L = "leaning default not set"
-    MPM_ACS_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
+    MPM_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
     MPM_AS_BAD_TYPE = "property '{0}' - expected {1}, got {2}"
     MPM_AS_EXTRA = "arm_split cannot be used with rec_layer '{0}'"
     MPM_PA_BAD_TYPE = "property '{0}' - expected object, got {1}"
 
+    ## MASHighlightMap
+    MHM_LOADING = "loading Highlight object in '{0}'..."
+    MHM_SUCCESS = "Highlight object '{0}' loaded successfully!"
+    MHM_S_LOADING = "loading Highlight Split object in '{0}'..."
+    MHM_S_SUCCESS = "Highlight Split object '{0}' loaded successfully!"
+    MHM_LOADING_MAPPING = "loading mapping..."
+    MHM_SUCCESS_MAPPING = "mapping loaded successfully!"
+    MHM_NO_DATA = "No data in Highlight object, ignoring"
+    MHM_S_NO_DATA = "No data in Highlight Split object, ignoring"
+    MHM_KEY_BAD_TYPE = "key '{0}' - expected type {1} got {2}"
+
+    ## MASFilterMap 
+    MFM_LOADING = "loading Filter object in '{0}'..."
+    MFM_SUCCESS = "Filter object '{0}' loaded successfully!"
+    MFM_NONE_FLT = "filter '{0}' set to null, ignoring"
+    MFM_BAD_TYPE = "filter '{0}' - expected type str, got {1}"
+    MFM_NO_DATA = "No data in Filter object, ignoring"
+
     ## MASPoseArms
-    MPA_LOADING = "loading MASPoseArms in '{0}'..."
+    MPA_LOADING = "loading Pose Arms in '{0}'..."
     MPA_SUCCESS = "MASPoseArms '{0}' loaded successfully!"
     MPA_NO_DATA = "no MASPoseArms data found"
     MPA_BOTH_OVER = "'both' data found. 'left' and 'right' will be discarded."
@@ -1338,6 +1360,7 @@ init 189 python in mas_sprites_json:
             - pose_map
             - giftname
             - arm_split
+            - highlight
 
         IN:
             jobj - json object to pasrse
@@ -1356,6 +1379,7 @@ init 189 python in mas_sprites_json:
         # acs_type
         # dlg_desc
         # dlg_plural
+        # keep_on_desk
         if not _validate_params(
             jobj,
             save_obj,
@@ -1440,6 +1464,7 @@ init 189 python in mas_sprites_json:
         save_obj["pose_map"] = pose_map
 
         # now for arm split
+        arm_split = None
         if store.MASMonika._verify_spl_layer(rec_layer):
             # this is an arm split layer, so we should parse it
             if "arm_split" not in obj_based:
@@ -1488,6 +1513,79 @@ init 189 python in mas_sprites_json:
                 indent_lvl,
                 MPM_AS_EXTRA.format(rec_layer)
             ))
+
+        # now for highlight
+        # NOTE: this depends on pose_map and arm_split
+        if "highlight" in obj_based:
+            hl_obj = obj_based.pop("highlight")
+
+            # first determine the hl keys
+            hl_keys = pose_map.unique_values()
+
+            if arm_split:
+                # this should be a split accessory
+                
+                # log loading
+                msg_log.append((
+                    MSG_INFO_T,
+                    indent_lvl,
+                    MHM_S_LOADING.format("highlight")
+                ))
+
+                # parse data
+                hl_data = store.MASSplitAccessory.fromJSON_hl_data(
+                    hl_obj,
+                    msg_log,
+                    indent_lvl + 1,
+                    hl_keys,
+                    rec_layer
+                )
+
+                # verify data
+                if hl_data is False:
+                    # failure case, logging should be donw already
+                    return False
+
+                # log success
+                msg_log.append((
+                    MSG_INFO_T,
+                    indent_lvl,
+                    MHM_S_SUCCESS.format("highlight")
+                ))
+
+            else:
+                # not a split accessory
+
+                # loading log
+                msg_log.append((
+                    MSG_INFO_T,
+                    indent_lvl,
+                    MHM_LOADING.format("highlight")
+                ))
+
+                # parse data
+                hl_data = store.MASSpriteBase.fromJSON_hl_data(
+                    hl_obj,
+                    msg_log,
+                    indent_lvl + 1,
+                    hl_keys
+                )
+
+                # verify hl data
+                if hl_data is False:
+                    # failure case, logging should be done already so just fail
+                    return False
+
+                # success log
+                msg_log.append((
+                    MSG_INFO_T,
+                    indent_lvl,
+                    MHM_SUCCESS.format("highlight")
+                ))
+
+            # otherwise, valid, so set if not None
+            if hl_data is not None:
+                save_obj["hl_data"] = hl_data
 
         return True
 
@@ -1562,11 +1660,11 @@ init 189 python in mas_sprites_json:
 
         Props validated:
             - unlock
+            - highlight
         
         IN:
             jobj - json object to parse
             obj_based - dict of object-based items
-                (contains split)
             indent_lvl - indentation lvl
 
         OUT:
@@ -1575,6 +1673,7 @@ init 189 python in mas_sprites_json:
 
         RETURNS: True on success, False if not
         """
+        # validate optional params
         if not _validate_params(
             jobj,
             save_obj,
@@ -1585,7 +1684,49 @@ init 189 python in mas_sprites_json:
         ):
             return False
 
-        # otherwise, should be good I think
+        # now validate highlight
+        if "highlight" in obj_based:
+            hl_obj = obj_based.pop("highlight")
+
+            # check type
+            if not _verify_dict(hl_obj, allow_none=False):
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    BAD_TYPE.format("highlight", dict, type(hl_obj))
+                ))
+                return False
+
+            # log loading
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MHM_LOADING.format("highlight")
+            ))
+
+            # parse
+            hl_data = store.MASSpriteBase.fromJSON_hl_data(
+                hl_obj,
+                msg_log,
+                indent_lvl + 1,
+                store.MASHair.hl_keys()
+            )
+
+            # check fail/succ
+            if hl_data is False:
+                # logging should happen already
+                return False
+
+            # log success
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MHM_SUCCESS.format("highlight")
+            ))
+
+            # save data if not None
+            if hl_data is not None:
+                save_obj["hl_data"] = hl_data
 
 #        # validate split
 #        if "split" not in obj_based:
@@ -1632,6 +1773,7 @@ init 189 python in mas_sprites_json:
             - hair_map
             - giftname
             - pose_arms
+            - highlight
 
         IN:
             jobj - json object to parse
@@ -1729,6 +1871,8 @@ init 189 python in mas_sprites_json:
 
         # validate pose arms
         if "pose_arms" in obj_based:
+            # TODO: this entire thing must change to work with new 
+            #   Pose Arm data
             # pose arms exists, get and validate
             msg_log.append((
                 MSG_INFO_T,
@@ -1756,6 +1900,50 @@ init 189 python in mas_sprites_json:
                 MPM_SUCCESS.format("pose_arms")
             ))
             save_obj["pose_arms"] = pose_arms
+
+        # now for highlight
+        if "highlight" in obj_based:
+            hl_obj = obj_based.pop("highlight")
+
+            # check type
+            if not _verify_dict(hl_obj, allow_none=False):
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    BAD_TYPE.format("highlight", dict, type(hl_obj))
+                ))
+                return False
+
+            # log loading
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MHM_LOADING.format("highlight")
+            ))
+
+            # parse
+            hl_data = store.MASSpriteBase.fromJSON_hl_data(
+                hl_obj,
+                msg_log,
+                indent_lvl + 1,
+                store.MASClothes.hl_keys()
+            )
+
+            # check fail/succ
+            if hl_data is False:
+                # logging should take care of this
+                return False
+
+            # log success
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MHM_SUCCESS.format("highlight")
+            ))
+
+            # svae data
+            if hl_data is not None:
+                save_obj["hl_data"] = hl_data
 
         return True
 
@@ -2038,7 +2226,6 @@ init 189 python in mas_sprites_json:
             return
 
         # now for specific params
-        # TODO: left off here
         if sp_type == SP_ACS:
             # ACS
             msg_log = []

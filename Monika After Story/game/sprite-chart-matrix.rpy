@@ -1769,7 +1769,6 @@ init -4 python in mas_sprites:
 
 init -2 python:
 
-    # TODO: make MASFilterMap hashable, then setup caching
     class MASFilterMap(object):
         """
         The FilterMap connects filters to values
@@ -1820,32 +1819,54 @@ init -2 python:
             """
             return not self.__eq__(other)
 
-        def get(self, flt, defval=None):
+        @staticmethod
+        def _fromJSON_value(json_obj, msg_log, ind_lvl, prop_name, output):
             """
-            Gets value from map based on filter
+            Parses a single value from the json obj
 
             IN:
-                flt - filter to lookup
-                defval - default value to reutrn if filter not found
-                    (Default: None)
+                json_obj - JSON object to parse
+                ind_lvl - indentation level
+                prop_name - name of the prop to parse for
 
-            RETURNS: value for given filter
+            OUT:
+                msg_log - list to add messagse to
+                output - dict to add data to:
+                    key: prop_name
+                    value: prop value
+
+            RETURNS: True if we should stop because of failure, false if not
             """
-            return self.map.get(flt, defval)
+            if prop_name not in json_obj:
+                return False
 
-        def unique_values(self):
-            """
-            Gets all unique non-None values in this filter map
+            # otherwise prop exist
+            prop_val = json_obj.pop(prop_name)
+            if prop_val is None:
+                # warn and leave if None
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.MFM_NONE_FLT.format(prop_name)
+                ))
+                return False
 
-            RETURNS: list of all non-NOne and unique values in this filter
-                map
-            """
-            vals = []
-            for key in self.map:
-                if self.map[key] not in vals:
-                    vals.append(self.map[key])
+            # check type
+            if store.mas_sprites_jsons._verify_str(prop_val):
+                # valid
+                output[prop_name] = prop_val
+                return False
 
-            return vals
+            # invalid type
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_ERR_T,
+                ind_lvl,
+                store.mas_sprites_jsons.MFM_BAD_TYPE.format(
+                    prop_name,
+                    type(prop_val)
+                )
+            ))
+            return True
 
         @staticmethod
         def cachecreate(default=None, **filter_pairs):
@@ -1926,11 +1947,88 @@ init -2 python:
             OUT:
                 msg_log - list to add messages to
 
-            RETURNS: MASFilterMap object build using the JSON, or None if
-                failed
+            RETURNS: MASFilterMap object build using the JSON, or None if not
+                creatable, or False if failur
             """
-            return None
-            # TODO:
+            fltpairs = {}
+
+            # parse for default first
+            isbad = cls._fromJSON_value(
+                json_obj,
+                msg_log,
+                ind_lvl,
+                "default",
+                fltpairs
+            )
+
+            # loop over available filters
+            for flt in store.mas_sprites.FILTERS:
+                if cls._fromJSON_value(
+                        json_obj,
+                        msg_log,
+                        ind_lvl,
+                        flt,
+                        fltpairs
+                ):
+                    isbad = True
+
+            # now loop over extras and warn
+            for extra_prop in json_obj:
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprites_jsons.EXTRA_PROP.format(extra_prop)
+                ))
+
+            # leave if bad
+            if isbad:
+                return False
+
+            if len(fltpairs) < 1:
+                # this has no data. ignore and return None
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprites_jsons.MFM_NO_DATA,
+                ))
+                return None
+
+            # otherwise probably valid
+
+            # take out default if exists
+            def_flt = None
+            if "default" in fltpairs:
+                def_flt = fltpairs.pop("default")
+
+            # then create this
+            return cls.cachecreate(def_flt, **fltpairs)
+
+        def get(self, flt, defval=None):
+            """
+            Gets value from map based on filter
+
+            IN:
+                flt - filter to lookup
+                defval - default value to reutrn if filter not found
+                    (Default: None)
+
+            RETURNS: value for given filter
+            """
+            return self.map.get(flt, defval)
+
+        def unique_values(self):
+            """
+            Gets all unique non-None values in this filter map
+
+            RETURNS: list of all non-NOne and unique values in this filter
+                map
+            """
+            vals = []
+            for key in self.map:
+                if self.map[key] not in vals:
+                    vals.append(self.map[key])
+
+            return vals
 
 
     def mas_drawmonika_rk(

@@ -5642,7 +5642,8 @@ init -2 python:
             """
             See MASPoseArms.fromJSON
             """
-            # TODO
+
+
             raise NotImplementedError
 
 
@@ -6056,69 +6057,6 @@ init -2 python:
             if key != self.__KEY_ALL and key in self.__map:
                 self.__map.pop(key)
 
-        def fltget(self, key, flt, defval=None):
-            """
-            Combines getting from here and getting the resulting MASFilterMap
-            object.
-
-            IN:
-                key - key to get from this map
-                flt - filter to get from associated MASFilterMap, if found
-                defval - default value to return if no flt value could be
-                    found.
-                    (Default: None)
-
-            RETURNS: value in the MASFilterMap associated with the given
-                flt, using the MASFilterMap associated with the given key.
-                or defval if no valid MASfilterMap or value found.
-            """
-            mfm = self.get(key)
-            if mfm is None:
-                return defval
-
-            return mfm.get(flt, defval=defval)
-
-        def get(self, key):
-            """
-            Gets value wth the given key.
-
-            IN:
-                key - key of item to get
-
-            RETURNS: MASFilterMap object, or None if not found
-            """
-            if key in self.__map:
-                return self.__map[key]
-
-            # otherwise return default
-            return self.getdef()
-
-        def getdef(self):
-            """
-            Gets the default value
-
-            RETURNS: MASFilterMap object, or NOne if not found
-            """
-            return self.__map.get(self.__KEY_ALL, None)
-
-        def keys(self):
-            """
-            gets keys in this map
-
-            RETURNS: tuple of keys
-            """
-            return self.__valid_keys
-
-        def setdefault(self, value):
-            """
-            Sets the default value
-
-            IN:
-                value - value to use as default
-            """
-            if value is None or isinstance(value, MASFilterMap):
-                self.__map[self.__KEY_ALL] = value
-
         @staticmethod
         def clear_hl_mapping(hl_mpm_data):
             """
@@ -6181,6 +6119,59 @@ init -2 python:
             mhm.apply(hl_mapping)
             return mhm
 
+        def fltget(self, key, flt, defval=None):
+            """
+            Combines getting from here and getting the resulting MASFilterMap
+            object.
+
+            IN:
+                key - key to get from this map
+                flt - filter to get from associated MASFilterMap, if found
+                defval - default value to return if no flt value could be
+                    found.
+                    (Default: None)
+
+            RETURNS: value in the MASFilterMap associated with the given
+                flt, using the MASFilterMap associated with the given key.
+                or defval if no valid MASfilterMap or value found.
+            """
+            mfm = self.get(key)
+            if mfm is None:
+                return defval
+
+            return mfm.get(flt, defval=defval)
+
+        def get(self, key):
+            """
+            Gets value wth the given key.
+
+            IN:
+                key - key of item to get
+
+            RETURNS: MASFilterMap object, or None if not found
+            """
+            if key in self.__map:
+                return self.__map[key]
+
+            # otherwise return default
+            return self.getdef()
+
+        def getdef(self):
+            """
+            Gets the default value
+
+            RETURNS: MASFilterMap object, or NOne if not found
+            """
+            return self.__map.get(self.__KEY_ALL, None)
+
+        def keys(self):
+            """
+            gets keys in this map
+
+            RETURNS: tuple of keys
+            """
+            return self.__valid_keys
+
         @staticmethod
         def o_fltget(mhm, key, flt, defval=None):
             """
@@ -6200,6 +6191,16 @@ init -2 python:
                 return defval
 
             return mhm.fltget(key, flt, defval=defval)
+
+        def setdefault(self, value):
+            """
+            Sets the default value
+
+            IN:
+                value - value to use as default
+            """
+            if value is None or isinstance(value, MASFilterMap):
+                self.__map[self.__KEY_ALL] = value
 
     # pose map helps map poses to an image
     class MASPoseMap(renpy.store.object):
@@ -6267,22 +6268,13 @@ init -2 python:
         # each pose is a string that determines the code to use
         # NOTE: somewhat identical to FB mode in data held
 
-        MPM_TYPE_HL = 5
-        # highlight map mode
-        # each pose is a MASHighlightMap object holding highlight mappings
-        # for a pose
-
         MPM_TYPES = (
             MPM_TYPE_ED,
             MPM_TYPE_FB,
             MPM_TYPE_AS,
             MPM_TYPE_PA,
-            MPM_TYPE_IC,
-            MPM_TYPE_HL
+            MPM_TYPE_IC
         )
-
-        # TODO :remove
-        MPM_AS_DATA = ("0", "1", "", "*")
 
         def __init__(self,
                 # NOTE: when updating params, make sure to modify param name
@@ -6460,72 +6452,153 @@ init -2 python:
             # update the all map
             self.__sync_all()
 
-        @staticmethod
-        def _verify_mpm_as(value, allow_none=None):
+        @classmethod
+        def _verify_mpm_item(cls, 
+                mpm_data,
+                msg_log,
+                ind_lvl,
+                mpm_type,
+                prop_name,
+                prop_val
+        ):
             """
-            Verifies if the given value is a valid arm split item
+            Verifies data for an mpm item based on type
 
             IN:
-                value - value to verify
-                allow_none - ununsed
+                ind_lvl - indent lvl
+                mpm_type - mpm type to check values for
+                prop_name - name of the item to check
+                prop_val - value of the item to check
 
-            RETURNS: True if verified, False if not
+            OUT:
+                mpm_data - dict to save data to
+                msg_log - list to add messages to
+
+            RETURNS: True if successful verification, False if not
             """
-            # TODO: fix this
-            return value in MASPoseMap.MPM_AS_DATA
+            if mpm_type == cls.MPM_TYPE_IC:
+                # image code usage means each item should be a string
 
-        def get(self, pose, defval):
-            """
-            Get passed to the internal pose map
-            only because its common to call get on this object. 
+                if cls.msj._verify_str(prop_val):
+                    mpm_data[prop_name] = prop_val
 
-            IN:
-                pose - pose to get from pose map
-                defval - default value to return if pose not found
+                else:
+                    msg_log.append((
+                        cls.msj.MSG_ERR_T,
+                        ind_lvl,
+                        cls.msj.MPM_BAD_POSE_TYPE.format(
+                            prop_name,
+                            str,
+                            type(prop_val)
+                        )
+                    ))
 
-            RETURNS:
-                value of pose in internal dict, or defval if not found
-            """
-            return self.__all_map.get(pose, defval)
+                return
 
-        def is_fallback(self):
-            """
-            Checks if this posemap is a fallback one via type.
+            if mpm_type == cls.MPM_TYPE_AS:
+                # arm split mean each item should be a string
 
-            RETURNS: True if this posemap is a fallback one, False if not
-            """
-            return self._mpm_type == self.MPM_TYPE_FB
+                if MASSplitAccessory.verify_arm_split_val(prop_val):
+                    mpm_data[prop_name] = prop_val
 
-        def unique_values(self):
-            """
-            Gets all unique non-None values in this MASPoseMap.
-            NOTE: because MPM's may not include hashable values, this is 
-            try/excepted to handle those cases. If something is non-hashable,
-            we always return all values.
+                else:
+                    msg_log.append((
+                        cls.msj.MSG_ERR_T,
+                        ind_lvl,
+                        cls.msj.MPM_AS_BAD_TYPE.format(
+                            prop_name,
+                            str(MASSplitAccessory.hl_keys()),
+                            prop_val
+                        )
+                    ))
 
-            RETURNS: list of unique non-None values in this MASPoseMap
-            """
-            try:
-                values = []
-                for value in self.__all_map.itervalues():
-                    if value is not None and value not in values:
-                        values.append(value)
+                return
 
-                return values
-            except:
-                return self.values()
+            if mpm_type == cls.MPM_TYPE_ED:
+                # enable/disable uses bools
 
-        def values(self):
-            """
-            Gets all non-None values in this MASPoseMap.
+                if cls.msj._verify_bool(prop_val):
+                    mpm_data[prop_name] = prop_val
 
-            RETURNS: list of all non-None values in this MASPoseMap
-            """
-            return [
-                value
-                for value in self.__all_map.itervalues()
-                if value is not None
-            ]
+                else:
+                    msg_log.append((
+                        cls.msj.MSG_ERR_T,
+                        ind_lvl,
+                        cls.msj.MPM_BAD_POSE_TYPE.format(
+                            prop_name,
+                            bool,
+                            type(prop_val)
+                        )
+                    ))
+
+                return
+
+            if mpm_type == cls.MPM_TYPE_FB:
+                # fallbacks use poses (as strings)
+
+                if cls.msj._verify_pose(prop_val, allow_none=False):
+                    mpm_data[prop_name[ = prop_val
+
+                else:
+                    msg_log.append((
+                        cls.msj.MSG_ERR_T,
+                        ind_lvl,
+                        cls.msj.MPM_BAD_POSE.format(
+                            prop_name,
+                            prop_val
+                        )
+                    ))
+
+                return
+
+            if mpm_type == cls.MPM_TYPE_PA:
+                # pose arms use special objects
+
+                # NOTE: actaully, we are chanigng this so no need to pass in
+                # MPM objects with PA type. Instead this will be different
+                # for clothes as its own object parse. TODO: do this later
+                #   when working onclothes
+                raise NotImplementedError
+
+                if prop_val is None:
+                    # None is allowed as it means use no layers
+                    mpm_data[prop_name] = prop_val
+
+                elif cls.msj._verify_dict(prop_val, allow_none=False):
+                    # prop data must be object
+
+                    # log opening pose arms
+                    msg_log.append((
+                        cls.msj.MSG_INFO_T,
+                        ind_lvl,
+                        cls.msj.MPA_LOADING.format(prop_name)
+                    ))
+
+                    # read in the mpa
+                    # TODO
+
+                    # log closing pose arms
+                    # TODO: previous function may reutrn bad news okay
+                    msg_log.append((
+                        cls.msj.MSG_INFO_T,
+                        ind_lvl,
+                        cls.msj.MPA_SUCCESS.format(prop_name)
+                    ))
+
+                else:
+                    # invalid type
+                    msg_log.append((
+                        cls.msj.MSG_ERR_T,
+                        ind_lvl,
+                        cls.msj.MPA_PA_BAD_TYPE.format(
+                            prop_name,
+                            type(prop_val)
+                        )
+                    ))
+
+                return
+
+            # invalid types should not be an issue here, so no warning
 
         @classmethod
         def fromJSON(cls, json_obj, msg_log, ind_lvl, valid_types=None):
@@ -6606,112 +6679,20 @@ init -2 python:
             else:
                 use_reg_for_l = None
 
-
+            # verify other params
             isbad = False
             for prop_name in json_obj.keys():
                 prop_val = json_obj.pop(prop_name)
                 if prop_name in cls.CONS_PARAM_NAMES:
-
-                    if mpm_type == cls.MPM_TYPE_IC:
-                        # more ACS, means more iamge code usage
-                        if cls.msj._verify_str(prop_val):
-                            mpm_data[prop_name] = prop_val
-
-                        else:
-                            isbad = True
-                            msg_log.append((
-                                cls.msj.MSG_ERR_T,
-                                ind_lvl,
-                                cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
-                                    prop_name,
-                                    str,
-                                    type(prop_val)
-                                )
-                            ))
-
-                    elif mpm_type == cls.MPM_TYPE_AS:
-                        # more ACS, more arm splits
-                        if MASPoseMap._verify_mpm_as(prop_val):
-                            mpm_data[prop_name] = prop_val
-
-                        else:
-                            isbad = True
-                            msg_log.append((
-                                cls.msj.MSG_ERR_T,
-                                ind_lvl,
-                                cls.msj.MPM_AS_BAD_TYPE.format(
-                                    prop_name,
-                                    str(MASPoseMap.MPM_AS_DATA),
-                                    prop_val
-                                )
-                            ))
-
-                    elif mpm_type == cls.MPM_TYPE_ED:
-                        # enable disable is default for clothing so
-                        if cls.msj._verify_bool(prop_val):
-                            mpm_data[prop_name] = prop_val
-
-                        else:
-                            isbad = True
-                            msg_log.append((
-                                cls.msj.MSG_ERR_T,
-                                ind_lvl,
-                                cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
-                                    prop_name,
-                                    bool,
-                                    type(prop_val)
-                                )
-                            ))
-
-                    elif mpm_type == cls.MPM_TYPE_FB:
-                        # clothes with fallbacks is pretty common
-                        if cls.msj._verify_pose(prop_val, allow_none=False):
-                            mpm_data[prop_name] = prop_val
-
-                        else:
-                            isbad = True
-                            msg_log.append((
-                                cls.msj.MSG_ERR_T,
-                                ind_lvl,
-                                cls.msj.MPM_BAD_POSE.format(
-                                    prop_name,
-                                    prop_val
-                                )
-                            ))
-
-                    else: 
-                        # otherwise pose arms
-                        if prop_val is None:
-                            # none is allowed as it means use no layers
-                            mpm_data[prop_name] = None
-
-                        elif cls.msj._verify_dict(prop_val, allow_none=False):
-                            msg_log.append((
-                                cls.msj.MSG_INFO_T,
-                                ind_lvl,
-                                cls.msj.MPA_LOADING.format(prop_name)
-                            ))
-                            mpm_data[prop_name] = MASPoseArms.fromJSON(
-                                prop_val,
-                                msg_log,
-                                ind_lvl + 1
-                            )
-                            msg_log.append((
-                                cls.msj.MSG_INFO_T,
-                                ind_lvl,
-                                cls.msj.MPA_SUCCESS.format(prop_name)
-                            ))
-
-                        else:
-                            isbad = True
-                            msg_log.append((
-                                cls.msj.MSG_ERR_T,
-                                ind_lvl,
-                                cls.msj.MPM_PA_BAD_TYPE.format(
-                                    prop_name,
-                                    type(prop_val)
-                                )
-                            ))
+                    if not cls._verify_mpm_item(
+                            mpm_data,
+                            msg_log,
+                            ind_lvl,
+                            mpm_type,
+                            prop_name,
+                            prop_val
+                    ):
+                        isbad = True
 
                 else:
                     # prop name NOT part of MASPoseMap. log as warning.
@@ -6745,6 +6726,59 @@ init -2 python:
                 ))
 
             return MASPoseMap(**mpm_data)
+
+        def get(self, pose, defval):
+            """
+            Get passed to the internal pose map
+            only because its common to call get on this object. 
+
+            IN:
+                pose - pose to get from pose map
+                defval - default value to return if pose not found
+
+            RETURNS:
+                value of pose in internal dict, or defval if not found
+            """
+            return self.__all_map.get(pose, defval)
+
+        def is_fallback(self):
+            """
+            Checks if this posemap is a fallback one via type.
+
+            RETURNS: True if this posemap is a fallback one, False if not
+            """
+            return self._mpm_type == self.MPM_TYPE_FB
+
+        def unique_values(self):
+            """
+            Gets all unique non-None values in this MASPoseMap.
+            NOTE: because MPM's may not include hashable values, this is 
+            try/excepted to handle those cases. If something is non-hashable,
+            we always return all values.
+
+            RETURNS: list of unique non-None values in this MASPoseMap
+            """
+            try:
+                values = []
+                for value in self.__all_map.itervalues():
+                    if value is not None and value not in values:
+                        values.append(value)
+
+                return values
+            except:
+                return self.values()
+
+        def values(self):
+            """
+            Gets all non-None values in this MASPoseMap.
+
+            RETURNS: list of all non-None values in this MASPoseMap
+            """
+            return [
+                value
+                for value in self.__all_map.itervalues()
+                if value is not None
+            ]
 
         @staticmethod
         def lp2pn(leanpose):
@@ -6922,6 +6956,66 @@ init -2 python:
                 hl_mapping
             )
 
+        @staticmethod
+        def _fromJSON_hl_data_flt(json_obj, msg_log, ind_lvl, prop_name):
+            """
+            Parses an hl filter object from a given JSON
+
+            IN:
+                json_obj - json object to parse
+                ind_lvl - indentation level
+                prop_name - name of the prop to parse
+
+            OUT:
+                msg_log - log to add messages to
+
+            RETURNS: MASFitlerObject if data parsed successfully, None if no
+                filter object, False if failure
+            """
+            fltobj = json_obj.pop(prop_name)
+
+            # verify type is dict
+            if not store.mas_sprite_jsons._verify_dict(
+                    fltobj,
+                    allow_none=False
+            ):
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_ERR_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.BAD_TYPE.format(
+                        prop_name,
+                        dict,
+                        type(fltobj)
+                    )
+                ))
+                return False
+
+            # otherwise dict so process
+
+            # log loading
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MFM_LOADING.format(prop_name)
+            ))
+
+            # parse
+            fltobj = MASFilterMap.fromJSON(fltobj, msg_log, ind_lvl + 1)
+
+            # check for error
+            if fltobj is False:
+                # this should be logged already
+                return False
+
+            # log success
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MFM_SUCCESS.format(prop_name)
+            ))
+
+            return fltobj
+
         def addprop(self, prop):
             """
             Adds the given prop to the ex_props list
@@ -6969,6 +7063,132 @@ init -2 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
+
+        @staticmethod
+        def fromJSON_hl_data(json_obj, msg_log, ind_lvl, hl_keys):
+            """
+            Converts JSON data into hl-ready data
+            NOTE: extended classes MAY want to implement their own version
+                of this
+
+            Standard highlight dict data consists of:
+                See zz_spritejsons
+
+            Hl dat
+
+            IN:
+                json_obj - json object to parse
+                msg_log - log to add messages to
+                ind_lvl - indentation lvl
+                hl_keys - expected keys of this highlight map
+
+            RETURNS: hl_data, completely validated:
+                Tuple:
+                [0] - default Filter Map object
+                [1] - dict:
+                    key: hl_key
+                    value: Filter Map object
+                or None if no data, False if failure in parsing occurred
+            """
+            hl_def = None
+            hl_mapping = {}
+
+            # first try parsing for default
+            if "default" in json_obj:
+                hl_def = MASSpriteBase._fromJSON_hl_data_flt(
+                    json_obj,
+                    msg_log,
+                    ind_lvl,
+                    "default"
+                )
+
+                # check failure state
+                if hl_def is False:
+                    # logging should have already been handled
+                    return False
+
+            # now for mapping
+            # mapping data should be in Dict format
+            has_map_data = False
+            if "mapping" in json_obj:
+                mapobj = json_obj.pop("mapping")
+
+                # check type
+                if not store.mas_sprite_jsons._verify_dict(
+                        mapobj,
+                        allow_none=False
+                ):
+                    msg_log.append((
+                        store.mas_sprite_jsons.MSG_ERR_T,
+                        ind_lvl,
+                        store.mas_sprite_jsons.BAD_TYPE.format(
+                            "mapping",
+                            dict,
+                            type(mapobj)
+                        )
+                    ))
+                    return False
+
+                # loading mapping
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_INFO_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.MHM_LOADING_MAPPING
+                ))
+
+                # loop over hl keys
+                isbad = False
+                for hl_key in hl_keys:
+                    if hl_key in mapobj:
+                        flt_obj = MASSpriteBase._fromJSON_hl_data_flt(
+                            mapobj,
+                            msg_log,
+                            ind_lvl + 1,
+                            hl_key
+                        )
+
+                        # check for fail/succ
+                        if flt_obj is False:
+                            isbad = True
+                        else:
+                            if flt_obj is not None:
+                                # None check the flt object for later
+                                has_map_data = True
+
+                            hl_mapping[hl_key] = flt_obj
+
+                # warn if any extras
+                for extra_prop in mapobj:
+                    msg_log.append((
+                        store.mas_sprites_jsons.MSG_WARN_T,
+                        ind_lvl + 1,
+                        store.mas_sprite_jsons.EXTRA_PROP.format(extra_prop)
+                    ))
+
+                # quit if failure
+                # log should be handled by the MFM logging
+                if isbad:
+                    return False
+
+                # done lodaing mapping
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_INFO_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.MHM_SUCCESS_MAPPING
+                ))
+
+            # check if we actually have any data
+            if hl_def is None and (len(hl_mapping) == 0 or not has_map_data):
+                # no data, warn but no failure
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.MHM_NO_DATA
+                ))
+                return None
+
+            # otherwise valid data probably
+            return (hl_def, hl_mapping)
 
         def gethlc(self, *args, **kwargs):
             """
@@ -7053,7 +7273,6 @@ init -2 python:
                 return sprite_base.name
 
             return ""
-
 
     class MASSpriteFallbackBase(MASSpriteBase):
         """
@@ -7621,6 +7840,10 @@ init -2 python:
         # valid MAShlightMap keys for this object
         # also known as the arm codes
 
+        __ASE_KEYS = ("0", "5", "10")
+        __BSE_KEYS = ("0", "1")
+        # layer-specific keys
+
         def __init__(self,
                 name,
                 img_sit,
@@ -7819,6 +8042,115 @@ init -2 python:
 
             return loadstrs
 
+        @classmethod
+        def fromJSON_hl_data(cls,
+                json_obj,
+                msg_log,
+                ind_lvl,
+                pm_keys,
+                rec_layer
+        ):
+            """
+            Parses JSOn data for a highlight split object
+
+            IN:
+                json_obj - JSON object to parse
+                ind_lvl - indentation level
+                pm_keys - pose map keys
+                rec_layer - the layer that this ACS wants to be on
+
+            OUT:
+                msg_log - list to add messages to
+
+            RETURNS: split hl_data, completely validated:
+                dict:
+                key: pose map keys
+                value: tuple:
+                    [0] - default MASFilterMap object
+                    [1] - dict:
+                        key: arm split keys
+                        value: MASFilterMap object
+                or None if no data, False if failure in parsing occured
+            """
+            # check rec layer for valid split
+            if rec_layer == MASMonika.BSE_ACS:
+                as_keys = cls.__BSE_KEYS
+            elif rec_layer == MASMonika.ASE_ACS:
+                as_keys = cls.__ASE_KEYS
+            else:
+                # silently fail in this case. This should never actually
+                # happen
+                return None
+
+            shl_data = {}
+
+            # parse data as dict
+            # the initial level keys should be pose map ones
+            has_map_data = False
+            isbad = False
+            for pm_key in pm_keys:
+                if pm_key in json_obj:
+                    hl_obj = json_obj.pop(pm_key)
+
+                    # check type
+                    if not store.mas_sprite_jsons._verify_dict(
+                            hl_obj,
+                            allow_none=False
+                    ):
+                        msg_log.append((
+                            store.mas_sprite_jsons.MSG_ERR_T,
+                            ind_lvl,
+                            store.mas_sprite_jsons.MHM_KEY_BAD_TYPE.format(
+                                pm_key,
+                                dict,
+                                type(hl_obj)
+                            )
+                        ))
+                        isbad = True
+
+                    else:
+                        # valid type, continue checking as highlith object
+                        hl_data = MASSpriteBase.fromJSON_hl_data(
+                            hl_obj,
+                            msg_log,
+                            ind_lvl,
+                            as_keys
+                        )
+
+                        # check for fail/succ
+                        if hl_data is False:
+                            isbad = True
+                        else:
+                            if hl_data is not None:
+                                # none check the hl object for later
+                                has_map_data = True
+
+                            shl_data[pm_key] = hl_data
+
+            # warn if any extras
+            for extra_prop in json_obj:
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.EXTRA_PROP.format(extra_prop)
+                ))
+
+            # quit if failure
+            if isbad:
+                return False
+
+            # check if we actually have any data
+            if len(shl_data) == 0 or not has_map_data:
+                # no data, warn but no failure
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.MHM_S_NO_DATA
+                ))
+                return None
+
+            return shl_data
+
         def get_arm_split_code(self, poseid):
             """
             Gets arm split code if needed
@@ -7896,6 +8228,19 @@ init -2 python:
                 flt,
                 defval
             )
+
+        @classmethod
+        def verify_arm_split_val(cls, value):
+            """
+            Verifies if an arm split value is valid
+
+            IN:
+                value - arm split value to check
+
+            RETURNS: True if valid, false if not
+            """
+            return value in cls.__MHM_KEYS
+            
 
     class MASHair(MASSpriteFallbackBase):
         """
