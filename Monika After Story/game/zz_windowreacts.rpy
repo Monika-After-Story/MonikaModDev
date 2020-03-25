@@ -694,7 +694,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitch",
-            category=['twitch'],
+            category=['-twitch'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
