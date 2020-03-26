@@ -706,7 +706,7 @@ label mas_wrs_twitch:
         m_name,
         [
             "Watching a stream, [player]?",
-            "Do you mind if I watch with you?"
+            "Do you mind if I watch with you?",
             "What are we watching today, [player]?"
         ],
         'Window Reactions'
