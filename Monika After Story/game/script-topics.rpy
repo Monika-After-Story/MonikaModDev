@@ -10064,7 +10064,7 @@ label monika_players_friends:
             extend 1eka "Maybe you just don't realize it."
             m 1etc "But I'm curious..."
 
-            call monika_players_friends_feels_lonely_ask(question="Do you ever feel lonely, [player]?")
+            call monika_players_friends_feels_lonely_ask(question=renpy.substitute("Do you ever feel lonely, [player]?"))
 
     return "derandom"
 
