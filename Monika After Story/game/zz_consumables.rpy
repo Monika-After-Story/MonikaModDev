@@ -1197,6 +1197,13 @@ label mas_consumables_generic_get(consumable):
         m 1eua "I'm going to get a [consumable.container] of [consumable.disp_name]."
         m 1eua "Hold on a moment."
 
+    #We want to take plush with
+    if (
+        consumable.consumable_type == store.mas_consumables.TYPE_FOOD
+        and monika_chr.is_wearing_acs(mas_acs_quetzalplushie)
+    ):
+        $ mas_acs_quetzalplushie.keep_on_desk = False
+
     #Monika is off screen
     call mas_transition_to_emptydesk
 
@@ -1204,6 +1211,7 @@ label mas_consumables_generic_get(consumable):
     python:
         renpy.pause(1.0, hard=True)
         consumable.acs.keep_on_desk = False
+        monika_chr.remove_acs(mas_acs_quetzalplushie)
         monika_chr.wear_acs(consumable.acs)
         renpy.pause(4.0, hard=True)
 
@@ -1396,8 +1404,11 @@ label mas_consumables_remove_thermos:
     $ thermos = monika_chr.get_acs_of_type("thermos-mug")
     call mas_transition_to_emptydesk
 
-    #Remove the current thermos
-    $ monika_chr.remove_acs(thermos)
+    python:
+        renpy.pause(3.0, hard=True)
+        #Remove the current thermos
+        monika_chr.remove_acs(thermos)
+        renpy.pause(2.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
 

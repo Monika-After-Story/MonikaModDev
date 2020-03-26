@@ -688,7 +688,7 @@ label mas_wrs_reddit:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_reddit')
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -771,4 +771,32 @@ label mas_wrs_netflix:
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_netflix')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_twitch",
+            category=['-twitch'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_twitch:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Watching a stream, [player]?",
+            "Do you mind if I watch with you?",
+            "What are we watching today, [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_twitch')
     return
