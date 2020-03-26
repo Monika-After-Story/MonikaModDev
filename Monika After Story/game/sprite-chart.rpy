@@ -860,11 +860,7 @@ init -5 python in mas_sprites:
     # list of available clothes
     CLOTHES = [
         "def" # school uniform
-    ]
-
-    # special mas sprite classes
-
-            
+    ]            
 
     # zoom adjuster
     def adjust_zoom():
@@ -1010,6 +1006,20 @@ init -5 python in mas_sprites:
     ALL_POSES = []
     ALL_POSES.extend(POSES)
     ALL_POSES.extend(L_POSES)
+
+    # arms
+    # NOTE: arm mapping happens at the base level
+    ARMS = [
+        "crossed",
+        "left-down",
+        "left-rest",
+        "right-down",
+        "right-point",
+        "right-restpoint",
+        "steepling",
+        "def|left-def",
+        "def|right-def",
+    ]
 
     # sprite exprop - list of topics
     EXPROP_TOPIC_MAP = {
@@ -3749,7 +3759,7 @@ init -5 python in mas_sprites:
 # retrieved from a Dress Up Renpy Cookbook
 # https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
 
-init -2 python:
+init -3 python:
 #    import renpy.store as store
 #    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
 #    from operator import attrgetter # we need this for sorting items
@@ -5346,50 +5356,212 @@ init -2 python:
 
             self.prepare()
 
-
-    class MASPoseArms(object):
+    
+    class MASArm(object):
         """
-        Base class for a pose's arms. Extending classes should override
-        the following:
-            build_loadstrs
-            get
-            fromJSON - as static
+        Representation of an "Arm" 
 
-        Each pose consists of a layered combination. 
+        Each Arm consists of of a layered combination:
         NOTE: we re using spaced layers so we can insert more if needed.
         0 - bottom layer. after body-0 but before table. Primary bottom layer.
         5 - middle layer. after table but before body-1.
         10 - top layer. after body-1.
 
-        Each implementing class should include the string used to tag the arm
-        type, as well as a mapping for each tag.
-        The mapping should be a dict of the following format:
-            key: layered combination code (see above) (as int)
-            value: string to suffix to the tag for the image
-
         PROPERTIES:
-            None
-
-        CONSTANTS:
-            _MPA_KEYS - tuple of standard pose arm keys to be implemented
-                by all pose arms.
+            tag - the tag string of this arm
+            layer_map - mapping of layer exiestence to image code
+                key: layer code
+                value: True if exists, False if not
+            hl_map - MASHighlightMap with layer code keys
         """
-        import store.mas_sprites_json as msj
 
         LAYER_BOT = "0"
         LAYER_MID = "5"
         LAYER_TOP = "10"
 
-        _MPA_KEYS = (LAYER_BOT, LAYER_MID, LAYER_TOP)
+        __MPA_KEYS = (LAYER_BOT, LAYER_MID, LAYER_TOP)
 
-        TYPE_BOTH = 1
-        TYPE_LR = 2
-
-        def __init__(self, mpa_type):
+        def __init__(self, tag, layer_map, hl_map=None):
             """
             Constructor
+
+            IN:
+                tag - tag string for this arm
+                layer_map - layer map to use
+                    key: image layer code
+                    value: True if exists, False if not
+                hl_data - highlght map data. tuple of the following formaT:
+                    [0] - default MASFilterMap to use. Pass in None to 
+                        not set a default highlight
+                    [1] - highlight mapping to use. Format:
+                        key: image layer code
+                        value: MASFilterMap object, or None if no highlight
+                    pass in None if no highlights should be used at all
             """
-            self.__mpa_type = mpa_type
+            self.tag = tag
+            self.clean_map(layer_map)
+            self.layer_map = layer_map
+            
+            if hl_data is not None:
+                self.hl_map = MASHighlightMap.create_from_mapping(
+                    self.__MPA_KEYS,
+                    hl_data[0],
+                    hl_data[1]
+                )
+            else:
+                self.hl_map = None
+
+        def clean_map(self, mapping):
+            """
+            cleans the given map, ensuring it contains only valid layer
+            keys. No errors are logged.
+
+            IN:
+                mapping - mapping to clean
+            """
+            for map_key in mapping.keys():
+                if map_key not in self.__MPA_KEYS:
+                    mapping.pop(map_key)
+
+        def get(self, layer_code):
+            """
+            Generates tag name + suffixes to use for
+            a given layer code. A tag name is a tuple of strings
+            that can be joined to build the full tag name,
+            Tag Names do NOT include file extensions
+
+            IN:
+                layer_code - layer code to fetch tag names for
+
+            RETURNS: list consisting of the tag strings and
+                appropriate suffixes
+            """
+            if not self.tag:
+                return []
+
+            # should this item exist on tihs layer code?
+            if not self.layer_map.get(layer_code, False):
+                return []
+
+            # should exist, generate the primary tag string
+            return [self.tag, store.mas_sprites.ART_DLM, str(layer_code)]
+
+        def gethlc(self, layer_code, flt, defval=None):
+            """
+            Gets highlight code.
+
+            IN:
+                layer_code - layer to get highlight for
+                flt - filter to get highilght for
+                defval - default value to return
+                    (Default: None)
+
+            RETURNS: highlight code, or None if no highligiht
+            """
+            return MASHighlightMap.o_fltget(
+                self.hl_map,
+                layer_code,
+                flt,
+                defval
+            )
+
+        def hl_keys(self):
+            """
+            Returns hl keys for a MASArm
+
+            RETURNS: tuple of hl keys
+            """
+            return self.__MPA_KEYS
+
+
+    class MASArmBoth(MASArm):
+        """
+        Representation of an "arm" that actually covers both arms
+
+        This currently has no additional behavior.
+        It's primary use is to act as a type of MASArm
+
+        PROPERTIES:
+            see MASArm
+        """
+        pass
+
+
+    class MASArmLeft(MASArm):
+        """
+        Representation of a left arm.
+
+        Overrides prefix-based functions
+
+        PROPERTIES:
+            see MASArm
+        """
+
+        def get(self, layer_code):
+            """
+            See MASArm.get
+
+            This adds left- prefix to result
+            """
+            return [
+                "left",
+                store.mas_sprites.ART_DLM
+            ] + super(MASArmLeft, self).get(layer_code)
+
+
+    class MASArmRight(MASArm):
+        """
+        Representation of a right arm.
+
+        Overrides prefix-based functions
+
+        PROPERTIES:
+            see MASArm
+        """
+
+        def get(self, layer_code):
+            """
+            See MASArm.get
+
+            This adds right- prefix to result
+            """
+            return [
+                "right",
+                store.mas_sprites.ART_DLM
+            ] + super(MASArmRight, self).get(layer_code)
+
+
+    class MASPoseArms(object):
+        """
+        Collection of MASArm objects. An Arm object is the representation of
+        an arm sprite.
+
+        PROPERTIES:
+            arms - dict mapping arms to MASArm objects
+                keys: string from mas_sprites.ARMS
+                value: MASArm object. None means no arm for this arm
+
+        """
+        import store.mas_sprites_json as msj
+
+        def __init__(self, arm_data):
+            """
+            Constructor
+
+            IN:
+                arm_data - see arms property
+            """
+            # must have a mas pose arm
+            if not store.mas_ev_data_ver._verify_dict(
+                    arm_data,
+                    allow_none=False
+            ):
+                raise Exception("arm data required for MASPoseArms")
+
+            # clean arms before setting
+            self._clean_arms(arm_data)
+            self.arms = arm_data
+
 
         def _build_loadstrs_ft(self, prefix, tag, hl_map, layer_code):
             """
@@ -5454,6 +5626,29 @@ init -2 python:
                 for hlc in mfm.unique_values()
             ]
 
+        def _clean_arms(self, arm_data):
+            """
+            Cleans arm data given
+            Will Noneify invalid-typed data
+
+            IN:
+                arm_data - arm data to clean
+            
+            OUT:
+                arm_data - cleaned arm data
+            """
+            for arm_key in arm_data.keys():
+                if arm_key in store.mas_sprites.ARMS:
+                    # NOneify invalid data
+                    if not isinstance(arm_data[arm_key], MASArm):
+                        store.mas_utils.writelog(
+                            "Invalid arm data at '{0}'\n".format(arm_key)
+                        )
+                        arm_data[arm_key] = None
+                else:
+                    # remove non-arm data
+                    arm_data.pop(arm_key)
+
         def build_loadstrs(self, prefix):
             """
             Builds list of all strings for this pose arms. Used for testing
@@ -5468,18 +5663,6 @@ init -2 python:
                 possible pose arms this may have.
             """
             raise NotImplementedError
-
-        def clean_map(self, mapping):
-            """
-            cleans the given map, ensuring it contains only valid layer
-            keys. No errors are logged.
-
-            IN:
-                mapping - mapping to clean
-            """
-            for map_key in mapping.keys():
-                if map_key not in self._MPA_KEYS:
-                    mapping.pop(map_key)
 
         def get(self, layer_code, flt):
             """
@@ -5528,8 +5711,26 @@ init -2 python:
             RETURNS: MASPoseArms object built using the JSON, or 
                 None if failed
             """
-            # TODO: try with Both, then try with l/r
+            # all pose arms are variants of both or LR
+            # pose arm data is contained in format specified in 
+            # zz_spritejsons
+
             raise NotImplementedError
+
+        @staticmethod
+        def nv_create(self, **arm_pairs):
+            """
+            Creates a MASPoseArms using name-value pairs
+
+            IN:
+                **arm_pairs - arm tag - MASArm pairs:
+                    name: key from mas_sprites.ARMS
+                    value: MASArm object, or None, although omiission is also
+                        None
+
+            RETURNS: MASPoseArms object
+            """
+            return MASPoseArms(arm_pairs)
 
 
     class MASPoseArmsBoth(MASPoseArms):
@@ -8503,8 +8704,8 @@ init -2 python:
                 hair name properties.
                 use "all" to signify a default hair style for all mappings that
                 are not found.
-            pose_arms - MASPoseMap object representing the arm layers used
-                for poses
+            pose_arms - MASPoseArms object containing the arms for these
+                clothes.
             hl_map - MASHighlightMap with the following format:
                 keys:
                     "0" - body-0 layer
@@ -9084,7 +9285,18 @@ init -2 python:
         return eval("".join(spr_str_list)), None
 
 
-init -1 python in mas_sprites:
+init -2 python in mas_sprites:
+    # base-related sprtie stuff
+    # NOTE: this should be made AFTER the sprite object classes are defined
+
+    # the base arms
+    base_arms = MASPoseArms(
+        "crossed"
+    )
+
+    # the base pose arm map
+    base_mpm = MASPoseMap(
+        p1=MASPoseArms(
 
     # combined arms
     LEFT_DOWN = {
