@@ -921,6 +921,8 @@ label mas_updater_rpy_issue:
             $ mas_rmallEVL("monika_rpy_files")
 
             m 2dsc "Now let me just run the updater.{w=0.5}.{w=0.5}.{nw}"
+            window hide
+
             #Run the updater
             jump update_now
 
