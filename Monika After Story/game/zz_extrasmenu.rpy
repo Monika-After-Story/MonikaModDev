@@ -104,7 +104,10 @@ label mas_extra_menu_close:
         call mas_extra_menu_zoom_callback
 
     # re-enable overlays
-    $ mas_DropShield_core()
+    if store.mas_globals.in_idle_mode:
+        $ mas_coreToIdleShield()
+    else:
+        $ mas_DropShield_core()
 
     show monika idle
 
@@ -112,6 +115,7 @@ label mas_extra_menu_close:
 
 label mas_idle_loop:
     pause 10.0
+    $ renpy.not_infinite_loop(60)
     jump mas_idle_loop
 
 default persistent._mas_opened_extra_menu = False
@@ -241,8 +245,8 @@ style mas_mbs_button_text is default:
     font gui.default_font
     size gui.text_size
     xalign 0.5
-    idle_color "#000"
-    hover_color "#fa9"
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_hover_color
     outlines []
 
 #screen mas_modebar_toggle():
@@ -320,8 +324,8 @@ style mas_adjustable_button is default:
     activate_sound gui.activate_sound
 
 style mas_adjustable_button_text is default:
-    idle_color "#000"
-    hover_color "#fa9"
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_hover_color
     outlines []
     kerning 0.2
     xalign 0.5
@@ -343,26 +347,25 @@ screen mas_extramenu_area():
         # close button
         textbutton _("Close"):
             area (61, 594, 120, 35)
-            style "hkb_button"
+            style mas_ui.hkb_button_style
             action Jump("mas_extra_menu_close")
 
         # zoom control
         frame:
             area (195, 450, 80, 255)
-            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
-
+            background Frame(mas_ui.exm_frame, left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
             vbox:
                 spacing 2
-
                 label "Zoom":
-                    style "hkb_button_text"
+                    text_style mas_ui.hkb_button_text_style
+                    xalign 0.5
 
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"
-                    xsize 70
+                    xsize 72
                     ysize 35
-                    xalign 0.5
+                    xalign 0.3
                     action SetField(store.mas_sprites, "zoom_level", store.mas_sprites.default_zoom_level)
 
                 # actual slider for adjusting zoom
@@ -370,3 +373,16 @@ screen mas_extramenu_area():
                     style "mas_adjust_vbar"
                     xalign 0.5
                 $ store.mas_sprites.adjust_zoom()
+
+        # TODO: frame for nose boop control
+        # TODO: only have available if certain affection + 
+        #   (Definitely not below normal)
+#        frame:
+#            area (280, 450, 80, 120)
+#            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+#
+#            vbox:
+#                spacing 2
+#                
+#                label "Boop":
+#                    style "hkb_button_text"

@@ -1,5 +1,40 @@
 # selector testing
 
+init -100 python:
+    
+    def dev_mas_unlock_all_sprites():
+        for sel_obj in store.mas_selspr.ACS_SEL_SL:
+            sel_obj.unlocked = True
+
+        for sel_obj in store.mas_selspr.HAIR_SEL_SL:
+            sel_obj.unlocked = True
+
+        for sel_obj in store.mas_selspr.CLOTH_SEL_SL:
+            sel_obj.unlocked = True
+
+
+    def dev_mas_clear_spritegift(giftname):
+        namegift_data = store.mas_sprites_json.giftname_map.get(giftname, None)
+        if namegift_data is not None :
+            ng_sp, ng_name = namegift_data
+            spr_obj = store.mas_sprites.get_sprite(ng_sp, ng_name)
+
+            if namegift_data in persistent._mas_sprites_json_gifted_sprites:
+                persistent._mas_sprites_json_gifted_sprites.pop(namegift_data)
+
+            if spr_obj is not None:
+                store.mas_selspr._lock_item(spr_obj, ng_sp)
+
+        if giftname in persistent._mas_filereacts_sprite_gifts:
+            persistent._mas_filereacts_sprite_gifts.pop(giftname)
+
+        if giftname in persistent._mas_filereacts_sprite_reacted:
+            persistent._mas_filereacts_sprite_reacted.pop(giftname)
+
+        if giftname in persistent._mas_filereacts_reacted_map:
+            persistent._mas_filereacts_reacted_map.pop(giftname)
+
+
 init 5 python:
     addEvent(
         Event(
@@ -176,5 +211,105 @@ label dev_selector_clothes_test:
 
     else:
         m 1eka "You canceled my clothes..."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_selector_acs_ribbons_test",
+            category=["dev"],
+            prompt="TEST SELECTOR (ribbons acs)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_selector_acs_ribbons_test:
+    python:
+        unlock_map = {}
+        sorted_acs = store.mas_selspr.ACS_SEL_SL
+        use_acs = []
+        for item in sorted_acs:
+            if item.group == "ribbon":
+                unlock_map[item.name] = item.unlocked
+                item.unlocked = True
+                use_acs.append(item)
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Pick ribbon:")
+        sel_map = {}
+
+    m 1eua "Hi! Lets change my ribbon!"
+
+    if monika_chr.hair.name != mas_hair_def.name:
+        m "But im going to change my clothes and hair back to default."
+        $ monika_chr.reset_outfit(False)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
+
+    # undo the unlocks 
+    python:
+        for item in use_acs:
+            item.unlocked = unlock_map[item.name]
+
+    if _return:
+        m 1eub "You confirmed my ribbon!"
+
+    else:
+        m 1eka "You canceled my ribbon..."
+
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_selector_hair_disabled",
+            category=["dev"],
+            prompt="TEST SELECTOR (disabling hair bc clothes)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_selector_hair_disabled:
+    python:
+        hdown_sel = store.mas_selspr.get_sel_hair(mas_hair_down)
+        hdown_sel_lstat = hdown_sel.unlocked
+        hdown_sel.unlocked = True
+        hdown_sel.disable_type = store.mas_selspr.DISB_HAIR_BC_CLOTH
+
+        unlock_map = {}
+        sorted_hair = store.mas_selspr.HAIR_SEL_SL
+        for item in sorted_hair:
+            unlock_map[item.name] = item.unlocked
+            item.unlocked = True
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hairstyle would you like me to wear?"
+        )
+        sel_map = {}
+
+    m 1eua "first reset outfit"
+    $ current_state = monika_chr.save_state(True, True, True)
+    $ monika_chr.reset_outfit()
+    $ monika_chr.remove_all_acs()
+
+    m 1eua "I will disable hair down for no reason"
+
+    call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
+
+    # undo unlocks
+    python:
+        for item in sorted_hair:
+            item.unlocked = unlock_map[item.name]
+
+        hdown_sel.unlocked = hdown_sel_lstat
+
+    m 6eua "now restore outfit"
+    $ monika_chr.restore(current_state)
+    m 1eua "done"
 
     return

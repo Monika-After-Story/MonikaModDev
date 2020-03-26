@@ -1,0 +1,9 @@
+{
+    "type": 0,
+    "name": "_testingxcp",
+    "img_sit": "ribbon_blank",
+    "pose_map": {
+        "default": "0",
+        "use_reg_for_l": true
+    }
+}

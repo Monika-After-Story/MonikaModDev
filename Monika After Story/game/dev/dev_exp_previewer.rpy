@@ -20,15 +20,19 @@ label dev_exp_previewer:
 
     $ HKBHideButtons()
     $ prev_mflag = morning_flag
-    $ prev_hair = monika_chr.hair
-    $ prev_clothes = monika_chr.clothes
+    $ prev_zoom = store.mas_sprites.zoom_level
+    $ store.mas_sprites.reset_zoom()
+    $ prev_moni_state = monika_chr.save_state(True, True, True)
     $ monika_chr.reset_outfit()
     $ morning_flag = True
 
     $ ui.add(MASExpPreviewer())
     $ result = ui.interact()
 
-    $ monika_chr.change_outfit(prev_clothes, prev_hair)
+    $ monika_chr.reset_outfit()
+    $ monika_chr.load_state(prev_moni_state)
+    $ store.mas_sprites.zoom_level = prev_zoom
+    $ store.mas_sprites.adjust_zoom()
     $ morning_flag = prev_mflag
     $ HKBShowButtons()
 
@@ -107,8 +111,11 @@ init 999 python:
         # for building the real deal sprites
 
         # list of leaning poses so we know
+        # format:
+        #   [0]: lean
+        #   [1]: arm
         LEAN_SMAP = {
-            5: "def"
+            5: ("def", "def")
         }
 
         # image name map
@@ -118,7 +125,8 @@ init 999 python:
                 2: "crossed",
                 3: "restleftpointright",
                 4: "pointright",
-                6: "down"
+                6: "down",
+                7: "downleftpointright",
             },
             "eyes": {
                 "e": "normal",
@@ -131,7 +139,8 @@ init 999 python:
                 "h": "closedhappy",
                 "d": "closedsad",
                 "k": "winkleft",
-                "n": "winkright"
+                "n": "winkright",
+                "f": "soft",
             },
             "eyebrows": {
                 "f": "furrowed",
@@ -156,8 +165,10 @@ init 999 python:
                 "td": "dried",
                 "tp": "pooled",
                 "tu": "up",
-                "tl": "left",
-                "tr": "right"
+#                "tl": "left",
+#                "tr": "right",
+#                "th": "closedhappy",
+#                "tc": "closedsad",
             },
             "sweat": {
                 "sdl": "def",
@@ -174,9 +185,10 @@ init 999 python:
                 "o": "gasp",
                 "u": "smug",
                 "w": "wide",
-                "x": "disgust",
+                "x": "angry",
                 "p": "pout",
-                "t": "triangle"
+                "t": "triangle",
+#                "g": "disgust",
             }
         }
 
@@ -185,8 +197,12 @@ init 999 python:
         SEL_TX_MAP = {
             "torso": {
                 "def": "School Uniform",
+                "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
-                "rin": "Neko Costume"
+                "rin": "Neko Costume",
+                "santa": "Santa Monika",
+                "sundress_white": "Sundress (White)",
+                "blackdress": "Formal Dress (Black)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -194,12 +210,13 @@ init 999 python:
                 3: "Rest Left, Point Right",
                 4: "Point Right",
                 5: "Leaning",
-                6: "Down"
+                6: "Down",
+                7: "Down Left, Point Right",
             },
             "hair": {
                 "def": "Ponytail",
                 "down": "Down",
-                "bun": "Bun"
+#                "bun": "Bun"
             },
             "eyes": {
                 "e": "Normal",
@@ -212,7 +229,8 @@ init 999 python:
                 "h": "Closed (Happy)",
                 "d": "Closed (Sad)",
                 "k": "Wink Left",
-                "n": "Wink Right"
+                "n": "Wink Right",
+                "f": "Soft",
             },
             "eyebrows": {
                 "f": "Furrowed",
@@ -238,7 +256,9 @@ init 999 python:
                 "tp": "Pooled Tears",
                 "tu": "Tearing Up",
                 "tl": "Tearing Up (Left)",
-                "tr": "Tearing Up (Right)"
+                "tr": "Tearing Up (Right)",
+#                "th": "Closed Happy Tears",
+#                "tc": "Closed Sad Tears",
             },
             "sweat": {
                 "sdl": "Left Sweat Drop",
@@ -257,7 +277,8 @@ init 999 python:
                 "w": "Wide Open",
                 "x": "Grit Teeth",
                 "p": "Pout",
-                "t": "Triangle"
+                "t": "Triangle",
+#                "g": "Disgust",
             },
             "time": {
                 0: "Day",
@@ -307,8 +328,12 @@ init 999 python:
         SC_MAP = {
             "torso": [
                 "def",
+                "blazerless",
                 "marisa",
-                "rin"
+                "rin",
+                "santa",
+                "sundress_white",
+                "blackdress",
             ],
             "arms": [
                 1,
@@ -316,12 +341,13 @@ init 999 python:
                 3,
                 4,
                 5,
-                6
+                6,
+                7,
             ],
             "hair": [
                 "def",
                 "down",
-                "bun"
+#                "bun"
             ],
             "eyes": [
                 "e",
@@ -334,7 +360,8 @@ init 999 python:
                 "h",
                 "d",
                 "k",
-                "n"
+                "n",
+                "f",
             ],
             "eyebrows": [
                 "f",
@@ -362,8 +389,10 @@ init 999 python:
                 "td",
                 "tp",
                 "tu",
-                "tl",
-                "tr"
+#                "tl",
+#                "tr",
+#                "th",
+#                "tc",
             ],
             "sweat": [
                 None,
@@ -384,13 +413,38 @@ init 999 python:
                 "w",
                 "x",
                 "p",
-                "t"
+                "t",
+#                "g",
             ],
             "time": [
                 0,
                 1
             ]
         }
+
+        # modifier map, for special cases. Currently this should be used
+        # as appenders to image names
+        # NOTE: each expression may use this differently.
+        MOD_MAP = {
+            "tears": {
+                "streaming": (
+                    "closedhappy",
+                    "closedsad",
+                    "winkleft",
+                    "winkright",
+                ),
+                "up": (
+                    "closedhappy",
+                    "closedsad",
+                    "winkleft",
+                    "winkright",
+                ),
+                "pooled": (
+                    "closedhappy",
+                ),
+            },
+        }
+                
 
         # list of keys that matter for a sprite code
         SC_PARTS = [
@@ -717,16 +771,17 @@ init 999 python:
             """
             _arms = self._get_spr_code("arms")
             if _arms in self.LEAN_SMAP:
-                _lean = self.LEAN_SMAP[_arms]
-                _arms = None
+                _lean, _arms = self.LEAN_SMAP[_arms]
             else:
                 _lean = None
                 _arms = self._get_img_name("arms")
 
+            img_eyes = self._get_img_name("eyes")
+
             try:
                 trn, rfr = mas_drawmonika(0, 0, monika_chr,
                     self._get_img_name("eyebrows"),
-                    self._get_img_name("eyes"),
+                    img_eyes,
                     self._get_img_name("nose"),
                     self._get_img_name("mouth"),
                     head="",
@@ -737,7 +792,7 @@ init 999 python:
                     eyebags=self._get_img_name("eyebags"),
                     sweat=self._get_img_name("sweat"),
                     blush=self._get_img_name("blush"),
-                    tears=self._get_img_name("tears"),
+                    tears=self._get_img_tears("tears", img_eyes),
                     emote=self._get_img_name("emote")
                 )
                 # now we need to modify the transform a little bit
@@ -1088,6 +1143,37 @@ init 999 python:
                 return None
 
             return self.IMG_NMAP[key][spr_code]
+
+
+        def _get_img_tears(self, key, eyes):
+            """
+            Custom name generator for tear expressions, as they vary on
+            eyes.
+
+            IN:
+                key - what image name do we need
+                eyes - current eyes as img name
+            
+            REUTRNS the image name we need
+            """
+            tears_name = self._get_img_name(key)
+
+            # check for the mapping
+            tears_map = self.MOD_MAP.get(key, None)
+            if tears_map is None:
+                return tears_name
+
+            # check for specific tears in the mapping
+            tears_mappings = tears_map.get(tears_name, None)
+            if tears_mappings is None:
+                return tears_name
+
+            # check for eyes in the mapping
+            if eyes in tears_mappings:
+                return tears_name + eyes
+
+            # otherwise just tears
+            return tears_name
 
 
         ####################### render / event ###############################

@@ -1,0 +1,34 @@
+{
+    "__author": "JMO",
+    "version": 2,
+    "type": 0,
+    "name": "jmo_hairclip_cherry",
+    "img_sit": "jmo_hairclip_cherry",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "left-hair-clip",
+    "mux_type": [
+        "left-hair-clip"
+    ],
+    "stay_on_start": true,
+    "ex_props": {
+        "left-hair-strand-eye-level": true
+    },
+    "select_info": {
+        "display_name": "Hairclip (Cherry)",
+        "thumb": "jmo_hairclip_cherry",
+        "group": "left-hair-clip",
+        "hover_dlg": [
+            "Have you heard of a cherry kiss, [player]?~"
+        ],
+        "select_dlg": [
+            "I love this hairpin.",
+            "This hairpin is adorable!",
+            "Cute!"
+        ]
+    },
+    "giftname": "cherryhairclip"
+}

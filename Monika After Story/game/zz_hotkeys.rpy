@@ -29,6 +29,12 @@ init -1 python in mas_hotkeys:
     # True means the play hotkey is enabled, False means its not
     play_enabled = False
 
+    # True means the derandom hotkey is enabled, False means its not
+    derandom_enabled = False
+
+    # True means the bookmark hotkey is enabled, False means its not
+    bookmark_enabled = False
+
     ## other keys
     # True means the music lowering / stopping functions will work.
     # False means they will not
@@ -159,6 +165,20 @@ init python:
             select_music()
 
 
+    def _mas_hk_derandom_topic():
+        """
+        hotkey specific derandom topics
+        """
+        if store.mas_hotkeys.derandom_enabled and not _windows_hidden:
+            mas_derandom_topic()
+
+    def _mas_hk_bookmark_topic():
+        """
+        hotkey specific bookmark topics
+        """
+        if store.mas_hotkeys.bookmark_enabled and not _windows_hidden:
+            mas_bookmark_topic()
+
     def _mas_game_menu():
         """
         Wrapper aound _invoke_game_menu that follows additional ui rules
@@ -169,7 +189,7 @@ init python:
 
             # call backs for the game menu
             if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks()
+                mas_drawSpaceroomMasks(dissolve_masks=False)
 
 
     def _mas_quick_menu_cb(screen_name):
@@ -186,7 +206,7 @@ init python:
 
             # call backs for the game menu
             if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks()
+                mas_drawSpaceroomMasks(dissolve_masks=False)
 
 
     def _mas_hide_windows():
@@ -216,6 +236,8 @@ init python:
         config.keymap["dec_musicvol"] = [
             "K_MINUS","shift_K_UNDERSCORE","K_KP_MINUS"
         ]
+        config.keymap["derandom_topic"] = ["x","X"]
+        config.keymap["bookmark_topic"] = ["b","B"]
 
         # get replace the game menu with our version (to block certain
         # workflows correctly)
@@ -240,6 +262,8 @@ init python:
         config.underlay.append(renpy.Keymap(dec_musicvol=_mas_hk_dec_musicvol))
         config.underlay.append(renpy.Keymap(mas_game_menu=_mas_game_menu))
         config.underlay.append(renpy.Keymap(mas_hide_windows=_mas_hide_windows))
+        config.underlay.append(renpy.Keymap(derandom_topic=_mas_hk_derandom_topic))
+        config.underlay.append(renpy.Keymap(bookmark_topic=_mas_hk_bookmark_topic))
 
         # finally enable those buttons
         mas_HKDropShield()

@@ -1,0 +1,33 @@
+{
+    "__author": "JMO",
+    "type": 0,
+    "name": "jmo_hair_ribbon_cute",
+    "img_sit": "jmo_hair_ribbon_cute",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "left-hair-ribbon",
+    "mux_type": [
+        "left-hair-ribbon"
+    ],
+    "__comment": "hair ribbons should render before hairclips",
+    "priority": 9,
+    "stay_on_start": true,
+    "ex_props": {
+        "left-hair-strand-eye-level": true
+    },
+    "select_info": {
+        "display_name": "Hair Ribbon (Cute)",
+        "thumb": "jmo_hair_ribbon_cute",
+        "group": "left-hair-ribbon",
+        "hover_dlg": [
+            "MEGU"
+        ],
+        "select_dlg": [
+            "QT"
+        ]
+    },
+    "giftname": "jmo-hair-ribbon-cute"
+}
