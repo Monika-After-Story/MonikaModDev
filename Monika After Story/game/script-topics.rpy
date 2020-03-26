@@ -4834,10 +4834,7 @@ label monika_dunbar:
     m 1eka "It helped us meet though, so it can't be all bad."
     return
 
-# TODO: maybe rewrite?
-#   there is controversary to this topic
-#   Lets gather data first before decideing wehter or not to completely
-#   remove or keep
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_regrets",category=['ddlc','philosophy'],prompt="Do you have any regrets?",pool=True))
 
