@@ -410,24 +410,24 @@ init -4 python in mas_sprites:
             return disp_list
 
 
-    def _add_mpa_rk(
+    def _add_arms_rk(
             rk_list, 
-            mpa,
-            pfx_list,
+            arms,
+            pfx,
             flt,
             bcode,
             clothing_t,
             leanpose
     ):
         """
-        Adds render key for MASPoseArms, if needed.
+        Adds render key for multiple MASArm objects, if needed
 
         IN:
-            mpa - MASPoseArms to make render key for
-            pfx_list - prefix list to generate image string with
+            arms - MASArm objects to add render key for
+            pfx - prefix tuple to generate image string with
             flt - filter code to use
             bcode - base code to use
-            clothing - type of clothing to use
+            clothing_t - type of clothing to use
             leanpose - leanpose to use
 
         OUT:
@@ -451,8 +451,21 @@ init -4 python in mas_sprites:
                 cache_arms[img_key] = None
                 return
 
-        # get arm data
-        arm_data = mpa.get(bcode, flt)
+        # check if arm actually exist
+        if arms is None:
+            # no arms to render
+            cache_arms[img_key] = None
+            cache_arms[day_key] = None
+            return
+
+        # filter for arms that exist at thies layer code
+        arm_data = []
+        for arm in arms:
+            tag_list = arm.get(bcode)
+            if len(tag_list) > 0:
+                arm_data.append((arm, tag_list))
+
+        # check if arm at layer exist
         if len(arm_data) == 0:
             # no arms to render
             cache_arms[img_key] = None
@@ -461,32 +474,38 @@ init -4 python in mas_sprites:
 
         # if only 1 item , then dont need to composite
         if len(arm_data) < 2:
-            img_tup, hl_tup = arm_data[0]
+            arm, tag_list = arm_data[0]
+            img_list = pfx + tag_list + [FILE_EXT]
 
-            # geneate image base
-            img_base = store.Image("".join(pfx_list + img_tup + (FILE_EXT,)))
-
-            # determine highlight
-            if len(hl_tup) > 0:
-                hl_img = store.Image("".join(pfx_list + hl_tup + (FILE_EXT,)))
-            else:
-                hl_img = None
-
-            rk_list.append((img_key, CID_ARMS, img_base, hl_img))
+            # create render key
+            rk_list.append((
+                img_key,
+                CID_ARMS,
+                store.Image("".join(img_list)),
+                _bhli(img_list, arm.gethlc(bcode, flt))
+            ))
             return
 
         # more than 1 item, need to composite
         arm_comp_args = [LOC_WH]
         hl_comp_args = [LOC_WH]
 
-        for arm in arm_data:
-            img_tup, hl_tup = arm
+        for arm, tag_list in arm_data:
+            img_list = pfx + tag_list
             arm_comp_args.append((0, 0))
-            arm_comp_args.append("".join(pfx_list + img_tup + (FILE_EXT,)))
+            arm_comp_args.append("".join(img_list + [FILE_EXT]))
 
-            if len(hl_tup) > 0:
+            # check for hl
+            hlc = arm.gethlc(bcode, flt)
+            if hlc is not None:
                 hl_comp_args.append((0, 0))
-                hl_comp_args.append("".join(pfx_list + hl_tup + (FILE_EXT,)))
+                hl_comp_args.append("".join(
+                    img_list + [
+                        HLITE_SUFFIX,
+                        hlc,
+                        FILE_EXT
+                    ]
+                ))
 
         # now generate composites
         img_comp = store.im.Composite(*arm_comp_args)
@@ -793,13 +812,13 @@ init -4 python in mas_sprites:
             )
 
 
-    def _rk_arms_base_nh(rk_list, bpose, leanpose, flt, bcode):
+    def _rk_arms_base_nh(rk_list, barms, leanpose, flt, bcode):
         """
         Adds arms base render keys
         (equiv to _ms_arms_nh_up_base)
 
         IN:
-            bpose - MASPoseArms to use
+            barms - tuple of MASArm objects to use
             leanpose - leanpose to use
             flt - filter to use
             bcode - base code to use
@@ -807,13 +826,13 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
-        _add_mpa_rk(
+        _add_arms_rk(
             rk_list,
-            bpose,
-            (
+            barms,
+            [
                 B_MAIN,
                 PREFIX_ARMS,
-            ),
+            ],
             flt,
             bcode,
             "base",
@@ -821,13 +840,13 @@ init -4 python in mas_sprites:
         )
 
 
-    def _rk_arms_base_lean_nh(rk_list, bpose, lean, leanpose, flt, bcode):
+    def _rk_arms_base_lean_nh(rk_list, barms, lean, leanpose, flt, bcode):
         """
         Adds arms base lean render key
         (eqiv to _ms_arms_nh_leaning_base)
 
         IN:
-            bpose - MASPoseArms to use
+            barms - tuple of MASArm objects to use
             lean - type of lean
             leanpose - leanpose to use
             flt - filter to use
@@ -836,15 +855,15 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
-        _add_mpa_rk(
+        _add_arms_rk(
             rk_list,
-            bpose,
-            (
+            barms,
+            [
                 B_MAIN,
                 PREFIX_ARMS_LEAN,
                 lean,
                 ART_DLM,
-            ),
+            ],
             flt,
             bcode,
             "base",
@@ -852,13 +871,13 @@ init -4 python in mas_sprites:
         )
 
 
-    def _rk_arms_nh(rk_list, apose, clothing, leanpose, flt, bcode):
+    def _rk_arms_nh(rk_list, parms, clothing, leanpose, flt, bcode):
         """
         Adds arms render key
         (equiv to _ms_arms_nh_up_arms)
 
         IN:
-            apose - MASPoseARms to use
+            parms - tuple of MASArm objects to use
             clothing - MASClothes object
             leanpose - leanpose to use
             flt - filter to use
@@ -867,15 +886,15 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
-        _add_mpa_rk(
+        _add_arms_rk(
             rk_list,
-            apose,
-            (
+            parms,
+            [
                 C_MAIN,
                 clothing.img_sit,
                 "/",
                 PREFIX_ARMS,
-            ),
+            ],
             flt,
             bcode,
             clothing.img_sit,
@@ -883,13 +902,13 @@ init -4 python in mas_sprites:
         )
 
 
-    def _rk_arms_lean_nh(rk_list, apose, clothing, lean, leanpose, flt, bcode):
+    def _rk_arms_lean_nh(rk_list, parms, clothing, lean, leanpose, flt, bcode):
         """
         Adds arms lean render key
         (equiv to _ms_arms_nh_leaning_arms)
 
         IN:
-            apose - MASPoseArms to use
+            parms - tuple of MASArm objects to use
             clothing - MASClothes object
             lean - type of lean
             leanpose - leanpose to use
@@ -899,17 +918,17 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
-        _add_mpa_rk(
+        _add_arms_rk(
             rk_list,
-            apose,
-            (
+            parms,
+            [
                 C_MAIN,
                 clothing.img_sit,
                 "/",
                 PREFIX_ARMS_LEAN,
                 lean,
                 ART_DLM,
-            ),
+            ],
             flt,
             bcode,
             clothing.img_sit,
@@ -919,8 +938,8 @@ init -4 python in mas_sprites:
 
     def _rk_arms_nh_wbase(
             rk_list,
-            bpose,
-            apose,
+            barms,
+            parms,
             clothing,
             acs_ase_list,
             leanpose,
@@ -932,8 +951,8 @@ init -4 python in mas_sprites:
         Adds arms render keys, no hair, with baes
 
         IN:
-            bpose - MASPoseArms for base
-            apose - MASPoseArms for outfit
+            barms - tuple of MASArm objects for base
+            parms - tuple of MASArm objects for pose
             clothing - MASClothes object
             acs_ase_list - acs between arms-base-0 and arms-0
             leanpose - leanpose to pass to accessorylist
@@ -946,16 +965,16 @@ init -4 python in mas_sprites:
         """
         if lean:
             # arms-base-0
-            _rk_arms_base_lean_nh(rk_list, bpose, lean, leanpose, flt, bcode)
+            _rk_arms_base_lean_nh(rk_list, barms, lean, leanpose, flt, bcode)
 
             # acs-ase
             _rk_accessory_list(rk_list, acs_ase_list, flt, leanpose, bcode)
 
-            if apose is not None:
+            if parms is not None:
                 # arms-0
                 _rk_arms_lean_nh(
                     rk_list,
-                    apose,
+                    parms,
                     clothing,
                     lean,
                     leanpose,
@@ -965,14 +984,14 @@ init -4 python in mas_sprites:
 
         else:
             # arms-base-0
-            _rk_arms_base_nh(rk_list, bpose, leanpose, flt, bcode)
+            _rk_arms_base_nh(rk_list, barms, leanpose, flt, bcode)
 
             # acs-ase
             _rk_accessory_list(rk_list, acs_ase_list, flt, leanpose, bcode)
 
-            if apose is not None:
+            if parms is not None:
                 # arms-0
-                _rk_arms_nh(rk_list, apose, clothing, leanpose, flt, bcode)
+                _rk_arms_nh(rk_list, parms, clothing, leanpose, flt, bcode)
 
 
     def _rk_base_body_nh(rk_list, flt, bcode):
@@ -1517,8 +1536,8 @@ init -4 python in mas_sprites:
     def _rk_sitting(
             clothing,
             hair,
-            base_pose,
-            arms_pose,
+            base_arms,
+            pose_arms,
             eyebrows,
             eyes,
             nose,
@@ -1553,8 +1572,8 @@ init -4 python in mas_sprites:
         IN:
             clothing - MASClothes object
             hair - MASHair object
-            base_pose - MASPoseArms for base
-            arms_pose - MASPoseArms for outfit
+            base_arms - tuple of MASArm objects to use for the base
+            pose_arms - tuple of MASArm objects to use for the clothes arms
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
@@ -1665,8 +1684,8 @@ init -4 python in mas_sprites:
         # 11. arms-0
         _rk_arms_nh_wbase(
             rk_list,
-            base_pose,
-            arms_pose,
+            base_arms,
+            pose_arms,
             clothing,
             acs_ase_list,
             leanpose,
@@ -1690,8 +1709,8 @@ init -4 python in mas_sprites:
         # 17. arms-5
         _rk_arms_nh_wbase(
             rk_list,
-            base_pose,
-            arms_pose,
+            base_arms,
+            pose_arms,
             clothing,
             acs_ase_list,
             leanpose,
@@ -1751,8 +1770,8 @@ init -4 python in mas_sprites:
         # 30. arms-1
         _rk_arms_nh_wbase(
             rk_list,
-            base_pose,
-            arms_pose,
+            base_arms,
+            pose_arms,
             clothing,
             acs_ase_list,
             leanpose,
@@ -2123,8 +2142,8 @@ init -2 python:
         # [1] - leanpose to use
         # [2] - arms to use
         # [3] - hair to use
-        # [4] - base pose to use
-        # [5] - arms pose to use
+        # [4] - base arms to use
+        # [5] - pose arms to use
         pose_data = character._determine_poses(lean, arms)
 
         # determine filter to use

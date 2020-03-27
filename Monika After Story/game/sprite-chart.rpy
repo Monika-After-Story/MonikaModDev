@@ -1008,18 +1008,20 @@ init -5 python in mas_sprites:
     ALL_POSES.extend(L_POSES)
 
     # arms
+    NUM_ARMS = {
+        1: "crossed",
+        2: "left-down",
+        3: "left-rest",
+        4: "right-down",
+        5: "right-point",
+        6: "right-restpoint",
+        7: "steepling",
+        8: "def|left-def",
+        9: "def|right-def",
+    }
+
     # NOTE: arm mapping happens at the base level
-    ARMS = [
-        "crossed",
-        "left-down",
-        "left-rest",
-        "right-down",
-        "right-point",
-        "right-restpoint",
-        "steepling",
-        "def|left-def",
-        "def|right-def",
-    ]
+    ARMS = list(NUM_ARMS.values())
 
     # sprite exprop - list of topics
     EXPROP_TOPIC_MAP = {
@@ -3931,8 +3933,8 @@ init -3 python:
                 [1] - leanpose to use
                 [2] - arms to use
                 [3] - hair to use
-                [4] - base pose to use
-                [5] - arms pose to use
+                [4] - base arms to use
+                [5] - pose arms to use
             """
             # first check black list
             if store.mas_sprites.should_disable_lean(lean, arms, self):
@@ -3967,20 +3969,24 @@ init -3 python:
             # MASPoseArms rules:
             #   1. If the pose_arms property in clothes is None, then we assume
             #   that the clothes follows the base pose rules.
-            #   2. If the pose_arms property contains a MASPoseMap, and the 
+            #   2. If the pose_arms property exists, and the 
             #   corresponding pose in that map is None, then we assume that
             #   the clothes does NOT have layers for this pose.
             # select MASPoseArms for baes and outfit
-            base_pose = store.mas_sprites.base_pose_arms_map.get(
-                leanpose,
-                None
-            )
-            if self.clothes.pose_arms is None:
-                arms_pose = base_pose
-            else:
-                arms_pose = self.clothes.pose_arms.get(leanpose, None)
 
-            return (lean, leanpose, arms, hair, base_pose, arms_pose)
+            # NOTE: we can always assume that base arms exist 
+            # NOTE: but we will default steepling justin case
+            base_arms = [
+                store.mas_sprites.base_arms.get(arm_id)
+                for arm_id in store.mas_sprites.base_mpm.get(leanpose, [7])
+            ]
+            if self.clothes.pose_arms is None:
+                pose_arms = base_arms
+
+            else:
+                pose_arms = self.clothes.pose_arms.getflp(leanpose)
+
+            return (lean, leanpose, arms, hair, base_arms, pose_arms)
 
         def _same_state_acs(self, a1, a2):
             """
@@ -5381,7 +5387,7 @@ init -3 python:
 
         __MPA_KEYS = (LAYER_BOT, LAYER_MID, LAYER_TOP)
 
-        def __init__(self, tag, layer_map, hl_map=None):
+        def __init__(self, tag, layer_map, hl_data=None):
             """
             Constructor
 
@@ -5411,6 +5417,75 @@ init -3 python:
             else:
                 self.hl_map = None
 
+        def __build_loadstrs_hl(self, prefix, layer_code):
+            """
+            Builds load strings for a hlight from a given map
+
+            IN:
+                prefix - prefix to apply
+                layer_code - layer code to generate loadstrings for
+
+            RETURNS: list of lists of strings representing image path for all
+                highlights for a layer code
+            """
+            if self.hl_map is None:
+                return []
+
+            mfm = self.hl_map.get(layer_code)
+            if mfm is None:
+                return []
+
+            # generate for all unique
+            return [
+                prefix + [
+                    store.mas_sprites.HLITE_SUFFIX,
+                    hlc,
+                    store.mas_sprites.FILE_EXT
+                ]
+                for hlc in mfm.unique_values()
+            ]
+
+        def build_loadstrs(self, prefix):
+            """
+            Builds loadstrs for this arm
+
+            IN:
+                prefix - prefix to apply to the loadstrs
+                    should be list of strings
+
+            RETURNS: list of lists of strings representing the load strings 
+                for this arm, + highlights 
+            """
+            if not self.tag:
+                return []
+
+            loadstrs = []
+
+            # add arms based on layer code
+            for layer_code in self.__MPA_KEYS:
+                # NOTE: we only add an arm + hlite if it exists for a layer
+                # code
+
+                if self.layer_map.get(layer_code, False):
+
+                    # generate image
+                    new_img = prefix + [
+                        self.tag,
+                        store.mas_sprites.ART_DLM,
+                        str(layer_code)
+                    ]
+
+                    # add with extension
+                    loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
+
+                    # generate highlights
+                    loadstrs.extend(self.__build_loadstrs_hl(
+                        new_img,
+                        layer_code
+                    ))
+
+            return loadstrs
+
         def clean_map(self, mapping):
             """
             cleans the given map, ensuring it contains only valid layer
@@ -5423,7 +5498,7 @@ init -3 python:
                 if map_key not in self.__MPA_KEYS:
                     mapping.pop(map_key)
 
-        def get(self, layer_code):
+        def get(self, layer_code, prefix=[]):
             """
             Generates tag name + suffixes to use for
             a given layer code. A tag name is a tuple of strings
@@ -5432,6 +5507,8 @@ init -3 python:
 
             IN:
                 layer_code - layer code to fetch tag names for
+                prefix - prefix to apply to the tag string if desired
+                    (Default: [])
 
             RETURNS: list consisting of the tag strings and
                 appropriate suffixes
@@ -5444,7 +5521,11 @@ init -3 python:
                 return []
 
             # should exist, generate the primary tag string
-            return [self.tag, store.mas_sprites.ART_DLM, str(layer_code)]
+            return prefix + [
+                self.tag,
+                store.mas_sprites.ART_DLM,
+                str(layer_code)
+            ]
 
         def gethlc(self, layer_code, flt, defval=None):
             """
@@ -5503,10 +5584,10 @@ init -3 python:
 
             This adds left- prefix to result
             """
-            return [
-                "left",
-                store.mas_sprites.ART_DLM
-            ] + super(MASArmLeft, self).get(layer_code)
+            return super(MASArmLeft, self).get(
+                layer_code,
+                prefix=["left", store.mas_sprites.ART_DLM]
+            )
 
 
     class MASArmRight(MASArm):
@@ -5525,10 +5606,10 @@ init -3 python:
 
             This adds right- prefix to result
             """
-            return [
-                "right",
-                store.mas_sprites.ART_DLM
-            ] + super(MASArmRight, self).get(layer_code)
+            return super(MASArmRight, self).get(
+                layer_code,
+                prefix=["right", store.mas_sprites.ART_DLM]
+            )
 
 
     class MASPoseArms(object):
@@ -5538,18 +5619,21 @@ init -3 python:
 
         PROPERTIES:
             arms - dict mapping arms to MASArm objects
-                keys: string from mas_sprites.ARMS
+                keys: number from NUM_ARMS
                 value: MASArm object. None means no arm for this arm
 
         """
         import store.mas_sprites_json as msj
 
-        def __init__(self, arm_data):
+        def __init__(self, arm_data, def_base=True):
             """
             Constructor
 
             IN:
                 arm_data - see arms property
+                def_base - True will use base arms for all missing data
+                    False will not
+                    (Default: True)
             """
             # must have a mas pose arm
             if not store.mas_ev_data_ver._verify_dict(
@@ -5559,142 +5643,82 @@ init -3 python:
                 raise Exception("arm data required for MASPoseArms")
 
             # clean arms before setting
-            self._clean_arms(arm_data)
+            self._clean_arms(arm_data, def_base)
             self.arms = arm_data
 
-
-        def _build_loadstrs_ft(self, prefix, tag, hl_map, layer_code):
-            """
-            Builds load strings for a layer code + highlight
-
-            IN:
-                prefix - prefix to apply
-                tag - tag string to use
-                hl_map - highlight map to use
-                layer_code - layer code to generate highlihgt parts for
-
-            RETURNS: list of lists of strinsg represnting image path for
-                image and highlights for a layer code
-            """
-            loadstrs = []
-
-            # generate image
-            new_img = prefix + [
-                tag,
-                store.mas_sprites.ART_DLM,
-                str(layer_code)
-            ]
-
-            # add with extension
-            loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
-
-            # generate highlights
-            loadstrs.extend(self._build_loadstrs_hlfm(
-                new_img,
-                hl_map,
-                layer_code
-            ))
-
-            return loadstrs
-
-        def _build_loadstrs_hlfm(self, prefix, hl_map, layer_code):
-            """
-            Builds load strings for a hlight from a given map
-
-            IN:
-                prefix - prefix to apply
-                hl_map - highlight map to use
-                layer_code - layer code to generate loadstrings for
-
-            RETURNS: list of lists of strings representing image path for all
-                highlights for a layer code
-            """
-            if hl_map is None:
-                return []
-
-            mfm = hl_map.get(layer_code)
-            if mfm is None:
-                return []
-
-            # generate for all unique
-            return [
-                prefix + [
-                    store.mas_sprites.HLITE_SUFFIX,
-                    hlc,
-                    store.mas_sprites.FILE_EXT
-                ]
-                for hlc in mfm.unique_values()
-            ]
-
-        def _clean_arms(self, arm_data):
+        def _clean_arms(self, arm_data, def_base):
             """
             Cleans arm data given
             Will Noneify invalid-typed data
 
             IN:
                 arm_data - arm data to clean
-            
+                def_base - True will use base arms for all missing data
+                    False will not
+
             OUT:
                 arm_data - cleaned arm data
             """
+            # first validate the arm data
             for arm_key in arm_data.keys():
-                if arm_key in store.mas_sprites.ARMS:
+
+                # then check 
+                if arm_key in store.mas_sprites.NUM_ARMS:
                     # NOneify invalid data
                     if not isinstance(arm_data[arm_key], MASArm):
                         store.mas_utils.writelog(
                             "Invalid arm data at '{0}'\n".format(arm_key)
                         )
                         arm_data[arm_key] = None
+
                 else:
-                    # remove non-arm data
+                    # remove invalid keys
                     arm_data.pop(arm_key)
 
-        def build_loadstrs(self, prefix):
-            """
-            Builds list of all strings for this pose arms. Used for testing
-            loadability
+            # now go through the arm data and set base for all non-included
+            # arm data
+            if def_base:
+                for arm_key in store.mas_sprites.NUM_ARMS:
+                    if arm_key not in arm_data:
+                        arm_data[arm_key] = store.mas_sprites.use_bma(arm_key)
 
-            NOTE: must be implemented by extending classes
+                # NOTE: if def_base is False, then get will auto return
+                #   None so no need to set any data
+
+        def get(self, arm_key):
+            """
+            Gets the arm data associated with the given arm key
 
             IN:
-                prefix - prefix to apply to each string
+                arm_key - key of the arm data to get
 
-            RETURNS: list of lists of strings representing image path for all 
-                possible pose arms this may have.
+            RETURNS: MASArm object requested, or NOne if not available for the
+                arm key
             """
-            raise NotImplementedError
+            return self.arms.get(arm_key, None)
 
-        def get(self, layer_code, flt):
+        def getflp(self, leanpose):
             """
-            Generats tag names + suffixes (including highlights) to use for a
-            given layer code and filter. Each tag name is a tuple of strings
-            that can be joined to build the full tag name.
-            Tag names are the parts of the filename after the arms prefix
-            NOTE: this does NOT include file extensions.
+            Retrieves arms assocaited with the given leanpose
 
             IN:
-                layer_code - layer code to fetch tag names for
-                flt - filter to get hl for 
-                    pass in None to ignore filters entirely
+                leanpose - the leanpose to get arms for
 
-            RETURNS: list of tuples. tuple format is as follows:
-                [0] - tuple of strings containing: 
-                    tag name + suffix to use for a given layer code. (get)
-                [1] - tuple of strings containing:
-                    tag name + suffix + hlite suffix + hlcode to use for
-                    a given layer code
-                    NOTE: will be an empty list if no hlite to apply
-                this list may be empty if no tag names to use
+            RETURNS: Tuple of arms associated with the leanpose. None may be
+                returned if no arms for the leanpose. The number of arms is 
+                not a guarantee.
             """
-            raise NotImplementedError
+            arm_data = []
+            for arm_key in store.mas_sprites.base_mpm.get(leanpose, []):
+                arm = self.get(arm_key)
+                if arm is not None:
+                    arm_data.append(arm)
 
-        def gettype(self):
-            """
-            Gets type of this MASPoseArms
+            if len(arm_data) > 0:
+                return tuple(arm_data)
 
-            RETURNS: type
-            """
-            return self.__mpa_type
+            # otherwse return None because no arms
+            return None
 
         @staticmethod
         def fromJSON(json_obj, msg_log, ind_lvl):
@@ -5714,437 +5738,8 @@ init -3 python:
             # all pose arms are variants of both or LR
             # pose arm data is contained in format specified in 
             # zz_spritejsons
-
-            raise NotImplementedError
-
-        @staticmethod
-        def nv_create(self, **arm_pairs):
-            """
-            Creates a MASPoseArms using name-value pairs
-
-            IN:
-                **arm_pairs - arm tag - MASArm pairs:
-                    name: key from mas_sprites.ARMS
-                    value: MASArm object, or None, although omiission is also
-                        None
-
-            RETURNS: MASPoseArms object
-            """
-            return MASPoseArms(arm_pairs)
-
-
-    class MASPoseArmsBoth(MASPoseArms):
-        """
-        PoseArms when a pose shows both arms with one image
-
-        PROPERTIES:
-            both - string tag of the image to use
-            bmap - mapping of layer existence to image code
-                key: image layer code
-                value: True if exists, False if not
-            hl_bmap - MASHighlightMap with MASPoseArms._MPA_KEYS
-        """
-
-        def __init__(self, both, bmap, bhl_data):
-            """
-            constructor.
-
-            IN:
-                both - name of string tag to use for both arms
-                bmap - mapping dict to use to map layer existence. Format:
-                    key: image layer code
-                    value: True if exists, False if not
-                bhl_data - highlight map data. tuple of the following format:
-                    [0] - default highlight to use. Pass in None to not set
-                        a default
-                    [1] - highlight mapping to use. Format:
-                        key: see MASPoseArms._MPA_KEYS
-                        value: MASFilterMap object, or None if no highlight
-                    pass in None if no highlights should be used at all
-            """
-            super(MASPoseArmsBoth, self).__init__(self.TYPE_BOTH)
-            self.both = both
-            self.clean_map(bmap)
-            self.bmap = bmap
-
-            # setup hl data
-            if bhl_data is not None:
-                self.hl_bmap = MASHighlightMap.create_from_mapping(
-                    self._MPA_KEYS,
-                    bhl_data[0],
-                    bhl_data[1]
-                )
-            else:
-                self.hl_bmap = None
-
-        def build_loadstrs(self, prefix):
-            """
-            See MASPoseArms.build_loadstrs
-            """
-            if not self.both:
-                return []
-
-            loadstrs = []
-
-            # now add arms based on layer codes
-            for layer_code in self._MPA_KEYS:
-                # NOTE: we only add an arm + hlite if it exists for a layer
-                # code
-
-                if self.bmap.get(layer_code, False):
-                    # NOTE: since this is a both string, we always get one
-
-                    # build main part of filename, with layer code
-                    # NOTE: this also does highlight
-                    loadstrs.extend(self._build_loadstrs_ft(
-                        prefix,
-                        self.both,
-                        self.hl_bmap,
-                        layer_code
-                    ))
-
-            return loadstrs
-
-        def get(self, layer_code, flt):
-            """
-            See MASPoseArms.get
-            """
-            if not self.both:
-                return []
-
-            # should this item exist on this layer code?
-            if not self.bmap.get(layer_code, False):
-                return []
-
-            # we should exist, now generate the tagname as tuple
-            tag = (
-                self.both,
-                store.mas_sprites.ART_DLM,
-                str(layer_code)
-            )
-
-            # check for hlite code
-            hlcode = MASHighlightMap.o_fltget(self.hl_bmap, layer_code, flt)
-            if not hlcode:
-                return [(tag, [])]
-
-            # otherwise valid hlcode found. Build the hl tag
-            hl_tag = list(tag)
-            hl_tag.extend((
-                store.mas_sprites.HLITE_SUFFIX,
-                hlcode
-            ))
-
-            # and return result
-            return [(tag, tuple(hl_tag))]
-
-        @staticmethod
-        def fromJSON(json_obj, msg_log, ind_lvl):
-            """
-            See MASPoseArms.fromJSON
-            """
-
-
-            raise NotImplementedError
-
-
-    class MASPoseArmsLR(MASPoseArms):
-        """
-        PoseArms when a pose shows left and right arms with two images
-
-        PROPERTIES:
-            left - string tag of the left arm image to use
-                may be None if no left arm to use
-            lmap - mapping of left arm layer existance
-                key: image layer code
-                value: True if exists, False if not
-                may be None if no left arm to use
-            hl_lmap - MASHighlightMap for left map with MASPoseARms._MPA_KEYS
-                may be None if no left arm to use
-            right - string tag of right arm image to use
-                may be None if no right arm to use
-            rmap - mapping of right arm layer existence
-                key: image layer code
-                values: True if eixsts False if not
-                may be None if no right arm to use
-            hl_rmap - MASHighlightMap for right map with MASPoseArms._MPA_KEYS
-                may be None if no right arm to use
-        """
-
-        def __init__(self,
-                left,
-                lmap,
-                lhl_data,
-                right,
-                rmap,
-                rhl_data
-        ):
-            """
-            Constructor
-            NOTE: input args are explicit on purpose. Keep it consistent with
-            MASPoseArmsBoth and prevent weird arm states.
-
-            IN:
-                left - name of string tag to use for left arm
-                lmap - mapping dict to use for mapping left arm layers exist
-                    key: image layer code
-                    value: True if exists, False if not
-                lhl_data - highlight map data. tuple of the following format:
-                    [0] - default highlight to use. Pass in None to not set
-                        a default
-                    [1] - highlight mapping to use. Format:
-                        key: see MASPoseArms._MPA_KEYS
-                        value: MASFilterMap object, or None if no highlight
-                    pass in None if no highlights should be used at all
-                right - name of string tag to use for right arm
-                rmap - mapping dict to use for mapping right arm layers exist
-                    key: image layer code
-                    value: True if exists, False if not
-                rhl_data - highlight map data. tuple of the following format:
-                    [0] - default highlight to use. Pass in None to not set
-                        a default
-                    [1] - highlight mapping to use. Format:
-                        key: see MASPoseArms._MPA_KEYS
-                        value: MASFilterMap object, or None if no highlight
-                    pass in None if no highlights should be used at all
-            """
-            super(MASPoseArmsLR, self).__init__(self.TYPE_LR)
-
-            # setup left arm
-            self.left, self.lmap, self.hl_lmap = self._parse(
-                left,
-                lmap,
-                lhl_data
-            )
-
-            # setup right arm
-            self.right, self.rmap, self.hl_rmap = self._parse(
-                right,
-                rmap,
-                rhl_data
-            )
-
-        def __build_loadstrs_ft(self,
-                loadstrs,
-                prefix,
-                layer_code,
-                tag_hl_map
-        ):
-            """
-            Generates load strings From Tag
-
-            IN:
-                prefix - prefix to apply
-                layer_code - layer code to generate fnames for
-                tag_hl_map - MASHighlightMap object assocaited with prefix
-
-            OUT:
-                loadstrs - list to add loadstrs to
-            """
-            # add extension
-            new_img = list(tag_str)
-            loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
-
-            # now check for hlite
-            loadstrs.extend(self._build_loadstrs_hlfm(
-                new_img,
-                tag_hl_map,
-                layer_code
-            ))
-
-            return loadstrs
-
-        def __get_hltag(self, tag, hl_map, layer_code, flt):
-            """
-            Gets the hltag to use based on highlight map, layer code, and 
-            filter.
-
-            IN: 
-                tag - tag to generate hl_tag with
-                hl_map - MASHighlightMap to check
-                layer_code - layer code to generate hltag for
-                flt - filter to generate hltag for
-
-            RETURNS: tuple of strings, which joined, will generate the hl
-                tag. OR empty list if no hlight found.
-            """
-            hlcode = MASHighlightMap.o_fltget(hl_map, layer_code, flt)
-            if hlcode:
-                hl_tag = list(tag)
-                hl_tag.extend((
-                    store.mas_sprites.HLITE_SUFFIX,
-                    hlcode
-                ))
-                return tuple(hl_tag)
-
-            return []
-
-        def __get_left(self, layer_code, flt):
-            """
-            Gets left side of a MASPoseArms. Assumes is exist.
-            NOTE: if left side does not exist for this MASPoseArms, this
-                output is undefined.
-
-            IN:
-                layer_code - layer code to generate left side for
-                flt - flter to generate left side for
-
-            RETURNS: tuple of the following format:
-                [0] - tuple of strings containing tag data
-                [1] - tuple of strings containing hlite tag data, if found
-            """
-            tag = (
-                store.mas_sprites.PREFIX_ARMS_LEFT,
-                self.left,
-                store.mas_sprites.ART_DLM,
-                str(layer_code),
-            )
-
-            return (tag, self.__get_hltag(tag, self.hl_lmap, layer_code, flt))
-
-        def __get_right(self, layer_code, flt):
-            """
-            Gets right side of a MASPoseArms. Assumes is exist.
-            NOTE: if right side does not exist for this MASPoseArms, this
-                output is undefined.
-
-            IN:
-                layer_code - layer code to generate right side for
-                flt - flter to generate right side for
-
-            RETURNS: tuple of the following format:
-                [0] - tuple of strings containing tag data
-                [1] - tuple of strings containing hlite tag data, if found
-            """
-            tag = (
-                store.mas_sprites.PREFIX_ARMS_RIGHT,
-                self.right,
-                store.mas_sprites.ART_DLM,
-                str(layer_code),
-            )
-
-            return (tag, self.__get_hltag(tag, self.hl_rmap, layer_code, flt))
-
-        def __has_left(self, layer_code):
-            """
-            Checks if the left side of this MASPoseArms exists for a given
-            layer code.
-
-            IN:
-                layer_code - layer code to check
-
-            RETURNS: True if left side exists, False if not
-            """
-            return self.left and self.lmap.get(layer_code, False)
-
-        def __has_right(self, layer_code):
-            """
-            Checks if the right side of this MASPoseArms exists for a given
-            layer code.
-
-            IN:
-                layer_code - layer code to check
-
-            RETURNS: True if right side exists, False if not
-            """
-            return self.right and self.rmap.get(layer_code, False)
-
-        def _parse(self, tag, tag_map, tag_hl_data):
-            """
-            Parses tag data and determines mapping and hl mappings to use
-
-            IN:
-                tag - string tag related to other tag data
-                tag_map - the mapping dict for mapping tag arm layer exist
-                    key: image layer code
-                    value: True if exists, False ifn ot
-                tag_hl_data - highlight map data related to the tag. format:
-                    [0] - default highlight to use, pass in none to not set
-                        a default
-                    [1] - highlight mapping to use. Format:
-                        key: see MASPoseArms._MPA_KEYS
-                        value: MASFilterMap object, or None if no highlight
-                    pass in None if no highlights should be used at all
-
-            RETURNS: tuple of the following format: (each item may be None)
-                [0] - tag 
-                [1] - tag map to use
-                [2] - tag MASHighlightMap to use
-            """
-            if tag is None:
-                return (None, None, None)
-
-            # otherwise parse data a bit
-            self.clean_map(tag_map)
-
-            # check hl map exist
-            if tag_hl_data is None:
-                return (tag, tag_map, None)
-
-            # parse hl map
-            tag_hl_map = MASHighlightMap.create_from_mapping(
-                self._MPA_KEYS,
-                tag_hl_data[0],
-                tag_hl_data[1]
-            )
-            return (tag, tag_map, tag_hl_map)
-
-        def build_loadstrs(self, prefix):
-            """
-            See MASPoseArms.build_loadstrs
-            """
-            if not self.left and not self.right:
-                return []
-
-            loadstrs = []
-            lprefix = prefix + [store.mas_sprites.PREFIX_ARMS_LEFT]
-            rprefix = prefix + [store.mas_sprites.PREFIX_ARMS_RIGHT]
-            
-            # now add arms based on layer codes
-            for layer_code in self._MPA_KEYS:
-                # NOTE: only add if exist for layer
-
-                # NOTE: ignore fitlers because we gen all at once
-                if self.__has_left(layer_code):
-                    loadstrs.extend(self._build_loadstrs_ft(
-                        lprefix,
-                        self.left,
-                        self.hl_lmap,
-                        layer_code
-                    ))
-
-                if self.__has_right(layer_code):
-                    loadstrs.extend(self._build_loadstrs_ft(
-                        rprefix,
-                        self.right,
-                        self.hl_rmap,
-                        layer_code
-                    ))
-
-            return loadstrs
-
-        def get(self, layer_code, flt):
-            """
-            See MASPoseARms.get
-            """
-            tags = []
-
-            # starting with left side
-            if self.__has_left(layer_code):
-                tags.append(self.__get_left(layer_code, flt))
-
-            # now right side, simliar to left
-            if self.__has_right(layer_code):
-                tags.append(self.__get_right(layer_code, flt))
-
-            return tags
-
-        @staticmethod
-        def fromJSON(json_obj, msg_log, ind_lvl):
-            """
-            See MASPoseArms.fromJSON
-            """
             # TODO
+
             raise NotImplementedError
 
 
@@ -9290,117 +8885,148 @@ init -2 python in mas_sprites:
     # NOTE: this should be made AFTER the sprite object classes are defined
 
     # the base arms
-    base_arms = MASPoseArms(
-        "crossed"
-    )
-
-    # the base pose arm map
-    base_mpm = MASPoseMap(
-        p1=MASPoseArms(
-
-    # combined arms
-    LEFT_DOWN = {
-        store.MASPoseArms.LAYER_BOT: True,
-    }
-    RIGHT_RESTPOINT = {
-        store.MASPoseArms.LAYER_TOP: True,
-    }
-
-    # initialization of the base arms poes map
-    base_pose_arms_map = {
+    base_arms = store.MASPoseArms({
         
-        # steepling
-        POSES[0]: store.MASPoseArmsBoth(
-            "steepling",
-            {
-                store.MASPoseArms.LAYER_TOP: True
-            },
-            None
-        ),
-
         # crossed
-        POSES[1]: store.MASPoseArmsBoth(
+        1: store.MASArmBoth(
             "crossed",
             {
-                store.MASPoseArms.LAYER_MID: True,
-                store.MASPoseArms.LAYER_TOP: True,
-            },
-            None
+                store.MASArm.LAYER_MID: True,
+                store.MASArm.LAYER_TOP: True,
+            }
         ),
 
-        # restleftpointright
-        POSES[2]: store.MASPoseArmsLR(
+        # left-down
+        2: store.MASArmLeft(
+            "down",
+            {
+                store.MASArm.LAYER_BOT: True,
+            }
+        ),
+
+        # left-rest
+        3: store.MASArmLeft(
             "rest",
             {
-                store.MASPoseArms.LAYER_TOP: True
-            },
-            None,
-            "restpoint",
-            RIGHT_RESTPOINT,
-            None
+                store.MASArm.LAYER_TOP: True,
+            }
         ),
 
-        # point right
-        POSES[3]: store.MASPoseArmsLR(
+        # right-down
+        4: store.MASArmRight(
             "down",
-            LEFT_DOWN,
-            None,
+            {
+                store.MASArm.LAYER_BOT: True,
+            }
+        ),
+
+        # right-point
+        5: store.MASArmRight(
             "point",
             {
-                store.MASPoseArms.LAYER_BOT: True
-            },
-            None
+                store.MASArm.LAYER_BOT: True,
+            }
         ),
 
-        # leaning def
-        L_POSES[0]: store.MASPoseArmsLR(
-            "def",
-            {
-                store.MASPoseArms.LAYER_TOP: True
-            },
-            None,
-            "def",
-            {
-                store.MASPoseArms.LAYER_MID: True,
-                store.MASPoseArms.LAYER_TOP: True,
-            },
-            None
-        ),
-
-        # down
-        POSES[4]: store.MASPoseArmsLR(
-            "down",
-            LEFT_DOWN,
-            None,
-            "down",
-            LEFT_DOWN,
-            None
-        ),
-
-        # downleftpointright
-        POSES[5]: store.MASPoseArmsLR(
-            "down",
-            LEFT_DOWN,
-            None,
+        # right-restpoint
+        6: store.MASArmRight(
             "restpoint",
-            RIGHT_RESTPOINT,
-            None
+            {
+                store.MASArm.LAYER_TOP: True,
+            }
         ),
-    }
+
+        # steepling
+        7: store.MASArmBoth(
+            "steepling",
+            {
+                store.MASArm.LAYER_TOP: True,
+            }
+        ),
+
+        # def|left-def
+        8: store.MASArmLeft(
+            "def",
+            {
+                store.MASArm.LAYER_TOP: True,
+            }
+        ),
+
+        # def|right-def
+        9: store.MASArmRight(
+            "def",
+            {
+                store.MASArm.LAYER_MID: True,
+                store.MASArm.LAYER_TOP: True,
+            }
+        ),
+    })
+
+    # the base pose arm map
+    base_mpm = store.MASPoseMap(
+
+        # steepling
+        p1=(7,),
+
+        # crossed
+        p2=(1,),
+
+        # restleftpointright - left-rest / right-restpoint
+        p3=(3, 6),
+
+        # pointright - left-down / right-point
+        p4=(2, 5),
+
+        # leaning-def - def|left-def / def|right-def
+        p5=(8, 9),
+
+        # down - left-down / right-down
+        p6=(2, 4),
+
+        # downleftpointright - left-down / right-restpoint
+        p7=(2, 6)
+
+    )
 
     # NOTE: consider allowing spritejsons to do this
-    def use_bpam(posenum):
+    def use_bma(arm_id):
         """
-        Returns the MASPoseArms for a pose num
+        Returns base MASArm for an armid
+
+        IN:
+            arm_id - numerical digit for an arm. Corresponds to NUM_ARMS
+
+        RETURNS: base MASArm for this arm, or None if no Arm
+        """
+        return base_arms.get(arm_id)
+
+    def use_bmpm(posenum):
+        """
+        Returns tuple of MASArms for a pose num
         
         IN:
             posenum - numerical digit for a pose. This corresponds to
                 NUM_POSE.
 
-        RETURNS: base MASPoseARms for this pose, or None if not found
+        RETURNS: base MASArms for this poes, or None if no arms
         """
-        return base_pose_arms_map.get(NUM_POSE.get(posenum, None), None)
+        return use_bpam_s(NUM_POSE.get(posenum, None))
 
+
+    def use_bmpm_s(leanpose):
+        """
+        Version of use_bpam that uses leanpose
+
+        IN:
+            leanpose - leanpose string
+
+        RETURNS: base MASArms for this pose, or None if no arms
+        """
+        return base_mpm.get(leanpose, None)
+
+
+init -1 python in mas_sprites:
+    # other post-sprite object functions (do NOT put base stuff in here)
 
     def show_empty_desk():
         """

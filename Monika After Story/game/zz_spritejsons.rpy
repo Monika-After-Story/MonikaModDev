@@ -2373,7 +2373,7 @@ init 189 python in mas_sprites_json:
         """
         Prepares internal data for sprite object processing
         """
-        _genAD()
+        pass
 
 
     def verifyHairs():

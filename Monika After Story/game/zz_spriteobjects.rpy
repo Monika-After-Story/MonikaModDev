@@ -950,22 +950,15 @@ init -1 python:
         ex_props={
             store.mas_sprites.EXP_C_BRS: True
         },
-        pose_arms=MASPoseMap(
-            default=None,
-            use_reg_for_l=True,
-            p1=store.mas_sprites.use_bpam(1),
-            p2=MASPoseArmsBoth(
-                "crossed",
-                {
-                    MASPoseArms.LAYER_MID: True,
-                },
-                None
-            ),
-            p3=store.mas_sprites.use_bpam(3),
-            p4=store.mas_sprites.use_bpam(4),
-            p5=store.mas_sprites.use_bpam(5),
-            p6=store.mas_sprites.use_bpam(6),
-            p7=store.mas_sprites.use_bpam(7)
+        pose_arms=MASPoseArms(
+            {
+                1: MASArmBoth(
+                    "crossed",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
         )
     )
     store.mas_sprites.init_clothes(mas_clothes_blazerless)
@@ -994,33 +987,21 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
-        pose_arms=MASPoseMap(
-            default=None,
-            use_reg_for_l=True,
-            p1=store.mas_sprites.use_bpam(1),
-            p2=MASPoseArmsBoth(
-                "crossed",
-                {
-                    MASPoseArms.LAYER_MID: True,
-                },
-                None
-            ),
-            p3=store.mas_sprites.use_bpam(3),
-            p4=store.mas_sprites.use_bpam(4),
-            p5=MASPoseArmsLR(
-                "def",
-                {
-                    store.MASPoseArms.LAYER_TOP: True,
-                },
-                None,
-                "def",
-                {
-                    store.MASPoseArms.LAYER_MID: True,
-                },
-                None
-            ),
-            p6=store.mas_sprites.use_bpam(6),
-            p7=store.mas_sprites.use_bpam(7)
+        pose_arms=MASPoseArms(
+            {
+                1: MASArmBoth(
+                    "crossed",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+                9: MASArmRight(
+                    "def",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
         ),
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_marisa_entry,
@@ -1143,10 +1124,7 @@ init -1 python:
         },
         entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
         exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
-        pose_arms=MASPoseMap(
-            default=None,
-            use_reg_for_l=True
-        )
+        pose_arms=MASPoseArms({}, def_base=False)
     )
     store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
     store.mas_selspr.init_selectable_clothes(
@@ -1181,10 +1159,7 @@ init -1 python:
         entry_pp=store.mas_sprites._clothes_dress_newyears_entry,
         exit_pp=store.mas_sprites._clothes_dress_newyears_exit,
         stay_on_start=True,
-        pose_arms=MASPoseMap(
-            default=None,
-            use_reg_for_l=True
-        ),
+        pose_arms=MASPoseArms({}, def_base=False),
         ex_props={
             store.mas_sprites.EXP_C_BRS: True,
         }
@@ -1218,10 +1193,7 @@ init -1 python:
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_sundress_white_entry,
         exit_pp=store.mas_sprites._clothes_sundress_white_exit,
-        pose_arms=MASPoseMap(
-            default=None,
-            use_reg_for_l=True
-        ),
+        pose_arms=MASPoseArms({}, def_base=False),
         ex_props={
             store.mas_sprites.EXP_C_BRS: True,
         }
@@ -1256,10 +1228,7 @@ init -1 python:
             store.mas_sprites.EXP_C_LING: True,
             store.mas_sprites.EXP_C_BRS: True
         },
-        pose_arms=MASPoseMap(
-            default=None,
-            use_reg_for_l=True
-        )
+        pose_arms=MASPoseArms({}, def_base=False)
     )
     store.mas_sprites.init_clothes(mas_clothes_vday_lingerie)
     store.mas_selspr.init_selectable_clothes(
