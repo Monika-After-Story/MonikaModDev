@@ -704,7 +704,7 @@ init 5 python:
 label mas_wrs_mal:
     python:
         myanimelist_quips = [
-                "Maybe we could watch anime together someday, [player]~",
+            "Maybe we could watch anime together someday, [player]~",
         ]
 
         if persistent._mas_pm_watch_mangime is None:
