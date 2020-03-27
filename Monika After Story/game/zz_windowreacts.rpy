@@ -693,6 +693,90 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_mal",
+            category=['myanimelist'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_mal:
+    python:
+        myanimelist_quips = [
+            "Maybe we could watch anime together someday, [player]~",
+        ]
+
+        if persistent._mas_pm_watch_mangime is None:
+            myanimelist_quips.append("So you like anime and manga, [player]?")
+
+        wrs_success = display_notif(m_name, myanimelist_quips, 'Window Reactions')
+
+        #Unlock again if we failed
+        if not wrs_success:
+            mas_unlockFailedWRS('mas_wrs_mal')
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_deviantart",
+            category=['deviantart'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_deviantart:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "There's so much talent here!",
+            "I'd love to learn how to draw someday...",
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_deviantart')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_netflix",
+            category=['netflix'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_netflix:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "I'd love to watch a romance movie with you [player]!",
+            "What are we watching today, [player]?",
+            "What are you going to watch [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_netflix')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitch",
             category=['-twitch'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
