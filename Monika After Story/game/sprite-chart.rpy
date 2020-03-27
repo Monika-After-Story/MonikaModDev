@@ -5445,6 +5445,99 @@ init -3 python:
                 for hlc in mfm.unique_values()
             ]
 
+        @classmethod
+        def _fromJSON(cls, json_obj, msg_log, ind_lvl, build_class):
+            """
+            Builds a MASArm object based on the given JSON format of it
+
+            IN:
+                json_obj - JSON object to parse
+                ind_lvl - indent level
+                build_class - actual MASArm derivative to build
+
+            OUT:
+                msg_log - list to save messages to
+
+            RETURNS: MASArm instance built with the JSON, or None if failed
+            """
+            params = {}
+            # start with required params
+            # tag
+            # layers
+            if not store.mas_sprite_jsons._validate_params(
+                    json_obj,
+                    params,
+                    {
+                        "tag": (str, store.mas_sprite_jsons._verify_str),
+                        "layers": (str, store.mas_sprite_jsons._verify_str),
+                    },
+                    True,
+                    msg_log,
+                    ind_lvl
+            ):
+                return None
+
+            # additional processing for the layers to ensure valid data
+            layer_map = {}
+            for layer in params.pop("layers").split("^"):
+                if layer in cls.__MPA_KEYS:
+                    layer_map[layer] = True
+
+                else:
+                    # invalid layer
+                    # warn and ignore
+                    msg_log.append((
+                        store.mas_sprite_jsons.MSG_WARN_T,
+                        ind_lvl,
+                        store.mas_sprite_jsons.MA_INVALID_LAYER.format(layer)
+                    ))
+
+            # NOTE: ERR if we have no layers for an arm. This is useless to
+            # include if no layers.
+            if len(layer_map) == 0:
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_ERR_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.MA_NO_LAYERS
+                ))
+                return None
+
+            # add layers to params
+            params["layer_map"] = layer_map
+
+            # now check highlight
+            if store.mas_sprite_jsons.HLITE in json_obj:
+                
+                # parse
+                vhl_data = {}
+                
+                if store.mas_sprite_jsons._validate_highlight(
+                        json_obj,
+                        vhl_data,
+                        msg_log,
+                        ind_lvl,
+                        layer_map.keys()
+                ):
+                    # success
+                    hl_data = vhl_data.get("hl_data", None)
+                    if hl_data is not None:
+                        params["hl_data"] = hl_data
+
+                else:
+                    # failure
+                    return None
+
+            # warn for extra properties
+            for extra_prop in json_obj:
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.EXTRA_PROP.format(extra_prop)
+                ))
+
+            # we now should have all the data we need to build
+            return build_class(**params)
+
         def build_loadstrs(self, prefix):
             """
             Builds loadstrs for this arm
@@ -5685,6 +5778,113 @@ init -3 python:
                 # NOTE: if def_base is False, then get will auto return
                 #   None so no need to set any data
 
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl):
+            """
+            Builds a MASPoseArms object given a JSON format of it
+
+            IN:
+                json_obj - json object to parse
+                ind_lvl - indent level
+
+            OUT:
+                msg_log - list to save messages to
+
+            RETURNS: MASPoseArms object built using the JSON, None if no
+                data to be made, False if error occured
+            """
+            # NOTE: we can assume type is checked already
+
+            arm_data = {}
+
+            # loop over valid arm data
+            isbad = False
+            for arm_id in store.mas_sprites.NUM_ARMS:
+                if arm_id in json_obj:
+                    arm_obj = json_obj.pop(arm_id)
+
+                    # check object first
+                    if arm_obj is None:
+                        # None is okay
+                        arm_data[arm_id] = None
+
+                    elif not store.mas_sprite_jsons._verify_dict(arm_obj):
+                        # must be dict, however
+                        msg_log.append((
+                            store.mas_sprite_jsons.MSG_ERR_T,
+                            ind_lvl,
+                            store.mas_sprite_jsons.MPA_BAD_TYPE.format(
+                                arm_id,
+                                dict,
+                                type(arm_obj)
+                            )
+                        ))
+                        isbad = True
+
+                    else:
+                        # otherwise try and parse this data
+
+                        # log loading
+                        msg_log.append((
+                            store.mas_sprite_jsons.MSG_INFO_T,
+                            ind_lvl,
+                            store.mas_sprite_jsons.MA_LOADING.format(arm_id)
+                        ))
+
+                        # parse
+                        arm = MASArm._fromJSON(
+                            arm_obj,
+                            msg_log,
+                            ind_lvl + 1,
+                            store.mas_sprites.NUM_MARMS[arm_id]
+                        )
+
+                        # check valid
+                        if arm is None:
+                            # failure case
+                            isbad = True
+
+                        else:
+                            # log success
+                            msg_log.append((
+                                store.mas_sprite_jsons.MSG_INFO_T,
+                                ind_lvl,
+                                store.mas_sprite_jsons.MA_SUCCESS.format(
+                                    arm_id
+                                )
+                            ))
+
+                            # and save the data
+                            arm_data[arm_id] = arm
+
+            # now check for extras
+            for extra_prop in json_obj:
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.EXTRA_PROP.format(extra_prop)
+                ))
+
+            # quit if failures
+            if isbad:
+                return False
+
+            # validate data existence
+            if len(arm_data) == 0:
+                # no data, but warn
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_WARN_T,
+                    ind_lvl,
+                    store.mas_sprite_jsons.MPA_NO_DATA
+                ))
+                return None
+
+            # otherwise we are good so we can build
+            # NOTE: we never use base options with JSONS.
+            #   spritepack creators should always describe each used arm
+            #   incase the base poses change
+            return MASPoseArms(arm_data, def_base=False)
+
         def get(self, arm_key):
             """
             Gets the arm data associated with the given arm key
@@ -5719,28 +5919,6 @@ init -3 python:
 
             # otherwse return None because no arms
             return None
-
-        @staticmethod
-        def fromJSON(json_obj, msg_log, ind_lvl):
-            """
-            Builds a MASPoseArms object given a JSON format of it
-
-            IN:
-                json_obj - json object to parse
-                ind_lvl - indent level
-
-            OUT:
-                msg_log - list to save messages to
-
-            RETURNS: MASPoseArms object built using the JSON, or 
-                None if failed
-            """
-            # all pose arms are variants of both or LR
-            # pose arm data is contained in format specified in 
-            # zz_spritejsons
-            # TODO
-
-            raise NotImplementedError
 
 
     class MASHighlightMap(object):
@@ -5936,6 +6114,58 @@ init -3 python:
                 return defval
 
             return mfm.get(flt, defval=defval)
+
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl, hl_keys):
+            """
+            Builds hl data from JSON data
+
+            IN:
+                json_obj - JSON object to parse
+                ind_lvl - indentation level
+                    NOTE: this function handles loading/success log so
+                    do NOT increment indent when passing in
+                hl_keys - expected keys of this highlight map
+
+            OUT:
+                msg_log - list to add messagse to
+
+            RETURNS: hl_data, ready to passed split and passed into
+                create_from_mapping. Tuple:
+                [0] - default MASFilterMap object
+                [1] - dict:
+                    key: hl_key
+                    value: MASFilterMap object
+                or None if no data, False if failure in parsing occured
+            """
+            # first log loading
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MHM_LOADING
+            ))
+
+            # parse the data
+            hl_data = MASHighlightMap._fromJSON_hl_data(
+                json_obj,
+                msg_log,
+                ind_lvl + 1,
+                hl_keys
+            )
+
+            # check fai/succ
+            if hl_data is False:
+                # loggin should take care of this already
+                return False
+
+            # log success
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MHM_SUCCESS
+            ))
+
+            return hl_data
 
         def get(self, key):
             """
@@ -6347,53 +6577,6 @@ init -3 python:
 
                 return
 
-            if mpm_type == cls.MPM_TYPE_PA:
-                # pose arms use special objects
-
-                # NOTE: actaully, we are chanigng this so no need to pass in
-                # MPM objects with PA type. Instead this will be different
-                # for clothes as its own object parse. TODO: do this later
-                #   when working onclothes
-                raise NotImplementedError
-
-                if prop_val is None:
-                    # None is allowed as it means use no layers
-                    mpm_data[prop_name] = prop_val
-
-                elif cls.msj._verify_dict(prop_val, allow_none=False):
-                    # prop data must be object
-
-                    # log opening pose arms
-                    msg_log.append((
-                        cls.msj.MSG_INFO_T,
-                        ind_lvl,
-                        cls.msj.MPA_LOADING.format(prop_name)
-                    ))
-
-                    # read in the mpa
-                    # TODO
-
-                    # log closing pose arms
-                    # TODO: previous function may reutrn bad news okay
-                    msg_log.append((
-                        cls.msj.MSG_INFO_T,
-                        ind_lvl,
-                        cls.msj.MPA_SUCCESS.format(prop_name)
-                    ))
-
-                else:
-                    # invalid type
-                    msg_log.append((
-                        cls.msj.MSG_ERR_T,
-                        ind_lvl,
-                        cls.msj.MPA_PA_BAD_TYPE.format(
-                            prop_name,
-                            type(prop_val)
-                        )
-                    ))
-
-                return
-
             # invalid types should not be an issue here, so no warning
 
         @classmethod
@@ -6752,66 +6935,6 @@ init -3 python:
                 hl_mapping
             )
 
-        @staticmethod
-        def _fromJSON_hl_data_flt(json_obj, msg_log, ind_lvl, prop_name):
-            """
-            Parses an hl filter object from a given JSON
-
-            IN:
-                json_obj - json object to parse
-                ind_lvl - indentation level
-                prop_name - name of the prop to parse
-
-            OUT:
-                msg_log - log to add messages to
-
-            RETURNS: MASFitlerObject if data parsed successfully, None if no
-                filter object, False if failure
-            """
-            fltobj = json_obj.pop(prop_name)
-
-            # verify type is dict
-            if not store.mas_sprite_jsons._verify_dict(
-                    fltobj,
-                    allow_none=False
-            ):
-                msg_log.append((
-                    store.mas_sprite_jsons.MSG_ERR_T,
-                    ind_lvl,
-                    store.mas_sprite_jsons.BAD_TYPE.format(
-                        prop_name,
-                        dict,
-                        type(fltobj)
-                    )
-                ))
-                return False
-
-            # otherwise dict so process
-
-            # log loading
-            msg_log.append((
-                store.mas_sprite_jsons.MSG_INFO_T,
-                ind_lvl,
-                store.mas_sprite_jsons.MFM_LOADING.format(prop_name)
-            ))
-
-            # parse
-            fltobj = MASFilterMap.fromJSON(fltobj, msg_log, ind_lvl + 1)
-
-            # check for error
-            if fltobj is False:
-                # this should be logged already
-                return False
-
-            # log success
-            msg_log.append((
-                store.mas_sprite_jsons.MSG_INFO_T,
-                ind_lvl,
-                store.mas_sprite_jsons.MFM_SUCCESS.format(prop_name)
-            ))
-
-            return fltobj
-
         def addprop(self, prop):
             """
             Adds the given prop to the ex_props list
@@ -6859,132 +6982,6 @@ init -3 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
-
-        @staticmethod
-        def fromJSON_hl_data(json_obj, msg_log, ind_lvl, hl_keys):
-            """
-            Converts JSON data into hl-ready data
-            NOTE: extended classes MAY want to implement their own version
-                of this
-
-            Standard highlight dict data consists of:
-                See zz_spritejsons
-
-            Hl dat
-
-            IN:
-                json_obj - json object to parse
-                msg_log - log to add messages to
-                ind_lvl - indentation lvl
-                hl_keys - expected keys of this highlight map
-
-            RETURNS: hl_data, completely validated:
-                Tuple:
-                [0] - default Filter Map object
-                [1] - dict:
-                    key: hl_key
-                    value: Filter Map object
-                or None if no data, False if failure in parsing occurred
-            """
-            hl_def = None
-            hl_mapping = {}
-
-            # first try parsing for default
-            if "default" in json_obj:
-                hl_def = MASSpriteBase._fromJSON_hl_data_flt(
-                    json_obj,
-                    msg_log,
-                    ind_lvl,
-                    "default"
-                )
-
-                # check failure state
-                if hl_def is False:
-                    # logging should have already been handled
-                    return False
-
-            # now for mapping
-            # mapping data should be in Dict format
-            has_map_data = False
-            if "mapping" in json_obj:
-                mapobj = json_obj.pop("mapping")
-
-                # check type
-                if not store.mas_sprite_jsons._verify_dict(
-                        mapobj,
-                        allow_none=False
-                ):
-                    msg_log.append((
-                        store.mas_sprite_jsons.MSG_ERR_T,
-                        ind_lvl,
-                        store.mas_sprite_jsons.BAD_TYPE.format(
-                            "mapping",
-                            dict,
-                            type(mapobj)
-                        )
-                    ))
-                    return False
-
-                # loading mapping
-                msg_log.append((
-                    store.mas_sprite_jsons.MSG_INFO_T,
-                    ind_lvl,
-                    store.mas_sprite_jsons.MHM_LOADING_MAPPING
-                ))
-
-                # loop over hl keys
-                isbad = False
-                for hl_key in hl_keys:
-                    if hl_key in mapobj:
-                        flt_obj = MASSpriteBase._fromJSON_hl_data_flt(
-                            mapobj,
-                            msg_log,
-                            ind_lvl + 1,
-                            hl_key
-                        )
-
-                        # check for fail/succ
-                        if flt_obj is False:
-                            isbad = True
-                        else:
-                            if flt_obj is not None:
-                                # None check the flt object for later
-                                has_map_data = True
-
-                            hl_mapping[hl_key] = flt_obj
-
-                # warn if any extras
-                for extra_prop in mapobj:
-                    msg_log.append((
-                        store.mas_sprites_jsons.MSG_WARN_T,
-                        ind_lvl + 1,
-                        store.mas_sprite_jsons.EXTRA_PROP.format(extra_prop)
-                    ))
-
-                # quit if failure
-                # log should be handled by the MFM logging
-                if isbad:
-                    return False
-
-                # done lodaing mapping
-                msg_log.append((
-                    store.mas_sprite_jsons.MSG_INFO_T,
-                    ind_lvl,
-                    store.mas_sprite_jsons.MHM_SUCCESS_MAPPING
-                ))
-
-            # check if we actually have any data
-            if hl_def is None and (len(hl_mapping) == 0 or not has_map_data):
-                # no data, warn but no failure
-                msg_log.append((
-                    store.mas_sprite_jsons.MSG_WARN_T,
-                    ind_lvl,
-                    store.mas_sprite_jsons.MHM_NO_DATA
-                ))
-                return None
-
-            # otherwise valid data probably
-            return (hl_def, hl_mapping)
 
         def gethlc(self, *args, **kwargs):
             """
@@ -7852,6 +7849,8 @@ init -3 python:
             IN:
                 json_obj - JSON object to parse
                 ind_lvl - indentation level
+                    NOTE: this function handles loading/success so do NOT
+                        incrememnt indent
                 pm_keys - pose map keys
                 rec_layer - the layer that this ACS wants to be on
 
@@ -7878,6 +7877,25 @@ init -3 python:
                 # happen
                 return None
 
+            # log loading
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MHM_S_LOADING
+            ))
+
+            # check type
+            if not store.mas_sprite_jsons._verify_dict(json_obj, False):
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_ERR_T,
+                    ind_lvl + 1,
+                    store.mas_sprite_jsons.MHM_S_NOT_DICT.format(
+                        dict,
+                        type(json_obj)
+                    )
+                ))
+                return False
+
             shl_data = {}
 
             # parse data as dict
@@ -7888,41 +7906,45 @@ init -3 python:
                 if pm_key in json_obj:
                     hl_obj = json_obj.pop(pm_key)
 
-                    # check type
-                    if not store.mas_sprite_jsons._verify_dict(
+                    # log loading
+                    msg_log.append((
+                        store.mas_sprite_jsons.MSG_INFO_T,
+                        ind_lvl + 1,
+                        store.mas_sprite_jsons.MHM_SK_LOADING.format(pm_key)
+                    ))
+
+                    # parse data
+                    vhl_data = {}
+                    if store.mas_sprite_jsons._validate_highlight_core(
                             hl_obj,
-                            allow_none=False
+                            vhl_data,
+                            msg_log,
+                            ind_lvl + 2,
+                            as_keys
                     ):
+                        # success
+
+                        # log success
                         msg_log.append((
-                            store.mas_sprite_jsons.MSG_ERR_T,
-                            ind_lvl,
-                            store.mas_sprite_jsons.MHM_KEY_BAD_TYPE.format(
-                                pm_key,
-                                dict,
-                                type(hl_obj)
+                            store.mas_sprite_jsons.MSG_INFO_T,
+                            ind_lvl + 1,
+                            store.mas_sprite_jsons.MHM_SK_SUCCESS.format(
+                                pm_key
                             )
                         ))
-                        isbad = True
+                        
+                        hl_data = vhl_data.get("hl_data", None)
+
+                        if hl_data is not None:
+                            # none check the hl object for later
+                            has_map_data = True
+
+                        shl_data[pm_key] = hl_data
 
                     else:
-                        # valid type, continue checking as highlith object
-                        hl_data = MASSpriteBase.fromJSON_hl_data(
-                            hl_obj,
-                            msg_log,
-                            ind_lvl,
-                            as_keys
-                        )
-
-                        # check for fail/succ
-                        if hl_data is False:
-                            isbad = True
-                        else:
-                            if hl_data is not None:
-                                # none check the hl object for later
-                                has_map_data = True
-
-                            shl_data[pm_key] = hl_data
-
+                        # failure case
+                        isbad = True
+                        
             # warn if any extras
             for extra_prop in json_obj:
                 msg_log.append((
@@ -7943,7 +7965,14 @@ init -3 python:
                     ind_lvl,
                     store.mas_sprite_jsons.MHM_S_NO_DATA
                 ))
-                return None
+                shl_data = None
+
+            # log success
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MHM_S_SUCCESS
+            ))
 
             return shl_data
 
@@ -8884,11 +8913,24 @@ init -2 python in mas_sprites:
     # base-related sprtie stuff
     # NOTE: this should be made AFTER the sprite object classes are defined
 
+    # ARMS to MASArm object mapping
+    NUM_MARMS = {
+        1: store.MASArmBoth,
+        2: store.MASArmLeft,
+        3: store.MASArmLeft,
+        4: store.MASArmRight,
+        5: store.MASArmRight,
+        6: store.MASArmRight,
+        7: store.MASArmBoth,
+        8: store.MASArmLeft,
+        9: store.MASArmRight,
+    }
+
     # the base arms
     base_arms = store.MASPoseArms({
         
         # crossed
-        1: store.MASArmBoth(
+        1: NUM_MARMS[1](
             "crossed",
             {
                 store.MASArm.LAYER_MID: True,
@@ -8897,7 +8939,7 @@ init -2 python in mas_sprites:
         ),
 
         # left-down
-        2: store.MASArmLeft(
+        2: NUM_MARMS[2](
             "down",
             {
                 store.MASArm.LAYER_BOT: True,
@@ -8905,7 +8947,7 @@ init -2 python in mas_sprites:
         ),
 
         # left-rest
-        3: store.MASArmLeft(
+        3: NUM_MARMS[3](
             "rest",
             {
                 store.MASArm.LAYER_TOP: True,
@@ -8913,7 +8955,7 @@ init -2 python in mas_sprites:
         ),
 
         # right-down
-        4: store.MASArmRight(
+        4: NUM_MARMS[4](
             "down",
             {
                 store.MASArm.LAYER_BOT: True,
@@ -8921,7 +8963,7 @@ init -2 python in mas_sprites:
         ),
 
         # right-point
-        5: store.MASArmRight(
+        5: NUM_MARMS[5](
             "point",
             {
                 store.MASArm.LAYER_BOT: True,
@@ -8929,7 +8971,7 @@ init -2 python in mas_sprites:
         ),
 
         # right-restpoint
-        6: store.MASArmRight(
+        6: NUM_MARMS[6](
             "restpoint",
             {
                 store.MASArm.LAYER_TOP: True,
@@ -8937,7 +8979,7 @@ init -2 python in mas_sprites:
         ),
 
         # steepling
-        7: store.MASArmBoth(
+        7: NUM_MARMS[7](
             "steepling",
             {
                 store.MASArm.LAYER_TOP: True,
@@ -8945,7 +8987,7 @@ init -2 python in mas_sprites:
         ),
 
         # def|left-def
-        8: store.MASArmLeft(
+        8: NUM_MARMS[8](
             "def",
             {
                 store.MASArm.LAYER_TOP: True,
@@ -8953,7 +8995,7 @@ init -2 python in mas_sprites:
         ),
 
         # def|right-def
-        9: store.MASArmRight(
+        9: NUM_MARMS[9](
             "def",
             {
                 store.MASArm.LAYER_MID: True,

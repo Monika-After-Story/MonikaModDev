@@ -513,15 +513,19 @@ init -21 python in mas_sprites_json:
     MPM_PA_BAD_TYPE = "property '{0}' - expected object, got {1}"
 
     ## MASHighlightMap
-    MHM_LOADING = "loading Highlight object in '{0}'..."
-    MHM_SUCCESS = "Highlight object '{0}' loaded successfully!"
-    MHM_S_LOADING = "loading Highlight Split object in '{0}'..."
-    MHM_S_SUCCESS = "Highlight Split object '{0}' loaded successfully!"
+    MHM_LOADING = "loading Highlight object..."
+    MHM_SUCCESS = "Highlight object loaded successfully!"
+    MHM_S_LOADING = "loading Highlight Split object..."
+    MHM_S_SUCCESS = "Highlight Split object loaded successfully!"
+    MHM_SK_LOADING = "loading Highlight object for key '{0}'..."
+    MHM_SK_SUCCESS = "Highlight object for key '{0}' loaded successfully!"
     MHM_LOADING_MAPPING = "loading mapping..."
     MHM_SUCCESS_MAPPING = "mapping loaded successfully!"
     MHM_NO_DATA = "No data in Highlight object, ignoring"
     MHM_S_NO_DATA = "No data in Highlight Split object, ignoring"
     MHM_KEY_BAD_TYPE = "key '{0}' - expected type {1} got {2}"
+    MHM_NOT_DICT = "Highlight object must be of type {0}. got {1}"
+    MHM_S_NOT_DICT = "Highlight split object must be of type {0}. got {1}"
 
     ## MASFilterMap 
     MFM_LOADING = "loading Filter object in '{0}'..."
@@ -532,9 +536,15 @@ init -21 python in mas_sprites_json:
 
     ## MASPoseArms
     MPA_LOADING = "loading Pose Arms in '{0}'..."
-    MPA_SUCCESS = "MASPoseArms '{0}' loaded successfully!"
-    MPA_NO_DATA = "no MASPoseArms data found"
-    MPA_BOTH_OVER = "'both' data found. 'left' and 'right' will be discarded."
+    MPA_SUCCESS = "Pose Arms '{0}' loaded successfully!"
+    MPA_BAD_TYPE = "Arm ID: {0} - expected type {1} got {2}"
+    MPA_NO_DATA = "No Pose Arms data found"
+
+    ## MASArm
+    MA_LOADING = "loading Arm in '{0}'..."
+    MA_SUCCESS = "Arm '{0}' loaded successfully!"
+    MA_INVALID_LAYER = "invalid layer '{0}' found, ignoring"
+    MA_NO_LAYERS = "Arm must have valid layers set"
 
     ## Hair Map
     HM_LOADING = "loading hair_map..."
@@ -1028,6 +1038,8 @@ init 189 python in mas_sprites_json:
         OUT:
             errs - list to save error messages to
         """
+        # TODO: I dont thin posearms and related have build_loadstrs
+        #   Should go through each main sprite object and double check
         # get selectable
         sel_obj = sml.get_sel(sp_obj)
 
@@ -1436,76 +1448,41 @@ init 189 python in mas_sprites_json:
 
         # now for highlight
         # NOTE: this depends on pose_map and arm_split
-        if "highlight" in obj_based:
-            hl_obj = obj_based.pop("highlight")
+        if HLITE in obj_based:
 
             # first determine the hl keys
             hl_keys = pose_map.unique_values()
 
             if arm_split:
                 # this should be a split accessory
-                
-                # log loading
-                msg_log.append((
-                    MSG_INFO_T,
-                    indent_lvl,
-                    MHM_S_LOADING.format("highlight")
-                ))
 
-                # parse data
                 hl_data = store.MASSplitAccessory.fromJSON_hl_data(
-                    hl_obj,
+                    obj_based.pop(HLITE),
                     msg_log,
-                    indent_lvl + 1,
+                    indent_lvl,
                     hl_keys,
                     rec_layer
                 )
 
-                # verify data
-                if hl_data is False:
-                    # failure case, logging should be donw already
+                # validate hl data
+                if hl_data is False
                     return False
 
-                # log success
-                msg_log.append((
-                    MSG_INFO_T,
-                    indent_lvl,
-                    MHM_S_SUCCESS.format("highlight")
-                ))
+                # otherwise good
+                if hl_data is not None:
+                    save_obj["hl_data"] = hl_data
 
             else:
                 # not a split accessory
 
-                # loading log
-                msg_log.append((
-                    MSG_INFO_T,
-                    indent_lvl,
-                    MHM_LOADING.format("highlight")
-                ))
-
-                # parse data
-                hl_data = store.MASSpriteBase.fromJSON_hl_data(
-                    hl_obj,
-                    msg_log,
-                    indent_lvl + 1,
-                    hl_keys
-                )
-
-                # verify hl data
-                if hl_data is False:
-                    # failure case, logging should be done already so just fail
+                if not _validate_highlight(
+                        obj_based,
+                        save_obj,
+                        msg_log,
+                        indent_lvl,
+                        hl_keys
+                ):
                     return False
-
-                # success log
-                msg_log.append((
-                    MSG_INFO_T,
-                    indent_lvl,
-                    MHM_SUCCESS.format("highlight")
-                ))
-
-            # otherwise, valid, so set if not None
-            if hl_data is not None:
-                save_obj["hl_data"] = hl_data
 
         return True
 
@@ -1605,48 +1582,17 @@ init 189 python in mas_sprites_json:
             return False
 
         # now validate highlight
-        if "highlight" in obj_based:
-            hl_obj = obj_based.pop("highlight")
-
-            # check type
-            if not _verify_dict(hl_obj, allow_none=False):
-                msg_log.append((
-                    MSG_ERR_T,
-                    indent_lvl,
-                    BAD_TYPE.format("highlight", dict, type(hl_obj))
-                ))
-                return False
-
-            # log loading
-            msg_log.append((
-                MSG_INFO_T,
-                indent_lvl,
-                MHM_LOADING.format("highlight")
-            ))
+        if HLITE in obj_based:
 
             # parse
-            hl_data = store.MASSpriteBase.fromJSON_hl_data(
-                hl_obj,
-                msg_log,
-                indent_lvl + 1,
-                store.MASHair.hl_keys()
-            )
-
-            # check fail/succ
-            if hl_data is False:
-                # logging should happen already
+            if not _validate_highlight(
+                    obj_based,
+                    save_obj,
+                    msg_log,
+                    indent_lvl,
+                    store.MASHair.hl_keys()
+            ):
                 return False
-
-            # log success
-            msg_log.append((
-                MSG_INFO_T,
-                indent_lvl,
-                MHM_SUCCESS.format("highlight")
-            ))
-
-            # save data if not None
-            if hl_data is not None:
-                save_obj["hl_data"] = hl_data
 
 #        # validate split
 #        if "split" not in obj_based:
@@ -1791,8 +1737,6 @@ init 189 python in mas_sprites_json:
 
         # validate pose arms
         if "pose_arms" in obj_based:
-            # TODO: this entire thing must change to work with new 
-            #   Pose Arm data
             # pose arms exists, get and validate
             msg_log.append((
                 MSG_INFO_T,
@@ -1800,17 +1744,25 @@ init 189 python in mas_sprites_json:
                 MPM_LOADING.format("pose_arms")
             ))
 
-            # set type to pose arms
-            mpm_obj = obj_based.pop("pose_arms")
-            mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_PA
-            mpm_msg_log = []
-            pose_arms = store.MASPoseMap.fromJSON(
-                mpm_obj,
-                mpm_msg_log,
+            # check type
+            pa_obj = obj_based.pop("pose_arms")
+            if not _verify_dict(pa_obj, False);
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl + 1,
+                    BAD_TYPE.format("pose_arms", dict, type(pa_obj)
+                ))
+                return False
+
+            # load pose arms
+            pose_arms = store.MASPoseArms.fromJSON(
+                pa_obj,
+                msg_log,
                 indent_lvl + 1
             )
-            msg_log.extend(mpm_msg_log)
-            if pose_arms is None:
+
+            # check fail/succ
+            if pose_arms is False:
                 return False
 
             # succ
@@ -1819,51 +1771,21 @@ init 189 python in mas_sprites_json:
                 indent_lvl,
                 MPM_SUCCESS.format("pose_arms")
             ))
-            save_obj["pose_arms"] = pose_arms
+
+            if pose_arms is not None:
+                save_obj["pose_arms"] = pose_arms
 
         # now for highlight
-        if "highlight" in obj_based:
-            hl_obj = obj_based.pop("highlight")
-
-            # check type
-            if not _verify_dict(hl_obj, allow_none=False):
-                msg_log.append((
-                    MSG_ERR_T,
-                    indent_lvl,
-                    BAD_TYPE.format("highlight", dict, type(hl_obj))
-                ))
-                return False
-
-            # log loading
-            msg_log.append((
-                MSG_INFO_T,
-                indent_lvl,
-                MHM_LOADING.format("highlight")
-            ))
-
+        if HLITE in obj_based:
             # parse
-            hl_data = store.MASSpriteBase.fromJSON_hl_data(
-                hl_obj,
-                msg_log,
-                indent_lvl + 1,
-                store.MASClothes.hl_keys()
-            )
-
-            # check fail/succ
-            if hl_data is False:
-                # logging should take care of this
+            if not _validate_highlight(
+                    obj_based,
+                    save_obj,
+                    msg_log,
+                    indent_lvl,
+                    store.MASClothes.hl_keys()
+            ):
                 return False
-
-            # log success
-            msg_log.append((
-                MSG_INFO_T,
-                indent_lvl,
-                MHM_SUCCESS.format("highlight")
-            ))
-
-            # svae data
-            if hl_data is not None:
-                save_obj["hl_data"] = hl_data
 
         return True
 
@@ -1919,6 +1841,150 @@ init 189 python in mas_sprites_json:
         # otherwise, we can say successful loading!
         writelog(MSG_INFO_ID.format(EP_SUCCESS))
         save_obj["ex_props"] = ex_props
+
+
+    def _validate_highlight(obj_based, save_obj, msg_log, ind_lvl, hl_keys):
+        """
+        Validates highlight objects
+
+        Props validated:
+            - highlight
+
+        IN:
+            obj_based - dict of object-based props
+            hl_keys - the keys that this highlight object should be using
+            ind_lvl - indentation level
+
+        OUT:
+            save_obj - dict to save data to
+            msg_log - list to add messages to
+
+        RETURNS: True if valid, False if not
+        """
+        # first log loading
+        msg_log.append((MSG_INFO_T, ind_lvl, MHM_LOADING))
+
+        # parse the data
+        if not _validate_highlight_core(
+                obj_based.pop(HLITE),
+                save_obj,
+                msg_log,
+                ind_lvl + 1,
+                hl_keys
+        ):
+            # failure case
+            return False
+
+        # otherwise successful
+        msg_log.append((MSG_INFO_T, ind_lvl, MHM_SUCCESS))
+        return True
+
+
+    def _validate_highlight_core(jobj, save_obj, msg_log, ind_lvl, hl_keys):
+        """
+        Primary portion of highlight validation. This is so it can be
+        used seamlessly with highlight split object validation logs.
+
+        Props validated:
+            - highlight
+
+        IN:
+            jobj - json object to parse
+            hl_keys - the keys this highlight object should be using
+
+        OUT:
+            save_obj - dict to save data to
+            msg_log - list to add messages to
+
+        RETURNS: True if valid, False if not
+        """
+        # first check type of this data
+        if not _verify_dict(jobj, allow_none=False):
+            msg_log.append((
+                MSG_ERR_T,
+                ind_lvl,
+                MHM_NOT_DICT.format(dict, type(jobj))
+            ))
+            return False
+
+        # setup hl data
+        hl_def = None
+        hl_mapping = {}
+
+        # first try parsing for default
+        if "default" in jobj:
+            hl_def = store.MASFilterMap.fromJSON(
+                jobj.pop("default"),
+                msg_log,
+                ind_lvl,
+                "default"
+            )
+
+        # now for mapping
+        # mapping data should be in Dict format
+        has_map_data = False
+        if "mapping" in jobj:
+            mapobj = jobj.pop("mapping")
+
+            # loading mapping
+            msg_log.append((MSG_INFO_T, ind_lvl, MHM_LOADING_MAPPING))
+
+            # check type
+            if not _verify_dict(mapobj, allow_none=False):
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl + 1,
+                    BAD_TYPE.format("mapping", dict, type(mapobj))
+                ))
+                return False
+
+            # loop over hl keys
+            isbad = False
+            for hl_key in hl_keys:
+                if hl_key in mapobj:
+                    flt_obj = store.MASFilterMap.fromJSON(
+                        mapobj.pop(hl_key),
+                        msg_log,
+                        ind_lvl + 1,
+                        hl_key
+                    )
+
+                    # check for fail/succ
+                    if flt_obj is False:
+                        isbad = True
+                    else:
+                        if flt_obj is not None:
+                            # None check the flt object for later
+                            has_map_data = True
+
+                        hl_mapping[hl_key] = flt_obj
+
+            # warn if any extras
+            for extra_prop in mapobj:
+                msg_log.append((
+                    MSG_WARN_T,
+                    ind_lvl + 1,
+                    EXTRA_PROP.format(extra_prop)
+                ))
+
+            # quit if failure
+            # log should be handled by the MFM logging
+            if isbad:
+                return False
+
+            # done lodaing mapping
+            msg_log.append((MSG_INFO_T, ind_lvl, MHM_SUCCESS_MAPPING))
+
+        # check if we actually have any data
+        if hl_def is None and (len(hl_mapping) == 0 or not has_map_data):
+            # no data, warn but no failure
+            msg_log.append((MSG_WARN_T, ind_lvl, MHM_NO_DATA))
+
+        else:
+            # otherwise valid data probably
+            save_obj["hl_data"] = (hl_def, hl_mapping)
+
+        return True
 
 
     def _validate_selectable(jobj, save_obj, obj_based, msg_log, indent_lvl):

@@ -1955,13 +1955,17 @@ init -2 python:
             ]))
 
         @classmethod
-        def fromJSON(cls, json_obj, msg_log, ind_lvl):
+        def fromJSON(cls, json_obj, msg_log, ind_lvl, prop_name):
             """
             Builds a MASFilterMap given a JSON format of it
 
             IN:
                 json_obj - JSOn object to parse
                 ind_lvl - indent lvl
+                    NOTE: this handles loading/success log, so do not
+                        increase indent level
+                prop_name - name of the prop this MASFilterMap object is 
+                    being created from
 
             OUT:
                 msg_log - list to add messages to
@@ -1969,13 +1973,43 @@ init -2 python:
             RETURNS: MASFilterMap object build using the JSON, or None if not
                 creatable, or False if failur
             """
+            # log loading
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MFM_LOADING.format(prop_name)
+            ))
+
+            # check none first
+            if json_obj is None:
+                # no data to make
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_INFO_T,
+                    ind_lvl + 1,
+                    store.mas_sprite_jsons.MFM_NO_DATA
+                ))
+                return None
+
+            # check type
+            if not store.mas_sprite_jsons._verify_dict(json_obj):
+                msg_log.append((
+                    store.mas_sprite_jsons.MSG_ERR_T,
+                    ind_lvl + 1,
+                    store.mas_sprite_jsons.BAD_TYPE.format(
+                        prop_name,
+                        dict,
+                        type(json_obj)
+                    )
+                ))
+                return False
+
             fltpairs = {}
 
             # parse for default first
             isbad = cls._fromJSON_value(
                 json_obj,
                 msg_log,
-                ind_lvl,
+                ind_lvl + 1,
                 "default",
                 fltpairs
             )
@@ -1985,7 +2019,7 @@ init -2 python:
                 if cls._fromJSON_value(
                         json_obj,
                         msg_log,
-                        ind_lvl,
+                        ind_lvl + 1,
                         flt,
                         fltpairs
                 ):
@@ -1995,7 +2029,7 @@ init -2 python:
             for extra_prop in json_obj:
                 msg_log.append((
                     store.mas_sprite_jsons.MSG_WARN_T,
-                    ind_lvl,
+                    ind_lvl + 1,
                     store.mas_sprites_jsons.EXTRA_PROP.format(extra_prop)
                 ))
 
@@ -2007,7 +2041,7 @@ init -2 python:
                 # this has no data. ignore and return None
                 msg_log.append((
                     store.mas_sprite_jsons.MSG_WARN_T,
-                    ind_lvl,
+                    ind_lvl + 1,
                     store.mas_sprites_jsons.MFM_NO_DATA,
                 ))
                 return None
@@ -2018,6 +2052,13 @@ init -2 python:
             def_flt = None
             if "default" in fltpairs:
                 def_flt = fltpairs.pop("default")
+
+            # log success
+            msg_log.append((
+                store.mas_sprite_jsons.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprite_jsons.MFM_SUCCESS.format(prop_name)
+            ))
 
             # then create this
             return cls.cachecreate(def_flt, **fltpairs)
