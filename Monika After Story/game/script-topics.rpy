@@ -4807,7 +4807,7 @@ init 5 python:
 
 label monika_dunbar:
     #We only want this on the first time seeing this topic post seeing the player's friends topic
-    if renpy.seen_label("monika_players_friends") and mas_getEV("monika_dunbar").shown_count == 0:
+    if mas_getEV("monika_dunbar").shown_count == 0 and persistent._mas_pm_few_friends:
         m 1eua "Do you remember when we talked about Dunbar's number and the amount of stable relationships people can maintain?"
     else:
         m 1eua "Do you know about Dunbar's number?"
@@ -9993,7 +9993,6 @@ default persistent._mas_pm_has_friends = None
 default persistent._mas_pm_few_friends = None
 
 #True if player says they feel lonely somtimes, False if not.
-#NOTE: None also means they selected the I have you option.
 default persistent._mas_pm_feels_lonely_sometimes = None
 
 
@@ -10020,8 +10019,6 @@ label monika_players_friends:
             m 1eua "Who wouldn't want to be friends with you?"
             m 3eua "Having lots of friends is great, don't you think?"
             m 1tsu "Provided of course, you still have time for your girlfriend, ehehe."
-            m 1rka "I guess it can be kind of hard to manage if you have too many, {nw}"
-            extend 1eua "but I'm sure you can handle what you have."
             m 1eua "I hope you're happy with your friends, [player].{w=0.2} {nw}"
             extend 3eud "But I kinda wonder..."
 
@@ -10086,18 +10083,19 @@ label monika_players_friends_feels_lonely_ask(question, exp="monika 1ekc"):
 
             #Otherwise few friends or no friends
             else:
-                m 1eua "But you'd be surprised at how many people would be willing to make you a part of their lives if you just try."
-                m 3eub "There's actually a good chance you'll have something in common with someone who might get your attention."
-                m 1eua "Maybe you share a class or activity or something or you just see them with something that interests you like a band or show."
-
-            m 1eua "But I'm sure there are plenty of people who would love to have you."
+                m 1eka "But you'd be surprised at how many people would be willing to make you a part of their lives if you just try."
+                m 3eub "There's actually a good chance you'll have something in common with someone who might get your attention!"
+                m 1eua "Maybe you share a class or activity or something..."
+                m 3eua "Or you see them doing something that interests you like listening to music or watching a show."
 
             if possibly_many_friends:
                 m 3eub "Maybe just reach out to some people in your group you want to get closer to."
+                m 3eka "It's always nice to have at least one really close friend you can confide in when you need it."
+                m 1ekbsa "...I think it's pretty obvious who that person is for me, [player]~"
 
             else:
-                m 3eua "It doesn't even have to be in person either."
-                m 3eub "You can still have good friends online."
+                m 3eua "It doesn't even have to be in person, either..."
+                m 3eub "You can have really close friends online!"
                 m 1hub "Once you get comfortable with that, maybe you could find some more in person too!"
 
         "Not really.":
