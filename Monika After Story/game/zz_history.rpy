@@ -1001,7 +1001,6 @@ init -810 python:
             # friends
             "_mas_pm_has_friends": "pm.friends.has_friends",
             "_mas_pm_few_friends": "pm.friends.few_friends",
-            "_mas_pm_friends_important": "pm.friends.are_important",
 
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",

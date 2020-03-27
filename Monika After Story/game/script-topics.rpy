@@ -10071,15 +10071,17 @@ label monika_players_friends_feels_lonely_ask(question, exp="monika 1ekc"):
 
         "Sometimes.":
             $ persistent._mas_pm_feels_lonely_sometimes = True
-            $ possibly_many_friends = persistent._mas_pm_has_friends and not persistent._mas_pm_few_friends
 
             m 1eka "I understand, [player]."
             m 2rksdlc "It can be really hard to form deep connections nowadays..."
 
             #Potentially if you have a lot of friends
-            if possibly_many_friends:
+            if persistent._mas_pm_has_friends and not persistent._mas_pm_few_friends:
                 m "Especially if you have a lot of friends, it's difficult to get close to all of them."
                 m 1ekd "...And in the end, you're just left with a bunch of people you barely know."
+                m 3eub "Maybe just reach out to some people in your group you want to get closer to."
+                m 3eka "It's always nice to have at least one really close friend you can confide in when you need it."
+                m 1ekbsa "...I think it's pretty obvious who that person is for me, [player]~"
 
             #Otherwise few friends or no friends
             else:
@@ -10087,13 +10089,6 @@ label monika_players_friends_feels_lonely_ask(question, exp="monika 1ekc"):
                 m 3eub "There's actually a good chance you'll have something in common with someone who might get your attention!"
                 m 1eua "Maybe you share a class or activity or something..."
                 m 3eua "Or you see them doing something that interests you like listening to music or watching a show."
-
-            if possibly_many_friends:
-                m 3eub "Maybe just reach out to some people in your group you want to get closer to."
-                m 3eka "It's always nice to have at least one really close friend you can confide in when you need it."
-                m 1ekbsa "...I think it's pretty obvious who that person is for me, [player]~"
-
-            else:
                 m 3eua "It doesn't even have to be in person, either..."
                 m 3eub "You can have really close friends online!"
                 m 1hub "Once you get comfortable with that, maybe you could find some more in person too!"
