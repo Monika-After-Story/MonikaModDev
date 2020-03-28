@@ -2718,6 +2718,20 @@ image monika 6wuo:
         0.06
         repeat
 
+image monika 7efc:
+    block:
+        "monika 7efc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 7dfc_static"
+        0.06
+        repeat
+
 image monika 7eka:
     block:
         "monika 7eka_static"
@@ -2743,6 +2757,20 @@ image monika 7ekc:
             choice:
                 7
         "monika 7dkc_static"
+        0.06
+        repeat
+
+image monika 7ekd:
+    block:
+        "monika 7ekd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 7dkd_static"
         0.06
         repeat
 
