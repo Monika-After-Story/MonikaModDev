@@ -70,6 +70,21 @@
 #       - used in confjunction with acs_type
 #       - must be list of strings
 #       - default None
+#   "dlg_desc": string describing this ACS for dialogue usage
+#       - optional
+#       - used in conjunction with dlg_plural
+#       - must be a string
+#       - default None
+#   "dlg_plural": true if dlg_desc is a plural object, false if not
+#       - optional
+#       - used in conjuction with dlg_desc
+#       - must be a bool
+#       - default None
+#   "keep_on_desk": true if this ACS should remain on desk if Monika is not
+#       at the desk, False otherwise
+#       - optional
+#       - must be a bool
+#       - default False
 # }
 #
 # Shared props for HAIR and CLOTHES:
@@ -485,6 +500,7 @@ init -21 python in mas_sprites_json:
         "acs_type": (str, _verify_str),
         "dlg_desc": (str, _verify_str),
         "dlg_plural": (str, _verify_bool),
+        "keep_on_desk": (bool, _verify_bool),
     }
     OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
@@ -1611,16 +1627,17 @@ init 189 python in mas_sprites_json:
 
         # now for list based
         if "hover_dlg" in select_info:
-            if not _validate_iterstr(
-                select_info,
-                save_obj,
-                "hover_dlg",
-                False,
-                True,
-                msg_log,
-                indent_lvl + 1
-            ):
-                return False
+            select_info.pop("hover_dlg")
+#            if not _validate_iterstr(
+#                select_info,
+#                save_obj,
+#                "hover_dlg",
+#                False,
+#                True,
+#                msg_log,
+#                indent_lvl + 1
+#            ):
+#                return False
 
         if "select_dlg" in select_info:
             if not _validate_iterstr(

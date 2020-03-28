@@ -117,6 +117,12 @@ init 10 python in mas_seasons:
 
         # show spring topics
         store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
+        store.mas_showEVL("monika_outdoors", "EVE", _random=True)
+        store.mas_showEVL("monika_backpacking", "EVE", _random=True)
+
+        #Since this is a player model topic, we only rerandom if we need to
+        if store.persistent._mas_pm_would_like_mt_peak is None:
+            store.mas_showEVL("monika_mountain", "EVE", _random=True)
 
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
@@ -125,9 +131,14 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_cozy", "EVE", derandom=True)
         store.mas_hideEVL("monika_winter", "EVE", derandom=True)
         store.mas_hideEVL("monika_winter_dangers", "EVE", derandom=True)
+        store.mas_hideEVL("monika_snowmen", "EVE", derandom=True)
 
-        # disbale hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
+        # disable hot choc
+        store.mas_getConsumable("hotchoc").disable()
+
+        # unhibernate islands greet
+        if not renpy.seen_label("greeting_ourreality"):
+            store.mas_unlockEVL("greeting_ourreality", "GRE")
 
 
     def _pp_summer():
@@ -137,17 +148,13 @@ init 10 python in mas_seasons:
         
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
-        
-        # disbale hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
 
 
     def _pp_fall():
         """
         Programming point for fall
         """
-        # disbale hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
+        pass
 
 
     def _pp_winter():
@@ -165,9 +172,21 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
         store.mas_unlockEVL("monika_snowballfight", "EVE")
 
-        # enable hotchoc if it has been given
-        if store.persistent._mas_c_hotchoc_been_given:
-            store.persistent._mas_acs_enable_hotchoc = True
+        #For if you get snow (or we don't know if you get snow or not)
+        if store.persistent._mas_pm_gets_snow is not False:
+            store.mas_showEVL("monika_snowmen", "EVE", _random=True)
+
+        # hide non-winter topics
+        store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
+        store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
+        store.mas_hideEVL("monika_mountain", "EVE", derandom=True)
+
+        # enable hotchoc if given before
+        if store.seen_event("mas_reaction_hotchocolate"):
+            store.mas_getConsumable("hotchoc").enable()
+
+        # want to ensure first time we see the islands they are dead and covered in snow
+        store.mas_lockEVL("greeting_ourreality", "GRE")
 
     
     # seaonal pp id:

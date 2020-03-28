@@ -181,11 +181,12 @@ init 5 python:
 
 label dev_hold_still_monika:
     m 1eua "okay!"
-    $ sel_pose = renpy.input("pose number (1-6)", allow="123456", length=1)
+    $ sel_pose = renpy.input("pose number (1-7)", allow="1234567", length=1)
+    $ sel_pose = store.mas_utils.tryparseint(sel_pose, 1)
     if sel_pose < 1:
         $ sel_pose = 1
-    elif sel_pose > 6:
-        $ sel_pose = 6
+    elif sel_pose > 7:
+        $ sel_pose = 7
     
     $ pose_to_make = str(sel_pose) + "eua"
     $ renpy.show("monika " + pose_to_make)
