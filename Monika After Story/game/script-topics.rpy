@@ -10852,7 +10852,7 @@ label monika_idle_shower:
     if mas_isMoniLove():
         m 1eua "Going to go shower?"
 
-        if renpy.random.randint(1, 100) == 1:
+        if renpy.random.randint(1, 50) == 1:
             m 3tub "Can I come with you?{nw}"
             $ _history_list.pop()
             show screen mas_background_timed_jump(2, "bye_brb_shower_timeout")
