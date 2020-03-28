@@ -4595,6 +4595,22 @@ init -1 python:
 
 init 2 python:
     #Global functions that should be defined after level 0
+    import re
+    def regexInStr(teststr, keyword_list):
+        """
+        Checks if anything from keyword_list is in teststr checking using regex
+        IN:
+            teststr - string to check
+            keyword_list - list of words/prases to see if in teststr
+        OUT:
+            boolean:
+                - True if anything from keyword_list is in teststr
+                - False otherwise
+        NOTE: ignores case by default
+        """
+        re_compiled_list = re.compile('|'.join(keyword_list), re.IGNORECASE)
+        return bool(re_compiled_list.search(teststr))
+
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.
