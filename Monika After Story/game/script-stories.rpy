@@ -651,8 +651,60 @@ label mas_story_immortal_love:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_self_hate",
-        prompt="Self-hate",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_mother_and_trees",
+            prompt="A mother and her trees",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_mother_and_trees:
+    call mas_story_begin
+    m 1eua "There was once a boy who lived with his mother."
+    m 3eud "She gave him all the affection a mother could give...{w=0.2}{nw}"
+    extend 3rksdla "but he always thought she could be a little weird."
+    m 3eub "On his birthdays, she would {i}always{/i} bake cookies for him and all his classmates to thank them for being his friends."
+    m 1eua "She would also keep and display every little drawing he made in art school, so their walls were covered with art from over the years."
+    m 2rksdlc "Sometimes, he would even get rid of his drawings because he didn't want her to put them up with the rest."
+    m 2euc "What stood out most with her however...{w=0.3}{nw}"
+    extend 2eud "was that she often talked to their trees."
+    m 1eua "There were three trees in their backyard that she would talk to every day."
+    m 3rksdlb "She even had names for each of them!"
+    m 3hksdlb "Sometimes, she would even ask him to dress up and pose by the trees so she could take pictures of them together."
+    m 1eka "One day, as he saw her talking to the trees, he asked her why she always talked to them so much."
+    m 3hub "His mother replied, 'Well, because they need to feel loved!'"
+    m 1eka "But he still didn't really understand...{w=0.2}{nw}"
+    extend 1eua "and as soon as he left, she just continued right where she had left off in her conversation."
+    m 2ekc "As time passed, the boy eventually had to move out and start his own life."
+    m 2eka "His mother told him not to worry about leaving her because she had her trees to always keep her company."
+    m 2eua "While he was busy with his life, he still made time to keep in touch with her."
+    m 2ekc "Until one day...{w=0.5}{nw}"
+    extend 2dkd "he got the call."
+    m 2rksdlc "His mother had died and was found lying by one of the trees."
+    m 2ekd "In her will, she only had one request of him...{w=0.3}and that was to keep taking care of the trees, talking to them every day."
+    m 1eka "He took good care of the trees of course, but he could never bring himself to talk to them."
+    m 3euc "Some time later, while he was looking through and cleaning up his mother's old belongings, he found an envelope."
+    m 1eud "Inside, he was shocked at what he found."
+    m 2wud "There were three stillborn death certificates for his would-be siblings."
+    m 2dsc "Each of them had an identical name to one of the trees that had been in the backyard all his life."
+    m 2dsd "He had never known that he had siblings, but he finally understood why his mother talked to the trees..."
+    m 2eka "He always wanted to take his mother's wish very seriously, and it was then when he started talking to the trees every day, just as his mother wished."
+    m 2duu "...And he even went ahead and planted one more tree."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_self_hate",
+            prompt="Self-hate",
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_self_hate:
     call mas_story_begin
