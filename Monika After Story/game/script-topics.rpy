@@ -10331,6 +10331,37 @@ label monika_idle_shower_callback:
             m 1hubfa "Ehehe~"
     return
 
+label bye_brb_shower_tease:
+    m 3tub "Can I come with you?{nw}"
+    $ _history_list.pop()
+    show screen mas_background_timed_jump(2, "bye_brb_shower_tease_2")
+    menu:
+        m "Can I come with you?{fast}"
+        "Yes.":
+            hide screen mas_background_timed_jump
+            m 1wubfd "Oh, uh...{w=1} you sure answered that fast."
+            m 2hkbfsdlb "You...{w=1} sure seem eager to let me tag along, huh?"
+            m 1rkbsa "Well..."
+            m 3tubfu "I'm afraid you'll just have to go without me while I'm stuck here."
+            m 1hubfb "Sorry, [player], ahaha!"
+            show monika 5nubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5nubfu "Maybe another time~"
+        "No.":
+            hide screen mas_background_timed_jump
+            m 2eka "Aw, you rejected me so fast."
+            m 3tubfb "Are you shy, [player]?"
+            m 1hubfb "Ahaha!"
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "Alright, I won't follow you this time, ehehe~"
+    return
+
+label bye_brb_shower_tease_2:
+    $ _history_list.pop()
+    m 1hubsa "Ehehe~"
+    m 3tubfu "Nevermind that, [player]."
+    m 1hubfb "I hope you have a nice shower!"
+    return
+
 init 5 python:
     addEvent(
         Event(

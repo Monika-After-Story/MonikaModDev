@@ -44,7 +44,6 @@ init -1 python in mas_greetings:
     TYPE_GAME = "game"
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
-    TYPE_SHOWER = "shower"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -3672,82 +3671,4 @@ label greeting_surprised2:
     extend 3rkbsa "You just caught me daydreaming a bit."
     show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfu "But now that you're here, that dream just came true~"
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_back_from_shower",
-            unlocked=True,
-            category=[store.mas_greetings.TYPE_SHOWER],
-        ),
-        code="GRE"
-    )
-
-label greeting_back_from_shower:
-    if mas_isMoniNormal(higher=True):
-        m 1eub "Welcome back, [player]."
-        m 3eua "Did you have a nice shower?{nw}"
-        menu:
-            m "Did you have a nice shower?{fast}"
-            "Yes.":
-                m 1hua "That's nice."
-                m 1eub "It might not feel as nice as full bath, but showers can still feel really nice."
-                m 3eua "A good shower can really help you wind down and feel refreshed."
-                m 1eka "I'm sure you would never get tired of me, but it can really invigorate you."
-                if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,5):
-                    m 1hua "Who knows?"
-                    m 2tubfb "Maybe it could be even better if we shared..."
-                    m 2hubfa "Ahaha!"
-            "No.":
-                m 1ekc "Aw, that's no good."
-                m 3eka "Still, I hope you feel a bit better after your shower."
-                m 2rksdlc "There's nothing worse than being stuck showering when the water is too hot or cold."
-                m 2ekd "Showering should be something to help you feel cleaner and better."
-                if mas_isMoniEnamored(higher=True):
-                    m 1tuu "Although..."
-                    m 3tubfb "Maybe it would be nicer if I was there with you~"
-                    m 1hubfa "Ehehe~"
-    elif mas_isMoniUpset():
-        m 1euc "Oh, there you are."
-        m 1esc "You know, I wish I could go shower and relax too."
-        m 2rsc "I could sure use it."
-    elif mas_isMoniDis():
-        m 2ekc "Oh."
-        m 1eka "You came back..."
-        m "I'm glad."
-    else:
-        m 6ckc "..."
-    return
-
-label bye_brb_shower_tease:
-    m 3tub "Can I come with you?{nw}"
-    $ _history_list.pop()
-    show screen mas_background_timed_jump(2, "bye_brb_shower_tease_2")
-    menu:
-        m "Can I come with you?{fast}"
-        "Yes.":
-            hide screen mas_background_timed_jump
-            m 1wubfd "Oh, uh...{w=1} you sure answered that fast."
-            m 2hkbfsdlb "You...{w=1} sure seem eager to let me tag along, huh?"
-            m 1rkbsa "Well..."
-            m 3tubfu "I'm afraid you'll just have to go without me while I'm stuck here."
-            m 1hubfb "Sorry, [player], ahaha!"
-            show monika 5nubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5nubfu "Maybe another time~"
-        "No.":
-            hide screen mas_background_timed_jump
-            m 2eka "Aw, you rejected me so fast."
-            m 3tubfb "Are you shy, [player]?"
-            m 1hubfb "Ahaha!"
-            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5tubfu "Alright, I won't follow you this time, ehehe~"
-    return
-
-label bye_brb_shower_tease_2:
-    $ _history_list.pop()
-    m 1hubsa "Ehehe~"
-    m 3tubfu "Nevermind that, [player]."
-    m 1hubfb "I hope you have a nice shower!"
     return
