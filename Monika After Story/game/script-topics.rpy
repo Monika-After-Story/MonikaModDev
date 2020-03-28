@@ -13514,20 +13514,22 @@ init 5 python:
 
 label monika_scamming:
     m 1euc "Have you ever been scammed, [player]?"
-    m 1ekd "I hope you never had to go through something like that, but it wouldn't be that unlikely after all. It's not that uncommon."
-    m 1euc "It's something that's more and more prevalent nowadays; especially online, with the advance of technology."
-    m 2rfd "It really is the worst when it happens. Not only do you lose money, but most of the time, you can't even fight back!"
-    m 3esd "It makes you feel like it's your fault for being had, too. A lot of victims start hating themselves for being 'naive', or feeling like they're idiots."
-    m 3rssdlb "But really, they shouldn't be so hard on themselves! Getting scammed is something that can happen to anyone, under the right conditions!"
-    m 4esc "People who do this take advantage of the goodwill of their victims, and exploit natural human reactions to fool you."
-    m 1dsd "Which is why it can feel so gut-wrenching. You placed your trust in others, and they betrayed you."
-    m 1eka "If this ever happens to you, don't feel bad. I'll be here for you."
-    m 3esd "Falling for this does {i}not{/i} mean you're stupid, or a loser, or anything. It just means you've been preyed upon by someone who knew exactly how to play you."
-    m 1esd "If you don't have a way to get back at your scammer, the best thing you can do is to let go."
-    m 1eka "Don't blame yourself for it, focus on what you can do at the moment."
-    m 3eka "And please, [player], don't stop believing in people because of the few that took advantage of you."
+    m 3ekd "I hope you've never had to go through something like that, but if you have, I wouldn't be that shocked...{w=0.2}it's not that uncommon, after all."
+    m 3euc "It's something that's more and more prevalent nowadays, especially online."
+    m 2rfd "It really is the worst when it happens... {w=0.3}Not only do you lose money, but most of the time, you can't even fight back!"
+    m 2ekd "It makes you feel like it's your fault for being had, too. A lot of victims start hating themselves for being naive, or feel like they're idiots."
+    m 2rksdlc "But really, they shouldn't be so hard on themselves...{w=0.2}getting scammed is something that can happen to anyone."
+    m 4efc "People who do it take advantage of the goodwill of their victims and exploit natural human reaction."
+    m 4dkd "That's why it can feel so gut-wrenching...{w=0.2}you placed your trust in others and were betrayed."
+    m 2ekd "If this ever happens to you, don't feel bad,{w=0.2} {nw}"
+    extend 2eka "I'll be here for you."
+    m 7ekd "Falling for a scam does {i}not{/i} mean you're stupid, or a loser, or anything else...{w=0.3}{nw}"
+    extend 7efc "it just means you've been preyed upon by someone with no morals."
+    m 3esc "If you don't have a way to get back at your scammer, the best thing you can do is to let go."
+    m 3eka "Don't blame yourself for it...focus on what you can do going forward, instead."
+    m 1eka "And please, [player], don't stop believing in people because of a few bad apples that took advantage of you."
     return
-    
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature'],prompt="Auroras",random=False,unlocked=False))
 
