@@ -103,15 +103,6 @@ python early:
             return [self.img_obj]
 
 
-init -99 python in mas_sprites:
-    # NOTE: this must be after -100 and -101
-
-    import store
-
-    # do a file check for disabling im mode
-    disable_im = store.is_file_present("no_matrix")
-
-
 # this should be after sprite-chart's initialization
 init -4 python in mas_sprites:
     # NOTE: render_key
