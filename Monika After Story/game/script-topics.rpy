@@ -13586,6 +13586,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_social_contagion",
+            category=['psychology'],
+            prompt="Social contagion",
+            random=True
+        )
+    )
+
+label monika_social_contagion:
+    m 1eud "Say, [player], have you noticed how we tend to imitate what other people around us do?"
+    m 3hub "Like, have you ever been in the situation where someone is having a laughing fit and somehow, everyone around ends up laughing too?"
+    m 3eub "Or have you ever mechanically cheered at something just because everyone else was cheering?"
+    m 3euc "Apparently, this is due to something called 'social contagion.'"
+    m 1eua "Basically, this means that how you feel and what you do has a subconscious influence on those around you."
+    m 4eub "It's something I picked up pretty quickly when I became president!"
+    m 2eksdlc "I noticed that when I felt unmotivated, or I was having a bad day, it would put a damper on club activities."
+    m 2euc "Everyone would end up going off on their own to do their own things."
+    m 7eua "Conversely, if I made an effort and tried to stay upbeat, the other girls would usually respond in kind... {w=0.3}{nw}"
+    extend 3eub "We would all end up having a better time!"
+    m 1eua "It's pretty gratifying when you start noticing these kinds of things... {w=0.3}{nw}"
+    extend 1hub "You realize that just by staying positive, you can make someone else's day better!"
+    m 3wud "You'd be surprised how far this kind of influence can reach, too!"
+    m 3esc "I heard that stuff like binge eating, gambling, and heavy drinking are all contagious behaviors."
+    m 2euc "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself."
+    m 2dsc "...It can be a bit disheartening."
+    m 7hub "It also works the other way around, though! Smiling, laughing, and positive thinking are contagious too!"
+    m 1eub "Turns out we are all more connected than you think. {w=0.3}Those around you matter a lot on how you feel about things!"
+    m 1eka "I hope by noticing these kinds of things, you'll be able to better understand and control your own feelings, [player]."
+    m 3hua "I just want to see you be the happiest you can be."
+    if mas_isMoniHappy(higher=True):
+        m 1huu "If you're ever feeling down, hopefully my happiness will help cheer you up~"
+    return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_scamming",
             category=['you', 'society'],
             prompt="Being scammed",
