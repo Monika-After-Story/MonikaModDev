@@ -199,7 +199,7 @@ init 999 python:
                 "def": "School Uniform",
                 "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
-                "rin": "Neko Costume",
+#                "rin": "Neko Costume",
                 "santa": "Santa Monika",
                 "sundress_white": "Sundress (White)",
                 "blackdress": "Formal Dress (Black)",
@@ -330,7 +330,7 @@ init 999 python:
                 "def",
                 "blazerless",
                 "marisa",
-                "rin",
+                #"rin",
                 "santa",
                 "sundress_white",
                 "blackdress",
@@ -495,6 +495,15 @@ init 999 python:
             Creates the Expression previewer displayable
             """
             super(renpy.Displayable, self).__init__()
+
+            # update torsos with spritepacked sprites
+            torso_map = self.SEL_TX_MAP["torso"]
+            torso_list = self.SC_MAP["torso"]
+            for sel in store.mas_selspr.CLOTH_SEL_MAP.itervalues():
+                spr = sel.get_sprobj()
+                if spr.is_custom and spr.name not in torso_map:
+                    torso_map[spr.name] = sel.display_name
+                    torso_list.append(spr.name)
 
             # background tile
             self.background = Solid(

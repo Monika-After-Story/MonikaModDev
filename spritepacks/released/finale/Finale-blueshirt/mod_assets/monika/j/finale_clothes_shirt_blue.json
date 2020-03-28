@@ -43,6 +43,10 @@
             "tag": "down",
             "layers": "0"
         },
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
+        },
         "right-restpoint": {
             "tag": "restpoint",
             "layers": "10"
