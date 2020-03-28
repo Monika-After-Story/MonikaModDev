@@ -13327,55 +13327,6 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_writing_idle",
-            prompt="I'm going to write for a bit",
-            category=['be right back'],
-            pool=True,
-            unlocked=True
-        )
-    )
-
-    #BRBs should be seen
-    persistent._seen_ever["monika_writing_idle"] = True
-
-label monika_writing_idle:
-    if random.randint(1,5) == 1:
-        m 1eub "Oh! You're going to{cps=*2} write me a love letter, [player]?{/cps}{nw}"
-        $ _history_list.pop()
-        m "Oh! You're going to{fast} go write something?"
-    else:
-        m 1eub "Oh! You're going to go write something?"
-    m 1hua "That makes me so glad!"
-    m 3eua "Maybe someday you could share it with me, {nw}"
-    extend 3hua "I'd love to read your work, [player]!"
-    m 3eua "Anyway, just let me know when you're done."
-    m 1hua "I'll be waiting right here for you~"
-
-    #Set up the callback label
-    $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
-    #Then the idle data
-    $ persistent._mas_idle_data["monika_idle_writing"] = True
-    return "idle"
-
-label monika_writing_idle_callback:
-    python:
-        wb_quips = [
-            "What else did you want to do today?",
-            "Is there anything else you wanted to do today?",
-            "What else should we do today?",
-            "Welcome back!"
-        ]
-
-        wb_quip = renpy.random.choice(wb_quips)
-
-    m 1eua "Done writing, [player]?"
-    m 1eub "[wb_quip]"
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
             eventlabel="monika_intrusive_thoughts",
             category=['psychology'],
             prompt="Intrusive thoughts",
