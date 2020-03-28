@@ -1864,9 +1864,9 @@ init -2 python:
             if prop_val is None:
                 # warn and leave if None
                 msg_log.append((
-                    store.mas_sprite_jsons.MSG_WARN_T,
+                    store.mas_sprites_json.MSG_WARN_T,
                     ind_lvl,
-                    store.mas_sprite_jsons.MFM_NONE_FLT.format(prop_name)
+                    store.mas_sprites_json.MFM_NONE_FLT.format(prop_name)
                 ))
                 return False
 
@@ -1878,7 +1878,7 @@ init -2 python:
 
             # invalid type
             msg_log.append((
-                store.mas_sprite_jsons.MSG_ERR_T,
+                store.mas_sprites_json.MSG_ERR_T,
                 ind_lvl,
                 store.mas_sprites_jsons.MFM_BAD_TYPE.format(
                     prop_name,
@@ -1975,27 +1975,27 @@ init -2 python:
             """
             # log loading
             msg_log.append((
-                store.mas_sprite_jsons.MSG_INFO_T,
+                store.mas_sprites_json.MSG_INFO_T,
                 ind_lvl,
-                store.mas_sprite_jsons.MFM_LOADING.format(prop_name)
+                store.mas_sprites_json.MFM_LOADING.format(prop_name)
             ))
 
             # check none first
             if json_obj is None:
                 # no data to make
                 msg_log.append((
-                    store.mas_sprite_jsons.MSG_INFO_T,
+                    store.mas_sprites_json.MSG_INFO_T,
                     ind_lvl + 1,
-                    store.mas_sprite_jsons.MFM_NO_DATA
+                    store.mas_sprites_json.MFM_NO_DATA
                 ))
                 return None
 
             # check type
-            if not store.mas_sprite_jsons._verify_dict(json_obj):
+            if not store.mas_sprites_json._verify_dict(json_obj):
                 msg_log.append((
-                    store.mas_sprite_jsons.MSG_ERR_T,
+                    store.mas_sprites_json.MSG_ERR_T,
                     ind_lvl + 1,
-                    store.mas_sprite_jsons.BAD_TYPE.format(
+                    store.mas_sprites_json.BAD_TYPE.format(
                         prop_name,
                         dict,
                         type(json_obj)
@@ -2028,7 +2028,7 @@ init -2 python:
             # now loop over extras and warn
             for extra_prop in json_obj:
                 msg_log.append((
-                    store.mas_sprite_jsons.MSG_WARN_T,
+                    store.mas_sprites_json.MSG_WARN_T,
                     ind_lvl + 1,
                     store.mas_sprites_jsons.EXTRA_PROP.format(extra_prop)
                 ))
@@ -2040,7 +2040,7 @@ init -2 python:
             if len(fltpairs) < 1:
                 # this has no data. ignore and return None
                 msg_log.append((
-                    store.mas_sprite_jsons.MSG_WARN_T,
+                    store.mas_sprites_json.MSG_WARN_T,
                     ind_lvl + 1,
                     store.mas_sprites_jsons.MFM_NO_DATA,
                 ))
@@ -2055,9 +2055,9 @@ init -2 python:
 
             # log success
             msg_log.append((
-                store.mas_sprite_jsons.MSG_INFO_T,
+                store.mas_sprites_json.MSG_INFO_T,
                 ind_lvl,
-                store.mas_sprite_jsons.MFM_SUCCESS.format(prop_name)
+                store.mas_sprites_json.MFM_SUCCESS.format(prop_name)
             ))
 
             # then create this

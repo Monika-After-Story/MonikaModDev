@@ -254,6 +254,7 @@
 # Pose Arm JSON
 # This is a mappnig of all available arms
 # Any omitted arm means that no layers should be shown for that arm.
+# An empty dict means these clothes have no arm layers.
 # {
 #   "crossed": {Pose Arm Data object}
 #       - optional
@@ -388,6 +389,7 @@ init -21 python in mas_sprites_json:
     import json
     import store
     import store.mas_utils as mas_utils
+    import traceback
 
     SP_JSON_VER = 3
     VERSION_TXT = "version"
@@ -733,7 +735,6 @@ init 189 python in mas_sprites_json:
     from store.mas_sprites import _verify_pose, HAIR_MAP, CLOTH_MAP, ACS_MAP
     from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
         JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
-        MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
         LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
         NAME_BAD
 
@@ -751,17 +752,6 @@ init 189 python in mas_sprites_json:
         MSG_WARN_T: MSG_WARN,
         MSG_ERR_T: MSG_ERR
     }
-
-    # other constants
-    MSG_INFO_IDD = "        [info]: {0}\n"
-    MSG_WARN_IDD = "        [Warning!]: {0}\n"
-    MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
-
-    # 
-    MSG_INFO_IDD = "        [info]: {0}\n"
-    MSG_WARN_IDD = "        [Warning!]: {0}\n"
-    MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
-
 
     # main functions
 
@@ -913,13 +903,13 @@ init 189 python in mas_sprites_json:
         # in /c/ folder
         # + night versions
         if sp_obj.gettype() == SP_ACS:
-            prefix = [A_MAIN]
+            prefix = [sms.A_MAIN]
 
         elif sp_obj.gettype() == SP_HAIR:
-            prefix = [H_MAIN]
+            prefix = [sms.H_MAIN]
 
         elif sp_obj.gettype() == SP_CLOTHES:
-            prefix = [C_MAIN]
+            prefix = [sms.C_MAIN]
 
         else:
             return []
@@ -937,7 +927,7 @@ init 189 python in mas_sprites_json:
         return to_verify
 
 
-    def _check_giftname(giftname, sp_type, sp_name, errs, err_base):
+    def _check_giftname(giftname, sp_type, sp_name, msg_log, ind_lvl):
         """
         Initializes the giftname with the sprite info
 
@@ -946,25 +936,33 @@ init 189 python in mas_sprites_json:
             sp_type - sprite type we want to init
             sp_name - name of the sprite object to associated with this gift
                 (use the sprite's name property == ID)
-            err_base - base to use for the error messages
+            ind_lvl - indentation level to use
 
         OUT:
-            errs - list to save error messages to
+            msg_log - list to log messages to
         """
         # giftname must be unique
         if giftname in giftname_map:
-            errs.append(err_base.format(DUPE_GIFTNAME.format(giftname)))
+            msg_log.append((
+                MSG_ERR_T,
+                ind_lvl,
+                DUPE_GIFTNAME.format(giftname)
+            ))
             return
 
         # cannot have a sprite object assocaited with 2 giftnames
         sp_value = (sp_type, sp_name)
         if sp_value in namegift_map:
-            errs.append(err_base.format(MATCH_GIFT.format(
-                giftname,
-                SP_STR[sp_type],
-                sp_name,
-                namegift_map[sp_value]
-            )))
+            msg_log.append((
+                MSG_ERR_T,
+                ind_lvl,
+                MATCH_GIFT.format(
+                    giftname,
+                    SP_STR[sp_type],
+                    sp_name,
+                    namegift_map[sp_value]
+                )
+            ))
             return
 
 
@@ -1002,8 +1000,8 @@ init 189 python in mas_sprites_json:
             sp_type,
             name,
             save_obj,
-            warns,
-            infos,
+            msg_log,
+            ind_lvl,
             progname
         ):
         """
@@ -1013,12 +1011,12 @@ init 189 python in mas_sprites_json:
         IN:
             sp_type - sprite object type
             name - name of sprite object
+            ind_lvl - indent level
             progname - name of progpoint (do not include suffix)
         
         OUT:
             save_obj - dict to save progpoint to
-            warns - list to save warning messages to
-            infos - list to save info messages to
+            msg_log - list to save messages to
         """
         # get string version
         e_pp_str = SP_PP[sp_type].format(name, progname)
@@ -1033,25 +1031,34 @@ init 189 python in mas_sprites_json:
 
         # validate progpoint
         if e_pp is None:
-            infos.append(MSG_INFO_ID.format(PP_MISS.format(progname)))
+            msg_log.append((
+                MSG_INFO_T,
+                ind_lvl,
+                PP_MISS.format(progname)
+            ))
 
         elif not callable(e_pp):
-            infos.append(MSG_WARN_ID.format(PP_NOTFUN.format(progname)))
+            msg_log.append((
+                MSG_WARN_T,
+                ind_lvl,
+                PP_NOTFUN.format(progname)
+            ))
 
         else:
             # success
             save_obj[progname + "_pp"] = e_pp
 
 
-    def _test_loadables(sp_obj, errs):
+    def _test_loadables(sp_obj, msg_log, ind_lvl):
         """
         Tests loadable images and errs if an image is not loadable.
 
         IN:
             sp_obj - sprite object to test
+            ind_lvl - indentation level
 
         OUT:
-            errs - list to save error messages to
+            msg_log - list to add messages to
         """
         sel_obj = sml.get_sel(sp_obj)
 
@@ -1061,7 +1068,11 @@ init 189 python in mas_sprites_json:
         # verfiy each string
         for imgpath in to_verify:
             if not renpy.loadable(imgpath):
-                errs.append(MSG_ERR_ID.format(IL_NOTLOAD.format(imgpath)))
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl,
+                    IL_NOTLOAD.format(imgpath)
+                ))
 
 
     def _validate_type(json_obj):
@@ -1753,7 +1764,7 @@ init 189 python in mas_sprites_json:
             msg_log.append((
                 MSG_INFO_T,
                 indent_lvl,
-                MPM_LOADING.format("pose_arms")
+                MPA_LOADING.format("pose_arms")
             ))
 
             # check type
@@ -1781,7 +1792,7 @@ init 189 python in mas_sprites_json:
             msg_log.append((
                 MSG_INFO_T,
                 indent_lvl,
-                MPM_SUCCESS.format("pose_arms")
+                MPA_SUCCESS.format("pose_arms")
             ))
 
             if pose_arms is not None:
@@ -1802,7 +1813,7 @@ init 189 python in mas_sprites_json:
         return True
 
 
-    def _validate_ex_props(jobj, save_obj, obj_based, errs, warns, infos):
+    def _validate_ex_props(jobj, save_obj, obj_based, msg_log, ind_lvl):
         """
         Validates ex_props proprety
 
@@ -1813,45 +1824,48 @@ init 189 python in mas_sprites_json:
             jobj - json object to parse
             obj_based - dict of object-based items
                 (contains ex_props)
+            ind_lvl - indentation level
 
         OUT:
             save_obj - dict to save data to
-            errs - list to save error messages to
-            warns - list to save warning messages to
-            infos - list to save info messages to
+            msg_log - list to save messages to
         """
         # validate ex_props
         if "ex_props" not in obj_based:
             return
 
         # ex_props exists, get and validate
-        writelog(MSG_INFO_ID.format(EP_LOADING))
+        msg_log.append((MSG_INFO_T, ind_lvl, EP_LOADING))
         ex_props = obj_based.pop("ex_props")
 
+        isbad = False
         for ep_key,ep_val in ex_props.iteritems():
             if not _verify_str(ep_key):
-                errs.append(MSG_ERR_IDD.format(EP_BAD_K_TYPE.format(
-                    ep_key,
-                    str,
-                    type(ep_key)
-                )))
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl + 1,
+                    EP_BAD_K_TYPE.format(ep_key, str, type(ep_key))
+                ))
+                isbad = True
 
             if not (
                     _verify_str(ep_val)
                     or _verify_bool(ep_val)
                     or _verify_int(ep_val)
                 ):
-                errs.append(MSG_ERR_IDD.format(EP_BAD_V_TYPE.format(
-                    ep_key,
-                    type(ep_val)
-                )))
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl + 1,
+                    EP_BAD_V_TYPE.format(ep_key, type(ep_val))
+                ))
+                isbad = True
 
         # check for no errors
-        if len(errs) > 0:
+        if isbad:
             return
 
         # otherwise, we can say successful loading!
-        writelog(MSG_INFO_ID.format(EP_SUCCESS))
+        msg_log.append((MSG_INFO_T, ind_lvl, EP_SUCCESS))
         save_obj["ex_props"] = ex_props
 
 
@@ -2191,7 +2205,7 @@ init 189 python in mas_sprites_json:
         # check for existence of pose_map property. We will not validate until
         # later.
         if "pose_map" not in jobj:
-            writelog(MSG_ERR_ID.format(REQ_MISS.format("pose_map")))
+            parsewritelog((MSG_ERR_T, indent_lvl, REQ_MISS.format("pose_map")))
             return
 
         # move object-based params out of the jobj
@@ -2201,11 +2215,11 @@ init 189 python in mas_sprites_json:
 
                 # objects must be dicts
                 if not _verify_dict(obj_val, allow_none=False):
-                    writelog(MSG_ERR_ID.format(BAD_TYPE.format(
-                        param_name,
-                        dict,
-                        type(obj_val)
-                    )))
+                    parsewritelog((
+                        MSG_ERR_T,
+                        indent_lvl,
+                        BAD_TYPE.format(param_name, dict, type(obj_val))
+                    ))
                     return
 
                 obj_based_params[param_name] = obj_val
@@ -2278,17 +2292,15 @@ init 189 python in mas_sprites_json:
                     return
 
         # back to shared acs/hair/clothes stuff
+        msg_log = []
         _validate_ex_props(
             jobj,
             sp_obj_params,
             obj_based_params,
-            msgs_err,
-            msgs_warn,
-            msgs_info
+            msg_log,
+            indent_lvl
         )
-        if len(msgs_err) > 0:
-            writelogs(msgs_warn)
-            writelogs(msgs_err)
+        if parsewritelogs(msg_log):
             return
 
         # select info if found
@@ -2308,7 +2320,11 @@ init 189 python in mas_sprites_json:
 
         # extra property warnings
         for extra_prop in jobj:
-            writelog(MSG_WARN_ID.format(EXTRA_PROP.format(extra_prop)))
+            parsewritelog((
+                MSG_WARN_T,
+                indent_lvl,
+                EXTRA_PROP.format(extra_prop)
+            ))
 
         # no gift/unlock warnings
         if "unlock" in sp_obj_params:
@@ -2319,39 +2335,48 @@ init 189 python in mas_sprites_json:
             giftname = sp_obj_params.pop("giftname")
 
             # validate gift stuff
-            _check_giftname(giftname, sp_type, sp_name, msgs_err, MSG_ERR_ID)
-            if len(msgs_err) > 0:
-                writelogs(msgs_err)
+            msg_log = []
+            _check_giftname(giftname, sp_type, sp_name, msg_log, indent_lvl)
+            if parsewritelogs(msg_log):
                 return
 
         elif sp_type != SP_HAIR:
-            writelog(MSG_WARN_ID.format(NO_GIFT))
+            parsewritelog((MSG_WARN_T, indent_lvl, NO_GIFT))
             giftname = None
 
         # progpoint processing
+        msg_log = []
         _process_progpoint(
             sp_type,
             sp_name,
             sp_obj_params,
-            msgs_warn,
-            msgs_info,
+            msg_log,
+            indent_lvl,
             "entry"
         )
         _process_progpoint(
             sp_type,
             sp_name,
             sp_obj_params,
-            msgs_warn,
-            msgs_info,
+            msg_log,
+            indent_lvl,
             "exit"
         )
-        writelogs(msgs_info)
-        writelogs(msgs_warn)
+        parsewritelogs(msg_log)
 
         # now we can build the sprites
         try:
+            #writelog(str(sp_obj_params))
             if sp_type == SP_ACS:
-                sp_obj = store.MASAccessory(**sp_obj_params)
+
+                if "arm_split" in sp_obj_params:
+                    # must be split accessory
+                    sp_obj = store.MASSplitAccessory(**sp_obj_params)
+
+                else:
+                    # normal accessory
+                    sp_obj = store.MASAccessory(**sp_obj_params)
+
                 sms.init_acs(sp_obj)
                 sel_obj_name = "acs"
 
@@ -2368,13 +2393,13 @@ init 189 python in mas_sprites_json:
 
         except Exception as e:
             # in thise case, we ended up with a duplicate
-            writelog(MSG_ERR.format(e.message))
+            writelog(MSG_ERR.format(traceback.format_exc()))
             return
 
         # check image loadables
-        _test_loadables(sp_obj, msgs_err)
-        if len(msgs_err) > 0:
-            writelogs(msgs_err)
+        msg_log = []
+        _test_loadables(sp_obj, msg_log, 0)
+        if parsewritelogs(msg_log):
             _reset_sp_obj(sp_obj)
             return
 
@@ -2442,9 +2467,7 @@ init 189 python in mas_sprites_json:
             try:
                 addSpriteObject(j_path)
             except Exception as e:
-                writelog(MSG_ERR.format(
-                    FILE_LOAD_FAILED.format(j_path, repr(e))
-                ))
+                writelog(MSG_ERR.format(traceback.format_exc()))
 
 
     def initSpriteObjectProc():
@@ -2463,19 +2486,21 @@ init 189 python in mas_sprites_json:
         # start with keys
         for hkey in hm_key_delayed_veri:
             if hkey not in HAIR_MAP:
-                writelog(MSG_WARN_ID.format(HM_NO_KEY.format(
-                    hkey,
-                    hm_key_delayed_veri[hkey]
-                )))
+                parsewritelog((
+                    MSG_WARN_T,
+                    1,
+                    HM_NO_KEY.format(hkey, hm_key_delayed_veri[hkey])
+                ))
 
         # now for values
         for hval in hm_val_delayed_veri:
             if hval not in HAIR_MAP:
                 sp_name_list = hm_val_delayed_veri[hval]
-                writelog(MSG_WARN_ID.format(HM_NO_VAL.format(
-                    hval,
-                    sp_name_list
-                )))
+                parsewritelog((
+                    MSG_WARN_T,
+                    1,
+                    HM_NO_VAL.format(hval, sp_name_list)
+                ))
 
                 # also clean the values
                 for sp_name in sp_name_list:
@@ -2484,13 +2509,14 @@ init 189 python in mas_sprites_json:
         writelog(MSG_INFO.format(HM_VER_SUCCESS))
 
 
-    def _addGift(giftname):
+    def _addGift(giftname, indent_lvl):
         """
         Adds the reaction for this gift, using the correct label depending on
         gift label existence.
 
         IN:
             giftname - giftname to add reaction for
+            indent_lvl - indentation level to use
         """
         namegift = giftname_map.get(giftname, None)
         if namegift is None:
@@ -2505,18 +2531,18 @@ init 189 python in mas_sprites_json:
         reaction_label = rlstr.format(spname)
         if renpy.has_label(reaction_label):
             store.addReaction(reaction_label, giftname, is_good=True)
-            writelog(MSG_INFO_ID.format(GR_FOUND.format(
-                SP_STR.get(gifttype),
-                spname,
-                giftname
-            )))
+            parsewritelog((
+                MSG_INFO_T,
+                indent_lvl,
+                GR_FOUND.format(SP_STR.get(gifttype), spname, giftname)
+            ))
 
         else:
-            writelog(MSG_INFO_ID.format(GR_GEN.format(
-                SP_STR.get(gifttype),
-                spname,
-                giftname
-            )))
+            parsewritelog((
+                MSG_INFO_T,
+                indent_lvl,
+                GR_GEN.format(SP_STR.get(gifttype), spname, giftname)
+            ))
 
 
     def processGifts():
@@ -2553,7 +2579,7 @@ init 189 python in mas_sprites_json:
                 frs_gifts[giftname] = sp_data
 
                 # now we always add the gift
-                _addGift(giftname)
+                _addGift(giftname, 1)
 
         writelog(MSG_INFO.format(GR_SUCCESS))
                 
