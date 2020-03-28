@@ -2153,7 +2153,7 @@ init -2 python:
             single - type of single standing image (standing)
                 (Default: None)
         """
-        if not is_sitting or character.clothes.hasprop("baked outfit"):
+        if not is_sitting:
             # image manips are only defined for sitting
             return mas_drawmonika(
                 st, at, character,
