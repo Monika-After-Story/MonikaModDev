@@ -10852,7 +10852,7 @@ label monika_idle_shower:
         if renpy.random.randint(1,100) == 1:
             m 3tub "Can I come with you?{nw}"
             $ _history_list.pop()
-            show screen mas_background_timed_jump(2, "bye_brb_shower_tease_2")
+            show screen mas_background_timed_jump(2, "bye_brb_shower_timeout")
             menu:
                 m "Can I come with you?{fast}"
                 "Yes.":
@@ -10898,7 +10898,7 @@ label monika_idle_shower_callback:
         m 1hub "Ahaha!"
     return
 
-label bye_brb_shower_tease_2:
+label bye_brb_shower_timeout:
     hide screen mas_background_timed_jump
     $ _history_list.pop()
     m 1hubsa "Ehehe~"
