@@ -10845,11 +10845,14 @@ init 5 python:
         )
     )
 
+    #BRBs should be seen
+    persistent._seen_ever["monika_idle_shower"] = True
+
 label monika_idle_shower:
     if mas_isMoniLove():
         m 1eua "Going to go shower?"
 
-        if renpy.random.randint(1,100) == 1:
+        if renpy.random.randint(1,2) == 1:
             m 3tub "Can I come with you?{nw}"
             $ _history_list.pop()
             show screen mas_background_timed_jump(2, "bye_brb_shower_timeout")
@@ -10885,12 +10888,12 @@ label monika_idle_shower:
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_shower"] = True
     return "idle"
-    
+
 label monika_idle_shower_callback:
     m 1eua "Welcome back, [player]."
     if mas_isMoniLove() and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
         m 3tubfb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
-        m 1hubfa "You could just relax with me some more~"
+        m 1hubsa "You could just relax with me some more~"
         m 1hub "Ahaha!"
     else:
         m 1hua "I hope you had a nice shower."
