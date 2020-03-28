@@ -1613,7 +1613,7 @@ init 189 python in mas_sprites_json:
                     save_obj,
                     msg_log,
                     indent_lvl,
-                    store.MASHair.hl_keys()
+                    store.MASHair.hl_keys_c()
             ):
                 return False
 
@@ -1806,7 +1806,7 @@ init 189 python in mas_sprites_json:
                     save_obj,
                     msg_log,
                     indent_lvl,
-                    store.MASClothes.hl_keys()
+                    store.MASClothes.hl_keys_c()
             ):
                 return False
 

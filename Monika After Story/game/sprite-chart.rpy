@@ -281,10 +281,6 @@ init -101 python in mas_sprites:
 
 init -100 python in mas_sprites:
 
-    # disable im
-    disable_im = True
-    
-
     # --- exprops ---
 
     # ---- ACS ----
@@ -3693,6 +3689,15 @@ init -3 python:
             """
             return self.__MPA_KEYS
 
+        @classmethod
+        def hl_keys_c(cls):
+            """
+            Class method version of hl_keys
+
+            RETURNS: tuple of hl keys
+            """
+            return cls.__MPA_KEYS
+
 
     class MASArmBoth(MASArm):
         """
@@ -6129,6 +6134,15 @@ init -3 python:
             """
             return self.__MHM_KEYS
 
+        @classmethod
+        def hl_keys_c(cls):
+            """
+            Class method version of hl_keys
+
+            RETURNS: tuple of hl keys
+            """
+            return cls.__MHM_KEYS
+
         def opt_gethlc(self, poseid, flt, arm_split, defval=None):
             """
             MASSplitAccessory-specific gethlc.
@@ -6283,8 +6297,8 @@ init -3 python:
                 return []
 
             # get filter map
-            mfm = self.hl_map.get(hl_key, None)
-            if mhm is None:
+            mfm = self.hl_map.get(hl_key)
+            if mfm is None:
                 return []
 
             return [
@@ -6414,6 +6428,15 @@ init -3 python:
             RETURNS: keys used for all MASHighlightMaps for MASHair objects
             """
             return self.__MHM_KEYS
+
+        @classmethod
+        def hl_keys_c(cls):
+            """
+            Class method of hl_keys
+
+            RETURNS: tuple of hl keys
+            """
+            return cls.__MHM_KEYS
 
 
     class MASClothes(MASSpriteFallbackBase):
@@ -6546,8 +6569,8 @@ init -3 python:
                 return []
 
             # get filter map
-            mfm = self.hl_map.get(hl_key, None)
-            if mhm is None:
+            mfm = self.hl_map.get(hl_key)
+            if mfm is None:
                 return []
 
             return [
@@ -6724,6 +6747,15 @@ init -3 python:
             RETURNS: keys used for all MASHighlightMaps for MASHair objects
             """
             return self.__MHM_KEYS
+
+        @classmethod
+        def hl_keys_c(cls):
+            """
+            Class method version of hl_keys
+
+            RETURNS: tuple of hl keys
+            """
+            return cls.__MHM_KEYS
 
         @staticmethod
         def by_exprop(exprop, value=True):

@@ -1871,7 +1871,7 @@ init -2 python:
                 return False
 
             # check type
-            if store.mas_sprites_jsons._verify_str(prop_val):
+            if store.mas_sprites_json._verify_str(prop_val):
                 # valid
                 output[prop_name] = prop_val
                 return False
@@ -1880,7 +1880,7 @@ init -2 python:
             msg_log.append((
                 store.mas_sprites_json.MSG_ERR_T,
                 ind_lvl,
-                store.mas_sprites_jsons.MFM_BAD_TYPE.format(
+                store.mas_sprites_json.MFM_BAD_TYPE.format(
                     prop_name,
                     type(prop_val)
                 )
@@ -2030,7 +2030,7 @@ init -2 python:
                 msg_log.append((
                     store.mas_sprites_json.MSG_WARN_T,
                     ind_lvl + 1,
-                    store.mas_sprites_jsons.EXTRA_PROP.format(extra_prop)
+                    store.mas_sprites_json.EXTRA_PROP.format(extra_prop)
                 ))
 
             # leave if bad
@@ -2042,7 +2042,7 @@ init -2 python:
                 msg_log.append((
                     store.mas_sprites_json.MSG_WARN_T,
                     ind_lvl + 1,
-                    store.mas_sprites_jsons.MFM_NO_DATA,
+                    store.mas_sprites_json.MFM_NO_DATA,
                 ))
                 return None
 
@@ -2085,8 +2085,9 @@ init -2 python:
             """
             vals = []
             for key in self.map:
-                if self.map[key] not in vals:
-                    vals.append(self.map[key])
+                value = self.map[key]
+                if value is not None and value not in vals:
+                    vals.append(value)
 
             return vals
 
