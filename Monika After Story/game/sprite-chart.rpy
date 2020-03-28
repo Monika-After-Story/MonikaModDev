@@ -1023,6 +1023,18 @@ init -5 python in mas_sprites:
     # NOTE: arm mapping happens at the base level
     ARMS = list(NUM_ARMS.values())
 
+    # leaning arms
+    # NOTE: no number should be linked to more than one lean type
+    LEAN_ARMS = {
+        LEAN_TYPES[0]: (8, 9),
+    }
+
+    # reverse map for eaiser lookup
+    ARMS_LEAN = {}
+    for lean, values in LEAN_ARMS.iteritems():
+        for value in values:
+            ARMS_LEAN[value] = lean
+
     # sprite exprop - list of topics
     EXPROP_TOPIC_MAP = {
         EXP_A_LHSEL: [
@@ -5671,6 +5683,20 @@ init -3 python:
             see MASArm
         """
 
+        def build_loadstrs(self, prefix):
+            """
+            Generates loadstrs for this arm
+
+            IN:
+                prefix - prefix to apply to the loadstrs
+                    list of strings
+
+            RETURNS: list of lists of strings representing the loadstrs
+            """
+            return super(MASArmLeft, self).build_loadstrs(
+                prefix + [store.mas_sprites.PREFIX_ARMS_LEFT]
+            )
+
         def get(self, layer_code):
             """
             See MASArm.get
@@ -5692,6 +5718,20 @@ init -3 python:
         PROPERTIES:
             see MASArm
         """
+
+        def build_loadstrs(self, prefix):
+            """
+            Generates loadstrs for this arm
+
+            IN:
+                prefix - prefix to apply to the loadstrs
+                    list of strings
+
+            RETURNS: list of lists of strings representing the loadstrs
+            """
+            return super(MASArmLeft, self).build_loadstrs(
+                prefix + [store.mas_sprites.PREFIX_ARMS_RIGHT]
+            )
 
         def get(self, layer_code):
             """
@@ -5777,6 +5817,42 @@ init -3 python:
 
                 # NOTE: if def_base is False, then get will auto return
                 #   None so no need to set any data
+
+        def build_loadstrs(self, prefix):
+            """
+            Generates loadstrs for this PoseArms object
+
+            IN:
+                prefix - list of strings to apply as prefix
+
+            RETURNS: list of lists of strings representing the load strs
+            """
+            loadstrs = []
+
+            # loop over all the arms we have
+            for arm_key in self.arms:
+                # only od actual arms
+                arm = self.arms[arm_key]
+
+                if arm is not None:
+
+                    # check for leans
+                    lean = store.mas_sprites.ARMS_LEAN.get(arm_key, None)
+                    if lean is None:
+                        # no lean, do normal prefix
+                        arm_prefix = prefix + [store.mas_sprites.PREFIX_ARMS]
+                    else:
+                        # have lean, do lean prefix
+                        arm_prefix = prefix + [
+                            store.mas_sprites.PREFIX_ARMS_LEAN,
+                            lean,
+                            store.mas_sprites.ART_DLM
+                        ]
+
+                    # pass in prefix to the arm
+                    loadstrs.extend(arm.build_loadstrs(arm_prefix))
+
+            return loadstrs
 
         @staticmethod
         def fromJSON(json_obj, msg_log, ind_lvl):
@@ -8537,34 +8613,13 @@ init -3 python:
                     ))
 
             # now do arms
-            for leanpose in store.mas_sprites.ALL_POSES:
-                
-                # determine actual pose
-                actual_pose = self.get_leanpose(leanpose)
+            if self.pose_arms is None:
+                # use base arms
+                pose_arms = store.mas_sprites.base_arms
+            else:
+                pose_arms = self.pose_arms
 
-                # only do valid poses
-                if actual_pose:
-                    
-                    # determine arms
-                    arms_pose = self.determine_arms(leanpose)
-
-                    # check if any arms to show
-                    if arms_pose is not None:
-
-                        # determine prefix
-                        if "|" in leanpose:
-                            # is leaning
-                            arm_prefix = c_prefix + [
-                                store.mas_sprites.PREFIX_ARMS_LEAN
-                            ]
-                        else:
-                            # not leaning
-                            arm_prefix = c_prefix + [
-                                store.mas_sprites.PREFIX_ARMS
-                            ]
-
-                        # add arms + hl
-                        loadstrs.extend(arms_pose.build_loadstrs(arm_prefix))
+            loadstrs.extend(pose_arms.build_loadstrs(c_prefix))
 
             return loadstrs
         

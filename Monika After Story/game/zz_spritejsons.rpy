@@ -899,8 +899,7 @@ init 189 python in mas_sprites_json:
 
         RETURNS: list of strings that would need to be loadable verified
         """
-        # list of strings to verify
-        to_verify = []
+        # determine full prefix
 
         # ACS: images consist of the all pose code items that are
         # in the /a/ folder
@@ -913,7 +912,23 @@ init 189 python in mas_sprites_json:
         # CLOTHES: images consist of upright and leaning body items
         # in /c/ folder
         # + night versions
-        to_verify.extend(sp_obj._build_loadstrs())
+        if sp_obj.gettype() == SP_ACS:
+            prefix = [A_MAIN]
+
+        elif sp_obj.gettype() == SP_HAIR:
+            prefix = [H_MAIN]
+
+        elif sp_obj.gettype() == SP_CLOTHES:
+            prefix = [C_MAIN]
+
+        else:
+            return []
+
+        # list of strings to verify
+        to_verify = [
+            "".join(str_tup)
+            for str_tup in sp_obj.build_loadstrs(prefix)
+        ]
 
         # thumbs
         if sel_obj is not None:
@@ -1038,9 +1053,6 @@ init 189 python in mas_sprites_json:
         OUT:
             errs - list to save error messages to
         """
-        # TODO: I dont thin posearms and related have build_loadstrs
-        #   Should go through each main sprite object and double check
-        # get selectable
         sel_obj = sml.get_sel(sp_obj)
 
         # and strs to verify
@@ -1465,7 +1477,7 @@ init 189 python in mas_sprites_json:
                 )
 
                 # validate hl data
-                if hl_data is False
+                if hl_data is False:
                     return False
 
                 # otherwise good
@@ -1746,11 +1758,11 @@ init 189 python in mas_sprites_json:
 
             # check type
             pa_obj = obj_based.pop("pose_arms")
-            if not _verify_dict(pa_obj, False);
+            if not _verify_dict(pa_obj, False):
                 msg_log.append((
                     MSG_ERR_T,
                     indent_lvl + 1,
-                    BAD_TYPE.format("pose_arms", dict, type(pa_obj)
+                    BAD_TYPE.format("pose_arms", dict, type(pa_obj))
                 ))
                 return False
 
