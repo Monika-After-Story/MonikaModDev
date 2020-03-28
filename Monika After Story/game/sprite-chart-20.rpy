@@ -4510,6 +4510,20 @@ image monika 2wubfb:
         0.06
         repeat
 
+image monika 2wubfd:
+    block:
+        "monika 2wubfd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dubfd_static"
+        0.06
+        repeat
+
 image monika 2wubfsdld:
     block:
         "monika 2wubfsdld_static"
@@ -6971,20 +6985,6 @@ image monika 4lfc:
             choice:
                 7
         "monika 4dfc_static"
-        0.06
-        repeat
-
-image monika 4lfd:
-    block:
-        "monika 4lfd_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfd_static"
         0.06
         repeat
 
