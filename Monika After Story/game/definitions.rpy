@@ -10,14 +10,18 @@ python early:
     me = singleton.SingleInstance()
     # define the zorders
     MAS_MONIKA_Z = 10
-    MAS_BACKGROUND_Z =5
+    MAS_BACKGROUND_Z = 3
 
     # this is now global
     import datetime
 
+    # uncomment when needed
+    import traceback
+    _dev_tb_list = []
+
 
 # uncomment this if you want syntax highlighting support on vim
-#init -1 python:
+# init -1 python:
 
     # special constants for event
     EV_ACT_PUSH = "push"
@@ -34,6 +38,8 @@ python early:
         EV_ACT_RANDOM,
         EV_ACT_POOL
     ]
+
+
 
     # custom event exceptions
     class EventException(Exception):
@@ -76,8 +82,10 @@ python early:
     #       conditional is True (See EV_ACTIONS and EV_ACT_...)
     #       (Default: None)
     #   start_date - datetime for when this event is available
+    #       NOTE: date can be provided, this will be converted to datetime
     #       (Default: None)
     #   end_date - datetime for when this event is no longer available
+    #       NOTE: date can be provided, this will be converted to datetime
     #       (Default: None)
     #   unlock_date - datetime for when this event is unlocked
     #       (Default: None)
@@ -92,6 +100,7 @@ python early:
     #       NOTE: treat diary entries as single paragraphs
     #       (Default: None)
     #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: this does not get svaed to persistent
     #       NOTE: refer to RULES documentation in event-rules
     #       NOTE: if you set this to None, you will break this forever
     #       (Default: empty dict)
@@ -102,6 +111,25 @@ python early:
     #       NOTE: If this is given, the year part of start_date and end_date
     #           will be IGNORED
     #       (Default: None)
+    #   sensitive - True means this is a sensitve topic, False means it is not
+    #       (Default: False)
+    #   aff_range - tuple of the following format:
+    #       [0]: - low limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no lower limit
+    #       [1]: - upper limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no uppwer limit
+    #       If None, then event is considered to be always available regardless
+    #       of affection level
+    #       NOTE: the tuple items should be AFFECTION STATES.
+    #           not using an affection state may break things
+    #       (Default: None)
+    #   show_in_idle - True if this Event can be shown during idle
+    #       False if not
+    #       (Default: False)
+    #   flags - bitmask system that acts as unchanging flags.
+    #       (Default: 0)
     class Event(object):
 
         # tuple constants
@@ -119,14 +147,23 @@ python early:
             "end_date":10,
             "unlock_date":11,
             "shown_count":12,
-            "diary_entry":13,
-            "rules":14,
-            "last_seen":15,
-            "years":16
+            #"diary_entry":13, # NOTE: this will not be removed until later
+            "last_seen":14,
+            "years":15,
+            "sensitive":16,
+            "aff_range":17,
+            "show_in_idle":18,
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
+        N_EVENT_NAMES = (
+            "per_eventdb",
+            "eventlabel",
+            "locks",
+            "rules",
+            "diary_entry",
+            "flags"
+        )
 
         # other constants
         DIARY_LIMIT = 500
@@ -162,10 +199,14 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-                diary_entry=None,
+#                diary_entry=None,
                 rules=dict(),
                 last_seen=None,
-                years=None
+                years=None,
+                sensitive=False,
+                aff_range=None,
+                show_in_idle=False,
+                flags=0
             ):
 
             # setting up defaults
@@ -175,16 +216,53 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
-            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
-                raise Exception(
-                    (
-                        "diary entry for {0} is longer than {1} characters"
-                    ).format(eventlabel, self.DIARY_LIMIT)
-                )
+#            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+#                raise Exception(
+#                    (
+#                        "diary entry for {0} is longer than {1} characters"
+#                    ).format(eventlabel, self.DIARY_LIMIT)
+#                )
             if rules is None:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
                 )
+            if (
+                    start_date is not None
+                    and type(start_date) is not datetime.datetime
+                    and type(start_date) is not datetime.date
+                ):
+                raise Exception(
+                    "'{0}' - invalid start date.".format(eventlabel)
+                )
+            if (
+                    end_date is not None
+                    and type(end_date) is not datetime.datetime
+                    and type(end_date) is not datetime.date
+                ):
+                raise Exception(
+                    "'{0}' - invalid end date.".format(eventlabel)
+                )
+            if years is not None and type(years) is not list:
+                raise Exception(
+                    "'{0}' - invalid years.".format(eventlabel)
+                )
+
+            # we'll simplify aff_range so we dont have to deal with extra
+            #   storage
+            if aff_range is not None:
+                low, high = aff_range
+                if low is None and high is None:
+                    aff_range = None
+
+            # and then check for valid affection states
+            # NOTE: we assume that the affection store is visible by now
+            if not store.mas_affection._isValidAffRange(aff_range):
+                raise Exception("{0} | bad aff range: {1}".format(
+                    eventlabel, str(aff_range)
+                ))
+
+            if not isinstance(flags, int):
+                raise Exception("'{0}' - invalid flags".format(eventlabel))
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -196,6 +274,21 @@ python early:
             # default label is a prompt
             if not label:
                 label = prompt
+
+            # convert dates to datetimes
+            if type(start_date) is datetime.date:
+                start_date = datetime.datetime.combine(
+                    start_date,
+                    datetime.time.min
+                )
+            if type(end_date) is datetime.date:
+                end_date = datetime.datetime.combine(
+                    end_date,
+                    datetime.time.min
+                )
+
+            self.rules = rules
+            self.flags = flags
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -213,10 +306,12 @@ python early:
                 end_date,
                 unlock_date,
                 0, # shown_count
-                diary_entry,
-                rules,
+                "", # diary_entry
                 last_seen,
-                years
+                years,
+                sensitive,
+                aff_range,
+                show_in_idle
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -261,9 +356,12 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-                    self.diary_entry = diary_entry
-                    self.rules = rules
+#                    self.diary_entry = diary_entry
+#                    self.rules = rules
                     self.years = years
+                    self.sensitive = sensitive
+                    self.aff_range = aff_range
+                    self.show_in_idle = show_in_idle
 
             # new items are added appropriately
             else:
@@ -307,6 +405,19 @@ python early:
                         raise EventException(
                             self.eventlabel + " not found in eventdb"
                         )
+
+                    # if we are dealing with start/end dates, we need to
+                    #   ensure that they are datetimes
+                    if name == "start_date" or name == "end_date":
+                        if type(value) is datetime.date:
+                            value = datetime.datetime.combine(
+                                value,
+                                datetime.time.min
+                            )
+
+                        # nullify bad date types
+                        if type(value) is not datetime.datetime:
+                            value = None
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
@@ -354,12 +465,136 @@ python early:
             )
 
 
+        def checkAffection(self, aff_level):
+            """
+            Checks if the given aff_level is within range of this event's
+            aff_range.
+
+            IN:
+                aff_level - aff_level to check
+
+            RETURNS: True if aff_level is within range of event's aff_range,
+                False otherwise
+            """
+            if self.aff_range is None:
+                return True
+
+            # otheerwise check the range
+            low, high = self.aff_range
+            return store.mas_affection._betweenAff(low, aff_level, high)
+
+
+        def canRepeat(self):
+            """
+            Checks if this event has the vars to enable repeat
+
+            RETURNS: True if this event can repeat, False if not
+            """
+            return (
+                self.start_date is not None
+                and self.end_date is not None
+                and self.years is not None
+            )
+
+
+        def prepareRepeat(self, force=False):
+            """
+            Prepres this event's dates for a repeat.
+
+            NOTE: does not check if the event hasnt been reached this year.
+
+            IN:
+                force - If True, we force the years to change
+                    (Default: False)
+
+            RETURNS: True if this event can repeat, False if not
+            """
+            # sanity check
+            if not self.canRepeat():
+                return False
+
+            new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
+
+            if was_changed:
+                if self.isWithinRange():
+                    store.evhand.addYearsetBlacklist(
+                        self.eventlabel,
+                        self.end_date
+                    )
+                self.start_date = new_start
+                self.end_date = new_end
+
+            return True
+
+        def isWithinRange(self, check_dt=None):
+            """
+            Checks if the given dt is within range of this events start/end
+
+            IN:
+                check_dt - datetime to check, if None passed, we use .now()
+
+            RETURNS: True if within range, False if not within range, None
+                if no dts to compare
+            """
+            if self.start_date is None or self.end_date is None:
+                return None
+            check_dt = datetime.datetime.now()
+            return self.start_date <= check_dt < self.end_date
+
+        def stripDates(self):
+            """
+            Removes date data from the event
+            """
+            self.start_date = None
+            self.end_date = None
+
+        def timePassedSinceLastSeen_d(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, in terms of datetime.date
+            (Excludes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            if self.last_seen is not None:
+                last_seen_date = self.last_seen.date()
+            else:
+                last_seen_date = None
+
+            return mas_timePastSince(last_seen_date, time_passed, _now)
+
+        def timePassedSinceLastSeen_dt(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, precise to datetime.datetime
+            (Includes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            return mas_timePastSince(self.last_seen, time_passed, _now)
+
         @staticmethod
         def getSortPrompt(ev):
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
-            return ev.prompt.lower()
+            return renpy.substitute(ev.prompt).lower()
 
 
         @staticmethod
@@ -437,6 +672,205 @@ python early:
 
 
         @staticmethod
+        def _verifyAndSetDatesEV(ev):
+            """
+            Runs _verifyDatesEV and sets the event properties if change
+            happens
+
+            IN:
+                ev - event object to verify and set
+
+            RETURNS: was_changed
+            """
+            new_start, new_end, was_changed = Event._verifyDatesEV(ev)
+            if was_changed:
+                ev.start_date = new_start
+                ev.end_date = new_end
+
+            return was_changed
+
+
+        @staticmethod
+        def _verifyDatesEV(ev):
+            """
+            _verifyDates, but for an Event object.
+
+            IN:
+                ev - event object to verify dates
+
+            RETURNS: See _verifyDates
+            """
+            return Event._verifyDates(ev.start_date, ev.end_date, ev.years)
+
+
+        @staticmethod
+        def _yearAdjustEV(ev, force=False):
+            """
+            _yearAdjust, but for an Event object
+
+            IN:
+                ev - evnet object to adjust years
+                force - if True, we force years to update
+                    (Default: False)
+
+            RETURNS: See _verifyDates
+            """
+            return Event._yearAdjust(
+                ev.start_date,
+                ev.end_date,
+                ev.years,
+                force
+            )
+
+
+        @staticmethod
+        def _verifyDates(_start, _end, _years):
+            """
+            Given start/end/_yeras, figure out the appropriate start and end
+            dates. We use current datetime to figure this out.
+
+            NOTE: this is meant for Event use ONLY
+            NOTE: this is NOT meant to be used with an Event object.
+                See _verifyDatesEV
+
+            IN:
+                _start - start datetime
+                _end - end datetime (exclusive)
+                _years - years list
+
+            RETURNS tuple of the following format:
+                [0]: start datetime to use
+                [1]: end datetime to use
+                [2]: True if there was and adjustment, False if not
+            """
+            # initial sanity check
+            if _start is None or _end is None or _years is None:
+                # if at least one item is None, this is not a repeatable.
+                return (_start, _end, False)
+
+            # otherwise, we need to repeat
+            return Event._yearAdjust(_start, _end, _years)
+
+
+        @staticmethod
+        def _yearAdjust(_start, _end, _years, force=False):
+            """
+            Performs the year adjustment algorithm.
+
+            IN:
+                force - If True, we force year to update
+                    (Default: False)
+
+            RETURNS: see _verifyDates
+            """
+            _now = datetime.datetime.now()
+
+            # no changes necessary if we are currently in the zone
+            if (_start <= _now < _end) and not force:
+                return (_start, _end, False)
+
+            # otherwise, we need to repeat.
+            add_yr_fun = store.mas_utils.add_years
+
+            if len(_years) == 0:
+                # years is empty list, we are repeat yearly.
+
+                if force:
+                    # force mode means we always update year
+                    return (add_yr_fun(_start, 1), add_yr_fun(_end, 1), True)
+
+                # we only need to check if current works, and if not,
+                # move to one year ahead of current.
+                diff = _now.year - _start.year
+                new_end = add_yr_fun(_end, diff)
+
+                if new_end <= _now:
+                    # in this case, we should actually be +1 current year
+                    diff += 1
+                    new_end = add_yr_fun(_end, diff)
+
+                # now return the new start and the modified end
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
+
+            # otherwise, we have a list of years, and shoudl determine next
+            if force:
+                # forcing means we should look forward from teh current
+                # year
+                new_years = [
+                    year
+                    for year in _years
+                    if year > _now.year
+                ]
+
+            else:
+                new_years = [
+                    year
+                    for year in _years
+                    if year >= _now.year
+                ]
+
+            if len(new_years) == 0:
+                # no repeat years, we have already reached the limit.
+                return (_start, _end, False)
+
+            new_years.sort()
+
+            # calc diff for the first year in this list
+            diff = _now.year - new_years[0]
+            new_end = add_yr_fun(_end, diff)
+
+            if force:
+                # force means we should just use this diff right away
+                return (add_yr_fun(_start, diff), new_end, diff != 0)
+
+            if new_end <= _now:
+                if len(new_years) <= 1:
+                    # no more years, so we should just not change anything
+                    return (_start, _end, False)
+
+                # otherwise, we can get a valid setup by going 1 further.
+                diff = _now.year - new_years[1]
+                new_end = add_yr_fun(_end, diff)
+
+            return (add_yr_fun(_start, diff), new_end, diff != 0)
+
+
+        @staticmethod
+        def _getNextYear(_years, year_comp):
+            """
+            Retreieves the next possible year into the future from the given
+            years list.
+
+            NOTE: if empty list, we return current year.
+
+            IN:
+                _years - list of years
+                year_comp - year to start search from.
+
+            RETURNS next possible year into the future from the given years
+                list. If _years is empty, current year is returned.
+                If unable to find a next year, we return None.
+            """
+            # empty lits means repeat yearly
+            if len(_years) == 0:
+                return datetime.date.today().year
+
+            # non empty list means we should repeat on these years
+            new_years = [
+                year
+                for year in _years
+                if year > year_comp
+            ]
+
+            # no new years to repeat, no repeats needed
+            if len(new_years) == 0:
+                return None
+
+            # otherwise, return the next year in the list
+            return sorted(new_years)[0]
+
+
+        @staticmethod
         def _filterEvent(
                 event,
                 category=None,
@@ -446,7 +880,10 @@ python early:
                 action=None,
                 seen=None,
                 excl_cat=None,
-                moni_wants=None):
+                moni_wants=None,
+                sensitive=None,
+                aff=None,
+            ):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -468,6 +905,9 @@ python early:
                 return False
 
             if pool is not None and event.pool != pool:
+                return False
+
+            if aff is not None and not event.checkAffection(aff):
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:
@@ -495,6 +935,10 @@ python early:
                 if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
                     return False
 
+            # sensitivyt
+            if sensitive is not None and event.sensitive != sensitive:
+                return False
+
             # check if event contains the monika wants this rule
             if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
                 return False
@@ -513,7 +957,10 @@ python early:
                 action=None,
                 seen=None,
                 excl_cat=None,
-                moni_wants=None):
+                moni_wants=None,
+                sensitive=None,
+                aff=None
+            ):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -524,6 +971,7 @@ python early:
             #   full_copy - True means we create a new dict with deepcopies of
             #       the events. False will only copy references
             #       (Default: False)
+            #       DEPRECATEDE
             #
             #   FILTERING RULES: (recommend to use **kwargs)
             #   NOTE: None means we ignore that filtering rule
@@ -551,6 +999,15 @@ python early:
             #   moni_wants - boolean value to match if the event has the monika
             #       wants this first.
             #       (Default: None )
+            #   sensitive - boolean value to match if the event is sensitive
+            #       or not
+            #       NOTE: if None, we use inverse of _mas_sensitive_mode, only
+            #           if sensitive mode is True.
+            #           AKA: we only filter sensitve topics if sensitve mode is
+            #           enabled.
+            #       (Default: None)
+            #   aff - affection level to match aff_range
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -569,7 +1026,9 @@ python early:
                     and action is None
                     and seen is None
                     and excl_cat is None
-                    and moni_wants is None)):
+                    and moni_wants is None
+                    and sensitive is None
+                    and aff is None)):
                 return events
 
             # copy check
@@ -585,6 +1044,13 @@ python early:
                 category = None
             if action and len(action) == 0:
                 action = None
+            if sensitive is None:
+                try:
+                    # i have no idea if this is reachable from here
+                    if persistent._mas_sensitive_mode:
+                        sensitive = False
+                except:
+                    pass
 
             filt_ev_dict = dict()
 
@@ -593,7 +1059,8 @@ python early:
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat,moni_wants=moni_wants):
+                        excl_cat=excl_cat,moni_wants=moni_wants,
+                        sensitive=sensitive, aff=aff):
 
                     filt_ev_dict[k] = v
 
@@ -658,38 +1125,68 @@ python early:
             return eventlabels
 
         @staticmethod
-        def checkConditionals(events):
+        def checkConditionals(events, rebuild_ev=False):
+            # NOTE: DEPRECATED
             #
             # This checks the conditionals for all of the events in the event list
             # if any evaluate to true, run the desired action then clear the
             # conditional.
+            #
+            # IN:
+            #   rebulid_ev - pass in True to notify idle to rebuild events
+            #       if a random action occured.
             import datetime
 
             # sanity check
             if not events or len(events) == 0:
                 return None
 
-            # dict check
-            ev_list = events.keys() # python 2
+            _now = datetime.datetime.now()
 
-            # insertion sort
-            for ev in ev_list:
-                #Calendar events use a different function
-                date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
-                if not date_based and events[ev].conditional is not None:
-                    if (
-                            eval(events[ev].conditional) 
-                            and events[ev].action in Event.ACTION_MAP
-                        ):
-                        Event._performAction(events[ev], datetime.datetime.now())
+            for ev_label,ev in events.iteritems():
+                # TODO: honestly, we should index events with conditionals
+                #   so we only check what needs to be checked. Its a bit of an
+                #   annoyance to check all of these properties once per minute.
 
-                        #Clear the conditional
-                        events[ev].conditional = None
+                # NOTE: we only check events with:
+                #   - a conditional property
+                #   - current affection is within aff_range
+                #   - has None for date properties
+
+                if (
+                        # has conditional property
+                        ev.conditional is not None
+
+                        # within aff range
+                        and ev.checkAffection(mas_curr_affection)
+
+                        # no date props
+                        and ev.start_date is None
+                        and ev.end_date is None
+
+                        # check if the action is valid
+                        and ev.action in Event.ACTION_MAP
+
+                        # finally check if the conditional is true
+                        and eval(ev.conditional)
+                    ):
+
+                    # perform action
+                    Event._performAction(
+                        ev,
+                        unlock_time=_now,
+                        rebuild_ev=rebuild_ev
+                    )
+
+                    #Clear the conditional
+                    ev.conditional = None
+
 
             return events
 
         @staticmethod
         def checkCalendar(events):
+            # NOTE: DEPRECATED
             #
             # This checks the date for all events to see if they are active.
             # If they are active, then it checks for a conditional, and evaluates
@@ -729,7 +1226,7 @@ python early:
 
                 if e.action in Event.ACTION_MAP:
                     # perform action
-                    Event._performAction(e, current_time)
+                    Event._performAction(e, unlock_time=current_time)
 
                     # Check if we have a years property
                     if e.years is not None:
@@ -768,8 +1265,78 @@ python early:
 
 
         @staticmethod
-        def _checkRepeatRule(ev, check_time):
+        def _checkEvent(ev, curr_time):
             """
+            Singular filter function for checkEvents
+
+            RETURNS: True if passes filter, False if not
+            """
+            # check if this event even has trigger points
+            if ev.start_date is None and ev.conditional is None:
+                return False
+
+            # check aff
+            if not ev.checkAffection(mas_curr_affection):
+                return False
+
+            # check dates, if needed
+            if ev.start_date is not None and ev.start_date > curr_time:
+                return False
+
+            if ev.end_date is not None and ev.end_date <= curr_time:
+                return False
+
+            # now check conditional, if needed
+            if ev.conditional is not None and not eval(ev.conditional):
+                return False
+
+            # check if valid action
+            if ev.action not in Event.ACTION_MAP:
+                return False
+
+            # success
+            return True
+
+
+        @staticmethod
+        def checkEvents(ev_dict, rebuild_ev=True):
+            """
+            This acts as a combination of both checkConditoinal and
+            checkCalendar
+
+            does NOT return dict
+            """
+            if not ev_dict or len(ev_dict) == 0:
+                return
+
+            _now = datetime.datetime.now()
+
+            for ev_label,ev in ev_dict.iteritems():
+                # TODO: same TODO as in checkConditionals.
+                #   indexing would be smarter.
+
+                if Event._checkEvent(ev, _now):
+                    # perform action
+                    Event._performAction(
+                        ev,
+                        unlock_time=_now,
+                        rebuild_ev=rebuild_ev
+                    )
+
+                    # check if we should repeat
+                    if not ev.prepareRepeat(True):
+                        # no repeats
+                        ev.conditional = None
+                        ev.action = None
+
+            return
+
+
+        @staticmethod
+        def _checkRepeatRule(ev, check_time, defval=True):
+            """
+            DEPRECATED (remove when farewells is updated)
+
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
@@ -777,18 +1344,24 @@ python early:
             IN:
                 ev - single event to check
                 check_time - datetime used to check time rules
+                defval - defval to pass into the rules
+                    (Default: True)
 
             RETURNS:
                 True if this event passes its repeat rule, False otherwise
             """
             # check if the event contains a MASSelectiveRepeatRule and
             # evaluate it
-            if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
+            if MASSelectiveRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             # check if the event contains a MASNumericalRepeatRule and
             # evaluate it
-            if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
+            if MASNumericalRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             return False
@@ -797,6 +1370,8 @@ python early:
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """
+            DEPRECATED (remove when farewells is updated)
+
             checks the event dict against repeat rules, which are evaluated
             to a time.
 
@@ -823,7 +1398,7 @@ python early:
 
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
-                if Event._checkRepeatRule(event, check_time):
+                if Event._checkRepeatRule(event, check_time, defval=False):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
@@ -833,57 +1408,6 @@ python early:
             # return the available events dict
             return available_events
 
-
-        @staticmethod
-        def _checkGreetingRule(ev):
-            """
-            Checks the given event against its own greeting specific rule.
-
-            IN:
-                ev - event to check
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            return MASGreetingRule.evaluate_rule(ev)
-
-
-        @staticmethod
-        def checkGreetingRules(events):
-            """
-            Checks the event dict (greetings) against their own greeting specific
-            rules, filters out those Events whose rule check return true. As for
-            now the only rule specific is their specific special random chance
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.iteritems():
-
-                # check if the event contains a MASGreetingRule and evaluate it
-                if Event._checkGreetingRule(event):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    # add the event to our available events dict
-                    available_events[label] = event
-
-            # return the available events dict
-            return available_events
 
         @staticmethod
         def _checkFarewellRule(ev):
@@ -992,7 +1516,7 @@ python early:
 
 
         @staticmethod
-        def _performAction(ev, _unlock_time):
+        def _performAction(ev, **kwargs):
             """
             Efficient / no checking action performing
 
@@ -1000,13 +1524,13 @@ python early:
 
             IN:
                 ev - event we are performing action on
-                _unlock_time - datetime to use for unlock_date
+                **kwargs - keyword args to pass to action
             """
-            Event.ACTION_MAP[ev.action](ev, unlock_time=_unlock_time)
+            Event.ACTION_MAP[ev.action](ev, **kwargs)
 
 
         @staticmethod
-        def performAction(ev, _unlock_time=datetime.datetime.now()):
+        def performAction(ev, **kwargs):
             """
             Performs the action of the given event
 
@@ -1014,7 +1538,26 @@ python early:
                 ev - event we are perfrming action on
             """
             if ev.action in Event.ACTION_MAP:
-                Event._performAction(ev, _unlock_time)
+                Event._performAction(ev, **kwargs)
+
+        @staticmethod
+        def _undoEVAction(ev):
+            """
+            Undoes the ev_action
+
+            IN:
+                ev - event to undo ev action for
+            """
+            if ev.action == EV_ACT_UNLOCK:
+                ev.unlocked = False
+
+            elif ev.action == EV_ACT_RANDOM:
+                ev.random = False
+                #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
+                if "no rmallEVL" not in ev.rules:
+                    mas_rmallEVL(ev.eventlabel)
+
+            #NOTE: we don't add the rest since there's no reason to undo those.
 
 
 # init -1 python:
@@ -1294,9 +1837,619 @@ python early:
             # otherwise continue on
             return None
 
-#init -1 python:
+
+# init -1 python:
+
+    class MASLinearForm(object):
+        """
+        Representation of a linear functions
+        """
+        THRESH = 0.001
+
+        def __init__(self, xdiff, ydiff, yint):
+            """
+            Constructor for a Linear Formula.
+
+            IN:
+                xdiff - difference in x coords (used in M)
+                ydiff - difference in y coords (used in M)
+                yint - y intercept 
+            """
+            self.xdiff = xdiff
+            self.ydiff = ydiff
+
+            # NOTE: this xdiff is actullay used in calculations
+            self._fxdiff = float(xdiff)
+
+            # double check yintercept calcuations
+            if xdiff == 0:
+                self.yint = None
+            elif ydiff == 0:
+                self.yint = 0
+            else:
+                self.yint = yint
+
+        def getx(self, y):
+            """
+            Calculates the X value given a y
+
+            IN:
+                y - y value to input
+
+            RETURNS: x value, or None if not possible
+            """
+            if self.yint is None:
+                return x
+            if self.ydiff == 0:
+                return None
+
+            return self._getx(y)
+
+        def gety(self, x):
+            """
+            Calculates the Y value given an x
+
+            IN:
+                x - x value to input
+
+            RETURNS: y value, or None if not possible
+            """
+            if self.yint is None:
+                return None
+
+            return self._gety(x)
+
+        @staticmethod
+        def diffPoints(p1, p2):
+            """
+            Generats x/y diffs for 2 points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: tuple of the following format:
+                [0] - xdiff
+                [1] - ydiff
+            """
+            lp, rp = MASLinearForm.sortPoints(p1, p2)
+            return rp[0] - lp[0], rp[1] - lp[1]
+
+        @staticmethod
+        def fromPoints(p1, p2):
+            """
+            Generates a MASLinearform object using points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: MASLinearForm object
+            """
+            xdiff, ydiff = MASLinearForm.diffPoints(p1, p2)
+            yint = MASLinearForm.yintPoints(p1, p2)
+            return MASLinearForm(xdiff, ydiff, yint)
+
+        @staticmethod
+        def fromSlope(slope, yint):
+            """
+            Generates a MASLinearForm object using slope
+
+            IN:
+                slope - the slope of the line 
+                yint - the yintercept of the line
+
+            RETURNS: MASLinearForm object
+            """
+            return MASLinearForm(1, m, yint)
+
+        @staticmethod
+        def sortPoints(p1, p2):
+            """
+            Returns the two points as an ordered tuple
+
+            IN:
+                p1 - (x, y) point 
+                p2 - (x, y) point
+
+            RETURNS: tuple of the following format:
+                [0] - left most point 
+                [1] - right most point
+            """
+            if p1[0] < p2[0]:
+                return p1, p2
+
+            return p2, p1
+
+        @staticmethod
+        def yintPoints(p1, p2):
+            """
+            Returns yintercept from 2 points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: yintercept, or None if no yintercept
+            """
+            # initial diff checks
+            xdiff, ydiff = MASLinearForm.diffPoints(p1, p2)
+            if xdiff == 0:
+                return None
+            elif ydiff == 0:
+                return 0
+
+            # otherwise, we need to check the points
+            lp, rp = MASLinearForm.sortPoints(p1, p2)
+            lx, ly = lp
+
+            # if the left point is already on y axis, this is easy
+            if lx == 0:
+                return lp[1]
+
+            # otherwise, we need to do math
+            pot_yint = ly - ( (ydiff * lx) / float(xdiff) )
+
+            # threshold check is so we dont have too many floats in simple
+            # cases
+            # NOTE: so here we are checking that the difference bewteen the
+            #   float value and its integercomponent is less than the
+            #   threshold (a small value), then we assume it is int instead
+            #   float.
+            if abs(int(pot_yint) - pot_yint) < MASLinearForm.THRESH:
+                pot_yint = int(pot_yint)
+
+            return pot_yint
+
+        def _getx(self, y):
+            """
+            Gets x without any checks (this can crash)
+            """
+            return (y - self.yint) / self._slope()
+
+        def _gety(self, x):
+            """
+            Gets y with out any checks (this can crash)
+            """
+            return self._slope(x) + self.yint
+
+        def _slope(self, x=1):
+            """
+            Returns the slope of this line
+            Pass in X to calculate mx instead of just m
+            """
+            return  (self.ydiff * x) / self._fxdiff
+
+
+    class MASEdge(object):
+        """
+        Representation of an edge (line with 2 points)
+        Has functions related to determining if a point will intersect with 
+        this edge (aka for point in polygon calculations)
+        """
+
+        def __init__(self, p1, p2):
+            """
+            Constructor for an edge
+            NOTE: the edges do NOT have to be the correct order. This is
+                determined internally.
+
+            IN:
+                p1 - start point of edge (x, y)
+                p2 - end point of edge (x, y)
+            """
+            self._horizontal = False
+            self._vertical = False
+            self._left_point = None
+            self._right_point = None
+            self.__bb_x_min = None
+            self.__bb_x_max = None
+            self.__bb_y_min = None
+            self.__bb_y_max = None
+            self.__norm_lp = (0, 0)
+            self.__norm_rp = None
+            self.__line = None
+
+            self.__setup(p1, p2)
+
+        def inBoundingBox(self, x, y):
+            """
+            Checks if the given x,y is in teh bounding box
+
+            IN:
+                x - x coordinate to check
+                y - y coordinate to check
+
+            RETURNS: True if in bounding box, False if not
+            """
+            return self._inBoundingBoxX(x) and self._inBoundingBoxY(y)
+
+        def horizontalIntersect(self, x, y):
+            """
+            Checks if a horizontal ray going right with the given point as
+            the origin of the ray will intersect this Edge
+
+            IN:
+                x - x coordinate to check
+                y - y coodinate to check
+
+            RETURNS: True if it intersects, False if not
+            """
+            # horizontal lines will always be considered not hitting
+            if self._horizontal:
+                return False
+
+            # then check if within the horizontal range of the edge
+            if not self._inBoundingBoxY(y):
+                return False
+
+            # right of the bounding box is for sure a miss
+            if self.__bb_x_max < x:
+                return False
+
+            # left of the bounding box is for sure a hit
+            # NOTE: this also handles vertical lines
+            if x < self.__bb_x_min:
+                return True
+
+            # otherwise, we are for sure within the bounding box. 
+
+            # vertical lines means we only have to check x
+            if self._vertical:
+                # in this case, we treat on the line as passing
+                return x <= self.__bb_x_min
+
+            # now just run the inverse of the linear formula, and if 
+            # our x is less than that, then the point is for sure before the
+            # edge
+            x, y = self._normalize((x, y))
+            return x <= self.__line._getx(y)
+
+        def _inBoundingBoxX(self, x):
+            """
+            Checks if the given point is within the vertical parts of the
+            bounding box (within x range)
+
+            IN:
+                x - x coordinate to check
+
+            RETURNS: True if the given x is within bounding box range, False
+                if not
+            """
+            return self.__bb_x_min <= x <= self.__bb_x_max
+
+        def _inBoundingBoxY(self, y):
+            """
+            Checks if the given y coord is within the horizontal parts of the
+            bounding box (within y range)
+
+            IN:
+                y - y coordinate to check
+
+            RETURNS: True if the given y is within bounding box range, False if
+                not
+            """
+            return self.__bb_y_min <= y <= self.__bb_y_max
+
+        def __setup(self, p1, p2):
+            """
+            Sets up this MASEdge using given points
+            """
+            self.__setupPoints(p1, p2)
+            self.__setupBoundingBox()
+            self.__setupNormalizedPoints()
+            self.__setupLinearFunction()
+
+        def __setupBoundingBox(self):
+            """
+            Sets up bounding box
+            """
+            self.__bb_x_min = self._left_point[0]
+            self.__bb_x_max = self._right_point[0]
+            self.__bb_y_min = min(self._left_point[1], self._right_point[1])
+            self.__bb_y_max = max(self._left_point[1], self._right_point[1])
+
+        def __setupLinearFunction(self):
+            """
+            Sets up the MASLinearForm functions for this Edge
+            """
+            self.__line = MASLinearForm.fromPoints(
+                self.__norm_lp,
+                self.__norm_rp
+            )
+
+        def __setupNormalizedPoints(self):
+            """
+            Sets up the appropraite normlization points
+            """
+            self.__norm_rp = MASLinearForm.diffPoints(
+                self._left_point,
+                self._right_point
+            )
+
+        def __setupPoints(self, p1, p2):
+            """
+            Sets up the appropriate vars for point handling
+            """
+            # split points
+            p1x, p1y = p1
+            p2x, p2y = p2
+
+            # determine of vertical line
+            if p1x == p2x:
+                self._vertical = True
+
+            # determine if horizontal line
+            elif p1y == p2y:
+                self._horizontal = True
+
+            # determine left and righ tpoint
+            self._left_point, self._right_point = MASLinearForm.sortPoints(
+                p1,
+                p2
+            )
+
+        def _normalize(self, point):
+            """
+            Normalizes a point so its normalized to this edge
+
+            IN:
+                point - (x, y) point to normalize
+
+            RETURNS: normalized point (x, y)
+            """
+            return (
+                point[0] - self._left_point[0],
+                point[1] - self._left_point[1]
+            )
+
+
+    class MASClickZone(renpy.Displayable):
+        """
+        Special mousezone that can react depending if being clicked
+        with mouse. Meant for custom displayable use.
+
+        PROPERTIES:
+            corners - list of verticies. each element should be a tuple like
+                (x, y)
+            disabled - True means to disable this mouse zone, False not
+        """
+        LEFT_CLICK = 1
+        MIDDLE_CLICK = 2
+        RIGHT_CLICK = 3
+
+        def __init__(self, corners):
+            """
+            Constructor for the Clickzone displayable
+
+            IN:
+                corners - list of verticies (x, y)
+                    ASSUMES THAT THIS IS SORTED IN ORDER
+            """
+            if len(corners) <= 0:
+                raise Exception("Clickzone cannot be built with empty corners")
+
+            super(renpy.Displayable, self).__init__()
+
+            self.corners = corners
+            self.disabled = False
+            self._debug_back = False
+            self.__edges = []
+            self._button_down = pygame.MOUSEBUTTONUP
+
+            self.__setup()
+
+        def render(self, width, height, st, at):
+            """
+            Render functions
+            """
+            # NOTE: we are using the given width and height because of teh
+            #   debug canvas mode
+            r = renpy.Render(width, height)
+
+            # only show a box if debug mode is on
+            if self._debug_back:
+                canvas = r.canvas()
+                canvas.polygon("#FFE6F4", self.corners, width=0)
+
+            return r
+
+        def event(self, ev, x, y, st):
+            """
+            Event function
+            """
+            if ev.type == self._button_down:
+                # determine if this event happend here
+                if self._isOverMe(x, y):
+                    return ev.button
+
+            # othewise, nothing happened
+            return None
+
+        def _inBoundingBox(self, x, y):
+            """
+            Checks if the given coordinates are within the bounding box
+
+            IN:
+                x - x coordinate to check
+                y - y coordinat eto check
+
+            RETURNS: True if these coords are within the bounding box, False
+                if not
+            """
+            return (
+                self.__bb_x_min <= x <= self.__bb_x_max
+                and self.__bb_y_min <= y <= self.__bb_y_max
+            )
+
+        def _isOverMe(self, x, y):
+            """
+            Determines if the given coordinates are inside this click zone
+
+            IN:
+                x - x coordinage to check
+                y - y coordinate to check
+
+            RETURNS: True if these coordinates are in this clickzone, False
+                if not
+            """
+            # bounding box covers most cases
+            if not self._inBoundingBox(x, y):
+                return False
+
+            # otherwise, determine if in polygon
+            intersections = 0
+            for edge in self.__edges:
+                intersections += int(edge.horizontalIntersect(x, y))
+
+            # odd number of intersctions mean inside
+            return (intersections % 2) == 1
+
+        def _start_click(self, button):
+            """
+            Marks the appropraite spot where a click should occur
+            ASSUMES MOUSEBUTTONDOWN was found, and we are just determining
+            the click.
+            """
+            self.__click_start[button - 1] = True
+
+        def _was_clicked(self, button):
+            """
+            Checks if this button spot was clicked
+            """
+            return self.__click_start[button - 1]
+
+        def _reset_click(self, button):
+            """
+            Resets click status for a button
+            """
+            self.__click_start[button - 1] = False
+
+        def __setup(self):
+            """
+            setup functions
+            """
+            self.__setupBoundingBox()
+            self.__setupEdges()
+
+        def __setupBoundingBox(self):
+            """
+            Generates the bounding box for this click zone
+            """
+            # set intiial vlaues
+            self.__bb_x_min = self.corners[0][0]
+            self.__bb_x_max = self.corners[0][0]
+            self.__bb_y_min = self.corners[0][1]
+            self.__bb_y_max = self.corners[0][1]
+
+            # create box
+            for index in range(1, len(self.corners)):
+                x, y = self.corners[index]
+                self.__bb_x_min = min(self.__bb_x_min, x)
+                self.__bb_x_max = max(self.__bb_x_max, x)
+                self.__bb_y_min = min(self.__bb_y_min, y)
+                self.__bb_y_max = max(self.__bb_y_max, y)
+
+            # finally, set the internal width and height for rendering
+            self.__width = self.__bb_x_max - self.__bb_x_min
+            self.__height = self.__bb_y_max - self.__bb_y_min
+
+        def __setupEdges(self):
+            """
+            Sets up the edges for this click zone
+            """
+            # only generate the edges up to the final edge
+            for index in range(len(self.corners)-1):
+                self.__edges.append(
+                    MASEdge(self.corners[index], self.corners[index+1])
+                )
+
+            # and the final edge
+            self.__edges.append(MASEdge(
+                self.corners[0],
+                self.corners[-1]
+            ))
+
+# init -1 python:
+
+    class MASInteractable(renpy.Displayable):
+        """
+        Base class for all interactable displayables.
+        Interactables are custom displayables that use clickzones
+        """
+
+        def __init__(self, zones, button_down, debug=False):
+            """
+            Constructor for an interactable.
+
+            IN:
+                zones - dict of the following format:
+                    key: key of the zone, this is returned if the zone is 
+                        clicked
+                    value: list of vertexes that make teh zone
+                button_down - button_down item to use for each clickzone
+                debug - Set to True to fill the clickzones
+            """
+            super(renpy.Displayable, self).__init__()
+
+            self.zones = {}
+            self.zones_render = []
+
+            self._build_zones(zones, button_down, debug=debug)
+
+        def _build_zones(self, zones, button_down, debug=False):
+            """
+            Builds clickzone objects (self.zones and self.zones_render)
+
+            IN:
+                zones - dict of zones (see constructor)
+                button_down - button_down item to use for each clikzone
+                debug - set to True to see clickzones
+            """
+            for zone_key, zone_vx in zones.iteritems():
+                # build clickzone
+                clickzone = MASClickZone(zone_vx)
+                clickzone._debug_back = debug
+                clickzone._button_down = button_down
+
+                # add to internal lists
+                self.zones[zone_key] = clickzone
+                self.zones_render.append(clickzone)
+
+        def check_click(self, ev, x, y, st):
+            """
+            Checks if an ev was a click over a zone.
+
+            RETURNS: zone key if clicked, None if not clicked
+            """
+            for zone_key, clickzone in self.zones.iteritems():
+                if clickzone.event(ev, x, y, st) is not None:
+                    return zone_key
+
+            return None
+
+        def check_over(self, x, y):
+            """
+            Checks if the given x y is over a zone, and returns the zone key
+            if appropripate
+
+            IN:
+                x - x
+                y - y
+
+            RETURNS: zone_key, or None if no click over zones
+            """
+            for zone_key, clickzone in self.zones.iteritems():
+                if clickzone._isOverMe(x, y):
+                    return zone_key
+
+            return None
+
+
+# init -1 python:
     # new class to manage a list of quips
     class MASQuipList(object):
+        import random
         """
         Class that manages a list of quips. Quips have types which helps us
         when deciding how to execute quips. Also we have some properties that
@@ -1463,6 +2616,17 @@ python early:
                 return -1
 
 
+        def addLabelQuips(self, label_list):
+            """
+            Adds multiple label quips.
+
+            IN:
+                label_list - list of label names to add
+            """
+            for _label in label_list:
+                self.addLabelQuip(_label)
+
+
         def addLineQuip(self, line, custom_type=None):
             """
             Adds a line quip. A custom type can be given if the caller wants
@@ -1526,13 +2690,13 @@ python early:
             """
             if remove:
                 # if we need to remove, we should use randint instead
-                sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
+                sel_index = random.randint(0, len(self.__quiplist) - 1)
                 quip_type, quip_value = self.__quiplist.pop(sel_index)
 
             else:
                 # if we dont need to remove, we can just use renpy random
                 # choice
-                quip_type, quip_value = renpy.random.choice(self.__quiplist)
+                quip_type, quip_value = random.choice(self.__quiplist)
 
             # now do preocessing then send
             if quip_type == self.TYPE_GLITCH:
@@ -1677,8 +2841,103 @@ python early:
             if self.raise_issues:
                 raise Exception(msg)
 
+
+# uncomment for syntax highlight on vim
+#init -1 python:
+
+    class MASMailbox(object):
+        """
+        Async communication between different objects.
+
+        NOTE: even though this is usable on its own, its highly recommended
+        that you extend this class to encapsulate message constants.
+
+        NOTE: this is NOT like notify, objects can only respond to messages
+            when they are active.
+
+        PROPERTIES:
+            box - the actual mailbox that contains messages
+        """
+        RETURN_KEY = "__mas_return"
+
+
+        def __init__(self):
+            """
+            Constructor
+            """
+            self.box = {}
+
+
+        def get(self, headline):
+            """
+            Removes a message from the box, and returns it.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the
+                message was actually None.
+            """
+            if headline in self.box:
+                return self.box.pop(headline)
+
+            return None
+
+
+        def mas_get_return(self):
+            """
+            Removes and returns a MAS_RETURN message.
+
+            RETURNS:
+                the returned message, or None if no message data or if the
+                emssage was wasctually none
+            """
+            return self.get(self.RETURN_KEY)
+
+
+        def mas_send_return(self, msg):
+            """
+            Adds a MAS_RETURN message to the box.
+
+            IN:
+                msg - message to return
+            """
+            self.send(self.RETURN_KEY, msg)
+
+
+        def read(self, headline):
+            """
+            Reads a message from the box.
+
+            NOTE: does NOT remove the message.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the
+                message was actually None
+            """
+            return self.box.get(headline, None)
+
+
+        def send(self, headline, msg):
+            """
+            Adds a message to the box.
+
+            IN:
+                headline - identifier for this message.
+                msg - message to send
+            """
+            self.box[headline] = msg
+
+
+
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
+    import store
+    import datetime
 
     # redefine this because I can't get access to global functions, also
     # i dont care to find out how
@@ -1778,13 +3037,12 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_chess_dlg_actions = dict()
         renpy.game.persistent._mas_chess_timed_disable = None
         renpy.game.persistent._mas_chess_3_edit_sorry = False
-        renpy.game.persistent._mas_chess_mangle_all = False
 
         # greetings
         renpy.game.persistent._mas_you_chr = False
         renpy.game.persistent.opendoor_opencount = 0
         renpy.game.persistent.opendoor_knockyes = False
-        persistent._mas_greeting_type = None
+        renpy.game.persistent._mas_greeting_type = None
 
         # hangman
         renpy.game.persistent._mas_hangman_playername = False
@@ -1794,7 +3052,22 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_piano_keymaps = dict()
 
         # affection
-        persistent._mas_affection["affection"] = 0
+        renpy.game.persistent._mas_affection["affection"] = 0
+
+
+    def initialSessionData():
+        """
+        Completely resets session data to usable initial values.
+        NOTE: these are not the defaults, but rather what they would be set to
+        on a first load.
+        """
+        store.persistent.sessions = {
+            "last_session_end": None,
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 1,
+            "first_session": datetime.datetime.now()
+        }
 
 
 init -999 python:
@@ -1812,22 +3085,29 @@ init -999 python:
 
 
 init -990 python in mas_utils:
+    import store
     import os
+    import stat
     import shutil
     import datetime
-    mas_log = renpy.renpy.log.open("log/mas_log")
-    mas_log_open = mas_log.open()
-    mas_log.raw_write = True
+    import codecs
+    import platform
+    import time
+    #import tempfile
+    from os.path import expanduser
+    from renpy.log import LogFile
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
     _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
+    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
 
     # bad text dict
     BAD_TEXT = {
         "{": "{{",
         "[": "[["
     }
+
 
     def clean_gui_text(text):
         """
@@ -1843,6 +3123,33 @@ init -990 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
+
+
+    def pdget(key, table, validator=None, defval=None):
+        """
+        Protected Dict GET
+        Gets an item from a dict, using protections to ensure this item is 
+        valid
+
+        IN:
+            key - key of item to get
+            table - dict to get from
+            validator - function to call with the item to validate it
+                If None, no validating done
+                (Default: None)
+            defval - default value to return if could not get from dict
+        """
+        if table is not None and key in table:
+
+            item = table[key]
+
+            if validator is None:
+                return item
+
+            if validator(table[key]):
+                return item
+
+        return defval
 
 
     def tryparseint(value, default=0):
@@ -1908,7 +3215,33 @@ init -990 python in mas_utils:
             os.remove(f_path)
         except Exception as e:
             if log:
-                writelog("[exp] {0}\n".format(str(e)))
+                writelog("[exp] {0}\n".format(repr(e)))
+
+
+    def trywrite(f_path, msg, log=False, mode="w"):
+        """
+        Attempts to write out a file at the given path
+
+        Exceptions are hidden
+
+        IN:
+            f_path - path to write file
+            msg - text to write
+            log - True means we log exceptions
+                (Default: False)
+            mode - write mode to use
+                (Defaut: w)
+        """
+        outfile = None
+        try:
+            outfile = open(f_path, mode)
+            outfile.write(msg)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(repr(e)))
+        finally:
+            if outfile is not None:
+                outfile.close()
 
 
     def logrotate(logpath, filename):
@@ -1970,6 +3303,7 @@ init -990 python in mas_utils:
         # and delete the current file
         trydel(old_path)
 
+
     def tryparsedt(_datetime, default=None, sep=" "):
         """
         Trys to parse a datetime isoformat string into a datetime object
@@ -2016,6 +3350,117 @@ init -990 python in mas_utils:
         except:
             return default
 
+    log_error = None
+
+    # mac logging
+    class MASMacLog(LogFile):
+
+        def __init__(self, name, append=False, developer=False, flush=True):
+            """
+            `name`
+                The name of the logfile, without the .txt extension.
+            `append`
+                If true, we will append to the logfile. If false, we will truncate
+                it to an empty file the first time we write to it.
+            `developer`
+                If true, nothing happens if config.developer is not set to True.
+            `flush`
+                Determines if the file is flushed after each write.
+            """
+            LogFile.__init__(self, name, append=append, developer=developer, flush=flush)
+
+
+        def open(self):  # @ReservedAssignment
+
+            if self.file:
+                return True
+
+            if self.file is False:
+                return False
+
+            if self.developer and not renpy.config.developer:
+                return False
+
+            if not renpy.config.log_enable:
+                return False
+
+            try:
+
+                home = expanduser("~")
+                base = os.path.join(home,".MonikaAfterStory/" )
+
+                if base is None:
+                    return False
+
+                fn = os.path.join(base, self.name + ".txt")
+
+                path, filename = os.path.split(fn)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+
+                if self.append:
+                    mode = "a"
+                else:
+                    mode = "w"
+
+                if renpy.config.log_to_stdout:
+                    self.file = real_stdout
+
+                else:
+
+                    try:
+                        self.file = codecs.open(fn, mode, "utf-8")
+                    except:
+                        pass
+
+                if self.append:
+                    self.write('')
+                    self.write('=' * 78)
+                    self.write('')
+
+                self.write("%s", time.ctime())
+                try:
+                    self.write("%s", platform.platform())
+                except:
+                    self.write("Unknown platform.")
+                self.write("%s", renpy.version)
+                self.write("%s %s", renpy.config.name, renpy.config.version)
+                self.write("")
+
+                return True
+
+            except:
+                self.file = False
+                return False
+
+
+    # A map from the log name to a log object.
+    mas_mac_log_cache = { }
+
+    def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
+        rv = mas_mac_log_cache.get(name, None)
+
+        if rv is None:
+            rv = MASMacLog(name, append=append, developer=developer, flush=flush)
+            mas_mac_log_cache[name] = rv
+
+        return rv
+
+    def getMASLog(name, append=False, developer=False, flush=False):
+        if renpy.macapp or renpy.macintosh:
+            return macLogOpen(name, append=append, developer=developer, flush=flush)
+        return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
+
+
+    # unstable should never delete logs
+    if store.persistent._mas_unstable_mode:
+        mas_log = getMASLog("log/mas_log", append=True, flush=True)
+    else:
+        mas_log = getMASLog("log/mas_log")
+
+    mas_log_open = mas_log.open()
+    mas_log.raw_write = True
+
 
 init -100 python in mas_utils:
     # utility functions for other stores.
@@ -2023,6 +3468,7 @@ init -100 python in mas_utils:
     import ctypes
     import random
     import os
+    import math
     from cStringIO import StringIO as fastIO
 
     __FLIMIT = 1000000
@@ -2044,6 +3490,21 @@ init -100 python in mas_utils:
             return float(value)
         except:
             return default
+
+
+    def bullet_list(_list, bullet="  -"):
+        """
+        Converts a list of items into a bulleted list of strings.
+
+        IN:
+            _list - list to convert into bulleted list
+            bullet - the bullet to use. A space is added between the bullet and
+                the item.
+                (Default: 2 spaces and a dash)
+
+        RETURNS: a list of strings where each string is an item with a bullet.
+        """
+        return [bullet + " " + str(item) for item in _list]
 
 
     ### date adjusting functions
@@ -2154,6 +3615,68 @@ init -100 python in mas_utils:
         )
 
 
+    def normalize_points(points, offsets, add=True):
+        """
+        normalizes a list of points using the given offsets
+
+        IN:
+            points - list of points to normalize
+            offsets - Tuple of the following format:
+                [0] - amount to offset x coords
+                [1] - amount to offset y coords
+            add - True will add offsets, False will subtract offsets
+
+        RETURNS: list of normalized points
+        """
+        normal_pts = []
+
+        # setup offsets
+        xoffset, yoffset = offsets
+        if not add:
+            xoffset *= -1
+            yoffset *= -1
+
+        for xcoord, ycoord in points:
+            normal_pts.append((
+                xcoord + xoffset,
+                ycoord + yoffset
+            ))
+
+        return normal_pts
+
+
+    def _EVgenY(_start, _end, current, for_start):
+        """
+        Generates/decides if a given start/end datetime/date should have its
+        year incremented or not.
+
+        NOTE: specialized for Event creation datetime selection
+        NOTE: this only modifies year.
+
+        IN:
+            _start - datetime/date that begins this period
+            _end - datetime/date that ends this period
+            current - datetime/date to compare with (should be either today
+                or now)
+            for_start - True if we want the next valid start, False for end
+
+        RETURNS either next valid _start or next valid _end.
+        """
+        # keep track of which elem is important to us
+        if for_start:
+            _focus = _start
+        else:
+            _focus = _end
+
+        if current < _end:
+            # the range hasnt been reached yet, we are fine with this value.
+            # or if we are in the range
+            return _focus
+
+        # now is actually ahead of target, we should adjust year
+        return _focus.replace(year=current.year + 1)
+
+
     def randomblob(size, seed=None):
         """
         Generates a blob of StringIO data with the given size
@@ -2219,6 +3742,29 @@ init -100 python in mas_utils:
             data.write(os.urandom(make_bytes))
 
         return data
+
+
+    def intersperse(_list, _sep):
+        """
+        Intersperses a list with the given separator
+        """
+        result_list = [_sep] * (len(_list) * 2 - 1)
+        result_list[0::2] = _list
+        return result_list
+
+
+    def log_entry(entry_log, value):
+        """
+        Generic entry add to the given log.
+        Stores both time and given value as a tuple:
+            [0]: datetime.now()
+            [1]: value
+
+        IN:
+            entry_log - list to log entry to
+            value - value to log in this entry
+        """
+        entry_log.append((datetime.datetime.now(), value))
 
 
     class ISCRAM(ctypes.BigEndianStructure):
@@ -2357,8 +3903,96 @@ init -100 python in mas_utils:
         return (ival, int((num - cleanival) * __FLIMIT), __FLIMIT)
 
 
+init -985 python:
+    # global stuff that should be defined somewhat early
+
+    def mas_getSessionLength():
+        """
+        Gets length of current session, IF this cannot be determined, a
+        time delta of 0 is returned
+        """
+        _now = datetime.datetime.now()
+        return _now - store.mas_utils.pdget(
+            "current_session_start",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=_now
+        )
+
+
+    def mas_getAbsenceLength():
+        """
+        Gets time diff between current session start and last session end
+        aka the diff between last session and this
+        if not found, time delta of 0 is returned
+        """
+        return mas_getCurrSeshStart() - mas_getLastSeshEnd()
+
+
+    def mas_getCurrSeshStart():
+        """
+        Returns the current session start datetime
+        If there is None, we use first session
+        """
+        return store.mas_utils.pdget(
+            "current_session_start",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=mas_getFirstSesh()
+        )
+
+
+    def mas_getFirstSesh():
+        """
+        Returns the first session datetime.
+
+        If we could not get it, datetime.datetime.now() is returnd
+        """
+        return store.mas_utils.pdget(
+            "first_session",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=datetime.datetime.now()
+        )
+
+    def mas_isFirstSeshPast(_date):
+        """
+        Checks if the first session is past the given date
+
+        IN:
+            _date - datetime.date to check against
+
+        OUT:
+            boolean:
+                - True if first sesh is past given date
+                - False otherwise
+        """
+        return mas_getFirstSesh().date() > _date
+
+    def mas_getLastSeshEnd():
+        """
+        Returns datetime of the last session
+        NOTE: if there was no last session, we use first session instead
+        """
+        return store.mas_utils.pdget(
+            "last_session_end",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=mas_getFirstSesh()
+        )
+
+
+    def mas_TTDetected():
+        """
+        Checks if time travel was detected
+        NOTE: TT detection occurs at init -890
+        """
+        return store.mas_globals.tt_detected
+
+
 init -1 python:
     import datetime # for mac issues i guess.
+    import os
     if "mouseup_3" in config.keymap['game_menu']:
         config.keymap['game_menu'].remove('mouseup_3')
     if "mouseup_3" not in config.keymap["hide_windows"]:
@@ -2410,17 +4044,20 @@ init -1 python:
         # otherwise, not found
         return False
 
-    def is_file_present(file):
-        try:
-            renpy.file(
-                ".." +
-                file
-            )
-            is_file = True
-        except:
-            is_file = False
+    def is_file_present(filename):
+        if not filename.startswith("/"):
+            filename = "/" + filename
 
-        return is_file
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
+
+
+    def is_apology_present():
+        return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
 
 
     def mas_cvToHM(mins):
@@ -2503,6 +4140,47 @@ init -1 python:
         return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
 
 
+    def mas_isMNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within midnight to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+        NOTE: lower bound is 0 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of midnight and the given
+            hour/min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 0, _hour, _min)
+
+
+    def mas_isNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within noon to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of noon and the given hour
+            /min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 12*60, _hour, _min)
+
+
     def mas_isAnytoST(_time, _hour, _min, _suntime):
         """
         Checks if the given time is within this range:
@@ -2567,7 +4245,49 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
 
-    
+
+    def mas_isAnytoMN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to midnight (next
+        day)
+
+        NOTE: lower bound is limited to midnight
+        NOTE: upper bound is 24 - midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - mintue to use for lower bound
+                (DEfault: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and midnight, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 24*60)
+
+
+    def mas_isAnytoN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to noon.
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given tim eis within the bounds of the given hour/min
+            and Noon, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 12*60)
+
+
     def mas_isMNtoSR(_time):
         """
         Checks if the given time is within midnight to sunrise
@@ -2663,6 +4383,160 @@ init -1 python:
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
 
+    def mas_genDateRange(_start, _end):
+        """
+        Generates a list of datetime.date objects with the given range.
+
+        NOTE: exclusive:
+
+        IN:
+            _start - starting date of range
+            _end - ending date of range
+
+        RETURNS: list of datetime.date objects between the _start and _end,
+            exclusive. May be empty if invalid start and end dates are given
+        """
+        # sanity check
+        if _start >= _end:
+            return []
+
+        _date_range = []
+        one_day = datetime.timedelta(days=1)
+        curr_date = _start
+
+        while curr_date < _end:
+            _date_range.append(curr_date)
+            curr_date += one_day
+
+        return _date_range
+
+
+    def mas_EVgenYDT(_start, _end, for_start):
+        """
+        Creates a valid start or end datetime for Event creation, given the
+        start and end datetimes.
+
+        NOTE: this only modifies year. Build a custom function for something
+        more precise.
+
+        IN:
+            _start - datetime that begins this period
+            _end - datetime that ends this period
+            for_start - True if we want the next valid starting datetime
+                False if we want the next valid ending datetime
+
+        RETURNS: valid datetime for Event creation
+        """
+        return store.mas_utils._EVgenY(
+            _start,
+            _end,
+            datetime.datetime.now(),
+            for_start
+        )
+
+
+    def mas_EVgenYD(
+            _start,
+            _end,
+            for_start,
+            _time=datetime.time.min
+        ):
+        """
+        Variation of mas_EVgenYDT that accepts datetime.dates. This still
+        returns datetimes though.
+
+        IN:
+            _start - date that begins this period
+            _end - date that ends this period
+            for_start - True if we want the next valid starting datetime
+                False if we want the next valid ending datetime
+            _time - time to use with the dates.
+                (Default: datetime.time.min)
+
+        RETURNS: valid datetime for Event creation
+        """
+        return datetime.datetime.combine(
+            store.mas_utils._EVgenY(
+                _start,
+                _end,
+                datetime.date.today(),
+                for_start
+            ),
+            _time
+        )
+
+
+
+
+    def mas_isSpecialDay():
+        """
+        Checks if today is a special day(birthday, anniversary or holiday)
+
+        RETURNS:
+            boolean indicating if today is a special day.
+        """
+        # TODO keep adding special days as we add them
+        return (
+            mas_isMonikaBirthday()
+            or mas_isO31()
+            or mas_isD25()
+            or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek())
+            or mas_isNYE()
+            or mas_isF14()
+        )
+
+    def mas_maxPlaytime():
+        return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
+
+
+    def mas_isInDateRange(
+            subject,
+            _start,
+            _end,
+            start_inclusive=True,
+            end_inclusive=False
+        ):
+        """
+        Checks if the given subject date is within  range of the given start
+        end dates.
+
+        NOTE: this does year normalization, so we only compare months and days
+        NOTE: we do NOT compare years
+
+        IN:
+            subject - subject date to compare
+            _start - starting date of the range
+            _end - ending date of the range
+            start_inclusive - True if start date should be inclusive
+                (Derfault: True)
+            end_inclusive - True if end date should be inclusive
+                (Default: False)
+
+        RETURNS: True if the given subject is within date range, False if not
+        """
+        real_start = _start.replace(year=subject.year)
+        real_end = _end.replace(year=subject.year)
+
+        if start_inclusive:
+            if real_start > subject:
+                return False
+
+        else:
+            if real_start >= subject:
+                return False
+
+        if end_inclusive:
+            if subject > real_end:
+                return False
+
+        else:
+            if subject >= real_end:
+                return False
+
+        # otherwise we passed the cases
+        return True
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos
@@ -2718,6 +4592,203 @@ init -1 python:
         except:
             appIds = None
         return appIds
+
+init 2 python:
+    # global functions that should be defined after level 0a
+    def mas_startupPlushieLogic(chance=4):
+        """
+        Runs a simple random check for the quetzal plushie.
+
+        IN:
+            chance - value that determines the chance of that
+                determines if the plushie will appear
+                Defualts to 4
+        """
+        #3 conditions:
+
+        #1. Do we even have plushie enabled?
+        #2. Is it f14? (heartchoc gift interferes)
+        #3. Are we currently eatding something?
+
+        #If any are true, we cannot have plushie out.
+        if (
+            not persistent._mas_acs_enable_quetzalplushie
+            or mas_isF14()
+            or MASConsumable._getCurrentFood()
+        ):
+            # run the plushie exit PP in case plushie is no longer enabled
+            mas_acs_quetzalplushie.exit(monika_chr)
+            return
+
+
+        if renpy.random.randint(1,chance) == 1:
+            if persistent._mas_d25_deco_active:
+                #if in d25 mode, it's seasonal, and also norm+
+                monika_chr.wear_acs_pst(mas_acs_quetzalplushie_santahat)
+
+            else:
+                monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+
+        else:
+            # run the plushie exit PP if plushie is not selected
+            mas_acs_quetzalplushie.exit(monika_chr)
+
+        return
+
+    def mas_incMoniReload():
+        """
+        Increments the monika reload counter unless its at max
+        """
+        if persistent.monika_reload < 4:
+            persistent.monika_reload += 1
+
+    def mas_isFirstSeshDay(_date=None):
+        """
+        Checks if _date is the day of first session
+
+        IN:
+            _date - date to compare against
+            (NOTE: if not provided, today is assumed)
+        """
+        if not _date:
+            _date = datetime.date.today()
+
+        return _date == mas_getFirstSesh().date()
+
+    def mas_hasRPYFiles():
+        """
+        Checks if there are rpy files in the gamedir
+        """
+        return len(mas_getRPYFiles()) > 0
+
+    def mas_getRPYFiles():
+        """
+        Gets a list of rpy files in the gamedir
+        """
+        rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+
+        return rpyCheckStation.getPackageList(".rpy")
+
+    def mas_is18Over(_date=None):
+        """
+        Checks if player is over 18
+
+        IN:
+            _date - date to check
+            If None, today is assumed.
+            (Default: None)
+
+        OUT:
+            boolean:
+                - True if player is over 18
+                - False otherwise
+        """
+        #If we don't have player bday, we assume not.
+        if not persistent._mas_player_bday:
+            return False
+
+        return mas_getPlayerAge(_date) >= 18
+
+    def mas_getPlayerAge(_date=None):
+        """
+        Gets the player age
+
+        IN:
+            _date - the datetime.date to get the player age at
+            (Default: None)
+
+        OUT:
+            integer representing the player's current age or None if we don't have player's bday
+        """
+        if not persistent._mas_player_bday:
+            return 0
+
+        elif _date is None:
+            _date = datetime.date.today()
+
+        year_bday = mas_player_bday_curr(_date)
+        _years = year_bday.year - persistent._mas_player_bday.year
+
+        if _date < year_bday:
+            _years -= 1
+
+        return _years
+
+    def mas_canShowRisque(aff_thresh=2000, grace=None):
+        """
+        Checks if we can show something risque
+
+        Conditions for this:
+            1. We're not in sensitive mode
+            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            3. Player is over 18
+            4. Aff condition (raw)
+
+        IN:
+            aff_thresh:
+                - Raw affection value to be greater than or equal to
+            grace:
+                - a grace period passed in as a timedelta
+                  defaults to 1 week
+
+        OUT:
+            boolean:
+                - True if the above conditions are satisfied
+                - False if not
+        """
+
+        if grace is None:
+            grace = datetime.timedelta(weeks=1)
+
+        _date = datetime.date.today() + grace
+
+        return (
+            not persistent._mas_sensitive_mode
+            and persistent._mas_first_kiss is not None
+            and mas_is18Over(_date)
+            and _mas_getAffection() >= aff_thresh
+        )
+
+    def mas_timePastSince(timekeeper, passed_time, _now=None):
+        """
+        Checks if a certain amount of time has passed since the time in the timekeeper
+        IN:
+            timekeeper:
+                variable holding the time we last checked whatever it restricts
+                (can be datetime.datetime or datetime.date)
+
+            passed_time:
+                datetime.timedelta of the amount of time which should
+                have passed since the last check in order to return True
+
+            _now:
+                time to check against (If none, now is assumed, (Default: None))
+        OUT:
+            boolean:
+                - True if it has been passed_time units past timekeeper
+                - False otherwise
+        """
+        if timekeeper is None:
+            return True
+
+        elif _now is None:
+            _now = datetime.datetime.now()
+
+        #If our timekeeper is holding a datetime.date, we need to convert it to a datetime.datetime
+        if not isinstance(timekeeper, datetime.datetime):
+            timekeeper = datetime.datetime.combine(timekeeper, datetime.time())
+
+        return timekeeper + passed_time <= _now
+
+    def mas_pastOneDay(timekeeper, _now=None):
+        """
+        One day time past version of mas_timePastSince()
+
+        IN:
+            timekeeper - variable holding the time since last event
+            _now - time to check against (Default: None)
+        """
+        return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -3931,6 +6002,9 @@ default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
 default persistent.greeting_database = dict()
+default persistent._mas_apology_database = dict()
+default persistent._mas_undo_action_rules = dict()
+default persistent._mas_strip_dates_rules = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
@@ -3946,17 +6020,25 @@ default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apolo
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
-default persistent._mas_player_bday = None
 default persistent._mas_first_calendar_check = False
 
+#Var to see if we were on a long absence (post flag reset)
+default mas_ret_long_absence = False
+
 # rain
-default persistent._mas_likes_rain = False
 define mas_is_raining = False
 
 # rain chances
 define MAS_RAIN_UPSET = 25
 define MAS_RAIN_DIS = 40
 define MAS_RAIN_BROKEN = 70
+
+# snow
+define mas_is_snowing = False
+
+# idle
+default persistent._mas_in_idle_mode = False
+default persistent._mas_idle_data = {}
 
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
@@ -4000,8 +6082,14 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
-define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
+
+# sensitive mode enabler
+default persistent._mas_sensitive_mode = False
+
+#Amount of times player has reloaded in ddlc
+default persistent._mas_ddlc_reload_count = 0
+
 init python:
     startup_check = False
     try:
@@ -4031,24 +6119,30 @@ define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies
 
-    # these numbers are the low end of how many seconds to wait between
+    # these numbers are the lower end of how many seconds to wait between
     # random topics
-    NORMAL = 20
-    OFTEN = 4
-    RARE = 36
-    NEVER = 0
+    OFTEN         = 5 # end 15
+    NORMAL        = 15 # end 45
+    LESS_OFTEN    = 40 # end 120 (2 min)
+    OCCASIONALLY  = 2*60 # end 360 (6 min)
+    RARELY        = 390 # end 1170 (19.5 min)
+    VERY_RARELY   = 20*60 # end 3600 (60 mins)
+    NEVER         = 0
 
-    # this is the added to the low end to get the upper end of seconds
-    SPAN = 24
+    # this is multiplied to the low end to get the upper end of seconds
+    SPAN_MULTIPLIER = 3
 
-    ## to better work with the sliders, we will create a range from 0 to 3
+    ## to better work with the sliders, we will create a range from 0 to 5
     # (inclusive)
     # these values will be utilized in script-ch30 as well as screens
     SLIDER_MAP = {
         0: OFTEN,
         1: NORMAL,
-        2: RARE,
-        3: NEVER
+        2: LESS_OFTEN,
+        3: OCCASIONALLY,
+        4: RARELY,
+        5: VERY_RARELY,
+        6: NEVER
     }
 
     ## slider map for displaying
@@ -4056,13 +6150,17 @@ init 1 python in mas_randchat:
         0: "Often",
         1: "Normal",
         2: "Less Often",
-        3: "Never"
+        3: "Occasionally",
+        4: "Rarely",
+        5: "Very Rarely",
+        6: "Never"
     }
 
     # current frequency times
     # also default to NORMAL, will get recaluated in reset
     rand_low = NORMAL
-    rand_high = NORMAL + SPAN
+    rand_high = NORMAL * SPAN_MULTIPLIER
+    rand_chat_waittime_left = 0
 
     def adjustRandFreq(slider_value):
         """
@@ -4070,7 +6168,7 @@ init 1 python in mas_randchat:
 
         IN:
             slider_value - slider value given from the slider
-                Should be between 0 - 3
+                Should be between 0 - 5
         """
         slider_setting = SLIDER_MAP.get(slider_value, 1)
 
@@ -4080,8 +6178,10 @@ init 1 python in mas_randchat:
         global rand_high
 
         rand_low = slider_setting
-        rand_high = slider_setting + SPAN
+        rand_high = slider_setting * SPAN_MULTIPLIER
         renpy.game.persistent._mas_randchat_freq = slider_value
+
+        setWaitingTime()
 
 
     def getRandChatDisp(slider_value):
@@ -4102,6 +6202,52 @@ init 1 python in mas_randchat:
             return "Never"
 
         return randchat_disp
+
+
+    def setWaitingTime():
+        """
+        Sets up the waiting time for the next random chat, depending on the current random chatter selection.
+        """
+        global rand_chat_waittime_left
+
+        rand_chat_waittime_left = renpy.random.randint(rand_low, rand_high)
+
+
+    def wait():
+        """
+        Pauses renpy for a small amount of seconds.
+        This helps adapting fast to a new random chatter selection.
+        All events before a random chat can also be handled rather than to keep waiting the whole time at once.
+        """
+        global rand_chat_waittime_left
+
+        WAITING_TIME = 5
+
+        if rand_chat_waittime_left > WAITING_TIME:
+            rand_chat_waittime_left -= WAITING_TIME
+            renpy.pause(WAITING_TIME, hard=True)
+
+        elif rand_chat_waittime_left > 0:
+            waitFor = rand_chat_waittime_left
+            rand_chat_waittime_left = 0
+            renpy.pause(waitFor, hard=True)
+
+        else:
+            rand_chat_waittime_left = 0
+            renpy.pause(WAITING_TIME, hard=True)
+
+
+    def waitedLongEnough():
+        """
+        Checks whether the waiting time is up yet.
+
+        RETURNS:
+            boolean to determine whether the wait is over
+        """
+        global rand_chat_waittime_left
+
+        return rand_chat_waittime_left == 0 and rand_low != 0
+
 
 
 # stores that need to be globally available
@@ -4155,3 +6301,69 @@ label set_gender:
 
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"
+
+# functions related to ily2
+init python:
+    def mas_passedILY(pass_time, check_time=None):
+        """
+        Checks whether we are within the appropriate time since the last time
+        Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
+        IN:
+            pass_time - a timedelta corresponding to the time limit we want to check against
+            check_time - the time at which we want to check, will typically be datetime.datetime.now()
+                which is the default
+
+        RETURNS:
+            boolean indicating if we are within the time limit
+        """
+        if check_time is None:
+            check_time = datetime.datetime.now()
+        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+
+    def mas_ILY(set_time=None):
+        """
+        Sets persistent._mas_last_monika_ily (the last time Monika said ily) to a given time
+        IN:
+            set_time - the time we want to set persistent._mas_last_monika_ily to
+                defaults to datetime.datetime.now()
+        """
+        if set_time is None:
+            set_time = datetime.datetime.now()
+        persistent._mas_last_monika_ily = set_time
+
+    def mas_shouldKiss(chance, cooldown=datetime.timedelta(hours=1), special_day_bypass=False):
+        """
+        Checks if Monika should give the player a random kiss
+
+        CONDITIONS:
+            1. Enamored+ affection
+            2. Player already had their first kiss with Monika
+            3. Random chance that changes depending on the chance and special_day_bypass vars
+            4. Enough time has passed since the last kiss
+
+        IN:
+            chance:
+                the chance to receive a kiss from Monika
+            cooldown:
+                a datetime.timedelta representing the amount of time after the
+                last kiss the next random kiss will be allowed
+                (Default: 1 hour)
+            special_day_bypass:
+                whether a special day should bypass the chance (Default=False)
+
+        OUT:
+            boolean:
+                - True if the above conditions are met
+                - False otherwise
+        """
+        should_kiss = (
+            renpy.random.randint(1, chance) == 1
+            or (special_day_bypass and mas_isSpecialDay())
+            )
+
+        return (
+            mas_isMoniEnamored(higher=True)
+            and persistent._mas_first_kiss
+            and should_kiss
+            and mas_timePastSince(persistent._mas_last_kiss, cooldown)
+        )

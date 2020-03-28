@@ -37,6 +37,88 @@ init -4 python:
             self.mPoint = mPoint
             self.glitch = glitch
 
+
+        def _merge(self, _poemword, mPoint):
+            """
+            Merges a PoemWord into this MASPoemWord 
+
+            IN:
+                _poemword - PoemWord object to merge
+                mPoint - points to use for Monika
+            """
+            self.word = _poemword.word
+            self.sPoint = _poemword.sPoint
+            self.nPoint = _poemword.nPoint
+            self.yPoint = _poemword.yPoint
+            self.mPoint = mPoint
+            self.glitch = _poemword.glitch
+
+
+        def _hangman(self, mon="I", say="Sayori", nat="Natsuki", yur="Yuri"):
+            """
+            Returns the approprite tuple of this word and the winner name.
+
+            All the input arguments are to change winnner names.
+
+            NOTE: highly specialized. Only used in hangman.
+            NOTE: monika will always have a bias here
+
+            RETURNS: tuple of the following format:
+                [0]: the word as a string
+                [1]: the winner as a string
+            """
+            the_winner = self.winner()
+
+            # monika wins ties
+            if the_winner == self.mPoint:
+                girl = mon # monika
+
+            elif the_winner == self.sPoint:
+                girl = say # sayori
+
+            elif the_winner == self.nPoint:
+                girl = nat # natsuki
+
+            elif the_winner == self.yPoint:
+                girl = yur # yuri
+
+            else:
+                # monika is also the default
+                girl = mon # monika
+
+            return (self.word, girl)
+
+
+        def winner(self):
+            """
+            Returns the point value of the winner
+            """
+            # figure out who likes this word the most
+            return max(self.mPoint, self.sPoint, self.nPoint, self.yPoint)
+
+
+        @staticmethod
+        def _build(_poemword, mPoint):
+            """
+            Builds a MASPoemword from a PoemWord
+
+            IN:
+                _poemword - Poemword object to build from
+                mPoint - points to use for MOnika
+
+            RETURNS: a MASPoemWord
+            """
+            return MASPoemWord(
+                _poemword.word,
+                _poemword.sPoint,
+                _poemword.nPoint,
+                _poemword.yPoint,
+                mPoint,
+                _poemword.glitch
+            )
+
+
+
     
     # poemword list class. Allows us to dynamically create Poemwords for 
     # the poem minigame

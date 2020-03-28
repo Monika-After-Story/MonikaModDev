@@ -1,5 +1,7 @@
 # Affection related checks
 
+default persistent._mas_disable_sorry = None
+
 init 5 python:
     addEvent(
         Event(

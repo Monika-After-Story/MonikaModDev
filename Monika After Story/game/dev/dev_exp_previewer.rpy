@@ -20,6 +20,9 @@ label dev_exp_previewer:
 
     $ HKBHideButtons()
     $ prev_mflag = morning_flag
+    $ prev_zoom = store.mas_sprites.zoom_level
+    $ store.mas_sprites.reset_zoom()
+    $ prev_moni_state = monika_chr.save_state(True, True, True)
     $ monika_chr.reset_outfit()
     $ morning_flag = True
 
@@ -27,14 +30,14 @@ label dev_exp_previewer:
     $ result = ui.interact()
 
     $ monika_chr.reset_outfit()
+    $ monika_chr.load_state(prev_moni_state)
+    $ store.mas_sprites.zoom_level = prev_zoom
+    $ store.mas_sprites.adjust_zoom()
     $ morning_flag = prev_mflag
     $ HKBShowButtons()
 
     show monika at i11
     window auto
-
-    $ lockEventLabel("monika_hair_ponytail")
-    $ unlockEventLabel("monika_hair_down")
 
     return
 
@@ -45,6 +48,7 @@ init 999 python:
         we are about to go there
         """
         import pygame
+        import store.mas_sprites as mas_sprites
 
         # CONSTANTS
         VIEW_WIDTH = 1280
@@ -107,310 +111,180 @@ init 999 python:
         # for building the real deal sprites
 
         # list of leaning poses so we know
+        # format:
+        #   [0]: lean
+        #   [1]: arm
         LEAN_SMAP = {
-            5: "def"
+            5: ("def", "def")
         }
 
-        ARMS_SMAP = {
-            1: "steepling",
-            2: "crossed",
-            3: "restleftpointright",
-            4: "pointright",
-            6: "down"
-        }
-
-        EYE_SMAP = {
-            "e": "normal",
-            "w": "wide",
-            "s": "sparkle",
-            "t": "smug",
-            "c": "crazy",
-            "r": "right",
-            "l": "left",
-            "h": "closedhappy",
-            "d": "closedsad",
-            "k": "winkleft",
-            "n": "winkright"
-        }
-
-        EYEBROW_SMAP = {
-            "f": "furrowed",
-            "u": "up",
-            "k": "knit",
-            "s": "mid",
-            "t": "think"
-        }
-
-        NOSE_SMAP = {
-            "nd": "def"
-        }
-
-        EYEBAG_SMAP = {
-            "ebd": "def"
-        }
-
-        BLUSH_SMAP = {
-            "bl": "lines",
-            "bs": "shade",
-            "bf": "full"
-        }
-
-        TEARS_SMAP = {
-            "ts": "streaming",
-            "td": "dried",
-            "tp": "pooled",
-            "tu": "up",
-            "tl": "left",
-            "tr": "right"
-        }
-
-        SWEAT_SMAP = {
-            "sdl": "def",
-            "sdr": "right"
-        }
-
-        EMOTE_SMAP = {
-            "ec": "confuse"
-        }
-
-        MOUTH_SMAP = {
-            "a": "smile",
-            "b": "big",
-            "c": "smirk",
-            "d": "small",
-            "o": "gasp",
-            "u": "smug",
-            "w": "wide",
-            "x": "disgust",
-            "p": "pout",
-            "t": "triangle"
-        }
-            
         # image name map
         IMG_NMAP = {
-            "arms": ARMS_SMAP,
-            "eyes": EYE_SMAP,
-            "eyebrows": EYEBROW_SMAP,
-            "nose": NOSE_SMAP,
-            "eyebags": EYEBAG_SMAP,
-            "blush": BLUSH_SMAP,
-            "tears": TEARS_SMAP,
-            "sweat": SWEAT_SMAP,
-            "emote": EMOTE_SMAP,
-            "mouth": MOUTH_SMAP
+            "arms": {
+                1: "steepling",
+                2: "crossed",
+                3: "restleftpointright",
+                4: "pointright",
+                6: "down",
+                7: "downleftpointright",
+            },
+            "eyes": {
+                "e": "normal",
+                "w": "wide",
+                "s": "sparkle",
+                "t": "smug",
+                "c": "crazy",
+                "r": "right",
+                "l": "left",
+                "h": "closedhappy",
+                "d": "closedsad",
+                "k": "winkleft",
+                "n": "winkright",
+                "f": "soft",
+            },
+            "eyebrows": {
+                "f": "furrowed",
+                "u": "up",
+                "k": "knit",
+                "s": "mid",
+                "t": "think"
+            },
+            "nose": {
+                "nd": "def"
+            },
+            "eyebags": {
+                "ebd": "def"
+            },
+            "blush": {
+                "bl": "lines",
+                "bs": "shade",
+                "bf": "full"
+            },
+            "tears": {
+                "ts": "streaming",
+                "td": "dried",
+                "tp": "pooled",
+                "tu": "up",
+#                "tl": "left",
+#                "tr": "right",
+#                "th": "closedhappy",
+#                "tc": "closedsad",
+            },
+            "sweat": {
+                "sdl": "def",
+                "sdr": "right"
+            },
+            "emote": {
+                "ec": "confuse"
+            },
+            "mouth": {
+                "a": "smile",
+                "b": "big",
+                "c": "smirk",
+                "d": "small",
+                "o": "gasp",
+                "u": "smug",
+                "w": "wide",
+                "x": "angry",
+                "p": "pout",
+                "t": "triangle",
+#                "g": "disgust",
+            }
         }
 
 
         ### sprite code maps
-
-        # otherwise known as clothes
-        TORSO_MAP = {
-            "def": "School Uniform"
-        }
-
-        # aka pose
-        ARMS_MAP = {
-            1: "Resting on Hands",
-            2: "Crossed",
-            3: "Rest Left, Point Right",
-            4: "Point Right",
-            5: "Leaning",
-            6: "Down"
-        }
-
-        HAIR_MAP = {
-            "def": "Ponytail",
-            "down": "Down",
-            "bun": "Bun"
-        }
-
-        EYE_MAP = {
-            "e": "Normal",
-            "w": "Wide",
-            "s": "Sparkle",
-            "t": "Smug",
-            "c": "Crazy",
-            "r": "Look Right",
-            "l": "Look Left",
-            "h": "Closed (Happy)",
-            "d": "Closed (Sad)",
-            "k": "Wink Left",
-            "n": "Wink Right"
-        }
-
-        EYEBROW_MAP = {
-            "f": "Furrowed",
-            "u": "Up",
-            "k": "Knit",
-            "s": "Straight",
-            "t": "Thinking"
-        }
-
-        NOSE_MAP = {
-            "nd": "Default"
-        }
-
-        EYEBAG_MAP = {
-            "ebd": "Default"
-        }
-
-        BLUSH_MAP = {
-            "bl": "Line Blush",
-            "bs": "Shade Blush",
-            "bf": "Full Blush"
-        }
-
-        TEARS_MAP = {
-            "ts": "Streaming Tears",
-            "td": "Dried Tears",
-            "tp": "Pooled Tears",
-            "tu": "Tearing Up",
-            "tl": "Tearing Up (Left)",
-            "tr": "Tearing Up (Right)"
-        }
-
-        SWEAT_MAP = {
-            "sdl": "Left Sweat Drop",
-            "sdr": "Right Sweat Drop"
-        }
-
-        EMOTE_MAP = {
-            "ec": "Confusion"
-        }
-
-        MOUTH_MAP = {
-            "a": "Smile",
-            "b": "Open Smile",
-            "c": "Straight / Smirk",
-            "d": "Small Open",
-            "o": "Gasp",
-            "u": "Smug",
-            "w": "Wide Open",
-            "x": "Grit Teeth",
-            "p": "Pout",
-            "t": "Triangle"
-        }
-
-        TIME_MAP = {
-            0: "Day",
-            1: "Night"
-        }
-
-        # sel tex map
         SEL_TX_MAP = {
-            "torso": TORSO_MAP,
-            "arms": ARMS_MAP,
-            "hair": HAIR_MAP,
-            "eyes": EYE_MAP,
-            "eyebrows": EYEBROW_MAP,
-            "nose": NOSE_MAP,
-            "eyebags": EYEBAG_MAP,
-            "blush": BLUSH_MAP,
-            "tears": TEARS_MAP,
-            "sweat": SWEAT_MAP,
-            "emote": EMOTE_MAP,
-            "mouth": MOUTH_MAP,
-            "time": TIME_MAP
+            "torso": {
+                "def": "School Uniform",
+                "blazerless": "S. Uniform (Blazerless)",
+                "marisa": "Witch Costume",
+                "rin": "Neko Costume",
+                "santa": "Santa Monika",
+                "sundress_white": "Sundress (White)",
+                "blackdress": "Formal Dress (Black)",
+            },
+            "arms": {
+                1: "Resting on Hands",
+                2: "Crossed",
+                3: "Rest Left, Point Right",
+                4: "Point Right",
+                5: "Leaning",
+                6: "Down",
+                7: "Down Left, Point Right",
+            },
+            "hair": {
+                "def": "Ponytail",
+                "down": "Down",
+#                "bun": "Bun"
+            },
+            "eyes": {
+                "e": "Normal",
+                "w": "Wide",
+                "s": "Sparkle",
+                "t": "Smug",
+                "c": "Crazy",
+                "r": "Look Right",
+                "l": "Look Left",
+                "h": "Closed (Happy)",
+                "d": "Closed (Sad)",
+                "k": "Wink Left",
+                "n": "Wink Right",
+                "f": "Soft",
+            },
+            "eyebrows": {
+                "f": "Furrowed",
+                "u": "Up",
+                "k": "Knit",
+                "s": "Straight",
+                "t": "Thinking"
+            },
+            "nose": {
+                "nd": "Default"
+            },
+            "eyebags": {
+                "ebd": "Default"
+            },
+            "blush": {
+                "bl": "Line Blush",
+                "bs": "Shade Blush",
+                "bf": "Full Blush"
+            },
+            "tears": {
+                "ts": "Streaming Tears",
+                "td": "Dried Tears",
+                "tp": "Pooled Tears",
+                "tu": "Tearing Up",
+                "tl": "Tearing Up (Left)",
+                "tr": "Tearing Up (Right)",
+#                "th": "Closed Happy Tears",
+#                "tc": "Closed Sad Tears",
+            },
+            "sweat": {
+                "sdl": "Left Sweat Drop",
+                "sdr": "Right Sweat Drop"
+            },
+            "emote": {
+                "ec": "Confusion"
+            },
+            "mouth": {
+                "a": "Smile",
+                "b": "Open Smile",
+                "c": "Straight / Smirk",
+                "d": "Small Open",
+                "o": "Gasp",
+                "u": "Smug",
+                "w": "Wide Open",
+                "x": "Grit Teeth",
+                "p": "Pout",
+                "t": "Triangle",
+#                "g": "Disgust",
+            },
+            "time": {
+                0: "Day",
+                1: "Night"
+            }
         }
-
-
-        ### Available codes
-        TORSO_SC = [
-            "def"
-        ]
-
-        ARMS_SC = [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-        ]
-
-        HAIR_SC = [
-            "def",
-            "down",
-            "bun"
-        ]
-
-        EYE_SC = [
-            "e",
-            "w",
-            "s",
-            "t",
-            "c",
-            "r",
-            "l",
-            "h",
-            "d",
-            "k",
-            "n"
-        ]
-
-        EYEBROW_SC = [
-            "f",
-            "u",
-            "k",
-            "s",
-            "t"
-        ]
-
-        NOSE_DEF = "nd"
-        NOSE_SC = [
-            "nd"
-        ]
-
-        EYEBAG_SC = [
-            None,
-            "ebd"
-        ]
-
-        BLUSH_SC = [
-            None,
-            "bl",
-            "bs",
-            "bf"
-        ]
-
-        TEARS_SC = [
-            None,
-            "ts",
-            "td",
-            "tp",
-            "tu",
-            "tl",
-            "tr"
-        ]
-
-        SWEAT_SC = [
-            None,
-            "sdl",
-            "sdr"
-        ]
-
-        EMOTE_SC = [
-            None,
-            "ec"
-        ]
-
-        MOUTH_SC = [
-            "a",
-            "b",
-            "c",
-            "d",
-            "o",
-            "u",
-            "w",
-            "x",
-            "p",
-            "t"
-        ]
-
-        TIME_SC = [
-            0,
-            1
-        ]
 
 
         ### Text map
@@ -448,23 +322,129 @@ init 999 python:
             "time"
         ]
 
-
+        ### Available codes
+        NOSE_DEF = "nd"
         # sprite code map
         SC_MAP = {
-            "torso": TORSO_SC,
-            "arms": ARMS_SC,
-            "hair": HAIR_SC,
-            "eyes": EYE_SC,
-            "eyebrows": EYEBROW_SC,
-            "nose": NOSE_SC,
-            "eyebags": EYEBAG_SC,
-            "blush": BLUSH_SC,
-            "tears": TEARS_SC,
-            "sweat": SWEAT_SC,
-            "emote": EMOTE_SC,
-            "mouth": MOUTH_SC,
-            "time": TIME_SC
+            "torso": [
+                "def",
+                "blazerless",
+                "marisa",
+                "rin",
+                "santa",
+                "sundress_white",
+                "blackdress",
+            ],
+            "arms": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+            ],
+            "hair": [
+                "def",
+                "down",
+#                "bun"
+            ],
+            "eyes": [
+                "e",
+                "w",
+                "s",
+                "t",
+                "c",
+                "r",
+                "l",
+                "h",
+                "d",
+                "k",
+                "n",
+                "f",
+            ],
+            "eyebrows": [
+                "f",
+                "u",
+                "k",
+                "s",
+                "t"
+            ],
+            "nose": [
+                "nd"
+            ],
+            "eyebags": [
+                None,
+                "ebd"
+            ],
+            "blush": [
+                None,
+                "bl",
+                "bs",
+                "bf"
+            ],
+            "tears": [
+                None,
+                "ts",
+                "td",
+                "tp",
+                "tu",
+#                "tl",
+#                "tr",
+#                "th",
+#                "tc",
+            ],
+            "sweat": [
+                None,
+                "sdl",
+                "sdr"
+            ],
+            "emote": [
+                None,
+                "ec"
+            ],
+            "mouth": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "o",
+                "u",
+                "w",
+                "x",
+                "p",
+                "t",
+#                "g",
+            ],
+            "time": [
+                0,
+                1
+            ]
         }
+
+        # modifier map, for special cases. Currently this should be used
+        # as appenders to image names
+        # NOTE: each expression may use this differently.
+        MOD_MAP = {
+            "tears": {
+                "streaming": (
+                    "closedhappy",
+                    "closedsad",
+                    "winkleft",
+                    "winkright",
+                ),
+                "up": (
+                    "closedhappy",
+                    "closedsad",
+                    "winkleft",
+                    "winkright",
+                ),
+                "pooled": (
+                    "closedhappy",
+                ),
+            },
+        }
+                
 
         # list of keys that matter for a sprite code
         SC_PARTS = [
@@ -791,16 +771,17 @@ init 999 python:
             """
             _arms = self._get_spr_code("arms")
             if _arms in self.LEAN_SMAP:
-                _lean = self.LEAN_SMAP[_arms]
-                _arms = None
+                _lean, _arms = self.LEAN_SMAP[_arms]
             else:
                 _lean = None
                 _arms = self._get_img_name("arms")
 
+            img_eyes = self._get_img_name("eyes")
+
             try:
                 trn, rfr = mas_drawmonika(0, 0, monika_chr,
                     self._get_img_name("eyebrows"),
-                    self._get_img_name("eyes"),
+                    img_eyes,
                     self._get_img_name("nose"),
                     self._get_img_name("mouth"),
                     head="",
@@ -811,7 +792,7 @@ init 999 python:
                     eyebags=self._get_img_name("eyebags"),
                     sweat=self._get_img_name("sweat"),
                     blush=self._get_img_name("blush"),
-                    tears=self._get_img_name("tears"),
+                    tears=self._get_img_tears("tears", img_eyes),
                     emote=self._get_img_name("emote")
                 )
                 # now we need to modify the transform a little bit
@@ -969,7 +950,10 @@ init 999 python:
         def _sel_hair(self, direct):
             self._adj_sel(direct, "hair")
             self._update_sel_tx("hair")
-            monika_chr.change_hair(self._get_spr_code("hair"))
+            monika_chr.change_hair(mas_sprites.HAIR_MAP.get(
+                self._get_spr_code("hair"),
+                mas_hair_def
+            ))
 
 
         def _sel_mouth(self, direct):
@@ -1006,7 +990,10 @@ init 999 python:
         def _sel_torso(self, direct):
             self._adj_sel(direct, "torso")
             self._update_sel_tx("torso")
-            monika_chr.change_clothes(self._get_spr_code("torso"))
+            monika_chr.change_clothes(mas_sprites.CLOTH_MAP.get(
+                self._get_spr_code("torso"),
+                mas_clothes_def
+            ))
 
 
         ######################### button functions ###########################
@@ -1156,6 +1143,37 @@ init 999 python:
                 return None
 
             return self.IMG_NMAP[key][spr_code]
+
+
+        def _get_img_tears(self, key, eyes):
+            """
+            Custom name generator for tear expressions, as they vary on
+            eyes.
+
+            IN:
+                key - what image name do we need
+                eyes - current eyes as img name
+            
+            REUTRNS the image name we need
+            """
+            tears_name = self._get_img_name(key)
+
+            # check for the mapping
+            tears_map = self.MOD_MAP.get(key, None)
+            if tears_map is None:
+                return tears_name
+
+            # check for specific tears in the mapping
+            tears_mappings = tears_map.get(tears_name, None)
+            if tears_mappings is None:
+                return tears_name
+
+            # check for eyes in the mapping
+            if eyes in tears_mappings:
+                return tears_name + eyes
+
+            # otherwise just tears
+            return tears_name
 
 
         ####################### render / event ###############################

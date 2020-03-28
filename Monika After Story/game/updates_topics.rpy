@@ -9,6 +9,34 @@ define updates.version_updates = None
 #   k:oldId -> v:newId
 define updates.topics = None
 
+init -1 python in mas_db_merging:
+    import store
+
+    def merge_db(source, dest):
+        """
+        Merges the given source database into the given destination db
+
+        IN:
+            source - source database to merge from
+            dest - destination database to merge into
+        """
+        dest.update(source)
+
+
+    def merge_post0810():
+        """
+        Runs a specific set of merges, particularly for the merge that
+        happend after version 0.8.10.
+        """
+
+        # compliments
+        if store.persistent._mas_compliments_database is not None:
+            merge_db(
+                store.persistent._mas_compliments_database,
+                store.persistent.event_database
+            )
+
+
 # preeerything
 init -1 python:
     def clearUpdateStructs():
@@ -17,18 +45,15 @@ init -1 python:
 
         updates.topics.clear()
         updates.topics = None
-        updates.version_updates.clear()
-        updates.version_updates = None
+        #updates.version_updates.clear()
+        #updates.version_updates = None
         # TODO
         # is there a way to delete a renpy storemodule?
 
 
 # runs before updates.rpy
 init 9 python:
-
-    if persistent.version_number != config.version:
-        renpy.call_in_new_context("vv_updates_topics")
-
+    renpy.call_in_new_context("vv_updates_topics")
 
 # init label for updats_topics
 label vv_updates_topics:
@@ -40,6 +65,29 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_10_8 = "v0_10_8"
+        vv0_10_7 = "v0_10_7"
+        vv0_10_6 = "v0_10_6"
+        vv0_10_5 = "v0_10_5"
+        vv0_10_4 = "v0_10_4"
+        vv0_10_3 = "v0_10_3"
+        vv0_10_2 = "v0_10_2"
+        vv0_10_1 = "v0_10_1"
+        vv0_10_0 = "v0_10_0"
+        vv0_9_5 = "v0_9_5"
+        vv0_9_4 = "v0_9_4"
+        vv0_9_3 = "v0_9_3"
+        vv0_9_2 = "v0_9_2"
+        vv0_9_1 = "v0_9_1"
+        vv0_9_0 = "v0_9_0"
+        vv0_8_14 = "v0_8_14"
+        vv0_8_13 = "v0_8_13"
+        vv0_8_12 = "v0_8_12"
+        vv0_8_11 = "v0_8_11"
+        vv0_8_10 = "v0_8_10"
+        vv0_8_9 = "v0_8_9"
+        vv0_8_8 = "v0_8_8"
+        vv0_8_7 = "v0_8_7"
         vv0_8_6 = "v0_8_6"
         vv0_8_5 = "v0_8_5"
         vv0_8_4 = "v0_8_4"
@@ -68,6 +116,31 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
+        #updates.version_updates[vv0_10_7] = vv0_10_8
+        updates.version_updates[vv0_10_6] = vv0_10_7
+        updates.version_updates[vv0_10_5] = vv0_10_6
+        updates.version_updates[vv0_10_4] = vv0_10_5
+        updates.version_updates[vv0_10_3] = vv0_10_4
+        updates.version_updates[vv0_10_2] = vv0_10_3
+        updates.version_updates[vv0_10_1] = vv0_10_2
+        updates.version_updates[vv0_10_0] = vv0_10_1
+        updates.version_updates[vv0_9_5] = vv0_10_0
+        updates.version_updates[vv0_9_4] = vv0_9_5
+        updates.version_updates[vv0_9_3] = vv0_9_4
+        updates.version_updates[vv0_9_2] = vv0_9_4
+        updates.version_updates[vv0_9_1] = vv0_9_2
+        updates.version_updates[vv0_9_0] = vv0_9_1
+        updates.version_updates[vv0_8_14] = vv0_9_0
+        updates.version_updates[vv0_8_13] = vv0_8_14
+        updates.version_updates[vv0_8_12] = vv0_8_13
+        updates.version_updates[vv0_8_11] = vv0_8_13
+        updates.version_updates[vv0_8_10] = vv0_8_11
+        updates.version_updates[vv0_8_9] = vv0_8_10
+        updates.version_updates[vv0_8_8] = vv0_8_9
+        updates.version_updates[vv0_8_7] = vv0_8_9
+        updates.version_updates[vv0_8_6] = vv0_8_9
+        updates.version_updates[vv0_8_5] = vv0_8_6
+        updates.version_updates[vv0_8_4] = vv0_8_6
         updates.version_updates[vv0_8_3] = vv0_8_4
         updates.version_updates[vv0_8_2] = vv0_8_3
         updates.version_updates[vv0_8_1] = vv0_8_2
@@ -90,6 +163,8 @@ label vv_updates_topics:
         updates.version_updates[vv0_3_0] = vv0_3_1
         updates.version_updates[vv0_2_2] = vv0_3_0
 
+        # NOTE: we are no longer going to use this:
+        #
         # version structures:
         # if a version has changed / removed IDS, then add it as a dict
         # here
@@ -101,6 +176,14 @@ label vv_updates_topics:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+
+        # (0.8.4 - 0.8.10) -> 0.8.11
+        updates.topics[vv0_8_11] = {
+            "monika_snowman": None,
+            "monika_relax": None,
+            "monika_hypothermia": None,
+            "monika_whatiwant": None
+        }
 
         # (0.8.1 - 0.8.3) -> 0.8.4
         updates.topics[vv0_8_4] = {

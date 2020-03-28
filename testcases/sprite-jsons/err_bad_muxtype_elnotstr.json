@@ -1,0 +1,20 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {},
+    "mux_type": [
+        "valid",
+        "valid2",
+        10,
+        "valid3",
+        false,
+        "valid4",
+        [],
+        "valid5",
+        {},
+        "valid6"
+    ]
+}
+

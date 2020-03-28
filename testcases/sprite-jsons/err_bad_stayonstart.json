@@ -1,0 +1,8 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {},
+    "stay_on_start": "bad"
+}

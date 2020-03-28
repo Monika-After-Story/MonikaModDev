@@ -1,6 +1,6 @@
 # Module that provides an interface for loading / saving files that we interact with
 #
-# NOTE: this is meant purely for reading / writing files into base64 with 
+# NOTE: this is meant purely for reading / writing files into base64 with
 #   checksums. If you want readable text files for users, DO NOT USE THIS.
 #
 # NOTE: some clarifications:
@@ -9,6 +9,8 @@
 #       encode files into sized chunks that will work nicely with file io
 #   - unpacked files are raw files, not encoded
 
+default persistent._mas_pm_taken_monika_out = False
+# True if the user has taken monika out of the spaceroom
 
 init -900 python in mas_ics:
     import os
@@ -19,6 +21,8 @@ init -900 python in mas_ics:
     islands_folder = os.path.normcase(
         renpy.config.basedir + "/game/mod_assets/location/special/"
     )
+
+    # NOTE: these checksums are BEFORE b64 encoding
 
     # Night With Frame
     islands_nwf = (
@@ -40,6 +44,66 @@ init -900 python in mas_ics:
         "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
     )
 
+    # rain with frame
+    islands_rwf = (
+        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
+    )
+
+    # rain without frame
+    islands_rwof = (
+        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
+    )
+
+    # night rain with frame
+    islands_nrwf = (
+        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
+    )
+
+    # night rain without frame
+    islands_nrwof = (
+        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
+    )
+
+    # overcast with frame
+    islands_owf = (
+        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
+    )
+
+    # overcast without frame
+    islands_owof = (
+        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
+    )
+
+    # night overcast with frame
+    islands_nowf = (
+        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
+    )
+
+    # night overcast without frame
+    islands_nowof = (
+        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
+    )
+
+    # snow with frame
+    islands_swf = (
+        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
+    )
+
+    # snow without frame
+    islands_swof = (
+        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
+    )
+
+    # night snow with frame
+    islands_nswf = (
+        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
+    )
+
+    # night snow without frame
+    islands_nswof = (
+        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
+    )
+
     # islands dict to map filenames to checksums and real filenames
     # key: filename of b64 encode
     # value: tuple:
@@ -49,9 +113,52 @@ init -900 python in mas_ics:
         "nwf": ("night_with_frame.png", islands_nwf),
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
-        "dwof": ("without_frame.png", islands_dwof)
+        "dwof": ("without_frame.png", islands_dwof),
+        "rwf": ("rain_with_frame.png", islands_rwf),
+        "rwof": ("rain_without_frame.png", islands_rwof),
+        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
+        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
+        "owf": ("overcast_with_frame.png", islands_owf),
+        "owof": ("overcast_without_frame.png", islands_owof),
+        "nowf": ("night_overcast_with_frame.png", islands_nowf),
+        "nowof": ("night_overcast_without_frame.png", islands_nowof),
+        "swf": ("snow_with_frame.png", islands_swf),
+        "swof": ("snow_without_frame.png", islands_swof),
+        "nswf": ("night_snow_with_frame.png", islands_nswf),
+        "nswof": ("night_snow_without_frame.png", islands_nswof)
     }
-        
+
+    #################################### O31 ##################################
+    # cg folder
+    o31_cg_folder = os.path.normcase(
+        renpy.config.basedir + "/game/mod_assets/monika/cg/"
+    )
+
+    # marisa cg
+    o31_marisa = (
+        "6a05463e8200af9846e7f70f4c03e6feddb6c5a93395d7b17a91a6fd23da29af"
+    )
+
+    # rin cg
+    o31_rin = (
+        "c8fb05e801e0eb1f234b4af99d910e561a9afbbd1a5df6bee6edd602c94adb81"
+    )
+
+    # cg dict to map filenames to checksums and real filenames
+    # key: filename of b64 encode
+    # value: tuple:
+    #   [0] - filename to save the image as
+    #   [1] - checksum for that image
+    o31_map = {
+        "o31mcg": ("o31_marisa_cg.png", o31_marisa),
+        "o31rcg": ("o31_rin_cg.png", o31_rin)
+    }
+
+    #################################### RPY ##################################
+    #game folder
+    game_folder = os.path.normcase(
+        renpy.config.basedir + "/game/"
+    )
     ###########################################################################
 
 
@@ -85,6 +192,7 @@ init -45 python:
         # 1 - docking station as str
         # 2 - exception (if applicable)
         ERR = "[ERROR] {0} | {1} | {2}\n"
+        ERR_DEL = "Failure removing package '{0}'."
         ERR_GET = "Failure getting package '{0}'."
         ERR_OPEN = "Failure opening package '{0}'."
         ERR_READ = "Failure reading package '{0}'."
@@ -113,17 +221,31 @@ init -45 python:
 
             IN:
                 station - the path to the folder this docking station interacts
-                    with. (absolute path) 
+                    with. (absolute path), will try to create the folder if it
+                    doesn't exist. Exceptions will be logged.
                     NOTE: END WITH '/' please
                     (Default: DEF_STATION_PATH)
             """
             if station is None:
                 station = self.DEF_STATION_PATH
 
-            if not station.endswith("/"):
-                station += "/"
+#            if not station.endswith("/"):
+#                station += "/"
 
             self.station = os.path.normcase(station)
+            self.enabled = True
+
+            if not os.path.isdir(self.station):
+                try:
+                    os.makedirs(self.station)
+                except Exception as e:
+                   mas_utils.writelog(self.ERR.format(
+                       self.ERR_CREATE.format(self.station),
+                       str(self),
+                       repr(e)
+                   ))
+                   self.enabled = False
+
 
 
         def __str__(self):
@@ -132,7 +254,7 @@ init -45 python:
             """
             return "DS: [{0}]".format(self.station)
 
-       
+
         def checkForPackage(self, package_name, check_read=True):
             """
             Checks if a package exists in the docking station
@@ -151,6 +273,9 @@ init -45 python:
                     If check_read is true, then package must also be readable
                 False otherwise
             """
+            if not self.enabled:
+                return False
+
             return self.__check_access(
                 self._trackPackage(package_name),
                 check_read
@@ -175,12 +300,75 @@ init -45 python:
                 sha256 checksum (hexadec) of the given package, or None
                 if error occured
             """
+            if not self.enabled:
+                return None
+
             pkg_slip = self._unpack(package, None, False, True, bs)
 
             # reset the package when done
             package.seek(0)
 
             return pkg_slip
+
+
+        def destroyPackage(self, package_name):
+            """
+            Attempts to destroy the given package in the docking station.
+
+            NOTE: exceptions are logged
+
+            IN:
+                package_name - name of the package to delete
+
+            RETURNS:
+                True if package no exist or was deleted. False otherwise
+            """
+            if not self.enabled:
+                return False
+
+            if not self.checkForPackage(package_name, False):
+                return True
+
+            # otherwise we have a package
+            try:
+                os.remove(self._trackPackage(package_name))
+                return True
+
+            except Exception as e:
+                mas_utils.writelog(self.ERR.format(
+                    self.ERR_DEL.format(package_name),
+                    str(self),
+                    repr(e)
+                ))
+                return False
+
+
+        def getPackageList(self, ext_filter=""):
+            """
+            Gets a list of the packages in the docking station.
+            We also ensure that the item retrieved is not a folder.
+
+            IN:
+                ext_filter - extension filter to use when getting list.
+                    the '.' is added if not already given.
+                    If not given, we get all the packages
+                    (Default: "")
+
+            RETURNS: list of packages
+            """
+            if not self.enabled:
+                return []
+
+            # correct filter if needed
+            if len(ext_filter) > 0 and not ext_filter.startswith("."):
+                ext_filter = "." + ext_filter
+
+            return [
+                package
+                for package in os.listdir(self.station)
+                if package.endswith(ext_filter)
+                and not os.path.isdir(self._trackPackage(package))
+            ]
 
 
         def getPackage(self, package_name):
@@ -197,6 +385,9 @@ init -45 python:
                     if package is readable and no errors occurred
                 None otherwise
             """
+            if not self.enabled:
+                return None
+
             ### Check access
             if not self.checkForPackage(package_name):
                 return None
@@ -211,7 +402,7 @@ init -45 python:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_OPEN.format(package_name),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
                 if package is not None:
                     package.close()
@@ -259,10 +450,20 @@ init -45 python:
                 contents.close()
 
 
-        def sendPackage(self, 
-                package_name, 
-                package, 
-                unpacked=False, 
+        def safeRandom(self, amount):
+            """
+            Generates a random amount of unicode-safe bytes.
+
+            IN:
+                amount - number of bytes to generate
+            """
+            return self.base64.b64encode(os.urandom(amount))[:amount]
+
+
+        def sendPackage(self,
+                package_name,
+                package,
+                unpacked=False,
                 pkg_slip=False
             ):
             """
@@ -278,7 +479,7 @@ init -45 python:
                     False means that it is in base64
                     (Default: False)
                 pkg_slip - True means we should generate a sha256 checksum for
-                    the package and return that 
+                    the package and return that
                     (Default: False)
 
             RETURNS:
@@ -286,6 +487,9 @@ init -45 python:
                 True if package was sent successfully and pkg_slip is False
                 False Otherwise
             """
+            if not self.enabled:
+                return False
+
             mailbox = None
             try:
                 ### open the mailbox
@@ -308,7 +512,7 @@ init -45 python:
                     str(e)
                 ))
                 return False
-                
+
             finally:
                 # always close the mailbox
                 if mailbox is not None:
@@ -317,7 +521,7 @@ init -45 python:
             return False
 
 
-        def signForPackage(self, 
+        def signForPackage(self,
                 package_name,
                 pkg_slip,
                 keep_contents=False,
@@ -353,6 +557,9 @@ init -45 python:
                     - return -1
                 0 otherwise (like if error occured)
             """
+            if not self.enabled:
+                return 0
+
             package = None
             contents = None
             try:
@@ -385,7 +592,7 @@ init -45 python:
                 if keep_contents:
                     return contents
 
-                ### or discard the results 
+                ### or discard the results
                 if contents is not None:
                     contents.close()
 
@@ -411,11 +618,11 @@ init -45 python:
             return 0
 
 
-        def smartUnpack(self, 
-                    package_name, 
-                    pkg_slip, 
-                    contents=None, 
-                    one_line=False,
+        def smartUnpack(self,
+                    package_name,
+                    pkg_slip,
+                    contents=None,
+                    lines=0,
                     b64=True,
                     bs=None
             ):
@@ -435,9 +642,11 @@ init -45 python:
                     If None, we save contents to a StringIO object and return
                     that
                     (Default: None)
-                one_line - True means we only retrieve a single line from the
-                    package
-                    (Default: False)
+                lines - number of lines to retrieve when reading data.
+                    If less than 0, then we scan the file itself to tell us
+                    how many lines to read.
+                    If "all", then we read ALL LINES
+                    (Default: 0)
                 b64 - True means the package is encoded in base64
                     (Default: True)
                 bs - blocksize to use. By default, we use B64_READ_SIZE
@@ -449,6 +658,8 @@ init -45 python:
                     If contents is not None, this is the same reference as
                     contents.
             """
+            NUM_DELIM = "|num|"
+
             # First, lets try and get the package
             package = self.getPackage(package_name)
 
@@ -474,28 +685,66 @@ init -45 python:
             checklist = self.hashlib.sha256()
 
             # and attempt to decode package
-            keep_saving = True
+            if lines == "all":
+                # nothing we read should be 200 million lines of 4MB
+                lines = 20000000
+
             try:
                 # iterator for looping
                 _box = MASDockingStation._blockiter(package, bs)
 
-                # and now we look. However we only save what is asked of us
+                # no lines means we need to look for them instead
+                if lines < 0:
+                    first_item = next(_box, None)
+
+                    if first_item is None:
+                        raise Exception("EMPTY PACKAGE")
+
+                    checklist.update(first_item)
+                    first_unpacked = self.base64.b64decode(first_item)
+
+                    # parse the line for the first NUM_DELIM
+                    raw_num, sep, remain = first_unpacked.partition(NUM_DELIM)
+                    if len(sep) == 0:
+                        raise Exception(
+                            "did not find sep. size of first {0}".format(
+                                len(raw_num)
+                            )
+                        )
+
+                    num = mas_utils.tryparseint(raw_num, -1)
+
+                    if num < 0:
+                        # this is a problem. Raise an exception
+                        raise Exception(
+                            "did not find lines. found {0}".format(raw_num)
+                        )
+
+                    # otherwise, set lines to num
+                    lines = num
+
+                    if lines > 0:
+                        # do we save the first line?
+                        _contents.write(remain)
+                        lines -= 1
+
+                # and now to look at the rest.
+                # only save what we need though
                 for packed_item in _box:
+
                     checklist.update(packed_item)
 
-                    if keep_saving:
+                    if lines > 0:
                         # writing out contents to buffer
                         _contents.write(self.base64.b64decode(packed_item))
+                        lines -= 1
 
-                        if one_line:
-                            # stop saving contents if we only want 1 line
-                            keep_saving = False
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_READ.format(package_name),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
 
                 if contents is None:
@@ -534,9 +783,12 @@ init -45 python:
 
             RETURNS:
                 StringIO buffer containing the package decoded
-                Or None if pkg_slip checksum was passed in and the given 
+                Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
+            if not self.enabled:
+                return None
+
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
@@ -558,7 +810,7 @@ init -45 python:
 
             except Exception as e:
                 # if we get an exception, close the contents buffer and raise
-                # the exception 
+                # the exception
                 if contents is not None:
                     contents.close()
                 raise e
@@ -640,6 +892,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or pack):
                 return None
 
@@ -649,7 +904,7 @@ init -45 python:
             _contents = MASDockingStation._blockiter(contents, bs)
 
             if pkg_slip and pack:
-                # encode the data, then checksum the base64, then write to 
+                # encode the data, then checksum the base64, then write to
                 # output
                 checklist = self.hashlib.sha256()
 
@@ -695,7 +950,7 @@ init -45 python:
             IN:
                 box - file descriptor to read data from
                 contents - file descriptor to write data to
-                unpack - if True, decode input data from base64 prior to 
+                unpack - if True, decode input data from base64 prior to
                     writing output data
                     (Default: True)
                 pkg_slip - if True, genereate a checksum of the data.
@@ -709,6 +964,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or unpack):
                 return None
 
@@ -743,10 +1001,10 @@ init -45 python:
 
             return None
 
-
         def __check_access(self, package_path, check_read):
             """
-            Checks access of the file at package_path
+            Checks access of the file at package_path.
+            Also ensures that the file is not actually is folder.
 
             NOTE:
                 will log exceptions
@@ -762,32 +1020,31 @@ init -45 python:
                     if check_read is True, returns None
                     otherwise, returns False
             """
+            if not self.enabled:
+                return False
+
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
+                not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_GET.format(package_path),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
 
                 # in error case, assume failure
                 return self.__bad_check_read(check_read)
 
             if check_read:
-                if not (file_ok and read_ok):
+                if not (file_ok and read_ok and not_dir):
                     return None
 
-            else:
-                if not file_ok:
-                    return False
+            return file_ok and not_dir
 
-            return True
-
-
-        def __bad_check_read(check_read):
+        def __bad_check_read(self, check_read):
             """
             Returns an appropriate failure value givne the check_read value
 
@@ -801,7 +1058,6 @@ init -45 python:
                 return None
 
             return False
-
 
     mas_docking_station = MASDockingStation()
 
@@ -835,12 +1091,19 @@ default persistent._mas_dockstat_going_to_leave = False
 # NOTE: do NOT set this directly. Use the helper functions
 default persistent._mas_dockstat_moni_size = 0
 
+default persistent._mas_bday_sbp_reacted = False
+# True means we have reacted to the surprise birthday party.
+# NOTE: we need to consider how we want to do this in future bdays. probably
+# may do historical when we can
+
+
 init -500 python in mas_dockstat:
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
     b64_blocksize = 5592408 # (above size converted to base64)
 
     ## package constants for the state of monika
+    # bit-based
     # Monika not found
     MAS_PKG_NF = 1
 
@@ -848,13 +1111,143 @@ init -500 python in mas_dockstat:
     MAS_PKG_F = 2
 
     # Not our monika was found
-    MAS_PKG_FO = 3
+    MAS_PKG_FO = 4
+
+    # Monika data is in list form
+    MAS_PKG_DL = 8
+
+    # Monika data is in persitent form
+    MAS_PKG_DP = 16
+
+    ## surprise party constants for the state of the surprise party
+    # bit based
+
+    MAS_SBP_NONE = 1
+    # no surprise party files
+
+    MAS_SBP_CAKE = 2
+    # cake was found
+
+    MAS_SBP_BANR = 4
+    # banner was found
+
+    MAS_SBP_BLON = 8
+    # balloon was found
+
+init -11 python in mas_dockstat:
+    import store.mas_utils as mas_utils
+
+    def decodeImages(dockstat, image_dict, selective=[]):
+        """
+        Attempts to decode the iamges
+
+        IN:
+            dockstat - docking station to use
+            image_dict - image map to use
+            selective - list of images keys to decode
+                If not passed in, we decode EVERYTHINg
+                (DEfault: [])
+
+        Returns TRUE upon success, False otherwise
+        """
+        if len(selective) == 0:
+            selective = image_dict.keys()
+
+        for b64_name in selective:
+            real_name, chksum = image_dict[b64_name]
+
+            # read in the base64 versions, output an image
+            b64_pkg = dockstat.getPackage(b64_name)
+
+            if b64_pkg is None:
+                # if we didnt find the image, we in big trouble
+                return False
+
+            # setup the outfile
+            real_pkg = None
+            real_chksum = None
+            real_path = dockstat._trackPackage(real_name)
+
+            # now try to decode image
+            try:
+                real_pkg = open(real_path, "wb")
+
+                # unpack this package
+                dockstat._unpack(
+                    b64_pkg,
+                    real_pkg,
+                    True,
+                    False,
+                    bs=b64_blocksize
+                )
+
+                # close and reopen as read
+                real_pkg.close()
+                real_pkg = open(real_path, "rb")
+
+                # check pkg slip
+                real_chksum = dockstat.createPackageSlip(
+                    real_pkg,
+                    bs=blocksize
+                )
+
+            except Exception as e:
+                mas_utils.writelog(
+                    "[ERROR] failed to decode '{0}' | {1}\n".format(
+                        b64_name,
+                        str(e)
+                    )
+                )
+                return False
+
+            finally:
+                # always close the base64 package
+                b64_pkg.close()
+
+                if real_pkg is not None:
+                    real_pkg.close()
+
+            # now to check this image for chksum correctness
+            if real_chksum is None:
+                # bad shit happened here somehow
+                mas_utils.trydel(real_path)
+                return False
+
+            if real_chksum != chksum:
+                # decoded was wrong somehow
+                mas_utils.trydel(real_path)
+                return False
+
+        # otherwise success somehow
+        return True
+
+
+    def removeImages(dockstat, image_dict, selective=[], log=False):
+        """
+        Removes the decoded images at the end of their lifecycle
+
+        IN:
+            dockstat - docking station
+            image_dict - image map to use
+            selective - list of image keys to delete
+                If not passed in, we delete everything in the image dict
+                (Default: [])
+            log - should we log a delete failure?
+                (Default: False)
+
+        AKA quitting
+        """
+        if len(selective) == 0:
+            selective = image_dict.keys()
+
+        for b64_name in selective:
+            real_name, chksum = image_dict[b64_name]
+            mas_utils.trydel(dockstat._trackPackage(real_name), log=log)
+
 
 init python in mas_dockstat:
     import store
-
-    # blocksize is relatively constant
-    blocksize = 4 * (1024**2)
+    import cPickle
 
     # previous vars dict
     previous_vars = dict()
@@ -892,22 +1285,239 @@ init python in mas_dockstat:
 
 
 init 200 python in mas_dockstat:
-    # special store 
+    # special store
     # lets use this store to handle generation of docking station files
     import store
-    import store.mas_utils as mas_utils
     import store.mas_sprites as mas_sprites
     import store.mas_greetings as mas_greetings
+    import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
+    import codecs
+    import re
     import os
     import random
     import datetime
-    import threading
 
     # we set these during init phase if we found a monika
     retmoni_status = None
     retmoni_data = None
+
+
+    def _buildMetaDataList(_outbuffer):
+        """
+        Writes out a pipe-delimeted metadata list to the given buffer
+
+        OUT:
+            _outbuffer - buffer to write metadata to
+        """
+        ### metadata elements
+        END_DELIM = "|||"
+        num_5 = "{:05d}"
+        num_2 = "{:02d}"
+        num_f = "{:6f}"
+        first_sesh = ""
+        affection_val = ""
+
+        # metadata parsing
+        if store.persistent.sessions is not None:
+            first_sesh_dt = store.persistent.sessions.get("first_session",None)
+
+            if first_sesh_dt is not None:
+                first_sesh = str(first_sesh_dt)
+#                first_sesh = "".join([
+#                    num_5.format(first_sesh_dt.year),
+#                    num_2.format(first_sesh_dt.month),
+#                    num_2.format(first_sesh_dt.day)
+#                ])
+
+        if store.persistent._mas_affection is not None:
+            _affection = store.persistent._mas_affection.get("affection", None)
+
+            if _affection is not None:
+                affection_val = num_f.format(_affection)
+
+        # build metadata list
+        _outbuffer.write("|".join([
+            first_sesh,
+            store.persistent.playername,
+            store.persistent._mas_monika_nickname,
+            affection_val,
+            store.monika_chr.hair,
+            store.monika_chr.clothes
+        ]) + END_DELIM)
+
+
+    def _buildMetaDataPer(_outbuffer):
+        """
+        Writes out the persistent's data into the given buffer
+
+        Exceptions are logged
+
+        OUT:
+            _outbuffer - buffer to write persistent data to
+
+        RETURNS:
+            True on success, False if failed
+        """
+        ### metadata elements
+        END_DELIM = "|||per|"
+
+        try:
+            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64"))
+            _outbuffer.write(END_DELIM)
+            return True
+
+        except Exception as e:
+            mas_utils.writelog(
+                "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
+            )
+            return False
+
+
+    def checkMonika(status, moni_data):
+        """
+        Parses if a given set of monika data is a rogue monika, our monika,
+        and so on, and does checkins and more for the appropriate case.
+
+        IN:
+            status - findMonika's return status
+            moni_data - findMonika's return data
+
+        RETURNS:
+            TBD
+        """
+        # TODO
+        return
+
+
+    def checkinMonika():
+        """
+        Adds entry to checkin log that monika has returned to the spaceroom.
+        Also clears the global checksum var.
+        """
+        mas_utils.log_entry(
+            store.persistent._mas_dockstat_checkin_log,
+            store.persistent._mas_moni_chksum
+        )
+        store.persistent._mas_moni_chksum = None
+
+
+    def checkoutMonika(chksum):
+        """
+        Adds entry to checkout log that monika has left the spaceroom.
+        Also sets the chk to the global checksum var.
+        Also removes monikas that had the same checksum
+
+        IN:
+            chksum - monika's checksum when checking her out.
+        """
+        # sanity checks
+        if chksum is None or chksum == -1 or len(chksum) == 0:
+            return
+
+        mas_utils.log_entry(
+            store.persistent._mas_dockstat_checkout_log,
+            chksum
+        )
+        store.persistent._mas_moni_chksum = chksum
+
+        if chksum in store.persistent._mas_dockstat_moni_log:
+            store.persistent._mas_dockstat_moni_log.pop(chksum)
+
+
+    def triageMonika(from_empty):
+        """
+        Jumps to an appropriate label based on retmoni_status and retmoni_data.
+        If retmoni_status is None, we dont do anything.
+
+        IN:
+            from_empty - True if we should assume from empty desk, False
+                otherwise.
+        """
+        if retmoni_status is None:
+            return
+
+        # otherwise, parse the status
+        if (retmoni_status & MAS_PKG_FO) > 0:
+            # TODO: jump to mas_dockstat_different_monika label
+            label_jump = "mas_dockstat_empty_desk"
+
+        elif (retmoni_status & MAS_PKG_F) > 0:
+            # found monika
+            label_jump = "mas_dockstat_found_monika"
+
+        else:
+            # none of the above
+            label_jump = "mas_dockstat_empty_desk"
+
+        if from_empty:
+            label_jump += "_from_empty"
+
+        renpy.jump(label_jump)
+
+
+    def packageCheck(
+            dockstat,
+            pkg_name,
+            pkg_slip,
+            on_succ,
+            on_fail,
+            sign=True
+        ):
+        """
+        Checks for existence of a package that matches the pkg name and slip.
+
+        This acts as a wrapper around the signForPackage that can encapsulate
+        return values with different values.
+
+        Success is when signForPackage returns 1. All other values are
+        considered failures.
+
+        NOTE: if sign is False, then we use createPackageSlip + getPackage
+        instead. use this if you don't want to delete the package once you
+        have checked them in.
+
+        IN:
+            dockstat - docking station to check packag ein
+            pkg_name - name of the package to check
+            pkg_slip - checksum of this package
+            on_succ - value to return on successful package check
+            on_fail - value to return on failed package check
+            sign - True to use signForPackage (aka delete after checking),
+                False uses getPackage + createPackageSlip (aka no delete after
+                checking)
+                (Default: True)
+        """
+        if sign:
+            if dockstat.signForPackage(pkg_name, pkg_slip, bs=b64_blocksize) == 1:
+                return on_succ
+
+        else:
+            # use getPackage and createPackageSlip
+            package = dockstat.getPackage(pkg_name)
+            if package is None:
+                return on_fail
+
+            try:
+                read_slip = dockstat.createPackageSlip(package, b64_blocksize)
+
+                if read_slip == pkg_slip:
+                    return on_succ
+
+            except Exception as e:
+                mas_utils.writelog(
+                    "[WARN]: package slip fail? {0} | {1}\n".format(
+                        pkg_name,
+                        repr(e)
+                    )
+                )
+
+            finally:
+                if package is not None:
+                    package.close()
+
+        return on_fail
 
     def generateMonika(dockstat):
         """
@@ -928,45 +1538,24 @@ init 200 python in mas_dockstat:
         ASSUMES:
             blocksize - this is a constant in this store
         """
+        # sanity check regarding the filepath
+        if "temp" in dockstat.station.lower():
+            mas_utils.writelog("[ERROR] temp directory found, aborting.\n")
+            return False
+
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
+        moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
-        ### metadata elements
-        END_DELIM = "|||"
-        num_5 = "{:05d}"
-        num_2 = "{:02d}"
-        num_f = "{:6f}"
-        first_sesh = ""
-        affection_val = ""
-       
-        # metadata parsing
-        if store.persistent.sessions is not None:
-            first_sesh_dt = store.persistent.sessions.get("first_session",None)
+        # number deliemter
+        NUM_DELIM = "|num|"
 
-            if first_sesh_dt is not None:
-                first_sesh = str(first_sesh_dt)
-#                first_sesh = "".join([
-#                    num_5.format(first_sesh_dt.year),
-#                    num_2.format(first_sesh_dt.month),
-#                    num_2.format(first_sesh_dt.day)
-#                ])
-
-        if store.persistent._mas_affection is not None:
-            _affection = store.persistent._mas_affection.get("affection", None)
-            
-            if _affection is not None:
-                affection_val = num_f.format(_affection)
-
-        # build metadata list
-        moni_buffer.write("|".join([
-            first_sesh,
-            store.persistent.playername,
-            store.persistent._mas_monika_nickname,
-            affection_val,
-            store.monika_chr.hair,
-            store.monika_chr.clothes
-        ]) + END_DELIM)
+        ### write metadata
+        if not _buildMetaDataPer(moni_buffer):
+            # if we failed to do this via persistent, then we'll use the old
+            # style instead
+            _buildMetaDataList(moni_buffer)
 
         ### monikachr
         moni_chr = None
@@ -980,11 +1569,11 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR] mbase copy failed | {0}".format(
-                str(e)
+                repr(e)
             ))
             moni_buffer.close()
-            return None
-            
+            return False
+
         finally:
             # always close moni_chr
             if moni_chr is not None:
@@ -993,41 +1582,110 @@ init 200 python in mas_dockstat:
         ### now we must do the streamlined write system to file
         moni_path = dockstat._trackPackage("monika")
         moni_fbuffer = None
+        moni_tbuffer = None
         moni_sum = None
         try:
-            # first, lets open up the moni file buffer
-            moni_fbuffer = open(moni_path, "wb")
+
+            # First, lets iterate over the data to figure out how many lines
+            # we will need, as well as how large this thing will be
+            moni_buffer_iter = store.MASDockingStation._blockiter(
+                moni_buffer,
+                blocksize
+            )
+            lines = 0
+            last_line_size = 0
+            for _line in moni_buffer_iter:
+                lines += 1
+                last_line_size = len(_line)
+
+            # check if adding the line data would go over the line size
+            line_str_size = len(str(lines) + NUM_DELIM)
+            if (last_line_size + line_str_size) > blocksize:
+                lines += 1
+
+            # fill a new buffer with the number of lines and reset it for
+            # blocksize iterating
+            moni_buffer_iter = store.MASDockingStation._blockiter(
+                moni_buffer,
+                blocksize
+            )
+            moni_tbuffer = fastIO()
+            moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
+            moni_tbuffer.write(str(lines) + NUM_DELIM)
+            for _line in moni_buffer_iter:
+                moni_tbuffer.write(_line)
+            moni_buffer.close()
+
+            # now we can prepare to write
+            moni_fbuffer = codecs.open(moni_path, "wb", "utf-8")
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
+            def safe_encoder(data):
+                return dockstat.base64.b64encode(dockstat.safeRandom(data))
             encoder = dockstat.base64.b64encode
 
-            # calculate extra padding we need to fill out the first line
-            moni_buffer_data = moni_buffer.getvalue()
-            extra_padding = blocksize - len(moni_buffer_data)
-            moni_size = store.persistent._mas_dockstat_moni_size - extra_padding
-
-            # and write out the metadata / monika
-            # NOTE: we can do this because its under our 4MB block size
-            data = encoder(moni_buffer_data + os.urandom(extra_padding))
-            checklist.update(data)
-            moni_fbuffer.write(data)
-
-            # and now for the random data generation
-            # NOTE: this should represent number of bytes
-            moni_size_limit = moni_size - blocksize
-            curr_size = 0
-
-            while curr_size < moni_size_limit:
-                data = encoder(os.urandom(blocksize))
+            # now write this buffer out, keeping track of the last buffer
+            # size
+            moni_tbuffer.seek(0)
+            _line = moni_tbuffer.read(blocksize)
+            total_buffer_size = 0
+            while len(_line) == blocksize:
+                total_buffer_size += blocksize
+                data = encoder(_line)
                 checklist.update(data)
                 moni_fbuffer.write(data)
-                curr_size += blocksize
+                _line = moni_tbuffer.read(blocksize)
+            moni_tbuffer.close()
 
-            # we should have some leftovers
-            leftovers = moni_size - curr_size
-            if leftovers > 0:
-                data = encoder(os.urandom(leftovers))
+            # when we reach here, we either have no more lines or leftovers
+            last_buffer_size = len(_line)
+            total_buffer_size += last_buffer_size
+
+            # calculate extra padding for last line and the remaining buffer
+            # size we need to write out
+            moni_size_left = (
+                store.persistent._mas_dockstat_moni_size
+                - total_buffer_size
+            )
+            if moni_size_left > 0:
+                # we should do some padding and additional data writes
+
+                # what padding do we even have
+                if (moni_size_left + last_buffer_size) <= blocksize:
+                    extra_padding = moni_size_left
+                    moni_size_left = 0
+                else:
+                    extra_padding = blocksize - last_buffer_size
+                    moni_size_left -= extra_padding
+
+                # and write out the metadata / monika
+                data = encoder(_line + dockstat.safeRandom(extra_padding))
+                checklist.update(data)
+                moni_fbuffer.write(data)
+
+                # and now for the random data generation
+                # NOTE: this should represent number of bytes
+                moni_size_limit = moni_size_left - blocksize
+                curr_size = 0
+
+                while curr_size < moni_size_limit:
+                    data = safe_encoder(blocksize)
+                    checklist.update(data)
+                    moni_fbuffer.write(data)
+                    curr_size += blocksize
+
+                # we should have some leftovers
+                leftovers = moni_size_left - curr_size
+                if leftovers > 0:
+                    data = safe_encoder(leftovers)
+                    checklist.update(data)
+                    moni_fbuffer.write(data)
+
+            else:
+                # otherwise, we shoudl just write out the last line and
+                # be done with it
+                data = encoder(_line)
                 checklist.update(data)
                 moni_fbuffer.write(data)
 
@@ -1036,11 +1694,11 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR] monibuffer write failed | {0}".format(
-                str(e)
+                repr(e)
             ))
 
             # attempt to delete existing file if its there
-            # NOTE: dont care if it fails, we just want to try it 
+            # NOTE: dont care if it fails, we just want to try it
             try:
                 # NOTE: we do buffer closing here because we need to try
                 # file deletion in here too
@@ -1052,12 +1710,16 @@ init 200 python in mas_dockstat:
             except:
                 pass
 
-            return None
+            return False
 
         finally:
             # always close the fbuffer
             if moni_fbuffer is not None:
                 moni_fbuffer.close()
+
+            # always close the temp buffer
+            if moni_tbuffer is not None:
+                moni_tbuffer.close()
 
             # we dont need this buffer after here
             moni_buffer.close()
@@ -1068,7 +1730,7 @@ init 200 python in mas_dockstat:
             # ALERT ALERT HOW DID WE FAIL
             mas_utils.writelog("[ERROR] monika not found.")
             mas_utils.trydel(moni_path)
-            return None
+            return False
 
         # we should have a file descriptor, lets attempt a pkg slip
         moni_slip = dockstat.createPackageSlip(moni_pkg, blocksize)
@@ -1076,7 +1738,7 @@ init 200 python in mas_dockstat:
             # ALERT ALERT WE FAILED AGAIN
             mas_utils.writelog("[ERROR] monika could not be validated.")
             mas_utils.trydel(moni_path)
-            return None
+            return False
 
         if moni_slip != moni_sum:
             # WOW SRS THIS IS BAD
@@ -1090,21 +1752,39 @@ init 200 python in mas_dockstat:
         return moni_sum
 
 
+    def init_findMonika(dockstat):
+        """
+        findMonika variation that is meant to be run at init time.
+
+        IN:
+            dockstat - MASDockingStation to use
+        """
+        global retmoni_status, retmoni_data
+
+        # try to find this monika
+        retmoni_status, retmoni_data = findMonika(dockstat)
+
+
     def findMonika(dockstat):
         """
         Attempts to find monika in the giving docking station
 
+        IN:
+            dockstat - MASDockingStation to use
+
         RETURNS: tuple of the following format:
             [0]: MAS_PKG_* constants depending on the state of monika
-            [1]: string of important data, if we found a monika. Will be empty
-                if no monika or data found
+            [1]: either list of data or persistent object of data. Will be
+                None if no data or errors occured
         """
         END_DELIM = "|||"
+        PER_DELIM = "per|"
+        ret_code = 0
 
         status, first_line = dockstat.smartUnpack(
             "monika",
             store.persistent._mas_moni_chksum,
-            one_line=True,
+            lines=-1,
             bs=b64_blocksize
         )
 
@@ -1112,7 +1792,7 @@ init 200 python in mas_dockstat:
             # we had an error in reading, therefore we cant trust the data.
             # OR, we didnt find the package.
             # in either case, just say we didnt find monika
-            return (MAS_PKG_NF, "")
+            return (MAS_PKG_NF, None)
 
         # otherwise, we certainly found monika
         # lets parse monika's data
@@ -1121,31 +1801,47 @@ init 200 python in mas_dockstat:
         first_line.seek(0)
 
         # we only want the data portion that's likely to contain our stuff
-        real_data = first_line.read(dockstat.READ_SIZE)
+        # TODO: we do NOT have a system in place to handle persistents above
+        #   4 MB. we need to consider this when we do long term
+        real_data = first_line.read()
         first_line.close()
 
-        # and see if this does contain our stuff
-        real_data, sep, garbage = real_data.partition(END_DELIM)
+        # because the console may have shit, we should just attempt to parse
+        # the data as persistent first, and then as a backup, try non-persist.
+        per_data = parseMoniDataPer(real_data)
 
-        # and return results
-        if len(sep) == 0:
-            # no data found, assume a missing monika
-            return (MAS_PKG_NF, "")
+        if per_data is None:
+            # this isn't a persistent. Let's try backup strats
+
+            # and see if this does contain our stuff
+            real_data, sep, garbage = real_data.partition(END_DELIM)
+
+            # and return results
+            if len(sep) == 0:
+                # no data found, assume a missing monika
+                return (MAS_PKG_NF, None)
+
+            real_data = parseMoniData(real_data)
+            ret_code = MAS_PKG_DL
+
+        else:
+            real_data = per_data
+            ret_code = MAS_PKG_DP
+
+        if real_data is None:
+            # we failed to parse data. Please return an error
+            # in this case, we should assume monika was not found
+            return (MAS_PKG_NF, real_data)
 
         if (status & dockstat.PKG_C) > 0:
             # we found a different monika (or corrupted monika)
-            return (MAS_PKG_FO, real_data)
+            mas_utils.writelog(
+                "[!] I found a corrupt monika! {0}\n".format(status)
+            )
+            return (ret_code | MAS_PKG_FO, real_data)
 
         # otherwise, we have a matching monika!
-        # lets log this monika
-        store.persistent._mas_dockstat_checkin_log.append((
-            datetime.datetime.now(),
-            store.persistent._mas_moni_chksum
-        ))
-
-        # and clear the checksum
-        store.persistent._mas_moni_chksum = None
-        return (MAS_PKG_F, real_data)
+        return (ret_code | MAS_PKG_F, real_data)
 
 
     def parseMoniData(data_line):
@@ -1164,12 +1860,12 @@ init 200 python in mas_dockstat:
             [3]: affection, integer value (dont really rely on this for much)
             [4]: monika's hair setting
             [5]: monika's clothes setting
-            
+
             OR None if general (not item-specific) parse errors occurs)
         """
         try:
             data_list = data_line.split("|")
-            
+
             # now parse what needs to be parsed
             data_list[0] = mas_utils.tryparsedt(data_list[0])
             data_list[3] = mas_utils.tryparseint(data_list[3], 0)
@@ -1181,200 +1877,274 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR]: Moni Data parse fail: {0}\n".format(
-                str(e)
+                repr(e)
             ))
             return None
 
 
-    def selectReturnHomeGreeting(_type=None):
+    def parseMoniDataPer(data_line):
+        """
+        Parses persitent data into a persitent object.
+
+        NOTE: all exceptions are loggeed
+
+        IN:
+            data_line - the data portion that may contain a persitent
+
+        RETURNS: a persistent object, or None if failure
+        """
+        try:
+            #pers = re.match(r"^(.*?)\|\|\|per\|",str(data_line)).group()
+            # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
+            splitted = data_line.split("|||per|")
+            if(len(splitted)>0):
+                return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
+            return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
+
+        except Exception as e:
+            mas_utils.writelog(
+                "[ERROR]: persistent unpickle failed: {0}\n".format(repr(e))
+            )
+            return None
+
+
+    def selectReturnHomeGreeting(gre_type=None):
         """
         Selects the correct Return Home greeting.
-        Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to 
-            runtime
-        
+        If None was selected, we return the default returned home gre
+
+        We also default type to TYPE_GENERIC_RET if no type is given
+
         IN:
-            _type - list of additoinal mas_greetings types to search on
+            gre_type - greeting type to find
+                If None, we use TYPE_GENERIC_RET
+                (Default: None)
 
         RETURNS:
             Event object representing the selected greeting
         """
-        if _type is not None:
-            greeting_types = list(_type)
-        else:
-            greeting_types = list()
+        if gre_type is None:
+            gre_type = mas_greetings.TYPE_GENERIC_RET
 
-        # add the return home type
-        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+        sel_gre_ev = mas_greetings.selectGreeting(gre_type)
 
-        # and now we need to find greetings that fit
-        rethome_greetings = store.Event.filterEvents(
-            evhand.greeting_database,
-            unlocked=True,
-            category=(False, greeting_types)
-        )
+        if sel_gre_ev is None:
+            # no selection? return the generic random
+            return store.mas_getEV("greeting_returned_home")
 
-        if len(rethome_greetings) > 0:
-            # if we have at least one from this list, random select
-            return rethome_greetings[random.choice(rethome_greetings.keys())]
-
-        # otherwise, always return the generic random event
-        return store.mas_getEV("greeting_returned_home")
+        # otherwise, return this ev
+        return sel_gre_ev
 
 
-    def diffCheckTimes():
+    def getCheckTimes(chksum=None):
+        """
+        Gets the corresponding checkin/out times for the given chksum.
+
+        IN:
+            chksum - chksum to retrieve checkin/checkout times.
+                If None, then we simply get the latest checkin/checkout,
+                regardless if they match or not.
+                (Default: None)
+
+        RETURNS tuple of the following format:
+            [0] - checkout time
+            [1] - checkin time
+        If any param is None, then we couldn't find the matching chksum or
+        there were no entries
+        """
+        checkin_log = store.persistent._mas_dockstat_checkin_log
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+        checkin_time = None
+        checkout_time = None
+        checkin_len = len(checkin_log)
+        checkout_len = len(checkout_log)
+
+        # quick function to find a time based on checksum
+        def find_time(check_log, check_sum):
+            for _time, _chksum in check_log:
+                if _chksum == check_sum:
+                    return _time
+
+            return None
+
+        if checkin_len > 0:
+            if chksum is None:
+                checkin_time = checkin_log[checkin_len-1][0]
+
+            else:
+                checkin_time = find_time(checkin_log, chksum)
+
+        if checkout_len > 0:
+            if chksum is None:
+                checkout_time = checkout_log[checkout_len-1][0]
+
+            else:
+                checkout_time = find_time(checkout_log, chksum)
+
+        return (checkout_time, checkin_time)
+
+
+    def diffCheckTimes(index=None):
         """
         Returns the difference between the latest checkout and check in times
         We do checkin - checkout.
+
+        IN:
+            index - the index of checkout/checkin to use when diffing
+                If None, we use the latest one
+                (Default: None)
 
         RETURNS: timedelta of the difference between checkin and checkout
         """
         checkin_log = store.persistent._mas_dockstat_checkin_log
         checkout_log = store.persistent._mas_dockstat_checkout_log
+        checkin_len = len(checkin_log)
+        checkout_len = len(checkout_log)
 
-        if len(checkin_log) == 0 or len(checkout_log) == 0:
+        if checkin_len == 0 or checkout_len == 0:
             return datetime.timedelta(0)
 
-        return checkin_log[-1:][0][0] - checkout_log[-1:][0][0]
+        if checkin_len != checkout_len:
+            # mis match logs, please log this.
+            mas_utils.writelog(
+                (
+                    "[WARNING]: checkin is {0}, checkout is {1}. "
+                    "Going to pop.\n"
+                ).format(checkin_len, checkout_len)
+            )
+
+            # and we will pop extras as well
+            if checkin_len > checkout_len:
+                larger_log = checkin_log
+                goal_size = checkout_len
+
+            else:
+                larger_log = checkout_log
+                goal_size = checkin_len
+
+            while len(larger_log) > goal_size:
+                larger_log.pop()
+
+        if index is None or index >= len(checkout_log):
+            index = len(checkout_log)-1
+
+        return checkin_log[index][0] - checkout_log[index][0]
 
 
-    # lock stuff needed for the threaded version of generateMonika
-    _th_lock_generateMonika = threading.Lock()
-    _th_cond_generateMonika = None
-    _th_result_generateMonika = None
-
-
-    def _th_generateMonika():
+    def timeOut(_date):
         """
-        Threaded variant of monika generation, using stock docking station
+        Given a date, return how long monika has been out
 
-        NOTE: this doesnt' actualyl have the thread, it just runs the primary
-        usage of the stock docking station code and saves the result
+        We assume that checkout logs are the source of truth
+
+        IN:
+            _date - date to check
         """
-        global _th_result_generateMonika
+        checkout_log = store.persistent._mas_dockstat_checkout_log
 
-        # generate monika
-        _result_genMoni = generateMonika(store.mas_docking_station)
+        if len(checkout_log) == 0:
+            return datetime.timedelta(0)
 
-        # acquire a lock on the condition and set the result var
-        with _th_cond_generateMonika:
-            _th_result_generateMonika = _result_genMoni
-            _th_cond_generateMonika.notify()
+        # we only want the checkout dates for today
+        checkout_indexes = [
+            index
+            for index in range(0, len(checkout_log))
+            if checkout_log[index][0].date() == _date
+        ]
+
+        if len(checkout_indexes) == 0:
+            return datetime.timedelta(0)
+
+        # otherwise we have checkouts today, lets calculat time
+        time_out = datetime.timedelta(0)
+
+        for index in checkout_indexes:
+            time_out += diffCheckTimes(index)
+
+        return time_out
 
 
-    def _startGenerateMonika():
+    def _ds_aff_for_tout(
+            _time_out,
+            max_hour_out,
+            max_aff_gain,
+            min_aff_gain,
+            aff_mult=1
+            ):
         """
-        This actually callst he threaded variant in background for general
-        usage.
+        Grants an amount of affection based on time out. This is designed for
+        use ONLY with the returned home greeting.
+
+        NOTE: this also sets the monika_returned_home persistent
+
+        IN:
+            _time_out - timedelta we want to treat as monika being out
+            max_hour_out - how many hours is considered max
+                (anthing OVER this will be maxxed)
+            max_aff_gain - amount of aff to be gained when max+
+            min_aff_gain - smallest amount of aff gain
+            aff_mult - multipler to hours to use as aff gain when between min
+                and max
+                (Default: 1)
         """
-        global _th_cond_generateMonika
+        if store.persistent._mas_monika_returned_home is None:
+            hours_out = int(_time_out.total_seconds() / 3600)
 
-        _th_cond_generateMonika = threading.Condition(_th_lock_generateMonika)
+            # you gain 1 per hour, max 5, min 1
+            if hours_out > max_hour_out:
+                aff_gain = max_aff_gain
+            elif hours_out == 0:
+                aff_gain = min_aff_gain
+            else:
+                aff_gain = hours_out * aff_mult
 
-        moni_gen_thread = threading.Thread(
-            target=_th_generateMonika
-        )
-        moni_gen_thread.start()
+            store.mas_gainAffection(aff_gain, bypass=True)
+            store.persistent._mas_monika_returned_home = (
+                datetime.datetime.now()
+            )
 
 
-    def _endGenerateMonika():
+init 205 python in mas_dockstat:
+    import store.mas_threading as mas_threading
+    # thread classes for monika files
+
+    # runs monika file generation
+    monikagen_promise = mas_threading.MASAsyncWrapper(
+        generateMonika,
+        [store.mas_docking_station]
+    )
+
+    # runs monika file check
+    monikafind_promise = mas_threading.MASAsyncWrapper(
+        findMonika,
+        [store.mas_docking_station]
+    )
+
+    # other important vars for this
+
+    abort_gen_promise = False
+    # if True, we aborted monika generation, but since its an async call,
+    # ch30_loop needs to handle this
+
+    def abortGenPromise():
         """
-        Returns the result of the generateMonika function when it finishes.
-
-        RETURNS:
-            result of generateMonika, function
+        Attempts to about the monikagen promise and properly delete the
+        monika package.
         """
-        global _th_result_generateMonika, _th_cond_generateMonika
+        global abort_gen_promise
 
-        if _th_cond_generateMonika is None:
-            return None
+        if not abort_gen_promise:
+            return
 
-        # acqure lock
-        _th_cond_generateMonika.acquire()
+        # otherwise we need to abourt this.
+        if not monikagen_promise.done():
+            return
 
-        # check conditional and wait
-        while _th_result_generateMonika is None:
-            _th_cond_generateMonika.wait()
-
-        # we have a success, retrieve value copy
-        _result = _th_result_generateMonika
-        _th_result_generateMonika = None
-
-        # release conditional
-        _th_cond_generateMonika.release()
-        _th_cond_generateMonika = None
-
-        return _result
-
-
-    # lock stuff needed for threading find Monika
-    _th_lock_findMonika = threading.Lock()
-    _th_cond_findMonika = None
-    _th_result_findMonika = None
-
-
-    def _th_findMonika():
-        """
-        Threaded variant of finding monika, using stock docking station
-
-        NOTE: this doesn't actually have the thread, it just runs the primary
-            usage of teh stock docking station code and saves result
-        """
-        global _th_result_findMonika
-
-        # find monika
-        _result_findMoni = findMonika(store.mas_docking_station)
-
-        # acquire lock on condition and set result var
-        with _th_cond_findMonika:
-            _th_result_findMonika = tuple(_result_findMoni)
-            _th_cond_findMonika.notify()
-
-
-    def _startFindMonika():
-        """
-        Starts the find monika thread
-        """
-        global _th_cond_findMonika
-
-        _th_cond_findMonika = threading.Condition(_th_lock_findMonika)
-
-        moni_find_thread = threading.Thread(
-            target=_th_findMonika
-        )
-        moni_find_thread.start()
-
-
-    def _endFindMonika():
-        """
-        Resulting the result of the find monika function when it finishes
-
-        RETURNS:
-            result of find monika function
-        """
-        global _th_result_findMonika, _th_cond_findMonika
-
-        if _th_cond_findMonika is None:
-            # please dont do this
-            return ("","")
-
-        # acquire lock
-        _th_cond_findMonika.acquire()
-
-        # check conditional and wait
-        while _th_result_findMonika is None:
-            _th_cond_findMonika.wait()
-
-        # we have a success, retrieve value copy
-        _result = tuple(_th_result_findMonika)
-        _th_result_findMonika = None
-
-        # releaes conditional
-        _th_cond_findMonika.release()
-        _th_cond_findMonika = None
-
-        return _result
+        # promise is done! lets abort
+        monikagen_promise.end()
+        store.mas_docking_station.destroyPackage("monika")
+        abort_gen_promise = False
 
 
 ### Docking station labels regarding monika leaving the station
@@ -1384,118 +2154,186 @@ init 200 python in mas_dockstat:
 #   true if moni can leave
 #   false otherwise
 label mas_dockstat_ready_to_go(moni_chksum):
-    show monika 2dsc
-
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
-    $ can_moni_leave = moni_chksum is not None and moni_chksum != -1
-     
+    $ can_moni_leave = moni_chksum and moni_chksum != -1
+
     if can_moni_leave:
         # file successfully made
         # monika can leave
-        if len(persistent._mas_dockstat_checkout_log) == 0:
+
+        #We'll do our actual getting ready here since this saves us needing to do it multiple times later
+        python:
+            #If we should take drink with, we do that now
+            mas_useThermos()
+
+            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
+            renpy.pause(1.0, hard=True)
+
+        #If bday + aff+, we use this fare
+        if (
+            mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
+            and not mas_SELisUnlocked(mas_clothes_blackdress)
+        ):
+            if len(persistent._mas_dockstat_checkout_log) == 0:
+                #We change Moni's outfit here because she just got ready
+                $ monika_chr.change_clothes(mas_clothes_blackdress)
+                call mas_dockstat_first_time_goers
+            call mas_bday_bd_outro
+
+        elif len(persistent._mas_dockstat_checkout_log) == 0:
             call mas_dockstat_first_time_goers
 
         else:
-            m 1eua "Alright."
+            m "Alright."
 
         # setup check and log this file checkout
-        python:
-            persistent._mas_moni_chksum = moni_chksum
-            persistent._mas_dockstat_checkout_log.append((
-                datetime.datetime.now(),
-                moni_chksum
-            ))
-
-            if moni_chksum in persistent._mas_dockstat_moni_log:
-                persistent._mas_dockstat_moni_log.pop(moni_chksum)
-
-        m 1eua "I'm ready to go."
+        $ store.mas_dockstat.checkoutMonika(moni_chksum)
+        # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
-        m 1ekc "Oh no..."
-        m 1lksdlb "I wasn't able to turn myself into a file."
-        m "I think you'll have to go on without me this time."
-        m 1ekc "Sorry, [player]."
+        # NOTE: callers must handle the dialogue for this
 
     return can_moni_leave
 
 
 label mas_dockstat_first_time_goers:
+    call mas_transition_from_emptydesk("monika 3eua")
     m 3eua "I'm now in the file 'monika' in your characters folder."
-    m "After I shutdown the game, you can move me wherever you like."
+    m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
-
     m 1eua "And lastly..."
     m 1ekc "Please be careful with me. It's so easy to delete files after all..."
     m 1eua "Anyway..."
     return
 
-# empty desk. This one includes file checking every 1 seconds for monika
+label mas_dockstat_abort_post_show:
+    #Call this label to re-set anything needed when aborting dockstat farewells (error or by user)
+    #After Monika has returned to her desk
+    python:
+        #Restore the drink and make sure it's kept on desk again
+        _curr_drink = MASConsumable._getCurrentDrink()
+        if _curr_drink and _curr_drink.portable:
+            _curr_drink.acs.keep_on_desk = True
+
+    return
+
+label mas_dockstat_abort_gen:
+    # call this label to abort monika gen promise
+    # we should abort the promise (this lets spaceroom idle abort, as well)
+    python:
+        store.mas_dockstat.abort_gen_promise = True
+
+        #Attempt to abort the promise
+        store.mas_dockstat.abortGenPromise()
+
+    #FALL THROUGH
+
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
+    # we are not leaving
+    $ persistent._mas_dockstat_going_to_leave = False
+
+    # we are not leaving and need to reset these
+    if persistent._mas_player_bday_left_on_bday:
+        $ persistent._mas_player_bday_left_on_bday = False
+        $ persistent._mas_player_bday_date -= 1
+
+    if persistent._mas_f14_on_date:
+        $ persistent._mas_f14_on_date = False
+        $ persistent._mas_f14_date_count -= 1
+
+    if persistent._mas_bday_on_date:
+        $ persistent._mas_bday_on_date = False
+        $ persistent._mas_bday_date_count -= 1
+    return
+
+
+# empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    call spaceroom(hide_monika=True)
+    #NOTE: this needs to be done prior to a spaceroom call otherwise it doesn't update
+    #Make sure O31 effects show
+    if persistent._mas_o31_in_o31_mode:
+        $ mas_globals.show_vignette = True
+        #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+        if mas_current_weather != mas_weather_thunder:
+            $ mas_changeWeather(mas_weather_thunder, True)
+
+
+    # TODO: else this with the o31 mode
+    # set weather here
+    # TODO: run the yet-to-be-made weather alg running function etc
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
+        $ skip_setting_weather = True
+
+    # reset zoom before showing spaceroom
+    $ store.mas_sprites.reset_zoom()
+
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
-    # empty desk should be a zorder lower so we can pop monika over it
-    $ ed_zorder = MAS_MONIKA_Z - 1
-    show emptydesk zorder ed_zorder at i11
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
-label mas_dockstat_empty_desk_loop:
+    if mas_isD25Season() and persistent._mas_d25_deco_active:
+        $ store.mas_d25ShowVisuals()
 
-    python:
-        # setup ui hiding
-        import store.mas_dockstat as mas_dockstat
-        mas_OVLHide()
-        mas_calRaiseOverlayShield()
-        mas_calShowOverlay()
-        disable_esc()
-        mas_enable_quit()
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-        # now just check for monika
-        moni_found = False
-        while not moni_found:
-            # wait a second
+    #NOTE: elif'd so we don't try and show two types of visuals here
+    elif persistent._mas_player_bday_decor:
+        $ store.mas_surpriseBdayShowVisuals()
 
-            # begin the find thread
-            mas_dockstat._startFindMonika()
 
-            # wait 4 seconds before checking again
-            renpy.pause(1.0, hard=True)
+label mas_dockstat_empty_desk_preloop:
 
-            # get result
-            moni_status, mas_dockstat.retmoni_data = mas_dockstat._endFindMonika()
+    # setup ui hiding
+    $ import store.mas_dockstat as mas_dockstat
+    $ mas_OVLHide()
+    $ mas_calRaiseOverlayShield()
+    $ mas_calShowOverlay()
+    $ disable_esc()
+    $ mas_enable_quit()
+    $ promise = mas_dockstat.monikafind_promise
 
-            if moni_status == mas_dockstat.MAS_PKG_FO:
-                # found a different monika, jump to the different monika
-                # greeting
-                #moni_found = True
+label mas_dockstat_empty_desk_from_empty:
 
-                # with a different monika, she won't care if you quit, but
-                # if you do, it's game over for this monika
+    # begin the find thread
+    if promise.ready:
+        $ promise.start()
 
-                #renpy.jump("mas_dockstat_different_monika")
-                #TODO: for now, lets just continue this loop
-                moni_found = None
+    # wait 1 seconds before checking again
+    $ renpy.pause(1.0, hard=True)
 
-            if moni_status == mas_dockstat.MAS_PKG_F:
-                # found our monika, jump to the found monika greeting
-                moni_found = True
-                renpy.jump("mas_dockstat_found_monika")
+    # check for surprise visuals
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-            # otherwise we still havent' found monika, so lets just continue
-            # the loop
+    # check for monika
+    if promise.done():
+        # we have a result! lets get and then check if we found anything.
+        $ _status, _data_line = promise.get()
+        $ mas_dockstat.retmoni_status = _status
+        $ mas_dockstat.retmoni_data = _data_line
+        $ mas_dockstat.triageMonika(True)
 
-    # we should never, ever reach here. If we do, just do a straight quit
-    jump _quit
+    # otherwise we still havent' found monika, so lets just continue
+    # the loop
+    jump mas_dockstat_empty_desk_from_empty
 
 define mas_dockstat.different_moni_flow = False
 
 # different monika found
 label mas_dockstat_different_monika:
     # ASSUMES:
-    #   moni_data - data line of the monika we read in. Would need parsing
+    # mas_dockstat.retmoni_data - should be the data portion of monika
 
     # NOTE: we also need to save current vars so we dont have issues
     $ mas_dockstat.previous_vars["m_name"] = persistent._mas_monika_nickname
@@ -1526,46 +2364,56 @@ label mas_dockstat_different_monika:
     #   player - player's name
     #   m_name - monika's name
     $ moni_sesh, player, m_name, aff_val, moni_hair, moni_clothes = moni_data
-    $ monika_chr.change_outfit(moni_clothes, moni_hair)
+    $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
-    show monika 1ekd zorder MAS_MONIKA_Z at t11
+    call mas_transition_from_emptydesk("monika 1ekd")
 
-    # 1 line of dialgoue before we remove the empty desk
-    m "[player]?" 
-    hide emptydesk
+    m "[player]?"
 
     m "Wait, you're not [player]."
-   
+
     # TODO: more dialogue
 
     $ mas_dockstat.retmoni_data = None
     $ startup_check = False
 
-    jump ch30_post_greeting_check
+    jump ch30_post_exp_check
+
+
+# found our monika, but we coming from empty desk
+label mas_dockstat_found_monika_from_empty:
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
+
+    # dont want users using our promises
+    $ promise = None
+
+    # FALL THROUGH
 
 # found our monika
 label mas_dockstat_found_monika:
-    # ASSUMES:
-    #   moni_data - data line of the monika we read in. Would need parsing
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
+    $ store.mas_dockstat.checkinMonika()
+    $ persistent._mas_pm_taken_monika_out = True
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
-    if mas_from_empty:
-        show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
-        hide emptydesk
-
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
         selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
             persistent._mas_greeting_type
         ).eventlabel
 
+        # TODO: consider running the greeting setup label?
+
         # reset greeting type
         persistent._mas_greeting_type = None
-        
+
         # removee the monika
-        store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+        mas_docking_station.destroyPackage("monika")
 
         # reenabel a bunch of things
         mas_OVLShow()
@@ -1573,4 +2421,12 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-    jump ch30_post_greeting_check
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_globals.show_vignette = True
+        #Force progressive to disabled for o31
+        $ mas_changeWeather(mas_weather_thunder, True)
+
+    elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
+        call mas_d25_season_exit
+
+    jump ch30_post_exp_check

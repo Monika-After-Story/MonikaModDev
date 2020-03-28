@@ -27,6 +27,7 @@ init python:
         Disables the hotkey buttons
         """
         store.hkb_button.talk_enabled = False
+        store.hkb_button.extra_enabled = False
         store.hkb_button.music_enabled = False
         store.hkb_button.play_enabled = False
 
@@ -36,6 +37,7 @@ init python:
         Enables the hotkey buttons
         """
         store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
         store.hkb_button.music_enabled = True
         store.hkb_button.play_enabled = True
 
@@ -48,6 +50,7 @@ init python:
             store.hkb_button.talk_enabled
             and store.hkb_button.music_enabled
             and store.hkb_button.play_enabled
+            and store.hkb_button.extra_enabled
         )
 
 
@@ -80,6 +83,9 @@ init -1 python in hkb_button:
     # property for enabling the talk button
     talk_enabled = True
 
+    # property for enabling the extra button
+    extra_enabled = True
+
     # property for enabling the music button
     music_enabled = True
 
@@ -103,8 +109,8 @@ define gui.hkb_button_text_font = gui.default_font
 define gui.hkb_button_text_size = gui.text_size
 define gui.hkb_button_text_xalign = 0.5
 #define gui.hkb_button_text_xanchor = 0.5
-define gui.hkb_button_text_idle_color = "#000"
-define gui.hkb_button_text_hover_color = "#fa9"
+define gui.hkb_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.hkb_button_text_hover_color = mas_ui.light_button_text_hover_color
 define gui.hkb_button_text_kerning = 0.2
 
 # starting with a new style: hkb (hotkey button)
@@ -146,8 +152,8 @@ style hkbd_button_text is default:
 #    properties gui.button_text_properties("hkb_button")
     font gui.default_font
     size gui.text_size
-    idle_color "#000"
-    hover_color "#000"
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_idle_color
     kerning 0.2
     outlines []
 
@@ -155,20 +161,20 @@ style hkb_text is default:
     xalign 0.5
     size gui.text_size
     font gui.default_font
-    color "#000"
+    color mas_ui.light_button_text_idle_color
     kerning 0.2
     outlines []
 
 screen hkb_overlay():
 
     zorder 50
-
-    style_prefix "hkb"
+    style_prefix store.mas_ui.hkb_style_prefix
 
     vbox:
         xpos 0.05
 #        xalign 0.05
-        ypos 0.80
+        yanchor 1.0
+        ypos 715
 #        yalign 0.95
 
         if store.hkb_button.talk_enabled:
@@ -178,8 +184,19 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image("mod_assets/hkb_disabled_background.png")
-                text "Talk"
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Talk" color "#8C8C8C"
+
+
+        if store.hkb_button.extra_enabled:
+            textbutton _("Extra") action Function(mas_open_extra_menu)
+        else:
+            frame:
+                ypadding 5
+                xsize 120
+
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Extra" color "#8C8C8C"
 
 
         if store.hkb_button.music_enabled:
@@ -189,9 +206,8 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image("mod_assets/hkb_disabled_background.png")
-                text "Music"
-
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Music" color "#8C8C8C"
 
         if store.hkb_button.play_enabled:
             textbutton _("Play") action Function(pick_game)
@@ -200,8 +216,8 @@ screen hkb_overlay():
                 ypadding 5
                 xsize 120
 
-                background Image("mod_assets/hkb_disabled_background.png")
-                text "Play"
+                background Image(store.mas_ui.hkb_disabled_bg)
+                text "Play" color "#8C8C8C"
 
 
 screen movie_overlay():

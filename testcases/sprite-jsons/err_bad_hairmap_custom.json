@@ -1,0 +1,12 @@
+{
+    "dryrun": true,
+    "type": 2,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {},
+    "hair_map": {
+        "all": "def",
+        "validval": "yes",
+        "invalidval": "custom"
+    }
+}
