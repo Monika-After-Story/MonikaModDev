@@ -945,6 +945,7 @@ init -810 python:
     #   lifestyle - what you do
     #   emotions - emotional/mental states
     #   family - family related stuff
+    #   friends - friend related stuff
     #   actions - what you have done
     #   location - location-based stuff
     #   likes - likes/wants
@@ -986,6 +987,7 @@ init -810 python:
 
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
+            "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
 
             # family
             "_mas_pm_have_fam": "pm.family.have_family",
@@ -995,6 +997,10 @@ init -810 python:
             "_mas_pm_have_fam_mess_better": "pm.family.will_get_better",
             "_mas_pm_no_talk_fam": "pm.family.no_talk_about",
             "_mas_pm_fam_like_monika": "pm.family.likes_monika",
+
+            # friends
+            "_mas_pm_has_friends": "pm.friends.has_friends",
+            "_mas_pm_few_friends": "pm.friends.few_friends",
 
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",

@@ -4795,11 +4795,24 @@ label monika_innovation:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dunbar",category=['psychology','trivia'],prompt="Dunbar's number",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dunbar",
+            category=['psychology','trivia'],
+            prompt="Dunbar's number",
+            random=True
+        )
+    )
 
 label monika_dunbar:
-    m 1eua "Do you know about Dunbar's number?"
-    m "Supposedly, there's a maximum amount of relationships we can maintain before they become unstable."
+    #We only want this on the first time seeing this topic post seeing the player's friends topic
+    if mas_getEV("monika_dunbar").shown_count == 0 and persistent._mas_pm_few_friends:
+        m 1eua "Do you remember when we talked about Dunbar's number and the amount of stable relationships people can maintain?"
+    else:
+        m 1eua "Do you know about Dunbar's number?"
+        m "Supposedly, there's a maximum amount of relationships we can maintain before they become unstable."
+
     m 3eua "For humans, this number is around 150."
     m 1eka "No matter how nice of a person you may be..."
     m "Beyond showing somebody basic respect and manners, it's impossible to care about people you don't personally interact with that much."
@@ -4821,10 +4834,7 @@ label monika_dunbar:
     m 1eka "It helped us meet though, so it can't be all bad."
     return
 
-# TODO: maybe rewrite?
-#   there is controversary to this topic
-#   Lets gather data first before decideing wehter or not to completely
-#   remove or keep
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_regrets",category=['ddlc','philosophy'],prompt="Do you have any regrets?",pool=True))
 
@@ -9968,6 +9978,174 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_players_friends",
+            category=['you'],
+            prompt="[player]'s friends",
+            random=True,
+            aff_range=(mas_aff.UPSET, None)
+        )
+    )
+
+#True if player has friends, False if not
+default persistent._mas_pm_has_friends = None
+
+#True if player has few friends, False if otherwise
+default persistent._mas_pm_few_friends = None
+
+#True if player says they feel lonely somtimes, False if not.
+default persistent._mas_pm_feels_lonely_sometimes = None
+
+
+label monika_players_friends:
+    m 1euc "Hey, [player]."
+
+    if renpy.seen_label('monika_friends'):
+        m 1eud "Remember how I was talking about how hard it is to make friends?"
+        m 1eka "I was just thinking about that and I realized that I don't know about your friends yet."
+
+    else:
+        m 1eua "I was just thinking about the idea of friends and I started wondering what your friends are like."
+
+    m 1eua "Do you have friends, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you have friends, [player]?{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_has_friends = True
+            $ persistent._mas_pm_few_friends = False
+
+            m 1hub "Of course you do! Ahaha~"
+            m 1eua "Who wouldn't want to be friends with you?"
+            m 3eua "Having lots of friends is great, don't you think?"
+            m 1tsu "Provided of course, you still have time for your girlfriend, ehehe."
+            m 1eua "I hope you're happy with your friends, [player].{w=0.2} {nw}"
+            extend 3eud "But I kinda wonder..."
+
+            call monika_players_friends_feels_lonely_ask(question="Do you ever feel lonely?")
+
+        "Only a few.":
+            $ persistent._mas_pm_few_friends = True
+            $ persistent._mas_pm_has_friends = True
+
+            m 1hub "That counts!"
+            m 3eua "I think friendship can be a lot more meaningful if you have just a few close friends."
+
+            if not renpy.seen_label('monika_dunbar'):
+                m 1eua "I've been doing a little reading and I've discovered something."
+                m 1eud "A man named Robin Dunbar had explained that there's a certain number of stable relationships we can maintain."
+                $ according_to = "...And according to this number"
+
+            else:
+                $ according_to = "According to Dunbar's number"
+
+            m 3eud "[according_to], you can have up to 150 stable relationships, but those are just casual relationships which aren't too deep."
+            m 1euc "They say you can have up to 15 friends that are like super family and only 5 that are like kin to you."
+            m 1rksdla "Sometimes it can be lonely when everyone's busy...{w=0.2}{nw}"
+            extend 1eub "but otherwise, it's pretty great!"
+            m 3eua "You don't have to worry about catering to too many people and you can still get some time to yourself."
+            m 1ekc "But I know sometimes it's easy to spend more time alone, especially if your friends are busy."
+            m 1dkc "It can be really hard when it happens since you wind up feeling lonely..."
+
+            call monika_players_friends_feels_lonely_ask(question=renpy.substitute("Do you ever feel lonely, [player]?"), exp="monika 1euc")
+
+        "No, actually...":
+            $ persistent._mas_pm_has_friends = False
+            $ persistent._mas_pm_few_friends = False
+
+            m 2ekc "Oh..."
+            m 3eka "Well, I'm sure you have some.{w=0.2} {nw}"
+            extend 1eka "Maybe you just don't realize it."
+            m 1etc "But I'm curious..."
+
+            call monika_players_friends_feels_lonely_ask(question=renpy.substitute("Do you ever feel lonely, [player]?"))
+
+    return "derandom"
+
+label monika_players_friends_feels_lonely_ask(question, exp="monika 1ekc"):
+    $ renpy.show(exp)
+    m "[question]{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[question]{fast}"
+
+        "Sometimes.":
+            $ persistent._mas_pm_feels_lonely_sometimes = True
+
+            m 1eka "I understand, [player]."
+            m 2rksdlc "It can be really hard to form deep connections nowadays..."
+
+            #Potentially if you have a lot of friends
+            if persistent._mas_pm_has_friends and not persistent._mas_pm_few_friends:
+                m "Especially if you have a lot of friends, it's difficult to get close to all of them."
+                m 1ekd "...And in the end, you're just left with a bunch of people you barely know."
+                m 3eub "Maybe just reach out to some people in your group you want to get closer to."
+                m 3eka "It's always nice to have at least one really close friend you can confide in when you need it."
+                m 1ekbsa "...I think it's pretty obvious who that person is for me, [player]~"
+
+            #Otherwise few friends or no friends
+            else:
+                m 1eka "But you'd be surprised at how many people would be willing to make you a part of their lives if you just try."
+                m 3eub "There's actually a good chance you'll have something in common with someone who might get your attention!"
+                m 1eua "Maybe you share a class or activity or something..."
+                m 3eua "Or you see them doing something that interests you like listening to music or watching a show."
+                m 3eua "It doesn't even have to be in person, either..."
+                m 3eub "You can have really close friends online!"
+                m 1hub "Once you get comfortable with that, maybe you could find some more in person too!"
+
+        "Not really.":
+            $ persistent._mas_pm_feels_lonely_sometimes = False
+
+            m 1eka "I'm glad to hear that, [player]."
+
+            if not persistent._mas_pm_has_friends:
+                m 1eka "Still though, you never know when you might need a helping hand or favor or something."
+                m 1hksdlb "As much as I'd love to help you with anything you might need, there's only so much I can do from here."
+
+                if mas_isMoniAff(higher=True):
+                    m 1eua "When I get there, I guess I wouldn't mind living a quiet life with you."
+                    m 1dkbsa "It would be so romantic to be just us..."
+                    m 1tsbsa "I guess that means I can have you all to myself then, doesn't it?"
+                    m 1hubsa "Ehehe~"
+
+                elif not persistent._mas_pm_has_friends:
+                    m 3eua "So be sure to find some friends who can help you when you really need it, alright?"
+
+            else:
+                m 3eua "It's good that you have a connection with your friends."
+                m 3rksdla "I know some people can have so many that it's hard to get to know them all."
+
+                if not persistent._mas_pm_few_friends:
+                    m 3eua "...So it's good to know that you've managed to be comfortable with them."
+                else:
+                    m 1hua "But since you're in a close-knit group, I'm sure you've all managed to get really close."
+
+                m 3eua "Maybe someday when I can get out of here, you can introduce your friends to me."
+
+                if mas_isMoniHappy(higher=True):
+                    m 1hub "If they're anything like you, I'd love to meet them!"
+
+        "I have you!":
+            $ persistent._mas_pm_feels_lonely_sometimes = False
+            $ mas_gainAffection()
+            m 1hubsa "Aww, [player]!"
+
+            if not persistent._mas_pm_has_friends:
+                m 1rkbsa "It makes me really happy to know I'm enough for you, but still..."
+                m 3ekbfa "It can be useful to know a few people sometimes."
+                show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eubfu "As always though, I don't mind it being just us."
+
+            else:
+                m 1eka "I'm really glad to know you're not lonely, [player].{w=0.3} {nw}"
+                extend 1hua "Especially because you're happy with me~"
+                m 3eua "No matter what happens, I'll always be here for you."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_graduation",
             category=['school'],
             prompt="Graduation",
@@ -10237,8 +10415,7 @@ label monika_grad_speech_ignored_lock:
 
     return
 
-label monika_grad_speech:  
-
+label monika_grad_speech:
     # clear selected track
     stop music fadeout 1.0
     $ songs.current_track = songs.FP_NO_SONG
