@@ -164,61 +164,444 @@ image monika g2:
             pause 0.2
     repeat
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
-#empty desk image, used when Monika is no longer in the room.
-#image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
-image emptydesk = ConditionSwitch(
-    "morning_flag", "mod_assets/emptydesk.png",
-    "not morning_flag", "mod_assets/emptydesk-n.png"
-)
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
-image mas_roses = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/monika/a/acs-roses-0.png",
-    "not morning_flag",
-    "mod_assets/monika/a/acs-roses-0-n.png"
-)
+### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
+# this contains special acs type mappings
+# basically on startup, we evaluate each acs and add mux types and other
+# properties.
 
-### bday stuff
-define mas_bday_cake_lit = False
-image mas_bday_cake_monika = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
-)
+init -101 python in mas_sprites:
+    
+    class ACSTemplate(renpy.store.object):
+        """
+        ACS template object
+        Establishes guidelines for defauling properties for an ACS
 
-image mas_bday_cake_player = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
-)
+        PROPERTIES:
+            acs_type - the acs type associated with this template
+            mux_type - the default mux type list for this template
+            ex_props - default exprops dict for this template
+            keep_on_desk - default keep on desk flag for this templat
+        """
 
-image mas_bday_banners = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
-)
+        def __init__(self, 
+                acs_type,
+                mux_type=None,
+                ex_props=None,
+                keep_on_desk=None
+        ):
+            """
+            Constructor
 
-image mas_bday_balloons = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
-)
+            IN:
+                acs_type - acs type this template should be associated with
+                mux_type - the mux_type we want to use as default. Ignored if
+                    None.
+                    (Default: None)
+                ex_props - the ex_props we want to use as default. Ignored if
+                    None.
+                    (Default: None)
+                keep_on_desk - the keep_on_desk flag we want to use as default.
+                    Ignored if None.
+                    (Default: None)
+            """
+            self.acs_type = acs_type
+            self.mux_type = mux_type
+            self.ex_props = ex_props
+            self.keep_on_desk = keep_on_desk
+
+        def _apply_ex_props(self, acs):
+            """
+            Applies ex prop defaults to the given ACS.
+
+            acs_type is NOT checked.
+
+            IN:
+                acs - acs to modify
+            """
+            if self.ex_props is None:
+                return
+
+            if acs.ex_props is None:
+                acs.ex_props = dict(self.ex_props)
+
+            else:
+                acs.ex_props.update(self.ex_props)
+
+        def _apply_keep_on_desk(self, acs):
+            """
+            Applies keep_on_desk defaults to the given ACS.
+
+            acs_type is NOT checked.
+
+            IN:
+                acs- acs to modify
+            """
+            if self.keep_on_desk is None:
+                return
+
+            acs.keep_on_desk = self.keep_on_desk
+
+        def _apply_mux_type(self, acs):
+            """
+            Applies mux type defaults to the given ACS. 
+            
+            acs_type is NOT checked.
+
+            IN:
+                acs - acs to modify.
+            """
+            if self.mux_type is None:
+                return
+
+            if acs.mux_type is None:
+                acs.mux_type = list(self.mux_type)
+
+            else:
+                for mux_type in self.mux_type:
+                    if mux_type not in acs.mux_type:
+                        acs.mux_type.append(mux_type)
+
+        def apply(self, acs):
+            """
+            Applies the defaults to the given ACS. (NOTE: acs type is checked)
+            """
+            if self.acs_type == acs.acs_type:
+                self._apply_ex_props(acs)
+                self._apply_keep_on_desk(acs)
+                self._apply_mux_type(acs)
+
+
+init -100 python in mas_sprites:
+
+    # --- exprops ---
+
+    # ---- ACS ----
+
+    EXP_A_EXCLHP = "excluded-hair-props"
+    # v: list of strings
+    # marks that an ACS requires a hairstyle with none of the value'd props 
+    # to be worn
+
+    EXP_A_LHSEL = "left-hair-strand-eye-level"
+    # v: ignored
+    # marks that an ACS is located at the left hair strand, eye level
+
+    EXP_A_RQHP = "required-hair-prop"
+    # v: string
+    # marks that an ACS requires a hairstyle with the value'd prop to be worn
+
+    EXP_A_LD = "left-desk-acs"
+    # v: ignored
+    # marks that this ACS is on the left side (Monika's left) of the desk
+
+    EXP_A_RBL = "ribbon-like"
+    # v: ignored
+    # marks that an ACS is like a ribbon in function
+
+    EXP_A_TWRB = "twin-ribbon"
+    # v: ignored
+    # marks that an ACS is a twin ribbon-based acs
+
+    EXP_A_FOOD = "food"
+    # v: ignored
+    # marks that this ACS is a food
+
+    EXP_A_DRINK = "drink"
+    # v: ignored
+    # marks that this ACS is a drink
+
+    # ---- HAIR ----
+
+    EXP_H_TT = "twintails"
+    # v: ignored
+    # marks that a hair style is a twintails style
+
+    EXP_H_RQCP = "required-clothes-prop"
+    # v: string
+    # marks that a hair style requires clothes with the value'd prop to be worn
+
+    EXP_H_EXCLCP = "excluded-clothes-props"
+    # v: list of strings
+    # marks that a hair style requires clothes with none of hte value'd props
+    # to be worn
+
+    EXP_H_TS = "tiedstrand"
+    # v: ignored
+    # marks that a hair style is a tied strand style
+
+    EXP_H_NT = "no-tails"
+    # v: ignored
+    # marks that a hair style has no tails. By default we assume ponytail.
+
+    # ---- CLOTHES ----
+
+    EXP_C_BRS = "bare-right-shoulder"
+    # v: ignored
+    # marks that a clothing item has a bare right shoulder
+
+    EXP_C_COST = "costume"
+    # v: costume type as string (o31, d25, etc..)
+    # marks that a clothing item is a costume
+
+    EXP_C_COSP = "cosplay"
+    # v: ignored
+    # marks that a clothing item is a cosplay outfit
+
+    EXP_C_LING = "lingerie"
+    # v: ignored
+    # marks that a clothing item is lingerie
+
+    # --- default exprops ---
+
+    DEF_EXP_TT_EXCL = [EXP_H_TT]
+    # twin tail exclusions
+
+    # --- default mux types ---
+
+    DEF_MUX_RB = [
+        "ribbon",
+        "bow",
+        "bunny-scrunchie",
+        "hat",
+        "s-type-ribbon",
+        "twin-ribbons",
+    ]
+    # default mux types for ribbon-based items.
+
+    DEF_MUX_HS = [
+        "headset",
+        "earphones",
+        "hat",
+        "headband",
+        "headphones",
+        "left-hair-flower-ear",
+    ]
+    # default mux types for headset-based items
+
+    DEF_MUX_HB = [
+        "headband",
+        "hat",
+        "headphones",
+        "headset",
+    ]
+    # default mux types for headband-based items
+
+    DEF_MUX_LHC = ["left-hair-clip"]
+    # default mux types for left hair clip-based items
+
+    DEF_MUX_LHFE = [
+        "left-hair-flower-ear",
+        "earphones",
+        "front-hair-flower-crown",
+        "hat",
+        "headset",
+        "headphones",
+        "left-hair-flower",
+    ]
+    # default mux types for left hair flower-baesd items
+
+    DEF_MUX_LD = [
+        "plush_q",
+        "chocs",
+        "plate"
+    ]
+    # default mux types for left-desk related items (namely foods)
+
+    DEF_MUX_HAT = [
+        "hat",
+        "bow",
+        "bunny-scrunchie",
+        "earphones",
+        "front-hair-flower-crown",
+        "headband",
+        "headphones",
+        "headset",
+        "left-hair-flower",
+        "ribbon",
+        "s-type-ribbon",
+        "twin-ribbons",
+    ]
+    # default mux types for hats
+
+    # maps ACS types to their ACS template
+    ACS_DEFS = {
+        "bow": ACSTemplate(
+            "bow",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+                EXP_A_EXCLHP: DEF_EXP_TT_EXCL,
+            }
+        ),
+        "bunny-scrunchie": ACSTemplate(
+            "bunny-scrunchie",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+                EXP_A_EXCLHP: DEF_EXP_TT_EXCL,
+            }
+        ),
+        "choker": ACSTemplate(
+            "choker",
+            mux_type=["choker"],
+            ex_props={
+                "bare neck": True
+            }
+        ),
+        "front-hair-flower-crown": ACSTemplate(
+            "front-hair-flower-crown",
+            mux_type=DEF_MUX_LHFE,
+            ex_props={
+                "front-hair-crown": True,
+            },
+        ),
+        "hat": ACSTemplate(
+            "hat",
+            mux_type=DEF_MUX_HAT
+        ),
+        "headband": ACSTemplate(
+            "headband",
+            mux_type=DEF_MUX_HB
+        ),
+        "headset": ACSTemplate(
+            "headset",
+            mux_type=DEF_MUX_HS
+        ),
+        "left-hair-clip": ACSTemplate(
+            "left-hair-clip",
+            mux_type=DEF_MUX_LHC,
+            ex_props={
+                EXP_A_LHSEL: True
+            }
+        ),
+        "left-hair-flower": ACSTemplate(
+            "left-hair-flower",
+            mux_type=[
+                "left-hair-flower",
+                "left-hair-flower-ear",
+                "front-hair-flower-crown"
+            ],
+            ex_props={
+                EXP_A_LHSEL: True
+            }
+        ),
+        "left-hair-flower-ear": ACSTemplate(
+            "left-hair-flower-ear",
+            mux_type=DEF_MUX_LHFE,
+            ex_props={
+                EXP_A_LHSEL: True
+            }
+        ),
+        "mug": ACSTemplate(
+            "mug",
+            mux_type=["mug", "thermos-mug"],
+            keep_on_desk=True,
+            ex_props={
+                EXP_A_DRINK: True
+            }
+        ),
+        "necklace": ACSTemplate(
+            "necklace",
+            mux_type=["necklace"],
+            ex_props={
+                "bare collar": True,
+            }
+        ),
+        "plate": ACSTemplate(
+            "plate",
+            mux_type=DEF_MUX_LD,
+            keep_on_desk=True,
+            ex_props={
+                EXP_A_LD: True,
+                EXP_A_FOOD: True
+            }
+        ),
+        # ring
+        "ribbon": ACSTemplate(
+            "ribbon",
+            mux_type=DEF_MUX_RB
+        ),
+        "s-type-ribbon": ACSTemplate(
+            "s-type-ribbon",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+            }
+        ),
+        "thermos-mug": ACSTemplate(
+            "thermos-mug",
+            mux_type=["mug", "thermos-mug"],
+            keep_on_desk=False
+        ),
+        "twin-ribbons": ACSTemplate(
+            "twin-ribbons",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_TWRB: True,
+                EXP_A_RBL: True,
+                EXP_A_RQHP: EXP_H_TT,
+            }
+        ),
+        "wrist-bracelet": ACSTemplate(
+            "wrist-bracelet",
+            mux_type=["wrist-bracelet"],
+            ex_props={
+                "bare wrist": True,
+            }
+        ),
+    }
+
+
+    def apply_ACSTemplate(acs):
+        """
+        Applies ACS template to the given ACS
+
+        IN:
+            acs - acs to apply defaults to
+        """
+        template = get_ACSTemplate(acs)
+        if template is not None:
+            template.apply(acs)
+
+
+    def apply_ACSTemplates():
+        """RUNTIME ONLY
+        Applies all templates to the available ACS.
+        """
+        for acs_name in ACS_MAP:
+            apply_ACSTemplate(ACS_MAP[acs_name])
+
+
+    def get_ACSTemplate(acs):
+        """
+        Gets the template for an ACS given the ACS.
+
+        IN:
+            acs - acs to get template for
+
+        RETURNS: ACSTemplate associated with the acs, or None if not found
+        """
+        if acs is None:
+            return None
+        return get_ACSTemplate_by_type(acs.acs_type)
+
+
+    def get_ACSTemplate_by_type(acs_type):
+        """
+        Gets the template for an ACS given the ACS type
+
+        IN:
+            acs_type - acs type to get template for
+
+        RETURNS: ACSTemplate associated with the acs_type or Nonr if not ound
+        """
+        return ACS_DEFS.get(acs_type, None)
+
 
 init -5 python in mas_sprites:
     # specific image generation functions
@@ -326,9 +709,11 @@ init -5 python in mas_sprites:
     PREFIX_EYEG = "eyebags" + ART_DLM
     PREFIX_BLUSH = "blush" + ART_DLM
     PREFIX_TABLE = "table" + ART_DLM
+    PREFIX_CHAIR = "chair" + ART_DLM
 
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
+    SHADOW_SUFFIX = ART_DLM + "s"
     FHAIR_SUFFIX  = ART_DLM + "front"
     BHAIR_SUFFIX = ART_DLM + "back"
     FILE_EXT = ".png"
@@ -450,6 +835,16 @@ init -5 python in mas_sprites:
         "{0}", # acs img sit
         ART_DLM,
         "{1}", # poseid
+    ))
+
+    # table strings
+    TC_GEN = "".join((
+        T_MAIN,
+        "{0}", # prefix table or chair
+        "{1}", # table or chair tag
+        "{2}", # shadow suffix
+        "{3}", # night suffix
+        FILE_EXT
     ))
 
 
@@ -674,7 +1069,7 @@ init -5 python in mas_sprites:
 
     # sprite exprop - list of topics
     EXPROP_TOPIC_MAP = {
-        "left-hair-strand-eye-level": [
+        EXP_A_LHSEL: [
             "monika_hairclip_select"
         ],
     }
@@ -739,7 +1134,7 @@ init -5 python in mas_sprites:
         return PREFIX_FACE
 
 
-    def create_remover(acs_type, group):
+    def create_remover(acs_type, group, mux_types):
         """
         Creates a remover ACS
 
@@ -747,6 +1142,7 @@ init -5 python in mas_sprites:
             acs_type - acs type for the remover. This is also used in mux_type
             group - group of selectables this ACS remover should be linked to
                 This is used in the naming of the ACS.
+            mux_types - list of types to use for mux_type
 
         RETURNS: remover ACS object
         """
@@ -759,7 +1155,7 @@ init -5 python in mas_sprites:
             ),
             stay_on_start=False,
             acs_type=acs_type,
-            mux_type=[acs_type]
+            mux_type=mux_types
         )
         init_acs(remover_acs)
         return remover_acs
@@ -937,8 +1333,27 @@ init -5 python in mas_sprites:
         return sprite_map.get(sprite_name, None)
 
 
-    # special mas monika functions
-
+##### special mas monika functions (hooks)
+    # NOTE: set flag "abort" to True in prechange points to prevent 
+    #   change/add/removal. This is dependent on the specific hook.
+    #   ACS: only wear_mux_pre_change and rm_exit_pre_change
+    #   HAIR: hair_exit_pre_change
+    #   CLOTHES: clothes_exit_pre_change
+    # NOTE: available temp_space flags by type:
+    #   ACS:
+    #       abort - see above
+    #       acs_list - list of acs Monika is currently wearing
+    #
+    #   HAIR:
+    #       abort - see above
+    #       by_user - True if set by the user, False if not
+    #       startup - True if we are in startup flow, false if not
+    #
+    #   CLOTHES:
+    #       abort - see above
+    #       by_user - same as hair
+    #       startup - same as hair
+    #       outfit_mode - True if in outfit mode, False if not
 
     def acs_rm_exit_pre_change(temp_space, moni_chr, rm_acs, acs_loc):
         """
@@ -977,7 +1392,9 @@ init -5 python in mas_sprites:
             new_acs - acs we are adding
             acs_loc - acs location to wear this acs
         """
-        pass
+        # abort if current hair not compatible wtih CAS
+        if not is_hairacs_compatible(moni_chr.hair, new_acs):
+            temp_space["abort"] = True
 
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
@@ -1044,6 +1461,8 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
+
+        # if clothes had a desired ribbon, restore to previous
         desired_ribbon = prev_cloth.getprop("desired-ribbon")
         if (
                 desired_ribbon is not None
@@ -1055,11 +1474,7 @@ init -5 python in mas_sprites:
                 moni_chr.remove_acs(ACS_MAP[desired_ribbon])
 
             else:
-                _acs_wear_if_wearing_acs(
-                    moni_chr,
-                    ACS_MAP[desired_ribbon],
-                    temp_ribbon
-                )
+                moni_chr.wear_acs(temp_ribbon)
 
 
     def clothes_entry_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -1072,7 +1487,11 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
-        pass
+        if prev_cloth.hasprop("baked outfit"):
+            # a baked outfit causes selector issues. we need to re-evaluate
+            # certain cases.
+            _hair_unlock_select_if_needed()
+            store.mas_selspr._validate_group_topics()
 
 
     def clothes_entry_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -1085,18 +1504,30 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
+        outfit_mode = temp_space.get("outfit_mode", False)
+
+        # if clothes has a desired ribbon, change to it if outfit mode
         desired_ribbon = new_cloth.getprop("desired-ribbon")
         if (
-                desired_ribbon is not None
+                outfit_mode
+                and desired_ribbon is not None
                 and desired_ribbon in ACS_MAP
                 and moni_chr.is_wearing_hair_with_exprop("ribbon")
         ):
             prev_ribbon = moni_chr.get_acs_of_type("ribbon")
+            if prev_ribbon is None:
+                prev_ribbon = moni_chr.get_acs_of_exprop("ribbon-like")
+
             if prev_ribbon != store.mas_acs_ribbon_blank:
                 temp_storage["hair.ribbon"] = prev_ribbon
 
             moni_chr.wear_acs(ACS_MAP[desired_ribbon])
 
+        # if current hair is incompatible, swap to def. 
+        # NOTE: we will enforce def has a hairstyle that all clothing
+        #   items MUST work with.
+        if not is_clotheshair_compatible(new_cloth, moni_chr.hair):
+            moni_chr.reset_hair(False)
     
     
     def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
@@ -1110,7 +1541,15 @@ init -5 python in mas_sprites:
             prev_hair - current hair
             new_hair - hair we are changing to
         """
-        pass
+        # abort if current clothes is not comaptible with new hair
+        if not is_clotheshair_compatible(moni_chr.clothes, new_hair):
+            temp_space["abort"] = True
+            return
+
+        all_acs = moni_chr.get_acs()
+        for acs in all_acs:
+            if not is_hairacs_compatible(new_hair, acs):
+                moni_chr.remove_acs(acs)
 
 
     def hair_exit_pst_change(temp_space, moni_chr, prev_hair, new_hair):
@@ -1173,20 +1612,74 @@ init -5 python in mas_sprites:
             elif new_hair.hasprop("ribbon-off"):
                 # take ribbon off for this hairstyle
                 _acs_ribbon_save_and_remove(moni_chr)
+                _acs_ribbon_like_save_and_remove(_moni_chr)
 
             if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
                 # unlock selector for ribbons if you have more than one
                 store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
             # also change name of the ribbon select prompt
-            if moni_chr.is_wearing_acs_type("ribbon"):
+            if moni_chr.is_wearing_ribbon():
                 store.mas_selspr.set_prompt("ribbon", "change")
+
             else:
                 store.mas_selspr.set_prompt("ribbon", "wear")
 
         else:
             # new hair not enabled for ribbon
             _acs_ribbon_save_and_remove(moni_chr)
+            _acs_ribbon_like_save_and_remove(moni_chr)
+
+    # hook function helpers
+
+    def is_hairacs_compatible(hair, acs):
+        """
+        Checks if the given hair is compatible with the given acs
+
+        IN:
+            hair - hair to check
+            acs - acs to check
+
+        RETURNS: True if hair+acs is compatible, False if not
+        """
+        # first check for required hair prop
+        req_hair_prop = acs.getprop(EXP_A_RQHP, None)
+        if req_hair_prop is not None and not hair.hasprop(req_hair_prop):
+            return False
+
+        # then check exclusions
+        excl_hair_props = acs.getprop(EXP_A_EXCLHP, None)
+        if excl_hair_props is not None:
+            for excl_hair_prop in excl_hair_props:
+                if hair.hasprop(excl_hair_prop):
+                    return False
+
+        return True
+
+
+    def is_clotheshair_compatible(clothes, hair):
+        """
+        Checks if the given clothes is compatible with the given hair
+
+        IN:
+            clothes - clothes to check
+            hair - hair to check
+
+        RETURNS: True if clothes+hair is comaptible, False if not
+        """
+        # first check for required clothes prop
+        req_cloth_prop = hair.getprop(EXP_H_RQCP, None)
+        if req_cloth_prop is not None and not clothes.hasprop(req_cloth_prop):
+            return False
+
+        # then check exclusions
+        excl_cloth_props = hair.getprop(EXP_H_EXCLCP, None)
+        if excl_cloth_props is not None:
+            for excl_cloth_prop in excl_cloth_props:
+                if clothes.hasprop(excl_cloth_prop):
+                    return False
+
+        return True
 
 
     # sprite maker functions
@@ -1984,6 +2477,29 @@ init -5 python in mas_sprites:
             _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix, bcode)
 
 
+    def _ms_chair(sprite_list, loc_str, chair, n_suffix):
+        """
+        Adds chair string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            chair - type of chair
+            n_suffix - night suffix to use
+        """
+        sprite_list.extend((
+            ",",
+            loc_str,
+            ',"',
+            T_MAIN,
+            PREFIX_CHAIR,
+            chair,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
     def _ms_emote(sprite_list, loc_str, emote, n_suffix, f_prefix):
         """
         Adds emote string
@@ -2437,7 +2953,9 @@ init -5 python in mas_sprites:
             blush=None,
             tears=None,
             emote=None,
-            table="def"
+            table="def",
+            chair="def",
+            show_shadow=False
         ):
         """
         Creates sitting string
@@ -2489,54 +3007,50 @@ init -5 python in mas_sprites:
                 (Default: None)
             table - type of table
                 (Default: "def")
+            chair - type of chair
+                (Default: "def")
+            show_shadow - True will show shadow, false will not
+                (Default: False)
 
         RETURNS:
             sitting stirng
         """
-        # location string from build loc
-        loc_build_str = build_loc()
-        loc_build_tup = (",", loc_build_str, ",")
-
-        # night suffix?
-        n_suffix = night_mode(isnight)
-
-        # initial portions of list
-        sprite_str_list = [
-            PRE_SPRITE_STR,
-            LOC_REG,
-        ]
+        # get sprite string data
+        loc_build_str, n_suffix, sprite_str_list = _pre_ms_setup(isnight)
 
         # NOTE: render order (new):
         #   1. pre-acs - every acs that should render before anything
         #   2. back-hair - back portion of hair (split mode)
         #   3. bbh-acs - acs between Body and Back Hair
-        #   4. base-0 - the base back part of body
-        #   5. bse-acs - between base and body-0
-        #   6. body-0 - the back part of body (no arms in split mode)
-        #   7. table - the table/desk
-        #   8. bba-acs - acs between Body and Back Arms
-        #   9. arms-base-0 - the base back part of arm
-        #   10. ase-acs-0 - between base arms and clothes, back part
-        #   11. arms-0 - the back part of arms
-        #   12. bab-acs - acs between Back Arms and Body-1
-        #   13. base-1 - the base front part of body
-        #   14. bse-acs - between base and body-1
-        #   15. body-1 - the front part of body (boobs)
-        #   16. bfh-acs - acs between Body and Front Hair
-        #   17. face-pre - pre front hair facial expressions
-        #   18. front-hair - front portion of hair (split mode)
-        #   19. afh-acs - acs betweem Arms and Front Hair
-        #   20. face - facial expressions
-        #   21. mid-acs - acs between face and front arms
-        #   22. arms-base-1 - the base front part of arms
-        #   23. ase-acs-1 - between base arms and clothes, front part
-        #   24. arms-1 - front arms
-        #   25. pst-acs - acs after everything
+        #   4. chair - chair sprite
+        #   5. base-0 - the base back part of body
+        #   6. bse-acs - between base and body-0
+        #   7. body-0 - the back part of body (no arms in split mode)
+        #   8. table - the table/desk
+        #   9. bba-acs - acs between Body and Back Arms
+        #   10. arms-base-0 - the base back part of arm
+        #   11. ase-acs-0 - between base arms and clothes, back part
+        #   12. arms-0 - the back part of arms
+        #   13. bab-acs - acs between Back Arms and Body-1
+        #   14. base-1 - the base front part of body
+        #   15. bse-acs - between base and body-1
+        #   16. body-1 - the front part of body (boobs)
+        #   17. bfh-acs - acs between Body and Front Hair
+        #   18. face-pre - pre front hair facial expressions
+        #   19. front-hair - front portion of hair (split mode)
+        #   20. afh-acs - acs betweem Arms and Front Hair
+        #   21. face - facial expressions
+        #   22. mid-acs - acs between face and front arms
+        #   23. arms-base-1 - the base front part of arms
+        #   24. ase-acs-1 - between base arms and clothes, front part
+        #   25. arms-1 - front arms
+        #   26. pst-acs - acs after everything
 
         # NOTE: render order (baked)
         #   1. pre-acs - every acs that should render before anything
-        #   *2. body - baked body
-        #   7. table - the table/desk
+        #   3 chair - chair sprite
+        #   *4. body - baked body
+        #   8. table - the table/desk
         #   3. bbh-acs - acs between Body and Back hair
         #   16. bfh-acs - acs between body and front hair
         #   18. afh-acs - acs between front hair and arms
@@ -2555,6 +3069,7 @@ init -5 python in mas_sprites:
         # NOTE: acs in split hair locations end up being rendered at mid
         #   if current split is False
 
+        # otherwise show evrything
 
         # 1. pre accessories
         _ms_accessorylist(
@@ -2568,6 +3083,9 @@ init -5 python in mas_sprites:
         )
 
         if is_baked:
+
+            # chair
+            _ms_chair(sprite_str_list, loc_build_str, chair, n_suffix)
             
             # *2. body
             _ms_body(
@@ -2581,7 +3099,13 @@ init -5 python in mas_sprites:
             )
 
             # 7. table
-            _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
+            _ms_table(
+                sprite_str_list,
+                loc_build_str,
+                table,
+                show_shadow,
+                n_suffix
+            )
 
             # 3. post back hair acs
             _ms_accessorylist(
@@ -2676,8 +3200,8 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # position setup
-            #sprite_str_list.extend(loc_build_tup)
+            # chair
+            _ms_chair(sprite_str_list, loc_build_str, chair, n_suffix)
 
             # 4. base-0
             # 5. between base-0 and body-0 acs
@@ -2693,11 +3217,14 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # positon setup
-            #sprite_str_list.extend(loc_build_tup)
-
             # 7. Table
-            _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
+            _ms_table(
+                sprite_str_list,
+                loc_build_str,
+                table,
+                show_shadow,
+                n_suffix
+            )
 
             # 8. between body and back arms acs
             _ms_accessorylist(
@@ -2835,6 +3362,9 @@ init -5 python in mas_sprites:
                 "1"
             )
 
+        # always show after arms acs
+        # and zoom
+
         # 25. after arms acs
         _ms_accessorylist(
             sprite_str_list,
@@ -2847,12 +3377,7 @@ init -5 python in mas_sprites:
         )
 
         # zoom
-        sprite_str_list.extend((
-            "),",
-            ZOOM,
-            str(value_zoom),
-            ")"
-        ))
+        _ms_zoom(sprite_str_list)
 
         return "".join(sprite_str_list)
 
@@ -2982,7 +3507,7 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_table(sprite_list, loc_str, table, n_suffix):
+    def _ms_table(sprite_list, loc_str, table, with_shadow, n_suffix):
         """
         Adds table string 
 
@@ -2990,9 +3515,9 @@ init -5 python in mas_sprites:
             sprite_list - list to add sprite strings to
             loc_str - location string
             table - type of table
+            with_shadow - True will add shadow, false will not
             n_suffix - night suffix to use
         """
-        # NOTE: testing without I COMP since we only have 1 image
         sprite_list.extend((
             ",",
             loc_str, 
@@ -3004,6 +3529,20 @@ init -5 python in mas_sprites:
             FILE_EXT,
             '"'
         ))
+
+        if with_shadow:
+            sprite_list.extend((
+                ",",
+                loc_str,
+                ',"',
+                T_MAIN,
+                PREFIX_TABLE,
+                table,
+                SHADOW_SUFFIX,
+                n_suffix,
+                FILE_EXT,
+                '"'
+            ))
 
 
     def _ms_tears(sprite_list, loc_str, tears, n_suffix, f_prefix):
@@ -3198,6 +3737,40 @@ init -5 python in mas_sprites:
         ))
 
 
+    def _ms_zoom(sprite_list):
+        """
+        Adds zoom to sprite string
+
+        IN:
+            sprite_list - list to add sprite string data to
+        """
+        sprite_list.extend((
+            "),",
+            ZOOM,
+            str(value_zoom),
+            ")"
+        ))
+
+
+    def _pre_ms_setup(is_night):
+        """
+        Builds pre sprite string generation data
+
+        IN:
+            is_night - True if this is should be night, false if not
+
+        RETURNS: tuple of the following ofmrat
+            [0] - location build string
+            [2] - night suffix
+            [3] - sprite string list
+        """
+        return (
+            build_loc(),
+            night_mode(is_night),
+            [PRE_SPRITE_STR, LOC_REG]
+        )
+
+
 # Dynamic sprite builder
 # retrieved from a Dress Up Renpy Cookbook
 # https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
@@ -3244,6 +3817,9 @@ init -2 python:
             BSE_ACS,
             ASE_ACS,
         )
+
+        # state tuple size
+        STATE_SIZE = 11
 
         def __init__(self):
             """
@@ -3325,6 +3901,12 @@ init -2 python:
             # set to True to allow ACS overriding
             self._override_rec_layer = False
 
+            # the current table/chair combo we 
+            # NOTE: this is associated with monika because we could definitely
+            # have multiple table/chairs in a MASBackground.
+            # NOTE: do not replace this. if you wnat to chante the table/chair,
+            #   change the table chair prop
+            self.tablechair = MASTableChair("def", "def")
 
         def __get_acs(self, acs_type):
             """
@@ -3338,6 +3920,194 @@ init -2 python:
             """
             return self.acs.get(acs_type, None)
 
+        def _determine_poses(self, lean, arms):
+            """
+            determines the lean/pose/hair/baked data for monika based on
+            the requested lean and arms
+
+            IN:
+                lean - requested lean
+                arms - requested arms
+
+            RETURNS: tuple of the following format:
+                [0] - lean to use
+                [1] - leanpose to use
+                [2] - arms to use
+                [3] - hair to use
+                [4] - base pose to use
+                [5] - arms pose to use
+            """
+            # first check black list
+            if store.mas_sprites.should_disable_lean(lean, arms, self):
+                # set lean to None if its on the blacklist
+                # NOTE: this function checks pose_maps
+                lean = None
+                arms = "steepling"
+
+            # fallback adjustments:
+            if self.hair.pose_map.is_fallback():
+                arms, lean = self.hair.get_fallback(arms, lean)
+
+            if self.clothes.pose_map.is_fallback():
+                arms, lean = self.clothes.get_fallback(arms, lean)
+
+            # get the mapped hair for the current clothes
+            if self.clothes.has_hair_map():
+                hair = store.mas_sprites.HAIR_MAP.get(
+                    self.clothes.get_hair(self.hair.name),
+                    mas_hair_def
+                )
+
+            else:
+                hair = self.hair
+
+            # combined pose with lean for efficient
+            if lean is not None:
+                leanpose = lean + "|" + arms
+            else:
+                leanpose = arms
+
+            # MASPoseArms rules:
+            #   1. If the pose_arms property in clothes is None, then we assume
+            #   that the clothes follows the base pose rules.
+            #   2. If the pose_arms property contains a MASPoseMap, and the 
+            #   corresponding pose in that map is None, then we assume that
+            #   the clothes does NOT have layers for this pose.
+            #   3. If a both/left/right str item in a MASPoseArms is None,
+            #   then we assume that that particular piece of a posemap does
+            #   NOT have layers for this pose.
+            # select MASPoseArms for baes and outfit
+            base_pose = store.mas_sprites.base_pose_arms_map.get(
+                leanpose,
+                None
+            )
+            arms_pose = self.clothes.pose_arms
+            if arms_pose is None:
+                arms_pose = base_pose
+            else:
+                arms_pose = arms_pose.get(leanpose, base_pose)
+
+            return (lean, leanpose, arms, hair, base_pose, arms_pose)
+
+        def _same_state_acs(self, a1, a2):
+            """
+            Compares given acs lists as acs objects
+
+            NOTE: order does not matter
+
+            IN:
+                a1 - list of acs objects to compare
+                a2 - list of acs objects to compare
+
+            RETURNS: True if the same, False if not
+            """
+            # quick chec
+            if len(a1) != len(a2):
+                return False
+
+            # make a list of names for comparison
+            a2_names = [acs.name for acs in a2]
+
+            # now do comparison
+            same_count = 0
+            for a1_acs in a1:
+                if a1_acs.name in a2_names:
+                    same_count += 1
+                else:
+                    return False
+
+            return len(a2_names) == same_count
+
+        def _same_state_acs_prims(self, a1, a2):
+            """
+            Compares given acs lists as primitive data.
+
+            NOTE: order does not matter
+
+            IN:
+                a1 - list of acs names to compare
+                a2 - list of acs names to compare
+
+            RETURNS: True if the same, False if not
+            """
+            # quick check
+            if len(a1) != len(a2):
+                return False
+
+            same_count = 0
+            for a1_name in a1:
+                if a1_name in a2:
+                    same_count += 1
+                else:
+                    return False
+
+            return len(a2) == same_count
+
+        def _same_state(self, data):
+            """
+            Compares the given state as objects
+
+            IN:
+                data - previous object state
+
+            RETURNS: True if the same, False if not
+            """
+            # object data is sprite objects, but we compare names
+
+            # get current monikas state
+            curr_state = self.save_state(True, True, True, False)
+
+            # first compare size
+            if len(data) != len(curr_state):
+                return False
+
+            # clothes
+            if data[0].name != curr_state[0].name:
+                return False
+
+            # hair
+            if data[1].name != curr_state[1].name:
+                return False
+
+            # acs lists
+            for index in range(2, len(data)):
+                if not self._same_state_acs(data[index], curr_state[index]):
+                    return False
+
+            return True
+
+        def _same_state_prims(self, data):
+            """
+            Compares the given state as primitives
+
+            IN:
+                data - previous primitive state
+
+            RETURNS: True if the same, False if not
+            """
+            # primtiive data is stored as names
+
+            # get current monika's state
+            curr_state = self.save_state(True, True, True, True)
+
+            # first compare state size
+            if len(data) != len(curr_state):
+                return False
+
+            # clothes
+            if data[0] != curr_state[0]:
+                return False
+
+            # hair
+            if data[1] != curr_state[1]:
+                return False
+
+            # acs lists
+            for index in range(2, len(data)):
+                if not self._same_state_acs_prims(data[index], curr_state[index]):
+                    return False
+
+            return True
 
         def _load(self,
                 _clothes_name,
@@ -3476,7 +4246,13 @@ init -2 python:
                 return allow_none
             return val in MASMonika.SPL_LAYERS
 
-        def change_clothes(self, new_cloth, by_user=None, startup=False):
+        def change_clothes(
+                self,
+                new_cloth,
+                by_user=None,
+                startup=False,
+                outfit_mode=False
+        ):
             """
             Changes clothes to the given cloth. also sets the persistent
             force clothes var to by_user, if its not None
@@ -3489,6 +4265,11 @@ init -2 python:
                 startup - True if we are loading on startup, False if not
                     When True, we dont respect locking
                     (Default: False)
+                outfit_mode - True means we should change hair/acs if it 
+                    completes the outfit. False means we should not.
+                    NOTE: this does NOT affect hair/acs that must change for
+                        consistency purposes.
+                    (Default: False)
             """
             if self.lock_clothes and not startup:
                 return
@@ -3497,6 +4278,7 @@ init -2 python:
             temp_space = {
                 "by_user": by_user,
                 "startup": startup,
+                "outfit_mode": outfit_mode
             }
 
             prev_cloth = self.clothes
@@ -3509,8 +4291,16 @@ init -2 python:
                 new_cloth
             )
 
+            # abort if asked
+            if temp_space.get("abort", False):
+                return
+
             # exit point
-            self.clothes.exit(self, new_clothes=new_cloth)
+            self.clothes.exit(
+                self,
+                new_clothes=new_cloth,
+                outfit_mode=outfit_mode
+            )
 
             # post exit, pre change
             store.mas_sprites.clothes_exit_pst_change(
@@ -3532,7 +4322,11 @@ init -2 python:
             )
 
             # entry point
-            self.clothes.entry(self, prev_clothes=prev_cloth)
+            self.clothes.entry(
+                self,
+                prev_clothes=prev_cloth,
+                outfit_mode=outfit_mode
+            )
 
             # post entry point
             store.mas_sprites.clothes_entry_pst_change(
@@ -3577,6 +4371,10 @@ init -2 python:
                 prev_hair,
                 new_hair
             )
+
+            # abort if asked
+            if temp_space.get("abort", False):
+                return
 
             # exit point
             self.hair.exit(self, new_hair=new_hair)
@@ -3637,6 +4435,41 @@ init -2 python:
             """
             self.change_clothes(new_cloth, by_user=by_user, startup=startup)
             self.change_hair(new_hair, by_user=by_user, startup=startup)
+
+
+        def get_acs(self):
+            """
+            Gets all acs objects currently worn by Monika
+
+            RETURNS: list of all acs objects being worn
+            """
+            acs_items = []
+            for acs_name in self.acs_list_map:
+                acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if acs is not None:
+                    acs_items.append(acs)
+
+            return acs_items
+
+
+        def get_acs_by_desk(self, flag_value=True):
+            """
+            Returns all acs that have a keep_on_desk flag set to flag_value
+
+            IN:
+                flag_value - flag value to check for
+                    (Default: True)
+
+            RETURNS: list of ACS objects with a keep_on_desk flag set to 
+                flag_value
+            """
+            acs_items = []
+            for acs_name in self.acs_list.map:
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.keep_on_desk == flag_value:
+                    acs_items.append(_acs)
+            
+            return acs_items
 
 
         def get_acs_of_exprop(self, exprop, get_all=False):
@@ -3772,6 +4605,24 @@ init -2 python:
 
             return False
 
+        def is_wearing_acs_with_mux(self, acs_type):
+            """
+            Checks if currently wearing any ACS with the given acs_type in its
+            mux type
+
+            IN:
+                acs_type - acceessory type to check
+            """
+            for acs_name in self.acs_list_map:
+                acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if (
+                        acs
+                        and acs.mux_type is not None
+                        and acs_type in acs.mux_type
+                ):
+                    return True
+
+            return False
 
         def is_wearing_acs_in(self, accessory, acs_type):
             """
@@ -3815,6 +4666,19 @@ init -2 python:
             RETURNS: True if wearing hair with the exprop, False if not
             """
             return self.hair.hasprop(exprop)
+
+
+        def is_wearing_ribbon(self):
+            """
+            Checks if we are currently wearing a ribbon or ribbon-like ACS
+
+            RETURNS: True if wearing ACS with ribbon type or ACS with
+                ribbon-like ex prop
+            """
+            return (
+                self.is_wearing_acs_type("ribbon") 
+                or self.is_wearing_acs_with_exprop("ribbon-like")
+            )
 
 
         def load(self, startup=False):
@@ -3969,6 +4833,10 @@ init -2 python:
                     acs_type
                 )
 
+                # abort removal if we were told to abort
+                if temp_space.get("abort", False):
+                    return
+
                 # run programming point
                 accessory.exit(self)
 
@@ -4071,6 +4939,18 @@ init -2 python:
             self.reset_clothes(by_user)
             self.reset_hair(by_user)
 
+        def restore(self, _data, as_prims=False):
+            """
+            Restores monika to a previous state. This will reset outfit and
+            clear ACS before loading.
+
+            IN:
+                _data - see load_state
+                as_prims - see load_state
+            """
+            self.reset_outfit()
+            self.remove_all_acs()
+            self.load_state(_data, as_prims=as_prims)
 
         def save(self, force_hair=False, force_clothes=False, force_acs=False):
             """
@@ -4136,6 +5016,21 @@ init -2 python:
                 force_acs
             )
 
+
+        def same_state(self, data, as_prims=False):
+            """
+            compares if the given state is the same as current monika
+
+            IN:
+                data - data to compare
+                as_prims - True if prims, False if not
+
+            RETURNS: True if same state, False if not
+            """
+            if as_prims:
+                return self._same_state_prims(data)
+
+            return self._same_state(data)
 
         def save_state(self,
                 force_hair=False,
@@ -4280,6 +5175,10 @@ init -2 python:
                     acs_type
                 )
 
+                # abort wearing if we were told to abort
+                if temp_space.get("abort", False):
+                    return
+
                 # run mutual exclusion for acs
                 if accessory.mux_type is not None:
                     self.remove_acs_mux(accessory.mux_type)
@@ -4412,6 +5311,68 @@ init -2 python:
 #    hair_huearray = [hair_hue1,hair_hue2,hair_hue3,hair_hue4]
 #
 #    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
+
+
+    class MASTableChair(object):
+        """
+        Representation of an available table + chair combo.
+
+        PROPERTIES:
+            has_shadow - True if this table has a shadow
+            table - table tag associated with this table chair combo
+                This will be used in bulding the table sprite string
+            chair - chair tag associated with tihs table chair combo
+                This will be used in building the chair sprite string
+        """
+        from store.mas_sprites import TC_GEN, PREFIX_TABLE, SHADOW_SUFFIX, NIGHT_SUFFIX
+
+        def __init__(self, table, chair):
+            """
+            constructor
+
+            IN:
+                table - table tag to use 
+                chair - chair tag to use
+            """
+            self.table = table
+            self.chair = chair
+            self.has_shadow = False
+            self.prepare()
+
+        def prepare(self):
+            """
+            Prepares this table chair combo by checking for shadow.
+            """
+            self.has_shadow = (
+                renpy.loadable(self.TC_GEN.format(
+                    self.PREFIX_TABLE,
+                    self.table,
+                    self.SHADOW_SUFFIX,
+                    ""
+                ))
+                and renpy.loadable(self.TC_GEN.format(
+                    self.PREFIX_TABLE,
+                    self.table,
+                    self.SHADOW_SUFFIX,
+                    self.NIGHT_SUFFIX
+                ))
+            )
+
+        def setTable(self, new_table):
+            """
+            sets the table tag and checks shadow
+
+            IN:
+                new_table - the new table tag to set
+                    if an invalid string or NOne is passed in, we reset to 
+                    default
+            """
+            if new_table:
+                self.table = new_table
+            else:
+                self.table = "def"
+
+            self.prepare()
 
 
     class MASPoseArms(object):
@@ -5310,7 +6271,7 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteBase constructor
@@ -5336,7 +6297,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             self.__sp_type = -1
             self.name = name
@@ -5346,11 +6307,16 @@ init -2 python:
             self.pose_map = pose_map
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
-            self.ex_props = ex_props
             self.is_custom = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
+
+            #sets the ex_props to an empty dict if ex_props is None
+            if ex_props is None:
+                self.ex_props = {}
+            else:
+                self.ex_props = ex_props
 
 
         def __eq__(self, other):
@@ -5493,7 +6459,7 @@ init -2 python:
                 fallback=False,
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -5521,7 +6487,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
                 name,
@@ -5597,6 +6563,13 @@ init -2 python:
                     "" - sprite does not have any arm version for this pose
                     "*" - sprite has both "-0" and "-1" version, and both
                         should be used for this pose
+            dlg_desc - user friendly way to describe this accessory in dialogue
+                Think "black bow" or "silver earrings"
+            dlg_plur - True if the dlg_desc should be used in the plural 
+                sense, like "these silver earrings", False if not, like:
+                "this black bow"
+            keep_on_desk - Set to True to keep the ACS on the desk when monika
+                leaves, False if not
 
         SEE MASSpriteBase for inherited properties
         """
@@ -5614,8 +6587,10 @@ init -2 python:
                 exit_pp=None,
                 acs_type=None,
                 mux_type=None,
-                ex_props={},
+                ex_props=None,
                 arm_split=None,
+                dlg_data=None,
+                keep_on_desk=False
             ):
             """
             MASAccessory constructor
@@ -5656,9 +6631,14 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 arm_split - MASPoseMap object for determining arm splits. See
                     property list above for more info.
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
+                keep_on_desk - determines if ACS should be shown if monika 
+                    leaves
 
             """
             super(MASAccessory, self).__init__(
@@ -5677,6 +6657,13 @@ init -2 python:
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.arm_split = arm_split
+            self.keep_on_desk = keep_on_desk
+            
+            if dlg_data is not None and len(dlg_data) == 2:
+                self.dlg_desc, self.dlg_plur = dlg_data
+            else:
+                self.dlg_desc = None
+                self.dlg_plur = None
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -5794,7 +6781,7 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 split=None,
-                ex_props={}
+                ex_props=None
             ):
             """
             MASHair constructor
@@ -5824,7 +6811,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -5911,7 +6898,7 @@ init -2 python:
                 hair_map={},
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={},
+                ex_props=None,
                 pose_arms=None
             ):
             """
@@ -5945,7 +6932,7 @@ init -2 python:
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
-                    (Default: empty dict)
+                    (Default: None)
                 pose_arms - MASPoseMap object represneting the arm layers
                     for poses. If None is passed, we assume use the base
                     layers as a guide
@@ -5973,7 +6960,6 @@ init -2 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
-
         def get_hair(self, hair):
             """
             Given a hair type, grabs the available mapping for this hair type
@@ -5986,13 +6972,37 @@ init -2 python:
             """
             return self.hair_map.get(hair, self.hair_map.get("all", hair))
 
-
         def has_hair_map(self):
             """
             RETURNS: True if we have a mapping to check, False otherwise
             """
             return len(self.hair_map) > 0
 
+        @staticmethod
+        def by_exprop(exprop, value=True):
+            """
+            Gets all clothes that have the given exprop.
+
+            IN:
+                exprop - exprop to look for
+                value - value the exprop should be. Set to None to ignore.
+
+            RETURNS: list of MASClothes objects with the given exprop and value
+            """
+            clothes = []
+
+            for c_name in store.mas_sprites.CLOTH_MAP:
+                clothing = store.mas_sprites.CLOTH_MAP[c_name]
+                if (
+                        clothing.hasprop(exprop)
+                        and (
+                            value is None
+                            or value == clothing.getprop(exprop)
+                        )
+                ):
+                    clothes.append(clothing)
+
+            return clothes
 
         def _build_loadstrs(self):
             """
@@ -6152,70 +7162,24 @@ init -2 python:
         # are we sitting or not
         if is_sitting:
 
-            if store.mas_sprites.should_disable_lean(lean, arms, character):
-                # set lean to None if its on the blacklist
-                # NOTE: this function checks pose_maps
-                lean = None
-                arms = "steepling"
-
-            # fallback adjustments:
-            if character.hair.pose_map.is_fallback():
-                arms, lean = character.hair.get_fallback(arms, lean)
-
-            if character.clothes.pose_map.is_fallback():
-                arms, lean = character.clothes.get_fallback(arms, lean)
-
-            # get the mapped hair for the current clothes
-            if character.clothes.has_hair_map():
-                hair = store.mas_sprites.HAIR_MAP.get(
-                    character.clothes.get_hair(character.hair.name),
-                    mas_hair_def
-                )
-
-            else:
-                hair = character.hair
-
-            # combined pose with lean for efficiency
-            if lean is not None:
-                leanpose = lean + "|" + arms
-            else:
-                leanpose = arms
-
             # determine hair split
             is_baked = character.clothes.hasprop("baked outfit")
-#            if character.clothes.hasprop("baked outfit"):
-#                hair_split = True
-#
-#            else:
-#                # not leaning, still assume true if arms not found
-#                hair_split = hair.split.get(leanpose, True)
 
-            # MASPoseArms rules:
-            #   1. If the pose_arms property in clothes is None, then we assume
-            #   that the clothes follows the base pose rules.
-            #   2. If the pose_arms property contains a MASPoseMap, and the 
-            #   corresponding pose in that map is None, then we assume that
-            #   the clothes does NOT have layers for this pose.
-            #   3. If a both/left/right str item in a MASPoseArms is None,
-            #   then we assume that that particular piece of a posemap does
-            #   NOT have layers for this pose.
-            # select MASPoseArms for baes and outfit
-            base_pose = store.mas_sprites.base_pose_arms_map.get(
-                leanpose,
-                None
-            )
-            arms_pose = character.clothes.pose_arms
-            if arms_pose is None:
-                arms_pose = base_pose
-            else:
-                arms_pose = arms_pose.get(leanpose, base_pose)
+            # detremine all poses-specifc data to use:
+            # [0] - lean to use
+            # [1] - leanpose to use
+            # [2] - arms to use
+            # [3] - hair to use
+            # [4] - base pose to use
+            # [5] - arms pose to use
+            pose_data = character._determine_poses(lean, arms)
 
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.img_sit,
-                hair.img_sit,
+                pose_data[3].img_sit,
                 is_baked,
-                base_pose,
-                arms_pose,
+                pose_data[4],
+                pose_data[5],
                 eyebrows,
                 eyes,
                 nose,
@@ -6231,14 +7195,17 @@ init -2 python:
                 acs_afh_list,
                 acs_mid_list,
                 acs_pst_list,
-                leanpose=leanpose,
-                lean=lean,
-                arms=arms,
+                leanpose=pose_data[1],
+                lean=pose_data[0],
+                arms=pose_data[2],
                 eyebags=eyebags,
                 sweat=sweat,
                 blush=blush,
                 tears=tears,
-                emote=emote
+                emote=emote,
+                table=character.tablechair.table,
+                chair=character.tablechair.chair,
+                show_shadow=character.tablechair.has_shadow
             )
 
         else:
@@ -6258,6 +7225,63 @@ init -2 python:
             # custom standing mode
 
         return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
+
+
+    def mas_drawemptydesk(st, at, character):
+        """
+        draws the table dynamically. includes ACS that should stay on desk.
+        NOTE: this is assumed to be used with empty desk ONLY
+        NOTE: sitting only
+
+        IN:
+            st - renpy related
+            at - renpy realted
+            character - MASMonika character object
+        """
+        # in drawtable mode, only pst acs that stay on desk matter
+        acs_pst_list = [
+            acs
+            for acs in character.acs.get(MASMonika.PST_ACS, [])
+            if acs.keep_on_desk
+        ]
+
+        # get sprite string data
+        loc_b_str, n_sfx, spr_str_list = store.mas_sprites._pre_ms_setup(
+            not morning_flag
+        )
+        
+        # now build the chair
+        store.mas_sprites._ms_chair(
+            spr_str_list,
+            loc_b_str,
+            character.tablechair.chair,
+            n_sfx
+        )
+
+        # then the able
+        store.mas_sprites._ms_table(
+            spr_str_list,
+            loc_b_str,
+            character.tablechair.table,
+            False,
+            n_sfx
+        )
+
+        # then the pst acs we got
+        store.mas_sprites._ms_accessorylist(
+            spr_str_list,
+            loc_b_str,
+            acs_pst_list,
+            n_sfx,
+            True,
+            "steepling"
+        )
+
+        # zoom
+        store.mas_sprites._ms_zoom(spr_str_list)
+
+        return eval("".join(spr_str_list)), None 
+
 
 init -1 python in mas_sprites:
     # initialization of the base arms poes map
@@ -6314,8 +7338,26 @@ init -1 python in mas_sprites:
         return base_pose_arms_map.get(NUM_POSE.get(posenum, None), None)
 
 
+    def show_empty_desk():
+        """
+        shows empty desk
+        """
+        renpy.show(
+            "emptydesk",
+            tag="emptydesk",
+            at_list=[store.i11],
+            zorder=store.MAS_MONIKA_Z - 1
+        )
+
 # Monika
 define monika_chr = MASMonika()
+
+# empty desk should be defined after MASMonika
+image emptydesk = DynamicDisplayable(
+    mas_drawemptydesk,
+    character=monika_chr
+)
+
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes
@@ -6563,7 +7605,7 @@ image monika 6ATL_lookleftright:
 image monika ATL_0_to_upset:
 
     # 1 time this part
-    "monika 1esc"
+    "monika 2esc"
     5.0
 
     # repeat this part
@@ -6571,7 +7613,7 @@ image monika ATL_0_to_upset:
         # select image
         block:
             choice 0.95:
-                "monika 1esc"
+                "monika 2esc"
             choice 0.05:
                 "monika 5tsc"
 
@@ -6785,8 +7827,9 @@ image monika ATL_love_too_enam_plus:
 image monika idle = ConditionSwitch(
     "mas_isMoniBroken(lower=True)", "monika 6ckc",
     "mas_isMoniDis()", "monika 6ATL_lookleftright",
-    "mas_isMoniUpset()", "monika 2efc",
-    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+#    "mas_isMoniUpset()", "monika 2efc"
+#    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+    "mas_isBelowZero()", "monika ATL_0_to_upset",
     "mas_isMoniHappy()", "monika 1eua",
     "mas_isMoniAff()", "monika ATL_affectionate",
     "mas_isMoniEnamored()", "monika ATL_enamored",
@@ -6806,3 +7849,23 @@ image chibika 3 = "gui/poemgame/m_sticker_2.png"
 image ghost_monika: 
     "mod_assets/other/ghost_monika.png" 
     zoom 1.25
+
+### [IMG200]
+# transition labels
+
+# transiton to empty desk
+# NOTE: to hide a desk ACS, set that ACS to not keep on desk b4 calling this
+label mas_transition_to_emptydesk:
+    $ store.mas_sprites.show_empty_desk()
+    hide monika with dissolve
+    return
+
+# transition from empty desk
+# NOTE: to unhide a desk ACS, set that ACS to keep on desk AFTER calling this
+# IN:
+#   exp - expression to show when monika is shown
+label mas_transition_from_emptydesk(exp="monika 1eua"):
+    $ renpy.show(exp, tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
+    $ renpy.with_statement(dissolve)
+    hide emptydesk
+    return

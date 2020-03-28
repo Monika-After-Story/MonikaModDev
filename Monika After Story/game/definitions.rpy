@@ -10,7 +10,7 @@ python early:
     me = singleton.SingleInstance()
     # define the zorders
     MAS_MONIKA_Z = 10
-    MAS_BACKGROUND_Z =5
+    MAS_BACKGROUND_Z = 3
 
     # this is now global
     import datetime
@@ -21,7 +21,7 @@ python early:
 
 
 # uncomment this if you want syntax highlighting support on vim
-#init -1 python:
+# init -1 python:
 
     # special constants for event
     EV_ACT_PUSH = "push"
@@ -128,6 +128,8 @@ python early:
     #   show_in_idle - True if this Event can be shown during idle
     #       False if not
     #       (Default: False)
+    #   flags - bitmask system that acts as unchanging flags.
+    #       (Default: 0)
     class Event(object):
 
         # tuple constants
@@ -145,7 +147,7 @@ python early:
             "end_date":10,
             "unlock_date":11,
             "shown_count":12,
-            "diary_entry":13,
+            #"diary_entry":13, # NOTE: this will not be removed until later
             "last_seen":14,
             "years":15,
             "sensitive":16,
@@ -154,7 +156,14 @@ python early:
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks", "rules")
+        N_EVENT_NAMES = (
+            "per_eventdb",
+            "eventlabel",
+            "locks",
+            "rules",
+            "diary_entry",
+            "flags"
+        )
 
         # other constants
         DIARY_LIMIT = 500
@@ -190,13 +199,14 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-                diary_entry=None,
+#                diary_entry=None,
                 rules=dict(),
                 last_seen=None,
                 years=None,
                 sensitive=False,
                 aff_range=None,
-                show_in_idle=False
+                show_in_idle=False,
+                flags=0
             ):
 
             # setting up defaults
@@ -206,12 +216,12 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
-            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
-                raise Exception(
-                    (
-                        "diary entry for {0} is longer than {1} characters"
-                    ).format(eventlabel, self.DIARY_LIMIT)
-                )
+#            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+#                raise Exception(
+#                    (
+#                        "diary entry for {0} is longer than {1} characters"
+#                    ).format(eventlabel, self.DIARY_LIMIT)
+#                )
             if rules is None:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
@@ -251,6 +261,9 @@ python early:
                     eventlabel, str(aff_range)
                 ))
 
+            if not isinstance(flags, int):
+                raise Exception("'{0}' - invalid flags".format(eventlabel))
+
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
 
@@ -275,7 +288,7 @@ python early:
                 )
 
             self.rules = rules
-
+            self.flags = flags
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -293,7 +306,7 @@ python early:
                 end_date,
                 unlock_date,
                 0, # shown_count
-                diary_entry,
+                "", # diary_entry
                 last_seen,
                 years,
                 sensitive,
@@ -343,7 +356,7 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-                    self.diary_entry = diary_entry
+#                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
                     self.sensitive = sensitive
@@ -534,6 +547,47 @@ python early:
             """
             self.start_date = None
             self.end_date = None
+
+        def timePassedSinceLastSeen_d(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, in terms of datetime.date
+            (Excludes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            if self.last_seen is not None:
+                last_seen_date = self.last_seen.date()
+            else:
+                last_seen_date = None
+
+            return mas_timePastSince(last_seen_date, time_passed, _now)
+
+        def timePassedSinceLastSeen_dt(self, time_passed, _now=None):
+            """
+            Checks if time_passed amount of time has passed since we've last seen this event, precise to datetime.datetime
+            (Includes hours, minutes, seconds, and microseconds)
+
+            IN:
+                time_passed - amount of time to check should have passed
+                _now - current time. If None, now is assumed (Default: None)
+
+            OUT:
+                boolean:
+                    - True if the amount of time provided has passed since we've last seen this event
+                    - False otherwise
+
+            NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
+            """
+            return mas_timePastSince(self.last_seen, time_passed, _now)
 
         @staticmethod
         def getSortPrompt(ev):
@@ -917,6 +971,7 @@ python early:
             #   full_copy - True means we create a new dict with deepcopies of
             #       the events. False will only copy references
             #       (Default: False)
+            #       DEPRECATEDE
             #
             #   FILTERING RULES: (recommend to use **kwargs)
             #   NOTE: None means we ignore that filtering rule
@@ -1495,11 +1550,13 @@ python early:
             """
             if ev.action == EV_ACT_UNLOCK:
                 ev.unlocked = False
+
             elif ev.action == EV_ACT_RANDOM:
                 ev.random = False
                 #And just pull this out of the event list if it's in there at all (provided we haven't bypassed it)
                 if "no rmallEVL" not in ev.rules:
                     mas_rmallEVL(ev.eventlabel)
+
             #NOTE: we don't add the rest since there's no reason to undo those.
 
 
@@ -1780,7 +1837,616 @@ python early:
             # otherwise continue on
             return None
 
-#init -1 python:
+
+# init -1 python:
+
+    class MASLinearForm(object):
+        """
+        Representation of a linear functions
+        """
+        THRESH = 0.001
+
+        def __init__(self, xdiff, ydiff, yint):
+            """
+            Constructor for a Linear Formula.
+
+            IN:
+                xdiff - difference in x coords (used in M)
+                ydiff - difference in y coords (used in M)
+                yint - y intercept 
+            """
+            self.xdiff = xdiff
+            self.ydiff = ydiff
+
+            # NOTE: this xdiff is actullay used in calculations
+            self._fxdiff = float(xdiff)
+
+            # double check yintercept calcuations
+            if xdiff == 0:
+                self.yint = None
+            elif ydiff == 0:
+                self.yint = 0
+            else:
+                self.yint = yint
+
+        def getx(self, y):
+            """
+            Calculates the X value given a y
+
+            IN:
+                y - y value to input
+
+            RETURNS: x value, or None if not possible
+            """
+            if self.yint is None:
+                return x
+            if self.ydiff == 0:
+                return None
+
+            return self._getx(y)
+
+        def gety(self, x):
+            """
+            Calculates the Y value given an x
+
+            IN:
+                x - x value to input
+
+            RETURNS: y value, or None if not possible
+            """
+            if self.yint is None:
+                return None
+
+            return self._gety(x)
+
+        @staticmethod
+        def diffPoints(p1, p2):
+            """
+            Generats x/y diffs for 2 points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: tuple of the following format:
+                [0] - xdiff
+                [1] - ydiff
+            """
+            lp, rp = MASLinearForm.sortPoints(p1, p2)
+            return rp[0] - lp[0], rp[1] - lp[1]
+
+        @staticmethod
+        def fromPoints(p1, p2):
+            """
+            Generates a MASLinearform object using points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: MASLinearForm object
+            """
+            xdiff, ydiff = MASLinearForm.diffPoints(p1, p2)
+            yint = MASLinearForm.yintPoints(p1, p2)
+            return MASLinearForm(xdiff, ydiff, yint)
+
+        @staticmethod
+        def fromSlope(slope, yint):
+            """
+            Generates a MASLinearForm object using slope
+
+            IN:
+                slope - the slope of the line 
+                yint - the yintercept of the line
+
+            RETURNS: MASLinearForm object
+            """
+            return MASLinearForm(1, m, yint)
+
+        @staticmethod
+        def sortPoints(p1, p2):
+            """
+            Returns the two points as an ordered tuple
+
+            IN:
+                p1 - (x, y) point 
+                p2 - (x, y) point
+
+            RETURNS: tuple of the following format:
+                [0] - left most point 
+                [1] - right most point
+            """
+            if p1[0] < p2[0]:
+                return p1, p2
+
+            return p2, p1
+
+        @staticmethod
+        def yintPoints(p1, p2):
+            """
+            Returns yintercept from 2 points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: yintercept, or None if no yintercept
+            """
+            # initial diff checks
+            xdiff, ydiff = MASLinearForm.diffPoints(p1, p2)
+            if xdiff == 0:
+                return None
+            elif ydiff == 0:
+                return 0
+
+            # otherwise, we need to check the points
+            lp, rp = MASLinearForm.sortPoints(p1, p2)
+            lx, ly = lp
+
+            # if the left point is already on y axis, this is easy
+            if lx == 0:
+                return lp[1]
+
+            # otherwise, we need to do math
+            pot_yint = ly - ( (ydiff * lx) / float(xdiff) )
+
+            # threshold check is so we dont have too many floats in simple
+            # cases
+            # NOTE: so here we are checking that the difference bewteen the
+            #   float value and its integercomponent is less than the
+            #   threshold (a small value), then we assume it is int instead
+            #   float.
+            if abs(int(pot_yint) - pot_yint) < MASLinearForm.THRESH:
+                pot_yint = int(pot_yint)
+
+            return pot_yint
+
+        def _getx(self, y):
+            """
+            Gets x without any checks (this can crash)
+            """
+            return (y - self.yint) / self._slope()
+
+        def _gety(self, x):
+            """
+            Gets y with out any checks (this can crash)
+            """
+            return self._slope(x) + self.yint
+
+        def _slope(self, x=1):
+            """
+            Returns the slope of this line
+            Pass in X to calculate mx instead of just m
+            """
+            return  (self.ydiff * x) / self._fxdiff
+
+
+    class MASEdge(object):
+        """
+        Representation of an edge (line with 2 points)
+        Has functions related to determining if a point will intersect with 
+        this edge (aka for point in polygon calculations)
+        """
+
+        def __init__(self, p1, p2):
+            """
+            Constructor for an edge
+            NOTE: the edges do NOT have to be the correct order. This is
+                determined internally.
+
+            IN:
+                p1 - start point of edge (x, y)
+                p2 - end point of edge (x, y)
+            """
+            self._horizontal = False
+            self._vertical = False
+            self._left_point = None
+            self._right_point = None
+            self.__bb_x_min = None
+            self.__bb_x_max = None
+            self.__bb_y_min = None
+            self.__bb_y_max = None
+            self.__norm_lp = (0, 0)
+            self.__norm_rp = None
+            self.__line = None
+
+            self.__setup(p1, p2)
+
+        def inBoundingBox(self, x, y):
+            """
+            Checks if the given x,y is in teh bounding box
+
+            IN:
+                x - x coordinate to check
+                y - y coordinate to check
+
+            RETURNS: True if in bounding box, False if not
+            """
+            return self._inBoundingBoxX(x) and self._inBoundingBoxY(y)
+
+        def horizontalIntersect(self, x, y):
+            """
+            Checks if a horizontal ray going right with the given point as
+            the origin of the ray will intersect this Edge
+
+            IN:
+                x - x coordinate to check
+                y - y coodinate to check
+
+            RETURNS: True if it intersects, False if not
+            """
+            # horizontal lines will always be considered not hitting
+            if self._horizontal:
+                return False
+
+            # then check if within the horizontal range of the edge
+            if not self._inBoundingBoxY(y):
+                return False
+
+            # right of the bounding box is for sure a miss
+            if self.__bb_x_max < x:
+                return False
+
+            # left of the bounding box is for sure a hit
+            # NOTE: this also handles vertical lines
+            if x < self.__bb_x_min:
+                return True
+
+            # otherwise, we are for sure within the bounding box. 
+
+            # vertical lines means we only have to check x
+            if self._vertical:
+                # in this case, we treat on the line as passing
+                return x <= self.__bb_x_min
+
+            # now just run the inverse of the linear formula, and if 
+            # our x is less than that, then the point is for sure before the
+            # edge
+            x, y = self._normalize((x, y))
+            return x <= self.__line._getx(y)
+
+        def _inBoundingBoxX(self, x):
+            """
+            Checks if the given point is within the vertical parts of the
+            bounding box (within x range)
+
+            IN:
+                x - x coordinate to check
+
+            RETURNS: True if the given x is within bounding box range, False
+                if not
+            """
+            return self.__bb_x_min <= x <= self.__bb_x_max
+
+        def _inBoundingBoxY(self, y):
+            """
+            Checks if the given y coord is within the horizontal parts of the
+            bounding box (within y range)
+
+            IN:
+                y - y coordinate to check
+
+            RETURNS: True if the given y is within bounding box range, False if
+                not
+            """
+            return self.__bb_y_min <= y <= self.__bb_y_max
+
+        def __setup(self, p1, p2):
+            """
+            Sets up this MASEdge using given points
+            """
+            self.__setupPoints(p1, p2)
+            self.__setupBoundingBox()
+            self.__setupNormalizedPoints()
+            self.__setupLinearFunction()
+
+        def __setupBoundingBox(self):
+            """
+            Sets up bounding box
+            """
+            self.__bb_x_min = self._left_point[0]
+            self.__bb_x_max = self._right_point[0]
+            self.__bb_y_min = min(self._left_point[1], self._right_point[1])
+            self.__bb_y_max = max(self._left_point[1], self._right_point[1])
+
+        def __setupLinearFunction(self):
+            """
+            Sets up the MASLinearForm functions for this Edge
+            """
+            self.__line = MASLinearForm.fromPoints(
+                self.__norm_lp,
+                self.__norm_rp
+            )
+
+        def __setupNormalizedPoints(self):
+            """
+            Sets up the appropraite normlization points
+            """
+            self.__norm_rp = MASLinearForm.diffPoints(
+                self._left_point,
+                self._right_point
+            )
+
+        def __setupPoints(self, p1, p2):
+            """
+            Sets up the appropriate vars for point handling
+            """
+            # split points
+            p1x, p1y = p1
+            p2x, p2y = p2
+
+            # determine of vertical line
+            if p1x == p2x:
+                self._vertical = True
+
+            # determine if horizontal line
+            elif p1y == p2y:
+                self._horizontal = True
+
+            # determine left and righ tpoint
+            self._left_point, self._right_point = MASLinearForm.sortPoints(
+                p1,
+                p2
+            )
+
+        def _normalize(self, point):
+            """
+            Normalizes a point so its normalized to this edge
+
+            IN:
+                point - (x, y) point to normalize
+
+            RETURNS: normalized point (x, y)
+            """
+            return (
+                point[0] - self._left_point[0],
+                point[1] - self._left_point[1]
+            )
+
+
+    class MASClickZone(renpy.Displayable):
+        """
+        Special mousezone that can react depending if being clicked
+        with mouse. Meant for custom displayable use.
+
+        PROPERTIES:
+            corners - list of verticies. each element should be a tuple like
+                (x, y)
+            disabled - True means to disable this mouse zone, False not
+        """
+        LEFT_CLICK = 1
+        MIDDLE_CLICK = 2
+        RIGHT_CLICK = 3
+
+        def __init__(self, corners):
+            """
+            Constructor for the Clickzone displayable
+
+            IN:
+                corners - list of verticies (x, y)
+                    ASSUMES THAT THIS IS SORTED IN ORDER
+            """
+            if len(corners) <= 0:
+                raise Exception("Clickzone cannot be built with empty corners")
+
+            super(renpy.Displayable, self).__init__()
+
+            self.corners = corners
+            self.disabled = False
+            self._debug_back = False
+            self.__edges = []
+            self._button_down = pygame.MOUSEBUTTONUP
+
+            self.__setup()
+
+        def render(self, width, height, st, at):
+            """
+            Render functions
+            """
+            # NOTE: we are using the given width and height because of teh
+            #   debug canvas mode
+            r = renpy.Render(width, height)
+
+            # only show a box if debug mode is on
+            if self._debug_back:
+                canvas = r.canvas()
+                canvas.polygon("#FFE6F4", self.corners, width=0)
+
+            return r
+
+        def event(self, ev, x, y, st):
+            """
+            Event function
+            """
+            if ev.type == self._button_down:
+                # determine if this event happend here
+                if self._isOverMe(x, y):
+                    return ev.button
+
+            # othewise, nothing happened
+            return None
+
+        def _inBoundingBox(self, x, y):
+            """
+            Checks if the given coordinates are within the bounding box
+
+            IN:
+                x - x coordinate to check
+                y - y coordinat eto check
+
+            RETURNS: True if these coords are within the bounding box, False
+                if not
+            """
+            return (
+                self.__bb_x_min <= x <= self.__bb_x_max
+                and self.__bb_y_min <= y <= self.__bb_y_max
+            )
+
+        def _isOverMe(self, x, y):
+            """
+            Determines if the given coordinates are inside this click zone
+
+            IN:
+                x - x coordinage to check
+                y - y coordinate to check
+
+            RETURNS: True if these coordinates are in this clickzone, False
+                if not
+            """
+            # bounding box covers most cases
+            if not self._inBoundingBox(x, y):
+                return False
+
+            # otherwise, determine if in polygon
+            intersections = 0
+            for edge in self.__edges:
+                intersections += int(edge.horizontalIntersect(x, y))
+
+            # odd number of intersctions mean inside
+            return (intersections % 2) == 1
+
+        def _start_click(self, button):
+            """
+            Marks the appropraite spot where a click should occur
+            ASSUMES MOUSEBUTTONDOWN was found, and we are just determining
+            the click.
+            """
+            self.__click_start[button - 1] = True
+
+        def _was_clicked(self, button):
+            """
+            Checks if this button spot was clicked
+            """
+            return self.__click_start[button - 1]
+
+        def _reset_click(self, button):
+            """
+            Resets click status for a button
+            """
+            self.__click_start[button - 1] = False
+
+        def __setup(self):
+            """
+            setup functions
+            """
+            self.__setupBoundingBox()
+            self.__setupEdges()
+
+        def __setupBoundingBox(self):
+            """
+            Generates the bounding box for this click zone
+            """
+            # set intiial vlaues
+            self.__bb_x_min = self.corners[0][0]
+            self.__bb_x_max = self.corners[0][0]
+            self.__bb_y_min = self.corners[0][1]
+            self.__bb_y_max = self.corners[0][1]
+
+            # create box
+            for index in range(1, len(self.corners)):
+                x, y = self.corners[index]
+                self.__bb_x_min = min(self.__bb_x_min, x)
+                self.__bb_x_max = max(self.__bb_x_max, x)
+                self.__bb_y_min = min(self.__bb_y_min, y)
+                self.__bb_y_max = max(self.__bb_y_max, y)
+
+            # finally, set the internal width and height for rendering
+            self.__width = self.__bb_x_max - self.__bb_x_min
+            self.__height = self.__bb_y_max - self.__bb_y_min
+
+        def __setupEdges(self):
+            """
+            Sets up the edges for this click zone
+            """
+            # only generate the edges up to the final edge
+            for index in range(len(self.corners)-1):
+                self.__edges.append(
+                    MASEdge(self.corners[index], self.corners[index+1])
+                )
+
+            # and the final edge
+            self.__edges.append(MASEdge(
+                self.corners[0],
+                self.corners[-1]
+            ))
+
+# init -1 python:
+
+    class MASInteractable(renpy.Displayable):
+        """
+        Base class for all interactable displayables.
+        Interactables are custom displayables that use clickzones
+        """
+
+        def __init__(self, zones, button_down, debug=False):
+            """
+            Constructor for an interactable.
+
+            IN:
+                zones - dict of the following format:
+                    key: key of the zone, this is returned if the zone is 
+                        clicked
+                    value: list of vertexes that make teh zone
+                button_down - button_down item to use for each clickzone
+                debug - Set to True to fill the clickzones
+            """
+            super(renpy.Displayable, self).__init__()
+
+            self.zones = {}
+            self.zones_render = []
+
+            self._build_zones(zones, button_down, debug=debug)
+
+        def _build_zones(self, zones, button_down, debug=False):
+            """
+            Builds clickzone objects (self.zones and self.zones_render)
+
+            IN:
+                zones - dict of zones (see constructor)
+                button_down - button_down item to use for each clikzone
+                debug - set to True to see clickzones
+            """
+            for zone_key, zone_vx in zones.iteritems():
+                # build clickzone
+                clickzone = MASClickZone(zone_vx)
+                clickzone._debug_back = debug
+                clickzone._button_down = button_down
+
+                # add to internal lists
+                self.zones[zone_key] = clickzone
+                self.zones_render.append(clickzone)
+
+        def check_click(self, ev, x, y, st):
+            """
+            Checks if an ev was a click over a zone.
+
+            RETURNS: zone key if clicked, None if not clicked
+            """
+            for zone_key, clickzone in self.zones.iteritems():
+                if clickzone.event(ev, x, y, st) is not None:
+                    return zone_key
+
+            return None
+
+        def check_over(self, x, y):
+            """
+            Checks if the given x y is over a zone, and returns the zone key
+            if appropripate
+
+            IN:
+                x - x
+                y - y
+
+            RETURNS: zone_key, or None if no click over zones
+            """
+            for zone_key, clickzone in self.zones.iteritems():
+                if clickzone._isOverMe(x, y):
+                    return zone_key
+
+            return None
+
+
+# init -1 python:
     # new class to manage a list of quips
     class MASQuipList(object):
         import random
@@ -2421,6 +3087,7 @@ init -999 python:
 init -990 python in mas_utils:
     import store
     import os
+    import stat
     import shutil
     import datetime
     import codecs
@@ -2433,6 +3100,7 @@ init -990 python in mas_utils:
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
     _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
+    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
 
     # bad text dict
     BAD_TEXT = {
@@ -2635,6 +3303,7 @@ init -990 python in mas_utils:
         # and delete the current file
         trydel(old_path)
 
+
     def tryparsedt(_datetime, default=None, sep=" "):
         """
         Trys to parse a datetime isoformat string into a datetime object
@@ -2799,6 +3468,7 @@ init -100 python in mas_utils:
     import ctypes
     import random
     import os
+    import math
     from cStringIO import StringIO as fastIO
 
     __FLIMIT = 1000000
@@ -2943,6 +3613,36 @@ init -100 python in mas_utils:
             second=0,
             microsecond=0
         )
+
+
+    def normalize_points(points, offsets, add=True):
+        """
+        normalizes a list of points using the given offsets
+
+        IN:
+            points - list of points to normalize
+            offsets - Tuple of the following format:
+                [0] - amount to offset x coords
+                [1] - amount to offset y coords
+            add - True will add offsets, False will subtract offsets
+
+        RETURNS: list of normalized points
+        """
+        normal_pts = []
+
+        # setup offsets
+        xoffset, yoffset = offsets
+        if not add:
+            xoffset *= -1
+            yoffset *= -1
+
+        for xcoord, ycoord in points:
+            normal_pts.append((
+                xcoord + xoffset,
+                ycoord + yoffset
+            ))
+
+        return normal_pts
 
 
     def _EVgenY(_start, _end, current, for_start):
@@ -3255,6 +3955,19 @@ init -985 python:
             defval=datetime.datetime.now()
         )
 
+    def mas_isFirstSeshPast(_date):
+        """
+        Checks if the first session is past the given date
+
+        IN:
+            _date - datetime.date to check against
+
+        OUT:
+            boolean:
+                - True if first sesh is past given date
+                - False otherwise
+        """
+        return mas_getFirstSesh().date() > _date
 
     def mas_getLastSeshEnd():
         """
@@ -3881,444 +4594,7 @@ init -1 python:
         return appIds
 
 init 2 python:
-    # global functions that should be defined after level 0
-
-    def mas_isCoffeeTime(_time=None):
-        """
-        Checks if its coffee time for monika
-
-        IN:
-            _time - time to check
-                If None, we use current time
-                (Defualt: None)
-
-        RETURNS:
-            true if its coffee time, false if not
-        """
-        if _time is None:
-            _time = datetime.datetime.now()
-
-        # monika drinks coffee between 6 am and noon
-        return (
-            store.mas_coffee.COFFEE_TIME_START
-            <= _time.hour <
-            store.mas_coffee.COFFEE_TIME_END
-        )
-
-
-    def mas_brewCoffee(_start_time=None):
-        """
-        Starts brewing coffee aka sets up the coffee finished brewing event
-
-        IN:
-            _start_time - time to start brewing the coffee
-                If None, we assume now
-                (Default: None)
-        """
-        if _start_time is None:
-            _start_time = datetime.datetime.now()
-
-        # start brew
-        persistent._mas_coffee_brew_time = _start_time
-
-        # calculate end brew time
-        end_brew = random.randint(
-            store.mas_coffee.BREW_LOW,
-            store.mas_coffee.BREW_HIGH
-        )
-
-        # setup the event conditional
-        brew_ev = mas_getEV("mas_coffee_finished_brewing")
-        brew_ev.conditional = (
-            "persistent._mas_coffee_brew_time is not None "
-            "and (datetime.datetime.now() - persistent._mas_coffee_brew_time) "
-            "> datetime.timedelta(0, {0})"
-        ).format(end_brew)
-        brew_ev.action = EV_ACT_QUEUE
-
-
-    def mas_drinkCoffee(_start_time=None):
-        """
-        Lets monika drink coffee aka sets the time she should stop drinking
-        coffee (coffee finished drinking event)
-
-        IN:
-            _start_time - time to start dirnking coffee
-                If None, we use now
-                (Defualt: now)
-        """
-        if _start_time is None:
-            _start_time = datetime.datetime.now()
-
-        # delta for drinking
-        # NOTE: between 10 minutes to 2 hours
-        drinking_time = datetime.timedelta(
-            0,
-            random.randint(
-                store.mas_coffee.DRINK_LOW,
-                store.mas_coffee.DRINK_HIGH
-            )
-        )
-
-        # setup the stop time for the cup
-        persistent._mas_coffee_cup_done = _start_time + drinking_time
-
-        # setup the event conditional
-        drink_ev = mas_getEV("mas_coffee_finished_drinking")
-        drink_ev.conditional = (
-            "persistent._mas_coffee_cup_done is not None "
-            "and datetime.datetime.now() > persistent._mas_coffee_cup_done"
-        )
-        drink_ev.action = EV_ACT_QUEUE
-
-        # increment cup count
-        persistent._mas_coffee_cups_drank += 1
-
-
-    def mas_resetCoffee():
-        """
-        Completely resets all coffee vars
-        NOTE: this only resets the coffee drinking vars, not the history
-        """
-        brew_ev = mas_getEV("mas_coffee_finished_brewing")
-        drink_ev = mas_getEV("mas_coffee_finished_drinking")
-        monika_chr.remove_acs(mas_acs_mug)
-        brew_ev.conditional = None
-        brew_ev.action = None
-        drink_ev.conditional = None
-        drink_ev.action = None
-        persistent._mas_coffee_brew_time = None
-        persistent._mas_coffee_cup_done = None
-        mas_rmEVL(brew_ev.eventlabel)
-        mas_rmEVL(drink_ev.eventlabel)
-
-
-    def _mas_startupCoffeeLogic():
-        """
-        Runs startup logic regarding coffee stuff.
-
-        It is assumed that this run prior to conditional checking.
-        """
-        # do we even have coffee enabled?
-        if not persistent._mas_acs_enable_coffee:
-            return
-
-        # setup some vars
-        brew_ev = mas_getEV("mas_coffee_finished_brewing")
-        drink_ev = mas_getEV("mas_coffee_finished_drinking")
-        _now = datetime.datetime.now()
-        _chance = random.randint(1, 100)
-        time_for_coffee = mas_isCoffeeTime(_now)
-
-        # setup some functions
-        def still_brew(_time):
-            return (
-                _time is not None
-                and _time.date() == _now.date()
-                and mas_isCoffeeTime(_time)
-            )
-
-        def still_drink(_time):
-            return _time is not None and _now < _time
-
-
-        # should we even drink coffee right now?
-        if not time_for_coffee:
-
-            # if its not time for coffee, we can still be drinking coffee
-            # because of a couple reasons:
-            #   - monika started her brew before her cut off time
-            #   - monika's drink time hasn't been reached yet
-            if still_brew(persistent._mas_coffee_brew_time):
-                # monika's brew started before the cut off.
-                # if the brew is done, then skip to drinking.
-                # otherwise, the finished brewing event will trigger on its
-                # own
-                if brew_ev.conditional is not None and eval(brew_ev.conditional):
-                    # even though this in inaccurate, it works for the
-                    # immersive purposes, so whatever.
-                    mas_rmEVL(brew_ev.eventlabel)
-                    mas_drinkCoffee(persistent._mas_coffee_brew_time)
-
-                    if not still_drink(persistent._mas_coffee_cup_done):
-                        # monika should have finished this coffee already
-                        mas_resetCoffee()
-
-                    else:
-                        # monika is currently drinking this coffee
-                        brew_ev.conditional = None
-                        brew_ev.action = None
-                        persistent._mas_coffee_brew_time = None
-                        monika_chr.wear_acs_pst(mas_acs_mug)
-
-            elif still_drink(persistent._mas_coffee_cup_done):
-                # monika is still drinking coffee
-                # clear brew vars just in case
-                brew_ev.conditional = None
-                brew_ev.action = None
-                persistent._mas_coffee_brew_time = None
-                mas_rmEVL(brew_ev.eventlabel)
-
-                # make sure she has the cup, just in case
-                if not monika_chr.is_wearing_acs(mas_acs_mug):
-                    monika_chr.wear_acs_pst(mas_acs_mug)
-
-            else:
-                # otherwise, just reset coffee
-                mas_resetCoffee()
-
-        else:
-            # its coffee time!
-            # if we are currently brewing or drinking, we don't need to do
-            # anything else
-            if (
-                    still_brew(persistent._mas_coffee_brew_time)
-                    or still_drink(persistent._mas_coffee_cup_done)
-                ):
-                return
-
-            # otherwise, lets checek if monika should be brewing or drinking
-            # coffee
-
-            # first clear vars so we start fresh
-            mas_resetCoffee()
-
-            if (
-                    _now.hour < store.mas_coffee.BREW_DRINK_SPLIT
-                    and _chance <= store.mas_coffee.BREW_CHANCE
-                ):
-                # monika is brewing coffee
-                mas_brewCoffee()
-
-            elif _chance <= store.mas_coffee.DRINK_CHANCE:
-                # monika is drinking coffee
-                mas_drinkCoffee()
-                monika_chr.wear_acs_pst(mas_acs_mug)
-
-        return
-
-
-    # NOTE: the hot choc logic is literally the same as coffee but with diff
-    # vars. We srs need to do consumable framework
-    # TODO: consumable framework before we do anymore related
-    def mas_isHotChocTime(_time=None):
-        """
-        Checks if its hot chocolate time for monika
-
-        IN:
-            _time - time to check
-                If None, we use current time
-                (Defualt: None)
-
-        RETURNS:
-            true if its hot chocolate time, false if not
-        """
-        if _time is None:
-            _time = datetime.datetime.now()
-
-        # monika drinks coffee between 6 am and noon
-        return (
-            store.mas_coffee.HOTCHOC_TIME_START
-            <= _time.hour <
-            store.mas_coffee.HOTCHOC_TIME_END
-        )
-
-
-    def mas_brewHotChoc(_start_time=None):
-        """
-        Starts brewing hot chocolate aka sets up the hot chocolate finished
-        brewing event
-
-        IN:
-            _start_time - time to start brewing the hotchoc
-                If None, we assume now
-                (Default: None)
-        """
-        if _start_time is None:
-            _start_time = datetime.datetime.now()
-
-        # start brew
-        persistent._mas_c_hotchoc_brew_time = _start_time
-
-        # calculate end brew time
-        end_brew = random.randint(
-            store.mas_coffee.BREW_LOW,
-            store.mas_coffee.BREW_HIGH
-        )
-
-        # setup the event conditional
-        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
-        brew_ev.conditional = (
-            "persistent._mas_c_hotchoc_brew_time is not None "
-            "and (datetime.datetime.now() - "
-            "persistent._mas_c_hotchoc_brew_time) "
-            "> datetime.timedelta(0, {0})"
-        ).format(end_brew)
-        brew_ev.action = EV_ACT_QUEUE
-
-
-    def mas_drinkHotChoc(_start_time=None):
-        """
-        Lets monika drink hot chocolate aka sets the time she should stop
-        drinking hot chocolate (hot chocolate finished drinking event)
-
-        IN:
-            _start_time - time to start dirnking hot chocolate
-                If None, we use now
-                (Defualt: now)
-        """
-        if _start_time is None:
-            _start_time = datetime.datetime.now()
-
-        # delta for drinking
-        # NOTE: between 10 minutes to 2 hours
-        drinking_time = datetime.timedelta(
-            0,
-            random.randint(
-                store.mas_coffee.DRINK_LOW,
-                store.mas_coffee.DRINK_HIGH
-            )
-        )
-
-        # setup the stop time for the cup
-        persistent._mas_c_hotchoc_cup_done = _start_time + drinking_time
-
-        # setup the event conditional
-        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
-        drink_ev.conditional = (
-            "persistent._mas_c_hotchoc_cup_done is not None "
-            "and datetime.datetime.now() > persistent._mas_c_hotchoc_cup_done"
-        )
-        drink_ev.action = EV_ACT_QUEUE
-
-        # increment cup count
-        persistent._mas_c_hotchoc_cups_drank += 1
-
-
-    def mas_resetHotChoc():
-        """
-        Completely resets all hot chocolate vars
-        NOTE: this only resets the hotchoc drinking vars, not the history
-        """
-        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
-        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
-        monika_chr.remove_acs(mas_acs_hotchoc_mug)
-        brew_ev.conditional = None
-        brew_ev.action = None
-        drink_ev.conditional = None
-        drink_ev.action = None
-        persistent._mas_c_hotchoc_brew_time = None
-        persistent._mas_c_hotchoc_cup_done = None
-        mas_rmEVL(brew_ev.eventlabel)
-        mas_rmEVL(drink_ev.eventlabel)
-
-
-    def _mas_startupHotChocLogic():
-        """
-        Runs startup logic regarding hotchocolate stuff.
-
-        It is assumed that this run prior to conditional checking.
-        """
-        # do we even have coffee enabled?
-        if not persistent._mas_acs_enable_hotchoc:
-            return
-
-        # setup some vars
-        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
-        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
-        _now = datetime.datetime.now()
-        _chance = random.randint(1, 100)
-        time_for_coffee = mas_isHotChocTime(_now)
-
-        # setup some functions
-        def still_brew(_time):
-            return (
-                _time is not None
-                and _time.date() == _now.date()
-                and mas_isHotChocTime(_time)
-            )
-
-        def still_drink(_time):
-            return _time is not None and _now < _time
-
-
-        # NOTE: assume everything below actually relates to hot choc
-        # should we even drink coffee right now?
-        if not time_for_coffee:
-
-            # if its not time for coffee, we can still be drinking coffee
-            # because of a couple reasons:
-            #   - monika started her brew before her cut off time
-            #   - monika's drink time hasn't been reached yet
-            if still_brew(persistent._mas_c_hotchoc_brew_time):
-                # monika's brew started before the cut off.
-                # if the brew is done, then skip to drinking.
-                # otherwise, the finished brewing event will trigger on its
-                # own
-                if brew_ev.conditional is not None and eval(brew_ev.conditional):
-                    # even though this in inaccurate, it works for the
-                    # immersive purposes, so whatever.
-                    mas_rmEVL(brew_ev.eventlabel)
-                    mas_drinkHotChoc(persistent._mas_c_hotchoc_brew_time)
-
-                    if not still_drink(persistent._mas_c_hotchoc_cup_done):
-                        # monika should have finished this coffee already
-                        mas_resetHotChoc()
-
-                    else:
-                        # monika is currently drinking this coffee
-                        brew_ev.conditional = None
-                        brew_ev.action = None
-                        persistent._mas_c_hotchoc_brew_time = None
-                        monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
-
-            elif still_drink(persistent._mas_c_hotchoc_cup_done):
-                # monika is still drinking coffee
-                # clear brew vars just in case
-                brew_ev.conditional = None
-                brew_ev.action = None
-                persistent._mas_c_hotchoc_brew_time = None
-                mas_rmEVL(brew_ev.eventlabel)
-
-                # make sure she has the cup, just in case
-                if not monika_chr.is_wearing_acs(mas_acs_hotchoc_mug):
-                    monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
-
-            else:
-                # otherwise, just reset coffee
-                mas_resetHotChoc()
-
-        else:
-            # its coffee time!
-            # if we are currently brewing or drinking, we don't need to do
-            # anything else
-            if (
-                    still_brew(persistent._mas_c_hotchoc_brew_time)
-                    or still_drink(persistent._mas_c_hotchoc_cup_done)
-                ):
-                return
-
-            # otherwise, lets checek if monika should be brewing or drinking
-            # coffee
-
-            # first clear vars so we start fresh
-            mas_resetHotChoc()
-
-            if (
-                    _now.hour < store.mas_coffee.HOTCHOC_BREW_DRINK_SPLIT
-                    and _chance <= store.mas_coffee.BREW_CHANCE
-                ):
-                # monika is brewing coffee
-                mas_brewHotChoc()
-
-            elif _chance <= store.mas_coffee.DRINK_CHANCE:
-                # monika is drinking coffee
-                mas_drinkHotChoc()
-                monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
-
-        return
-
-
+    # global functions that should be defined after level 0a
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.
@@ -4328,8 +4604,18 @@ init 2 python:
                 determines if the plushie will appear
                 Defualts to 4
         """
-        # do we even have plushe enabled?
-        if not persistent._mas_acs_enable_quetzalplushie or mas_isF14():
+        #3 conditions:
+
+        #1. Do we even have plushie enabled?
+        #2. Is it f14? (heartchoc gift interferes)
+        #3. Are we currently eatding something?
+
+        #If any are true, we cannot have plushie out.
+        if (
+            not persistent._mas_acs_enable_quetzalplushie
+            or mas_isF14()
+            or MASConsumable._getCurrentFood()
+        ):
             # run the plushie exit PP in case plushie is no longer enabled
             mas_acs_quetzalplushie.exit(monika_chr)
             return
@@ -4349,7 +4635,6 @@ init 2 python:
 
         return
 
-
     def mas_incMoniReload():
         """
         Increments the monika reload counter unless its at max
@@ -4357,7 +4642,153 @@ init 2 python:
         if persistent.monika_reload < 4:
             persistent.monika_reload += 1
 
+    def mas_isFirstSeshDay(_date=None):
+        """
+        Checks if _date is the day of first session
 
+        IN:
+            _date - date to compare against
+            (NOTE: if not provided, today is assumed)
+        """
+        if not _date:
+            _date = datetime.date.today()
+
+        return _date == mas_getFirstSesh().date()
+
+    def mas_hasRPYFiles():
+        """
+        Checks if there are rpy files in the gamedir
+        """
+        return len(mas_getRPYFiles()) > 0
+
+    def mas_getRPYFiles():
+        """
+        Gets a list of rpy files in the gamedir
+        """
+        rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+
+        return rpyCheckStation.getPackageList(".rpy")
+
+    def mas_is18Over(_date=None):
+        """
+        Checks if player is over 18
+
+        IN:
+            _date - date to check
+            If None, today is assumed.
+            (Default: None)
+
+        OUT:
+            boolean:
+                - True if player is over 18
+                - False otherwise
+        """
+        #If we don't have player bday, we assume not.
+        if not persistent._mas_player_bday:
+            return False
+
+        return mas_getPlayerAge(_date) >= 18
+
+    def mas_getPlayerAge(_date=None):
+        """
+        Gets the player age
+
+        IN:
+            _date - the datetime.date to get the player age at
+            (Default: None)
+
+        OUT:
+            integer representing the player's current age or None if we don't have player's bday
+        """
+        if not persistent._mas_player_bday:
+            return 0
+
+        elif _date is None:
+            _date = datetime.date.today()
+
+        year_bday = mas_player_bday_curr(_date)
+        _years = year_bday.year - persistent._mas_player_bday.year
+
+        if _date < year_bday:
+            _years -= 1
+
+        return _years
+
+    def mas_canShowRisque(aff_thresh=2000, grace=None):
+        """
+        Checks if we can show something risque
+
+        Conditions for this:
+            1. We're not in sensitive mode
+            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            3. Player is over 18
+            4. Aff condition (raw)
+
+        IN:
+            aff_thresh:
+                - Raw affection value to be greater than or equal to
+            grace:
+                - a grace period passed in as a timedelta
+                  defaults to 1 week
+
+        OUT:
+            boolean:
+                - True if the above conditions are satisfied
+                - False if not
+        """
+
+        if grace is None:
+            grace = datetime.timedelta(weeks=1)
+
+        _date = datetime.date.today() + grace
+
+        return (
+            not persistent._mas_sensitive_mode
+            and persistent._mas_first_kiss is not None
+            and mas_is18Over(_date)
+            and _mas_getAffection() >= aff_thresh
+        )
+
+    def mas_timePastSince(timekeeper, passed_time, _now=None):
+        """
+        Checks if a certain amount of time has passed since the time in the timekeeper
+        IN:
+            timekeeper:
+                variable holding the time we last checked whatever it restricts
+                (can be datetime.datetime or datetime.date)
+
+            passed_time:
+                datetime.timedelta of the amount of time which should
+                have passed since the last check in order to return True
+
+            _now:
+                time to check against (If none, now is assumed, (Default: None))
+        OUT:
+            boolean:
+                - True if it has been passed_time units past timekeeper
+                - False otherwise
+        """
+        if timekeeper is None:
+            return True
+
+        elif _now is None:
+            _now = datetime.datetime.now()
+
+        #If our timekeeper is holding a datetime.date, we need to convert it to a datetime.datetime
+        if not isinstance(timekeeper, datetime.datetime):
+            timekeeper = datetime.datetime.combine(timekeeper, datetime.time())
+
+        return timekeeper + passed_time <= _now
+
+    def mas_pastOneDay(timekeeper, _now=None):
+        """
+        One day time past version of mas_timePastSince()
+
+        IN:
+            timekeeper - variable holding the time since last event
+            _now - time to check against (Default: None)
+        """
+        return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -5656,6 +6087,9 @@ define mas_monika_twitter_handle = "lilmonix3"
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
 
+#Amount of times player has reloaded in ddlc
+default persistent._mas_ddlc_reload_count = 0
+
 init python:
     startup_check = False
     try:
@@ -5871,7 +6305,7 @@ style jpn_text:
 # functions related to ily2
 init python:
     def mas_passedILY(pass_time, check_time=None):
-        '''
+        """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
@@ -5881,18 +6315,55 @@ init python:
 
         RETURNS:
             boolean indicating if we are within the time limit
-        '''
+        """
         if check_time is None:
             check_time = datetime.datetime.now()
         return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
-        '''
+        """
         Sets persistent._mas_last_monika_ily (the last time Monika said ily) to a given time
         IN:
             set_time - the time we want to set persistent._mas_last_monika_ily to
                 defaults to datetime.datetime.now()
-        '''
+        """
         if set_time is None:
             set_time = datetime.datetime.now()
         persistent._mas_last_monika_ily = set_time
+
+    def mas_shouldKiss(chance, cooldown=datetime.timedelta(hours=1), special_day_bypass=False):
+        """
+        Checks if Monika should give the player a random kiss
+
+        CONDITIONS:
+            1. Enamored+ affection
+            2. Player already had their first kiss with Monika
+            3. Random chance that changes depending on the chance and special_day_bypass vars
+            4. Enough time has passed since the last kiss
+
+        IN:
+            chance:
+                the chance to receive a kiss from Monika
+            cooldown:
+                a datetime.timedelta representing the amount of time after the
+                last kiss the next random kiss will be allowed
+                (Default: 1 hour)
+            special_day_bypass:
+                whether a special day should bypass the chance (Default=False)
+
+        OUT:
+            boolean:
+                - True if the above conditions are met
+                - False otherwise
+        """
+        should_kiss = (
+            renpy.random.randint(1, chance) == 1
+            or (special_day_bypass and mas_isSpecialDay())
+            )
+
+        return (
+            mas_isMoniEnamored(higher=True)
+            and persistent._mas_first_kiss
+            and should_kiss
+            and mas_timePastSince(persistent._mas_last_kiss, cooldown)
+        )

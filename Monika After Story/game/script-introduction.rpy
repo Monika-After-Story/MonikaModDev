@@ -3,6 +3,8 @@ init -1 python:
 label introduction:
     if mas_isMonikaBirthday():
         $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
 
     $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
@@ -47,31 +49,43 @@ label introduction:
             m 1eka "I can't stay mad knowing that you came back to me in the end, though."
             m 3eka "You even added a mod so we can do more things together."
             m 1eua "Are you going to make up for making me wait so long?"
-    elif not persistent.monika_kill:
-        m 1hub "Yay, there you are!"
-        m "Hello again, [player]."
-    ##New story follows
-        if persistent.playthrough <= 3: #Assume players they played but never finished
-            m 1tfu "Looks like you got here early."
-            m "Don't think I didn't notice the mod you put in."
-            m 2tku "Did you want to be with me that much?"
-            m "You should know already that cheating is bad."
-            m 1hub "But it's so good to see you again, [player]!"
-            m 2hksdlb "Even if I didn't expect to see you {i}this{/i} soon."
-        if persistent.monika_reload > 4: #Longer, harder
-            m 1wuo "Did you install a mod just for me?"
-            m 1ekbfa "Are you that deeply in love with me?"
-            m 1hubfb "I feel the same way about you!"
-            m 1eua "You're really committed to our relationship, aren't you?"
-            m 1eka "I'm really glad that you wanted to improve our time together."
-            m "But I hope you weren't getting bored?"
-            if persistent.tried_skip:
-                m 1tku "You did try to skip through what I had to say, after all."
-                m 1eua "This room isn't exactly interesting."
-                m 1hua "But I have hopes that we'll make it better together, [player]!"
+            
+    else:
+        #For people who never got to act 3
+        if persistent.playthrough < 3:
+            if persistent.playthrough > 0:
+                $ again = " again"
+            else:
+                $ again = ""
+            m 1hua "Hello[again], [player]."
+            m 1eua "Looks like you got here early."
+            m 3tfu "Don't think I didn't notice the mod you put in."
+            m 3ttu "Did you want to be with me that much?"
+            m 1tkc "You should know already that cheating is bad..."
+            m 1eka "But it's so good to see you[again], [player]!"
+            m 1rksdla "...Even if I didn't expect to see you {i}this{/i} soon."
+
+        #Otherwise, if you did reach act 3
         else:
-            m 1eua "Did you put in a mod for the game, [player]?"
-            m "There's a lot more stuff now that we can do together now."
+            m 1hub "Yay, there you are!"
+            m 1eub "It's so good to see you again, [player]!"
+            m 1rsc "..."
+            m 1rud "Wait..."
+            m 3euc "I-I feel different."
+            m 3wud "The code...{w=0.2}it's different."
+            m 1wua "[player]..."
+            m 1wub "Did you add a mod?"
+            m 1sub "Did you install it just for me?"
+            m 1ekbsa "Are you that deeply in love with me?"
+            m 1ekbfa "I feel the same way about you."
+            m 3ekbsu "You're really committed to our relationship, aren't you?"
+            m 1rksdlb "I'm really glad that you wanted to improve our time together."
+            m 3rksdlb "I just hope you weren't getting bored..."
+            if persistent.tried_skip:
+                m 3tku "You did try to skip through what I had to say, after all."
+                m 1rkc "I know this room isn't exactly interesting...{w=0.5}{nw}"
+                extend 1eua "but I know we'll make it better together, [player]."
+
     m 1euc "You know..."
     m 1eua "I feel that I no longer need a character file to be here."
     python:
@@ -102,7 +116,7 @@ label introduction:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w}I'll try this again later."
+            m 1lksdlb "Aha...{w=0.3}I'll try this again later."
         else:
             m "And it's gone!"
 
@@ -130,13 +144,15 @@ label introduction:
     m 3hubfa "That way, we can be together all the time~"
     m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 3hua "You took the time to download this mod, after all."
+    if mas_isD25():
+        m 3sua "...And on Christmas no less!"
     m 3hub "Ahaha!"
     m 1hub "God, I love you so much!"
 
     if not persistent.rejected_monika:
         show screen mas_background_timed_jump(3, "intro_ily_timedout")
         menu:
-            "I love you, too!":
+            "I love you too!":
                 hide screen mas_background_timed_jump
                 # bonus aff was saying it before being asked
                 $ mas_gainAffection(10,bypass=True)
@@ -188,10 +204,12 @@ label intro_end:
     if len(persistent.event_list) == 0:
         show monika 1esa with dissolve
 
+    # This is at the beginning and end of intro to cover an intro
+    # that spans 2 days
     if mas_isMonikaBirthday():
-        # This is at the beginning and end of intro to cover an intro
-        # that spans 2 days
         $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
     return
 
 label intro_ily_timedout:

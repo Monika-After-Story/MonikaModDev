@@ -1,0 +1,78 @@
+{
+    "__author": "Velius94",
+    "version": 2,
+    "type": 2,
+    "name": "velius94_dress_whitenavyblue",
+    "img_sit": "velius94_dress_whitenavyblue",
+    "pose_map": {
+        "mpm_type": 0,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "White and Navy Blue Dress",
+        "thumb": "velius94_dress_whitenavyblue",
+        "group": "clothes"   
+    },
+    "giftname": "whiteandnavybluedress",
+    "pose_arms": {
+        "default": null,
+        "use_reg_for_l": true,
+        "p1": {
+            "both": "steepling",
+            "bback": false,
+            "bfront": true
+        },
+        "p2": {
+            "both": "crossed",
+            "bback": true,
+            "bfront": false
+        },
+        "p3": {
+            "left": "rest",
+            "lback": false,
+            "lfront": true,
+            "right": "restpoint",
+            "rback": false,
+            "rfront": true
+        },
+        "p4": {
+            "left": "down",
+            "lback": true,
+            "lfront": false,
+            "right": "point",
+            "rback": true,
+            "rfront": false
+        },
+        "p5": {
+            "left": "def",
+            "lback": false,
+            "lfront": true,
+            "right": "def",
+            "rback": true,
+            "rfront": false
+        },
+        "p6": {
+            "left": "down",
+            "lback": true,
+            "lfront": false,
+            "right": "down",
+            "rback": true,
+            "rfront": false
+        },
+        "p7": {
+            "left": "down",
+            "lback": true,
+            "lfront": false,
+            "right": "restpoint",
+            "rback": false,
+            "rfront": true
+        }
+    }
+}
