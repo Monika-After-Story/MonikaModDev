@@ -13633,7 +13633,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_working_out",
-            category=['you'],
+            category=['advice'],
             prompt="Working Out",
             random=True
         )
