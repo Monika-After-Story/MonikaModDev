@@ -50,7 +50,7 @@ init -1 python in mas_moods:
 
     # pane constants
     # most of these are the same as the unseen area consants
-    MOOD_RETURN = "...like talking about something else."
+    MOOD_RETURN = _("...like talking about something else.")
 
 ## FUNCTIONS ==================================================================
 
@@ -569,7 +569,7 @@ label mas_mood_bored:
         menu:
             m "Do I really bore you that much, [player]?{fast}"
             "No, I'm not bored {i}of you{/i}...":
-                m 1hua "Oh,{w} that's such a relief!"
+                m 1hua "Oh,{w=0.2} that's such a relief!"
                 m 1eka "But, if you're bored, we should find something to do then..."
 
             "Well...":

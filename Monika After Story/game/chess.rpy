@@ -46,7 +46,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_NEW_GAME_VALUE = "NEWGAME"
     CHESS_MENU_NEW_GAME_ITEM = (
-        "Play New Game",
+        _("Play New Game"),
         CHESS_MENU_NEW_GAME_VALUE,
         True,
         False
@@ -54,7 +54,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_FINAL_VALUE = "NONE"
     CHESS_MENU_FINAL_ITEM = (
-        "Nevermind",
+        _("Nevermind"),
         CHESS_MENU_FINAL_VALUE,
         False,
         False,
@@ -63,7 +63,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_WAIT_VALUE = "MATTE"
     CHESS_MENU_WAIT_ITEM = (
-        "I can't make this decision right now...",
+        _("I can't make this decision right now..."),
         CHESS_MENU_WAIT_VALUE,
         False,
         False,
@@ -142,15 +142,15 @@ init 1 python in mas_chess:
 
     # ofcnot
     DLG_QF_LOST_OFCN_ENABLE = True
-    DLG_QF_LOST_OFCN_CHOICE = "Of course not!"
+    DLG_QF_LOST_OFCN_CHOICE = _("Of course not!")
 
     # maybe
     DLG_QF_LOST_MAY_ENABLE = True
-    DLG_QF_LOST_MAY_CHOICE = "Maybe..."
+    DLG_QF_LOST_MAY_CHOICE = _("Maybe...")
 
     # accident
     DLG_QF_LOST_ACDNT_ENABLE = True
-    DLG_QF_LOST_ACDNT_CHOICE = "It was an accident!"
+    DLG_QF_LOST_ACDNT_CHOICE = _("It was an accident!")
 
     ## if player is locked out of chess
     DLG_CHESS_LOCKED = "mas_chess_dlg_chess_locked"
@@ -172,14 +172,14 @@ init 1 python in mas_chess:
     # first, lets take all the text based ones and group them
     # 1q
     _monika_loses_line_quips = (
-        "Hmph.{w} You were just lucky today.",
-        "...{w}I'm just having an off day.",
-        "Ah, so you {i}are{/i} capable of winning...",
-        "I guess you're not {i}entirely{/i} terrible.",
-        "Tch-",
-        "Winning isn't everything, you know...",
-        "Ahaha,{w} I was just letting you win since you keep losing so much.",
-        "Oh, you won.{w} I should have taken this game seriously, then."
+        _("Hmph.{w=0.3} You were just lucky today."),
+        _("...{w=0.3}I'm just having an off day."),
+        _("Ah, so you {i}are{/i} capable of winning..."),
+        _("I guess you're not {i}entirely{/i} terrible."),
+        _("Tch-"),
+        _("Winning isn't everything, you know..."),
+        _("Ahaha,{w=0.3} I was just letting you win since you keep losing so much."),
+        _("Oh, you won.{w=0.3} I should have taken this game seriously, then.")
         # TODO: look into more of these
     )
 
@@ -195,8 +195,8 @@ init 1 python in mas_chess:
     # first, lets generate line quips
     # 1k expressions
     _monika_wins_line_quips = (
-        "Ahaha, do you even know how to play chess?", # use this for surrenders too
-        "Are you {i}that{/i} bad? I wasn't even taking this game seriously."
+        _("Ahaha, do you even know how to play chess?"), # use this for surrenders too
+        _("Are you {i}that{/i} bad? I wasn't even taking this game seriously.")
     )
 
     # generate label quips
@@ -211,10 +211,7 @@ init 1 python in mas_chess:
     # first, lets generate line quips
     _monika_wins_surr_line_quips = (
         _monika_wins_line_quips[0],
-        (
-            "Figures you'd give up. You're not one to see things all the " +
-            "way through."
-        ),
+        _("Figures you'd give up. You're not one to see things all the way through."),
     )
 
     # generate label quips
@@ -544,21 +541,21 @@ init:
                 # hotkey button text
                 # idle style/ disabled style:
                 button_text_save_idle = Text(
-                    "Save",
+                    _("Save"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_idle_color,
                     outlines=[]
                 )
                 button_text_giveup_idle = Text(
-                    "Give Up",
+                    _("Give Up"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_idle_color,
                     outlines=[]
                 )
                 button_text_done_idle = Text(
-                    "Done",
+                    _("Done"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_idle_color,
@@ -567,21 +564,21 @@ init:
 
                 # hover style
                 button_text_save_hover = Text(
-                    "Save",
+                    _("Save"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_hover_color,
                     outlines=[]
                 )
                 button_text_giveup_hover = Text(
-                    "Give Up",
+                    _("Give Up"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_hover_color,
                     outlines=[]
                 )
                 button_text_done_hover = Text(
-                    "Done",
+                    _("Done"),
                     font=gui.default_font,
                     size=gui.text_size,
                     color=mas_globals.button_text_hover_color,
@@ -1692,15 +1689,15 @@ label mas_chess_save_migration:
         # only show this if we even have multiple pgn games
         if game_count > 1:
             if renpy.seen_label("mas_chess_save_multi_dlg"):
-                $ pick_text = "You still need to pick a game to keep."
+                $ pick_text = _("You still need to pick a game to keep.")
             else:
                 label mas_chess_save_multi_dlg:
                     m 1m "So I've been thinking, [player]..."
                     m "Most people who leave in the middle of a chess game don't come back to start a new one."
                     m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
                     m 1p "And since we have [game_count] games in progress..."
-                    m 1g "I have to ask you to pick only one to keep.{w} Sorry, [player]."
-                    $ pick_text = "Pick a game you'd like to keep."
+                    m 1g "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
+                    $ pick_text = _("Pick a game you'd like to keep.")
             show monika 1e at t21
             $ renpy.say(m, pick_text, interact=False)
 
@@ -1814,9 +1811,10 @@ label mas_chess_savegame:
             m "You can open this file in PGN viewers."
 
             if game_result == "*": # ongoing game
-                m 1lksdlb "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
+                m 1lksdlb "It's possible to edit this file and change the outcome of the game...{w=0.5} {nw}"
+                extend 1tsu "but I'm sure you wouldn't do that."
 
-                m 1eka "Right, [player]?{nw}"
+                m 1tku "Right, [player]?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Right, [player]?{fast}"
@@ -1859,7 +1857,7 @@ label mas_chess_dlg_qs_lost:
 
 # quicksave lost start
 label mas_chess_dlg_qs_lost_start:
-    m 2lksdlb "Uh, [player]...{w} It seems I messed up in saving our last game, and now I can't open it anymore."
+    m 2lksdlb "Uh, [player]...{w=0.5} It seems I messed up in saving our last game, and now I can't open it anymore."
     return
 
 # generic quicksave lost statement
@@ -1880,7 +1878,7 @@ label mas_chess_dlg_qs_lost_2:
 
 # 3rd time quicksave lost statement
 label mas_chess_dlg_qs_lost_3:
-    m 1lksdlc "I'm so clumsy, [player]...{w} I'm sorry."
+    m 1lksdlc "I'm so clumsy, [player]...{w=0.3} I'm sorry."
     m 3eksdla "Let's start a new game instead."
     return
 
@@ -1922,7 +1920,7 @@ label mas_chess_dlg_qf_lost:
 
 # intro to quickfile lost
 label mas_chess_dlg_qf_lost_start:
-    m 2lksdla "Well,{w} this is embarrassing."
+    m 2lksdla "Well,{w=0.3} this is embarrassing."
     m "I could have sworn that we had an unfinished game, but I can't find the save file."
     return
 
@@ -1962,7 +1960,7 @@ label mas_chess_dlg_qf_lost_ofcn_gen:
 # 3rd time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_3:
     m 2esc "..."
-    m "[player],{w} did you..."
+    m "[player],{w=0.2} did you..."
     m 2dsc "Nevermind."
     m 1esc "Let's play a new game."
     return
@@ -1975,12 +1973,12 @@ label mas_chess_dlg_qf_lost_ofcn_4:
 label mas_chess_dlg_qf_lost_ofcn_5:
     $ mas_loseAffection()
     m 2esc "..."
-    m "[player],{w} this is happening way too much."
+    m "[player],{w=0.2} this is happening way too much."
     m 2dsc "I really don't believe you this time."
     pause 2.0
     m 2esc "I hope you're not messing with me."
     m "..."
-    m 1esc "Whatever.{w} Let's just play a new game."
+    m 1esc "Whatever.{w=0.5} Let's just play a new game."
     return
 
 # 6th time you ofcn monika
@@ -1997,7 +1995,7 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     $ persistent._seen_ever["unlock_chess"] = True
 
     m 2dfc "..."
-    m 2efc "[player],{w} I don't believe you."
+    m 2efc "[player],{w=0.3} I don't believe you."
     m 2efd "If you're just going to throw away our chess games like that..."
     m 6wfw "Then I don't want to play chess with you anymore!"
     return True
@@ -2023,19 +2021,19 @@ label mas_chess_dlg_qf_lost_may_start:
 # generic maybe monika
 # NOTE: we do a check for the file every line
 label mas_chess_dlg_qf_lost_may_gen:
-    m 2ekd "[player]!{w} I should have known you were just messing with me!"
+    m 2ekd "[player]!{w=0.2} I should have known you were just messing with me!"
     jump mas_chess_dlg_qf_lost_may_filechecker
 
 # generic maybe monika, found file
 label mas_chess_dlg_qf_lost_may_gen_found:
     m 2eua "Oh!"
-    m 1hua "There's the save.{w} Thanks for putting it back, [player]."
+    m 1hua "There's the save.{w=0.2} Thanks for putting it back, [player]."
     m 1eua "Now we can continue our game."
     return store.mas_chess.CHESS_GAME_CONT
 
 # 2nd time maybe monika
 label mas_chess_dlg_qf_lost_may_2:
-    m 2ekd "[player]!{w} Stop messing with me!"
+    m 2ekd "[player]!{w=0.2} Stop messing with me!"
     jump mas_chess_dlg_qf_lost_may_filechecker
 
 # 2nd time maybe monika, found file
@@ -2070,7 +2068,7 @@ label mas_chess_dlg_qf_lost_may_filechecker:
                 seconds += 1
 
     if file_found:
-        m 1hua "Yay!{w} Thanks for putting it back, [player]."
+        m 1hua "Yay!{w=0.2} Thanks for putting it back, [player]."
         m "Now we can continue our game."
         show monika 1eua
         return mas_chess.CHESS_GAME_CONT
@@ -2127,7 +2125,7 @@ label mas_chess_dlg_qf_lost_acdnt_start:
 # generic accident monika
 label mas_chess_dlg_qf_lost_acdnt_gen:
     m 1eka "[player]..."
-    m "That's okay.{w} Accidents happen."
+    m "That's okay.{w=0.3} Accidents happen."
     m 1eua "Let's play a new game instead."
     return
 
@@ -2280,7 +2278,7 @@ label mas_chess_dlg_qf_edit_n_2:
 label mas_chess_dlg_qf_edit_n_3:
     $ mas_loseAffection(modifier=3)
     m 2dfc "[player]..."
-    m 2dftdc "I kept a backup of our game.{w} I know you edited the save file."
+    m 2dftdc "I kept a backup of our game.{w=0.5} I know you edited the save file."
     m 2dftsc "I just-"
     $ _history_list.pop()
     m 6ektsc "I just{fast} can't believe you would cheat and {i}lie{/i} to me."
