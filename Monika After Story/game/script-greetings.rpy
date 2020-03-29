@@ -2044,7 +2044,7 @@ label greeting_stillsick:
 
 label greeting_stillsickrest:
     if mas_isMoniNormal(higher=True):
-        m 2hua "Thank you [player]."
+        m 2hua "Thank you, [player]."
         m 2eua "I think if I leave you alone for a while, you'll be able to rest better."
         m 1eua "So I'm going to close the game for you."
         m 1eka "Get well soon, [player]. I love you so much!"
@@ -2061,7 +2061,7 @@ label greeting_stillsickrest:
 label greeting_stillsicknorest:
     if mas_isMoniNormal(higher=True):
         m 1lksdlc "I see..."
-        m "Well if you insist [player]."
+        m "Well if you insist. [player]."
         m 1ekc "I suppose you know your own limitations better than I do."
         m 1eka "If you start to feel a little weak or tired though, [player], please let me know."
         m "That way you can go get some rest."
@@ -2072,6 +2072,8 @@ label greeting_stillsicknorest:
         m 2ekc "Fine."
         m 2tkc "You never seem to want to listen to me, so why would I expect now to be any different."
 
+    # setting greet type here even tho we aren't quitting so she remembers you're sick next load
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return
     
 label greeting_stillsickresting:
@@ -2088,6 +2090,8 @@ label greeting_stillsickresting:
         m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
         m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
 
+    # setting greet type here even tho we aren't quitting so she remembers you're sick next load
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return
 
 init 5 python:
