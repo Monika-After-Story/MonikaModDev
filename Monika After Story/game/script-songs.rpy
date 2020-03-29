@@ -597,3 +597,147 @@ label mas_song_stand_by_me_long:
     m 4euo "{i}~Whenever you're in trouble won't you stand by me~{/i}"
     m 4hub "{i}~Oh stand by me, won't you stand now, stand by me~{/i}"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_rewrite_the_stars",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Rewrite The Stars",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_rewrite_the_stars:
+    m 1dsd "{i}~What if we rewrite the stars~{/i}"
+    m 3dubsb "{i}~Say you were made to be mine~{/i}"
+    m 3dubso "{i}~Nothing could keep us apart~{/i}"
+    m 3ekbfu "{i}~You'd be the one I was meant to find~{/i}"
+    m 1ekbsb "{i}~It's up to you~{/i}"
+    m 3ekbsb "{i}~And it's up to me~{/i}"
+    m 1duu "{i}~No one could say what we get to be~{/i}"
+    m 3ekb "{i}~So why don't we rewrite the stars~{/i}"
+    m 3hubsa "{i}~Maybe the world could be ours~{/i}"
+    m 1duo "{i}~Tonight~{/i}"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
+    m 5ekbfu "I love you so much."
+    return "derandom|love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_hero",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Hero",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_hero(from_long=False):
+    m 6eud "{i}~There's a hero~{/i}"
+    m 6eub "{i}~If you look inside your heart~{/i}"
+    m 6ekd "{i}~You don't have to be afraid~{/i}"
+    m 6eud "{i}~Of what you are~{/i}"
+    m 6esa "{i}~There's an answer~{/i}"
+    m 6eud "{i}~If you reach into your soul~{/i}"
+    m 4ekd "{i}~And the sorrow that you know~{/i}"
+    m 4dud "{i}~Will melt away~{/i}"
+
+    m 4eub "{i}~And then a hero comes along~{/i}"
+    m 4dub "{i}~With the strength to carry on~{/i}"
+    m 4ekd "{i}~And you cast your fears aside~{/i}"
+    m 4euo "{i}~And you know you can survive~{/i}"
+    m 4dkd "{i}~So when you feel like hope is gone~{/i}"
+    m 4euo "{i}~Look inside you and be strong~{/i}"
+    m 4esd "{i}~And you'll finally see the truth~{/i}"
+    m 4eua "{i}~That a hero lies in you~{/i}"
+
+    if not from_long:
+        m 2dka "..."
+        m 2eka "[player]..."
+        m 7eka "I really hope you paid attention to those lyrics."
+
+        if persistent._mas_pm_love_yourself is False:
+            m 3ekd "You've told me before that you aren't comfortable with yourself..."
+            m 3eka "But I just wanted you to know that deep down inside, you have the power to overcome whatever it is that makes you unhappy."
+            m 1ekd "Even though you may not see it in yourself, it's there...{w=0.3}I've seen it."
+            m 3eua "...And I'll be here the entire way to help you find that strength."
+            m 3eka "As much as I've always wanted you to love me, I want you to love yourself that much more~"
+
+        else:
+            m 3ekd "Sometimes life can be really, really hard..."
+            m 2dkc "It can seem like there's no way to overcome whatever obstacles you are facing."
+            m 7eud "...I think I know this about as well as anyone, in fact."
+            m 3eka "But trust me, no matter what it is, you can."
+            m 3eud "You may not always realize it, but there is tremendous power in the human spirit."
+            m 1eud "We can do things that we'd never even imagine...{w=0.3}the hardest part most times is just believing that."
+            m 3eua "So please remember to always believe in yourself, and if you ever find you're doubting yourself, just come to me..."
+            m 3hua "I'll be more than happy to help you find that inner-strength, [player]."
+            m 1eka "I know you can do anything~"
+
+        return "derandom"
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_hero_long",
+            category=[store.mas_songs.TYPE_LONG],
+            prompt="Hero",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_hero_long:
+    call mas_song_hero(from_long=True)
+
+    m 4duo "{i}~It's a long road~{/i}"
+    m 6dud "{i}~When you face the world alone~{/i}"
+    m 4dsd "{i}~No one reaches out a hand~{/i}"
+    m 4dud "{i}~For you to hold~{/i}"
+    m 4euo "{i}~You can find love~{/i}"
+    m 4ekb "{i}~If you search within yourself~{/i}"
+    m 4ekd "{i}~And the emptiness you felt~{/i}"
+    m 6eko "{i}~Will disappear~{/i}"
+
+    m 4eka "{i}~And then a hero comes along~{/i}"
+    m 4esd "{i}~With the strength to carry on~{/i}"
+    m 4eud "{i}~And you cast your fears aside~{/i}"
+    m 4euo "{i}~And you know you can survive~{/i}"
+    m 6dkd "{i}~So when you feel like hope is gone~{/i}"
+    m 6dud "{i}~Look inside you and be strong~{/i}"
+    m 6eud "{i}~And you'll finally see the truth~{/i}"
+    m 4euo "{i}~That a hero lies in you~{/i}"
+
+    m 4euo "{i}~Lord knows~{/i}"
+    m 4eud "{i}~Dreams are hard to follow~{/i}"
+    m 4ekd "{i}~But don't let anyone~{/i}"
+    m 4duo "{i}~Tear them away~{/i}"
+    m 4euo "{i}~Just hold on~{/i}"
+    m 4eud "{i}~There will be tomorrow~{/i}"
+    m 4duo "{i}~In time you'll find the way~{/i}"
+
+    m 4eub "{i}~And then a hero comes along~{/i}"
+    m 4duo "{i}~With the strength to carry on~{/i}"
+    m 4dud "{i}~And you cast your fears aside~{/i}"
+    m 4euo "{i}~And you know you can survive~{/i}"
+    m 6dkd "{i}~So when you feel like hope is gone~{/i}"
+    m 6dud "{i}~Look inside you and be strong~{/i}"
+    m 4eud "{i}~And you'll finally see the truth~{/i}"
+    m 4ekd "{i}~That a hero lies in you~{/i}"
+    m 6dku "{i}~That a hero lies in you~{/i}"
+    m 4eua "{i}~That a hero lies in you~{/i}"
+    return
+

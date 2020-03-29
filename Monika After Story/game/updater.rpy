@@ -134,14 +134,14 @@ init -1 python:
 
             # ok button text
             button_text_ok_idle = Text(
-                "Ok",
+                _("Ok"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_ok_hover = Text(
-                "Ok",
+                _("Ok"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_hover_color,
@@ -150,14 +150,14 @@ init -1 python:
 
             # cancel button text
             button_text_cancel_idle = Text(
-                "Cancel",
+                _("Cancel"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_cancel_hover = Text(
-                "Cancel",
+                _("Cancel"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_hover_color,
@@ -166,14 +166,14 @@ init -1 python:
 
             # update button text
             button_text_update_idle = Text(
-                "Update",
+                _("Update"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_update_hover = Text(
-                "Update",
+                _("Update"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_hover_color,
@@ -182,14 +182,14 @@ init -1 python:
 
             # retry button text
             button_text_retry_idle = Text(
-                "Retry",
+                _("Retry"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_retry_hover = Text(
-                "Retry",
+                _("Retry"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color=mas_globals.button_text_hover_color,
@@ -289,42 +289,42 @@ init -1 python:
 
             # confirm text
             self._text_checking = Text(
-                "Checking for updates...",
+                _("Checking for updates..."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_update = Text(
-                "New update available!",
+                _("New update available!"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_noupdate = Text(
-                "No update found.",
+                _("No update found."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_timeout = Text(
-                "Connection timed out.",
+                _("Connection timed out."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badresponse = Text(
-                "Server returned bad response.",
+                _("Server returned bad response."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badjson = Text(
-                "Server returned bad JSON.",
+                _("Server returned bad JSON."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
@@ -921,6 +921,8 @@ label mas_updater_rpy_issue:
             $ mas_rmallEVL("monika_rpy_files")
 
             m 2dsc "Now let me just run the updater.{w=0.5}.{w=0.5}.{nw}"
+            window hide
+
             #Run the updater
             jump update_now
 
