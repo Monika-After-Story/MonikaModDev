@@ -5,8 +5,27 @@ init -10 python in mas_fun_facts:
     #The fun facts db
     fun_fact_db = {}
 
-    TYPE_GOOD = "good"
-    TYPE_BAD = "bad"
+    def getUnseenFactsEVL():
+        """
+        Gets all unseen (locked) fun facts as eventlabels
+
+        OUT:
+            List of all unseen fun fact eventlabels
+        """
+        return [
+            fun_fact_evl
+            for fun_fact_evl, ev in fun_fact_db.iteritems()
+            if not ev.unlocked
+        ]
+
+    def getAllFactsEVL():
+        """
+        Gets all fun facts regardless of unlocked as eventlabels
+
+        OUT:
+            List of all fun fact eventlabels
+        """
+        return fun_fact_db.keys()
 
 
 #Whether or not the last fun fact seen was a good fact
@@ -18,7 +37,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_fun_facts_open",
             category=['misc'],
-            prompt="Fun facts",
+            prompt="Can you tell me a fun fact?",
             pool=True
         )
     )
@@ -36,31 +55,24 @@ label monika_fun_facts_open:
             m 3hua "That last one was pretty interesting after all!"
         else:
             m 2rksdlb "I know the last one wasn't great...but I'm sure this next one will be better."
-    m 2dsc "Now, let's see..."
+    m 2dsc "Now, let's see.{w=0.5}.{w=0.5}.{nw}"
 
     python:
-        #Determines if it is a bad fact, 10% chance.
-        if renpy.random.randint(1,100) <= 10:
-            list_facts = [
-                eventlabel
-                for eventlabel, event in store.mas_fun_facts.fun_fact_db.iteritems()
-                if store.mas_fun_facts.TYPE_BAD in event.category
-            ]
-
+        unseen_fact_evls = mas_fun_facts.getUnseenFactsEVL()
+        if len(unseen_fact_evls) > 0:
+            fact_evl_list = unseen_fact_evls
         else:
-            list_facts = [
-                eventlabel
-                for eventlabel, event in store.mas_fun_facts.fun_fact_db.iteritems()
-                if store.mas_fun_facts.TYPE_GOOD in event.category
-            ]
+            fact_evl_list = mas_fun_facts.getAllFactsEVL()
 
-        #Now we push the fact
-        pushEvent(renpy.random.choice(list_facts))
+        #Now we push and unlock the fact
+        fun_fact_evl = renpy.random.choice(fact_evl_list)
+        mas_unlockEVL(fun_fact_evl, "FFF")
+        pushEvent(fun_fact_evl)
     return
 
 #Most labels end here
 label mas_fun_facts_end:
-    m 1hub "I hope you enjoyed another session of 'Learning with Monika!'"
+    m 3hub "I hope you enjoyed another session of 'Learning with Monika!'"
     $ persistent._mas_funfactfun = True
     return
 
@@ -76,13 +88,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_1",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_librocubiculartist",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_1:
+label mas_fun_fact_librocubiculartist:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
     m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
     m 3rksdld "It's a real shame some words just never get used in general."
@@ -98,13 +109,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_2",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_menu_currency",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_2:
+label mas_fun_fact_menu_currency:
     m 3euc "Supposedly, a lot of restaurants purposefully leave out any sign of currency on their menus."
     m 3eud "This is done to psychologically manipulate people into spending more money than they need to."
     m 2euc "It works because a currency sign, such as a dollar, is used to represent a cost."
@@ -120,13 +130,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_3",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_love_you",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_3:
+label mas_fun_fact_love_you:
     m 1dkc "Hmm, I'm not sure if I should tell you {i}this{/i} fact."
     m 1ekc "It's not for the faint of heart after all."
     m 1rkc "The thing is..."
@@ -142,13 +151,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_4",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_morpheus",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_4:
+label mas_fun_fact_morpheus:
     m 3wub "Oh! A language based fact. I always like these."
     m 1eua "The word 'morphine' is based on the greek god Morpheus."
     m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense."
@@ -164,13 +172,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_5",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_otter_hand_holding",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_5:
+label mas_fun_fact_otter_hand_holding:
     m 1eka "Aww, this one is really sweet."
     m 3ekb "Did you know that sea otters hold hands when they sleep to stop themselves drifting away from one another?"
     m 1hub "It's practical for them to do, but there's something really cute about it!"
@@ -186,14 +193,14 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_6",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_chess",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_6:
-    if persistent.game_unlocks['chess']:
+label mas_fun_fact_chess:
+    #Chess is unlocked
+    if mas_isGameUnlocked("chess"):
         m 1eua "Now this is a fun fact!"
         m 3eub "There was a man named Claude Shannon who calculated the maximum amount of possible moves in chess."
         m "That number is called the 'Shannon number' and states that the amount of chess games possible is 10^120."
@@ -206,7 +213,8 @@ label mas_fun_facts_6:
         call mas_fun_facts_end
         return
 
-    elif not persistent.game_unlocks['chess'] and persistent_seen_ever["unlock_chess"]:
+    #Chess was unlocked, but locked due to cheating
+    elif not mas_isGameUnlocked("chess") and renpy.seen_label("unlock_chess"):
         m 1dsc "Chess..."
         m 2dfc "..."
         m 2rfd "You can forget about this fact since you're a cheater, [player]."
@@ -215,6 +223,7 @@ label mas_fun_facts_6:
         #No end for this path
         return
 
+    #We haven't unlocked chess yet
     else:
         m 1euc "Oh, not this one."
         m 3hksdlb "Not yet, at least."
@@ -226,13 +235,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_7",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_struck_by_lightning",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_7:
+label mas_fun_fact_struck_by_lightning:
     m 2dkc "Hmm, this one sounds a bit misleading to me..."
     m 3ekc "'Men are six times more likely to be struck by lightning than women.'"
     m 3ekd "It's...rather silly, in my opinion."
@@ -248,13 +256,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_8",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_honey",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_8:
+label mas_fun_fact_honey:
     m 1eub "Ah, this is a nice easy one."
     m 3eub "Did you know that honey never spoils?"
     m 3eua "Honey can crystallize, though. Some people may see this as spoiling but it's still completely edible and fine!"
@@ -271,13 +278,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_9",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_vincent_van_gone",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_9:
+label mas_fun_fact_vincent_van_gone:
     m 1dsc "Ah, this one..."
     m 1ekd "It's a little disheartening, [player]..."
     m 1ekc "Did you know that Vincent Van Gogh's last words were '{i}La tristesse durera toujours{/i}'?"
@@ -286,7 +292,7 @@ label mas_fun_facts_9:
     m 2ekc "It's really sad to know that someone so renowned would say something so dark with his last breath."
     m 2ekd "I don't think it's true, however. No matter how bad things can get and how deep the sadness can go..."
     m 2dkc "There will come a time where it'll no longer be there."
-    m 2rkc "...Or at least noticeable."
+    m 2rkc "...Or at least be noticeable."
     m 4eka "If you're ever sad, you know you can talk to me, right?"
     m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
     #No end for this fact
@@ -297,13 +303,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_10",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_king_snakes",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_10:
+label mas_fun_fact_king_snakes:
     m 1dsc "Hmm..."
     m 3eub "Did you know that if a snake has the word 'king' in its name, it devours other snakes?"
     m 1euc "I always wondered why a king cobra would be named how it is but never really thought more into it."
@@ -318,13 +323,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_11",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_strength",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_11:
+label mas_fun_fact_strength:
     m 1hub "This fact might motivate you a bit!"
     m 3eub "The longest word in English that only contains a single vowel is 'strength'."
     m 1eua "It's funny how out of every word in the language, it's such a meaningful word that had that little detail."
@@ -340,13 +344,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_12",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_reindeer_eyes",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_12:
+label mas_fun_fact_reindeer_eyes:
     m 3eua "Ready for this one?"
     m "A reindeer's eyes changes color depending on the season. They're gold in summer and blue in winter."
     m 1rksdlb "It's a really strange phenomenon, though I don't know why..."
@@ -361,13 +364,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_13",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_bananas",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_13:
+label mas_fun_fact_bananas:
     m 1eub "Oh, I'd say this fact is healthy!"
     m 3eua "Did you know that when a banana grows, it curves to face the sun?"
     m 1hua "It's a process called negative geotropism."
@@ -391,13 +393,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_14",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_pens",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_14:
+label mas_fun_fact_pens:
     m 1dsc "Hmm...I'm sure I already know this one."
     m 3euc "The word 'pen' is derived from the latin word 'penna', which means feather in latin."
     m "Pens back then were sharpened goose feathers dipped in ink so it'd make sense why they'd call them pens."
@@ -413,13 +414,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_15",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_density",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_15:
+label mas_fun_fact_density:
     m 1eub "Ooh, I know."
     m 3eua "Did you know that the densest planet in our solar system is Earth itself?"
     m "And that Saturn is the least dense?"
@@ -436,13 +436,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_16",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_binky",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_16:
+label mas_fun_fact_binky:
     m 3hub "Aww, this one's cute!"
     m "This fact will really send you 'hopping' [player]!"
     m 3hua "Whenever a rabbit hops around excitedly, it's called a binky!"
@@ -459,13 +458,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_17",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_windows_games",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_17:
+label mas_fun_fact_windows_games:
     m 1eua "Hmm, maybe this one will be more interesting to you."
     m 3eub "The card game Solitaire was introduced originally in the Windows operating system in 1990."
     m 1eub "The game was added as a feature to teach users how to use the mouse."
@@ -482,13 +480,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_18",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_mental_word_processing",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_18:
+label mas_fun_fact_mental_word_processing:
     m 1hua "Ready for an interesting one, [player]?"
     m 3eua "The brain is a fickle thing..."
     m 3eub "Its way of composing and archiving information is very unique."
@@ -505,13 +502,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_19",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_I_am",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_19:
+label mas_fun_fact_I_am:
     m 1hua "Mmmm, I love language facts!"
     m 3eub "In English, the shortest complete sentence is 'I am.'"
     m 1eua "Here's an example."
@@ -526,13 +522,12 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_facts_20",
-            category=[store.mas_fun_facts.TYPE_GOOD],
+            eventlabel="mas_fun_fact_low_rates",
         ),
         code="FFF"
     )
 
-label mas_fun_facts_20:
+label mas_fun_fact_low_rates:
     m 1hua "Now this is a wholesome one..."
     m 1eua "Currently, we have the lowest crime rates, maternity death, infant mortality and illiteracy ever in human history."
     m 3eub "Life expectancy, average income, and standards of living is the highest for most of the global population too!"
@@ -542,94 +537,70 @@ label mas_fun_facts_20:
     call mas_fun_facts_end
     return
 
-
-#START: Bad facts
 init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_facts_1",
-            category=[store.mas_fun_facts.TYPE_BAD],
+            eventlabel="mas_fun_fact_desert",
         ),
         code="FFF"
     )
 
-label mas_bad_facts_1:
-    m 1eub "Did you know th--"
-    m 1wud "..."
-    m 2efw "T-this isn't a true fact at all!"
-    m 2dfc "'Humans only use 10 percent of their brain.'"
-    m 2lfd "Ugh, such nonsense."
-    m 4tfc "People don't really believe this, do they?"
+label mas_fun_fact_desert:
+    m 3euc "Deserts have a pretty unique ecosystem..."
+    m 3rksdla "However, they don't offer a lot of positive factors for humans."
+    m 1eud "Temperatures can vary between extreme heat during the day and freezing cold at night. Their average rainfall is also pretty low, making living in one difficult."
+    m 3eub "That's not to say they can't be beneficial to us though!"
+    m 3eua "Their surface is a great spot for solar power generation and oil is commonly found beneath all that sand."
+    m 3eub "Not to mention, their unique landscape makes them popular vacation spots!"
+    m 1eua "So I guess while we can't live in them that easily, they're still better than they seem."
+
     #Call the end
-    call mas_bad_facts_end
+    call mas_fun_facts_end
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_facts_2",
-            category=[store.mas_fun_facts.TYPE_BAD],
+            eventlabel="mas_fun_fact_photography",
         ),
         code="FFF"
     )
 
-label mas_bad_facts_2:
-    m 2ekc "Hm? This doesn't sound right..."
-    m 2tkd "It says here that different areas of the tongue taste different flavors."
-    m 2tfd "One area for bitter tastes, another for sweet..."
-    m 2dfd "{i}*sigh*{/i}{w} For the love of--"
-    m 2rfd "--only children would believe this."
+label mas_fun_fact_photography:
+    m 1esa "Did you know that the first photograph was taken using a box with a hole in it as a camera?"
+    m 1eua "Lenses weren't actually introduced until much later on."
+    m 1euc "Early photography also relied on a series of special chemicals in a dark room to prepare the photos..."
+    m 3eud "Developer, stop bath, and fixer chemicals were used just to prepare the paper the photos would be printed on...{w=0.3} {nw}"
+    extend 1wuo "And that's only for black and white prints!"
+    m 1hksdlb "Old photos were much harder to prepare compared to modern ones, don't you think?"
+
     #Call the end
-    call mas_bad_facts_end
+    call mas_fun_facts_end
     return
 
+#Stealing yearolder's bit for this since it makes sense as a fun fact
 init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_facts_3",
-            category=[store.mas_fun_facts.TYPE_BAD],
+            eventlabel="mas_fun_fact_getting_older",
         ),
         code="FFF"
     )
 
-label mas_bad_facts_3:
-    m 2dsc "{i}*inhale*{/i}"
-    m 2dsd "{i}*exhale*{/i}"
-    m 2esc "'Vaccines cause autism...'"
-    m "Just wow."
-    m "That's not even funny, and if they're serious, it's long since been disproven."
-    m 2dsc "I really don't like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."
-    m 2lksdlc "I hope no one actually believes this..."
-    #Call the end
-    call mas_bad_facts_end
-    return
+label mas_fun_fact_getting_older:
+    m 3eua "Did you know that how you perceive time changes as you age?"
+    m "For example, when you're a year old, you see one year as 100%% of your life."
+    m 1euc "But when you're 18, you see a year as only 5.6%% of your life."
+    m 3eud "As you get older, the proportion of a year compared to your entire lifespan decreases, and in turn, time {i}feels{/i} like it's moving faster as you grow up."
+    m 1eka "So I'll always cherish our moments together, no matter how long or short they are."
+    m 1lkbsa "Although sometimes it feels like time stops when I'm with you."
+    m 1ekbfa "Do you feel the same, [player]?"
+    python:
+        import time
+        time.sleep(5)
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_fun_facts_database,
-            eventlabel="mas_bad_facts_4",
-            category=[store.mas_fun_facts.TYPE_BAD],
-        ),
-        code="FFF"
-    )
-
-label mas_bad_facts_4:
-    m 2dkc "...Oh."
-    m 2rkc "I'm not even sure it's worth telling you this one, [player]."
-    m 2dkc "It says here that moss only grows on the north side of trees, but I know that it's only a myth."
-    m 2ekd "A very popular one too!"
-    m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there'll be moss there too."
-    m 2efd "But relying on that kind of logic is dangerous!"
-    m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in."
-    m "Plus even if it wasn't like that, the trick would only work in the Northern Hemisphere."
-    m 2wfc "Anyone within the Southern Hemisphere would have it growing facing south."
-    m 2dfc "..."
-    m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
-    m 2dkc "I would hate for something to happen to you, especially because of false information like this..."
-    #Call the end
-    call mas_bad_facts_end
+    m 1hubfa "Aha, I thought so!"
     return

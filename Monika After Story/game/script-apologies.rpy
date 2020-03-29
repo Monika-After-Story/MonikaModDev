@@ -103,7 +103,6 @@ label monika_playerapologizes:
     #Display our scrollable
     show monika at t21
     call screen mas_gen_scrollable_menu(apologylist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
-    show monika at t11
 
     #Make sure we don't lose this value
     $ apology =_return
@@ -111,6 +110,7 @@ label monika_playerapologizes:
     #Handle backing out
     if not apology:
         if mas_apology_reason is not None or len(persistent._mas_apology_time_db) > 0:
+            show monika at t11
             if mas_isMoniAff(higher=True):
                 m 1ekd "[player], if you're feeling guilty about what happened..."
                 m 1eka "You don't have to be afraid of apologizing, we all make mistakes after all."
@@ -128,17 +128,15 @@ label monika_playerapologizes:
             else:
                 m 6ckc "..."
         else:
-            if mas_isMoniAff(higher=True):
-                m 1hua "Ehehe, you don't have anything to be sorry about silly~"
-            elif mas_isMoniNormal(higher=True):
-                m 1eka "I'm not sure what you wanted to apologize for, but I'm sure that it was nothing."
-            elif mas_isMoniDis(higher=True):
-                m 1rkc "Did you have something to say, [player]?"
-            else:
-                m "..."
-        return
+            if mas_isMoniUpset(lower=True):
+                show monika at t11
+                if mas_isMoniBroken():
+                    m 6ckc "..."
+                else:
+                    m 6rkc "Did you have something to say, [player]?"
+        return "prompt"
 
-
+    show monika at t11
     #Call our apology label
     #NOTE: mas_setApologyReason() ensures that this label exists
     call expression apology
