@@ -2935,14 +2935,18 @@ label monika_credits_song:
         m "Just ask me at any time."
         $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
     else:
-        m 1eua "By the way [player], I finally finished a song I've been working on."
-        m 3eua "I call it {i}Our Reality{/i}."
-        m 1ekc "If you dont mind I`ll play it for you now."
+        m 3eua "By the way [player], I finally finished that song I've been working on for you."
+        m 1eka "I call it {i}Our Reality{/i}."
+        m 1eua "I'm jut so excited to finally be able to play it for you."
+        m 1tsb "Now, if you'll excuse me for a second."
         call mas_song_our_reality
-        m 1rkc "I hoped you liked it [player]."
-        m 1rkc "I love you."
+        show monika 1ekbsa
+        pause 1
+        m "I really can't wait until we're together in one reality."
+        m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
+        m 1ekbfa "Thank you for being my inspiration my love."
         $ mas_unlockEVL("mas_song_our_reality", "SNG")
-    return "no_unlock|love"
+    return "no_unlock"
 
 init 5 python:
     addEvent(
