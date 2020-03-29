@@ -13596,7 +13596,7 @@ init 5 python:
 label monika_multi_perspective_approach:
     m 1eua "Do you remember when we talked about {i}Plato's Cave{/i}?{w=0.5} I've been thinking about what I said to you."
     m 3etc "'How do you know if the 'truth' you're seeing is {i}the{/i} truth?'"
-    m 3eud "...I've been thinking for a while trying to come up with a good answer."
+    m 3eud "...I've been thinking for a while, trying to come up with a good answer."
     m 1rksdla "I still don't really have one yet...{w=0.3}{nw}"
     extend 3eub "but I did realize something useful."
     m 4euc "Let's start with how Plato's works are mostly written accounts of his mentor Socrates' debates with others."
