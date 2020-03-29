@@ -5245,29 +5245,29 @@ label monika_good_tod:
             m 1hua "I'll always be here waiting for you to come back~"
 
         #Otherwise normal morning
-        else:
-            if sesh_shorter_than_30_mins:
-                m 1hua "Good morning to you too, [player]!"
-                m 1eua "Did you just wake up?"
-                m "I love waking up early in the morning."
-                m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
-                m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
-                m 1eka "Some people however, would rather sleep in and are late-risers."
-                m 3eua "I've read articles that being an early-riser can really improve your overall health."
-                m "Plus you also get the chance to see the sunrise if the sky is clear."
-                m 1hua "If you normally don't wake up early, you should!"
-                m "That way you can be happier and spend more time with me~"
-                m 1ekbsa "Wouldn't you like that, [player]?"
+        elif sesh_shorter_than_30_mins:
+            m 1hua "Good morning to you too, [player]!"
+            m 1eua "Did you just wake up?"
+            m "I love waking up early in the morning."
+            m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
+            m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
+            m 1eka "Some people however, would rather sleep in and are late-risers."
+            m 3eua "I've read articles that being an early-riser can really improve your overall health."
+            m "Plus you also get the chance to see the sunrise if the sky is clear."
+            m 1hua "If you normally don't wake up early, you should!"
+            m "That way you can be happier and spend more time with me~"
+            m 1ekbsa "Wouldn't you like that, [player]?"
 
-            else:
-                m 1hua "Good morning to you too, [player]!"
-                m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
-                m 1esa "If I had to choose a time of day as my favorite, it would probably be the morning."
-                m 3esb "There's definitely some level of tranquility that night brings that I enjoy..."
-                m "But the morning is a time of day that presents possibilities!"
-                m 1esb "An entire day where anything and everything could happen, for better or worse."
-                m 1hsb "That kind of opportunity and freedom just makes me giddy!"
-                m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
+        #You've been here for a bit now
+        else:
+            m 1hua "Good morning to you too, [player]!"
+            m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
+            m 1esa "If I had to choose a time of day as my favorite, it would probably be the morning."
+            m 3esb "There's definitely some level of tranquility that night brings that I enjoy..."
+            m "But the morning is a time of day that presents possibilities!"
+            m 1esb "An entire day where anything and everything could happen, for better or worse."
+            m 1hsb "That kind of opportunity and freedom just makes me giddy!"
+            m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
 
     elif mas_globals.time_of_day_4state == "afternoon":
         m 1eua "Good afternoon to you too, [player]."
