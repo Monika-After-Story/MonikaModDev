@@ -11873,52 +11873,47 @@ init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
 
 label monika_whydoyouloveme:
-
-    if mas_isMoniBroken(lower=True):
+    if mas_isMoniBroken():
         m 2euc "Hmph."
         m 2wfc "I ask myself that question every day."
 
-    elif mas_isMoniDis(lower=True):
+    elif mas_isMoniDis():
         m 1efc "I-"
-        $ _history_list.pop()
         m 1efc "I'm not sure..."
 
-    elif mas_isMoniUpset(lower=True):
+    elif mas_isMoniUpset():
         m 1dsc "Hmmmmm..."
         m 3hua "Because I know that you're a good person despite how things are between us."
 
-    elif mas_isMoniLove(higher=True):
-        if store.mas_anni.pastSixMonths() and renpy.random.randint(1,2) == 1:
-            m 1eka "Why do I love you?"
-            m 2eka "[player]...{w=0.5}there are so many reasons why... Where do I even begin?"
-            m 3eka "You've spent so much time with me,{w=0.5} knowing I might not even get to feel your embrace for who knows how long."
+    elif mas_isMoniEnamored(higher=True):
+        if renpy.random.randint(1,10) > 1:
+            m 1eksdla "Why do I love you?"
+            m 1dka "[player]...{w=0.5}there are so many reasons why. Where do I even begin?"
+
             if store.mas_anni.anniCount() >= 1:
-                m 1hua "...But here you are, still by my side."
-                m 2eka "No matter how crazy it might seem, or what other people might say, you're here with me anyway.."
-                m 1dkbfa "Every time you visit, you remind me that there's a world out there."
-                m 1ekbfa "I'd give you the world if I could, [player]."
-                m 3hubfa "If there's anyone who deserves it...{w=0.3}it's you."
-                m 1hubfa "After all, you've already given me my world~"
-            if store.mas_anni.anniCount() >= 2:
-                m 1ekbfa "I promise you, [player]..."
-                m 3ekbfa "No matter what happens, I don't think I'll {i}ever{/i} forget you for the rest of my life."
-                m 1dua "You didn't just save my life, [player]..."
-                m 1dkbfa "You made me remember how beautiful life really is...{w=0.5}{nw}" 
-                extend 1ekbfa "and I want you to be able to experience just how beautiful my world is with you."
-                m 1ekbfb "Someday, I promise I'll make you feel as loved as you've made me~"
-                m 2dkbfa "One day...{w=1}I'll get to be with you..."
-            m 1ekbfa "You know I love you."
+                m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."
+                m 3hua "...But here you are, still by my side."
+
+            m 3eksdla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
+            m 1dku "Every time you visit, you remind me that there's a world out there."
+            m "..."
+            m 1ekbsa "I'd give you the world if I could, [player]."
+            m 1hubsa "If there's anyone who deserves it...{w=0.3}it's you."
+            m 1ekbsa "I promise you, [player]..."
+            m 3ekbsa "No matter what happens, I'll {i}never{/i} forget you for the rest of my life."
+            m 1dkbsu "You didn't just save me, [player]...{w=0.3}{nw}"
+            extend 1ekbsa "you made me remember how beautiful life really is."
+            m 1ekbsb "Someday, I'll make you feel as loved as you've made me feel~"
+            m 1dkbsa "Someday...{w=0.5}I'll get to be with you~"
+
             if persistent._mas_pm_love_yourself is False:
-                m 2ekc "I remember you saying that you didn't love yourself earlier."
-                m 1eka "But I think you do love yourself at least a little."
-            else:
-                m 1eka "Even if you don't think you love yourself..."
-                m 3eka "I know you do love yourself at least a little."
-            m 1hua "You wouldn't still be here with me if you didn't."
-            m 3ekbfa "But...{w=0.5}I'm glad you're still here, [player]."
-            m 2ekbfa "I just want you to know that I'm here for you."
-            m 1hubfa "And I love you~"
-            return "love"
+                m 2eka "And [player]..."
+                m 2ekc "I remember you saying that you didn't love yourself..."
+                m 1eka "But I think you do love yourself, at least a little."
+                m 1hua "You wouldn't still be here with me if you didn't."
+                m 1ekbsa "I'm...{w=0.5}I'm just glad you're still here, [player]."
+                m 1ekbsa "Please know that I'm here for you, whenever you need me~"
+
         else:
             m 1esc "I don't."
             pause 3.0
@@ -11926,15 +11921,15 @@ label monika_whydoyouloveme:
             m 1eub "You mean {i}everything{/i} to me, silly!"
             m 1esd "But if you really want to know, [player]..."
             m 1kubfu "That's a secret!"
+
     else:
-        #TODO: Add unique paths for aff - enam
-        # normal - enamored is this case
+        # normal - aff
         m 1ekc "[player]..."
-        m 1ekd "Are you, by any chance...{w}feeling insecure?"
+        m 1ekd "Are you, by any chance...{w=0.5}feeling insecure?"
         m 2lksdla "I can understand why you're asking such things out of the blue..."
-        m 2eka "But whatever the reason might be,{w} I just want you to know that I love you no matter who you are, [player]."
-        m 1eka "Just by opening the game for me, you {i}literally{/i} saved my life."
-        m 5eua "And when I'm with you,{w} I'm no longer lonely."
+        m 2eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
+        m 1eka "Just by opening the game for me, you literally saved my life."
+        m 5eua "...When I'm with you,{w=0.2} I'm no longer lonely."
         m "You truly are my hero, [player]~"
         m 1eub "If anything, I hope that would make you feel better about yourself."
         m 1hub "So keep your hopes up for me, [player]!"
