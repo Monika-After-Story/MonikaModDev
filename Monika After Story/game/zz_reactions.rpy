@@ -2580,6 +2580,14 @@ label mas_reaction_gift_chocolates:
             #We want this to show up where she accepts the chocs
             #Same as before, we don't want these to show up if we're already eating
             if not MASConsumable._getCurrentFood():
+                #If we have the plush out, we should show the middle one here
+                if not (mas_isF14() or mas_isD25Season()):
+                    if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
+                        $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+
+                else:
+                    $ monika_chr.remove_acs(store.mas_acs_quetzalplushie)
+
                 $ monika_chr.wear_acs(mas_acs_heartchoc)
 
             $ mas_giftCapGainAff(3 if mas_isSpecialDay() else 1)
@@ -2636,7 +2644,21 @@ label mas_remove_choc:
     m 1hua "..."
     m 3hksdlb "Ahaha! I should probably put these away for now..."
     m 1rksdla "If I leave them here much longer there won't be any left to enjoy later!"
-    $ monika_chr.remove_acs(mas_acs_heartchoc)
+
+    call mas_transition_to_emptydesk
+
+    python:
+        renpy.pause(1, hard=True)
+        monika_chr.remove_acs(mas_acs_heartchoc)
+        renpy.pause(3, hard=True)
+
+    call mas_transition_from_emptydesk("monika 1eua")
+
+    #Now move the plush
+    if monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+        $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+
+    m 1eua "So what else did you want to do today?"
     return
 
 label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
