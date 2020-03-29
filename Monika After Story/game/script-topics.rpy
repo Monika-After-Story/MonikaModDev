@@ -13586,6 +13586,40 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_ship_of_theseus",
+            category=['philosophy'],
+            prompt="The Ship of Theseus",
+            random=True,
+        )
+    )
+
+label monika_ship_of_theseus:
+    m 1eua "Have you heard of the 'Ship of Theseus'?"
+    m 3eua "It's a well known philosophical problem about the nature of identity that's been around for millennia."
+    m 1rkb "Well, I say 'well known' but I suppose that's only true among scholars, ahaha..."
+    m 1eua "Let's consider the legendary Greek hero, Theseus and the ship he sailed during his adventures." 
+    m 3eud "He's from a long time ago so let's say his ship is now stored in a famous museum, theoretically..."
+    m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
+    m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
+    m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
+    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced?"
+    m 3euc "In other words, not a single cell that made you, 'you' 7 years ago is part of you right now."
+    m 3eud "You could argue that you have no relation to that person, other than a consistent consciousness, and of course DNA."
+    m 1etc "...There's also an extra thing to consider."
+    m 1euc "Let's say for now that the modified ship should still be considered Theseus' ship. {w=0.3}What if all the parts that were originally removed were now reassembled into another ship?"
+    m 3wud "We'd have 2 of Theseus' ships!{w=0.2} Which one's the true one!?"
+    m 3etd "And what if we got all of the cells that made up your body 7 years ago and reassembled them into another 'you' right now? {w=0.2}Who would be the real [player]?"
+    m 1eua "Personally, I think that we're not the same people we were 7 years ago--or even the same people from yesterday."
+    m 3eua "In other words, there's no use getting hung up on any grievances we may have with our past selves."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "We should keep trying our best each day and not let ourselves be limited by who we were yesterday."
+    m 5eub "Today is a new day, and you are a new you. {w=0.2}And I love you as you are right now, [player]."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_multi_perspective_approach",
             category=['philosophy'],
             prompt="Multi-perspective approach",
