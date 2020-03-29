@@ -1745,7 +1745,7 @@ label ch30_hour:
     $ MASConsumable._checkConsumables()
 
     #Set our TOD var
-    $ mas_setTODVar()
+    $ mas_setTODVars()
     return
 
 # label for things that should run about once per day
@@ -2042,5 +2042,5 @@ label ch30_reset:
         $ mas_d25SilentReactToGifts()
 
     #Set our TOD var
-    $ mas_setTODVar()
+    $ mas_setTODVars()
     return

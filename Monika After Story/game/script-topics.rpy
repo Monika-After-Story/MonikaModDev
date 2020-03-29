@@ -5273,12 +5273,12 @@ label monika_good_tod:
         m 1eua "Good afternoon to you too, [player]."
         m 1hua "It's so sweet of you to take time out of your day to spend with me~"
         m 3euc "Afternoons sure can be a strange part of the day don't you think?"
-        m 4eud "Sometimes they're really busy..."
-        m 4lsc "Other times you'll have nothing to do..."
+        m 4eud "Sometimes they're really busy...{w=0.3}{nw}"
+        extend 4lsc "other times you'll have nothing to do..."
         m 1lksdla "They can seem to last forever or really fly by."
 
         if mas_isMoniNormal(higher=True):
-            m 1ekbsa "But with you here, I don't mind any of those outcomes."
+            m 1ekbsa "But with you here, I don't mind it either way."
             m 1hubsa "No matter what, I'll always enjoy the time you spend with me, [player]!"
             m 1hubsb "I love you!"
             $ mas_ILY()

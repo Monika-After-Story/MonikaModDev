@@ -4790,7 +4790,7 @@ init 2 python:
         """
         return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
 
-    def mas_setTODVar():
+    def mas_setTODVars():
         """
         Sets the mas_globals.time_of_day variable
 
