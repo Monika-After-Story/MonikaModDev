@@ -12203,7 +12203,7 @@ label monika_player_read_poetry:
     m 2dkc "But it's not...{w=0.3}{nw}"
     extend 2dkd "poetry is more than that."
     m 4ekd "You have to put yourself in it."
-    m 4ekc "Without his writing skills, {w=0.2}and also his feelings, {w=0.2}E.E.Cummings just wouldn't be E.E.Cummings..."
+    m 4ekc "Without his writing skills, {w=0.2}and also his feelings, {w=0.2}E.E.Cummings simply wouldn't be E.E.Cummings..."
     m 7ekd "And without my feelings for you, my poems wouldn't be the same."
     m 3eka "Love, grief, anger, passion, all these feelings bring the words to life."
     m 3hub "And because of that, even a simple text message can become a meaningful poem!"
