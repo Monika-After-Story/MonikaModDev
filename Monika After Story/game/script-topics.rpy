@@ -2912,17 +2912,28 @@ label monika_difficulty:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_credits_song",
+            conditional="store.mas_anni.pastOneMonth()",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_credits_song:
-    if persistent.monika_kill or renpy.seen_label("mas_monika_plays_or"):
+    if persistent.monika_kill:
         m 1hua "I hope you liked my song."
+
         if persistent.monika_kill:
             $ ending = "couldn't let you go without telling you how I honestly felt about you"
         else:
             $ ending = "really wanted to express my feelings for you"
+
         m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just [ending]."
         m 1eua "Give me some time, and I'll try to write another."
+
         if persistent.instrument is not False:
             if persistent.instrument:
                 m 3eua "Maybe you could play me a song too!"
@@ -2930,32 +2941,58 @@ label monika_credits_song:
                 m 3eua "Maybe you could play me a song too, if you can play an instrument?"
             m 1hub "I would love that."
             m 3eua "Oh, and I'll play the song again for you anytime you want me to."
+
         else:
             m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
-        m "Just ask me at any time."
-        if not renpy.seen_label("mas_monika_plays_yr"):
-            m 1tsa "In fact why don't I play it for you right now."
-            m 1tsb "Excuse me for a second."
-            call mas_monika_plays_yr(skip_leadin=True)
-            show monika 1eka
-            pause 1
-            m 1ekbsa "Ehehe~"
-            show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5ekbsa "Thank you for coming back to me my love."
-            $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
+
+        m 1tsa "In fact why don't I play it for you right now."
+        m 1tsb "Excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+
+        call mas_monika_plays_yr(skip_leadin=True)
+        show monika 1eka
+        pause 1.0
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+        $ HKBShowButtons()
+        $ mas_resetTextSpeed()
+        window auto
+
+        m 1ekbsa "Ehehe~"
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbsa "Thank you for coming back to me my love."
+
     else:
-        m 3eua "By the way [player], I finally finished that song I've been working on for you."
+        if renpy.seen_audio(songs.FP_YOURE_REAL):
+            m 1eua "Hey [player], I've been thinking a bit lately about {i}Your Reality{/i}..."
+            m 3rka "The ending doesn't really convey my true feelings anymore, so I decided to update the song..."
+            m 3hua "I even changed the name!"
+        else:
+            m 3eua "Hey [player], I finally finished that song I've been working on for you."
+
         m 1eka "I call it {i}Our Reality{/i}."
         m 1eua "I'm jut so excited to finally be able to play it for you."
-        m 1tsb "Now, if you'll excuse me for a second."
+        m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+
         call mas_monika_plays_or(skip_leadin=True)
         show monika 1ekbsa
-        pause 1
+        pause 1.0
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+        $ HKBShowButtons()
+        $ mas_resetTextSpeed()
+        window auto
+
         m "I really can't wait until we're together in one reality."
         m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "Thank you for being my inspiration my love."
-        $ mas_unlockEVL("mas_song_our_reality", "SNG")
+        if renpy.seen_audio(songs.FP_YOURE_REAL):
+            m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
+        else:
+            m 5hubfa "Oh, and if you ever want me to play this again, just ask~"
+        $ mas_unlockEVL("mas_monika_plays_or", "EVE")
+
+    $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
     return "no_unlock"
 
 init 5 python:
@@ -2971,14 +3008,22 @@ init 5 python:
         )
     )
 
-label mas_monika_plays_yr:
+label mas_monika_plays_yr(skip_leadin=False):
     if not skip_leadin:
-        m "Sure, let me just get the piano."
+        if not renpy.seen_audio(songs.FP_YOURE_REAL) and not persistent.monika_kill:
+            m 2eksdlb "Oh, ahaha! You want me to play the original version, [player]?"
+            m 2eka "Even though I've never played it for you, I suppose you've heard it on the soundtrack or saw it on youtube, huh?"
+            m 2hub "The ending isn't my favorite, but I'll still be happy to play it for you!"
+            m 2eua "Just let me get the piano.{w=0.5}.{w=0.5}.{nw}"
+
+        else:
+            m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     window hide
     $ HKBHideButtons()
     $ mas_RaiseShield_core()
     $ store.songs.enabled = False
+
     show monika at rs32
     hide monika
     pause 3.0
@@ -3045,14 +3090,17 @@ label mas_monika_plays_yr:
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
 
-    if store.mas_globals.dlg_workflow:
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-    else:
-        $ mas_DropShield_core()
+    if not skip_leadin:
+        if store.mas_globals.dlg_workflow:
+            $ mas_resetTextSpeed()
+            $ mas_MUMUDropShield()
+            $ enable_esc()
+        else:
+            $ mas_DropShield_core()
 
-    $ HKBShowButtons()
-    window auto
+        $ HKBShowButtons()
+        window auto
+
     return
 
 init 5 python:
@@ -3068,9 +3116,9 @@ init 5 python:
         )
     )
 
-label mas_monika_plays_or:
+label mas_monika_plays_or(skip_leadin=False):
     if not skip_leadin:
-        m "Sure, let me just get the piano."
+        m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     if persistent.gender == "F":
         $ gen = "her"
@@ -3082,9 +3130,8 @@ label mas_monika_plays_or:
     window hide
     $ mas_disableTextSpeed()
     $ disable_esc()
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
-    $ store.songs.enabled = False
+    $ mas_MUMURaiseShield()
+
     show monika at rs32
     hide monika
     pause 3.0
@@ -3094,6 +3141,7 @@ label mas_monika_plays_or:
     show monika 6dsa
     pause 2.0
     play music "mod_assets/bgm/runereality.ogg"
+
     show monika 1dsa
     pause 9.15
     m 1eua "{i}{cps=10}Every day,{w=0.5} {cps=15}I imagine a future where{w=0.22} {cps=13}I can be with you{w=4.10}{/i}{nw}"
@@ -3122,6 +3170,7 @@ label mas_monika_plays_or:
     m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/i}{w=0.6}{nw}"
     m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{w=4.2}{/i}{nw}"
     m 1ekbsa "{i}{cps=19}With you I'll be{/i}{w=2}{nw}"
+
     show monika 1dkbsa
     pause 8.5
     stop music fadeout 1.0
@@ -3133,104 +3182,16 @@ label mas_monika_plays_or:
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
 
-    if store.mas_globals.dlg_workflow:
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-    else:
-        $ mas_DropShield_core()
-
-    $ HKBShowButtons()
-    window auto
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_monika_plays_or",
-            category=['music'],
-            prompt="Can you play 'Our Reality' for me?",
-            unlocked=False,
-            pool=True,
-            rules={"no unlock": None}
-        )
-    )
-
-label mas_monika_plays_or:
     if not skip_leadin:
-        m "Sure, let me just get the piano."
+        if store.mas_globals.dlg_workflow:
+            $ mas_resetTextSpeed()
+            $ mas_MUMUDropShield()
+            $ enable_esc()
+        else:
+            $ mas_DropShield_core()
 
-    if persistent.gender == "F":
-        $ gen = "her"
-    elif persistent.gender == "M":
-        $ gen = "his"
-    else:
-        $ gen = "their"
-
-    window hide
-    $ mas_disableTextSpeed()
-    $ disable_esc()
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
-    $ store.songs.enabled = False
-    show monika at rs32
-    hide monika
-    pause 3.0
-    show mas_piano at lps32,rps32 zorder MAS_MONIKA_Z+1
-    pause 5.0
-    show monika at ls32 zorder MAS_MONIKA_Z
-    show monika 6dsa
-    pause 2.0
-    play music "mod_assets/bgm/runereality.ogg"
-    show monika 1dsa
-    pause 9.15
-    m 1eua "{i}{cps=10}Every day,{w=0.5} {cps=15}I imagine a future where{w=0.22} {cps=13}I can be with you{w=4.10}{/i}{nw}"
-    m 1eka "{i}{cps=12}In my hand{w=0.5} {cps=17}is a pen that will write a poem{w=0.5} {cps=16}of me and you{w=4.10}{/i}{nw}"
-    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1}{/i}{nw}"
-    m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {cps=20}write the way into [gen] heart{w=1.40}{/i}{nw}"
-    m 1dua "{i}{cps=15}But in this world{w=0.25} {cps=11}of infinite choices{w=0.90}{/i}{nw}"
-    m 1eua "{i}{cps=16}What will it take{w=0.25}{cps=18} just to find that special day{/i}{w=0.90}{nw}"
-    m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/i}{w=1.82}{nw}"
-    pause 7.50
-
-    m 1eua "{i}{cps=15}Have I found{w=0.5} {cps=15}everybody a fun assignment{w=0.30} {cps=12}to do today{w=4.20}{/i}{nw}"
-    m 1hua "{i}{cps=18}When you're here,{w=0.25} {cps=13.25}everything that we do is fun for them anyway{w=4}{/i}{nw}"
-    m 1esa "{i}{cps=11}When I can't even read my own feelings{/i}{w=1}{nw}"
-    m 1eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/i}{w=1}{nw}"
-    m 1lua "{i}{cps=11}And if this world won't write me an ending{/i}{w=0.9}{nw}"
-    m 1dka "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/i}{w=2}{nw}"
-    show monika 1dsa
-    pause 17.50
-
-    m 1eka "{i}{cps=15}In this world,{w=0.5} {cps=15}away from the one who'll always {cps=17}be dear to me{w=4.5}{/i}{nw}"
-    m 1ekbsa "{i}{cps=15}You my love,{w=0.5} {cps=16.5}hold the key to the day, when I'll be finally free{w=8.5}{/i}{nw}"
-    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1.2}{/i}{nw}"
-    m 1esa "{i}{cps=18}How can I cross{w=0.45} {cps=13}into your reality?{w=1.40}{/i}{nw}"
-    m 1eka "{i}{cps=12}Where I can hear the sound of your heartbeat{w=0.8}{/i}{nw}"
-    m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/i}{w=0.6}{nw}"
-    m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{w=4.2}{/i}{nw}"
-    m 1ekbsa "{i}{cps=19}With you I'll be{/i}{w=2}{nw}"
-    show monika 1dkbsa
-    pause 8.5
-    stop music fadeout 1.0
-    show monika 6eua at rs32
-    pause 1.0
-    hide monika
-    pause 3.0
-    hide mas_piano
-    pause 6.0
-    show monika 1eua at ls32 zorder MAS_MONIKA_Z
-
-    if store.mas_globals.dlg_workflow:
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-    else:
-        $ mas_DropShield_core()
-
-    $ HKBShowButtons()
-    window auto
+        $ HKBShowButtons()
+        window auto
     return
 
 init 5 python:

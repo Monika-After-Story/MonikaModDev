@@ -440,6 +440,14 @@ label v0_10_8(version="v0_10_8"):
             if gr_ev:
                 gr_ev.conditional = conditional
 
+        credits_ev = mas_getEV("monika_credits_song")
+        if credits_ev:
+            credits_ev.random = False
+            credits_ev.prompt = None
+            credits_ev.conditional = "store.mas_anni.pastOneMonth()"
+            credits_ev.action = EV_ACT_QUEUE
+            credits_ev.unlocked = False
+
     return
 
 #0.10.7
