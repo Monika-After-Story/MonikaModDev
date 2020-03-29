@@ -11961,7 +11961,15 @@ label monika_anime_art:
     return
 
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_whydoyouloveme",
+            category=['monika','romance'],
+            prompt="Why do you love me?",
+            pool=True
+        )
+    )
 
 label monika_whydoyouloveme:
     if mas_isMoniBroken():
@@ -11970,10 +11978,10 @@ label monika_whydoyouloveme:
 
     elif mas_isMoniDis():
         m 1efc "I-"
-        m 1efc "I'm not sure..."
+        m 1rkc "I'm not sure..."
 
     elif mas_isMoniUpset():
-        m 1dsc "Hmmmmm..."
+        m 1dsc "Hmm..."
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniEnamored(higher=True):
