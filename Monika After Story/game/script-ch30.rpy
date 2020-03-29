@@ -61,6 +61,12 @@ init -1 python in mas_globals:
     last_day = None
     # numbr of the day we last ran ch30_day
 
+    time_of_day_4state = None
+    #Time of day, basically either morning, afternoon, evening, night. Set by ch30_hour, used in dlg
+
+    time_of_day_3state = None
+    #Time of day broken into 3 states. morning, afternoon, evening. Set by ch30_hour, used in dlg
+
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
 
@@ -1737,6 +1743,9 @@ label ch30_hour:
 
     #Runtime checks to see if we should have a consumable
     $ MASConsumable._checkConsumables()
+
+    #Set our TOD var
+    $ mas_setTODVar()
     return
 
 # label for things that should run about once per day
@@ -2031,4 +2040,7 @@ label ch30_reset:
         and not mas_globals.returned_home_this_sesh
     ):
         $ mas_d25SilentReactToGifts()
+
+    #Set our TOD var
+    $ mas_setTODVar()
     return

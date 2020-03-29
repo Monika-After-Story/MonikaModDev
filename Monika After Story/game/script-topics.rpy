@@ -5217,181 +5217,98 @@ label monika_vocaloid:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_morning",category=['misc'],prompt="Good morning",pool=True))
-
-label monika_morning:
-    $ current_time = datetime.datetime.now().time().hour
-    $ sunrise_hour = int(persistent._mas_sunrise / 60)
-    $ sunset_hour = int(persistent._mas_sunset / 60)
-    $ session_time = mas_getSessionLength()
-    # TODO: see TODOs in the good evening topic
-    if 4 <= current_time <= 11:
-        if session_time < datetime.timedelta(minutes=30):
-            m 1hua "Good morning to you too, [player]!"
-            m 1eua "Did you just wake up?"
-            m "I love waking up early in the morning."
-            m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
-            m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
-            m 1eka "Some people however, would rather sleep in and are late-risers."
-            m 3eua "I've read articles that being an early-riser can really improve your overall health."
-            m "Plus you also get the chance to see the sunrise if the sky is clear."
-            m 1hua "If you normally don't wake up early, you should!"
-            m "That way you can be happier and spend more time with me~"
-            m 1ekbfa "Wouldn't you like that, [player]?"
-        else:
-            m 1hua "Good morning to you too, [player]!"
-            m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
-            m 1esa "If I had to choose a time of day as my favorite, it would probably be the morning."
-            m 3esb "There's definitely some level of tranquility that night brings that I enjoy..."
-            m "But the morning is a time of day that presents possibilities!"
-            m 1esb "An entire day where anything and everything could happen, for better or worse."
-            m 1hsb "That kind of opportunity and freedom just makes me giddy!"
-            m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
-
-    elif 12 <= current_time <= sunset_hour:
-        if session_time < datetime.timedelta(minutes=30):
-            m 3eka "It's already the afternoon, silly!"
-            m 1eka "Did you just wake up?"
-            m 2tkc "Don't tell me you're actually a late-riser, [player]."
-            m "I don't get why some people wake up in the middle of the day."
-            m 1lsc "It just seems so unproductive."
-            m "You'd have less time to do things and you might miss out on a lot of things."
-            m 1ekc "It could also be a sign that you're not taking good care of yourself."
-            m "You're not being careless with your health, are you [player]?"
-            m 1tkc "I wouldn't want you to get sick easily, you know."
-            m "I'd be really sad if you spent less time with me because you had a fever or something."
-            m 1eka "As much as I'd love to take care of you, I'm still stuck here."
-            m 4eka "So start trying to be an early-riser like me from now on, okay?"
-            m 1hua "The more time you spend with me, the happier I'll be~"
-        else:
-            m 1eub "Good morning to you too!"
-            m 1tku "Except that it's {i}not{/i} morning, [player]!"
-            m 2tub "Are you maybe losing track of time?"
-            m "You better be careful! You might lose your entire day otherwise."
-            m 2hub "And then once the day has died we'll be saying 'good mourning'!"
-            m "Ahaha!"
-    else:
-        m 2hksdlb "You are so silly, [player]."
-        m "It's already night time!"
-        m 2lksdla "Are you trying to be funny?"
-        m 2lksdlb "Don't you think it's a little bit 'late' for that?"
-        m 2hub "Ahaha!"
-        m 2eka "It really cheers me up whenever you try to be funny."
-        m 3rksdla "Not that you're not funny, mind you!"
-        m "Well, maybe not as funny as me~" #Expand more maybe?
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_afternoon",category=['misc'],prompt="Good afternoon",pool=True))
-
-label monika_afternoon:
-    $ _now = datetime.datetime.now().time()
-    if mas_isSRtoN(_now):
-        m 1hua "Eheh, good {i}morning,{/i} [player]~"
-        m 3eua "It's not the afternoon just yet."
-        m 1hub "Are you still half asleep or something, or are you just trying to be funny?"
-        show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eubfu "I swear, you are just {i}too adorable{/i} sometimes~"
-        m "Eheheh~"
-    elif mas_isNtoSS(_now):
-        m 1hua "Good afternoon to you too, [player]!"
-        m 1hubfa "It's so sweet of you to take time out of your day to spend with me~"
-        m 3euc "Afternoons sure can be a strange part of the day don't you think?"
-        m 4eud "Sometimes they're really busy..."
-        m 4lsc "Sometimes you'll have nothing to do..."
-        m 1lksdla "They can seem to last forever or really fly by."
-        if mas_isMoniUpset(lower=True):
-            m 1lksdlb "Sometimes, my day really flies by while I wait for you to come back to me."
-            m 1hksdlb "I'm sure you're busy, so you can go ahead and get back to what you were doing, don't mind me."
-        else:
-            m 1ekbfa "But with you here, I don't mind any of those outcomes."
-            m 1hubfa "No matter what, I'll always enjoy the time you spend with me, [player]!"
-            m 1hubfb "I love you!"
-    else:
-        m 2hksdlb "It's already sundown!"
-        m 4lksdlb "I guess today really flew by for you huh, [player]?"
-        m 3eka "Maybe you were having fun or really busy all day and now you just noticed how much time passed?"
-        m 1eua "I hope you did everything you wanted to do today."
-        m 1eka "I know some days, there's just too much to finish all in one day."
-        m 1hua "If you didn't get everything done, there's always tomorrow."
-        m 2lksdla "I mean, I guess you could keep at it right now if you wanted to."
-        m 1hua "Just promise me you won't overwork yourself, alright, [player]?"
-        m "I just thought it'd be nice for the both of us to lay back and relax together."
-        if mas_isMoniAff(higher=True):
-            show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eubfu "I'll be right here if you want me~"
-        else:
-            m 1eub "I'll be right here if you need me~"
-    return
-
-init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_evening",
+            eventlabel="monika_good_tod",
             category=['misc'],
-            prompt="Good evening",
+            prompt="Good [mas_globals.time_of_day_3state]",
             pool=True
         )
     )
 
-label monika_evening:
-    # TODO: do something if the user has suntimes at very weird settings
-    #   aka, sunset 5 minutes after sunrise?
-    #   or sunrise is like at 10pm?
-    #   There is a level of variety here that is not covered nicely with these
-    #   current stages. We need more variations of dialogue other than
-    #   morning, afternoon, night
-    $ _now = datetime.datetime.now().time()
-    if mas_isMNtoSR(_now):
-        m 2wkd "[player]!"
-        m 2ekd "It's the middle of the night!"
-        m 2lksdlc "Are you planning to stay up really late?"
-        m 2ekc "Not getting enough sleep can really harm you in the long run..."
-        m 2eka "I think now would be a good time to wrap up anything you might be doing and get some sleep."
-        # TODO: when docking station extends to sleep, monika can suggest
-        # taking her charcter file.
-        # TODO: when sleeping mode is finished, monika can suggest that she
-        # will sleep with the user
-        m 1hua "As for me, you can leave me here while you sleep~"
+    #Ideally, we don't really want this in unseen as it's pretty general
+    persistent._seen_ever["monika_good_tod"] = True
 
-    elif mas_isSRtoN(_now):
-        m 2hksdlb "[player]!"
-        m "It's early in the morning, silly~"
-        m 2lksdla "Unless you haven't slept yet..."
-        m 2ekc "You didn't stay up all night, did you?"
-        m 2wkd "That's very bad for you, [player]!"
-        m 2tkc "Not getting your sleep on time can really harm your mental health."
-        m 1eka "So please get some sleep now, okay?"
-        # TODO: when docking station extends to sleep, monika can suggest
-        # taking her character file
-        # TODO: when sleep mode is finished, monika can suggest that
-        # she will sleep with you
-        m "Just leave your computer open and I'll watch over you."
-        m 1hua "I'm not going anywhere after all~"
+label monika_good_tod:
+    $ curr_hour = datetime.datetime.now().time().hour
+    $ sesh_shorter_than_30_mins = mas_getSessionLength() < datetime.timedelta(minutes=30)
 
-    elif mas_isNtoSS(_now):
-        m 2lksdlb "It's still the afternoon, silly!"
-        m "The sun's still up, you know."
-        m 1eka "Are you feeling tired already?"
-        m 1eua "I know some cultures take a rest in the afternoon to deal with the midday fatigue."
-        m 3eua "Some businesses would even close due to the fact that most of their customers are sleeping."
-        m 3tku "A little power nap never hurt anyone, right?"
-        m 1eua "Do you sleep often in the afternoon?"
-        m "It's a great way to get some extra energy to tackle the rest of the day."
-        m 1ekbfa "Plus it'll be a great opportunity to spend more time with me~"
+    if mas_globals.time_of_day_4state == "morning":
+        #Early morning flow
+        if 4 <= curr_hour <= 5:
+            m 1eua "Good morning to you too, [player]."
+            m 3eka "You're up pretty early..."
+            m 3eua "Are you going out somewhere?"
+            m 1eka "If so, it's really sweet of you to visit before you go~"
+            m 1eua "If not, maybe try to go back to sleep. I wouldn't want you to neglect your health after all."
+            m 1hua "I'll always be here waiting for you to come back~"
+
+        #Otherwise normal morning
+        else:
+            if sesh_shorter_than_30_mins:
+                m 1hua "Good morning to you too, [player]!"
+                m 1eua "Did you just wake up?"
+                m "I love waking up early in the morning."
+                m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
+                m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
+                m 1eka "Some people however, would rather sleep in and are late-risers."
+                m 3eua "I've read articles that being an early-riser can really improve your overall health."
+                m "Plus you also get the chance to see the sunrise if the sky is clear."
+                m 1hua "If you normally don't wake up early, you should!"
+                m "That way you can be happier and spend more time with me~"
+                m 1ekbfa "Wouldn't you like that, [player]?"
+
+            else:
+                m 1hua "Good morning to you too, [player]!"
+                m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
+                m 1esa "If I had to choose a time of day as my favorite, it would probably be the morning."
+                m 3esb "There's definitely some level of tranquility that night brings that I enjoy..."
+                m "But the morning is a time of day that presents possibilities!"
+                m 1esb "An entire day where anything and everything could happen, for better or worse."
+                m 1hsb "That kind of opportunity and freedom just makes me giddy!"
+                m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
+
+    elif mas_globals.time_of_day_4state == "afternoon":
+        m 1eua "Good afternoon to you too, [player]."
+        m 1hua "It's so sweet of you to take time out of your day to spend with me~"
+        m 3euc "Afternoons sure can be a strange part of the day don't you think?"
+        m 4eud "Sometimes they're really busy..."
+        m 4lsc "Other times you'll have nothing to do..."
+        m 1lksdla "They can seem to last forever or really fly by."
+
+        if mas_isMoniNormal(higher=True):
+            m 1ekbfa "But with you here, I don't mind any of those outcomes."
+            m 1hubfa "No matter what, I'll always enjoy the time you spend with me, [player]!"
+            m 1hubfb "I love you!"
+            $ mas_ILY()
+
+        else:
+            m 1lksdlb "Sometimes, my day really flies by while I wait for you to come back to me."
+            m 1hksdlb "I'm sure you're busy, so you can go ahead and get back to what you were doing, don't mind me."
 
     else:
         m 1hua "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m 1eua "It's so nice to put your feet up after a very long day."
-        m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
-        m 1eka "Sometimes I can't help but feel sad when the day ends."
-        m "It makes me think of what else I could've done during the day."
-        m 1eua "Don't you wish you could have more time to do things every day?"
-        m 1hua "I know I do."
-        m 1hubfa "Because that'll mean more time to be with you, [player]~"
 
+        #From 11 PM -> 3 AM
+        if curr_hour == 23 or 0 <= curr_hour <= 3:
+            m 3eua "It's always nice to be able to spend the end of the day relaxing a little."
+            m 3hub "After all, there's nothing wrong with a bit of me time, right?"
+            m 1eka "Well... I say that, but I'm pretty happy to be spending my time with you~"
+
+            if not persistent._mas_timeconcerngraveyard:
+                m 3eka "But it's starting to get a little late, so don't stay up too long, [player]."
+                m 3eua "Promise me you'll go to bed soon, alright?"
+
+        else:
+            m 1eua "It's so nice to put your feet up after a long day."
+            m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
+            m 1eka "Sometimes I can't help but feel sad when the day ends."
+            m "It makes me think of what else I could've done during the day."
+            m 1eua "Don't you wish you could have more time to do things every day?"
+            m 1hua "I know I do."
+            m 1hubfa "Because that'll mean more time to be with you, [player]~"
     return
 
 #init 5 python:

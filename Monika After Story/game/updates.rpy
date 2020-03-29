@@ -435,11 +435,15 @@ label v0_10_8(version="v0_10_8"):
             "greeting_visit9": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=1)",
             "greeting_hamlet": "store.mas_getAbsenceLength() >= datetime.timedelta(days=7)"
         }
+
         for gr_label, conditional in new_greetings_conditions.iteritems():
             gr_ev = mas_getEV(gr_label)
             if gr_ev:
                 gr_ev.conditional = conditional
 
+        #Remove some old topics
+        mas_eraseTopic("monika_morning")
+        mas_eraseTopic("monika_evening")
     return
 
 #0.10.7
