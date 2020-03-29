@@ -5257,7 +5257,7 @@ label monika_good_tod:
                 m "Plus you also get the chance to see the sunrise if the sky is clear."
                 m 1hua "If you normally don't wake up early, you should!"
                 m "That way you can be happier and spend more time with me~"
-                m 1ekbfa "Wouldn't you like that, [player]?"
+                m 1ekbsa "Wouldn't you like that, [player]?"
 
             else:
                 m 1hua "Good morning to you too, [player]!"
@@ -5278,9 +5278,9 @@ label monika_good_tod:
         m 1lksdla "They can seem to last forever or really fly by."
 
         if mas_isMoniNormal(higher=True):
-            m 1ekbfa "But with you here, I don't mind any of those outcomes."
-            m 1hubfa "No matter what, I'll always enjoy the time you spend with me, [player]!"
-            m 1hubfb "I love you!"
+            m 1ekbsa "But with you here, I don't mind any of those outcomes."
+            m 1hubsa "No matter what, I'll always enjoy the time you spend with me, [player]!"
+            m 1hubsb "I love you!"
             $ mas_ILY()
 
         else:
@@ -5291,24 +5291,25 @@ label monika_good_tod:
         m 1hua "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
 
-        #From 11 PM -> 3 AM
-        if curr_hour == 23 or 0 <= curr_hour <= 3:
-            m 3eua "It's always nice to be able to spend the end of the day relaxing a little."
-            m 3hub "After all, there's nothing wrong with a bit of me time, right?"
-            m 1eka "Well... I say that, but I'm pretty happy to be spending my time with you~"
-
-            if not persistent._mas_timeconcerngraveyard:
-                m 3eka "But it's starting to get a little late, so don't stay up too long, [player]."
-                m 3eua "Promise me you'll go to bed soon, alright?"
-
-        else:
+        if 17 <= curr_hour < 23:
             m 1eua "It's so nice to put your feet up after a long day."
             m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
             m 1eka "Sometimes I can't help but feel sad when the day ends."
             m "It makes me think of what else I could've done during the day."
-            m 1eua "Don't you wish you could have more time to do things every day?"
+            m 3eua "Don't you wish you could have more time to do things every day?"
             m 1hua "I know I do."
-            m 1hubfa "Because that'll mean more time to be with you, [player]~"
+            m 1hubsa "Because that'll mean more time to be with you, [player]~"
+
+        # between 11pm and 4am
+        else:
+            m 3eua "It's always nice to be able to spend the end of the day relaxing a little."
+            m 3hub "After all, there's nothing wrong with a bit of 'me' time, right?"
+            m 1eka "Well... I say that, but I'm pretty happy to be spending my time with you~"
+
+            if not persistent._mas_timeconcerngraveyard:
+                m 3eka "Although it's starting to get a little late, so don't stay up too long, [player]."
+                m 3eua "Promise me you'll go to bed soon, alright?"
+
     return
 
 #init 5 python:
