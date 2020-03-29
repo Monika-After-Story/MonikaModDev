@@ -988,6 +988,10 @@ init -810 python:
             # lifestyle / exercise
             "_mas_pm_works_out": "pm.lifestyle.works_out",
 
+            # lifestyle / dating
+            "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
+            "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
             "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
