@@ -12180,16 +12180,18 @@ default persistent._mas_pm_likes_poetry = None
 label monika_player_read_poetry:
     m 1eud "Say, [player]..."
     m 1eua "You know that I like poetry, but I was wondering..."
+
     m 3eua "Do you often read poetry?{nw}"
     $ _history_list.pop()
-
     menu:
         m "Do you often read poetry?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_likes_poetry = True
             m 1sub "Really?"
             m 1hua "That makes me so happy!"
             m 3eua "And really, I mean it. Not a lot of people read poetry nowadays."
+
         "No.":
             $ persistent._mas_pm_likes_poetry = False
             m 2ekc "Oh, that's too bad..."
@@ -12198,9 +12200,10 @@ label monika_player_read_poetry:
 
     m 2euc "In fact, poetry is often considered as something too difficult to understand..."
     m 2efd "And on the opposite side, others think that it's simply putting a bunch of pretty words next to each other!"
-    m 2dkc "But it's not...poetry is more than that."
+    m 2dkc "But it's not...{w=0.3}{nw}"
+    extend 2dkd "poetry is more than that."
     m 4ekd "You have to put yourself in it."
-    m 4ekc "Without his writing skills, {w=0.2}and also his feelings, {w=0.2}E.E.Cummings wouldn't be E.E.Cummings..."
+    m 4ekc "Without his writing skills, {w=0.2}and also his feelings, {w=0.2}E.E.Cummings just wouldn't be E.E.Cummings..."
     m 7ekd "And without my feelings for you, my poems wouldn't be the same."
     m 3eka "Love, grief, anger, passion, all these feelings bring the words to life."
     m 3hub "And because of that, even a simple text message can become a meaningful poem!"
@@ -12224,7 +12227,7 @@ label monika_player_read_poetry:
         extend 1kua "ehehe~"
 
     return "derandom"
-    
+
 init 5 python:
     addEvent(
         Event(
