@@ -13637,7 +13637,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_working_out",
             category=['advice','you'],
-            prompt="Working Out",
+            prompt="Working out",
             random=True
         )
     )
