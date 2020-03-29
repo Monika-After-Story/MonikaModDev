@@ -1081,6 +1081,7 @@ init -810 python:
             "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
             "_mas_pm_likes_rain": "pm.likes.rain",
             "_mas_pm_likes_travelling": "pm.likes.travelling",
+            "_mas_pm_likes_poetry" : "pm.likes.poetry",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
