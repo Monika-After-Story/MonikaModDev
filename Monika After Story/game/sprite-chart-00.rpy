@@ -2428,6 +2428,16 @@ image monika 1rka_static = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1rkb_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    arms="steepling"
+)
+
 image monika 1rkbfb_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,

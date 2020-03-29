@@ -444,6 +444,14 @@ label v0_10_8(version="v0_10_8"):
         #Remove some old topics
         mas_eraseTopic("monika_morning")
         mas_eraseTopic("monika_evening")
+
+        #Make multi-perspective approach random for people who've seen the allegory of the cave topic
+        cave_ev = mas_getEV("monika_allegory_of_the_cave")
+        if cave_ev and cave_ev.shown_count > 0:
+            perspective_ev = mas_getEV("monika_multi_perspective_approach")
+            if perspective_ev:
+                perspective_ev.random = True
+
     return
 
 #0.10.7

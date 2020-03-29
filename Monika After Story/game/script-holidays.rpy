@@ -6308,7 +6308,7 @@ P.S: Don't tell her about me.
         #show chibi, she's just written the letter
         show chibi_peek with moveinleft
         m 1ekc "Of course, I haven't read it, since it's obviously for you..."
-        m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
+        m 1tuu "{cps=*2}Hmm, I wonder what this could be about...{/cps}{nw}"
         $ _history_list.pop()
         m 1hua "Ehehe~"
 
