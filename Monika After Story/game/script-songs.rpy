@@ -785,6 +785,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     pause 2.0
     $ play_song(store.songs.FP_YOURE_REAL,loop=False)
 
+    # TODO: possibly generalize this for future use
     show monika 6hua
     $ renpy.pause(10.012)
     show monika 6eua_static
@@ -842,13 +843,9 @@ label mas_monika_plays_yr(skip_leadin=False):
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
 
     if not skip_leadin:
-        if store.mas_globals.dlg_workflow:
-            $ mas_resetTextSpeed()
-            $ mas_MUMUDropShield()
-            $ enable_esc()
-        else:
-            $ mas_DropShield_core()
-
+        $ mas_resetTextSpeed()
+        $ mas_MUMUDropShield()
+        $ enable_esc()
         $ HKBShowButtons()
         window auto
 
@@ -934,13 +931,10 @@ label mas_monika_plays_or(skip_leadin=False):
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
 
     if not skip_leadin:
-        if store.mas_globals.dlg_workflow:
-            $ mas_resetTextSpeed()
-            $ mas_MUMUDropShield()
-            $ enable_esc()
-        else:
-            $ mas_DropShield_core()
-
+        $ mas_resetTextSpeed()
+        $ mas_MUMUDropShield()
+        $ enable_esc()
         $ HKBShowButtons()
         window auto
+
     return
