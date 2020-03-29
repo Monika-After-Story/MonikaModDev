@@ -13673,4 +13673,4 @@ label monika_working_out:
     else:
         m 3eub "Maybe when I cross over, we can do our workouts together!"
 
-return "derandom"
+    return "derandom"
