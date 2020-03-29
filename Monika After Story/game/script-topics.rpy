@@ -12178,47 +12178,50 @@ default persistent._mas_pm_read_poetry = None
 #True if player likes poems, false if not
 
 label monika_player_read_poetry:
-    m 2eub "Say, [player]..."
-    m 2eua "You know that I like poetry, but I was wondering something."
-    m "Did you often read poems before you joined the Literature Club?{nw}"
+    m 1eud "Say, [player]..."
+    m 1eua "You know that I like poetry, but I was wondering..."
+    m 3eua "Do you often read poetry?{nw}"
     $ _history_list.pop()
+
     menu:
-        m "Did you often read poems before you joined the Literature Club?{fast}"
+        m "Do you often read poetry?{fast}"
         "Yes.":
             $ persistent._mas_pm_read_poetry = True
-            $ mas_gainAffection()
-            m 2sub "Really?"
-            m 2hub "That makes me so happy!"
-            m 2hua "And really, I mean it. Not a lot of people nowadays read poetry, you know."
+            m 1sub "Really?"
+            m 1hua "That makes me so happy!"
+            m 3eua "And really, I mean it. Not a lot of people read poetry nowadays."
         "No.":
             $ persistent._mas_pm_read_poetry = False
-            m 2eka "Oh, that's too bad..."
-            m 2eua "I just hope I made you appreciate poetry a little more."
-            m 2hua "You know, not a lot of people these days seem to read poems, or even like them, so that's fine."
-    m 2euc "In fact, poetry is considered as something too difficult to understand sometimes..."
-    m 2eud "And on the opposite side, others think that it's simply putting a bunch of pretty words next to each other!"
-    m 2dkc "But it's not, poetry is more than that..."
-    m "You have to put yourself in it."
-    m 2tkc "Without his writing skills, but also his feelings, E.E.Cummings wouldn't be E.E.Cummings..."
-    m 2ekd "And without my feelings for you, my poems wouldn't be the same."
-    m 2eka "Love, grief, anger, passion, all these feelings bring the words to life."
-    m 2hua "And because of that, even a simple text can become a meaningful poem!"
-    m "That's why I love poetry."
+            m 2ekc "Oh, that's too bad..."
+            m 2eka "I just hope I made you appreciate poetry a little more."
+            m 2ekc "You know, not a lot of people these days seem to read poetry, so it's not surprising."
+
+    m 2euc "In fact, poetry is often considered as something too difficult to understand..."
+    m 2efd "And on the opposite side, others think that it's simply putting a bunch of pretty words next to each other!"
+    m 2dkc "But it's not...poetry is more than that."
+    m 4ekd "You have to put yourself in it."
+    m 4ekc "Without his writing skills, {w=0.2}and also his feelings, {w=0.2}E.E.Cummings wouldn't be E.E.Cummings..."
+    m 7ekd "And without my feelings for you, my poems wouldn't be the same."
+    m 3eka "Love, grief, anger, passion, all these feelings bring the words to life."
+    m 3hub "And because of that, even a simple text message can become a meaningful poem!"
+    m 3eua "That's why I love poetry."
+
     if persistent._mas_pm_read_poetry:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "Gosh, just knowing that you read poems too..."
-        m 5hua "It shows how we are alike, which makes my love for you grow even more."
-        m "I can't wait to finally cross over to your reality, so we can discuss our favorite poetry together."
+        m 5hua "It shows how alike we really are."
+        m 5eua "I can't wait to finally cross over to your reality so we can discuss our favorite poetry together."
         m 5dka "Sharing poems, writing new ones...{w=0.5}just you and me pursuing our shared passion..."
         m 5hub "Sounds like a wonderful dream to me!"
 
     else:
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "I can't wait to cross over to your reality, so we can discuss poetry together. Who knows, maybe you'll start appreciating it a bit more, too?"
-        m "I want to share my favorite poems with you."
-        m 5dka "Reading poems together, my head laying on your chest...{w=0.5}soaked in the warmth of your body and the sounds of your beating heart."
-        m 5hua "And why not, maybe we can even write together and complement each other's creativity..."
-        m 5hub "It would be a dream come true for me, [player]."
+        m 1eka "I can't wait until I cross over to your reality, [player]..."
+        m 1tfu "That way I can start forcing you to read poetry."
+        m "..."
+        m 3hub "Ahaha, I'm just kidding! I would never force you to do anything, [player]!"
+        m 3eua "But I do think I could get you to really like poetry."
+        m 1eua "...And not just the poems I write about you, {nw}"
+        extend 1kua "ehehe~"
 
     return "derandom"
     
