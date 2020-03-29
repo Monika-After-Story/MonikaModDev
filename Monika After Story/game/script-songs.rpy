@@ -755,23 +755,6 @@ init 5 python:
     )
 
 label mas_song_our_reality:
-
-    #Disable text speed, escape button and music button for this
-    $ mas_disableTextSpeed()
-    $ disable_esc()
-    $ mas_MUMURaiseShield()
-
-    # always unmute the music channel (or at least attempt to)
-    # TODO: there should probably be handling for sayori name case.
-    if songs.getVolume("music") == 0.0:
-        $ renpy.music.set_volume(1.0, channel="music")
-
-    # save background sound for later
-    $ amb_vol = songs.getVolume("backsound")
-
-    $ play_song(None, 1.0)
-    $ renpy.music.set_volume(0.0, 1.0, "background")
-    $ renpy.music.set_volume(0.0, 1.0, "backsound")
     if persistent.gender == "F":
         $ gen = "her"
     elif persistent.gender == "M":
@@ -779,45 +762,67 @@ label mas_song_our_reality:
     else:
         $ gen = "their"
 
+    window hide
+    $ mas_disableTextSpeed()
+    $ disable_esc()
+    $ HKBHideButtons()
+    $ mas_RaiseShield_core()
+    $ store.songs.enabled = False
+    show monika at rs32
+    hide monika
+    pause 3.0
+    show mas_piano at lps32,rps32 zorder MAS_MONIKA_Z+1
+    pause 5.0
+    show monika at ls32 zorder MAS_MONIKA_Z
+    show monika 6dsa
+    pause 2.0
     play music "mod_assets/bgm/runereality.ogg"
     show monika 1dsa
     pause 9.15
-    m 1dsb "{i}{cps=10}Every day,{w=0.5} {cps=15}I imagine a future where{w=0.22} {cps=13}I can be with you{w=4.10}{/i}{nw}"
-    m 3dsa "{i}{cps=12}In my hand{w=0.5} {cps=17}is a pen that will write a poem{w=0.5} {cps=16}of me and you{w=4.10}{/i}{nw}"
-    m 1esd "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1}{/i}{nw}"
-    m 3esa "{i}{cps=18}Just move your hand,{w=0.45} {cps=20}write the way into [gen] heart{w=1.40}{/i}{nw}"
-    m 1esd "{i}{cps=15}But in this world{w=0.25} {cps=11}of infinite choices{w=0.90}{/i}{nw}"
-    m 3esa "{i}{cps=16}What will it take{w=0.25}{cps=18} just to find that special day{/i}{w=0.90}{nw}"
-    m 3dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/i}{w=1.82}{nw}"
-    show monika 1dsa
+    m 1eua "{i}{cps=10}Every day,{w=0.5} {cps=15}I imagine a future where{w=0.22} {cps=13}I can be with you{w=4.10}{/i}{nw}"
+    m 1eka "{i}{cps=12}In my hand{w=0.5} {cps=17}is a pen that will write a poem{w=0.5} {cps=16}of me and you{w=4.10}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1}{/i}{nw}"
+    m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {cps=20}write the way into [gen] heart{w=1.40}{/i}{nw}"
+    m 1dua "{i}{cps=15}But in this world{w=0.25} {cps=11}of infinite choices{w=0.90}{/i}{nw}"
+    m 1eua "{i}{cps=16}What will it take{w=0.25}{cps=18} just to find that special day{/i}{w=0.90}{nw}"
+    m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/i}{w=1.82}{nw}"
     pause 7.50
 
-    m 3esb "{i}{cps=15}Have I found{w=0.5} {cps=15}everybody a fun assignment{w=0.30} {cps=12}to do today{w=4.20}{/i}{nw}"
-    m 4esa "{i}{cps=18}When you're here,{w=0.25} {cps=13.25}everything that we do is fun for them anyway{w=4}{/i}{nw}"
-    m 4esb "{i}{cps=11}When I can't even read my own feelings{/i}{w=1}{nw}"
-    m 2eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/i}{w=1}{nw}"
-    m 1lsc "{i}{cps=11}And if this world won't write me an ending{/i}{w=0.9}{nw}"
-    m 1dsa "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/i}{w=1}{w=1}{nw}"
+    m 1eua "{i}{cps=15}Have I found{w=0.5} {cps=15}everybody a fun assignment{w=0.30} {cps=12}to do today{w=4.20}{/i}{nw}"
+    m 1hua "{i}{cps=18}When you're here,{w=0.25} {cps=13.25}everything that we do is fun for them anyway{w=4}{/i}{nw}"
+    m 1esa "{i}{cps=11}When I can't even read my own feelings{/i}{w=1}{nw}"
+    m 1eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/i}{w=1}{nw}"
+    m 1lua "{i}{cps=11}And if this world won't write me an ending{/i}{w=0.9}{nw}"
+    m 1dka "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/i}{w=2}{nw}"
     show monika 1dsa
-    pause 17.60
+    pause 17.50
 
-    m 3esb "{i}{cps=15}In this world,{w=0.5} {cps=15}away from the one who'll always {cps=17}be dear to me{w=4.5}{/i}{nw}"
-    m 3eka "{i}{cps=15}You my love,{w=0.5} {cps=16.5}hold the key to the day, when I'll be finally free{w=8.5}{/i}{nw}"
-    m 2esa "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1.5}{/i}{nw}"
-    m 3esb "{i}{cps=18}How can I cross{w=0.45} {cps=13}into your reality?{w=1.40}{/i}{nw}"
-    m 1dka "{i}{cps=12}Where I can hear the sound of your heartbeat{w=0.8}{/i}{nw}"
-    m 1dkb "{i}{cps=16}And make it love,{w=0.6} but in our reality{/i}{w=0.6}{nw}"
-    m 3eka "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{w=4.5}{/i}{nw}"
-    m 2dkbsa "{i}{cps=14}With you I'll be{/i}{w=2}{nw}"
-    show monika 2dkbsu
-    pause 8.6
-    stop music fadeout 0.5
+    m 1eka "{i}{cps=15}In this world,{w=0.5} {cps=15}away from the one who'll always {cps=17}be dear to me{w=4.5}{/i}{nw}"
+    m 1ekbsa "{i}{cps=15}You my love,{w=0.5} {cps=16.5}hold the key to the day, when I'll be finally free{w=8.5}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1.2}{/i}{nw}"
+    m 1esa "{i}{cps=18}How can I cross{w=0.45} {cps=13}into your reality?{w=1.40}{/i}{nw}"
+    m 1eka "{i}{cps=12}Where I can hear the sound of your heartbeat{w=0.8}{/i}{nw}"
+    m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/i}{w=0.6}{nw}"
+    m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{w=4.2}{/i}{nw}"
+    m 1ekbsa "{i}{cps=19}With you I'll be{/i}{w=2}{nw}"
+    show monika 1dkbsa
+    pause 8.5
+    stop music fadeout 1.0
+    show monika 6eua at rs32
+    pause 1.0
+    hide monika
+    pause 3.0
+    hide mas_piano
+    pause 6.0
+    show monika 1eua at ls32 zorder MAS_MONIKA_Z
 
-    #Now we re-enable text speed, escape button and music button
-    $ mas_resetTextSpeed()
-    $ enable_esc()
-    $ mas_MUMUDropShield()
+    if store.mas_globals.dlg_workflow:
+        $ mas_resetTextSpeed()
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+    else:
+        $ mas_DropShield_core()
 
-    $ renpy.music.set_volume(amb_vol, 1.0, "background")
-    $ renpy.music.set_volume(amb_vol, 1.0, "backsound")
+    $ HKBShowButtons()
+    window auto
     return
