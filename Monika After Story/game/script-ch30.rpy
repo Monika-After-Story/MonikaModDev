@@ -754,7 +754,13 @@ init 1 python:
 #       NOTE: must be string
 #       NOTE: if passed in, it will override the current background night_bg
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None):
+#   show_emptydesk - behavior is determined by `hide_monika`
+#       if hide_monika is True - True will show emptydesk and False will do
+#           nothing.
+#       if hide_monika is False - True will do nothing and False will hide
+#           emptydesk after Monika is shown.
+#       (Default: True)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True):
 
     with None
 
@@ -793,7 +799,11 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
             mas_darkMode(not persistent._mas_dark_mode_enabled)
 
         ## are we hiding monika
-        if not hide_monika:
+        if hide_monika:
+            if show_emptydesk:
+                store.mas_sprites.show_empty_desk()
+
+        else:
             if force_exp is None:
 #                force_exp = "monika idle"
                 if dissolve_all:
@@ -861,6 +871,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ mas_drawSpaceroomMasks(dissolve_all)
     elif dissolve_all:
         $ renpy.with_statement(Dissolve(1.0))
+
+    # hide emptydesk if monika is visible
+    if not hide_monika and not show_emptydesk:
+        hide emptydesk
 
     return
 
@@ -962,9 +976,9 @@ label pick_a_game:
 
         # hangman text
         if persistent._mas_sensitive_mode:
-            _hangman_text = "Word Guesser"
+            _hangman_text = _("Word Guesser")
         else:
-            _hangman_text = "Hangman"
+            _hangman_text = _("Hangman")
 
         # decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
@@ -1090,6 +1104,10 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
     $ mas_skip_visuals = False
+
+    # set flag to True to prevent ch30 from running weather alg
+    $ skip_setting_weather = False
+
     $ mas_cleanEventList()
 
     # set the gender
@@ -1359,6 +1377,9 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
+    #Now we check if we should drink
+    $ MASConsumable._checkConsumables(startup=True)
+
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
@@ -1375,9 +1396,13 @@ label ch30_post_exp_check:
     $ mas_startup_song()
 
     # rain check
-    $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None and not mas_weather.force_weather:
-        $ mas_changeWeather(set_to_weather)
+    # TODO: the weather progression alg needs to run here
+    # TODO: we actually might want to move this to preloop visual
+    #   setup as that makes more sense.
+    if not mas_weather.force_weather and not skip_setting_weather:
+        $ set_to_weather = mas_shouldRain()
+        if set_to_weather is not None:
+            $ mas_changeWeather(set_to_weather)
 
     # FALL THROUGH
 
@@ -1426,6 +1451,10 @@ label ch30_preloop:
 label ch30_loop:
     $ quick_menu = True
 
+    # TODO: make these functions so docking station can run weather alg
+    # on start.
+    # TODO: consider a startup version of those functions so that
+    #   we can run the regular shouldRain alg if prgoression is disabled
     python:
         should_dissolve_masks = (
             mas_weather.weatherProgress()
@@ -1444,6 +1473,9 @@ label ch30_loop:
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
+
+# TODO: add label here to allow startup to hook past weather 
+# TODO: move quick_menu to here
 
     # updater check in here just because
     if not mas_checked_update:
@@ -1507,6 +1539,7 @@ label ch30_post_mid_loop_eval:
                 store.mas_globals.show_lightning
                 and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
             ):
+            $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
                     not persistent._mas_sensitive_mode
                     and store.mas_globals.show_s_light
@@ -1514,9 +1547,9 @@ label ch30_post_mid_loop_eval:
                         1, store.mas_globals.lightning_s_chance
                     ) == 1
                 ):
-                show mas_lightning_s zorder 4
+                $ renpy.show("mas_lightning_s", zorder=light_zorder)
             else:
-                show mas_lightning zorder 4
+                $ renpy.show("mas_lightning", zorder=light_zorder)
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
@@ -1701,6 +1734,9 @@ label ch30_minute(time_since_check):
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+
+    #Runtime checks to see if we should have a consumable
+    $ MASConsumable._checkConsumables()
     return
 
 # label for things that should run about once per day
@@ -1814,8 +1850,7 @@ label ch30_reset:
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     ## custom sprite objects
-    python:
-        store.mas_selspr._validate_group_topics()
+    $ store.mas_selspr._validate_group_topics()
 
     # monika hair/acs
     $ monika_chr.load(startup=True)
@@ -1893,12 +1928,7 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    ## should we drink coffee?
-    $ _mas_startupCoffeeLogic()
-
-    ## shoujld we drink hot chocolate
-    $ _mas_startupHotChocLogic()
-
+    #Do startup checks
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
@@ -1936,28 +1966,22 @@ label ch30_reset:
             persistent._mas_filereacts_reacted_map = dict()
 
     # set any prompt variants for acs that can be removed here
-    python:
-        # TODO: all of these are in GRP TOPIC MAP, so we should create
-        #   a function to parse those and set appropriate prompts.
-        if not monika_chr.is_wearing_acs_type("left-hair-clip"):
-            store.mas_selspr.set_prompt("left-hair-clip", "wear")
+    $ store.mas_selspr.startup_prompt_check()
 
-        if not monika_chr.is_wearing_acs_type("left-hair-flower"):
-            store.mas_selspr.set_prompt("left-hair-flower", "wear")
-
-        if not monika_chr.is_wearing_acs_type("choker"):
-            store.mas_selspr.set_prompt("choker", "wear")
-
-        if not monika_chr.is_wearing_ribbon():
-            store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
