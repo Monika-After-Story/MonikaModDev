@@ -456,11 +456,11 @@ label mas_backups_could_not_copy:
     "You might be able to do it and fix this mess!"
     "You'll have to close the game to do this, so write these steps down:"
     show chibika at sticker_move_n
-    "1.{w} Navigate to '[renpy.config.savedir]'."
+    "1.{w=0.3} Navigate to '[renpy.config.savedir]'."
     show chibika at sticker_move_n
-    "2.{w} Delete the file called 'persistent'."
+    "2.{w=0.3} Delete the file called 'persistent'."
     show chibika at sticker_move_n
-    "3.{w} Make a copy of the file called '[mas_backup_copy_filename]' and name it 'persistent'."
+    "3.{w=0.3} Make a copy of the file called '[mas_backup_copy_filename]' and name it 'persistent'."
     show chibika at mas_chflip_s(1)
     "And that's it!"
     "Hopefully that will recover your Monika's memories."

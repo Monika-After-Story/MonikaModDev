@@ -14,6 +14,11 @@ init python in mas_poems:
         "ff": "mod_assets/poem_assets/poem_finalfarewell.png"
     }
 
+    author_font_map = {
+        "monika": "monika_text",
+        "chibika": "chibika_note_text"
+    }
+
     #If we've got pbday, let's also add this here.
     if store.persistent._mas_player_bday is not None:
         paper_cat_map["pbday"] = "mod_assets/poem_assets/poem_pbday_" + str(store.persistent._mas_player_bday.month) + ".png"
@@ -103,6 +108,32 @@ init 11 python in mas_poems:
             if poem.is_seen()
         ]
 
+    def getRandomPoem(category,unseen=True):
+        """
+        Gets a random poem from the specified category
+        IN:
+            category:
+                category to search for
+
+            unseen:
+                whether or not we only want unseen poems
+                defaults to True 
+
+        OUT:
+            A random poem
+        """
+        unseen_poem_amt = len(getPoemsByCategory(category, unseen=True))
+        total_poem_amt = len(getPoemsByCategory(category, unseen=False))
+        sel_poem_len = total_poem_amt-1
+
+        if unseen:
+            if unseen_poem_amt > 0:
+                sel_poem_len = unseen_poem_amt-1
+            else:
+                unseen = False
+        poem_num = renpy.random.randint(0, sel_poem_len)
+
+        return getPoemsByCategory(category, unseen=unseen)[poem_num]
 
 init 10 python:
     class MASPoem:
@@ -113,7 +144,7 @@ init 10 python:
             prompt,
             title="",
             text="",
-            author="monika"
+            author="monika",
         ):
             """
             MASPoem constructor
@@ -122,7 +153,8 @@ init 10 python:
 
 
             poem_id:
-                identifier for the poem. (NOTE: Must be unique)
+                identifier for the poem.
+                (NOTE: Must be unique)
 
             category:
                 category for the poem is under (So we can get poems by category)
@@ -137,7 +169,8 @@ init 10 python:
                 poem contents (supports renpy substitution)
 
             author:
-                poem author (Default: monika)
+                poem author
+                (Default: monika)
             """
             if poem_id in store.mas_poems.poem_map:
                 raise Exception ("poem_id {0} already exists in the poem map.".format(poem_id))
@@ -204,7 +237,7 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
     $ renpy.game.preferences.afm_enable = False
 
     #Handle the poem screen we use
-    show screen mas_generic_poem(poem, paper=paper)
+    show screen mas_generic_poem(poem, paper=paper, _styletext=mas_poems.author_font_map.get(poem.author, "monika_text"))
 
     with Dissolve(1)
 
@@ -224,7 +257,8 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
 
     #Flag this poem as seen
     #We only want to increment showns of MASPoems, since only they have the poem_id attribute
-    if is_maspoem:
+    #NOTE: If the poem has no title, we can assume that this shouldn't be unlocked
+    if is_maspoem and poem.prompt:
         if poem.poem_id in persistent._mas_poems_seen:
             $ persistent._mas_poems_seen[poem.poem_id] += 1
         else:
@@ -249,8 +283,6 @@ init 5 python:
 
 
 label monika_showpoem:
-    m 1hub "Sure!"
-
     show monika 1eua at t21
     python:
         #We'll store the base DDLC poems here
@@ -273,9 +305,7 @@ label monika_showpoem:
     $ _poem = _return
 
     if not _poem:
-        m 1eka "Alright [player]."
-        m 3eua "If you ever want to read one of my poems, just ask okay?"
-        return
+        return "prompt"
 
     show monika 3hua at t11
     m 3hua "Alright!"
