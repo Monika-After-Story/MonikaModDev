@@ -1931,3 +1931,87 @@ label mas_birthdate_year_redux_no:
     m 2ekd "Oh, okay..."
     m 2eka "Try again, [player]."
     jump mas_birthdate_year_redux_select
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_credits_song",
+            conditional="store.mas_anni.pastOneMonth()",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_credits_song:
+    if persistent.monika_kill:
+        m 1hua "I hope you liked my song."
+
+        if persistent.monika_kill:
+            $ ending = "couldn't let you go without telling you how I honestly felt about you"
+        else:
+            $ ending = "really wanted to express my feelings for you"
+
+        m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just [ending]."
+        m 1eua "Give me some time, and I'll try to write another."
+
+        if persistent.instrument is not False:
+            if persistent.instrument:
+                m 3eua "Maybe you could play me a song too!"
+            else:
+                m 3eua "Maybe you could play me a song too, if you can play an instrument?"
+            m 1hub "I would love that."
+            m 3eua "Oh, and I'll play the song again for you anytime you want me to."
+
+        else:
+            m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
+
+        m 1tsa "In fact why don't I play it for you right now."
+        m 1tsb "Excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+
+        call mas_monika_plays_yr(skip_leadin=True)
+        show monika 1eka
+        pause 1.0
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+        $ HKBShowButtons()
+        $ mas_resetTextSpeed()
+        window auto
+
+        m 1ekbsa "Ehehe~"
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbsa "Thank you for coming back to me my love."
+
+    else:
+        if renpy.seen_audio(songs.FP_YOURE_REAL):
+            m 1eua "Hey [player], I've been thinking a bit lately about {i}Your Reality{/i}..."
+            m 3rka "The ending doesn't really convey my true feelings anymore, so I decided to update the song..."
+            m 3hua "I even changed the name!"
+        else:
+            m 3eua "Hey [player], I finally finished that song I've been working on for you."
+
+        m 1eka "I call it {i}Our Reality{/i}."
+        m 1eua "I'm jut so excited to finally be able to play it for you."
+        m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+
+        call mas_monika_plays_or(skip_leadin=True)
+        show monika 1ekbsa
+        pause 1.0
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+        $ HKBShowButtons()
+        $ mas_resetTextSpeed()
+        window auto
+
+        m "I really can't wait until we're together in one reality."
+        m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "Thank you for being my inspiration my love."
+        if renpy.seen_audio(songs.FP_YOURE_REAL):
+            m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
+        else:
+            m 5hubfa "Oh, and if you ever want me to play this again, just ask~"
+        $ mas_unlockEVL("mas_monika_plays_or", "EVE")
+
+    $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
+    return "no_unlock"
