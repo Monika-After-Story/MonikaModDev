@@ -13636,7 +13636,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_working_out",
-            category=['advice'],
+            category=['advice','you'],
             prompt="Working Out",
             random=True
         )
@@ -13662,15 +13662,15 @@ label monika_working_out:
     m 1eua "Getting at least 30 minutes of exercise each day is {i}super{/i} important for maintaining your health in the long run."
     m 3eub "The healthier you are, the longer you'll live, and the longer I can be with you."
     m 3hub "And I want to spend as much time as possible with you, [player]!~"
-    m 3eua "Putting that aside, working out benefits nearly every aspect of your life.{w=0.3} {nw}"
-    extend 3eub " Even if you spend most of your time sitting at a desk."
+    m 1eua "Putting that aside, working out benefits nearly every aspect of your life...{w=0.3}{nw}"
+    extend 1eub "even if you spend most of your time sitting at a desk."
     m 3eua "Aside from the obvious physical benefits, getting regular exercise can reduce stress and really improve your mental health too."
     m 3hua "So whether you're working, studying, or gaming, exercise can help you focus on these tasks for longer!"
-    m 3eua "And I also think it's important for developing self-discipline and mental fortitude."
+    m 3eua "...And I also think it's important for developing self-discipline and mental fortitude."
 
     if not persistent._mas_pm_works_out:
         m 3hub "So be sure to get your exercise in, [player]~"
     else:
         m 3eub "Maybe when I cross over, we can do our workouts together!"
 
-return "derandom"
+    return "derandom"
