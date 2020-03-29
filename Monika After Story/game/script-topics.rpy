@@ -13589,27 +13589,28 @@ init 5 python:
             eventlabel="monika_multi_perspective_approach",
             category=['philosophy'],
             prompt="Multi-perspective approach",
-            random=True
+            random=False
         )
     )
 
 label monika_multi_perspective_approach:
     m 1eua "Do you remember when we talked about {i}Plato's Cave{/i}?{w=0.5} I've been thinking about what I said to you."
-    m 3eub "'How do you know if the 'truth' you're seeing is {i}the{/i} truth?'"
-    m 3ekb "...I've been racking my brain, trying to come up with a good answer."
-    m 1rka "Well,{w=0.3} I still don't really have one yet, but...{w=0.5}{nw}" 
+    m 3etc "'How do you know if the 'truth' you're seeing is {i}the{/i} truth?'"
+    m 3eud "...I've been racking my brain, trying to come up with a good answer."
+    m 1rksdla "Well,{w=0.3} I still don't really have one yet, but...{w=0.5}{nw}" 
     extend 3eub "I did realize something useful, [player]!"
-    m 4eub "Let's start with how Plato's works are mostly written accounts of his mentor Socrates' debates with others."
-    m 4esb "The purpose of these debates was to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
-    m 3esb "And I began wondering, 'What was Plato's mindset while writing?'"
-    m "Plato himself was on a quest for the truth. That much is obvious or else he wouldn't have written so much on the topic, ahaha!"
-    m 3eub "And even though, {i}technically{/i}, Socrates was the one having these debates with others, Plato too was having these debates within himself while he wrote about them!"
-    m 4eub "The fact that Plato internalized all sides of the debate, all perspectives of the issue, is pretty significant in my opinion."
-    m 1esa "Taking all sides of a debate...I think that'd be pretty useful in realizing the truth."
-    m 3eua "I guess it's kind of like how two eyes are better than one. Having two eyes in separate spots lets us properly see the world, or in this case, the truth."
-    m 3esb "Likewise, I think that if we tackled an issue with another perspective to cross-reference with the first then we'd see the truth a lot more clearly!"
-    m 3esa "Whereas if we took to an issue from just one angle, it'd be like having just one eye;{w=0.2} it'd be a bit harder to accurately gauge the reality of the situation."
-    m 1eub "What do you think, [player]? If you haven't already been using this 'multi-perspective' approach, maybe you can try it sometime!"
+    m 4euc "Let's start with how Plato's works are mostly written accounts of his mentor Socrates' debates with others."
+    m 4eud "The purpose of these debates was to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
+    m 2eud "And I began wondering, 'What was Plato's mindset while writing?'"
+    m 2esc "Plato himself was on a quest for the truth..."
+    m 2eub "That much is obvious or else he wouldn't have written so much on the topic, ahaha!"
+    m 2euc "And even though, {i}technically{/i}, Socrates was the one having these debates with others, Plato too was having these debates within himself while he wrote about them."
+    m 7eud "The fact that Plato internalized all sides of the debate, all perspectives of the issue, is pretty significant in my opinion."
+    m 3eua "Taking all sides of a debate...{w=0.3}I think that'd be pretty useful in realizing the truth."
+    m 3esd "I guess it's kind of like how two eyes are better than one. {w=0.3}Having two eyes in separate spots lets us properly see the world, or in this case, the truth."
+    m 3eud "Likewise, I think that if we tackled an issue with another perspective, to cross-reference with the first, then we'd see the truth a lot more clearly!"
+    m 1euc "Whereas if we took to an issue from just one angle, it'd be like having just one eye...{w=0.2}it'd be a bit harder to accurately gauge the reality of the situation."
+    m 1eub "What do you think, [player]? {w=0.3}If you haven't already been using this 'multi-perspective' approach, maybe you can try it sometime!"
     return
 
 init 5 python:
@@ -13656,4 +13657,5 @@ label monika_allegory_of_the_cave:
     m 3hub "Ahaha!"
     m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
+    $ mas_showEVL("monika_multi_perspective_approach","EVE",_random=True)
     return
