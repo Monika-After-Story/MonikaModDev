@@ -627,7 +627,7 @@ init -850 python:
             # else check regular range
             return (
                 self.start_dt.replace(year=check_dt.year)
-                <= check_dt 
+                <= check_dt
                 < self.end_dt.replace(year=check_dt.year)
             )
 
@@ -985,6 +985,9 @@ init -810 python:
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
             "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
+            # lifestyle / exercise
+            "_mas_pm_works_out": "pm.lifestyle.works_out",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
             "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
@@ -1081,6 +1084,7 @@ init -810 python:
             "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
             "_mas_pm_likes_rain": "pm.likes.rain",
             "_mas_pm_likes_travelling": "pm.likes.travelling",
+            "_mas_pm_likes_poetry" : "pm.likes.poetry",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",

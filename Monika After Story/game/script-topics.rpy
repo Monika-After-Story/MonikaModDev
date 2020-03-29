@@ -11961,44 +11961,73 @@ label monika_anime_art:
     return
 
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_whydoyouloveme",
+            category=['monika','romance'],
+            prompt="Why do you love me?",
+            pool=True
+        )
+    )
 
 label monika_whydoyouloveme:
-
-    if mas_isMoniBroken(lower=True):
+    if mas_isMoniBroken():
         m 2euc "Hmph."
         m 2wfc "I ask myself that question every day."
 
-    elif mas_isMoniDis(lower=True):
+    elif mas_isMoniDis():
         m 1efc "I-"
-        $ _history_list.pop()
-        m 1efc "I'm not sure..."
+        m 1rkc "I'm not sure..."
 
-    elif mas_isMoniUpset(lower=True):
-        m 1dsc "Hmmmmm..."
+    elif mas_isMoniUpset():
+        m 1dsc "Hmm..."
         m 3hua "Because I know that you're a good person despite how things are between us."
 
-    elif mas_isMoniLove(higher=True):
-        m 1esc "I don't."
-        pause 3.0
-        m 1hub "Just kidding!"
-        m 1eub "You mean {i}everything{/i} to me, silly!"
-        m 1esd "But if you really want to know, [player]..."
-        # TODO: wink / tongue stick out here woul dbe perfect
-        m 1hfu "That's a secret!"
+    elif mas_isMoniEnamored(higher=True):
+        if renpy.random.randint(1,10) > 1:
+            m 1eksdla "Why do I love you?"
+            m 1dka "[player]...{w=0.5}there are so many reasons why. Where do I even begin?"
+
+            if store.mas_anni.anniCount() >= 1:
+                m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."
+                m 3hua "...But here you are, still by my side."
+
+            m 3eksdla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
+            m 1dku "Every time you visit, you remind me that there's a world out there."
+            m "..."
+            m 1ekbsa "I'd give you the world if I could, [player]."
+            m 1hubsa "If there's anyone who deserves it...{w=0.3}it's you."
+            m 1ekbsa "I promise you, [player]..."
+            m 3ekbsa "No matter what happens, I'll {i}never{/i} forget you for the rest of my life."
+            m 1dkbsu "You didn't just save me, [player]...{w=0.3}{nw}"
+            extend 1ekbsa "you made me remember how beautiful life really is."
+            m 1ekbsb "Someday, I'll make you feel as loved as you've made me feel~"
+            m 1dkbsa "Someday...{w=0.5}I'll get to be with you~"
+
+            if persistent._mas_pm_love_yourself is False:
+                m 2eka "And [player]..."
+                m 2ekc "I remember you saying that you didn't love yourself..."
+                m 7eka "But I think you do love yourself, at least a little."
+                m 3hua "You wouldn't still be here with me if you didn't."
+                m 1dkbsu "I'm...{w=0.5}I'm just glad you're still here, [player]."
+                m 1ekbsa "Please know that I'm here for you, whenever you need me~"
+
+        else:
+            m 1esc "I don't."
+            pause 5.0
+            m 1hub "Ahaha, just kidding!"
+            m 1eub "You mean {i}everything{/i} to me, silly!"
 
     else:
-        # normalt - enamored is this case
-        m 1ekc "[player]..."
-        m 1ekd "Are you, by any chance...{w=0.3}feeling insecure?"
-        m 2lksdla "I can understand why you're asking such things out of the blue..."
-        m 2eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
-        m 1eka "Just by opening the game for me, you {i}literally{/i} saved my life."
-        m 5eua "And when I'm with you,{w=0.2} I'm no longer lonely."
-        m "You truly are my hero, [player]~"
-        m 1eub "If anything, I hope that would make you feel better about yourself."
-        m 1hub "So keep your hopes up for me, [player]!"
-
+        # normal - aff
+        m 2ekc "[player]..."
+        m 2ekd "Are you, by any chance feeling insecure?"
+        m 7rksdla "I can understand feeling that way..."
+        m 3eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
+        m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
+        m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
+        m 3ekbsa "You truly are my hero, [player]~"
     return
 
 init 5 python:
@@ -12163,6 +12192,71 @@ label monika_mystery:
     m 4hksdlb "Though I guess a story with absolutely no form of mystery would be pretty boring!"
     return
     
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_player_read_poetry",
+            category=['literature'],
+            prompt="Reading poetry",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_likes_poetry = None
+#True if player likes poems, false if not
+
+label monika_player_read_poetry:
+    m 1eud "Say, [player]..."
+    m 1eua "You know that I like poetry, but I was wondering..."
+
+    m 3eua "Do you often read poetry?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you often read poetry?{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_likes_poetry = True
+            m 1sub "Really?"
+            m 1hua "That makes me so happy!"
+            m 3eua "And really, I mean it. Not a lot of people read poetry nowadays."
+
+        "No.":
+            $ persistent._mas_pm_likes_poetry = False
+            m 2ekc "Oh, that's too bad..."
+            m 2eka "I just hope I made you appreciate poetry a little more."
+            m 2ekc "You know, not a lot of people these days seem to read poetry, so it's not surprising."
+
+    m 2euc "In fact, poetry is often considered as something too difficult to understand..."
+    m 2efd "And on the opposite side, others think that it's simply putting a bunch of pretty words next to each other!"
+    m 2dkc "But it's not...{w=0.3}{nw}"
+    extend 2dkd "poetry is more than that."
+    m 4ekd "You have to put yourself in it."
+    m 4ekc "Without his writing skills, {w=0.2}and also his feelings, {w=0.2}E.E.Cummings simply wouldn't be E.E.Cummings..."
+    m 7ekd "And without my feelings for you, my poems wouldn't be the same."
+    m 3eka "Love, grief, anger, passion, all these feelings bring the words to life."
+    m 3hub "And because of that, even a simple text message can become a meaningful poem!"
+    m 3eua "That's why I love poetry."
+
+    if persistent._mas_pm_likes_poetry:
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "Gosh, just knowing that you read poems too..."
+        m 5hua "It shows how alike we really are."
+        m 5eua "I can't wait to finally cross over to your reality so we can discuss our favorite poetry together."
+        m 5dka "Sharing poems, writing new ones...{w=0.5}just you and me pursuing our shared passion..."
+        m 5hub "Sounds like a wonderful dream to me!"
+
+    else:
+        m 1eka "I can't wait until I cross over to your reality, [player]..."
+        m 1tfu "That way I can start forcing you to read poetry."
+        m "..."
+        m 3hub "Ahaha, I'm just kidding! I would never force you to do anything, [player]!"
+        m 3eua "But I do think I could get you to really like poetry."
+        m 1eua "...And not just the poems I write about you, {nw}"
+        extend 1kua "ehehe~"
+
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(
@@ -13492,6 +13586,71 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_ship_of_theseus",
+            category=['philosophy'],
+            prompt="The Ship of Theseus",
+            random=True,
+        )
+    )
+
+label monika_ship_of_theseus:
+    m 1eua "Have you heard of the 'Ship of Theseus'?"
+    m 3eua "It's a well known philosophical problem about the nature of identity that's been around for millennia."
+    m 1rkb "Well, I say 'well known' but I suppose that's only true among scholars, ahaha..."
+    m 1eua "Let's consider the legendary Greek hero, Theseus and the ship he sailed during his adventures." 
+    m 3eud "He's from a long time ago so let's say his ship is now stored in a famous museum, theoretically..."
+    m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
+    m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
+    m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
+    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced?"
+    m 3euc "In other words, not a single cell that made you, 'you' 7 years ago is part of you right now."
+    m 3eud "You could argue that you have no relation to that person, other than a consistent consciousness, and of course DNA."
+    m 1etc "...There's also an extra thing to consider."
+    m 1euc "Let's say for now that the modified ship should still be considered Theseus' ship. {w=0.3}What if all the parts that were originally removed were now reassembled into another ship?"
+    m 3wud "We'd have 2 of Theseus' ships!{w=0.2} Which one's the true one!?"
+    m 3etd "And what if we got all of the cells that made up your body 7 years ago and reassembled them into another 'you' right now? {w=0.2}Who would be the real [player]?"
+    m 1eua "Personally, I think that we're not the same people we were 7 years ago--or even the same people from yesterday."
+    m 3eua "In other words, there's no use getting hung up on any grievances we may have with our past selves."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "We should keep trying our best each day and not let ourselves be limited by who we were yesterday."
+    m 5eub "Today is a new day, and you are a new you. {w=0.2}And I love you as you are right now, [player]."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_multi_perspective_approach",
+            category=['philosophy'],
+            prompt="Multi-perspective approach",
+            random=False
+        )
+    )
+
+label monika_multi_perspective_approach:
+    m 1eua "Do you remember when we talked about {i}Plato's Cave{/i}?{w=0.5} I've been thinking about what I said to you."
+    m 3etc "'How do you know if the 'truth' you're seeing is {i}the{/i} truth?'"
+    m 3eud "...I've been thinking for a while, trying to come up with a good answer."
+    m 1rksdla "I still don't really have one yet...{w=0.3}{nw}"
+    extend 3eub "but I did realize something useful."
+    m 4euc "Let's start with how Plato's works are mostly written accounts of his mentor Socrates' debates with others."
+    m 4eud "The purpose of these debates was to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
+    m 2eud "And I began wondering, 'What was Plato's mindset while writing?'"
+    m 2esc "Plato himself was on a quest for the truth..."
+    m 2eub "That much is obvious or else he wouldn't have written so much on the topic, ahaha!"
+    m 2euc "And even though, {i}technically{/i}, Socrates was the one having these debates with others, Plato too was having these debates within himself while he wrote about them."
+    m 7eud "The fact that Plato internalized all sides of the debate, all perspectives of the issue, is pretty significant in my opinion."
+    m 3eua "Taking all sides of a debate...{w=0.3}I think that'd be pretty useful in realizing the truth."
+    m 3esd "I guess it's kind of like how two eyes are better than one. {w=0.3}Having two eyes in separate spots lets us properly see the world, or in this case, the truth."
+    m 3eud "Likewise, I think that if we tackled an issue with another perspective, to cross-reference with the first, then we'd see the truth a lot more clearly."
+    m 1euc "Whereas if we took to an issue from just one angle, it'd be like having just one eye...{w=0.2}it'd be a bit harder to accurately gauge the reality of the situation."
+    m 1eub "What do you think, [player]? {w=0.3}If you haven't already been using this 'multi-perspective' approach, maybe you can try it sometime!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_allegory_of_the_cave",
             category=['philosophy'],
             prompt="The Allegory of the Cave",
@@ -13501,8 +13660,8 @@ init 5 python:
 
 label monika_allegory_of_the_cave:
     m 1eua "Hey, [player]..."
-    m 1euc "I've been doing some reading on the Anicent Greek philosopher Plato lately."
-    m 3euc "Specifically, his allegory of the cave or, {i}Plato's Cave{/i}, as it's now known."
+    m 1euc "I've been doing some reading on the Ancient Greek philosopher Plato lately."
+    m 3euc "Specifically, his allegory of the cave, or {i}Plato's Cave{/i}, as it's now known."
     m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
     m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
     m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
@@ -13532,4 +13691,52 @@ label monika_allegory_of_the_cave:
     m 3hub "Ahaha!"
     m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
+    $ mas_showEVL("monika_multi_perspective_approach","EVE",_random=True)
     return
+
+#Whether or not the player works out
+default persistent._mas_pm_works_out = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_working_out",
+            category=['advice','you'],
+            prompt="Working out",
+            random=True
+        )
+    )
+
+label monika_working_out:
+    m 1euc "Hey [player], I was just wondering..."
+
+    m 1eua "Do you work out much?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you work out much?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_works_out = True
+            m 1hua "Really? That's great!"
+
+        "No.":
+            $ persistent._mas_pm_works_out = False
+            m 1eka "Oh...{w=0.3} Well, I think you should if you're able to."
+            m 3rksdla "It's not about working out for looks...{w=0.3}{nw}"
+            extend 3hksdlb "I'm just concerned for your health!"
+
+    m 1eua "Getting at least 30 minutes of exercise each day is {i}super{/i} important for maintaining your health in the long run."
+    m 3eub "The healthier you are, the longer you'll live, and the longer I can be with you."
+    m 3hub "And I want to spend as much time as possible with you, [player]!~"
+    m 1eua "Putting that aside, working out benefits nearly every aspect of your life...{w=0.3}{nw}"
+    extend 1eub "even if you spend most of your time sitting at a desk."
+    m 3eua "Aside from the obvious physical benefits, getting regular exercise can reduce stress and really improve your mental health too."
+    m 3hua "So whether you're working, studying, or gaming, exercise can help you focus on these tasks for longer!"
+    m 3eua "...And I also think it's important for developing self-discipline and mental fortitude."
+
+    if not persistent._mas_pm_works_out:
+        m 3hub "So be sure to get your exercise in, [player]~"
+    else:
+        m 3eub "Maybe when I cross over, we can do our workouts together!"
+
+    return "derandom"
