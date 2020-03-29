@@ -13586,6 +13586,37 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_multi_perspective_approach",
+            category=['philosophy'],
+            prompt="Multi-perspective approach",
+            random=False
+        )
+    )
+
+label monika_multi_perspective_approach:
+    m 1eua "Do you remember when we talked about {i}Plato's Cave{/i}?{w=0.5} I've been thinking about what I said to you."
+    m 3etc "'How do you know if the 'truth' you're seeing is {i}the{/i} truth?'"
+    m 3eud "...I've been thinking for a while, trying to come up with a good answer."
+    m 1rksdla "I still don't really have one yet...{w=0.3}{nw}"
+    extend 3eub "but I did realize something useful."
+    m 4euc "Let's start with how Plato's works are mostly written accounts of his mentor Socrates' debates with others."
+    m 4eud "The purpose of these debates was to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
+    m 2eud "And I began wondering, 'What was Plato's mindset while writing?'"
+    m 2esc "Plato himself was on a quest for the truth..."
+    m 2eub "That much is obvious or else he wouldn't have written so much on the topic, ahaha!"
+    m 2euc "And even though, {i}technically{/i}, Socrates was the one having these debates with others, Plato too was having these debates within himself while he wrote about them."
+    m 7eud "The fact that Plato internalized all sides of the debate, all perspectives of the issue, is pretty significant in my opinion."
+    m 3eua "Taking all sides of a debate...{w=0.3}I think that'd be pretty useful in realizing the truth."
+    m 3esd "I guess it's kind of like how two eyes are better than one. {w=0.3}Having two eyes in separate spots lets us properly see the world, or in this case, the truth."
+    m 3eud "Likewise, I think that if we tackled an issue with another perspective, to cross-reference with the first, then we'd see the truth a lot more clearly."
+    m 1euc "Whereas if we took to an issue from just one angle, it'd be like having just one eye...{w=0.2}it'd be a bit harder to accurately gauge the reality of the situation."
+    m 1eub "What do you think, [player]? {w=0.3}If you haven't already been using this 'multi-perspective' approach, maybe you can try it sometime!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_allegory_of_the_cave",
             category=['philosophy'],
             prompt="The Allegory of the Cave",
@@ -13595,8 +13626,8 @@ init 5 python:
 
 label monika_allegory_of_the_cave:
     m 1eua "Hey, [player]..."
-    m 1euc "I've been doing some reading on the Anicent Greek philosopher Plato lately."
-    m 3euc "Specifically, his allegory of the cave or, {i}Plato's Cave{/i}, as it's now known."
+    m 1euc "I've been doing some reading on the Ancient Greek philosopher Plato lately."
+    m 3euc "Specifically, his allegory of the cave, or {i}Plato's Cave{/i}, as it's now known."
     m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
     m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
     m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."
@@ -13626,4 +13657,5 @@ label monika_allegory_of_the_cave:
     m 3hub "Ahaha!"
     m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
+    $ mas_showEVL("monika_multi_perspective_approach","EVE",_random=True)
     return
