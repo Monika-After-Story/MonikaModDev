@@ -13,7 +13,6 @@ python early:
         Also includes surface caching, if desired.
 
         PROPERTIES:
-            rendered_surface - render for this displayable. Can be used for
                 caching.
             flt - filter we last used
         """
@@ -38,7 +37,6 @@ python early:
                 _args=_args,
                 **properties
             )
-            self.rendered_surface = None
             self.flt = None
 
         # NOTE: extended classes should impelement the render function.
@@ -81,23 +79,20 @@ python early:
             self.img_obj = Image(image_path)
 
         def render(self, width, height, st, at):
-            curr_flt = store.mas_sprites._decide_filter()
-            if curr_flt != self.flt or self.rendered_surface is None:
-                # need new render
-                self.flt = curr_flt
 
-                # prepare filtered image
-                new_img = store.mas_sprites._gen_im(self.flt, self.img_obj)
+            # need new render
+            self.flt = store.mas_sprites._decide_filter()
 
-                # render and blit
-                render = renpy.render(new_img, width, height, st, at)
-                rv = renpy.Render(width, height)
-                rv.blit(render, (0, 0))
+            # prepare filtered image
+            new_img = store.mas_sprites._gen_im(self.flt, self.img_obj)
 
-                # save
-                self.rendered_surface = rv
+            # render and blit
+            render = renpy.render(new_img, width, height, st, at)
+            rv = renpy.Render(width, height)
+            rv.blit(render, (0, 0))
 
-            return self.rendered_surface
+            # save
+            return rv
 
         def visit(self):
             return [self.img_obj]
@@ -253,9 +248,6 @@ init -4 python in mas_sprites:
         at the same time.
 
         INHERED PROPS:
-            rendered_surface - the render for this displayable.
-                If we our render is called more than once, then this is
-                reutrned.
             flt - filter we are using (string)
 
         PROPERTIES:
@@ -288,7 +280,6 @@ init -4 python in mas_sprites:
             """
             super(store.MASFilterable, self).__init__()
             self.render_keys = render_keys
-            self.rendered_surface = None
             self.xpos = xpos
             self.ypos = ypos
             self.width = width
@@ -371,22 +362,20 @@ init -4 python in mas_sprites:
             """
             Render function
             """
-            curr_flt = store.mas_sprites._decide_filter()
-            if self.rendered_surface is None or curr_flt != self.flt:
-                self.flt = curr_flt
-                renders = []
-                for render_key in self.render_keys:
-                    renders.append(self._render_surf(render_key, st, at))
-                    self._l_render_hl(renders, render_key, st, at)
+            self.flt = store.mas_sprites._decide_filter()
 
-                # blit all
-                rv = renpy.Render(width, height)
-                for render in renders:
-                    rv.blit(render, (self.xpos, self.ypos + Y_OFFSET))
+            renders = []
+            for render_key in self.render_keys:
+                renders.append(self._render_surf(render_key, st, at))
+                self._l_render_hl(renders, render_key, st, at)
 
-                self.rendered_surface = rv
+            # blit all
+            rv = renpy.Render(width, height)
+            for render in renders:
+                rv.blit(render, (self.xpos, self.ypos + Y_OFFSET))
 
-            return self.rendered_surface
+            return rv
+
 
         def visit(self):
             """
