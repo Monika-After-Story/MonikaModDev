@@ -1,0 +1,29 @@
+{
+    "__author": "Velius94",
+    "version": 2,
+    "type": 2,
+    "name": "velius94_shirt_pink",
+    "img_sit": "velius94_shirt_pink",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "bare-right-shoulder": true
+    },
+    "select_info": {
+        "display_name": "Shirt (Pink)",
+        "thumb": "velius94_shirt_pink",
+        "group": "clothes",
+        "select_dlg": [
+            "Pretty in pink~"
+        ]
+    },
+    "giftname": "pinkshirt",
+    "pose_arms": {
+        "default": null,
+        "use_reg_for_l": true
+    }
+}

@@ -9,6 +9,8 @@
 #       encode files into sized chunks that will work nicely with file io
 #   - unpacked files are raw files, not encoded
 
+default persistent._mas_pm_taken_monika_out = False
+# True if the user has taken monika out of the spaceroom
 
 init -900 python in mas_ics:
     import os
@@ -19,6 +21,8 @@ init -900 python in mas_ics:
     islands_folder = os.path.normcase(
         renpy.config.basedir + "/game/mod_assets/location/special/"
     )
+
+    # NOTE: these checksums are BEFORE b64 encoding
 
     # Night With Frame
     islands_nwf = (
@@ -40,6 +44,66 @@ init -900 python in mas_ics:
         "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
     )
 
+    # rain with frame
+    islands_rwf = (
+        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
+    )
+
+    # rain without frame
+    islands_rwof = (
+        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
+    )
+
+    # night rain with frame
+    islands_nrwf = (
+        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
+    )
+
+    # night rain without frame
+    islands_nrwof = (
+        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
+    )
+
+    # overcast with frame
+    islands_owf = (
+        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
+    )
+
+    # overcast without frame
+    islands_owof = (
+        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
+    )
+
+    # night overcast with frame
+    islands_nowf = (
+        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
+    )
+
+    # night overcast without frame
+    islands_nowof = (
+        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
+    )
+
+    # snow with frame
+    islands_swf = (
+        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
+    )
+
+    # snow without frame
+    islands_swof = (
+        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
+    )
+
+    # night snow with frame
+    islands_nswf = (
+        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
+    )
+
+    # night snow without frame
+    islands_nswof = (
+        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
+    )
+
     # islands dict to map filenames to checksums and real filenames
     # key: filename of b64 encode
     # value: tuple:
@@ -49,32 +113,52 @@ init -900 python in mas_ics:
         "nwf": ("night_with_frame.png", islands_nwf),
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
-        "dwof": ("without_frame.png", islands_dwof)
+        "dwof": ("without_frame.png", islands_dwof),
+        "rwf": ("rain_with_frame.png", islands_rwf),
+        "rwof": ("rain_without_frame.png", islands_rwof),
+        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
+        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
+        "owf": ("overcast_with_frame.png", islands_owf),
+        "owof": ("overcast_without_frame.png", islands_owof),
+        "nowf": ("night_overcast_with_frame.png", islands_nowf),
+        "nowof": ("night_overcast_without_frame.png", islands_nowof),
+        "swf": ("snow_with_frame.png", islands_swf),
+        "swof": ("snow_without_frame.png", islands_swof),
+        "nswf": ("night_snow_with_frame.png", islands_nswf),
+        "nswof": ("night_snow_without_frame.png", islands_nswof)
     }
 
-    ########################## SURPRISE BDAY PARTY ############################
-    # cake
-    sbp_cake = (
-        "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
+    #################################### O31 ##################################
+    # cg folder
+    o31_cg_folder = os.path.normcase(
+        renpy.config.basedir + "/game/mod_assets/monika/cg/"
     )
 
-    # banners
-    sbp_banners = (
-        "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
+    # marisa cg
+    o31_marisa = (
+        "6a05463e8200af9846e7f70f4c03e6feddb6c5a93395d7b17a91a6fd23da29af"
     )
 
-    # balloons
-    sbp_balloons = (
-        "eda87e74b8dc9d5082a0f2a7d5202dc0e7b96ec36cbaebc98eb046584834b8e9"
+    # rin cg
+    o31_rin = (
+        "c8fb05e801e0eb1f234b4af99d910e561a9afbbd1a5df6bee6edd602c94adb81"
     )
 
-    # surprise bday party dicts to map filenames to checksums
-    sbp_map = {
-        "cake": sbp_cake,
-        "banners": sbp_banners,
-        "balloons": sbp_balloons
+    # cg dict to map filenames to checksums and real filenames
+    # key: filename of b64 encode
+    # value: tuple:
+    #   [0] - filename to save the image as
+    #   [1] - checksum for that image
+    o31_map = {
+        "o31mcg": ("o31_marisa_cg.png", o31_marisa),
+        "o31rcg": ("o31_rin_cg.png", o31_rin)
     }
 
+    #################################### RPY ##################################
+    #game folder
+    game_folder = os.path.normcase(
+        renpy.config.basedir + "/game/"
+    )
     ###########################################################################
 
 
@@ -145,10 +229,11 @@ init -45 python:
             if station is None:
                 station = self.DEF_STATION_PATH
 
-            if not station.endswith("/"):
-                station += "/"
+#            if not station.endswith("/"):
+#                station += "/"
 
             self.station = os.path.normcase(station)
+            self.enabled = True
 
             if not os.path.isdir(self.station):
                 try:
@@ -159,6 +244,7 @@ init -45 python:
                        str(self),
                        repr(e)
                    ))
+                   self.enabled = False
 
 
 
@@ -187,6 +273,9 @@ init -45 python:
                     If check_read is true, then package must also be readable
                 False otherwise
             """
+            if not self.enabled:
+                return False
+
             return self.__check_access(
                 self._trackPackage(package_name),
                 check_read
@@ -211,6 +300,9 @@ init -45 python:
                 sha256 checksum (hexadec) of the given package, or None
                 if error occured
             """
+            if not self.enabled:
+                return None
+
             pkg_slip = self._unpack(package, None, False, True, bs)
 
             # reset the package when done
@@ -231,6 +323,9 @@ init -45 python:
             RETURNS:
                 True if package no exist or was deleted. False otherwise
             """
+            if not self.enabled:
+                return False
+
             if not self.checkForPackage(package_name, False):
                 return True
 
@@ -251,6 +346,7 @@ init -45 python:
         def getPackageList(self, ext_filter=""):
             """
             Gets a list of the packages in the docking station.
+            We also ensure that the item retrieved is not a folder.
 
             IN:
                 ext_filter - extension filter to use when getting list.
@@ -260,6 +356,9 @@ init -45 python:
 
             RETURNS: list of packages
             """
+            if not self.enabled:
+                return []
+
             # correct filter if needed
             if len(ext_filter) > 0 and not ext_filter.startswith("."):
                 ext_filter = "." + ext_filter
@@ -268,6 +367,7 @@ init -45 python:
                 package
                 for package in os.listdir(self.station)
                 if package.endswith(ext_filter)
+                and not os.path.isdir(self._trackPackage(package))
             ]
 
 
@@ -285,6 +385,9 @@ init -45 python:
                     if package is readable and no errors occurred
                 None otherwise
             """
+            if not self.enabled:
+                return None
+
             ### Check access
             if not self.checkForPackage(package_name):
                 return None
@@ -384,6 +487,9 @@ init -45 python:
                 True if package was sent successfully and pkg_slip is False
                 False Otherwise
             """
+            if not self.enabled:
+                return False
+
             mailbox = None
             try:
                 ### open the mailbox
@@ -451,6 +557,9 @@ init -45 python:
                     - return -1
                 0 otherwise (like if error occured)
             """
+            if not self.enabled:
+                return 0
+
             package = None
             contents = None
             try:
@@ -677,6 +786,9 @@ init -45 python:
                 Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
+            if not self.enabled:
+                return None
+
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
@@ -780,6 +892,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or pack):
                 return None
 
@@ -849,6 +964,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or unpack):
                 return None
 
@@ -883,10 +1001,10 @@ init -45 python:
 
             return None
 
-
         def __check_access(self, package_path, check_read):
             """
-            Checks access of the file at package_path
+            Checks access of the file at package_path.
+            Also ensures that the file is not actually is folder.
 
             NOTE:
                 will log exceptions
@@ -902,9 +1020,13 @@ init -45 python:
                     if check_read is True, returns None
                     otherwise, returns False
             """
+            if not self.enabled:
+                return False
+
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
+                not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
@@ -917,17 +1039,12 @@ init -45 python:
                 return self.__bad_check_read(check_read)
 
             if check_read:
-                if not (file_ok and read_ok):
+                if not (file_ok and read_ok and not_dir):
                     return None
 
-            else:
-                if not file_ok:
-                    return False
+            return file_ok and not_dir
 
-            return True
-
-
-        def __bad_check_read(check_read):
+        def __bad_check_read(self, check_read):
             """
             Returns an appropriate failure value givne the check_read value
 
@@ -979,11 +1096,6 @@ default persistent._mas_bday_sbp_reacted = False
 # NOTE: we need to consider how we want to do this in future bdays. probably
 # may do historical when we can
 
-# this will act historial until we have better data poitns
-default persistent._mas_bday_sbp_found_cake = False
-default persistent._mas_bday_sbp_found_banners = False
-default persistent._mas_bday_sbp_found_balloons = False
-
 
 init -500 python in mas_dockstat:
     # blocksize is relatively constant
@@ -1022,13 +1134,120 @@ init -500 python in mas_dockstat:
     MAS_SBP_BLON = 8
     # balloon was found
 
+init -11 python in mas_dockstat:
+    import store.mas_utils as mas_utils
+
+    def decodeImages(dockstat, image_dict, selective=[]):
+        """
+        Attempts to decode the iamges
+
+        IN:
+            dockstat - docking station to use
+            image_dict - image map to use
+            selective - list of images keys to decode
+                If not passed in, we decode EVERYTHINg
+                (DEfault: [])
+
+        Returns TRUE upon success, False otherwise
+        """
+        if len(selective) == 0:
+            selective = image_dict.keys()
+
+        for b64_name in selective:
+            real_name, chksum = image_dict[b64_name]
+
+            # read in the base64 versions, output an image
+            b64_pkg = dockstat.getPackage(b64_name)
+
+            if b64_pkg is None:
+                # if we didnt find the image, we in big trouble
+                return False
+
+            # setup the outfile
+            real_pkg = None
+            real_chksum = None
+            real_path = dockstat._trackPackage(real_name)
+
+            # now try to decode image
+            try:
+                real_pkg = open(real_path, "wb")
+
+                # unpack this package
+                dockstat._unpack(
+                    b64_pkg,
+                    real_pkg,
+                    True,
+                    False,
+                    bs=b64_blocksize
+                )
+
+                # close and reopen as read
+                real_pkg.close()
+                real_pkg = open(real_path, "rb")
+
+                # check pkg slip
+                real_chksum = dockstat.createPackageSlip(
+                    real_pkg,
+                    bs=blocksize
+                )
+
+            except Exception as e:
+                mas_utils.writelog(
+                    "[ERROR] failed to decode '{0}' | {1}\n".format(
+                        b64_name,
+                        str(e)
+                    )
+                )
+                return False
+
+            finally:
+                # always close the base64 package
+                b64_pkg.close()
+
+                if real_pkg is not None:
+                    real_pkg.close()
+
+            # now to check this image for chksum correctness
+            if real_chksum is None:
+                # bad shit happened here somehow
+                mas_utils.trydel(real_path)
+                return False
+
+            if real_chksum != chksum:
+                # decoded was wrong somehow
+                mas_utils.trydel(real_path)
+                return False
+
+        # otherwise success somehow
+        return True
+
+
+    def removeImages(dockstat, image_dict, selective=[], log=False):
+        """
+        Removes the decoded images at the end of their lifecycle
+
+        IN:
+            dockstat - docking station
+            image_dict - image map to use
+            selective - list of image keys to delete
+                If not passed in, we delete everything in the image dict
+                (Default: [])
+            log - should we log a delete failure?
+                (Default: False)
+
+        AKA quitting
+        """
+        if len(selective) == 0:
+            selective = image_dict.keys()
+
+        for b64_name in selective:
+            real_name, chksum = image_dict[b64_name]
+            mas_utils.trydel(dockstat._trackPackage(real_name), log=log)
+
 
 init python in mas_dockstat:
     import store
     import cPickle
-
-    # blocksize is relatively constant
-    blocksize = 4 * (1024**2)
 
     # previous vars dict
     previous_vars = dict()
@@ -1069,12 +1288,13 @@ init 200 python in mas_dockstat:
     # special store
     # lets use this store to handle generation of docking station files
     import store
-    import store.mas_utils as mas_utils
     import store.mas_sprites as mas_sprites
     import store.mas_greetings as mas_greetings
     import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
+    import codecs
+    import re
     import os
     import random
     import datetime
@@ -1083,13 +1303,10 @@ init 200 python in mas_dockstat:
     retmoni_status = None
     retmoni_data = None
 
-    # and these are set for bday related stuff
-    retsbp_status = None
-
 
     def _buildMetaDataList(_outbuffer):
         """
-        Writes out a pipe-delimeted metadata list tot he given buffer
+        Writes out a pipe-delimeted metadata list to the given buffer
 
         OUT:
             _outbuffer - buffer to write metadata to
@@ -1147,7 +1364,7 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            _outbuffer.write(cPickle.dumps(store.persistent))
+            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64"))
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1302,134 +1519,6 @@ init 200 python in mas_dockstat:
 
         return on_fail
 
-
-    def surpriseBdayCheck(dockstat):
-        """
-        Checks for surprise party files in the given docking station.
-        Returns a bit set of surprise party states
-
-        Also sets the dockstat retsbp status var
-
-        IN:
-            dockstat - the docking station to check surprise party files
-
-        RETURNS:
-            MAS_SBP bit constants
-        """
-        global retsbp_status
-        if not store.mas_isMonikaBirthday():
-            retsbp_status = MAS_SBP_NONE
-            return MAS_SBP_NONE
-
-        ret_val = (
-            packageCheck(
-                dockstat,
-                "cake",
-                mas_ics.sbp_cake,
-                MAS_SBP_CAKE,
-                0,
-                False
-            )
-            | packageCheck(
-                dockstat,
-                "banners",
-                mas_ics.sbp_banners,
-                MAS_SBP_BANR,
-                0,
-                False
-            )
-            | packageCheck(
-                dockstat,
-                "balloons",
-                mas_ics.sbp_balloons,
-                MAS_SBP_BLON,
-                0,
-                False
-            )
-        )
-
-        if ret_val == 0:
-            retsbp_status = MAS_SBP_NONE
-            return MAS_SBP_NONE
-
-        retsbp_status = ret_val
-        return ret_val
-
-
-    def surpriseBdayShowVisuals(_status=None, bday_bypass=False):
-        """
-        Checks status and shows bday visuals if we need to
-
-        IN:
-            _status - status to use when checking. If None, we check status
-                ourselves.
-                (Default: None)
-            bday_bypass - set to True to bypass birthday check
-                (Defalt: False)
-        """
-        if not bday_bypass and not store.mas_isMonikaBirthday():
-            return
-
-        if _status is None:
-            _status = surpriseBdayCheck(store.mas_docking_station)
-
-        if (_status & MAS_SBP_NONE) > 0:
-            surpriseBdayHideVisuals()
-            return
-
-        # otherwise we have visuals to show
-        if (
-                (_status & MAS_SBP_CAKE) > 0
-                and not store.persistent._mas_bday_sbp_reacted
-            ):
-            store.persistent._mas_bday_sbp_found_cake = True
-            renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-        else:
-            renpy.hide("mas_bday_cake")
-
-        if (_status & MAS_SBP_BANR) > 0:
-            store.persistent._mas_bday_sbp_found_banners = True
-            renpy.show("mas_bday_banners", zorder=7)
-        else:
-            renpy.hide("mas_bday_banners")
-
-        if (_status & MAS_SBP_BLON) > 0:
-            store.persistent._mas_bday_sbp_found_balloons = True
-            renpy.show("mas_bday_balloons", zorder=8)
-        else:
-            renpy.hide("mas_bday_balloons")
-
-
-    def surpriseBdayHideVisuals():
-        """
-        Hides all visuals for surprise party
-        """
-        renpy.hide("mas_bday_cake")
-        renpy.hide("mas_bday_banners")
-        renpy.hide("mas_bday_balloons")
-
-
-    def surpriseBdayIsCake():
-        """
-        Returns true if cake was found, False otherwise
-        """
-        return (retsbp_status & MAS_SBP_CAKE) > 0
-
-
-    def surpriseBdayIsBanners():
-        """
-        Returns true if banners were found, false otherwise
-        """
-        return (retsbp_status & MAS_SBP_BANR) > 0
-
-
-    def surpriseBdayIsBalloon():
-        """
-        Returns true if balloon was found, false otherwise
-        """
-        return (retsbp_status & MAS_SBP_BLON) > 0
-
-
     def generateMonika(dockstat):
         """
         Generates / writes a monika blob file.
@@ -1449,9 +1538,15 @@ init 200 python in mas_dockstat:
         ASSUMES:
             blocksize - this is a constant in this store
         """
+        # sanity check regarding the filepath
+        if "temp" in dockstat.station.lower():
+            mas_utils.writelog("[ERROR] temp directory found, aborting.\n")
+            return False
+
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
+        moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
         # number deliemter
         NUM_DELIM = "|num|"
@@ -1515,13 +1610,14 @@ init 200 python in mas_dockstat:
                 blocksize
             )
             moni_tbuffer = fastIO()
+            moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
             moni_tbuffer.write(str(lines) + NUM_DELIM)
             for _line in moni_buffer_iter:
                 moni_tbuffer.write(_line)
             moni_buffer.close()
 
             # now we can prepare to write
-            moni_fbuffer = open(moni_path, "wb")
+            moni_fbuffer = codecs.open(moni_path, "wb", "utf-8")
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
@@ -1798,7 +1894,12 @@ init 200 python in mas_dockstat:
         RETURNS: a persistent object, or None if failure
         """
         try:
-            return cPickle.loads(str(data_line))
+            #pers = re.match(r"^(.*?)\|\|\|per\|",str(data_line)).group()
+            # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
+            splitted = data_line.split("|||per|")
+            if(len(splitted)>0):
+                return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
+            return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
             mas_utils.writelog(
@@ -1807,41 +1908,81 @@ init 200 python in mas_dockstat:
             return None
 
 
-    def selectReturnHomeGreeting(_type=None):
+    def selectReturnHomeGreeting(gre_type=None):
         """
         Selects the correct Return Home greeting.
-        Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to
-            runtime
+        If None was selected, we return the default returned home gre
+
+        We also default type to TYPE_GENERIC_RET if no type is given
 
         IN:
-            _type - list of additoinal mas_greetings types to search on
+            gre_type - greeting type to find
+                If None, we use TYPE_GENERIC_RET
+                (Default: None)
 
         RETURNS:
             Event object representing the selected greeting
         """
-        if _type is not None:
-            greeting_types = list(_type)
-        else:
-            greeting_types = list()
+        if gre_type is None:
+            gre_type = mas_greetings.TYPE_GENERIC_RET
 
-        # add the return home type
-        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+        sel_gre_ev = mas_greetings.selectGreeting(gre_type)
 
-        # and now we need to find greetings that fit
-        rethome_greetings = store.Event.filterEvents(
-            evhand.greeting_database,
-            unlocked=True,
-            category=(False, greeting_types)
-        )
+        if sel_gre_ev is None:
+            # no selection? return the generic random
+            return store.mas_getEV("greeting_returned_home")
 
-        if len(rethome_greetings) > 0:
-            # if we have at least one from this list, random select
-            return rethome_greetings[random.choice(rethome_greetings.keys())]
+        # otherwise, return this ev
+        return sel_gre_ev
 
-        # otherwise, always return the generic random event
-        return store.mas_getEV("greeting_returned_home")
+
+    def getCheckTimes(chksum=None):
+        """
+        Gets the corresponding checkin/out times for the given chksum.
+
+        IN:
+            chksum - chksum to retrieve checkin/checkout times.
+                If None, then we simply get the latest checkin/checkout,
+                regardless if they match or not.
+                (Default: None)
+
+        RETURNS tuple of the following format:
+            [0] - checkout time
+            [1] - checkin time
+        If any param is None, then we couldn't find the matching chksum or
+        there were no entries
+        """
+        checkin_log = store.persistent._mas_dockstat_checkin_log
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+        checkin_time = None
+        checkout_time = None
+        checkin_len = len(checkin_log)
+        checkout_len = len(checkout_log)
+
+        # quick function to find a time based on checksum
+        def find_time(check_log, check_sum):
+            for _time, _chksum in check_log:
+                if _chksum == check_sum:
+                    return _time
+
+            return None
+
+        if checkin_len > 0:
+            if chksum is None:
+                checkin_time = checkin_log[checkin_len-1][0]
+
+            else:
+                checkin_time = find_time(checkin_log, chksum)
+
+        if checkout_len > 0:
+            if chksum is None:
+                checkout_time = checkout_log[checkout_len-1][0]
+
+            else:
+                checkout_time = find_time(checkout_log, chksum)
+
+        return (checkout_time, checkin_time)
 
 
     def diffCheckTimes(index=None):
@@ -1858,11 +1999,34 @@ init 200 python in mas_dockstat:
         """
         checkin_log = store.persistent._mas_dockstat_checkin_log
         checkout_log = store.persistent._mas_dockstat_checkout_log
+        checkin_len = len(checkin_log)
+        checkout_len = len(checkout_log)
 
-        if len(checkin_log) == 0 or len(checkout_log) == 0:
+        if checkin_len == 0 or checkout_len == 0:
             return datetime.timedelta(0)
 
-        if index is None:
+        if checkin_len != checkout_len:
+            # mis match logs, please log this.
+            mas_utils.writelog(
+                (
+                    "[WARNING]: checkin is {0}, checkout is {1}. "
+                    "Going to pop.\n"
+                ).format(checkin_len, checkout_len)
+            )
+
+            # and we will pop extras as well
+            if checkin_len > checkout_len:
+                larger_log = checkin_log
+                goal_size = checkout_len
+
+            else:
+                larger_log = checkout_log
+                goal_size = checkin_len
+
+            while len(larger_log) > goal_size:
+                larger_log.pop()
+
+        if index is None or index >= len(checkout_log):
             index = len(checkout_log)-1
 
         return checkin_log[index][0] - checkout_log[index][0]
@@ -1899,6 +2063,46 @@ init 200 python in mas_dockstat:
             time_out += diffCheckTimes(index)
 
         return time_out
+
+
+    def _ds_aff_for_tout(
+            _time_out,
+            max_hour_out,
+            max_aff_gain,
+            min_aff_gain,
+            aff_mult=1
+            ):
+        """
+        Grants an amount of affection based on time out. This is designed for
+        use ONLY with the returned home greeting.
+
+        NOTE: this also sets the monika_returned_home persistent
+
+        IN:
+            _time_out - timedelta we want to treat as monika being out
+            max_hour_out - how many hours is considered max
+                (anthing OVER this will be maxxed)
+            max_aff_gain - amount of aff to be gained when max+
+            min_aff_gain - smallest amount of aff gain
+            aff_mult - multipler to hours to use as aff gain when between min
+                and max
+                (Default: 1)
+        """
+        if store.persistent._mas_monika_returned_home is None:
+            hours_out = int(_time_out.total_seconds() / 3600)
+
+            # you gain 1 per hour, max 5, min 1
+            if hours_out > max_hour_out:
+                aff_gain = max_aff_gain
+            elif hours_out == 0:
+                aff_gain = min_aff_gain
+            else:
+                aff_gain = hours_out * aff_mult
+
+            store.mas_gainAffection(aff_gain, bypass=True)
+            store.persistent._mas_monika_returned_home = (
+                datetime.datetime.now()
+            )
 
 
 init 205 python in mas_dockstat:
@@ -1950,8 +2154,6 @@ init 205 python in mas_dockstat:
 #   true if moni can leave
 #   false otherwise
 label mas_dockstat_ready_to_go(moni_chksum):
-    show monika 2dsc
-
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
     $ can_moni_leave = moni_chksum and moni_chksum != -1
@@ -1959,49 +2161,135 @@ label mas_dockstat_ready_to_go(moni_chksum):
     if can_moni_leave:
         # file successfully made
         # monika can leave
-        if len(persistent._mas_dockstat_checkout_log) == 0:
+
+        #We'll do our actual getting ready here since this saves us needing to do it multiple times later
+        python:
+            #If we should take drink with, we do that now
+            mas_useThermos()
+
+            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
+            renpy.pause(1.0, hard=True)
+
+        #If bday + aff+, we use this fare
+        if (
+            mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
+            and not mas_SELisUnlocked(mas_clothes_blackdress)
+        ):
+            if len(persistent._mas_dockstat_checkout_log) == 0:
+                #We change Moni's outfit here because she just got ready
+                $ monika_chr.change_clothes(mas_clothes_blackdress)
+                call mas_dockstat_first_time_goers
+            call mas_bday_bd_outro
+
+        elif len(persistent._mas_dockstat_checkout_log) == 0:
             call mas_dockstat_first_time_goers
 
         else:
-            m 1eua "Alright."
+            m "Alright."
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
-
-        m 1eua "I'm ready to go."
+        # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
-        m 1ekc "Oh no..."
-        m 1lksdlb "I wasn't able to turn myself into a file."
-        m "I think you'll have to go on without me this time."
-        m 1ekc "Sorry, [player]."
+        # NOTE: callers must handle the dialogue for this
 
     return can_moni_leave
 
 
 label mas_dockstat_first_time_goers:
+    call mas_transition_from_emptydesk("monika 3eua")
     m 3eua "I'm now in the file 'monika' in your characters folder."
-    m "After I shutdown the game, you can move me wherever you like."
+    m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
-
     m 1eua "And lastly..."
     m 1ekc "Please be careful with me. It's so easy to delete files after all..."
     m 1eua "Anyway..."
     return
 
+label mas_dockstat_abort_post_show:
+    #Call this label to re-set anything needed when aborting dockstat farewells (error or by user)
+    #After Monika has returned to her desk
+    python:
+        #Restore the drink and make sure it's kept on desk again
+        _curr_drink = MASConsumable._getCurrentDrink()
+        if _curr_drink and _curr_drink.portable:
+            _curr_drink.acs.keep_on_desk = True
+
+    return
+
+label mas_dockstat_abort_gen:
+    # call this label to abort monika gen promise
+    # we should abort the promise (this lets spaceroom idle abort, as well)
+    python:
+        store.mas_dockstat.abort_gen_promise = True
+
+        #Attempt to abort the promise
+        store.mas_dockstat.abortGenPromise()
+
+    #FALL THROUGH
+
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
+    # we are not leaving
+    $ persistent._mas_dockstat_going_to_leave = False
+
+    # we are not leaving and need to reset these
+    if persistent._mas_player_bday_left_on_bday:
+        $ persistent._mas_player_bday_left_on_bday = False
+        $ persistent._mas_player_bday_date -= 1
+
+    if persistent._mas_f14_on_date:
+        $ persistent._mas_f14_on_date = False
+        $ persistent._mas_f14_date_count -= 1
+
+    if persistent._mas_bday_on_date:
+        $ persistent._mas_bday_on_date = False
+        $ persistent._mas_bday_date_count -= 1
+    return
+
+
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    call spaceroom(hide_monika=True)
+    #NOTE: this needs to be done prior to a spaceroom call otherwise it doesn't update
+    #Make sure O31 effects show
+    if persistent._mas_o31_in_o31_mode:
+        $ mas_globals.show_vignette = True
+        #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+        if mas_current_weather != mas_weather_thunder:
+            $ mas_changeWeather(mas_weather_thunder, True)
+
+
+    # TODO: else this with the o31 mode
+    # set weather here
+    # TODO: run the yet-to-be-made weather alg running function etc
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
+        $ skip_setting_weather = True
+
+    # reset zoom before showing spaceroom
+    $ store.mas_sprites.reset_zoom()
+
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
-    # empty desk should be a zorder lower so we can pop monika over it
-    $ ed_zorder = MAS_MONIKA_Z - 1
-    show emptydesk zorder ed_zorder at i11
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
-    # show birthday visuals?
-    $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
+    if mas_isD25Season() and persistent._mas_d25_deco_active:
+        $ store.mas_d25ShowVisuals()
+
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+
+    #NOTE: elif'd so we don't try and show two types of visuals here
+    elif persistent._mas_player_bday_decor:
+        $ store.mas_surpriseBdayShowVisuals()
+
 
 label mas_dockstat_empty_desk_preloop:
 
@@ -2024,7 +2312,9 @@ label mas_dockstat_empty_desk_from_empty:
     $ renpy.pause(1.0, hard=True)
 
     # check for surprise visuals
-    $ store.mas_dockstat.surpriseBdayShowVisuals()
+    if mas_confirmedParty() and mas_isMonikaBirthday():
+        $ persistent._mas_bday_visuals = True
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
     # check for monika
     if promise.done():
@@ -2074,14 +2364,12 @@ label mas_dockstat_different_monika:
     #   player - player's name
     #   m_name - monika's name
     $ moni_sesh, player, m_name, aff_val, moni_hair, moni_clothes = moni_data
-    $ monika_chr.change_outfit(moni_clothes, moni_hair)
+    $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
-    show monika 1ekd zorder MAS_MONIKA_Z at t11
+    call mas_transition_from_emptydesk("monika 1ekd")
 
-    # 1 line of dialgoue before we remove the empty desk
     m "[player]?"
-    hide emptydesk
 
     m "Wait, you're not [player]."
 
@@ -2090,13 +2378,13 @@ label mas_dockstat_different_monika:
     $ mas_dockstat.retmoni_data = None
     $ startup_check = False
 
-    jump ch30_post_greeting_check
+    jump ch30_post_exp_check
 
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
-    show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
-    hide emptydesk
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
 
     # dont want users using our promises
     $ promise = None
@@ -2105,24 +2393,21 @@ label mas_dockstat_found_monika_from_empty:
 
 # found our monika
 label mas_dockstat_found_monika:
-
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
+    $ persistent._mas_pm_taken_monika_out = True
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
-        if (
-                (store.mas_dockstat.retsbp_status 
-                    & store.mas_dockstat.MAS_SBP_NONE) == 0
-                and not persistent._mas_bday_sbp_reacted
-            ):
-            selected_greeting = "mas_bday_surprise_party_reaction"
+        selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
+            persistent._mas_greeting_type
+        ).eventlabel
 
-        else:
-            selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
-                persistent._mas_greeting_type
-            ).eventlabel
+        # TODO: consider running the greeting setup label?
 
         # reset greeting type
         persistent._mas_greeting_type = None
@@ -2136,4 +2421,12 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-    jump ch30_post_greeting_check
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_globals.show_vignette = True
+        #Force progressive to disabled for o31
+        $ mas_changeWeather(mas_weather_thunder, True)
+
+    elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
+        call mas_d25_season_exit
+
+    jump ch30_post_exp_check

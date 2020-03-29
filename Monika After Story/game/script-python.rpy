@@ -18,20 +18,23 @@
 #   2 - types
 #       - numbers and strings, bools and Nones
 #   3 - interpreted language
+#   5 - comparisons and booleans
 #   6 - Variables and assignment
+#   8 - Literals
+#   9 - Truth Values
 #
 # TODO:
 #   4 - Python sytnax ?
-#   5 - comparisons
 #   7 - variable sizes
 #   3 - If statement / elif and else
 #   4 - while loop
 #   5 - for loop
 #   6 - functions
 #   7 - functions continiued?
-#   8 - classes (might be too much) -- Definitely too much, we should probably stick to functional programming
-#   9 - modules (might be too much) / importing? -- mention importing only, module making is too much
-#   10 - lists
+#   10 - Evaluation order and short circuting
+#   ? - classes (might be too much) -- Definitely too much, we should probably stick to functional programming
+#   ? - modules (might be too much) / importing? -- mention importing only, module making is too much
+#   ? - lists
 #   11 - dict
 #   12 - tuples
 #   13 - py2 vs py3
@@ -52,6 +55,8 @@
 # 1 -> 3
 # 2 -> 6
 # 3 -> 2
+# 5 -> 9
+# 6 -> 5, 8
 ##############################################
 
 init 4 python in mas_ptod:
@@ -132,7 +137,7 @@ label monika_ptod_tip000:
     m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
     m 1esa "Let's start with what Python even is."
 
-    $ hideEventLabel("monika_ptod_tip000", depool=True)
+    $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)
 
     # enable tip 1
     $ import datetime
@@ -160,14 +165,14 @@ label monika_ptod_tip001:
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
-    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w} which is built off of Python."
+    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w=0.2} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
     show monika 5eua with dissolve
     m "Wouldn't that be great, [player]?"
     
-    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w} Python2 and Python3."
+    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
-    m "Even though this caused a rift in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
+    m "Even though this caused a rift in the Python community,{w=0.2} it's generally agreed that both versions of the language have their own strengths and weaknesses."
     m 3eub "I'll tell you about those differences in another lesson."
 
     m 1eua "Since this mod runs on a Ren'Py version that uses Python2, I won't be talking about Python3 too often."
@@ -205,7 +210,7 @@ label monika_ptod_tip002:
     show screen mas_py_console_teaching
 
     ### numbers
-    m 1eua "Python has two types to represent numbers:{w} {i}integers{/i}, or {b}ints{/b},{w} and {i}floats{/i}."
+    m 1eua "Python has two types to represent numbers:{w=0.3} {i}integers{/i}, or {b}ints{/b},{w=0.3} and {i}floats{/i}."
 
     ## integers
     m 1eua "Integers are used to represent whole numbers; basically anything that isn't a decimal."
@@ -232,8 +237,8 @@ label monika_ptod_tip002:
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
-    m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it basically is the same thing."
-    m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
+    m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it's basically the same thing."
+    m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w=0.2} I'll talk about them another day."
 
     ### booleans
     m "Booleans are special types that represent {b}True{/b} or {b}False{/b} values."
@@ -243,7 +248,7 @@ label monika_ptod_tip002:
     m 1eua "I'll go into more detail about what booleans are and what they are used for in another lesson."
 
     ### Nones
-    m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w} This type represents the absence of any data."
+    m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w=0.2} This type represents the absence of any data."
     m "If you're familiar with other programing languages, this is like a {i}null{/i} or {i}undefined{/i} type."
     m "The keyword {i}None{/i} represents NoneTypes in Python."
     show monika 1eua
@@ -311,7 +316,7 @@ label monika_ptod_tip003:
         m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
         m "Not that you would{fast}{nw}"
         $ _history_list.pop()
-        m 1eksdlb "I can't let you use this.{w} Sorry..." 
+        m 1eksdlb "I can't let you use this.{w=0.3} Sorry..." 
         m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
 
         m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
@@ -370,25 +375,175 @@ label monika_ptod_tip004:
     return
 
 ###############################################################################
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_ptod_tip005",
-#            category=["python tips"],
-#            prompt="Comparisons and booleans",
-#            conditional="store.mas_ptod.has_day_past_tip(2)",
-#   actually, this should probably unlock after we talk about variable 
-#   assignment, since we can do an example like variable = a == b kind of thing
-#            action=EV_ACT_POOL
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ptod_tip005",
+            category=["python tips"],
+            prompt="Comparisons and Booleans",
+            conditional="store.mas_ptod.has_day_past_tip(6)",
+            action=EV_ACT_POOL
+        )
+    )
 
+# PREREQS:
+#   Variables and Assignment
 label monika_ptod_tip005:
-    # [show this once]
-    # So if you remember, a single = does assignment, the == does 
-    # compariosns
-    #
+    $ store.mas_ptod.rst_cn()
+    $ local_ctx = dict()
+    $ store.mas_ptod.set_local_context(local_ctx)
+    $ tip_ev = mas_getEV("monika_ptod_tip005")
+
+    if tip_ev.last_seen is None:
+        m 1eua "Remember when I was describing different Python types and mentioned booleans?"
+        m 1eub "Well, today I'm going into more detail about booleans and how they relate to making comparisons between values."
+
+    m 1eua "Booleans are commonly used in deciding what code to run or setting a flag to note if something happened or not."
+    m "When we do comparisons, each expression is evaluated to a boolean."
+
+    if tip_ev.last_seen is None:
+        m 1eksdlb "This probably makes no sense right now, so I'll pull up the console and show you some examples."
+
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    m 3eub "Let's start with some of the basic symbols used in variable-to-variable comparisons."
+
+    call mas_wx_cmd("a = 10")
+    call mas_wx_cmd("b = 10")
+    call mas_wx_cmd("c = 3")
+
+    m 3eua "To check if two values are equivalent, use two equal signs (==):"
+    call mas_wx_cmd("a == b")
+    call mas_wx_cmd("a == c")
+
+    m 3eua "To check if two values are not equivalent, use an exclamation mark and an equal sign (!=):"
+    call mas_wx_cmd("a != b")
+    call mas_wx_cmd("a != c")
+    m 3eub "The exclamation mark is often referred to as a logical 'not' operator in other programming languages, so (!=) is read as 'not-equals'."
+
+    m 3eua "To check if a value is greater than or less than another value, use the greater-than (>) or less-than (<) signs, respectively."
+    call mas_wx_cmd("a > c")
+    call mas_wx_cmd("a < c")
+
+    m 3eub "Greater-than-or-equal-to (>=) and less-than-or-equal-to (<=) also have their own symbols, which,{w=1} unsurprisingly,{w=1} are just the greater-than and less-than signs with equal signs."
+    call mas_wx_cmd("a >= b")
+    call mas_wx_cmd("a <= b")
+    call mas_wx_cmd("a >= c")
+    call mas_wx_cmd("a <= c")
+
+    if tip_ev.last_seen is None:
+        m 1eua "You may have noticed that every comparison returned {b}True{/b} or {b}False{/b}."
+        m 1eksdlb "{i}That{/i} is what I meant when I said that comparison expressions evaluate to booleans."
+
+    m 1eua "It's also possible to chain multiple comparison expressions together by using the keywords {b}and{/b} and {b}or{/b}. These are also known as {i}logical operators{/i}."
+    m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w=0.3} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
+    m 1hua "Let's go through some examples."
+
+    $ val_a = local_ctx["a"]
+    $ val_b = local_ctx["b"]
+    $ val_c = local_ctx["c"]
+
+    call mas_w_cmd("a == b and a == c")
+    m 3eua "Since 'a' and 'b' are both [val_a], the first comparison evaluates to {b}True{/b}."
+    m "'c', however, is [val_c], so the second comparison evaluates to {b}False{/b}."
+    m 3eub "Since at least one comparison evaluated to {b}False{/b}, the complete expression evaluates to {b}False{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a == b and a >= c")
+    m 3eua "In this example, the first comparison again evaluates to {b}True{/b}."
+    m "[val_a] is certainly greater-than-or-equal-to [val_c], so the second comparison evaluates to {b}True{/b} as well."
+    m 3eub "Since both comparisons evaluated to {b}True{/b}, the complete expression evaluates to {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a != b and a >= c")
+    m 3eua "In this example, the first comparison evaluates to {b}False{/b} this time."
+    m "Since we immediately have at least one comparison evaluating to {b}False{/b}, it doesn't matter what the second comparison evaluates to."
+    m 3eub "We know for sure that the complete expression evaluates to {b}False{/b}."
+    call mas_x_cmd()
+
+    m "Same goes for the next example:"
+    call mas_wx_cmd("a != b and a == c")
+
+    m 1eub "Again, when using the {b}and{/b} operator, the result is {b}True{/b} if and only if both comparisons evaluate to {b}True{/b}."
+
+    m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w=0.3} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
+    m 3eua "Let's go through some examples."
+
+    call mas_w_cmd("a == b or a == c")
+    m 3eua "This time, since the first comparison evaluates to {b}True{/b}, we don't have to check the second comparison."
+    m 3eub "The result of this expression is {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a == b or a >= c")
+    m 3eua "Again, the first comparison evaluates to {b}True{/b}, so the complete expression evaluates to {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a != b or a >= c")
+    m 3eua "In this case, the first comparison evaluates to {b}False{/b}."
+    m "Since [val_a] is greater-than-or-equal-to [val_c], the second comparison evaluates to {b}True{/b}."
+    m 3eub "And since at least one comparison evaluated to {b}True{/b}, the complete expression evaluates to {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a != b or a == c")
+    m 3eua "We know that the first comparison evaluates to {b}False{/b}."
+    m "Since [val_a] is certainly not equal to [val_c], the second comparison also evaluates to {b}False{/b}."
+    m 3eub "Since neither comparison evaluated to {b}True{/b}, the complete expression evaluates to {b}False{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    m 3eub "Again, when using the {b}or{/b} operator, the result is {b}True{/b} if either comparison evaluates to {b}True{/b}."
+
+    m 1eua "There is also a third logical operator called the {b}not{/b} operator. Instead of linking multiple comparisons together, this operator inverts the boolean value of a comparison."
+    m 3eua "Here's an example of this:"
+    call mas_wx_cmd("not (a == b and a == c)")
+    call mas_wx_cmd("not (a == b or a == c)")
+
+    m "Note that I'm using parentheses to group the comparisons together. The code in the parentheses is evaluated first, then the result of that comparison is inverted with {b}not{/b}."
+    m 1eua "If I drop the parentheses:"
+    call mas_wx_cmd("not a == b and a == c")
+    m 3eua "We get a different result!{w=0.2} This is because the {b}not{/b} gets applied to the 'a == b' comparison before being linked to the second comparison by the {b}and{/b}."
+
+    m 3eka "Earlier I mentioned that the exclamation point is used as the logical 'not' operator in other programming languages.{w=0.2} Python, however, uses the word 'not' instead for easier readability."
+
+    m 1eua "Lastly, since the comparisons get evaluated to booleans, we can store the result of a comparison in a variable."
+    call mas_wx_cmd("d = a == b and a >= c")
+    call mas_wx_cmd("d")
+    call mas_wx_cmd("e = a == b and a == c")
+    call mas_wx_cmd("e")
+
+    m 3eub "And use those variables in comparisons as well!"
+    call mas_wx_cmd("d and e")
+    m "Since 'd' is {b}True{/b} but 'e' is {b}False{/b}, this expression evaluates to {b}False{/b}."
+
+    call mas_wx_cmd("d or e")
+    m "Since 'd' is {b}True{/b}, we know that at least one of the comparisons in this expression is {b}True{/b}. Therefore the complete expression is {b}True{/b}."
+
+    call mas_wx_cmd("not (d or e)")
+    m 3eua "We know that the inner expression 'd or e' evaluates to {b}True{/b}. The inverse of that is {b}False{/b}, so this expression evaluates to {b}False{/b}."
+
+    call mas_wx_cmd("d and not e")
+    m 3eub "In this case, we know that 'd' is {b}True{/b}."
+    m "The 'not' operator is applied to 'e', which inverts its {b}False{/b} value to {b}True{/b}."
+    m 3eua "Since both comparison expressions evaluate to {b}True{/b}, the complete expression evaluates to {b}True{/b}."
+
+    m 1eua "Comparisons are used everywhere in every programming language."
+    m 1hua "If you ever decide to do programming for a living, you'll find that a lot of your code is just checking if some comparisons are true so you can make your programs do the {i}right{/i} thing."
+    m 1eksdla "And even if coding isn't part of your career path, we'll be doing lots of comparisons in future lessons, so be prepared!"
+
+    if tip_ev.last_seen is None:
+        m 1eua "I think that's enough for today."
+
+    $ store.mas_ptod.ex_cn()
+    hide screen mas_py_console_teaching
+    show monika at t11
+    m 1hua "Thanks for listening!"
     return
 
 ###############################################################################
@@ -439,14 +594,14 @@ label monika_ptod_tip006:
     m 1eub "That is called assignment, where we take whatever is on the left of the equals sign and point it to, or {i}assign{/i} it, the value of whatever is on the right."
 
     # b_number
-    m 1eua "Assignment is executed in right-to-left order.{w} To illustrate this, let's create a new variable, 'b_number'."
+    m 1eua "Assignment is executed in right-to-left order.{w=0.3} To illustrate this, let's create a new variable, 'b_number'."
     call mas_w_cmd("b_number = a_number  -  " + b_num_store)
 
-    m "In assignment, the right side of the equal sign is evaluated first,{w} then its data type is inferred and an appropriate amount of memory is reserved."
+    m "In assignment, the right side of the equal sign is evaluated first,{w=0.2} then its data type is inferred and an appropriate amount of memory is reserved."
     m "That memory is linked to the symbol on the left via a lookup table."
-    m 1eub "When Python encounters a symbol,{w} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
+    m 1eub "When Python encounters a symbol,{w=0.2} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
 
-    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
+    m 3eub "Here, 'a_number' would be replaced with [num_store],{w=0.2} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
     show monika 3eua
     call mas_x_cmd(local_ctx)
 
@@ -466,22 +621,24 @@ label monika_ptod_tip006:
     m 1hua "Python is able to find the symbol in the lookup table and won't give us an error."
     
     m 1eua "The variables we created are all {i}integer{/i} types."
-    m "We didn't have to explicity say that those variables were integers because Python does dynamic typing."
+    m "We didn't have to explicitly say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
     m "Other languages, like C or Java, require types to be defined with the variable."
     m "Dynamic typing enables variables in Python to change types during execution,"
     m 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
 
     if tip_ev.last_seen is None:
-        m 1eud "Whew!{w} That was a mouthful!"
+        m 1eud "Whew!{w=0.2} That was a mouthful!"
 
+    m "Did you understand all that?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Did you understand all that?"
+        m "Did you understand all that?{fast}"
         "Yes!":
             m 1hua "Yay!"
 
         "I'm a bit confused.":
-            m 1eksdla "That's okay.{w} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
+            m 1eksdla "That's okay.{w=0.3} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
             m "The symbol / value names are really only useful for hinting at how variables work under the hood, so don't feel bad if you didn't understand it all."
             m 1eua "Just knowing how to work with variables is enough for future lessons."
             m "Anyway..."
@@ -530,6 +687,195 @@ label monika_ptod_tip007:
     m "To store the number [num_store], Python uses [int_size] bytes."
 
     return
+
+###############################################################################
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ptod_tip008",
+            category=["python tips"],
+            prompt="Literals",
+            conditional="store.mas_ptod.has_day_past_tip(6)",
+            action=EV_ACT_POOL
+        )
+    )
+
+# PREREQS:
+#   Variables and Assignment (tip 6)
+label monika_ptod_tip008:
+    $ store.mas_ptod.rst_cn()
+    $ local_ctx = dict()
+    $ store.mas_ptod.set_local_context(local_ctx)
+    $ tip_ev = mas_getEV("monika_ptod_tip008")
+
+    m 1eua "Remember when I showed you how to make variables and assign them values?"
+    m 1dsa "Imagine if we dropped the notion of variables and focused on using the values directly in code."
+    m 1hua "That is where literals come in. I'll show you what I mean by this with the following demonstration."
+
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    call mas_wx_cmd("a = 10")
+    m 3eua "Here I made a variable called 'a' and assigned it an integer value of 10."
+    m "When I type 'a' into the interpreter..."
+
+    call mas_wx_cmd("a")
+    m 3eub "Python looks up the symbol 'a' and finds that it's associated with the value 10, so 10 is shown to us."
+    m "If I type in just '10', however..."
+
+    call mas_wx_cmd("10")
+    m 3hua "Python still shows us a 10!"
+    m 3eua "This happens because Python interprets the '10' as an integer value straight away, without having to look up a symbol and retrieve its value."
+    m "Code that Python can interpret into values directly are called {i}literals{/i}."
+    m 3eub "All the data types I mentioned in the Types lesson can be written as literals."
+
+    call mas_wx_cmd("23")
+    call mas_wx_cmd("21.05")
+    m 3eua "These are {b}integer{/b} and {b}float{/b} literals."
+
+    call mas_wx_cmd('"this is a string"')
+    call mas_wx_cmd("'this is another string'")
+    m "These are {b}string{/b} literals."
+
+    call mas_wx_cmd("True")
+    call mas_wx_cmd("False")
+    m "These are {b}boolean{/b} literals."
+
+    call mas_wx_cmd("None")
+    m "The keyword {i}None{/i} is itself a literal."
+
+    # TODO: lists, dicts
+
+    if tip_ev.last_seen is None:
+        m 1eua "There are more literals for other types, but I'll mention them when I talk about those types."
+
+    m 1eua "Literals can be used in place of variables when writing code. For example:"
+
+    call mas_wx_cmd("10 + 21")
+    call mas_wx_cmd("10 * 5")
+    m "We can do math with literals instead of variables."
+
+    call mas_wx_cmd("a + 21")
+    call mas_wx_cmd("a * 5")
+    m "We can also use literals alongside variables."
+    m 1eub "Additionally, literals are great for creating and using data on-the-fly without the overhead of creating unnecessary variables."
+
+    if tip_ev.last_seen is None:
+        m 1kua "Alright, that's about all I can {i}literally{/i} say about literals."
+
+    $ store.mas_ptod.ex_cn()
+    hide screen mas_py_console_teaching
+    show monika at t11
+
+    m 1hua "Thanks for listening!"
+    return
+
+###############################################################################
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ptod_tip009",
+            category=["python tips"],
+            prompt="Truth Values",
+            conditional="store.mas_ptod.has_day_past_tip(5)",
+            action=EV_ACT_POOL
+        )
+    )
+
+# PREREQS:
+#   Comparisons and Booleans (5)
+label monika_ptod_tip009:
+    $ store.mas_ptod.rst_cn()
+    $ local_ctx = dict()
+    $ store.mas_ptod.set_local_context(local_ctx)
+    $ tip_ev = mas_getEV("monika_ptod_tip009")
+
+    if tip_ev.last_seen is None:
+        m 1eua "When we talked about comparisons and booleans, we used integers as the basis for our comparisons."
+        m 1dsa "But..."
+        m 3eua "Did you know that every type has its own truth value associated with it?"
+
+    m 1eua "All types have a 'truth value' that can change depending on the value of the type."
+
+    # TODO: when we go over built-in functions, this should be
+    # changed to function bool, not keyword
+    m "We can check the truth value of a type by using the keyword {b}bool{/b}."
+
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    m 3eua "Let's start by taking a look at the truth values for integers."
+    call mas_wx_cmd("bool(10)")
+    call mas_wx_cmd("bool(-1)")
+    m 3eua "All non-zero integers have a truth value of {b}True{/b}."
+    call mas_wx_cmd("bool(0)")
+    m 3eub "Zero, on the other hand, has a truth value of {b}False{/b}."
+
+    m 1eua "Floats follow the same rules as integers:"
+    call mas_wx_cmd("bool(10.02)")
+    call mas_wx_cmd("bool(0.14)")
+    call mas_wx_cmd("bool(0.0)")
+
+    m 1eua "Now let's look at strings."
+    call mas_wx_cmd('bool("string with text")')
+    call mas_wx_cmd('bool("  ")')
+    m 3eub "A string with text, even if the text is only whitespace characters, has a truth value of {b}True{/b}."
+    call mas_wx_cmd('bool("")')
+    m "An empty string, or a string with length 0, has a truth value of {b}False{/b}."
+
+    m 1eua "Now let's look at {b}None{/b}."
+    call mas_wx_cmd("bool(None)")
+    m 1eub "{b}None{/b} always has a truth value of {b}False{/b}."
+
+    # TODO: lists and dicts
+
+    m 1eua "If we do comparisons with these values, the values are evaluated to their truth values before being applied in comparisons."
+    m 1hua "Let me show some examples."
+    m 3eua "First, I'll set up some variables:"
+    call mas_wx_cmd("num10 = 10")
+    call mas_wx_cmd("num0 = 0")
+    call mas_wx_cmd('text = "text"')
+    call mas_wx_cmd('empty_text = ""')
+    call mas_wx_cmd("none_var = None")
+
+    m 3eub "And then do several comparisons."
+    call mas_wx_cmd("bool(num10 and num0)")
+    call mas_wx_cmd("bool(num10 and text)")
+    call mas_wx_cmd("bool(empty_text or num0)")
+    call mas_wx_cmd("bool(none_var and text)")
+    call mas_wx_cmd("bool(empty_text or none_var)")
+
+    m 1eua "Knowing the truth values of different types can be useful in performing certain comparisons more efficiently."
+    m 1hua "I'll mention when it's possible to do so when we come across those situations in future lessons."
+
+    $ store.mas_ptod.ex_cn()
+    hide screen mas_py_console_teaching
+    show monika at t11
+    m 1hua "Thanks for listening!"
+    return
+
+###############################################################################
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_ptod_tip006",
+#            category=["python tips"],
+#            prompt="Evaluation Order and Short Circuiting",
+# TODO: this should be after if statements.
+#            conditional="store.mas_ptod.has_day_past_tip(2)",
+#            action=EV_ACT_POOL
+#        )
+#    )
+
+label monika_ptod_tip010:
+    # evaluation order and short circuting
+    return
+
+
+
 
 
 ############################# [CONSOLE] #######################################
@@ -614,6 +960,9 @@ init -1 python in mas_ptod:
 
     # current state
     state = STATE_SINGLE
+
+    # local context
+    local_ctx = dict()
 
     # short variants of the comonly used commands:
     def clr_cn():
@@ -738,11 +1087,12 @@ init -1 python in mas_ptod:
 
         Also resets state to Single
         """
-        global cn_history, cn_line, cn_history, state
+        global cn_history, cn_line, cn_history, state, local_ctx
         cn_line = ""
         cn_cmd = ""
         cn_history = []
         state = STATE_SINGLE
+        local_ctx = {}
 
 
     def restart_console():
@@ -847,9 +1197,13 @@ init -1 python in mas_ptod:
         IN:
             context - dict that represnts the current context. You should pass
                 locals here.
+                If None, then we use the local_ctx.
         """
         if state == STATE_OFF:
             return
+
+        if context is None:
+            context = local_ctx
 
         global cn_cmd, cn_line, state, stack_level, blk_cmd
 
@@ -998,6 +1352,16 @@ init -1 python in mas_ptod:
             return cn_history[len(cn_history)-1]
 
         return ""
+
+
+    def set_local_context(context):
+        """
+        Sets the local context to the given context.
+
+        Stuff in the old context are forgotten.
+        """
+        global local_ctx
+        local_ctx = context
 
 
     def __pushi(indent_level):
@@ -1187,24 +1551,24 @@ screen mas_py_console_teaching():
 # does a write command and waits 
 label mas_w_cmd(cmd, wait=0.7):
     $ store.mas_ptod.w_cmd(cmd)
-    pause wait
+    $ renpy.pause(wait, hard=True)
     return
 
 # does an execute and waits
-label mas_x_cmd(ctx, wait=0.7):
+label mas_x_cmd(ctx=None, wait=0.7):
     $ store.mas_ptod.x_cmd(ctx)
-    pause wait
+    $ renpy.pause(wait, hard=True)
     return
 
 # does both writing and executing, with waits
-label mas_wx_cmd(cmd, ctx, w_wait=0.7, x_wait=0.7):
+label mas_wx_cmd(cmd, ctx=None, w_wait=0.7, x_wait=0.7):
     $ store.mas_ptod.w_cmd(cmd)
-    pause w_wait
+    $ renpy.pause(w_wait, hard=True)
     $ store.mas_ptod.x_cmd(ctx)
-    pause x_wait
+    $ renpy.pause(x_wait, hard=True)
     return
 
 # does both writing and executing, no x wait
-label mas_wx_cmd_noxwait(cmd, ctx):
+label mas_wx_cmd_noxwait(cmd, ctx=None):
     call mas_wx_cmd(cmd, ctx, x_wait=0.0)
     return

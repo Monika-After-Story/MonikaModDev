@@ -3,7 +3,8 @@
 init 10 python:
 
     if persistent._mas_dev_enable_ptods is None:
-        persistent._mas_dev_enable_ptods = True
+        # force this to False by default
+        persistent._mas_dev_enable_ptods = False
 
 
 init 998 python:
@@ -22,6 +23,46 @@ init 998 python:
         ]
 
         mas_remove_event_list(tip_list)
+
+
+    def mas_ptod_warptime():
+        """
+        Emulates moving forward 1 day by changing all currently unlocked
+        python tips to have an unlock date of yesterday
+        """
+        # max 1000 tips
+        tip_list = [
+            mas_ptod.M_PTOD.format(tip_num)
+            for tip_num in range(0,1000)
+        ]
+        yesterday = datetime.datetime.now() - datetime.timedelta(1)
+
+        for tip in tip_list:
+            tip_ev = mas_getEV(tip)
+
+            if tip_ev and tip_ev.unlock_date is not None:
+                tip_ev.unlock_date = yesterday
+
+
+    def mas_ptod_unlocktip(*nums):
+        """
+        Unlocks tips with the given numbers.
+        This does not do warp time.
+        """
+        tip_list = [
+            mas_ptod.M_PTOD.format(num)
+            for num in nums
+        ]
+        now = datetime.datetime.now()
+
+        for tip in tip_list:
+            tip_ev = mas_getEV(tip)
+
+            tip_ev.unlocked = True
+            tip_ev.pool = True
+            tip_ev.unlock_date = now
+            tip_ev.shown_count = 1
+            tip_ev.last_seen = now
 
 
 ### test eevent to show this screen
