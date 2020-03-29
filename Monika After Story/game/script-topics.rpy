@@ -12174,7 +12174,7 @@ init 5 python:
         )
     )
 
-default persistent._mas_pm_read_poetry = None
+default persistent._mas_pm_likes_poetry = None
 #True if player likes poems, false if not
 
 label monika_player_read_poetry:
@@ -12186,12 +12186,12 @@ label monika_player_read_poetry:
     menu:
         m "Do you often read poetry?{fast}"
         "Yes.":
-            $ persistent._mas_pm_read_poetry = True
+            $ persistent._mas_pm_likes_poetry = True
             m 1sub "Really?"
             m 1hua "That makes me so happy!"
             m 3eua "And really, I mean it. Not a lot of people read poetry nowadays."
         "No.":
-            $ persistent._mas_pm_read_poetry = False
+            $ persistent._mas_pm_likes_poetry = False
             m 2ekc "Oh, that's too bad..."
             m 2eka "I just hope I made you appreciate poetry a little more."
             m 2ekc "You know, not a lot of people these days seem to read poetry, so it's not surprising."
@@ -12206,7 +12206,7 @@ label monika_player_read_poetry:
     m 3hub "And because of that, even a simple text message can become a meaningful poem!"
     m 3eua "That's why I love poetry."
 
-    if persistent._mas_pm_read_poetry:
+    if persistent._mas_pm_likes_poetry:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "Gosh, just knowing that you read poems too..."
         m 5hua "It shows how alike we really are."
