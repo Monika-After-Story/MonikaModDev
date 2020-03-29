@@ -783,7 +783,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
     pause 2.0
-    $ play_song(store.songs.FP_YOURE_REAL)
+    $ play_song(store.songs.FP_YOURE_REAL,loop=False)
 
     show monika 6hua
     $ renpy.pause(10.012)
@@ -891,7 +891,7 @@ label mas_monika_plays_or(skip_leadin=False):
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
     pause 2.0
-    play music "mod_assets/bgm/runereality.ogg"
+    $ play_song(songs.FP_PIANO_COVER,loop=False)
 
     show monika 1dsa
     pause 9.15
@@ -923,8 +923,8 @@ label mas_monika_plays_or(skip_leadin=False):
     m 1ekbsa "{i}{cps=19}With you I'll be{/i}{w=2}{nw}"
 
     show monika 1dkbsa
-    pause 8.5
-    stop music fadeout 1.0
+    pause 9.0
+    stop music
     show monika 6eua at rs32
     pause 1.0
     hide monika
