@@ -2068,7 +2068,7 @@ label greeting_stillsickrest:
         m 1eka "Get well soon, [player]. I love you so much!"
 
     else:
-        m 2ekc "Thank you [player]."
+        m 2ekc "Thank you, [player]."
         m "I think if I leave you alone for a while, you'll be able to rest better."
         m 4ekc "So I'm going to close the game for you."
         m 2ekc "Get well soon, [player]."
@@ -2079,7 +2079,7 @@ label greeting_stillsickrest:
 label greeting_stillsicknorest:
     if mas_isMoniNormal(higher=True):
         m 1lksdlc "I see..."
-        m "Well if you insist. [player]."
+        m "Well if you insist, [player]."
         m 1ekc "I suppose you know your own limitations better than I do."
         m 1eka "If you start to feel a little weak or tired though, [player], please let me know."
         m "That way you can go get some rest."
