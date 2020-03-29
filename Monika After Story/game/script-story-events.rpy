@@ -359,6 +359,10 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
             "bobba",
         ]
 
+        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+        awk_comp = re.compile('|'.join(awkward_nickname_list), re.IGNORECASE)
+
         awkward_quips = [
             "I don't really feel...{w=0.5}comfortable calling you that all the time.",
             "That's...{w=0.5}not something I would like to call you, [player].",
@@ -407,12 +411,12 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
                     m 4hksdlb "That's the same name you have right now, silly!"
                     m 1eua "Try again~"
 
-                elif regexInStr(tempname, awkward_nickname_list):
+                elif awk_comp.search(tempname):
                     $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
                     m 1rksdlb "[awkward_quip]"
                     m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
-                elif regexInStr(tempname, bad_nickname_list):
+                elif bad_comp.search(tempname):
                     $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
                     m 1ekd "[bad_quip]"
                     m 3eka "Please pick a nicer name for yourself, okay?"
@@ -448,7 +452,7 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
                         m "Either it really is your name or you're playing a joke on me."
                         m 1hua "But it's fine by me if that's what you want me to call you~"
 
-                    elif regexInStr(tempname, good_nickname_list):
+                    elif good_comp.search(tempname):
                         $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                         m 1sub "[good_quip]"
                         $ adjustNames(tempname)

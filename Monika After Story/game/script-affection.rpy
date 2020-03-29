@@ -2066,6 +2066,9 @@ label monika_affection_nickname:
             "kasan",
         ]
 
+        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+
         # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
 
@@ -2133,11 +2136,11 @@ label monika_affection_nickname:
                     $ done = True
 
                 else:
-                    if not regexInStr(inputname, bad_nickname_list):
+                    if not bad_comp.search(inputname):
                         if inputname == "Monika":
                             m 1eua "Ehehe~ Back to the classics, I see."
 
-                        elif regexInStr(inputname, good_nickname_list):
+                        elif good_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
 
@@ -2179,6 +2182,7 @@ label monika_affection_nickname:
 
                             show monika 1efc
                             pause 5.0
+
                         else:
                             m 4efd "[player]! That's not nice at all!"
                             m 2efc "Why would you say such things?"
