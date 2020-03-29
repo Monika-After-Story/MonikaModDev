@@ -1234,6 +1234,20 @@ image monika 1rka:
         0.06
         repeat
 
+image monika 1rkb:
+    block:
+        "monika 1rkb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dkb_static"
+        0.06
+        repeat
+
 image monika 1rkbfb:
     block:
         "monika 1rkbfb_static"
@@ -6971,20 +6985,6 @@ image monika 4lfb:
             choice:
                 7
         "monika 4dfb_static"
-        0.06
-        repeat
-
-image monika 4lfc:
-    block:
-        "monika 4lfc_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfc_static"
         0.06
         repeat
 
