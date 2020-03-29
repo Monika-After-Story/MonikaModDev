@@ -833,7 +833,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     $ renpy.pause(5)
 
     stop music
-    show monika 6eua at rs32
+    show monika 6eua at rs32 with dissolve
     pause 1.0
     hide monika
     pause 3.0

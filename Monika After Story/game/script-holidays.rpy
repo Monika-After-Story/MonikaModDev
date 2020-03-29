@@ -2702,7 +2702,7 @@ label monika_aiwfc_song:
     $ renpy.music.set_volume(0.0, 1.0, "background")
     $ renpy.music.set_volume(0.0, 1.0, "backsound")
 
-    $ play_song("mod_assets/bgm/aiwfc.ogg",loop=None)
+    $ play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
     m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"
