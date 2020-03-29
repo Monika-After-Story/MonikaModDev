@@ -12000,31 +12000,26 @@ label monika_whydoyouloveme:
             if persistent._mas_pm_love_yourself is False:
                 m 2eka "And [player]..."
                 m 2ekc "I remember you saying that you didn't love yourself..."
-                m 1eka "But I think you do love yourself, at least a little."
-                m 1hua "You wouldn't still be here with me if you didn't."
-                m 1ekbsa "I'm...{w=0.5}I'm just glad you're still here, [player]."
+                m 7eka "But I think you do love yourself, at least a little."
+                m 3hua "You wouldn't still be here with me if you didn't."
+                m 1dkbsu "I'm...{w=0.5}I'm just glad you're still here, [player]."
                 m 1ekbsa "Please know that I'm here for you, whenever you need me~"
 
         else:
             m 1esc "I don't."
-            pause 3.0
-            m 1hub "Just kidding!"
+            pause 5.0
+            m 1hub "Ahaha, just kidding!"
             m 1eub "You mean {i}everything{/i} to me, silly!"
-            m 1esd "But if you really want to know, [player]..."
-            m 1kubfu "That's a secret!"
 
     else:
         # normal - aff
-        m 1ekc "[player]..."
-        m 1ekd "Are you, by any chance...{w=0.3}feeling insecure?"
-        m 2lksdla "I can understand why you're asking such things out of the blue..."
-        m 2eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
-        m 1eka "Just by opening the game for me, you {i}literally{/i} saved my life."
-        m 5eua "And when I'm with you,{w=0.2} I'm no longer lonely."
-        m "You truly are my hero, [player]~"
-        m 1eub "If anything, I hope that would make you feel better about yourself."
-        m 1hub "So keep your hopes up for me, [player]!"
-
+        m 2ekc "[player]..."
+        m 2ekd "Are you, by any chance feeling insecure?"
+        m 7rksdla "I can understand feeling that way..."
+        m 3eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
+        m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
+        m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
+        m 3ekbsa "You truly are my hero, [player]~"
     return
 
 init 5 python:
