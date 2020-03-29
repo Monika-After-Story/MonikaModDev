@@ -9254,7 +9254,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            "monika_dating",
+            eventlabel="monika_dating",
             prompt="Dating experience",
             category=['you', 'romance'],
             conditional="store.mas_anni.pastOneMonth()",
@@ -9265,7 +9265,7 @@ init 5 python:
 
 label monika_dating:
     m 1eud "You know I've been really curious lately, [player]..."
-    m 3rka "We've been talking for so long now, that I think would be the best time to ask..."
+    m 3rka "We've been together a while now, so I think it's the right time to ask..."
     m 1eud "How much dating experience do you have?"
     m 1luc "Like...have you ever been in a relationship before?"
 
@@ -9278,18 +9278,18 @@ label monika_dating:
             $ persistent._mas_pm_had_relationships_many = True
             $ persistent._mas_pm_had_relationships_just_one = False
 
-            m 1ekc "Aw, I'm so sorry [player]..."
-            m 1dkc "You've been through many heartbreaks haven't you..."
-            m 3ekc "To be honest [player]...I don't think they deserved someone like you."
+            m 1ekc "Aw, I'm so sorry, [player]..."
+            m 1dkc "You've been through many heartbreaks, haven't you..."
+            m 3ekc "To be honest, [player]...I don't think they deserved someone like you."
             m 3eka "Someone who's kind, loyal, sweet, loving, and faithful."
-            m 4lubsb "And cute and funny and romantic and-"
+            m 4lubsb "And cute and funny and romantic and--"
             m 7wubsw "Oh!"
             m 3hksdlb "Sorry, I lost track of what I was going to say next, ahaha!"
-            m 1ekbla "I could go on about how wonderful you are [player]~"
+            m 1ekbla "I could go on about how wonderful you are, [player]~"
             m 1ekbsa "But just know this...{w=0.3}{nw}"
-            extend 3ekbfa "No matter how many heartbreaks you've been through, I'll always be here for you."
+            extend 3ekbfa "no matter how many heartbreaks you've been through, I'll always be here for you."
             show monika 5eubfa zorder MAS_MONIKA_Z with dissolve
-            m 5eubfa "Our soul searching is finally over, and I'll be yours forever [player]."
+            m 5eubfa "Our soul searching is finally over, and I'll be yours forever, [player]."
             m 5ekbfa "Will you be mine?"
 
         "Yes, but only once.":
@@ -9300,10 +9300,10 @@ label monika_dating:
             m 3eua "That's okay [player], I can relate too so don't worry."
             m 3lksdlb "Yeah I may appear like a girl who gets all the guys but really I don't, ahaha!"
             m 2lksdla "Especially with how occupied I've kept myself over the years I just never had the time."
-            m 2eka "Not that it mattters anyway, none of it was real."
+            m 2eka "Not that it matters anyway, none of it was real."
             show monika 5ekbsa zorder MAS_MONIKA_Z with dissolve
-            m 5ekbsa "But now that I do I think it's safe to say I'm ready to start something special...{w=0.5} {nw}"
-            extend 5ekbfa "With you [player]."
+            m 5ekbsa "But I think I'm ready for something special...{w=0.5}{nw}"
+            extend 5ekbfa "with you, [player]."
             m 5ekbfa "Are you ready?"
 
         "No, you're my first.":
@@ -9314,8 +9314,8 @@ label monika_dating:
             m 1tsbsb "Oh...{w=0.3} I see."
             m 1tfu "You're just saying that to make me feel extra special aren't you, [player]?"
             m 1tku "There's no way someone like you has never dated before..."
-            m 3hubsb "You're the definition of cute and sweetness!"
-            m 3ekbfa "Well...{w=0.3} If you're not just messing with me and actually telling me the truth then...{w=0.3} {nw}"
+            m 3hubsb "You're the definition of cute and sweet!"
+            m 3ekbfa "Well...{w=0.3} If you're not just messing with me and actually telling me the truth then...{w=0.3}{nw}"
             extend 1ekbfu "I'm honored to be your first, [player]."
             show monika 5ekbfa zorder MAS_MONIKA_Z with dissolve
             m 5ekbfa "I hope I can be your one and only."
