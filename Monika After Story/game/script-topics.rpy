@@ -13627,7 +13627,10 @@ label monika_allegory_of_the_cave:
     m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
     return
-    
+
+#Whether or not the player works out
+default persistent._mas_pm_works_out = None
+
 init 5 python:
     addEvent(
         Event(
@@ -13640,54 +13643,34 @@ init 5 python:
     )
 
 label monika_working_out:
-    m 1eua "Hey [player], I was wondering...{w=0.3}do you work out much?"
+    m 1euc "Hey [player], I was just wondering..."
+
+    m 1eua "Do you work out much?{nw}"
     $ _history_list.pop()
     menu:
-        m "Hey [player], I was wondering...do you workout much?{fast}"
+        m "Do you work out much?{fast}"
         "Yes.":
-            $ persistent._mas_pm_training = True
+            $ persistent._mas_pm_works_out = True
             m 1hua "Really? That's great!"
+
         "No.":
-            $ persistent._mas_pm_training = False
-            m 1eka "Oh.{w=0.3} If you physically can, I really think you should."
-            m 3eua "And really, I think nearly everyone can exercise{w=0.2} - even if you were in a wheelchair there'd be some exercises you could do!"
-            if persistent.gender == "M":
-                m 3eub "I think it was the philosopher Socrates who once said:{w=0.2} '{i}It is a shame for a man to grow old without seeing the beauty and strength of which his body is capable.{/i}'"
-                m 1wub "-not that I'm trying to shame you into working out ahaha!!"
-                m 1eub "I'm not so concerned about you working out for your looks... "
-                extend 1hua "I'm just concerned for your health!"
-            else:
-                m 1eub "It's not about working out for looks... " 
-                extend 1hua "I'm just concerned for your health!"
-    m 1eua "Getting at least 30 minutes of exercise each day is {i}super{/i} important for maintaining your health long-term."
+            $ persistent._mas_pm_works_out = False
+            m 1eka "Oh...{w=0.3} Well, I think you should if you're able to."
+            m 3rksdla "It's not about working out for looks...{w=0.3}{nw}"
+            extend 3hksdlb "I'm just concerned for your health!"
+
+    m 1eua "Getting at least 30 minutes of exercise each day is {i}super{/i} important for maintaining your health in the long run."
     m 3eub "The healthier you are, the longer you'll live, and the longer I can be with you."
     m 3hub "And I want to spend as much time as possible with you, [player]!~"
-    m 3esa "Putting that aside, working out benefits nearly every aspect of your life{w=0.2} - even if you spend most of your time sitting at a desk."
-    m 3esb "Aside from the obvious physical benefits, getting regular exercise is known to reduce stress levels, and can improve your mental acuity."
-    m 4eub "So whether you're working, studying, or gaming, exercise can help you focus on these tasks for longer!"
-    m 3eua "And I think it's also important for developing self-discipline and mental fortitude.{w=0.3} These traits will help {i}a lot{/i} in life."
-    if persistent.gender == "M":
-        m 1eka "Although, another reason I'm asking is because I was wondering..."
-        m 1ekbla"If I ever made it to your world...{w=0.3}would you be able to protect me?"
-        m 3ekbla "I know it's kinda reinforcing gender stereotypes, but in the end I {i}am{/i} just a girl...{w=0.3} And you're a guy.{w=0.3} I can't be as strong as you can."
-        m 1ekbla "And, if it ever came down to it, I hope you'd protect me."
-        m 1eua "To do that, you've got to be in your best condition{w=0.2} - both physically and mentally."
-        m 3euc "Because in real life sometimes there won't be a second chance.{w=0.3} You've got to get it right the first time or someone could get hurt."
-        m 1ekbla "Can you do it?{w=0.3} Protect me if I needed it?"
-        $ _history_list.pop()
-        menu:
-            m "Can you do it? Protect me if I need it?{fast}"
-            "Protect her smile.":
-                m 1dkbsa "[player].{w=0.2}.{w=0.2}.{w=0.2}thank you."
-                m 1eubla "This really means a lot to me, to know that I can always depend on you..."
-            "I can't...":
-                m 1rkc "Okay.{w=0.2}.{w=0.2}.{w=0.2}I think I understand."
-                return
-    if persistent._mas_pm_training is True:
-        show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5kua "So, [player], please keep training.{w=0.3} Both for your sake and mine!~"
-    else:
-        show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5kua "So, [player], please start training.{w=0.3} Both for your sake and mine!~"
+    m 3eua "Putting that aside, working out benefits nearly every aspect of your life.{w=0.3} {nw}"
+    extend 3eub " Even if you spend most of your time sitting at a desk."
+    m 3eua "Aside from the obvious physical benefits, getting regular exercise can reduce stress and really improve your mental health too."
+    m 3hua "So whether you're working, studying, or gaming, exercise can help you focus on these tasks for longer!"
+    m 3eua "And I also think it's important for developing self-discipline and mental fortitude."
 
-return
+    if not persistent._mas_pm_works_out:
+        m 3hub "So be sure to get your exercise in, [player]~"
+    else:
+        m 3eub "Maybe when I cross over, we can do our workouts together!"
+
+return "derandom"
