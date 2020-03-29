@@ -13596,9 +13596,9 @@ init 5 python:
 label monika_multi_perspective_approach:
     m 1eua "Do you remember when we talked about {i}Plato's Cave{/i}?{w=0.5} I've been thinking about what I said to you."
     m 3etc "'How do you know if the 'truth' you're seeing is {i}the{/i} truth?'"
-    m 3eud "...I've been racking my brain, trying to come up with a good answer."
-    m 1rksdla "Well,{w=0.3} I still don't really have one yet, but...{w=0.5}{nw}" 
-    extend 3eub "I did realize something useful, [player]!"
+    m 3eud "...I've been thinking for a while trying to come up with a good answer."
+    m 1rksdla "I still don't really have one yet...{w=0.3}{nw}"
+    extend 3eub "but I did realize something useful."
     m 4euc "Let's start with how Plato's works are mostly written accounts of his mentor Socrates' debates with others."
     m 4eud "The purpose of these debates was to find answers to universal questions.{w=0.5} In other words, they were searching for the truth."
     m 2eud "And I began wondering, 'What was Plato's mindset while writing?'"
@@ -13608,7 +13608,7 @@ label monika_multi_perspective_approach:
     m 7eud "The fact that Plato internalized all sides of the debate, all perspectives of the issue, is pretty significant in my opinion."
     m 3eua "Taking all sides of a debate...{w=0.3}I think that'd be pretty useful in realizing the truth."
     m 3esd "I guess it's kind of like how two eyes are better than one. {w=0.3}Having two eyes in separate spots lets us properly see the world, or in this case, the truth."
-    m 3eud "Likewise, I think that if we tackled an issue with another perspective, to cross-reference with the first, then we'd see the truth a lot more clearly!"
+    m 3eud "Likewise, I think that if we tackled an issue with another perspective, to cross-reference with the first, then we'd see the truth a lot more clearly."
     m 1euc "Whereas if we took to an issue from just one angle, it'd be like having just one eye...{w=0.2}it'd be a bit harder to accurately gauge the reality of the situation."
     m 1eub "What do you think, [player]? {w=0.3}If you haven't already been using this 'multi-perspective' approach, maybe you can try it sometime!"
     return
