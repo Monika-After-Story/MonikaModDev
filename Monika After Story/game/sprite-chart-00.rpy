@@ -649,6 +649,17 @@ image monika 1dsbsa_static = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1dsbsb_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="big",
+    arms="steepling",
+    blush="shade"
+)
+
 image monika 1dsbsd_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2334,6 +2345,16 @@ image monika 1lubfb_static = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1luc_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    arms="steepling"
+)
+
 image monika 1lud_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2997,6 +3018,17 @@ image monika 1tsbsa_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smile",
+    arms="steepling",
+    blush="shade"
+)
+
+image monika 1tsbsb_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="big",
     arms="steepling",
     blush="shade"
 )
@@ -5588,41 +5620,6 @@ image monika 2rkbsa_static = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smile",
-    arms="crossed",
-    blush="shade"
-)
-
-image monika 2rkbssdla_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="right",
-    nose="def",
-    mouth="smile",
-    arms="crossed",
-    blush="shade",
-    sweat="def"
-)
-
-image monika 2rkbssdlb_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="right",
-    nose="def",
-    mouth="big",
-    arms="crossed",
-    blush="shade",
-    sweat="def"
-)
-
-image monika 2rkbsu_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="right",
-    nose="def",
-    mouth="smug",
     arms="crossed",
     blush="shade"
 )
