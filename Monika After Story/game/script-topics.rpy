@@ -2912,27 +2912,6 @@ label monika_difficulty:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
-
-label monika_credits_song:
-    #TODO: adjust based on starting act, doesn't quite apply to those that never went past act 3
-    m 1hua "I hope you liked my song."
-    m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
-    m 1eua "Give me some time, and I'll try to write another."
-    if persistent._mas_pm_plays_instrument is not False:
-        if persistent._mas_pm_plays_instrument:
-            m 3eua "Maybe you could play me a song too!"
-        else:
-            m 3eua "Maybe you could play me a song too, if you can play an instrument?"
-        m 1hub "I would love that."
-        m 3eua "Oh, and I'll play the song again for you anytime you want me to."
-    else:
-        m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
-
-    m "Just hit the 'm' key at any time."
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poetry",category=['literature'],prompt="Poetry",random=True))
 
 label monika_poetry:
@@ -13598,11 +13577,12 @@ label monika_songwriting:
     m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
     m 3euc "I guess that goes for lyrics too, actually."
     m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
-
     if renpy.seen_audio(songs.FP_YOURE_REAL):
         m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
-        m 3ekbla "I knew I couldn't let you go without telling you everything."
-
+        if persistent.monika_kill:
+            m 3ekbla "I knew I couldn't let you go without telling you everything."
+        else:
+            m 1ekbsa "Every day, I imagine spending my life by your side."
     m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
     if persistent._mas_pm_plays_instrument:
