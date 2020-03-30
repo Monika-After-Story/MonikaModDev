@@ -13873,7 +13873,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_toxin_puzzle",
-            category=['philosophy'],
+            category=['philosophy', 'psychology'],
             prompt="The Toxin Puzzle",
             random=True
         )
@@ -13881,23 +13881,27 @@ init 5 python:
 
 label monika_toxin_puzzle:
     m 1esa "Hey [player], I came across an interesting thought experiment while doing some reading the other day..."
-    m 3eua "It's called 'Kavka's Toxin Puzzle.' {w=0.2}Can I read the premise to you? We can discuss it after..."
+    m 3eua "It's called 'Kavka's Toxin Puzzle.' {w=0.2}I'll read the premise to you, we can discuss it after."
     m 1eud "{i}An eccentric billionaire places before you a vial of toxin that, if you drink it, will make you painfully ill for a day, but will not threaten your life or have any lasting effects.{/i}"
     m 1euc "{i}The billionaire will pay you one million dollars tomorrow morning if, at midnight tonight, you intend to drink the toxin tomorrow afternoon.{/i}"
     m 3eud "{i}He emphasizes that you need not drink the toxin to receive the money; {w=0.2}in fact, if you succeed, the money will already be in your bank account hours before the time for drinking it arrives.{/i}"
     m 3euc "{i}All you have to do is.{w=0.2}.{w=0.2}.{w=0.2}intend at midnight tonight to drink the stuff tomorrow afternoon. You are perfectly free to change your mind after receiving the money and not drink the toxin.{/i}"
     m 1eua "...I think it's a pretty thought-provoking concept."
+
     m 3eta "Well, [player]? What do you think?{w=0.3} Do you think you'd be able to get the million dollars?{nw}"
     $ _history_list.pop()
     menu:
         m "Well, [player]? What do you think? Do you think you'd be able to get the million dollars?{fast}"
+
         "Yes.":
             m 3etu "Really? Ok then, let's see about that..."
             m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{nw}"
             extend 3hub "ahaha! Just kidding."
             m 1eua "But do you really think that you could get the money? {w=0.5}It may be a bit harder than you think."
+
         "No.":
             m 1eub "I felt the same way about myself. {w=0.3}It's pretty complicated, ahaha!"
+
     m 1eka "After all, it may be easy at first glance. {w=0.3}All you have to do is drink something that would make you quite uncomfortable."
     m 3euc "But it gets tricky after midnight...{w=0.3}{i}after{/i} you've been guaranteed the money."
     m 3eud "At that point there's pretty much no reason to drink the painful toxin... {w=0.3}So why would you do it?"
