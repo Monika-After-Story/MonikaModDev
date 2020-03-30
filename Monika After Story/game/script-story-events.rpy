@@ -2040,7 +2040,7 @@ label mas_covid19:
         "Is the virus in your area yet?{fast}"
         "Yes.":
             m 2wksdld "Oh no, [player]! That's really scary!"
-            m 4ekc "I know a lot of places where it's prevelant have orders to stay at home..."
+            m 4ekc "I know a lot of people living in places where it's prevalent have orders to stay at home..."
 
             m 2ekd "Do you have any orders to stay at home where you live?{nw}"
             $ _history_list.pop()
@@ -2050,10 +2050,10 @@ label mas_covid19:
                     m 4hua "Oh, good!"
                     m 4eub "I'm so glad to hear that, [player]!"
 
-                    m 2eud "So you're staying home when at all possible then, right?{nw}"
+                    m 2eud "So you're staying home whenever you can, right?{nw}"
                     $ _history_list.pop()
                     menu:
-                        m "So you're staying home when at all possible then, right?{fast}"
+                        m "So you're staying home whenever you can, right?{fast}"
                         "Yes.":
                             m 2eua "That's great, I'm glad you're doing the responsible thing."
                             m 2eka "...And not only for yourself, but also for everyone else."
@@ -2070,7 +2070,7 @@ label mas_covid19:
                         "No...":
                             m 2tfd "[player]!"
                             m 2tfo "Why not?!"
-                            m 4tfo "This is serious! You {i}have{/i} to stay inside when at all possible!"
+                            m 4tfo "This is serious! You {i}have{/i} to stay inside whenever possible!"
                             m 2dfc "..."
                             m 2dkc "..."
                             m 2rksdlc "Sorry, [player], that just scares me a lot."
@@ -2096,12 +2096,12 @@ label mas_covid19:
     m 7eksdld "Please remember any time you do need to go outside you practice social distancing...{w=0.5} Always stay at least 2 meters, or 6 feet, from anyone else."
     m "Also remember to wash your hands for at least 20 seconds with soap and water as often as you can."
     m 7eksdlc "...And never touch your face with unwashed hands, [player]."
-    m 2eka "Oh, and if you're having a hard time washing your hands long enough, I found a neat way for you make sure you're doing it for 20 whole seconds..."
+    m 2eka "Oh, and if you're having a hard time washing your hands long enough, I found a neat way for you to make sure you're doing it for 20 whole seconds..."
     m 4hub "Just go to {a=https://washyourlyrics.com}{i}{u}washyourlyrics.com{/u}{/i}{/a} and type {i}Your Reality{/i} for the song title and {i}Monika{/i} for the song artist!"
     m 4eub "Just download the picture it creates with the lyrics from my song and it'll show you the best way to wash your hands and how long to do it for!"
     m 2hua "Then everytime you wash your hands, you can remember how much I love you~"
     m 2eka "..."
-    m 7eksdla "You know [player], if I could I'd bring you here with me until this is all over so you couldn't get sick..."
-    m 7eksdla "But since I can't, please do your best to stay safe."
-    m 2dku "I need you, [player]~"
+    m 7eksdla "You know [player], if I could, I'd bring you here with me until this is all over so you couldn't get sick..."
+    m "But since I can't, please do your best to stay safe."
+    m 2dkbsu "I need you, [player]~"
     return "no_unlock"
