@@ -1342,6 +1342,7 @@ label monika_horror:
         "I do.":
             $ persistent._mas_pm_likes_horror = True
             m 3hub "That's great [player]!"
+
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
             m 2eka "I can understand. It's definitely not for everyone."
@@ -1351,7 +1352,8 @@ label monika_horror:
     m 2esc "The problem I have with horror movies is that most of them just rely on easy tactics."
     m 4esc "Like dark lighting and scary-looking monsters and jump scares, and things like that."
 
-    #If you're not a fan of horror, you're probably not a fan of spoops. Are you? (So we can just assume if player doesn't like horror, they don't want spoops)
+    #If you're not a fan of horror, you're probably not a fan of spoops. Are you?
+    #(So we can just assume if player doesn't like horror, they don't want spoops)
     if persistent._mas_pm_likes_horror:
         m 2esc "Do you like spooks?{nw}"
         $ _history_list.pop()
@@ -1377,13 +1379,18 @@ label monika_horror:
     m 3tfu "...and then, you just start inverting things and pulling the pieces apart."
     m 3tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
-    m 2lksdla "God, just thinking about it gives me the chills."
+    m 2lksdla "God, just thinking about it gives me chills."
     m 3eua "That's the kind of horror I can really appreciate."
+    $ _and = "And"
+
     if not persistent._mas_pm_likes_horror:
         m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
         m 1eka "Ahaha, don't worry."
         m 1hua "I won't make you read any horror stories anytime soon."
-        m 1hubfa "I can't really complain if we just stick with the romance~"
+        m 1hubsa "I can't really complain if we just stick with the romance~"
+        $ _and = "But"
+
+    m 3eua "[_and] if you're ever in the mood, you can always ask me to tell you a scary story, [player]."
     return "derandom"
 
 # do you like rap
