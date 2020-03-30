@@ -566,7 +566,7 @@ label mas_story_genie_regret:
     m 3ekd "Mistakes will happen, people will get hurt.{w=0.5} Nothing will ever change that."
     m 3eka "The truth is, a lot of times we tend to blame ourselves for things that likely would've happened with or without our involvement."
     m 3eub "In fact, it's through regret that we learn compassion, empathy, and forgiveness."
-    m 3eua "You can't change the past, but you need to forgive yourself someday to live a life without regret."
+    m 3eua "You can't change the past, but you need to forgive yourself someday to live a life without regrets."
     m 1eka "As for me..."
     m 1rksdlc "Who knows what would have happened in my world if I hadn't done anything..."
 
