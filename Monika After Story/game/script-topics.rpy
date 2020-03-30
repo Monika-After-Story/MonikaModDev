@@ -13368,66 +13368,43 @@ label monika_auroras:
     $ mas_showEVL("monika_auroras","EVE",_random=True)
     return
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_boardgames",category=["games", "media"],prompt="Board games",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boardgames",
+            category=["games", "media"],
+            prompt="Board games",
+            random=True
+        )
+    )
 
 default persistent._mas_pm_likes_board_games = None
 # True if player likes board games, false if not
 
 label monika_boardgames:
     m 1eua "Say, [player], you like playing video games, right?"
-    m 2rsc "Well, I assume you do...{w=1} {nw}"
-    extend 2eud " I don't know if many people would play a game like this one if they weren't at least a little into video games in the first place."
+    m 2rsc "Well, I assume you do at least...{w=0.2} {nw}"
+    extend 2rksdla "I don't know if many people would play a game like this one if they weren't at least a little into video games."
     m 2eua "But I was wondering, what do you think of board games?"
-    m 4eub "As you probably know, board games have been around since very early in our history, and video games most likely wouldn't be a thing today if it weren't for them."
-    m 1rksdla "...I guess that means I probably wouldn't have existed either, if our ancestors didn't play board games in their time.{w=0.3} {nw}"
-    extend 1hksdlb "ahaha~"
-    m 1euc "I never really got the occasion to play a lot of board games myself, so I'm a little intrigued by them."
-    if renpy.seen_label('unlock_chess') or renpy.seen_label('game_chess') :
-        m 1ruc "Well, except for chess, of course. And a few card games as well..."
-    else :
-        m 1rud "Well, I did try out a few basic card games."
-        m 1hua "As well as a little something I've been working on... I'm keeping it a surprise, though!"
-    m 1etc "But I can't help but think... Those are pretty basic and well known games, right? I'm sure most people have played a game like that at least once in their lives."
-    m 3esa "Even if I never got too much into this before, I figured there had to be a wider variety of games out there and,{w=0.2} well,{w=0.2} I got curious and made a bit of research to see for myself."
-    m 3wud "And, as it turns out, this is actually a pretty big market!"
-    m 1eub "Board games tend to be a little overshadowed by video games nowadays, but there seems to be a lot of people who are really passionate about them anyway."
-    m "Some of those people will want to play any game they can, and might even spend a lot of money into buying a lot of different games."
-    m 1lksdla "...Not that I'm judging, of course. It's nice that they are having fun."
-    m 1esc "But since some people are willing to spend a lot of money into those things, it means that some board games can get really expensive."
-    m 3esa "With figures, pretty illustrations, high quality materials..."
-    m "Those kinds of things."
-    m 2lsc "Though, as fancy as those particular games look, one might wonder if they aren't meant for collection more than actually playing, at this point."
-    m 2euc "Speaking of collecting..."
-    m 2eud "Maybe you've heard of those card games where you collect as many cards as possible and then play against someone else's deck?"
-    m 4eub "They're games where you buy cards in packs to grow your collection, and then try to make them work together in a single deck, usually with one or two specific strategies in mind."
-    m 4rkd "To tell you the truth, I thought these were a bit childish at first..."
-    m 1eksdlc "...I mean, can you blame me?{w=0.5} {nw}"
-    extend 1hksdla "This looks like the kind of things kids in elementary school would do."
-    m 3rssdlb "Comparing their collections with each other to see who has the strongest cards, trade them to get someone else's card that they thought looked cool..."
-    m 3eud "But then, I got to watch what a game between serious players looks like..."
-    m 2wud "...And surprisingly enough, this actually looks very complex!"
-    m 2eud "Especially since unlike traditional card games, your opponent probably plays cards that are very different to yours, so something completely unexpected can happen at any moment."
-    m 4esa "Since there are so many possibilities, it probably makes it hard to get bored with a game like that. So I can see why some people are really into it."
-    m 4eua "I guess this is just another example of how we shouldn't always take things for granted...{w=0.7} {nw}"
-    extend 4eub "There might be more to it than what we think at first !"
-    m 1eua "But what about you, [player]?"
 
-    m "Do you like board games?{nw}"
+    m 2etc "Do you like board games, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like board games?{fast}"
-        "Yeah":
+        m "Do you like board games, [player]?{fast}"
+
+        "Yeah.":
             $ persistent._mas_pm_likes_board_games = True
             m 1eub "Oh, really?"
-            m 1eka "Well, if we ever do get the chance, I'd love to play some of your favorite games with you."
-            m 3eka "Like I said, I'm not really too familiar with those kinds of things, but I'm sure you can think of some games I might enjoy."
-            m 1hua "Who knows, maybe I'll end up liking board games as much as you do, ehehe~"
+            m 1hua "Well, if we ever get the chance, I'd love to play some of your favorite games with you."
+            m 3eka "I'm not too familiar with board games, but I'm sure you can find some I might enjoy."
+            m 3hua "Who knows, maybe I'll end up liking board games as much as you do, ehehe~"
 
         "Not really.":
             $ persistent._mas_pm_likes_board_games = False
-            m 2eka "I can see why. It is a pretty niche hobby, after all."
-            m 2eua "I'm sure there are plenty of other, just as fun activities you enjoy doing in your free time."
-            m 2hua "Still, if you ever change your mind, I think I'd like to give some board games a try with you sometime."
+            m 2eka "I can see why...{w=0.2}{nw}"
+            m 2rksdla "it's a pretty niche hobby, after all."
+            m 1eua "But I'm sure there are plenty of other fun activities you enjoy doing in your free time."
+            m 3hua "Still, if you ever change your mind, I'd like to give some board games a try with you sometime."
 
     return "derandom"
 

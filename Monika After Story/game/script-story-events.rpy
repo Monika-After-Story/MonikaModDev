@@ -536,13 +536,16 @@ label unlock_chess:
         m 1eua "I thought that you might be getting bored with Pong."
     else:
         m 3eua "I know you haven't tried playing Pong with me, yet."
+
     m 3hua "But I have a new game for us to play!"
     m "This one's a lot more strategic..."
     m 3hub "It's Chess!"
-    if persistent._mas_pm_likes_board_games is False :
+
+    if persistent._mas_pm_likes_board_games is False:
         m 3eka "I know you told me that those kinds of games aren't really your thing..."
         m 1eka "But it would make me very happy if you could give it a try."
         m 1eua "Anyway..."
+
     m 1esa "I'm not sure if you know how to play, but it's always been a bit of a hobby for me."
     m 1tku "So I'll warn you in advance!"
     m 3tku "I'm pretty good."
@@ -554,6 +557,7 @@ label unlock_chess:
     m 1eka "But don't think of this as a battle of man vs machine."
     m 1hua "Just think of it as playing a fun game with your beautiful girlfriend..."
     m "And I promise I'll go easy on you."
+
     if not is_platform_good_for_chess():
         m 2tkc "...Hold on."
         m 2tkx "Something isn't right here."
@@ -561,7 +565,8 @@ label unlock_chess:
         m 2euc "Maybe the code doesn't work on this system?"
         m 2ekc "I'm sorry, [player], but chess will have to wait."
         m 4eka "I promise we'll play if I get it working, though!"
-    $persistent.game_unlocks['chess']=True
+
+    $ persistent.game_unlocks['chess']=True
     return
 
 init 5 python:
