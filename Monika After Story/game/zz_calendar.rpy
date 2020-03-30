@@ -309,7 +309,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 # Generate as buttons the day names
 
                 button_day_text = Text(
-                    day,
+                    "{#weekday}" + day,
                     font=gui.default_font,
                     size=17,
                     color=self.TEXT_DAY_COLOR,
@@ -482,7 +482,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # constant month and year text labels
             self.text_current_month = Text(
-                self.MONTH_NAMES[self.selected_month],
+                "{#month}" + self.MONTH_NAMES[self.selected_month],
                 font=gui.default_font,
                 size=21,
                 color=self.TEXT_DAY_COLOR,
@@ -594,7 +594,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                             ret_val = current_date
 
                     day_button_text = Text(
-                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), event_labels[0], event_labels[1], third_label),
+                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), __(event_labels[0]), __(event_labels[1]), __(third_label)),
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
                         color=self.TEXT_DAY_COLOR,
@@ -1729,15 +1729,15 @@ init python:
     import store.mas_calendar as calendar
     import datetime
 
-    calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
-    calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
+    calendar.addRepeatable("New years day",_("New Year's Day"),month=1,day=1,year_param=list())
+    calendar.addRepeatable("Valentine",_("Valentine's Day"),month=2,day=14,year_param=list())
     #calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
-    calendar.addRepeatable("April Fools","Day I Became an AI",month=4,day=1,year_param=[2018])
-    calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=range(1999,MASCalendar.MAX_VIEWABLE_YEAR))
-    calendar.addRepeatable("Halloween","Halloween",month=10,day=31,year_param=list())
-    calendar.addRepeatable("Christmas eve","Christmas Eve",month=12,day=24,year_param=list())
-    calendar.addRepeatable("Christmas","Christmas",month=12,day=25,year_param=list())
-    calendar.addRepeatable("New year's eve","New Year's Eve",month=12,day=31,year_param=list())
+    calendar.addRepeatable("April Fools",_("Day I Became an AI"),month=4,day=1,year_param=[2018])
+    calendar.addRepeatable("Monika's Birthday",_("My Birthday"),month=9,day=22,year_param=range(1999,MASCalendar.MAX_VIEWABLE_YEAR))
+    calendar.addRepeatable("Halloween",_("Halloween"),month=10,day=31,year_param=list())
+    calendar.addRepeatable("Christmas eve",_("Christmas Eve"),month=12,day=24,year_param=list())
+    calendar.addRepeatable("Christmas",_("Christmas"),month=12,day=25,year_param=list())
+    calendar.addRepeatable("New year's eve",_("New Year's Eve"),month=12,day=31,year_param=list())
 
     # add inital session
     if (
@@ -1747,7 +1747,7 @@ init python:
     ):
         calendar.addRepeatable_dt(
             "first_session",
-            "<3",
+            _("<3"),
             persistent.sessions["first_session"],
             year_param=[persistent.sessions["first_session"].year]
         )
@@ -1760,7 +1760,7 @@ init python:
         ):
         calendar.addRepeatable_d(
             "player-bday",
-            "Your Birthday",
+            _("Your Birthday"),
             pbday,
             range(pbday.year,MASCalendar.MAX_VIEWABLE_YEAR)
         )
@@ -1772,7 +1772,7 @@ init python:
         ):
         calendar.addRepeatable_dt(
             "first-kiss",
-            "Our First Kiss",
+            _("Our First Kiss"),
             persistent._mas_first_kiss,
             [persistent._mas_first_kiss.year]
         )
@@ -1789,10 +1789,10 @@ init 2 python in mas_calendar:
             changed - flag to specify that we need to change the
                 old events from the calendar
         """
-        WINTER = "Winter"
-        SPRING = "Spring"
-        SUMMER = "Summer"
-        AUTUMN = "Autumn"
+        WINTER = _("Winter")
+        SPRING = _("Spring")
+        SUMMER = _("Summer")
+        AUTUMN = _("Autumn")
 
         # Season changes:
         if renpy.game.persistent._mas_pm_live_south_hemisphere:
