@@ -1514,6 +1514,20 @@ image monika 1rsu:
         0.06
         repeat
 
+image monika 1rtc:
+    block:
+        "monika 1rtc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dtc_static"
+        0.06
+        repeat
+
 image monika 1ruc:
     block:
         "monika 1ruc_static"
@@ -5098,6 +5112,20 @@ image monika 3esd:
         0.06
         repeat
 
+image monika 3eta:
+    block:
+        "monika 3eta_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dta_static"
+        0.06
+        repeat
+
 image monika 3etc:
     block:
         "monika 3etc_static"
@@ -6957,34 +6985,6 @@ image monika 4eub:
             choice:
                 7
         "monika 4dub_static"
-        0.06
-        repeat
-
-image monika 4euc:
-    block:
-        "monika 4euc_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4duc_static"
-        0.06
-        repeat
-
-image monika 4eud:
-    block:
-        "monika 4eud_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dud_static"
         0.06
         repeat
 
