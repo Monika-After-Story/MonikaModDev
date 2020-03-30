@@ -926,6 +926,9 @@ label ch30_main:
     # set session data to startup values
     $ store._mas_root.initialSessionData()
 
+    # skip weather
+    $ skip_setting_weather = True
+
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
         $ mas_rebuildEventLists()
