@@ -50,22 +50,19 @@ init 4 python:
 
 # create some functions
 init python:
-
     def removeTopicID(topicID):
-        #
-        # Removes one topic from the _seen_ever variable
-        # topics list (if it exists in either var) (persistent is also
-        # checked for existence)
-        #
-        # IN:
-        #   @param topicID - the topicID to remove
-        #
-        # ASSUMES:
-        #   persistent._seen_ever
+        """
+        Removes one topic from the _seen_ever variable topics list if it exists in either var
+        (persistent is also checked for existence)
 
+        IN:
+            topicID - the topicID to remove
+
+        ASSUMES:
+            persistent._seen_ever
+        """
         if renpy.seen_label(topicID):
             persistent._seen_ever.pop(topicID)
-
 
     def mas_eraseTopic(topicID, per_eventDB=persistent.event_database):
         """
@@ -84,9 +81,9 @@ init python:
         if topicID in Event.INIT_LOCKDB:
             Event.INIT_LOCKDB.pop(topicID)
 
-
     def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
         """DEPREACTED
+
         NOTE: This can cause data corruption. DO NOT USE.
 
         Transfers a topic's data from the old topic ID to the new one int he
@@ -111,7 +108,6 @@ init python:
         if old_topicID in Event.INIT_LOCKDB:
             Event.INIT_LOCKDB[new_topicID] = Event.INIT_LOCKDB.pop(old_topicID)
 
-
     def mas_transferTopicSeen(old_topicID, new_topicID):
         """
         Tranfers persistent seen ever data. This is separate because of complex
@@ -125,20 +121,20 @@ init python:
             persistent._seen_ever.pop(old_topicID)
             persistent._seen_ever[new_topicID] = True
 
-
     def adjustTopicIDs(changedIDs,updating_persistent=persistent):
-        #
-        # Changes labels in persistent._seen_ever
-        # to new IDs in the changedIDs dict
-        #
-        # IN:
-        #   @param oldList - the list of old Ids to change
-        #   @param changedIDs - dict of changed ids:
-        #       key -> old ID
-        #       value -> new ID
-        #
-        # ASSUMES:
-        #   persistent._seen_ever
+        """
+        Changes labels in persistent._seen_ever
+        to new IDs in the changedIDs dict
+
+        IN:
+            oldList - the list of old Ids to change
+            changedIDs - dict of changed ids:
+                key -> old ID
+                value -> new ID
+
+        ASSUMES:
+            persistent._seen_ever
+        """
 
         # now for a complicated alg that changes keys in _seen_ever
         # except its not that complicated lol
@@ -149,22 +145,18 @@ init python:
 
         return updating_persistent
 
-
-
     def updateTopicIDs(version_number,updating_persistent=persistent):
-        #
-        # Updates topic IDS between versions by performing
-        # a two step process: adjust exisitng IDS to match
-        # the new IDS, then add newIDs to the persistent
-        # randomtopics
-        #
-        # IN:
-        #   @param version_number - the version number we are
-        #       updating to
-        #
-        # ASSUMES:
-        #   persistent._seen_ever
-        #   updates.topics
+        """
+        Updates topic IDS between versions by performing a two step process: adjust exisitng IDS to match the new IDS
+        then add newIDs to the persistent randomtopics
+
+        IN:
+            version_number - the version number we are updating to
+
+        ASSUMES:
+            persistent._seen_ever
+            updates.topics
+        """
         if version_number in updates.topics:
             changedIDs = updates.topics[version_number]
 
@@ -174,17 +166,16 @@ init python:
 
         return updating_persistent
 
-
     def updateGameFrom(startVers):
-        #
-        # Updates the game, starting at the given start version
-        #
-        # IN:
-        #   @param startVers - the version number in the parsed
-        #       format ("v#####")
-        #
-        # ASSUMES:
-        #   updates.version_updates
+        """
+        Updates the game, starting at the given start version
+
+        IN:
+            startVers - the version number in the parsed format ('v#####')
+
+        ASSUMES:
+            updates.version_updates
+        """
 
         while startVers in updates.version_updates:
 
@@ -194,6 +185,19 @@ init python:
             if renpy.has_label(updateTo) and not renpy.seen_label(updateTo):
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
+
+    def safeDel(varname):
+        """
+        Safely deletes variables from persistent
+
+        IN:
+            varname - name of the variable to delete from persistent as string
+
+        NOTE: THIS SHOULD BE USED IN PLACE OF THE DEFAULT `del` KEYWORD WHEN DELETING VARIABLES FROM THE PERSISTENT
+        """
+        if varname in persistent.__dict__:
+            persistent.__dict__.pop(varname)
+
 
 init 7 python:
     def mas_transferTopicData(
@@ -368,13 +372,132 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.10.8
+label v0_10_8(version="v0_10_8"):
+    python:
+        #Let's stock current users on some consumables (assuming they've gifted before)
+        #We'll keep it somewhat random.
+        coffee_cons = mas_getConsumable("coffee")
+        if coffee_cons and persistent._mas_acs_enable_coffee:
+            #If this is enabled already, we don't want to restock
+            if not coffee_cons.enabled():
+                coffee_cons.restock(renpy.random.randint(40, 60))
+
+                #Enable the consumable object
+                coffee_cons.enable()
+
+
+            #Transfer the amount of cups had
+            persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
+
+            #Delete the old vars
+            safeDel("_mas_coffee_cups_drank")
+            safeDel("_mas_acs_enable_coffee")
+            safeDel("_mas_coffee_been_given")
+
+        hotchoc_cons = mas_getConsumable("hotchoc")
+        if hotchoc_cons and persistent._mas_acs_enable_hotchoc:
+            if not hotchoc_cons.enabled():
+                hotchoc_cons.restock(renpy.random.randint(40, 60))
+
+                #Enable
+                hotchoc_cons.enable()
+
+            persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
+
+            #Delete uneeded vars
+            safeDel("_mas_c_hotchoc_cups_drank")
+            safeDel("_mas_acs_enable_hotchoc")
+            safeDel("_mas_c_hotchoc_been_given")
+
+        #Fix the song pool delegate
+        song_pool_ev = mas_getEV("monika_sing_song_pool")
+        if song_pool_ev:
+            song_pool_ev.conditional = None
+            song_pool_ev.action = None
+            song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
+
+        # ensure marisa + ACS is unlocked
+        if mas_o31CostumeWorn(mas_clothes_marisa):
+            store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+            store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
+            store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
+
+        #Update conditions for the greetings
+        new_greetings_conditions = {
+            "greeting_back": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=12)",
+            "greeting_back2": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=20)",
+            "greeting_back3": "store.mas_getAbsenceLength() >= datetime.timedelta(days=1)",
+            "greeting_back4": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=10)",
+            "greeting_visit3": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=15)",
+            "greeting_back5": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=15)",
+            "greeting_visit4": "store.mas_getAbsenceLength() <= datetime.timedelta(hours=3)",
+            "greeting_visit9": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=1)",
+            "greeting_hamlet": "store.mas_getAbsenceLength() >= datetime.timedelta(days=7)"
+        }
+
+        for gr_label, conditional in new_greetings_conditions.iteritems():
+            gr_ev = mas_getEV(gr_label)
+            if gr_ev:
+                gr_ev.conditional = conditional
+
+        #Remove some old topics
+        mas_eraseTopic("monika_morning")
+        mas_eraseTopic("monika_evening")
+
+        #Make multi-perspective approach random for people who've seen the allegory of the cave topic
+        cave_ev = mas_getEV("monika_allegory_of_the_cave")
+        if cave_ev and cave_ev.shown_count > 0:
+            perspective_ev = mas_getEV("monika_multi_perspective_approach")
+            if perspective_ev:
+                perspective_ev.random = True
+
+    return
+
+#0.10.7
+label v0_10_7(version="v0_10_7"):
+    python:
+        #Transfer the OG vday content stuff to history so we can be done with it forever
+        if renpy.seen_label("monika_valentines_start"):
+            persistent._mas_history_archives[2018]["f14.actions.spent_f14"] = True
+
+        #Fix the conditional on this event
+        f14_spent_time_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if f14_spent_time_ev:
+            f14_spent_time_ev.conditional = "persistent._mas_f14_spent_f14"
+
+        vday_spent_ev = mas_getEV("mas_f14_monika_spent_time_with")
+        if vday_spent_ev:
+            vday_spent_ev.start_date = datetime.datetime.combine(mas_f14, datetime.time(hour=18))
+            vday_spent_ev.end_date = datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=3))
+
+        #Fix the vday origins event
+        vday_origins_ev = mas_getEV('mas_f14_monika_vday_origins')
+        if vday_origins_ev:
+            vday_origins_ev.action = EV_ACT_UNLOCK
+            vday_origins_ev.pool = True
+            #Just make sure it's locked (provided not on f14, in case people update on f14)
+            if not mas_isF14():
+                vday_origins_ev.unlocked=False
+
+        #Give d25 randoms their actions back
+        mistletoe_ev = mas_getEV("mas_d25_monika_mistletoe")
+        carolling_ev = mas_getEV("mas_d25_monika_carolling")
+
+        if mistletoe_ev:
+            mistletoe_ev.action = EV_ACT_RANDOM
+
+        if carolling_ev:
+            carolling_ev.action = EV_ACT_RANDOM
+    return
+
 #0.10.6
 label v0_10_6(version="v0_10_6"):
     python:
         #NOTE: Because of a crash in the last update script, this part was not guaranteed to run for everyone.
         #Therefore we're running it again
         if persistent._mas_likes_rain:
-            del persistent._mas_likes_rain
+            safeDel("_mas_likes_rain")
 
         # remove bookmarks unbookmark topic
         mas_eraseTopic("mas_topic_unbookmark")
@@ -451,13 +574,10 @@ label v0_10_6(version="v0_10_6"):
             if renpy.seen_label("v0_9_0") and seen_year - bday.year < 5:
                 mas_addDelayedAction(16)
 
-        #Try/Excepting this just in case
-        try:
-            del persistent._mas_mood_bday_last
-            del persistent._mas_mood_bday_lies
-            del persistent._mas_mood_bday_locked
-        except:
-            pass
+        #Don't need these vars
+        safeDel("_mas_mood_bday_last")
+        safeDel("_mas_mood_bday_lies")
+        safeDel("_mas_mood_bday_locked")
     return
 
 #0.10.5
@@ -558,11 +678,9 @@ label v0_10_5(version="v0_10_5"):
         persistent._mas_pm_plays_instrument = persistent.instrument
         persistent._mas_pm_likes_rain = persistent._mas_likes_rain
 
-        #And delete the old
-        if persistent.instrument:
-            del persistent.instrument
-        if persistent._mas_likes_rain:
-            del persistent._mas_likes_rain
+        #Delete old vars
+        safeDel("instrument")
+        safeDel("_mas_likes_rain")
 
         # remove bookmarks unbookmark topic
         mas_eraseTopic("mas_topic_unbookmark")

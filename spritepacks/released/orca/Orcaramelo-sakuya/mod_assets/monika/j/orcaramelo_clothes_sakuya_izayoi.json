@@ -17,7 +17,7 @@
     "stay_on_start": true,
     "ex_props": {
         "desired-hair-prop": "braidstrand",
-        "costume": true,
+        "costume": "o31",
         "cosplay": true
     },
     "select_info": {

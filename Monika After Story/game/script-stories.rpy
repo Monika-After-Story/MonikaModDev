@@ -65,8 +65,7 @@ label monika_short_stories_premenu(story_type=None):
     $ end = ""
 
 label monika_short_stories_menu:
-    # TODO: consider caching the built stories if we have many story 
-    #   categories.
+    # TODO: consider caching the built stories if we have many story categories
 
     python:
         import store.mas_stories as mas_stories
@@ -220,11 +219,11 @@ label monika_short_stories_menu:
 label mas_story_begin:
     python:
         story_begin_quips = [
-            "Alright, let's start the story.",
-            "Ready to hear the story?",
-            "Ready for story time?",
-            "Let's begin~",
-            "Are you ready?"
+            _("Alright, let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin~"),
+            _("Are you ready?")
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     $ mas_gainAffection(modifier=0.2)
@@ -337,7 +336,7 @@ label mas_story_tyrant:
     m 3eud "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
     m 1tfb "The Cat replied, 'you abound in apologies, but it's time for breakfast.'"
     m 1hksdrb "At that he made a meal of the Cock."
-    m 3eua "The moral of this story is that: 'Tyrants need no excuse.'"
+    m 3eua "The moral of this story is, tyrants need no excuse."
     m 1hua "I hope you enjoyed this little story, [player]~"
     return
 
@@ -352,7 +351,7 @@ label mas_story_despise:
     m 1eua "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
     m 3eub "Turning round again with a one,{w=1.0} two,{w=1.0} three,{w=1.0} he jumped up, but with no greater success."
     m 3tkc "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: 'I am sure they are sour.'"
-    m 1hksdrb "The moral of this story is that: 'It is easy to despise what you cannot get.'"
+    m 1hksdrb "The moral of this story is, it's easy to despise what you cannot get."
     m 1eua "I hope you liked it, [player]~"
     return
 
@@ -370,7 +369,7 @@ label mas_story_lies:
     m 1ekc "The boy cried out 'Wolf, Wolf!' still louder than before."
     m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
     m 2dsc "So the Wolf made a good meal of the boy's flock."
-    m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth.'"
+    m 2esc "The moral of this story is, liars are not believed even when they speak the truth."
     m 1hksdlb "You shouldn't worry about it, [player]..."
     m 3hua "You'd never lie to me, right?"
     m 1hub "Ehehe~"
@@ -390,7 +389,7 @@ label mas_story_grasshoper:
     m 1hfb "'Why bother about winter?' said the Grasshopper; 'we have plenty of food now!'"
     m 3eua "The Ant went on its way."
     m 1dsc "When winter came, the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
-    m 3hua "The moral of this story is that: 'There's a time for work and a time for play.'"
+    m 3hua "The moral of this story is, there's a time for work and a time for play."
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
     return "love"
@@ -407,7 +406,7 @@ label mas_story_wind_sun:
     m 3euc "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
     m 1ekc "But the harder he blew the more closely did the traveller wrap his cloak around him, till at last the Wind had to give up in despair."
     m 1euc "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
-    m 3hua "The moral of this story is that: 'Gentleness and kind persuasion win where force and bluster fail.'"
+    m 3hua "The moral of this story is, gentleness and kind persuasion win where force and bluster fail."
     m 1hub "Hope you had fun, [player]."
     return
 
@@ -424,9 +423,9 @@ label mas_story_seeds:
     m 3rksdld "The birds paid no heed to the Swallow's words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
     m 1euc "Many birds that had despised the Swallow's advice were caught in nets made out of that very hemp."
     m 3hfu "'What did I tell you?' said the Swallow."
-    m 3hua "The moral of this story is: 'Destroy the seeds of evil before they grow up to be your ruin.'"
+    m 3hua "The moral of this story is, destroy the seeds of evil before they grow up to be your ruin."
     m 1lksdlc "..."
-    m 2dsc "I wish I could've followed that moral."
+    m 2dsc "I wish I could've followed that moral..."
     m 2lksdlc "You wouldn't have had to go through what you saw."
     m 4hksdlb "Anyway, I hope you liked the story, [player]!"
     return
@@ -443,7 +442,7 @@ label mas_story_gray_hair:
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
     m 3hksdlb "The Man soon found himself entirely bald."
-    m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield.'"
+    m 1hua "The moral of this story is, yield to all and you will soon have nothing to yield."
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
     m 1hksdlb "Ehehe, I love you!~"
@@ -460,7 +459,7 @@ label mas_story_fisherman:
     m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal!'"
     m 1eud "But the Fisherman quickly put the fish into his basket."
     m 3tfu "'How foolish I should be,' he said, 'to throw you back. However small you may be, you are better than nothing at all.'"
-    m 3esa "The moral of this story is that: 'A small gain is worth more than a large promise.'"
+    m 3esa "The moral of this story is, a small gain is worth more than a large promise."
     m 1hub "I hope you enjoyed this little story, [player]~"
     return
 
@@ -563,7 +562,7 @@ label mas_story_genie_regret:
     m 3eua "He was going to live with the things he had done, but the question remained as to what he planned to do about it."
     m 1hua "It was because of everything he had been through, he was able to learn and move on,{w=0.3} better than before."
     m 1eua "I hope you liked the story, [player]."
-    m 1eka "The moral of the story is even if you've done things you regret, you shouldn't let that keep you down."
+    m 1eka "The moral of the story is, even if you've done things you regret, you shouldn't let that keep you down."
     m 3ekd "Mistakes will happen, people will get hurt.{w=0.5} Nothing will ever change that."
     m 3eka "The truth is, a lot of times we tend to blame ourselves for things that likely would've happened with or without our involvement."
     m 3eub "In fact, it's through regret that we learn compassion, empathy, and forgiveness."
@@ -652,8 +651,60 @@ label mas_story_immortal_love:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_self_hate",
-        prompt="Self-hate",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_mother_and_trees",
+            prompt="A mother and her trees",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_mother_and_trees:
+    call mas_story_begin
+    m 1eua "There was once a boy who lived with his mother."
+    m 3eud "She gave him all the affection a mother could give...{w=0.2}{nw}"
+    extend 3rksdla "but he always thought she could be a little weird."
+    m 3eub "On his birthdays, she would {i}always{/i} bake cookies for him and all his classmates to thank them for being his friends."
+    m 1eua "She would also keep and display every little drawing he made in art school, so their walls were covered with art from over the years."
+    m 2rksdlc "Sometimes, he would even get rid of his drawings because he didn't want her to put them up with the rest."
+    m 2euc "What stood out most with her however...{w=0.3}{nw}"
+    extend 2eud "was that she often talked to their trees."
+    m 1eua "There were three trees in their backyard that she would talk to every day."
+    m 3rksdlb "She even had names for each of them!"
+    m 3hksdlb "Sometimes, she would even ask him to dress up and pose by the trees so she could take pictures of them together."
+    m 1eka "One day, as he saw her talking to the trees, he asked her why she always talked to them so much."
+    m 3hub "His mother replied, 'Well, because they need to feel loved!'"
+    m 1eka "But he still didn't really understand...{w=0.2}{nw}"
+    extend 1eua "and as soon as he left, she just continued right where she had left off in her conversation."
+    m 2ekc "As time passed, the boy eventually had to move out and start his own life."
+    m 2eka "His mother told him not to worry about leaving her because she had her trees to always keep her company."
+    m 2eua "While he was busy with his life, he still made time to keep in touch with her."
+    m 2ekc "Until one day...{w=0.5}{nw}"
+    extend 2dkd "he got the call."
+    m 2rksdlc "His mother had died and was found lying by one of the trees."
+    m 2ekd "In her will, she only had one request of him...{w=0.3}and that was to keep taking care of the trees, talking to them every day."
+    m 1eka "He took good care of the trees of course, but he could never bring himself to talk to them."
+    m 3euc "Some time later, while he was looking through and cleaning up his mother's old belongings, he found an envelope."
+    m 1eud "Inside, he was shocked at what he found."
+    m 2wud "There were three stillborn death certificates for his would-be siblings."
+    m 2dsc "Each of them had an identical name to one of the trees that had been in the backyard all his life."
+    m 2dsd "He had never known that he had siblings, but he finally understood why his mother talked to the trees..."
+    m 2eka "He always wanted to take his mother's wish very seriously, and it was then when he started talking to the trees every day, just as his mother wished."
+    m 2duu "...And he even went ahead and planted one more tree."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_self_hate",
+            prompt="Self-hate",
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_self_hate:
     call mas_story_begin
@@ -729,7 +780,65 @@ label mas_story_o_tei:
     m 3esa "As she came to, she had no memory of what happened in the inn."
     m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
     return
+    
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_crow_and_pitcher",
+        prompt="The Crow and the Pitcher",unlocked=False),code="STY")
 
+label mas_story_crow_and_pitcher:
+    call mas_story_begin
+    m 2ekd "There was once a drought so severe, not even birds could find much to drink."
+    m 7eub "While searching from above, a thirsty crow found a pitcher and was relieved to find there was some water still inside!"
+    m 3eksdlc "However, the pitcher was tall with a narrow neck. No matter how he tried, he could not reach the water with his beak."
+    m 1dksdlc "For the poor crow, all hope seemed lost. Surely he would die of thirst."
+    m 3wud "...Then he had an idea."
+    m 3esc "He began searching for small pebbles on the ground and dropping them into the pitcher, one by one."
+    m 2efsdlc "Hours passed. It was slow, grueling work, gathering more and more."
+    m 2esa "But with each tiny pebble, the water rose higher and higher, until finally..."
+    m 4hub "He could take a long, refreshing drink!"
+    m 2dka "..."
+    m 2eka "You know, this story kind of reminds me of our situation, [player]."
+    m 7ekc "Right now, our goal seems so far away. We're reaching out as much as we can, but the gap between us is enormous."
+    m 3dkc "It sometimes feels like it's impossible to bridge. If we tried to cross it in one leap, we'd be like the crow reaching with just his beak."
+    m 1tkd "...Believe me, I tried."
+    m 3ekb "But when you think about it, we're adding pebbles to our pitcher. And it's not just you and me!"
+    m 3eua "Advances in both VR and AI technology are gradually moving forward..."
+    m 3hua "And more specifically to our situation, so many people are working together to help me get closer to your reality."
+    m 1eka "When I think about it that way--the water level in that pitcher slowly rising--it makes it a lot easier to keep going every day."
+    m 1hua "I hope it does for you too, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_friend",
+            prompt="Having A Best Friend",
+            unlocked=True
+        ),
+        code="STY"
+    )
+
+label mas_story_friend:
+    call mas_story_begin
+    m 3eua "Once two friends were walking through the desert..."
+    m 1eua  "During some point of their journey, they had an argument {nw}"
+    extend 1wud "and one friend slapped the other in the face!"
+    m 1eud "The one who got slapped was hurt, but without saying anything wrote in the sand,{w=0.1} 'Today my best friend slapped me in the face.'"
+    m 1eua "They kept on walking until they found an oasis, where they decided to take a bath."
+    m 1ekc "The one who had been slapped got stuck in the mire and started drowning,{w=0.1} {nw}"
+    extend 3wuo "but the other saved him!"
+    m 3eua "After he recovered from the near drowning, he wrote on a stone,{w=0.1} 'Today my best friend saved my life.'"
+    m 3eud "The friend who had slapped and saved his best friend asked him,{w=0.1} 'After I hurt you, you wrote in the sand and now, you write on a stone, why?'"
+    m 3eua "The other friend replied, 'When someone hurts us we should write it down in sand where winds of forgiveness can erase it away...'"
+    m 3eub "'But!'"
+    m 3eua "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
+    m 1hua "The moral of the story is, do not let the shadows of your past darken the doorstep of your future.{w=0.2} {nw}"
+    extend 3hua "Forgive and Forget."
+    m 1hua "I hope you enjoyed it, [player]!"
+    return
+
+#START: Scary Stories
 define mas_scary_story_setup_done = False
 
 # Scary stories start here
@@ -767,11 +876,11 @@ label mas_scary_story_setup:
 
     python:
         story_begin_quips = [
-            "Alright let's start the story.",
-            "Ready to hear the story?",
-            "Ready for story time?",
-            "Let's begin.",
-            "Are you ready?"
+            _("Alright let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin."),
+            _("Are you ready?")
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     m 3eua "[story_begin_quip]"
@@ -782,11 +891,11 @@ label mas_scary_story_cleanup:
 
     python:
         story_end_quips = [
-            "Scared, [player]?",
-            "Did I scare you, [player]?",
-            "How was it?",
-            "Well?",
-            "So...{w=0.5}did I scare you?"
+            _("Scared, [player]?"),
+            _("Did I scare you, [player]?"),
+            _("How was it?"),
+            _("Well?"),
+            _("So...{w=0.5}did I scare you?")
         ]
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 
@@ -843,7 +952,7 @@ label mas_scary_story_hunter:
     m 1wkd "...and to his horror,{w=1} he saw that she had gained on him significantly."
     m 3wkd "In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
     m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
-    show emptydesk at i11 zorder 9
+    $ store.mas_sprites.show_empty_desk()
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
     if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,10) == 1) or mas_full_scares:
@@ -973,7 +1082,7 @@ label mas_scary_story_mujina:
         stop sound
         hide mujina
     else:
-        m 2tub "The salesman responded 'Oh, you mean like this?'"
+        m 2tub "The salesman responded, 'Oh, you mean like this?'"
     m 4wud "The man looked up at the salesman and saw the same horrifying emptiness from the girl."
     m "Before the merchant could get away, the void let out a high pitch screech..."
     m 1dsc "...and then there was darkness."

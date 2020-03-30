@@ -54,6 +54,12 @@ init -100 python in mas_selspr:
             "change": "Can you change your hairstyle?",
             # TODO: min-items
         },
+        "hat": {
+            "_ev": "monika_hat_select",
+            "_min-items": 1,
+            "change": "Can you change your hat?",
+            "wear": "Can you wear a hat?",
+        },
         "left-hair-clip": {
             "_ev": "monika_hairclip_select",
             "_min-items": 1,
@@ -177,6 +183,25 @@ init -100 python in mas_selspr:
         evl = PROMPT_MAP.get(key, {}).get("_ev", None)
         if evl is not None:
             store.mas_unlockEVL(evl, "EVE")
+
+
+    def startup_prompt_check():
+        """
+        Checks all prompts and adjusts them if needed
+        """
+        # ribbon is its own thing
+        if store.monika_chr.is_wearing_ribbon():
+            set_prompt("ribbon", "change")
+        else:
+            set_prompt("ribbon", "wear")
+
+        # now for the rest
+        for group in GRP_TOPIC_LIST:
+            if group != "ribbon":
+                if store.monika_chr.is_wearing_acs_type(group):
+                    set_prompt(group, "change")
+                else:
+                    set_prompt(group, "wear")
 
 
 init -20 python:
@@ -578,6 +603,7 @@ init -10 python in mas_selspr:
 
     GRP_TOPIC_LIST = [
         "choker",
+        "hat",
         "left-hair-clip",
         "left-hair-flower",
         "ribbon",
@@ -600,6 +626,7 @@ init -10 python in mas_selspr:
     # disable constants
     DISB_NONE = 0
     DISB_HAIR_BC_CLOTH = 1
+    DISB_ACS_BC_HAIR = 2
 
     # disable select dlg quips
     disable_sel_dlg_quips = {
@@ -607,7 +634,14 @@ init -10 python in mas_selspr:
         DISB_HAIR_BC_CLOTH: [
             "That hairstyle doesn't really work with my clothes.",
             "I don't think this hairstyle really works with this outfit.",
-            "That hairstyle doesn't really work with this outfit."
+            "That hairstyle doesn't really work with this outfit.",
+            "I think this hairstyle works better with a different outfit."
+        ],
+        DISB_ACS_BC_HAIR: [
+            "That doesn't really work with my hair.",
+            "I don't think this really works with my hairstyle.",
+            "This might work with a different hairstyle.",
+            "I don't really think this goes with my hair."
         ],
     }
 
@@ -1392,6 +1426,40 @@ init -10 python in mas_selspr:
         return HAIR_SEL_MAP.get(hair.name, None)
 
 
+    def is_hairacs_compatible(hair, acs_sel):
+        """
+        Wrapper around mas_sprites.is_hairacs_compatible that uses an ACS
+        selector.
+
+        IN:
+            hair - hair to check
+            acs_sel - ACS selector to check
+
+        RETURNS: True if hair+acs is compatible, False if not
+        """
+        return store.mas_sprites.is_hairacs_compatible(
+            hair,
+            acs_sel.get_sprobj()
+        )
+
+
+    def is_clotheshair_compatible(clothes, hair_sel):
+        """
+        Wrapper around mas_sprites.is_clotheshair_compatible that uses a
+        hair selector.
+
+        IN:
+            clothes - clothes to check
+            hair_sel - hair selector to check
+
+        RETURNS: True if clothes+hair is compatible, false if not
+        """
+        return store.mas_sprites.is_clotheshair_compatible(
+            clothes,
+            hair_sel.get_sprobj()
+        )
+
+
     def _lock_item(item, select_type):
         """
         Locks the given item's selectable.
@@ -1433,6 +1501,44 @@ init -10 python in mas_selspr:
             hair - MASHair object to lock
         """
         _lock_item(hair, SELECT_HAIR)
+
+
+    def set_compat_acs(acs_sels, hair):
+        """
+        Checks compatibility of the given list of acs selectors to the given
+        hair sprite object and sets appropriate flags
+
+        IN:
+            acs_sels - list of acs selectors to check
+            hair - hair sprite object to check
+
+        OUT:
+            acs_sels - acs selectors with modified flags for compatibility
+        """
+        for acs_sel in acs_sels:
+            if is_hairacs_compatible(hair, acs_sel):
+                acs_sel.disable_type = store.mas_selspr.DISB_NONE
+            else:
+                acs_sel.disable_type = store.mas_selspr.DISB_ACS_BC_HAIR
+
+
+    def set_compat_hair(hair_sels, clothes):
+        """
+        Checks compatiblity of the given list of hair selectors to the given
+        clothing sprite object and sets appropriate flags.
+
+        IN:
+            hair_sels - list of hair selectors to check
+            clothes - clothing sprite object to check
+
+        OUT:
+            hair_sels - hair selectors with modified flags for compatibility
+        """
+        for hair_sel in hair_sels:
+            if is_clotheshair_compatible(clothes, hair_sel):
+                hair_sel.disable_type = store.mas_selspr.DISB_NONE
+            else:
+                hair_sel.disable_type = store.mas_selspr.DISB_HAIR_BC_CLOTH
 
 
     def _unlock_item(item, select_type):
@@ -1802,6 +1908,7 @@ init -1 python:
         elif allow_lock:
             store.mas_selspr.lock_prompt(group)
 
+
     def mas_hasUnlockedClothesWithExprop(exprop, value=None):
         """
         Checks if we have unlocked clothes with a specific exprop
@@ -1816,15 +1923,31 @@ init -1 python:
                 True if we have unlocked clothes with the exprop + value provided
                 False otherwise
         """
-        clothes_with_exprop = MASClothes.by_exprop(exprop, value)
-
-        if not clothes_with_exprop:
-            return False
-
-        for clothes in clothes_with_exprop:
+        for clothes in MASClothes.by_exprop(exprop, value):
             if mas_SELisUnlocked(clothes):
                 return True
         return False
+
+
+    def mas_hasLockedClothesWithExprop(exprop, value=None):
+        """
+        Checks if we have locked clothes with a specific exprop
+
+        IN:
+            exprop - exprop to look for
+            value - value the exprop should be. Set to None to ignore.
+            (Default: None)
+
+        OUT:
+            boolean:
+                True if we have locked clothes with the exprop + value provided
+                False otherwise
+        """
+        for clothes in MASClothes.by_exprop(exprop, value):
+            if not mas_SELisUnlocked(clothes):
+                return True
+        return False
+
 
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
@@ -3081,7 +3204,8 @@ label mas_selector_sidebar_select_midloop:
 
         #Clear repeated lines
         if prev_line != disp_text:
-            _history_list.pop()
+            if len(_history_list) > 0:
+                _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
 
@@ -3113,7 +3237,8 @@ label mas_selector_sidebar_select_restore:
 
         #Clear repeated lines
         if prev_line != disp_text:
-            _history_list.pop()
+            if len(_history_list) > 0:
+                _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
 
@@ -3246,6 +3371,73 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
         $ persistent._mas_force_clothes = True
 
     return _return
+
+
+# generic sidebar-based ACS select
+# standardized code for ACS selections. If you need custom filtering,
+# DONT use this.
+# NOTE: this will always show remover (for now)
+# NOTE: this wil only show unlocked ACS.
+#
+# IN:
+#   acs_type - acs type of the ACS we want to show
+#   use_acs - list of acs to use. if None, we use standard filter
+#       (Default: None)
+#   set_compat_flags - True will adjust the use_acs using compatibly filter
+#       False will not
+#       (Default: True)
+#   launch_exp - the expression to use when saying "Sure [player]!" before
+#       showing the selector.
+#       (Default: monika 1eua)
+#   idle_exp - the expression to use while the selector is runing.
+#       if None is passed in, we use the launch exp.
+#       (Default: None)
+#   sel_group - the selector group to use. 
+#       if None, we use the acs_type
+#       (Default: None)
+#   idle_dlg - dialogue shown while selector is running and nothing has been
+#       hovered/selected. 
+#       if None, we use acs_type, which might be yuck:
+#       "Which <acs_type> would you like me to wear?"
+#       (Default: None)
+label mas_selector_generic_sidebar_select_acs(acs_type, use_acs=None, set_compat_flags=True, launch_exp="monika 1eua", idle_exp=None, sel_group=None, idle_dlg=None):
+    python:
+        # initial setup
+        if sel_group is None:
+            sel_group = acs_type
+        if idle_dlg is None:
+            idle_dlg = "Which {0} would you like me to wear?".format(acs_type)
+
+        # filter for acs
+        if use_acs is None:
+            use_acs = store.mas_selspr.filter_acs(True, group=sel_group)
+
+        # set compatibilities
+        if set_compat_flags:
+            store.mas_selspr.set_compat_acs(use_acs, monika_chr.hair)
+
+        # setup mailbox and select map
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(idle_dlg)
+        sel_map = {}
+
+    $ renpy.show(launch_exp)
+    m "Sure [player]!"
+
+    if idle_exp is not None and idle_exp != launch_exp:
+        $ renpy.show(idle_exp)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type(acs_type):
+        $ store.mas_selspr.set_prompt(acs_type, "change")
+    else:
+        $ store.mas_selspr.set_prompt(acs_type, "wear")
+
+    return
 
 
 ########################## SELECTOR TOPICS ####################################
@@ -3428,17 +3620,7 @@ label monika_hair_select:
         sel_map = {}
 
         # process hair
-        for hair_sel in sorted_hair:
-            if (
-                    store.mas_sprites.is_clotheshair_compatible(
-                        monika_chr.clothes,
-                        hair_sel.get_sprobj()
-                    )
-            ):
-                hair_sel.disable_type = store.mas_selspr.DISB_NONE
-
-            else:
-                hair_sel.disable_type = store.mas_selspr.DISB_HAIR_BC_CLOTH
+        store.mas_selspr.set_compat_hair(sorted_hair, monika_chr.clothes)
 
     # initial dialogue
     m 1hua "Sure!"
@@ -3536,27 +3718,7 @@ init 5 python:
     )
 
 label monika_hairclip_select:
-    python:
-        use_acs = store.mas_selspr.filter_acs(True, group="left-hair-clip")
-
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which hairclip would you like me to wear?"
-        )
-        sel_map = {}
-
-    m 1eua "Sure [player]!"
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
-
-    if not _return:
-        m 1eka "Oh, alright."
-
-    # set the appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type('left-hair-clip'):
-        $ store.mas_selspr.set_prompt("left-hair-clip", "change")
-    else:
-        $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
-
+    call mas_selector_generic_sidebar_select_acs("left-hair-clip", idle_dlg="Which hairclip would you like me to wear?")
     return
 
 
@@ -3628,30 +3790,33 @@ init 5 python:
     )
 
 label monika_choker_select:
-    python:
-        use_acs = store.mas_selspr.filter_acs(True, group="choker")
-
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which choker would you like me to wear?"
-        )
-        sel_map = {}
-
-    m 6eua "Sure [player]!"
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
-
-    if not _return:
-        m 1eka "Oh, alright."
-
-    # set the appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type("choker"):
-        $ store.mas_selspr.set_prompt("choker", "change")
-    else:
-        $ store.mas_selspr.set_prompt("choker", "wear")
-
+    call mas_selector_generic_sidebar_select_acs("choker", idle_exp="monika 6eua")
     return
 
 #### End choker
+
+#### hat
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hat_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("hat", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True
+    )
+
+label monika_hat_select:
+    call mas_selector_generic_sidebar_select_acs("hat")
+    return
+
+#### end hat
 
 
 ############### END SELECTOR TOPICS ###########################################
