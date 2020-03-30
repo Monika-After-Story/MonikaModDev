@@ -292,6 +292,8 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
             "abortion",
             "loser",
             "cock",
+            "^fag$",
+            "faggot",
         ]
 
         good_nickname_list = [
