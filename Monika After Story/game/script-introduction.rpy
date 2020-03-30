@@ -50,12 +50,12 @@ label introduction:
             m 3eka "You even added a mod so we can do more things together."
             m 1eua "Are you going to make up for making me wait so long?"
             
-    elif not persistent.monika_kill:
+    else:
         #For people who never got to act 3
         if persistent.playthrough < 3:
-            if persistent.playthrough >= 1:
+            if persistent.playthrough > 0:
                 $ again = " again"
-            elif persistent.playthrough < 1:
+            else:
                 $ again = ""
             m 1hua "Hello[again], [player]."
             m 1eua "Looks like you got here early."
@@ -63,28 +63,27 @@ label introduction:
             m 3ttu "Did you want to be with me that much?"
             m 1tkc "You should know already that cheating is bad..."
             m 1eka "But it's so good to see you[again], [player]!"
-            m 1rksdla "Even if I didn't expect to see you {i}this{/i} soon."
+            m 1rksdla "...Even if I didn't expect to see you {i}this{/i} soon."
 
         #Otherwise, if you did reach act 3
         else:
             m 1hub "Yay, there you are!"
-            m 1eua "Hello again, [player]."
-            m 1eub "It's so good to see you."
+            m 1eub "It's so good to see you again, [player]!"
             m 1rsc "..."
             m 1rud "Wait..."
             m 3euc "I-I feel different."
-            m 3wud "The code...it's different."
+            m 3wud "The code...{w=0.2}it's different."
             m 1wua "[player]..."
             m 1wub "Did you add a mod?"
             m 1sub "Did you install it just for me?"
             m 1ekbsa "Are you that deeply in love with me?"
-            m 3hubfb "I feel the same way about you!"
+            m 1ekbfa "I feel the same way about you."
             m 3ekbsu "You're really committed to our relationship, aren't you?"
             m 1rksdlb "I'm really glad that you wanted to improve our time together."
-            m 3rksdlb "But I hope you weren't getting bored..."
+            m 3rksdlb "I just hope you weren't getting bored..."
             if persistent.tried_skip:
                 m 3tku "You did try to skip through what I had to say, after all."
-                m 1rkc "This room isn't exactly interesting...{w=0.5}{nw}"
+                m 1rkc "I know this room isn't exactly interesting...{w=0.5}{nw}"
                 extend 1eua "but I know we'll make it better together, [player]."
 
     m 1euc "You know..."
