@@ -6404,7 +6404,7 @@ label monika_rock:
     m 3esa "You wanna know a cool form of literature?"
     m 3hua "Rock and roll!"
     m 3hub "That's right. Rock and roll!"
-    m 2eka "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
+    m 2eka "It's disheartening to know that so many people think that rock and roll is just a bunch of noises."
     m 2lsc "To tell you the truth, I judged rock too."
     m 3euc "They're no different from poems, actually."
     m 1euc "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
@@ -13212,6 +13212,45 @@ label monika_auroras:
     m 5eubsa "That would be an experience to remember, don't you think, [player]?"
     m 5hubsu "I can't wait until we can turn that into reality."
     $ mas_showEVL("monika_auroras","EVE",_random=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_social_norms",
+            category=['society'],
+            prompt="Changing social norms",
+            random=True
+        )
+    )
+
+label monika_social_norms:
+    m 1eua "Have you ever wondered how new ideas get accepted in society?"
+    m 3eub "There's tons of things that were considered bad at first, but have since been reconsidered!"
+    m 4esa "For instance, did you know rock and roll was seen as vulgar and depraved when it first appeared?"
+    m 4eud "Early fans were seen as impressionable youth at best, and delinquents at worst."
+    m 1duu "But as these people grew to become full-fledged members of society, they passed down their interest to those around them."
+    m 3eua "Those who met them realized they were just normal people, with nothing weird about them."
+    m 3hub "Nowadays, that stigma has almost completely disappeared! Even those who still don't like rock music at least respect it!"
+    m 4eua "And there's plenty of other things still in the process of getting accepted."
+    m 4eub "You might be familiar with role-playing, or online gaming... {w=0.5}or even reading manga."
+    m 3lksdla "Though Natsuki would probably be the one to ask about this..."
+    m 1eub "Remember how she was trying to change your mind about that manga she liked?"
+    m 1rsc "I wonder what she had to go through because of this hobby... {w=0.5}I can't imagine it's always been easy."
+    m 3esb "It even showed up on her poetry in the end. Remember her poem about spiders?"
+    m 1hub "It all makes me wonder what kind of things will be seen as normal in the future..."
+    m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
+    m 4eub "How do you think this will change over the years? Will we ever reach a point where it's seen as just another normal thing?"
+    m 1dubla "Not that it's important anyway. As long as we have each other, that's all that should count, right?"
+    m 1ekbfa "It's nice to know there is someone I can truly be myself with, no matter what..."
+    m 1ekbsa "And if you've got any unique interests, you already know I'll always be there to talk about it."
+    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfb "I want to learn everything about what you like!"
+    m 5ekbfa "All these little particularities that make you so unique..."
+    show monika 1ekbfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1ekbfb "So, please, always be yourself, [player]. You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
+    m 3tfbfu "And if some people reject you anyway? I'll be the one to teach them how great you are!"
     return
 
 init 5 python:
