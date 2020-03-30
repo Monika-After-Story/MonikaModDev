@@ -1991,7 +1991,7 @@ label monika_credits_song:
             m 3eua "Hey [player], I finally finished that song I've been working on for you."
 
         m 1eka "I call it {i}Our Reality{/i}."
-        m 1eua "I'm jut so excited to finally be able to play it for you."
+        m 1eua "I'm just so excited to finally be able to play it for you."
         m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
         call mas_monika_plays_or(skip_leadin=True)
