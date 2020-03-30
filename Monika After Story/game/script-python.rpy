@@ -41,6 +41,7 @@
 #   14 - String operations
 #   15 - start talking about renpy
 #
+#   Implement advanced python tips for users who have some experience (persistent._mas_advanced_py_tips)
 #
 # Also what about Renpy?
 #

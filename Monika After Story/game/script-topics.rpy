@@ -13590,7 +13590,7 @@ label monika_coding_experience:
 
         "Yes.":
             $ persistent._mas_pm_has_code_experience = True
-            m 1sua "Oh, that's great, [player]!"
+            m 1hua "Oh, that's great, [player]!"
             m 3euc "I know not all languages are quite the same in terms of usage or syntax..."
             if renpy.seen_label("monika_ptod_tip005"):
                 m 1rksdlc "But since you've gotten to some of the core topics of my tips, I have to ask..."
@@ -13630,7 +13630,7 @@ label monika_coding_experience:
             m 1eka "That's alright, [player]."
             m 1hksdlb "I just wanted to make sure I wasn't boring you with my python tips, ahaha~"
             m 3eub "But I hope they convince you to take on some of your own coding projects too!"
-            m 3hub "I'd love to see what you can come up with if you put your mind to it!"
+            m 3hua "I'd love to see what you can come up with if you put your mind to it!"
     return "derandom"
 
 init 5 python:
