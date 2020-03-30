@@ -13367,6 +13367,45 @@ label monika_auroras:
     m 5hubsu "I can't wait until we can turn that into reality."
     $ mas_showEVL("monika_auroras","EVE",_random=True)
     return
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boardgames",
+            category=["games", "media"],
+            prompt="Board games",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_likes_board_games = None
+# True if player likes board games, false if not
+
+label monika_boardgames:
+    m 1eua "Say, [player], you like playing video games, right?"
+    m 2rsc "Well, I assume you do at least...{w=0.2} {nw}"
+    extend 2rksdla "I don't know if many people would play a game like this one if they weren't at least a little into video games."
+
+    m 2etc "But I was wondering, do you like board games, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "But I was wondering, do you like board games, [player]?{fast}"
+
+        "Yeah.":
+            $ persistent._mas_pm_likes_board_games = True
+            m 1eub "Oh, really?"
+            m 1hua "Well, if we ever get the chance, I'd love to play some of your favorite games with you."
+            m 3eka "I'm not too familiar with board games, but I'm sure you can find some I might enjoy."
+            m 3hua "Who knows, maybe I'll end up liking board games as much as you do, ehehe~"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_board_games = False
+            m 2eka "I can see why...{w=0.2}{nw}"
+            extend 2rksdla "it's a pretty niche hobby, after all."
+            m 1eua "But I'm sure there are plenty of other fun activities you enjoy doing in your free time."
+            m 3hua "Still, if you ever change your mind, I'd like to give some board games a try with you sometime."
+
+    return "derandom"
 
 init 5 python:
     addEvent(
