@@ -45,18 +45,15 @@ init -1 python:
 
         updates.topics.clear()
         updates.topics = None
-        updates.version_updates.clear()
-        updates.version_updates = None
+        #updates.version_updates.clear()
+        #updates.version_updates = None
         # TODO
         # is there a way to delete a renpy storemodule?
 
 
 # runs before updates.rpy
 init 9 python:
-
-    if persistent.version_number != config.version:
-        renpy.call_in_new_context("vv_updates_topics")
-
+    renpy.call_in_new_context("vv_updates_topics")
 
 # init label for updats_topics
 label vv_updates_topics:
@@ -68,6 +65,13 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_10_8 = "v0_10_8"
+        vv0_10_7 = "v0_10_7"
+        vv0_10_6 = "v0_10_6"
+        vv0_10_5 = "v0_10_5"
+        vv0_10_4 = "v0_10_4"
+        vv0_10_3 = "v0_10_3"
+        vv0_10_2 = "v0_10_2"
         vv0_10_1 = "v0_10_1"
         vv0_10_0 = "v0_10_0"
         vv0_9_5 = "v0_9_5"
@@ -112,6 +116,13 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
+        #updates.version_updates[vv0_10_7] = vv0_10_8
+        updates.version_updates[vv0_10_6] = vv0_10_7
+        updates.version_updates[vv0_10_5] = vv0_10_6
+        updates.version_updates[vv0_10_4] = vv0_10_5
+        updates.version_updates[vv0_10_3] = vv0_10_4
+        updates.version_updates[vv0_10_2] = vv0_10_3
+        updates.version_updates[vv0_10_1] = vv0_10_2
         updates.version_updates[vv0_10_0] = vv0_10_1
         updates.version_updates[vv0_9_5] = vv0_10_0
         updates.version_updates[vv0_9_4] = vv0_9_5

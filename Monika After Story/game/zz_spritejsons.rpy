@@ -70,6 +70,21 @@
 #       - used in confjunction with acs_type
 #       - must be list of strings
 #       - default None
+#   "dlg_desc": string describing this ACS for dialogue usage
+#       - optional
+#       - used in conjunction with dlg_plural
+#       - must be a string
+#       - default None
+#   "dlg_plural": true if dlg_desc is a plural object, false if not
+#       - optional
+#       - used in conjuction with dlg_desc
+#       - must be a bool
+#       - default None
+#   "keep_on_desk": true if this ACS should remain on desk if Monika is not
+#       at the desk, False otherwise
+#       - optional
+#       - must be a bool
+#       - default False
 # }
 #
 # Shared props for HAIR and CLOTHES:
@@ -336,6 +351,9 @@ init -21 python in mas_sprites_json:
     )
     NO_GIFT = "without 'giftname', this cannot be natively unlocked"
 
+    NO_DLG_DESC = "'dlg_desc' not found, ignoring 'dlg_plural'"
+    NO_DLG_PLUR = "'dlg_plural' not found, ignoring 'dlg_desc'"
+
     ## MASPoseMap
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
     MPM_SUCCESS = "MASPoseMap '{0}' loaded successfully!"
@@ -480,6 +498,9 @@ init -21 python in mas_sprites_json:
 
         "priority": (int, _verify_int),
         "acs_type": (str, _verify_str),
+        "dlg_desc": (str, _verify_str),
+        "dlg_plural": (str, _verify_bool),
+        "keep_on_desk": (bool, _verify_bool),
     }
     OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
@@ -1078,10 +1099,12 @@ init 189 python in mas_sprites_json:
             - rec_layer
             - priority
             - acs_type
+            - dlg_desc
+            - dlg_plural
             - mux_type
             - pose_map
             - giftname
-            - arm_spli
+            - arm_split
 
         IN:
             jobj - json object to pasrse
@@ -1098,6 +1121,8 @@ init 189 python in mas_sprites_json:
         # validate ez to validate props
         # priority
         # acs_type
+        # dlg_desc
+        # dlg_plural
         if not _validate_params(
             jobj,
             save_obj,
@@ -1107,6 +1132,25 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return False
+
+        # combine dlg_desc and dlg_plur
+        if "dlg_desc" in save_obj:
+            dlg_desc = save_obj.pop("dlg_desc")
+
+            # both fields are required
+            if "dlg_plural" in save_obj:
+
+                # combine data
+                save_obj["dlg_data"] = (dlg_desc, save_obj.pop("dlg_plural"))
+
+            else:
+                # dlg_plural not found, show a warn
+                msg_log.append((MSG_WARN_T, indent_lvl, NO_DLG_PLUR))
+
+        elif "dlg_plural" in save_obj:
+            # dlg_desc was not found, just pop out dlg_plur
+            msg_log.append((MSG_WARN_T, indent_lvl, NO_DLG_DESC))
+            save_obj.pop("dlg_plural")
 
         # now for rec_layer
         if "rec_layer" in jobj:
@@ -1583,16 +1627,17 @@ init 189 python in mas_sprites_json:
 
         # now for list based
         if "hover_dlg" in select_info:
-            if not _validate_iterstr(
-                select_info,
-                save_obj,
-                "hover_dlg",
-                False,
-                True,
-                msg_log,
-                indent_lvl + 1
-            ):
-                return False
+            select_info.pop("hover_dlg")
+#            if not _validate_iterstr(
+#                select_info,
+#                save_obj,
+#                "hover_dlg",
+#                False,
+#                True,
+#                msg_log,
+#                indent_lvl + 1
+#            ):
+#                return False
 
         if "select_dlg" in select_info:
             if not _validate_iterstr(
