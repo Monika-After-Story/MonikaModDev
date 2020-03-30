@@ -1021,7 +1021,7 @@ label bye_going_somewhere_iowait:
 
             #Show Monika again
             call mas_transition_from_emptydesk("monika 1ekc")
-
+            call mas_dockstat_abort_post_show
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
@@ -1053,6 +1053,7 @@ label bye_going_somewhere_rtg:
 
 
     call mas_transition_from_emptydesk("monika 1ekc")
+    call mas_dockstat_abort_post_show
 
     # otherwise, we failed, so monika should tell player
     m 1ekc "Oh no..."

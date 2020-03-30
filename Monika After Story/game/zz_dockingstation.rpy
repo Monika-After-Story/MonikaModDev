@@ -2210,13 +2210,25 @@ label mas_dockstat_first_time_goers:
     m 1eua "Anyway..."
     return
 
+label mas_dockstat_abort_post_show:
+    #Call this label to re-set anything needed when aborting dockstat farewells (error or by user)
+    #After Monika has returned to her desk
+    python:
+        #Restore the drink and make sure it's kept on desk again
+        _curr_drink = MASConsumable._getCurrentDrink()
+        if _curr_drink and _curr_drink.portable:
+            _curr_drink.acs.keep_on_desk = True
+
+    return
+
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
     # we should abort the promise (this lets spaceroom idle abort, as well)
-    $ store.mas_dockstat.abort_gen_promise = True
+    python:
+        store.mas_dockstat.abort_gen_promise = True
 
-    # attempt to abort the promise
-    $ store.mas_dockstat.abortGenPromise()
+        #Attempt to abort the promise
+        store.mas_dockstat.abortGenPromise()
 
     #FALL THROUGH
 
