@@ -2912,27 +2912,6 @@ label monika_difficulty:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
-
-label monika_credits_song:
-    #TODO: adjust based on starting act, doesn't quite apply to those that never went past act 3
-    m 1hua "I hope you liked my song."
-    m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
-    m 1eua "Give me some time, and I'll try to write another."
-    if persistent._mas_pm_plays_instrument is not False:
-        if persistent._mas_pm_plays_instrument:
-            m 3eua "Maybe you could play me a song too!"
-        else:
-            m 3eua "Maybe you could play me a song too, if you can play an instrument?"
-        m 1hub "I would love that."
-        m 3eua "Oh, and I'll play the song again for you anytime you want me to."
-    else:
-        m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
-
-    m "Just hit the 'm' key at any time."
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poetry",category=['literature'],prompt="Poetry",random=True))
 
 label monika_poetry:
@@ -6463,7 +6442,7 @@ label monika_rock:
     m 3esa "You wanna know a cool form of literature?"
     m 3hua "Rock and roll!"
     m 3hub "That's right. Rock and roll!"
-    m 2eka "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
+    m 2eka "It's disheartening to know that so many people think that rock and roll is just a bunch of noises."
     m 2lsc "To tell you the truth, I judged rock too."
     m 3euc "They're no different from poems, actually."
     m 1euc "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
@@ -13390,6 +13369,47 @@ label monika_auroras:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_social_norms",
+            category=['society'],
+            prompt="Changing social norms",
+            random=True
+        )
+    )
+
+label monika_social_norms:
+    m 1eua "[player], have you ever wondered how new ideas get accepted in society?"
+    m 1eub "There's tons of things that were considered bad at first, but have since been reconsidered!"
+    m 3etc "For example, did you know rock and roll was seen as vulgar and depraved when it first appeared?"
+    m 3eud "Early fans were seen as impressionable youth at best, and delinquents at worst."
+    m 1duu "But as these people grew to become full-fledged members of society, they passed their interests onto those around them."
+    m 3eua "Those who met them realized they were just normal people with nothing weird about them."
+    m 3hua "Nowadays, that stigma has almost completely disappeared!{w=0.3} {nw}"
+    extend 3hub "Even those who still don't like rock music at least respect it!"
+    m 1eub "And there's plenty of other things still in the process of becoming accepted too."
+    m 1eua "You might be familiar with role-playing, online gaming...or even reading manga."
+    m 3rksdla "Though Natsuki would probably be the one to ask about this..."
+    m 1eub "Remember how she was trying to change your mind about that manga she liked?"
+    m 1rkc "I wonder how many people criticized her for her hobby...{w=0.5}I can't imagine it was always easy."
+    m 1eua "It all makes me wonder what kind of things will be seen as normal in the future."
+    m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
+    m 3etc "But how do you think this will change over the years?{w=0.3} {nw}"
+    extend 3eud "Will we ever reach a point where it's seen as something normal?"
+    m 1eka "Not that it's important anyway."
+    m 3eka "As long as we have each other, that's all that matters, right?"
+    m 1duu "It's nice to know there's someone I can truly be myself with, no matter what."
+    m 1eua "And if you've got any unique interests, you already know I'll always be there to talk about it."
+    m 1hub "I want to learn everything about what you like!"
+    m 1dka "All of the little things that make you...{w=0.3}{nw}"
+    extend 1eka "you."
+    m 1ekb "So please, always be yourself, [player]. Everybody else is already taken, after all."
+    if mas_isMoniHappy(higher=True):
+        m 1dkbfu "You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
@@ -13521,6 +13541,77 @@ label monika_intrusive_thoughts:
     m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
     return
 
+#Whether or not the player can code in python
+default persistent._mas_pm_has_code_experience = None
+
+#Whether or not we should use advanced python tips or not
+default persistent._mas_advanced_py_tips = True
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_coding_experience",
+            category=['misc', 'you'],
+            prompt="Coding experience",
+            conditional="renpy.seen_label('monika_ptod_tip001')",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_coding_experience:
+    m 1rsc "Hey [player], I was just wondering since you went through some of my python tips..."
+
+    m 1euc "Do you have any experience with coding?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you have any experience with coding?{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_has_code_experience = True
+            m 1hua "Oh, that's great, [player]!"
+            m 3euc "I know not all languages are quite the same in terms of usage or syntax..."
+            if renpy.seen_label("monika_ptod_tip005"):
+                m 1rksdlc "But since you've gotten to some of the core topics of my tips, I have to ask..."
+            else:
+                m 1rksdlc "But still, I should ask..."
+
+            m 1etc "Have I been underestimating your coding skills?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Have I been underestimating your coding skills?{fast}"
+
+                "Yes.":
+                    $ persistent._mas_advanced_py_tips = True
+                    m 1hksdlb "Ahaha, I'm sorry, [player]!"
+                    m 1ekc "I didn't mean to...{w=0.3}{nw}"
+                    extend 3eka "I just never thought to ask before."
+                    if persistent._mas_pm_has_contributed_to_mas:
+                        m 1eka "But I guess it makes sense since you've already helped me come closer to your reality."
+
+                    m 1eub "I'll keep your experience in mind for future tips though!"
+
+                "No.":
+                    $ persistent._mas_advanced_py_tips = False
+                    m 1ekb "I'm glad to hear I'm going at a good pace for you then."
+                    m 3eka "I just wanted to make sure I wasn't assuming your skill level."
+                    m 1hua "I hope my tips help you, [player]~"
+
+            if not persistent._mas_pm_has_contributed_to_mas and persistent._mas_pm_wants_to_contribute_to_mas:
+                m 3eub "And since you're interested in contributing, you should give it a shot!"
+                m 3hub "I'd love to see what you come up with~"
+
+        "No.":
+            $ persistent._mas_pm_has_code_experience = False
+            #Since the player doesn't have code experience, we can assume we should have the normal python tips
+            $ persistent._mas_advanced_py_tips = False
+
+            m 1eka "That's alright, [player]."
+            m 1hksdlb "I just wanted to make sure I wasn't boring you with my python tips, ahaha~"
+            m 3eub "But I hope they convince you to take on some of your own coding projects too!"
+            m 3hua "I'd love to see what you can come up with if you put your mind to it!"
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(
@@ -13557,11 +13648,12 @@ label monika_songwriting:
     m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
     m 3euc "I guess that goes for lyrics too, actually."
     m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
-
     if renpy.seen_audio(songs.FP_YOURE_REAL):
         m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
-        m 3ekbla "I knew I couldn't let you go without telling you everything."
-
+        if persistent.monika_kill:
+            m 3ekbla "I knew I couldn't let you go without telling you everything."
+        else:
+            m 1ekbsa "Every day, I imagine spending my life by your side."
     m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
     if persistent._mas_pm_plays_instrument:
