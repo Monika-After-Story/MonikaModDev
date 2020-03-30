@@ -2702,7 +2702,7 @@ label monika_aiwfc_song:
     $ renpy.music.set_volume(0.0, 1.0, "background")
     $ renpy.music.set_volume(0.0, 1.0, "backsound")
 
-    play music "mod_assets/bgm/aiwfc.ogg"
+    $ play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
     m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"
@@ -6308,7 +6308,7 @@ P.S: Don't tell her about me.
         #show chibi, she's just written the letter
         show chibi_peek with moveinleft
         m 1ekc "Of course, I haven't read it, since it's obviously for you..."
-        m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
+        m 1tuu "{cps=*2}Hmm, I wonder what this could be about...{/cps}{nw}"
         $ _history_list.pop()
         m 1hua "Ehehe~"
 
