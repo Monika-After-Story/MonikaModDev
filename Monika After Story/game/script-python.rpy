@@ -134,7 +134,7 @@ init 5 python:
 label monika_ptod_tip000:
     m 3eub "You want to learn about Python?"
     m 3hub "I'm so happy you asked me!"
-    m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
+    m 1lksdlb "I don't know {i}that{/i} much about programming, but I'll try my best to explain."
     m 1esa "Let's start with what Python even is."
 
     $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)

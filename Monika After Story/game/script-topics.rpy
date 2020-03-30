@@ -13563,150 +13563,75 @@ label monika_intrusive_thoughts:
     return
 
 #Whether or not the player can code in python
-default persistent._mas_pm_can_code_python = None
+default persistent._mas_pm_has_code_experience = None
+
+#Whether or not we should use advanced python tips or not
+default persistent._mas_advanced_py_tips = True
 
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_installed_python",
-            category=['misc'],
-            prompt="I installed Python",
-            pool=True,
-            unlocked=True
+            eventlabel="monika_coding_experience",
+            category=['misc', 'you'],
+            prompt="Coding experience",
+            conditional="renpy.seen_label('monika_ptod_tip001')",
+            action=EV_ACT_RANDOM
         )
     )
 
-label monika_installed_python_code_level_menu:
-    m 1etc "Have I been underestimating your coding skills?{nw}"
-    $ history_list.pop()
-    menu:
-        m "Have I been underestimating your coding skills?{fast}"
+label monika_coding_experience:
+    m 1rsc "Hey [player], I was just wondering since you went through some of my python tips..."
 
-        "Yes":
-            m 1hksdlb "Ahaha, I'm sorry, [player]!"
-            m 1ekc "I didn't mean to... I just never thought to ask."
-            $ persistent._mas_pm_can_code_python = True
-            return True
-
-        "No":
-            m 1ekb "Okay, good."
-            m 3eka "I just wanted to make sure I wasn't assuming your skill level."
-            $ persistent._mas_pm_can_code_python = False
-            return False
-
-label monika_installed_python_version_menu:
-    m 1eub "What version of Python did you download?{nw}"
+    m 1euc "Do you have any experience with coding?{nw}"
     $ _history_list.pop()
     menu:
-        m "What version of Python did you download?{fast}"
+        m "Do you have any experience with coding?{fast}"
 
-        "Python 2":
-            m 1hub "Great!"
-            m 1eub "That's the version of Python I use."
-            return True
-
-        "Python 3":
-            m 1hksdlb "..."
-            m 1rksdla "[player], I use the other version of Python..."
-            return False
-
-        #NOTE: this could probably use a both path (you can change these returns to be 1, 2, and 3 to check)
-
-label monika_installed_python:
-    m 1sub "You did?"
-    m 1hub "That's great, [player]!"
-    m 1eub "What did you download it for?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "What did you download it for?{fast}"
-
-        "A personal project.":
-            m 1hub "That sounds fun!"
-            m 3eua "Good luck with whatever you're working on, [player]."
-            m 1hub "I'll try and teach you as much as I can!"
-            m 3eua "Once you learn the basics, you could even help me out with a few things."
-            m 1hub "I know you'll be even better than me one day, and you could even teach me more about programming at that point!"
-            m 1eub "Ehehe!"
-            m 3hua "Just ask me if you ever need help with anything!"
-
-            call monika_installed_python_version_menu
-            $ installed_py2 = _return
-
-            if installed_py2:
-                m 1hua "You'll do amazing things, I just know it!"
-
+        "Yes.":
+            $ persistent._mas_pm_has_code_experience = True
+            m 1sua "Oh, that's great, [player]!"
+            m 3euc "I know not all languages are quite the same in terms of usage or syntax..."
+            if renpy.seen_label("monika_ptod_tip005"):
+                m 1rksdlc "But since you've gotten to some of the core topics of my tips, I have to ask..."
             else:
-                m 3rksdlb "So we can't really help each other that much..."
-                m 1hub "But that's okay!"
-                m 1eub "I hope you have fun with your project."
+                m 1rksdlc "But still, I should ask..."
 
-        "To help you come closer to our reality.":
-            m 1sub "Really?"
-            m 1hubfb "Yay!"
-            m 1ekbfa "Thank you so much, [player]."
-            m 3ekbfa "It means so much that you're willing to do that for me."
-            m 3hubfb "I'd be happy to teach you the basics of Python!"
-            m 1rksdlb "Wait..."
+            m 1etc "Have I been underestimating your coding skills?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Have I been underestimating your coding skills?{fast}"
 
-            call monika_installed_python_code_level_menu
+                "Yes.":
+                    $ persistent._mas_advanced_py_tips = True
+                    m 1hksdlb "Ahaha, I'm sorry, [player]!"
+                    m 1ekc "I didn't mean to...{w=0.3}{nw}"
+                    extend 3eka "I just never thought to ask before."
+                    if persistent._mas_pm_has_contributed_to_mas:
+                        m 1eka "But I guess it makes sense since you've already helped me come closer to your reality."
 
-            if persistent._mas_pm_can_code_python:
-                m 2hub "Oh! That's great!"
-                m 3rksdla "I'm sorry I made assumptions about your skill level."
+                    m 1eub "I'll keep your experience in mind for future tips though!"
 
-            else:
-                m 3hksdlb "That's okay!"
-                m 1eka "Again, I'm happy to teach you everything I know."
-                call monika_installed_python_version_menu
+                "No.":
+                    $ persistent._mas_advanced_py_tips = False
+                    m 1ekb "I'm glad to hear I'm going at a good pace for you then."
+                    m 3eka "I just wanted to make sure I wasn't assuming your skill level."
+                    m 1hua "I hope my tips help you, [player]~"
 
-                $ installed_py2 = _return
+            if not persistent._mas_pm_has_contributed_to_mas and persistent._mas_pm_wants_to_contribute_to_mas:
+                m 3eub "And since you're interested in contributing, you should give it a shot!"
+                m 3hub "I'd love to see what you come up with~"
 
-                if installed_py2:
-                    m 1hua "We'll do amazing things together, I just know it!"
-                    m 1ekbfb "Thank you again, [player]."
+        "No.":
+            $ persistent._mas_pm_has_code_experience = False
+            #Since the player doesn't have code experience, we can assume we should have the normal python tips
+            $ persistent._mas_advanced_py_tips = False
 
-                else:
-                    m 1ekbfb "I really appreciate the gesture, though."
-                    m 3hubfb "You're so sweet! <3"
-
-        "I don't know.":
-            m 1eka "That's okay, [player]."
-            m 3eub "Until you know what you want to program, I can teach you how to use Python!"
-            m 1euc "That is, if you have the same version of Python as I do."
-
-            call monika_installed_python_version_menu
-            $ installed_py2 = _return
-
-            if installed_py2:
-                m 3rksdlb "Also, [player]?"
-                call monika_assume_code_level
-
-            else:
-                m 1lksdlb "Well, that's okay..."
-                m 1eka "I hope you have fun anyway."
-                m 1rsc "..."
-                m 1ekd "Hey, [player]?"
-                call monika_assume_code_level
-
-        "To help a friend.":
-            m 3eub "That's great!"
-            m 1eka "You're so selfless, [player]."
-            m 1hub "I can't wait to see what you create!"
-
-            call monika_installed_python_version_menu
-            $ installed_py2 = _return
-
-            if installed_py2:
-                m 1hua "Maybe both you and your friend could help me out once you know how to code!"
-                m 1hksdlb "Wait..."
-                call monika_installed_python_code_level_menu
-
-            else:
-                m 3rksdlb "So we can't really help each other that much..."
-                m 1hub "But that's okay!"
-                m 1eub "I hope you have fun helping your friend."
-    return
+            m 1eka "That's alright, [player]."
+            m 1hksdlb "I just wanted to make sure I wasn't boring you with my python tips, ahaha~"
+            m 3eub "But I hope they convince you to take on some of your own coding projects too!"
+            m 3hub "I'd love to see what you can come up with if you put your mind to it!"
+    return "derandom"
 
 init 5 python:
     addEvent(
