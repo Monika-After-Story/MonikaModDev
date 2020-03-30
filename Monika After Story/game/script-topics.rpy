@@ -13385,12 +13385,11 @@ label monika_boardgames:
     m 1eua "Say, [player], you like playing video games, right?"
     m 2rsc "Well, I assume you do at least...{w=0.2} {nw}"
     extend 2rksdla "I don't know if many people would play a game like this one if they weren't at least a little into video games."
-    m 2eua "But I was wondering, what do you think of board games?"
 
-    m 2etc "Do you like board games, [player]?{nw}"
+    m 2etc "But I was wondering, do you like board games, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like board games, [player]?{fast}"
+        m "But I was wondering, do you like board games, [player]?{fast}"
 
         "Yeah.":
             $ persistent._mas_pm_likes_board_games = True
@@ -13402,7 +13401,7 @@ label monika_boardgames:
         "Not really.":
             $ persistent._mas_pm_likes_board_games = False
             m 2eka "I can see why...{w=0.2}{nw}"
-            m 2rksdla "it's a pretty niche hobby, after all."
+            extend 2rksdla "it's a pretty niche hobby, after all."
             m 1eua "But I'm sure there are plenty of other fun activities you enjoy doing in your free time."
             m 3hua "Still, if you ever change your mind, I'd like to give some board games a try with you sometime."
 
