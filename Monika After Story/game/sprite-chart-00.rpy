@@ -4718,6 +4718,20 @@ image monika 2ektda_static = DynamicDisplayable(
     tears="dried"
 )
 
+image monika 2ektdc_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    arms="crossed",
+    head="f",
+    left="1l",
+    right="2r",
+    tears="dried"
+)
+
 image monika 2ektdd_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -4741,6 +4755,20 @@ image monika 2ektpa_static = DynamicDisplayable(
     mouth="smile",
     arms="crossed",
     head="e",
+    left="1l",
+    right="2r",
+    tears="pooled"
+)
+
+image monika 2ektpc_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    arms="crossed",
+    head="f",
     left="1l",
     right="2r",
     tears="pooled"
@@ -5601,40 +5629,5 @@ image monika 2rkbfsdlc_static = DynamicDisplayable(
     arms="crossed",
     blush="full",
     sweat="def"
-)
-
-image monika 2rkbfsdld_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="right",
-    nose="def",
-    mouth="small",
-    arms="crossed",
-    blush="full",
-    sweat="def"
-)
-
-image monika 2rkbfsdlu_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="right",
-    nose="def",
-    mouth="smug",
-    arms="crossed",
-    blush="full",
-    sweat="def"
-)
-
-image monika 2rkbsa_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="right",
-    nose="def",
-    mouth="smile",
-    arms="crossed",
-    blush="shade"
 )
 

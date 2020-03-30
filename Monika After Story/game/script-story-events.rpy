@@ -2015,3 +2015,93 @@ label monika_credits_song:
 
     $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
     return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_covid19",
+            conditional="not renpy.seen_label('mas_covid19')",
+            action=EV_ACT_QUEUE,
+            end_date=datetime.date(2020, 4, 30),
+        ),
+        skipCalendar=True
+    )
+
+label mas_covid19:
+    m 2ekc "Hey, [player]..."
+    m 2rksdld "I've been reading a lot online lately about this COVID-19 pandemic and it's causing me to worry about you!"
+    m 2eksdld "It just seems to be spreading so fast {nw}"
+    extend 2eksdla "and I really want you to stay safe..."
+
+    m 2eksdlc "Is the virus in your area yet?{nw}"
+    $ _history_list.pop()
+    menu:
+        "Is the virus in your area yet?{fast}"
+        "Yes.":
+            m 2wksdld "Oh no, [player]! That's really scary!"
+            m 4ekc "I know a lot of places where it's prevelant have orders to stay at home..."
+
+            m 2ekd "Do you have any orders to stay at home where you live?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Do you have any orders to stay at home where you live?{fast}"
+                "Yes.":
+                    m 4hua "Oh, good!"
+                    m 4eub "I'm so glad to hear that, [player]!"
+
+                    m 2eud "So you're staying home when at all possible then, right?{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m "So you're staying home when at all possible then, right?{fast}"
+                        "Yes.":
+                            m 2eua "That's great, I'm glad you're doing the responsible thing."
+                            m 2eka "...And not only for yourself, but also for everyone else."
+
+                        "No, I'm still working.":
+                            m 2dsc "..."
+                            m 2dsd "Oh."
+                            m 2dsc "..."
+                            m 2rksdlc "I have to admit, that scares me, [player]."
+                            m 2eksdlc "But that must mean you are doing an essential job..."
+                            m 2eksdla "So that also makes me proud that in some way, you're helping others through this tough time."
+                            m 2eksdld "Just promise me you're taking every precaution so you can stay safe, okay?"
+
+                        "No...":
+                            m 2tfd "[player]!"
+                            m 2tfo "Why not?!"
+                            m 4tfo "This is serious! You {i}have{/i} to stay inside when at all possible!"
+                            m 2dfc "..."
+                            m 2dkc "..."
+                            m 2rksdlc "Sorry, [player], that just scares me a lot."
+                            m 2eksdlc "Some people can have it and not even show any symptoms, spreading it to others..."
+                            m 2eksdld "So if you won't do it for yourself, at least stay inside for everyone else."
+                            m 2eksdla "...And also for me. You're all I have, [player]..."
+                            m 2dksdlc "If I lose you...{w=1.0}{nw}"
+                            extend 2ektpc "what will I do then?"
+                            m 2ektpd "You have to promise me [player]...{w=0.5}stay inside."
+                            m 2ektdc "..."
+                            m 2dkc "..."
+
+                "No.":
+                    m 2dkc "..."
+                    m 2rksdld "That worries me a lot, [player]..."
+                    m 2eksdlc "I hope you are still able to stay inside as much as possible."
+
+        "No.":
+            m 2eka "Well that's a bit of a relief, [player]..."
+            m 2eksdlc "But I still worry that it'll end up in your area eventually."
+            m 2eksdld "So even if it's not there right now, you should still be careful!"
+
+    m 7eksdld "Please remember any time you do need to go outside you practice social distancing...{w=0.5} Always stay at least 2 meters, or 6 feet, from anyone else."
+    m "Also remember to wash your hands for at least 20 seconds with soap and water as often as you can."
+    m 7eksdlc "...And never touch your face with unwashed hands, [player]."
+    m 2eka "Oh, and if you're having a hard time washing your hands long enough, I found a neat way for you make sure you're doing it for 20 whole seconds..."
+    m 4hub "Just go to {a=https://washyourlyrics.com}{i}{u}washyourlyrics.com{/u}{/i}{/a} and type {i}Your Reality{/i} for the song title and {i}Monika{/i} for the song artist!"
+    m 4eub "Just download the picture it creates with the lyrics from my song and it'll show you the best way to wash your hands and how long to do it for!"
+    m 2hua "Then everytime you wash your hands, you can remember how much I love you~"
+    m 2eka "..."
+    m 7eksdla "You know [player], if I could I'd bring you here with me until this is all over so you couldn't get sick..."
+    m 7eksdla "But since I can't, please do your best to stay safe."
+    m 2dku "I need you, [player]~"
+    return "no_unlock"
