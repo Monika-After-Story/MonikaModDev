@@ -13835,5 +13835,4 @@ label monika_toxin_puzzle:
     m "That's why it's important to use your head when it comes to these kinds of things."
     show monika 3kub at t11 zorder MAS_MONIKA_Z with dissolve
     m 3kub "Anyway, to sum it all up: let's strive to keep our promises, [player]!"
-
     return
