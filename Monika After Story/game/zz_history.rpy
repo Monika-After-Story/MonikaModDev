@@ -627,7 +627,7 @@ init -850 python:
             # else check regular range
             return (
                 self.start_dt.replace(year=check_dt.year)
-                <= check_dt 
+                <= check_dt
                 < self.end_dt.replace(year=check_dt.year)
             )
 
@@ -945,6 +945,7 @@ init -810 python:
     #   lifestyle - what you do
     #   emotions - emotional/mental states
     #   family - family related stuff
+    #   friends - friend related stuff
     #   actions - what you have done
     #   location - location-based stuff
     #   likes - likes/wants
@@ -973,6 +974,7 @@ init -810 python:
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
 
             # lifestyle / music
+            "_mas_pm_plays_instrument": "pm.lifestyle.play_instrument",
             "_mas_pm_play_jazz": "pm.lifestyle.music.play_jazz",
 
             # lifestyle / smoking
@@ -983,8 +985,16 @@ init -810 python:
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
             "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
+            # lifestyle / exercise
+            "_mas_pm_works_out": "pm.lifestyle.works_out",
+
+            # lifestyle / dating
+            "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
+            "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
+            "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
 
             # family
             "_mas_pm_have_fam": "pm.family.have_family",
@@ -995,12 +1005,21 @@ init -810 python:
             "_mas_pm_no_talk_fam": "pm.family.no_talk_about",
             "_mas_pm_fam_like_monika": "pm.family.likes_monika",
 
+            # friends
+            "_mas_pm_has_friends": "pm.friends.has_friends",
+            "_mas_pm_few_friends": "pm.friends.few_friends",
+
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
+            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
+            "_mas_pm_has_been_to_amusement_park": "pm.actions.been_to_amusement_park",
+
+            # actions / d25
+            "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
+
+            # actions / nye-nyd
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
-            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
-            "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
 
             # actions / games
             "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
@@ -1067,6 +1086,9 @@ init -810 python:
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
             "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
+            "_mas_pm_likes_rain": "pm.likes.rain",
+            "_mas_pm_likes_travelling": "pm.likes.travelling",
+            "_mas_pm_likes_poetry" : "pm.likes.poetry",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1103,6 +1125,7 @@ init -810 python:
             "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
             "_mas_pm_is_bullying_victim": "pm.exp.victim_of_bullying",
             "_mas_pm_currently_bullied": "pm.exp.currently_being_bullied",
+            "_mas_pm_has_code_experience": "pm.exp.code_experience",
 
             # op (opinions)
             # op / monika
@@ -1152,4 +1175,3 @@ init -810 python:
         use_year_before=True,
         dont_reset=True
     ))
-

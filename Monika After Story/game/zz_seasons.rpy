@@ -119,7 +119,10 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
         store.mas_showEVL("monika_outdoors", "EVE", _random=True)
         store.mas_showEVL("monika_backpacking", "EVE", _random=True)
-        store.mas_showEVL("monika_mountain", "EVE", _random=True)
+
+        #Since this is a player model topic, we only rerandom if we need to
+        if store.persistent._mas_pm_would_like_mt_peak is None:
+            store.mas_showEVL("monika_mountain", "EVE", _random=True)
 
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
@@ -131,7 +134,7 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_snowmen", "EVE", derandom=True)
 
         # disable hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
+        store.mas_getConsumable("hotchoc").disable()
 
         # unhibernate islands greet
         if not renpy.seen_label("greeting_ourreality"):
@@ -145,17 +148,13 @@ init 10 python in mas_seasons:
         
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
-        
-        # disbale hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
 
 
     def _pp_fall():
         """
         Programming point for fall
         """
-        # disbale hot choc
-        store.persistent._mas_acs_enable_hotchoc = False
+        pass
 
 
     def _pp_winter():
@@ -182,9 +181,9 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_backpacking", "EVE", derandom=True)
         store.mas_hideEVL("monika_mountain", "EVE", derandom=True)
 
-        # enable hotchoc if it has been given
-        if store.persistent._mas_c_hotchoc_been_given:
-            store.persistent._mas_acs_enable_hotchoc = True
+        # enable hotchoc if given before
+        if store.seen_event("mas_reaction_hotchocolate"):
+            store.mas_getConsumable("hotchoc").enable()
 
         # want to ensure first time we see the islands they are dead and covered in snow
         store.mas_lockEVL("greeting_ourreality", "GRE")

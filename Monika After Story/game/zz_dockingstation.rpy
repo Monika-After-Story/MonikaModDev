@@ -2154,8 +2154,6 @@ init 205 python in mas_dockstat:
 #   true if moni can leave
 #   false otherwise
 label mas_dockstat_ready_to_go(moni_chksum):
-    show monika 2dsc
-
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
     $ can_moni_leave = moni_chksum and moni_chksum != -1
@@ -2163,6 +2161,15 @@ label mas_dockstat_ready_to_go(moni_chksum):
     if can_moni_leave:
         # file successfully made
         # monika can leave
+
+        #We'll do our actual getting ready here since this saves us needing to do it multiple times later
+        python:
+            #If we should take drink with, we do that now
+            mas_useThermos()
+
+            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
+            renpy.pause(1.0, hard=True)
+
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
@@ -2178,14 +2185,15 @@ label mas_dockstat_ready_to_go(moni_chksum):
             call mas_dockstat_first_time_goers
 
         else:
-            m 1eua "Alright."
+            m "Alright."
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
         # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
         # NOTE: callers must handle the dialogue for this
 
@@ -2193,26 +2201,41 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
 
 label mas_dockstat_first_time_goers:
+    call mas_transition_from_emptydesk("monika 3eua")
     m 3eua "I'm now in the file 'monika' in your characters folder."
     m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
-
     m 1eua "And lastly..."
     m 1ekc "Please be careful with me. It's so easy to delete files after all..."
     m 1eua "Anyway..."
     return
 
+label mas_dockstat_abort_post_show:
+    #Call this label to re-set anything needed when aborting dockstat farewells (error or by user)
+    #After Monika has returned to her desk
+    python:
+        #Restore the drink and make sure it's kept on desk again
+        _curr_drink = MASConsumable._getCurrentDrink()
+        if _curr_drink and _curr_drink.portable:
+            _curr_drink.acs.keep_on_desk = True
+
+    return
+
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
+    # we should abort the promise (this lets spaceroom idle abort, as well)
+    python:
+        store.mas_dockstat.abort_gen_promise = True
 
+        #Attempt to abort the promise
+        store.mas_dockstat.abortGenPromise()
+
+    #FALL THROUGH
+
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
     # we are not leaving
     $ persistent._mas_dockstat_going_to_leave = False
-
-    # we should abort the promise (this lets spaceroom idle abort, as well)
-    $ store.mas_dockstat.abort_gen_promise = True
-
-    # attempt to abort the promise
-    $ store.mas_dockstat.abortGenPromise()
 
     # we are not leaving and need to reset these
     if persistent._mas_player_bday_left_on_bday:
@@ -2221,7 +2244,7 @@ label mas_dockstat_abort_gen:
 
     if persistent._mas_f14_on_date:
         $ persistent._mas_f14_on_date = False
-        $ persistent._mas_f14_date -= 1
+        $ persistent._mas_f14_date_count -= 1
 
     if persistent._mas_bday_on_date:
         $ persistent._mas_bday_on_date = False
@@ -2239,20 +2262,25 @@ label mas_dockstat_empty_desk:
         if mas_current_weather != mas_weather_thunder:
             $ mas_changeWeather(mas_weather_thunder, True)
 
+
+    # TODO: else this with the o31 mode
+    # set weather here
+    # TODO: run the yet-to-be-made weather alg running function etc
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
+        $ skip_setting_weather = True
+
+    # reset zoom before showing spaceroom
+    $ store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
-    # empty desk should be a zorder lower so we can pop monika over it
-    $ ed_zorder = MAS_MONIKA_Z - 1
-    $ store.mas_sprites.reset_zoom()
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
-    show emptydesk zorder ed_zorder at i11
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25ShowVisuals()
-
-    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
-        $ renpy.show("mas_roses", zorder=10)
 
     if mas_confirmedParty() and mas_isMonikaBirthday():
         $ persistent._mas_bday_visuals = True
@@ -2339,11 +2367,9 @@ label mas_dockstat_different_monika:
     $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
-    show monika 1ekd zorder MAS_MONIKA_Z at t11
+    call mas_transition_from_emptydesk("monika 1ekd")
 
-    # 1 line of dialgoue before we remove the empty desk
     m "[player]?"
-    hide emptydesk
 
     m "Wait, you're not [player]."
 
@@ -2357,10 +2383,8 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
-    $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
-    hide emptydesk
 
     # dont want users using our promises
     $ promise = None

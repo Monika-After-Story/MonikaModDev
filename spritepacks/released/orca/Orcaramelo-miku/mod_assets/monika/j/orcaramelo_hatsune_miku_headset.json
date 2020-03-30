@@ -8,7 +8,7 @@
         "default": "0",
         "l_default": "5"
     },
-    "rec_layer": 6,
+    "rec_layer": 5,
     "acs_type": "headset",
     "mux_type": [
         "headset",

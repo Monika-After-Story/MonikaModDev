@@ -11,7 +11,8 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "bikini": true
+        "bikini": true,
+        "bare-right-shoulder": true
     },
     "select_info": {
         "display_name": "Bikini (Summer)",
