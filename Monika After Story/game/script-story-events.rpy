@@ -730,6 +730,7 @@ label mas_monikai_detected:
 init 5 python:
     ev_rules = {}
     ev_rules.update(MASGreetingRule.create_rule(skip_visual=True))
+    ev_rules.update(MASPriorityRule.create_rule(-1))
 
     addEvent(
         Event(
