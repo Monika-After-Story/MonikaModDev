@@ -6463,7 +6463,7 @@ label monika_rock:
     m 3esa "You wanna know a cool form of literature?"
     m 3hua "Rock and roll!"
     m 3hub "That's right. Rock and roll!"
-    m 2eka "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
+    m 2eka "It's disheartening to know that so many people think that rock and roll is just a bunch of noises."
     m 2lsc "To tell you the truth, I judged rock too."
     m 3euc "They're no different from poems, actually."
     m 1euc "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
@@ -13387,6 +13387,47 @@ label monika_auroras:
     m 5eubsa "That would be an experience to remember, don't you think, [player]?"
     m 5hubsu "I can't wait until we can turn that into reality."
     $ mas_showEVL("monika_auroras","EVE",_random=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_social_norms",
+            category=['society'],
+            prompt="Changing social norms",
+            random=True
+        )
+    )
+
+label monika_social_norms:
+    m 1eua "[player], have you ever wondered how new ideas get accepted in society?"
+    m 1eub "There's tons of things that were considered bad at first, but have since been reconsidered!"
+    m 3etc "For example, did you know rock and roll was seen as vulgar and depraved when it first appeared?"
+    m 3eud "Early fans were seen as impressionable youth at best, and delinquents at worst."
+    m 1duu "But as these people grew to become full-fledged members of society, they passed their interests onto those around them."
+    m 3eua "Those who met them realized they were just normal people with nothing weird about them."
+    m 3hua "Nowadays, that stigma has almost completely disappeared!{w=0.3} {nw}"
+    extend 3hub "Even those who still don't like rock music at least respect it!"
+    m 1eub "And there's plenty of other things still in the process of becoming accepted too."
+    m 1eua "You might be familiar with role-playing, online gaming...or even reading manga."
+    m 3rksdla "Though Natsuki would probably be the one to ask about this..."
+    m 1eub "Remember how she was trying to change your mind about that manga she liked?"
+    m 1rkc "I wonder how many people criticized her for her hobby...{w=0.5}I can't imagine it was always easy."
+    m 1eua "It all makes me wonder what kind of things will be seen as normal in the future."
+    m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
+    m 3etc "But how do you think this will change over the years?{w=0.3} {nw}"
+    extend 3eud "Will we ever reach a point where it's seen as something normal?"
+    m 1eka "Not that it's important anyway."
+    m 3eka "As long as we have each other, that's all that matters, right?"
+    m 1duu "It's nice to know there's someone I can truly be myself with, no matter what."
+    m 1eua "And if you've got any unique interests, you already know I'll always be there to talk about it."
+    m 1hub "I want to learn everything about what you like!"
+    m 1dka "All of the little things that make you...{w=0.3}{nw}"
+    extend 1eka "you."
+    m 1ekb "So please, always be yourself, [player]. Everybody else is already taken, after all."
+    if mas_isMoniHappy(higher=True):
+        m 1dkbfu "You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
     return
 
 init 5 python:
