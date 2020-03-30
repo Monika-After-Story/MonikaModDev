@@ -13401,7 +13401,7 @@ init 5 python:
     )
 
 label monika_social_norms:
-    m 1eua "Have you ever wondered how new ideas get accepted in society?"
+    m 1eua "[player], have you ever wondered how new ideas get accepted in society?"
     m 1eub "There's tons of things that were considered bad at first, but have since been reconsidered!"
     m 3etc "For example, did you know rock and roll was seen as vulgar and depraved when it first appeared?"
     m 3eud "Early fans were seen as impressionable youth at best, and delinquents at worst."
@@ -13411,9 +13411,9 @@ label monika_social_norms:
     extend 3hub "Even those who still don't like rock music at least respect it!"
     m 1eub "And there's plenty of other things still in the process of becoming accepted too."
     m 1eua "You might be familiar with role-playing, online gaming...or even reading manga."
-    m 3lksdla "Though Natsuki would probably be the one to ask about this..."
+    m 3rksdla "Though Natsuki would probably be the one to ask about this..."
     m 1eub "Remember how she was trying to change your mind about that manga she liked?"
-    m 1rkc "I wonder how many people criticized her for her hobby...{w=0.5}I can't imagine it's always been easy."
+    m 1rkc "I wonder how many people criticized her for her hobby...{w=0.5}I can't imagine it was always easy."
     m 1eua "It all makes me wonder what kind of things will be seen as normal in the future."
     m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
     m 3etc "But how do you think this will change over the years?{w=0.3} {nw}"
