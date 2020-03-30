@@ -13552,7 +13552,7 @@ label monika_intrusive_thoughts:
 default persistent._mas_pm_has_code_experience = None
 
 #Whether or not we should use advanced python tips or not
-default persistent._mas_advanced_py_tips = True
+default persistent._mas_advanced_py_tips = False
 
 init 5 python:
     addEvent(
