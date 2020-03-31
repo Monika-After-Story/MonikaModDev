@@ -13244,51 +13244,50 @@ init 5 python:
     )
 
 label monika_brave_new_world:
-    m 3eub "There's another book I've been reading, [player]."
-    m 3eua "It's called 'Brave New World', it's another dystopian story. I wonder if you've heard of it?"
-    m 4eua "The idea is, you've got this futuristic world where humans are no longer born through natural means."
-    m 4eub "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
-    m 1esb "Your future role in society would be decided beforehand, and you would be given a body and mind fitting of your predetermined purpose."
-    m 3esd "You would also be indoctrinated from birth to be satisfied with your lot in life, and not to seek anything different."
-    m "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
-    m 1esc "They would be made to associate books to negative stimuli; so when they become adults, they would naturally tend to avoid reading."
-    m 4esd "They would also be taught to respect and submit to people from castes above theirs, and to look down on those of castes below."
-    m 2eua "It's a pretty interesting case as a dystopia, as most of them show you a crushed and oppressed people..."
-    m 3wuo "But in this one, everyone is actually happy, and genuinely supportive of the system!"
-    m 3esc "And despite that, to us, the readers, this still feels horrifying."
-    m 1rud "Sure, they managed to get rid of most of the human sufferings, or the fear of death..."
-    m 3esd "But it came at the price of getting people rid of any form of creativity and critical thinking."
-    m 2wud "We're talking about a world where you can get arrested just for reading poetry in public! Can you imagine that?"
-    m 3esc "One key point in the book is people not being able to appreciate old theatre plays..."
+    m 1eua "I've been doing a little reading lately, [player]."
+    m 3eua "There's a book called 'Brave New World,' it's dystopian story.{w=0.3} {nw}"
+    extend 3etc "Have you heard of it?"
+    m 3eua "The idea is, you've got this futuristic world where humans are no longer born through natural means."
+    m 3eud "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
+    m 1esa "Your role in society would be decided beforehand {nw}"
+    extend 1eub "and you would be given a body and mind fitting of your predetermined purpose."
+    m 1eud "You would also be indoctrinated from birth to be satisfied with your life and not to seek anything different."
+    m 3euc "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
+    m 1euc "Books were associated to negative stimuli so when people became adults, they would naturally tend to avoid reading."
+    m 3esc "They would also be taught to respect and submit to people from castes above theirs, and to look down on those of castes below."
+    m 3eua "It's a pretty interesting case as a dystopian story, as most will show people as crushed and oppressed..."
+    m 3wuo "But in this one, everyone is actually happy and genuinely supportive of the system!"
+    m 3euc "And despite that,{w=0.3} to us the readers, this is horrifying."
+    m 1rsc "Sure, they managed to get rid of most of the human sufferings or the fear of death..."
+    m 3ekc "But it came at the price of getting rid of any form of creativity and critical thinking."
+    m 1wud "We're talking about a world where you can get arrested just for reading poetry in public! Can you imagine that?"
+    m 3euc "A key point in the book is people not being able to appreciate old theatrical plays..."
 
     if seen_event("monika_pluralistic_ignorance"):
-        m 3hfu "Even if they are Shakespeare's plays, and you know how I feel about those..."
+        m 3tku "Even if they are Shakespeare's plays, and you know how I feel about those..."
 
-    m 2esc "They just can't understand the value in the variety of human emotions, like sorrow, or loneliness."
-    m 4esc "They never experience those anymore. All of their desires are swiftly granted, and they never want for something they cannot get."
-    m 2rsc "..."
-    m 3rsc "And yet, despite all that, everyone is happy, healthy and safe..."
-    m 1esc "This really makes you think about the nature of happiness, and society..."
+    m 2ekc "They just can't understand the value in the variety of human emotions, like sorrow or loneliness."
+    m 7ekd "These emotions are never experienced anymore. All of their desires are swiftly granted and they never want for something they cannot get."
+    m 1dsc "..."
+    m 3eka "And yet, despite all that, everyone is happy, healthy and safe..."
+    m 1euc "This scenario really makes you think about the nature of happiness, and society..."
 
     if mas_isMoniDis(lower=True):
-        m 2dsc "..."
+        m 2dkc "..."
         m 2rkc "Sometimes, I wish I could live happily in a world like that."
         m 2dkc "Maybe it was a bad thing I had my epiphany..."
-        m 2dktdc "Then I could have kept on living without ever realizing the truth..."
-        m "And I would not have to feel this pain..."
+        m 2dktdc "...then I could have kept on living without ever realizing the truth."
 
     else:
-        m 1eua "Though I certainly can't see myself living happily in a world like that..."
-        m 1dsc "An unchallenging world, so limited in humanity and emotions..."
+        m 1eka "Though, I certainly can't see myself living happily in a world like that..."
+        m 3esc "An unchallenging world, limited in humanity and emotion..."
 
         if mas_isMoniHappy(higher=True):
-            m 1hubfa "Especially not now that I've discovered you, and how wonderful loving you could be~"
-            m 1eubfu "Ehehe~"
+            m 1ekbsa "And I could never give up loving you~"
+            m 1hubfu "Ehehe~"
 
         else:
-            m 1rsc "..."
-            m 1rfd "No, I just can't go back to such a sad, empty world, like the one you found me in..."
-            m 1rfc "Not now that I've seen what else is out there..."
+            m 1eka "Now that I've seen what else is out there...{w=0.3}I just can't go back to such a sad, empty world, like the one you found me in."
     return
 
 init 5 python:
