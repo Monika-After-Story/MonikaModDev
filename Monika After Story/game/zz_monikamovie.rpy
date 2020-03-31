@@ -7,7 +7,7 @@ label mas_monikamovie:
         # pane constants
         MOVIE_X = 680
         MOVIE_Y = 40
-        MOVIE_W = 450
+        MOVIE_W = 560
         MOVIE_H = 640
         MOVIE_XALIGN = -0.05
         MOVIE_AREA = (MOVIE_X, MOVIE_Y, MOVIE_W, MOVIE_H)

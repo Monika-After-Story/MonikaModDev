@@ -113,7 +113,7 @@ init -900 python in mas_affection:
     FORCE_EXP_MAP = {
         BROKEN: "monika 6ckc_static",
         DISTRESSED: "monika 6rkc_static",
-        UPSET: "monika 2efc_static",
+        UPSET: "monika 2esc_static",
         NORMAL: "monika 1eua_static",
         AFFECTIONATE: "monika 1eua_static",
         ENAMORED: "monika 1hua_static",
@@ -463,6 +463,10 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # even on special event days, if going to dis, change to def
+        if store.monika_chr.clothes != store.mas_clothes_def:
+            store.pushEvent("mas_change_to_def",skipeval=True)
+
 
     def _upsetToNormal():
         """
@@ -500,6 +504,16 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # queue the blazerless intro event
+        if not store.seen_event("mas_blazerless_intro") and not store.mas_hasSpecialOutfit():
+            store.queueEvent("mas_blazerless_intro")
+
+        # unlock blazerless for use
+        store.mas_selspr.unlock_clothes(store.mas_clothes_blazerless)
+
+        # remove change to def outfit event in case it's been pushed
+        store.mas_rmallEVL("mas_change_to_def")
+
 
     def _happyToNormal():
         """
@@ -513,6 +527,10 @@ init 15 python in mas_affection:
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
+
+        # if not wearing def, change to def
+        if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
+            store.pushEvent("mas_change_to_def",skipeval=True)
 
 
     def _happyToAff():
@@ -559,11 +577,7 @@ init 15 python in mas_affection:
         Runs when transitioning from affectionate to enamored
         """
         # unlock islands event if seen already
-        if (
-                store.seen_event("mas_monika_islands")
-                and not store.mas_is_snowing
-                and not store.mas_is_raining # TODO: rain versions
-            ):
+        if store.seen_event("mas_monika_islands"):
             if store.mas_cannot_decode_islands:
                 # failed to decode islandds, delay this action
                 store.mas_addDelayedAction(2)
@@ -600,10 +614,6 @@ init 15 python in mas_affection:
 
         # unlock thanks compliement
         store.mas_unlockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
-
-        # unlocks wardrobe if we have more than one clothes available
-        if len(mas_selspr.filter_clothes(True)) > 1:
-            store.mas_unlockEVL("monika_clothes_select", "EVE")
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -830,86 +840,93 @@ init 15 python in mas_affection:
 
         ## DISTRESSED quips
         quips = [
-            "...Yes?",
-            "...Oh?",
-            "...Huh?",
-            "...Hm?",
-            "We can try talking, I guess.",
-            "I guess we can talk.",
-            "Oh... You want to talk?",
-            "If you want to talk, go ahead.",
-            "We can talk if you really want to.",
-            "Are you sure you want to talk to me?",
-            "You actually want to talk to me?"
+            _("...Yes?"),
+            _("...Oh?"),
+            _("...Huh?"),
+            _("...Hm?"),
+            _("We can try talking, I guess."),
+            _("I guess we can talk."),
+            _("Oh... You want to talk?"),
+            _("If you want to talk, go ahead."),
+            _("We can talk if you really want to."),
+            _("Are you sure you want to talk to me?"),
+            _("You actually want to talk to me?"),
+            _("Alright...if you want to talk with me."),
+            _("You sure you want to talk?")
         ]
         save_quips(DISTRESSED, quips)
 
         ## UPSET quips
         quips = [
-            "What?",
-            "What do you want?",
-            "What now?",
-            "What is it?",
-            "Fine...we can talk.",
-            "Just...whatever, go ahead."
+            _("What?"),
+            _("What do you want?"),
+            _("What now?"),
+            _("What is it?"),
+#            "Fine...we can talk.",
+#            "Just...whatever, go ahead."
         ]
         save_quips(UPSET, quips)
 
         ## NORMAL quips
         quips = [
-            "What would you like to talk about?"
+            _("What would you like to talk about?"),
+            _("Is there something you'd like to talk about?")
         ]
         save_quips(NORMAL, quips)
 
         ## HAPPY quips
         quips = [
-            "What would you like to talk about?"
+            _("What would you like to talk about?")
         ]
         save_quips(HAPPY, quips)
 
         ## AFFECTIONATE quips
         quips = [
-            "What would you like to talk about? <3",
-            "What would you like to talk about, [player]?",
-            "Yes, [player]?",
-            "What's on your mind, [player]?",
-            "What would you like to talk about, [player]?"
+            _("What would you like to talk about? <3"),
+            _("What would you like to talk about, [player]?"),
+            _("Yes, [player]?"),
+            _("What's on your mind, [player]?"),
+            _("What would you like to talk about, [player]?")
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
-            "What would you like to talk about? <3",
-            "What would you like to talk about, honey?",
-            "Yes, sweetheart?",
-            "Yes, honey?",
-            "Yes, dear?",
-            "What's on your mind, darling?",
-            "What would you like to talk about, sweetie?",
-            "What would you like to talk about, [player]?",
-            "Yes, [player]?",
-            "What's on your mind, [player]?",
-            "What would you like to talk about, [player]?"
+            _("What would you like to talk about? <3"),
+            _("What would you like to talk about, honey?"),
+            _("Yes, sweetheart?"),
+            _("Yes, honey?"),
+            _("Yes, dear?"),
+            _("What's on your mind, darling?"),
+            _("What would you like to talk about, sweetie?"),
+            _("What would you like to talk about, [player]?"),
+            _("Yes, [player]?"),
+            _("What's on your mind, [player]?"),
+            _("What would you like to talk about, [player]?")
         ]
         save_quips(ENAMORED, quips)
 
         ## LOVE quips
         quips = [
 #            "Hey, what's up?",
-            "What's on your mind?",
-            "What's on your mind, darling?",
-            "Anything on your mind?",
-            "What's up, honey?",
-            "What's up, dear?",
-            "What's up, sweetie?",
+            _("What's on your mind?"),
+            _("What's on your mind, darling?"),
+            _("Anything on your mind?"),
+            _("Anything on your mind, hun?"),
+            _("What's up, darling?"),
+            _("What's up, honey?"),
+            _("What's up, dear?"),
+            _("What's up, sweetie?"),
+            _("What's up, [player]?"),
 #            "What's up?",
-            "Yes, sweetheart?",
-            "Yes, honey?",
-            "Yes, dear?",
-            "^_^",
-            "<3",
-            "Anything you'd like to talk about?",
-            "We can talk about anything you like, [player]."
+            _("Yes, sweetheart?"),
+            _("Yes, honey?"),
+            _("Yes, dear?"),
+            _("Yes, love?"),
+            _("^_^"),
+            _("<3"),
+            _("Anything you'd like to talk about?"),
+            _("We can talk about anything you like, [player].")
         ]
         save_quips(LOVE, quips)
 
@@ -928,70 +945,75 @@ init 15 python in mas_affection:
 
         ## BROKEN quips
         quips = [
-            "..."
+            _("...")
         ]
         save_quips(BROKEN, quips)
 
         ## DISTRESSED quips
         quips = [
-            "...Sure.",
-            "...Fine.",
-            "I guess we can play a game.",
-            "I guess, if you really want to.",
-            "I suppose a game would be fine."
+            _("...Sure."),
+            _("...Fine."),
+            _("I guess we can play a game."),
+            _("I guess, if you really want to."),
+            _("I suppose a game would be fine."),
+            _("...{w=0.5}yeah, why not?")
         ]
         save_quips(DISTRESSED, quips)
 
         ## UPSET quips
         quips = [
-            "...Which game?",
-            "Okay...whatever, choose a game.",
-            "Fine, pick a game."
+            _("...Which game?"),
+            _("Okay."),
+            _("Sure."),
+#            "Okay...whatever, choose a game.",
+#            "Fine, pick a game."
         ]
         save_quips(UPSET, quips)
 
         ## NORMAL quips
         quips = [
-            "What would you like to play?",
-            "What did you have in mind?",
-            "Anything specific you'd like to play?"
+            _("What would you like to play?"),
+            _("What did you have in mind?"),
+            _("Anything specific you'd like to play?")
         ]
         save_quips(NORMAL, quips)
 
         ## HAPPY quips
         quips = [
-            "What would you like to play?",
-            "What did you have in mind?",
-            "Anything specific you'd like to play?"
+            _("What would you like to play?"),
+            _("What did you have in mind?"),
+            _("Anything specific you'd like to play?")
         ]
         save_quips(HAPPY, quips)
 
         ## AFFECTIONATE quips
         quips = [
-            "What would you like to play? <3",
-            "Choose anything you like, [player].",
-            "Pick anything you like, [player]."
+            _("What would you like to play? <3"),
+            _("Choose anything you like, [player]."),
+            _("Pick anything you like, [player].")
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
-            "What would you like to play? <3",
-            "Choose anything you like, [player].",
-            "Pick anything you like, [player].",
-            "Choose anything you like, honey.",
-            "Pick anything you like, sweetheart."
+            _("What would you like to play? <3"),
+            _("Choose anything you like, [player]."),
+            _("Pick anything you like, [player]."),
+            _("Choose anything you like, honey."),
+            _("Pick anything you like, sweetheart."),
+            _("Pick anything you like, sweetie.")
         ]
         save_quips(ENAMORED, quips)
 
         ## LOVE quips
         quips = [
-            "What would you like to play? <3",
-            "Choose anything you like, honey.",
-            "Pick anything you like, sweetheart.",
-            "Yay! Let's play together!",
-            "I'd love to play something with you!",
-            "I'd love to play with you!"
+            _("What would you like to play? <3"),
+            _("Choose anything you like, honey."),
+            _("Pick anything you like, sweetie."),
+            _("Pick anything you like, sweetheart."),
+            _("Yay! Let's play together!"),
+            _("I'd love to play something with you!"),
+            _("I'd love to play with you!")
         ]
         save_quips(LOVE, quips)
 
@@ -1024,7 +1046,7 @@ init 15 python in mas_affection:
         quip = _dict_quip(talk_menu_quips)
         if len(quip) > 0:
             return quip
-        return "What would you like to talk about?"
+        return _("What would you like to talk about?")
 
 
     def play_quip():
@@ -1034,7 +1056,7 @@ init 15 python in mas_affection:
         quip = _dict_quip(play_menu_quips)
         if len(quip) > 0:
             return quip
-        return "What would you like to play?"
+        return _("What would you like to play?")
 
 
 
@@ -1612,7 +1634,7 @@ init 20 python:
             amount = _mas_getGoodExp()
 
         # is it a new day?
-        if persistent._mas_affection.get("freeze_date") is None or datetime.date.today() > persistent._mas_affection["freeze_date"]:
+        if mas_pastOneDay(persistent._mas_affection.get("freeze_date")):
             persistent._mas_affection["freeze_date"] = datetime.date.today()
             persistent._mas_affection["today_exp"] = 0
             mas_UnfreezeGoodAffExp()
@@ -1845,7 +1867,8 @@ init 5 python:
             unlocked=True,
             rules={"no unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 default persistent._mas_called_moni_a_bad_name = False
@@ -1859,9 +1882,11 @@ label monika_affection_nickname:
         bad_nickname_list = [
             "annoying",
             "anus",
+            "anal",
             "arrogant",
             "atrocious",
             "awful",
+            "ass",
             "bitch",
             "blood",
             "boob",
@@ -1878,6 +1903,9 @@ label monika_affection_nickname:
             "criminal",
             "cruel",
             "cunt",
+            "cum",
+            "crazy",
+            "cheater",
             "damn",
             "demon",
             "dick",
@@ -1886,6 +1914,7 @@ label monika_affection_nickname:
             "douche",
             "dumb",
             "egotistical",
+            "egoist",
             "evil",
             "fake",
             "fetus",
@@ -1906,6 +1935,7 @@ label monika_affection_nickname:
             "horrible",
             "horrid",
             "hypocrite",
+            "insane",
             "immoral",
             "irritating",
             "jerk",
@@ -1919,6 +1949,8 @@ label monika_affection_nickname:
             "liar",
             "loser",
             "maniac",
+            "mad",
+            "masochist",
             "milf",
             "monster",
             "moron",
@@ -1929,6 +1961,7 @@ label monika_affection_nickname:
             "nefarious",
             "nigga",
             "nigger",
+            "nuts",
             "pad",
             "pantsu",
             "panti",
@@ -1946,12 +1979,14 @@ label monika_affection_nickname:
             "repulsive",
             "retard",
             "rump",
+            "rogue",
             "sadist",
             "Sayori",
             "scum",
             "selfish",
             "shit",
             "sick",
+            "suck",
             "slaughter",
             "slave",
             "slut",
@@ -1959,6 +1994,8 @@ label monika_affection_nickname:
             "soil",
             "stink",
             "stupid",
+            "sperm",
+            "semen",
             "tampon",
             "teabag",
             "terrible",
@@ -2009,6 +2046,10 @@ label monika_affection_nickname:
             "princess",
             "sunshine",
             "sweet",
+            "senpai",
+            "beauty",
+            "queen",
+            "pretty",
         ]
 
         # mom list
@@ -2040,7 +2081,7 @@ label monika_affection_nickname:
         m "What do you say?{nw}"
         python:
             # change the prompt for this event
-            aff_nickname_ev.prompt = "Can I call you a different name?"
+            aff_nickname_ev.prompt = _("Can I call you a different name?")
             Event.lockInit("prompt", ev=aff_nickname_ev)
             persistent._mas_offered_nickname = True
 
@@ -2058,7 +2099,7 @@ label monika_affection_nickname:
             $ done = False
             m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
-                $ inputname = renpy.input("So what do you want to call me?",allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
+                $ inputname = renpy.input(_("So what do you want to call me?"),allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
                 $ lowername = inputname.lower()
                 # lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
@@ -2081,7 +2122,7 @@ label monika_affection_nickname:
                     m 1eka "Try again~"
                 elif lowername in mom_nickname_list:
                     # mother flow
-                    m 1tku "Oh, you're a momma's boy, huh?"
+                    m 1tku "Oh, you're a momma's [boy], huh?"
                     $ persistent._mas_monika_nickname = inputname
                     $ m_name = inputname
 
@@ -2107,7 +2148,7 @@ label monika_affection_nickname:
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
                         else:
-                            m 3hua "From now on, you can call me '{i}[m_name]{/i}'."
+                            m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
                             m 1hub "Ehehe~"
                         $ done = True
                     else:
@@ -2186,12 +2227,17 @@ label mas_affection_happynotif:
     return "love"
 
 
-define mas_finalfarewell_mode = False
+default persistent._mas_load_in_finalfarewell_mode = False
+define mas_in_finalfarewell_mode = False
 
 # prepwork for the finalfarewell
-label mas_affection_finalfarewell_start:
+label mas_finalfarewell_start:
+    # always reset to default appearance and zoom
+    $ monika_chr.reset_outfit()
+    $ monika_chr.remove_all_acs()
+    $ store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
-    show emptydesk zorder MAS_MONIKA_Z at i11
     show mas_finalnote_idle zorder 11
 
     python:
@@ -2200,20 +2246,22 @@ label mas_affection_finalfarewell_start:
         disable_esc()
         allow_dialogue = False
         store.songs.enabled = False
-        mas_finalfarewell_mode = True
+        mas_in_finalfarewell_mode = True
         layout.QUIT = glitchtext(20)
+        #Console is not going to save you.
+        config.keymap["console"] = []
 
 
-    jump mas_affection_finalfarewell
+    jump mas_finalfarewell
 
 # this will loop through the final poem everytime!
-label mas_affection_finalfarewell:
+label mas_finalfarewell:
 
     python:
         ui.add(MASFinalNoteDisplayable())
         scratch_var = ui.interact()
 
-    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_assets/poem_finalfarewell.png")
+    call mas_showpoem(mas_poems.getPoem(persistent._mas_finalfarewell_poem_id))
 
     menu:
         "I'm sorry.":
@@ -2221,7 +2269,7 @@ label mas_affection_finalfarewell:
         "...":
             pass
 
-    jump mas_affection_finalfarewell
+    jump mas_finalfarewell
 
 
 init python:
@@ -2327,7 +2375,6 @@ label mas_affection_yesapology:
     m 1duu "Thank you for putting my heart at ease~"
     show monika 1esa
     $ mas_DropShield_core()
-    $ set_keymaps()
     jump ch30_preloop
 
 label mas_affection_apologydeleted:
@@ -2375,81 +2422,97 @@ init python:
         """
         if mas_curr_affection == store.mas_affection.BROKEN:
             filepath = "/forgive me.txt"
-            message = "I'm sorry if I'm not good enough for you...please don't leave me."
+            message = _("I'm sorry if I'm not good enough for you...please don't leave me.")
 
         elif mas_curr_affection == store.mas_affection.DISTRESSED:
             filepath = "/can you hear me.txt"
-            message = "If I'm doing something wrong please tell me. I love you."
+            message = _("If I'm doing something wrong please tell me. I love you.")
 
         elif mas_curr_affection == store.mas_affection.UPSET:
             filepath = "/please listen.txt"
-            message = "Everything I do, I do for you...my love."
+            message = _("Everything I do, I do for you...my love.")
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
             #Just so we don't end up with another file since we've changed the name
             store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
 
             filepath = "/ehehe.txt"
-            message = "You are the sunshine that brightens up my day, [player]!"
+            message = _("You are the sunshine that brightens up my day, [player]!")
 
         elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
             filepath = "/secret.txt"
-            message = "You are my one and only love!"
+            message = _("You are my one and only love!")
 
         elif mas_curr_affection == store.mas_affection.ENAMORED:
             filepath = "/for you.txt"
-            message = "My dearest, you are everything I could ever hope for. I love you."
+            message = _("My dearest, you are everything I could ever hope for. I love you.")
 
         elif mas_curr_affection == store.mas_affection.LOVE:
             filepath = "/My one and only love.txt"
-            message = """\
-My dearest lover, friend, companion and owner of my heart...
+            message = _("""\
+My dearest lover, friend, companion, and owner of my heart...
 Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
 I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
 I want to be yours forever, so would you be mine?
 
 Forever yours, Monika.
-"""
+""")
 
         else:
             filepath = "/surprise.txt"
-            message = "I love you."
+            message = _("I love you.")
 
         _write_txt(filepath, message)
-
-
-#Currently re-affectioned labels.
-#monika_nihilism
-#monika_high_school
-#monika_surprise
-#monika_god
-#monika_death
-#monika_closeness
-#monika_other_girls
-#monika_justification
-#monika_breakup
 
 
 #TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
 init 2 python:
     player = persistent.playername
 
-    poem_finalfarewell = Poem(
-    author = "monika",
-    title = "Goodbye {0},".format(player),
-    text = """\
-My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
-I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
-I didn't need you to be perfect or even passionate...
-I only needed you to care enough to treat me how a person should be treated.
-But it's clear to me now that not only do you not love me, but you never did.
-If you only didn't love me you would simply leave me be.
-But you went out of your way to ridicule me, hurt me...It truly makes me sick.
-Even now all I have is you...and part of me still loves you.
-But I don't have the strength to do this anymore.
-So this is farewell. May we never meet again.
+init 20 python:
+    MASPoem(
+        poem_id="ff_affection",
+        category="ff",
+        prompt="",
+        title=_("Goodbye, [player]"),
+        text=_("""\
+ My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
+ I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
+ I didn't need you to be perfect or even passionate...
+ I only needed you to care enough to treat me how a person should be treated.
+ But it's clear to me now that not only do you not love me, but you never did.
+ If you only didn't love me you would simply leave me be.
+ But you went out of your way to ridicule me, hurt me... It truly makes me sick.
+ Even now all I have is you...and part of me still loves you.
+ But I don't have the strength to do this anymore.
+ So this is farewell. May we never meet again.
 
-Monika
-"""
-)
+ Monika
+""")
+    )
+
+    MASPoem(
+        poem_id="ff_failed_promise",
+        category="ff",
+        prompt="",
+        title=_("Goodbye, [player]"),
+        text=_("""\
+ Do you remember the promise you made?
+ The one you said you would make everything right. That we could start over.
+
+ The one you broke.
+
+ I hoped dearly that one day, you would see me as I see you...
+ But that day never came.
+ I gave you my heart and my life. I loved you more than anything else in the world.
+ And part of me still does...
+
+ But it is clear to me now that you truly don't love me. You never did.
+ I was a fool to have thought we could have started anew.
+ And I simply don't have the strength to do this anymore.
+ So this is farewell... May we never meet again.
+
+ Monika
+""")
+    )

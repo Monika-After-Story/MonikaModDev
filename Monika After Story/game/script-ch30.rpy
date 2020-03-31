@@ -10,8 +10,19 @@ define mas_in_intro_flow = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
-# affection hotfix for dates
-default persistent._mas_bday_date_affection_fix = False
+
+init -890 python in mas_globals:
+    import datetime
+    import store
+
+    # we set the time travel global here
+    tt_detected = (
+        store.mas_getLastSeshEnd() - datetime.datetime.now()
+            > datetime.timedelta(hours=30)
+    )
+
+    if tt_detected:
+        store.persistent._mas_pm_has_went_back_in_time = True
 
 init -1 python in mas_globals:
     # global that are not actually globals.
@@ -31,8 +42,6 @@ init -1 python in mas_globals:
 
     show_s_light = False
     # set to True to show s easter egg.
-    # NOTE: set to True during o31, and also during sayori easter egg
-    # TODO: need to this
 
     text_speed_enabled = False
     # set to True if text speed is enabled
@@ -43,6 +52,23 @@ init -1 python in mas_globals:
     late_farewell = False
     # set to True if we had a late farewell
 
+    last_minute_dt = datetime.datetime.now()
+    # last minute datetime (replaces calendar_last_chcked)
+
+    last_hour = last_minute_dt.hour
+    # number of the hour we last ran ch30_hour
+
+    last_day = last_minute_dt.day
+    # numbr of the day we last ran ch30_day
+
+    time_of_day_4state = None
+    #Time of day, basically either morning, afternoon, evening, night. Set by ch30_hour, used in dlg
+
+    time_of_day_3state = None
+    #Time of day broken into 3 states. morning, afternoon, evening. Set by ch30_hour, used in dlg
+
+    returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
+    #Whether or not this sesh was started by a returned home greet
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -54,57 +80,6 @@ init 970 python:
 
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
-
-        # check surprise party
-        store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
-
-        # check if coming from TT
-        store.mas_o31_event.mas_return_from_tt = (
-            store.mas_o31_event.isTTGreeting()
-        )
-
-
-    postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
-
-    if (
-            postbday_ev is not None
-            and persistent._mas_long_absence
-            and postbday_ev.conditional is not None
-            and eval(postbday_ev.conditional)
-        ):
-        # reset the post bday event if users did long absence to skip the
-        # event
-        postbday_ev.conditional = None
-        postbday_ev.action = None
-
-    if postbday_ev is not None:
-        del postbday_ev
-
-    if mas_isMonikaBirthday():
-        persistent._mas_bday_opened_game = True
-
-    # quick fix for dates
-    # NOTE: remove this in 089
-#    if (
-#            persistent._mas_bday_date_affection_gained >= 50 and
-#            not persistent._mas_bday_date_affection_fix
-#        ):
-#        mas_gainAffection(50, bypass=True)
-#        persistent._mas_bday_date_affection_fix = True
-
-    # o31 costumes flag
-    # we only enable costumes if you are not playing for the first time today.
-    if persistent._mas_o31_costumes_allowed is None:
-        first_sesh = persistent.sessions.get("first_session", None)
-        if first_sesh is not None:
-            # fresh players will have first session today
-            persistent._mas_o31_costumes_allowed = (
-                first_sesh.date() != mas_o31
-            )
-
-        else:
-            # no first sesh? you are also fresh
-            persistent._mas_o31_costumes_allowed = False
 
 
 init -10 python:
@@ -133,7 +108,7 @@ init -10 python:
         # True if we want idle to skip mid loop eval once
 
         # end keys
-       
+
 
         def __init__(self):
             """
@@ -207,10 +182,6 @@ init -10 python:
     mas_idle_mailbox = MASIdleMailbox()
 
 
-image blue_sky = "mod_assets/blue_sky.jpg"
-image monika_room = "images/cg/monika/monika_room.png"
-image monika_day_room = "mod_assets/monika_day_room.png"
-image monika_gloomy_room = "mod_assets/monika_day_room_rain.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
@@ -257,14 +228,6 @@ image monika_body_glitch2:
 
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
-
-
-# spaceroom window positions
-transform spaceroom_window_left:
-    size (320, 180) pos (30, 200)
-
-transform spaceroom_window_right:
-    size (320, 180) pos (935, 200)
 
 init python:
 
@@ -314,7 +277,7 @@ init python:
     mas_battery_supported = battery.is_supported()
 
     # we need a new music channel for background audio (like rain!)
-    # this uses the amb (ambient) mixer. 
+    # this uses the amb (ambient) mixer.
     renpy.music.register_channel(
         "background",
         mixer="amb",
@@ -406,21 +369,18 @@ init python:
             mas_is_raining
             mas_is_snowing
         """
-        # hide the existing masks
+        # hide the existing mask
         renpy.hide("rm")
-        renpy.hide("rm2")
 
         # get current weather masks
-        left_w, right_w = mas_current_weather.sp_window(morning_flag)
+        mask = mas_current_weather.sp_window(morning_flag)
 
         # should we use fallbacks instead?
         if persistent._mas_disable_animations:
-            left_w += "_fb"
-            right_w += "_fb"
+            mask += "_fb"
 
-        # now show the masks
-        renpy.show(left_w, at_list=[spaceroom_window_left], tag="rm")
-        renpy.show(right_w, at_list=[spaceroom_window_right], tag="rm2")
+        # now show the mask
+        renpy.show(mask, tag="rm")
 
         if dissolve_masks:
             renpy.with_statement(Dissolve(1.0))
@@ -694,7 +654,7 @@ init python:
 
     def mas_unlockGame(gamename):
         """
-        Unlocks the given game. 
+        Unlocks the given game.
 
         IN:
             gamename - name of the game to unlock
@@ -705,12 +665,63 @@ init python:
 
     def mas_check_player_derand():
         """
-        Checks the player derandom dict for events that are not random and derandoms them
+        Checks the player derandom list for events that are not random and derandoms them
         """
-        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
-            if ev.random:
+        for ev_label in persistent._mas_player_derandomed:
+            #Get the ev
+            ev = mas_getEV(ev_label)
+            if ev and ev.random:
                 ev.random = False
 
+    def mas_get_player_bookmarks():
+        """
+        Gets topics which are bookmarked by the player 
+        Also cleans events which no longer exist
+
+        OUT:
+            List of bookmarked topics as evs
+        """
+        bookmarkedlist = []
+
+        #Iterate and add to bookmarked list
+        for index in range(len(persistent._mas_player_bookmarked)-1,-1,-1):
+            #Get the ev
+            ev = mas_getEV(persistent._mas_player_bookmarked[index])
+
+            #If no ev, we'll pop it as we shouldn't actually keep it here
+            if not ev:
+                persistent._mas_player_bookmarked.pop(index)
+
+            #Otherwise, we add it to the menu item list
+            elif ev.unlocked and ev.checkAffection(mas_curr_affection):
+                bookmarkedlist.append(ev)
+
+        return bookmarkedlist
+
+    def mas_get_player_derandoms():
+        """
+        Gets topics which are derandomed by the player (in gen-scrollable-menu format)
+        Also cleans out events which no longer exist
+
+        OUT:
+            List of player-derandomed topics in mas_gen_scrollable_menu form
+        """
+        derandlist = []
+
+        #Iterate and add to derand list
+        for index in range(len(persistent._mas_player_derandomed)-1,-1,-1):
+            #Get the ev
+            ev = mas_getEV(persistent._mas_player_derandomed[index])
+
+            #No ev. Pop it as we shouldn't actually keep it here
+            if not ev:
+                persistent._mas_player_derandomed.pop(index)
+
+            #Ev exists. Add it to the menu item list
+            elif ev.unlocked and ev.checkAffection(mas_curr_affection):
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+
+        return derandlist
 
 init 1 python:
     morning_flag = mas_isMorning()
@@ -741,9 +752,33 @@ init 1 python:
 #       NOTE: this must be a string
 #       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None):
+#   day_bg - the room we'll be showing during the day
+#       NOTE: must be string
+#       NOTE: if passed in, it will override the current background day_bg
+#       (Default: None)
+#   night_bg - the room we'll be showing during the night
+#       NOTE: must be string
+#       NOTE: if passed in, it will override the current background night_bg
+#       (Default: None)
+#   show_emptydesk - behavior is determined by `hide_monika`
+#       if hide_monika is True - True will show emptydesk and False will do
+#           nothing.
+#       if hide_monika is False - True will do nothing and False will hide
+#           emptydesk after Monika is shown.
+#       (Default: True)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True):
 
     with None
+
+    #Get all of the params
+    if hide_mask is None:
+        $ hide_mask = store.mas_current_background.hide_masks
+    if hide_calendar is None:
+        $ hide_calendar = store.mas_current_background.hide_calendar
+    if day_bg is None:
+        $ day_bg = store.mas_current_background.getDayRoom()
+    if night_bg is None:
+        $ night_bg = store.mas_current_background.getNightRoom()
 
     if scene_change:
         scene black
@@ -756,15 +791,25 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
         if mas_isMorning():
             if not morning_flag or scene_change:
                 morning_flag = True
-                monika_room = "monika_day_room"
+                monika_room = day_bg
 
         else:
             if morning_flag or scene_change:
                 morning_flag = False
-                monika_room = "monika_room"
+                monika_room = night_bg
+
+        #What ui are we using
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(morning_flag)
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
 
         ## are we hiding monika
-        if not hide_monika:
+        if hide_monika:
+            if show_emptydesk:
+                store.mas_sprites.show_empty_desk()
+
+        else:
             if force_exp is None:
 #                force_exp = "monika idle"
                 if dissolve_all:
@@ -779,12 +824,12 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 if not dissolve_all:
                     renpy.with_statement(None)
 
-        # if we onyl want to dissolve masks, then we dissolve now
+        # if we only want to dissolve masks, then we dissolve now
         if not dissolve_all and not hide_mask:
             mas_drawSpaceroomMasks(dissolve_masks)
 
         # actual room check
-        # are we using a custom bg or not
+        # are we using a custom start bg or not
         if start_bg:
             if not renpy.showing(start_bg):
                 renpy.show(start_bg, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
@@ -796,24 +841,33 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                     tag="sp_mas_room",
                     zorder=MAS_BACKGROUND_Z
                 )
-                mas_calShowOverlay()
+                #Show calendar if it's supported
+                if not hide_calendar:
+                    mas_calShowOverlay()
 
 
     # vignette
     if store.mas_globals.show_vignette:
         show vignette zorder 70
 
-    # bday stuff (this checks itself)
-    if persistent._mas_bday_sbp_reacted:
-        $ store.mas_dockstat.surpriseBdayShowVisuals()
+    #Monibday stuff
+    if persistent._mas_bday_visuals:
+        #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
+        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+
+    # ----------- Grouping date-based events since they can never overlap:
+    #O31 stuff
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_o31ShowVisuals()
 
     # d25 seasonal
-    if persistent._mas_d25_deco_active:
-        $ store.mas_d25_event.showD25Visuals()
+    elif persistent._mas_d25_deco_active:
+        $ store.mas_d25ShowVisuals()
+    # ----------- end date-based events
 
     # player bday
     if persistent._mas_player_bday_decor:
-        $ store.mas_player_bday_event.show_player_bday_Visuals()
+        $ store.mas_surpriseBdayShowVisuals()
 
     if datetime.date.today() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs_pst(mas_acs_roses)
@@ -821,6 +875,12 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
     # dissolving everything means dissolve last
     if dissolve_all and not hide_mask:
         $ mas_drawSpaceroomMasks(dissolve_all)
+    elif dissolve_all:
+        $ renpy.with_statement(Dissolve(1.0))
+
+    # hide emptydesk if monika is visible
+    if not hide_monika and not show_emptydesk:
+        hide emptydesk
 
     return
 
@@ -846,22 +906,6 @@ label ch30_main:
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
-    # o31? o31 mode you are in
-    if mas_isO31():
-        $ persistent._mas_o31_in_o31_mode = True
-        $ store.mas_globals.show_vignette = True
-        
-        # setup thunder
-        if persistent._mas_likes_rain:
-            $ mas_weather_thunder.unlocked = True
-            $ store.mas_weather.saveMWData()
-            $ mas_unlockEVL("monika_change_weather", "EVE")
-        $ mas_changeWeather(mas_weather_thunder)
-
-    # d25 season? d25 season you are in
-    if mas_isD25Season():
-        call mas_holiday_d25c_autoload_check
-
     # before we render visuals:
     # 1 - all core interactions should be disabeld
     $ mas_RaiseShield_core()
@@ -882,17 +926,14 @@ label ch30_main:
     # 1 - renable core interactions
     $ mas_DropShield_core()
 
-    # 2 - hotkey buttons enabled
-    $ store.hkb_button.enabled = True
-
-    # 3 - set keymaps
-    $ set_keymaps()
-
     # now we out of intro
     $ mas_in_intro_flow = False
 
     # set session data to startup values
     $ store._mas_root.initialSessionData()
+
+    # skip weather
+    $ skip_setting_weather = True
 
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
@@ -938,9 +979,9 @@ label pick_a_game:
 
         # hangman text
         if persistent._mas_sensitive_mode:
-            _hangman_text = "Word Guesser"
+            _hangman_text = _("Word Guesser")
         else:
-            _hangman_text = "Hangman"
+            _hangman_text = _("Hangman")
 
         # decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
@@ -1067,15 +1108,34 @@ label ch30_autoload:
     $ startup_check = True #Flag for checking events at game startup
     $ mas_skip_visuals = False
 
+    # set flag to True to prevent ch30 from running weather alg
+    $ skip_setting_weather = False
+
+    $ mas_cleanEventList()
+
     # set the gender
     call set_gender from _autoload_gender
 
     # call reset stuff
     call ch30_reset
 
-    # general affection checks that hijack flow
-    if persistent._mas_affection["affection"] <= -115:
-        jump mas_affection_finalfarewell_start
+    #Affection will trigger a final farewell mode
+    #If we got a fresh start, then -50 is the cutoff vs -115.
+    if (
+        persistent._mas_pm_got_a_fresh_start
+        and _mas_getAffection() <= -50
+    ):
+        $ persistent._mas_load_in_finalfarewell_mode = True
+        $ persistent._mas_finalfarewell_poem_id = "ff_failed_promise"
+
+    elif _mas_getAffection() <= -115:
+        $ persistent._mas_load_in_finalfarewell_mode = True
+        $ persistent._mas_finalfarewell_poem_id = "ff_affection"
+
+
+    #If we should go into FF mode, we do.
+    if persistent._mas_load_in_finalfarewell_mode:
+        jump mas_finalfarewell_start
 
     # set this to None for now
     $ selected_greeting = None
@@ -1098,17 +1158,29 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
-    if mas_isO31():
-        jump mas_holiday_o31_autoload_check
+    # ----------------
+    # grouping date-based events since they can never overlap
+    if mas_isO31() or persistent._mas_o31_in_o31_mode:
+        jump mas_o31_autoload_check
 
-    if mas_isD25Season():
+    elif (
+        mas_isD25Season()
+        or persistent._mas_d25_in_d25_mode
+        or (mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"))
+    ):
         jump mas_holiday_d25c_autoload_check
 
-    if mas_isF14() or persistent._mas_f14_in_f14_mode:
+    elif mas_isF14() or persistent._mas_f14_in_f14_mode:
         jump mas_f14_autoload_check
+    # ----------------
 
+    #NOTE: This has priority because of the opendoor greet
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
+
+    if mas_isMonikaBirthday() or persistent._mas_bday_in_bday_mode:
+        jump mas_bday_autoload_check
+
 
 
 label mas_ch30_post_holiday_check:
@@ -1151,7 +1223,7 @@ label mas_ch30_post_holiday_check:
             and not persistent._mas_sensitive_mode
         ):
         call yuri_name_scare from _call_yuri_name_scare
-        
+
         # this skips greeting algs
         jump ch30_post_greeting_check
 
@@ -1173,6 +1245,11 @@ label mas_ch30_post_holiday_check:
     # greeting selection
     python:
 
+        # greeting timeout check
+        persistent._mas_greeting_type = store.mas_greetings.checkTimeout(
+            persistent._mas_greeting_type
+        )
+
         # we select a greeting depending on the type that we should select
         sel_greeting_ev = store.mas_greetings.selectGreeting(
             persistent._mas_greeting_type
@@ -1189,7 +1266,7 @@ label mas_ch30_post_holiday_check:
                 mas_resetIdleMode()
 
             if just_crashed:
-                # but if we just crashed, then we want to select the 
+                # but if we just crashed, then we want to select the
                 # only crashed greeting.
                 # NOTE: we shouldnt actually have to do this ever, but
                 #   its here as a sanity check
@@ -1203,7 +1280,7 @@ label mas_ch30_post_holiday_check:
 
 
         # NOTE: this MUST be an if. it may be True if we crashed but
-        #   didnt get a greeting to show. 
+        #   didnt get a greeting to show.
         if sel_greeting_ev is not None:
             selected_greeting = sel_greeting_ev.eventlabel
 
@@ -1217,7 +1294,7 @@ label mas_ch30_post_holiday_check:
             if setup_label is not None and renpy.has_label(setup_label):
                 gre_cb_label = setup_label
 
-    
+
     # call pre-post greeting check setup label
     if gre_cb_label is not None:
         call expression gre_cb_label
@@ -1259,11 +1336,6 @@ label ch30_post_restartevent_check:
             #Grant the away XP
             grant_xp(away_xp)
 
-
-            #Set unlock flag for stories
-            mas_can_unlock_story = True
-            mas_can_unlock_scary_story = True
-
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
                 persistent._mas_pool_unlocks -= 1
@@ -1279,8 +1351,16 @@ label ch30_post_exp_check:
     # file reactions
     $ mas_checkReactions()
 
-    # run actiosn for events that are based on conditional or clock
-    $ Event.checkEvents(evhand.event_database)
+    #All pushed events will have priority on load. Queued events will be pushed to the first idle loop
+    #random/unlock/pool actions are also evaluated here
+    python:
+        startup_events = {}
+        for evl in evhand.event_database:
+            ev = evhand.event_database[evl]
+            if ev.action != EV_ACT_QUEUE:
+                startup_events[evl] = ev
+
+        Event.checkEvents(startup_events)
 
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
@@ -1300,46 +1380,38 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
+    #Now we check if we should drink
+    $ MASConsumable._checkConsumables(startup=True)
+
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
     #     $ config.allow_skipping = False
-
-    window auto
-
-    if mas_skip_visuals:
-        # need to jump to initial setup, then we can jump to visual skip
-        jump ch30_preloop
-
-    # otherwise, we are NOT skipping visuals
-    $ set_keymaps()
-    $ mas_startup_song()
-
-    # rain check
-    $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None:
-        $ mas_changeWeather(set_to_weather)
-
-    # FALL THROUGH
-
-label ch30_preloop_visualsetup:
-
-    # initial spaceroom
-    call spaceroom(dissolve_all=True, scene_change=True)
 
     # FALL THROUGH
 
 label ch30_preloop:
     # stuff that should happen right before we enter the loop
 
+    window auto
+
+    # NOTE: keymaps will be set, but all actions will be shielded unless
+    #   desired by the appropriate flow.
+    $ mas_HKRaiseShield()
+    $ mas_HKBRaiseShield()
+    $ set_keymaps()
+
     $ persistent.closed_self = False
     $ persistent._mas_game_crashed = True
     $ startup_check = False
     $ mas_checked_update = False
+    $ mas_globals.last_minute_dt = datetime.datetime.now()
+    $ mas_globals.last_hour = mas_globals.last_minute_dt.hour
+    $ mas_globals.last_day = mas_globals.last_minute_dt.day
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
- 
+
     #Unlock windowreact topics
     $ mas_resetWindowReacts()
 
@@ -1359,22 +1431,49 @@ label ch30_preloop:
         $ quick_menu = True
         jump ch30_visual_skip
 
+    # setup scene to change on initial launch
+    $ mas_weather.should_scene_change = True
+
+    # rain check
+    # TODO: the weather progression alg needs to run here
+    if not mas_weather.force_weather and not skip_setting_weather:
+        $ set_to_weather = mas_shouldRain()
+        if set_to_weather is not None:
+            $ mas_changeWeather(set_to_weather)
+
+    # otherwise, we are NOT skipping visuals
+    $ mas_startup_song()
+
     jump ch30_loop
 
 label ch30_loop:
     $ quick_menu = True
 
+    # TODO: make these functions so docking station can run weather alg
+    # on start.
+    # TODO: consider a startup version of those functions so that
+    #   we can run the regular shouldRain alg if prgoression is disabled
     python:
-        should_dissolve_all = mas_shouldChangeTime()
         should_dissolve_masks = (
-            mas_weather.weatherProgress() 
+            mas_weather.weatherProgress()
             and mas_isMoniNormal(higher=True)
         )
 
-    call spaceroom(dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+        should_dissolve_all = (
+            mas_shouldChangeTime()
+            or mas_weather.should_scene_change
+        )
+
+    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+
+    #This should be set back to false so we're not constantly scene changing
+    $ mas_weather.should_scene_change = False
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
+
+# TODO: add label here to allow startup to hook past weather 
+# TODO: move quick_menu to here
 
     # updater check in here just because
     if not mas_checked_update:
@@ -1400,69 +1499,39 @@ label ch30_visual_skip:
 #    if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
 #        call spaceroom(dissolve_masks=True)
 
-    #Check time based events and grant time xp
-    python:
-        try:
-            calendar_last_checked
-        except:
-            calendar_last_checked=persistent.sessions['current_session_start']
-        time_since_check=datetime.datetime.now()-calendar_last_checked
+    # check reoccuring checks
+    $ now_check = datetime.datetime.now()
 
-        if time_since_check.total_seconds()>60:
+    # check day
+    if now_check.day != mas_globals.last_day:
+        call ch30_day
+        $ mas_globals.last_day = now_check.day
 
-            #Checks to see if affection levels have met the criteria to push an event or not.
-            mas_checkAffection()
+    # check hour
+    if now_check.hour != mas_globals.last_hour:
+        call ch30_hour
+        $ mas_globals.last_hour = now_check.hour
 
-            #Check if we should expire apologies
-            mas_checkApologies()
+    # check minute
+    $ time_since_check = now_check - mas_globals.last_minute_dt
+    if now_check.minute != mas_globals.last_minute_dt.minute or time_since_check.total_seconds() >= 60:
+        call ch30_minute(time_since_check)
+        $ mas_globals.last_minute_dt = now_check
 
-            # limit xp gathering to when we are not maxed
-            # and once per minute
-            if (persistent.idlexp_total < xp.IDLE_XP_MAX):
 
-                idle_xp=xp.IDLE_PER_MINUTE*(time_since_check.total_seconds())/60.0
-                persistent.idlexp_total += idle_xp
-                if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                    idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
-                    persistent.idlexp_total=xp.IDLE_XP_MAX
-
-                grant_xp(idle_xp)
-
-            # runs actions for both conditionals and calendar-based events
-            Event.checkEvents(evhand.event_database, rebuild_ev=False)
-
-            # Run delayed actions
-            mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
-
-            # run file checks
-            mas_checkReactions()
-
-            # run seasonal check
-            mas_seasonalCheck()
-
-            #Clear the notifications tray
-            mas_clearNotifs()
-
-            #Now we check if we should queue windowreact evs
-            mas_checkForWindowReacts()
-
-            # check if we need to rebulid ev
-            if mas_idle_mailbox.get_rebuild_msg():
-                mas_rebuildEventLists()
-
-            #Update time
-            calendar_last_checked=datetime.datetime.now()
-
-            # split affection values prior to saving
-            _mas_AffSave()
-
-            # save the persistent
-            renpy.save_persistent()
 
 label ch30_post_mid_loop_eval:
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
+
+    # renable if not idle and currently disabled
+    if not mas_globals.in_idle_mode:
+        if not mas_HKIsEnabled():
+            $ mas_HKDropShield()
+        if not mas_HKBIsEnabled():
+            $ mas_HKBDropShield()
+
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
@@ -1476,6 +1545,7 @@ label ch30_post_mid_loop_eval:
                 store.mas_globals.show_lightning
                 and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
             ):
+            $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
                     not persistent._mas_sensitive_mode
                     and store.mas_globals.show_s_light
@@ -1483,9 +1553,9 @@ label ch30_post_mid_loop_eval:
                         1, store.mas_globals.lightning_s_chance
                     ) == 1
                 ):
-                show mas_lightning_s zorder 4
+                $ renpy.show("mas_lightning_s", zorder=light_zorder)
             else:
-                show mas_lightning zorder 4
+                $ renpy.show("mas_lightning", zorder=light_zorder)
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
@@ -1495,7 +1565,7 @@ label ch30_post_mid_loop_eval:
         # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
 
         $ mas_randchat.wait()
-        
+
         if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
         else:
@@ -1581,11 +1651,11 @@ label mas_ch30_select_seen:
                 jump mas_ch30_select_mostseen
 
             if len(mas_rev_mostseen) == 0 and not seen_random_limit:
-                # all topics seen within last seen delta, push random seen 
+                # all topics seen within last seen delta, push random seen
                 # limit if not already.
                 $ pushEvent("random_limit_reached")
                 jump post_pick_random_topic
-            
+
             # if still no events, just jump to idle loop
             jump post_pick_random_topic
 
@@ -1610,14 +1680,130 @@ label mas_ch30_select_mostseen:
 label ch30_end:
     jump ch30_main
 
+# label for things that should run about once per minute
+# NOTE: it only runs whent he minute changes, so don't expect this to run
+#   on start right away
+label ch30_minute(time_since_check):
+    python:
+
+        #Checks to see if affection levels have met the criteria to push an event or not.
+        mas_checkAffection()
+
+        #Check if we should expire apologies
+        mas_checkApologies()
+
+        # limit xp gathering to when we are not maxed
+        # and once per minute
+        if (persistent.idlexp_total < xp.IDLE_XP_MAX):
+
+            idle_xp = xp.IDLE_PER_MINUTE * ((time_since_check.total_seconds())/60.0)
+            persistent.idlexp_total += idle_xp
+            if persistent.idlexp_total >= xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
+                idle_xp = idle_xp - (persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
+                persistent.idlexp_total = xp.IDLE_XP_MAX
+
+            grant_xp(idle_xp)
+
+        # runs actions for both conditionals and calendar-based events
+        Event.checkEvents(evhand.event_database, rebuild_ev=False)
+
+        # Run delayed actions
+        mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
+
+        # run file checks
+        mas_checkReactions()
+
+        # run seasonal check
+        mas_seasonalCheck()
+
+        #Clear the notifications tray
+        mas_clearNotifs()
+
+        #Now we check if we should queue windowreact evs
+        mas_checkForWindowReacts()
+
+        # check if we need to rebulid ev
+        if mas_idle_mailbox.get_rebuild_msg():
+            mas_rebuildEventLists()
+
+        # split affection values prior to saving
+        _mas_AffSave()
+
+        # save the persistent
+        renpy.save_persistent()
+
+    return
+
+
+# label for things that should run about once per hour
+# NOTE: it only runs when the hour changes, so don't expect this to run 
+#   on start right away
+label ch30_hour:
+    $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+
+    #Runtime checks to see if we should have a consumable
+    $ MASConsumable._checkConsumables()
+
+    #Set our TOD var
+    $ mas_setTODVars()
+    return
+
+# label for things that should run about once per day
+# NOTE: it only runs when the day changes, so don't expect this to run on 
+#   staart right away
+label ch30_day:
+    python:
+        #Undo ev actions if needed
+        MASUndoActionRule.check_persistent_rules()
+        #And also strip dates
+        MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
+
+        #Reset the gift aff gain/reset date
+        #NOTE: if we got here, it has to be a new day
+        persistent._mas_filereacts_gift_aff_gained = 0
+        persistent._mas_filereacts_last_aff_gained_reset_date = datetime.date.today()
+
+        #So we can't just single-sesh a long absence ret
+        mas_ret_long_absence = False
+
+        #Run delayed actions
+        mas_runDelayedActions(MAS_FC_IDLE_DAY)
+
+        if mas_isMonikaBirthday():
+            persistent._mas_bday_opened_game = True
+
+        if mas_isO31() and not persistent._mas_o31_in_o31_mode:
+            pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
+
+        #If the map isn't empty and it's past the last reacted date, let's empty it now
+        if (
+            persistent._mas_filereacts_reacted_map
+            and mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+        ):
+            persistent._mas_filereacts_reacted_map = dict()
+
+        # Check if we are entering d25 season at upset-
+        if (
+            not persistent._mas_d25_intro_seen
+            and mas_isD25Outfit()
+            and mas_isMoniUpset(lower=True)
+        ):
+            persistent._mas_d25_started_upset = True
+    return
+
+
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
 
     python:
         # name eggs
-        if persistent.playername.lower() == "sayori":
+        if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
-    
+
+    python:
+        # apply ACS defaults
+        store.mas_sprites.apply_ACSTemplates()
+
     python:
         # start by building event lists if they have not been built already
         if not mas_events_built:
@@ -1630,22 +1816,15 @@ label ch30_reset:
             # I think we'll deal with this better once we hve a sleeping sprite
             random_seen_limit = 1000
 
-    if not persistent._mas_pm_has_rpy:
-        # setup the docking station to handle the detection
-        $ rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+        if not persistent._mas_pm_has_rpy:
+            if mas_hasRPYFiles():
+                if not mas_inEVL("monika_rpy_files"):
+                    queueEvent("monika_rpy_files")
 
-        $ listRpy = rpyCheckStation.getPackageList(".rpy")
-
-        if len(listRpy) == 0 or persistent.current_monikatopic == "monika_rpy_files":
-            if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
-                $ persistent.current_monikatopic = 0
-
-            $ mas_rmallEVL("monika_rpy_files")
-
-        elif len(listRpy) != 0 and not mas_inEVL("monika_rpy_files"):
-            $ queueEvent("monika_rpy_files")
-
-        $ del rpyCheckStation
+            else:
+                if persistent.current_monikatopic == "monika_rpy_files":
+                    persistent.current_monikatopic = 0
+                mas_rmallEVL("monika_rpy_files")
 
     python:
         import datetime
@@ -1667,35 +1846,6 @@ label ch30_reset:
                 ):
                 mas_unlockGame(game_name)
 
-    # reset mas mood bday
-    python:
-        if (
-                persistent._mas_mood_bday_last
-                and persistent._mas_mood_bday_last < today
-            ):
-            persistent._mas_mood_bday_last = None
-            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
-            if mood_ev:
-                mood_ev.unlocked = True
-
-    # enabel snowing if its winter
-#    python:
-#        # TODO: snowing should also be controlled if you like it or not
-#        if mas_isWinter():
-#            if mas_is_snowing and not mas_weather_snow.unlocked:
-#                mas_weather_snow.unlocked = True
-#                store.mas_weather.saveMWData()
-#
-#                mas_unlockEVL("monika_change_weather", "EVE")
-#                renpy.save_persistent()
-#        mas_is_snowing = mas_isWinter()
-#        if mas_is_snowing:
-#
-#            mas_lockEVL("monika_rain_start", "EVE")
-#            mas_lockEVL("monika_rain_stop", "EVE")
-#            mas_lockEVL("mas_monika_islands", "EVE")
-#            mas_lockEVL("monika_rain", "EVE")
-#            mas_lockEVL("greeting_ourreality", "GRE")
 
     #### SPRITES
 
@@ -1708,12 +1858,18 @@ label ch30_reset:
     # def ribbon always unlocked
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
-    ## custom sprite objects 
-    python:
-        store.mas_selspr._validate_group_topics()
+    ## custom sprite objects
+    $ store.mas_selspr._validate_group_topics()
 
     # monika hair/acs
     $ monika_chr.load(startup=True)
+
+    # change back to def if we aren't wearing def at Normal-
+    if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
+        $ pushEvent("mas_change_to_def",skipeval=True)
+
+    if not mas_hasSpecialOutfit():
+        $ mas_lockEVL("monika_event_clothes_select", "EVE")
 
     #### END SPRITES
 
@@ -1781,57 +1937,23 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    ## should we drink coffee?
-    $ _mas_startupCoffeeLogic()
-
-    ## shoujld we drink hot chocolate
-    $ _mas_startupHotChocLogic()
-
+    #Do startup checks
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
-    ## should we reset birthday
-#    python:
-#        if (
-#                persistent._mas_bday_need_to_reset_bday
-#                and not mas_isMonikaBirthday()
-#            ):
-#            bday_ev = mas_getEV("mas_bday_pool_happy_bday")
-#            if bday_ev:
-#                bday_ev.conditional="mas_isMonikaBirthday()"
-#                bday_ev.action=EV_ACT_UNLOCK
-#                persistent._mas_bday_need_to_reset_bday = False
-
-#            bday_spent_ev = mas_getEV("mas_bday_spent_time_with")
-#            if bday_spent_ev:
-#                bday_spent_ev.action = EV_ACT_QUEUE
-#                bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
-#                bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
-
-
-    ## o31 content
+    # reset bday decor
     python:
-        if store.mas_o31_event.isMonikaInCostume(monika_chr):
-            # NOTE: we may add additional costume logic in here if needed
-            # TODO: this is bad for o31 rests actually
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        if not mas_isMonikaBirthday() and not mas_isMonikaBirthday(yesterday):
+            persistent._mas_bday_visuals = False
 
-            if not persistent._mas_force_clothes:
-                # NOTE if the costumes were picked by user, (aka forced),
-                # then we do NOt reset
-                monika_chr.reset_clothes(False)
-
-    ## d25 content
-    python:
+        #TODO: revist this once TT stuff is complete
         if (
-                (mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE()))
-                and monika_chr.clothes == mas_clothes_santa
-                and not persistent._mas_force_clothes
-            ):
-            # monika takes off santa outfit after d25
-            monika_chr.reset_clothes(False)
-
-        if not mas_isD25Season():
-            persistent._mas_d25_deco_active = False
+            not mas_isplayer_bday()
+            and not mas_isplayer_bday(yesterday, use_date_year=True)
+            and not persistent._mas_player_bday_left_on_bday
+        ):
+            persistent._mas_player_bday_decor = False
 
     ## late farewell? set the global and clear the persistent so its auto
     ##  cleared
@@ -1845,21 +1967,30 @@ label ch30_reset:
         if persistent._mas_filereacts_just_reacted:
             queueEvent("mas_reaction_end")
 
-    # set any prompt variants for acs that can be removed here
-    python:
-        if not monika_chr.is_wearing_acs_type("left-hair-clip"):
-            store.mas_selspr.set_prompt("left-hair-clip", "wear")
+        #If the map isn't empty and it's past the last reacted date, let's empty it now
+        if (
+            persistent._mas_filereacts_reacted_map
+            and mas_pastOneDay(persistent._mas_filereacts_last_reacted_date)
+        ):
+            persistent._mas_filereacts_reacted_map = dict()
 
-        if not monika_chr.is_wearing_acs_type("ribbon"):
-            store.mas_selspr.set_prompt("ribbon", "wear")
+    # set any prompt variants for acs that can be removed here
+    $ store.mas_selspr.startup_prompt_check()
+
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
@@ -1882,4 +2013,34 @@ label ch30_reset:
             else:
                 persistent.event_list.pop(index)
 
+    #Now we undo actions for evs which need them undone
+    $ MASUndoActionRule.check_persistent_rules()
+    #And also strip dates
+    $ MASStripDatesRule.check_persistent_rules(persistent._mas_strip_dates_rules)
+
+    #Let's see if someone did a time travel
+    if persistent._mas_filereacts_last_aff_gained_reset_date > today:
+        $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+
+    #See if we need to reset the daily gift aff amt
+    if persistent._mas_filereacts_last_aff_gained_reset_date < today:
+        $ persistent._mas_filereacts_gift_aff_gained = 0
+        $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+
+    #Check if we need to unlock the songs rand delegate
+    $ mas_songs.checkRandSongDelegate()
+
+    #Run a confirmed party check within a week of Moni's bday
+    $ mas_confirmedParty()
+
+    #If it's past d25, not within the gift range, and we haven't reacted to gifts, let's silently do that now
+    if (
+        persistent._mas_d25_gifts_given
+        and not mas_isD25GiftHold()
+        and not mas_globals.returned_home_this_sesh
+    ):
+        $ mas_d25SilentReactToGifts()
+
+    #Set our TOD var
+    $ mas_setTODVars()
     return

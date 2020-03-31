@@ -125,7 +125,8 @@ init 999 python:
                 2: "crossed",
                 3: "restleftpointright",
                 4: "pointright",
-                6: "down"
+                6: "down",
+                7: "downleftpointright",
             },
             "eyes": {
                 "e": "normal",
@@ -138,7 +139,8 @@ init 999 python:
                 "h": "closedhappy",
                 "d": "closedsad",
                 "k": "winkleft",
-                "n": "winkright"
+                "n": "winkright",
+                "f": "soft",
             },
             "eyebrows": {
                 "f": "furrowed",
@@ -163,8 +165,8 @@ init 999 python:
                 "td": "dried",
                 "tp": "pooled",
                 "tu": "up",
-                "tl": "left",
-                "tr": "right",
+#                "tl": "left",
+#                "tr": "right",
 #                "th": "closedhappy",
 #                "tc": "closedsad",
             },
@@ -183,9 +185,10 @@ init 999 python:
                 "o": "gasp",
                 "u": "smug",
                 "w": "wide",
-                "x": "disgust",
+                "x": "angry",
                 "p": "pout",
-                "t": "triangle"
+                "t": "triangle",
+#                "g": "disgust",
             }
         }
 
@@ -194,10 +197,12 @@ init 999 python:
         SEL_TX_MAP = {
             "torso": {
                 "def": "School Uniform",
+                "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
                 "rin": "Neko Costume",
                 "santa": "Santa Monika",
                 "sundress_white": "Sundress (White)",
+                "blackdress": "Formal Dress (Black)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -205,12 +210,13 @@ init 999 python:
                 3: "Rest Left, Point Right",
                 4: "Point Right",
                 5: "Leaning",
-                6: "Down"
+                6: "Down",
+                7: "Down Left, Point Right",
             },
             "hair": {
                 "def": "Ponytail",
                 "down": "Down",
-                "bun": "Bun"
+#                "bun": "Bun"
             },
             "eyes": {
                 "e": "Normal",
@@ -223,7 +229,8 @@ init 999 python:
                 "h": "Closed (Happy)",
                 "d": "Closed (Sad)",
                 "k": "Wink Left",
-                "n": "Wink Right"
+                "n": "Wink Right",
+                "f": "Soft",
             },
             "eyebrows": {
                 "f": "Furrowed",
@@ -270,7 +277,8 @@ init 999 python:
                 "w": "Wide Open",
                 "x": "Grit Teeth",
                 "p": "Pout",
-                "t": "Triangle"
+                "t": "Triangle",
+#                "g": "Disgust",
             },
             "time": {
                 0: "Day",
@@ -320,10 +328,12 @@ init 999 python:
         SC_MAP = {
             "torso": [
                 "def",
+                "blazerless",
                 "marisa",
                 "rin",
                 "santa",
                 "sundress_white",
+                "blackdress",
             ],
             "arms": [
                 1,
@@ -331,12 +341,13 @@ init 999 python:
                 3,
                 4,
                 5,
-                6
+                6,
+                7,
             ],
             "hair": [
                 "def",
                 "down",
-                "bun"
+#                "bun"
             ],
             "eyes": [
                 "e",
@@ -349,7 +360,8 @@ init 999 python:
                 "h",
                 "d",
                 "k",
-                "n"
+                "n",
+                "f",
             ],
             "eyebrows": [
                 "f",
@@ -377,8 +389,8 @@ init 999 python:
                 "td",
                 "tp",
                 "tu",
-                "tl",
-                "tr",
+#                "tl",
+#                "tr",
 #                "th",
 #                "tc",
             ],
@@ -401,7 +413,8 @@ init 999 python:
                 "w",
                 "x",
                 "p",
-                "t"
+                "t",
+#                "g",
             ],
             "time": [
                 0,
@@ -426,13 +439,8 @@ init 999 python:
                     "winkleft",
                     "winkright",
                 ),
-                "left": (
+                "pooled": (
                     "closedhappy",
-                    "closedsad",
-                ),
-                "right": (
-                    "closedhappy",
-                    "closedsad",
                 ),
             },
         }
