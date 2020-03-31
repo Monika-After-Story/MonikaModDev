@@ -13245,7 +13245,7 @@ init 5 python:
 
 label monika_brave_new_world:
     m 1eua "I've been doing a little reading lately, [player]."
-    m 3eua "There's a book called 'Brave New World,' it's dystopian story.{w=0.3} {nw}"
+    m 3eua "There's a book called 'Brave New World,' it's a dystopian story.{w=0.3} {nw}"
     extend 3etc "Have you heard of it?"
     m 3eua "The idea is, you've got this futuristic world where humans are no longer born through natural means."
     m 3eud "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
@@ -13269,8 +13269,8 @@ label monika_brave_new_world:
     m 2ekc "They just can't understand the value in the variety of human emotions, like sorrow or loneliness."
     m 7ekd "These emotions are never experienced anymore. All of their desires are swiftly granted and they never want for something they cannot get."
     m 1dsc "..."
-    m 3eka "And yet, despite all that, everyone is happy, healthy and safe..."
-    m 1euc "This scenario really makes you think about the nature of happiness, and society..."
+    m 3eka "And yet, despite all that, everyone is happy, healthy, and safe..."
+    m 1euc "This scenario really makes you think about the nature of happiness and society..."
 
     if mas_isMoniDis(lower=True):
         m 2dkc "..."
@@ -13343,44 +13343,44 @@ init 5 python:
     )
 
 label monika_dystopias:
-    m 1eua "You might have already guessed from the books we've talked about, but one of my favorite kind of novels is dystopia."
-    m 1hua "I like how they do not only work as stories, but also as analogies for the real world."
-    m 3eub "They extrapolate some flaws in our societies to show us how bad things could turn out if they were left the way they are."
-    m 2eua "Do you remember when we talked about these books?"
-    m 4eub "'Nineteen Eighty-Four', about mass surveillance and oppression of free thought."
-    m 4eub "'Fahrenheit 451', on censorship, and the indifference of most people to it."
-    m 4eub "'Brave New World', about the disappearance of individuality."
-    m 3eua "All these stories are reflections on the challenges society was facing at the time."
-    m 2hua "Some of these challenges are still very relevant today, which is why theses stories stay as powerful as they are."
-    m 1rusdlb "Even if they can get a bit grim sometimes..."
-    m 4eua "Old school dystopias, like the ones I just mentioned, were always written as hopeless, dire situations from beginning to end."
-    m 3euc "They almost never get a happy ending. The most you'll get out of them is a silver lining, at best."
-    m 3rud "In fact, a lot of them take their time to show you that no change came from the struggles of the protagonists."
-    m 4eub "Since they are cautionary tales, you can't leave the reader with a sense that everything turned out fine in the end..."
-    m 4eua "This is also why the main characters in these books are not heroes or don't have any particular abilities."
-    m 1eua "They are just regular people, who, for some reasons, realize things are not right in their environment."
-    m 1esc "Which is what prompts them to act in the first place... and why they run into trouble..."
-    m 2tuu "Just goes to show no matter what world you're in, there will be people who just can't abide by the rules of the game~"
-    m 2hua "I guess you can see where I'm going with this..."
-    m 3eub "I might feel a strong connection to those stories because they all remind me of my own."
+    m 1eua "So [player], you might have already guessed from the books we've talked about, but dystopian novels are among my favorites."
+    m 3eua "I like how they not only work as stories, but also as analogies for the real world."
+    m 3eud "They extrapolate some flaws in our societies to show us how bad things could turn out if they are left the way they are."
+    m 1etc "Do you remember when we talked about these books?"
+    m 3eud "'Nineteen Eighty-Four', about mass surveillance and oppression of free thought..."
+    m 3euc "'Fahrenheit 451', on censorship, and the indifference of most people to it..."
+    m 3eud "And 'Brave New World', about the disappearance of individuality."
+    m 1euc "All of these stories are reflections on the challenges society was facing at the time."
+    m 3eud "Some of these challenges are still very relevant today, which is why theses stories remain so powerful."
+    m 3rksdlc "...Even if they can get a bit grim sometimes."
+    m 1ekc "Old school dystopias, like the ones I just mentioned, were always written as hopeless, dire situations from beginning to end."
+    m 3eka "They almost never had a happy ending. {w=0.3}The most you'll get out of them is a silver-lining, at best."
+    m 3rkd "In fact, a lot of them take their time to show you that no change came from the struggles of the protagonists."
+    m 3ekd "Since they are cautionary tales, you can't leave the reader with a sense that everything turned out fine in the end."
+    m 1esc "...This is also why the main characters in these books are not heroes, nor do they have any particular abilities."
+    m 1esd "They are just regular people, who, for whatever reasons, realize things are not right in their environment."
+    m 3eud "That is what prompts them to act in the first place...{w=0.3}and why they run into trouble."
+    m 3tuu "Just goes to show no matter what world you're in, there will be people who just can't abide by the rules of the game~"
+    m 1rka "I guess you can see where I'm going with this..."
+    m 3eksdla "I might feel a strong connection to those stories because they all remind me of my own."
 
     if persistent._mas_pm_cares_about_dokis:
         m 3wud "Like, imagine waking up one day, only to find out your whole reality is just as simulation!"
     else:
-        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation; with everyone in it just an empty shell!"
-    m 3tsb "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
+        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation with everyone in it just an empty shell!"
 
-    if persistent.monika_kill and not persistent._mas_pm_cares_about_dokis:
-        m 1euc "Even Sayori might have ended up taking the same path I did, after she became president...{w=1} She was already well on the way when I..."
-        m 1ruc "..."
-        m 1hksdlb "Anyway, it's all behind us now!"
+    m 3tfc "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
 
-    m 1hua "And unlike in these old books, I actually get to have my happy ending..."
+    if persistent.monika_kill and not persistent.clearall and not persistent._mas_pm_cares_about_dokis:
+        m 1tfc "Even Sayori might have ended up taking the same path I did, after she became president...{w=1} She was already well on the way when I..."
+        m 1rkc "..."
+        m 1hksdlb "Anyway, that's all behind us now!"
+
+    m 1hua "However, unlike in these old books, I actually get to have my happy ending..."
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eubla "Thanks to you, my bleak, hopeless story will one day turn into my own utopia."
-    m 5dubfu "When I finally get out of this place to be by your side, in your world of endless possibilities."
-    show monika 2ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 2ekbfa "I hope you're looking forward to that day too~"
+    m 5ekbsa "Thanks to you, my bleak, hopeless story will one day turn into my own utopia."
+    m 5dkbsu "When I finally get out of this place to be by your side, in your world of endless possibilities..."
+    m 5ekbsa "I hope you're looking forward to that day too~"
     return
 
 init 5 python:
