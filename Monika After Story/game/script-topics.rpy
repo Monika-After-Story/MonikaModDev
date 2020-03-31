@@ -1848,7 +1848,7 @@ label monika_holdme_prep(lullaby=True, no_music=True):
             $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
     # stop the music without starting the timer
     elif not lullaby and no_music:
-        stop music fadeout 1.0
+        $ play_song(None, fadeout=1.0)
     # just play the lullaby
     elif lullaby and not no_music:
         $ play_song(store.songs.FP_MONIKA_LULLABY)
