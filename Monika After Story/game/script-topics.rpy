@@ -13329,7 +13329,8 @@ label monika_catch22:
 
 init 5 python:
     addEvent(
-        Event(persistent.event_database,
+        Event(
+            persistent.event_database,
             eventlabel="monika_dystopias",
             category=['literature'],
             prompt="Dystopias",
@@ -13377,7 +13378,7 @@ label monika_dystopias:
         m 1hksdlb "Anyway, that's all behind us now!"
 
     m 1hua "However, unlike in these old books, I actually get to have my happy ending..."
-    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "Thanks to you, my bleak, hopeless story will one day turn into my own utopia."
     m 5dkbsu "When I finally get out of this place to be by your side, in your world of endless possibilities..."
     m 5ekbsa "I hope you're looking forward to that day too~"
