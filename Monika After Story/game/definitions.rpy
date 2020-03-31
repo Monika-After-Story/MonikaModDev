@@ -4594,7 +4594,8 @@ init -1 python:
         return appIds
 
 init 2 python:
-    # global functions that should be defined after level 0a
+    import re
+    #Global functions that should be defined after level 0
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.
@@ -4608,7 +4609,7 @@ init 2 python:
 
         #1. Do we even have plushie enabled?
         #2. Is it f14? (heartchoc gift interferes)
-        #3. Are we currently eatding something?
+        #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
