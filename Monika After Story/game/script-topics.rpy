@@ -1846,9 +1846,11 @@ label monika_holdme_prep(lullaby=True, no_music=True):
             # from the music menu after the 30 minute mark
             $ songs.current_track = store.songs.FP_MONIKA_LULLABY
             $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
+
     # stop the music without starting the timer
     elif not lullaby and no_music:
         $ play_song(None, fadeout=1.0)
+
     # just play the lullaby
     elif lullaby and not no_music:
         $ play_song(store.songs.FP_MONIKA_LULLABY)
@@ -1856,7 +1858,8 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     # stop music when a song other than lullaby is playing but don't clear selected track
     # this way the lullaby will play only if the user has clicked the no music button
     if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
-        stop music fadeout 1.0
+        $ play_song(None, fadeout=1.0)
+
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
@@ -1884,7 +1887,8 @@ label monika_holdme_reactions:
     
     # stop the timer if the holding time is less than 30 minutes
     if elapsed_time <= datetime.timedelta(minutes=30):
-        stop music
+        $ play_song(None, fadeout=1.0)
+
     if elapsed_time > datetime.timedelta(minutes=30):
         call monika_holdme_long
 
@@ -2059,7 +2063,7 @@ label monika_holdme_long:
     m "..."
     menu:
         "{i}Wake Monika up.{/i}":
-            stop music fadeout 5.0
+            $ play_song(None, fadeout=5.0)
             if mas_isMoniLove():
                 m 6dubfa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
@@ -2074,6 +2078,7 @@ label monika_holdme_long:
                 m 5hubfb "I'd do the same for you, after all~"
                 m 5tsbfu "Who knows if I'll ever let go when I finally get the chance..."
                 m 5hubfu "Ehehe~"
+
             elif mas_isMoniEnamored():
                 m 6dkbfa "...{w=1}Hm?"
                 m 6tsbfa "[player]..."
@@ -2084,6 +2089,7 @@ label monika_holdme_long:
                 m 1hubfb "So I have to blame you for that, ahaha!"
                 m 3rkbfsdla "Could...{w=0.7}we do that again sometime?"
                 m 1ekbfu "It...{w=1}felt nice~"
+
             elif mas_isMoniAff():
                 m 6dubsa "Mm...{w=1}hm?"
                 m 1wubfsdld "Oh!{w=1} [player]?"
@@ -2095,6 +2101,7 @@ label monika_holdme_long:
                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eubfu "You're so sweet, [player]~"
                 m 5hubfa "Hopefully you enjoyed that as much as I did~"
+
             #happy
             else:
                 m 6dubsc "...{w=1}Hm?"
@@ -2109,18 +2116,23 @@ label monika_holdme_long:
                 m 3ekbfb "I still enjoyed it, mind you!"
                 m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
+
         "{i}Let her rest on you.{/i}":
             call monika_holdme_prep(False,False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
+
             elif mas_isMoniEnamored():
                 m 6dubfa "{cps=*0.5}[player]...{/cps}"
+
             elif mas_isMoniAff():
                 m "{cps=*0.5}Mm...{/cps}"
+
             #happy
             else:
                 m "..."
+
             call monika_holdme_start
             jump monika_holdme_long
     return
@@ -10431,7 +10443,7 @@ label monika_grad_speech_ignored_lock:
 
 label monika_grad_speech:
     # clear selected track
-    stop music fadeout 1.0
+    $ play_song(None, fadeout=1.0)
     $ songs.current_track = songs.FP_NO_SONG
     $ songs.selected_track = songs.FP_NO_SONG
     #play some grad music
