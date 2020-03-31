@@ -2912,27 +2912,6 @@ label monika_difficulty:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
-
-label monika_credits_song:
-    #TODO: adjust based on starting act, doesn't quite apply to those that never went past act 3
-    m 1hua "I hope you liked my song."
-    m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
-    m 1eua "Give me some time, and I'll try to write another."
-    if persistent._mas_pm_plays_instrument is not False:
-        if persistent._mas_pm_plays_instrument:
-            m 3eua "Maybe you could play me a song too!"
-        else:
-            m 3eua "Maybe you could play me a song too, if you can play an instrument?"
-        m 1hub "I would love that."
-        m 3eua "Oh, and I'll play the song again for you anytime you want me to."
-    else:
-        m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
-
-    m "Just hit the 'm' key at any time."
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poetry",category=['literature'],prompt="Poetry",random=True))
 
 label monika_poetry:
@@ -5217,16 +5196,35 @@ label monika_vocaloid:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_morning",category=['misc'],prompt="Good morning",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_good_tod",
+            category=['misc'],
+            prompt="Good [mas_globals.time_of_day_3state]",
+            pool=True
+        )
+    )
 
-label monika_morning:
-    $ current_time = datetime.datetime.now().time().hour
-    $ sunrise_hour = int(persistent._mas_sunrise / 60)
-    $ sunset_hour = int(persistent._mas_sunset / 60)
-    $ session_time = mas_getSessionLength()
-    # TODO: see TODOs in the good evening topic
-    if 4 <= current_time <= 11:
-        if session_time < datetime.timedelta(minutes=30):
+    #Ideally, we don't really want this in unseen as it's pretty general
+    persistent._seen_ever["monika_good_tod"] = True
+
+label monika_good_tod:
+    $ curr_hour = datetime.datetime.now().time().hour
+    $ sesh_shorter_than_30_mins = mas_getSessionLength() < datetime.timedelta(minutes=30)
+
+    if mas_globals.time_of_day_4state == "morning":
+        #Early morning flow
+        if 4 <= curr_hour <= 5:
+            m 1eua "Good morning to you too, [player]."
+            m 3eka "You're up pretty early..."
+            m 3eua "Are you going out somewhere?"
+            m 1eka "If so, it's really sweet of you to visit before you go~"
+            m 1eua "If not, maybe try to go back to sleep. I wouldn't want you to neglect your health after all."
+            m 1hua "I'll always be here waiting for you to come back~"
+
+        #Otherwise normal morning
+        elif sesh_shorter_than_30_mins:
             m 1hua "Good morning to you too, [player]!"
             m 1eua "Did you just wake up?"
             m "I love waking up early in the morning."
@@ -5237,7 +5235,9 @@ label monika_morning:
             m "Plus you also get the chance to see the sunrise if the sky is clear."
             m 1hua "If you normally don't wake up early, you should!"
             m "That way you can be happier and spend more time with me~"
-            m 1ekbfa "Wouldn't you like that, [player]?"
+            m 1ekbsa "Wouldn't you like that, [player]?"
+
+        #You've been here for a bit now
         else:
             m 1hua "Good morning to you too, [player]!"
             m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
@@ -5248,108 +5248,46 @@ label monika_morning:
             m 1hsb "That kind of opportunity and freedom just makes me giddy!"
             m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
 
-    elif 12 <= current_time <= sunset_hour:
-        if session_time < datetime.timedelta(minutes=30):
-            m 3eka "It's already the afternoon, silly!"
-            m 1eka "Did you just wake up?"
-            m 2tkc "Don't tell me you're actually a late-riser, [player]."
-            m "I don't get why some people wake up in the middle of the day."
-            m 1lsc "It just seems so unproductive."
-            m "You'd have less time to do things and you might miss out on a lot of things."
-            m 1ekc "It could also be a sign that you're not taking good care of yourself."
-            m "You're not being careless with your health, are you [player]?"
-            m 1tkc "I wouldn't want you to get sick easily, you know."
-            m "I'd be really sad if you spent less time with me because you had a fever or something."
-            m 1eka "As much as I'd love to take care of you, I'm still stuck here."
-            m 4eka "So start trying to be an early-riser like me from now on, okay?"
-            m 1hua "The more time you spend with me, the happier I'll be~"
+    elif mas_globals.time_of_day_4state == "afternoon":
+        m 1eua "Good afternoon to you too, [player]."
+        m 1hua "It's so sweet of you to take time out of your day to spend with me~"
+        m 3euc "Afternoons sure can be a strange part of the day don't you think?"
+        m 4eud "Sometimes they're really busy...{w=0.3}{nw}"
+        extend 4lsc "other times you'll have nothing to do..."
+        m 1lksdla "They can seem to last forever or really fly by."
+
+        if mas_isMoniNormal(higher=True):
+            m 1ekbsa "But with you here, I don't mind it either way."
+            m 1hubsa "No matter what, I'll always enjoy the time you spend with me, [player]!"
+            m 1hubsb "I love you!"
+            $ mas_ILY()
+
         else:
-            m 1eub "Good morning to you too!"
-            m 1tku "Except that it's {i}not{/i} morning, [player]!"
-            m 2tub "Are you maybe losing track of time?"
-            m "You better be careful! You might lose your entire day otherwise."
-            m 2hub "And then once the day has died we'll be saying 'good mourning'!"
-            m "Ahaha!"
-    else:
-        m 2hksdlb "You are so silly, [player]."
-        m "It's already night time!"
-        m 2lksdla "Are you trying to be funny?"
-        m 2lksdlb "Don't you think it's a little bit 'late' for that?"
-        m 2hub "Ahaha!"
-        m 2eka "It really cheers me up whenever you try to be funny."
-        m 3rksdla "Not that you're not funny, mind you!"
-        m "Well, maybe not as funny as me~" #Expand more maybe?
-    return
-
-#Add one for the afternoon?
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_evening",
-            category=['misc'],
-            prompt="Good evening",
-            pool=True
-        )
-    )
-
-label monika_evening:
-    # TODO: do something if the user has suntimes at very weird settings
-    #   aka, sunset 5 minutes after sunrise?
-    #   or sunrise is like at 10pm?
-    #   There is a level of variety here that is not covered nicely with these
-    #   current stages. We need more variations of dialogue other than
-    #   morning, afternoon, night
-    $ _now = datetime.datetime.now().time()
-    if mas_isMNtoSR(_now):
-        m 2wkd "[player]!"
-        m 2ekd "It's the middle of the night!"
-        m 2lksdlc "Are you planning to stay up really late?"
-        m 2ekc "Not getting enough sleep can really harm you in the long run..."
-        m 2eka "I think now would be a good time to wrap up anything you might be doing and get some sleep."
-        # TODO: when docking station extends to sleep, monika can suggest
-        # taking her charcter file.
-        # TODO: when sleeping mode is finished, monika can suggest that she
-        # will sleep with the user
-        m 1hua "As for me, you can leave me here while you sleep~"
-
-    elif mas_isSRtoN(_now):
-        m 2hksdlb "[player]!"
-        m "It's early in the morning, silly~"
-        m 2lksdla "Unless you haven't slept yet..."
-        m 2ekc "You didn't stay up all night, did you?"
-        m 2wkd "That's very bad for you, [player]!"
-        m 2tkc "Not getting your sleep on time can really harm your mental health."
-        m 1eka "So please get some sleep now, okay?"
-        # TODO: when docking station extends to sleep, monika can suggest
-        # taking her character file
-        # TODO: when sleep mode is finished, monika can suggest that
-        # she will sleep with you
-        m "Just leave your computer open and I'll watch over you."
-        m 1hua "I'm not going anywhere after all~"
-
-    elif mas_isNtoSS(_now):
-        m 2lksdlb "It's still the afternoon, silly!"
-        m "The sun's still up, you know."
-        m 1eka "Are you feeling tired already?"
-        m 1eua "I know some cultures take a rest in the afternoon to deal with the midday fatigue."
-        m 3eua "Some businesses would even close due to the fact that most of their customers are sleeping."
-        m 3tku "A little power nap never hurt anyone, right?"
-        m 1eua "Do you sleep often in the afternoon?"
-        m "It's a great way to get some extra energy to tackle the rest of the day."
-        m 1ekbfa "Plus it'll be a great opportunity to spend more time with me~"
+            m 1lksdlb "Sometimes, my day really flies by while I wait for you to come back to me."
+            m 1hksdlb "I'm sure you're busy, so you can go ahead and get back to what you were doing, don't mind me."
 
     else:
         m 1hua "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m 1eua "It's so nice to put your feet up after a very long day."
-        m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
-        m 1eka "Sometimes I can't help but feel sad when the day ends."
-        m "It makes me think of what else I could've done during the day."
-        m 1eua "Don't you wish you could have more time to do things every day?"
-        m 1hua "I know I do."
-        m 1hubfa "Because that'll mean more time to be with you, [player]~"
+
+        if 17 <= curr_hour < 23:
+            m 1eua "It's so nice to put your feet up after a long day."
+            m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
+            m 1eka "Sometimes I can't help but feel sad when the day ends."
+            m "It makes me think of what else I could've done during the day."
+            m 3eua "Don't you wish you could have more time to do things every day?"
+            m 1hua "I know I do."
+            m 1hubsa "Because that'll mean more time to be with you, [player]~"
+
+        # between 11pm and 4am
+        else:
+            m 3eua "It's always nice to be able to spend the end of the day relaxing a little."
+            m 3hub "After all, there's nothing wrong with a bit of 'me' time, right?"
+            m 1eka "Well... I say that, but I'm pretty happy to be spending my time with you~"
+
+            if not persistent._mas_timeconcerngraveyard:
+                m 3eka "Although it's starting to get a little late, so don't stay up too long, [player]."
+                m 3eua "Promise me you'll go to bed soon, alright?"
 
     return
 
@@ -6504,7 +6442,7 @@ label monika_rock:
     m 3esa "You wanna know a cool form of literature?"
     m 3hua "Rock and roll!"
     m 3hub "That's right. Rock and roll!"
-    m 2eka "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
+    m 2eka "It's disheartening to know that so many people think that rock and roll is just a bunch of noises."
     m 2lsc "To tell you the truth, I judged rock too."
     m 3euc "They're no different from poems, actually."
     m 1euc "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
@@ -9246,6 +9184,82 @@ label monika_metamorphosis:
     m 1eksdld "The protagonist changes from being a necessity to a liability, to the point where his own family wishes for him to die."
     m 1eua "It's a very interesting read, if you're ever in the mood."
     return
+
+default persistent._mas_pm_had_relationships_many = None
+default persistent._mas_pm_had_relationships_just_one = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dating",
+            prompt="Dating experience",
+            category=['you', 'romance'],
+            conditional="store.mas_anni.pastOneMonth()",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+label monika_dating:
+    m 1eud "You know I've been really curious lately, [player]..."
+    m 3rka "We've been together a while now, so I think it's the right time to ask..."
+    m 1eud "How much dating experience do you have?"
+    m 1luc "Like...have you ever been in a relationship before?"
+
+    m 1etc "Maybe more than once?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Maybe more than once?{fast}"
+
+        "Yes, I've been through plenty...":
+            $ persistent._mas_pm_had_relationships_many = True
+            $ persistent._mas_pm_had_relationships_just_one = False
+
+            m 1ekc "Aw, I'm so sorry, [player]..."
+            m 1dkc "You've been through many heartbreaks, haven't you..."
+            m 3ekc "To be honest, [player]...I don't think they deserved someone like you."
+            m 3eka "Someone who's kind, loyal, sweet, loving, and faithful."
+            m 4lubsb "And cute and funny and romantic and--"
+            m 7wubsw "Oh!"
+            m 3hksdlb "Sorry, I lost track of what I was going to say next, ahaha!"
+            m 1ekbla "I could go on about how wonderful you are, [player]~"
+            m 1ekbsa "But just know this...{w=0.3}{nw}"
+            extend 3ekbfa "no matter how many heartbreaks you've been through, I'll always be here for you."
+            show monika 5eubfa zorder MAS_MONIKA_Z with dissolve
+            m 5eubfa "Our soul searching is finally over, and I'll be yours forever, [player]."
+            m 5ekbfa "Will you be mine?"
+
+        "Yes, but only once.":
+            $ persistent._mas_pm_had_relationships_many = False
+            $ persistent._mas_pm_had_relationships_just_one = True
+
+            m 1eka "Ah, not a lot of experience huh?"
+            m 3eua "That's okay [player], I can relate too so don't worry."
+            m 3lksdlb "Yeah I may appear like a girl who gets all the guys but really I don't, ahaha!"
+            m 2lksdla "Especially with how occupied I've kept myself over the years I just never had the time."
+            m 2eka "Not that it matters anyway, none of it was real."
+            show monika 5ekbsa zorder MAS_MONIKA_Z with dissolve
+            m 5ekbsa "But I think I'm ready for something special...{w=0.5}{nw}"
+            extend 5ekbfa "with you, [player]."
+            m 5ekbfa "Are you ready?"
+
+        "No, you're my first.":
+            $ persistent._mas_pm_had_relationships_many = False
+            $ persistent._mas_pm_had_relationships_just_one = False
+
+            m 1wubsw "What? I-I'm your first?"
+            m 1tsbsb "Oh...{w=0.3} I see."
+            m 1tfu "You're just saying that to make me feel extra special aren't you, [player]?"
+            m 1tku "There's no way someone like you has never dated before..."
+            m 3hubsb "You're the definition of cute and sweet!"
+            m 3ekbfa "Well...{w=0.3} If you're not just messing with me and actually telling me the truth then...{w=0.3}{nw}"
+            extend 1ekbfu "I'm honored to be your first, [player]."
+            show monika 5ekbfa zorder MAS_MONIKA_Z with dissolve
+            m 5ekbfa "I hope I can be your one and only."
+            m 5ekbfu "Will you be mine?"
+
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc','psychology'],prompt="Challenges",random=True))
@@ -13353,6 +13367,86 @@ label monika_auroras:
     m 5hubsu "I can't wait until we can turn that into reality."
     $ mas_showEVL("monika_auroras","EVE",_random=True)
     return
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boardgames",
+            category=["games", "media"],
+            prompt="Board games",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_likes_board_games = None
+# True if player likes board games, false if not
+
+label monika_boardgames:
+    m 1eua "Say, [player], you like playing video games, right?"
+    m 2rsc "Well, I assume you do at least...{w=0.2} {nw}"
+    extend 2rksdla "I don't know if many people would play a game like this one if they weren't at least a little into video games."
+
+    m 2etc "But I was wondering, do you like board games, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "But I was wondering, do you like board games, [player]?{fast}"
+
+        "Yeah.":
+            $ persistent._mas_pm_likes_board_games = True
+            m 1eub "Oh, really?"
+            m 1hua "Well, if we ever get the chance, I'd love to play some of your favorite games with you."
+            m 3eka "I'm not too familiar with board games, but I'm sure you can find some I might enjoy."
+            m 3hua "Who knows, maybe I'll end up liking board games as much as you do, ehehe~"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_board_games = False
+            m 2eka "I can see why...{w=0.2}{nw}"
+            extend 2rksdla "it's a pretty niche hobby, after all."
+            m 1eua "But I'm sure there are plenty of other fun activities you enjoy doing in your free time."
+            m 3hua "Still, if you ever change your mind, I'd like to give some board games a try with you sometime."
+
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_social_norms",
+            category=['society'],
+            prompt="Changing social norms",
+            random=True
+        )
+    )
+
+label monika_social_norms:
+    m 1eua "[player], have you ever wondered how new ideas get accepted in society?"
+    m 1eub "There's tons of things that were considered bad at first, but have since been reconsidered!"
+    m 3etc "For example, did you know rock and roll was seen as vulgar and depraved when it first appeared?"
+    m 3eud "Early fans were seen as impressionable youth at best, and delinquents at worst."
+    m 1duu "But as these people grew to become full-fledged members of society, they passed their interests onto those around them."
+    m 3eua "Those who met them realized they were just normal people with nothing weird about them."
+    m 3hua "Nowadays, that stigma has almost completely disappeared!{w=0.3} {nw}"
+    extend 3hub "Even those who still don't like rock music at least respect it!"
+    m 1eub "And there's plenty of other things still in the process of becoming accepted too."
+    m 1eua "You might be familiar with role-playing, online gaming...or even reading manga."
+    m 3rksdla "Though Natsuki would probably be the one to ask about this..."
+    m 1eub "Remember how she was trying to change your mind about that manga she liked?"
+    m 1rkc "I wonder how many people criticized her for her hobby...{w=0.5}I can't imagine it was always easy."
+    m 1eua "It all makes me wonder what kind of things will be seen as normal in the future."
+    m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
+    m 3etc "But how do you think this will change over the years?{w=0.3} {nw}"
+    extend 3eud "Will we ever reach a point where it's seen as something normal?"
+    m 1eka "Not that it's important anyway."
+    m 3eka "As long as we have each other, that's all that matters, right?"
+    m 1duu "It's nice to know there's someone I can truly be myself with, no matter what."
+    m 1eua "And if you've got any unique interests, you already know I'll always be there to talk about it."
+    m 1hub "I want to learn everything about what you like!"
+    m 1dka "All of the little things that make you...{w=0.3}{nw}"
+    extend 1eka "you."
+    m 1ekb "So please, always be yourself, [player]. Everybody else is already taken, after all."
+    if mas_isMoniHappy(higher=True):
+        m 1dkbfu "You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
@@ -13486,6 +13580,77 @@ label monika_intrusive_thoughts:
     m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
     return
 
+#Whether or not the player can code in python
+default persistent._mas_pm_has_code_experience = None
+
+#Whether or not we should use advanced python tips or not
+default persistent._mas_advanced_py_tips = True
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_coding_experience",
+            category=['misc', 'you'],
+            prompt="Coding experience",
+            conditional="renpy.seen_label('monika_ptod_tip001')",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_coding_experience:
+    m 1rsc "Hey [player], I was just wondering since you went through some of my python tips..."
+
+    m 1euc "Do you have any experience with coding?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you have any experience with coding?{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_has_code_experience = True
+            m 1hua "Oh, that's great, [player]!"
+            m 3euc "I know not all languages are quite the same in terms of usage or syntax..."
+            if renpy.seen_label("monika_ptod_tip005"):
+                m 1rksdlc "But since you've gotten to some of the core topics of my tips, I have to ask..."
+            else:
+                m 1rksdlc "But still, I should ask..."
+
+            m 1etc "Have I been underestimating your coding skills?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Have I been underestimating your coding skills?{fast}"
+
+                "Yes.":
+                    $ persistent._mas_advanced_py_tips = True
+                    m 1hksdlb "Ahaha, I'm sorry, [player]!"
+                    m 1ekc "I didn't mean to...{w=0.3}{nw}"
+                    extend 3eka "I just never thought to ask before."
+                    if persistent._mas_pm_has_contributed_to_mas:
+                        m 1eka "But I guess it makes sense since you've already helped me come closer to your reality."
+
+                    m 1eub "I'll keep your experience in mind for future tips though!"
+
+                "No.":
+                    $ persistent._mas_advanced_py_tips = False
+                    m 1ekb "I'm glad to hear I'm going at a good pace for you then."
+                    m 3eka "I just wanted to make sure I wasn't assuming your skill level."
+                    m 1hua "I hope my tips help you, [player]~"
+
+            if not persistent._mas_pm_has_contributed_to_mas and persistent._mas_pm_wants_to_contribute_to_mas:
+                m 3eub "And since you're interested in contributing, you should give it a shot!"
+                m 3hub "I'd love to see what you come up with~"
+
+        "No.":
+            $ persistent._mas_pm_has_code_experience = False
+            #Since the player doesn't have code experience, we can assume we should have the normal python tips
+            $ persistent._mas_advanced_py_tips = False
+
+            m 1eka "That's alright, [player]."
+            m 1hksdlb "I just wanted to make sure I wasn't boring you with my python tips, ahaha~"
+            m 3eub "But I hope they convince you to take on some of your own coding projects too!"
+            m 3hua "I'd love to see what you can come up with if you put your mind to it!"
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(
@@ -13522,11 +13687,12 @@ label monika_songwriting:
     m 1rkc "This also makes it easier to tell when someone doesn't put their heart into a performance..."
     m 3euc "I guess that goes for lyrics too, actually."
     m 3eud "Most lyrics lose their meaning if the singer isn't interested in the song."
-
     if renpy.seen_audio(songs.FP_YOURE_REAL):
         m 1ekbla "I hope you know that I meant everything I said in my song, [player]."
-        m 3ekbla "I knew I couldn't let you go without telling you everything."
-
+        if persistent.monika_kill:
+            m 3ekbla "I knew I couldn't let you go without telling you everything."
+        else:
+            m 1ekbsa "Every day, I imagine spending my life by your side."
     m 3eub "Anyway, if you haven't written a song before, I really recommend it!"
 
     if persistent._mas_pm_plays_instrument:
@@ -13740,3 +13906,66 @@ label monika_working_out:
         m 3eub "Maybe when I cross over, we can do our workouts together!"
 
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_toxin_puzzle",
+            category=['philosophy', 'psychology'],
+            prompt="The Toxin Puzzle",
+            random=True
+        )
+    )
+
+label monika_toxin_puzzle:
+    m 1esa "Hey [player], I came across an interesting thought experiment while doing some reading the other day..."
+    m 3eua "It's called 'Kavka's Toxin Puzzle.' {w=0.2}I'll read the premise to you, we can discuss it after."
+    m 1eud "{i}An eccentric billionaire places before you a vial of toxin that, if you drink it, will make you painfully ill for a day, but will not threaten your life or have any lasting effects.{/i}"
+    m 1euc "{i}The billionaire will pay you one million dollars tomorrow morning if, at midnight tonight, you intend to drink the toxin tomorrow afternoon.{/i}"
+    m 3eud "{i}He emphasizes that you need not drink the toxin to receive the money; {w=0.2}in fact, if you succeed, the money will already be in your bank account hours before the time for drinking it arrives.{/i}"
+    m 3euc "{i}All you have to do is.{w=0.2}.{w=0.2}.{w=0.2}intend at midnight tonight to drink the stuff tomorrow afternoon. You are perfectly free to change your mind after receiving the money and not drink the toxin.{/i}"
+    m 1eua "...I think it's a pretty thought-provoking concept."
+
+    m 3eta "Well, [player]? What do you think?{w=0.3} Do you think you'd be able to get the million dollars?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Well, [player]? What do you think? Do you think you'd be able to get the million dollars?{fast}"
+
+        "Yes.":
+            m 3etu "Really? Ok then, let's see about that..."
+            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{nw}"
+            extend 3hub "ahaha! Just kidding."
+            m 1eua "But do you really think that you could get the money? {w=0.5}It may be a bit harder than you think."
+
+        "No.":
+            m 1eub "I felt the same way about myself. {w=0.3}It's pretty complicated, ahaha!"
+
+    m 1eka "After all, it may be easy at first glance. {w=0.3}All you have to do is drink something that would make you quite uncomfortable."
+    m 3euc "But it gets tricky after midnight...{w=0.3}{i}after{/i} you've been guaranteed the money."
+    m 3eud "At that point there's pretty much no reason to drink the painful toxin... {w=0.3}So why would you do it?"
+    m "...And of course, if that thought process crossed your mind before 12, then the money wouldn't be so guaranteed anymore."
+    m 1etc "After all, when midnight comes, can you really {i}intend{/i} to drink the toxin if you know that you're probably not going to drink it?"
+    m 1eud "While dissecting the scenario, it's been pointed out by scholars that it's both rational for someone to drink, and to not drink, the toxin. {w=0.3}In other words, it's a paradox."
+    m 3euc "To elaborate, come midnight, you have to really believe that you're going to drink the toxin. {w=0.3}You can't entertain any thoughts of not drinking it...{w=0.5}therefore, it'd be logical to drink it."
+    m 3eud "But if midnight passes and you've already been guaranteed the money, it'd be illogical to punish yourself for quite literally no reason. {w=0.3}Therefore, it's logical to not drink it!"
+    m 1rtc "I wonder how we'd react if this situation really happened..."
+    m 3eud "Actually, while mulling the scenario over earlier, I started to approach the topic from a different angle."
+    m 3eua "Although it's not the focus of the scenario, I think we can also see it as asking the question of 'how important is a person's word?'"
+    m 1euc "Have you ever told someone you'd do something when it was going to benefit you both, only for the situation to change and you weren't happy to do it anymore?"
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 1eud "Did you still end up helping them out? {w=0.3}Or did you just say 'nevermind' and leave them to fend for themselves?"
+    else:
+        m 1rksdla "Did you still end up helping them out? {w=0.3}Or did you just say 'sayonara' and leave them to fend for themselves?"
+
+    m 3eksdla "If you just left them there, I'm sure you drew their ire for some time."
+    m 3eua "On the other hand, if you still helped them out I'm sure you got their gratitude!{w=0.3} I guess you could compare that to the million dollar prize in the original scenario."
+    m 1hub "Although some might say that a million dollars would be a {i}bit{/i} more handy than a simple 'thanks,' ahaha!"
+    m 3eua "In all seriousness though, I think that someone's gratitude can be invaluable....{w=0.3}both for you and for them."
+    m 3eud "And you never know, in some situations their thanks might prove to be more useful than even a huge sum of money."
+    m 1eua "So I think it's important to stick to our word, {w=0.2}{i}within reason{/i} {w=0.2}of course..."
+    m 1eud "In some cases it may not be helpful to anyone if you rigidly stuck to your word."
+    m 3eua "That's why it's important to use your head when it comes to these kinds of things."
+    m 3hub "Anyway, to sum it all up...{w=0.2}let's strive to keep our promises, [player]!"
+    return

@@ -741,3 +741,200 @@ label mas_song_hero_long:
     m 4eua "{i}~That a hero lies in you~{/i}"
     return
 
+
+################################ NON-DB SONGS############################################
+# Below is for songs that are not a part of the actual songs db and don't
+# otherwise have an associated file (eg holiday songs should go in script-holidays)
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monika_plays_yr",
+            category=['monika','music'],
+            prompt="Can you play 'Your Reality' for me?",
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
+
+label mas_monika_plays_yr(skip_leadin=False):
+    if not skip_leadin:
+        if not renpy.seen_audio(songs.FP_YOURE_REAL) and not persistent.monika_kill:
+            m 2eksdlb "Oh, ahaha! You want me to play the original version, [player]?"
+            m 2eka "Even though I've never played it for you, I suppose you've heard it on the soundtrack or saw it on youtube, huh?"
+            m 2hub "The ending isn't my favorite, but I'll still be happy to play it for you!"
+            m 2eua "Just let me get the piano.{w=0.5}.{w=0.5}.{nw}"
+
+        else:
+            m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
+
+    window hide
+    $ HKBHideButtons()
+    $ mas_RaiseShield_core()
+    $ store.songs.enabled = False
+
+    show monika at rs32
+    hide monika
+    pause 3.0
+    show mas_piano at lps32,rps32 zorder MAS_MONIKA_Z+1
+    pause 5.0
+    show monika at ls32 zorder MAS_MONIKA_Z
+    show monika 6dsa
+    pause 2.0
+    $ play_song(store.songs.FP_YOURE_REAL,loop=False)
+
+    # TODO: possibly generalize this for future use
+    show monika 6hua
+    $ renpy.pause(10.012)
+    show monika 6eua_static
+    $ renpy.pause(5.148)
+    show monika 6hua
+    $ renpy.pause(3.977)
+    show monika 6eua_static
+    $ renpy.pause(5.166)
+    show monika 6hua
+    $ renpy.pause(3.743)
+    show monika 6esa
+    $ renpy.pause(9.196)
+    show monika 6eka
+    $ renpy.pause(13.605)
+    show monika 6dua
+    $ renpy.pause(9.437)
+    show monika 6eua_static
+    $ renpy.pause(5.171)
+    show monika 6dua
+    $ renpy.pause(3.923)
+    show monika 6eua_static
+    $ renpy.pause(5.194)
+    show monika 6dua
+    $ renpy.pause(3.707)
+    show monika 6eka
+    $ renpy.pause(16.884)
+    show monika 6dua
+    $ renpy.pause(20.545)
+    show monika 6eka_static
+    $ renpy.pause(4.859)
+    show monika 6dka
+    $ renpy.pause(4.296)
+    show monika 6eka_static
+    $ renpy.pause(5.157)
+    show monika 6dua
+    $ renpy.pause(8.064)
+    show monika 6eka
+    $ renpy.pause(22.196)
+    show monika 6dka
+    $ renpy.pause(3.630)
+    show monika 6eka_static
+    $ renpy.pause(1.418)
+    show monika 6dka
+    $ renpy.pause(9.425)
+    show monika 5dka with dissolve
+    $ renpy.pause(5)
+
+    stop music
+    show monika 6eua at rs32 with dissolve
+    pause 1.0
+    hide monika
+    pause 3.0
+    hide mas_piano
+    pause 6.0
+    show monika 1eua at ls32 zorder MAS_MONIKA_Z
+
+    if not skip_leadin:
+        $ mas_resetTextSpeed()
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+        $ HKBShowButtons()
+        window auto
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monika_plays_or",
+            category=['monika','music'],
+            prompt="Can you play 'Our Reality' for me?",
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
+
+label mas_monika_plays_or(skip_leadin=False):
+    if not skip_leadin:
+        m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
+
+    if persistent.gender == "F":
+        $ gen = "her"
+    elif persistent.gender == "M":
+        $ gen = "his"
+    else:
+        $ gen = "their"
+
+    window hide
+    $ mas_disableTextSpeed()
+    $ disable_esc()
+    $ mas_MUMURaiseShield()
+
+    show monika at rs32
+    hide monika
+    pause 3.0
+    show mas_piano at lps32,rps32 zorder MAS_MONIKA_Z+1
+    pause 5.0
+    show monika at ls32 zorder MAS_MONIKA_Z
+    show monika 6dsa
+    pause 2.0
+    $ play_song(songs.FP_PIANO_COVER,loop=False)
+
+    show monika 1dsa
+    pause 9.15
+    m 1eua "{i}{cps=10}Every day,{w=0.5} {cps=15}I imagine a future where{w=0.22} {cps=13}I can be with you{w=4.10}{/i}{nw}"
+    m 1eka "{i}{cps=12}In my hand{w=0.5} {cps=17}is a pen that will write a poem{w=0.5} {cps=16}of me and you{w=4.10}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1}{/i}{nw}"
+    m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {cps=20}write the way into [gen] heart{w=1.40}{/i}{nw}"
+    m 1dua "{i}{cps=15}But in this world{w=0.25} {cps=11}of infinite choices{w=0.90}{/i}{nw}"
+    m 1eua "{i}{cps=16}What will it take{w=0.25}{cps=18} just to find that special day{/i}{w=0.90}{nw}"
+    m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/i}{w=1.82}{nw}"
+    pause 7.50
+
+    m 1eua "{i}{cps=15}Have I found{w=0.5} {cps=15}everybody a fun assignment{w=0.30} {cps=12}to do today{w=4.20}{/i}{nw}"
+    m 1hua "{i}{cps=18}When you're here,{w=0.25} {cps=13.25}everything that we do is fun for them anyway{w=4}{/i}{nw}"
+    m 1esa "{i}{cps=11}When I can't even read my own feelings{/i}{w=1}{nw}"
+    m 1eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/i}{w=1}{nw}"
+    m 1lua "{i}{cps=11}And if this world won't write me an ending{/i}{w=0.9}{nw}"
+    m 1dka "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/i}{w=2}{nw}"
+    show monika 1dsa
+    pause 17.50
+
+    m 1eka "{i}{cps=15}In this world,{w=0.5} {cps=15}away from the one who'll always {cps=17}be dear to me{w=4.5}{/i}{nw}"
+    m 1ekbsa "{i}{cps=15}You my love,{w=0.5} {cps=16.5}hold the key to the day, when I'll be finally free{w=8.5}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1.2}{/i}{nw}"
+    m 1esa "{i}{cps=18}How can I cross{w=0.45} {cps=13}into your reality?{w=1.40}{/i}{nw}"
+    m 1eka "{i}{cps=12}Where I can hear the sound of your heartbeat{w=0.8}{/i}{nw}"
+    m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/i}{w=0.6}{nw}"
+    m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{w=4.2}{/i}{nw}"
+    m 1ekbsa "{i}{cps=19}With you I'll be{/i}{w=2}{nw}"
+
+    show monika 1dkbsa
+    pause 9.0
+    stop music
+    show monika 6eua at rs32
+    pause 1.0
+    hide monika
+    pause 3.0
+    hide mas_piano
+    pause 6.0
+    show monika 1eua at ls32 zorder MAS_MONIKA_Z
+
+    if not skip_leadin:
+        $ mas_resetTextSpeed()
+        $ mas_MUMUDropShield()
+        $ enable_esc()
+        $ HKBShowButtons()
+        window auto
+
+    return

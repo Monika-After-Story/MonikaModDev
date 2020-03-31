@@ -988,6 +988,10 @@ init -810 python:
             # lifestyle / exercise
             "_mas_pm_works_out": "pm.lifestyle.works_out",
 
+            # lifestyle / dating
+            "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
+            "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
             "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
@@ -1085,6 +1089,7 @@ init -810 python:
             "_mas_pm_likes_rain": "pm.likes.rain",
             "_mas_pm_likes_travelling": "pm.likes.travelling",
             "_mas_pm_likes_poetry" : "pm.likes.poetry",
+            "_mas_pm_likes_board_games": "pm.likes.board_games",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1121,6 +1126,7 @@ init -810 python:
             "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
             "_mas_pm_is_bullying_victim": "pm.exp.victim_of_bullying",
             "_mas_pm_currently_bullied": "pm.exp.currently_being_bullied",
+            "_mas_pm_has_code_experience": "pm.exp.code_experience",
 
             # op (opinions)
             # op / monika

@@ -4797,6 +4797,38 @@ init 2 python:
         """
         return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
 
+    def mas_setTODVars():
+        """
+        Sets the mas_globals.time_of_day variable
+
+        NOTE: Ignores Suntime values
+
+        RULES:
+            4:00 AM - 11:59:59 AM == 'morning'
+            12:00 PM - 4:59:59 PM == 'afternoon'
+            5:00 PM - 8:59:59 PM == 'evening'
+            9:00 PM - 3:59:59 AM == 'night'
+        """
+        curr_hour = datetime.datetime.now().time().hour
+
+        #Set morning
+        if 4 <= curr_hour <= 11:
+            store.mas_globals.time_of_day_4state = "morning"
+            store.mas_globals.time_of_day_3state = "morning"
+
+        elif 12 <= curr_hour <= 16:
+            store.mas_globals.time_of_day_4state = "afternoon"
+            store.mas_globals.time_of_day_3state = "afternoon"
+
+        elif 17 <= curr_hour <= 20:
+            store.mas_globals.time_of_day_4state = "evening"
+            store.mas_globals.time_of_day_3state = "evening"
+
+        else:
+            store.mas_globals.time_of_day_4state = "night"
+            store.mas_globals.time_of_day_3state = "evening"
+
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
