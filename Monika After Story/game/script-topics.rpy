@@ -13432,7 +13432,7 @@ label monika_social_contagion:
     m 2euc "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself."
     m 2dsc "...It can be a bit disheartening."
     m 7hub "It also works the other way around, though! Smiling, laughing, and positive thinking are contagious too!"
-    m 1eub "Turns out we are all more connected than you think. {w=0.3}Those around you matter a lot on how you feel about things!"
+    m 1eub "Turns out we are all more connected than you think. {w=0.3}The behaviors of those around us depend a lot on how we feel about things!"
     m 1eka "I hope by noticing these kinds of things, you'll be able to better understand and control your own feelings, [player]."
     m 3hua "I just want to see you be the happiest you can be."
     if mas_isMoniHappy(higher=True):
