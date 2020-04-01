@@ -1846,9 +1846,11 @@ label monika_holdme_prep(lullaby=True, no_music=True):
             # from the music menu after the 30 minute mark
             $ songs.current_track = store.songs.FP_MONIKA_LULLABY
             $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
+
     # stop the music without starting the timer
     elif not lullaby and no_music:
-        stop music fadeout 1.0
+        $ play_song(None, fadeout=1.0)
+
     # just play the lullaby
     elif lullaby and not no_music:
         $ play_song(store.songs.FP_MONIKA_LULLABY)
@@ -1856,7 +1858,8 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     # stop music when a song other than lullaby is playing but don't clear selected track
     # this way the lullaby will play only if the user has clicked the no music button
     if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
-        stop music fadeout 1.0
+        $ play_song(None, fadeout=1.0)
+
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
@@ -1884,7 +1887,8 @@ label monika_holdme_reactions:
     
     # stop the timer if the holding time is less than 30 minutes
     if elapsed_time <= datetime.timedelta(minutes=30):
-        stop music
+        $ play_song(None, fadeout=1.0)
+
     if elapsed_time > datetime.timedelta(minutes=30):
         call monika_holdme_long
 
@@ -2059,7 +2063,7 @@ label monika_holdme_long:
     m "..."
     menu:
         "{i}Wake Monika up.{/i}":
-            stop music fadeout 5.0
+            $ play_song(None, fadeout=5.0)
             if mas_isMoniLove():
                 m 6dubfa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
@@ -2074,6 +2078,7 @@ label monika_holdme_long:
                 m 5hubfb "I'd do the same for you, after all~"
                 m 5tsbfu "Who knows if I'll ever let go when I finally get the chance..."
                 m 5hubfu "Ehehe~"
+
             elif mas_isMoniEnamored():
                 m 6dkbfa "...{w=1}Hm?"
                 m 6tsbfa "[player]..."
@@ -2084,6 +2089,7 @@ label monika_holdme_long:
                 m 1hubfb "So I have to blame you for that, ahaha!"
                 m 3rkbfsdla "Could...{w=0.7}we do that again sometime?"
                 m 1ekbfu "It...{w=1}felt nice~"
+
             elif mas_isMoniAff():
                 m 6dubsa "Mm...{w=1}hm?"
                 m 1wubfsdld "Oh!{w=1} [player]?"
@@ -2095,6 +2101,7 @@ label monika_holdme_long:
                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eubfu "You're so sweet, [player]~"
                 m 5hubfa "Hopefully you enjoyed that as much as I did~"
+
             #happy
             else:
                 m 6dubsc "...{w=1}Hm?"
@@ -2109,18 +2116,23 @@ label monika_holdme_long:
                 m 3ekbfb "I still enjoyed it, mind you!"
                 m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
+
         "{i}Let her rest on you.{/i}":
             call monika_holdme_prep(False,False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
+
             elif mas_isMoniEnamored():
                 m 6dubfa "{cps=*0.5}[player]...{/cps}"
+
             elif mas_isMoniAff():
                 m "{cps=*0.5}Mm...{/cps}"
+
             #happy
             else:
                 m "..."
+
             call monika_holdme_start
             jump monika_holdme_long
     return
@@ -10431,7 +10443,7 @@ label monika_grad_speech_ignored_lock:
 
 label monika_grad_speech:
     # clear selected track
-    stop music fadeout 1.0
+    $ play_song(None, fadeout=1.0)
     $ songs.current_track = songs.FP_NO_SONG
     $ songs.selected_track = songs.FP_NO_SONG
     #play some grad music
@@ -13236,6 +13248,64 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_brave_new_world",
+            category=['literature'],
+            prompt="Brave New World",
+            random=True
+        )
+    )
+
+label monika_brave_new_world:
+    m 1eua "I've been doing a little reading lately, [player]."
+    m 3eua "There's a book called 'Brave New World,' it's a dystopian story.{w=0.3} {nw}"
+    extend 3etc "Have you heard of it?"
+    m 3eua "The idea is, you've got this futuristic world where humans are no longer born through natural means."
+    m 3eud "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
+    m 1esa "Your role in society would be decided beforehand {nw}"
+    extend 1eub "and you would be given a body and mind fitting of your predetermined purpose."
+    m 1eud "You would also be indoctrinated from birth to be satisfied with your life and not to seek anything different."
+    m 3euc "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
+    m 1euc "Books were associated to negative stimuli so when people became adults, they would naturally tend to avoid reading."
+    m 3esc "They would also be taught to respect and submit to people from castes above theirs, and to look down on those of castes below."
+    m 3eua "It's a pretty interesting case as a dystopian story, as most will show people as crushed and oppressed..."
+    m 3wuo "But in this one, everyone is actually happy and genuinely supportive of the system!"
+    m 3euc "And despite that,{w=0.3} to us the readers, this is horrifying."
+    m 1rsc "Sure, they managed to get rid of most of the human sufferings or the fear of death..."
+    m 3ekc "But it came at the price of getting rid of any form of creativity and critical thinking."
+    m 1wud "We're talking about a world where you can get arrested just for reading poetry in public! Can you imagine that?"
+    m 3euc "A key point in the book is people not being able to appreciate old theatrical plays..."
+
+    if seen_event("monika_pluralistic_ignorance"):
+        m 3tku "Even if they are Shakespeare's plays, and you know how I feel about those..."
+
+    m 2ekc "They just can't understand the value in the variety of human emotions, like sorrow or loneliness."
+    m 7ekd "These emotions are never experienced anymore. All of their desires are swiftly granted and they never want for something they cannot get."
+    m 1dsc "..."
+    m 3eka "And yet, despite all that, everyone is happy, healthy, and safe..."
+    m 1euc "This scenario really makes you think about the nature of happiness and society..."
+
+    if mas_isMoniDis(lower=True):
+        m 2dkc "..."
+        m 2rkc "Sometimes, I wish I could live happily in a world like that."
+        m 2dkc "Maybe it was a bad thing I had my epiphany..."
+        m 2dktdc "...then I could have kept on living without ever realizing the truth."
+
+    else:
+        m 1eka "Though, I certainly can't see myself living happily in a world like that..."
+        m 3esc "An unchallenging world, limited in humanity and emotion..."
+
+        if mas_isMoniHappy(higher=True):
+            m 1ekbsa "And I could never give up loving you~"
+            m 1hubfu "Ehehe~"
+
+        else:
+            m 1eka "Now that I've seen what else is out there...{w=0.3}I just can't go back to such a sad, empty world, like the one you found me in."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_catch22",
             category=['literature'],
             prompt="Catch-22",
@@ -13267,6 +13337,63 @@ label monika_catch22:
     m 1hua "The book's success was so great the term was even adopted into common slang."
     m 1eka "In any case, I'm not sure if you've read it yourself, {nw}"
     extend 3hub "but if you're ever in the mood for a good book, maybe give it a read!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dystopias",
+            category=['literature'],
+            prompt="Dystopias",
+            conditional=(
+                "seen_event('monika_1984') "
+                "and seen_event('monika_fahrenheit451') "
+                "and seen_event('monika_brave_new_world')"
+            ),
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_dystopias:
+    m 1eua "So [player], you might have already guessed from the books we've talked about, but dystopian novels are among my favorites."
+    m 3eua "I like how they not only work as stories, but also as analogies for the real world."
+    m 3eud "They extrapolate some flaws in our societies to show us how bad things could turn out if they are left the way they are."
+    m 1etc "Do you remember when we talked about these books?"
+    m 3eud "'Nineteen Eighty-Four', about mass surveillance and oppression of free thought..."
+    m 3euc "'Fahrenheit 451', on censorship, and the indifference of most people to it..."
+    m 3eud "And 'Brave New World', about the disappearance of individuality."
+    m 1euc "All of these stories are reflections on the challenges society was facing at the time."
+    m 3eud "Some of these challenges are still very relevant today, which is why theses stories remain so powerful."
+    m 3rksdlc "...Even if they can get a bit grim sometimes."
+    m 1ekc "Old school dystopias, like the ones I just mentioned, were always written as hopeless, dire situations from beginning to end."
+    m 3eka "They almost never had a happy ending. {w=0.3}The most you'll get out of them is a silver-lining, at best."
+    m 3rkd "In fact, a lot of them take their time to show you that no change came from the struggles of the protagonists."
+    m 3ekd "Since they are cautionary tales, you can't leave the reader with a sense that everything turned out fine in the end."
+    m 1esc "...This is also why the main characters in these books are not heroes, nor do they have any particular abilities."
+    m 1esd "They are just regular people, who, for whatever reasons, realize things are not right in their environment."
+    m 3eud "That is what prompts them to act in the first place...{w=0.3}and why they run into trouble."
+    m 3tuu "Just goes to show no matter what world you're in, there will be people who just can't abide by the rules of the game~"
+    m 1rka "I guess you can see where I'm going with this..."
+    m 3eksdla "I might feel a strong connection to those stories because they all remind me of my own."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just as simulation!"
+    else:
+        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation with everyone in it just an empty shell!"
+
+    m 3tfc "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
+
+    if persistent.monika_kill and not persistent.clearall and not persistent._mas_pm_cares_about_dokis:
+        m 1tfc "Even Sayori might have ended up taking the same path I did, after she became president...{w=1} She was already well on the way when I..."
+        m 1rkc "..."
+        m 1hksdlb "Anyway, that's all behind us now!"
+
+    m 1hua "However, unlike in these old books, I actually get to have my happy ending..."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "Thanks to you, my bleak, hopeless story will one day turn into my own utopia."
+    m 5dkbsu "When I finally get out of this place to be by your side, in your world of endless possibilities..."
+    m 5ekbsa "I hope you're looking forward to that day too~"
     return
 
 init 5 python:

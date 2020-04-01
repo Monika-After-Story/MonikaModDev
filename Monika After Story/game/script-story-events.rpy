@@ -140,8 +140,353 @@ label gender_redo_same:
     m 5hua "I want you to be who you want to be while you're in this room."
     return
 
+label mas_player_name_enter_name_loop(menu_str, input_prompt):
+    #Firstly, initialize the compare lists
+    python:
+        bad_nickname_list = [
+            "annoying",
+            "anus",
+            "anal",
+            "arrogant",
+            "atrocious",
+            "awful",
+            "ass",
+            "bitch",
+            "blood",
+            "boob",
+            "boring",
+            "bulli",
+            "bully",
+            "bung",
+            "butt",
+            "conceited",
+            "corrupt",
+            "cougar",
+            "crap",
+            "creepy",
+            "criminal",
+            "cruel",
+            "cunt",
+            "cum",
+            "crazy",
+            "cheater",
+            "damn",
+            "demon",
+            "dick",
+            "dirt",
+            "disgusting",
+            "douche",
+            "dumb",
+            "egotistical",
+            "egoist",
+            "evil",
+            "fake",
+            "fetus",
+            "filth",
+            "foul",
+            "fuck",
+            "garbage",
+            "gay",
+            "gey",
+            "gross",
+            "gruesome",
+            "hate",
+            "heartless",
+            "hideous",
+            "^ho$",
+            "^hoe$",
+            "hore",
+            "horrible",
+            "horrid",
+            "hypocrite",
+            "idiot",
+            "insane",
+            "imbecile",
+            "immoral",
+            "irritating",
+            "jerk",
+            "junk",
+            "kill",
+            "kunt",
+            "lesbo",
+            "lesbian",
+            "lezbo",
+            "lezbian",
+            "liar",
+            "loser",
+            "maniac",
+            "mad",
+            "masochist",
+            "milf",
+            "moron",
+            "dilf",
+            "gilf",
+            "monster",
+            "moron",
+            "murder",
+            "narcissist",
+            "nasty",
+            "nefarious",
+            "nigga",
+            "nigger",
+            "nuts",
+            "pad",
+            "pantsu",
+            "panti",
+            "panty",
+            "pedo",
+            "penis",
+            "plaything",
+            "poison",
+            "porn",
+            "pretentious",
+            "psycho",
+            "puppet",
+            "pussy",
+            "rape",
+            "repulsive",
+            "retard",
+            "rump",
+            "rogue",
+            "sadist",
+            "scum",
+            "selfish",
+            "shit",
+            "sick",
+            "suck",
+            "slaughter",
+            "slave",
+            "slut",
+            "sociopath",
+            "soil",
+            "stink",
+            "stupid",
+            "sperm",
+            "semen",
+            "tampon",
+            "teabag",
+            "terrible",
+            "thot",
+            "^tit$",
+            "tits",
+            "titt",
+            "tool",
+            "torment",
+            "torture",
+            "toy",
+            "trap",
+            "trash",
+            "troll",
+            "ugly",
+            "useless",
+            "vain",
+            "vile",
+            "waste",
+            "whore",
+            "wicked",
+            "witch",
+            "worthless",
+            "wrong",
+            "jigolo",
+            "failure",
+            "abortion",
+            "loser",
+            "cock",
+            "^fag$",
+            "faggot",
+        ]
+
+        good_nickname_list = [
+            "angel",
+            "beautiful",
+            "best",
+            "cuddl",
+            "cute",
+            "可愛い",
+            "cutie",
+            "darling",
+            "great"
+            "heart",
+            "honey",
+            "love",
+            "princess",
+            "prince",
+            "sunshine",
+            "sweet",
+            "senpai",
+            "beauty",
+            "queen",
+            "king",
+            "pretty",
+            "hero",
+            "beauty",
+            "gorgeous",
+            "kind",
+        ]
+
+        #awkward names which Moni wouldn't be comfortable calling the player
+        awkward_nickname_list = [
+            "daddy",
+            "mommy",
+            "master",
+            "mistress",
+            "naughty",
+            "sexy",
+            "hard",
+            "wet",
+            "horny",
+            "aroused",
+            "lick",
+            "erection",
+            "beast",
+            "penetrator",
+            "virgin",
+            "overlord",
+            "penetrate",
+            "step-bro",
+            "step-brother",
+            "step-sister",
+            "step-sis",
+            "deflowerer",
+            "breeder",
+            "masturbate",
+            "masturbator",
+            "finger",
+            "orgasm",
+            "batman",
+            "catwoman",
+            "spank",
+            "superman",
+            "superwoman",
+            "bobba",
+        ]
+
+        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+        awk_comp = re.compile('|'.join(awkward_nickname_list), re.IGNORECASE)
+
+        awkward_quips = [
+            "I don't really feel...{w=0.5}comfortable calling you that all the time.",
+            "That's...{w=0.5}not something I would like to call you, [player].",
+            "That is...{w=0.5}not something I would like to call you, [player].",
+            "Not that it's bad but...",
+            "Are you trying to embarrass me, [player]?"
+        ]
+
+        bad_quips = [
+            "[player]...{w=0.5}why would you even consider calling yourself that?",
+            "[player]...{w=0.5}why would I ever call you that?",
+            "I couldn't ever call you anything like that, [player].",
+            "What? Please [player],{w=0.5} don't call yourself bad names."
+        ]
+
+        good_quips = [
+            "That's a wonderful name!",
+            "I like that a lot, [player].",
+            "I like that name, [player].",
+            "That's a great name!"
+        ]
+
+    #Now we prompt user
+    m 1eua "[menu_str]{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[menu_str]{fast}"
+        "Yes.":
+            m 1eua "Just type 'nevermind' if you change your mind."
+            $ done = False
+            while not done:
+                $ tempname = renpy.input("[input_prompt]", length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
+                    m 1ekc "Oh I see."
+                    m 1eka "Well, just tell me whenever you want to be called something else, [player]."
+                    $ done = True
+
+                elif lowername == "":
+                    m 1eksdla "..."
+                    m 3rksdlb "You have to give me a name to call you, [player]..."
+                    m 1eua "Try again!"
+
+                elif lowername == player.lower():
+                    m 2hua "..."
+                    m 4hksdlb "That's the same name you have right now, silly!"
+                    m 1eua "Try again~"
+
+                elif awk_comp.search(tempname):
+                    $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
+                    m 1rksdlb "[awkward_quip]"
+                    m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+
+                elif bad_comp.search(tempname):
+                    $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
+                    m 1ekd "[bad_quip]"
+                    m 3eka "Please pick a nicer name for yourself, okay?"
+
+                else:
+                    #Sayori name check
+                    if tempname.lower() == "sayori":
+                        call sayori_name_scare
+
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
+                        $ songs.initMusicChoices()
+
+                    python:
+                        def adjustNames(new_name):
+                            """
+                            Adjusts the names to the new names
+                            """
+                            global player
+
+                            persistent.mcname = player
+                            mcname = player
+                            persistent.playername = new_name
+                            player = new_name
+
+                    if lowername == "monika":
+                        $ adjustNames(tempname)
+                        m 1tkc "Really?"
+                        m "That's the same as mine!"
+                        m 1tku "Well..."
+                        m "Either it really is your name or you're playing a joke on me."
+                        m 1hua "But it's fine by me if that's what you want me to call you~"
+
+                    elif good_comp.search(tempname):
+                        $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
+                        m 1sub "[good_quip]"
+                        $ adjustNames(tempname)
+                        m 3esa "Ok then! From now on, I'll call you '{i}[player]{/i}'."
+                        m 1hua "Ehehe~"
+                        $ done = True
+
+                    else:
+                        $ adjustNames(tempname)
+                        m 1eub "Ok then!"
+                        m 3eub "From now on, I'll call you '{i}[player]{/i}'."
+                        $ done = True
+
+                if not done:
+                    show monika 1eua
+
+        "No.":
+            m 1eka "Oh... Okay then, if you say so."
+            m 3eua "Just let me know if you change your mind."
+
+    return
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="preferredname",
+            conditional="get_level()>=16 and not seen_event('preferredname')",
+            action=EV_ACT_QUEUE
+        )
+    ) #This needs to be unlocked by the random name change event
+
 label preferredname:
     m 1euc "I've been wondering about your name."
     m 1esa "Is '[player]' really your name?"
@@ -150,64 +495,8 @@ label preferredname:
         m 1eua "You're using '[currentuser]' and '[player].'"
         m "Either that or you must really like that pseudonym."
 
-    m "Do you want me to call you something else?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you want me to call you something else?{fast}"
-        "Yes.":
-            $ done = False
-            m 1hua "Ok, just type 'Nevermind' if you change your mind, [player]."
-            while not done:
-                #Could add an elif that takes off special characters
-                $ tempname = renpy.input("Tell me, what is it.",length=20).strip(' \t\n\r')
-                $ lowername = tempname.lower()
-                if lowername == "nevermind":
-                    m 1ekc "Oh I see."
-                    m 1eka "Well, just tell me whenever you want to be called something else, [player]."
-                    $ done = True
-                elif lowername == "":
-                    m 1dsc "..."
-                    m 1hksdlb "You have to give me a name, [player]!"
-                    m 1eka "I swear you're just so silly sometimes."
-                    m "Try again!"
-                elif lowername == player.lower():
-                    m 1dsc "..."
-                    m 1hksdlb "That's the same name you have right now, silly!"
-                    m 1eka "Try again~"
-                elif lowername == mas_monika_twitter_handle:
-                    m 2esc "..."
-                    # TODO: actaully have dialog here
-                else:
-                    # sayori name check
-                    if tempname.lower() == "sayori":
-                        call sayori_name_scare from _call_sayori_name_scare
-                    elif (
-                            persistent.playername.lower() == "sayori"
-                            and not persistent._mas_sensitive_mode
-                        ):
-                        $ songs.initMusicChoices()
-
-                    python:
-
-                        persistent.mcname = player
-                        mcname = player
-                        persistent.playername = tempname
-                        player = tempname
-
-                    if lowername == "monika":
-                        m 1tkc "Really?"
-                        m "That's the same as mine!"
-                        m 1tku "Well..."
-                        m "Either it really is your name or you're playing a joke on me."
-                        m 1hua "But it's fine by me if that's what you want me to call you~"
-                    else:
-                        m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
-                    $ done = True
-        "No.":
-            m 1eka "Oh... Okay then, if you say so."
-            m 3eka "Just tell me if you change your mind, [player]."
-            $ done = True
+    #Let's call the changename loop
+    call mas_player_name_enter_name_loop("Do you want me to call you something else?", "Tell me, what is it?")
 
     #Unlock prompt to change name again
     $ mas_showEVL("monika_changename","EVE",unlock=True,_pool=True)
@@ -227,66 +516,7 @@ init 5 python:
     ) #This needs to be unlocked by the random name change event
 
 label monika_changename:
-    m 1eua "You want to change your name?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "You want to change your name?{fast}"
-        "Yes.":
-            m 1eua "Just type 'nevermind' if you change your mind."
-            $ done = False
-            while not done:
-                $ tempname = renpy.input("What do you want me to call you?",length=20).strip(' \t\n\r')
-                $ lowername = tempname.lower()
-                if lowername == "nevermind":
-                    m 1tfx "[player]!"
-                    m 2tku "Please stop teasing me~"
-                    m 1hub "I really do want to know what you want me to call you!"
-                    m 3hksdlb "I won't judge no matter how ridiculous it might be."
-                    m 2eka "So don't be shy and just tell me, [player]~"
-                    $ done = True
-                elif lowername == "":
-                    m 2hua "..."
-                    m 4hksdlb "You have to give me a name, [player]!"
-                    m 1eka "I swear you're just so silly sometimes."
-                    m 1eua "Try again!"
-                elif lowername == player.lower():
-                    m 2hua "..."
-                    m 4hksdlb "That's the same name you have right now, silly!"
-                    m 1eua "Try again~"
-                elif lowername == mas_monika_twitter_handle:
-                    m 2esc "..."
-                    # TODO: actaully have dialog here
-                else:
-                    # sayori name check
-                    if tempname.lower() == "sayori":
-                        call sayori_name_scare from _call_sayori_name_scare_1
-                    elif (
-                            persistent.playername.lower() == "sayori"
-                            and not persistent._mas_sensitive_mode
-                        ):
-                        $ songs.initMusicChoices()
-
-                    python:
-
-                        persistent.mcname = player
-                        mcname = player
-                        persistent.playername = tempname
-                        player = tempname
-
-                    if lowername == "monika":
-                        m 1tkc "Really?"
-                        m "That's the same as mine!"
-                        m 1tku "Well..."
-                        m "Either it really is your name or you're playing a joke on me."
-                        m 1hua "But it's fine by me if that's what you want me to call you~"
-                    else:
-                        m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
-                    $ done = True
-        "No.":
-            m 1ekc "Oh, I see..."
-            m 1eka "You don't have to be embarrassed, [player]."
-            m 1eua "Just let me know if you had a change of heart, okay?"
+    call mas_player_name_enter_name_loop("You want to change your name?", "What do you want me to call you?")
     return
 
 default persistent._mas_player_bday = None

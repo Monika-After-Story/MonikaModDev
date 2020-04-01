@@ -853,7 +853,7 @@ label mas_scary_story_setup:
     $ are_masks_changing = mas_current_weather != mas_weather_rain
     $ mas_is_raining = True
 
-    stop music fadeout 1.0
+    $ play_song(None, fadeout=1.0)
     pause 1.0
 
     $ mas_temp_m_flag = morning_flag
