@@ -13733,7 +13733,7 @@ init 5 python:
     )
 
 label monika_coding_experience:
-    m 1rsc "Hey [player], I was just wondering since you went through some of my python tips..."
+    m 1rsc "Hey [player], I was just wondering since you went through some of my Python tips..."
 
     m 1euc "Do you have any experience with coding?{nw}"
     $ _history_list.pop()
@@ -13780,7 +13780,7 @@ label monika_coding_experience:
             $ persistent._mas_advanced_py_tips = False
 
             m 1eka "That's alright, [player]."
-            m 1hksdlb "I just wanted to make sure I wasn't boring you with my python tips, ahaha~"
+            m 1hksdlb "I just wanted to make sure I wasn't boring you with my Python tips, ahaha~"
             m 3eub "But I hope they convince you to take on some of your own coding projects too!"
             m 3hua "I'd love to see what you can come up with if you put your mind to it!"
     return "derandom"
@@ -13914,7 +13914,7 @@ label monika_ship_of_theseus:
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "We should keep trying our best each day and not let ourselves be limited by who we were yesterday."
     m 5eub "Today is a new day, and you are a new you. {w=0.2}And I love you as you are right now, [player]."
-    return
+    return "love"
 
 init 5 python:
     addEvent(
