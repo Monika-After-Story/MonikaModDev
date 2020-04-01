@@ -22,14 +22,32 @@ init -10 python:
 
 
 # user defined trasnforms
-transform leftin_slow(x=640, z=0.80):
+transform leftin_slow(x=640, z=0.80, t=1.00):
     xcenter -300 yoffset 0 yanchor 1.0 ypos 1.03 zoom z*1.00 alpha 1.00 subpixel True
-    easein 1.00 xcenter x
+    easein t xcenter x
 
 # transform positional shortcuts
 # NOTE: only the ones that we need are defined. Add them as you need em
 transform ls32:
-    leftin_slow(640)
+    leftin_slow(x=640)
+
+# piano slides in
+transform lps32:
+    leftin_slow(x=640,t=4.00)
+
+# used so things that slide in will also slide back out
+transform lslide(t=1.00, x=-600):
+    subpixel True
+    on hide:
+        easeout t xcenter x
+
+# used so Monika can slide back out
+transform rs32:
+    lslide()
+
+# used so piano can slide back out
+transform rps32:
+    lslide(t=4.00,x=-700)
 
 ### transforms for chibi monika
 transform mas_chdropin(x=640, y=405, travel_time=3.00):

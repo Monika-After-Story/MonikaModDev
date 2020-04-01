@@ -1118,8 +1118,8 @@ label i_greeting_monikaroom:
     # 1 - if you quit here, monika doesnt know u here
     $ mas_enable_quit()
 
-    # 2 - music button + hotkeys should be disabled
-    $ store.mas_hotkeys.music_enabled = False
+    # all UI elements stopped
+    $ mas_RaiseShield_core()
 
     # 3 - keymaps not set (default)
     # 4 - overlays hidden (skip visual)
@@ -1796,7 +1796,7 @@ label monikaroom_greeting_cleanup:
         mas_disable_quit()
 
         # 2 - music is renabled
-        store.mas_hotkeys.music_enabled = True
+        mas_MUMUDropShield()
 
         # 3 - keymaps should be set
         set_keymaps()
@@ -2057,16 +2057,18 @@ label greeting_stillsick:
             jump greeting_stillsickrest
         "No.":
             jump greeting_stillsicknorest
+        "I'm already resting.":
+            jump greeting_stillsickresting
 
 label greeting_stillsickrest:
     if mas_isMoniNormal(higher=True):
-        m 2hua "Thank you [player]."
+        m 2hua "Thank you, [player]."
         m 2eua "I think if I leave you alone for a while, you'll be able to rest better."
         m 1eua "So I'm going to close the game for you."
         m 1eka "Get well soon, [player]. I love you so much!"
 
     else:
-        m 2ekc "Thank you [player]."
+        m 2ekc "Thank you, [player]."
         m "I think if I leave you alone for a while, you'll be able to rest better."
         m 4ekc "So I'm going to close the game for you."
         m 2ekc "Get well soon, [player]."
@@ -2077,7 +2079,7 @@ label greeting_stillsickrest:
 label greeting_stillsicknorest:
     if mas_isMoniNormal(higher=True):
         m 1lksdlc "I see..."
-        m "Well if you insist [player]."
+        m "Well if you insist, [player]."
         m 1ekc "I suppose you know your own limitations better than I do."
         m 1eka "If you start to feel a little weak or tired though, [player], please let me know."
         m "That way you can go get some rest."
@@ -2088,6 +2090,26 @@ label greeting_stillsicknorest:
         m 2ekc "Fine."
         m 2tkc "You never seem to want to listen to me, so why would I expect now to be any different."
 
+    # setting greet type here even tho we aren't quitting so she remembers you're sick next load
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
+    return
+    
+label greeting_stillsickresting:
+    m 1eka "Oh, that's a relief to hear, [player]."
+    m 3eka "I hope you're keeping yourself warm though."
+    if mas_isMoniNormal(higher=True):
+        m 1dku "Maybe snuggled in a warm blanket with a nice hot cup of tea."
+        m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
+        m 5hua "Ehehe~"
+
+    else:
+        m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
+        m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
+
+    # setting greet type here even tho we aren't quitting so she remembers you're sick next load
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return
 
 init 5 python:
@@ -2470,12 +2492,8 @@ init 5 python:
 label greeting_hairdown:
 
     # couple of things:
-    # 1 - music hotkeys should be disabled
-    $ store.mas_hotkeys.music_enabled = False
-
-    # 2 - the calendar overlay will become visible, but we should keep it
-    # disabled
-    $ mas_calRaiseOverlayShield()
+    # shield ui
+    $ mas_RaiseShield_core()
 
     # 3 - keymaps not set (default)
     # 4 - hotkey buttons are hidden (skip visual)
@@ -2530,11 +2548,8 @@ label greeting_hairdown:
     $ mas_lockEvent(mas_getEV("greeting_hairdown"))
 
     # cleanup
-    # 1 - music hotkeys should be enabled
-    $ store.mas_hotkeys.music_enabled = True
-
-    # 2 - calendarovrelay enabled
-    $ mas_calDropOverlayShield()
+    # enable music menu
+    $ mas_MUMUDropShield()
 
     # 3 - set the keymaps
     $ set_keymaps()

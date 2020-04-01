@@ -1334,8 +1334,9 @@ python early:
 
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
-            """
-            DEPRECATED (remove when farewells is updated)
+            """DEPRECATED
+            
+            (remove when farewells is updated)
 
             Checks a single event against its repeat rules, which are evaled
             to a time.
@@ -1369,8 +1370,9 @@ python early:
 
         @staticmethod
         def checkRepeatRules(events, check_time=None):
-            """
-            DEPRECATED (remove when farewells is updated)
+            """DEPRECATED
+
+            (remove when farewells is updated)
 
             checks the event dict against repeat rules, which are evaluated
             to a time.
@@ -3990,9 +3992,25 @@ init -985 python:
         return store.mas_globals.tt_detected
 
 
+init -101 python:
+    import os
+
+    # TODO: we should move this to utils at some point.
+    def is_file_present(filename):
+        if not filename.startswith("/"):
+            filename = "/" + filename
+
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
+
+
 init -1 python:
     import datetime # for mac issues i guess.
-    import os
+
     if "mouseup_3" in config.keymap['game_menu']:
         config.keymap['game_menu'].remove('mouseup_3')
     if "mouseup_3" not in config.keymap["hide_windows"]:
@@ -4043,17 +4061,6 @@ init -1 python:
 
         # otherwise, not found
         return False
-
-    def is_file_present(filename):
-        if not filename.startswith("/"):
-            filename = "/" + filename
-
-        filepath = renpy.config.basedir + filename
-
-        try:
-            return os.access(os.path.normcase(filepath), os.F_OK)
-        except:
-            return False
 
 
     def is_apology_present():
@@ -4594,7 +4601,8 @@ init -1 python:
         return appIds
 
 init 2 python:
-    # global functions that should be defined after level 0a
+    import re
+    #Global functions that should be defined after level 0
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.
@@ -4608,7 +4616,7 @@ init 2 python:
 
         #1. Do we even have plushie enabled?
         #2. Is it f14? (heartchoc gift interferes)
-        #3. Are we currently eatding something?
+        #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
@@ -4789,6 +4797,38 @@ init 2 python:
             _now - time to check against (Default: None)
         """
         return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
+
+    def mas_setTODVars():
+        """
+        Sets the mas_globals.time_of_day variable
+
+        NOTE: Ignores Suntime values
+
+        RULES:
+            4:00 AM - 11:59:59 AM == 'morning'
+            12:00 PM - 4:59:59 PM == 'afternoon'
+            5:00 PM - 8:59:59 PM == 'evening'
+            9:00 PM - 3:59:59 AM == 'night'
+        """
+        curr_hour = datetime.datetime.now().time().hour
+
+        #Set morning
+        if 4 <= curr_hour <= 11:
+            store.mas_globals.time_of_day_4state = "morning"
+            store.mas_globals.time_of_day_3state = "morning"
+
+        elif 12 <= curr_hour <= 16:
+            store.mas_globals.time_of_day_4state = "afternoon"
+            store.mas_globals.time_of_day_3state = "afternoon"
+
+        elif 17 <= curr_hour <= 20:
+            store.mas_globals.time_of_day_4state = "evening"
+            store.mas_globals.time_of_day_3state = "evening"
+
+        else:
+            store.mas_globals.time_of_day_4state = "night"
+            store.mas_globals.time_of_day_3state = "evening"
+
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

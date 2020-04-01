@@ -376,7 +376,7 @@ init 6 python:
 
 
     def mas_hideEVL(
-            ev_label, 
+            ev_label,
             code, 
             lock=False, 
             derandom=False,
@@ -2183,6 +2183,9 @@ label prompt_menu:
         jump prompt_menu_end
 
     python:
+        #We want to adjust the time of day vars
+        mas_setTODVars()
+
         unlocked_events = Event.filterEvents(
             evhand.event_database,
             unlocked=True,
