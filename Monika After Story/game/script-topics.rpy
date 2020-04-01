@@ -13898,7 +13898,7 @@ label monika_ship_of_theseus:
     m 3eua "It's a well known philosophical problem about the nature of identity that's been around for millennia."
     m 1rkb "Well, I say 'well known' but I suppose that's only true among scholars, ahaha..."
     m 1eua "Let's consider the legendary Greek hero, Theseus and the ship he sailed during his adventures." 
-    m 3eud "He's from a long time ago so let's say his ship is now stored in a famous museum, theoretically..."
+    m 3eud "He's from a long time ago, so let's say his ship is now stored in a famous museum."
     m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
     m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
     m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
