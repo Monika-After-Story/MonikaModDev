@@ -1,6 +1,6 @@
 {
     "__author": "Orcaramelo",
-    "version": 2,
+    "version": 3,
     "type": 2,
     "name": "orcaramelo_bikini_shell",
     "img_sit": "orcaramelo_bikini_shell",
@@ -24,9 +24,6 @@
         ]
     },
     "giftname": "shellbikini",
-    "pose_arms": {
-        "default": null,
-        "use_reg_for_l": true
-    }
+    "pose_arms": {}
 }
 

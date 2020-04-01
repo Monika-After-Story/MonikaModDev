@@ -9,6 +9,8 @@ import menutils
 
 import spritepuller as spull
 
+import sprite as spr_module
+
 from sprite import StaticSprite
 
 # state vars
@@ -847,6 +849,20 @@ def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
         quiet - supresses menus and stdout
         sp_per_file - max number of sprites allowed per file
     """
+    # ask for draw function to use
+    if not quiet:
+        df_choice = True
+        while df_choice is not None:
+            df_choice = menutils.menu(menu_sdf, defindex=1)
+
+            # if no choice was made here (or we aborted), then quit
+            if df_choice is None:
+                return
+
+            # otherwise set and quit loop
+            spr_module.draw_function = df_choice
+            df_choice = None
+
     # ask if okay to overwrite files
     if not quiet:
         print("\n" + MSG_OVERWRITE.format(
@@ -1023,6 +1039,18 @@ menu_lstc = [
     ("Show List", run_lstc_show),
     ("Show Filters", run_lstc_showfilter),
     ("Set Filter", run_lstc_setfilter),
+]
+
+menu_sdf = [
+    ("Set Draw Function", "Option: "),
+    (
+        "Image Manipulators (" + spr_module.DRAW_MONIKA_IM + ")",
+        spr_module.DRAW_MONIKA_IM
+    ),
+    (
+        "Sprite Strings (" + spr_module.DRAW_MONIKA + ")",
+        spr_module.DRAW_MONIKA
+    ),
 ]
 
 # strings

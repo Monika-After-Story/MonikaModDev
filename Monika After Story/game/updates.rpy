@@ -417,6 +417,9 @@ label v0_10_8(version="v0_10_8"):
             song_pool_ev.action = None
             song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
 
+        # clear out the bab list as its been replaced
+        persistent._mas_acs_bab_list = None
+
         # ensure marisa + ACS is unlocked
         if mas_o31CostumeWorn(mas_clothes_marisa):
             store.mas_selspr.unlock_clothes(mas_clothes_marisa)
