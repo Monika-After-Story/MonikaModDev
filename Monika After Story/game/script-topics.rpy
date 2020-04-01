@@ -13264,7 +13264,7 @@ init 5 python:
 
 label monika_brave_new_world:
     m 1eua "I've been doing a little reading lately, [player]."
-    m 3eua "There's a book called 'Brave New World,' it's a dystopian story.{w=0.3} {nw}"
+    m 3eua "There's a book called 'Brave New World,' a dystopian story.{w=0.3} {nw}"
     extend 3etc "Have you heard of it?"
     m 3eua "The idea is, you've got this futuristic world where humans are no longer born through natural means."
     m 3eud "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
@@ -13566,7 +13566,7 @@ label monika_social_norms:
     m 3rksdla "Though Natsuki would probably be the one to ask about this..."
     m 1eub "Remember how she was trying to change your mind about that manga she liked?"
     m 1rkc "I wonder how many people criticized her for her hobby...{w=0.5}I can't imagine it was always easy."
-    m 1eua "It all makes me wonder what kind of things will be seen as normal in the future."
+    m 1eua "It all makes me wonder what kinds of things will be seen as normal in the future."
     m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
     m 3etc "But how do you think this will change over the years?{w=0.3} {nw}"
     extend 3eud "Will we ever reach a point where it's seen as something normal?"
