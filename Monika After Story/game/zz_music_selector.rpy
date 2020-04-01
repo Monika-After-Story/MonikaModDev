@@ -1042,7 +1042,7 @@ init python:
             songs.setUserVolume(songs.music_volume, "music")
 
 
-    def play_song(song, fadein=0.0, loop=True, set_per=False):
+    def play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0):
         #
         # literally just plays a song onto the music channel
         # Also sets the currentt track
@@ -1055,14 +1055,15 @@ init python:
         #   set_per - True if we should set persistent track, False if not
         if song is None:
             song = songs.FP_NO_SONG
-            renpy.music.stop(channel="music")
+            renpy.music.stop(channel="music", fadeout=fadeout)
         else:
             renpy.music.play(
                 song,
                 channel="music",
                 loop=loop,
                 synchro_start=True,
-                fadein=fadein
+                fadein=fadein,
+                fadeout=fadeout
             )
 
         songs.current_track = song

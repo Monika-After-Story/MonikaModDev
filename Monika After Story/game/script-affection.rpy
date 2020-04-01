@@ -2066,6 +2066,9 @@ label monika_affection_nickname:
             "kasan",
         ]
 
+        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+
         # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
 
@@ -2094,8 +2097,7 @@ label monika_affection_nickname:
         "Yes.":
             label monika_affection_nickname_yes:
                 pass
-            $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-            $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+
             $ done = False
             m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
@@ -2107,19 +2109,23 @@ label monika_affection_nickname:
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."
                     $ done = True
+
                 elif not lowername:
                     m 1lksdla "..."
                     m 1hksdrb "You have to give me a name, [player]!"
                     m "I swear you're just so silly sometimes."
                     m 1eka "Try again!"
+
                 elif lowername == player.lower():
                     m 1euc "..."
                     m 1lksdlb "That's your name, [player]! Give me my own!"
                     m 1eka "Try again~"
+
                 elif lowername == m_name.lower():
                     m 1euc "..."
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
+
                 elif lowername in mom_nickname_list:
                     # mother flow
                     m 1tku "Oh, you're a momma's [boy], huh?"
@@ -2130,31 +2136,35 @@ label monika_affection_nickname:
                     $ done = True
 
                 else:
-                    $ bad_nickname = bad_nickname_search.search(inputname)
-                    if bad_nickname is None:
-                        $ good_nickname = good_nickname_search.search(inputname)
+                    if not bad_comp.search(inputname):
                         if inputname == "Monika":
                             m 1eua "Ehehe~ Back to the classics, I see."
-                        elif good_nickname is None:
+
+                        elif good_comp.search(inputname):
+                            m 1wuo "Oh! That's a wonderful name!"
+                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
+
+                        else:
                             m 1eud "Well, it's not exactly my favorite."
                             m 1eua "But I don't dislike it either."
                             m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
-                        else:
-                            m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
+
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
+
                         m 2eua "Okay, [player]!"
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
+
                         else:
                             m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
                             m 1hub "Ehehe~"
                         $ done = True
+
                     else:
                         #Remove the apology reason from this as we're handling the apology differently now.
                         $ mas_loseAffection(ev_label="mas_apology_bad_nickname")
-                        if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
+                        if lowername in ["yuri", "sayori", "natsuki"]:
                             m 1wud "...!"
                             m 2wfw "I..."
                             m "I...can't believe you just did that, [player]."
@@ -2172,6 +2182,7 @@ label monika_affection_nickname:
 
                             show monika 1efc
                             pause 5.0
+
                         else:
                             m 4efd "[player]! That's not nice at all!"
                             m 2efc "Why would you say such things?"
