@@ -97,7 +97,7 @@ init 999 python:
         SPR_MISS = "#ff0000"
 
         MONI_X = -240
-        MONI_Y = -107
+        MONI_Y = 20
 
         # STATES for which monika to show
 
@@ -788,7 +788,7 @@ init 999 python:
             img_eyes = self._get_img_name("eyes")
 
             try:
-                trn, rfr = mas_drawmonika(0, 0, monika_chr,
+                trn, rfr = mas_drawmonika_rk(0, 0, monika_chr,
                     self._get_img_name("eyebrows"),
                     img_eyes,
                     self._get_img_name("nose"),
