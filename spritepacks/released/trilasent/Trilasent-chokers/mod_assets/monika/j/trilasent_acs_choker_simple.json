@@ -1,0 +1,27 @@
+{
+    "__author": "Trilasent",
+    "version": 3,
+    "type": 0,
+    "name": "trilasent_choker_simple",
+    "img_sit": "trilasent_choker_simple",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 8,
+    "acs_type": "choker",
+    "stay_on_start": true,
+    "priority": 8,
+    "dlg_desc": "choker",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Choker (Simple)",
+        "thumb": "trilasent_choker_simple",
+        "group": "choker"
+    },
+    "giftname": "simplechoker",
+    "arm_split": {
+        "default": "0",
+        "use_reg_for_l": true
+    }
+}

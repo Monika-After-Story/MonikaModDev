@@ -235,6 +235,12 @@ init -10 python:
             return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
 
 
+#   TODO: consider this. I'm not sure its 100% worth it since we might prefer
+#   the bg to be a static sprite than a Matrixcolor render. Revaluate this
+#   when we json bgs.
+#    class MASFilterableBackground(MASBackground):
+
+
 
 #Helper methods and such
 init -20 python in mas_background:
@@ -426,7 +432,7 @@ label monika_change_background_loop:
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(backgrounds, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(backgrounds, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     $ sel_background = _return
 

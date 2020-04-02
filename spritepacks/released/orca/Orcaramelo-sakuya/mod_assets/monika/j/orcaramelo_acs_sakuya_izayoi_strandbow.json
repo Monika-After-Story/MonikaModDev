@@ -1,0 +1,17 @@
+{
+    "__author": "Orcaramelo",
+    "version": 3,
+    "type": 0,
+    "name": "orcaramelo_sakuya_izayoi_strandbow",
+    "img_sit": "orcaramelo_sakuya_izayoi_strandbow",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "strandbow",
+    "ex_props": {
+        "required-hair-prop": "braidstrand"
+    },
+    "stay_on_start": true
+}

@@ -1,0 +1,29 @@
+{
+    "__author": "anonymioo",
+    "version": 3,
+    "type": 0,
+    "name": "anonymioo_ribbon_gradient",
+    "img_sit": "anonymioo_ribbon_gradient",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "multi-colored ribbon",
+    "dlg_plural": false,
+    "ex_props": {
+        "ribbon-multicolor": true,
+        "gradient": true
+    },
+    "select_info": {
+        "display_name": "Ribbon (Gradient)",
+        "thumb": "anonymioo_ribbon_gradient",
+        "group": "ribbon",
+        "select_dlg": [
+            "A classic with a twist!"
+        ]
+    },
+    "giftname": "gradientribbon"
+}

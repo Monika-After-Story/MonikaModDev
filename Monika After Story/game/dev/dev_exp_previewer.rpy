@@ -97,7 +97,7 @@ init 999 python:
         SPR_MISS = "#ff0000"
 
         MONI_X = -240
-        MONI_Y = -107
+        MONI_Y = 20
 
         # STATES for which monika to show
 
@@ -197,10 +197,12 @@ init 999 python:
         SEL_TX_MAP = {
             "torso": {
                 "def": "School Uniform",
+                "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
-                "rin": "Neko Costume",
+#                "rin": "Neko Costume",
                 "santa": "Santa Monika",
                 "sundress_white": "Sundress (White)",
+                "blackdress": "Formal Dress (Black)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -326,10 +328,12 @@ init 999 python:
         SC_MAP = {
             "torso": [
                 "def",
+                "blazerless",
                 "marisa",
-                "rin",
+                #"rin",
                 "santa",
                 "sundress_white",
+                "blackdress",
             ],
             "arms": [
                 1,
@@ -491,6 +495,15 @@ init 999 python:
             Creates the Expression previewer displayable
             """
             super(renpy.Displayable, self).__init__()
+
+            # update torsos with spritepacked sprites
+            torso_map = self.SEL_TX_MAP["torso"]
+            torso_list = self.SC_MAP["torso"]
+            for sel in store.mas_selspr.CLOTH_SEL_MAP.itervalues():
+                spr = sel.get_sprobj()
+                if spr.is_custom and spr.name not in torso_map:
+                    torso_map[spr.name] = sel.display_name
+                    torso_list.append(spr.name)
 
             # background tile
             self.background = Solid(
@@ -775,7 +788,7 @@ init 999 python:
             img_eyes = self._get_img_name("eyes")
 
             try:
-                trn, rfr = mas_drawmonika(0, 0, monika_chr,
+                trn, rfr = mas_drawmonika_rk(0, 0, monika_chr,
                     self._get_img_name("eyebrows"),
                     img_eyes,
                     self._get_img_name("nose"),
