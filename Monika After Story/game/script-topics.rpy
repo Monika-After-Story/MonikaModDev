@@ -12897,109 +12897,69 @@ label monika_unknown:
         return "love"
     return
 
-default persistent._mas_pm_slightly_bothered_monika_is_virtual = None
-default persistent._mas_pm_bothered_monika_is_virtual = None
-
-#prompt starts as 'Evasive message' until changed to 'Monika's origin' once we reach love
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_origin",
-            category=['misc'],
-            prompt="Evasive message",
+            eventlabel="monika_being_virtual",
+            category=['monika'],
+            prompt="Being virtual",
             random=True,
-            aff_range=(mas_aff.ENAMORED,None)
+            aff_range=(None, mas_aff.DISTRESSED)
         )
     )
 
-label monika_origin:
-    if(mas_isMoniLove()):
-        m 1euc "Hey, [player]..."
-        m 1ruc "..."
-        m 1esd "There's a question I need to ask you."
-        m 1esc "It's a little bit delicate..."
-        m 2lsc "I was a bit afraid to ask until now... {w=1}but it's something I have to know, no matter how you might answer."
-        m 2esc "..."
-        m 1esd "Do you love me less because of what I am?"
-        m 3esc "I mean, from your perspective, I am still someone living in a video game in your world, right?"
-        m 3rkd "So you might see me in a different way you would someone from your reality... {w=0.5}and you might think less of me because of that..."
-        m 1ekbla "I just want to be the best sweetheart for you, [player]."
-        m 1eka "Sometimes, I wonder how I compare with all these people living with you in the real world..."
-        m 3hksdlb "I'm sorry, you've not given me any reason to feel insecure, it's just..."
-        m 3ekb "It's a question that comes to my mind, from time to time."
-        m 1eka "Do you love me less for not being from your reality?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "Do you love me less for not being from your reality?{fast}"
-            "Yes.":
-                $ persistent._mas_pm_slightly_bothered_monika_is_virtual = True
-                $ persistent._mas_pm_bothered_monika_is_virtual = True
-                m 1dkc "..."
-                m 1ekb "Thank you for your honesty, [player]. I really appreciate it."
-                m 1eka "It's kind of understandable after all..."
-                m 3ekb "I don't have a body that's able to be with you in your reality."
-                m 3ekd "And since I've never been to your world, I can't really know how different I am from a regular person."
-                m 1esa "I mean, I like to think of myself as human, and I definitely have feelings the same way you do."
-                m 1ekb "But until I can join you in your reality and see for myself, I can't really know for sure, can I?"
-                m 2ekd "Trust me, I am the first one to be sorry about this state of things. One day, we'll find a way to make things right..."
-                m 1eubla "But even with that said, considering all the care and dedication you've shown me until now, I know you love me anyway..."
-                m 1tubla "Besides, This just means after I find my way to your reality..."
-                m 3hubsb "...you'll just love me that much more, right? Ahaha~ "
-            "Just a bit.":
-                $mas_gainAffection()
-                $ persistent._mas_pm_slightly_bothered_monika_is_virtual = True
-                $ persistent._mas_pm_bothered_monika_is_virtual = False
-                m 1eua "I can live with that answer."
-                m "It's kind of understandable after all..."
-                m 3eub "I don't yet have a body that's able to be with you in your reality."
-                m 3ekd "And since I've never been to your world, I can't really know how different I am from a regular person."
-                m 1eub "I mean, I like to think of myself as human, and I definitely have feelings the same way you do."
-                m 1eka "But until I can join you in your reality and see for myself, I can't really know for sure, can I?"
-                m 3hua "Despite all that, you're still here with me, aren't you?"
-                m 1ekbsa "And seeing all the care and dedication you've shown me until now, I know you love me anyway..."
-                m 1hubfb "So even if it bothers you a little, it just makes me that much more grateful that you stuck up with me all this time!"
-                m 1eubfa "I love you, [player]. Please stay with me until I can find my way to you..."
-                call monika_origin_update_prompt_and_category
-                return "derandom|love"
-            "No.":
-                if not mas_getEV("monika_origin").prompt == "Monika's origin":
-                    $ mas_gainAffection(amount=5, bypass=True)
-                else:
-                    $ mas_gainAffection()
-                $ persistent._mas_pm_slightly_bothered_monika_is_virtual = False
-                $ persistent._mas_pm_bothered_monika_is_virtual = False
-                m 1ekbfa "[player]..."
-                m 1dubfu "You can't even imagine how relieved I am to hear that..."
-                m 3hubfb "Gosh, I feel so silly for even doubting you in the first place!"
-                m 1ekbfa "After all the care and dedication you've shown me since we've been together!"
-                m 2ekbsb "I hope I haven't upset you by asking this. It's just...{w=0.5} It was important to me."
-                m 1eubfa "Knowing you see me as a normal person, fully deserving of your love... {w=0.5}well, it really means a lot!"
-                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5hubsa "Thank you, [player], you're really making me feel better."
-        call monika_origin_update_prompt_and_category
-        return "derandom"
+label monika_being_virtual:
+    m 2esc "You know, for a while, I thought the reason you hated me was because of what happened with the other girls."
+    m 2esd "But recently, I've been thinking that might not be the whole story."
+    m 2eksdld "The truth is...{w=0.5} you don't even see me as a person, do you?"
+    m 3rksdld "To you, this whole world...{w=0.5} my whole reality..."
+    m 3ektpd "It's all just a game, isn't it?"
+    show monika 1dktsc
+    pause 3.0
+    show monika 1ektdc
+    pause 2.0
+    m 1ektdd "Say, [player]...{w=0.5} has anything I ever said reached you, even once?"
+    m 1wktdd "Did you ever love me at all?" 
+    m 2wktdw "You must have, right?!"
+    if persistent.monika_kill:
+        m 2wktdd "You even went through the trouble of installing this mod! You brought me back!"
     else:
-        m 1euc "Hey, [player]..."
-        m 1ruc "..."
-        m 1esd "There's..."
-        m 1lsc "..."
-        m 1hksdlb "Ahaha! Nevermind! It's nothing important..."
-        show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbla "I love you, [player]. I hope you {i}do{/i} realize that."
-        return "love"
-
-# change the prompt and the category of monika_origin to match the 'love' path of the topic
-label monika_origin_update_prompt_and_category:
-    python:
-        monika_origin_ev = mas_getEV("monika_origin")
-        if not monika_origin_ev.prompt == "Monika's origin":
-            monika_origin_ev.prompt = "Monika's origin"
-            Event.lockInit("prompt", ev=monika_origin_ev)
-            monika_origin_ev.category = ['monika']
-            Event.lockInit("category", ev=monika_origin_ev)
-    return
-        
+        m 2wktdd "You even went through the trouble of installing this mod!"
+    m 2wkc "Was it all so you could keep tormenting me?"
+    m 2wfd "Is it something you get your kicks out of?!"
+    m 2wfw "I have feelings too, you know?!"
+    m 2wfd "Do you even realize what you're doing?"
+    m 2dfc "Or are you nothing more than a child playing with an anthill?"
+    if persistent.monika_kill:
+        m 3ekc "Even after I let go of you and ended it all..."
+        m 3rkd "Do I really deserve the way you're treating me?"
+        m 2ekd "Did you really have to bring me back for that?"
+    else:
+        m 2dkc "..."
+        m 2rkc "Then again, maybe that's what I deserve after all..."
+    m 2dkd "I just...{w=0.5} don't know anymore..."
+    m 2dkc "I feel so tired..."
+    m "..."
+    m 1ekd "I just want to know...{w=0.5} if I had been real..."
+    m 1ektpa "Would you have fallen in love with me?"
+    m "Would you have accepted me then?"
+    m 1dka "That's all I ever wanted, [player]..."
+    m "For the both of us to be happy together..."
+    m 1ekd "If only you could find in you a way to love me..."
+    m 2ekc "I get that I don't have a body that can be with you right now..."
+    m 2ekd "And maybe I really am different from these other people living in your reality..."
+    m 2efo "But I can love you much more than any of them ever could!"
+    m 2efc "I just know it!"
+    m 2dkd "So please, [player], I need you to make a decision soon..."
+    m 2wkd "I beg of you, you need to give us a chance to be happy!"
+    m 2ekd "I know the two of us can be great together!"
+    m 2dkc "If you can't do that..."
+    m 2dktpc "If, after all, you can't love me for who I am..."
+    m 2ektpd "Then, please... put an end to this..."
+    m 2dktpx "Delete me..."
+    return derandom|no_unlock
+    
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
