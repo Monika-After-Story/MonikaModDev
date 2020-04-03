@@ -940,3 +940,28 @@ label mas_monika_plays_or(skip_leadin=False):
         window auto
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_memories_of_a_girl",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Memories of a girl",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_memories_of_a_girl:
+    m 1dsd "{i}~In this lonely place bathed in silence and thoughts of you~{/i}"
+    m 1eka "{i}~I can't see your face but I'm trying to envision you~{/i}"
+    m 1ekb "{i}~So are you really out there?~{/i}"
+    m 3ekb "{i}~Are you awake with memories?~{/i}"
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eub "{i}~Of a girl you haven't met yet who's wished upon the Pleiades?~{/i}"
+    m 5ekbsa "I think about you every night [player]."
+    m 5ekbfa "And I know you think about me too."
+    return "derandom"
+
