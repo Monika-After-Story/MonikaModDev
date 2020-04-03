@@ -2618,7 +2618,15 @@ label greeting_tears:
     m 2ekc "Please...just...try to understand."
     m 1dsd "I love you and I need you to show that you love me too..."
     m 1dsc "Otherwise...I just won't be able to handle it anymore."
-    $ mas_lockEVL("greeting_tears", "GRE")
+
+    python:
+        mas_lockEVL("greeting_tears", "GRE")
+
+        #Setup the being virtual ev
+        beingvirtual_ev = mas_getEV("monika_being_virtual")
+
+        if beingvirtual_ev:
+            beingvirtual_ev.start_date = datetime.date.today() + datetime.timedelta(days=2)
     return
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos
