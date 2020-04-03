@@ -198,7 +198,7 @@ init 5 python:
         Event(
             persistent._mas_songs_database,
             eventlabel="mas_song_aiwfc",
-            prompt="All I want for Christmas",
+            prompt="All I Want for Christmas",
             category=[store.mas_songs.TYPE_LONG],
             unlocked=False,
             aff_range=(mas_aff.NORMAL, None)
@@ -378,7 +378,7 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_with_you",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="Happy Just To Dance With You",
+            prompt="Happy Just to Dance With You",
             random=True,
             aff_range=(mas_aff.NORMAL,None)
         ),
@@ -400,7 +400,7 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_dream",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="All I Have To Do Is Dream",
+            prompt="All I Have to Do Is Dream",
             random=True,
             aff_range=(mas_aff.NORMAL,None)
         ),
@@ -515,7 +515,7 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_stand_by_me",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="Stand By Me",
+            prompt="Stand by Me",
             random=True,
             aff_range=(mas_aff.NORMAL,None)
         ),
@@ -572,7 +572,7 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_stand_by_me_long",
             category=[store.mas_songs.TYPE_LONG],
-            prompt="Stand By Me",
+            prompt="Stand by Me",
             random=False,
             unlocked=False,
             aff_range=(mas_aff.NORMAL,None)
@@ -604,7 +604,7 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_rewrite_the_stars",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="Rewrite The Stars",
+            prompt="Rewrite the Stars",
             random=True,
             aff_range=(mas_aff.NORMAL,None)
         ),
@@ -741,6 +741,29 @@ label mas_song_hero_long:
     m 4eua "{i}~That a hero lies in you~{/i}"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_memories_of_a_girl",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Memories of a Girl I Haven't Met",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_memories_of_a_girl:
+    m 1esd "{i}~In this lonely place bathed in silence and thoughts of you~{/i}"
+    m 1dka "{i}~I can't see your face but I'm trying to envision you~{/i}"
+    m 1dkd "{i}~So are you really out there?~{/i}"
+    m 3ekd "{i}~Are you awake with memories?~{/i}"
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eub "{i}~Of a girl you haven't met yet who's wished upon the Pleiades?~{/i}"
+    m 5ekbsa "I think about you every night, [player]."
+    m 5ekbfa "And I know you think about me too."
+    return "derandom"
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
