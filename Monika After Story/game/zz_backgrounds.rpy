@@ -235,6 +235,12 @@ init -10 python:
             return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
 
 
+#   TODO: consider this. I'm not sure its 100% worth it since we might prefer
+#   the bg to be a static sprite than a Matrixcolor render. Revaluate this
+#   when we json bgs.
+#    class MASFilterableBackground(MASBackground):
+
+
 
 #Helper methods and such
 init -20 python in mas_background:

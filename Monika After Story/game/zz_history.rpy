@@ -1089,6 +1089,7 @@ init -810 python:
             "_mas_pm_likes_rain": "pm.likes.rain",
             "_mas_pm_likes_travelling": "pm.likes.travelling",
             "_mas_pm_likes_poetry" : "pm.likes.poetry",
+            "_mas_pm_likes_board_games": "pm.likes.board_games",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1125,6 +1126,7 @@ init -810 python:
             "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
             "_mas_pm_is_bullying_victim": "pm.exp.victim_of_bullying",
             "_mas_pm_currently_bullied": "pm.exp.currently_being_bullied",
+            "_mas_pm_has_code_experience": "pm.exp.code_experience",
 
             # op (opinions)
             # op / monika

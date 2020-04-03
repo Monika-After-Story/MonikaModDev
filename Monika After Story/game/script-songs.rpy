@@ -843,6 +843,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
 
     if not skip_leadin:
+        pause 2.0
         $ mas_resetTextSpeed()
         $ mas_MUMUDropShield()
         $ enable_esc()
@@ -931,6 +932,7 @@ label mas_monika_plays_or(skip_leadin=False):
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
 
     if not skip_leadin:
+        pause 2.0
         $ mas_resetTextSpeed()
         $ mas_MUMUDropShield()
         $ enable_esc()

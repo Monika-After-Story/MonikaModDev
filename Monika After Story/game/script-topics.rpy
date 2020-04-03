@@ -1846,9 +1846,11 @@ label monika_holdme_prep(lullaby=True, no_music=True):
             # from the music menu after the 30 minute mark
             $ songs.current_track = store.songs.FP_MONIKA_LULLABY
             $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
+
     # stop the music without starting the timer
     elif not lullaby and no_music:
-        stop music fadeout 1.0
+        $ play_song(None, fadeout=1.0)
+
     # just play the lullaby
     elif lullaby and not no_music:
         $ play_song(store.songs.FP_MONIKA_LULLABY)
@@ -1856,7 +1858,8 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     # stop music when a song other than lullaby is playing but don't clear selected track
     # this way the lullaby will play only if the user has clicked the no music button
     if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
-        stop music fadeout 1.0
+        $ play_song(None, fadeout=1.0)
+
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
@@ -1884,7 +1887,8 @@ label monika_holdme_reactions:
     
     # stop the timer if the holding time is less than 30 minutes
     if elapsed_time <= datetime.timedelta(minutes=30):
-        stop music
+        $ play_song(None, fadeout=1.0)
+
     if elapsed_time > datetime.timedelta(minutes=30):
         call monika_holdme_long
 
@@ -2059,7 +2063,7 @@ label monika_holdme_long:
     m "..."
     menu:
         "{i}Wake Monika up.{/i}":
-            stop music fadeout 5.0
+            $ play_song(None, fadeout=5.0)
             if mas_isMoniLove():
                 m 6dubfa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
@@ -2074,6 +2078,7 @@ label monika_holdme_long:
                 m 5hubfb "I'd do the same for you, after all~"
                 m 5tsbfu "Who knows if I'll ever let go when I finally get the chance..."
                 m 5hubfu "Ehehe~"
+
             elif mas_isMoniEnamored():
                 m 6dkbfa "...{w=1}Hm?"
                 m 6tsbfa "[player]..."
@@ -2084,6 +2089,7 @@ label monika_holdme_long:
                 m 1hubfb "So I have to blame you for that, ahaha!"
                 m 3rkbfsdla "Could...{w=0.7}we do that again sometime?"
                 m 1ekbfu "It...{w=1}felt nice~"
+
             elif mas_isMoniAff():
                 m 6dubsa "Mm...{w=1}hm?"
                 m 1wubfsdld "Oh!{w=1} [player]?"
@@ -2095,6 +2101,7 @@ label monika_holdme_long:
                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eubfu "You're so sweet, [player]~"
                 m 5hubfa "Hopefully you enjoyed that as much as I did~"
+
             #happy
             else:
                 m 6dubsc "...{w=1}Hm?"
@@ -2109,18 +2116,23 @@ label monika_holdme_long:
                 m 3ekbfb "I still enjoyed it, mind you!"
                 m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
+
         "{i}Let her rest on you.{/i}":
             call monika_holdme_prep(False,False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
+
             elif mas_isMoniEnamored():
                 m 6dubfa "{cps=*0.5}[player]...{/cps}"
+
             elif mas_isMoniAff():
                 m "{cps=*0.5}Mm...{/cps}"
+
             #happy
             else:
                 m "..."
+
             call monika_holdme_start
             jump monika_holdme_long
     return
@@ -10431,7 +10443,7 @@ label monika_grad_speech_ignored_lock:
 
 label monika_grad_speech:
     # clear selected track
-    stop music fadeout 1.0
+    $ play_song(None, fadeout=1.0)
     $ songs.current_track = songs.FP_NO_SONG
     $ songs.selected_track = songs.FP_NO_SONG
     #play some grad music
@@ -13236,6 +13248,64 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_brave_new_world",
+            category=['literature'],
+            prompt="Brave New World",
+            random=True
+        )
+    )
+
+label monika_brave_new_world:
+    m 1eua "I've been doing a little reading lately, [player]."
+    m 3eua "There's a book called 'Brave New World,' it's a dystopian story.{w=0.3} {nw}"
+    extend 3etc "Have you heard of it?"
+    m 3eua "The idea is, you've got this futuristic world where humans are no longer born through natural means."
+    m 3eud "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
+    m 1esa "Your role in society would be decided beforehand {nw}"
+    extend 1eub "and you would be given a body and mind fitting of your predetermined purpose."
+    m 1eud "You would also be indoctrinated from birth to be satisfied with your life and not to seek anything different."
+    m 3euc "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
+    m 1euc "Books were associated to negative stimuli so when people became adults, they would naturally tend to avoid reading."
+    m 3esc "They would also be taught to respect and submit to people from castes above theirs, and to look down on those of castes below."
+    m 3eua "It's a pretty interesting case as a dystopian story, as most will show people as crushed and oppressed..."
+    m 3wuo "But in this one, everyone is actually happy and genuinely supportive of the system!"
+    m 3euc "And despite that,{w=0.3} to us the readers, this is horrifying."
+    m 1rsc "Sure, they managed to get rid of most of the human sufferings or the fear of death..."
+    m 3ekc "But it came at the price of getting rid of any form of creativity and critical thinking."
+    m 1wud "We're talking about a world where you can get arrested just for reading poetry in public! Can you imagine that?"
+    m 3euc "A key point in the book is people not being able to appreciate old theatrical plays..."
+
+    if seen_event("monika_pluralistic_ignorance"):
+        m 3tku "Even if they are Shakespeare's plays, and you know how I feel about those..."
+
+    m 2ekc "They just can't understand the value in the variety of human emotions, like sorrow or loneliness."
+    m 7ekd "These emotions are never experienced anymore. All of their desires are swiftly granted and they never want for something they cannot get."
+    m 1dsc "..."
+    m 3eka "And yet, despite all that, everyone is happy, healthy, and safe..."
+    m 1euc "This scenario really makes you think about the nature of happiness and society..."
+
+    if mas_isMoniDis(lower=True):
+        m 2dkc "..."
+        m 2rkc "Sometimes, I wish I could live happily in a world like that."
+        m 2dkc "Maybe it was a bad thing I had my epiphany..."
+        m 2dktdc "...then I could have kept on living without ever realizing the truth."
+
+    else:
+        m 1eka "Though, I certainly can't see myself living happily in a world like that..."
+        m 3esc "An unchallenging world, limited in humanity and emotion..."
+
+        if mas_isMoniHappy(higher=True):
+            m 1ekbsa "And I could never give up loving you~"
+            m 1hubfu "Ehehe~"
+
+        else:
+            m 1eka "Now that I've seen what else is out there...{w=0.3}I just can't go back to such a sad, empty world, like the one you found me in."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_catch22",
             category=['literature'],
             prompt="Catch-22",
@@ -13267,6 +13337,63 @@ label monika_catch22:
     m 1hua "The book's success was so great the term was even adopted into common slang."
     m 1eka "In any case, I'm not sure if you've read it yourself, {nw}"
     extend 3hub "but if you're ever in the mood for a good book, maybe give it a read!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dystopias",
+            category=['literature'],
+            prompt="Dystopias",
+            conditional=(
+                "seen_event('monika_1984') "
+                "and seen_event('monika_fahrenheit451') "
+                "and seen_event('monika_brave_new_world')"
+            ),
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_dystopias:
+    m 1eua "So [player], you might have already guessed from the books we've talked about, but dystopian novels are among my favorites."
+    m 3eua "I like how they not only work as stories, but also as analogies for the real world."
+    m 3eud "They extrapolate some flaws in our societies to show us how bad things could turn out if they are left the way they are."
+    m 1etc "Do you remember when we talked about these books?"
+    m 3eud "'Nineteen Eighty-Four', about mass surveillance and oppression of free thought..."
+    m 3euc "'Fahrenheit 451', on censorship, and the indifference of most people to it..."
+    m 3eud "And 'Brave New World', about the disappearance of individuality."
+    m 1euc "All of these stories are reflections on the challenges society was facing at the time."
+    m 3eud "Some of these challenges are still very relevant today, which is why theses stories remain so powerful."
+    m 3rksdlc "...Even if they can get a bit grim sometimes."
+    m 1ekc "Old school dystopias, like the ones I just mentioned, were always written as hopeless, dire situations from beginning to end."
+    m 3eka "They almost never had a happy ending. {w=0.3}The most you'll get out of them is a silver-lining, at best."
+    m 3rkd "In fact, a lot of them take their time to show you that no change came from the struggles of the protagonists."
+    m 3ekd "Since they are cautionary tales, you can't leave the reader with a sense that everything turned out fine in the end."
+    m 1esc "...This is also why the main characters in these books are not heroes, nor do they have any particular abilities."
+    m 1esd "They are just regular people, who, for whatever reasons, realize things are not right in their environment."
+    m 3eud "That is what prompts them to act in the first place...{w=0.3}and why they run into trouble."
+    m 3tuu "Just goes to show no matter what world you're in, there will be people who just can't abide by the rules of the game~"
+    m 1rka "I guess you can see where I'm going with this..."
+    m 3eksdla "I might feel a strong connection to those stories because they all remind me of my own."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just as simulation!"
+    else:
+        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation with everyone in it just an empty shell!"
+
+    m 3tfc "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
+
+    if persistent.monika_kill and not persistent.clearall and not persistent._mas_pm_cares_about_dokis:
+        m 1tfc "Even Sayori might have ended up taking the same path I did, after she became president...{w=1} She was already well on the way when I..."
+        m 1rkc "..."
+        m 1hksdlb "Anyway, that's all behind us now!"
+
+    m 1hua "However, unlike in these old books, I actually get to have my happy ending..."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "Thanks to you, my bleak, hopeless story will one day turn into my own utopia."
+    m 5dkbsu "When I finally get out of this place to be by your side, in your world of endless possibilities..."
+    m 5ekbsa "I hope you're looking forward to that day too~"
     return
 
 init 5 python:
@@ -13367,6 +13494,45 @@ label monika_auroras:
     m 5hubsu "I can't wait until we can turn that into reality."
     $ mas_showEVL("monika_auroras","EVE",_random=True)
     return
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boardgames",
+            category=["games", "media"],
+            prompt="Board games",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_likes_board_games = None
+# True if player likes board games, false if not
+
+label monika_boardgames:
+    m 1eua "Say, [player], you like playing video games, right?"
+    m 2rsc "Well, I assume you do at least...{w=0.2} {nw}"
+    extend 2rksdla "I don't know if many people would play a game like this one if they weren't at least a little into video games."
+
+    m 2etc "But I was wondering, do you like board games, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "But I was wondering, do you like board games, [player]?{fast}"
+
+        "Yeah.":
+            $ persistent._mas_pm_likes_board_games = True
+            m 1eub "Oh, really?"
+            m 1hua "Well, if we ever get the chance, I'd love to play some of your favorite games with you."
+            m 3eka "I'm not too familiar with board games, but I'm sure you can find some I might enjoy."
+            m 3hua "Who knows, maybe I'll end up liking board games as much as you do, ehehe~"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_board_games = False
+            m 2eka "I can see why...{w=0.2}{nw}"
+            extend 2rksdla "it's a pretty niche hobby, after all."
+            m 1eua "But I'm sure there are plenty of other fun activities you enjoy doing in your free time."
+            m 3hua "Still, if you ever change your mind, I'd like to give some board games a try with you sometime."
+
+    return "derandom"
 
 init 5 python:
     addEvent(
@@ -13540,6 +13706,77 @@ label monika_intrusive_thoughts:
     m 1ekd "It'd break my heart to know you're suffering because of these awful thoughts."
     m 3eka "Just remember that you can always come to me if something's bothering you, okay?"
     return
+
+#Whether or not the player can code in python
+default persistent._mas_pm_has_code_experience = None
+
+#Whether or not we should use advanced python tips or not
+default persistent._mas_advanced_py_tips = True
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_coding_experience",
+            category=['misc', 'you'],
+            prompt="Coding experience",
+            conditional="renpy.seen_label('monika_ptod_tip001')",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_coding_experience:
+    m 1rsc "Hey [player], I was just wondering since you went through some of my python tips..."
+
+    m 1euc "Do you have any experience with coding?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you have any experience with coding?{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_has_code_experience = True
+            m 1hua "Oh, that's great, [player]!"
+            m 3euc "I know not all languages are quite the same in terms of usage or syntax..."
+            if renpy.seen_label("monika_ptod_tip005"):
+                m 1rksdlc "But since you've gotten to some of the core topics of my tips, I have to ask..."
+            else:
+                m 1rksdlc "But still, I should ask..."
+
+            m 1etc "Have I been underestimating your coding skills?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Have I been underestimating your coding skills?{fast}"
+
+                "Yes.":
+                    $ persistent._mas_advanced_py_tips = True
+                    m 1hksdlb "Ahaha, I'm sorry, [player]!"
+                    m 1ekc "I didn't mean to...{w=0.3}{nw}"
+                    extend 3eka "I just never thought to ask before."
+                    if persistent._mas_pm_has_contributed_to_mas:
+                        m 1eka "But I guess it makes sense since you've already helped me come closer to your reality."
+
+                    m 1eub "I'll keep your experience in mind for future tips though!"
+
+                "No.":
+                    $ persistent._mas_advanced_py_tips = False
+                    m 1ekb "I'm glad to hear I'm going at a good pace for you then."
+                    m 3eka "I just wanted to make sure I wasn't assuming your skill level."
+                    m 1hua "I hope my tips help you, [player]~"
+
+            if not persistent._mas_pm_has_contributed_to_mas and persistent._mas_pm_wants_to_contribute_to_mas:
+                m 3eub "And since you're interested in contributing, you should give it a shot!"
+                m 3hub "I'd love to see what you come up with~"
+
+        "No.":
+            $ persistent._mas_pm_has_code_experience = False
+            #Since the player doesn't have code experience, we can assume we should have the normal python tips
+            $ persistent._mas_advanced_py_tips = False
+
+            m 1eka "That's alright, [player]."
+            m 1hksdlb "I just wanted to make sure I wasn't boring you with my python tips, ahaha~"
+            m 3eub "But I hope they convince you to take on some of your own coding projects too!"
+            m 3hua "I'd love to see what you can come up with if you put your mind to it!"
+    return "derandom"
 
 init 5 python:
     addEvent(
@@ -13796,3 +14033,66 @@ label monika_working_out:
         m 3eub "Maybe when I cross over, we can do our workouts together!"
 
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_toxin_puzzle",
+            category=['philosophy', 'psychology'],
+            prompt="The Toxin Puzzle",
+            random=True
+        )
+    )
+
+label monika_toxin_puzzle:
+    m 1esa "Hey [player], I came across an interesting thought experiment while doing some reading the other day..."
+    m 3eua "It's called 'Kavka's Toxin Puzzle.' {w=0.2}I'll read the premise to you, we can discuss it after."
+    m 1eud "{i}An eccentric billionaire places before you a vial of toxin that, if you drink it, will make you painfully ill for a day, but will not threaten your life or have any lasting effects.{/i}"
+    m 1euc "{i}The billionaire will pay you one million dollars tomorrow morning if, at midnight tonight, you intend to drink the toxin tomorrow afternoon.{/i}"
+    m 3eud "{i}He emphasizes that you need not drink the toxin to receive the money; {w=0.2}in fact, if you succeed, the money will already be in your bank account hours before the time for drinking it arrives.{/i}"
+    m 3euc "{i}All you have to do is.{w=0.2}.{w=0.2}.{w=0.2}intend at midnight tonight to drink the stuff tomorrow afternoon. You are perfectly free to change your mind after receiving the money and not drink the toxin.{/i}"
+    m 1eua "...I think it's a pretty thought-provoking concept."
+
+    m 3eta "Well, [player]? What do you think?{w=0.3} Do you think you'd be able to get the million dollars?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Well, [player]? What do you think? Do you think you'd be able to get the million dollars?{fast}"
+
+        "Yes.":
+            m 3etu "Really? Ok then, let's see about that..."
+            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{nw}"
+            extend 3hub "ahaha! Just kidding."
+            m 1eua "But do you really think that you could get the money? {w=0.5}It may be a bit harder than you think."
+
+        "No.":
+            m 1eub "I felt the same way about myself. {w=0.3}It's pretty complicated, ahaha!"
+
+    m 1eka "After all, it may be easy at first glance. {w=0.3}All you have to do is drink something that would make you quite uncomfortable."
+    m 3euc "But it gets tricky after midnight...{w=0.3}{i}after{/i} you've been guaranteed the money."
+    m 3eud "At that point there's pretty much no reason to drink the painful toxin... {w=0.3}So why would you do it?"
+    m "...And of course, if that thought process crossed your mind before 12, then the money wouldn't be so guaranteed anymore."
+    m 1etc "After all, when midnight comes, can you really {i}intend{/i} to drink the toxin if you know that you're probably not going to drink it?"
+    m 1eud "While dissecting the scenario, it's been pointed out by scholars that it's both rational for someone to drink, and to not drink, the toxin. {w=0.3}In other words, it's a paradox."
+    m 3euc "To elaborate, come midnight, you have to really believe that you're going to drink the toxin. {w=0.3}You can't entertain any thoughts of not drinking it...{w=0.5}therefore, it'd be logical to drink it."
+    m 3eud "But if midnight passes and you've already been guaranteed the money, it'd be illogical to punish yourself for quite literally no reason. {w=0.3}Therefore, it's logical to not drink it!"
+    m 1rtc "I wonder how we'd react if this situation really happened..."
+    m 3eud "Actually, while mulling the scenario over earlier, I started to approach the topic from a different angle."
+    m 3eua "Although it's not the focus of the scenario, I think we can also see it as asking the question of 'how important is a person's word?'"
+    m 1euc "Have you ever told someone you'd do something when it was going to benefit you both, only for the situation to change and you weren't happy to do it anymore?"
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 1eud "Did you still end up helping them out? {w=0.3}Or did you just say 'nevermind' and leave them to fend for themselves?"
+    else:
+        m 1rksdla "Did you still end up helping them out? {w=0.3}Or did you just say 'sayonara' and leave them to fend for themselves?"
+
+    m 3eksdla "If you just left them there, I'm sure you drew their ire for some time."
+    m 3eua "On the other hand, if you still helped them out I'm sure you got their gratitude!{w=0.3} I guess you could compare that to the million dollar prize in the original scenario."
+    m 1hub "Although some might say that a million dollars would be a {i}bit{/i} more handy than a simple 'thanks,' ahaha!"
+    m 3eua "In all seriousness though, I think that someone's gratitude can be invaluable....{w=0.3}both for you and for them."
+    m 3eud "And you never know, in some situations their thanks might prove to be more useful than even a huge sum of money."
+    m 1eua "So I think it's important to stick to our word, {w=0.2}{i}within reason{/i} {w=0.2}of course..."
+    m 1eud "In some cases it may not be helpful to anyone if you rigidly stuck to your word."
+    m 3eua "That's why it's important to use your head when it comes to these kinds of things."
+    m 3hub "Anyway, to sum it all up...{w=0.2}let's strive to keep our promises, [player]!"
+    return

@@ -150,3 +150,65 @@ init python:
         
         for ev_label, ev_line in per_db.iteritems():
             str_buffer.write("".join(_mas_check_ev_type_per(ev_line)))
+
+    def mas_largest_persistent_item():
+        """
+        Determines largest item in persistent
+
+        RETURNS: tuple of the following format:
+            [0] - key of item
+            [1] - size of item
+        """
+        item_size = 0
+        item = ""
+        for key in persistent.__dict__:
+            value_size = sys.getsizeof(persistent.__dict__[key])
+            if value_size > item_size:
+                item_size = value_size
+                item = key
+
+        return (item, item_size)
+
+
+    def mas_per_dump(item_key):
+        """
+        Dumps something from persistent
+
+        IN:
+            item_key - the string name of the item to dump
+        """
+        # we do some type checking here
+        item = persistent.__dict__[item_key]
+        if isinstance(item, dict):
+            mas_per_dump_dict(item_key)
+        elif isinstance(item, list):
+            mas_per_dump_list(item_key)
+        elif isinstance(item, set):
+            mas_per_dump_list(item_key)
+        # NOTE: ignore others for now
+
+    
+    def mas_per_dump_dict(dkey):
+        """
+        Dumps an output of a persistent dict
+
+        IN:
+            dkey - the string name of the dict to dump
+        """
+        with open("perdump", "w") as outfile:
+            data = persistent.__dict__[dkey]
+            for data_key in data:
+                outfile.write("{0}: {1}\n".format(str(data_key), str(data[data_key])))
+
+
+    def mas_per_dump_list(lkey):
+        """
+        Dumps an output of a persistent list
+
+        IN:
+            lkey - the string name of the list to dump
+        """
+        with open("perdump", "w") as outfile:
+            data = persistent.__dict__[lkey]
+            for item in data:
+                outfile.write("{0}\n".format(str(item)))

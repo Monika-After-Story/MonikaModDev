@@ -1118,8 +1118,8 @@ label i_greeting_monikaroom:
     # 1 - if you quit here, monika doesnt know u here
     $ mas_enable_quit()
 
-    # 2 - music button + hotkeys should be disabled
-    $ store.mas_hotkeys.music_enabled = False
+    # all UI elements stopped
+    $ mas_RaiseShield_core()
 
     # 3 - keymaps not set (default)
     # 4 - overlays hidden (skip visual)
@@ -1796,7 +1796,7 @@ label monikaroom_greeting_cleanup:
         mas_disable_quit()
 
         # 2 - music is renabled
-        store.mas_hotkeys.music_enabled = True
+        mas_MUMUDropShield()
 
         # 3 - keymaps should be set
         set_keymaps()
@@ -2492,12 +2492,8 @@ init 5 python:
 label greeting_hairdown:
 
     # couple of things:
-    # 1 - music hotkeys should be disabled
-    $ store.mas_hotkeys.music_enabled = False
-
-    # 2 - the calendar overlay will become visible, but we should keep it
-    # disabled
-    $ mas_calRaiseOverlayShield()
+    # shield ui
+    $ mas_RaiseShield_core()
 
     # 3 - keymaps not set (default)
     # 4 - hotkey buttons are hidden (skip visual)
@@ -2552,11 +2548,8 @@ label greeting_hairdown:
     $ mas_lockEvent(mas_getEV("greeting_hairdown"))
 
     # cleanup
-    # 1 - music hotkeys should be enabled
-    $ store.mas_hotkeys.music_enabled = True
-
-    # 2 - calendarovrelay enabled
-    $ mas_calDropOverlayShield()
+    # enable music menu
+    $ mas_MUMUDropShield()
 
     # 3 - set the keymaps
     $ set_keymaps()
@@ -2625,7 +2618,15 @@ label greeting_tears:
     m 2ekc "Please...just...try to understand."
     m 1dsd "I love you and I need you to show that you love me too..."
     m 1dsc "Otherwise...I just won't be able to handle it anymore."
-    $ mas_lockEVL("greeting_tears", "GRE")
+
+    python:
+        mas_lockEVL("greeting_tears", "GRE")
+
+        #Setup the being virtual ev
+        beingvirtual_ev = mas_getEV("monika_being_virtual")
+
+        if beingvirtual_ev:
+            beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
     return
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos

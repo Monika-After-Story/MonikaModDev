@@ -363,4 +363,7 @@ label quit:
         if not persistent._mas_dockstat_going_to_leave:
             store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
+        # clear image caches
+        store.mas_sprites._clear_caches()
+
     return
