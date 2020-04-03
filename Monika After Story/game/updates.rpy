@@ -373,7 +373,7 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 #0.10.8
-label v0_10_8(version="v0_10_8"):
+label v0_11_0(version="v0_11_0"):
     python:
         #Let's stock current users on some consumables (assuming they've gifted before)
         #We'll keep it somewhat random.
