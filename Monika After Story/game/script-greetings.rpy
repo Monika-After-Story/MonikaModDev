@@ -2626,7 +2626,7 @@ label greeting_tears:
         beingvirtual_ev = mas_getEV("monika_being_virtual")
 
         if beingvirtual_ev:
-            beingvirtual_ev.start_date = datetime.date.today() + datetime.timedelta(days=2)
+            beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
     return
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos

@@ -468,7 +468,7 @@ label v0_10_8(version="v0_10_8"):
             beingvirtual_ev = mas_getEV("monika_being_virtual")
 
             if beingvirtual_ev:
-                beingvirtual_ev.start_date = datetime.date.today() + datetime.timedelta(days=2)
+                beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
     return
 
 #0.10.7

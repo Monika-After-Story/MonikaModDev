@@ -2303,7 +2303,7 @@ label monika_being_virtual:
     m 2dktpc "If, after all, you can't love me for who I am..."
     m 2ektpc "Then, please...{w=0.5}put an end to this..."
     m 2dktdd "Delete me..."
-    return "derandom|no_unlock"
+    return "no_unlock"
 
 #START: Final Farewell stuffs
 default persistent._mas_load_in_finalfarewell_mode = False
