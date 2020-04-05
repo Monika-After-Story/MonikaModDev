@@ -167,26 +167,7 @@ label gender_redo_same:
     m 5hua "I want you to be who you want to be while you're in this room."
     return
 
-<<<<<<< HEAD
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="preferredname",
-            conditional="get_level()>=16 and not seen_event('preferredname')",
-            action=EV_ACT_QUEUE
-        )
-    )
-    #NOTE: This unlocks the player name change event
 
-label preferredname:
-    m 1euc "I've been wondering about your name."
-    m 1esa "Is '[player]' really your name?"
-    if renpy.windows and currentuser.lower() == player.lower():
-        m 3esa "I mean, it's the same as your computer's name..."
-        m 1eua "You're using '[currentuser]' and '[player].'"
-        m "Either that or you must really like that pseudonym."
-=======
 label mas_player_name_enter_name_loop(menu_str, input_prompt):
     #Firstly, initialize the compare lists
     python:
@@ -426,7 +407,6 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
             "I couldn't ever call you anything like that, [player].",
             "What? Please [player],{w=0.5} don't call yourself bad names."
         ]
->>>>>>> content
 
         good_quips = [
             "That's a wonderful name!",
@@ -533,7 +513,8 @@ init 5 python:
             conditional="get_level()>=16 and not seen_event('preferredname')",
             action=EV_ACT_QUEUE
         )
-    ) #This needs to be unlocked by the random name change event
+    )
+    #NOTE: This unlocks the player name change event
 
 label preferredname:
     m 1euc "I've been wondering about your name."
