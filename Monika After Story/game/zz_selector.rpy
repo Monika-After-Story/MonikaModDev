@@ -376,7 +376,7 @@ init -20 python:
                     not
                     (Default: False)
             """
-            if type(_sprite_object) != MASAccessory:
+            if not isinstance(_sprite_object, MASAccessoryBase):
                 raise Exception("not an acs: {0}".format(group))
             if remover and store.mas_selspr._has_remover(group):
                 raise Exception(

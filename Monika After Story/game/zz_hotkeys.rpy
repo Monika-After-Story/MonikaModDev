@@ -265,5 +265,3 @@ init python:
         config.underlay.append(renpy.Keymap(derandom_topic=_mas_hk_derandom_topic))
         config.underlay.append(renpy.Keymap(bookmark_topic=_mas_hk_bookmark_topic))
 
-        # finally enable those buttons
-        mas_HKDropShield()

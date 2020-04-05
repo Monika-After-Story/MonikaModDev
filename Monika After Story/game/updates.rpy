@@ -417,6 +417,9 @@ label v0_10_8(version="v0_10_8"):
             song_pool_ev.action = None
             song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
 
+        # clear out the bab list as its been replaced
+        persistent._mas_acs_bab_list = None
+
         # ensure marisa + ACS is unlocked
         if mas_o31CostumeWorn(mas_clothes_marisa):
             store.mas_selspr.unlock_clothes(mas_clothes_marisa)
@@ -435,6 +438,7 @@ label v0_10_8(version="v0_10_8"):
             "greeting_visit9": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=1)",
             "greeting_hamlet": "store.mas_getAbsenceLength() >= datetime.timedelta(days=7)"
         }
+
         for gr_label, conditional in new_greetings_conditions.iteritems():
             gr_ev = mas_getEV(gr_label)
             if gr_ev:
@@ -473,6 +477,31 @@ label v0_10_8(version="v0_10_8"):
         if gender_redo_ev:
             gender_redo_ev.pool=True
 
+        #Remove some old topics
+        mas_eraseTopic("monika_morning")
+        mas_eraseTopic("monika_evening")
+
+        #Make multi-perspective approach random for people who've seen the allegory of the cave topic
+        cave_ev = mas_getEV("monika_allegory_of_the_cave")
+        if cave_ev and cave_ev.shown_count > 0:
+            perspective_ev = mas_getEV("monika_multi_perspective_approach")
+            if perspective_ev:
+                perspective_ev.random = True
+
+        credits_ev = mas_getEV("monika_credits_song")
+        if credits_ev:
+            credits_ev.random = False
+            credits_ev.prompt = None
+            credits_ev.conditional = "store.mas_anni.pastOneMonth()"
+            credits_ev.action = EV_ACT_QUEUE
+            credits_ev.unlocked = False
+
+        #Setup the being virtual ev for those who have seen greeting_tears
+        if renpy.seen_label("greeting_tears"):
+            beingvirtual_ev = mas_getEV("monika_being_virtual")
+
+            if beingvirtual_ev:
+                beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
     return
 
 #0.10.7

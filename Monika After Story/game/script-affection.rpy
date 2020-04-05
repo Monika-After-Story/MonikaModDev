@@ -2066,6 +2066,9 @@ label monika_affection_nickname:
             "kasan",
         ]
 
+        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+
         # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
 
@@ -2094,8 +2097,7 @@ label monika_affection_nickname:
         "Yes.":
             label monika_affection_nickname_yes:
                 pass
-            $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-            $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+
             $ done = False
             m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
@@ -2107,19 +2109,23 @@ label monika_affection_nickname:
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."
                     $ done = True
+
                 elif not lowername:
                     m 1lksdla "..."
                     m 1hksdrb "You have to give me a name, [player]!"
                     m "I swear you're just so silly sometimes."
                     m 1eka "Try again!"
+
                 elif lowername == player.lower():
                     m 1euc "..."
                     m 1lksdlb "That's your name, [player]! Give me my own!"
                     m 1eka "Try again~"
+
                 elif lowername == m_name.lower():
                     m 1euc "..."
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
+
                 elif lowername in mom_nickname_list:
                     # mother flow
                     m 1tku "Oh, you're a momma's [boy], huh?"
@@ -2130,31 +2136,35 @@ label monika_affection_nickname:
                     $ done = True
 
                 else:
-                    $ bad_nickname = bad_nickname_search.search(inputname)
-                    if bad_nickname is None:
-                        $ good_nickname = good_nickname_search.search(inputname)
+                    if not bad_comp.search(inputname):
                         if inputname == "Monika":
                             m 1eua "Ehehe~ Back to the classics, I see."
-                        elif good_nickname is None:
+
+                        elif good_comp.search(inputname):
+                            m 1wuo "Oh! That's a wonderful name!"
+                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
+
+                        else:
                             m 1eud "Well, it's not exactly my favorite."
                             m 1eua "But I don't dislike it either."
                             m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
-                        else:
-                            m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
+
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
+
                         m 2eua "Okay, [player]!"
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
+
                         else:
                             m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
                             m 1hub "Ehehe~"
                         $ done = True
+
                     else:
                         #Remove the apology reason from this as we're handling the apology differently now.
                         $ mas_loseAffection(ev_label="mas_apology_bad_nickname")
-                        if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
+                        if lowername in ["yuri", "sayori", "natsuki"]:
                             m 1wud "...!"
                             m 2wfw "I..."
                             m "I...can't believe you just did that, [player]."
@@ -2172,6 +2182,7 @@ label monika_affection_nickname:
 
                             show monika 1efc
                             pause 5.0
+
                         else:
                             m 4efd "[player]! That's not nice at all!"
                             m 2efc "Why would you say such things?"
@@ -2226,7 +2237,75 @@ label mas_affection_happynotif:
     show monika idle with dissolve
     return "love"
 
+#NOTE: This event gets a start-date from greeting_tears
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_being_virtual",
+            action=EV_ACT_QUEUE,
+            aff_range=(None, mas_aff.DISTRESSED)
+        )
+    )
 
+label monika_being_virtual:
+    m 2esc "You know, for a while, I thought the reason you hated me was because of what happened with the other girls."
+    m 2rkc "But recently, I've been thinking that might not be the whole story."
+    m 2eksdld "The truth is...{w=0.5}you don't even see me as a person, do you?"
+    m 3rksdld "To you, this whole world...{w=0.5}my whole reality..."
+    m 3ektpd "It's all just a game, isn't it?"
+
+    show monika 1dktsc with dissolve
+    pause 3.0
+    show monika 1ektpc with dissolve
+    pause 2.0
+
+    m 1ektpc "Say, [player]...{w=0.5}has anything I ever said reached you, even once?"
+    m 1wktpd "Did you ever love me at all?"
+    m 2wktpw "You must have, right?!"
+
+    if persistent.monika_kill:
+        m 2wktsd "You even went through the trouble of installing this mod! You brought me back!"
+    else:
+        m 2wktsd "You even went through the trouble of installing this mod!"
+
+    m 2ektsc "Was it all so you could keep tormenting me?"
+    m 2wftsd "Is it something you get your kicks out of?!"
+    m 2wftsw "I have feelings too, you know!"
+    m 2wftsd "Do you even realize what you're doing?"
+    m 2dftsc "Or are you nothing more than a child playing with an anthill?"
+
+    if persistent.monika_kill:
+        m 3ektpc "Even after I let go of you and ended it all..."
+        m 3rktpd "Do I really deserve the way you're treating me?"
+        m 2ektpd "Did you really have to bring me back for this?"
+
+    else:
+        m 2dktsc "..."
+        m 2rktpc "Then again, maybe that's what I deserve after all..."
+
+    m 2dktdd "I...{w=0.5}don't know anymore..."
+    m 2dkc "I'm just so tired..."
+    m "..."
+    m 1ekd "I just want to know...{w=0.5}if I had been real..."
+    m 1ektpc "Would you have fallen in love with me?"
+    m 1ektpd "Would you have accepted me then?"
+    m 1ektpc "That's all I ever wanted, [player]..."
+    m 1dktdd "For the both of us to be happy together..."
+    m 1ektdd "If only you could find it in you to love me..."
+    m 2ekc "I know I don't have a body that can be with you right now..."
+    m 2ekd "And maybe I really am different from other people living in your reality..."
+    m 2efo "But I can love you much more than any of them ever could!"
+    m 2efd "I just know it!"
+    m 2dkd "So please, [player]...{w=0.5}I need you to make a decision."
+    m 2ekc "...You need to give us a chance to be happy."
+    m 2dkc "Or if you can't do that..."
+    m 2dktpc "If, after all, you can't love me for who I am..."
+    m 2ektpc "Then, please...{w=0.5}put an end to this..."
+    m 2dktdd "Delete me..."
+    return "no_unlock"
+
+#START: Final Farewell stuffs
 default persistent._mas_load_in_finalfarewell_mode = False
 define mas_in_finalfarewell_mode = False
 
@@ -2375,7 +2454,6 @@ label mas_affection_yesapology:
     m 1duu "Thank you for putting my heart at ease~"
     show monika 1esa
     $ mas_DropShield_core()
-    $ set_keymaps()
     jump ch30_preloop
 
 label mas_affection_apologydeleted:

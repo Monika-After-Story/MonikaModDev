@@ -195,6 +195,13 @@ init -810 python:
         end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
+#Images
+image mas_o31_deco = ConditionSwitch(
+    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
+    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+)
+
+#Functions
 init -10 python:
     import random
 
@@ -2695,7 +2702,7 @@ label monika_aiwfc_song:
     $ renpy.music.set_volume(0.0, 1.0, "background")
     $ renpy.music.set_volume(0.0, 1.0, "backsound")
 
-    play music "mod_assets/bgm/aiwfc.ogg"
+    $ play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
     m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"
@@ -6048,6 +6055,46 @@ init -810 python:
         end_dt=datetime.datetime(2020, 9, 23)
     ))
 
+### bday stuff
+
+############### [HOL060]: IMAGES
+define mas_bday_cake_lit = False
+image mas_bday_cake_monika = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
+)
+
+image mas_bday_cake_player = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
+)
+
+image mas_bday_banners = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
+)
+
+image mas_bday_balloons = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+)
+
 ############### [HOL060]: METHODS
 init -1 python:
     def mas_isMonikaBirthday(_date=None):
@@ -6261,7 +6308,7 @@ P.S: Don't tell her about me.
         #show chibi, she's just written the letter
         show chibi_peek with moveinleft
         m 1ekc "Of course, I haven't read it, since it's obviously for you..."
-        m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
+        m 1tuu "{cps=*2}Hmm, I wonder what this could be about...{/cps}{nw}"
         $ _history_list.pop()
         m 1hua "Ehehe~"
 
