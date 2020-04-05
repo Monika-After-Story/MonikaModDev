@@ -367,11 +367,23 @@ init -900 python:
         # the chosen dict can be completely cleaned
         persistent._chosen.clear()
 
+        # translations can be cleared
+        persistent._seen_translates.clear()
+
         # the seen ever dict must be iterated through
         from store.mas_ev_data_ver import _verify_str
         for seen_ever_key in persistent._seen_ever.keys():
             if not _verify_str(seen_ever_key):
                 persistent._seen_ever.pop(seen_ever_key)
+
+        # the seen images dict must be iterated through
+        # NOTE: we only want to keep non-monika sprite images
+        for seen_images_key in persistent._seen_images.keys():
+            if (
+                    len(seen_images_key) > 0
+                    and seen_images_key[0] == "monika"
+            ):
+                persistent._seen_images.pop(seen_images_key)
 
 
     # run the backup system if persistents arent screwd

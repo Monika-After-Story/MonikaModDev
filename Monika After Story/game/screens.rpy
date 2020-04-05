@@ -33,7 +33,12 @@ init -1 python:
         "and offer some comments based on what you're doing."
     )
 
-
+    _TXT_FINISHED_UPDATING = (
+        "The updates have been installed. Please reopen Monika After Story.\n\n"
+        "Get spritepacks {a=http://monikaafterstory.com/releases.html}{i}{u}from our website{/u}{/i}{/a}.\n"
+        "See the patch notes {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}here{/u}{/i}{/a}.\n"
+        "Confused about some features? Take a look at our {a=https://github.com/Monika-After-Story/MonikaModDev/wiki}{i}{u}wiki page{/u}{/i}{/a}."
+    )
 
 
 init python in mas_layout:
@@ -1974,7 +1979,7 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    text _("The updates have been installed. Please reopen Monika After Story.")
+                    text _(_TXT_FINISHED_UPDATING)
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
                 elif u.state == u.CANCELLED:
@@ -2452,3 +2457,10 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         text "{0}\n\n{1}".format(renpy.substitute(_poem.title), renpy.substitute(_poem.text)) style _styletext
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
+
+#Chibika's text style
+style chibika_note_text:
+    font "gui/font/Halogen.ttf"
+    size 28
+    color "#000"
+    outlines []
