@@ -1,3 +1,14 @@
+#V.0.1.7.0
+
+#Additnaly effected code/files
+#Spaceroom in script-ch30
+
+
+#extra to do
+#look at _validate_ex_props for decorations
+
+
+
 default persistent.mas_decorations_items = {}
 
 init python:
@@ -62,8 +73,9 @@ init python:
                 first_select_dlg=None,
                 select_dlg=None
             ):
-
+            from collections import OrderedDict 
             self._sprite_object = decoration
+            self.ex_props = self._sprite_object.ex_props
             self.name = self._sprite_object.name
             store.MASSelectableSprite.__init__(self, self._sprite_object, display_name, thumb, group, visible_when_locked, hover_dlg, first_select_dlg, select_dlg)      
             self.data = self._sprite_object 
@@ -79,36 +91,96 @@ init python:
             self.init_str = "{}{}".format(self.l_comp_str, self.size)
             self.path = 'mod_assets/location/spaceroom/decoration/'
             self.img_end_str = ".png"
+            self.sub_object_str = "sub_object_img"
+            self.full_composite_str = "full_composite_img"
             self.sprite_str_list = [self.init_str]
-            self.sub_object_img = None
-            self.full_composite_img = None  
+            self.start_str = "w_"
+            self.time_of_day_map = OrderedDict()
+            self.composite_map = {}
+            self.same_map_str = "same_map"
+            self.w_same_map_str = "{}{}".format(self.start_str, self.same_map_str)
+            self.filter_ex_prop_weather_keys()
             if self.sub_objects_present:
                 self.sub_objects = self.data.pose_map
-                if self.sub_object_img:
+                self.composite_init("sub")
+            self.composite_init("full")
+            
+            
+        def filter_ex_prop_weather_keys(self):                
+            #Filter out only "w_"
+            if self.ex_props:
+                self.time_of_day_map["def"] =  {"has": True}
+                for key in self.ex_props.keys():
+                    if key.startswith(self.start_str):
+                        new_key = key.replace(self.start_str, "")
+                        self.time_of_day_map[new_key] = self.ex_props[key]
+            else:
+                self.time_of_day_map = {"def": {"has": True}}
+            return
+
+        def get_comp_value(self, mode, weather, times, time_of_day):
+            if mode == "sub":
+                value  = self.sub_object_composite(sub_objects = self.sub_objects, weather = weather, night_suffix = times[time_of_day])
+            elif mode == "full":
+                sub_objects = self.composite_map.get('{}_{}_{}'.format(self.sub_object_str, weather, time_of_day))
+                value  = self.full_composite(sub_objects = sub_objects, weather = weather, night_suffix = times[time_of_day])
+            return value
+            
+        def get_same_comp_value(self, comp_key_str, weather, time_of_day):
+            value = self.composite_map.get("{}_{}_{}".format(comp_key_str, weather, time_of_day))
+            return value
+            
+        def composite_init(self, mode):
+            #self.log = []
+            times = {"day" : "", "night" : store.mas_sprites.NIGHT_SUFFIX}
+            if mode == "sub":
+                comp_key_str = self.sub_object_str
+            elif mode == "full":
+                comp_key_str = self.full_composite_str
+            
+            for key in self.time_of_day_map.keys():
+                if key == self.same_map_str:
                     pass
                 else:
-                    self.sub_object_img = self.sub_object_composite(self.sub_objects)
-            #checks for img to not rerender
-            if self.full_composite_img:
-                pass
-            else:
-                self.full_composite_img = self.full_composite()
-            
-        def sub_object_composite(self, sub_objects):
+                    for time_of_day in times.keys():
+                        if self.time_of_day_map[key].get("ignore_night") == True and time_of_day == "night":
+                            value = self.get_same_comp_value(comp_key_str, "def", time_of_day)
+                            
+                        elif self.time_of_day_map[key].get("ignore_day") == True and time_of_day == "day":
+                            value = self.get_same_comp_value(comp_key_str, "def", time_of_day)
+                            
+                        else:
+                            value = self.get_comp_value(mode,key, times, time_of_day)
+                            
+                        self.composite_map["{}_{}_{}".format(comp_key_str, key, time_of_day)] = value
+                        
+            if self.same_map_str in self.time_of_day_map.keys():
+                same_dict = self.time_of_day_map[self.same_map_str]
+                same_keys = same_dict.keys()
+                for same_key in same_keys:
+                    for same_weather in same_dict[same_key]:
+                        for time_of_day in times.keys():
+                            value = self.get_same_comp_value(comp_key_str, same_key, time_of_day)
+                            self.composite_map["{}_{}_{}".format(comp_key_str, same_weather, time_of_day)] = value
+            return 
+
+
+        def sub_object_composite(self, sub_objects, weather = "def", mode = "day", night_suffix = ""):
+                    
             keys = sub_objects.keys()
             sprite_str_list = [self.init_str]
             for x in range(len(sub_objects)):
-                sprite_str_list.append(',{},"{}{}{}"'.format(self.loc_str, self.path, sub_objects[keys[x]], self.img_end_str))
+                sprite_str_list.append(',{},"{}{}{}{}{}{}"'.format(self.loc_str, self.path, sub_objects[keys[x]], mas_sprites.ART_DLM, weather, night_suffix, self.img_end_str))
             sprite_str_list.append(")")
             result_sub_objects = "".join(sprite_str_list)
             return eval(result_sub_objects)
-            
-        def full_composite(self):
+     
+        def full_composite(self, sub_objects, weather = "def", mode = "day", night_suffix = ""):
             sprite_str_list = [self.init_str]
-            if self.sub_object_img:
-               full_composite = renpy.display.layout.LiveComposite(self.size, self.loc_str, '{}{}{}'.format(self.path, self.img_sit, self.img_end_str), self.loc_str, self.sub_object_img)
+            if sub_objects:
+               full_composite = renpy.display.layout.LiveComposite(self.size, self.loc_str, '{}{}{}{}{}{}'.format(self.path, self.img_sit, mas_sprites.ART_DLM, weather, night_suffix, self.img_end_str), self.loc_str, sub_objects)
             else:
-               full_composite = renpy.display.layout.LiveComposite(self.size, self.loc_str, self.sub_object_img)
+               full_composite = renpy.display.layout.LiveComposite(self.size, self.loc_str, '{}{}{}{}{}{}'.format(self.path, self.img_sit, mas_sprites.ART_DLM, weather, night_suffix, self.img_end_str))
             return full_composite
 
  class MASSelectableImageButtonDisplayable_Decoration(store.MASSelectableImageButtonDisplayable):
@@ -138,7 +210,9 @@ init python:
                 self.selectable.selected = False
                 store.persistent.mas_decorations_items[self.selectable.name]["selected"] = self.selectable.selected
                 for x in store.persistent.mas_decorations_items.keys():
-                 store.mas_decorations_items_tmp_pos[x]["pos"] = store.drag_dict[x].x, store.drag_dict[x].y
+                 if drag_dict.get(x) is not None:
+                    store.mas_decorations_items_tmp_pos[x]["pos"] = store.drag_dict[x].x, store.drag_dict[x].y
+                        
             else:
                 self.selected = True 
                 self.selectable.selected = True
@@ -180,7 +254,6 @@ init python:
             return
             
 
-
 init python:
  import store
  #Short Cut
@@ -210,7 +283,23 @@ init python in mas_decorations:
 
         
 init python in mas_decorations:
+ def get_weather_suffix():
+  mas_weather_suffix = [store.mas_current_weather.weather_id]
+  if store.morning_flag:
+   time = "_day"
+   mas_weather_suffix.append(time)
+  else:
+   time = "_night"
+   mas_weather_suffix.append(time)
+  mas_weather_suffix = "".join(mas_weather_suffix)
+  return mas_weather_suffix, time
   
+ def full_comp_exists(items, current_key, mas_weather_suffix):
+   return items[current_key].composite_map.get('full_composite_img_{}'.format(mas_weather_suffix))
+    
+ def get_full_comp_str(drag_loc_str, current_key, mas_weather_suffix):
+  return ', {}, items["{}"].composite_map["full_composite_img_{}"]'.format(drag_loc_str, current_key, mas_weather_suffix)
+    
  def decoration_composite(st,at):
   size = (1280,720)
   loc_str = ",(0,0),"
@@ -218,18 +307,24 @@ init python in mas_decorations:
   init = "{}{}".format(l_comp_str, size)
   path = '"mod_assets/location/spaceroom/decoration/'
   sprite_str_list = [init]
-  MD_items = DECORATION_SEL_MAP
-  keys = MD_items.keys()
+  items = DECORATION_SEL_MAP
+  keys = items.keys()
   persistent_data = store.persistent.mas_decorations_items
   
-  for x in range(len(MD_items)):
+  for x in range(len(items)):
    current_key = keys[x]
-   current_item = MD_items[current_key]
+   current_item = items[current_key]
 
    drag_loc_str = persistent_data[current_key]["pos"]
+
    
    if persistent_data[current_key]["selected"] == True:
-    sprite_str_list.append(', {}, MD_items.get("{}").full_composite_img'.format(drag_loc_str, current_key))
+    mas_weather_suffix, time = get_weather_suffix()
+    if full_comp_exists(items, current_key, mas_weather_suffix) is not None:
+     sprite_str_list.append(get_full_comp_str(drag_loc_str, current_key, mas_weather_suffix))
+    else:
+     sprite_str_list.append(get_full_comp_str(drag_loc_str, current_key, "def{}".format(time)))
+
 
   sprite_str_list.append(")")
   
@@ -242,6 +337,12 @@ image decoration = DynamicDisplayable(store.mas_decorations.decoration_composite
 
 init python in mas_decorations:
  import store 
+ def reload_decorations():
+  DECORATION_SEL_SL = []
+  DECORATION_SEL_MAP = {}
+  mas_sprites_json.addSpriteObjects()
+ 
+ 
  
  def save_persistent_drag_pos():
   items = store.persistent.mas_decorations_items
@@ -288,7 +389,14 @@ init python in mas_decorations:
   for x in range(len(DECORATION_SEL_MAP)):
    current_key = keys[x]
    current_item = items[current_key]
-   store.drag_dict[current_item.name] = Drag(drag_name = current_item.name, d = current_item.full_composite_img, drag_offscreen = True, draggable = True, xpos = persistent_data[current_key]["pos"][0], ypos = persistent_data[current_key]["pos"][1])
+   mas_weather_suffix, time = get_weather_suffix()
+   
+   if full_comp_exists(items, current_key, mas_weather_suffix) is not None:
+    value = current_item.composite_map["full_composite_img_{}".format(mas_weather_suffix)]
+   else:
+    value = current_item.composite_map["full_composite_img_{}".format("def{}".format(time))]
+    
+   store.drag_dict[current_item.name] = Drag(drag_name = current_item.name, d = value, drag_offscreen = True, draggable = True, xpos = persistent_data[current_key]["pos"][0], ypos = persistent_data[current_key]["pos"][1])
   return
   
 init 100 python:
@@ -707,6 +815,7 @@ init 190 python in mas_sprites_json:
         indent_lvl = 1
         # check for existence of pose_map property. We will not validate until
         # later.
+
         if "pose_map" not in jobj:
             writelog(MSG_ERR_ID.format(REQ_MISS.format("pose_map")))
             return
@@ -798,14 +907,16 @@ init 190 python in mas_sprites_json:
 
             
         # back to shared acs/hair/clothes stuff
-        _validate_ex_props(
-            jobj,
-            sp_obj_params,
-            obj_based_params,
-            msgs_err,
-            msgs_warn,
-            msgs_info
-        )
+        if sp_type != SP_DECORATIONS:
+            _validate_ex_props(
+                jobj,
+                sp_obj_params,
+                obj_based_params,
+                msgs_err,
+                msgs_warn,
+                msgs_info
+            )
+
         if len(msgs_err) > 0:
             writelogs(msgs_warn)
             writelogs(msgs_err)
@@ -897,6 +1008,7 @@ init 190 python in mas_sprites_json:
                 new = sp_obj_params.copy()
                 new.update(obj_based_params)
                 new["thumb"] = sel_params.get("thumb")
+                store.tmp_new = new
                 sp_obj = store.MASDecoration(**new)
                 sel_obj_name = "decoration"
 
@@ -905,7 +1017,8 @@ init 190 python in mas_sprites_json:
             writelog(MSG_ERR.format(e.message))
             return
         # check image loadables
-        _test_loadables(sp_obj, msgs_err)
+        if sp_type != SP_DECORATIONS:
+            _test_loadables(sp_obj, msgs_err)
         if len(msgs_err) > 0:
             writelogs(msgs_err)
             _reset_sp_obj(sp_obj)
@@ -963,4 +1076,3 @@ init 190 python in mas_sprites_json:
                 SP_STR.get(sp_type),
                 sp_name
             )))
-
