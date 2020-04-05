@@ -1,0 +1,21 @@
+{
+    "__author": "tw4449",
+    "version": 2,
+    "type": 3,
+    "name": "table",
+    "img_sit": "table",
+    "pose_map": {
+    
+    },
+
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Table",
+        "thumb": "acs-ribbon_def",
+        "group": "decoration",
+        "select_dlg": [
+            "It's a table"
+        ]
+    },
+    "unlock": true
+}

@@ -1,0 +1,26 @@
+{
+    "__author": "tw4449",
+    "version": 2,
+    "type": 3,
+    "name": "couch",
+    "img_sit": "couch",
+    "pose_map": {
+        "Left Pillow" : "left_pillow",
+        "Right Pillow": "right_pillow"
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "w_rain": {"has": true},
+        "w_same_map" : {"rain" :["snow","overcast","thunder"]}
+    },
+    
+    "select_info": {
+        "display_name": "Couch",
+        "thumb": "acs-ribbon_def",
+        "group": "decoration",
+        "select_dlg": [
+            "It's a couch"
+        ]
+    },
+    "unlock": true
+}
