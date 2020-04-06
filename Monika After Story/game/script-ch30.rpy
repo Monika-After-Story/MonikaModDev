@@ -989,24 +989,14 @@ label pick_a_game:
     menu:
         m "[play_menu_dlg]"
         "Pong." if mas_isGameUnlocked("pong"):
-            if not renpy.seen_label('game_pong'):
-                $grant_xp(xp.NEW_GAME)
             call game_pong from _call_game_pong
         "Chess." if chess_unlocked:
-            if not renpy.seen_label('game_chess'):
-                $grant_xp(xp.NEW_GAME)
             call game_chess from _call_game_chess
         "[_hangman_text]." if mas_isGameUnlocked('hangman'):
-            if not renpy.seen_label("game_hangman"):
-                $ grant_xp(xp.NEW_GAME)
             call game_hangman from _call_game_hangman
         "Piano." if mas_isGameUnlocked('piano'):
-            if not renpy.seen_label("mas_piano_start"):
-                $ grant_xp(xp.NEW_GAME)
             call mas_piano_start from _call_play_piano
         # "Movie":
-        #     if not renpy.seen_label("mas_monikamovie"):
-        #         $ grant_xp(xp.NEW_GAME)
         #     call mas_monikamovie from _call_monikamovie
         "Nevermind.":
             # NOTE: changing this to no dialogue so we dont have to edit this
@@ -1312,29 +1302,12 @@ label ch30_post_restartevent_check:
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
             away_experience_time=datetime.datetime.now()-persistent.sessions['last_session_end'] #Time since end of previous session
-            away_xp=0
 
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
-                persistent.idlexp_total=0
 
                 #Grant good exp for closing the game correctly.
                 mas_gainAffection()
-
-            #Ignore anything beyond 3 days
-            if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
-                away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
-
-            #Give 5 xp per hour for everything beyond 1 day
-            if away_experience_time.total_seconds() > times.FULL_XP_AWAY_TIME:
-                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time.total_seconds()-times.FULL_XP_AWAY_TIME)/3600.0
-                away_experience_time = datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
-
-            #Give 10 xp per hour for the first 24 hours
-            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time.total_seconds()/3600.0
-
-            #Grant the away XP
-            grant_xp(away_xp)
 
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
@@ -1692,18 +1665,6 @@ label ch30_minute(time_since_check):
         #Check if we should expire apologies
         mas_checkApologies()
 
-        # limit xp gathering to when we are not maxed
-        # and once per minute
-        if (persistent.idlexp_total < xp.IDLE_XP_MAX):
-
-            idle_xp = xp.IDLE_PER_MINUTE * ((time_since_check.total_seconds())/60.0)
-            persistent.idlexp_total += idle_xp
-            if persistent.idlexp_total >= xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                idle_xp = idle_xp - (persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
-                persistent.idlexp_total = xp.IDLE_XP_MAX
-
-            grant_xp(idle_xp)
-
         # runs actions for both conditionals and calendar-based events
         Event.checkEvents(evhand.event_database, rebuild_ev=False)
 
@@ -1743,6 +1704,9 @@ label ch30_hour:
 
     #Runtime checks to see if we should have a consumable
     $ MASConsumable._checkConsumables()
+
+    # xp calc
+    $ store.mas_xp.grant()
 
     #Set our TOD var
     $ mas_setTODVars()
@@ -1794,6 +1758,20 @@ label ch30_day:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+
+    python:
+        # xp fixes and adjustments
+        if persistent._mas_xp_lvl < 0:
+            persistent._mas_xp_lvl = 0 # prevent negative issues
+
+        if persistent._mas_xp_tnl < 0:
+            persistent._mas_xp_tnl = store.mas_xp.XP_LVL_RATE
+
+        if persistent._mas_xp_hrx < 0:
+            persistent._mas_xp_hrx = 0.0
+
+        store.mas_xp.set_lvl_rate()
+        store.mas_xp.prev_grant = mas_getCurrSeshStart()
 
     python:
         # name eggs

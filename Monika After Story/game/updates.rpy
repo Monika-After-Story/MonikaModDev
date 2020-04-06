@@ -502,6 +502,9 @@ label v0_10_8(version="v0_10_8"):
 
             if beingvirtual_ev:
                 beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
+
+        # TODO: adjust xp
+
     return
 
 #0.10.7
@@ -2088,9 +2091,6 @@ label v0_7_0(version="v0_7_0"):
                 )):
                 event.unlocked = True
                 event.conditional = None
-
-                #Grant some XP so existing players don't start at square 1
-                grant_xp(xp.NEW_EVENT)
 
         #Clear the "Add prompt" events that this adds to the stack
         persistent.event_list = temp_event_list

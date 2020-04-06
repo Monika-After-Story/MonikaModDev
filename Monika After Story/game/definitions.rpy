@@ -3023,8 +3023,7 @@ init -1 python in _mas_root:
             'total_sessions':0,
             'first_session':datetime.datetime.now()
         }
-        renpy.game.persistent.playerxp = 0
-        renpy.game.persistent.idlexp_total = 0
+        renpy.game.persistent._mas_xp_lvl = 0
         renpy.game.persistent.rejected_monika = True
         renpy.game.persistent.current_track = None
 
@@ -3127,6 +3126,41 @@ init -990 python in mas_utils:
         return text
 
 
+    def eqfloat(left, right, places=6):
+        """
+        Float comparisons thatcan handle accuracy errors.
+        This uses checks equivalence within a given amount of decimal places
+
+        IN:
+            left - value to compare
+            right - other value to compare
+
+        RETURNS: True if values are equal, False if not
+        """
+        acc = 0.1
+        if places > 1:
+            for x in range(places):
+                acc /= 10.0
+        
+        return abs(left-right) < acc
+
+
+    def floatsplit(value):
+        """
+        Splits a float into int and float parts (unlike _splitfloat which 
+        returns two ints)
+
+        IN:
+            value - float to split
+
+        RETURNS: tuple of the following format:
+            [0] - integer portion of float (int)
+            [1] - float portion of float (float)
+        """
+        int_part = int(value)
+        return int_part, value - int_part
+
+
     def pdget(key, table, validator=None, defval=None):
         """
         Protected Dict GET
@@ -3152,6 +3186,18 @@ init -990 python in mas_utils:
                 return item
 
         return defval
+
+
+    def td2hr(duration):
+        """
+        Converts a timedetla to hours (fractional)
+
+        IN:
+            duration - timedelta to convert
+
+        RETURNS: hours as float
+        """
+        return (duration.days * 24) + (duration.seconds / 3600.0)
 
 
     def tryparseint(value, default=0):
@@ -6053,8 +6099,6 @@ default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
-default persistent.playerxp = 0
-default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default seen_random_limit = False
@@ -6115,12 +6159,7 @@ define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
-define xp.NEW_GAME = 30
-define xp.WIN_GAME = 30
-define xp.AWAY_PER_HOUR = 10
-define xp.IDLE_PER_MINUTE = 1
-define xp.IDLE_XP_MAX = 120
-define xp.NEW_EVENT = 15
+
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define mas_monika_twitter_handle = "lilmonix3"
 

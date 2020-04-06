@@ -1582,7 +1582,6 @@ label mas_chess_game_start:
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
-            $grant_xp(xp.WIN_GAME)
 
         # main dialogue
         call mas_chess_dlg_game_monika_lose from _mas_chess_dlggml
