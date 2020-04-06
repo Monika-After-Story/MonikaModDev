@@ -167,7 +167,6 @@ label gender_redo_same:
     m 5hua "I want you to be who you want to be while you're in this room."
     return
 
-
 label mas_player_name_enter_name_loop(menu_str, input_prompt):
     #Firstly, initialize the compare lists
     python:
@@ -801,11 +800,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="unlock_chess",
-            conditional=(
-                "get_level()>=30 "
-                "and not seen_event('unlock_chess') "
-                "and not persistent.game_unlocks['chess']"
-            ),
+            conditional="get_level() >= 3",
             action=EV_ACT_QUEUE
         )
     )
@@ -854,10 +849,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="unlock_hangman",
-            conditional=(
-                "get_level()>=60 "
-                "and not seen_event('unlock_hangman')"
-            ),
+            conditional="get_level() >= 5",
             action=EV_ACT_QUEUE
         )
     )
@@ -915,10 +907,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="unlock_piano",
-            conditional=(
-                "get_level()>=100 "
-                "and not seen_event('unlock_piano')"
-            ),
+            conditional="get_level() >= 12",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )

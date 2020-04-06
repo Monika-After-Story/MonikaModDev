@@ -446,18 +446,11 @@ label v0_10_8(version="v0_10_8"):
 
         new_game_unlock_conditions = {
             "unlock_chess": (
-                "get_level()>=30 "
-                "and not seen_event('unlock_chess') "
+                "get_level() >= 3 "
                 "and not persistent.game_unlocks['chess']"
             ),
-            "unlock_hangman": (
-                "get_level()>=60 "
-                "and not seen_event('unlock_hangman')"
-            ),
-            "unlock_piano": (
-                "get_level()>=100 "
-                "and not seen_event('unlock_piano')"
-            )
+            "unlock_hangman": "get_level() >= 5",
+            "unlock_piano": "get_level() >= 12"
         }
 
         #Let's adjust the condtionals for game unlocks
@@ -504,7 +497,6 @@ label v0_10_8(version="v0_10_8"):
                 beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
 
         # TODO: adjust xp
-
     return
 
 #0.10.7
