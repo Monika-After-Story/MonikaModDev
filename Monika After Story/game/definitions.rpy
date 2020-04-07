@@ -4030,6 +4030,35 @@ init -985 python:
         )
 
 
+    def mas_getTotalPlaytime():
+        """
+        Gets total playtime.
+
+        RETURNS: total playtime as a timedelta. If not found, we return a
+            time delta of 0
+        """
+        return store.mas_utils.pdget(
+            "total_playtime",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_td_nn,
+            defval=datetime.timedelta(0)
+        )
+
+
+    def mas_getTotalSessions():
+        """
+        Gets total sessions
+
+        REUTRNS: total number of sessions. If not found, we return 1
+        """
+        return store.mas_utils.pdget(
+            "total_sessions",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_int_nn,
+            defval=1
+        )
+
+
     def mas_TTDetected():
         """
         Checks if time travel was detected

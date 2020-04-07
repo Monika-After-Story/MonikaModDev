@@ -1770,7 +1770,7 @@ label ch30_reset:
         if persistent._mas_xp_hrx < 0:
             persistent._mas_xp_hrx = 0.0
 
-        store.mas_xp.set_lvl_rate()
+        store.mas_xp.set_xp_rate()
         store.mas_xp.prev_grant = mas_getCurrSeshStart()
 
     python:

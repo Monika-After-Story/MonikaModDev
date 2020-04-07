@@ -496,7 +496,17 @@ label v0_10_8(version="v0_10_8"):
             if beingvirtual_ev:
                 beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
 
-        # TODO: adjust xp
+        # adjust XP
+        if persistent.playerxp is not None:
+            lvls_gained, xptnl = store.mas_xp._grant_on_pt()
+
+            # setup starting xp values
+            persistent._mas_xp_tnl = xptnl
+            persistent._mas_xp_lvl = lvls_gained
+            persistent._mas_pool_unlocks = lvls_gained
+
+            persistent.playerxp = None
+            
     return
 
 #0.10.7

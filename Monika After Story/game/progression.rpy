@@ -189,15 +189,27 @@ init python in mas_xp:
         return 1 + lvl_gained, XP_LVL_RATE - xp_remain
 
 
-    def grant():
+    def _grant_on_pt():
         """
-        Grants xp based on current state. Meant for use by ch30 code
-        """
-        # no gain for time travelers
-        if store.mas_TTDetected():
-            return
+        Grants xp by calcuating avgs using the current playtime
 
-        _grant_xp(calc())
+        RETURNS: tuple:
+            [0] - lvls gained
+            [1] - new xp tnl
+        """
+        total_pt_hr = mas_utils.td2hr(store.mas_getTotalPlaytime())
+        dsf = float(
+            (datetime.date.today() - store.mas_getFirstSesh().date()).days
+        )
+
+        if dsf > 0:
+            # calculate xp based on avg playtime per day
+            xp_gained, rate = calc_by_hours(total_pt_hr / dsf, DEF_XP_RATE)
+
+            # apply that as xp
+            return _grant(xp_gained * dsf, XP_LVL_RATE)
+
+        return 0, XP_LVL_RATE
 
 
     def _grant_xp(xp):
@@ -217,6 +229,17 @@ init python in mas_xp:
         # set xp and lvls
         store.persistent._mas_xp_lvl += lvl_gained
         store.persistent._mas_xp_tnl = new_xptnl
+
+
+    def grant():
+        """
+        Grants xp based on current state. Meant for use by ch30 code
+        """
+        # no gain for time travelers
+        if store.mas_TTDetected():
+            return
+
+        _grant_xp(calc())
 
 
     def _level(xp):
@@ -261,7 +284,7 @@ init python in mas_xp:
 
     def set_xp_rate():
         """
-        Sets level rate based on session time today
+        Sets xp rate based on session time today
         Also resets reset date if appropriate
 
         NOTE: assumes that we are calling this once at a new session start

@@ -70,6 +70,10 @@ init -999 python in mas_ev_data_ver:
         return _verify_item(val, int, allow_none)
 
 
+    def _verify_int_nn(val):
+        return _verify_int(val, False)
+
+
     def _verify_str(val, allow_none=True):
         if val is None:
             return allow_none
@@ -81,6 +85,10 @@ init -999 python in mas_ev_data_ver:
         if val is None:
             return allow_none
         return _verify_item(val, datetime.timedelta, allow_none)
+
+
+    def _verify_td_nn(val):
+        return _verify_td(val, False)
 
 
     def _verify_tuli(val, allow_none=True):
