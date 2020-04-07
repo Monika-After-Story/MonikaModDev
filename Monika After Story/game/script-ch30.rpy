@@ -1104,7 +1104,7 @@ label ch30_autoload:
     $ mas_cleanEventList()
 
     # set the gender
-    call mas_set_gender from _autoload_gender
+    call mas_set_gender
 
     # call reset stuff
     call ch30_reset
