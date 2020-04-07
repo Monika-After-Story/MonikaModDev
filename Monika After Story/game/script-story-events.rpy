@@ -7,14 +7,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="gender",
-            conditional="get_level()>=8 and not seen_event('gender')",
+            eventlabel="mas_gender",
+            conditional="store.mas_xp.level() >= 1",
             action=EV_ACT_QUEUE
         )
     )
     #NOTE: This unlocks the gender_redo event
 
-label gender:
+label mas_gender:
     m 2eud "...[player]? So I've been thinking a bit."
     m 2euc "I've mentioned before that the 'you' in the game might not reflect the real you."
     m 3lksdla "But I guess I just assumed that you were probably a guy."
@@ -28,18 +28,18 @@ label gender:
 
         "Male.":
             $ persistent.gender = "M"
-            call set_gender
-            call gender_male
+            call mas_set_gender
+            call mas_gender_male
 
         "Female.":
             $ persistent.gender = "F"
-            call set_gender
-            call gender_female
+            call mas_set_gender
+            call mas_gender_female
 
         "Neither.":
             $ persistent.gender = "X"
-            call set_gender
-            call gender_neither
+            call mas_set_gender
+            call mas_gender_neither
 
     m 1hub "Remember that I'll always love you unconditionally, [player]."
 
@@ -53,7 +53,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="gender_redo",
+            eventlabel="mas_gender_redo",
             category=['you','misc'],
             prompt="Can you change my gender?",
             unlocked=False,
@@ -62,7 +62,7 @@ init 5 python:
         )
     )
 
-label gender_redo:
+label mas_gender_redo:
     m 1wud "You want to change your gender? Why?"
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
 
@@ -101,11 +101,11 @@ label gender_redo:
         "I'm a boy.":
             if persistent.gender == "M":
                 $ gender_var = "boy"
-                call gender_redo_same
+                call mas_gender_redo_same
             else:
                 $ persistent.gender = "M"
-                call set_gender
-                call gender_male
+                call mas_set_gender
+                call mas_gender_male
                 show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
 
         "I'm a girl.":
@@ -114,8 +114,8 @@ label gender_redo:
                 call gender_redo_same
             else:
                 $ persistent.gender = "F"
-                call set_gender
-                call gender_female
+                call mas_set_gender
+                call mas_gender_female
                 show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
 
         "I'm neither.":
@@ -124,14 +124,14 @@ label gender_redo:
                 m 1eka "But just know that it doesn't matter what you are to me."
             else:
                 $ persistent.gender = "X"
-                call set_gender
-                call gender_neither
+                call mas_set_gender
+                call mas_gender_neither
             show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
 
     m 5hubsa "Remember that I'll always love you unconditionally, [player]~"
     return "love"
 
-label gender_female:
+label mas_gender_female:
     m 2eud "Oh? So you're actually a [guy]?"
     m 2hksdlb "I hope I didn't say anything to offend you before!"
     m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
@@ -140,7 +140,7 @@ label gender_female:
     m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
     return
 
-label gender_male:
+label mas_gender_male:
     m 2eud "Oh? So you {i}are{/i} a [guy]?"
     m 1hub "Ehehe, I suppose that makes sense!"
     m 1eua "Not a lot of girls would play a game like this."
@@ -148,7 +148,7 @@ label gender_male:
     m 2hksdlb "Even I can be curious sometimes, you know?"
     return
 
-label gender_neither:
+label mas_gender_neither:
     m 1euc "You don't see yourself as a guy or a girl?"
     m 2eua "That's very interesting, but I can sort of relate."
     m 1esc "Like, I am a girl, but I'm also a character in a computer game..."
@@ -508,14 +508,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="preferredname",
-            conditional="get_level()>=16 and not seen_event('preferredname')",
+            eventlabel="mas_preferredname",
+            conditional="store.mas_xp.level() >= 2",
             action=EV_ACT_QUEUE
         )
     )
     #NOTE: This unlocks the player name change event
 
-label preferredname:
+label mas_preferredname:
     m 1euc "I've been wondering about your name."
     m 1esa "Is '[player]' really your name?"
     if renpy.windows and currentuser.lower() == player.lower():
@@ -613,9 +613,7 @@ label birthdate_set:
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
-        # TODO: need to update script the conditional with the new F14 value
-        # NOTE: should consider makin gthe condiitonal string generated from
-        #   this a function for ease of use
+        #NOTE: should consider making the condiitonal string generated from this a function for ease of use
         bday_ret_bday_ev = mas_getEV('mas_player_bday_ret_on_bday')
         if bday_ret_bday_ev is not None:
             bday_ret_bday_ev.start_date = mas_player_bday_curr()
@@ -636,9 +634,7 @@ label birthdate_set:
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
-        # TODO: need to update script the conditional with the new F14 value
-        # NOTE: should consider makin gthe condiitonal string generated from
-        #   this a function for ease of use
+        #NOTE: should consider making the condiitonal string generated from this a function for ease of use
         bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr(), datetime.time(hour=19))
@@ -654,10 +650,8 @@ label birthdate_set:
             )
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
-   
-        # TODO: need to update script the conditional with the new F14 value
-        # NOTE: should consider makin gthe condiitonal string generated from
-        #   this a function for ease of use
+
+        #NOTE: should consider making the condiitonal string generated from this a function for ease of use
         bday_holiday_ev = mas_getEV('mas_player_bday_other_holiday')
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr()
@@ -799,13 +793,16 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="unlock_chess",
-            conditional="get_level() >= 3",
+            eventlabel="mas_unlock_chess",
+            conditional=(
+                "store.mas_xp.level() >= 4 "
+                "and not persistent.game_unlocks['chess']"
+            ),
             action=EV_ACT_QUEUE
         )
     )
 
-label unlock_chess:
+label mas_unlock_chess:
     m 1eua "So, [player]..."
     if renpy.seen_label('game_pong'):
         m 1eua "I thought that you might be getting bored with Pong."
@@ -848,13 +845,13 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="unlock_hangman",
-            conditional="get_level() >= 5",
+            eventlabel="mas_unlock_hangman",
+            conditional="store.mas_xp.level() >= 8",
             action=EV_ACT_QUEUE
         )
     )
 
-label unlock_hangman:
+label mas_unlock_hangman:
     if persistent._mas_sensitive_mode:
         $ game_name = "Word Guesser"
     else:
@@ -906,14 +903,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="unlock_piano",
-            conditional="get_level() >= 12",
+            eventlabel="mas_unlock_piano",
+            conditional="store.mas_xp.level() >= 18",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
-label unlock_piano:
+label mas_unlock_piano:
     m 2hua "Hey! I've got something exciting to tell you!"
     m 2eua "I've finally added a piano to the room for us to use, [player]."
     if not persistent._mas_pm_plays_instrument:
@@ -2015,7 +2012,7 @@ init 5 python:
                 persistent.event_database,
                 eventlabel="mas_gift_giving_instructs",
                 conditional=(
-                    "get_level() >= 15 "
+                    "store.mas_xp.level() >= 3 "
                     "or mas_isSpecialDay()"
                 ),
                 action=EV_ACT_QUEUE

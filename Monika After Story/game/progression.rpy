@@ -333,5 +333,3 @@ init python:
         This does not do anything anymore. Around for compatibility purposes
         """
         return 0
-
-        

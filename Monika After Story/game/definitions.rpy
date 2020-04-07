@@ -6371,7 +6371,7 @@ return
 #"It is their pen." (if player's gender is not declared)
 #Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
 #Please remember to update the list if you add more gender exclusive words. ^
-label set_gender:
+label mas_set_gender:
     if persistent.gender == "M":
         $his = "his"
         $he = "he"

@@ -444,23 +444,6 @@ label v0_10_8(version="v0_10_8"):
             if gr_ev:
                 gr_ev.conditional = conditional
 
-        new_game_unlock_conditions = {
-            "unlock_chess": (
-                "get_level() >= 3 "
-                "and not persistent.game_unlocks['chess']"
-            ),
-            "unlock_hangman": "get_level() >= 5",
-            "unlock_piano": "get_level() >= 12"
-        }
-
-        #Let's adjust the condtionals for game unlocks
-        for game_evl, conditional in new_game_unlock_conditions.iteritems():
-            game_unlock_ev = mas_getEV(game_evl)
-
-            #If the game has already unlocked (we've seen the label) we don't want to do anything
-            if game_unlock_ev and not renpy.seen_label(game_evl):
-                game_unlock_ev.conditional = conditional
-
         #Fix some intro topics
         changename_ev = mas_getEV("monika_changename")
         if changename_ev:
@@ -473,6 +456,25 @@ label v0_10_8(version="v0_10_8"):
         #Remove some old topics
         mas_eraseTopic("monika_morning")
         mas_eraseTopic("monika_evening")
+
+        #Transfer some topics
+        # new_topic_evl: old_topic_evl
+        topic_transfer_map = {
+            "mas_gender_redo": "gender_redo",
+            "mas_gender": "gender",
+            "mas_preferredname": "preferredname",
+            "mas_unlock_hangman": "unlock_hangman",
+            "mas_unlock_chess": "unlock_chess",
+            "mas_unlock_piano": "unlock_piano"
+        }
+
+        for new_evl, old_evl in topic_transfer_map.iteritems():
+            mas_transferTopicData(new_evl, old_evl, persistent.event_database)
+
+            #If we've seen this event before, then we shouldn't allow its conditions to be true again
+            #So we'll remove its conditional and action
+            if seen_event(new_evl):
+                mas_stripEVL(new_evl, list_pop=True)
 
         #Make multi-perspective approach random for people who've seen the allegory of the cave topic
         cave_ev = mas_getEV("monika_allegory_of_the_cave")
@@ -1743,7 +1745,7 @@ label v0_8_3(version="v0_8_3"):
             kiz_ev.conditional = "seen_event('greeting_hai_domo')"
 
         # give players pool unlocks if they've been here for some time
-        curr_level = get_level()
+        curr_level = store.mas_xp.level()
         if curr_level > 25:
             persistent._mas_pool_unlocks = int(curr_level / 2)
 
