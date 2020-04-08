@@ -1812,9 +1812,9 @@ label ch30_reset:
     python:
         game_unlock_db = {
             "pong": "ch30_main", # pong should always be unlocked
-            "chess": "unlock_chess",
-            "hangman": "unlock_hangman",
-            "piano": "unlock_piano",
+            "chess": "mas_unlock_chess",
+            "hangman": "mas_unlock_hangman",
+            "piano": "mas_unlock_piano",
         }
 
         for game_name,game_startlabel in game_unlock_db.iteritems():
