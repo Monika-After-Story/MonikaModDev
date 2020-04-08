@@ -469,6 +469,9 @@ label v0_10_8(version="v0_10_8"):
 
             if beingvirtual_ev:
                 beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
+
+        #Fix for unstable users
+        mas_unlockEVL("monika_good_tod", "EVE")
     return
 
 #0.10.7
