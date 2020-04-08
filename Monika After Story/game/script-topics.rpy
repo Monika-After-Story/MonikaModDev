@@ -12275,7 +12275,7 @@ label monika_player_read_poetry:
         m 5eua "Gosh, just knowing that you read poems too..."
         m 5hua "It shows how alike we really are."
         m 5eua "I can't wait to finally cross over to your reality so we can discuss our favorite poetry together."
-        m 5dka "Sharing poems, writing new ones...{w=0.5}just you and me pursuing our shared passion..."
+        m 5dka "Sharing poems, writing new ones...{w=0.5}just you and I pursuing our shared passion..."
         m 5hub "Sounds like a wonderful dream to me!"
 
     else:
