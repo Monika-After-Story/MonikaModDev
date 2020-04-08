@@ -5214,6 +5214,7 @@ init 5 python:
             eventlabel="monika_good_tod",
             category=['misc'],
             prompt="Good [mas_globals.time_of_day_3state]",
+            unlocked=True,
             pool=True
         )
     )

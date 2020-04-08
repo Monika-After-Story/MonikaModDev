@@ -509,6 +509,8 @@ label v0_10_8(version="v0_10_8"):
 
             persistent.playerxp = None
             
+        #Fix for unstable users
+        mas_unlockEVL("monika_good_tod", "EVE")
     return
 
 #0.10.7
