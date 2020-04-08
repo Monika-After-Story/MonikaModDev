@@ -541,23 +541,28 @@ init 5 python:
     )
 
 label mas_wrs_twitter:
-    $ temp_line = renpy.substitute("I love you, [player].")
-    $ temp_len = len(temp_line)
+    python:
+        temp_line = renpy.substitute("I love you, [player].")
+        temp_len = len(temp_line)
 
-    $ wrs_success = display_notif(
-        m_name,
-        [
-            "See anything you want to share with me, [player]?",
-            "Anything interesting to share, [player]?",
-            "280 characters? I only need [temp_len]...\n[temp_line]"
-        ],
-        'Window Reactions'
-    )
+        # quip: is_ily
+        ily_quips_map = {
+            "See anything you want to share with me, [player]?": False,
+            "Anything interesting to share, [player]?": False,
+            "280 characters? I only need [temp_len]...\n[temp_line]": True
+        }
+        quip = renpy.random.choice(ily_quips_map.keys())
+
+        wrs_success = display_notif(
+            m_name,
+            [quip],
+            'Window Reactions'
+        )
 
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
-    return
+    return "love" if ily_quips_map[quip] else None
 
 init 5 python:
     addEvent(
