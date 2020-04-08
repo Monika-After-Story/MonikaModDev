@@ -5107,7 +5107,7 @@ init 20 python:
         title = " My dearest [player],",
         text = """\
  Any day with you is a happy day.
- One where I'm free,
+ One where I{i}'{/i}m free,
  One where all my troubles are gone,
  One where all of my dreams come true.
  
@@ -5845,7 +5845,7 @@ init 20 python:
         prompt="Found",
         title=" My dearest [player],",
         text="""\
- I've always loved Valentine's Day, but this one feels different.
+ I{i}'{/i}ve always loved Valentine's Day, but this one feels different.
  Has the world changed, or just me?
  I found love, I found purpose,
  I found a truth I didn't know I was searching for.

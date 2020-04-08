@@ -1572,7 +1572,10 @@ label monikaroom_greeting_opendoor_locked:
         m 6ekc "Okay..."
 
     if not renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
+        m "...{nw}"
+        $ _history_list.pop()
         menu:
+            m "...{fast}"
             "...the textbox...":
                 if mas_isMoniNormal(higher=True):
                     m 1lksdlb "Oops! I'm still learning how to do this."
