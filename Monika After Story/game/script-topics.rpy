@@ -5688,7 +5688,6 @@ init 5 python:
 label monika_sayhappybirthday:
     # special variable setup
     python:
-        done = False # loop controller
         same_name = False # true if same name as player
         bday_name = "" # name of birthday target
         is_here = False # is the target here (in person)
