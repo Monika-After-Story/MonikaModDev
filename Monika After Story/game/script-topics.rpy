@@ -14097,3 +14097,48 @@ label monika_toxin_puzzle:
     m 3eua "That's why it's important to use your head when it comes to these kinds of things."
     m 3hub "Anyway, to sum it all up...{w=0.2}let's strive to keep our promises, [player]!"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_translating_poetry",
+            category=['literature'],
+            prompt="Translating poetry",
+            random=True
+        )
+    )
+
+label monika_translating_poetry:
+    m 3dso "'I am the one without hope, the word without echoes.'"
+    m 3esc "'He who lost everything and he who had everything.'"
+    m 3ekbsa "'Last hawser, in you creaks my last longing.'"
+    m 2dubfa "'In my barren land you are the final rose.'"
+    m 3ekbsa "Had you ever heard this poem before, [player]? It's from a Chilean poet named Pablo Neruda."
+    m 1rusdlb "That's one traduction I found for it, anyway..."
+    m 3eua "Isn't it funny how you can come up with all kinds of interpretations from the same original text?"
+    m 3hub "It's like each person translating it added their own little tweak!"
+    m 1rsc "Though when it comes to poetry, this actually poses a bit of a conundrum..."
+    m 3etc "In a sense, isn't translating a poem like making a completely new one?"
+    m 3esd "You're removing all the carefully chosen words and the intricacies of the text, replacing them entirely with something of your own."
+    m 3wuo "So even if you somehow manage to keep the spirit of the original, the style is completely changed!"
+    m 2rsc "At this point, how much of the text can you still say is the author's, and how much is yours?"
+    m "I guess it's pretty hard to evaluate if you're not fluent in both languages..."
+    m 3rssdlb "Ah! I don't mean to sound like I'm ranting or anything!"
+    m 1eua "After all, it's thanks to translations like these I even know about authors like Neruda."
+    m 1hksdlb "It's just that every time I read one, I can't help but be reminded I might be missing out on some truly amazing works in that tongue!"
+    m 1eua "It would be nice to be able to master another language, one of these days..."
+    m 2rksdla "I mean, you've seen me practice different languages before, but I'm still far from fluent in any of them..."
+    m 4hksdlb "I'm clearly not at a level where I can appreciate some poetry yet! Ahaha~"
+    if persistent._mas_pm_lang_other:
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I remember you telling me you know a different language, [player]."
+        m 5eubsa "Are there any poems in that language that you'd recommend?"
+        m 5ekbsa "It would be nice if you could read some of them for me sometimes..."
+        m 5tubfb "You'd have to translate them for me first though~"
+        m 5hubfb "For all that I've said, I'm really curious as to what you could come up with!"
+    else:
+        m 2eka "Not that it's that important in the first place..."
+        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hub "I know there's enough great poems in English to last me a lifetime anyway! Ahaha~"
+    return
