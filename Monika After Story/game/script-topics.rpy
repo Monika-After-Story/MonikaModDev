@@ -5694,12 +5694,12 @@ label monika_sayhappybirthday:
         is_here = False # is the target here (in person)
         is_watching = False # is the target watching (but not here)
         is_recording = False # is player recording this
-        age = None # how old is this person turning
+        age = 0 # how old is this person turning
         bday_msg = "" # happy [age] birthday (or not)
-        take_counter =  1 # how many takes
+        take_counter = 1 # how many takes
         take_threshold = 5 # multiple of takes that will make monika annoyed
         max_age = 121 # like who the hell is this old and playing ddlc?
-        age_prompt = "What is their {0} age?" # a little bit of flexibilty regarding age
+        age_prompt = "What is their age?" # prompt for age question
 
         # age suffix dictionary
         age_suffix = {
@@ -5741,22 +5741,17 @@ label monika_sayhappybirthday:
         m "Alright! Do you want me to say their age too?{fast}"
         "Yes.":
             m "Then..."
-            $ done = False
-            $ age_modifier = ""
-            while not done:
-                $ age = int(renpy.input(age_prompt.format(age_modifier),allow=numbers_only,length=3))
-                if age == 0:
-                    m 1esc "..."
-                    m 1dsc "I'm just going to ignore that."
-                    $ age_modifier = "real"
-                elif age > max_age:
-                    m 1lsc "..."
-                    m 1tkc "I highly doubt anyone is that old..."
-                    $ age_modifier = "real"
-                else:
-                    # NOTE: if we want to comment on (valid) age, put it here.
-                    # I'm not too sure on what to have monika say in these cases.
-                    $ done = True
+
+            while max_age <= age or age <= 0:
+                $ age = store.mas_utils.tryparseint(
+                    renpy.input(
+                        age_prompt,
+                        allow=numbers_only,
+                        length=3
+                    ).strip(),
+                    0
+                )
+
             m "Okay."
         "No.":
             m "Okay."
