@@ -12,7 +12,7 @@ init 5 python:
             action=EV_ACT_QUEUE
         )
     )
-    #NOTE: This unlocks the gender_redo event
+    #NOTE: This unlocks the monika_gender_redo event
 
 label mas_gender:
     m 2eud "...[player]? So I've been thinking a bit."
@@ -44,8 +44,8 @@ label mas_gender:
     m 1hub "Remember that I'll always love you unconditionally, [player]."
 
     #Unlock the gender redo event
-    $ mas_unlockEVL("gender_redo","EVE")
-    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
+    $ mas_unlockEVL("monika_gender_redo","EVE")
+    $ persistent._seen_ever["monika_gender_redo"] = True # dont want this in unseen
 
     return "love"
 
@@ -53,7 +53,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_gender_redo",
+            eventlabel="monika_gender_redo",
             category=['you','misc'],
             prompt="Can you change my gender?",
             unlocked=False,
@@ -62,7 +62,7 @@ init 5 python:
         )
     )
 
-label mas_gender_redo:
+label monika_gender_redo:
     m 1wud "You want to change your gender? Why?"
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
 
@@ -111,7 +111,7 @@ label mas_gender_redo:
         "I'm a girl.":
             if persistent.gender == "F":
                 $ gender_var = "girl"
-                call gender_redo_same
+                call mas_gender_redo_same
             else:
                 $ persistent.gender = "F"
                 call mas_set_gender
@@ -158,7 +158,7 @@ label mas_gender_neither:
     m 1ekbsa "Because your happiness is the most important thing to me."
     return
 
-label gender_redo_same:
+label mas_gender_redo_same:
     m 1hksdlb "...That's the same as before, [player]."
     m 3eua "If you're confused about how to answer, just pick whatever makes you happiest."
     m 3eka "It doesn't matter what your body looks like..."

@@ -449,9 +449,6 @@ label v0_10_8(version="v0_10_8"):
         if changename_ev:
             changename_ev.pool=True
 
-        gender_redo_ev = mas_getEV("gender_redo")
-        if gender_redo_ev:
-            gender_redo_ev.pool=True
 
         #Remove some old topics
         mas_eraseTopic("monika_morning")
@@ -460,7 +457,7 @@ label v0_10_8(version="v0_10_8"):
         #Transfer some topics
         # new_topic_evl: old_topic_evl
         topic_transfer_map = {
-            "mas_gender_redo": "gender_redo",
+            "monika_gender_redo": "gender_redo",
             "mas_gender": "gender",
             "mas_preferredname": "preferredname",
             "mas_unlock_hangman": "unlock_hangman",
