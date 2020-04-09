@@ -455,7 +455,7 @@ label v0_10_8(version="v0_10_8"):
         mas_eraseTopic("monika_evening")
 
         #Transfer some topics
-        # new_topic_evl: old_topic_evl
+        #new_topic_evl: old_topic_evl
         topic_transfer_map = {
             "monika_gender_redo": "gender_redo",
             "mas_gender": "gender",
@@ -465,13 +465,50 @@ label v0_10_8(version="v0_10_8"):
             "mas_unlock_piano": "unlock_piano"
         }
 
+        #game_unlock_evl: game
+        game_evl_map = {
+            "mas_unlock_hangman": "hangman",
+            "mas_unlock_chess": "chess",
+            "mas_unlock_piano": "piano"
+        }
+
+        #redo_label: unlocking_label
+        intro_topic_map = {
+            "monika_gender_redo": "mas_gender",
+            "monika_changename": "mas_preferredname"
+        }
+
         for new_evl, old_evl in topic_transfer_map.iteritems():
             mas_transferTopicData(new_evl, old_evl, persistent.event_database)
 
             #If we've seen this event before, then we shouldn't allow its conditions to be true again
             #So we'll remove its conditional and action
-            if seen_event(new_evl):
+            if seen_event(new_evl) or mas_isGameUnlocked(game_evl_map.get(new_evl)):
                 mas_stripEVL(new_evl, list_pop=True)
+
+                #Fix the persistent data for the games
+                persistent._seen_ever[new_evl] = True
+
+                #Adjust the shown count for the game
+                if mas_isGameUnlocked(game_evl_map.get(new_evl)):
+                    mas_getEV(new_evl).shown_count = 1
+
+            #In the case of the intro topics, being gender and preferredname
+            #We need to make sure these aren't shown again.
+            if new_evl in intro_topic_map and mas_getEV(new_evl).unlocked:
+                prereq_evl = intro_topic_map[new_evl]
+                #Add seen ever
+                persistent._seen_ever[prereq_evl] = True
+                #Fix shown count
+                mas_getEV(prereq_evl).shown_count = 1
+                #Lock the ev
+                mas_stripEVL(prereq_evl, list_pop=True)
+
+        #Now handle changename and preferredname because those don't change otherwise
+        if mas_getEV("monika_changename").unlocked:
+            persistent._seen_ever[intro_topic_map["monika_changename"]] = True
+            mas_getEV(intro_topic_map["monika_changename"]).shown_count = 1
+            mas_stripEVL(intro_topic_map["monika_changename"], list_pop=True)
 
         #Make multi-perspective approach random for people who've seen the allegory of the cave topic
         cave_ev = mas_getEV("monika_allegory_of_the_cave")
