@@ -88,7 +88,8 @@ python early:
 
             # render and blit
             render = renpy.render(new_img, width, height, st, at)
-            rv = renpy.Render(width, height)
+            rw, rh = render.get_size()
+            rv = renpy.Render(rw, rh)
             rv.blit(render, (0, 0))
 
             # save
