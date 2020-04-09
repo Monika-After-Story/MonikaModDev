@@ -1821,7 +1821,14 @@ label ch30_reset:
             if (
                     not mas_isGameUnlocked(game_name)
                     and renpy.seen_label(game_startlabel)
-                ):
+                    and (
+                        game_name != "chess"
+                        or (
+                            game_name == "chess"
+                            and not renpy.seen_label("mas_chess_dlg_qf_lost_ofcn_6")
+                        )
+                    )
+            ):
                 mas_unlockGame(game_name)
 
 
