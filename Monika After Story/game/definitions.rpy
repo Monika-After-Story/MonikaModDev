@@ -4958,6 +4958,49 @@ init 2 python:
             store.mas_globals.time_of_day_4state = "night"
             store.mas_globals.time_of_day_3state = "evening"
 
+    def mas_seenLabels(label_list, seen_all=False):
+        """
+        List format for renpy.seen_label. Allows checking if we've seen multiple labels at once
+
+        IN:
+            label_list - list of labels we want to check if we've seen
+            seen_all - True if all labels in label_list must have been seen in order for this function to return True.
+            False otherwise
+                (Default: False)
+                (NOTE: If seen_all is False, seeing ANY of the labels will let this function return True)
+
+        OUT:
+            boolean:
+                - True if we have seen the inputted labels and met the seen_all criteria
+                - False otherwise
+        """
+        for _label in label_list:
+            seen = renpy.seen_label(_label)
+
+            #First, filter out if we have an unseen label and we must have seen all
+            if not seen and seen_all:
+                return False
+
+            #As well, if it's a seen label and we don't need to see all
+            elif seen and not seen_all:
+                return True
+
+        #If we're here, that means we need to do some returns based on the values we put in
+        return seen_all
+
+    def mas_a_an_str(ref_str):
+        """
+        Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
+
+        IN:
+            ref_str - string in question to prefix
+
+        OUT:
+            string prefixed with a/an
+        """
+        if ref_str[0] in "aeiou":
+            return "an " + ref_str
+        return "a " + ref_str
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

@@ -532,6 +532,11 @@ label v0_10_8(version="v0_10_8"):
             if beingvirtual_ev:
                 beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
 
+        #Clean up this conditional
+        concert_ev = mas_getEV("monika_concerts")
+        if concert_ev and concert_ev.action is not None:
+            concert_ev.conditional = "mas_seenLabels(['monika_jazz', 'monika_orchestra', 'monika_rock', 'monika_vocaloid', 'monika_rap'], seen_all=True)"
+
         # adjust XP
         if persistent.playerxp is not None:
             lvls_gained, xptnl = store.mas_xp._grant_on_pt()
@@ -545,6 +550,13 @@ label v0_10_8(version="v0_10_8"):
             
         #Fix for unstable users
         mas_unlockEVL("monika_good_tod", "EVE")
+
+        dystopias_ev = mas_getEV("monika_dystopias")
+        if dystopias_ev and dystopias_ev.action is not None:
+            dystopias_ev.conditional= "mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world'], seen_all=True)"
+
+        if persistent._mas_pm_have_fam is None:
+            mas_hideEVL("monika_familygathering","EVE",derandom=True)
     return
 
 #0.10.7
