@@ -1660,12 +1660,9 @@ label monikaroom_greeting_opendoor_seen_partone:
 #                    m 2eka "And it would make me really happy if you did."
 
     $ persistent.opendoor_opencount += 1
-    jump monikaroom_greeting_opendoor_post2
-
+    # FALL THROUGH
 
 label monikaroom_greeting_opendoor_post2:
-    show monika 1eua_static at t11
-    pause 0.7
     show monika 5eua_static at hf11
     m "I'm glad you're back, [player]."
     show monika 5eua_static at t11
