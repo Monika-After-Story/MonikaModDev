@@ -2372,30 +2372,8 @@ label _mas_reaction_ribbon_helper(label):
 label mas_reaction_new_ribbon:
     python:
         def _ribbon_prepare_hair():
-            if monika_chr.hair.hasprop("ribbon"):
-                # first check for ribbon prop
-                return
-
-            # no ribbon prop means we should change
-            if (
-                    monika_chr.clothes == mas_clothes_rin
-                ):
-                if mas_isD25Outfit():
-                    monika_chr.change_outfit(
-                        mas_clothes_santa,
-                        mas_hair_def,
-                        False
-                    )
-
-                else:
-                    monika_chr.change_outfit(
-                        mas_clothes_def,
-                        mas_hair_def,
-                        False
-                    )
-
-            else:
-                # otherwise, just change hair
+            #If current hair doesn't support ribbons, we should change hair
+            if not monika_chr.hair.hasprop("ribbon"):
                 monika_chr.change_hair(mas_hair_def, False)
 
     $ mas_giftCapGainAff(3)

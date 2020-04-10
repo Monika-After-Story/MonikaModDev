@@ -2168,8 +2168,8 @@ label mas_lupd_v0_8_10:
         if persistent._mas_o31_seen_costumes is not None:
             if persistent._mas_o31_seen_costumes.get("marisa", False):
                 mas_selspr.unlock_clothes(mas_clothes_marisa)
-            if persistent._mas_o31_seen_costumes.get("rin", False):
-                mas_selspr.unlock_clothes(mas_clothes_rin)
+            #if persistent._mas_o31_seen_costumes.get("rin", False):
+            #    mas_selspr.unlock_clothes(mas_clothes_rin)
 
         # save the selectables we just unlocked
         mas_selspr.save_selectables()
