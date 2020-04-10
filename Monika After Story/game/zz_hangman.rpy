@@ -692,7 +692,6 @@ label mas_hangman_game_loop:
         m "Good job, [player]!"
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
-            $ grant_xp(xp.WIN_GAME)
         #TODO: grant a really tiny amount of affection?
 
     # try again?
