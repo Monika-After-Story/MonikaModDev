@@ -470,8 +470,19 @@ label v0_10_8(version="v0_10_8"):
             if beingvirtual_ev:
                 beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
 
-        #Fix for unstable users
+        #Clean up this conditional
+        if not seen_event("monika_concerts"):
+            concert_ev = mas_getEV("monika_concerts")
+            if concert_ev:
+                concert_ev.conditional = "mas_seenLabels(['monika_jazz', 'monika_orchestra', 'monika_rock', 'monika_vocaloid', 'monika_rap'], seen_all=True)"
+
+        #Fixes for unstable users
         mas_unlockEVL("monika_good_tod", "EVE")
+
+        if not seen_event("monika_dystopias"):
+            dystopias_ev = mas_getEV("monika_dystopias")
+            if dystopias_ev:
+                dystopias_ev.conditional= "mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world'], seen_all=True)"
     return
 
 #0.10.7

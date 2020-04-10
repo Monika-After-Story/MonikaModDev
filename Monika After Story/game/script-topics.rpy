@@ -7961,7 +7961,8 @@ label monika_asks_family:
             $ mas_showEVL("monika_familygathering","EVE",_random=True)
 
             m 1hua "That's wonderful!"
-            m "Your family must be great people."
+            m 3hua "Your family must be great~"
+
             m 1eua "Do you have any siblings?{nw}"
             $ _history_list.pop()
             menu:
@@ -7977,6 +7978,7 @@ label monika_asks_family:
                     m 3rksdla "It'd turn out much better than before, that's for sure."
                     m 1eua "I'm sure I'll get along with your siblings, as well as the rest of your family, [player]."
                     m 3hub "I can't wait to meet them all!"
+
                 "I'm an only child.":
                     $ persistent._mas_pm_have_fam_sibs = False
                     m 1euc "Being an only child certainly has its trade-offs."
@@ -7984,6 +7986,7 @@ label monika_asks_family:
                     m 2ekc "On the other hand, maybe you feel more lonely than those with siblings."
                     m 2eka "I can definitely understand that feeling."
                     m 1hua "But know that I'll always be with you no matter what, [player]."
+
         "My family is a mess.":
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = True
@@ -7991,6 +7994,7 @@ label monika_asks_family:
             m 1euc "Oh."
             m 1lksdlc "..."
             m 1ekc "I'm sorry, [player]."
+
             m "Do you think things will get better?{nw}"
             $ _history_list.pop()
             menu:
@@ -8002,6 +8006,7 @@ label monika_asks_family:
                     m 3eua "And I know you can get through what's going on in your life right now."
                     m 1eka "No matter what, I'll be here for you, [player]."
                     m 1hua "Always keep that in mind!"
+
                 "No.":
                     $ persistent._mas_pm_have_fam_mess_better = "NO"
                     m 1ekc "Ah, I see..."
@@ -8010,7 +8015,8 @@ label monika_asks_family:
                     m 3eka "[player], no matter what you're going through, I know it'll get better some day."
                     m 1eua "I'll be here with you every step of the way."
                     m 1hub "I love you so much, [player]. Please never forget that!"
-                    return "derandom|love"
+                    $ mas_ILY()
+
                 "Maybe.":
                     $ persistent._mas_pm_have_fam_mess_better = "MAYBE"
                     m 1lksdla "..."
@@ -8019,6 +8025,7 @@ label monika_asks_family:
                     m 1eka "I hope all the problems in your family work out in the end, [player]."
                     m "If not, know that I'll be here for you."
                     m 1hua "I will always be here to support my beloved~"
+
         "I've never had a family.":
             $ persistent._mas_pm_have_fam = False
             $ persistent._mas_pm_no_talk_fam = False
@@ -8032,18 +8039,20 @@ label monika_asks_family:
             m 1ekc "Still, I know you've had it worse."
             m "You've never even had a fake family."
             m 1dsc "..."
-            m 1ekc "Does it still bother you badly on a daily basis?{nw}"
+
+            m 1ekc "Does it still bother you?{nw}"
             $ _history_list.pop()
             menu:
-                m "Does it still bother you badly on a daily basis?{fast}"
+                m "Does it still bother you?{fast}"
                 "Yes.":
                     $ persistent._mas_pm_no_fam_bother = True
-                    m 1ekc "That's... understandable."
+                    m 1ekc "That's...understandable."
                     m 1eka "I'll be here for you forever, [player]."
                     m "No matter what it takes, I will fill that gap in your heart with my love..."
                     m 1hua "I promise you that."
                     m 1ekbfa "You are my everything..."
                     m 1hubfa "I hope I can be yours~"
+
                 "No.":
                     $ persistent._mas_pm_no_fam_bother = False
                     m 1eua "That's very good."
@@ -8052,6 +8061,7 @@ label monika_asks_family:
                     m 1eka "I hope I can fill that void in your heart."
                     m "I really care about you, and I'd do anything for you."
                     m 1hua "Someday, we'll be able to make our own family together!"
+
         "I don't want to talk about this.":
             $ persistent._mas_pm_no_talk_fam = True
             m 1dsc "I understand, [player]."
@@ -8060,7 +8070,7 @@ label monika_asks_family:
             m 1lksdlc "It might be something that's too painful for you to talk about."
             m 1eka "You can tell me about your family when you're ready, [player]."
             m 1hubfa "I love you very much!"
-            return "derandom|love"
+            $ mas_ILY()
 
     return "derandom"
 
@@ -8077,19 +8087,12 @@ init 5 python:
             eventlabel="monika_concerts",
             category=['media',"music"],
             prompt="Music concerts",
-            conditional=(
-                "renpy.seen_label('monika_jazz') "
-                "and renpy.seen_label('monika_orchestra') "
-                "and renpy.seen_label('monika_rock') "
-                "and renpy.seen_label('monika_vocaloid') "
-                "and renpy.seen_label('monika_rap')"
-            ),
+            conditional="mas_seenLabels(['monika_jazz', 'monika_orchestra', 'monika_rock', 'monika_vocaloid', 'monika_rap'], seen_all=True)",
             action=EV_ACT_RANDOM
         )
     )
 
 label monika_concerts:
-
     # TODO: perhaps this should be separated into something specific to music
     # genres and the concert just referencing back to that?
     # this topic is starting to get too complicated
@@ -8122,12 +8125,12 @@ label monika_concerts:
 
         "No.":
             if (
-                    not persistent._mas_pm_like_vocaloids
-                    and not persistent._mas_pm_like_rap
-                    and not persistent._mas_pm_like_rock_n_roll
-                    and not persistent._mas_pm_like_orchestral_music
-                    and not persistent._mas_pm_like_jazz
-                ):
+                not persistent._mas_pm_like_vocaloids
+                and not persistent._mas_pm_like_rap
+                and not persistent._mas_pm_like_rock_n_roll
+                and not persistent._mas_pm_like_orchestral_music
+                and not persistent._mas_pm_like_jazz
+            ):
                 $ persistent._mas_pm_like_other_music = False
                 m 1ekc "Oh... Well that's okay, [player]..."
                 m 1eka "I'm sure we can find something else to do."
@@ -8167,9 +8170,9 @@ label monika_concerts:
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
     if (
-            not renpy.seen_label("monika_add_custom_music_instruct")
-            and not persistent._mas_pm_added_custom_bgm
-        ):
+        not renpy.seen_label("monika_add_custom_music_instruct")
+        and not persistent._mas_pm_added_custom_bgm
+    ):
         m 1eua "In the meantime, if you want to share your favorite music with me, it's really easy to do so!"
         m 3eua "All you have to do is follow these steps..."
         call monika_add_custom_music_instruct
@@ -13347,11 +13350,7 @@ init 5 python:
             eventlabel="monika_dystopias",
             category=['literature'],
             prompt="Dystopias",
-            conditional=(
-                "seen_event('monika_1984') "
-                "and seen_event('monika_fahrenheit451') "
-                "and seen_event('monika_brave_new_world')"
-            ),
+            conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world'], seen_all=True)",
             action=EV_ACT_RANDOM
         )
     )
@@ -14124,12 +14123,15 @@ label monika_translating_poetry:
     m 3wud "So even if you somehow manage to keep the spirit of the original, the style is completely changed!"
     m 1etc "At this point, how much of the text can you still say is the author's, and how much is yours?"
     m 1rsc "I guess it's pretty hard to evaluate if you're not fluent in both languages..."
-    m 3rusdld "Ah! I don't mean to sound like I'm ranting or anything!"
+    m 3hksdlb "Ah! I don't mean to sound like I'm ranting or anything!"
     m 1eua "After all, it's thanks to translations like these that I even know about authors like Neruda."
     m 1hksdlb "It's just that every time I read one, I can't help but be reminded I might be missing out on some truly amazing works in that tongue!"
     m 1eua "It would be nice to be able to master another language, one of these days..."
-    m 2rksdla "I mean, you've seen me practice different languages before, but I'm still far from fluent in any of them..."
-    m 4hksdlb "I'm clearly not at a level where I can fully appreciate poetry from other languages yet, ahaha!"
+
+    if mas_seenLabels(["greeting_japan", "greeting_italian", "greeting_latin"]):
+        m 2rksdla "I mean, you've seen me practice different languages before, but I'm still far from fluent in any of them..."
+        m 4hksdlb "I'm clearly not at a level where I can fully appreciate poetry from other languages yet, ahaha!"
+
     if persistent._mas_pm_lang_other:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I remember you telling me you know a different language, [player]."
