@@ -7946,7 +7946,7 @@ default persistent._mas_pm_have_fam_mess_better = None
 default persistent._mas_pm_no_talk_fam = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=False))
 
 label monika_asks_family:
     m 1eua "[player], do you have a family?{nw}"
@@ -8109,10 +8109,17 @@ label monika_concerts:
         m "Are there any other types of music you'd like to see live that we haven't talked about yet?{fast}"
         "Yes.":
             $ persistent._mas_pm_like_other_music = True
-            m 3eua "Great! What other kind of music do you like, [player]?"
+            m 3eua "Great!"
 
             python:
-                musicgenrename = renpy.input('What kind of music do you listen to?',length=15).strip(' \t\n\r')
+                musicgenrename = ""
+                while len(musicgenrename) == 0:
+                    musicgenrename = renpy.input(
+                        'What kind of music do you listen to?',
+                        length=15,
+                        allow=letters_only
+                    ).strip(' \t\n\r')
+
                 tempmusicgenre = musicgenrename.lower()
                 persistent._mas_pm_like_other_music_history.append((
                     datetime.datetime.now(),

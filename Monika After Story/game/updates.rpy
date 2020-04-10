@@ -483,6 +483,9 @@ label v0_10_8(version="v0_10_8"):
             dystopias_ev = mas_getEV("monika_dystopias")
             if dystopias_ev:
                 dystopias_ev.conditional= "mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world'], seen_all=True)"
+
+        if persistent._mas_pm_have_fam is None:
+            mas_hideEVL("monika_familygathering","EVE",derandom=True)
     return
 
 #0.10.7
