@@ -3278,7 +3278,10 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
     #FALL THROUGH
 
 label greeting_returned_home_morethan5mins_cleanup:
-    $ grant_xp(xp.NEW_GAME)
+    pass
+    # TODO: re-evaluate this XP gain when rethinking XP. Going out with 
+    #   monika could be seen as gaining xp
+    # $ grant_xp(xp.NEW_GAME)
     #FALL THROUGH
 
 label greeting_returned_home_cleanup:

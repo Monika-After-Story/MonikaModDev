@@ -548,7 +548,6 @@ label demo_minigame_pong:
         #Give player XP if this is their first win
         if not persistent.ever_won['pong']:
             $persistent.ever_won['pong'] = True
-            $grant_xp(xp.WIN_GAME)
 
     if new_difficulty < 0:
         $ persistent._mas_pong_difficulty = 0
