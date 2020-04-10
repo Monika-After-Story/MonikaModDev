@@ -537,7 +537,6 @@ label v0_10_8(version="v0_10_8"):
         if concert_ev and concert_ev.action is not None:
             concert_ev.conditional = "mas_seenLabels(['monika_jazz', 'monika_orchestra', 'monika_rock', 'monika_vocaloid', 'monika_rap'], seen_all=True)"
 
-        #Fixes for unstable users
         # adjust XP
         if persistent.playerxp is not None:
             lvls_gained, xptnl = store.mas_xp._grant_on_pt()
