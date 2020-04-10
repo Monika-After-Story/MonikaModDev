@@ -397,9 +397,8 @@ label v0_11_0(version="v0_11_0"):
 
         hotchoc_cons = mas_getConsumable("hotchoc")
         if hotchoc_cons and seen_event("mas_reaction_hotchocolate"):
-            if not hotchoc_cons.enabled():
-                hotchoc_cons.restock(renpy.random.randint(40, 60))
-                #NOTE: This will re-enable itself automatically in winter
+            hotchoc_cons.restock(renpy.random.randint(40, 60))
+            #NOTE: This will re-enable itself automatically in winter
 
             persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
 
