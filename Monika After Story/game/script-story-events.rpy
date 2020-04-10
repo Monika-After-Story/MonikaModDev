@@ -2326,7 +2326,7 @@ init 5 python:
             conditional="not renpy.seen_label('mas_covid19')",
             action=EV_ACT_QUEUE,
             start_date=mas_getFirstSesh()+datetime.timedelta(days=1),
-            end_date=datetime.date(2020, 4, 30),
+            end_date=datetime.date(2020, 5, 1),
         ),
         skipCalendar=True
     )
