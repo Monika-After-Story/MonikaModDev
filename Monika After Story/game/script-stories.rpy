@@ -566,7 +566,7 @@ label mas_story_genie_regret:
     m 3ekd "Mistakes will happen, people will get hurt.{w=0.5} Nothing will ever change that."
     m 3eka "The truth is, a lot of times we tend to blame ourselves for things that likely would've happened with or without our involvement."
     m 3eub "In fact, it's through regret that we learn compassion, empathy, and forgiveness."
-    m 3eua "You can't change the past, but you need to forgive yourself someday to live a life without regret."
+    m 3eua "You can't change the past, but you need to forgive yourself someday to live a life without regrets."
     m 1eka "As for me..."
     m 1rksdlc "Who knows what would have happened in my world if I hadn't done anything..."
 
@@ -772,12 +772,12 @@ label mas_story_o_tei:
     m 1esc "He flagged down the girl and told her, 'I'm sorry to be a bother, but you remind me so much of someone I knew long ago that it startled me at first.'"
     m 3euc "'If you don't mind me asking, what is your name?'"
     m 3wud "Immediately, in the unforgotten voice of his deceased beloved, the girl answered, 'My name is Tomoe, and you are Kenji, my promised husband.'"
-    m 1wud "'I had died tragically before we could complete our marriage...'"
+    m 1wud "'I died tragically before we could complete our marriage...'"
     m "'And now I have returned, Kenji, my husband-to-be.'"
     m 1dsc "The girl then collapsed to the floor, unconscious."
-    m 1esa "Kenji held her to his arms, tears flowing from his face."
+    m 1esa "Kenji held her in his arms, tears flowing from his face."
     m 1dsa "'...Welcome back, Tomoe...'"
-    m 3esa "As she came to, she had no memory of what happened in the inn."
+    m 3esa "As she came to, she had no memory of what happened at the inn."
     m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
     return
     

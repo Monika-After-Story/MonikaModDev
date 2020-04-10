@@ -214,7 +214,7 @@ label mas_fun_fact_chess:
         return
 
     #Chess was unlocked, but locked due to cheating
-    elif not mas_isGameUnlocked("chess") and renpy.seen_label("unlock_chess"):
+    elif not mas_isGameUnlocked("chess") and renpy.seen_label("mas_unlock_chess"):
         m 1dsc "Chess..."
         m 2dfc "..."
         m 2rfd "You can forget about this fact since you're a cheater, [player]."

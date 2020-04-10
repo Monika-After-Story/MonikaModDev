@@ -971,6 +971,19 @@ image monika 5rkbla_static = DynamicDisplayable(
     blush="lines"
 )
 
+image monika 5rkbsu_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smug",
+    arms="def",
+    lean="def",
+    single="3a",
+    blush="shade"
+)
+
 image monika 5rkc_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
