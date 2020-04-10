@@ -510,10 +510,6 @@ label v0_10_8(version="v0_10_8"):
             mas_getEV(intro_topic_map["monika_changename"]).shown_count = 1
             mas_stripEVL(intro_topic_map["monika_changename"], list_pop=True)
 
-        #Lock chess again if it's unlocked and it should be locked due to cheating
-        if mas_isGameUnlocked('chess') and renpy.seen_label("mas_chess_dlg_qf_lost_ofcn_6"):
-            persistent.game_unlocks["chess"] = False
-
         #Make multi-perspective approach random for people who've seen the allegory of the cave topic
         cave_ev = mas_getEV("monika_allegory_of_the_cave")
         if cave_ev and cave_ev.shown_count > 0:
