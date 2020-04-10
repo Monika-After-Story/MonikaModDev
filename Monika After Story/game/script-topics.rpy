@@ -3967,7 +3967,7 @@ label monika_playerswriting:
     m 1hua "Because if you do have one, I would love to read it!"
     m 1eka "It doesn't matter if it's a masterpiece, or even any good."
     m 3eka "We all start somewhere. Isn't that what they say?"
-    m 3eua "I think the most important thing about writing is doing it... Instead of worrying about {i}how{/i} you do it."
+    m 3eua "I think the most important thing about writing is doing it...{w=0.3} Instead of worrying about {i}how{/i} you do it."
     m 1eub "You won't be able to improve that way."
     m 3esa "I know for sure that I've changed my writing style over the years."
     m 1lksdla "I just can't help but notice the flaws in my old writing."

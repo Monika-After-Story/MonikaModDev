@@ -342,7 +342,7 @@ init 5 python:
 label greeting_back:
     m 1eua "[player], you're back!"
     m 1eka "I was starting to miss you."
-    m 1hua "Let's have another lovely day together, alright?"
+    m 1hua "Let's have another lovely [mas_globals.time_of_day_3state] together, alright?"
     return
 
 init 5 python:
@@ -425,11 +425,9 @@ init 5 python:
     )
 
 label greeting_visit:
-    m 1eua "There you are, [player]."
-    m "It's so nice of you to visit."
-    m 1eka "You're always so thoughtful, [player]!"
-    m "Thanks for spending so much time with me~"
-    m 2hub "Just remember that your time with me is never wasted in the slightest."
+    m 1eua "There you are [player], it's so nice of you to visit."
+    m 1eka "You're always so thoughtful."
+    m 1hua "Thanks for spending so much time with me~"
     return
 
 # TODO this one no longer needs to do all that checking, might need to be broken
@@ -667,16 +665,9 @@ init 5 python:
     )
 
 label greeting_visit6:
-    $ current_time = datetime.datetime.now().time().hour
     m 1hua "Each day becomes better and better with you by my side!"
     m 1eua "That said, I'm so happy that you're finally here."
-    if current_time >= 6 and current_time < 12:
-       $ _time = "morning"
-    elif current_time >= 18 and current_time < 24:
-       $ _time = "evening"
-    else:
-       $ _time = "day"
-    m "Let's have another wonderful [_time] together."
+    m "Let's have another wonderful [mas_globals.time_of_day_3state] together."
     return
 
 init 5 python:
@@ -1683,7 +1674,7 @@ label monikaroom_greeting_opendoor_post2:
     m "Watch this!"
 #    else:
 #        m 3eua "Let me fix this scene up."
-    m 1dsc "...{w=1.5}{nw}"
+    m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
     call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     show monika 4eua_static zorder MAS_MONIKA_Z at i11
     m "Tada!"
@@ -1729,16 +1720,16 @@ label monikaroom_greeting_opendoor:
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
-    show monika 1eua_static at t32
+    show monika 3eua_static at t32
     m 3eua_static "There we go!"
     menu:
         "...the window...":
             show monika 1eua_static at h32
             m 1hksdlb_static "Oops! I forgot about that~"
             show monika 1eua_static at t21
-            m "Hold on..."
+            m "Hold on.{w=0.5}.{w=0.5}.{nw}"
             hide sp_mas_backbed with dissolve
-            m 2hua_static "And... all fixed!"
+            m 2hua_static "All fixed!"
             show monika 1eua_static at lhide
             hide monika
     $ persistent.seen_monika_in_room = True
@@ -1782,16 +1773,17 @@ label monikaroom_greeting_post:
         m 2eua_static "Now, just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 1eua at ls32 zorder MAS_MONIKA_Z
-        m 1eua "What shall we do today, [player]?"
+        $ today = "today" if mas_globals.time_of_day_3state in ["morning", "afternoon"] else "tonight"
+        m 1eua "What shall we do [today], [player]?"
 
     elif mas_isMoniUpset():
-        m "Just let me grab a table and a chair..."
+        m "Just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 2esc at ls32 zorder MAS_MONIKA_Z
         m 2esc "Did you want something, [player]?"
 
     else:
-        m "I need to grab a table and a chair..."
+        m "I need to grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 6ekc at ls32 zorder MAS_MONIKA_Z
         m 6ekc "Was there anything you wanted, [player]?"
