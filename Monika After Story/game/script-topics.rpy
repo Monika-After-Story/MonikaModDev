@@ -8128,7 +8128,8 @@ label monika_concerts:
 
             # NOTE: should be think? maybe?
             m 1eua "Interesting..."
-            m 3hub "I'd love to go to a [tempmusicgenre] concert with you!"
+            show monika 3hub
+            $ renpy.say(m, "I'd love to go to {0} concert with you!".format(mas_a_an_str(tempmusicgenre)))
 
         "No.":
             if (

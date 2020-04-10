@@ -4859,6 +4859,19 @@ init 2 python:
         #If we're here, that means we need to do some returns based on the values we put in
         return seen_all
 
+    def mas_a_an_str(ref_str):
+        """
+        Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
+
+        IN:
+            ref_str - string in question to prefix
+
+        OUT:
+            string prefixed with a/an
+        """
+        if ref_str[0] in "aeiou":
+            return "an " + ref_str
+        return "a " + ref_str
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

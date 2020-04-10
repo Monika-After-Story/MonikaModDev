@@ -2446,10 +2446,8 @@ label mas_reaction_new_ribbon:
 label mas_reaction_old_ribbon:
     m 1rksdlb "[player]..."
     #Need to handle vowels lol
-    if _mas_new_ribbon_color[:1] in 'aeiou':
-        m 1rusdlb "You already gave me an [_mas_new_ribbon_color] ribbon!"
-    else:
-        m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
+    show monika 1rusdlb
+    $ renpy.say(m, "You already gave me {0} ribbon!".format(mas_a_an_str(_mas_new_ribbon_color)))
     return
 
 init 5 python:
