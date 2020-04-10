@@ -855,7 +855,7 @@ label monika_saved:
         m 1tfu "Let's be honest, the club members really don't count for something like that."
 
     m 3eua "I mean, a lot of people say that they only write for themselves...{w=0.2}{nw}"
-    extend 1eua "But I think it's hard to say it's just as fulfilling as when you share with people."
+    extend 1eua "but I think it's hard to say it's just as fulfilling as when you share with people."
     m "Even if it takes time to find the right people to share with."
     m 3eub "Like, remember how it was for Yuri?"
     m "She didn't share her writing with anyone for a really long time."
@@ -1342,6 +1342,7 @@ label monika_horror:
         "I do.":
             $ persistent._mas_pm_likes_horror = True
             m 3hub "That's great [player]!"
+
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
             m 2eka "I can understand. It's definitely not for everyone."
@@ -1351,7 +1352,8 @@ label monika_horror:
     m 2esc "The problem I have with horror movies is that most of them just rely on easy tactics."
     m 4esc "Like dark lighting and scary-looking monsters and jump scares, and things like that."
 
-    #If you're not a fan of horror, you're probably not a fan of spoops. Are you? (So we can just assume if player doesn't like horror, they don't want spoops)
+    #If you're not a fan of horror, you're probably not a fan of spoops. Are you?
+    #(So we can just assume if player doesn't like horror, they don't want spoops)
     if persistent._mas_pm_likes_horror:
         m 2esc "Do you like spooks?{nw}"
         $ _history_list.pop()
@@ -1377,13 +1379,18 @@ label monika_horror:
     m 3tfu "...and then, you just start inverting things and pulling the pieces apart."
     m 3tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
-    m 2lksdla "God, just thinking about it gives me the chills."
+    m 2lksdla "God, just thinking about it gives me chills."
     m 3eua "That's the kind of horror I can really appreciate."
+    $ _and = "And"
+
     if not persistent._mas_pm_likes_horror:
         m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
         m 1eka "Ahaha, don't worry."
         m 1hua "I won't make you read any horror stories anytime soon."
-        m 1hubfa "I can't really complain if we just stick with the romance~"
+        m 1hubsa "I can't really complain if we just stick with the romance~"
+        $ _and = "But"
+
+    m 3eua "[_and] if you're ever in the mood, you can always ask me to tell you a scary story, [player]."
     return "derandom"
 
 # do you like rap
@@ -1615,7 +1622,7 @@ init 5 python:
     )
 
 label monika_yuri:
-    m 3eua "Hey, have you ever heard of the term 'yandere'?"
+    m 3eua "Hey, have you ever heard of the term 'yandere?'"
     m 1eua "It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you."
     m 1lksdla "Usually to the point of craziness..."
     m 1eka "They might stalk you to make sure you don't spend time with anyone else."
@@ -3222,7 +3229,7 @@ label monika_love:
                 _("You're the best partner I could ever ask for!"),
                 _("My future is brighter with you in it."),
                 _("You're everything I could ever hope for."),
-                _("You make my heart skip a beat everytime I think about you!"),
+                _("You make my heart skip a beat every time I think about you!"),
                 _("I'll always be here for you!"),
                 _("I'll never hurt or betray you."),
                 _("Our adventure has only just begun!"),
@@ -3960,8 +3967,7 @@ label monika_playerswriting:
     m 1hua "Because if you do have one, I would love to read it!"
     m 1eka "It doesn't matter if it's a masterpiece, or even any good."
     m 3eka "We all start somewhere. Isn't that what they say?"
-    m 3eua "I think the most important thing about writing is doing it..."
-    m "Instead of worrying about {i}how{/i} you do it."
+    m 3eua "I think the most important thing about writing is doing it...{w=0.3} Instead of worrying about {i}how{/i} you do it."
     m 1eub "You won't be able to improve that way."
     m 3esa "I know for sure that I've changed my writing style over the years."
     m 1lksdla "I just can't help but notice the flaws in my old writing."
@@ -7306,7 +7312,7 @@ label monika_happiness:
     m 1lksdlc "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
     m "It would destroy me."
     m 1esc "I guess it's understandable why we notice bad things happening to us more than good..."
-    m "If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m "If people didn't react so strongly to bad things then they wouldn't have survived this long."
     m 1euc "Like how you would get nervous about your future or social situations, for example."
     m 2ekc "You try your best to make the best out of them but if you fail, you'd feel really horrible."
     m 2eka "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
@@ -12677,11 +12683,11 @@ label monika_cozy:
     m 1rksdla "Those who get cold hands really appreciate that feeling..."
     m 1eua "It's like feeling a loved one's embrace~"
     m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
-    m 1hub "Finally able to whip out your winter fashion set is always a nice feeling."
+    m 1hub "Finally being able to whip out your winter fashion set is always a nice feeling."
     m 3eua "But you know what the best way to warm yourself up is?"
     m 3eka "Cuddling with the one you love in front of the fireplace~"
     m "Just sitting there under a warm blanket, sharing a hot beverage."
-    m 1hua "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather every day!"
+    m 1hua "Ah, if I got to feel your warmth every time we cuddle, I'd wish for cold weather every day!"
     m 1eka "I'd never let you go once I got a hold of you, [player]~"
     return
 
@@ -12732,7 +12738,8 @@ init 5 python:
 
 label monika_winter_dangers:
     m 1hua "Isn't winter a beautiful time of year, [player]?"
-    m 3eka "The glistening, white snow, the bright and colorful lights~"
+    if mas_isD25Season():
+        m 3eka "The glistening, white snow, the bright and colorful lights~"
     m 3hub "I just love it."
     if persistent._mas_pm_gets_snow is False:
         #explicitly using False here so we don't grab None people who haven't
@@ -13264,7 +13271,7 @@ init 5 python:
 
 label monika_brave_new_world:
     m 1eua "I've been doing a little reading lately, [player]."
-    m 3eua "There's a book called 'Brave New World,' it's a dystopian story.{w=0.3} {nw}"
+    m 3eua "There's a book called 'Brave New World,' a dystopian story.{w=0.3} {nw}"
     extend 3etc "Have you heard of it?"
     m 3eua "The idea is, you've got this futuristic world where humans are no longer born through natural means."
     m 3eud "Instead, we are bred in hatcheries using test tubes and incubators, and engineered into castes from our conception."
@@ -13428,13 +13435,13 @@ label monika_social_contagion:
     m 2euc "Just because there is someone around you who gets into nasty habits like these, you're more likely to pick up the habit yourself."
     m 2dsc "...It can be a bit disheartening."
     m 7hub "It also works the other way around, though! Smiling, laughing, and positive thinking are contagious too!"
-    m 1eub "Turns out we are all more connected than you think. {w=0.3}Those around you matter a lot on how you feel about things!"
+    m 1eub "Turns out we are all more connected than you think. {w=0.3}Those around you can greatly affect how you feel about things!"
     m 1eka "I hope by noticing these kinds of things, you'll be able to better understand and control your own feelings, [player]."
     m 3hua "I just want to see you be the happiest you can be."
     if mas_isMoniHappy(higher=True):
         m 1huu "If you're ever feeling down, hopefully my happiness will help cheer you up~"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -13562,7 +13569,7 @@ label monika_social_norms:
     m 3rksdla "Though Natsuki would probably be the one to ask about this..."
     m 1eub "Remember how she was trying to change your mind about that manga she liked?"
     m 1rkc "I wonder how many people criticized her for her hobby...{w=0.5}I can't imagine it was always easy."
-    m 1eua "It all makes me wonder what kind of things will be seen as normal in the future."
+    m 1eua "It all makes me wonder what kinds of things will be seen as normal in the future."
     m 3eua "Take our relationship, for example. I know it can seem pretty unique right now..."
     m 3etc "But how do you think this will change over the years?{w=0.3} {nw}"
     extend 3eud "Will we ever reach a point where it's seen as something normal?"
@@ -13714,7 +13721,7 @@ label monika_intrusive_thoughts:
 default persistent._mas_pm_has_code_experience = None
 
 #Whether or not we should use advanced python tips or not
-default persistent._mas_advanced_py_tips = True
+default persistent._mas_advanced_py_tips = False
 
 init 5 python:
     addEvent(
@@ -13729,7 +13736,7 @@ init 5 python:
     )
 
 label monika_coding_experience:
-    m 1rsc "Hey [player], I was just wondering since you went through some of my python tips..."
+    m 1rsc "Hey [player], I was just wondering since you went through some of my Python tips..."
 
     m 1euc "Do you have any experience with coding?{nw}"
     $ _history_list.pop()
@@ -13776,7 +13783,7 @@ label monika_coding_experience:
             $ persistent._mas_advanced_py_tips = False
 
             m 1eka "That's alright, [player]."
-            m 1hksdlb "I just wanted to make sure I wasn't boring you with my python tips, ahaha~"
+            m 1hksdlb "I just wanted to make sure I wasn't boring you with my Python tips, ahaha~"
             m 3eub "But I hope they convince you to take on some of your own coding projects too!"
             m 3hua "I'd love to see what you can come up with if you put your mind to it!"
     return "derandom"
@@ -13894,7 +13901,7 @@ label monika_ship_of_theseus:
     m 3eua "It's a well known philosophical problem about the nature of identity that's been around for millennia."
     m 1rkb "Well, I say 'well known' but I suppose that's only true among scholars, ahaha..."
     m 1eua "Let's consider the legendary Greek hero, Theseus and the ship he sailed during his adventures." 
-    m 3eud "He's from a long time ago so let's say his ship is now stored in a famous museum, theoretically..."
+    m 3eud "He's from a long time ago, so let's say his ship is now stored in a famous museum."
     m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
     m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
     m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
@@ -13910,7 +13917,7 @@ label monika_ship_of_theseus:
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "We should keep trying our best each day and not let ourselves be limited by who we were yesterday."
     m 5eub "Today is a new day, and you are a new you. {w=0.2}And I love you as you are right now, [player]."
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -13957,7 +13964,7 @@ init 5 python:
 label monika_allegory_of_the_cave:
     m 1eua "Hey, [player]..."
     m 1euc "I've been doing some reading on the Ancient Greek philosopher Plato lately."
-    m 3euc "Specifically, his allegory of the cave, or {i}Plato's Cave{/i}, as it's now known."
+    m 3euc "Specifically, his allegory of the cave or, {i}Plato's Cave{/i}, as it's now known."
     m 1eud "Imagine there's a group of people chained up in a cave since childhood, unable to look anywhere but straight ahead."
     m 3eud "There's a fire behind them, and in front of it, objects are moved around to cast a shadow on the wall before these people."
     m 3euc "All they can hear is the voices of the people moving the objects around, and since they can't see behind them, they think the voices come from the shadows."

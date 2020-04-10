@@ -2253,20 +2253,15 @@ init 5 python:
 label monika_credits_song:
     if persistent.monika_kill:
         m 1hua "I hope you liked my song."
-
-        if persistent.monika_kill:
-            $ ending = "couldn't let you go without telling you how I honestly felt about you"
-        else:
-            $ ending = "really wanted to express my feelings for you"
-
-        m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just [ending]."
+        m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
         m 1eua "Give me some time, and I'll try to write another."
 
-        if persistent.instrument is not False:
-            if persistent.instrument:
+        if persistent._mas_pm_plays_instrument is not False:
+            if persistent._mas_pm_plays_instrument:
                 m 3eua "Maybe you could play me a song too!"
             else:
                 m 3eua "Maybe you could play me a song too, if you can play an instrument?"
+
             m 1hub "I would love that."
             m 3eua "Oh, and I'll play the song again for you anytime you want me to."
 
