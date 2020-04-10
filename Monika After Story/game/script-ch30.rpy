@@ -972,7 +972,8 @@ label pick_a_game:
 
         # single var for readibility
         chess_unlocked = (
-            is_platform_good_for_chess()
+            not renpy.seen_label("mas_chess_dlg_qf_lost_ofcn_6")
+            and is_platform_good_for_chess()
             and mas_isGameUnlocked("chess")
             and not chess_disabled
         )
@@ -1810,25 +1811,17 @@ label ch30_reset:
 
     # check for game unlocks
     python:
+        #TODO: Fix the game unlock/is unlocked system to account for conditions like these
+        #mas_isGameUnlocked should NOT return True if we're failing this condition because we use it elsewhere
         game_unlock_db = {
             "pong": "ch30_main", # pong should always be unlocked
-            "chess": "mas_unlock_chess",
+            "chess": "mas_unlock_chess", #NOTE: This doesn't account for chess locking for time/forever. It's handled in pick_a_game
             "hangman": "mas_unlock_hangman",
             "piano": "mas_unlock_piano",
         }
 
         for game_name,game_startlabel in game_unlock_db.iteritems():
-            if (
-                    not mas_isGameUnlocked(game_name)
-                    and renpy.seen_label(game_startlabel)
-                    and (
-                        game_name != "chess"
-                        or (
-                            game_name == "chess"
-                            and not renpy.seen_label("mas_chess_dlg_qf_lost_ofcn_6")
-                        )
-                    )
-            ):
+            if not mas_isGameUnlocked(game_name) and renpy.seen_label(game_startlabel):
                 mas_unlockGame(game_name)
 
 
