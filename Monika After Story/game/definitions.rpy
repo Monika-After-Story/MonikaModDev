@@ -3084,6 +3084,60 @@ init -999 python:
         except:
             pass
 
+init -995 python in mas_utils:
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
+
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+
+        #Now, let's do some work.
+        #First, we check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #The lists are not the same, which means we need to do a bit of work.
+        #Before we do that, let's verify that the lists are the same length
+        if len(comparative_vers) > len(curr_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #We've found a number which was greater, let's return 1 as we know this version is greater
+                return 1
+
+        #If we're here, we never found something greater. Let's return -1
+        return -1
 
 init -990 python in mas_utils:
     import store
