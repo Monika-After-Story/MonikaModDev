@@ -814,7 +814,7 @@ init 5 python:
                 startup=startup
             )
 
-            if startup:
+            if startup and not store.mas_globals.returned_home_this_sesh:
                 MASConsumable._absentUse()
 
                 #Now we'll check if we've got sprites out in case we've crashed
