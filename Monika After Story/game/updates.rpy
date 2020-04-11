@@ -392,7 +392,8 @@ label v0_11_0(version="v0_11_0"):
 
 
             #Transfer the amount of cups had
-            persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
+            if persistent._mas_coffee_cups_drank:
+                persistent._mas_consumable_map["coffee"]["times_had"] += persistent._mas_coffee_cups_drank
 
             #Delete the old vars
             safeDel("_mas_coffee_cups_drank")
@@ -404,7 +405,8 @@ label v0_11_0(version="v0_11_0"):
             hotchoc_cons.restock(renpy.random.randint(40, 60))
             #NOTE: This will re-enable itself automatically in winter
 
-            persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
+            if persistent._mas_c_hotchoc_cups_drank:
+                persistent._mas_consumable_map["hotchoc"]["times_had"] += persistent._mas_c_hotchoc_cups_drank
 
             #Delete uneeded vars
             safeDel("_mas_c_hotchoc_cups_drank")
@@ -423,12 +425,9 @@ label v0_11_0(version="v0_11_0"):
 
         # ensure marisa + ACS is unlocked
         if mas_o31CostumeWorn(mas_clothes_marisa):
-            store.mas_selspr.unlock_clothes(mas_clothes_marisa)
-            store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
-            store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
-
-            #Now save this data so loading doesn't override this
-            store.mas_selspr.save_selectables()
+            persistent._mas_selspr_clothes_db["marisa"] = (True, False)
+            persistent._mas_selspr_acs_db["marisa_witchhat"] = (True, False)
+            persistent._mas_selspr_hair_db["downtiedstrand"] = (True, True)
 
         #Update conditions for the greetings
         new_greetings_conditions = {
