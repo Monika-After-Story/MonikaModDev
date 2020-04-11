@@ -427,6 +427,9 @@ label v0_11_0(version="v0_11_0"):
             store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
             store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
+            #Now save this data so loading doesn't override this
+            store.mas_selspr.save_selectables()
+
         #Update conditions for the greetings
         new_greetings_conditions = {
             "greeting_back": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=12)",
