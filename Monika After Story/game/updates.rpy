@@ -375,6 +375,10 @@ label v0_3_1(version=version): # 0.3.1
 #0.10.8
 label v0_11_0(version="v0_11_0"):
     python:
+        #First, we're fixing the consumables map
+        for cons_id in persistent._mas_consumable_map.iterkeys():
+            persistent._mas_consumable_map[cons_id]["has_restock_warned"] = False
+
         #Let's stock current users on some consumables (assuming they've gifted before)
         #We'll keep it somewhat random.
         coffee_cons = mas_getConsumable("coffee")

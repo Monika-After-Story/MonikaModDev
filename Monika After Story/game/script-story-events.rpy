@@ -2340,7 +2340,7 @@ label mas_covid19:
     m 2eksdlc "Is the virus in your area yet?{nw}"
     $ _history_list.pop()
     menu:
-        "Is the virus in your area yet?{fast}"
+        m "Is the virus in your area yet?{fast}"
         "Yes.":
             m 2wksdld "Oh no, [player]! That's really scary!"
             m 4ekc "I know a lot of people living in places where it's prevalent have orders to stay at home..."
