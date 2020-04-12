@@ -75,7 +75,7 @@ init python:
         store.mas_hotkeys.play_enabled = False
 
 
-    def mas_HKDropShield_all():
+    def mas_HKDropShield_main():
         """RUNTIME ONLY
         Enables main hotkeys
         """
