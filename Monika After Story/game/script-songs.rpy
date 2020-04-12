@@ -794,10 +794,9 @@ label mas_monika_plays_yr(skip_leadin=False):
             m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     window hide
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
-    $ store.songs.enabled = False
-
+    $ mas_RaiseShield_piano()
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
     show monika at rs32
     hide monika
     pause 3.0
@@ -864,13 +863,11 @@ label mas_monika_plays_yr(skip_leadin=False):
     hide mas_piano
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
+    call monika_zoom_transition_reset(mas_temp_zoom_level)
 
     if not skip_leadin:
         pause 2.0
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
+        $ mas_DropShield_piano()
         window auto
 
     return
@@ -900,10 +897,9 @@ label mas_monika_plays_or(skip_leadin=False):
         $ gen = "their"
 
     window hide
-    $ mas_disableTextSpeed()
-    $ disable_esc()
-    $ mas_MUMURaiseShield()
-
+    $ mas_RaiseShield_piano()
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
     show monika at rs32
     hide monika
     pause 3.0
@@ -953,13 +949,11 @@ label mas_monika_plays_or(skip_leadin=False):
     hide mas_piano
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
+    call monika_zoom_transition_reset(mas_temp_zoom_level)
 
     if not skip_leadin:
         pause 2.0
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
+        $ mas_DropShield_piano()
         window auto
 
     return

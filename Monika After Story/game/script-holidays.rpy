@@ -2649,7 +2649,7 @@ label monika_aiwfc:
         m 3hksdlb "I know it's a little cheesy, but I think you might like it."
         m 3eksdla "If your volume is off, would you mind turning it on for me?"
         if songs.getUserVolume("music") == 0.0:
-            m 3hksdlb "Oh, don't forget about your in game volume too!"
+            m 3hksdlb "Oh, don't forget about your in-game volume too!"
             m 3eka "I really want you to hear this."
         m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
 
