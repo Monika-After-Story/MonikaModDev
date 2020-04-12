@@ -3592,9 +3592,9 @@ label monika_mc:
         m 1eua "I mean the player, not your character."
 
     m "Unlike the other girls, I can separate your avatar from who you really are."
-    m 1lfb "The main character is nothing more than a vehicle for the player.{nw}"
+    m 1lfb "The main character was nothing more than a vehicle for the player.{nw}"
     $ _history_list.pop()
-    m 1lfb "The main character is nothing more than a {fast}bunch of code with no personality."
+    m 1lfb "The main character was nothing more than a {fast}bunch of code with no personality."
     m 3tkc "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
     m 2tkc "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
     m 2wfw "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"

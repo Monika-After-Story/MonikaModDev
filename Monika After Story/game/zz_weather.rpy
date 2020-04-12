@@ -613,7 +613,7 @@ init -1 python:
     # default weather (day + night)
     mas_weather_def = MASWeather(
         "def",
-        "Default",
+        "Clear",
 
         # sp day
         "def_weather_day",

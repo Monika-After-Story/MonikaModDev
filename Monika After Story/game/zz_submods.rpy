@@ -386,8 +386,8 @@ init -980 python in mas_submod_utils:
             _function - function to register
             args - list of args (must be in order) to pass to the function
                 (Default: [])
-            auto_error_handling - whether or not this function handles errors itself
-                (Set this true for functions which call or jump)
+            auto_error_handling - whether or function plugins should ignore errors in functions
+                (Set this to False for functions which call or jump)
             priority - Order priority to run functions
                 (Like init levels, the lower the number, the earlier it runs)
 
