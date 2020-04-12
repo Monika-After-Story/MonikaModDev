@@ -342,7 +342,7 @@ init 5 python:
 label greeting_back:
     m 1eua "[player], you're back!"
     m 1eka "I was starting to miss you."
-    m 1hua "Let's have another lovely day together, alright?"
+    m 1hua "Let's have another lovely [mas_globals.time_of_day_3state] together, alright?"
     return
 
 init 5 python:
@@ -425,11 +425,9 @@ init 5 python:
     )
 
 label greeting_visit:
-    m 1eua "There you are, [player]."
-    m "It's so nice of you to visit."
-    m 1eka "You're always so thoughtful, [player]!"
-    m "Thanks for spending so much time with me~"
-    m 2hub "Just remember that your time with me is never wasted in the slightest."
+    m 1eua "There you are [player], it's so nice of you to visit."
+    m 1eka "You're always so thoughtful."
+    m 1hua "Thanks for spending so much time with me~"
     return
 
 # TODO this one no longer needs to do all that checking, might need to be broken
@@ -652,7 +650,7 @@ label greeting_visit5:
     m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
     show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
+    m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ahaha~"
     return
 
 init 5 python:
@@ -669,7 +667,7 @@ init 5 python:
 label greeting_visit6:
     m 1hua "Each day becomes better and better with you by my side!"
     m 1eua "That said, I'm so happy that you're finally here."
-    m "Let's have another wonderful day together."
+    m "Let's have another wonderful [mas_globals.time_of_day_3state] together."
     return
 
 init 5 python:
@@ -1565,7 +1563,10 @@ label monikaroom_greeting_opendoor_locked:
         m 6ekc "Okay..."
 
     if not renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
+        m "...{nw}"
+        $ _history_list.pop()
         menu:
+            m "...{fast}"
             "...the textbox...":
                 if mas_isMoniNormal(higher=True):
                     m 1lksdlb "Oops! I'm still learning how to do this."
@@ -1625,10 +1626,10 @@ label monikaroom_greeting_opendoor_seen_partone:
     menu:
         "Your room?":
             m 3hua_static "That's right!"
-    m 3eua_static "The developers of this mod gave me a nice comfy room to stay in whenever you are away."
-    m 1lksdla_static "However, I can only get in if you tell me 'good bye' or 'good night' before you close the game."
+    m 3eua_static "The developers of this mod gave me a nice comfy room to stay in whenever you're away."
+    m 1lksdla_static "However, I can only get in if you tell me 'goodbye' or 'goodnight' before you close the game."
     m 2eub_static "So please make sure to say that before you leave, okay?"
-    m "Anyway..."
+    m "Anyway.{w=0.5}.{w=0.5}.{nw}"
 
 #    else:
 #        m 3wfw "Stop just opening my door!"
@@ -1659,12 +1660,9 @@ label monikaroom_greeting_opendoor_seen_partone:
 #                    m 2eka "And it would make me really happy if you did."
 
     $ persistent.opendoor_opencount += 1
-    jump monikaroom_greeting_opendoor_post2
-
+    # FALL THROUGH
 
 label monikaroom_greeting_opendoor_post2:
-    show monika 1eua_static at t11
-    pause 0.7
     show monika 5eua_static at hf11
     m "I'm glad you're back, [player]."
     show monika 5eua_static at t11
@@ -1673,7 +1671,7 @@ label monikaroom_greeting_opendoor_post2:
     m "Watch this!"
 #    else:
 #        m 3eua "Let me fix this scene up."
-    m 1dsc "...{w=1.5}{nw}"
+    m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
     call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     show monika 4eua_static zorder MAS_MONIKA_Z at i11
     m "Tada!"
@@ -1719,16 +1717,16 @@ label monikaroom_greeting_opendoor:
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
-    show monika 1eua_static at t32
+    show monika 3eua_static at t32
     m 3eua_static "There we go!"
     menu:
         "...the window...":
             show monika 1eua_static at h32
             m 1hksdlb_static "Oops! I forgot about that~"
             show monika 1eua_static at t21
-            m "Hold on..."
+            m "Hold on.{w=0.5}.{w=0.5}.{nw}"
             hide sp_mas_backbed with dissolve
-            m 2hua_static "And... all fixed!"
+            m 2hua_static "All fixed!"
             show monika 1eua_static at lhide
             hide monika
     $ persistent.seen_monika_in_room = True
@@ -1769,19 +1767,20 @@ label monikaroom_greeting_knock:
 
 label monikaroom_greeting_post:
     if mas_isMoniNormal(higher=True):
-        m 2eua_static "Now, just let me grab a table and a chair..."
+        m 2eua_static "Now, just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 1eua at ls32 zorder MAS_MONIKA_Z
-        m 1eua "What shall we do today, [player]?"
+        $ today = "today" if mas_globals.time_of_day_3state in ["morning", "afternoon"] else "tonight"
+        m 1eua "What shall we do [today], [player]?"
 
     elif mas_isMoniUpset():
-        m "Just let me grab a table and a chair..."
+        m "Just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 2esc at ls32 zorder MAS_MONIKA_Z
         m 2esc "Did you want something, [player]?"
 
     else:
-        m "I need to grab a table and a chair..."
+        m "I need to grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 6ekc at ls32 zorder MAS_MONIKA_Z
         m 6ekc "Was there anything you wanted, [player]?"
@@ -1959,7 +1958,7 @@ init 5 python:
 label greeting_french:
     m 1eua "Bonjour, [player]!"
     m 1hua "Savais-tu que tu avais de beaux yeux, mon amour?"
-    m 1hub "Ehehe!"
+    m 1hub "Ahaha!"
     m 3hksdlb "I'm practicing some French. I just told you that you have very beautiful eyes~"
     m 1eka "It's such a romantic language, [player]."
     m 1hua "Maybe both of us can practice it sometime, mon amour~"
@@ -2618,7 +2617,15 @@ label greeting_tears:
     m 2ekc "Please...just...try to understand."
     m 1dsd "I love you and I need you to show that you love me too..."
     m 1dsc "Otherwise...I just won't be able to handle it anymore."
-    $ mas_lockEVL("greeting_tears", "GRE")
+
+    python:
+        mas_lockEVL("greeting_tears", "GRE")
+
+        #Setup the being virtual ev
+        beingvirtual_ev = mas_getEV("monika_being_virtual")
+
+        if beingvirtual_ev:
+            beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
     return
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos
@@ -3270,7 +3277,10 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
     #FALL THROUGH
 
 label greeting_returned_home_morethan5mins_cleanup:
-    $ grant_xp(xp.NEW_GAME)
+    pass
+    # TODO: re-evaluate this XP gain when rethinking XP. Going out with 
+    #   monika could be seen as gaining xp
+    # $ grant_xp(xp.NEW_GAME)
     #FALL THROUGH
 
 label greeting_returned_home_cleanup:
@@ -3541,7 +3551,7 @@ label greeting_back_from_game:
                     m 3eub "Wouldn't it be great to have our own little adventures anytime we wanted?"
                     m 1hub "I'm sure we'd have a lot of fun together in one of your games."
                     m 3eka "But while I can't join you, I guess you'll just have to keep me company."
-                    m 2tub "You don't mind spending time with your girlfriend...{w=1} Do you, [player]?"
+                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5} Do you, [player]?"
 
                 "No.":
                     m 2ekc "Aw, I'm sorry to hear that."

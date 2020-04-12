@@ -1196,7 +1196,7 @@ label mas_reaction_gift_starter_f14:
     m "T-{w=1}This is..."
     m "A gift? For me?"
     if mas_getGiftStatsForDate(mas_f14) == 0:
-        m 1eka "You're so sweet, getting something for me on Valentine's day..."
+        m 1eka "You're so sweet, getting something for me on Valentine's Day..."
     else:
         m 1eka "Thank you so much, [player]."
     m 1sua "Now, let's see... What's inside?"
@@ -2372,30 +2372,8 @@ label _mas_reaction_ribbon_helper(label):
 label mas_reaction_new_ribbon:
     python:
         def _ribbon_prepare_hair():
-            if monika_chr.hair.hasprop("ribbon"):
-                # first check for ribbon prop
-                return
-
-            # no ribbon prop means we should change
-            if (
-                    monika_chr.clothes == mas_clothes_rin
-                ):
-                if mas_isD25Outfit():
-                    monika_chr.change_outfit(
-                        mas_clothes_santa,
-                        mas_hair_def,
-                        False
-                    )
-
-                else:
-                    monika_chr.change_outfit(
-                        mas_clothes_def,
-                        mas_hair_def,
-                        False
-                    )
-
-            else:
-                # otherwise, just change hair
+            #If current hair doesn't support ribbons, we should change hair
+            if not monika_chr.hair.hasprop("ribbon"):
                 monika_chr.change_hair(mas_hair_def, False)
 
     $ mas_giftCapGainAff(3)
@@ -2446,10 +2424,8 @@ label mas_reaction_new_ribbon:
 label mas_reaction_old_ribbon:
     m 1rksdlb "[player]..."
     #Need to handle vowels lol
-    if _mas_new_ribbon_color[:1] in 'aeiou':
-        m 1rusdlb "You already gave me an [_mas_new_ribbon_color] ribbon!"
-    else:
-        m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
+    show monika 1rusdlb
+    $ renpy.say(m, "You already gave me {0} ribbon!".format(mas_a_an_str(_mas_new_ribbon_color)))
     return
 
 init 5 python:

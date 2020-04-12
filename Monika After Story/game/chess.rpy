@@ -1,3 +1,4 @@
+#TODO: Fix label names. It's difficult to follow
 
 # we now will keep track of player wins / losses/ draws/ whatever
 default persistent._mas_chess_stats = {"wins": 0, "losses": 0, "draws": 0}
@@ -1582,7 +1583,6 @@ label mas_chess_game_start:
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
-            $grant_xp(xp.WIN_GAME)
 
         # main dialogue
         call mas_chess_dlg_game_monika_lose from _mas_chess_dlggml
@@ -1992,7 +1992,7 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     $ mas_loseAffection(modifier=10)
     $ persistent.game_unlocks["chess"] = False
     # workaround to deal with peeople who havent seen the unlock chess label
-    $ persistent._seen_ever["unlock_chess"] = True
+    $ persistent._seen_ever["mas_unlock_chess"] = True
 
     m 2dfc "..."
     m 2efc "[player],{w=0.3} I don't believe you."

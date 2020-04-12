@@ -4,9 +4,17 @@
 #Requirements must be created/added in script-ch30.rpy under label ch30_autoload.
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_gender",
+            conditional="store.mas_xp.level() >= 1",
+            action=EV_ACT_QUEUE
+        )
+    )
+    #NOTE: This unlocks the monika_gender_redo event
 
-label gender:
+label mas_gender:
     m 2eud "...[player]? So I've been thinking a bit."
     m 2euc "I've mentioned before that the 'you' in the game might not reflect the real you."
     m 3lksdla "But I guess I just assumed that you were probably a guy."
@@ -17,42 +25,44 @@ label gender:
     $ _history_list.pop()
     menu:
         m "So, are you male or female?{fast}"
+
         "Male.":
             $ persistent.gender = "M"
-            call set_gender from _call_set_gender_1
-            m 2eud "Oh? So you {i}are{/i} a [guy]?"
-            m 1hub "Ehehe, I suppose that makes sense!"
-            m 1eua "Not a lot of girls would play a game like this."
-            m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
-            m 2hksdlb "Even I can be curious sometimes, you know?"
+            call mas_set_gender
+            call mas_gender_male
+
         "Female.":
             $ persistent.gender = "F"
-            call set_gender from _call_set_gender_2
-            m 2eud "Oh? So you're actually a [guy]?"
-            m 2hksdlb "I hope I didn't say anything to offend you before!"
-            m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
-            m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
-            m 1hua "It's very attractive, to tell you the truth!"
-            m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
+            call mas_set_gender
+            call mas_gender_female
+
         "Neither.":
             $ persistent.gender = "X"
-            call set_gender from _call_set_gender_3
-            m 1euc "You don't see yourself as a guy or a girl?"
-            m 2eua "That's very interesting, but I can sort of relate."
-            m 1esc "Like, I am a girl, but I'm also a character in a computer game..."
-            m 2esd "So in some ways I'm not really a girl at all."
-            m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
-            m "So I'll treat you however you want to be treated."
-            m 1ekbfa "Because your happiness is the most important thing to me."
+            call mas_set_gender
+            call mas_gender_neither
+
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    $ mas_showEVL("gender_redo","EVE",unlock=True,_pool=True)
-    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
+
+    #Unlock the gender redo event
+    $ mas_unlockEVL("monika_gender_redo","EVE")
+    $ persistent._seen_ever["monika_gender_redo"] = True # dont want this in unseen
 
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
-label gender_redo:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gender_redo",
+            category=['you','misc'],
+            prompt="Can you change my gender?",
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_gender_redo:
     m 1wud "You want to change your gender? Why?"
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
 
@@ -60,6 +70,7 @@ label gender_redo:
     $ _history_list.pop()
     menu:
         m "I mean, were you just too shy to tell me the truth before? Or did something...happen?{fast}"
+
         "I was too shy.":
             if persistent.gender == "M":
                 m 2ekd "I guess I understand. I started off assuming you were a guy, after all."
@@ -67,12 +78,15 @@ label gender_redo:
                 m 2ekd "I guess I understand. You might have thought I'd be more comfortable spending time alone with another girl."
             else:
                 m 2ekd "I guess I understand. I might not have given you the most accurate options to pick from."
+
             m 2dkd "And I probably didn't make it easy for you to tell me otherwise..."
             m 1eub "But whatever your gender, I love you for who you are."
+
         "I've made some personal discoveries.":
             m 1eka "I see. I know I've been there."
             m 1hua "I'm so proud of you for going on that journey of self discovery."
             m 1eub "And even prouder of you for being courageous enough to tell me!"
+
         "I didn't know if you'd accept me as I am...":
             m 2wkd "[player]..."
             m 1dkd "I hate that I didn't reassure you enough before."
@@ -83,55 +97,68 @@ label gender_redo:
     $ _history_list.pop()
     menu:
         m "So, what is your gender?{fast}"
-        "I'm a girl.":
-            if persistent.gender == "F":
-                $ gender_var = "girl"
-                call gender_redo_same
-            else:
-                $ persistent.gender = "F"
-                call set_gender
-                m 2eud "Oh? So you're actually a [guy]?"
-                m 2hksdlb "I hope I didn't say anything to offend you before!"
-                m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
-                m 3eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
-                m 1hua "It's very attractive, to tell you the truth!"
-                m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
-                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+
         "I'm a boy.":
             if persistent.gender == "M":
                 $ gender_var = "boy"
-                call gender_redo_same
+                call mas_gender_redo_same
             else:
                 $ persistent.gender = "M"
-                call set_gender
-                m 2eud "Oh? So you {i}are{/i} a [guy]?"
-                m 1hub "Ehehe, I suppose that makes sense!"
-                m 1eua "Not a lot of girls would play a game like this."
-                m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
-                m 2hksdlb "Even I can be curious sometimes, you know?"
+                call mas_set_gender
+                call mas_gender_male
                 show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+
+        "I'm a girl.":
+            if persistent.gender == "F":
+                $ gender_var = "girl"
+                call mas_gender_redo_same
+            else:
+                $ persistent.gender = "F"
+                call mas_set_gender
+                call mas_gender_female
+                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+
         "I'm neither.":
             if persistent.gender == "X":
-                m 1hksdlb "...That's the same as before. I'm sorry if that's not really the best way for you to describe it."
-                m 1eub "I'm interested in learning how to use new pronouns, like xir!"
-                m 3hub "If you're trying to tell me you'd prefer pronouns like those, get in touch with the people who created this mod!"
-                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5eub "They'll tell you how to teach me."
+                m 1hksdlb "...That's the same as before, [player]...I'm sorry if that's not really the best way for you to describe it."
+                m 1eka "But just know that it doesn't matter what you are to me."
             else:
                 $ persistent.gender = "X"
-                call set_gender
-                m 1euc "You don't see yourself as a guy or a girl?"
-                m 2eua "That's very interesting, but I can sort of relate."
-                m 1esc "Like, I am a girl, but I'm also a character in a computer game..."
-                m 2esd "So in some ways I'm not really a girl at all."
-                m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
-                m "So I'll treat you however you want to be treated."
-                m 1ekbsa "Because your happiness is the most important thing to me."
-                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+                call mas_set_gender
+                call mas_gender_neither
+            show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+
     m 5hubsa "Remember that I'll always love you unconditionally, [player]~"
     return "love"
 
-label gender_redo_same:
+label mas_gender_female:
+    m 2eud "Oh? So you're actually a [guy]?"
+    m 2hksdlb "I hope I didn't say anything to offend you before!"
+    m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
+    m 3eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
+    m 1hua "It's very attractive, to tell you the truth!"
+    m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
+    return
+
+label mas_gender_male:
+    m 2eud "Oh? So you {i}are{/i} a [guy]?"
+    m 1hub "Ehehe, I suppose that makes sense!"
+    m 1eua "Not a lot of girls would play a game like this."
+    m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
+    m 2hksdlb "Even I can be curious sometimes, you know?"
+    return
+
+label mas_gender_neither:
+    m 1euc "You don't see yourself as a guy or a girl?"
+    m 2eua "That's very interesting, but I can sort of relate."
+    m 1esc "Like, I am a girl, but I'm also a character in a computer game..."
+    m 2esd "So in some ways I'm not really a girl at all."
+    m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
+    m "So I'll treat you however you want to be treated."
+    m 1ekbsa "Because your happiness is the most important thing to me."
+    return
+
+label mas_gender_redo_same:
     m 1hksdlb "...That's the same as before, [player]."
     m 3eua "If you're confused about how to answer, just pick whatever makes you happiest."
     m 3eka "It doesn't matter what your body looks like..."
@@ -481,13 +508,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="preferredname",
-            conditional="get_level()>=16 and not seen_event('preferredname')",
+            eventlabel="mas_preferredname",
+            conditional="store.mas_xp.level() >= 2",
             action=EV_ACT_QUEUE
         )
-    ) #This needs to be unlocked by the random name change event
+    )
+    #NOTE: This unlocks the player name change event
 
-label preferredname:
+label mas_preferredname:
     m 1euc "I've been wondering about your name."
     m 1esa "Is '[player]' really your name?"
     if renpy.windows and currentuser.lower() == player.lower():
@@ -498,9 +526,9 @@ label preferredname:
     #Let's call the changename loop
     call mas_player_name_enter_name_loop("Do you want me to call you something else?", "Tell me, what is it?")
 
-    #Unlock prompt to change name again
-    $ mas_showEVL("monika_changename","EVE",unlock=True,_pool=True)
-    $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
+    #Unlock the name change event
+    $ mas_unlockEVL("monika_changename","EVE")
+    $ persistent._seen_ever["monika_changename"] = True
     return
 
 
@@ -511,9 +539,12 @@ init 5 python:
             eventlabel="monika_changename",
             category=['you','misc'],
             prompt="Can you change my name?",
-            unlocked=False
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
         )
-    ) #This needs to be unlocked by the random name change event
+    )
+    #NOTE: This needs to be unlocked by the random name change event
 
 label monika_changename:
     call mas_player_name_enter_name_loop("You want to change your name?", "What do you want me to call you?")
@@ -524,7 +555,14 @@ default persistent._mas_player_bday = None
 default persistent._mas_player_confirmed_bday = False
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_birthdate",conditional="datetime.date.today()>mas_getFirstSesh().date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_birthdate",
+            conditional="datetime.date.today()>mas_getFirstSesh().date() and not persistent._mas_player_confirmed_bday",
+            action=EV_ACT_QUEUE
+        )
+    )
 
 label mas_birthdate:
     m 1euc "Hey [player], I've been thinking..."
@@ -575,9 +613,7 @@ label birthdate_set:
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
-        # TODO: need to update script the conditional with the new F14 value
-        # NOTE: should consider makin gthe condiitonal string generated from
-        #   this a function for ease of use
+        #NOTE: should consider making the condiitonal string generated from this a function for ease of use
         bday_ret_bday_ev = mas_getEV('mas_player_bday_ret_on_bday')
         if bday_ret_bday_ev is not None:
             bday_ret_bday_ev.start_date = mas_player_bday_curr()
@@ -598,9 +634,7 @@ label birthdate_set:
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
-        # TODO: need to update script the conditional with the new F14 value
-        # NOTE: should consider makin gthe condiitonal string generated from
-        #   this a function for ease of use
+        #NOTE: should consider making the condiitonal string generated from this a function for ease of use
         bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr(), datetime.time(hour=19))
@@ -616,10 +650,8 @@ label birthdate_set:
             )
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
-   
-        # TODO: need to update script the conditional with the new F14 value
-        # NOTE: should consider makin gthe condiitonal string generated from
-        #   this a function for ease of use
+
+        #NOTE: should consider making the condiitonal string generated from this a function for ease of use
         bday_holiday_ev = mas_getEV('mas_player_bday_other_holiday')
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr()
@@ -682,14 +714,14 @@ label birthdate_set:
         m 1sua "Oh! Your birthday is the same date as our anniversary, [player]?"
         m 3hub "That's amazing!"
         m 1sua "I can't imagine a more special day than celebrating your birthday and our love on the same day..."
-        #TODO: add more holidays here (f14)
+
         if mas_player_bday_curr() == mas_o31:
             $ hol_str = "Halloween"
         elif mas_player_bday_curr() == mas_d25:
             $ hol_str = "Christmas"
         elif mas_player_bday_curr() == mas_monika_birthday:
             $ hol_str = "my birthday"
-        elif mas_player_bday_curr() == mas_f14: 
+        elif mas_player_bday_curr() == mas_f14:
             $ hol_str = "Valentine's Day"
         else:
             $ hol_str = None
@@ -755,12 +787,23 @@ label calendar_birthdate:
     $ mas_stripEVL('mas_birthdate',True)
     return
 
-## Game unlock events
+##START: Game unlock events
 ## These events handle unlocking new games
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="unlock_chess",conditional="get_level()>=12 and not seen_event('unlock_chess') and not persistent.game_unlocks['chess']",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_unlock_chess",
+            conditional=(
+                "store.mas_xp.level() >= 4 "
+                "and not persistent.game_unlocks['chess'] "
+                "and not seen_event('mas_unlock_chess')"
+            ),
+            action=EV_ACT_QUEUE
+        )
+    )
 
-label unlock_chess:
+label mas_unlock_chess:
     m 1eua "So, [player]..."
     if renpy.seen_label('game_pong'):
         m 1eua "I thought that you might be getting bored with Pong."
@@ -800,9 +843,16 @@ label unlock_chess:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="unlock_hangman",conditional="get_level()>=20 and not seen_event('unlock_hangman')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_unlock_hangman",
+            conditional="store.mas_xp.level() >= 8",
+            action=EV_ACT_QUEUE
+        )
+    )
 
-label unlock_hangman:
+label mas_unlock_hangman:
     if persistent._mas_sensitive_mode:
         $ game_name = "Word Guesser"
     else:
@@ -812,12 +862,16 @@ label unlock_hangman:
     m 3hub "I got a new game for you to try!"
     if renpy.seen_label('game_pong') and renpy.seen_label('game_chess'):
         m 1lksdlb "You're probably bored with Chess and Pong already."
+
     elif renpy.seen_label('game_pong') and not renpy.seen_label('game_chess'):
         m 3hksdlb "I thought you'd like to play Chess, but you've been so busy with Pong instead!"
+
     elif renpy.seen_label('game_chess') and not renpy.seen_label('game_pong'):
         m 1hksdlb "You really loved playing Chess with me, but you haven't touched Pong yet."
+
     else:
         m 1ekc "I was actually worried that you didn't like the other games I made for us to play..."
+
     m 1hua "Soooo~"
     m 1hub "I made [game_name]!"
 
@@ -843,22 +897,32 @@ label unlock_hangman:
     else:
         m 1hua "I hope you'll enjoy playing it with me!"
 
-    $persistent.game_unlocks['hangman']=True
+    $ persistent.game_unlocks['hangman'] = True
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="unlock_piano",conditional="get_level()>=24 and not seen_event('unlock_piano')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_unlock_piano",
+            conditional="store.mas_xp.level() >= 18",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
 
-label unlock_piano:
+label mas_unlock_piano:
     m 2hua "Hey! I've got something exciting to tell you!"
     m 2eua "I've finally added a piano to the room for us to use, [player]."
     if not persistent._mas_pm_plays_instrument:
         m 3hub "I really want to hear you play!"
         m 3eua "It might seem overwhelming at first, but at least give it a try."
         m 3hua "After all, we all start somewhere."
+
     else:
         m 1eua "Of course, playing music is nothing new to you."
         m 4hub "So I'm expecting something nice! Ehehe~"
+
     m 4hua "Wouldn't it be fun to play something together?"
     m "Maybe we could even do a duet!"
     m 4hub "We would both improve and have fun at the same time."
@@ -868,10 +932,10 @@ label unlock_piano:
     m 3hua "It's a wonderful feeling."
     m 1eua "I hope this isn't too forceful, but I would love it if you tried."
     m 1eka "For me, please?~"
-    $persistent.game_unlocks['piano']=True
+    $ persistent.game_unlocks['piano'] = True
     return
 
-# NOTE: this has beenpartially disabled
+# NOTE: this has been partially disabled
 label random_limit_reached:
     $ seen_random_limit=True
 
@@ -889,12 +953,14 @@ label random_limit_reached:
             _("You don't mind if I think about what to say next, do you?")
         ]
         limit_quip=renpy.random.choice(limit_quips)
+
     m 1eka "[limit_quip]"
     if len(mas_rev_unseen)>0 or persistent._mas_enable_random_repeats:
         m 1ekc "I'm sure I'll have something to talk about after a little rest."
+
     else:
         if not renpy.seen_label("mas_random_ask"):
-            call mas_random_ask from _mas_random_ask_call
+            call mas_random_ask
             if _return:
                 m "Now let me think of something to talk about."
                 return
@@ -917,13 +983,14 @@ label mas_random_ask:
                 m 1eka "That tells me when you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
+
         "No.":
             m 1eka "I see."
             m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics.'"
             m "That tells me if you're okay with me repeating anything I've said."
             return
 
-# TODO think about adding additional dialogue if monika sees that you're running
+# TODO: think about adding additional dialogue if monika sees that you're running
 # this program often. Basically include a stat to keep track, but atm we don't
 # have a framework for detections. So wait until thats a thing before doing
 # fullon program tracking
@@ -1946,7 +2013,7 @@ init 5 python:
                 persistent.event_database,
                 eventlabel="mas_gift_giving_instructs",
                 conditional=(
-                    "get_level() >= 15 "
+                    "store.mas_xp.level() >= 3 "
                     "or mas_isSpecialDay()"
                 ),
                 action=EV_ACT_QUEUE
@@ -2186,20 +2253,15 @@ init 5 python:
 label monika_credits_song:
     if persistent.monika_kill:
         m 1hua "I hope you liked my song."
-
-        if persistent.monika_kill:
-            $ ending = "couldn't let you go without telling you how I honestly felt about you"
-        else:
-            $ ending = "really wanted to express my feelings for you"
-
-        m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just [ending]."
+        m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
         m 1eua "Give me some time, and I'll try to write another."
 
-        if persistent.instrument is not False:
-            if persistent.instrument:
+        if persistent._mas_pm_plays_instrument is not False:
+            if persistent._mas_pm_plays_instrument:
                 m 3eua "Maybe you could play me a song too!"
             else:
                 m 3eua "Maybe you could play me a song too, if you can play an instrument?"
+
             m 1hub "I would love that."
             m 3eua "Oh, and I'll play the song again for you anytime you want me to."
 
@@ -2254,4 +2316,95 @@ label monika_credits_song:
         $ mas_unlockEVL("mas_monika_plays_or", "EVE")
 
     $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_covid19",
+            conditional="not renpy.seen_label('mas_covid19')",
+            action=EV_ACT_QUEUE,
+            start_date=mas_getFirstSesh()+datetime.timedelta(days=1),
+            end_date=datetime.date(2020, 5, 1),
+        ),
+        skipCalendar=True
+    )
+
+label mas_covid19:
+    m 2ekc "Hey, [player]..."
+    m 2rksdld "I've been reading a lot online lately about this COVID-19 pandemic and it's causing me to worry about you!"
+    m 2eksdld "It just seems to be spreading so fast {nw}"
+    extend 2eksdla "and I really want you to stay safe..."
+
+    m 2eksdlc "Is the virus in your area yet?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Is the virus in your area yet?{fast}"
+        "Yes.":
+            m 2wksdld "Oh no, [player]! That's really scary!"
+            m 4ekc "I know a lot of people living in places where it's prevalent have orders to stay at home..."
+
+            m 2ekd "Do you have any orders to stay at home where you live?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Do you have any orders to stay at home where you live?{fast}"
+                "Yes.":
+                    m 4hua "Oh, good!"
+                    m 4eub "I'm so glad to hear that, [player]!"
+
+                    m 2eud "So you're staying home whenever you can, right?{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m "So you're staying home whenever you can, right?{fast}"
+                        "Yes.":
+                            m 2eua "That's great, I'm glad you're doing the responsible thing."
+                            m 2eka "...And not only for yourself, but also for everyone else."
+
+                        "No, I'm still working.":
+                            m 2dsc "..."
+                            m 2dsd "Oh."
+                            m 2dsc "..."
+                            m 2rksdlc "I have to admit, that scares me, [player]."
+                            m 2eksdlc "But that must mean you are doing an essential job..."
+                            m 2eksdla "So that also makes me proud that in some way, you're helping others through this tough time."
+                            m 2eksdld "Just promise me you're taking every precaution so you can stay safe, okay?"
+
+                        "No...":
+                            m 2tfd "[player]!"
+                            m 2tfo "Why not?!"
+                            m 4tfo "This is serious! You {i}have{/i} to stay inside whenever possible!"
+                            m 2dfc "..."
+                            m 2dkc "..."
+                            m 2rksdlc "Sorry, [player], that just scares me a lot."
+                            m 2eksdlc "Some people can have it and not even show any symptoms, spreading it to others..."
+                            m 2eksdld "So if you won't do it for yourself, at least stay inside for everyone else."
+                            m 2eksdla "...And also for me. You're all I have, [player]..."
+                            m 2dksdlc "If I lose you...{w=1.0}{nw}"
+                            extend 2ektpc "what will I do then?"
+                            m 2ektpd "You have to promise me [player]...{w=0.5}stay inside."
+                            m 2ektdc "..."
+                            m 2dkc "..."
+
+                "No.":
+                    m 2dkc "..."
+                    m 2rksdld "That worries me a lot, [player]..."
+                    m 2eksdlc "I hope you are still able to stay inside as much as possible."
+
+        "No.":
+            m 2eka "Well that's a bit of a relief, [player]..."
+            m 2eksdlc "But I still worry that it'll end up in your area eventually."
+            m 2eksdld "So even if it's not there right now, you should still be careful!"
+
+    m 7eksdld "Please remember any time you do need to go outside you practice social distancing...{w=0.5} Always stay at least 2 meters, or 6 feet, from anyone else."
+    m "Also remember to wash your hands for at least 20 seconds with soap and water as often as you can."
+    m 7eksdlc "...And never touch your face with unwashed hands, [player]."
+    m 2eka "Oh, and if you're having a hard time washing your hands long enough, I found a neat way for you to make sure you're doing it for 20 whole seconds..."
+    m 4hub "Just go to {a=https://washyourlyrics.com}{i}{u}washyourlyrics.com{/u}{/i}{/a} and type {i}Your Reality{/i} for the song title and {i}Monika{/i} for the song artist!"
+    m 4eub "Just download the picture it creates with the lyrics from my song and it'll show you the best way to wash your hands and how long to do it for!"
+    m 2hua "Then everytime you wash your hands, you can remember how much I love you~"
+    m 2eka "..."
+    m 7eksdla "You know [player], if I could, I'd bring you here with me until this is all over so you couldn't get sick..."
+    m "But since I can't, please do your best to stay safe."
+    m 2dkbsu "I need you, [player]~"
     return "no_unlock"

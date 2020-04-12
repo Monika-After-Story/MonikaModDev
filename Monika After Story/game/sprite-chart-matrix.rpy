@@ -88,7 +88,8 @@ python early:
 
             # render and blit
             render = renpy.render(new_img, width, height, st, at)
-            rv = renpy.Render(width, height)
+            rw, rh = render.get_size()
+            rv = renpy.Render(rw, rh)
             rv.blit(render, (0, 0))
 
             # save
@@ -1464,17 +1465,17 @@ init -4 python in mas_sprites:
             rk_list.append((img_key, CID_TC, None, None))
             return
 
-        # otherwise, we need to create the table sprite, maybe with shadow
+        # otherwise, we need to create the table sprite
         table_list = (
             T_MAIN,
             PREFIX_TABLE,
             tablechair.table,
             FILE_EXT,
         )
-        table_str = "".join(table_list)
 
-        # in this case, we may need to use im.Composite
+        # highlight is determined by shadow
         if show_shadow:
+
             # need to make shadow
             shdw_list = (
                 T_MAIN,
@@ -1485,22 +1486,25 @@ init -4 python in mas_sprites:
             )
             shdw_str = "".join(shdw_list)
 
-            new_im = _gen_im(flt, store.im.Composite(
-                (1280, 850),
-                (0, 0), table_str,
-                (0, 0), shdw_str
-            ))
-
             # determine highlight
             hl_img = _bhli(
                 shdw_list,
                 store.MASHighlightMap.o_fltget(tablechair.hl_map, "ts", flt)
             )
 
-        else:
-            # no shadow, so just table
-            new_im = store.Image(table_str)
+            if hl_img is None:
+                # no need to composite
+                hl_img = store.Image(shdw_str)
 
+            else:
+                # need to composite
+                hl_img = store.im.Composite(
+                    (1280, 850),
+                    (0, 0), shdw_str,
+                    (0, 0), hl_img
+                )
+
+        else:
             # determine highlight
             hl_img = _bhli(
                 table_list,
@@ -1508,7 +1512,12 @@ init -4 python in mas_sprites:
             )
 
         # add to list
-        rk_list.append((img_key, CID_TC, new_im, hl_img))
+        rk_list.append((
+            img_key,
+            CID_TC,
+            store.Image("".join(table_list)),
+            hl_img
+        ))
         
 
 # main sprite compilation

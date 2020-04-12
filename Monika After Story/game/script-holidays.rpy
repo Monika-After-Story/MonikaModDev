@@ -2345,8 +2345,12 @@ init 5 python:
 
 label mas_d25_monika_christmaslights:
     m 1euc "Hey, [player]..."
-    m 1lua "I've been spending a lot of time looking at the lights in here..."
-    m 3eua "They're very pretty, aren't they?"
+    if mas_isD25Season():
+        m 1lua "I've been spending a lot of time looking at the lights in here..."
+        m 3eua "They're very pretty, aren't they?"
+    else:
+        m 1lua "I was just thinking back to Christmas, with all the lights that were hanging in here..."
+        m 3eua "They were really pretty, right?"
     m 1eka "Christmas lights bring such a warm, cozy vibe during the harshest, coldest season...{w=0.5}{nw}"
     extend 3hub "and there's a lot of different types too!"
     m 3eka "It sounds like a dream come true to go on a walk with you on a cold winter night, [player]."
@@ -5103,7 +5107,7 @@ init 20 python:
         title = " My dearest [player],",
         text = """\
  Any day with you is a happy day.
- One where I'm free,
+ One where I{i}'{/i}m free,
  One where all my troubles are gone,
  One where all of my dreams come true.
  
@@ -5841,7 +5845,7 @@ init 20 python:
         prompt="Found",
         title=" My dearest [player],",
         text="""\
- I've always loved Valentine's day, but this one feels different.
+ I{i}'{/i}ve always loved Valentine's Day, but this one feels different.
  Has the world changed, or just me?
  I found love, I found purpose,
  I found a truth I didn't know I was searching for.

@@ -229,7 +229,8 @@ init 5 python:
                 persistent._mas_consumable_map[consumable_id] = {
                     "enabled": False,
                     "times_had": 0,
-                    "servings_left": 0
+                    "servings_left": 0,
+                    "has_restock_warned": False
                 }
 
         def enabled(self):
@@ -307,15 +308,20 @@ init 5 python:
             """
             return persistent._mas_consumable_map[self.consumable_id]["servings_left"] > 0
 
-        def restock(self, servings=100):
+        def restock(self, servings=100, clear_flag=True):
             """
             Adds more servings of the consumable
 
             IN:
                 servings - amount of servings to add
                 (Default: 100)
+                clear_flag - whether or not we should clear the has_restock_warned flag
+                (Default: True)
             """
             persistent._mas_consumable_map[self.consumable_id]["servings_left"] += servings
+
+            if clear_flag:
+                self.resetRestockWarnFlag()
 
         def getStock(self):
             """
@@ -358,6 +364,24 @@ init 5 python:
                     - False otherwise
             """
             return self.getStock() <= MASConsumable.LOW_CRITICAL_STOCK_AMT
+
+        def flagRestockWarn(self):
+            """
+            Flags a consumable as having been restock warned
+            """
+            persistent._mas_consumable_map[self.consumable_id]["has_restock_warned"] = True
+
+        def resetRestockWarnFlag(self):
+            """
+            Resets the restock warn flag
+            """
+            persistent._mas_consumable_map[self.consumable_id]["has_restock_warned"] = False
+
+        def hasRestockWarned(self):
+            """
+            Return the has restock warned flag
+            """
+            return persistent._mas_consumable_map[self.consumable_id]["has_restock_warned"]
 
         def use(self, amount=1):
             """
@@ -631,7 +655,25 @@ init 5 python:
             return low_cons
 
         @staticmethod
-        def _getLowConsType(_type, critical=False):
+        def _getLowConsNotWarned(critical=False):
+            """
+            Gets a list of all consumables which Monika is low on that she's not restock warned
+
+            IN:
+                - critical - Whether this list should only be populated by items Monika is critically low on or not
+                    (Default: False)
+
+            OUT:
+                list of all consumables Monika
+            """
+            low_cons = []
+            for _type in store.mas_consumables.consumable_map.iterkeys():
+                low_cons += MASConsumable._getLowConsType(_type, critical, exclude_restock_warned=True)
+
+            return low_cons
+
+        @staticmethod
+        def _getLowConsType(_type, critical=False, exclude_restock_warned=False):
             """
             Gets a list of all consumables (of the provided type) which Monika is low on (and should warn about)
 
@@ -639,26 +681,44 @@ init 5 python:
                 _type - Type of consumables to get a low list for
                 critical - Whether the list should be only those Monika is critically low on
                     (Default: False)
+                exclude_restock_warned - Whether or not we want to exclude consumables we've restock warned already
+                    (Default: False)
 
             OUT:
-                list of all consumables of the provided type Monika is low on (or critical on)
+                list of all consumables of the provided type Monika is low on (or critical on), matching the entered criteria
             """
             if _type not in store.mas_consumables.consumable_map:
                 return []
 
             if critical:
-                return [
-                    cons
-                    for cons in store.mas_consumables.consumable_map[_type].itervalues()
-                    if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow()
-                ]
+                if exclude_restock_warned:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow() and not cons.hasRestockWarned()
+                    ]
+
+                else:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow()
+                    ]
 
             else:
-                return [
-                    cons
-                    for cons in store.mas_consumables.consumable_map[_type].itervalues()
-                    if cons.enabled() and cons.should_restock_warn and cons.isLow()
-                ]
+                if exclude_restock_warned:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isLow() and not cons.hasRestockWarned()
+                    ]
+
+                else:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isLow()
+                    ]
 
         @staticmethod
         def _reset(_type=None):
@@ -814,7 +874,7 @@ init 5 python:
                 startup=startup
             )
 
-            if startup:
+            if startup and not store.mas_globals.returned_home_this_sesh:
                 MASConsumable._absentUse()
 
                 #Now we'll check if we've got sprites out in case we've crashed
@@ -827,6 +887,10 @@ init 5 python:
 
                 if not MASConsumable._isHaving(store.mas_consumables.TYPE_FOOD) and food_acs:
                     store.monika_chr.remove_acs(food_acs)
+
+                #We should warn if there's something to warn about
+                if MASConsumable._getLowConsNotWarned():
+                    store.queueEvent("mas_consumables_generic_running_out_absentuse")
 
         @staticmethod
         def _absentUse():
@@ -1367,9 +1431,25 @@ init 5 python:
     )
 
 label mas_consumables_generic_queued_running_out:
-    #Firstly, let's get what we're low on.
     $ low_cons = MASConsumable._getLowCons()
+    call mas_consumables_generic_queued_running_out_dlg(low_cons)
+    return "no_unlock"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_consumables_generic_running_out_absentuse"
+        )
+    )
+
+label mas_consumables_generic_running_out_absentuse:
+    $ low_cons = MASConsumable._getLowConsNotWarned()
+    call mas_consumables_generic_queued_running_out_dlg(low_cons)
+    return "no_unlock"
+
+
+label mas_consumables_generic_queued_running_out_dlg(low_cons):
     m 1esc "By the way, [player]..."
     if len(low_cons) > 2:
         $ mas_generateShoppingList(low_cons)
@@ -1388,6 +1468,11 @@ label mas_consumables_generic_queued_running_out:
         $ them = "some more"
 
     m 1eka "You wouldn't mind getting [them] for me, would you?"
+
+    #Flag these as needing to be restocked
+    python:
+        for cons in low_cons:
+            cons.flagRestockWarn()
     return
 
 label mas_consumables_remove_thermos:

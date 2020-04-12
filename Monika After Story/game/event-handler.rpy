@@ -70,6 +70,10 @@ init -999 python in mas_ev_data_ver:
         return _verify_item(val, int, allow_none)
 
 
+    def _verify_int_nn(val):
+        return _verify_int(val, False)
+
+
     def _verify_str(val, allow_none=True):
         if val is None:
             return allow_none
@@ -81,6 +85,10 @@ init -999 python in mas_ev_data_ver:
         if val is None:
             return allow_none
         return _verify_item(val, datetime.timedelta, allow_none)
+
+
+    def _verify_td_nn(val):
+        return _verify_td(val, False)
 
 
     def _verify_tuli(val, allow_none=True):
@@ -2041,8 +2049,12 @@ label call_next_event:
     $ event_label, notify = popEvent()
     if event_label and renpy.has_label(event_label):
 
-        if not seen_event(event_label): #Give 15 xp for seeing a new event
-            $grant_xp(xp.NEW_EVENT)
+        # TODO: we should have a way to keep track of how many topics/hr
+        #   users tend to end up with. without this data we cant really do
+        #   too many things based on topic freqeuency.
+        #if not seen_event(event_label): 
+        #    # give whatver the hourly rate is for unseens
+        #    $ store.mas_xp._grant_xp(store.mas_xp.xp_rate)
 
         $ mas_RaiseShield_dlg()
 

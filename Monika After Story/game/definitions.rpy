@@ -3023,8 +3023,7 @@ init -1 python in _mas_root:
             'total_sessions':0,
             'first_session':datetime.datetime.now()
         }
-        renpy.game.persistent.playerxp = 0
-        renpy.game.persistent.idlexp_total = 0
+        renpy.game.persistent._mas_xp_lvl = 0
         renpy.game.persistent.rejected_monika = True
         renpy.game.persistent.current_track = None
 
@@ -3085,6 +3084,60 @@ init -999 python:
         except:
             pass
 
+init -995 python in mas_utils:
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
+
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+
+        #Now, let's do some work.
+        #First, we check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #The lists are not the same, which means we need to do a bit of work.
+        #Before we do that, let's verify that the lists are the same length
+        if len(comparative_vers) > len(curr_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #We've found a number which was greater, let's return 1 as we know this version is greater
+                return 1
+
+        #If we're here, we never found something greater. Let's return -1
+        return -1
 
 init -990 python in mas_utils:
     import store
@@ -3127,6 +3180,41 @@ init -990 python in mas_utils:
         return text
 
 
+    def eqfloat(left, right, places=6):
+        """
+        Float comparisons thatcan handle accuracy errors.
+        This uses checks equivalence within a given amount of decimal places
+
+        IN:
+            left - value to compare
+            right - other value to compare
+
+        RETURNS: True if values are equal, False if not
+        """
+        acc = 0.1
+        if places > 1:
+            for x in range(places):
+                acc /= 10.0
+        
+        return abs(left-right) < acc
+
+
+    def floatsplit(value):
+        """
+        Splits a float into int and float parts (unlike _splitfloat which 
+        returns two ints)
+
+        IN:
+            value - float to split
+
+        RETURNS: tuple of the following format:
+            [0] - integer portion of float (int)
+            [1] - float portion of float (float)
+        """
+        int_part = int(value)
+        return int_part, value - int_part
+
+
     def pdget(key, table, validator=None, defval=None):
         """
         Protected Dict GET
@@ -3152,6 +3240,18 @@ init -990 python in mas_utils:
                 return item
 
         return defval
+
+
+    def td2hr(duration):
+        """
+        Converts a timedetla to hours (fractional)
+
+        IN:
+            duration - timedelta to convert
+
+        RETURNS: hours as float
+        """
+        return (duration.days * 24) + (duration.seconds / 3600.0)
 
 
     def tryparseint(value, default=0):
@@ -3981,6 +4081,35 @@ init -985 python:
             persistent.sessions,
             validator=store.mas_ev_data_ver._verify_dt_nn,
             defval=mas_getFirstSesh()
+        )
+
+
+    def mas_getTotalPlaytime():
+        """
+        Gets total playtime.
+
+        RETURNS: total playtime as a timedelta. If not found, we return a
+            time delta of 0
+        """
+        return store.mas_utils.pdget(
+            "total_playtime",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_td_nn,
+            defval=datetime.timedelta(0)
+        )
+
+
+    def mas_getTotalSessions():
+        """
+        Gets total sessions
+
+        REUTRNS: total number of sessions. If not found, we return 1
+        """
+        return store.mas_utils.pdget(
+            "total_sessions",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_int_nn,
+            defval=1
         )
 
 
@@ -4829,6 +4958,49 @@ init 2 python:
             store.mas_globals.time_of_day_4state = "night"
             store.mas_globals.time_of_day_3state = "evening"
 
+    def mas_seenLabels(label_list, seen_all=False):
+        """
+        List format for renpy.seen_label. Allows checking if we've seen multiple labels at once
+
+        IN:
+            label_list - list of labels we want to check if we've seen
+            seen_all - True if all labels in label_list must have been seen in order for this function to return True.
+            False otherwise
+                (Default: False)
+                (NOTE: If seen_all is False, seeing ANY of the labels will let this function return True)
+
+        OUT:
+            boolean:
+                - True if we have seen the inputted labels and met the seen_all criteria
+                - False otherwise
+        """
+        for _label in label_list:
+            seen = renpy.seen_label(_label)
+
+            #First, filter out if we have an unseen label and we must have seen all
+            if not seen and seen_all:
+                return False
+
+            #As well, if it's a seen label and we don't need to see all
+            elif seen and not seen_all:
+                return True
+
+        #If we're here, that means we need to do some returns based on the values we put in
+        return seen_all
+
+    def mas_a_an_str(ref_str):
+        """
+        Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
+
+        IN:
+            ref_str - string in question to prefix
+
+        OUT:
+            string prefixed with a/an
+        """
+        if ref_str[0] in "aeiou":
+            return "an " + ref_str
+        return "a " + ref_str
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -6053,8 +6225,6 @@ default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
-default persistent.playerxp = 0
-default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default seen_random_limit = False
@@ -6115,12 +6285,7 @@ define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
-define xp.NEW_GAME = 30
-define xp.WIN_GAME = 30
-define xp.AWAY_PER_HOUR = 10
-define xp.IDLE_PER_MINUTE = 1
-define xp.IDLE_XP_MAX = 120
-define xp.NEW_EVENT = 15
+
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define mas_monika_twitter_handle = "lilmonix3"
 
@@ -6303,7 +6468,7 @@ return
 #"It is their pen." (if player's gender is not declared)
 #Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
 #Please remember to update the list if you add more gender exclusive words. ^
-label set_gender:
+label mas_set_gender:
     if persistent.gender == "M":
         $his = "his"
         $he = "he"
