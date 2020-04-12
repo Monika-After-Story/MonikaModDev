@@ -2268,7 +2268,7 @@ label monika_credits_song:
         else:
             m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
 
-        m 1tsa "In fact why don't I play it for you right now."
+        m 1tsa "In fact, why don't I play it for you right now?"
         m 1tsb "Excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
         call mas_monika_plays_yr(skip_leadin=True)
