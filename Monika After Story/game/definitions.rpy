@@ -3010,12 +3010,6 @@ init -1 python in _mas_root:
             'hangman':False,
             'piano':False
         }
-        renpy.game.persistent.game_unlocks = {
-            'pong':True,
-            'chess':False,
-            'hangman':False,
-            'piano':False
-        }
         renpy.game.persistent.sessions={
             'last_session_end':datetime.datetime.now(),
             'current_session_start':datetime.datetime.now(),
@@ -6223,7 +6217,6 @@ default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
-default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}

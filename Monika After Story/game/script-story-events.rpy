@@ -795,9 +795,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_unlock_chess",
             conditional=(
-                "store.mas_xp.level() >= 4 "
-                "and not persistent.game_unlocks['chess'] "
-                "and not seen_event('mas_unlock_chess')"
+                "store.mas_xp.level() >= 4"
             ),
             action=EV_ACT_QUEUE
         )

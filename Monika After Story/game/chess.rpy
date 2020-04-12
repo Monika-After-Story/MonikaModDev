@@ -1983,10 +1983,12 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     # TODO: this makes sense compared to the go_ham event since
     # its just throwing away stuff instead of cheating
     # disable chess forever!
-    $ mas_loseAffection(modifier=10)
-    $ mas_lockGame("chess")
-    # workaround to deal with peeople who havent seen the unlock chess label
-    $ persistent._seen_ever["mas_unlock_chess"] = True
+    python:
+        mas_loseAffection(modifier=10)
+        #NOTE: Chess is automatically locked due to its conditional. No need to manually lock it here
+        mas_stripEVL("mas_unlock_chess")
+        #Workaround to deal with peeople who havent seen the unlock chess label
+        persistent._seen_ever["mas_unlock_chess"] = True
 
     m 2dfc "..."
     m 2efc "[player],{w=0.3} I don't believe you."

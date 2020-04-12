@@ -372,6 +372,16 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.1
+label v0_11_1(version="v0_11_1"):
+    python:
+        safeDel("game_unlocks")
+
+        chess_unlock_ev = mas_getEV("mas_unlock_chess")
+        if not renpy.seen_label("mas_unlock_chess") and chess_unlock_ev:
+            chess_unlock_ev.conditional = "store.mas_xp.level() >= 4"
+    return
+
 #0.11.0
 label v0_11_0(version="v0_11_0"):
     python:
@@ -2152,7 +2162,7 @@ label v0_7_0(version="v0_7_0"):
 
         #Unlock chess if they've already played it
         if seen_event('game_chess'):
-            persistent.game_unlocks['chess']=True
+            mas_unlockGame("chess")
 
         #Unlock the name change topic if the name change topic has been seen
         if seen_event('preferredname'):
