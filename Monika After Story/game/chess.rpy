@@ -418,14 +418,6 @@ init:
         class ArchitectureError(RuntimeError):
             pass
 
-        def is_platform_good_for_chess():
-            import platform
-            import sys
-            if sys.maxsize > 2**32:
-                return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
-            else:
-                return platform.system() == 'Windows'
-
         def get_mouse_pos():
             vw = config.screen_width * 10000
             vh = config.screen_height * 10000
@@ -461,7 +453,7 @@ init:
                 return self.msg
 
         # only add chess folder if we can even do chess
-        if is_platform_good_for_chess():
+        if mas_games.is_platform_good_for_chess():
             # first create the folder for this
             try:
                 file_path = os.path.normcase(
@@ -659,7 +651,7 @@ init:
 
                 # Stockfish engine provides AI for the game.
                 # Launch the appropriate version based on the architecture and OS.
-                if not is_platform_good_for_chess():
+                if not mas_games.is_platform_good_for_chess():
                     # This is the last-resort check, the availability of the chess game should be checked independently beforehand.
                     raise ArchitectureError('Your operating system does not support the chess game.')
 
@@ -674,9 +666,11 @@ init:
                         self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x64.exe',startupinfo)
                     else:
                         self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x32.exe',startupinfo)
+
                 elif platform.system() == 'Linux' and is_64_bit:
                     os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_linux_x64',0755)
                     self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_linux_x64')
+
                 elif platform.system() == 'Darwin' and is_64_bit:
                     os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_macosx_x64',0755)
                     self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_macosx_x64')
@@ -1990,7 +1984,7 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     # its just throwing away stuff instead of cheating
     # disable chess forever!
     $ mas_loseAffection(modifier=10)
-    $ persistent.game_unlocks["chess"] = False
+    $ mas_lockGame("chess")
     # workaround to deal with peeople who havent seen the unlock chess label
     $ persistent._seen_ever["mas_unlock_chess"] = True
 
@@ -2094,9 +2088,9 @@ label mas_chess_dlg_qf_lost_may_3:
 
 # maybe monika, but player removed the file again!
 label mas_chess_dlg_qf_lost_may_removed:
-    $ import datetime
-    $ persistent._mas_chess_timed_disable = datetime.datetime.now()
-    $ mas_loseAffection(modifier=0.5)
+    python:
+        persistent._mas_chess_timed_disable = datetime.datetime.now()
+        mas_loseAffection(modifier=0.5)
 
     m 2wfw "[player]!"
     m 2wfx "You removed the save again."
@@ -2213,7 +2207,6 @@ label mas_chess_dlg_qf_edit_y_1:
 # 2nd time yes edit
 label mas_chess_dlg_qf_edit_y_2:
     python:
-        import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
         mas_loseAffection(modifier=0.5)
 
@@ -2319,7 +2312,6 @@ label mas_chess_dlg_qf_edit_n_3_s:
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
     python:
-        import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
         mas_loseAffection()
 

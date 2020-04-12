@@ -831,7 +831,7 @@ label mas_unlock_chess:
     m 1hua "Just think of it as playing a fun game with your beautiful girlfriend..."
     m "And I promise I'll go easy on you."
 
-    if not is_platform_good_for_chess():
+    if not mas_games.is_platform_good_for_chess():
         m 2tkc "...Hold on."
         m 2tkx "Something isn't right here."
         m 2ekc "I seem to be having trouble getting the game working."
@@ -839,7 +839,7 @@ label mas_unlock_chess:
         m 2ekc "I'm sorry, [player], but chess will have to wait."
         m 4eka "I promise we'll play if I get it working, though!"
 
-    $ persistent.game_unlocks['chess']=True
+    $ mas_unlockGame("chess")
     return
 
 init 5 python:
@@ -897,7 +897,7 @@ label mas_unlock_hangman:
     else:
         m 1hua "I hope you'll enjoy playing it with me!"
 
-    $ persistent.game_unlocks['hangman'] = True
+    $ mas_unlockGame("hangman")
     return
 
 init 5 python:
@@ -932,7 +932,7 @@ label mas_unlock_piano:
     m 3hua "It's a wonderful feeling."
     m 1eua "I hope this isn't too forceful, but I would love it if you tried."
     m 1eka "For me, please?~"
-    $ persistent.game_unlocks['piano'] = True
+    $ mas_unlockGame("piano")
     return
 
 # NOTE: this has been partially disabled
