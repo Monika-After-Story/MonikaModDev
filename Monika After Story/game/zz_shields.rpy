@@ -154,6 +154,7 @@ init python:
             - Extra hotkey
             - Music hotkey
             - Play button + hotkey
+            - Music controller hotkeys
 
         Intended Flow:
             - Idle mode ends
@@ -169,6 +170,7 @@ init python:
             - Extra hotkey
             - Music hotkey
             - Play button + hotkey
+            - Music controller hotkeys
 
         Intended Flow:
             - Idle mode starts
