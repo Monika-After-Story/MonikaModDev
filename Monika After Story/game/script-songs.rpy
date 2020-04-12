@@ -794,9 +794,7 @@ label mas_monika_plays_yr(skip_leadin=False):
             m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     window hide
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
-    $ store.songs.enabled = False
+    $ mas_RaiseShield_piano()
 
     show monika at rs32
     hide monika
@@ -867,10 +865,7 @@ label mas_monika_plays_yr(skip_leadin=False):
 
     if not skip_leadin:
         pause 2.0
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
+        $ mas_DropShield_piano()
         window auto
 
     return
@@ -900,9 +895,7 @@ label mas_monika_plays_or(skip_leadin=False):
         $ gen = "their"
 
     window hide
-    $ mas_disableTextSpeed()
-    $ disable_esc()
-    $ mas_MUMURaiseShield()
+    $ mas_RaiseShield_piano()
 
     show monika at rs32
     hide monika
@@ -956,10 +949,7 @@ label mas_monika_plays_or(skip_leadin=False):
 
     if not skip_leadin:
         pause 2.0
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
+        $ mas_DropShield_piano()
         window auto
 
     return
