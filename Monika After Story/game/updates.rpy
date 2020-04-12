@@ -372,7 +372,7 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-#0.10.8
+#0.11.0
 label v0_11_0(version="v0_11_0"):
     python:
         #First, we're fixing the consumables map
