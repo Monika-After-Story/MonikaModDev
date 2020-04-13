@@ -210,7 +210,7 @@ label mas_song_aiwfc:
     #Get current song
     $ curr_song = songs.current_track
     if songs.getUserVolume("music") == 0.0:
-        m 3eua "Don't forget to put your in-game volume up, [player]."
+        m 3eua "Don't forget to turn your in-game volume up, [player]."
 
     call monika_aiwfc_song
 
