@@ -70,6 +70,10 @@ init -999 python in mas_ev_data_ver:
         return _verify_item(val, int, allow_none)
 
 
+    def _verify_int_nn(val):
+        return _verify_int(val, False)
+
+
     def _verify_str(val, allow_none=True):
         if val is None:
             return allow_none
@@ -81,6 +85,10 @@ init -999 python in mas_ev_data_ver:
         if val is None:
             return allow_none
         return _verify_item(val, datetime.timedelta, allow_none)
+
+
+    def _verify_td_nn(val):
+        return _verify_td(val, False)
 
 
     def _verify_tuli(val, allow_none=True):
@@ -376,7 +384,7 @@ init 6 python:
 
 
     def mas_hideEVL(
-            ev_label, 
+            ev_label,
             code, 
             lock=False, 
             derandom=False,
@@ -2041,8 +2049,12 @@ label call_next_event:
     $ event_label, notify = popEvent()
     if event_label and renpy.has_label(event_label):
 
-        if not seen_event(event_label): #Give 15 xp for seeing a new event
-            $grant_xp(xp.NEW_EVENT)
+        # TODO: we should have a way to keep track of how many topics/hr
+        #   users tend to end up with. without this data we cant really do
+        #   too many things based on topic freqeuency.
+        #if not seen_event(event_label): 
+        #    # give whatver the hourly rate is for unseens
+        #    $ store.mas_xp._grant_xp(store.mas_xp.xp_rate)
 
         $ mas_RaiseShield_dlg()
 
@@ -2183,6 +2195,9 @@ label prompt_menu:
         jump prompt_menu_end
 
     python:
+        #We want to adjust the time of day vars
+        mas_setTODVars()
+
         unlocked_events = Event.filterEvents(
             evhand.event_database,
             unlocked=True,
@@ -2221,20 +2236,20 @@ label prompt_menu:
         talk_menu = []
         if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
             # show unseen if we have unseen events and the player hasn't chosen to hide it
-            talk_menu.append(("{b}Unseen{/b}", "unseen"))
+            talk_menu.append((_("{b}Unseen{/b}"), "unseen"))
         if mas_hasBookmarks():
-            talk_menu.append(("Bookmarks","bookmarks"))
-        talk_menu.append(("Hey, [m_name]...", "prompt"))
+            talk_menu.append((_("Bookmarks"),"bookmarks"))
+        talk_menu.append((_("Hey, [m_name]..."), "prompt"))
         if len(repeatable_events)>0:
-            talk_menu.append(("Repeat conversation", "repeat"))
+            talk_menu.append((_("Repeat conversation"), "repeat"))
         if _mas_getAffection() > -50:
             if mas_passedILY(pass_time=datetime.timedelta(0,10)):
-                talk_menu.append(("I love you too!","love_too"))
+                talk_menu.append((_("I love you too!"),"love_too"))
             else:
-                talk_menu.append(("I love you!", "love"))
-        talk_menu.append(("I'm feeling...", "moods"))
-        talk_menu.append(("Goodbye", "goodbye"))
-        talk_menu.append(("Nevermind","nevermind"))
+                talk_menu.append((_("I love you!"), "love"))
+        talk_menu.append((_("I'm feeling..."), "moods"))
+        talk_menu.append((_("Goodbye"), "goodbye"))
+        talk_menu.append((_("Nevermind"),"nevermind"))
 
         renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")

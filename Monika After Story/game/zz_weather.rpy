@@ -242,6 +242,7 @@ init -20 python in mas_weather:
         global should_scene_change
         #Set a time for startup
         if not weather_change_time:
+            # TODO: make this a function so init can set the weather_change _time and prevent double weather setting
             weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
 
         elif weather_change_time < datetime.datetime.now():
@@ -612,7 +613,7 @@ init -1 python:
     # default weather (day + night)
     mas_weather_def = MASWeather(
         "def",
-        "Default",
+        "Clear",
 
         # sp day
         "def_weather_day",

@@ -52,14 +52,20 @@ init -1 python in mas_globals:
     late_farewell = False
     # set to True if we had a late farewell
 
-    last_minute_dt = None
+    last_minute_dt = datetime.datetime.now()
     # last minute datetime (replaces calendar_last_chcked)
 
-    last_hour = None
+    last_hour = last_minute_dt.hour
     # number of the hour we last ran ch30_hour
 
-    last_day = None
+    last_day = last_minute_dt.day
     # numbr of the day we last ran ch30_day
+
+    time_of_day_4state = None
+    #Time of day, basically either morning, afternoon, evening, night. Set by ch30_hour, used in dlg
+
+    time_of_day_3state = None
+    #Time of day broken into 3 states. morning, afternoon, evening. Set by ch30_hour, used in dlg
 
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
@@ -754,7 +760,13 @@ init 1 python:
 #       NOTE: must be string
 #       NOTE: if passed in, it will override the current background night_bg
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None):
+#   show_emptydesk - behavior is determined by `hide_monika`
+#       if hide_monika is True - True will show emptydesk and False will do
+#           nothing.
+#       if hide_monika is False - True will do nothing and False will hide
+#           emptydesk after Monika is shown.
+#       (Default: True)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True):
 
     with None
 
@@ -793,7 +805,11 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
             mas_darkMode(not persistent._mas_dark_mode_enabled)
 
         ## are we hiding monika
-        if not hide_monika:
+        if hide_monika:
+            if show_emptydesk:
+                store.mas_sprites.show_empty_desk()
+
+        else:
             if force_exp is None:
 #                force_exp = "monika idle"
                 if dissolve_all:
@@ -861,6 +877,11 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ mas_drawSpaceroomMasks(dissolve_all)
     elif dissolve_all:
         $ renpy.with_statement(Dissolve(1.0))
+
+    # hide emptydesk if monika is visible
+    if not hide_monika and not show_emptydesk:
+        hide emptydesk
+        
     $renpy.show("decoration", zorder = 5)
     return
 
@@ -906,17 +927,14 @@ label ch30_main:
     # 1 - renable core interactions
     $ mas_DropShield_core()
 
-    # 2 - hotkey buttons enabled
-    $ store.hkb_button.enabled = True
-
-    # 3 - set keymaps
-    $ set_keymaps()
-
     # now we out of intro
     $ mas_in_intro_flow = False
 
     # set session data to startup values
     $ store._mas_root.initialSessionData()
+
+    # skip weather
+    $ skip_setting_weather = True
 
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
@@ -955,16 +973,17 @@ label pick_a_game:
 
         # single var for readibility
         chess_unlocked = (
-            is_platform_good_for_chess()
+            not renpy.seen_label("mas_chess_dlg_qf_lost_ofcn_6")
+            and is_platform_good_for_chess()
             and mas_isGameUnlocked("chess")
             and not chess_disabled
         )
 
         # hangman text
         if persistent._mas_sensitive_mode:
-            _hangman_text = "Word Guesser"
+            _hangman_text = _("Word Guesser")
         else:
-            _hangman_text = "Hangman"
+            _hangman_text = _("Hangman")
 
         # decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
@@ -972,24 +991,14 @@ label pick_a_game:
     menu:
         m "[play_menu_dlg]"
         "Pong." if mas_isGameUnlocked("pong"):
-            if not renpy.seen_label('game_pong'):
-                $grant_xp(xp.NEW_GAME)
             call game_pong from _call_game_pong
         "Chess." if chess_unlocked:
-            if not renpy.seen_label('game_chess'):
-                $grant_xp(xp.NEW_GAME)
             call game_chess from _call_game_chess
         "[_hangman_text]." if mas_isGameUnlocked('hangman'):
-            if not renpy.seen_label("game_hangman"):
-                $ grant_xp(xp.NEW_GAME)
             call game_hangman from _call_game_hangman
         "Piano." if mas_isGameUnlocked('piano'):
-            if not renpy.seen_label("mas_piano_start"):
-                $ grant_xp(xp.NEW_GAME)
             call mas_piano_start from _call_play_piano
         # "Movie":
-        #     if not renpy.seen_label("mas_monikamovie"):
-        #         $ grant_xp(xp.NEW_GAME)
         #     call mas_monikamovie from _call_monikamovie
         "Nevermind.":
             # NOTE: changing this to no dialogue so we dont have to edit this
@@ -1090,10 +1099,14 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
     $ mas_skip_visuals = False
+
+    # set flag to True to prevent ch30 from running weather alg
+    $ skip_setting_weather = False
+
     $ mas_cleanEventList()
 
     # set the gender
-    call set_gender from _autoload_gender
+    call mas_set_gender
 
     # call reset stuff
     call ch30_reset
@@ -1291,29 +1304,12 @@ label ch30_post_restartevent_check:
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
             away_experience_time=datetime.datetime.now()-persistent.sessions['last_session_end'] #Time since end of previous session
-            away_xp=0
 
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
-                persistent.idlexp_total=0
 
                 #Grant good exp for closing the game correctly.
                 mas_gainAffection()
-
-            #Ignore anything beyond 3 days
-            if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
-                away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
-
-            #Give 5 xp per hour for everything beyond 1 day
-            if away_experience_time.total_seconds() > times.FULL_XP_AWAY_TIME:
-                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time.total_seconds()-times.FULL_XP_AWAY_TIME)/3600.0
-                away_experience_time = datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
-
-            #Give 10 xp per hour for the first 24 hours
-            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time.total_seconds()/3600.0
-
-            #Grant the away XP
-            grant_xp(away_xp)
 
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
@@ -1359,37 +1355,26 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
+    #Now we check if we should drink
+    $ MASConsumable._checkConsumables(startup=True)
+
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
     #     $ config.allow_skipping = False
 
-    window auto
-
-    if mas_skip_visuals:
-        # need to jump to initial setup, then we can jump to visual skip
-        jump ch30_preloop
-
-    # otherwise, we are NOT skipping visuals
-    $ set_keymaps()
-    $ mas_startup_song()
-
-    # rain check
-    $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None and not mas_weather.force_weather:
-        $ mas_changeWeather(set_to_weather)
-
-    # FALL THROUGH
-
-label ch30_preloop_visualsetup:
-
-    # initial spaceroom
-    call spaceroom(dissolve_all=True, scene_change=True)
-
     # FALL THROUGH
 
 label ch30_preloop:
     # stuff that should happen right before we enter the loop
+
+    window auto
+
+    # NOTE: keymaps will be set, but all actions will be shielded unless
+    #   desired by the appropriate flow.
+    $ mas_HKRaiseShield()
+    $ mas_HKBRaiseShield()
+    $ set_keymaps()
 
     $ persistent.closed_self = False
     $ persistent._mas_game_crashed = True
@@ -1421,11 +1406,28 @@ label ch30_preloop:
         $ quick_menu = True
         jump ch30_visual_skip
 
+    # setup scene to change on initial launch
+    $ mas_weather.should_scene_change = True
+
+    # rain check
+    # TODO: the weather progression alg needs to run here
+    if not mas_weather.force_weather and not skip_setting_weather:
+        $ set_to_weather = mas_shouldRain()
+        if set_to_weather is not None:
+            $ mas_changeWeather(set_to_weather)
+
+    # otherwise, we are NOT skipping visuals
+    $ mas_startup_song()
+
     jump ch30_loop
 
 label ch30_loop:
     $ quick_menu = True
 
+    # TODO: make these functions so docking station can run weather alg
+    # on start.
+    # TODO: consider a startup version of those functions so that
+    #   we can run the regular shouldRain alg if prgoression is disabled
     python:
         should_dissolve_masks = (
             mas_weather.weatherProgress()
@@ -1444,6 +1446,9 @@ label ch30_loop:
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
+
+# TODO: add label here to allow startup to hook past weather 
+# TODO: move quick_menu to here
 
     # updater check in here just because
     if not mas_checked_update:
@@ -1494,6 +1499,14 @@ label ch30_post_mid_loop_eval:
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
+
+    # renable if not idle and currently disabled
+    if not mas_globals.in_idle_mode:
+        if not mas_HKIsEnabled():
+            $ mas_HKDropShield()
+        if not mas_HKBIsEnabled():
+            $ mas_HKBDropShield()
+
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
@@ -1507,6 +1520,7 @@ label ch30_post_mid_loop_eval:
                 store.mas_globals.show_lightning
                 and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
             ):
+            $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
                     not persistent._mas_sensitive_mode
                     and store.mas_globals.show_s_light
@@ -1514,9 +1528,9 @@ label ch30_post_mid_loop_eval:
                         1, store.mas_globals.lightning_s_chance
                     ) == 1
                 ):
-                show mas_lightning_s zorder 4
+                $ renpy.show("mas_lightning_s", zorder=light_zorder)
             else:
-                show mas_lightning zorder 4
+                $ renpy.show("mas_lightning", zorder=light_zorder)
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
@@ -1653,18 +1667,6 @@ label ch30_minute(time_since_check):
         #Check if we should expire apologies
         mas_checkApologies()
 
-        # limit xp gathering to when we are not maxed
-        # and once per minute
-        if (persistent.idlexp_total < xp.IDLE_XP_MAX):
-
-            idle_xp = xp.IDLE_PER_MINUTE * ((time_since_check.total_seconds())/60.0)
-            persistent.idlexp_total += idle_xp
-            if persistent.idlexp_total >= xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                idle_xp = idle_xp - (persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
-                persistent.idlexp_total = xp.IDLE_XP_MAX
-
-            grant_xp(idle_xp)
-
         # runs actions for both conditionals and calendar-based events
         Event.checkEvents(evhand.event_database, rebuild_ev=False)
 
@@ -1701,6 +1703,15 @@ label ch30_minute(time_since_check):
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+
+    #Runtime checks to see if we should have a consumable
+    $ MASConsumable._checkConsumables()
+
+    # xp calc
+    $ store.mas_xp.grant()
+
+    #Set our TOD var
+    $ mas_setTODVars()
     return
 
 # label for things that should run about once per day
@@ -1751,6 +1762,20 @@ label ch30_day:
 label ch30_reset:
 
     python:
+        # xp fixes and adjustments
+        if persistent._mas_xp_lvl < 0:
+            persistent._mas_xp_lvl = 0 # prevent negative issues
+
+        if persistent._mas_xp_tnl < 0:
+            persistent._mas_xp_tnl = store.mas_xp.XP_LVL_RATE
+
+        if persistent._mas_xp_hrx < 0:
+            persistent._mas_xp_hrx = 0.0
+
+        store.mas_xp.set_xp_rate()
+        store.mas_xp.prev_grant = mas_getCurrSeshStart()
+
+    python:
         # name eggs
         if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
@@ -1787,18 +1812,17 @@ label ch30_reset:
 
     # check for game unlocks
     python:
+        #TODO: Fix the game unlock/is unlocked system to account for conditions like these
+        #mas_isGameUnlocked should NOT return True if we're failing this condition because we use it elsewhere
         game_unlock_db = {
             "pong": "ch30_main", # pong should always be unlocked
-            "chess": "unlock_chess",
-            "hangman": "unlock_hangman",
-            "piano": "unlock_piano",
+            "chess": "mas_unlock_chess", #NOTE: This doesn't account for chess locking for time/forever. It's handled in pick_a_game
+            "hangman": "mas_unlock_hangman",
+            "piano": "mas_unlock_piano",
         }
 
         for game_name,game_startlabel in game_unlock_db.iteritems():
-            if (
-                    not mas_isGameUnlocked(game_name)
-                    and renpy.seen_label(game_startlabel)
-                ):
+            if not mas_isGameUnlocked(game_name) and renpy.seen_label(game_startlabel):
                 mas_unlockGame(game_name)
 
 
@@ -1814,8 +1838,7 @@ label ch30_reset:
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     ## custom sprite objects
-    python:
-        store.mas_selspr._validate_group_topics()
+    $ store.mas_selspr._validate_group_topics()
 
     # monika hair/acs
     $ monika_chr.load(startup=True)
@@ -1893,12 +1916,7 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    ## should we drink coffee?
-    $ _mas_startupCoffeeLogic()
-
-    ## shoujld we drink hot chocolate
-    $ _mas_startupHotChocLogic()
-
+    #Do startup checks
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
@@ -1936,28 +1954,22 @@ label ch30_reset:
             persistent._mas_filereacts_reacted_map = dict()
 
     # set any prompt variants for acs that can be removed here
-    python:
-        # TODO: all of these are in GRP TOPIC MAP, so we should create
-        #   a function to parse those and set appropriate prompts.
-        if not monika_chr.is_wearing_acs_type("left-hair-clip"):
-            store.mas_selspr.set_prompt("left-hair-clip", "wear")
+    $ store.mas_selspr.startup_prompt_check()
 
-        if not monika_chr.is_wearing_acs_type("left-hair-flower"):
-            store.mas_selspr.set_prompt("left-hair-flower", "wear")
-
-        if not monika_chr.is_wearing_acs_type("choker"):
-            store.mas_selspr.set_prompt("choker", "wear")
-
-        if not monika_chr.is_wearing_ribbon():
-            store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
@@ -2007,4 +2019,7 @@ label ch30_reset:
         and not mas_globals.returned_home_this_sesh
     ):
         $ mas_d25SilentReactToGifts()
+
+    #Set our TOD var
+    $ mas_setTODVars()
     return

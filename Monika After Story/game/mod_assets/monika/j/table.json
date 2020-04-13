@@ -1,6 +1,6 @@
 {
-    "__author": "tw4449",
-    "version": 2,
+    "__author": "tw4449 (art) LordBaaa (code)" ,
+    "version": 3,
     "type": 3,
     "name": "table",
     "img_sit": "table",
@@ -16,6 +16,6 @@
         "select_dlg": [
             "It's a table"
         ]
-    },
-    "unlock": true
+    }
+
 }

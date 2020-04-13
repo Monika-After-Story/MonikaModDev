@@ -3,8 +3,8 @@ init 100 python:
     layout.UNSTABLE = store.mas_layout.UNSTABLE
 
 init -1 python:
-    layout.QUIT_YES = "Please don't close the game on me!"
-    layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
+    layout.QUIT_YES = _("Please don't close the game on me!")
+    layout.QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
 
     # tooltips
     layout.MAS_TT_SENS_MODE = (
@@ -16,16 +16,16 @@ init -1 python:
         "branch of development. It is HIGHLY recommended to make a backup "
         "of your persistents before enabling this mode."
     )
-    layout.MAS_TT_REPEAT = (
+    layout.MAS_TT_REPEAT = _(
         "Enable this to let Monika repeat topics that you have already seen."
     )
-    layout.MAS_TT_NOTIF = (
+    layout.MAS_TT_NOTIF = _(
         "Enabling this will let Monika use your system's notifications and check if MAS is your active window "
     )
-    layout.MAS_TT_NOTIF_SOUND = (
+    layout.MAS_TT_NOTIF_SOUND = _(
         "If enabled, a custom notification sound will play for Monika's notifications "
     )
-    layout.MAS_TT_G_NOTIF = (
+    layout.MAS_TT_G_NOTIF = _(
         "Enables notifications for the selected group."
     )
     layout.MAS_TT_ACTV_WND = (
@@ -33,7 +33,12 @@ init -1 python:
         "and offer some comments based on what you're doing."
     )
 
-
+    _TXT_FINISHED_UPDATING = (
+        "The updates have been installed. Please reopen Monika After Story.\n\n"
+        "Get spritepacks {a=http://monikaafterstory.com/releases.html}{i}{u}from our website{/u}{/i}{/a}.\n"
+        "See the patch notes {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}here{/u}{/i}{/a}.\n"
+        "Confused about some features? Take a look at our {a=https://github.com/Monika-After-Story/MonikaModDev/wiki}{i}{u}wiki page{/u}{/i}{/a}."
+    )
 
 
 init python in mas_layout:
@@ -42,7 +47,7 @@ init python in mas_layout:
 
     QUIT_YES = store.layout.QUIT_YES
     QUIT_NO = store.layout.QUIT_NO
-    QUIT = "Leaving without saying goodbye, [player]?"
+    QUIT = _("Leaving without saying goodbye, [player]?")
     UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
         "experimental unstable branch. It is HIGHLY recommended to make a " +
@@ -51,21 +56,21 @@ init python in mas_layout:
     )
 
     # quit yes messages affection scaled
-    QUIT_YES_BROKEN = "You could at least pretend that you care."
-    QUIT_YES_DIS = ":("
-    QUIT_YES_AFF = "T_T [player]..."
+    QUIT_YES_BROKEN = _("You could at least pretend that you care.")
+    QUIT_YES_DIS = _(":(")
+    QUIT_YES_AFF = _("T_T [player]...")
 
     # quit no messages affection scaled
-    QUIT_NO_BROKEN = "{i}Now{/i} you listen?"
-    QUIT_NO_UPSET = "Thanks for being considerate, [player]."
-    QUIT_NO_HAPPY = ":)"
-    QUIT_NO_AFF_G = "Good [boy]."
-    QUIT_NO_AFF_GL = "Good. :)"
-    QUIT_NO_LOVE = "<3 u"
+    QUIT_NO_BROKEN = _("{i}Now{/i} you listen?")
+    QUIT_NO_UPSET = _("Thanks for being considerate, [player].")
+    QUIT_NO_HAPPY = _(":)")
+    QUIT_NO_AFF_G = _("Good [boy].")
+    QUIT_NO_AFF_GL = _("Good. :)")
+    QUIT_NO_LOVE = _("<3 u")
 
     # quit messages affection scaled
-    QUIT_BROKEN = "Just go."
-    QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
+    QUIT_BROKEN = _("Just go.")
+    QUIT_AFF = _("Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!")
 
     if store.persistent.gender == "M" or store.persistent.gender == "F":
         _usage_quit_aff = QUIT_NO_AFF_G
@@ -621,6 +626,9 @@ screen navigation():
             textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
+
+        if mas_ui.has_submod_settings:
+            textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
@@ -1974,7 +1982,7 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    text _("The updates have been installed. Please reopen Monika After Story.")
+                    text _(_TXT_FINISHED_UPDATING)
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
                 elif u.state == u.CANCELLED:
@@ -2429,7 +2437,7 @@ init python:
             return renpy.Render(width, height)
 
         def event(self, ev, x, y, st):
-            if ev.type == pygame.MOUSEBUTTONDOWN:
+            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
                 return True
 
             raise renpy.IgnoreEvent()
@@ -2453,3 +2461,53 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
+#Chibika's text style
+style chibika_note_text:
+    font "gui/font/Halogen.ttf"
+    size 28
+    color "#000"
+    outlines []
+
+#Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
+screen submods():
+    tag menu
+
+    use game_menu(("Submods"), scroll="viewport"):
+
+        default tooltip = Tooltip("")
+
+        viewport id "scrollme":
+            scrollbars "vertical"
+            mousewheel True
+            draggable True
+
+            vbox:
+                style_prefix mas_ui.cbx_style_prefix
+                box_wrap False
+                xmaximum 1000
+                xfill True
+
+                for submod in sorted(store.mas_submod_utils.submod_map.values(), key=lambda x: x.name):
+                    if submod.settings_pane:
+                        label submod.name yanchor 0 xalign 0
+                        hbox:
+                            box_wrap False
+                            spacing 20
+                            xmaximum 1000
+
+                            text "v{}".format(submod.version) yanchor 0 xalign 0 style mas_ui.mm_tt_style
+                            text "by {}".format(submod.author) yanchor 0 xalign 0 style mas_ui.mm_tt_style
+
+                        vbox:
+                            box_wrap False
+                            xfill True
+                            xmaximum 1000
+                            text submod.description
+                        $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
+
+        vbar value YScrollValue("scrollme")
+
+    text tooltip.value:
+        xalign 0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"

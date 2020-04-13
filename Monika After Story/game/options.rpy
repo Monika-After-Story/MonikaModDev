@@ -23,7 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "0.10.7"
+define config.version = "0.11.0"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -155,8 +155,8 @@ define config.autosave_on_quit = False
 define config.autosave_slots = 0
 define config.layers = [ 'master', 'transient', 'screens', 'overlay', 'front' ]
 define config.image_cache_size = 64
-define config.debug_image_cache = True
-define config.predict_statements = 10
+define config.debug_image_cache = config.developer
+define config.predict_statements = 5
 define config.rollback_enabled = config.developer
 define config.menu_clear_layers = ["front"]
 define config.gl_test_image = "white"
