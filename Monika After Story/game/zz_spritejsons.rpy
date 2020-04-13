@@ -568,7 +568,18 @@ init -21 python in mas_sprites_json:
         "hair '{0}' does not exist - found in hair_map values of these "
         "sprites: {1}. replacing with defaults."
     )
-
+    ## weather_map
+    WM_LOADING = "loading weather_map..."
+    WM_SUCCESS = "weather_map loaded successfully!"
+    WM_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}"
+    WM_BAD_V_TYPE = "value for key '{0}' - expected type dict, got {1}"
+    
+    #sub_objects
+    SO_LOADING = "loading sub_objects..."
+    SO_SUCCESS = "sub_objects loaded successfully!"
+    SO_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}"
+    SO_BAD_V_TYPE = "value for key '{0}' - expected type str, got {1}"
+    
     ## ex_props
     EP_LOADING = "loading ex_props..."
     EP_SUCCESS = "ex_props loaded successfully!"
@@ -597,35 +608,43 @@ init -21 python in mas_sprites_json:
     SP_ACS = 0
     SP_HAIR = 1
     SP_CLOTHES = 2
-
+    SP_DECORATIONS = 3
+    
     SP_CONSTS = (
         SP_ACS,
         SP_HAIR,
         SP_CLOTHES,
+        SP_DECORATIONS,
     )
 
     SP_STR = {
         SP_ACS: "ACS",
         SP_HAIR: "HAIR",
         SP_CLOTHES: "CLOTHES",
+        SP_DECORATIONS : "DECORATION",
     }
 
     SP_UF_STR = {
         SP_ACS: "accessory",
         SP_HAIR: "hairstyle",
         SP_CLOTHES: "outfit",
+        SP_DECORATIONS : "decoration",
     }
 
+    #TODO
+    #Add in add store.mas_sprites._decorations_ bit instead
     SP_PP = {
         SP_ACS: "store.mas_sprites._acs_{0}_{1}",
         SP_HAIR: "store.mas_sprites._hair_{0}_{1}",
         SP_CLOTHES: "store.mas_sprites._clothes_{0}_{1}",
+        SP_DECORATIONS : "store.mas_sprites._clothes_{0}_{1}"
     }
 
     SP_RL = {
         SP_ACS: "mas_reaction_gift_acs_{0}",
         SP_HAIR: "mas_reaction_gift_hair_{0}",
         SP_CLOTHES: "mas_reaction_gift_clothes_{0}",
+        SP_DECORATIONS: "mas_reaction_gift_clothes_{0}",
     }
 
     SP_RL_GEN = "{0}|{1}|{2}"
@@ -701,6 +720,8 @@ init -21 python in mas_sprites_json:
     OBJ_BASED_PARAM_NAMES = (
         "pose_map",
         "ex_props",
+        "weather_map",
+        "sub_objects",
         "select_info",
         "split",
         "hair_map",
@@ -1813,6 +1834,112 @@ init 189 python in mas_sprites_json:
         return True
 
 
+    def _validate_weather_map(jobj, save_obj, obj_based, msg_log, ind_lvl):
+        """
+        Validates weather_map dict
+
+
+        IN:
+            jobj - json object to parse
+            obj_based - dict of object-based items
+                (contains weather_map)
+            ind_lvl - indentation level
+
+        OUT:
+            save_obj - dict to save data to
+            msg_log - list to save messages to
+        """
+
+        # validate weather_map
+
+        if "weather_map" not in obj_based:
+            return
+
+        # weather_map exists, get and validate
+        msg_log.append((MSG_INFO_T, ind_lvl, SO_LOADING))
+        weather_map = obj_based.pop("weather_map")
+
+        isbad = False
+
+        for ep_key, ep_val in weather_map.iteritems():
+            if not _verify_str(ep_key):
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl + 1,
+                    SO_BAD_K_TYPE.format(ep_key, str, type(ep_key))
+                ))
+                isbad = True
+
+            if not _verify_dict(ep_val):
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl + 1,
+                    SO_BAD_V_TYPE.format(ep_key, type(ep_val))
+                ))
+                isbad = True
+
+        # check for no errors
+
+        if isbad:
+            return
+
+        # otherwise, we can say successful loading!
+        msg_log.append((MSG_INFO_T, ind_lvl, SO_SUCCESS))
+        save_obj["weather_map"] = weather_map
+        
+    def _validate_sub_objects(jobj, save_obj, obj_based, msg_log, ind_lvl):
+        """
+        Validates sub_objects dict
+
+
+        IN:
+            jobj - json object to parse
+            obj_based - dict of object-based items
+                (contains sub_objects)
+            ind_lvl - indentation level
+
+        OUT:
+            save_obj - dict to save data to
+            msg_log - list to save messages to
+        """
+
+        # validate sub_objects
+
+        if "sub_objects" not in obj_based:
+            return
+
+        # sub_objects exists, get and validate
+        msg_log.append((MSG_INFO_T, ind_lvl, WM_LOADING))
+        sub_objects = obj_based.pop("sub_objects")
+
+        isbad = False
+
+        for ep_key, ep_val in sub_objects.iteritems():
+            if not _verify_str(ep_key):
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl + 1,
+                    WM_BAD_K_TYPE.format(ep_key, str, type(ep_key))
+                ))
+                isbad = True
+
+            if not _verify_str(ep_val):
+                msg_log.append((
+                    MSG_ERR_T,
+                    ind_lvl + 1,
+                    WM_BAD_V_TYPE.format(ep_key, type(ep_val))
+                ))
+                isbad = True
+
+        # check for no errors
+
+        if isbad:
+            return
+
+        # otherwise, we can say successful loading!
+        msg_log.append((MSG_INFO_T, ind_lvl, WM_SUCCESS))
+        save_obj["sub_objects"] = sub_objects
+        
     def _validate_ex_props(jobj, save_obj, obj_based, msg_log, ind_lvl):
         """
         Validates ex_props proprety
@@ -2121,6 +2248,8 @@ init 189 python in mas_sprites_json:
         unlock_hair = True
         giftname = None
         indent_lvl = 0
+        store.log = []
+
 
         writelog("\n" + MSG_INFO.format(READING_FILE.format(filepath)))
 
@@ -2224,6 +2353,7 @@ init 189 python in mas_sprites_json:
 
                 obj_based_params[param_name] = obj_val
 
+
         # validate optional shared params
         msg_log = []
         _validate_params(
@@ -2234,6 +2364,7 @@ init 189 python in mas_sprites_json:
             msg_log,
             indent_lvl
         )
+
         if parsewritelogs(msg_log):
             return
 
@@ -2250,7 +2381,35 @@ init 189 python in mas_sprites_json:
             )
             if parsewritelogs(msg_log):
                 return
+                
 
+        elif sp_type == SP_DECORATIONS:
+        
+            msg_log = []
+            _validate_weather_map(
+                jobj,
+                sp_obj_params,
+                obj_based_params,
+                msg_log,
+                indent_lvl
+            )
+            if parsewritelogs(msg_log):
+                return
+             
+                                       
+                      
+                
+            msg_log = []
+            _validate_sub_objects(
+                jobj,
+                sp_obj_params,
+                obj_based_params,
+                msg_log,
+                indent_lvl
+            )
+            
+            if parsewritelogs(msg_log):
+                return
         else:
             # hair / clothes
             msg_log = []
@@ -2385,11 +2544,18 @@ init 189 python in mas_sprites_json:
                 sms.init_hair(sp_obj)
                 sel_obj_name = "hair"
 
-            else:
+            elif sp_type == SP_CLOTHES:
                 # clothing
                 sp_obj = store.MASClothes(**sp_obj_params)
                 sms.init_clothes(sp_obj)
                 sel_obj_name = "clothes"
+                
+            elif sp_type == SP_DECORATIONS:
+                combined_obj_params = sp_obj_params.copy()
+                combined_obj_params.update(obj_based_params)
+                sp_obj = store.MASDecoration(**combined_obj_params)
+                sel_obj_name = "decoration"
+                
 
         except Exception as e:
             # in thise case, we ended up with a duplicate
@@ -2398,6 +2564,7 @@ init 189 python in mas_sprites_json:
 
         # check image loadables
         msg_log = []
+        
         _test_loadables(sp_obj, msg_log, 0)
         if parsewritelogs(msg_log):
             _reset_sp_obj(sp_obj)
@@ -2417,9 +2584,19 @@ init 189 python in mas_sprites_json:
                     if unlock_hair:
                         sml.unlock_hair(sp_obj)
 
-                else:
+                elif sp_type == SP_CLOTHES:
                     # clothing
                     sml.init_selectable_clothes(**sel_params)
+                    
+                elif sp_type == SP_DECORATIONS:
+                    store.sel_params_tmp = sel_params
+                    obj = store.mas_decorations.create_MASSelectable_object_from_json(sel_params)
+                    if store.persistent.mas_decorations_items.get(obj.name) is not None:
+                        pass
+                    else:
+                        store.persistent.mas_decorations_items[obj.name] = {}
+                        store.persistent.mas_decorations_items[obj.name]["selected"] = store.mas_decorations.default_visibility
+                        store.persistent.mas_decorations_items[obj.name]["pos"] = (0,0)
 
             except Exception as e:
                 # we probably ended up with a duplicate again
@@ -2447,6 +2624,7 @@ init 189 python in mas_sprites_json:
                 SP_STR.get(sp_type),
                 sp_name
             )))
+
 
 
     def addSpriteObjects():
