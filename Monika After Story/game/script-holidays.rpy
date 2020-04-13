@@ -2656,9 +2656,13 @@ label monika_aiwfc:
     else:
         m 1hua "Ehehe..."
         m 3tuu "I hope you're ready, [player]..."
-        m "It {i}is{/i} that time of year again, after all..."
-        m 3hub "Make sure you have your volume up!"
-        m 1huu ".{w=0.5}.{w=0.5}.{nw}"
+
+        $ ending = "..." if songs.getUserVolume("music") == 0.0 else ".{w=0.5}.{w=0.5}.{nw}"
+
+        m "It {i}is{/i} that time of year again, after all[ending]"
+        if songs.getUserVolume("music") == 0.0:
+            m 3hub "Make sure you have your volume up!"
+            m 1huu ".{w=0.5}.{w=0.5}.{nw}"
 
     #Get current song
     $ curr_song = songs.current_track

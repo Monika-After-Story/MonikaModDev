@@ -209,6 +209,9 @@ init 5 python:
 label mas_song_aiwfc:
     #Get current song
     $ curr_song = songs.current_track
+    if songs.getUserVolume("music") == 0.0:
+        m 3eua "Don't forget to put your in-game volume up, [player]."
+
     call monika_aiwfc_song
 
     #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
@@ -804,6 +807,10 @@ label mas_monika_plays_yr(skip_leadin=False):
     pause 5.0
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
+
+    if songs.getUserVolume("music") == 0.0:
+        m 6hua "Don't forget about your in-game volume, [player]!"
+
     pause 2.0
     $ play_song(store.songs.FP_YOURE_REAL,loop=False)
 
@@ -905,6 +912,10 @@ label mas_monika_plays_or(skip_leadin=False):
     pause 5.0
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
+
+    if songs.getUserVolume("music") == 0.0:
+        m 6hua "Don't forget about your in-game volume, [player]!"
+
     pause 2.0
     $ play_song(songs.FP_PIANO_COVER,loop=False)
 
