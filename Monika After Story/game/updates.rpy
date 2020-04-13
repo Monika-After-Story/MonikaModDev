@@ -372,6 +372,13 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.1
+label v0_11_1(version="v0_11_1"):
+    python:
+        if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
+            persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+    return
+
 #0.11.0
 label v0_11_0(version="v0_11_0"):
     python:
