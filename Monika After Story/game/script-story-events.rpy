@@ -2283,20 +2283,15 @@ label monika_credits_song:
                 call mas_monika_plays_yr(skip_leadin=True)
                 show monika 1eka
                 pause 1.0
-                $ mas_MUMUDropShield()
-                $ enable_esc()
-                $ HKBShowButtons()
-                $ mas_resetTextSpeed()
-                window auto
 
                 m 1ekbsa "Ehehe~"
                 show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5ekbsa "Thank you for coming back to me my love."
 
-        "Sorry, I can't right now.":
-            m 3ekd "Oh, okay."
-            m 1eka "That's fine [player], I understand if you don't have the time or just can't listen to music right now."
-            m 3hua "Just me know when it's a better time for you and I'll happily play it for you then~"
+            "Sorry, I can't right now.":
+                m 3ekd "Oh, okay."
+                m 1eka "That's fine [player], I understand if you don't have the time or just can't listen to music right now."
+                m 3hua "Just me know when it's a better time for you and I'll happily play it for you then~"
 
     else:
         if renpy.seen_audio(songs.FP_YOURE_REAL):
@@ -2323,11 +2318,6 @@ label monika_credits_song:
                 call mas_monika_plays_or(skip_leadin=True)
                 show monika 1ekbsa
                 pause 1.0
-                $ mas_MUMUDropShield()
-                $ enable_esc()
-                $ HKBShowButtons()
-                $ mas_resetTextSpeed()
-                window auto
 
                 m "I really can't wait until we're together in one reality."
                 m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."

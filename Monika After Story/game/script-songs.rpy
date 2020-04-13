@@ -855,7 +855,6 @@ label mas_monika_plays_yr(skip_leadin=False):
     show monika 5dka with dissolve
     $ renpy.pause(5)
 
-    stop music
     show monika 6eua at rs32 with dissolve
     pause 1.0
     hide monika
@@ -863,12 +862,11 @@ label mas_monika_plays_yr(skip_leadin=False):
     hide mas_piano
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
-    call monika_zoom_transition_reset(mas_temp_zoom_level)
-
-    if not skip_leadin:
-        pause 2.0
-        $ mas_DropShield_piano()
-        window auto
+    pause 1.0
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    $ mas_DropShield_piano()
+    window auto
+    $ play_song(None, 1.0)
 
     return
 
@@ -941,7 +939,6 @@ label mas_monika_plays_or(skip_leadin=False):
 
     show monika 1dkbsa
     pause 9.0
-    stop music
     show monika 6eua at rs32
     pause 1.0
     hide monika
@@ -949,11 +946,10 @@ label mas_monika_plays_or(skip_leadin=False):
     hide mas_piano
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
-    call monika_zoom_transition_reset(mas_temp_zoom_level)
-
-    if not skip_leadin:
-        pause 2.0
-        $ mas_DropShield_piano()
-        window auto
+    pause 1.0
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    $ mas_DropShield_piano()
+    window auto
+    $ play_song(None, 1.0)
 
     return
