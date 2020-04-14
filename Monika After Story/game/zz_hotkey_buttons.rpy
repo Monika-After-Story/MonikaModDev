@@ -145,15 +145,13 @@ style hkbd_vbox:
 
 style hkbd_button is default:
     properties gui.button_properties("hkb_button")
-    idle_background "mod_assets/hkb_disabled_background.png"
-    hover_background "mod_assets/hkb_disabled_background.png"
+    background "mod_assets/hkb_disabled_background.png"
 
 style hkbd_button_text is default:
 #    properties gui.button_text_properties("hkb_button")
     font gui.default_font
     size gui.text_size
-    idle_color mas_ui.light_button_text_idle_color
-    hover_color mas_ui.light_button_text_idle_color
+    color "8C8C8C"
     kerning 0.2
     outlines []
 
@@ -181,43 +179,32 @@ screen hkb_overlay():
             textbutton _("Talk") action Function(show_dialogue_box)
         else:
             frame:
-                ypadding 5
-                xsize 120
-
-                background Image(store.mas_ui.hkb_disabled_bg)
-                text "Talk" color "#8C8C8C"
+                style store.mas_ui.hkbd_button_style
+                text "Talk"
 
 
         if store.hkb_button.extra_enabled:
             textbutton _("Extra") action Function(mas_open_extra_menu)
         else:
             frame:
-                ypadding 5
-                xsize 120
-
-                background Image(store.mas_ui.hkb_disabled_bg)
-                text "Extra" color "#8C8C8C"
+                style store.mas_ui.hkbd_button_style
+                text "Extra"
 
 
         if store.hkb_button.music_enabled:
             textbutton _("Music") action Function(select_music)
         else:
             frame:
-                ypadding 5
-                xsize 120
+                style store.mas_ui.hkbd_button_style
+                text "Music"
 
-                background Image(store.mas_ui.hkb_disabled_bg)
-                text "Music" color "#8C8C8C"
 
         if store.hkb_button.play_enabled:
             textbutton _("Play") action Function(pick_game)
         else:
             frame:
-                ypadding 5
-                xsize 120
-
-                background Image(store.mas_ui.hkb_disabled_bg)
-                text "Play" color "#8C8C8C"
+                style store.mas_ui.hkbd_button_style
+                text "Play"
 
 
 screen movie_overlay():
@@ -240,7 +227,7 @@ screen movie_overlay():
         else:
             textbutton _("Time"):
                 action NullAction()
-                style "hkbd_button"
+                style store.mas_ui.hkbd_button_style
 
 init python:
     HKBShowButtons()

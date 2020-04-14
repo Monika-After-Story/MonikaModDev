@@ -213,6 +213,8 @@ init python:
             mas_ui.hkb_button_style = "hkb_dark_button"
             mas_ui.hkb_button_text_style = "hkb_dark_button_text"
             mas_ui.hkb_text_style = "hkb_dark_text"
+            mas_ui.hkbd_button_style = "hkbd_dark_button"
+            mas_ui.hkbd_button_text_style = "hkbd_dark_button_text"
             mas_ui.mm_tt_style = "main_menu_version_dark"
             mas_ui.mms_style_prefix = "music_menu_dark"
             mas_ui.mms_button_prev_style = "music_menu_dark_prev_button"
@@ -284,6 +286,8 @@ init python:
             mas_ui.hkb_button_style = "hkb_button"
             mas_ui.hkb_button_text_style = "hkb_button_text"
             mas_ui.hkb_text_style = "hkb_text"
+            mas_ui.hkbd_button_style = "hkbd_button"
+            mas_ui.hkbd_button_text_style = "hkbd_button_text"
             mas_ui.mm_tt_style = "main_menu_version_def"
             mas_ui.mms_style_prefix = "music_menu"
             mas_ui.mms_button_prev_style = "music_menu_prev_button"
@@ -443,15 +447,13 @@ style hkbd_dark_vbox:
 
 style hkbd_dark_button is default:
     properties gui.button_properties("hkb_dark_button")
-    idle_background "mod_assets/hkb_disabled_background_d.png"
-    hover_background "mod_assets/hkb_disabled_background_d.png"
+    background "mod_assets/hkb_disabled_background_d.png"
 
 style hkbd_dark_button_text is default:
 #    properties gui.button_text_properties("hkb_button")
     font gui.default_font
     size gui.text_size
-    idle_color "8C8C8C"
-    hover_color "8C8C8C"
+    color "8C8C8C"
     kerning 0.2
     outlines []
 
