@@ -5,7 +5,7 @@ python early:
 # Custom filter renderable
 
 # uncomment this if you want syntax highlighting support on vim
-#init -1 python:
+init -1 python:
 
     class MASFilterable(renpy.Displayable):
         """
@@ -13,7 +13,6 @@ python early:
         Also includes surface caching, if desired.
 
         PROPERTIES:
-                caching.
             flt - filter we last used
         """
 
@@ -42,74 +41,81 @@ python early:
         # NOTE: extended classes should impelement the render function.
 
 
-    # TODO: use this wwith standard sprites. (think ConditionSwitch with
-    #   morning flag. NOTE: wait until room deco as that is where this will
-    #   actually matter.
-    class MASFilterableSprite(MASFilterable):
+    def MASFilterSwitch(img_path, filter_map=None):
         """
-        Basic filterable sprite that changes for filter.
-        This has NO x/y support
+        Builds a condition switch that applies appropriate filters
 
-        PROPERTIES:
-            img_obj - the Image object represnting this sprite
+        NOTE: because this builds a conditionswitch, it is not dynamic in 
+        the sense that you cant change this after init.
+
+        NOTE: this is only meant for direct image paths, not objects.
+
+        IN:
+            img_path - path to the image
+            filter_map - a MASFilterMap of highlights to apply to the spirte
         """
-
-        def __init__(self,
-                image_path,
-                focus=None,
-                default=False,
-                style='default',
-                _args=None,
-                **properties
-        ):
-            """
-            Constructor
-
-            IN:
-                image_path - image path (or Image) of the sprite to use
-                remaining properties are sent to Displayable
-            """
-            super(MASFilterable, self).__init__(
-                focus=focus,
-                default=default,
-                style=style,
-                _args=_args,
-                **properties
+        if not renpy.loadable(img_path):
+            raise Exception(
+                "'{0}' must be a valid and loadable image path".format(
+                    img_path
+                )
             )
-            self.img_obj = Image(image_path)
 
-        def render(self, width, height, st, at):
+        args = []
+        for flt in store.mas_sprites.FILTERS.iterkeys():
 
-            # need new render
-            self.flt = store.mas_sprites._decide_filter()
+            # generate image
+            new_img = store.mas_sprites._gen_im(flt, img_path)
 
-            # prepare filtered image
-            new_img = store.mas_sprites._gen_im(self.flt, self.img_obj)
+            # generate highlight if needed
+            hlcode = None
+            if filter_map is not None:
+                hlcode = filter_map.get(flt)
 
-            # render and blit
-            render = renpy.render(new_img, width, height, st, at)
-            rw, rh = render.get_size()
-            rv = renpy.Render(rw, rh)
-            rv.blit(render, (0, 0))
+                # split image path and make hl image path
+                pre_img, ext, nothing = img_path.partition(".png")
+                hl_img = "".join((
+                    pre_img,
+                    store.mas_sprites.HLITE_SUFFIX,
+                    hlcode,
+                    ext
+                ))
 
-            # save
-            return rv
+                if not renpy.loadable(hl_img):
+                    raise Exception(
+                        "'{0}' must be a valid and loadable image path".format(
+                            hl_img
+                        )
+                    )
 
-        def visit(self):
-            return [self.img_obj]
+                # build im composite args
+                # TODO
+                im_args = [
+                    store.mas_sprites.LOC_WH,
+                    (0, 0), new_img,
+                    (0, 0), 
+                ]
 
 
-# this should be after sprite-chart's initialization
-init -4 python in mas_sprites:
-    # NOTE: render_key
 
-    Y_OFFSET = -130
 
-    # TODO: please consider ways we can get submods to add their own filtesr
-    #   likely via APIs that they can use to add filters.
-    #   We should also move filter definitions to -99. 
+            args.append("store.mas_sprites.get_filter() == {0}".format(flt))
+            args.append(
+
+
+init -1 python in mas_sprites:
+
+    __ignore_filters = True
+    # set to prevent additional filters being added when inappropriate
+
+
+init -99 python in mas_sprites:
+    import store.mas_utils as mas_utils
+    
+    # Filtering Framework
     # TODO: consider making the filter dict use Curryables so custom filters
     #   can use non-Matrixcolor-based logic
+    #   import renpy.curry.Curry # but do we really need this?
 
     # filter enums
     FLT_DAY = "day"
@@ -121,20 +127,77 @@ init -4 python in mas_sprites:
         FLT_NIGHT: store.im.matrix.tint(0.59, 0.49, 0.55),
     }
 
+    # should be false until init -1
+    __ignore_filters = False
+
+    # global filter variable.
+    # NOTE: we keep this out of mas_globals to prevent crashes.
+    __flt_global = FLT_DAY
+
+
+    def add_filter(flt_enum, imx):
+        """
+        Adds a filter to the global filters
+
+        NOTE: if you plan to use this, please use it before init level -1
+        Filters beyond this level will be ignored.
+
+        IN:
+            flt_enum - enum key to use as a filter. 
+                NOTE: duplicates will be logged and ignored
+            imx - image matrix to use as filter
+        """
+        if flt_enum in FILTERS:
+            mas_utils.writelog(
+                "[Warning!]: duplicate filter enum '{0}'\n".format(flt_enum)
+            )
+            return
+
+        if __ignore_filters:
+            mas_utils.writelog(
+                "[Warning!]: Cannot add filter '{0}' after init -1\n".format(
+                    flt_enum
+                )
+            )
+            return
+
+        FILTERS[flt_enum] = imx
+
+
     def _decide_filter():
+        """DEPRECATED
+        Please use get_filter
         """
-        Returns the appropriate filter to use
+        return get_filter()
 
-        NOTE: this is currently not how we want to do this going forward.
-        Once we decide on lighting progression, then have this function call
-        that code.
 
-        RETURNS: desired filter
+    def get_filter():
         """
-        if store.morning_flag:
-            return FLT_DAY
+        Returns the current filter
 
-        return FLT_NIGHT
+        RETURNS: filter to use
+        """
+        return __flt_global
+
+
+    def set_filter(flt_enum):
+        """
+        Sets the current filter if it is valid.
+        Invalid filters are ignored.
+
+        IN:
+            flt_enum - filter to set
+        """
+        global __flt_global
+        if flt_enum in FILTERS:
+            __flt_global = flt_enum
+
+
+# this should be after sprite-chart's initialization
+init -4 python in mas_sprites:
+    # NOTE: render_key
+
+    Y_OFFSET = -130
 
     # cache ids
     CID_FACE = 1 # NOTE: we should not use highlights for this
@@ -363,7 +426,7 @@ init -4 python in mas_sprites:
             """
             Render function
             """
-            self.flt = store.mas_sprites._decide_filter()
+            self.flt = store.mas_sprites.get_filter()
 
             renders = []
             for render_key in self.render_keys:
@@ -383,7 +446,7 @@ init -4 python in mas_sprites:
             Returns a list of displayables we obtain
             NOTE: will also save to our cache
             """
-            self.flt = store.mas_sprites._decide_filter()
+            self.flt = store.mas_sprites.get_filter()
             disp_list = []
             for render_key in self.render_keys:
                 store.mas_sprites._cgha_im(disp_list, self.flt, render_key)
@@ -1689,7 +1752,6 @@ init -4 python in mas_sprites:
         # 13. table
         _rk_table(rk_list, tablechair, show_shadow, flt)
 
-        # TODO: add acs layer here (MAT - middle arms and table)
         # 14. mat-acs
         _rk_accessory_list(rk_list, acs_mat_list, flt, leanpose)
 
@@ -2178,7 +2240,7 @@ init -2 python:
         pose_data = character._determine_poses(lean, arms)
 
         # determine filter to use
-        flt = store.mas_sprites._decide_filter()
+        flt = store.mas_sprites.get_filter()
 
         # generate sprite displayable
         sprite = store.mas_sprites.MASMonikaRender(
@@ -2249,7 +2311,7 @@ init -2 python:
         rk_list = []
 
         # decide the filter
-        flt = store.mas_sprites._decide_filter()
+        flt = store.mas_sprites.get_filter()
         
         # now build the chair
         store.mas_sprites._rk_chair(rk_list, character.tablechair, flt)

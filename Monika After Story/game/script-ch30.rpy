@@ -454,6 +454,19 @@ init python:
         return sr_time <= now_time < ss_time
 
 
+    def mas_progressFilter():
+        """
+        Changes filter according to rules.
+
+        Call this when you want to update the filter.
+        """
+        if morning_flag:
+            store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
+
+        else:
+            store.mas_sprites.set_filter(store.mas_sprites.FLT_NIGHT)
+
+
     def mas_shouldChangeTime():
         """
         Checks if we should change the day to night or night to day.
