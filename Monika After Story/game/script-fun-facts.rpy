@@ -609,60 +609,6 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_fun_facts_database,
-            eventlabel="mas_fun_fact_smile_contagious",
-        ),
-        code="FFF"
-    )
-
-label mas_fun_fact_smile_contagious:
-    m 3eub "Here's one!"
-    m 1esa "Humans have a strong instinct for facial mimicry.{w=0.3} We mirror the expressions of people we see as it helps us empathize with how they're feeling."
-    m 1eua "When you smile, others smile. When you frown, others frown..."
-    m 3eub "In other words, smiling is contagious!"
-    m 1eua "Let's test it out. I'll smile at you, okay?"
-    m 6eua "{w=0.3}{nw}"
-    extend 6hua "{w=0.4}.{w=0.4}.{w=0.4}.{w=0.4}{nw}"
-    extend 6hubla "Is it working yet?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "...Is it working yet?{fast}"
-        "Yes.":
-            m 6hublb "Glad to hear it!{w=0.3} I'll make sure to keep smiling at you from now on then aha!~"
-            call mas_fun_facts_end
-            return
-        "No.":
-            m 6hubsa "{w=0.4}.{w=0.4}.{w=0.4}.{w=0.4}{nw}"
-    m 6hubsa "...How about now?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "...How about now?{fast}"
-        "Yes.":
-            m 6hubsb "Great!{w=0.3} I'll make sure to keep smiling at you from now on then aha!~"
-            call mas_fun_facts_end
-            return
-        "No.":
-            m 6hubsb "Ahaha! you're making me blush, [player]!~"
-    m 6hubfa "{w=0.4}.{w=0.4}.{w=0.4}.{w=0.4}Now?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "...Now?{fast}"
-        "Yes.":
-            m 6eubfb "Finally!{w=0.3} Looks like I'm just gonna have to start smiling at you even harder from now on aha!~"
-            call mas_fun_facts_end
-            return
-        "No.":
-            m 6hubfb "Stooooop it, [player]!~. I can't hold this smile any longer hahaha!"
-            m 1eubla "I guess it doesn't work through a computer screen..." 
-            m 1rud "Or maybe.{w=0.2}.{w=0.2}.{w=0.2}{nw}" 
-            extend 1ttu "I'm just gonna have to start smiling at you {i}reeaal{/i} hard from now on,{w=0.2} ehehe!~"
-    #Call the end
-    call mas_fun_facts_end
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_fun_facts_database,
             eventlabel="mas_fun_fact_dancing_plague",
         ),
         code="FFF"
@@ -675,10 +621,12 @@ label mas_fun_fact_dancing_plague:
     m "On some occasions there'd be hundreds dancing frantically on the streets."
     m 3ekd "They tried to treat it by having people play music alongside the dancers but...you can imagine that didn't work out so well."
     m 1euc "To this day they're still unsure exactly what caused it..."
-    m 1esd "Gosh.{w=0.2}.{w=0.2}.{w=0.2}I couldn't imagine dancing for days on end."
-    m 1rsc "Though.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
-    extend 1eubla "I guess I wouldn't mind doing it if it was with you.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
-    extend 3tsu "just for a bit ehehe!~"
+    m 3eud "The whole thing seems kind of unbelievable to me, but it has been independently documented and observed by multiple sources across centuries..."
+    m 3euc "Reality is stranger than fiction, I guess."
+    m 1esd "Gosh...{w=0.3} I couldn't imagine dancing for days on end."
+    m 1rsc "Though...{w=0.3}{nw}"
+    extend 1eubla "I guess I wouldn't mind if it was with you...{w=0.3}"
+    m 3tsu "Just for a bit ehehe!~"
     #Call the end
     call mas_fun_facts_end
     return
