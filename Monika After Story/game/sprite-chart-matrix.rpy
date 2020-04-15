@@ -41,66 +41,162 @@ init -1 python:
         # NOTE: extended classes should impelement the render function.
 
 
-    def MASFilterSwitch(img_path, filter_map=None):
+    class MASFilterableSprite(MASFilterable):
         """
-        Builds a condition switch that applies appropriate filters
+        Generic Filterable Sprite with Highlight support
 
-        NOTE: because this builds a conditionswitch, it is not dynamic in 
-        the sense that you cant change this after init.
+        Potentially more optimal than MASFilterSwitch, but likely to have less
+        configuration.
 
-        NOTE: this is only meant for direct image paths, not objects.
+        NOTE:
+            Many of the style properties will likely NOT work with this.
+            If you can make it work, submit a PR.
+
+        PROPERTIES:
+            img_path - image path of this sprite
+            img_obj = Image object of this sprite
+            highlight - MASFilterMap of highlights to use
+        """
+
+        def __init__(self,
+                image_path,
+                highlight,
+                focus=None,
+                default=False,
+                style='default',
+                _args=None,
+                **properties
+        ):
+            """
+            Constructor
+
+            IN:
+                image_path - MUST be an image path string.
+                highlight - MASFilterMap object of highlights to apply
+            """
+            super(MASFilterable, self).__init__(
+                focus=focus,
+                default=default,
+                style=style,
+                _args=_args,
+                **properties
+            )
+            self.img_path = image_path
+            self.img_obj = Image(image_path)
+            self.highlight = highlight
+
+        def __gen_hl(self):
+            """
+            Builds highlight Image based on current filters and cache
+
+            REUTRNS: Image to use as highlight, None if we shouldnt make filter
+            """
+            # no highlight, no worry
+            if self.highlight is None:
+                return None
+
+            # check cache
+            img_key = (self.flt, self.img_path)
+            hlg_c = store.mas_sprites._gc(store.mas_sprites.CID_HLG)
+            if img_key in hlg_c:
+                return hlg_c[img_key]
+
+            # get hlcode
+            hlcode = self.highlight.get(self.flt)
+
+            # check if we even have highlight for this filter
+            if hlcode is None:
+                hlg_c[img_key] = None
+                return None
+
+            # we have a highlight, so lets build
+            new_img = store.mas_sprites._bhlifp(self.img_path, hlcode)
+            hlg_c[img_key] = new_img
+            return new_img
+
+        def render(self, width, height, st, at):
+            """
+            Render function
+            """
+
+            self.flt = store.mas_sprites.get_filter()
+
+            # generate image
+            new_img = store.mas_sprites._gen_im(self.flt, self.img_obj)
+
+            # then highlight
+            hl_img = self.__gen_hl()
+
+            # NOTE: branching this for efficiency. 
+            #   we woudl still need to branch once to check of hl is valid,
+            #   so we don't lose anything in branching the render into two
+            #   separate paths. Non-highlights get a slightly faster render.
+            if hl_img is None:
+                # no looping, just do a quick render
+
+                # render and blit
+                render = renpy.render(new_img, width, height, st, at)
+                rw, rh = render.get_size()
+                rv = renpy.Render(rw, rh)
+                rv.blit(render, (0, 0))
+
+            else:
+                # loop render 
+                render_list = [
+                    renpy.render(img, width, height, st, at)
+                    for img in (new_img, hl_img)
+                ]
+
+                # size is determined by the image render
+                rw, rh = render_list[0].get_size()
+                rv = renpy.Render(rw, rh)
+                
+                # loop blit
+                for render in render_list:
+                    rv.blit(render, (0, 0))
+
+            # save
+            return rv
+
+        def visit(self):
+            self.flt = store.mas_sprites.get_filter()
+
+            # prepare filtered image
+            new_img = store.mas_sprites._gen_im(self.flt, self.img_obj)
+
+            # and highlight
+            hl_img = self.__gen_hl()
+
+            # decide what to return
+            if hl_img is None:
+                return [new_img]
+
+            return [new_img, hl_img]
+
+
+    def MASFilterSwitch(img):
+        """
+        Builds a condition switch that applies appropriate filters.
+
+        NOTE: as this returns a ConditionSwitch, use this when you need
+            more renpy-based control over an image.
 
         IN:
-            img_path - path to the image
-            filter_map - a MASFilterMap of highlights to apply to the spirte
-        """
-        if not renpy.loadable(img_path):
-            raise Exception(
-                "'{0}' must be a valid and loadable image path".format(
-                    img_path
-                )
-            )
+            img - image path/ImageBase to build filter switch for
+                NOTE: CANNOT BE A DISPLAYABLE
 
+        RETURNS: ConditionSwitch for filters
+        """
         args = []
         for flt in store.mas_sprites.FILTERS.iterkeys():
 
-            # generate image
-            new_img = store.mas_sprites._gen_im(flt, img_path)
-
-            # generate highlight if needed
-            hlcode = None
-            if filter_map is not None:
-                hlcode = filter_map.get(flt)
-
-                # split image path and make hl image path
-                pre_img, ext, nothing = img_path.partition(".png")
-                hl_img = "".join((
-                    pre_img,
-                    store.mas_sprites.HLITE_SUFFIX,
-                    hlcode,
-                    ext
-                ))
-
-                if not renpy.loadable(hl_img):
-                    raise Exception(
-                        "'{0}' must be a valid and loadable image path".format(
-                            hl_img
-                        )
-                    )
-
-                # build im composite args
-                # TODO
-                im_args = [
-                    store.mas_sprites.LOC_WH,
-                    (0, 0), new_img,
-                    (0, 0), 
-                ]
-
-
-
-
+            # condition
             args.append("store.mas_sprites.get_filter() == {0}".format(flt))
-            args.append(
+
+            # filtered image
+            args.append(store.mas_sprites._gen_im(flt, img))
+
+        return ConditionSwitch(*args)
 
 
 init -1 python in mas_sprites:
@@ -207,6 +303,7 @@ init -4 python in mas_sprites:
     CID_ACS = 5
     CID_TC = 6
     CID_HL = 7
+    CID_HLG = 8
 
     # several caches for images
 
@@ -284,6 +381,17 @@ init -4 python in mas_sprites:
         #   tuple containing:
         #   [0] - cache ID - determines what sprite this highlight is for
         #   [1+] - the sprite's key
+        # value:
+        #   Image object, or None if should not be rendered
+
+        CID_HLG: {}
+        # the global highlight cache
+        # this should be used for anything that is not part of Monika sprite
+        # rendering system.
+        # key:
+        #   tuple containig:
+        #   [0] - filter
+        #   [1] - image path
         # value:
         #   Image object, or None if should not be rendered
     }
@@ -585,6 +693,29 @@ init -4 python in mas_sprites:
         hl_list = list(img_list)
         hl_list[-1:-1] = [HLITE_SUFFIX, hlcode]
         return store.Image("".join(hl_list))
+
+
+    def _bhlifp(img_path, hlcode):
+        """
+        Builds a 
+        High-
+        Light
+        Image using an image's
+        File
+        Path
+
+        IN:
+            img_path - full filepath to an image, including extension.
+            hlcode - highlight code to use. Can be None
+
+        RETURNS: Image to use for highlight, or None if no highlight
+        """
+        if hlcode is None:
+            return None
+
+        # otherwise partition and build
+        pre_img, ext, ignore = img_path.partition(FILE_EXT)
+        return store.Image("".join((pre_img, HLITE_SUFFIX, hlcode, ext)))
 
 
     def _cgen_im(flt, key, cid, img_base):
