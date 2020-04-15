@@ -5,7 +5,7 @@ python early:
 # Custom filter renderable
 
 # uncomment this if you want syntax highlighting support on vim
-init -1 python:
+#init -1 python:
 
     class MASFilterable(renpy.Displayable):
         """
@@ -191,12 +191,25 @@ init -1 python:
         for flt in store.mas_sprites.FILTERS.iterkeys():
 
             # condition
-            args.append("store.mas_sprites.get_filter() == {0}".format(flt))
+            args.append("store.mas_sprites.get_filter() == '{0}'".format(flt))
 
             # filtered image
             args.append(store.mas_sprites._gen_im(flt, img))
 
         return ConditionSwitch(*args)
+
+
+    def MASFilteredSprite(flt, img):
+        """
+        Generates an already filtered version of the given image
+
+        IN:
+            flt - filter to use
+            img_base - image path/ImageBase to build filtered sprite for
+
+        RETURNS: Displayable of the filtered image
+        """
+        return renpy.easy.displayable(store.mas_sprites._gen_im(flt, img))
 
 
 init -1 python in mas_sprites:
@@ -206,6 +219,7 @@ init -1 python in mas_sprites:
 
 
 init -99 python in mas_sprites:
+    import store
     import store.mas_utils as mas_utils
     
     # Filtering Framework
@@ -287,6 +301,33 @@ init -99 python in mas_sprites:
         global __flt_global
         if flt_enum in FILTERS:
             __flt_global = flt_enum
+
+
+init -98 python:
+    
+    # global filter-based functions
+    # NOTE: only put the most used filter checks. 
+
+    def mas_isFltDay():
+        """
+        Checks if the filter is currently on "Day"
+
+        NOTE: You probably want to use mas_isSunny
+
+        RETURNS: True if filter is day. false if not
+        """
+        return store.mas_sprites.get_filter() == store.mas_sprites.FLT_DAY
+
+
+    def mas_isFltNight():
+        """
+        Checks if the filter is currently on "Night"
+
+        NOTE: You probably want to use mas_isNight
+
+        RETURNS: True if filter is night, false if not
+        """
+        return store.mas_sprites.get_filter() == store.mas_sprites.FLT_NIGHT
 
 
 # this should be after sprite-chart's initialization

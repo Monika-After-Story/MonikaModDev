@@ -443,6 +443,13 @@ init python:
 #            renpy.display.behavior.clear_keymap_cache()
 
     def mas_isMorning():
+        """DEPRECATED
+        Checks if it is day or night via suntimes
+
+        NOTE: this should be replaced with a filter-specific function
+
+        RETURNS: True if day, false if not
+        """
         # generate the times we need
         sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
         ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
@@ -460,6 +467,7 @@ init python:
 
         Call this when you want to update the filter.
         """
+        # TODO: change to check suntimes instead
         if morning_flag:
             store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
 
@@ -473,6 +481,7 @@ init python:
 
         RETURNS: true if we should change day/night cycle, False otherwise
         """
+        # TODO: change to check suntimes instead
         return morning_flag != mas_isMorning()
 
 
@@ -801,15 +810,18 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         # MORNING CHECK
         # establishes correct room to use
+        # TODO: change this to work as a progressive filter based on suntime
         if mas_isMorning():
             if not morning_flag or scene_change:
                 morning_flag = True
                 monika_room = day_bg
+                mas_progressFilter()
 
         else:
             if morning_flag or scene_change:
                 morning_flag = False
                 monika_room = night_bg
+                mas_progressFilter()
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
@@ -1696,6 +1708,9 @@ label ch30_minute(time_since_check):
 
         #Now we check if we should queue windowreact evs
         mas_checkForWindowReacts()
+
+        # update filter
+        mas_progressFilter()
 
         # check if we need to rebulid ev
         if mas_idle_mailbox.get_rebuild_msg():

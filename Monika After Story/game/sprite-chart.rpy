@@ -173,10 +173,7 @@ define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffi
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 # Monika's piano sprite
-image mas_piano = ConditionSwitch(
-    "morning_flag", "mod_assets/other/mas_piano.png",
-    "not morning_flag", "mod_assets/other/mas_piano-n.png"
-)
+image mas_piano = MASFilterSwitch("mod_assets/other/mas_piano.png")
 
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings

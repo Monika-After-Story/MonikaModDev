@@ -191,6 +191,8 @@ init python:
             if prev_disable_animations != persistent._mas_disable_animations:
                 mas_drawSpaceroomMasks(dissolve_masks=False)
 
+            mas_progressFilter()
+
 
     def _mas_quick_menu_cb(screen_name):
         """

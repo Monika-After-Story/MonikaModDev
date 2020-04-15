@@ -1521,7 +1521,7 @@ screen history():
                         if "color" in h.who_args:
                             text_color h.who_args["color"]
 
-                text h.what.replace("[","[[")
+                text h.what.replace("[","[[")  # ]" fix syntax highlight issue
 
         if not _history_list:
             label _("The dialogue history is empty.")
