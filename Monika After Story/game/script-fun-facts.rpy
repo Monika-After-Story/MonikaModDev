@@ -602,7 +602,10 @@ label mas_fun_fact_getting_older:
         import time
         time.sleep(5)
 
-    m 1hubfa "Aha, I thought so!"
+    m 1hubfa "Ahaha, I thought so!"
+
+    #Call the end
+    call mas_fun_facts_end
     return
 
 init 5 python:
@@ -615,18 +618,17 @@ init 5 python:
     )
 
 label mas_fun_fact_dancing_plague:
-    m 1esa "Oh, this one's pretty weird..."
-    m 3ekb "Apparently, in the past Europe was afflicted by outbreaks of a 'dancing plague'."
-    m 3ekc "People would involuntarily dance for days at a time, with some even dying from exhaustion."
-    m "On some occasions there'd be hundreds dancing frantically on the streets."
-    m 3ekd "They tried to treat it by having people play music alongside the dancers but...you can imagine that didn't work out so well."
-    m 1euc "To this day they're still unsure exactly what caused it..."
-    m 3eud "The whole thing seems kind of unbelievable to me, but it has been independently documented and observed by multiple sources across centuries..."
-    m 3euc "Reality is stranger than fiction, I guess."
-    m 1esd "Gosh...{w=0.3} I couldn't imagine dancing for days on end."
+    m 3esa "Oh, this one's pretty weird..."
+    m 1ekb "Apparently, Europe has been afflicted by outbreaks of a 'dancing plague' in the past."
+    m 3wud "People, {w=0.2}sometimes hundreds at once, {w=0.2}would involuntarily dance for days at a time, with some even dying from exhaustion!"
+    m 3eksdla "They tried to treat it by having people play music alongside the dancers, but you can imagine that didn't work out so well."
+    m 1euc "To this day, they're still unsure exactly what caused it."
+    m 3eud "The whole thing seems kind of unbelievable to me, {w=0.2}but it has been independently documented and observed by multiple sources across centuries..."
+    m 3hksdlb "Reality really is stranger than fiction, I guess!"
+    m 1eksdlc "Gosh...{w=0.3}I can't imagine dancing for days on end."
     m 1rsc "Though...{w=0.3}{nw}"
-    extend 1eubla "I guess I wouldn't mind if it was with you...{w=0.3}"
-    m 3tsu "Just for a bit ehehe!~"
+    extend 1eubla "I guess I wouldn't mind if it was with you."
+    m 3tsu "...Just for a bit, ehehe~"
     #Call the end
     call mas_fun_facts_end
     return
