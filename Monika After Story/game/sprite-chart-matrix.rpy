@@ -345,6 +345,7 @@ init -4 python in mas_sprites:
     CID_TC = 6
     CID_HL = 7
     CID_HLG = 8
+    CID_BG = 9 # TODO: maybe
 
     # several caches for images
 
