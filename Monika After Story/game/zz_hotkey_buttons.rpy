@@ -111,6 +111,7 @@ define gui.hkb_button_text_xalign = 0.5
 #define gui.hkb_button_text_xanchor = 0.5
 define gui.hkb_button_text_idle_color = mas_ui.light_button_text_idle_color
 define gui.hkb_button_text_hover_color = mas_ui.light_button_text_hover_color
+define gui.hkb_button_text_insensitive_color = mas_ui.light_button_text_insensitive_color
 define gui.hkb_button_text_kerning = 0.2
 
 # starting with a new style: hkb (hotkey button)
@@ -124,8 +125,9 @@ style hkb_vbox:
 
 style hkb_button is default:
     properties gui.button_properties("hkb_button")
-    idle_background  "mod_assets/hkb_idle_background.png"
+    idle_background "mod_assets/hkb_idle_background.png"
     hover_background "mod_assets/hkb_hover_background.png"
+    insensitive_background "mod_assets/hkb_disabled_background.png"
     ypadding 5
 
     hover_sound gui.hover_sound
@@ -133,26 +135,6 @@ style hkb_button is default:
 
 style hkb_button_text is default:
     properties gui.button_text_properties("hkb_button")
-    outlines []
-
-# and a disabled varient of the button
-style hkbd_vbox is vbox
-style hkbd_button is button
-style hkbd_button_text is button_text
-
-style hkbd_vbox:
-    spacing 0
-
-style hkbd_button is default:
-    properties gui.button_properties("hkb_button")
-    background "mod_assets/hkb_disabled_background.png"
-
-style hkbd_button_text is default:
-#    properties gui.button_text_properties("hkb_button")
-    font gui.default_font
-    size gui.text_size
-    color "8C8C8C"
-    kerning 0.2
     outlines []
 
 style hkb_text is default:
@@ -178,40 +160,28 @@ screen hkb_overlay():
         if store.hkb_button.talk_enabled:
             textbutton _("Talk") action Function(show_dialogue_box)
         else:
-            frame:
-                style store.mas_ui.hkbd_button_style
-                text "Talk"
-
+            textbutton _("Talk")
 
         if store.hkb_button.extra_enabled:
             textbutton _("Extra") action Function(mas_open_extra_menu)
         else:
-            frame:
-                style store.mas_ui.hkbd_button_style
-                text "Extra"
-
+            textbutton _("Extra")
 
         if store.hkb_button.music_enabled:
             textbutton _("Music") action Function(select_music)
         else:
-            frame:
-                style store.mas_ui.hkbd_button_style
-                text "Music"
-
+            textbutton _("Music")
 
         if store.hkb_button.play_enabled:
             textbutton _("Play") action Function(pick_game)
         else:
-            frame:
-                style store.mas_ui.hkbd_button_style
-                text "Play"
+            textbutton _("Play")
 
 
 screen movie_overlay():
 
     zorder 50
-
-    style_prefix "hkb"
+    style_prefix store.mas_ui.hkb_style_prefix
 
     vbox:
         xalign 0.95
@@ -220,14 +190,12 @@ screen movie_overlay():
         if watchingMovie:
             textbutton _("Pause") action Jump("mm_movie_pausefilm")
         else:
-            textbutton _("Pause") action NullAction() style "hkbd_button"
+            textbutton _("Pause")
 
         if watchingMovie:
             textbutton _("Time") action Jump("mm_movie_settime")
         else:
-            textbutton _("Time"):
-                action NullAction()
-                style store.mas_ui.hkbd_button_style
+            textbutton _("Time")
 
 init python:
     HKBShowButtons()
