@@ -248,21 +248,15 @@ init -99 python in mas_sprites:
     def add_filter(flt_enum, imx):
         """
         Adds a filter to the global filters
+        You can also use this to override built-in filters.
 
         NOTE: if you plan to use this, please use it before init level -1
         Filters beyond this level will be ignored.
 
         IN:
             flt_enum - enum key to use as a filter. 
-                NOTE: duplicates will be logged and ignored
             imx - image matrix to use as filter
         """
-        if flt_enum in FILTERS:
-            mas_utils.writelog(
-                "[Warning!]: duplicate filter enum '{0}'\n".format(flt_enum)
-            )
-            return
-
         if __ignore_filters:
             mas_utils.writelog(
                 "[Warning!]: Cannot add filter '{0}' after init -1\n".format(
