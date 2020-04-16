@@ -1,18 +1,18 @@
-#START: vars
-#Whether dark mode is enabled or not
+# START: vars
+# Whether dark mode is enabled or not
 default persistent._mas_dark_mode_enabled = False
 
-#Whether auto ui change is enabled or not
+# Whether auto ui change is enabled or not
 default persistent._mas_auto_mode_enabled = False
 
 init -1 python in mas_globals:
-    #None on init, True if dark ui, False otherwise
+    # None on init, True if dark ui, False otherwise
     dark_mode = None
 
-    #The door-knock greets, if door open, need to keep a broken textbox, so this would be set False for those before the spaceroom call
+    # The door-knock greets, if door open, need to keep a broken textbox, so this would be set False for those before the spaceroom call
     change_textbox = True
 
-    #The colors we're using for buttons
+    # The colors we're using for buttons
     button_text_hover_color = None
     button_text_idle_color = None
 
@@ -131,7 +131,7 @@ init -200 python in mas_ui:
     SCROLLABLE_MENU_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_H)
     SCROLLABLE_MENU_TXT_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_TXT_H)
 
-#START: Helper method(s)
+# START: Helper method(s)
 init python:
     import store.mas_globals as mas_globals
     import store.mas_ui as mas_ui
@@ -147,18 +147,18 @@ init python:
             filestring pointing to the right path
         """
 
-        #Light handling
+        # Light handling
         if not mas_globals.dark_mode:
             return filestring
 
-        #Dark handling
+        # Dark handling
         else:
-            #Need to isolate this for just the extension and the path so we can form a new one
+            # Need to isolate this for just the extension and the path so we can form a new one
             if '.' in filestring:
                 extension = filestring[filestring.index('.'):]
                 path = filestring[:filestring.index('.')]
                 return path + "_d" + extension
-            #If that fails then we just return the normal one
+            # If that fails then we just return the normal one
             return filestring
 
     def mas_darkMode(morning_flag=False):
@@ -172,7 +172,7 @@ init python:
             mas_globals.dark_mode = True
             mas_ui.ui_mode_suffix = "_dark"
 
-            #Style swaps
+            # Style swaps
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_dark
             style.mas_mbs_button = style.mas_mbs_button_dark
             style.mas_adjustable_button = style.mas_adjustable_button_dark
@@ -199,11 +199,11 @@ init python:
             style.pref_label = style.pref_dark_label
             style.pref_label_text = style.pref_dark_label_text
 
-            #Textbox handling
+            # Textbox handling
             if mas_globals.change_textbox:
                 style.say_window = style.window_dark
 
-            #Global swaps
+            # Global swaps
             mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
             mas_globals.button_text_idle_color = mas_ui.dark_button_text_idle_color
             mas_globals.button_text_insensitive_color = mas_ui.dark_button_text_insensitive_color
@@ -244,7 +244,7 @@ init python:
             mas_globals.dark_mode = False
             mas_ui.ui_mode_suffix = ""
 
-            #Style swaps
+            # Style swaps
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_def
             style.mas_mbs_button = style.mas_mbs_button_def
             style.mas_adjustable_button = style.mas_adjustable_button_def
@@ -271,11 +271,11 @@ init python:
             style.pref_label = style.pref_def_label
             style.pref_label_text = style.pref_def_label_text
 
-            #Textbox
+            # Textbox
             if mas_globals.change_textbox:
                 style.say_window = style.window_def
 
-            #Handle the global swaps
+            # Handle the global swaps
             mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
             mas_globals.button_text_idle_color = mas_ui.light_button_text_idle_color
             mas_globals.button_text_insensitive_color = mas_ui.light_button_text_insensitive_color
@@ -318,10 +318,10 @@ init python:
         mas_ui.hkb_disabled_bg = mas_getTimeFile(mas_ui.HKB_DISABLED_BG)
         mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
     
-        #Reset the global flag
+        # Reset the global flag
         mas_globals.change_textbox = True
 
-#START: Settings menu helpers
+# START: Settings menu helpers
 init python in mas_settings:
     _persistent = renpy.game.persistent
     import store
@@ -329,13 +329,13 @@ init python in mas_settings:
         """
         Handles the toggling of fields so the menu options become mutually exclusive
         """
-        #We're disablng this so we only set it false
+        # We're disablng this so we only set it false
         if _persistent._mas_auto_mode_enabled:
             _persistent._mas_auto_mode_enabled = False
             if not store.morning_flag:
                 store.mas_darkMode(True)
 
-        #But here we need to also switch the other button since this is mutually exclusive
+        # But here we need to also switch the other button since this is mutually exclusive
         else:
             _persistent._mas_auto_mode_enabled = True
             _persistent._mas_dark_mode_enabled = False
@@ -353,7 +353,7 @@ init python in mas_settings:
         renpy.restart_interaction()
 
 
-#START: Extras Menu Styles
+# START: Extras Menu Styles
 style mas_adjust_vbar_def:
     xsize 18
     base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
@@ -416,7 +416,7 @@ style mas_adjustable_button_dark is default:
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-#START: Hotkey Buttons Styles
+# START: Hotkey Buttons Styles
 
 style hkb_dark_vbox is vbox
 style hkb_dark_button is button_dark
@@ -448,7 +448,7 @@ style hkb_dark_text is default:
     outlines []
 
 
-#START: screens styles
+# START: screens styles
 style window_monika_def is window:
     background Image("gui/textbox_monika.png", xalign=0.5, yalign=1.0)
 
@@ -1004,7 +1004,7 @@ style game_menu_label_dark_text:
 
 
 
-#START: islands event styles
+# START: islands event styles
 
 style island_dark_button is button_dark
 
@@ -1080,19 +1080,19 @@ style mute_all_button_def_text is check_button_text
 style mute_all_button_dark is check_dark_button
 style mute_all_button_dark_text is check_dark_button_text
 
-#START: quick menu styles
+# START: quick menu styles
 
 style quick_dark_button:
     properties gui.button_properties("quick_dark_button")
     activate_sound gui.activate_sound
 
-#style quick_dark_button_text is button_text_dark
+# style quick_dark_button_text is button_text_dark
 style quick_dark_button_selected_text
 style quick_dark_button_text:
     properties gui.button_text_properties("quick_dark_button")
     outlines []
 
-#START: music selector styles
+# START: music selector styles
 
 style music_menu_dark_label is game_menu_label_dark
 style music_menu_dark_label_text is game_menu_label_dark_text
@@ -1128,7 +1128,7 @@ style music_menu_dark_prev_button_text is navigation_dark_button_text:
     min_width 135
     text_align 1.0
 
-#START: image definitions
+# START: image definitions
 image menu_bg:
     topleft
     ConditionSwitch(
@@ -1150,7 +1150,7 @@ image menu_nav:
     menu_nav_move
 
 
-#START: gui definitions
+# START: gui definitions
 define gui.button_def_width = None
 define gui.button_def_height = 36
 define gui.button_def_borders = Borders(4, 4, 4, 4)
