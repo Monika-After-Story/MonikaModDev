@@ -3,6 +3,11 @@ default persistent._mas_background_MBGdata = {}
 
 #START: Class definition
 init -10 python:
+
+    # TODO: the background class needs to decide the filters to use.
+    #   *AS WELL AS THE PROGRESSION*
+    # TODO: move the current DAY/NIGHT filters from mas_sprites to here.
+    # NOTE: I will do this when adding sunset progression
     class MASBackground(object):
         """
         Background class to get display props for bgs
@@ -234,39 +239,6 @@ init -10 python:
             """
             return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
 
-
-    class MASFilterableBackground(MASBackground):
-        """
-        Background with filter support
-
-        PROPERTIES:
-            None
-        """
-
-        def __init__(self,
-            background_id,
-            prompt,
-            image_day,
-            image_night,
-            image_rain_day=None,
-            image_rain_night=None,
-            image_overcast_day=None,
-            image_overcast_night=None,
-            image_snow_day=None,
-            image_snow_night=None,
-            hide_calendar=False,
-            hide_masks=False,
-            disable_progressive=None,
-            unlocked=False,
-            entry_pp=None,
-            exit_pp=None
-        ):
-            """
-            Constructor for Filterable background
-
-            TODO
-            """
-            # TODO
 
 #Helper methods and such
 init -20 python in mas_background:

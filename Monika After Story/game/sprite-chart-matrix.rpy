@@ -302,26 +302,16 @@ init -98 python:
     # global filter-based functions
     # NOTE: only put the most used filter checks. 
 
-    def mas_isFltDay():
+    def mas_isCurrentFlt(flt):
         """
-        Checks if the filter is currently on "Day"
+        Checks if the given filter is the current filter.
 
-        NOTE: You probably want to use mas_isSunny
+        IN:
+            flt - filter to check
 
-        RETURNS: True if filter is day. false if not
+        RETURNS: True if flt is the current filter, false if not
         """
-        return store.mas_sprites.get_filter() == store.mas_sprites.FLT_DAY
-
-
-    def mas_isFltNight():
-        """
-        Checks if the filter is currently on "Night"
-
-        NOTE: You probably want to use mas_isNight
-
-        RETURNS: True if filter is night, false if not
-        """
-        return store.mas_sprites.get_filter() == store.mas_sprites.FLT_NIGHT
+        return store.mas_sprites.get_filter() == flt
 
 
 # this should be after sprite-chart's initialization

@@ -107,6 +107,9 @@ init -10 python:
         SKIP_MID_LOOP_EVAL = 4
         # True if we want idle to skip mid loop eval once
 
+        SCENE_CHANGE = 5
+        # TRue if want the scene to change
+
         # end keys
 
 
@@ -116,7 +119,6 @@ init -10 python:
             """
             super(MASIdleMailbox, self).__init__()
 
-
         # NOTE: add additoinal functions below when appropriate.
         def send_rebuild_msg(self):
             """
@@ -124,20 +126,17 @@ init -10 python:
             """
             self.send(self.REBUILD_EV, True)
 
-
         def get_rebuild_msg(self):
             """
             Gets rebuild message
             """
             return self.get(self.REBUILD_EV)
 
-
         def send_ds_gre_type(self, gre_type):
             """
             Sends greeting type to mailbox
             """
             self.send(self.DOCKSTAT_GRE_TYPE, gre_type)
-
 
         def get_ds_gre_type(self, default=None):
             """
@@ -150,13 +149,11 @@ init -10 python:
                 return default
             return result
 
-
         def send_idle_cb(self, cb_label):
             """
             Sends idle callback label to mailbox
             """
             self.send(self.IDLE_MODE_CB_LABEL, cb_label)
-
 
         def get_idle_cb(self):
             """
@@ -164,19 +161,29 @@ init -10 python:
             """
             return self.get(self.IDLE_MODE_CB_LABEL)
 
-
         def send_skipmidloopeval(self):
             """
             Sends skip mid loop eval message to mailbox
             """
             self.send(self.SKIP_MID_LOOP_EVAL, True)
 
-
         def get_skipmidloopeval(self):
             """
             Gets skip midloop eval value
             """
             return self.get(self.SKIP_MID_LOOP_EVAL)
+
+        def send_scene_change(self):
+            """
+            Sends scene change message to mailbox
+            """
+            self.send(self.SCENE_CHANGE, True)
+
+        def get_scene_change(self):
+            """
+            Gets scene change value
+            """
+            return self.get(self.SCENE_CHANGE)
 
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -442,23 +449,17 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
+
     def mas_isMorning():
         """DEPRECATED
         Checks if it is day or night via suntimes
 
-        NOTE: this should be replaced with a filter-specific function
+        NOTE: the wording of this function is bad. This does not literally
+            mean that it is morning. USE mas_isSunnyNow
 
         RETURNS: True if day, false if not
         """
-        # generate the times we need
-        sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
-        ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
-        sr_time = datetime.time(sr_hour, sr_min)
-        ss_time = datetime.time(ss_hour, ss_min)
-
-        now_time = datetime.datetime.now().time()
-
-        return sr_time <= now_time < ss_time
+        return mas_isSunnyNow()
 
 
     def mas_progressFilter():
@@ -466,23 +467,29 @@ init python:
         Changes filter according to rules.
 
         Call this when you want to update the filter.
-        """
-        # TODO: change to check suntimes instead
-        if morning_flag:
-            store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
 
-        else:
-            store.mas_sprites.set_filter(store.mas_sprites.FLT_NIGHT)
+        RETURNS: True upon a filter change, False if not
+        """
+        # TODO: this should be deferred to the BG
+        curr_flt = store.mas_sprites.get_filter()
+
+        now_time = datetime.datetime.now().time()
+        if mas_isSunny(now_time):
+            new_flt = store.mas_sprites.FLT_DAY
+
+        else: # mas_isNight(now_time):
+            new_flt = store.mas_sprites.FLT_NIGHT
+
+        store.mas_sprites.set_filter(new_flt)
+
+        return curr_flt != new_flt
 
 
     def mas_shouldChangeTime():
+        """DEPRECATED
+        This no longer makes sense with the filtering system.
         """
-        Checks if we should change the day to night or night to day.
-
-        RETURNS: true if we should change day/night cycle, False otherwise
-        """
-        # TODO: change to check suntimes instead
-        return morning_flag != mas_isMorning()
+        return False
 
 
     def mas_shouldRain():
@@ -802,26 +809,28 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if night_bg is None:
         $ night_bg = store.mas_current_background.getNightRoom()
 
+    # progress filter
+    python:
+        if mas_progressFilter():
+            # NOTE: a filter change is like a scene change with all dissolve
+            scene_change = True
+            dissolve_all = True
+
     if scene_change:
         scene black
 
     python:
         monika_room = None
 
-        # MORNING CHECK
-        # establishes correct room to use
-        # TODO: change this to work as a progressive filter based on suntime
-        if mas_isMorning():
-            if not morning_flag or scene_change:
-                morning_flag = True
+        # TODO: this will need some rework to work nicely with filter
+        #   progression. For now its just going to be customized for
+        #   our two filters.
+        if scene_change:
+            if mas_isSunnyNow():
                 monika_room = day_bg
-                mas_progressFilter()
 
-        else:
-            if morning_flag or scene_change:
-                morning_flag = False
+            else:
                 monika_room = night_bg
-                mas_progressFilter()
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
@@ -1458,12 +1467,9 @@ label ch30_loop:
             and mas_isMoniNormal(higher=True)
         )
 
-        should_dissolve_all = (
-            mas_shouldChangeTime()
-            or mas_weather.should_scene_change
-        )
+        should_dissolve_all = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    call spaceroom(scene_change=should_dissolve_all, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
     #This should be set back to false so we're not constantly scene changing
     $ mas_weather.should_scene_change = False
@@ -1708,9 +1714,6 @@ label ch30_minute(time_since_check):
 
         #Now we check if we should queue windowreact evs
         mas_checkForWindowReacts()
-
-        # update filter
-        mas_progressFilter()
 
         # check if we need to rebulid ev
         if mas_idle_mailbox.get_rebuild_msg():

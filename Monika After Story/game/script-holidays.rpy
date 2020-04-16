@@ -1610,7 +1610,7 @@ image mas_mistletoe = MASFilterSwitch(
 # NOTE: this will need to be revaluated with every filter.
 #   Not very maintainable but it has to be done.
 image mas_d25_lights = ConditionSwitch(
-    "mas_isFltNight()", ConditionSwitch(
+    "mas_isNightNow()", ConditionSwitch(
         "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/lights_on_1.png",
         "not persistent._mas_disable_animations", "mas_d25_night_lights_atl"
     ),
@@ -1630,7 +1630,7 @@ image mas_d25_night_lights_atl:
 # NOTE: this will need to be revaluated with every filter.
 #   Not very maintainable but it has to be done.
 image mas_d25_garlands = ConditionSwitch(
-    "mas_isFltNight()", ConditionSwitch(
+    "mas_isNightNow()", ConditionSwitch(
         "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/garland_on_1.png",
         "not persistent._mas_disable_animations", "mas_d25_night_garlands_atl"
     ),
@@ -1649,7 +1649,7 @@ image mas_d25_night_garlands_atl:
 # NOTE: this will need to be revaluated with every filter.
 #   Not very maintainable but it has to be done.
 image mas_d25_tree = ConditionSwitch(
-    "mas_isFltNight()", ConditionSwitch(
+    "mas_isNightNow()", ConditionSwitch(
         "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/tree_lights_on_1.png",
         "not persistent._mas_disable_animations", "mas_d25_night_tree_lights_atl"
     ),

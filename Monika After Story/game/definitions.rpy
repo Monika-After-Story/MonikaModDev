@@ -4490,6 +4490,15 @@ init -1 python:
         return persistent._mas_sunrise <= _curr_minutes < persistent._mas_sunset
 
 
+    def mas_isSunnyNow():
+        """
+        Checks if the sun is up right now
+
+        RETURNS: True if it is sunny now, False if not
+        """
+        return mas_isSunny(datetime.datetime.now().time())
+
+
     def mas_isNight(_time):
         """
         Checks if the sun is down during the given time
@@ -4501,6 +4510,15 @@ init -1 python:
         RETURNS: True if it the sun is down during the given time
         """
         return not mas_isSunny(_time)
+
+
+    def mas_isNightNow():
+        """
+        Checks if the sun is down right now
+
+        RETURNS: True if it is night now, False if not
+        """
+        return not mas_isSunnyNow()
 
 
     def mas_cvToDHM(mins):
