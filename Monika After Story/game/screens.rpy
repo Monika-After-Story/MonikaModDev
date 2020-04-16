@@ -443,25 +443,29 @@ screen choice(items):
 define config.narrator_menu = True
 
 
-style choice_vbox is vbox
-style choice_button is button
-style choice_button_text is button_text
-
-style choice_vbox:
+style choice_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
-
     spacing gui.choice_spacing
 
-style choice_button is default:
-    properties gui.button_properties("choice_button")
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style choice_dark_vbox is vbox:
+    xalign 0.5
+    ypos 270
+    yanchor 0.5
+    spacing gui.choice_spacing
 
-style choice_button_text is default:
-    properties gui.button_text_properties("choice_button")
-    outlines []
+style choice_button is generic_button_light:
+    xysize (420, None)
+    padding (100, 5, 100, 5)
+
+style choice_dark_button is generic_button_dark:
+    xysize (420, None)
+    padding (100, 5, 100, 5)
+
+style choice_button_text is generic_button_text_light
+
+style choice_dark_button_text is generic_button_text_dark
 
 
 init python:
@@ -483,8 +487,16 @@ screen rigged_choice(items):
 style talk_choice_vbox is choice_vbox:
     xcenter 960
 
+style talk_choice_dark_vbox is choice_dark_vbox:
+    xcenter 960
+
 style talk_choice_button is choice_button
+
+style talk_choice_dark_button is choice_dark_button
+
 style talk_choice_button_text is choice_button_text
+
+style talk_choice_dark_button_text is choice_dark_button_text
 
 
 ## This screen is used for the talk menu
@@ -499,27 +511,6 @@ screen talk_choice(items):
 ## When this is true, menu captions will be spoken by the narrator. When false,
 ## menu captions will be displayed as empty buttons.
 define config.narrator_menu = True
-
-
-style choice_vbox is vbox
-style choice_button is button
-style choice_button_text is button_text
-
-style choice_vbox:
-    xalign 0.5
-    ypos 270
-    yanchor 0.5
-
-    spacing gui.choice_spacing
-
-style choice_button is default:
-    properties gui.button_properties("choice_button")
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
-
-style choice_button_text is default:
-    properties gui.button_text_properties("choice_button")
-    outlines []
 
 
 ## Quick Menu screen ###########################################################
@@ -2138,87 +2129,113 @@ init python:
 
 define prev_adj = ui.adjustment()
 define main_adj = ui.adjustment()
-define gui.scrollable_menu_button_width = 560
-define gui.scrollable_menu_button_height = None
-define gui.scrollable_menu_button_tile = False
-define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
-
-define gui.scrollable_menu_button_text_font = gui.default_font
-define gui.scrollable_menu_button_text_size = gui.text_size
-define gui.scrollable_menu_button_text_xalign = 0.0
-define gui.scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
-define gui.scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
-
-# twopane_scrollabe is now a prefix
-define gui.twopane_scrollable_menu_button_width = 250
-define gui.twopane_scrollable_menu_button_height = None
-define gui.twopane_scrollable_menu_button_tile = False
-define gui.twopane_scrollable_menu_button_borders = Borders(25, 5, 25, 5)
-
-define gui.twopane_scrollable_menu_button_text_font = gui.default_font
-define gui.twopane_scrollable_menu_button_text_size = gui.text_size
-define gui.twopane_scrollable_menu_button_text_xalign = 0.0
-define gui.twopane_scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
-define gui.twopane_scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
 
 #Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
-# The line properties gui.button_properties("scrollable_menu_button") assigns all
-# attributes of gui.scrollable_menu_button to the style scrollable_menu_button
-# and the style scrollable_menu_button_text
 
-style scrollable_menu_vbox:
+style scrollable_menu_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
+    spacing 5
 
+style scrollable_menu_dark_vbox is vbox:
+    xalign 0.5
+    ypos 270
+    yanchor 0.5
     spacing 5
 
 style scrollable_menu_button is choice_button:
-    properties gui.button_properties("scrollable_menu_button")
+    xysize (560, None)
+    padding (25, 5, 25, 5)
+
+style scrollable_menu_dark_button is choice_dark_button:
+    xysize (560, None)
+    padding (25, 5, 25, 5)
 
 style scrollable_menu_button_text is choice_button_text:
-    properties gui.button_text_properties("scrollable_menu_button")
+    align (0.0, 0.0)
+
+style scrollable_menu_dark_button_text is choice_dark_button_text:
+    align (0.0, 0.0)
 
 style scrollable_menu_new_button is scrollable_menu_button
+
+style scrollable_menu_dark_new_button is scrollable_menu_dark_button
 
 style scrollable_menu_new_button_text is scrollable_menu_button_text:
     italic True
 
+style scrollable_menu_dark_new_button_text is scrollable_menu_dark_button_text:
+    italic True
+
 style scrollable_menu_special_button is scrollable_menu_button
+
+style scrollable_menu_dark_special_button is scrollable_menu_dark_button
 
 style scrollable_menu_special_button_text is scrollable_menu_button_text:
     bold True
 
+style scrollable_menu_dark_special_button_text is scrollable_menu_dark_button_text:
+    bold True
+
 style scrollable_menu_crazy_button is scrollable_menu_button
+
+style scrollable_menu_dark_crazy_button is scrollable_menu_dark_button
 
 style scrollable_menu_crazy_button_text is scrollable_menu_button_text:
     italic True
     bold True
 
+style scrollable_menu_dark_crazy_button_text is scrollable_menu_dark_button_text:
+    italic True
+    bold True
+
 # two pane stuff
-style twopane_scrollable_menu_vbox:
+style twopane_scrollable_menu_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
+    spacing 5
 
+style twopane_scrollable_menu_dark_vbox is vbox:
+    xalign 0.5
+    ypos 270
+    yanchor 0.5
     spacing 5
 
 style twopane_scrollable_menu_button is choice_button:
-    properties gui.button_properties("twopane_scrollable_menu_button")
+    xysize (250, None)
+    padding (25, 5, 25, 5)
+
+style twopane_scrollable_menu_dark_button is choice_dark_button:
+    xysize (250, None)
+    padding (25, 5, 25, 5)
 
 style twopane_scrollable_menu_button_text is choice_button_text:
-    properties gui.button_text_properties("twopane_scrollable_menu_button")
+    align (0.0, 0.0)
+
+style twopane_scrollable_menu_dark_button_text is choice_dark_button_text:
+    align (0.0, 0.0)
 
 style twopane_scrollable_menu_new_button is twopane_scrollable_menu_button
+
+style twopane_scrollable_menu_dark_new_button is twopane_scrollable_menu_dark_button
 
 style twopane_scrollable_menu_new_button_text is twopane_scrollable_menu_button_text:
     italic True
 
+style twopane_scrollable_menu_dark_new_button_text is twopane_scrollable_menu_dark_button_text:
+    italic True
+
 style twopane_scrollable_menu_special_button is twopane_scrollable_menu_button
+
+style twopane_scrollable_menu_dark_special_button is twopane_scrollable_menu_dark_button
 
 style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_button_text:
     bold True
 
+style twopane_scrollable_menu_dark_special_button_text is twopane_scrollable_menu_dark_button_text:
+    bold True
 
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
