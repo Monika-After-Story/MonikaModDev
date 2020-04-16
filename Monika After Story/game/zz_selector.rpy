@@ -2911,6 +2911,8 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
         vbox:
             xsize 200
             xalign 0.5
+            spacing 5
+
             viewport id "sidebar_scroll":
                 mousewheel True
                 arrowkeys True
@@ -2932,7 +2934,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
                     null height 1
 
-            null height 10
+            null height 5
 
             if mailbox.read_outfit_checkbox_visible():
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
@@ -2954,28 +2956,19 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     xalign 0.5
                     action Jump(confirm)
             else:
-                frame:
-                    ypadding 5
-                    xsize 120
+                textbutton _("Confirm"):
+                    style store.mas_ui.hkb_button_style
                     xalign 0.5
-
-                    background Image(store.mas_ui.hkb_disabled_bg)
-                    text "Confirm" style store.mas_ui.hkb_text_style
 
             if mailbox.read_restore_enable():
                 textbutton _("Restore"):
                     style store.mas_ui.hkb_button_style
                     xalign 0.5
                     action Jump(restore)
-
             else:
-                frame:
-                    ypadding 5
-                    xsize 120
+                textbutton _("Restore"):
+                    style store.mas_ui.hkb_button_style
                     xalign 0.5
-
-                    background Image(store.mas_ui.hkb_disabled_bg)
-                    text "Restore" style store.mas_ui.hkb_text_style
 
             textbutton _("Cancel"):
                 style store.mas_ui.hkb_button_style

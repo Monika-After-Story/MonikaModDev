@@ -57,7 +57,6 @@ init -200 python in mas_ui:
     hkb_style_prefix = "hkb"
     hkb_button_style = "hkb_button"
     hkb_button_text_style = "hkb_button_text"
-    hkb_text_style = "hkb_text"
 
     # main menu
     mm_tt_style = "main_menu_version_def"
@@ -215,7 +214,6 @@ init python:
             mas_ui.hkb_style_prefix = "hkb_dark"
             mas_ui.hkb_button_style = "hkb_dark_button"
             mas_ui.hkb_button_text_style = "hkb_dark_button_text"
-            mas_ui.hkb_text_style = "hkb_dark_text"
             mas_ui.mm_tt_style = "main_menu_version_dark"
             mas_ui.mms_style_prefix = "music_menu_dark"
             mas_ui.mms_button_prev_style = "music_menu_dark_prev_button"
@@ -287,7 +285,6 @@ init python:
             mas_ui.hkb_style_prefix = "hkb"
             mas_ui.hkb_button_style = "hkb_button"
             mas_ui.hkb_button_text_style = "hkb_button_text"
-            mas_ui.hkb_text_style = "hkb_text"
             mas_ui.mm_tt_style = "main_menu_version_def"
             mas_ui.mms_style_prefix = "music_menu"
             mas_ui.mms_button_prev_style = "music_menu_prev_button"

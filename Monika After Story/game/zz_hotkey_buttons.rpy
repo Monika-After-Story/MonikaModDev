@@ -120,23 +120,6 @@ style hkb_button_text is generic_button_text_light:
 style hkb_dark_button_text is generic_button_text_dark:
     kerning 0.2
 
-# FIXME: get rid of this styles after restyling the selector buttons
-style hkb_text is default:
-    xalign 0.5
-    size gui.text_size
-    font gui.default_font
-    color mas_ui.light_button_text_idle_color
-    kerning 0.2
-    outlines []
-
-style hkb_dark_text is default:
-    xalign 0.5
-    size gui.text_size
-    font gui.default_font
-    color mas_ui.dark_button_text_idle_color
-    kerning 0.2
-    outlines []
-
 screen hkb_overlay():
 
     zorder 50
