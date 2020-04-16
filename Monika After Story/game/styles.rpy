@@ -353,6 +353,35 @@ init python in mas_settings:
         renpy.restart_interaction()
 
 
+# START: Generic button styles
+# FIXME: can be renamed or removed later
+style generic_button_base:
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style generic_button_light is generic_button_base:
+    background Frame("mod_assets/buttons/generic/[prefix_]bg.png", Borders(5, 5, 5, 5), tile=False)
+
+style generic_button_dark is generic_button_base:
+    background Frame("mod_assets/buttons/generic/[prefix_]bg_d.png", Borders(5, 5, 5, 5), tile=False)
+
+style generic_button_text_base:
+    font gui.default_font
+    size gui.text_size
+    align (0.5, 0.5)
+    outlines []
+
+style generic_button_text_light is generic_button_text_base:
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_hover_color
+    insensitive_color mas_ui.light_button_text_insensitive_color
+
+style generic_button_text_dark is generic_button_text_base:
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
+    insensitive_color mas_ui.dark_button_text_insensitive_color
+
+
 # START: Extras Menu Styles
 style mas_adjust_vbar_def:
     xsize 18
@@ -415,37 +444,6 @@ style mas_adjustable_button_dark is default:
     hover_background Frame("mod_assets/buttons/squares/square_hover_d.png", left=3, top=3)
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
-
-# START: Hotkey Buttons Styles
-
-style hkb_dark_vbox is vbox
-style hkb_dark_button is button_dark
-style hkb_dark_button_text is button_text_dark
-
-style hkb_dark_vbox:
-    spacing 0
-
-style hkb_dark_button is default:
-    properties gui.button_properties("hkb_dark_button")
-    idle_background "mod_assets/hkb_idle_background_d.png"
-    hover_background "mod_assets/hkb_hover_background_d.png"
-    insensitive_background "mod_assets/hkb_disabled_background_d.png"
-    ypadding 5
-
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
-
-style hkb_dark_button_text is default:
-    properties gui.button_text_properties("hkb_dark_button")
-    outlines []
-
-style hkb_dark_text is default:
-    xalign 0.5
-    size gui.text_size
-    font gui.default_font
-    color mas_ui.dark_button_text_idle_color
-    kerning 0.2
-    outlines []
 
 
 # START: screens styles
@@ -1188,17 +1186,6 @@ define gui.scrollable_menu_button_dark_text_size = gui.text_size
 define gui.scrollable_menu_button_dark_text_xalign = 0.0
 define gui.scrollable_menu_button_dark_text_idle_color = mas_ui.dark_button_text_idle_color
 define gui.scrollable_menu_button_dark_text_hover_color = mas_ui.dark_button_text_hover_color
-
-define gui.hkb_dark_button_width = 120
-define gui.hkb_dark_button_height = None
-define gui.hkb_dark_button_tile = False
-define gui.hkb_dark_button_text_font = gui.default_font
-define gui.hkb_dark_button_text_size = gui.text_size
-define gui.hkb_dark_button_text_xalign = 0.5
-define gui.hkb_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
-define gui.hkb_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
-define gui.hkb_dark_button_text_insensitive_color = mas_ui.dark_button_text_insensitive_color
-define gui.hkb_dark_button_text_kerning = 0.2
 
 define gui.choice_dark_button_width = 420
 define gui.choice_dark_button_height = None

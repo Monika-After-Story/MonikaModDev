@@ -99,49 +99,41 @@ init -1 python in hkb_button:
 # HOTKEY BUTTON SCREEN ========================================================
 # Literally just hotkey buttons
 
-# properties for these new buttons
-# again copied from choice
-define gui.hkb_button_width = 120
-define gui.hkb_button_height = None
-define gui.hkb_button_tile = False
-#define gui.hkb_button_borders = Borders(0, 5, 0, 5)
-define gui.hkb_button_text_font = gui.default_font
-define gui.hkb_button_text_size = gui.text_size
-define gui.hkb_button_text_xalign = 0.5
-#define gui.hkb_button_text_xanchor = 0.5
-define gui.hkb_button_text_idle_color = mas_ui.light_button_text_idle_color
-define gui.hkb_button_text_hover_color = mas_ui.light_button_text_hover_color
-define gui.hkb_button_text_insensitive_color = mas_ui.light_button_text_insensitive_color
-define gui.hkb_button_text_kerning = 0.2
-
 # starting with a new style: hkb (hotkey button)
-# most of this is copied from choice
-style hkb_vbox is vbox
-style hkb_button is button
-style hkb_button_text is button_text
+style hkb_vbox is vbox:
+    spacing 5
 
-style hkb_vbox:
-    spacing 0
+style hkb_dark_vbox is vbox:
+    spacing 5
 
-style hkb_button is default:
-    properties gui.button_properties("hkb_button")
-    idle_background "mod_assets/hkb_idle_background.png"
-    hover_background "mod_assets/hkb_hover_background.png"
-    insensitive_background "mod_assets/hkb_disabled_background.png"
-    ypadding 5
+style hkb_button is generic_button_light:
+    xysize (120, 35)
+    padding (5, 5, 5, 5)
 
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style hkb_dark_button is generic_button_dark:
+    xysize (120, 35)
+    padding (5, 5, 5, 5)
 
-style hkb_button_text is default:
-    properties gui.button_text_properties("hkb_button")
-    outlines []
+style hkb_button_text is generic_button_text_light:
+    kerning 0.2
 
+style hkb_dark_button_text is generic_button_text_dark:
+    kerning 0.2
+
+# FIXME: get rid of this styles after restyling the selector buttons
 style hkb_text is default:
     xalign 0.5
     size gui.text_size
     font gui.default_font
     color mas_ui.light_button_text_idle_color
+    kerning 0.2
+    outlines []
+
+style hkb_dark_text is default:
+    xalign 0.5
+    size gui.text_size
+    font gui.default_font
+    color mas_ui.dark_button_text_idle_color
     kerning 0.2
     outlines []
 
