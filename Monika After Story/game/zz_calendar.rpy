@@ -1732,7 +1732,7 @@ init python:
     calendar.addRepeatable("New years day",_("New Year's Day"),month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine",_("Valentine's Day"),month=2,day=14,year_param=list())
     #calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
-    calendar.addRepeatable("April Fools",_("Day I Become an AI"),month=4,day=1,year_param=[2018])
+    calendar.addRepeatable("April Fools",_("Day I Became an AI"),month=4,day=1,year_param=[2018])
     calendar.addRepeatable("Monika's Birthday",_("My Birthday"),month=9,day=22,year_param=range(1999,MASCalendar.MAX_VIEWABLE_YEAR))
     calendar.addRepeatable("Halloween",_("Halloween"),month=10,day=31,year_param=list())
     calendar.addRepeatable("Christmas eve",_("Christmas Eve"),month=12,day=24,year_param=list())

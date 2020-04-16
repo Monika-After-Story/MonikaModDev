@@ -372,9 +372,13 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-#0.10.8
-label v0_10_8(version="v0_10_8"):
+#0.11.0
+label v0_11_0(version="v0_11_0"):
     python:
+        #First, we're fixing the consumables map
+        for cons_id in persistent._mas_consumable_map.iterkeys():
+            persistent._mas_consumable_map[cons_id]["has_restock_warned"] = False
+
         #Let's stock current users on some consumables (assuming they've gifted before)
         #We'll keep it somewhat random.
         coffee_cons = mas_getConsumable("coffee")
@@ -388,7 +392,8 @@ label v0_10_8(version="v0_10_8"):
 
 
             #Transfer the amount of cups had
-            persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
+            if persistent._mas_coffee_cups_drank:
+                persistent._mas_consumable_map["coffee"]["times_had"] += persistent._mas_coffee_cups_drank
 
             #Delete the old vars
             safeDel("_mas_coffee_cups_drank")
@@ -396,14 +401,12 @@ label v0_10_8(version="v0_10_8"):
             safeDel("_mas_coffee_been_given")
 
         hotchoc_cons = mas_getConsumable("hotchoc")
-        if hotchoc_cons and persistent._mas_acs_enable_hotchoc:
-            if not hotchoc_cons.enabled():
-                hotchoc_cons.restock(renpy.random.randint(40, 60))
+        if hotchoc_cons and seen_event("mas_reaction_hotchocolate"):
+            hotchoc_cons.restock(renpy.random.randint(40, 60))
+            #NOTE: This will re-enable itself automatically in winter
 
-                #Enable
-                hotchoc_cons.enable()
-
-            persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
+            if persistent._mas_c_hotchoc_cups_drank:
+                persistent._mas_consumable_map["hotchoc"]["times_had"] += persistent._mas_c_hotchoc_cups_drank
 
             #Delete uneeded vars
             safeDel("_mas_c_hotchoc_cups_drank")
@@ -422,9 +425,9 @@ label v0_10_8(version="v0_10_8"):
 
         # ensure marisa + ACS is unlocked
         if mas_o31CostumeWorn(mas_clothes_marisa):
-            store.mas_selspr.unlock_clothes(mas_clothes_marisa)
-            store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
-            store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
+            persistent._mas_selspr_clothes_db["marisa"] = (True, False)
+            persistent._mas_selspr_acs_db["marisa_witchhat"] = (True, False)
+            persistent._mas_selspr_hair_db["downtiedstrand"] = (True, True)
 
         #Update conditions for the greetings
         new_greetings_conditions = {
