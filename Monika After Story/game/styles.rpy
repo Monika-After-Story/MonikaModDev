@@ -175,6 +175,7 @@ init python:
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_dark
             style.mas_mbs_button = style.mas_mbs_button_dark
             style.mas_adjustable_button = style.mas_adjustable_button_dark
+            style.mas_adjust_vbar = style.mas_adjust_vbar_dark
             style.scrollbar = style.scrollbar_dark
             style.frame = style.frame_dark
             style.confirm_frame = style.confirm_frame_dark
@@ -246,6 +247,7 @@ init python:
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_def
             style.mas_mbs_button = style.mas_mbs_button_def
             style.mas_adjustable_button = style.mas_adjustable_button_def
+            style.mas_adjust_vbar = style.mas_adjust_vbar_def
             style.scrollbar = style.scrollbar_def
             style.frame = style.frame_def
             style.confirm_frame = style.confirm_frame_def
@@ -377,70 +379,6 @@ style generic_button_text_dark is generic_button_text_base:
     idle_color mas_ui.dark_button_text_idle_color
     hover_color mas_ui.dark_button_text_hover_color
     insensitive_color mas_ui.dark_button_text_insensitive_color
-
-
-# START: Extras Menu Styles
-style mas_adjust_vbar_def:
-    xsize 18
-    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
-    thumb "gui/slider/horizontal_hover_thumb.png"
-    bar_vertical True
-
-style mas_adjust_vbar_dark:
-    xsize 18
-    base_bar Frame("gui/scrollbar/vertical_poem_bar_d.png", tile=False)
-    thumb "gui/slider/horizontal_hover_thumb.png"
-    bar_vertical True
-
-style mas_adjustable_button_text_def is default:
-    idle_color mas_ui.light_button_text_idle_color
-    hover_color mas_ui.light_button_text_hover_color
-    outlines []
-    kerning 0.2
-    xalign 0.5
-    yalign 0.5
-    font gui.default_font
-    size gui.text_size
-
-style mas_adjustable_button_text_dark is default:
-    idle_color mas_ui.dark_button_text_idle_color
-    hover_color mas_ui.dark_button_text_hover_color
-    outlines []
-    kerning 0.2
-    xalign 0.5
-    yalign 0.5
-    font gui.default_font
-    size gui.text_size
-
-style mas_mbs_button_def is default:
-#    width 35
-#    height 35
-#    tile False
-    idle_background  "mod_assets/buttons/squares/square_idle.png"
-    hover_background "mod_assets/buttons/squares/square_hover.png"
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
-
-style mas_mbs_button_dark is default:
-#    width 35
-#    height 35
-#    tile False
-    idle_background  "mod_assets/buttons/squares/square_idle_d.png"
-    hover_background "mod_assets/buttons/squares/square_hover_d.png"
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
-
-style mas_adjustable_button_def is default:
-    idle_background Frame("mod_assets/buttons/squares/square_idle.png", left=3, top=3)
-    hover_background Frame("mod_assets/buttons/squares/square_hover.png", left=3, top=3)
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
-
-style mas_adjustable_button_dark is default:
-    idle_background Frame("mod_assets/buttons/squares/square_idle_d.png", left=3, top=3)
-    hover_background Frame("mod_assets/buttons/squares/square_hover_d.png", left=3, top=3)
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
 
 
 # START: screens styles
