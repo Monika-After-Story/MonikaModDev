@@ -387,8 +387,8 @@ label v0_11_1(version="v0_11_1"):
 
             # calc avg hr per session
             ahs = (
-                store.mas_utils.td2hr(mas_getTotalPlaytime())
-                / ( (float) mas_getTotalSessions() )
+                store.mas_utils.td2hr(mas_getTotalPlaytime()) 
+                / float(mas_getTotalSessions())
             )
 
             # only care about users with under 1 hour session time avg
