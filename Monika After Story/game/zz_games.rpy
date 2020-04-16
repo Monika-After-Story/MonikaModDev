@@ -21,6 +21,23 @@ init 1 python in mas_games:
     #NOTE: This is adjusted in the mas_pick_a_game label
     HANGMAN_NAME = _("Hangman") if not store.persistent._mas_sensitive_mode else _("Word Guesser")
 
+    def _total_games_played(exclude_list=[]):
+        """
+        Returns the total number of games played by adding up the shown_count of each game
+
+        IN:
+            exclude_list - A list of event_label strings for games we want to exclude from the number of games played
+                defaults to an empty list
+        """
+        global game_db
+
+        total_shown_count = 0
+        for ev in game_db.itervalues():
+            if ev.eventlabel not in exclude_list:
+                total_shown_count += ev.shown_count
+
+        return total_shown_count
+
 init 7 python in mas_games:
     def getGameEVByPrompt(gamename):
         """
@@ -184,7 +201,7 @@ label mas_pick_a_game:
 
     if selected_game:
         show monika at t11
-        call expression selected_game
+        $ pushEvent(selected_game, skipeval=True)
 
     if not renpy.showing("monika idle"):
         show monika idle at t11

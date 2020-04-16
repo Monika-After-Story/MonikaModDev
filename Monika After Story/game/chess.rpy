@@ -1609,6 +1609,11 @@ label mas_chess_playagain:
         m "Do you want to play again?{fast}"
 
         "Yes.":
+            $ chess_ev = mas_getEV("mas_chess")
+            if chess_ev:
+                # each game counts as a game played
+                $ chess_ev.shown_count += 1
+
             jump mas_chess_new_game_start
         "No.":
             pass

@@ -378,8 +378,23 @@ label v0_11_1(version="v0_11_1"):
         safeDel("game_unlocks")
 
         chess_unlock_ev = mas_getEV("mas_unlock_chess")
-        if not renpy.seen_label("mas_unlock_chess") and chess_unlock_ev:
-            chess_unlock_ev.conditional = "store.mas_xp.level() >= 4"
+        if chess_unlock_ev and chess_unlock_ev.action:
+            chess_unlock_ev.conditional = (
+                "store.mas_xp.level() >= 8 "
+                "or store.mas_games._total_games_played() > 99"
+            )
+
+        hangman_unlock_ev = mas_getEV("mas_unlock_hangman")
+        if hangman_unlock_ev and hangman_unlock_ev.action:
+            hangman_unlock_ev.conditional = (
+                "store.mas_xp.level() >= 4 "
+                "or store.mas_games._total_games_played() > 49"
+            )
+
+        piano_unlock_ev = mas_getEV("mas_unlock_piano")
+        if piano_unlock_ev and piano_unlock_ev.action:
+            piano_unlock_ev.conditional="store.mas_xp.level() >= 12"
+
     return
 
 #0.11.0
@@ -496,7 +511,7 @@ label v0_11_0(version="v0_11_0"):
 
             #If we've seen this event before, then we shouldn't allow its conditions to be true again
             #So we'll remove its conditional and action
-            if seen_event(new_evl) or mas_isGameUnlocked(game_evl_map.get(new_evl)):
+            if seen_event(new_evl) or mas_isGameUnlocked(game_evl_map.get(new_evl, "")):
                 mas_stripEVL(new_evl, list_pop=True)
 
                 #Fix the persistent data for the games
