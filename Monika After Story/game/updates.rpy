@@ -395,6 +395,34 @@ label v0_11_1(version="v0_11_1"):
         if piano_unlock_ev and piano_unlock_ev.action:
             piano_unlock_ev.conditional="store.mas_xp.level() >= 12"
 
+        # add missing xp for new users
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 10)):
+            # only care about users who basically started with 0.11.0
+
+            # calc avg hr per session
+            ahs = (
+                store.mas_utils.td2hr(mas_getTotalPlaytime()) 
+                / float(mas_getTotalSessions())
+            )
+
+            # only care about users with under 1 hour session time avg
+            if ahs < 1:
+                lvls_gained, xptnl = store.mas_xp._grant_on_pt()
+             
+                # only give users levels if they didn't earn what we 
+                # expected. If they have more levels gained then we expected,
+                # we won't change anything.
+                if persistent._mas_xp_lvl < lvls_gained:
+
+                    # give them the difference in levels as pool unlocks
+                    persistent._mas_pool_unlocks += (
+                        lvls_gained - persistent._mas_xp_lvl
+                    )
+
+                    # and set with averages
+                    persistent._mas_xp_tnl = xptnl
+                    persistent._mas_xp_lvl = lvls_gained
+
     return
 
 #0.11.0
