@@ -37,7 +37,6 @@ init 5 python in mas_nou:
     MONIKA_REFLECTED_ACT_AFTER_WDF = 5
     PLAYER_REFLECTED_ACT_AFTER_WDF = 6
     MONIKA_REFLECTED_WCC = 7
-    # BUG: Moni played wcc > I reflected with wcc > Moni reflected with wd4 got this with seen_coun 0, a bug?
     PLAYER_REFLECTED_WCC = 8
 
     player_wins_this_sesh = 0
@@ -58,7 +57,7 @@ init 5 python in mas_nou:
         A class to represent a shedding card game - NoU
         Total cards in the deck: 108
         The one who first gets rid of cards wins the round
-        The one who first reaches the points cap (default 250) wins the game
+        The one who first reaches the points cap (default 200) wins the game
         One game takes about 5-10 minutes, you keep your points through sessions
             so you can start the game in one sesh and finish it later if you wish
         """
@@ -83,25 +82,6 @@ init 5 python in mas_nou:
 
         # Maximum cards in hand
         HAND_CARDS_LIMIT = 30
-
-        # Dialogues lists
-
-        last_response = None
-        response = None
-
-        # MONIKA_PLAYS_FIRST = ()
-        # PLAYER_PLAYS_FIRST = ()
-        # MONIKA_SKIPS_FIRST_TURN = ()
-        # PLAYER_SKIPS_FIRST_TURN = ()
-        # MONIKA_DRAWS_CARD_FIRST_TURN = ()
-        # PLAYER_DRAWS_CARD_FIRST_TURN = ()
-        # MONIKA_CHOOSE_COLOUR_FIRST_TURN = ()
-        # PLAYER_CHOOSE_COLOUR_FIRST_TURN = ()
-        # PLAYER_PLAYS_AGGRESSIVELY_EARLY = ()
-        # PLAYER_PLAYS_AGGRESSIVELY = ()
-        # PLAYER_PLAYS_EXTRA_AGGRESSIVELY = ()
-        # MONIKA_REVERSE = ()
-        # MONIKA_REVERSE_FAILED = ()
 
         def __init__(self):
             """
@@ -465,7 +445,6 @@ init 5 python in mas_nou:
                 self.set_sensitive(False)
 
                 if next_player.isAI:
-                    # TODO: a wrapper to have more dlg
                     renpy.say(m, "There's no way you could hold more cards, ahaha!", True)
                     renpy.say(m, "You don't have to draw more this turn, [player].", True)
 
@@ -808,6 +787,46 @@ init 5 python in mas_nou:
             }
             self.game_log.append(current_player_data)
 
+            quips_monika_turn = (
+                "Oh, it's my turn.",
+                "My turn first.",
+                "I play first."
+            )
+
+            quip_monika_skip = " And I have to skip it."
+
+            quip_monika_draw = " And I have to draw cards."
+
+            quips_player_turn = (
+                "It's your turn, honey~",
+                "You play first.",
+                "Your turn, [player]."
+            )
+
+            quip_player_skip = " And you have to skip it."
+
+            quip_player_draw = " And you have to draw cards."
+
+            if current_player.isAI:
+                quip = renpy.substitute(renpy.random.choice(quips_monika_turn))
+
+                if current_player.should_draw_cards:
+                    quip += quip_monika_draw
+
+                elif current_player.should_skip_turn:
+                    quip += quip_monika_skip
+
+            else:
+                quip = renpy.substitute(renpy.random.choice(quips_player_turn))
+
+                if current_player.should_draw_cards:
+                    quip += quip_player_draw
+
+                elif current_player.should_skip_turn:
+                    quip += quip_player_skip
+
+            renpy.say(m, quip, True)
+
             # Finally allow to interact with cards
             current_player.plays_turn = True
             self.set_sensitive(not current_player.isAI)
@@ -935,7 +954,7 @@ init 5 python in mas_nou:
                 reaction = self.monika.choose_reaction()
                 if reaction["type"] != NO_REACTION:
                     renpy.call(reaction["label"], reaction["seen_count"])
-                    renpy.say(m, "My reaction: {0}: {1}".format(reaction["type"], reaction["seen_count"]), True)
+                    # renpy.say(m, "My reaction: {0}: {1}".format(reaction["type"], reaction["seen_count"]), True)
             self.has_jumped = False
 
             self.end_turn(self.monika, self.player)
@@ -1127,7 +1146,6 @@ init 5 python in mas_nou:
                 self.game = game
                 self.cards_data = {}
                 self.forced_card = None
-                # TODO: finish the class' docstring
                 self.player_cards_data = {
                     # we reset 'has_colour' to None in 'reset_in' turns
                     "reset_in": 0,
@@ -2207,7 +2225,7 @@ init 5 python in mas_nou:
             }
             temp_list = list()
 
-            for card in store.mas_nou.game.monika.hand:
+            for card in game.monika.hand:
                 hex_colour = colour_map[card.colour]
                 temp_list.append("{{color={0}}}{1}{{/color}}".format(hex_colour, card.label))
 
@@ -2222,18 +2240,274 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_nou_change_house_rules",
-            prompt="I want to change our house rules for NoU",
+            prompt="Let's change our house rules for NoU",
             category=["games"],
             pool=True,
             unlocked=False,
             conditional="persistent._mas_game_nou_wins['Monika'] or persistent._mas_game_nou_wins['Player']",
             action=EV_ACT_UNLOCK,
+            rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         )
     )
 
 label monika_nou_change_house_rules:
-    m "Alright, what kind of rule would you like to change?"
+    if (
+        persistent._mas_game_nou_house_rules["win_points"]
+        and (
+            persistent._mas_game_nou_points["Monika"]
+            or persistent._mas_game_nou_points["Player"]
+        )
+    ):
+        m 3eud "[player], we still haven't finished our game."
+        m 1euc "If you want to play with new rules, then we'll have to start a new game next time."
+
+    else:
+        m 1eub "Of course."
+
+    label .selection_loop:
+        python:
+            is_default_rules = (
+                persistent._mas_game_nou_house_rules["win_points"] == 200
+                and persistent._mas_game_nou_house_rules["start_cards"] == 7
+                and persistent._mas_game_nou_house_rules["stack_d2"] == False
+                and persistent._mas_game_nou_house_rules["play_wd4_anytime"] == False
+            )
+
+            menu_items = [
+                (
+                    _("I'd like to change the amount of points required to win."),
+                    "win_points",
+                    False,
+                    False
+                ),
+                (
+                    _("I'd like to change the number of cards we start each round with."),
+                    "start_cards",
+                    False,
+                    False
+                ),
+                (
+                    _("I'd like to play with stackable Draw 2's.") if not persistent._mas_game_nou_house_rules["stack_d2"] else _("I'd like to play with non-stackable Draw 2's."),
+                    "stack_d2",
+                    False,
+                    False
+                ),
+                (
+                    _("I'd like to play with free Wild Draw 4's.") if not persistent._mas_game_nou_house_rules["play_wd4_anytime"] else _("I'd like to play with default Wild Draw 4's."),
+                    "play_wd4_anytime",
+                    False,
+                    False
+                )
+            ]
+
+            if not is_default_rules:
+                menu_items.append((_("I'd like to go back to the classic rules."), "restore", False, False))
+
+            final_item = (_("Nevermind"), False, False, False, 20)
+
+        show monika 1eua at t21
+
+        $ renpy.say(m, _("What kind of rule would you like to change?"), interact=False)
+
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        show monika 1eua at t11
+
+        if not _return:
+            m 1eua "Oh, alrigh."
+            python:
+                del[is_default_rules]
+                del[menu_items]
+                del[final_item]
+            return
+
+        elif _return == "win_points":
+            m 1eub "Alright!"
+            call monika_nou_change_house_rules.change_win_points_loop
+
+        elif _return == "start_cards":
+            m 1eub "Alright!"
+            call monika_nou_change_house_rules.change_starting_cards_loop
+
+        elif _return == "stack_d2":
+            if not persistent._mas_game_nou_house_rules["stack_d2"]:
+                m 1tub "Okay, but I must warn you that that might go against you~"
+
+            else:
+                m 1ttu "Did I go too hard at this game for you?"
+                m 1hub "Ahaha~ I'm just kidding!"
+
+            $ persistent._mas_game_nou_house_rules["stack_d2"] = not persistent._mas_game_nou_house_rules["stack_d2"]
+
+        elif _return == "play_wd4_anytime":
+            if not persistent._mas_game_nou_house_rules["play_wd4_anytime"]:
+                # m "Oh, you better be ready for this one, [player]~"
+                m 1eua "That sounds fun."
+
+            else:
+                m 1eua "Back to the classic rules, I see."
+
+            $ persistent._mas_game_nou_house_rules["play_wd4_anytime"] = not persistent._mas_game_nou_house_rules["play_wd4_anytime"]
+
+        else:
+            m 3eub "Okay! Then settled!"
+
+            python:
+                persistent._mas_game_nou_house_rules["win_points"] = 200
+                persistent._mas_game_nou_house_rules["start_cards"] = 7
+                persistent._mas_game_nou_house_rules["stack_d2"] = False
+                persistent._mas_game_nou_house_rules["play_wd4_anytime"] = False
+
+                persistent._mas_game_nou_points["Monika"] = 0
+                persistent._mas_game_nou_points["Player"] = 0
+
+                del[is_default_rules]
+                del[menu_items]
+                del[final_item]
+
+            return
+
+    $ persistent._mas_game_nou_points["Monika"] = 0
+    $ persistent._mas_game_nou_points["Player"] = 0
+
+    m 3eua "Is there anything else you would like to change?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Is there anything else you would like to change?{fast}"
+
+        "Yes.":
+            jump monika_nou_change_house_rules.selection_loop
+
+        "No.":
+            m 2eub "Then let's play together soon~"
+
+    python:
+        del[is_default_rules]
+        del[menu_items]
+        del[final_item]
+
+    return
+
+label .change_win_points_loop:
+    $ ready = False
+    while not ready:
+        show monika 1eua at t11
+
+        $ points_cap = store.mas_utils.tryparseint(
+            renpy.input(
+                "How many points would you like it to be?",
+                allow=numbers_only,
+                length=4
+            ).strip("\t\n\r"),
+            200
+        )
+
+        if points_cap < 0:
+            m 2rksdla "[player], how would we play with negative amount of point?"
+            m 3ekb "Try again, silly!"
+
+        elif points_cap == 0:
+            m 3eua "Oh, you just want to have quick games?"
+            m 2tuu "Alright! But don't expect me to go easy on you, though~"
+            $ persistent._mas_game_nou_house_rules["win_points"] = points_cap
+            $ ready = True
+
+        elif points_cap < 50:
+            m 3rksdlb "Hmm, It doesn't make sense to play with {i}that{/i} little amount of points."
+            m 1eka "We can play without points if you wish.{nw}"
+            $ _history_list.pop()
+            menu:
+                m "We can play without points if you wish.{fast}"
+
+                "I'd like that.":
+                    m 1eub "Oh, alrigh!"
+                    $ persistent._mas_game_nou_house_rules["win_points"] = 0
+                    $ ready = True
+
+                "No":
+                    m 3eua "Then choose again."
+
+        elif points_cap > 3000:
+            m 2eka "Oh it's too much I think..."
+            m 3eka "Let's leave it at 3000?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Let's leave it at 3000?{fast}"
+
+                "Alright.":
+                    m 1eua "Settled."
+                    $ persistent._mas_game_nou_house_rules["win_points"] = 3000
+                    $ ready = True
+
+                "No":
+                    m 3eua "Then choose again."
+
+        else:
+            m 3eub "Okay, from now wins the first who reaches [points_cap] points!"
+            $ persistent._mas_game_nou_house_rules["win_points"] = points_cap
+            $ ready = True
+
+    $ del[ready]
+    $ del[points_cap]
+
+    return
+
+label .change_starting_cards_loop:
+    $ ready = False
+    while not ready:
+        show monika 1eua at t11
+
+        $ starting_cards = store.mas_utils.tryparseint(
+            renpy.input(
+                "With how many cards would you like to start the game?",
+                allow=numbers_only,
+                length=2
+            ).strip("\t\n\r"),
+            7
+        )
+
+        if starting_cards < 1:
+            m 2rksdlb "We can't play cards without cards, [player]!"
+            m 3ekb "Try again, silly~"
+
+        elif starting_cards < 4:
+            m 2eka "I don't think this will makes sense, [player]..."
+            m 3eka "Let's start with at least 4 cards?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Let's start with at least 4 cards?{fast}"
+
+                "Alright.":
+                    $ persistent._mas_game_nou_house_rules["start_cards"] = 4
+                    $ ready = True
+
+                "No.":
+                    m 3eua "Then try again."
+
+        elif starting_cards > 25:
+            m 2hub "Ahaha, [player]! How do you think I'll hold all these card?"
+            m 3eua "Let's leave it at 20 cards?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Let's leave it at 20 cards?{fast}"
+
+                "Alright.":
+                    $ persistent._mas_game_nou_house_rules["start_cards"] = 20
+                    $ ready = True
+
+                "No.":
+                    m 3eua "Then try again."
+
+        else:
+            $ _round = _("round") if persistent._mas_game_nou_house_rules["win_points"] else _("game")
+            m 3eub "Okay, from now we will start each [_round!t] with [starting_cards] cards!"
+            $ persistent._mas_game_nou_house_rules["start_cards"] = starting_cards
+            $ ready = True
+
+    $ del[ready]
+    $ del[starting_cards]
+
     return
 
 # Explaining rules unlocked after you give Monika the deck
@@ -2248,13 +2522,35 @@ init 5 python:
             unlocked=False,
             conditional="renpy.seen_label('mas_reaction_gift_carddeck')",
             action=EV_ACT_UNLOCK,
+            rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         )
     )
 
 label monika_nou_explain_rules:
-    m "Even if the game looks complicated at first, it's quite simple really."
-    m "i'm sure if we play some more games and you'll get into it."
+    m 4eub "Even if the game looks complicated at first, it's rather quite simple."
+    m 1eua "I'm sure if we play some more games, you'll get into it."
+    m "We start the game with [persistent._mas_game_nou_house_rules[start_cards]] cards."
+    m "Your goal is to play all your cards before I play mine."
+    m 3eua "To play a card you need to match it by the color or the text on the card with the top card on the discard pile."
+    m "If you can't play card in your turn, you must draw one from the draw pile."
+    m 1eua "You don't have to play it, though."
+    m "After you played a card or skipped your turn, my turn begins. And so on until someone wins."
+    m 4eub "Besides the Number cards, there're also special cards known as Action and Wild cards."
+    m 4eua "You can distinguish an Action card by its symbol and a Wild card by its black color."
+    m 1eua "Those cards can make your opponent skip their turn or even draw some cards."
+    m 1tsu "And by some I mean 12 cards in a row."
+    m 1eua "The Wild cards don't have color which means they can be placed on any card."
+    m 3eua "Although, there's one rule for Wild Draw Four. To play it you must have no other cards with the color of the discard pile."
+    m 1eua "When you play any Wild card, you should choose what color you want to set for it."
+    m "As powerful Wild and Action cards may look, you can still save yourself from them."
+    m 3eub "For example you can mirror a Wild Draw Four by playing a Draw Two with the same color."
+    m 3eua "Or you can play any Draw Two to mirror a Draw Two. The color won't matter in that case."
+    m 1eua "I hope all that will give you a better understanding of the game."
+    m 1eka "But I think the point of it is not winning anyway, right?"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "It's all about spending time with the one you love~"
+    m 5hubfa "Ehehe~"
     return
 
 # The game handling label
@@ -2529,7 +2825,7 @@ label mas_nou_reaction_player_wins_round:
 
             else:
                 if len(store.mas_nou.game.monika.hand) > 3:
-                    m "Maybe I should go a bit harder on you?~"
+                    m "Maybe I should try a bit harder?~"
                     m "Ehehe, you keep finishing [_round!t]s before I can do anything."
 
                 else:
@@ -2718,50 +3014,34 @@ label mas_nou_reaction_monika_wins_round:
                 m "Another quick win for me!"
 
             elif choice == 1:
-                m "Another win for me~"
+                m "Can't keep up with me, huh?~"
 
             else:
-                if len(store.mas_nou.game.monika.hand) > 3:
-                    m "Maybe I should go a bit harder on you?~"
-                    m "Ehehe, you keep finishing [_round!t]s before I can do anything."
-
-                else:
-                    m "Ah...{w=0.1}I was so close!"
-                    m "Good job, [player]!"
-
-        elif (
-            len(store.mas_nou.game.monika.hand) > 4
-            or not store.mas_nou.game.player.yelled_nou
-        ):
-            m "Wow!{w=0.2} Played all your cards already?"
-            m "That was quick!"
+                m "Yay, I won again!"
 
         else:
-            $ choice = renpy.random.randint(0, 2)
+            $ choice = renpy.random.randint(0, 1)
 
             if not choice:
-                m "Well played!"
-
-            elif choice == 1:
-                m "Impressive, [player]!"
+                m "Yay, I won~"
 
             else:
-                m "That was a quick [_round!t] for you!"
+                m "That was quick."
 
     elif store.mas_nou.game.total_turns > 75:
         $ choice = renpy.random.randint(0, 2)
 
         if not choice:
-            m "A quite long [_round!t], [player]."
+            m "That was a long [_round!t]!"
 
-            if len(store.mas_nou.game.monika.hand) < 4:
-                if store.mas_nou.player_win_streak > 0:
-                    m "And I almost win this time!"
+            if len(store.mas_nou.game.player.hand) < 4:
+                if store.mas_nou.monika_win_streak > 0:
+                    m "You even almost win this time."
 
                 else:
-                    m "And I almost win!"
+                    m "You even almost win."
 
-                m "Ahaha~ Well played!"
+                m "Ehehe~ Well played!"
 
             else:
                 m "Well played!"
@@ -2770,31 +3050,24 @@ label mas_nou_reaction_monika_wins_round:
             m "That was intense!"
 
         else:
-            m "Ehehe~ You're really good!"
-
-    else:
-        $ choice = renpy.random.randint(0, 3)
-
-        if not choice:
-            if store.mas_nou.player_win_streak > 0:
-                m "You won again!"
+            if len(store.mas_nou.game.player.hand) > 4:
+                m "Not bad, [player]."
+                m "I think you even could win this time if not all those card you've drawn."
 
             else:
-                m "You won!~"
+                # sparkle pls
+                m "Oh, I won!"
 
-        elif choice == 1:
-            m "This [_round!t] is yours!"
+    else:
+        if store.mas_nou.monika_win_streak > 0:
+            m "I won again~"
 
-        elif choice == 2:
-            m "And you won! Good job!"
-            if renpy.random.randint(0, 8) > 7:
-                m "But don't expect to win everytime~"
+        elif store.mas_nou.player_win_streak > 1:
+            m "Finally I won too~"
 
         else:
-            if store.mas_nou.monika_win_streak > 1:
-                m "I'm glad you won this time~"
+            m "I won~"
 
-            m "Good job, [player]!"
     return
 
 label mas_nou_reaction_monika_wins_game:
@@ -2803,8 +3076,8 @@ label mas_nou_reaction_monika_wins_game:
     if not choice:
         m "And this time I won the game!"
         if (persistent._mas_game_nou_house_rules["win_points"] - persistent._mas_game_nou_points["Player"]) / persistent._mas_game_nou_house_rules["win_points"] < 0.2:
+            m "You were quite close, though!"
             if renpy.random.randint(0, 14):
-                m "You were quite close, though!"
                 m "I'm sure you'll win next time."
 
             # 1/15
@@ -2929,13 +3202,6 @@ label mas_nou_reaction_monika_reflected_wcc(seen_count=0):
     jump mas_nou_game_loop
 
 label mas_nou_reaction_player_reflected_wcc(seen_count=0):
-    jump mas_nou_game_loop
-
-# TODO: del this label
-label nou_test_label(text="text"):
-    m "We've just jumped to this test label!"
-    m "And the importan info is [text]"
-    m "Let's try to get back with another jump."
     jump mas_nou_game_loop
 
 # SL and stuff
@@ -3072,11 +3338,6 @@ screen nou_gui():
                 background Frame("gui/button/scrollable_menu_disable_background.png")
                 text "Give up"
 
-        # DEV TOOLS
-        # BUG: remove before release
-        textbutton _("DEBUG"):
-            action Show("nou_debug")
-
     # Choose colour menu
     vbox:
         xpos 640
@@ -3146,93 +3407,6 @@ screen nou_gui():
                                 Return([])
                             ]
                         )
-
-# BUG: delete debugging things
-screen nou_debug():
-
-    zorder 50
-    style_prefix "nou"
-
-    vbox:
-        xpos 30
-        ypos 360
-        yanchor 0.5
-
-        textbutton _("Tell me your cards"):
-            action Function(store.mas_nou.debug_tell_me_cards)
-        textbutton _("Set sensetivity, please"):
-            action Function(store.mas_nou.game.set_sensitive, True)
-        textbutton _("Can you switch the flag"):
-            action ToggleField(store, "morning_flag", true_value=True, false_value=False)
-        textbutton _("Hide this menu"):
-            action Hide("nou_debug")
-
-    vbox:
-        xpos 10
-        ypos 580
-
-        if len(store.mas_nou.game.game_log) > 2:
-            $ slt_turn = store.mas_nou.game.game_log[-3]["turn"]
-            $ slt_player = store.mas_nou.game.game_log[-3]["player"]
-            text "Turn: [slt_turn], Player: [slt_player]" size 15 text_align 0 newline_indent True xalign 0
-            if store.mas_nou.game.game_log[-3]["had_skip_turn"]:
-                if store.mas_nou.game.game_log[-3]["had_draw_cards"]:
-                    if store.mas_nou.game.game_log[-3]["played_card"]:
-                        text "Had to skip their turn and draw cards, but was able to reflect the card" size 15 text_align 0 newline_indent True xalign 0
-
-                    else:
-                        text "Had to skip their turn and draw cards" size 15 text_align 0 newline_indent True xalign 0
-
-                else:
-                    if store.mas_nou.game.game_log[-3]["played_card"]:
-                        text "Had to skip their turn, but was able to reflect the card" size 15 text_align 0 newline_indent True xalign 0
-
-                    else:
-                        text "Had to skip their turn" size 15 text_align 0 newline_indent True xalign 0
-
-            elif store.mas_nou.game.game_log[-3]["drew_card"]:
-                if store.mas_nou.game.game_log[-3]["played_card"]:
-                    text "Drew a card and played it" size 15 text_align 0 newline_indent True xalign 0
-
-                else:
-                    text "Drew a card, but couldn't play it" size 15 text_align 0 newline_indent True xalign 0
-
-            elif store.mas_nou.game.game_log[-3]["played_card"]:
-                text "Played a card" size 15 text_align 0 newline_indent True xalign 0
-
-            null height 20
-
-        else:
-            null height 60
-
-        if len(store.mas_nou.game.game_log) > 1:
-            $ lt_turn = store.mas_nou.game.game_log[-2]["turn"]
-            $ lt_player = store.mas_nou.game.game_log[-2]["player"]
-            text "Turn: [lt_turn], Player: [lt_player]" size 15 text_align 0 newline_indent True xalign 0
-            if store.mas_nou.game.game_log[-2]["had_skip_turn"]:
-                if store.mas_nou.game.game_log[-2]["had_draw_cards"]:
-                    if store.mas_nou.game.game_log[-2]["played_card"]:
-                        text "Had to skip their turn and draw cards, but was able to reflect the card" size 15 text_align 0 newline_indent True xalign 0
-
-                    else:
-                        text "Had to skip their turn and draw cards" size 15 text_align 0 newline_indent True xalign 0
-
-                else:
-                    if store.mas_nou.game.game_log[-2]["played_card"]:
-                        text "Had to skip their turn, but was able to reflect the card" size 15 text_align 0 newline_indent True xalign 0
-
-                    else:
-                        text "Had to skip their turn" size 15 text_align 0 newline_indent True xalign 0
-
-            elif store.mas_nou.game.game_log[-2]["drew_card"]:
-                if store.mas_nou.game.game_log[-2]["played_card"]:
-                    text "Drew a card and played it" size 15 text_align 0 newline_indent True xalign 0
-
-                else:
-                    text "Drew a card, but couldn't play it" size 15 text_align 0 newline_indent True xalign 0
-
-            elif store.mas_nou.game.game_log[-2]["played_card"]:
-                text "Played a card" size 15 text_align 0 newline_indent True xalign 0
 
 # Styles for NoU GUI
 # TODO: use MAS dark theme
@@ -3419,6 +3593,7 @@ init -10 python in mas_cardgames:
             super(renpy.Displayable, self).__init__(**kwargs)
 
             # Image supports only these types
+            # TODO: use MASFilterSwitch instead (#5554)
             if isinstance(back, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
                 self.back = MASFilterableSprite(back)
 
@@ -3655,7 +3830,7 @@ init -10 python in mas_cardgames:
             """
             Renders the table's stacks and cards that should be rendered
             NOTE: all filtered images will choose the flt during the init
-                that means they will stay the same untill full redraw,
+                that means they will stay the same until full redraw,
                 but that doesn't matter, since we're in the loop, and the flag won't change,
                 that will matter if we get async time change though
                 then i'll move defining of flt imgs to the render method
@@ -4443,20 +4618,16 @@ init -10 python in mas_cardgames:
 
 # # # zz_reactions.rpy
 # init 5 python:
-#     # TODO: this or just Moni says that you don't need 2 decks?
 #     if not renpy.seen_label("mas_reaction_gift_carddeck"):
 #         addReaction("mas_reaction_gift_carddeck", "carddeck", is_good=True)
 
 # label mas_reaction_gift_carddeck:
-#     # TODO: EXP
 #     $ mas_giftCapGainAff(0.5)
 
 #     if mas_isMoniHappy(higher=True):
 #         $ persistent.game_unlocks["nou"] = True
 
-#         # TODO: this's terrible, need to rewrite it from scratch
-#         m "What is it?"
-#         m "Oh!{w=0.2} A deck of cards!"
+#         m "Oh!{w=0.3} A deck of cards!"
 #         m "And I think I know how to play this game!"
 #         m "Have you ever played 'NoU', [player]?{w=0.3}{nw} "
 #         extend "It's a popular card game where to win you need to play all your cards before your opponents."
@@ -4474,10 +4645,9 @@ init -10 python in mas_cardgames:
 #             m "Let's play it soon."
 
 #     elif mas_isMoniNormal():
-#         m "And.{w=0.2}.{w=0.2}.{w=0.2}{nw} "
-#         extend "A card deck!"
+#         m "A card deck!"
 #         m "It's good that you found another game for us to play."
-#         m "We'll play next time, okay?"
+#         m "We'll play it next time, okay?"
 
 #     else:
 #         m "A deck?"
@@ -4494,8 +4664,8 @@ init -10 python in mas_cardgames:
 #     return
 
 # # # updates.rpy
-# #0.10.11
-# label v0_10_11(version="v0_10_11"):
+# #0.12.0
+# label v0_12_0(version="v0_12_0"):
 #     python:
 #         persistent.ever_won["nou"] = False
 #         persistent.game_unlocks["nou"] = False
