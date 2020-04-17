@@ -317,6 +317,7 @@ init python:
         #Reset the global flag
         mas_globals.change_textbox = True
 
+
 #START: Settings menu helpers
 init python in mas_settings:
     _persistent = renpy.game.persistent
@@ -328,7 +329,7 @@ init python in mas_settings:
         #We're disablng this so we only set it false
         if _persistent._mas_auto_mode_enabled:
             _persistent._mas_auto_mode_enabled = False
-            if not store.morning_flag:
+            if store.mas_current_background.isFltNight():
                 store.mas_darkMode(True)
 
         #But here we need to also switch the other button since this is mutually exclusive

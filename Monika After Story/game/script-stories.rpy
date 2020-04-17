@@ -856,7 +856,6 @@ label mas_scary_story_setup:
     $ play_song(None, fadeout=1.0)
     pause 1.0
 
-    $ mas_temp_m_flag = morning_flag
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
 
@@ -902,8 +901,6 @@ label mas_scary_story_cleanup:
     m 3eua "[story_end_quip]"
     show monika 1dsc
     pause 1.0
-
-    $ morning_flag = mas_temp_m_flag
 
     #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
     if not persistent._mas_o31_in_o31_mode:

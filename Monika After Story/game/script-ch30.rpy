@@ -372,7 +372,6 @@ init python:
                 (Default; True)
 
         ASSUMES:
-            morning_flag
             mas_is_raining
             mas_is_snowing
         """
@@ -380,7 +379,10 @@ init python:
         renpy.hide("rm")
 
         # get current weather masks
-        mask = mas_current_weather.sp_window(morning_flag)
+        # TODO: change to pass in current filter 
+        mask = mas_current_weather.sp_window(
+            mas_isCurrentFlt("day")
+        )
 
         # should we use fallbacks instead?
         if persistent._mas_disable_animations:
@@ -752,8 +754,6 @@ init python:
 
         return derandlist
 
-init 1 python:
-    morning_flag = mas_isMorning()
 
 
 # IN:
@@ -795,7 +795,10 @@ init 1 python:
 #       if hide_monika is False - True will do nothing and False will hide
 #           emptydesk after Monika is shown.
 #       (Default: True)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True):
+#   progress_filter - True will progress the filter. False will not
+#       NOTE: use this if you explicity set the filter 
+#       (Default: True)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
 
     with None
 
@@ -810,11 +813,16 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ night_bg = store.mas_current_background.getNightRoom()
 
     # progress filter
+    # NOTE: filter progression MUST happen here because othrewise we many have
+    #   cases where the filter has changed (so Monika has changed)
+    #   but the BG has not (because BG is not inherently controleld by filter)
     python:
-        if mas_progressFilter():
+        if progress_filter and mas_progressFilter():
             # NOTE: a filter change is like a scene change with all dissolve
             scene_change = True
             dissolve_all = True
+
+        day_mode = mas_current_background.isFltDay()
 
     if scene_change:
         scene black
@@ -826,7 +834,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         #   progression. For now its just going to be customized for
         #   our two filters.
         if scene_change:
-            if mas_isDayNow():
+            if day_mode:
                 monika_room = day_bg
 
             else:
@@ -834,7 +842,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(morning_flag)
+            mas_darkMode(day_mode)
         else:
             mas_darkMode(not persistent._mas_dark_mode_enabled)
 
@@ -1440,7 +1448,7 @@ label ch30_preloop:
         jump ch30_visual_skip
 
     # setup scene to change on initial launch
-    $ mas_weather.should_scene_change = True
+    $ mas_idle_mailbox.send_scene_change()
 
     # rain check
     # TODO: the weather progression alg needs to run here
@@ -1470,9 +1478,6 @@ label ch30_loop:
         should_dissolve_all = mas_idle_mailbox.get_scene_change()
 
     call spaceroom(scene_change=should_dissolve_all, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
-
-    #This should be set back to false so we're not constantly scene changing
-    $ mas_weather.should_scene_change = False
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z

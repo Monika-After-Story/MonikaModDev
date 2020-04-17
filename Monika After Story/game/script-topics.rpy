@@ -13478,7 +13478,7 @@ label monika_auroras:
     m 1esa "I just thought of something we could do when I finally cross over, [player]."
     m 1eua "Have you ever heard of auroras? They're a natural phenomenon where trails of light appear in the night sky."
 
-    if not morning_flag and mas_current_weather == mas_weather_snow:
+    if mas_current_background.isFltNight() and mas_current_weather == mas_weather_snow:
         m 3eub "In fact, if you were wondering about those green lights outside my window, that's an aurora event!"
     else:
         m 3eub "In fact, if you ever wondered about those green lights outside my window during winter, that's an aurora event!"
@@ -13489,7 +13489,7 @@ label monika_auroras:
     extend 3eud "Since it's something that happens in the sky, clouds can get in the way."
     m 3esc "Even though they're the exact same thing, they have different names depending on where they occur..."
     m 3eud "In the Northern Hemisphere, they're called the aurora borealis, while in the Southern Hemisphere, the aurora australis."
-    if not morning_flag and mas_current_weather == mas_weather_snow:
+    if mas_current_background.isFltNight() and mas_current_weather == mas_weather_snow:
         m 2rksdla "I guess that would make the aurora outside of my window the aurora dokialis..."
         m 2hksdlb "Ahaha...I'm just kidding, [player]!"
         m 2rksdla "..."

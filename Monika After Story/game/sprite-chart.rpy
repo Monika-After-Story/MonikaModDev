@@ -98,7 +98,7 @@
 # hmmmmmm (1etecc)
 
 # This defines a dynamic displayable for Monika whose position and style changes
-# depending on the variables is_sitting and the function morning_flag
+# depending on the variables is_sitting 
 define is_sitting = True
 
 # accessories list

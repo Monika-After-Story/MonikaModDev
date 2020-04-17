@@ -245,7 +245,7 @@ label mas_island_cherry_blossom4:
 label mas_island_sky:
     python:
 
-        if morning_flag:
+        if mas_current_background.isFltDay():
             _mas_sky_events = [
                 "mas_island_day1",
                 "mas_island_day2",
@@ -480,10 +480,16 @@ init 500 python in mas_island_event:
             image filepath to show
         """
         if store.mas_isWinter():
-            return store.mas_weather_snow.isbg_window(store.morning_flag, store._mas_island_window_open)
+            return store.mas_weather_snow.isbg_window(
+                store.mas_current_background.isFltDay(),
+                store._mas_island_window_open
+            )
 
         else:
-            return store.mas_current_weather.isbg_window(store.morning_flag, store._mas_island_window_open)
+            return store.mas_current_weather.isbg_window(
+                store.mas_current_background.isFltDay(),
+                store._mas_island_window_open
+            )
 
 screen mas_islands_background:
 

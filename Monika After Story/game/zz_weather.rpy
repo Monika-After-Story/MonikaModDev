@@ -361,7 +361,7 @@ init -20 python in mas_weather:
         #We want this topic seen for the first time with aurora visible outside her window
         #But we also don't want it to machine gun other topics too
         if (
-            not store.morning_flag
+            store.mas_current_background.isFltNight()
             and not store.persistent.event_list
             and store.mas_getEV("monika_auroras").shown_count == 0
         ):
@@ -573,6 +573,7 @@ init -10 python:
             RETURNS:
                 image tag for the corresponding mask to use
             """
+            # TODO: swap to filter-based
             if day:
                 return self.sp_day
 
