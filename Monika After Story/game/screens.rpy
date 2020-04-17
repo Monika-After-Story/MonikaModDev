@@ -431,7 +431,7 @@ style input:
 ## http://www.renpy.org/doc/html/screen_special.html#choice
 
 screen choice(items):
-    style_prefix mas_ui.cb_style_prefix
+    style_prefix "choice"
 
     vbox:
         for i in items:
@@ -444,12 +444,6 @@ define config.narrator_menu = True
 
 
 style choice_vbox is vbox:
-    xalign 0.5
-    ypos 270
-    yanchor 0.5
-    spacing gui.choice_spacing
-
-style choice_dark_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
@@ -476,7 +470,7 @@ init python:
             renpy.display.draw.set_mouse_pos((currentpos[0] * 9 + targetpos[0]) / 10.0, (currentpos[1] * 9 + targetpos[1]) / 10.0)
 
 screen rigged_choice(items):
-    style_prefix mas_ui.cb_style_prefix
+    style_prefix "choice"
 
     vbox:
         for i in items:
@@ -485,9 +479,6 @@ screen rigged_choice(items):
     timer 1.0/30.0 repeat True action Function(RigMouse)
 
 style talk_choice_vbox is choice_vbox:
-    xcenter 960
-
-style talk_choice_dark_vbox is choice_dark_vbox:
     xcenter 960
 
 style talk_choice_button is choice_button
@@ -501,7 +492,7 @@ style talk_choice_dark_button_text is choice_dark_button_text
 
 ## This screen is used for the talk menu
 screen talk_choice(items):
-    style_prefix mas_ui.tcb_style_prefix
+    style_prefix "talk_choice"
 
     vbox:
         for i in items:
@@ -589,7 +580,7 @@ init python:
 
 screen navigation():
     vbox:
-        style_prefix mas_ui.nm_style_prefix
+        style_prefix "navigation"
 
         xpos gui.navigation_xpos
         yalign 0.8
@@ -1320,17 +1311,17 @@ screen preferences():
             hbox:
                 textbutton _("Update Version"):
                     action Function(renpy.call_in_new_context, 'forced_update_now')
-                    style mas_ui.nm_button_style
+                    style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
-                    style mas_ui.nm_button_style
+                    style "navigation_button"
 
 
     text tooltip.value:
         xalign 0.0 yalign 1.0
         xoffset 300 yoffset -10
-        style mas_ui.mm_tt_style
+        style "main_menu_version"
 #        layout "greedy"
 #        text_align 0.5
 #        xmaximum 650
@@ -1338,7 +1329,7 @@ screen preferences():
     text "v[config.version]":
         xalign 1.0 yalign 0.0
         xoffset -10
-        style mas_ui.mm_tt_style
+        style "main_menu_version"
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text
@@ -2512,8 +2503,8 @@ screen submods():
                             spacing 20
                             xmaximum 1000
 
-                            text "v{}".format(submod.version) yanchor 0 xalign 0 style mas_ui.mm_tt_style
-                            text "by {}".format(submod.author) yanchor 0 xalign 0 style mas_ui.mm_tt_style
+                            text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
+                            text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
 
                         vbox:
                             box_wrap False

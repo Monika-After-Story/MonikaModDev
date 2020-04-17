@@ -40,20 +40,11 @@ init -200 python in mas_ui:
     light_button_text_idle_color = "#000"
     light_button_text_insensitive_color = "#8C8C8C"
 
-    # Style adjustment var. None on init, "_dark" if dark ui, "" otherwise
-    ui_mode_suffix = None
-
-    # choice buttons
-    cb_style_prefix = "choice"
-
     # checkbox
     cbx_style_prefix = "check"
 
     # game menu 
     gm_label_style = "game_menu_label"
-
-    # main menu
-    mm_tt_style = "main_menu_version_def"
 
     # music menu (music selector)
     mms_style_prefix = "music_menu"
@@ -62,10 +53,6 @@ init -200 python in mas_ui:
     mms_frame_content_style = "music_menu_content_frame"
     mms_frame_navigation_style = "music_menu_navigation_frame"
     mms_frame_outer_style = "music_menu_outer_frame"
-
-    # nav menu
-    nm_style_prefix = "navigation"
-    nm_button_style = "navigation_button"
 
     # quick menu
     qm_style_prefix = "quick"
@@ -87,9 +74,6 @@ init -200 python in mas_ui:
 
     # selector menu
     st_cbx_style = "outfit_check_button"
-
-    # talk choice 
-    tcb_style_prefix = "talk_choice"
 
     # two pane scrollable
     tpsm_style_prefix = "twopane_scrollable_menu"
@@ -172,41 +156,8 @@ init python:
         IN:
             morning_flag - if True, light mode, if False, dark mode
         """
-
         if not morning_flag:
             mas_globals.dark_mode = True
-            mas_ui.ui_mode_suffix = "_dark"
-
-            # Style swaps
-            #style.mas_extra_menu_frame = style.mas_extra_menu_frame_dark
-            style.mas_adjustable_button_text = style.mas_adjustable_button_text_dark
-            style.mas_mbs_button = style.mas_mbs_button_dark
-            style.mas_adjustable_button = style.mas_adjustable_button_dark
-            style.mas_adjust_vbar = style.mas_adjust_vbar_dark
-            style.scrollbar = style.scrollbar_dark
-            style.frame = style.frame_dark
-            style.confirm_frame = style.confirm_frame_dark
-            style.game_menu_outer_frame = style.game_menu_outer_frame_dark
-            style.edited_def = style.edited_def_dark
-            style.poemgame_text = style.poemgame_text_dark
-            style.main_menu_version = style.main_menu_version_dark
-            style.confirm_prompt_text = style.confirm_prompt_text_dark
-            style.button = style.button_dark
-            style.main_menu_frame = style.main_menu_frame_dark
-            style.window_monika = style.window_monika_dark
-            style.window = style.window_dark
-            style.page_label = style.page_label_dark
-            style.page_label_text = style.page_label_dark_text
-            style.slot_button = style.slot_button_dark
-            style.slot_button_text = style.slot_button_dark_text
-            style.mute_all_button = style.mute_all_button_dark
-            style.mute_all_button_text = style.mute_all_button_dark_text
-            style.pref_label = style.pref_dark_label
-            style.pref_label_text = style.pref_dark_label_text
-
-            # Textbox handling
-            if mas_globals.change_textbox:
-                style.say_window = style.window_dark
 
             # Global swaps
             mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
@@ -214,18 +165,14 @@ init python:
             mas_globals.button_text_insensitive_color = mas_ui.dark_button_text_insensitive_color
 
             # ui swaps
-            mas_ui.cb_style_prefix = "choice_dark"
             mas_ui.cbx_style_prefix = "check_dark"
             mas_ui.gm_label_style = "game_menu_label_dark"
-            mas_ui.mm_tt_style = "main_menu_version_dark"
             mas_ui.mms_style_prefix = "music_menu_dark"
             mas_ui.mms_button_prev_style = "music_menu_dark_prev_button"
             mas_ui.mms_button_return_style = "music_menu_dark_return_button"
             mas_ui.mms_frame_content_style = "music_menu_dark_content_frame"
             mas_ui.mms_frame_navigation_style = "music_menu_dark_navigation_frame"
             mas_ui.mms_frame_outer_style = "music_menu_dark_outer_frame"
-            mas_ui.nm_style_prefix = "navigation_dark"
-            mas_ui.nm_button_style = "navigation_dark_button"
             mas_ui.qm_style_prefix = "quick_dark"
             mas_ui.rab_style_prefix = "radio_dark"
             mas_ui.rb_button_style = "return_dark_button"
@@ -235,7 +182,6 @@ init python:
             mas_ui.sm_button_new_style = "scrollable_menu_dark_new_button"
             mas_ui.sm_button_special_style = "scrollable_menu_dark_special_button"
             mas_ui.st_cbx_style = "outfit_check_dark_button"
-            mas_ui.tcb_style_prefix = "talk_choice_dark"
             mas_ui.tpsm_style_prefix = "twopane_scrollable_menu_dark"
             mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_dark_new_button"
             mas_ui.tpsm_button_special_style = "twopane_scrollable_menu_dark_special_button"
@@ -243,38 +189,6 @@ init python:
 
         else:
             mas_globals.dark_mode = False
-            mas_ui.ui_mode_suffix = ""
-
-            # Style swaps
-            #style.mas_extra_menu_frame = style.mas_extra_menu_frame_def
-            style.mas_adjustable_button_text = style.mas_adjustable_button_text_def
-            style.mas_mbs_button = style.mas_mbs_button_def
-            style.mas_adjustable_button = style.mas_adjustable_button_def
-            style.mas_adjust_vbar = style.mas_adjust_vbar_def
-            style.scrollbar = style.scrollbar_def
-            style.frame = style.frame_def
-            style.confirm_frame = style.confirm_frame_def
-            style.game_menu_outer_frame = style.game_menu_outer_frame_def
-            style.edited_def = style.edited_def_def
-            style.poemgame_text = style.poemgame_text_def
-            style.main_menu_version = style.main_menu_version_def
-            style.confirm_prompt_text = style.confirm_prompt_text_def
-            style.button = style.button_def
-            style.main_menu_frame = style.main_menu_frame_def
-            style.window_monika = style.window_monika_def
-            style.window = style.window_def
-            style.page_label = style.page_label_def
-            style.page_label_text = style.page_label_def_text
-            style.slot_button = style.slot_button_def
-            style.slot_button_text = style.slot_button_def_text
-            style.mute_all_button = style.mute_all_button_def
-            style.mute_all_button_text = style.mute_all_button_def_text
-            style.pref_label = style.pref_def_label
-            style.pref_label_text = style.pref_def_label_text
-
-            # Textbox
-            if mas_globals.change_textbox:
-                style.say_window = style.window_def
 
             # Handle the global swaps
             mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
@@ -282,18 +196,14 @@ init python:
             mas_globals.button_text_insensitive_color = mas_ui.light_button_text_insensitive_color
 
             # ui swaps
-            mas_ui.cb_style_prefix = "choice"
             mas_ui.cbx_style_prefix = "check"
             mas_ui.gm_label_style = "game_menu_label"
-            mas_ui.mm_tt_style = "main_menu_version_def"
             mas_ui.mms_style_prefix = "music_menu"
             mas_ui.mms_button_prev_style = "music_menu_prev_button"
             mas_ui.mms_button_return_style = "music_menu_return_button"
             mas_ui.mms_frame_content_style = "music_menu_content_frame"
             mas_ui.mms_frame_navigation_style = "music_menu_navigation_frame"
             mas_ui.mms_frame_outer_style = "music_menu_outer_frame"
-            mas_ui.nm_style_prefix = "navigation"
-            mas_ui.nm_button_style = "navigation_button"
             mas_ui.qm_style_prefix = "quick"
             mas_ui.rab_style_prefix = "radio"
             mas_ui.rb_button_style = "return_button"
@@ -303,17 +213,52 @@ init python:
             mas_ui.sm_button_new_style = "scrollable_menu_new_button"
             mas_ui.sm_button_special_style = "scrollable_menu_special_button"
             mas_ui.st_cbx_style = "outfit_check_button"
-            mas_ui.tcb_style_prefix = "talk_choice"
             mas_ui.tpsm_style_prefix = "twopane_scrollable_menu"
             mas_ui.tpsm_button_new_style = "twopane_scrollable_menu_new_button"
             mas_ui.tpsm_button_special_style = "twopane_scrollable_menu_special_button"
             mas_ui.fli_style_prefix = "island"
 
-        mas_swapStyle("hkb_button"          , "hkb_dark_button"          , morning_flag)
-        mas_swapStyle("hkb_button_text"     , "hkb_dark_button_text"     , morning_flag)
-        mas_swapStyle("mas_extra_menu_frame", "mas_extra_menu_frame_dark", morning_flag)
-        mas_swapStyle("namebox"             , "namebox_dark"             , morning_flag)
-        mas_swapStyle("say_label"           , "say_label_dark"           , morning_flag)
+        # FIXME: it will be done automagically later (requires consistent naming between styles)
+        mas_swapStyle("button"                    , "button_dark"                    , morning_flag)
+        mas_swapStyle("button_text"               , "button_dark_text"               , morning_flag)
+        mas_swapStyle("choice_button"             , "choice_dark_button"             , morning_flag)
+        mas_swapStyle("choice_button_text"        , "choice_dark_button_text"        , morning_flag)
+        mas_swapStyle("confirm_frame"             , "confirm_frame_dark"             , morning_flag)
+        mas_swapStyle("confirm_prompt_text"       , "confirm_prompt_text_dark"       , morning_flag)
+        mas_swapStyle("hkb_button"                , "hkb_dark_button"                , morning_flag)
+        mas_swapStyle("hkb_button_text"           , "hkb_dark_button_text"           , morning_flag)
+        mas_swapStyle("edited"                    , "edited_dark"                    , morning_flag)
+        mas_swapStyle("frame"                     , "frame_dark"                     , morning_flag)
+        mas_swapStyle("game_menu_outer_frame"     , "game_menu_outer_frame_dark"     , morning_flag)
+        mas_swapStyle("main_menu_frame"           , "main_menu_frame_dark"           , morning_flag)
+        mas_swapStyle("main_menu_version"         , "main_menu_version_dark"         , morning_flag)
+        mas_swapStyle("mas_adjustable_button"     , "mas_adjustable_button_dark"     , morning_flag)
+        mas_swapStyle("mas_adjustable_button_text", "mas_adjustable_button_text_dark", morning_flag)
+        mas_swapStyle("mas_adjust_vbar"           , "mas_adjust_vbar_dark"           , morning_flag)
+        mas_swapStyle("mas_mbs_button"            , "mas_mbs_button_dark"            , morning_flag)
+        mas_swapStyle("mas_mbs_button_text"       , "mas_mbs_button_text_dark"       , morning_flag)
+        mas_swapStyle("mas_extra_menu_frame"      , "mas_extra_menu_frame_dark"      , morning_flag)
+        mas_swapStyle("mute_all_button"           , "mute_all_button_dark"           , morning_flag)
+        mas_swapStyle("mute_all_button_text"      , "mute_all_button_dark_text"      , morning_flag)
+        mas_swapStyle("namebox"                   , "namebox_dark"                   , morning_flag)
+        mas_swapStyle("navigation_button_text"    , "navigation_button_text_dark"    , morning_flag)
+        mas_swapStyle("page_label"                , "page_label_dark"                , morning_flag)
+        mas_swapStyle("page_label_text"           , "page_label_dark_text"           , morning_flag)
+        mas_swapStyle("poemgame_text"             , "poemgame_text_dark"             , morning_flag)
+        mas_swapStyle("pref_label"                , "pref_dark_label"                , morning_flag)
+        mas_swapStyle("pref_label_text"           , "pref_dark_label_text"           , morning_flag)
+        mas_swapStyle("say_label"                 , "say_label_dark"                 , morning_flag)
+        mas_swapStyle("scrollbar"                 , "scrollbar_dark"                 , morning_flag)
+        mas_swapStyle("slot_button"               , "slot_button_dark"               , morning_flag)
+        mas_swapStyle("slot_button_text"          , "slot_button_dark_text"          , morning_flag)
+        mas_swapStyle("talk_choice_button"        , "talk_choice_dark_button"        , morning_flag)
+        mas_swapStyle("talk_choice_button_text"   , "talk_choice_dark_button_text"   , morning_flag)
+        mas_swapStyle("window"                    , "window_dark"                    , morning_flag)
+        mas_swapStyle("window_monika"             , "window_monika_dark"             , morning_flag)
+
+        # Textbox
+        if mas_globals.change_textbox:
+            style.say_window = style.window
 
         # timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
@@ -321,6 +266,8 @@ init python:
     
         # Reset the global flag
         mas_globals.change_textbox = True
+
+        style.rebuild()
 
 # START: Settings menu helpers
 init python in mas_settings:
@@ -408,34 +355,6 @@ style navigation_dark_button_text:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
-style pref_def_label is gui_label
-style pref_def_label_text is gui_label_text
-
-style pref_def_label:
-    top_margin gui.pref_spacing
-    bottom_margin 2
-
-style pref_def_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
-    size 24
-    color "#fff"
-    outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
-    yalign 1.0
-
-style pref_dark_label is gui_label
-style pref_dark_label_text is gui_label_text
-
-style pref_dark_label:
-    top_margin gui.pref_spacing
-    bottom_margin 2
-
-style pref_dark_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
-    size 24
-    color "#FFD9E8"
-    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
-    yalign 1.0
-
 style pref_dark_label is gui_label
 style pref_dark_label_text is gui_label_text
 
@@ -483,35 +402,12 @@ style outfit_check_dark_button_text:
     hover_color "#FFAA99"
     outlines []
 
-style button_def:
-    properties gui.button_properties("button")
-
-style button_text_def is gui_text:
-    properties gui.button_text_properties("button")
-    yalign 0.5
-
-style button_def_text is gui_text:
-    properties gui.button_text_properties("button")
-    yalign 0.5
-
 style button_dark:
     properties gui.button_properties("button_dark")
-
-style button_text_dark is gui_text:
-    properties gui.button_text_properties("button_dark")
-    yalign 0.5
 
 style button_dark_text is gui_text:
     properties gui.button_text_properties("button_dark")
     yalign 0.5
-
-style main_menu_frame_def is empty
-
-style main_menu_frame_def:
-    xsize 310
-    yfill True
-
-    background "menu_nav"
 
 style main_menu_frame_dark is empty
 
@@ -548,13 +444,6 @@ style slider_dark_button is gui_button
 style slider_dark_button_text is gui_button_text
 style slider_dark_pref_vbox is pref_vbox
 
-style scrollbar_def:
-    ysize 18
-    base_bar Frame("gui/scrollbar/horizontal_poem_bar.png", tile=False)
-    thumb Frame("gui/scrollbar/horizontal_poem_thumb.png", top=6, right=6, tile=True)
-    unscrollable "hide"
-    bar_invert True
-
 style scrollbar_dark:
     ysize 18
     base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
@@ -578,31 +467,15 @@ style vscrollbar_dark:
     bar_vertical True
     bar_invert True
 
-style frame_def:
-    padding gui.frame_borders.padding
-    background Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile)
-
 style frame_dark:
     padding gui.frame_borders.padding
     background Frame("gui/frame_d.png", gui.frame_borders, tile=gui.frame_tile)
-
-style confirm_frame_def:
-    background Frame([ "gui/confirm_frame.png", "gui/frame.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
-    padding gui.confirm_frame_borders.padding
-    xalign .5
-    yalign .5
 
 style confirm_frame_dark:
     background Frame([ "gui/confirm_frame.png", "gui/frame_d.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
     padding gui.confirm_frame_borders.padding
     xalign .5
     yalign .5
-
-style game_menu_outer_frame_def:
-    bottom_padding 30
-    top_padding 120
-
-    background "gui/overlay/game_menu.png"
 
 style game_menu_outer_frame_dark:
     bottom_padding 30
@@ -626,17 +499,6 @@ style default_dark:
     line_overlap_split 1
     line_spacing 1
 
-style edited_def is default:
-    font "gui/font/VerilySerifMono.otf"
-    kerning 8
-    outlines [(10, "#000", 0, 0)]
-    xpos gui.text_xpos
-    xanchor gui.text_xalign
-    xsize gui.text_width
-    ypos gui.text_ypos
-    text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
-
 style edited_dark is default:
     font "gui/font/VerilySerifMono.otf"
     kerning 8
@@ -647,16 +509,6 @@ style edited_dark is default:
     ypos gui.text_ypos
     text_align gui.text_xalign
     layout ("subtitle" if gui.text_xalign else "tex")
-
-style poemgame_text_def:
-    yalign 0.5
-    font "gui/font/Halogen.ttf"
-    size 30
-    color "#000"
-    outlines []
-
-    hover_xoffset -3
-    hover_outlines [(3, "#fef", 0, 0), (2, "#fcf", 0, 0), (1, "#faf", 0, 0)]
 
 style poemgame_text_dark:
     yalign 0.5
@@ -690,16 +542,6 @@ style say_label_dark:
     yalign 0.5
     outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
 
-style window_def is default
-
-style window_def:
-    xalign 0.5
-    xfill True
-    yalign gui.textbox_yalign
-    ysize gui.textbox_height
-
-    background Image("gui/textbox.png", xalign=0.5, yalign=1.0)
-
 style window_dark is default
 
 style window_dark:
@@ -709,16 +551,6 @@ style window_dark:
     ysize gui.textbox_height
 
     background Image("gui/textbox_d.png", xalign=0.5, yalign=1.0)
-
-style navigation_button_text_def is gui_button_text
-
-style navigation_button_text_def:
-    properties gui.button_text_properties("navigation_button")
-    font "gui/font/RifficFree-Bold.ttf"
-    color "#fff"
-    outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
-    hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
-    insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
 
 style navigation_button_text_dark is gui_button_text_dark
 
@@ -730,23 +562,10 @@ style navigation_button_text_dark:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
-style main_menu_version_def is main_menu_text:
-    color "#000000"
-    size 16
-    outlines []
-
 style main_menu_version_dark is main_menu_text:
     color mas_ui.dark_button_text_idle_color
     size 16
     outlines []
-
-style confirm_prompt_text_def is gui_prompt_text
-
-style confirm_prompt_text_def:
-    color "#000"
-    outlines []
-    text_align 0.5
-    layout "subtitle"
 
 style confirm_prompt_text_dark is gui_prompt_text
 
@@ -840,20 +659,6 @@ style island_dark_button_text is default:
     hover_background "mod_assets/island_hover_background_d.png"
     outlines []
 
-style page_label_def is gui_label
-style page_label_def_text is gui_label_text
-
-style page_label_def:
-    xpadding 50
-    ypadding 3
-
-style page_label_def_text:
-    color "#000"
-    outlines []
-    text_align 0.5
-    layout "subtitle"
-    hover_color gui.hover_color
-
 style page_label_dark is gui_label
 style page_label_dark_text is gui_label_text
 
@@ -868,17 +673,6 @@ style page_label_dark_text:
     layout "subtitle"
     hover_color gui.hover_color
 
-style slot_button_def is gui_button
-style slot_button_def_text is gui_button_text
-
-style slot_button_def:
-    properties gui.button_properties("slot_button")
-
-style slot_button_def_text:
-    properties gui.button_text_properties("slot_button")
-    color "#666"
-    outlines []
-
 style slot_button_dark is gui_button
 style slot_button_dark_text is gui_button_text
 
@@ -889,9 +683,6 @@ style slot_button_dark_text:
     properties gui.button_text_properties("slot_button")
     color "#8C8C8C"
     outlines []
-
-style mute_all_button_def is check_button
-style mute_all_button_def_text is check_button_text
 
 style mute_all_button_dark is check_dark_button
 style mute_all_button_dark_text is check_dark_button_text
@@ -967,17 +758,17 @@ image menu_nav:
 
 
 # START: gui definitions
-define gui.button_def_width = None
-define gui.button_def_height = 36
-define gui.button_def_borders = Borders(4, 4, 4, 4)
-define gui.button_def_tile = False
-define gui.button_def_text_font = gui.interface_font
-define gui.button_def_text_size = gui.interface_text_size
-define gui.button_def_text_idle_color = gui.idle_color
-define gui.button_def_text_hover_color = gui.hover_color
-define gui.button_def_text_selected_color = gui.selected_color
-define gui.button_def_text_insensitive_color = gui.insensitive_color
-define gui.button_def_text_xalign = 0.0
+define gui.button_width = None
+define gui.button_height = 36
+define gui.button_borders = Borders(4, 4, 4, 4)
+define gui.button_tile = False
+define gui.button_text_font = gui.interface_font
+define gui.button_text_size = gui.interface_text_size
+define gui.button_text_idle_color = gui.idle_color
+define gui.button_text_hover_color = gui.hover_color
+define gui.button_text_selected_color = gui.selected_color
+define gui.button_text_insensitive_color = gui.insensitive_color
+define gui.button_text_xalign = 0.0
 
 define gui.button_dark_width = None
 define gui.button_dark_height = 36

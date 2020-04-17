@@ -103,9 +103,6 @@ init -1 python in hkb_button:
 style hkb_vbox is vbox:
     spacing 5
 
-style hkb_dark_vbox is vbox:
-    spacing 5
-
 style hkb_button is generic_button_light:
     xysize (120, 35)
     padding (5, 5, 5, 5)

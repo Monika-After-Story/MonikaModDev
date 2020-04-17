@@ -226,47 +226,18 @@ label mas_extra_menu_zoom_in_max_first_time:
 
 
 # FIXME: the following styles cannot be checked because of the commented code
-style mas_mbs_vbox is vbox
-style mas_mbs_button is button
-style mas_mbs_button_text is button_text
-
-style mas_mbs_vbox:
+style mas_mbs_vbox is vbox:
     spacing 0
 
-style mas_mbs_button is default:
-#    width 35
-#    height 35
-#    tile False
-    idle_background  "mod_assets/buttons/squares/square_idle.png"
-    hover_background "mod_assets/buttons/squares/square_hover.png"
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style mas_mbs_button is generic_button_light
+#    xysize (35, 35)
 
-style mas_mbs_button_def is default:
-#    width 35
-#    height 35
-#    tile False
-    idle_background  "mod_assets/buttons/squares/square_idle.png"
-    hover_background "mod_assets/buttons/squares/square_hover.png"
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style mas_mbs_button_dark is generic_button_dark
+#    xysize (35, 35)
 
-style mas_mbs_button_dark is default:
-#    width 35
-#    height 35
-#    tile False
-    idle_background  "mod_assets/buttons/squares/square_idle_d.png"
-    hover_background "mod_assets/buttons/squares/square_hover_d.png"
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style mas_mbs_button_text is generic_button_text_light
 
-style mas_mbs_button_text is default:
-    font gui.default_font
-    size gui.text_size
-    xalign 0.5
-    idle_color mas_ui.light_button_text_idle_color
-    hover_color mas_ui.light_button_text_hover_color
-    outlines []
+style mas_mbs_button_text_dark is generic_button_text_dark
 
 #screen mas_modebar_toggle():
 #    zorder 50
@@ -336,10 +307,7 @@ style mas_extra_menu_frame:
 style mas_extra_menu_frame_dark:
     background Frame("mod_assets/frames/trans_pink2pxborder100_d.png", Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
 
-# NOTE: this style is used only for night mode switching
-style mas_adjust_vbar
-
-style mas_adjust_vbar_def:
+style mas_adjust_vbar:
     xsize 18
     base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
     thumb "gui/slider/horizontal_hover_thumb.png"
@@ -351,10 +319,7 @@ style mas_adjust_vbar_dark:
     thumb "gui/slider/horizontal_hover_thumb.png"
     bar_vertical True
 
-# NOTE: this style is used only for night mode switching
-style mas_adjustable_button
-
-style mas_adjustable_button_def is generic_button_light:
+style mas_adjustable_button is generic_button_light:
     xysize (None, None)
     padding (3, 3, 3, 3)
 
@@ -362,10 +327,7 @@ style mas_adjustable_button_dark is generic_button_dark:
     xysize (None, None)
     padding (3, 3, 3, 3)
 
-# NOTE: this style is used only for night mode switching
-style mas_adjustable_button_text
-
-style mas_adjustable_button_text_def is generic_button_text_light:
+style mas_adjustable_button_text is generic_button_text_light:
     kerning 0.2
 
 style mas_adjustable_button_text_dark is generic_button_text_dark:
