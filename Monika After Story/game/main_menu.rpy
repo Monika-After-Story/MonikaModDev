@@ -36,6 +36,7 @@ screen main_menu():
     key "K_ESCAPE" action Quit(confirm=False)
 
 style main_menu_frame is empty
+style main_menu_frame_dark is empty
 style main_menu_vbox is vbox
 style main_menu_text is gui_text
 style main_menu_title is main_menu_text
@@ -44,7 +45,18 @@ style main_menu_version is main_menu_text:
     size 16
     outlines []
 
+style main_menu_version_dark is main_menu_text:
+    color mas_ui.dark_button_text_idle_color
+    size 16
+    outlines []
+
 style main_menu_frame:
+    xsize 310
+    yfill True
+
+    background "menu_nav"
+
+style main_menu_frame_dark:
     xsize 310
     yfill True
 

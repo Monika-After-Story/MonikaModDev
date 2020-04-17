@@ -175,6 +175,17 @@ style edited is default:
     text_align gui.text_xalign
     layout ("subtitle" if gui.text_xalign else "tex")
 
+style edited_dark is default:
+    font "gui/font/VerilySerifMono.otf"
+    kerning 8
+    outlines []
+    xpos gui.text_xpos
+    xanchor gui.text_xalign
+    xsize gui.text_width
+    ypos gui.text_ypos
+    text_align gui.text_xalign
+    layout ("subtitle" if gui.text_xalign else "tex")
+
 style normal is default:
     xpos gui.text_xpos
     xanchor gui.text_xalign
@@ -209,19 +220,59 @@ style poemgame_text:
     hover_xoffset -3
     hover_outlines [(3, "#fef", 0, 0), (2, "#fcf", 0, 0), (1, "#faf", 0, 0)]
 
+style poemgame_text_dark:
+    yalign 0.5
+    font "gui/font/Halogen.ttf"
+    size 30
+    color "#000"
+    outlines []
+
+    hover_xoffset -3
+    hover_outlines [(3, "#fef", 0, 0), (2, "#fcf", 0, 0), (1, "#faf", 0, 0)]
+
 style gui_text:
     font gui.interface_font
     color gui.interface_text_color
     size gui.interface_text_size
 
 
+define gui.button_width = None
+define gui.button_height = 36
+define gui.button_borders = Borders(4, 4, 4, 4)
+define gui.button_tile = False
+define gui.button_text_font = gui.interface_font
+define gui.button_text_size = gui.interface_text_size
+define gui.button_text_idle_color = gui.idle_color
+define gui.button_text_hover_color = gui.hover_color
+define gui.button_text_selected_color = gui.selected_color
+define gui.button_text_insensitive_color = gui.insensitive_color
+define gui.button_text_xalign = 0.0
+
+define gui.button_dark_width = None
+define gui.button_dark_height = 36
+define gui.button_dark_borders = Borders(4, 4, 4, 4)
+define gui.button_dark_tile = False
+define gui.button_text_dark_font = gui.interface_font
+define gui.button_text_dark_size = gui.interface_text_size
+define gui.button_text_dark_idle_color = gui.idle_color
+define gui.button_text_dark_hover_color = gui.hover_color
+define gui.button_text_dark_selected_color = gui.selected_color
+define gui.button_text_dark_insensitive_color = gui.insensitive_color
+define gui.button_text_dark_xalign = 0.0
+
 style button:
     properties gui.button_properties("button")
+
+style button_dark:
+    properties gui.button_properties("button_dark")
 
 style button_text is gui_text:
     properties gui.button_text_properties("button")
     yalign 0.5
 
+style button_text_dark is gui_text:
+    properties gui.button_text_properties("button_dark")
+    yalign 0.5
 
 style label_text is gui_text:
     color gui.accent_color
@@ -254,6 +305,17 @@ style scrollbar:
     unscrollable "hide"
     bar_invert True
 
+style scrollbar_dark:
+    ysize 18
+    base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
+    thumb Frame("gui/scrollbar/horizontal_poem_thumb.png", top=6, right=6, tile=True)
+    unscrollable "hide"
+    bar_invert True
+
+#style vscrollbar:
+#    xsize gui.scrollbar_size
+#    base_bar Frame("gui/scrollbar/vertical_[prefix_]bar.png", gui.vscrollbar_borders, tile=gui.scrollbar_tile)
+#    thumb Frame("gui/scrollbar/vertical_[prefix_]thumb.png", gui.vscrollbar_borders, tile=gui.scrollbar_tile)
 
 style vscrollbar:
     xsize 18
@@ -263,14 +325,22 @@ style vscrollbar:
     bar_vertical True
     bar_invert True
 
-#style vscrollbar:
-#    xsize gui.scrollbar_size
-#    base_bar Frame("gui/scrollbar/vertical_[prefix_]bar.png", gui.vscrollbar_borders, tile=gui.scrollbar_tile)
-#    thumb Frame("gui/scrollbar/vertical_[prefix_]thumb.png", gui.vscrollbar_borders, tile=gui.scrollbar_tile)
+style vscrollbar_dark:
+    xsize 18
+    base_bar Frame("gui/scrollbar/vertical_poem_bar_d.png", tile=False)
+    thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
+    unscrollable "hide"
+    bar_vertical True
+    bar_invert True
 
 style slider:
     ysize 18
     base_bar Frame("gui/scrollbar/horizontal_poem_bar.png", tile=False)
+    thumb "gui/slider/horizontal_hover_thumb.png"
+
+style slider_dark:
+    ysize 18
+    base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
     thumb "gui/slider/horizontal_hover_thumb.png"
 
 style vslider:
@@ -283,6 +353,9 @@ style frame:
     padding gui.frame_borders.padding
     background Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile)
 
+style frame_dark:
+    padding gui.frame_borders.padding
+    background Frame("gui/frame_d.png", gui.frame_borders, tile=gui.frame_tile)
 
 
 ################################################################################
@@ -325,16 +398,10 @@ screen say(who, what):
     use quick_menu
 
 
-style window is default
-style say_label is default
 style say_dialogue is default
 style say_thought is say_dialogue
 
-style namebox is default
-style namebox_label is say_label
-
-
-style window:
+style window is default:
     xalign 0.5
     xfill True
     yalign gui.textbox_yalign
@@ -342,10 +409,21 @@ style window:
 
     background Image("gui/textbox.png", xalign=0.5, yalign=1.0)
 
+style window_dark is default:
+    xalign 0.5
+    xfill True
+    yalign gui.textbox_yalign
+    ysize gui.textbox_height
+
+    background Image("gui/textbox_d.png", xalign=0.5, yalign=1.0)
+
 style window_monika is window:
     background Image("gui/textbox_monika.png", xalign=0.5, yalign=1.0)
 
-style namebox:
+style window_monika_dark is window:
+    background Image("gui/textbox_monika_d.png", xalign=0.5, yalign=1.0)
+
+style namebox is default:
     xpos gui.name_xpos
     xanchor gui.name_xalign
     xsize gui.namebox_width
@@ -355,13 +433,31 @@ style namebox:
     background Frame("gui/namebox.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
     padding gui.namebox_borders.padding
 
-style say_label:
+style namebox_dark is default:
+    xpos gui.name_xpos
+    xanchor gui.name_xalign
+    xsize gui.namebox_width
+    ypos gui.name_ypos
+    ysize gui.namebox_height
+
+    background Frame("gui/namebox_d.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
+    padding gui.namebox_borders.padding
+
+style say_label is default:
     color gui.accent_color
     font gui.name_font
     size gui.name_text_size
     xalign gui.name_xalign
     yalign 0.5
     outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
+
+style say_label_dark is default:
+    color "#FFD9E8"
+    font gui.name_font
+    size gui.name_text_size
+    xalign gui.name_xalign
+    yalign 0.5
+    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
 
 style say_dialogue:
     xpos gui.text_xpos
@@ -551,17 +647,29 @@ screen quick_menu():
 
 default quick_menu = True
 
-#style quick_button is default
-#style quick_button_text is button_text
-
+# START: quick menu styles
 style quick_button:
     properties gui.button_properties("quick_button")
+    activate_sound gui.activate_sound
+
+style quick_button_dark:
+    properties gui.button_properties("quick_button_dark")
     activate_sound gui.activate_sound
 
 style quick_button_text:
     properties gui.button_text_properties("quick_button")
     outlines []
 
+style quick_button_text_dark:
+    properties gui.button_text_properties("quick_button_dark")
+    xysize (205, None)
+    font gui.default_font
+    size 14
+    idle_color "#FFAA99"
+    selected_color "#FFEEEB"
+    hover_color "#FFD4CC"
+    kerning 0.2
+    outlines []
 
 ################################################################################
 # Main and Game Menu Screens
@@ -628,16 +736,19 @@ screen navigation():
 
 
 
-style navigation_button is gui_button
-style navigation_button_text is gui_button_text
-
-style navigation_button:
+style navigation_button is gui_button:
     size_group "navigation"
     properties gui.button_properties("navigation_button")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-style navigation_button_text:
+style navigation_button_dark is gui_button:
+    size_group "navigation"
+    properties gui.button_properties("navigation_button")
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style navigation_button_text is gui_button_text:
     properties gui.button_text_properties("navigation_button")
     font "gui/font/RifficFree-Bold.ttf"
     color "#fff"
@@ -645,6 +756,13 @@ style navigation_button_text:
     hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
     insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
 
+style navigation_button_text_dark is gui_button_text_dark:
+    properties gui.button_text_properties("navigation_button")
+    font "gui/font/RifficFree-Bold.ttf"
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
 ## Main Menu screen ############################################################
 ##
@@ -706,6 +824,7 @@ screen main_menu():
     key "K_ESCAPE" action Quit(confirm=False)
 
 style main_menu_frame is empty
+style main_menu_frame_dark is empty
 style main_menu_vbox is vbox
 style main_menu_text is gui_text
 style main_menu_title is main_menu_text
@@ -714,7 +833,18 @@ style main_menu_version is main_menu_text:
     size 16
     outlines []
 
+style main_menu_version_dark is main_menu_text:
+    color mas_ui.dark_button_text_idle_color
+    size 16
+    outlines []
+
 style main_menu_frame:
+    xsize 310
+    yfill True
+
+    background "menu_nav"
+
+style main_menu_frame_dark:
     xsize 310
     yfill True
 
@@ -838,16 +968,26 @@ style game_menu_side is gui_side
 style game_menu_scrollbar is gui_vscrollbar
 
 style game_menu_label is gui_label
+style game_menu_label_dark is gui_label
 style game_menu_label_text is gui_label_text
+style game_menu_label_text_dark is gui_label_text
 
 style return_button is navigation_button
+style return_button_dark is navigation_button
 style return_button_text is navigation_button_text
+style return_button_text_dark is navigation_button_text_dark
 
 style game_menu_outer_frame:
     bottom_padding 30
     top_padding 120
 
     background "gui/overlay/game_menu.png"
+
+style game_menu_outer_frame_dark:
+    bottom_padding 30
+    top_padding 120
+
+    background "gui/overlay/game_menu_d.png"
 
 style game_menu_navigation_frame:
     xsize 280
@@ -857,6 +997,12 @@ style game_menu_content_frame:
     left_margin 40
     right_margin 20
     top_margin 10
+
+# FIXME: why?
+style game_menu_content_frame:
+    left_margin 40
+    right_margin 20
+    top_margin -40
 
 style game_menu_viewport:
     xsize 920
@@ -871,6 +1017,10 @@ style game_menu_label:
     xpos 50
     ysize 120
 
+style game_menu_label_dark:
+    xpos 50
+    ysize 120
+
 style game_menu_label_text:
     font "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
@@ -878,11 +1028,22 @@ style game_menu_label_text:
     outlines [(6, "#b59", 0, 0), (3, "#b59", 2, 2)]
     yalign 0.5
 
+style game_menu_label_text_dark:
+    font "gui/font/RifficFree-Bold.ttf"
+    size gui.title_text_size
+    color "#FFD9E8"
+    outlines [(6, "#DE367E", 0, 0), (3, "#DE367E", 2, 2)]
+    yalign 0.5
+
 style return_button:
     xpos gui.navigation_xpos
     yalign 1.0
     yoffset -30
 
+style return_button_dark:
+    xpos gui.navigation_xpos
+    yalign 1.0
+    yoffset -30
 
 ## About screen ################################################################
 ##
@@ -1030,12 +1191,16 @@ screen file_slots(title):
 
 
 style page_label is gui_label
+style page_label_dark is gui_label
 style page_label_text is gui_label_text
+style page_label_text_dark is gui_label_text
 style page_button is gui_button
 style page_button_text is gui_button_text
 
 style slot_button is gui_button
+style slot_button_dark is gui_button
 style slot_button_text is gui_button_text
+style slot_button_text_dark is gui_button_text
 style slot_time_text is slot_button_text
 style slot_name_text is slot_button_text
 
@@ -1043,8 +1208,19 @@ style page_label:
     xpadding 50
     ypadding 3
 
+style page_label_dark:
+    xpadding 50
+    ypadding 3
+
 style page_label_text:
     color "#000"
+    outlines []
+    text_align 0.5
+    layout "subtitle"
+    hover_color gui.hover_color
+
+style page_label_text_dark:
+    color "#FFD9E8"
     outlines []
     text_align 0.5
     layout "subtitle"
@@ -1060,11 +1236,18 @@ style page_button_text:
 style slot_button:
     properties gui.button_properties("slot_button")
 
+style slot_button_dark:
+    properties gui.button_properties("slot_button")
+
 style slot_button_text:
     properties gui.button_text_properties("slot_button")
     color "#666"
     outlines []
 
+style slot_button_text_dark:
+    properties gui.button_text_properties("slot_button")
+    color "#8C8C8C"
+    outlines []
 
 ## Preferences screen ##########################################################
 ##
@@ -1333,32 +1516,47 @@ screen preferences():
         style "main_menu_version"
 
 style pref_label is gui_label
+style pref_label_dark is gui_label
 style pref_label_text is gui_label_text
+style pref_label_text_dark is gui_label_text
 style pref_vbox is vbox
 
 style radio_label is pref_label
+style radio_label_dark is pref_label
 style radio_label_text is pref_label_text
+style radio_label_text_dark is pref_label_text
 style radio_button is gui_button
+style radio_button_dark is gui_button_dark
 style radio_button_text is gui_button_text
+style radio_button_text_dark is gui_button_text_dark
 style radio_vbox is pref_vbox
 
 style check_label is pref_label
+style check_label_dark is pref_label
 style check_label_text is pref_label_text
+style check_label_text_dark is pref_label_text
 style check_button is gui_button
+style check_button_dark is gui_button_dark
 style check_button_text is gui_button_text
+style check_button_text_dark is gui_button_text_dark
 style check_vbox is pref_vbox
 
 style slider_label is pref_label
+style slider_label_dark is pref_label
 style slider_label_text is pref_label_text
+style slider_label_text_dark is pref_label_text
 style slider_slider is gui_slider
+style slider_slider_dark is gui_slider_dark
 style slider_button is gui_button
+style slider_button_dark is gui_button
 style slider_button_text is gui_button_text
+style slider_button_text_dark is gui_button_text
 style slider_pref_vbox is pref_vbox
 
 style mute_all_button is check_button
+style mute_all_button_dark is check_button_dark
 style mute_all_button_text is check_button_text
-
-style outfit_check_button_text is gui_button_text
+style mute_all_button_text_dark is check_button_text_dark
 
 style pref_label:
     top_margin gui.pref_spacing
@@ -1371,6 +1569,17 @@ style pref_label_text:
     outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
     yalign 1.0
 
+style pref_label_dark:
+    top_margin gui.pref_spacing
+    bottom_margin 2
+
+style pref_label_text_dark:
+    font "gui/font/RifficFree-Bold.ttf"
+    size 24
+    color "#FFD9E8"
+    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+    yalign 1.0
+
 style pref_vbox:
     xsize 225
 
@@ -1381,10 +1590,25 @@ style radio_button:
     properties gui.button_properties("radio_button")
     foreground "gui/button/check_[prefix_]foreground.png"
 
+style radio_button_dark:
+    properties gui.button_properties("radio_button")
+    foreground "gui/button/check_[prefix_]foreground_d.png"
+
 style radio_button_text:
     properties gui.button_text_properties("radio_button")
     font "gui/font/Halogen.ttf"
     outlines []
+
+style radio_button_text_dark:
+    properties gui.button_text_properties("radio_button_dark")
+    font "gui/font/Halogen.ttf"
+    color "#8C8C8C" 
+    hover_color "#FF80B7"
+    selected_color "#DE367E"
+    outlines []
+
+define gui.check_button_borders = Borders(28, 4, 4, 4)
+define gui.check_button_dark_borders = Borders(28, 4, 4, 4)
 
 style check_vbox:
     spacing gui.pref_button_spacing
@@ -1393,12 +1617,27 @@ style check_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
 
+style check_button_dark:
+    properties gui.button_properties("check_button")
+    foreground "gui/button/check_[prefix_]foreground_d.png"
+
 style check_button_text:
     properties gui.button_text_properties("check_button")
     font "gui/font/Halogen.ttf"
     outlines []
 
+style check_button_text_dark:
+    properties gui.button_text_properties("check_button_dark")
+    color "#8C8C8C" 
+    hover_color "#FF80B7"
+    selected_color "#DE367E"
+    font "gui/font/Halogen.ttf"
+    outlines []
+
 style slider_slider:
+    xsize 350
+    
+style slider_slider_dark:
     xsize 350
 
 style slider_button:
@@ -1409,6 +1648,9 @@ style slider_button:
 style slider_button_text:
     properties gui.button_text_properties("slider_button")
 
+style slider_button_text_dark:
+    properties gui.button_text_properties("slider_button")
+
 style slider_vbox:
     xsize 450
 
@@ -1416,7 +1658,19 @@ style outfit_check_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
 
-style outfit_check_button_text:
+style outfit_check_button_dark:
+    properties gui.button_properties("check_button")
+    foreground "gui/button/check_[prefix_]foreground_d.png"
+
+style outfit_check_button_text is gui_button_text:
+    properties gui.button_text_properties("outfit_check_button")
+    font "gui/font/Halogen.ttf"
+    color "#BFBFBF"
+    selected_color "#FFEEEB"
+    hover_color "#FFAA99"
+    outlines []
+
+style outfit_check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("outfit_check_button")
     font "gui/font/Halogen.ttf"
     color "#BFBFBF"
@@ -1848,6 +2102,7 @@ screen confirm(message, yes_action, no_action):
 style confirm_frame is gui_frame
 style confirm_prompt is gui_prompt
 style confirm_prompt_text is gui_prompt_text
+style confirm_prompt_text_dark is gui_prompt_text
 style confirm_button is gui_medium_button
 style confirm_button_text is gui_medium_button_text
 
@@ -1857,8 +2112,20 @@ style confirm_frame:
     xalign .5
     yalign .5
 
+style confirm_frame_dark:
+    background Frame([ "gui/confirm_frame.png", "gui/frame_d.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
+    padding gui.confirm_frame_borders.padding
+    xalign .5
+    yalign .5
+
 style confirm_prompt_text:
     color "#000"
+    outlines []
+    text_align 0.5
+    layout "subtitle"
+
+style confirm_prompt_text_dark:
+    color "#FD5BA2"
     outlines []
     text_align 0.5
     layout "subtitle"
@@ -2130,12 +2397,6 @@ style scrollable_menu_vbox is vbox:
     yanchor 0.5
     spacing 5
 
-style scrollable_menu_dark_vbox is vbox:
-    xalign 0.5
-    ypos 270
-    yanchor 0.5
-    spacing 5
-
 style scrollable_menu_button is choice_button:
     xysize (560, None)
     padding (25, 5, 25, 5)
@@ -2184,12 +2445,6 @@ style scrollable_menu_crazy_button_text_dark is scrollable_menu_button_text_dark
 
 # two pane stuff
 style twopane_scrollable_menu_vbox is vbox:
-    xalign 0.5
-    ypos 270
-    yanchor 0.5
-    spacing 5
-
-style twopane_scrollable_menu_dark_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
