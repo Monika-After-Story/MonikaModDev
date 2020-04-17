@@ -1529,8 +1529,8 @@ screen hot_keys():
                 vbox:
                     label _("Music")
                     spacing 10
-                    text _("Vol Up")
-                    text _("Vol Down")
+                    text _("Volume Up")
+                    text _("Volume Down")
                     text _("Mute")
 
                 vbox:
