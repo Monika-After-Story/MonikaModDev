@@ -2246,12 +2246,12 @@ init 5 python:
             eventlabel="monika_credits_song",
             conditional="store.mas_anni.pastOneMonth()",
             action=EV_ACT_QUEUE,
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
 label monika_credits_song:
-    if persistent.monika_kill:
+    if persistent.monika_kill or renpy.seen_audio(songs.FP_YOURE_REAL):
         m 1hua "I hope you liked my song."
         m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
         m 1eua "Give me some time, and I'll try to write another."
@@ -2294,13 +2294,7 @@ label monika_credits_song:
                 m 3hua "Just me know when it's a better time for you and I'll happily play it for you then~"
 
     else:
-        if renpy.seen_audio(songs.FP_YOURE_REAL):
-            m 1eua "Hey [player], I've been thinking a bit lately about {i}Your Reality{/i}..."
-            m 3rka "The ending doesn't really convey my true feelings anymore, so I decided to update the song..."
-            m 3hua "I even changed the name!"
-        else:
-            m 3eua "Hey [player], I finally finished that song I've been working on for you."
-
+        m 3eua "Hey [player], I finally finished that song I've been working on for you."
         m 1eka "I call it {i}Our Reality{/i}."
 
         m 1eua "I'm just so excited to finally be able to play it for you, if you have time that is...{nw}"
