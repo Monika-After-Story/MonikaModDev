@@ -153,7 +153,8 @@ init python:
         mas_swapStyle("mute_all_button"                            , "mute_all_button_dark"                            , morning_flag)
         mas_swapStyle("mute_all_button_text"                       , "mute_all_button_dark_text"                       , morning_flag)
         mas_swapStyle("namebox"                                    , "namebox_dark"                                    , morning_flag)
-        mas_swapStyle("navigation_button_text"                     , "navigation_button_text_dark"                     , morning_flag)
+        mas_swapStyle("navigation_button"                          , "navigation_dark_button"                          , morning_flag)
+        mas_swapStyle("navigation_button_text"                     , "navigation_dark_button_text"                     , morning_flag)
         mas_swapStyle("outfit_check_button"                        , "outfit_check_dark_button"                        , morning_flag)
         mas_swapStyle("outfit_check_button_text"                   , "outfit_check_dark_button_text"                   , morning_flag)
         mas_swapStyle("page_label"                                 , "page_label_dark"                                 , morning_flag)
@@ -194,6 +195,7 @@ init python:
         mas_swapStyle("twopane_scrollable_menu_new_button_text"    , "twopane_scrollable_menu_dark_new_button_text"    , morning_flag)
         mas_swapStyle("twopane_scrollable_menu_special_button"     , "twopane_scrollable_menu_dark_special_button"     , morning_flag)
         mas_swapStyle("twopane_scrollable_menu_special_button_text", "twopane_scrollable_menu_dark_special_button_text", morning_flag)
+        mas_swapStyle("vscrollbar"                                 , "vscrollbar_dark"                                 , morning_flag)
         mas_swapStyle("window"                                     , "window_dark"                                     , morning_flag)
         mas_swapStyle("window_monika"                              , "window_monika_dark"                              , morning_flag)
 
@@ -292,21 +294,17 @@ style generic_button_text_dark is generic_button_text_base:
 
 
 # START: screens styles
-style window_monika_def is window:
-    background Image("gui/textbox_monika.png", xalign=0.5, yalign=1.0)
-
 style window_monika_dark is window:
     background Image("gui/textbox_monika_d.png", xalign=0.5, yalign=1.0)
 
 style navigation_dark_button is gui_button
+style navigation_dark_button_text is gui_button_text_dark
 
 style navigation_dark_button:
     size_group "navigation"
     properties gui.button_properties("navigation_button")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
-
-style navigation_dark_button_text is gui_button_text_dark
 
 style navigation_dark_button_text:
     properties gui.button_text_properties("navigation_button")
@@ -398,14 +396,6 @@ style scrollbar_dark:
     unscrollable "hide"
     bar_invert True
 
-style vscrollbar_def:
-    xsize 18
-    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
-    thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
-    unscrollable "hide"
-    bar_vertical True
-    bar_invert True
-
 style vscrollbar_dark:
     xsize 18
     base_bar Frame("gui/scrollbar/vertical_poem_bar_d.png", tile=False)
@@ -429,14 +419,6 @@ style game_menu_outer_frame_dark:
     top_padding 120
 
     background "gui/overlay/game_menu_d.png"
-
-style default_def:
-    font gui.default_font
-    size gui.text_size
-    color gui.text_color
-    outlines [(2, "#000000aa", 0, 0)]
-    line_overlap_split 1
-    line_spacing 1
 
 style default_dark:
     font gui.default_font
@@ -498,16 +480,6 @@ style window_dark:
     ysize gui.textbox_height
 
     background Image("gui/textbox_d.png", xalign=0.5, yalign=1.0)
-
-style navigation_button_text_dark is gui_button_text_dark
-
-style navigation_button_text_dark:
-    properties gui.button_text_properties("navigation_button")
-    font "gui/font/RifficFree-Bold.ttf"
-    color "#FFD9E8"
-    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
-    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
-    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
 style main_menu_version_dark is main_menu_text:
     color mas_ui.dark_button_text_idle_color
@@ -714,8 +686,8 @@ define gui.button_dark_text_selected_color = gui.selected_color
 define gui.button_dark_text_insensitive_color = gui.insensitive_color
 define gui.button_dark_text_xalign = 0.0
 
+define gui.check_button_borders = Borders(28, 4, 4, 4)
 define gui.check_button_dark_borders = Borders(28, 4, 4, 4)
-define gui.check_button_def_borders = Borders(28, 4, 4, 4)
 
 define gui.island_dark_button_height = None
 define gui.island_dark_button_width = 205

@@ -260,6 +260,7 @@ style vscrollbar:
     base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
     thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
     unscrollable "hide"
+    bar_vertical True
     bar_invert True
 
 #style vscrollbar:
