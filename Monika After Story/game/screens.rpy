@@ -819,11 +819,11 @@ screen game_menu(title, scroll=None):
     #     on "show" action Show("game_menu_m")
 
     textbutton _("Return"):
-        style mas_ui.rb_button_style
+        style "return_button"
 
         action Return()
 
-    label title style mas_ui.gm_label_style
+    label title style "game_menu_label"
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
@@ -1108,7 +1108,7 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix mas_ui.cbx_style_prefix
+                    style_prefix "check"
                     label _("Graphics")
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
@@ -1123,7 +1123,7 @@ screen preferences():
 
 
                 vbox:
-                    style_prefix mas_ui.cbx_style_prefix
+                    style_prefix "check"
                     label _("Gameplay")
                     if persistent._mas_unstable_mode:
                         textbutton _("Unstable"):
@@ -1143,7 +1143,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix mas_ui.cbx_style_prefix
+                    style_prefix "check"
                     label _(" ")
                     textbutton _("Sensitive Mode"):
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
@@ -1432,7 +1432,7 @@ screen notif_settings():
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix mas_ui.cbx_style_prefix
+            style_prefix "check"
             hbox:
                 spacing 25
                 textbutton _("Use Notifications"):
@@ -1448,7 +1448,7 @@ screen notif_settings():
             label _("Alert Filters")
 
         hbox:
-            style_prefix mas_ui.cbx_style_prefix
+            style_prefix "check"
             box_wrap True
             spacing 25
 
@@ -2248,9 +2248,9 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 for i_caption,i_label in prev_items:
                     textbutton i_caption:
                         if renpy.has_label(i_label) and not seen_event(i_label):
-                            style mas_ui.tpsm_button_new_style
+                            style "twopane_scrollable_menu_new_button"
                         if not renpy.has_label(i_label):
-                            style mas_ui.tpsm_button_special_style
+                            style "twopane_scrollable_menu_special_button"
 
                         action Return(i_label)
 
@@ -2277,9 +2277,9 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                     for i_caption,i_label in main_items:
                         textbutton i_caption:
                             if renpy.has_label(i_label) and not seen_event(i_label):
-                                style mas_ui.tpsm_button_new_style
+                                style "twopane_scrollable_menu_new_button"
                             if not renpy.has_label(i_label):
-                                style mas_ui.tpsm_button_special_style
+                                style "twopane_scrollable_menu_special_button"
 
                             action Return(i_label)
 
@@ -2307,9 +2307,9 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
                 for i_caption,i_label in items:
                     textbutton i_caption:
                         if renpy.has_label(i_label) and not seen_event(i_label):
-                            style mas_ui.sm_button_new_style
+                            style "scrollable_menu_new_button"
                         if not renpy.has_label(i_label):
-                            style mas_ui.sm_button_special_style
+                            style "scrollable_menu_special_button"
                         action Return(i_label)
 
 
@@ -2365,11 +2365,11 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                 for item_prompt,item_value,is_italic,is_bold in items:
                     textbutton item_prompt:
                         if is_italic and is_bold:
-                            style mas_ui.sm_button_crazy_style
+                            style "scrollable_menu_crazy_button"
                         elif is_italic:
-                            style mas_ui.sm_button_new_style
+                            style "scrollable_menu_new_button"
                         elif is_bold:
-                            style mas_ui.sm_button_special_style
+                            style "scrollable_menu_special_button"
                         action Return(item_value)
 
                 for final_items in args:
@@ -2378,11 +2378,11 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 
                     textbutton _(final_items[0]):
                         if final_items[2] and final_items[3]:
-                            style mas_ui.sm_button_crazy_style
+                            style "scrollable_menu_crazy_button"
                         elif final_items[2]:
-                            style mas_ui.sm_button_new_style
+                            style "scrollable_menu_new_button"
                         elif final_items[3]:
-                            style mas_ui.sm_button_special_style
+                            style "scrollable_menu_special_button"
                         action Return(final_items[1])
 
 # background timed jump screen
@@ -2490,7 +2490,7 @@ screen submods():
             draggable True
 
             vbox:
-                style_prefix mas_ui.cbx_style_prefix
+                style_prefix "check"
                 box_wrap False
                 xmaximum 1000
                 xfill True
