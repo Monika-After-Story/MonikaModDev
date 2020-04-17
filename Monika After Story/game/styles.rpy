@@ -17,6 +17,8 @@ init -1 python in mas_globals:
     button_text_idle_color = None
 
 init -201 python in mas_ui:
+    dark_suffix = "_dark"
+
     # img strings and other constants
 
     # confirm
@@ -105,6 +107,26 @@ init python:
             dark_style = getattr(style, dark_name)
             setattr(style, base_name, dark_style)
 
+    def mas_hasDarkStyle(style_name):
+        """
+        Check if selected style has a dark alternative.
+        """
+        dark_style_name = style_name + mas_ui.dark_suffix
+
+        for other_tuple in renpy.style.styles:
+            other_name = other_tuple[0]
+            if other_name == dark_style_name:
+                return True
+
+        return False
+
+    def mas_isDarkStyle(style_name):
+        """
+        Check if selected style is a dark style.
+        """
+        suffix_len = len(mas_ui.dark_suffix)
+        return len(style_name) > suffix_len and style_name[-suffix_len:] == mas_ui.dark_suffix
+
     def mas_darkMode(morning_flag=False):
         """
         Swaps all styles to dark/light mode provided on the input
@@ -113,7 +135,6 @@ init python:
             morning_flag - if True, light mode, if False, dark mode
         """
         # FIXME: it will be done automagically later (requires consistent naming between styles)
-        mas_swapStyle("button"                                     , "button_dark"                                     , morning_flag)
         mas_swapStyle("button_text"                                , "button_dark_text"                                , morning_flag)
         mas_swapStyle("check_button"                               , "check_dark_button"                               , morning_flag)
         mas_swapStyle("check_button_text"                          , "check_dark_button_text"                          , morning_flag)
@@ -121,25 +142,11 @@ init python:
         mas_swapStyle("check_label_text"                           , "check_dark_label_text"                           , morning_flag)
         mas_swapStyle("choice_button"                              , "choice_dark_button"                              , morning_flag)
         mas_swapStyle("choice_button_text"                         , "choice_dark_button_text"                         , morning_flag)
-        mas_swapStyle("confirm_frame"                              , "confirm_frame_dark"                              , morning_flag)
-        mas_swapStyle("confirm_prompt_text"                        , "confirm_prompt_text_dark"                        , morning_flag)
-        mas_swapStyle("edited"                                     , "edited_dark"                                     , morning_flag)
-        mas_swapStyle("frame"                                      , "frame_dark"                                      , morning_flag)
-        mas_swapStyle("game_menu_label"                            , "game_menu_label_dark"                            , morning_flag)
         mas_swapStyle("game_menu_label_text"                       , "game_menu_label_dark_text"                       , morning_flag)
-        mas_swapStyle("game_menu_outer_frame"                      , "game_menu_outer_frame_dark"                      , morning_flag)
         mas_swapStyle("hkb_button"                                 , "hkb_dark_button"                                 , morning_flag)
         mas_swapStyle("hkb_button_text"                            , "hkb_dark_button_text"                            , morning_flag)
         mas_swapStyle("island_button"                              , "island_dark_button"                              , morning_flag)
         mas_swapStyle("island_button_text"                         , "island_dark_button_text"                         , morning_flag)
-        mas_swapStyle("main_menu_frame"                            , "main_menu_frame_dark"                            , morning_flag)
-        mas_swapStyle("main_menu_version"                          , "main_menu_version_dark"                          , morning_flag)
-        mas_swapStyle("mas_adjust_vbar"                            , "mas_adjust_vbar_dark"                            , morning_flag)
-        mas_swapStyle("mas_adjustable_button"                      , "mas_adjustable_button_dark"                      , morning_flag)
-        mas_swapStyle("mas_adjustable_button_text"                 , "mas_adjustable_button_text_dark"                 , morning_flag)
-        mas_swapStyle("mas_mbs_button"                             , "mas_mbs_button_dark"                             , morning_flag)
-        mas_swapStyle("mas_mbs_button_text"                        , "mas_mbs_button_text_dark"                        , morning_flag)
-        mas_swapStyle("mas_extra_menu_frame"                       , "mas_extra_menu_frame_dark"                       , morning_flag)
         mas_swapStyle("music_menu_button_text"                     , "music_menu_dark_button_text"                     , morning_flag)
         mas_swapStyle("music_menu_content_frame"                   , "music_menu_dark_content_frame"                   , morning_flag)
         mas_swapStyle("music_menu_label"                           , "music_menu_dark_label"                           , morning_flag)
@@ -150,16 +157,12 @@ init python:
         mas_swapStyle("music_menu_prev_button_text"                , "music_menu_dark_prev_button_text"                , morning_flag)
         mas_swapStyle("music_menu_return_button"                   , "music_menu_dark_return_button"                   , morning_flag)
         mas_swapStyle("music_menu_return_button_text"              , "music_menu_dark_return_button_text"              , morning_flag)
-        mas_swapStyle("mute_all_button"                            , "mute_all_button_dark"                            , morning_flag)
         mas_swapStyle("mute_all_button_text"                       , "mute_all_button_dark_text"                       , morning_flag)
-        mas_swapStyle("namebox"                                    , "namebox_dark"                                    , morning_flag)
         mas_swapStyle("navigation_button"                          , "navigation_dark_button"                          , morning_flag)
         mas_swapStyle("navigation_button_text"                     , "navigation_dark_button_text"                     , morning_flag)
         mas_swapStyle("outfit_check_button"                        , "outfit_check_dark_button"                        , morning_flag)
         mas_swapStyle("outfit_check_button_text"                   , "outfit_check_dark_button_text"                   , morning_flag)
-        mas_swapStyle("page_label"                                 , "page_label_dark"                                 , morning_flag)
         mas_swapStyle("page_label_text"                            , "page_label_dark_text"                            , morning_flag)
-        mas_swapStyle("poemgame_text"                              , "poemgame_text_dark"                              , morning_flag)
         mas_swapStyle("pref_label"                                 , "pref_dark_label"                                 , morning_flag)
         mas_swapStyle("pref_label_text"                            , "pref_dark_label_text"                            , morning_flag)
         mas_swapStyle("quick_button"                               , "quick_dark_button"                               , morning_flag)
@@ -169,8 +172,6 @@ init python:
         mas_swapStyle("radio_label"                                , "radio_dark_label"                                , morning_flag)
         mas_swapStyle("radio_label_text"                           , "radio_dark_label_text"                           , morning_flag)
         mas_swapStyle("return_button"                              , "return_dark_button"                              , morning_flag)
-        mas_swapStyle("say_label"                                  , "say_label_dark"                                  , morning_flag)
-        mas_swapStyle("scrollbar"                                  , "scrollbar_dark"                                  , morning_flag)
         mas_swapStyle("scrollable_menu_button"                     , "scrollable_menu_dark_button"                     , morning_flag)
         mas_swapStyle("scrollable_menu_button_text"                , "scrollable_menu_dark_button_text"                , morning_flag)
         mas_swapStyle("scrollable_menu_crazy_button"               , "scrollable_menu_dark_crazy_button"               , morning_flag)
@@ -179,13 +180,11 @@ init python:
         mas_swapStyle("scrollable_menu_new_button_text"            , "scrollable_menu_dark_new_button_text"            , morning_flag)
         mas_swapStyle("scrollable_menu_special_button"             , "scrollable_menu_dark_special_button"             , morning_flag)
         mas_swapStyle("scrollable_menu_special_button_text"        , "scrollable_menu_dark_special_button_text"        , morning_flag)
-        mas_swapStyle("slider"                                     , "slider_dark"                                     , morning_flag)
         mas_swapStyle("slider_button"                              , "slider_dark_button"                              , morning_flag)
         mas_swapStyle("slider_button_text"                         , "slider_dark_button_text"                         , morning_flag)
         mas_swapStyle("slider_label"                               , "slider_dark_label"                               , morning_flag)
         mas_swapStyle("slider_label_text"                          , "slider_dark_label_text"                          , morning_flag)
         mas_swapStyle("slider_slider"                              , "slider_dark_slider"                              , morning_flag)
-        mas_swapStyle("slot_button"                                , "slot_button_dark"                                , morning_flag)
         mas_swapStyle("slot_button_text"                           , "slot_button_dark_text"                           , morning_flag)
         mas_swapStyle("talk_choice_button"                         , "talk_choice_dark_button"                         , morning_flag)
         mas_swapStyle("talk_choice_button_text"                    , "talk_choice_dark_button_text"                    , morning_flag)
@@ -195,9 +194,13 @@ init python:
         mas_swapStyle("twopane_scrollable_menu_new_button_text"    , "twopane_scrollable_menu_dark_new_button_text"    , morning_flag)
         mas_swapStyle("twopane_scrollable_menu_special_button"     , "twopane_scrollable_menu_dark_special_button"     , morning_flag)
         mas_swapStyle("twopane_scrollable_menu_special_button_text", "twopane_scrollable_menu_dark_special_button_text", morning_flag)
-        mas_swapStyle("vscrollbar"                                 , "vscrollbar_dark"                                 , morning_flag)
-        mas_swapStyle("window"                                     , "window_dark"                                     , morning_flag)
-        mas_swapStyle("window_monika"                              , "window_monika_dark"                              , morning_flag)
+
+        # Automagically switch every style which has a dark variant
+        for style_tuple in renpy.style.styles:
+            style_name = style_tuple[0]
+            if not mas_isDarkStyle(style_name) and mas_hasDarkStyle(style_name):
+                dark_style_name = style_name + mas_ui.dark_suffix
+                mas_swapStyle(style_name, dark_style_name, morning_flag)
 
         if not morning_flag:
             # Handle the global swaps
@@ -221,7 +224,7 @@ init python:
 
             # Textbox
             if mas_globals.change_textbox:
-                style.say_window = mas_ui.style_stash["window"]
+                style.say_window = style.window
 
         # timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
@@ -419,14 +422,6 @@ style game_menu_outer_frame_dark:
     top_padding 120
 
     background "gui/overlay/game_menu_d.png"
-
-style default_dark:
-    font gui.default_font
-    size gui.text_size
-    color gui.text_color
-    outlines []
-    line_overlap_split 1
-    line_spacing 1
 
 style edited_dark is default:
     font "gui/font/VerilySerifMono.otf"
