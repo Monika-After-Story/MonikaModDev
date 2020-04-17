@@ -455,11 +455,11 @@ init python:
         Checks if it is day or night via suntimes
 
         NOTE: the wording of this function is bad. This does not literally
-            mean that it is morning. USE mas_isSunnyNow
+            mean that it is morning. USE mas_isDayNow
 
         RETURNS: True if day, false if not
         """
-        return mas_isSunnyNow()
+        return mas_isDayNow()
 
 
     def mas_progressFilter():
@@ -474,7 +474,7 @@ init python:
         curr_flt = store.mas_sprites.get_filter()
 
         now_time = datetime.datetime.now().time()
-        if mas_isSunny(now_time):
+        if mas_isDay(now_time):
             new_flt = store.mas_sprites.FLT_DAY
 
         else: # mas_isNight(now_time):
@@ -826,7 +826,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         #   progression. For now its just going to be customized for
         #   our two filters.
         if scene_change:
-            if mas_isSunnyNow():
+            if mas_isDayNow():
                 monika_room = day_bg
 
             else:
