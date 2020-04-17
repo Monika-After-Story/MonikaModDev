@@ -690,7 +690,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 if ret_val:
                     return ret_val
 
-            for button, number, text in self.day_buttons:
+            for button, day_number, note in self.day_buttons:
                 ret_val = button.event(ev, x, y, st)
                 if ret_val:
                     return ret_val
@@ -904,9 +904,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 for x, y, z in self.day_buttons
             ]
 
-            for vis_b, xy_b, vis_t, xy_t, vis_n, xy_n in cal_r_buttons:
+            for vis_b, xy_b, vis_dn, xy_dn, vis_n, xy_n in cal_r_buttons:
                 r.blit(vis_b, xy_b)
-                r.blit(vis_t, xy_t)
+                r.blit(vis_dn, xy_dn)
                 r.blit(vis_n, xy_n)
 
             # Return the render.
