@@ -17,15 +17,13 @@ init -1 python in mas_globals:
     button_text_idle_color = None
 
 init -201 python in mas_ui:
+
     dark_suffix = "_dark"
 
     # img strings and other constants
 
     # confirm
     CNF_BG = "gui/overlay/confirm.png"
-
-    # hotkey buttons
-    HKB_DISABLED_BG = "mod_assets/hkb_disabled_background.png"
 
     # selector
     SEL_SB_FRAME = "mod_assets/frames/black70_pinkborder100_5px.png"
@@ -34,12 +32,12 @@ init -200 python in mas_ui:
 
     style_stash = {}
 
-    dark_button_text_hover_color = "#FFABD8"
     dark_button_text_idle_color = "#FD5BA2"
+    dark_button_text_hover_color = "#FFABD8"
     dark_button_text_insensitive_color = "#8C8C8C"
 
-    light_button_text_hover_color = "#fa9"
     light_button_text_idle_color = "#000"
+    light_button_text_hover_color = "#fa9"
     light_button_text_insensitive_color = "#8C8C8C"
 
     # ---- files ----
@@ -90,6 +88,7 @@ init python:
             # If that fails then we just return the normal one
             return filestring
 
+    # FIXME: the next four methods could be refactored into some sort of "StyleUtils" static class
     def mas_swapStyle(base_name, dark_name, morning_flag):
         """
         Swaps the single style between default and dark variants.
@@ -127,7 +126,6 @@ init python:
         suffix_len = len(mas_ui.dark_suffix)
         return len(style_name) > suffix_len and style_name[-suffix_len:] == mas_ui.dark_suffix
 
-    # FIXME: temporary
     def mas_isTextDarkStyle(style_name):
         """
         Check if selected style is a text_dark style.
@@ -144,7 +142,7 @@ init python:
             morning_flag - if True, light mode, if False, dark mode
         """
         # Create aliases
-        # FIXME: should be done on startup
+        # FIXME: could be done on startup for some speedup
         new_aliases = {}
 
         for style_tuple, style_ptr in renpy.style.styles.items():
@@ -170,8 +168,8 @@ init python:
             # Handle the global swaps
             mas_globals.dark_mode = True
 
-            mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
             mas_globals.button_text_idle_color = mas_ui.dark_button_text_idle_color
+            mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
             mas_globals.button_text_insensitive_color = mas_ui.dark_button_text_insensitive_color
 
             # Textbox
@@ -182,15 +180,15 @@ init python:
             # Handle the global swaps
             mas_globals.dark_mode = False
 
-            mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
             mas_globals.button_text_idle_color = mas_ui.light_button_text_idle_color
+            mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
             mas_globals.button_text_insensitive_color = mas_ui.light_button_text_insensitive_color
 
             # Textbox
             if mas_globals.change_textbox:
                 style.say_window = style.window
 
-        # timefile changes
+        # Timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
         mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
     
