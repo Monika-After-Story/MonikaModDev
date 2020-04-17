@@ -107,14 +107,14 @@ style hkb_button is generic_button_light:
     xysize (120, 35)
     padding (5, 5, 5, 5)
 
-style hkb_dark_button is generic_button_dark:
+style hkb_button_dark is generic_button_dark:
     xysize (120, 35)
     padding (5, 5, 5, 5)
 
 style hkb_button_text is generic_button_text_light:
     kerning 0.2
 
-style hkb_dark_button_text is generic_button_text_dark:
+style hkb_button_text_dark is generic_button_text_dark:
     kerning 0.2
 
 screen hkb_overlay():

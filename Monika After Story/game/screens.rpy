@@ -454,13 +454,13 @@ style choice_button is generic_button_light:
     xysize (420, None)
     padding (100, 5, 100, 5)
 
-style choice_dark_button is generic_button_dark:
+style choice_button_dark is generic_button_dark:
     xysize (420, None)
     padding (100, 5, 100, 5)
 
 style choice_button_text is generic_button_text_light
 
-style choice_dark_button_text is generic_button_text_dark
+style choice_button_text_dark is generic_button_text_dark
 
 
 init python:
@@ -484,11 +484,11 @@ style talk_choice_vbox is choice_vbox:
 
 style talk_choice_button is choice_button
 
-style talk_choice_dark_button is choice_dark_button
+style talk_choice_button_dark is choice_button_dark
 
 style talk_choice_button_text is choice_button_text
 
-style talk_choice_dark_button_text is choice_dark_button_text
+style talk_choice_button_text_dark is choice_button_text_dark
 
 
 ## This screen is used for the talk menu
@@ -2140,45 +2140,45 @@ style scrollable_menu_button is choice_button:
     xysize (560, None)
     padding (25, 5, 25, 5)
 
-style scrollable_menu_dark_button is choice_dark_button:
+style scrollable_menu_button_dark is choice_button_dark:
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_text is choice_button_text:
     align (0.0, 0.0)
 
-style scrollable_menu_dark_button_text is choice_dark_button_text:
+style scrollable_menu_button_text_dark is choice_button_text_dark:
     align (0.0, 0.0)
 
 style scrollable_menu_new_button is scrollable_menu_button
 
-style scrollable_menu_dark_new_button is scrollable_menu_dark_button
+style scrollable_menu_new_button_dark is scrollable_menu_button_dark
 
 style scrollable_menu_new_button_text is scrollable_menu_button_text:
     italic True
 
-style scrollable_menu_dark_new_button_text is scrollable_menu_dark_button_text:
+style scrollable_menu_new_button_text_dark is scrollable_menu_button_text_dark:
     italic True
 
 style scrollable_menu_special_button is scrollable_menu_button
 
-style scrollable_menu_dark_special_button is scrollable_menu_dark_button
+style scrollable_menu_special_button_dark is scrollable_menu_button_dark
 
 style scrollable_menu_special_button_text is scrollable_menu_button_text:
     bold True
 
-style scrollable_menu_dark_special_button_text is scrollable_menu_dark_button_text:
+style scrollable_menu_special_button_text_dark is scrollable_menu_button_text_dark:
     bold True
 
 style scrollable_menu_crazy_button is scrollable_menu_button
 
-style scrollable_menu_dark_crazy_button is scrollable_menu_dark_button
+style scrollable_menu_crazy_button_dark is scrollable_menu_button_dark
 
 style scrollable_menu_crazy_button_text is scrollable_menu_button_text:
     italic True
     bold True
 
-style scrollable_menu_dark_crazy_button_text is scrollable_menu_dark_button_text:
+style scrollable_menu_crazy_button_text_dark is scrollable_menu_button_text_dark:
     italic True
     bold True
 
@@ -2199,34 +2199,34 @@ style twopane_scrollable_menu_button is choice_button:
     xysize (250, None)
     padding (25, 5, 25, 5)
 
-style twopane_scrollable_menu_dark_button is choice_dark_button:
+style twopane_scrollable_menu_button_dark is choice_button_dark:
     xysize (250, None)
     padding (25, 5, 25, 5)
 
 style twopane_scrollable_menu_button_text is choice_button_text:
     align (0.0, 0.0)
 
-style twopane_scrollable_menu_dark_button_text is choice_dark_button_text:
+style twopane_scrollable_menu_button_text_dark is choice_button_text_dark:
     align (0.0, 0.0)
 
 style twopane_scrollable_menu_new_button is twopane_scrollable_menu_button
 
-style twopane_scrollable_menu_dark_new_button is twopane_scrollable_menu_dark_button
+style twopane_scrollable_menu_new_button_dark is twopane_scrollable_menu_button_dark
 
 style twopane_scrollable_menu_new_button_text is twopane_scrollable_menu_button_text:
     italic True
 
-style twopane_scrollable_menu_dark_new_button_text is twopane_scrollable_menu_dark_button_text:
+style twopane_scrollable_menu_new_button_text_dark is twopane_scrollable_menu_button_text_dark:
     italic True
 
 style twopane_scrollable_menu_special_button is twopane_scrollable_menu_button
 
-style twopane_scrollable_menu_dark_special_button is twopane_scrollable_menu_dark_button
+style twopane_scrollable_menu_special_button_dark is twopane_scrollable_menu_button_dark
 
 style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_button_text:
     bold True
 
-style twopane_scrollable_menu_dark_special_button_text is twopane_scrollable_menu_dark_button_text:
+style twopane_scrollable_menu_special_button_text_dark is twopane_scrollable_menu_button_text_dark:
     bold True
 
 #scrollable_menu selection screen

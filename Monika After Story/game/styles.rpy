@@ -127,6 +127,15 @@ init python:
         suffix_len = len(mas_ui.dark_suffix)
         return len(style_name) > suffix_len and style_name[-suffix_len:] == mas_ui.dark_suffix
 
+    # FIXME: temporary
+    def mas_isTextDarkStyle(style_name):
+        """
+        Check if selected style is a text_dark style.
+        """
+        complete_suffix = "_text" + mas_ui.dark_suffix
+        suffix_len = len(complete_suffix)
+        return len(style_name) > suffix_len and style_name[-suffix_len:] == complete_suffix
+
     def mas_darkMode(morning_flag=False):
         """
         Swaps all styles to dark/light mode provided on the input
@@ -134,66 +143,21 @@ init python:
         IN:
             morning_flag - if True, light mode, if False, dark mode
         """
-        # FIXME: it will be done automagically later (requires consistent naming between styles)
-        mas_swapStyle("button_text"                                , "button_dark_text"                                , morning_flag)
-        mas_swapStyle("check_button"                               , "check_dark_button"                               , morning_flag)
-        mas_swapStyle("check_button_text"                          , "check_dark_button_text"                          , morning_flag)
-        mas_swapStyle("check_label"                                , "check_dark_label"                                , morning_flag)
-        mas_swapStyle("check_label_text"                           , "check_dark_label_text"                           , morning_flag)
-        mas_swapStyle("choice_button"                              , "choice_dark_button"                              , morning_flag)
-        mas_swapStyle("choice_button_text"                         , "choice_dark_button_text"                         , morning_flag)
-        mas_swapStyle("game_menu_label_text"                       , "game_menu_label_dark_text"                       , morning_flag)
-        mas_swapStyle("hkb_button"                                 , "hkb_dark_button"                                 , morning_flag)
-        mas_swapStyle("hkb_button_text"                            , "hkb_dark_button_text"                            , morning_flag)
-        mas_swapStyle("island_button"                              , "island_dark_button"                              , morning_flag)
-        mas_swapStyle("island_button_text"                         , "island_dark_button_text"                         , morning_flag)
-        mas_swapStyle("music_menu_button_text"                     , "music_menu_dark_button_text"                     , morning_flag)
-        mas_swapStyle("music_menu_content_frame"                   , "music_menu_dark_content_frame"                   , morning_flag)
-        mas_swapStyle("music_menu_label"                           , "music_menu_dark_label"                           , morning_flag)
-        mas_swapStyle("music_menu_label_text"                      , "music_menu_dark_label_text"                      , morning_flag)
-        mas_swapStyle("music_menu_navigation_frame"                , "music_menu_dark_navigation_frame"                , morning_flag)
-        mas_swapStyle("music_menu_outer_frame"                     , "music_menu_dark_outer_frame"                     , morning_flag)
-        mas_swapStyle("music_menu_prev_button"                     , "music_menu_dark_prev_button"                     , morning_flag)
-        mas_swapStyle("music_menu_prev_button_text"                , "music_menu_dark_prev_button_text"                , morning_flag)
-        mas_swapStyle("music_menu_return_button"                   , "music_menu_dark_return_button"                   , morning_flag)
-        mas_swapStyle("music_menu_return_button_text"              , "music_menu_dark_return_button_text"              , morning_flag)
-        mas_swapStyle("mute_all_button_text"                       , "mute_all_button_dark_text"                       , morning_flag)
-        mas_swapStyle("navigation_button"                          , "navigation_dark_button"                          , morning_flag)
-        mas_swapStyle("navigation_button_text"                     , "navigation_dark_button_text"                     , morning_flag)
-        mas_swapStyle("outfit_check_button"                        , "outfit_check_dark_button"                        , morning_flag)
-        mas_swapStyle("outfit_check_button_text"                   , "outfit_check_dark_button_text"                   , morning_flag)
-        mas_swapStyle("page_label_text"                            , "page_label_dark_text"                            , morning_flag)
-        mas_swapStyle("pref_label"                                 , "pref_dark_label"                                 , morning_flag)
-        mas_swapStyle("pref_label_text"                            , "pref_dark_label_text"                            , morning_flag)
-        mas_swapStyle("quick_button"                               , "quick_dark_button"                               , morning_flag)
-        mas_swapStyle("quick_button_text"                          , "quick_dark_button_text"                          , morning_flag)
-        mas_swapStyle("radio_button"                               , "radio_dark_button"                               , morning_flag)
-        mas_swapStyle("radio_button_text"                          , "radio_dark_button_text"                          , morning_flag)
-        mas_swapStyle("radio_label"                                , "radio_dark_label"                                , morning_flag)
-        mas_swapStyle("radio_label_text"                           , "radio_dark_label_text"                           , morning_flag)
-        mas_swapStyle("return_button"                              , "return_dark_button"                              , morning_flag)
-        mas_swapStyle("scrollable_menu_button"                     , "scrollable_menu_dark_button"                     , morning_flag)
-        mas_swapStyle("scrollable_menu_button_text"                , "scrollable_menu_dark_button_text"                , morning_flag)
-        mas_swapStyle("scrollable_menu_crazy_button"               , "scrollable_menu_dark_crazy_button"               , morning_flag)
-        mas_swapStyle("scrollable_menu_crazy_button_text"          , "scrollable_menu_dark_crazy_button_text"          , morning_flag)
-        mas_swapStyle("scrollable_menu_new_button"                 , "scrollable_menu_dark_new_button"                 , morning_flag)
-        mas_swapStyle("scrollable_menu_new_button_text"            , "scrollable_menu_dark_new_button_text"            , morning_flag)
-        mas_swapStyle("scrollable_menu_special_button"             , "scrollable_menu_dark_special_button"             , morning_flag)
-        mas_swapStyle("scrollable_menu_special_button_text"        , "scrollable_menu_dark_special_button_text"        , morning_flag)
-        mas_swapStyle("slider_button"                              , "slider_dark_button"                              , morning_flag)
-        mas_swapStyle("slider_button_text"                         , "slider_dark_button_text"                         , morning_flag)
-        mas_swapStyle("slider_label"                               , "slider_dark_label"                               , morning_flag)
-        mas_swapStyle("slider_label_text"                          , "slider_dark_label_text"                          , morning_flag)
-        mas_swapStyle("slider_slider"                              , "slider_dark_slider"                              , morning_flag)
-        mas_swapStyle("slot_button_text"                           , "slot_button_dark_text"                           , morning_flag)
-        mas_swapStyle("talk_choice_button"                         , "talk_choice_dark_button"                         , morning_flag)
-        mas_swapStyle("talk_choice_button_text"                    , "talk_choice_dark_button_text"                    , morning_flag)
-        mas_swapStyle("twopane_scrollable_menu_button"             , "twopane_scrollable_menu_dark_button"             , morning_flag)
-        mas_swapStyle("twopane_scrollable_menu_button_text"        , "twopane_scrollable_menu_dark_button_text"        , morning_flag)
-        mas_swapStyle("twopane_scrollable_menu_new_button"         , "twopane_scrollable_menu_dark_new_button"         , morning_flag)
-        mas_swapStyle("twopane_scrollable_menu_new_button_text"    , "twopane_scrollable_menu_dark_new_button_text"    , morning_flag)
-        mas_swapStyle("twopane_scrollable_menu_special_button"     , "twopane_scrollable_menu_dark_special_button"     , morning_flag)
-        mas_swapStyle("twopane_scrollable_menu_special_button_text", "twopane_scrollable_menu_dark_special_button_text", morning_flag)
+        # Create aliases
+        # FIXME: should be done on startup
+        new_aliases = {}
+
+        for style_tuple, style_ptr in renpy.style.styles.items():
+            style_name = style_tuple[0]
+            if mas_isTextDarkStyle(style_name):
+                complete_suffix = "_text" + mas_ui.dark_suffix
+                suffix_len = len(complete_suffix)
+                alias_name = style_name[:-suffix_len] + mas_ui.dark_suffix + "_text"
+                if not style.exists(alias_name):
+                    new_aliases[alias_name] = style_ptr
+
+        for alias_name, alias_style_ptr in new_aliases.items():
+            setattr(style, alias_name, alias_style_ptr)
 
         # Automagically switch every style which has a dark variant
         for style_tuple in renpy.style.styles:
@@ -300,16 +264,16 @@ style generic_button_text_dark is generic_button_text_base:
 style window_monika_dark is window:
     background Image("gui/textbox_monika_d.png", xalign=0.5, yalign=1.0)
 
-style navigation_dark_button is gui_button
-style navigation_dark_button_text is gui_button_text_dark
+style navigation_button_dark is gui_button
+style navigation_button_text_dark is gui_button_text_dark
 
-style navigation_dark_button:
+style navigation_button_dark:
     size_group "navigation"
     properties gui.button_properties("navigation_button")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-style navigation_dark_button_text:
+style navigation_button_text_dark:
     properties gui.button_text_properties("navigation_button")
     font "gui/font/RifficFree-Bold.ttf"
     color "#FFD9E8"
@@ -317,42 +281,42 @@ style navigation_dark_button_text:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
-style pref_dark_label is gui_label
-style pref_dark_label_text is gui_label_text
+style pref_label_dark is gui_label
+style pref_label_text_dark is gui_label_text
 
-style pref_dark_label:
+style pref_label_dark:
     top_margin gui.pref_spacing
     bottom_margin 2
 
-style pref_dark_label_text:
+style pref_label_text_dark:
     font "gui/font/RifficFree-Bold.ttf"
     size 24
     color "#FFD9E8"
     outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
     yalign 1.0
 
-style check_dark_label is pref_label
-style check_dark_label_text is pref_label_text
-style check_dark_button is gui_button_dark
-style check_dark_button_text is gui_button_text_dark
+style check_label_dark is pref_label
+style check_label_text_dark is pref_label_text
+style check_button_dark is gui_button_dark
+style check_button_text_dark is gui_button_text_dark
 
-style check_dark_button:
+style check_button_dark:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground_d.png"
 
-style check_dark_button_text:
-    properties gui.button_text_properties("check_dark_button")
+style check_button_text_dark:
+    properties gui.button_text_properties("check_button_dark")
     color "#8C8C8C" 
     hover_color "#FF80B7"
     selected_color "#DE367E"
     font "gui/font/Halogen.ttf"
     outlines []
 
-style outfit_check_dark_button:
+style outfit_check_button_dark:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground_d.png"
 
-style outfit_check_dark_button_text:
+style outfit_check_button_text_dark:
     properties gui.button_text_properties("outfit_check_button")
     font "gui/font/Halogen.ttf"
     color "#BFBFBF"
@@ -363,7 +327,7 @@ style outfit_check_dark_button_text:
 style button_dark:
     properties gui.button_properties("button_dark")
 
-style button_dark_text is gui_text:
+style button_text_dark is gui_text:
     properties gui.button_text_properties("button_dark")
     yalign 0.5
 
@@ -380,17 +344,17 @@ style slider_dark:
     base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
     thumb "gui/slider/horizontal_hover_thumb.png"
 
-style slider_dark_button_text:
+style slider_button_text_dark:
     properties gui.button_text_properties("slider_button")
 
-style slider_dark_slider is gui_slider_dark
-style slider_dark_slider:
+style slider_slider_dark is gui_slider_dark
+style slider_slider_dark:
     xsize 350
 
-style slider_dark_label is pref_label
-style slider_dark_label_text is pref_label_text
-style slider_dark_button is gui_button
-style slider_dark_button_text is gui_button_text
+style slider_label_dark is pref_label
+style slider_label_text_dark is pref_label_text
+style slider_button_dark is gui_button
+style slider_button_text_dark is gui_button_text
 
 style scrollbar_dark:
     ysize 18
@@ -489,31 +453,31 @@ style confirm_prompt_text_dark:
     text_align 0.5
     layout "subtitle"
 
-style radio_dark_label is pref_label
-style radio_dark_label_text is pref_label_text
-style radio_dark_button is gui_button_dark
-style radio_dark_button_text is gui_button_text_dark
+style radio_label_dark is pref_label
+style radio_label_text_dark is pref_label_text
+style radio_button_dark is gui_button_dark
+style radio_button_text_dark is gui_button_text_dark
 style radio_dark_vbox is pref_vbox
 
 style radio_dark_vbox:
     spacing gui.pref_button_spacing
 
-style radio_dark_button:
+style radio_button_dark:
     properties gui.button_properties("radio_button")
     foreground "gui/button/check_[prefix_]foreground_d.png"
 
-style radio_dark_button_text:
-    properties gui.button_text_properties("radio_dark_button")
+style radio_button_text_dark:
+    properties gui.button_text_properties("radio_button_dark")
     font "gui/font/Halogen.ttf"
     color "#8C8C8C" 
     hover_color "#FF80B7"
     selected_color "#DE367E"
     outlines []
 
-style return_dark_button is navigation_button
-style return_dark_button_text is navigation_dark_button_text
+style return_button_dark is navigation_button
+style return_button_text_dark is navigation_button_text_dark
 
-style return_dark_button:
+style return_button_dark:
     xpos gui.navigation_xpos
     yalign 1.0
     yoffset -30
@@ -524,13 +488,13 @@ style game_menu_content_frame:
     top_margin -40
 
 style game_menu_label_dark is gui_label
-style game_menu_label_dark_text is gui_label_text
+style game_menu_label_text_dark is gui_label_text
 
 style game_menu_label_dark:
     xpos 50
     ysize 120
 
-style game_menu_label_dark_text:
+style game_menu_label_text_dark:
     font "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
     color "#FFD9E8"
@@ -541,9 +505,9 @@ style game_menu_label_dark_text:
 
 # START: islands event styles
 
-style island_dark_button is button_dark
+style island_button_dark is button_dark
 
-style island_dark_button is default:
+style island_button_dark is default:
     properties gui.button_properties("island_button")
     idle_background  "mod_assets/island_idle_background_d.png"
     hover_background "mod_assets/island_hover_background_d.png"
@@ -551,22 +515,22 @@ style island_dark_button is default:
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-style island_dark_button_text is button_text_dark
+style island_button_text_dark is button_text_dark
 
-style island_dark_button_text is default:
-    properties gui.button_text_properties("island_dark_button")
+style island_button_text_dark is default:
+    properties gui.button_text_properties("island_button_dark")
     idle_background  "mod_assets/island_idle_background_d.png"
     hover_background "mod_assets/island_hover_background_d.png"
     outlines []
 
 style page_label_dark is gui_label
-style page_label_dark_text is gui_label_text
+style page_label_text_dark is gui_label_text
 
 style page_label_dark:
     xpadding 50
     ypadding 3
 
-style page_label_dark_text:
+style page_label_text_dark:
     color "#FFD9E8"
     outlines []
     text_align 0.5
@@ -574,44 +538,51 @@ style page_label_dark_text:
     hover_color gui.hover_color
 
 style slot_button_dark is gui_button
-style slot_button_dark_text is gui_button_text
+style slot_button_text_dark is gui_button_text
 
 style slot_button_dark:
     properties gui.button_properties("slot_button")
 
-style slot_button_dark_text:
+style slot_button_text_dark:
     properties gui.button_text_properties("slot_button")
     color "#8C8C8C"
     outlines []
 
-style mute_all_button_dark is check_dark_button
-style mute_all_button_dark_text is check_dark_button_text
+style mute_all_button_dark is check_button_dark
+style mute_all_button_text_dark is check_button_text_dark
 
 # START: quick menu styles
-
-style quick_dark_button:
-    properties gui.button_properties("quick_dark_button")
+style quick_button_dark:
+    properties gui.button_properties("quick_button_dark")
     activate_sound gui.activate_sound
 
-# style quick_dark_button_text is button_text_dark
-style quick_dark_button_text:
-    properties gui.button_text_properties("quick_dark_button")
+# style quick_button_text_dark is button_text_dark
+style quick_button_text_dark:
+    properties gui.button_text_properties("quick_button_dark")
+    xysize (205, None)
+    #align (0.5, 0.995)
+    font gui.default_font
+    size 14
+    idle_color "#FFAA99"
+    selected_color "#FFEEEB"
+    hover_color "#FFD4CC"
+    kerning 0.2
     outlines []
 
 # START: music selector styles
 
-style music_menu_dark_label is game_menu_label_dark
-style music_menu_dark_label_text is game_menu_label_dark_text
+style music_menu_label_dark is game_menu_label_dark
+style music_menu_label_text_dark is game_menu_label_text_dark
 
-style music_menu_dark_outer_frame is game_menu_outer_frame_dark
+style music_menu_outer_frame_dark is game_menu_outer_frame_dark
 
-style music_menu_dark_outer_frame:
+style music_menu_outer_frame_dark:
     background "mod_assets/music_menu_d.png"
 
-style music_menu_dark_navigation_frame is game_menu_navigation_frame
-style music_menu_dark_content_frame is game_menu_content_frame
+style music_menu_navigation_frame_dark is game_menu_navigation_frame
+style music_menu_content_frame_dark is game_menu_content_frame
 
-style music_menu_dark_button_text is navigation_button_text:
+style music_menu_button_text_dark is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
     font "mod_assets/font/mplus-2p-regular.ttf"
     color "#FFD9E8"
@@ -619,18 +590,18 @@ style music_menu_dark_button_text is navigation_button_text:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
-style music_menu_dark_return_button is return_button:
+style music_menu_return_button_dark is return_button:
     xminimum 0
     xmaximum 200
     xfill False
 
-style music_menu_dark_prev_button is return_button:
+style music_menu_prev_button_dark is return_button:
     xminimum 0
     xmaximum 135
     xfill False
 
-style music_menu_dark_return_button_text is navigation_dark_button_text
-style music_menu_dark_prev_button_text is navigation_dark_button_text:
+style music_menu_return_button_text_dark is navigation_button_text_dark
+style music_menu_prev_button_text_dark is navigation_button_text_dark:
     min_width 135
     text_align 1.0
 
@@ -693,15 +664,3 @@ define gui.island_dark_button_text_xalign = 0.5
 define gui.island_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
 define gui.island_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
 define gui.island_dark_button_text_kerning = 0.2
-
-define gui.quick_dark_button_text_height = None
-define gui.quick_dark_button_text_width = 205
-define gui.quick_dark_button_text_tile = False
-define gui.quick_dark_button_text_font = gui.default_font
-define gui.quick_dark_button_text_size = 14
-define gui.quick_dark_button_text_xalign = 0.5
-define gui.quick_dark_button_text_yalign = 0.995
-define gui.quick_dark_button_text_idle_color = "#FFAA99"
-define gui.quick_dark_button_text_selected_color = "#FFEEEB"
-define gui.quick_dark_button_text_hover_color = "#FFD4CC"
-define gui.quick_dark_button_text_kerning = 0.2

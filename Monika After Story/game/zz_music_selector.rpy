@@ -927,12 +927,12 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             # dynamic prevous text, so we can keep button size alignments
             if page_num > 0:
                 textbutton _("<<<< Prev"):
-                    style "music_menu_dark_prev_button"
+                    style "music_menu_prev_button"
                     action Return(page_num - 1)
 
             else:
                 textbutton _( " "):
-                    style "music_menu_dark_prev_button"
+                    style "music_menu_prev_button"
                     sensitive False
 
 #                if more_pages:
