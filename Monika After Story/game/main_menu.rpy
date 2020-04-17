@@ -48,13 +48,11 @@ style main_menu_version_dark is main_menu_text:
 style main_menu_frame is empty:
     xsize 310
     yfill True
-
     background "menu_nav"
 
 style main_menu_frame_dark is empty:
     xsize 310
     yfill True
-
     background "menu_nav"
 
 style main_menu_vbox is vbox:
@@ -66,7 +64,6 @@ style main_menu_vbox is vbox:
 
 style main_menu_text is gui_text:
     xalign 1.0
-
     layout "subtitle"
     text_align 1.0
     color gui.accent_color
