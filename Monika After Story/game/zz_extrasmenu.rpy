@@ -330,6 +330,12 @@ style mas_mbs_button_text is default:
 #            textbutton _("not") action NullAction()
 #            textbutton _("not3") action NullAction()
 
+style mas_extra_menu_frame:
+    background Frame("mod_assets/frames/trans_pink2pxborder100.png", Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+
+style mas_extra_menu_frame_dark:
+    background Frame("mod_assets/frames/trans_pink2pxborder100_d.png", Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+
 # NOTE: this style is used only for night mode switching
 style mas_adjust_vbar
 
@@ -378,17 +384,17 @@ screen mas_extramenu_area():
         # close button
         textbutton _("Close"):
             area (61, 594, 120, 35)
-            style mas_ui.hkb_button_style
+            style "hkb_button"
             action Jump("mas_extra_menu_close")
 
         # zoom control
         frame:
             area (195, 450, 80, 255)
-            background Frame(mas_ui.exm_frame, left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+            style "mas_extra_menu_frame"
             vbox:
                 spacing 2
                 label "Zoom":
-                    text_style mas_ui.hkb_button_text_style
+                    text_style "hkb_button_text"
                     xalign 0.5
 
                 # resets the zoom value back to default

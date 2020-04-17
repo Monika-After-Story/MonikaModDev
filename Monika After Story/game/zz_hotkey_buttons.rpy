@@ -123,7 +123,7 @@ style hkb_dark_button_text is generic_button_text_dark:
 screen hkb_overlay():
 
     zorder 50
-    style_prefix store.mas_ui.hkb_style_prefix
+    style_prefix "hkb"
 
     vbox:
         xpos 0.05
@@ -156,7 +156,7 @@ screen hkb_overlay():
 screen movie_overlay():
 
     zorder 50
-    style_prefix store.mas_ui.hkb_style_prefix
+    style_prefix "hkb"
 
     vbox:
         xalign 0.95

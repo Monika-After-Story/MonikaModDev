@@ -22,9 +22,6 @@ init -201 python in mas_ui:
     # confirm
     CNF_BG = "gui/overlay/confirm.png"
 
-    # extras frame
-    EX_FRAME = "mod_assets/frames/trans_pink2pxborder100.png"
-
     # hotkey buttons
     HKB_DISABLED_BG = "mod_assets/hkb_disabled_background.png"
 
@@ -32,6 +29,8 @@ init -201 python in mas_ui:
     SEL_SB_FRAME = "mod_assets/frames/black70_pinkborder100_5px.png"
 
 init -200 python in mas_ui:
+
+    style_stash = {}
 
     dark_button_text_hover_color = "#FFABD8"
     dark_button_text_idle_color = "#FD5BA2"
@@ -52,11 +51,6 @@ init -200 python in mas_ui:
 
     # game menu 
     gm_label_style = "game_menu_label"
-
-    # hotkey buttons
-    hkb_style_prefix = "hkb"
-    hkb_button_style = "hkb_button"
-    hkb_button_text_style = "hkb_button_text"
 
     # main menu
     mm_tt_style = "main_menu_version_def"
@@ -111,12 +105,6 @@ init -200 python in mas_ui:
     # confirm screen
     cm_bg = CNF_BG
 
-    # extras menu
-    exm_frame = EX_FRAME
-
-    # hotkey buttons
-    hkb_disabled_bg = HKB_DISABLED_BG
-
     # selector
     sel_sb_frame = SEL_SB_FRAME
 
@@ -160,6 +148,23 @@ init python:
             # If that fails then we just return the normal one
             return filestring
 
+    def mas_swapStyle(base_name, dark_name, morning_flag):
+        """
+        Swaps the single style between default and dark variants.
+
+        IN:
+            morning_flag - Light/dark mode switch
+        """
+        if not base_name in mas_ui.style_stash:
+            mas_ui.style_stash[base_name] = getattr(style, base_name)
+
+        if morning_flag:
+            stashed_style = mas_ui.style_stash[base_name]
+            setattr(style, base_name, mas_ui.style_stash[base_name])
+        else:
+            dark_style = getattr(style, dark_name)
+            setattr(style, base_name, dark_style)
+
     def mas_darkMode(morning_flag=False):
         """
         Swaps all styles to dark/light mode provided on the input
@@ -167,11 +172,13 @@ init python:
         IN:
             morning_flag - if True, light mode, if False, dark mode
         """
+
         if not morning_flag:
             mas_globals.dark_mode = True
             mas_ui.ui_mode_suffix = "_dark"
 
             # Style swaps
+            #style.mas_extra_menu_frame = style.mas_extra_menu_frame_dark
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_dark
             style.mas_mbs_button = style.mas_mbs_button_dark
             style.mas_adjustable_button = style.mas_adjustable_button_dark
@@ -180,10 +187,8 @@ init python:
             style.frame = style.frame_dark
             style.confirm_frame = style.confirm_frame_dark
             style.game_menu_outer_frame = style.game_menu_outer_frame_dark
-            style.say_label = style.say_label_dark
             style.edited_def = style.edited_def_dark
             style.poemgame_text = style.poemgame_text_dark
-            style.namebox = style.namebox_dark
             style.main_menu_version = style.main_menu_version_dark
             style.confirm_prompt_text = style.confirm_prompt_text_dark
             style.button = style.button_dark
@@ -212,9 +217,6 @@ init python:
             mas_ui.cb_style_prefix = "choice_dark"
             mas_ui.cbx_style_prefix = "check_dark"
             mas_ui.gm_label_style = "game_menu_label_dark"
-            mas_ui.hkb_style_prefix = "hkb_dark"
-            mas_ui.hkb_button_style = "hkb_dark_button"
-            mas_ui.hkb_button_text_style = "hkb_dark_button_text"
             mas_ui.mm_tt_style = "main_menu_version_dark"
             mas_ui.mms_style_prefix = "music_menu_dark"
             mas_ui.mms_button_prev_style = "music_menu_dark_prev_button"
@@ -244,6 +246,7 @@ init python:
             mas_ui.ui_mode_suffix = ""
 
             # Style swaps
+            #style.mas_extra_menu_frame = style.mas_extra_menu_frame_def
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_def
             style.mas_mbs_button = style.mas_mbs_button_def
             style.mas_adjustable_button = style.mas_adjustable_button_def
@@ -252,10 +255,8 @@ init python:
             style.frame = style.frame_def
             style.confirm_frame = style.confirm_frame_def
             style.game_menu_outer_frame = style.game_menu_outer_frame_def
-            style.say_label = style.say_label_def
             style.edited_def = style.edited_def_def
             style.poemgame_text = style.poemgame_text_def
-            style.namebox = style.namebox_def
             style.main_menu_version = style.main_menu_version_def
             style.confirm_prompt_text = style.confirm_prompt_text_def
             style.button = style.button_def
@@ -284,9 +285,6 @@ init python:
             mas_ui.cb_style_prefix = "choice"
             mas_ui.cbx_style_prefix = "check"
             mas_ui.gm_label_style = "game_menu_label"
-            mas_ui.hkb_style_prefix = "hkb"
-            mas_ui.hkb_button_style = "hkb_button"
-            mas_ui.hkb_button_text_style = "hkb_button_text"
             mas_ui.mm_tt_style = "main_menu_version_def"
             mas_ui.mms_style_prefix = "music_menu"
             mas_ui.mms_button_prev_style = "music_menu_prev_button"
@@ -311,10 +309,14 @@ init python:
             mas_ui.tpsm_button_special_style = "twopane_scrollable_menu_special_button"
             mas_ui.fli_style_prefix = "island"
 
+        mas_swapStyle("hkb_button"          , "hkb_dark_button"          , morning_flag)
+        mas_swapStyle("hkb_button_text"     , "hkb_dark_button_text"     , morning_flag)
+        mas_swapStyle("mas_extra_menu_frame", "mas_extra_menu_frame_dark", morning_flag)
+        mas_swapStyle("namebox"             , "namebox_dark"             , morning_flag)
+        mas_swapStyle("say_label"           , "say_label_dark"           , morning_flag)
+
         # timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
-        mas_ui.exm_frame = mas_getTimeFile(mas_ui.EX_FRAME)
-        mas_ui.hkb_disabled_bg = mas_getTimeFile(mas_ui.HKB_DISABLED_BG)
         mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
     
         # Reset the global flag
@@ -666,18 +668,6 @@ style poemgame_text_dark:
     hover_xoffset -3
     hover_outlines [(3, "#fef", 0, 0), (2, "#fcf", 0, 0), (1, "#faf", 0, 0)]
 
-style namebox_def is default
-
-style namebox_def:
-    xpos gui.name_xpos
-    xanchor gui.name_xalign
-    xsize gui.namebox_width
-    ypos gui.name_ypos
-    ysize gui.namebox_height
-
-    background Frame("gui/namebox.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
-    padding gui.namebox_borders.padding
-
 style namebox_dark is default
 
 style namebox_dark:
@@ -689,16 +679,6 @@ style namebox_dark:
 
     background Frame("gui/namebox_d.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
     padding gui.namebox_borders.padding
-
-style say_label_def is default
-
-style say_label_def:
-    color gui.accent_color
-    font gui.name_font
-    size gui.name_text_size
-    xalign gui.name_xalign
-    yalign 0.5
-    outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
 
 style say_label_dark is default
 

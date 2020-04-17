@@ -2952,26 +2952,26 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
-                    style store.mas_ui.hkb_button_style
+                    style "hkb_button"
                     xalign 0.5
                     action Jump(confirm)
             else:
                 textbutton _("Confirm"):
-                    style store.mas_ui.hkb_button_style
+                    style "hkb_button"
                     xalign 0.5
 
             if mailbox.read_restore_enable():
                 textbutton _("Restore"):
-                    style store.mas_ui.hkb_button_style
+                    style "hkb_button"
                     xalign 0.5
                     action Jump(restore)
             else:
                 textbutton _("Restore"):
-                    style store.mas_ui.hkb_button_style
+                    style "hkb_button"
                     xalign 0.5
 
             textbutton _("Cancel"):
-                style store.mas_ui.hkb_button_style
+                style "hkb_button"
                 xalign 0.5
                 action Jump(cancel)
 #                action Function(mailbox.mas_send_return, -1)
