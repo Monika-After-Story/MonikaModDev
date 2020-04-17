@@ -348,7 +348,6 @@ style vslider:
     base_bar Frame("gui/slider/vertical_[prefix_]bar.png", gui.vslider_borders, tile=gui.slider_tile)
     thumb "gui/slider/vertical_[prefix_]thumb.png"
 
-
 style frame:
     padding gui.frame_borders.padding
     background Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile)
@@ -397,9 +396,6 @@ screen say(who, what):
 
     use quick_menu
 
-
-style say_dialogue is default
-style say_thought is say_dialogue
 
 style window is default:
     xalign 0.5
@@ -459,7 +455,7 @@ style say_label_dark is default:
     yalign 0.5
     outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
 
-style say_dialogue:
+style say_dialogue is default:
     xpos gui.text_xpos
     xanchor gui.text_xalign
     xsize gui.text_width
@@ -467,6 +463,8 @@ style say_dialogue:
 
     text_align gui.text_xalign
     layout ("subtitle" if gui.text_xalign else "tex")
+
+style say_thought is say_dialogue
 
 image ctc:
     xalign 0.81 yalign 0.98 xoffset -5 alpha 0.0 subpixel True
@@ -823,11 +821,6 @@ screen main_menu():
 
     key "K_ESCAPE" action Quit(confirm=False)
 
-style main_menu_frame is empty
-style main_menu_frame_dark is empty
-style main_menu_vbox is vbox
-style main_menu_text is gui_text
-style main_menu_title is main_menu_text
 style main_menu_version is main_menu_text:
     color "#000000"
     size 16
@@ -838,33 +831,33 @@ style main_menu_version_dark is main_menu_text:
     size 16
     outlines []
 
-style main_menu_frame:
+style main_menu_frame is empty:
     xsize 310
     yfill True
 
     background "menu_nav"
 
-style main_menu_frame_dark:
+style main_menu_frame_dark is empty:
     xsize 310
     yfill True
 
     background "menu_nav"
 
-style main_menu_vbox:
+style main_menu_vbox is vbox:
     xalign 1.0
     xoffset -20
     xmaximum 800
     yalign 1.0
     yoffset -20
 
-style main_menu_text:
+style main_menu_text is gui_text:
     xalign 1.0
 
     layout "subtitle"
     text_align 1.0
     color gui.accent_color
 
-style main_menu_title:
+style main_menu_title is main_menu_text:
     size gui.title_text_size
 
 
@@ -960,90 +953,79 @@ screen game_menu(title, scroll=None):
         key "game_menu" action ShowMenu("main_menu")
 
 
-style game_menu_outer_frame is empty
-style game_menu_navigation_frame is empty
-style game_menu_content_frame is empty
-style game_menu_viewport is gui_viewport
-style game_menu_side is gui_side
-style game_menu_scrollbar is gui_vscrollbar
-
-style game_menu_label is gui_label
-style game_menu_label_dark is gui_label
-style game_menu_label_text is gui_label_text
-style game_menu_label_text_dark is gui_label_text
-
-style return_button is navigation_button
-style return_button_dark is navigation_button
-style return_button_text is navigation_button_text
-style return_button_text_dark is navigation_button_text_dark
-
-style game_menu_outer_frame:
+style game_menu_outer_frame is empty:
     bottom_padding 30
     top_padding 120
 
     background "gui/overlay/game_menu.png"
 
-style game_menu_outer_frame_dark:
+style game_menu_outer_frame_dark is empty:
     bottom_padding 30
     top_padding 120
 
     background "gui/overlay/game_menu_d.png"
 
-style game_menu_navigation_frame:
+style game_menu_navigation_frame is empty:
     xsize 280
     yfill True
 
-style game_menu_content_frame:
+style game_menu_content_frame is empty:
     left_margin 40
     right_margin 20
     top_margin 10
 
 # FIXME: why?
-style game_menu_content_frame:
+style game_menu_content_frame is empty:
     left_margin 40
     right_margin 20
     top_margin -40
 
-style game_menu_viewport:
+style game_menu_viewport is gui_viewport:
     xsize 920
+
+style game_menu_scrollbar is gui_vscrollbar
 
 style game_menu_vscrollbar:
     unscrollable gui.unscrollable
 
-style game_menu_side:
+style game_menu_side is gui_side:
     spacing 10
 
-style game_menu_label:
+style game_menu_label is gui_label:
     xpos 50
     ysize 120
 
-style game_menu_label_dark:
+style game_menu_label_dark is gui_label:
     xpos 50
     ysize 120
 
-style game_menu_label_text:
+style game_menu_label_text is gui_label_text:
     font "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
     color "#fff"
     outlines [(6, "#b59", 0, 0), (3, "#b59", 2, 2)]
     yalign 0.5
 
-style game_menu_label_text_dark:
+style game_menu_label_text_dark is gui_label_text:
     font "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
     color "#FFD9E8"
     outlines [(6, "#DE367E", 0, 0), (3, "#DE367E", 2, 2)]
     yalign 0.5
 
-style return_button:
+style return_button is navigation_button:
     xpos gui.navigation_xpos
     yalign 1.0
     yoffset -30
 
-style return_button_dark:
+style return_button_dark is navigation_button:
     xpos gui.navigation_xpos
     yalign 1.0
     yoffset -30
+
+style return_button_text is navigation_button_text
+
+style return_button_text_dark is navigation_button_text_dark
 
 ## About screen ################################################################
 ##
@@ -1080,11 +1062,11 @@ define gui.about = ""
 
 
 style about_label is gui_label
-style about_label_text is gui_label_text
-style about_text is gui_text
 
-style about_label_text:
+style about_label_text is gui_label_text:
     size gui.label_text_size
+
+style about_text is gui_text
 
 
 ## Load and Save screens #######################################################
@@ -1190,64 +1172,54 @@ screen file_slots(title):
                 #textbutton _(">") action FilePageNext(max=9, wrap=True)
 
 
-style page_label is gui_label
-style page_label_dark is gui_label
-style page_label_text is gui_label_text
-style page_label_text_dark is gui_label_text
-style page_button is gui_button
-style page_button_text is gui_button_text
-
-style slot_button is gui_button
-style slot_button_dark is gui_button
-style slot_button_text is gui_button_text
-style slot_button_text_dark is gui_button_text
-style slot_time_text is slot_button_text
-style slot_name_text is slot_button_text
-
-style page_label:
+style page_label is gui_label:
     xpadding 50
     ypadding 3
 
-style page_label_dark:
+style page_label_dark is gui_label:
     xpadding 50
     ypadding 3
 
-style page_label_text:
+style page_label_text is gui_label_text:
     color "#000"
     outlines []
     text_align 0.5
     layout "subtitle"
     hover_color gui.hover_color
 
-style page_label_text_dark:
+style page_label_text_dark is gui_label_text:
     color "#FFD9E8"
     outlines []
     text_align 0.5
     layout "subtitle"
     hover_color gui.hover_color
 
-style page_button:
+style page_button is gui_button:
     properties gui.button_properties("page_button")
 
-style page_button_text:
+style page_button_text is gui_button_text:
     properties gui.button_text_properties("page_button")
     outlines []
 
-style slot_button:
+style slot_button is gui_button:
     properties gui.button_properties("slot_button")
 
-style slot_button_dark:
+style slot_button_dark is gui_button:
     properties gui.button_properties("slot_button")
 
-style slot_button_text:
+style slot_button_text is gui_button_text:
     properties gui.button_text_properties("slot_button")
     color "#666"
     outlines []
 
-style slot_button_text_dark:
+style slot_button_text_dark is gui_button_text:
     properties gui.button_text_properties("slot_button")
     color "#8C8C8C"
     outlines []
+
+style slot_time_text is slot_button_text
+
+style slot_name_text is slot_button_text
 
 ## Preferences screen ##########################################################
 ##
@@ -1521,43 +1493,7 @@ style pref_label_text is gui_label_text
 style pref_label_text_dark is gui_label_text
 style pref_vbox is vbox
 
-style radio_label is pref_label
-style radio_label_dark is pref_label
-style radio_label_text is pref_label_text
-style radio_label_text_dark is pref_label_text
-style radio_button is gui_button
-style radio_button_dark is gui_button_dark
-style radio_button_text is gui_button_text
-style radio_button_text_dark is gui_button_text_dark
-style radio_vbox is pref_vbox
-
-style check_label is pref_label
-style check_label_dark is pref_label
-style check_label_text is pref_label_text
-style check_label_text_dark is pref_label_text
-style check_button is gui_button
-style check_button_dark is gui_button_dark
-style check_button_text is gui_button_text
-style check_button_text_dark is gui_button_text_dark
-style check_vbox is pref_vbox
-
-style slider_label is pref_label
-style slider_label_dark is pref_label
-style slider_label_text is pref_label_text
-style slider_label_text_dark is pref_label_text
-style slider_slider is gui_slider
-style slider_slider_dark is gui_slider_dark
-style slider_button is gui_button
-style slider_button_dark is gui_button
-style slider_button_text is gui_button_text
-style slider_button_text_dark is gui_button_text
-style slider_pref_vbox is pref_vbox
-
-style mute_all_button is check_button
-style mute_all_button_dark is check_button_dark
-style mute_all_button_text is check_button_text
-style mute_all_button_text_dark is check_button_text_dark
-
+# Preference
 style pref_label:
     top_margin gui.pref_spacing
     bottom_margin 2
@@ -1583,23 +1519,32 @@ style pref_label_text_dark:
 style pref_vbox:
     xsize 225
 
-style radio_vbox:
+# Radio
+style radio_label is pref_label
+
+style radio_label_dark is pref_label
+
+style radio_label_text is pref_label_text
+
+style radio_label_text_dark is pref_label_text
+
+style radio_vbox is pref_vbox:
     spacing gui.pref_button_spacing
 
-style radio_button:
+style radio_button is gui_button:
     properties gui.button_properties("radio_button")
     foreground "gui/button/check_[prefix_]foreground.png"
 
-style radio_button_dark:
+style radio_button_dark is gui_button_dark:
     properties gui.button_properties("radio_button")
     foreground "gui/button/check_[prefix_]foreground_d.png"
 
-style radio_button_text:
+style radio_button_text is gui_button_text:
     properties gui.button_text_properties("radio_button")
     font "gui/font/Halogen.ttf"
     outlines []
 
-style radio_button_text_dark:
+style radio_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("radio_button_dark")
     font "gui/font/Halogen.ttf"
     color "#8C8C8C" 
@@ -1607,26 +1552,34 @@ style radio_button_text_dark:
     selected_color "#DE367E"
     outlines []
 
-define gui.check_button_borders = Borders(28, 4, 4, 4)
-define gui.check_button_dark_borders = Borders(28, 4, 4, 4)
+# Check
+style check_label is pref_label
 
-style check_vbox:
+style check_label_dark is pref_label
+
+style check_label_text is pref_label_text
+
+style check_label_text_dark is pref_label_text
+
+style check_vbox is pref_vbox:
     spacing gui.pref_button_spacing
 
-style check_button:
+style check_button is gui_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
+    padding (28, 4, 4, 4)
 
-style check_button_dark:
+style check_button_dark is gui_button_dark:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground_d.png"
+    padding (28, 4, 4, 4)
 
-style check_button_text:
+style check_button_text is gui_button_text:
     properties gui.button_text_properties("check_button")
     font "gui/font/Halogen.ttf"
     outlines []
 
-style check_button_text_dark:
+style check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("check_button_dark")
     color "#8C8C8C" 
     hover_color "#FF80B7"
@@ -1634,26 +1587,49 @@ style check_button_text_dark:
     font "gui/font/Halogen.ttf"
     outlines []
 
-style slider_slider:
+# Mute all
+style mute_all_button is check_button
+
+style mute_all_button_dark is check_button_dark
+
+style mute_all_button_text is check_button_text
+
+style mute_all_button_text_dark is check_button_text_dark
+
+# Slider
+style slider_label is pref_label
+
+style slider_label_dark is pref_label
+
+style slider_label_text is pref_label_text
+
+style slider_label_text_dark is pref_label_text
+
+style slider_slider is gui_slider:
     xsize 350
     
-style slider_slider_dark:
+style slider_slider_dark is gui_slider_dark:
     xsize 350
 
-style slider_button:
+style slider_button is gui_button:
     properties gui.button_properties("slider_button")
     yalign 0.5
     left_margin 10
 
-style slider_button_text:
+style slider_button_dark is gui_button
+
+style slider_button_text is gui_button_text:
     properties gui.button_text_properties("slider_button")
 
-style slider_button_text_dark:
+style slider_button_text_dark is gui_button_text:
     properties gui.button_text_properties("slider_button")
 
 style slider_vbox:
     xsize 450
 
+style slider_pref_vbox is pref_vbox
+
+# Outfit check
 style outfit_check_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
@@ -1764,32 +1740,21 @@ screen history():
             label _("The dialogue history is empty.")
 
 
-style history_window is empty
-
-style history_name is gui_label
-style history_name_text is gui_label_text
-style history_text is gui_text
-
-style history_text is gui_text
-
-style history_label is gui_label
-style history_label_text is gui_label_text
-
-style history_window:
+style history_window is empty:
     xfill True
     ysize gui.history_height
 
-style history_name:
+style history_name is gui_label:
     xpos gui.history_name_xpos
     xanchor gui.history_name_xalign
     ypos gui.history_name_ypos
     xsize gui.history_name_width
 
-style history_name_text:
+style history_name_text is gui_label_text:
     min_width gui.history_name_width
     text_align gui.history_name_xalign
 
-style history_text:
+style history_text is gui_text:
     xpos gui.history_text_xpos
     ypos gui.history_text_ypos
     xanchor gui.history_text_xalign
@@ -1798,10 +1763,10 @@ style history_text:
     text_align gui.history_text_xalign
     layout ("subtitle" if gui.history_text_xalign else "tex")
 
-style history_label:
+style history_label is gui_label:
     xfill True
 
-style history_label_text:
+style history_label_text is gui_label_text:
     xalign 0.5
 
 
@@ -1939,27 +1904,23 @@ style history_label_text:
 #    textbutton _("Calibrate") action GamepadCalibrate()
 #
 #
-#style help_button is gui_button
-#style help_button_text is gui_button_text
-#style help_label is gui_label
-#style help_label_text is gui_label_text
-#style help_text is gui_text
-#
-#style help_button:
+#style help_button is gui_button:
 #    properties gui.button_properties("help_button")
 #    xmargin 8
 #
-#style help_button_text:
+#style help_button_text is gui_button_text:
 #    properties gui.button_text_properties("help_button")
 #
-#style help_label:
+#style help_label is gui_label:
 #    xsize 250
 #    right_padding 20
 #
-#style help_label_text:
+#style help_label_text is gui_label_text:
 #    size gui.text_size
 #    xalign 1.0
 #    text_align 1.0
+#
+#style help_text is gui_text
 
 
 
@@ -2099,41 +2060,39 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
-style confirm_frame is gui_frame
-style confirm_prompt is gui_prompt
-style confirm_prompt_text is gui_prompt_text
-style confirm_prompt_text_dark is gui_prompt_text
-style confirm_button is gui_medium_button
-style confirm_button_text is gui_medium_button_text
-
-style confirm_frame:
+style confirm_frame is gui_frame:
     background Frame([ "gui/confirm_frame.png", "gui/frame.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
     padding gui.confirm_frame_borders.padding
     xalign .5
     yalign .5
 
-style confirm_frame_dark:
+style confirm_frame_dark is gui_frame:
     background Frame([ "gui/confirm_frame.png", "gui/frame_d.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
     padding gui.confirm_frame_borders.padding
     xalign .5
     yalign .5
 
-style confirm_prompt_text:
+style confirm_prompt is gui_prompt
+
+style confirm_prompt_text is gui_prompt_text:
     color "#000"
     outlines []
     text_align 0.5
     layout "subtitle"
 
-style confirm_prompt_text_dark:
+style confirm_prompt_text_dark is gui_prompt_text:
     color "#FD5BA2"
     outlines []
     text_align 0.5
     layout "subtitle"
 
-style confirm_button:
+style confirm_button is gui_medium_button:
     properties gui.button_properties("confirm_button")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
+
+# FIXME: why?
+style confirm_button_text is gui_medium_button_text
 
 style confirm_button_text is navigation_button_text:
     properties gui.button_text_properties("confirm_button")
@@ -2302,19 +2261,15 @@ transform delayed_blink(delay, cycle):
         repeat
 
 
-style skip_frame is empty
-style skip_text is gui_text
-style skip_triangle is skip_text
-
-style skip_frame:
+style skip_frame is empty:
     ypos gui.skip_ypos
     background Frame("gui/skip.png", gui.skip_frame_borders, tile=gui.frame_tile)
     padding gui.skip_frame_borders.padding
 
-style skip_text:
+style skip_text is gui_text:
     size gui.notify_text_size
 
-style skip_triangle:
+style skip_triangle is skip_text:
     # We have to use a font that has the BLACK RIGHT-POINTING SMALL TRIANGLE
     # glyph in it.
     font "DejaVuSans.ttf"
@@ -2346,16 +2301,13 @@ transform notify_appear:
         linear .5 alpha 0.0
 
 
-style notify_frame is empty
-style notify_text is gui_text
-
-style notify_frame:
+style notify_frame is empty:
     ypos gui.notify_ypos
 
     background Frame("gui/notify.png", gui.notify_frame_borders, tile=gui.frame_tile)
     padding gui.notify_frame_borders.padding
 
-style notify_text:
+style notify_text is gui_text:
     size gui.notify_text_size
 
 ## This part of the code is used to create the tutorial selection screen.
@@ -2391,6 +2343,7 @@ define main_adj = ui.adjustment()
 
 #Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
 
+# Scrollable
 style scrollable_menu_vbox is vbox:
     xalign 0.5
     ypos 270
@@ -2443,7 +2396,7 @@ style scrollable_menu_crazy_button_text_dark is scrollable_menu_button_text_dark
     italic True
     bold True
 
-# two pane stuff
+# Two-pane scrollable
 style twopane_scrollable_menu_vbox is vbox:
     xalign 0.5
     ypos 270
