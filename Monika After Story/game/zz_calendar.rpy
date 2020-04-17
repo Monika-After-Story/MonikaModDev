@@ -60,8 +60,11 @@ init -1 python:
         # size for the arrow like button selectors
         ARROW_BUTTON_SIZE = 20
 
-        # Size of the day number and displayed data inside a day block
-        CALENDAR_DAY_TEXT_SIZE = 12
+        # Size of the day number inside a day block
+        DAY_NUMBER_TEXT_SIZE = 13
+
+        # Size of the note text inside a day block
+        NOTE_TEXT_SIZE = 19
 
         # X inside the close button size
         CALENDAR_CLOSE_X_SIZE = 45
@@ -74,7 +77,10 @@ init -1 python:
         CALENDAR_YEAR_DECREASE = "YEAR_DECR" # signals to decrease the current selected month
 
         # Color used for the day number
-        TEXT_DAY_COLOR = "#000000" # PINK: "#ffb0ed"
+        DAY_NUMBER_COLOR = "#000000" # PINK: "#ffb0ed"
+
+        # Color used for the note
+        NOTE_COLOR = "#181818"
 
         # Month names constant array
         MONTH_NAMES = ["Unknown", "January", "February",
@@ -86,8 +92,11 @@ init -1 python:
         DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday"]
 
-        # Format used for calendar display
-        DATE_DISPLAY_FORMAT = "\t  \t  \t  \t  \t  \t  \t  {0}\n{1}\n{2}\n{3}"
+        # Format used for day number display
+        DAY_NUMBER_DISPLAY_FORMAT = "{0}"
+
+        # Format used for note display
+        NOTE_DISPLAY_FORMAT = "{0}\n{1}\n{2}"
 
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
@@ -312,7 +321,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "{#weekday}" + day,
                     font=gui.default_font,
                     size=17,
-                    color=self.TEXT_DAY_COLOR,
+                    color=self.DAY_NUMBER_COLOR,
                     outlines=[]
                 )
 
@@ -485,7 +494,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 "{#month}" + self.MONTH_NAMES[self.selected_month],
                 font=gui.default_font,
                 size=21,
-                color=self.TEXT_DAY_COLOR,
+                color=self.DAY_NUMBER_COLOR,
                 outlines=[]
             )
 
@@ -493,7 +502,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 str(self.selected_year),
                 font=gui.default_font,
                 size=21,
-                color=self.TEXT_DAY_COLOR,
+                color=self.DAY_NUMBER_COLOR,
                 outlines=[]
             )
 
@@ -593,18 +602,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         if self.can_select_date:
                             ret_val = current_date
 
-                    day_button_text = Text(
-                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), __(event_labels[0]), __(event_labels[1]), __(third_label)),
-                        font=gui.default_font,
-                        size=self.CALENDAR_DAY_TEXT_SIZE,
-                        color=self.TEXT_DAY_COLOR,
-                        outlines=[]
-                    )
-
                     day_button = MASButtonDisplayable(
-                        day_button_text,
-                        day_button_text,
-                        day_button_text,
+                        Null(),
+                        Null(),
+                        Null(),
                         button_day_bg,
                         button_day_bg_hover,
                         bg_disabled,
@@ -617,13 +618,28 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         return_value=ret_val
                     )
 
+                    day_number_text = Text(
+                        self.DAY_NUMBER_DISPLAY_FORMAT.format(str(current_date.day)),
+                        font=gui.default_font,
+                        size=self.DAY_NUMBER_TEXT_SIZE,
+                        color=self.DAY_NUMBER_COLOR,
+                        outlines=[]
+                    )
+
+                    note_text = Text(
+                        self.NOTE_DISPLAY_FORMAT.format(__(event_labels[0]), __(event_labels[1]), __(third_label)),
+                        font="gui/font/m1.TTF",
+                        size=self.NOTE_TEXT_SIZE,
+                        color=self.NOTE_COLOR,
+                        outlines=[]
+                    )
+
                     # if this day isn't on the current month
                     if current_date.month != self.selected_month or (not self.can_select_date and not many_events):
                         # disable the button
                         day_button.disable()
 
-
-                    self.day_buttons.append(day_button)
+                    self.day_buttons.append((day_button, day_number_text, note_text))
 
 
         def _showScrollableEventList(self,events):
@@ -674,7 +690,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 if ret_val:
                     return ret_val
 
-            for button in self.day_buttons:
+            for button, number, text in self.day_buttons:
                 ret_val = button.event(ev, x, y, st)
                 if ret_val:
                     return ret_val
@@ -879,13 +895,19 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             cal_r_buttons = [
                 (
                     x.render(width, height, st, at),
-                    (x.xpos, x.ypos)
+                    (x.xpos, x.ypos),
+                    y.render(width, height, st, at),
+                    (x.xpos + self.DAY_BUTTON_WIDTH - y.render(width, height, st, at).get_size()[0] - 7, x.ypos + 5),
+                    z.render(width, height, st, at),
+                    (x.xpos + 8, x.ypos + 6)
                 )
-                for x in self.day_buttons
+                for x, y, z in self.day_buttons
             ]
 
-            for vis_b, xy in cal_r_buttons:
-                r.blit(vis_b, xy)
+            for vis_b, xy_b, vis_t, xy_t, vis_n, xy_n in cal_r_buttons:
+                r.blit(vis_b, xy_b)
+                r.blit(vis_t, xy_t)
+                r.blit(vis_n, xy_n)
 
             # Return the render.
             return r
