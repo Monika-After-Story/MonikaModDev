@@ -40,25 +40,6 @@ init -200 python in mas_ui:
     light_button_text_idle_color = "#000"
     light_button_text_insensitive_color = "#8C8C8C"
 
-    # quick menu
-    qm_style_prefix = "quick"
-
-    # radio button
-    rab_style_prefix = "radio"
-
-    # slider
-    sld_style_prefix = "slider"
-
-    # scrollable menu
-    sm_style_prefix = "scrollable_menu"
-
-    # two pane scrollable
-    tpsm_style_prefix = "twopane_scrollable_menu"
-
-    # floating islands
-
-    fli_style_prefix = "island"
-
     # ---- files ----
 
     # confirm screen
@@ -131,61 +112,31 @@ init python:
         IN:
             morning_flag - if True, light mode, if False, dark mode
         """
-        if not morning_flag:
-            mas_globals.dark_mode = True
-
-            # Global swaps
-            mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
-            mas_globals.button_text_idle_color = mas_ui.dark_button_text_idle_color
-            mas_globals.button_text_insensitive_color = mas_ui.dark_button_text_insensitive_color
-
-            # ui swaps
-            mas_ui.qm_style_prefix = "quick_dark"
-            mas_ui.rab_style_prefix = "radio_dark"
-            mas_ui.sld_style_prefix = "slider_dark"
-            mas_ui.sm_style_prefix = "scrollable_menu_dark"
-            mas_ui.tpsm_style_prefix = "twopane_scrollable_menu_dark"
-            mas_ui.fli_style_prefix = "island_dark"
-
-        else:
-            mas_globals.dark_mode = False
-
-            # Handle the global swaps
-            mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
-            mas_globals.button_text_idle_color = mas_ui.light_button_text_idle_color
-            mas_globals.button_text_insensitive_color = mas_ui.light_button_text_insensitive_color
-
-            # ui swaps
-            mas_ui.qm_style_prefix = "quick"
-            mas_ui.rab_style_prefix = "radio"
-            mas_ui.sld_style_prefix = "slider"
-            mas_ui.sm_style_prefix = "scrollable_menu"
-            mas_ui.tpsm_style_prefix = "twopane_scrollable_menu"
-            mas_ui.fli_style_prefix = "island"
-
         # FIXME: it will be done automagically later (requires consistent naming between styles)
         mas_swapStyle("button"                                     , "button_dark"                                     , morning_flag)
         mas_swapStyle("button_text"                                , "button_dark_text"                                , morning_flag)
-        mas_swapStyle("check_label"                                , "check_dark_label"                                , morning_flag)
-        mas_swapStyle("check_label_text"                           , "check_dark_label_text"                           , morning_flag)
         mas_swapStyle("check_button"                               , "check_dark_button"                               , morning_flag)
         mas_swapStyle("check_button_text"                          , "check_dark_button_text"                          , morning_flag)
+        mas_swapStyle("check_label"                                , "check_dark_label"                                , morning_flag)
+        mas_swapStyle("check_label_text"                           , "check_dark_label_text"                           , morning_flag)
         mas_swapStyle("choice_button"                              , "choice_dark_button"                              , morning_flag)
         mas_swapStyle("choice_button_text"                         , "choice_dark_button_text"                         , morning_flag)
         mas_swapStyle("confirm_frame"                              , "confirm_frame_dark"                              , morning_flag)
         mas_swapStyle("confirm_prompt_text"                        , "confirm_prompt_text_dark"                        , morning_flag)
-        mas_swapStyle("game_menu_label"                            , "game_menu_label_dark"                            , morning_flag)
-        mas_swapStyle("game_menu_label_text"                       , "game_menu_label_dark_text"                       , morning_flag)
-        mas_swapStyle("hkb_button"                                 , "hkb_dark_button"                                 , morning_flag)
-        mas_swapStyle("hkb_button_text"                            , "hkb_dark_button_text"                            , morning_flag)
         mas_swapStyle("edited"                                     , "edited_dark"                                     , morning_flag)
         mas_swapStyle("frame"                                      , "frame_dark"                                      , morning_flag)
+        mas_swapStyle("game_menu_label"                            , "game_menu_label_dark"                            , morning_flag)
+        mas_swapStyle("game_menu_label_text"                       , "game_menu_label_dark_text"                       , morning_flag)
         mas_swapStyle("game_menu_outer_frame"                      , "game_menu_outer_frame_dark"                      , morning_flag)
+        mas_swapStyle("hkb_button"                                 , "hkb_dark_button"                                 , morning_flag)
+        mas_swapStyle("hkb_button_text"                            , "hkb_dark_button_text"                            , morning_flag)
+        mas_swapStyle("island_button"                              , "island_dark_button"                              , morning_flag)
+        mas_swapStyle("island_button_text"                         , "island_dark_button_text"                         , morning_flag)
         mas_swapStyle("main_menu_frame"                            , "main_menu_frame_dark"                            , morning_flag)
         mas_swapStyle("main_menu_version"                          , "main_menu_version_dark"                          , morning_flag)
+        mas_swapStyle("mas_adjust_vbar"                            , "mas_adjust_vbar_dark"                            , morning_flag)
         mas_swapStyle("mas_adjustable_button"                      , "mas_adjustable_button_dark"                      , morning_flag)
         mas_swapStyle("mas_adjustable_button_text"                 , "mas_adjustable_button_text_dark"                 , morning_flag)
-        mas_swapStyle("mas_adjust_vbar"                            , "mas_adjust_vbar_dark"                            , morning_flag)
         mas_swapStyle("mas_mbs_button"                             , "mas_mbs_button_dark"                             , morning_flag)
         mas_swapStyle("mas_mbs_button_text"                        , "mas_mbs_button_text_dark"                        , morning_flag)
         mas_swapStyle("mas_extra_menu_frame"                       , "mas_extra_menu_frame_dark"                       , morning_flag)
@@ -210,19 +161,35 @@ init python:
         mas_swapStyle("poemgame_text"                              , "poemgame_text_dark"                              , morning_flag)
         mas_swapStyle("pref_label"                                 , "pref_dark_label"                                 , morning_flag)
         mas_swapStyle("pref_label_text"                            , "pref_dark_label_text"                            , morning_flag)
+        mas_swapStyle("quick_button"                               , "quick_dark_button"                               , morning_flag)
+        mas_swapStyle("quick_button_text"                          , "quick_dark_button_text"                          , morning_flag)
+        mas_swapStyle("radio_button"                               , "radio_dark_button"                               , morning_flag)
+        mas_swapStyle("radio_button_text"                          , "radio_dark_button_text"                          , morning_flag)
+        mas_swapStyle("radio_label"                                , "radio_dark_label"                                , morning_flag)
+        mas_swapStyle("radio_label_text"                           , "radio_dark_label_text"                           , morning_flag)
         mas_swapStyle("return_button"                              , "return_dark_button"                              , morning_flag)
         mas_swapStyle("say_label"                                  , "say_label_dark"                                  , morning_flag)
         mas_swapStyle("scrollbar"                                  , "scrollbar_dark"                                  , morning_flag)
+        mas_swapStyle("scrollable_menu_button"                     , "scrollable_menu_dark_button"                     , morning_flag)
+        mas_swapStyle("scrollable_menu_button_text"                , "scrollable_menu_dark_button_text"                , morning_flag)
         mas_swapStyle("scrollable_menu_crazy_button"               , "scrollable_menu_dark_crazy_button"               , morning_flag)
         mas_swapStyle("scrollable_menu_crazy_button_text"          , "scrollable_menu_dark_crazy_button_text"          , morning_flag)
         mas_swapStyle("scrollable_menu_new_button"                 , "scrollable_menu_dark_new_button"                 , morning_flag)
         mas_swapStyle("scrollable_menu_new_button_text"            , "scrollable_menu_dark_new_button_text"            , morning_flag)
         mas_swapStyle("scrollable_menu_special_button"             , "scrollable_menu_dark_special_button"             , morning_flag)
         mas_swapStyle("scrollable_menu_special_button_text"        , "scrollable_menu_dark_special_button_text"        , morning_flag)
+        mas_swapStyle("slider"                                     , "slider_dark"                                     , morning_flag)
+        mas_swapStyle("slider_button"                              , "slider_dark_button"                              , morning_flag)
+        mas_swapStyle("slider_button_text"                         , "slider_dark_button_text"                         , morning_flag)
+        mas_swapStyle("slider_label"                               , "slider_dark_label"                               , morning_flag)
+        mas_swapStyle("slider_label_text"                          , "slider_dark_label_text"                          , morning_flag)
+        mas_swapStyle("slider_slider"                              , "slider_dark_slider"                              , morning_flag)
         mas_swapStyle("slot_button"                                , "slot_button_dark"                                , morning_flag)
         mas_swapStyle("slot_button_text"                           , "slot_button_dark_text"                           , morning_flag)
         mas_swapStyle("talk_choice_button"                         , "talk_choice_dark_button"                         , morning_flag)
         mas_swapStyle("talk_choice_button_text"                    , "talk_choice_dark_button_text"                    , morning_flag)
+        mas_swapStyle("twopane_scrollable_menu_button"             , "twopane_scrollable_menu_dark_button"             , morning_flag)
+        mas_swapStyle("twopane_scrollable_menu_button_text"        , "twopane_scrollable_menu_dark_button_text"        , morning_flag)
         mas_swapStyle("twopane_scrollable_menu_new_button"         , "twopane_scrollable_menu_dark_new_button"         , morning_flag)
         mas_swapStyle("twopane_scrollable_menu_new_button_text"    , "twopane_scrollable_menu_dark_new_button_text"    , morning_flag)
         mas_swapStyle("twopane_scrollable_menu_special_button"     , "twopane_scrollable_menu_dark_special_button"     , morning_flag)
@@ -230,9 +197,29 @@ init python:
         mas_swapStyle("window"                                     , "window_dark"                                     , morning_flag)
         mas_swapStyle("window_monika"                              , "window_monika_dark"                              , morning_flag)
 
-        # Textbox
-        if mas_globals.change_textbox:
-            style.say_window = style.window
+        if not morning_flag:
+            # Handle the global swaps
+            mas_globals.dark_mode = True
+
+            mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
+            mas_globals.button_text_idle_color = mas_ui.dark_button_text_idle_color
+            mas_globals.button_text_insensitive_color = mas_ui.dark_button_text_insensitive_color
+
+            # Textbox
+            if mas_globals.change_textbox:
+                style.say_window = style.window_dark
+
+        else:
+            # Handle the global swaps
+            mas_globals.dark_mode = False
+
+            mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
+            mas_globals.button_text_idle_color = mas_ui.light_button_text_idle_color
+            mas_globals.button_text_insensitive_color = mas_ui.light_button_text_insensitive_color
+
+            # Textbox
+            if mas_globals.change_textbox:
+                style.say_window = mas_ui.style_stash["window"]
 
         # timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
@@ -387,11 +374,6 @@ style main_menu_frame_dark:
 
     background "menu_nav"
 
-style slider_def:
-    ysize 18
-    base_bar Frame("gui/scrollbar/horizontal_poem_bar.png", tile=False)
-    thumb "gui/slider/horizontal_hover_thumb.png"
-
 style slider_dark:
     ysize 18
     base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
@@ -400,19 +382,14 @@ style slider_dark:
 style slider_dark_button_text:
     properties gui.button_text_properties("slider_button")
 
-style slider_dark_vbox:
-    xsize 450
-
 style slider_dark_slider is gui_slider_dark
 style slider_dark_slider:
     xsize 350
 
 style slider_dark_label is pref_label
 style slider_dark_label_text is pref_label_text
-style slider_dark_slider is gui_slider_dark
 style slider_dark_button is gui_button
 style slider_dark_button_text is gui_button_text
-style slider_dark_pref_vbox is pref_vbox
 
 style scrollbar_dark:
     ysize 18
@@ -650,7 +627,6 @@ style quick_dark_button:
     activate_sound gui.activate_sound
 
 # style quick_dark_button_text is button_text_dark
-style quick_dark_button_selected_text
 style quick_dark_button_text:
     properties gui.button_text_properties("quick_dark_button")
     outlines []

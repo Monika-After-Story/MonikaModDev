@@ -507,7 +507,7 @@ screen mas_islands_background:
             zoom 0.5
 
 screen mas_show_islands():
-    style_prefix mas_ui.fli_style_prefix
+    style_prefix "island"
     imagemap:
 
         ground mas_island_event.getBackground()

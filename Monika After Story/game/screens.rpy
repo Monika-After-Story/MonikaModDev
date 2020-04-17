@@ -518,7 +518,7 @@ screen quick_menu():
 
         # Add an in-game quick menu.
         hbox:
-            style_prefix mas_ui.qm_style_prefix
+            style_prefix "quick"
 
             xalign 0.5
             yalign 0.995
@@ -1094,7 +1094,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix mas_ui.rab_style_prefix
+                        style_prefix "radio"
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1157,7 +1157,7 @@ screen preferences():
             null height (4 * gui.pref_spacing)
 
             hbox:
-                style_prefix mas_ui.sld_style_prefix
+                style_prefix "slider"
                 box_wrap True
 
                 python:
@@ -2231,7 +2231,7 @@ style twopane_scrollable_menu_dark_special_button_text is twopane_scrollable_men
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
 screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
-    style_prefix mas_ui.tpsm_style_prefix
+    style_prefix "twopane_scrollable_menu"
 
     fixed:
         area left_area
@@ -2289,7 +2289,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
-    style_prefix mas_ui.sm_style_prefix
+    style_prefix "scrollable_menu"
 
     fixed:
         area display_area
@@ -2347,7 +2347,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
 #               NOTE: must be >= 0
 #       (Default: None)
 screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
-    style_prefix mas_ui.sm_style_prefix
+    style_prefix "scrollable_menu"
 
     fixed:
         area display_area

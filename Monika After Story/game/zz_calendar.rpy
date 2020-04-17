@@ -1915,7 +1915,7 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
 screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")):
-        style_prefix mas_ui.sm_style_prefix
+        style_prefix "scrollable_menu"
 
         zorder 51
 
