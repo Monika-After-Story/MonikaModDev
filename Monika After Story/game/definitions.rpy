@@ -6469,39 +6469,58 @@ return
 #Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
 #Please remember to update the list if you add more gender exclusive words. ^
 label mas_set_gender:
-    if persistent.gender == "M":
-        $his = "his"
-        $he = "he"
-        $hes = "he's"
-        $heis = "he is"
-        $bf = "boyfriend"
-        $man = "man"
-        $boy = "boy"
-        $guy = "guy"
-        $ him = "him"
-        $ himself = "himself"
-    elif persistent.gender == "F":
-        $his = "her"
-        $he = "she"
-        $hes = "she's"
-        $heis = "she is"
-        $bf = "girlfriend"
-        $man = "woman"
-        $boy = "girl"
-        $guy = "girl"
-        $ him = "her"
-        $ himself = "herself"
-    else:
-        $his = "their"
-        $he = "they"
-        $hes = "they're"
-        $heis = "they are"
-        $bf = "partner"
-        $man = "person"
-        $boy = "person"
-        $guy = "person"
-        $ him = "them"
-        $ himself = "themselves"
+    python:
+        pronoun_gender_map = {
+            "M": {
+                "his": "his",
+                "he": "he",
+                "hes": "he's",
+                "heis": "he is",
+                "bf": "boyfriend",
+                "man": "man",
+                "boy": "boy",
+                "guy": "guy",
+                "him": "him",
+                "himself": "himself"
+            },
+            "F": {
+                "his": "her",
+                "he": "she",
+                "hes": "she's",
+                "heis": "she is",
+                "bf": "girlfriend",
+                "man": "woman",
+                "boy": "girl",
+                "guy": "girl",
+                "him": "her",
+                "himself": "herself"
+            },
+            "X": {
+                "his": "their",
+                "he": "they",
+                "hes": "they're",
+                "heis": "they are",
+                "bf": "partner",
+                "man": "person",
+                "boy": "person",
+                "guy": "person",
+                "him": "them",
+                "himself": "themselves"
+            }
+        }
+
+        pronouns = pronoun_gender_map[persistent.gender]
+
+        his = pronouns["his"]
+        he = pronouns["he"]
+        hes = pronouns["hes"]
+        heis = pronouns["heis"]
+        bf = pronouns["bf"]
+        man = pronouns["man"]
+        boy = pronouns["boy"]
+        guy = pronouns["guy"]
+        him = pronouns["him"]
+        himself = pronouns["himself"]
     return
 
 style jpn_text:

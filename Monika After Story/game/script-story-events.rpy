@@ -65,31 +65,36 @@ init 5 python:
 label monika_gender_redo:
     m 1eka "Of course, [player]!"
 
-    m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Have you made some personal discoveries since the last time we talked about this?{fast}"
+    if mas_getEV('monika_gender_redo').shown_count == 0:
+        m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Have you made some personal discoveries since the last time we talked about this?{fast}"
 
-        "Yes.":
-            m 1eka "I see. I know I've been there."
-            m 3hua "I'm so proud of you for going on that journey of self-discovery."
-            m 1eub "...And even prouder of you for being courageous enough to tell me!"
+            "Yes.":
+                m 1eka "I see. I know I've been there."
+                m 3hua "I'm so proud of you for going on that journey of self-discovery."
+                m 1eub "...And even prouder of you for being courageous enough to tell me!"
 
-        "I was just too shy.":
-            if persistent.gender == "M":
-                m 2ekd "I understand, I started off assuming you were a guy, after all."
-            elif persistent.gender == "F":
-                m 2ekd "I understand, you might have thought I'd be more comfortable spending time alone with another girl."
-            else:
-                m 2ekd "I understand, I might not have given you the most accurate options to pick from."
+            "I was just too shy.":
+                if persistent.gender == "M":
+                    m 2ekd "I understand, I started off assuming you were a guy, after all."
+                elif persistent.gender == "F":
+                    m 2ekd "I understand, you might have thought I'd be more comfortable spending time alone with another girl."
+                else:
+                    m 2ekd "I understand, I might not have given you the most accurate options to pick from."
 
-            m 2dkd "...And I probably didn't make it easy for you to tell me otherwise..."
-            m 7eua "But whatever your gender, I love you for who you are."
+                m 2dkd "...And I probably didn't make it easy for you to tell me otherwise..."
+                m 7eua "But whatever your gender, I love you for who you are."
 
-        "I didn't know if you'd accept me as I am...":
-            m 2wkd "[player]..."
-            m 2dkd "I hate that I didn't reassure you enough before."
-            m 7eka "But I hope that you're telling me now because you know I'll love you no matter what."
+            "I didn't know if you'd accept me as I am...":
+                m 2wkd "[player]..."
+                m 2dkd "I hate that I didn't reassure you enough before."
+                m 7eka "But I hope that you're telling me now because you know I'll love you no matter what."
+
+            "I'm genderfluid.":
+                m 1eub "Oh, okay!"
+                m 3hub "Feel free to let me know as often as you'd like when you want me to use different pronouns!"
 
     $ gender_var = None
     m "So, what's your gender?{nw}"
@@ -129,7 +134,7 @@ label monika_gender_redo:
     return "love"
 
 label mas_gender_female:
-    m 2eud "Oh? So you're actually a girl?"
+    m 2eud "Oh? So you're a girl?"
     m 2hksdlb "I hope I didn't say anything to offend you before!"
     m 2lksdla "Though I did suspect it a bit from the beginning...{w=0.2}just a little!"
     m 7eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
