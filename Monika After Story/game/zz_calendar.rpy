@@ -620,8 +620,18 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         if self.can_select_date:
                             ret_val = current_date
 
-                    # FIXME: eww!
-                    is_today = (current_date.day == self.today.day) and (current_date.month == self.today.month) and (current_date.year == self.today.year)
+                    # Set the final BGs/colors for the following displayables
+                    final_bg_idle = button_day_bg
+                    final_bg_hover = button_day_bg_hover
+                    final_bg_disabled = bg_disabled
+                    final_number_color = self.DAY_NUMBER_COLOR
+
+                    # The date in current iteration is today
+                    if (current_date.day == self.today.day) and (current_date.month == self.today.month) and (current_date.year == self.today.year):
+                        final_bg_idle = button_today_bg
+                        final_bg_hover = button_today_bg_hover
+                        final_bg_disabled = today_bg_disabled
+                        final_number_color = self.TODAY_NUMBER_COLOR
 
                     button_pos = (self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
                         initial_y + (i * self.DAY_BUTTON_HEIGHT))
@@ -630,9 +640,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         Null(),
                         Null(),
                         Null(),
-                        button_day_bg if not is_today else button_today_bg,
-                        button_day_bg_hover if not is_today else button_today_bg_hover,
-                        bg_disabled if not is_today else today_bg_disabled,
+                        final_bg_idle,
+                        final_bg_hover,
+                        final_bg_disabled,
                         button_pos[0],
                         button_pos[1],
                         self.DAY_BUTTON_WIDTH,
@@ -646,7 +656,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         self.DAY_NUMBER_DISPLAY_FORMAT.format(str(current_date.day)),
                         font=gui.default_font,
                         size=self.DAY_NUMBER_TEXT_SIZE,
-                        color=self.DAY_NUMBER_COLOR if not is_today else self.TODAY_NUMBER_COLOR,
+                        color=final_number_color,
                         outlines=[]
                     )
 
