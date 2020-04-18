@@ -196,8 +196,10 @@ init -810 python:
     ))
 
 #Images
-image mas_o31_deco = MASFilterSwitch(
-    "mod_assets/location/spaceroom/o31/halloween_deco.png"
+image mas_o31_deco = ConditionSwitch(
+    "mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/o31/halloween_deco.png",
+    "True", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
 )
 
 #Functions
@@ -6065,21 +6067,25 @@ define mas_bday_cake_lit = False
 
 # NOTE: maybe the cakes should be ACS
 image mas_bday_cake_monika = ConditionSwitch(
-    "mas_bday_cake_lit", MASFilterSwitch(
-        "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png"
-    ),
-    "True", MASFilterSwitch(
-        "mod_assets/location/spaceroom/bday/monika_birthday_cake.png"
-    )
+    "mas_bday_cake_lit and mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
+    "mas_bday_cake_lit and mas_current_background.isFltNight()",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
+    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
+    "True",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
 )
 
 image mas_bday_cake_player = ConditionSwitch(
-    "mas_bday_cake_lit", MASFilterSwitch(
-        "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png"
-    ),
-    "True", MASFilterSwitch(
-        "mod_assets/location/spaceroom/bday/player_birthday_cake.png"
-    )
+    "mas_bday_cake_lit and mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
+    "mas_bday_cake_lit and mas_current_background.isFltNight()",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
+    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
+    "True",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
 )
 
 image mas_bday_banners = MASFilterSwitch(

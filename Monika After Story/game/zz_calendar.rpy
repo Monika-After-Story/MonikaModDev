@@ -225,7 +225,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # dont really feel like changing every image line to not do inline
             # if statements so this will work for now.
-            self.day_mode = not mas_globals.dark_mode
+            self.day_mode = mas_current_background.isFltDay()
 
             # The calendar background
             self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png" if self.day_mode else "mod_assets/calendar/calendar_bg-n.png")
@@ -1919,7 +1919,7 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #   mask - hex color that will be used for the mask that will cover the screen
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
-screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if not mas_globals.dark_mode else "mod_assets/calendar/calendar_bg-n.png")):
+screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_bg-n.png")):
         style_prefix mas_ui.sm_style_prefix
 
         zorder 51
@@ -2057,7 +2057,7 @@ screen calendar_overlay():
     #
     if store.mas_calendar.enabled:
         imagebutton:
-            idle ("mod_assets/calendar/calendar_button_normal.png" if not mas_globals.dark_mode else "mod_assets/calendar/calendar_button_normal-n.png")
+            idle ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"
             hover_sound gui.hover_sound
             activate_sound gui.activate_sound
@@ -2065,7 +2065,7 @@ screen calendar_overlay():
             xpos 360
             ypos 260
     else:
-        image ("mod_assets/calendar/calendar_button_normal.png" if not mas_globals.dark_mode else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
+        image ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
 
 init python:
 
