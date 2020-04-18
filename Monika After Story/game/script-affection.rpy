@@ -302,6 +302,7 @@ init -1 python in mas_affection:
     log = renpy.store.mas_utils.getMASLog("log/aff_log", append=True)
     log_open = log.open()
     log.raw_write = True
+    log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
     # LOG messages
     # [current datetime]: monikatopic | magnitude | prev -> new
@@ -375,6 +376,21 @@ init -1 python in mas_affection:
             change,
             old,
             new
+        ))
+
+
+    def txt_audit(tag, msg):
+        """
+        Generic auditing in the aff log
+
+        IN:
+            tag - a string to label thsi audit
+            msg - message to show
+        """
+        log.write("[{0}]: {1} | {2}\n".format(
+            datetime.datetime.now(),
+            tag,
+            msg
         ))
 
 
@@ -1134,11 +1150,18 @@ init -10 python:
             ):
             if persistent._mas_aff_backup is None:
                 new_value = 0
+                store.mas_affection.txt_audit("LOAD", "No backup found")
+
             else:
                 new_value = persistent._mas_aff_backup
+                store.mas_affection.txt_audit("LOAD", "Loading from backup")
 
         else:
             new_value = persistent._mas_affection["affection"]
+            store.mas_affection.txt_audit("LOAD", "Loading from system")
+
+        # audit the amount loaded
+        store.mas_affection.raw_audit(0, new_value, new_value, "LOAD?")
 
         # if the back is None, set the backup
         if persistent._mas_aff_backup is None:
@@ -1157,6 +1180,10 @@ init -10 python:
             # restore from backup if we have a mismatch
             if new_value != persistent._mas_aff_backup:
                 persistent._mas_aff_mismatches += 1
+                store.mas_affection.txt_audit(
+                    "MISMATCHES",
+                    persistent._mas_aff_mismatches
+                )
                 store.mas_affection.raw_audit(
                     new_value,
                     persistent._mas_aff_backup,
@@ -1166,7 +1193,7 @@ init -10 python:
                 new_value = persistent._mas_aff_backup
 
         # audit this change
-        store.mas_affection.audit(new_value, new_value, ldsv="LOAD")
+        store.mas_affection.audit(new_value, new_value, ldsv="LOAD COMPLETE")
 
         # and set what we got
         persistent._mas_affection["affection"] = new_value
@@ -1683,7 +1710,7 @@ init 20 python:
             reason=None,
             ev_label=None,
             apology_active_expiry=datetime.timedelta(hours=3),
-            apology_overall_expiry=datetime.timedelta(weeks=1)
+            apology_overall_expiry=datetime.timedelta(weeks=1),
         ):
 
         if amount is None:
@@ -1710,11 +1737,19 @@ init 20 python:
             mas_updateAffectionExp()
 
 
-    def mas_setAffection(
-            amount=None
-        ):
-        # NOTE: never use this to add / lower affection unless its to
-        #   strictly set affection to a level for some reason.
+    def mas_setAffection(amount=None, logmsg="SET"):
+        """
+        Sets affection to a value
+
+        NOTE: never use this to add / lower affection unless its to
+          strictly set affection to a level for some reason.
+
+        IN:
+            amount - amount to set affection to
+            logmsg - msg to show in the log
+                (Default: SET)
+        """
+
 #        frozen = (
 #            persistent._mas_affection_badexp_freeze
 #            or persistent._mas_affection_goodexp_freeze
@@ -1723,7 +1758,7 @@ init 20 python:
             amount = _mas_getAffection()
 
         # audit the change (or attempt)
-        affection.audit(amount, amount, False)
+        affection.audit(amount, amount, False, ldsv=logmsg)
 
         # NOTE: we should NEVER freeze set affection.
         # Otherwise, use the value passed in the argument.
@@ -1843,13 +1878,16 @@ init 20 python:
                             )
                         ):
                         # 10 years later is an end-game situation
+                        store.mas_affection.txt_audit("ABS", "10 year diff")
                         mas_loseAffection(200)
 
                     else:
                         # otherwise, you cant lose past a certain amount
+                        store.mas_affection.txt_audit("ABS", "capped loss")
                         mas_setAffection(affection.AFF_TIME_CAP)
 
                 else:
+                    store.mas_affection.txt_audit("ABS", "she missed you")
                     mas_setAffection(new_aff)
 
 

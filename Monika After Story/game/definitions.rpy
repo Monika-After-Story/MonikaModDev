@@ -3562,6 +3562,7 @@ init -990 python in mas_utils:
 
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
+    mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
 
 init -100 python in mas_utils:
