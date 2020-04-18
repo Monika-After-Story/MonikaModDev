@@ -2291,7 +2291,7 @@ label monika_credits_song:
             "Sorry, I can't right now.":
                 m 3ekd "Oh, okay."
                 m 1eka "That's fine [player], I understand if you don't have the time or just can't listen to music right now."
-                m 3hua "Just me know when it's a better time for you and I'll happily play it for you then~"
+                m 3hua "Just let me know when it's a better time for you and I'll happily play it for you then~"
 
     else:
         m 3eua "Hey [player], I finally finished that song I've been working on for you."
