@@ -40,7 +40,7 @@ init -1 python:
         # exit button position and size
         EXIT_BUTTON_WIDTH = 74
         EXIT_BUTTON_HEIGHT = 74
-        EXIT_BUTTON_X = 1040
+        EXIT_BUTTON_X = 1041
         EXIT_BUTTON_Y = 60
 
         # day name related sizes
@@ -49,13 +49,14 @@ init -1 python:
         DAY_NAME_BUTTON_HEIGHT = 35
 
         # initial position for displaying things inside the calendar
-        INITIAL_POSITION_X = 193
+        INITIAL_POSITION_X = 192
         INITIAL_POSITION_Y = 155
 
         # position for the title
         TITLE_POSITION_Y = 115
-        TITLE_POSITION_X_1 = 560
-        TITLE_POSITION_X_2 = 530
+
+        # Internal area width
+        INTERNAL_WIDTH = DAY_BUTTON_WIDTH * 7
 
         # size for the arrow like button selectors
         ARROW_BUTTON_SIZE = 20
@@ -294,7 +295,6 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # Change title depending on flag
             if select_date:
-                self.title_position_x = self.TITLE_POSITION_X_2
                 self.text_title = Text(
                     "Select a Date",
                     font=gui.default_font,
@@ -303,7 +303,6 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     outlines=[]
                 )
             else:
-                self.title_position_x = self.TITLE_POSITION_X_1
                 self.text_title = Text(
                     "Calendar",
                     font=gui.default_font,
@@ -390,7 +389,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 outlines=[]
             )
 
-            # actual buttons that decrease/ increase the month and year values
+            # actual buttons that decrease/increase the month and year values
             self.button_month_decrease = MASButtonDisplayable(
                 button_empty_text,
                 button_empty_text,
@@ -398,7 +397,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_left_arrow,
                 button_left_arrow_hover,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 70,
+                self.INITIAL_POSITION_X + 100,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -414,7 +413,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_right_arrow,
                 button_right_arrow_hover,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 300,
+                self.INITIAL_POSITION_X + 330,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -430,7 +429,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_left_arrow,
                 button_left_arrow_hover,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 525,
+                self.INITIAL_POSITION_X + self.INTERNAL_WIDTH - self.ARROW_BUTTON_SIZE - 330,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -446,7 +445,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_right_arrow,
                 button_right_arrow_hover,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 770,
+                self.INITIAL_POSITION_X + self.INTERNAL_WIDTH - self.ARROW_BUTTON_SIZE - 100,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -863,11 +862,13 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             year_label = renpy.render(self.text_current_year, width, height, st, at)
 
             # now do some calcs
+            titlew, titleh = calendar_title.get_size()
             monw, monh = month_label.get_size()
             yearw, yearh = year_label.get_size()
 
-            monthx = self._xcenter(380, monw)
-            yearx = self._xcenter(380, yearw) + 460
+            titlex = self._xcenter(self.INTERNAL_WIDTH, titlew)
+            monthx = self._xcenter(250, monw) + 100
+            yearx = self.INTERNAL_WIDTH - yearw - self._xcenter(250, yearw) - 100
 
             # Get the size of the child.
             self.width, self.height = calendar_bg.get_size()
@@ -878,13 +879,13 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # blit the constant elements that make this UI
             r.blit(back,(0,0))
 
-            r.blit(calendar_bg, (192, 103))
+            r.blit(calendar_bg, (190, 103))
 
             r.blit(month_label, (self.INITIAL_POSITION_X + monthx, self.INITIAL_POSITION_Y + 8))
 
             r.blit(year_label, (self.INITIAL_POSITION_X + yearx, self.INITIAL_POSITION_Y + 8))
 
-            r.blit(calendar_title, (self.title_position_x, self.TITLE_POSITION_Y))
+            r.blit(calendar_title, (self.INITIAL_POSITION_X + titlex, self.TITLE_POSITION_Y))
 
             # blit the constant buttons
             c_r_buttons = [
