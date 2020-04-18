@@ -899,7 +899,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 r.blit(vis_b, xy)
 
             # blit the calendar buttons
-            cal_r_buttons = [
+            cal_r_displayables = [
                 (
                     x.render(width, height, st, at),
                     (x.xpos, x.ypos)
@@ -907,23 +907,17 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 for x in self.day_buttons
             ]
 
-            for vis_b, xy in cal_r_buttons:
-                r.blit(vis_b, xy)
-
-            # blit the calendar button labels
-            cal_r_labels = []
-
             for day_number_text, note_text, button_pos in self.day_labels:
                 dnt_r = day_number_text.render(width, height, st, at)
                 dnt_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - dnt_r.get_size()[0] - 7, button_pos[1] + 5)
-                cal_r_labels.append((dnt_r, dnt_xy))
+                cal_r_displayables.append((dnt_r, dnt_xy))
 
                 nt_r = note_text.render(width, height, st, at)
                 nt_xy = (button_pos[0] + 8, button_pos[1] + 6)
-                cal_r_labels.append((nt_r, nt_xy))
+                cal_r_displayables.append((nt_r, nt_xy))
 
-            for vis_t, xy in cal_r_labels:
-                r.blit(vis_t, xy)
+            for vis_d, xy in cal_r_displayables:
+                r.blit(vis_d, xy)
 
             # Return the render.
             return r
