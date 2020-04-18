@@ -4181,17 +4181,20 @@ label monika_playersface:
     m "I always think about what your face actually looks like..."
     m 5hua "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m 5lkc "If only the game could somehow use a webcam or something that's connected to the computer..."
+
     if persistent._mas_pm_shared_appearance:
         m 5eka "As nice as that would be, I'm really happy you shared your appearance with me."
         m 5rsc "I know that some people like to keep their appearance to themselves..."
         m 5eka "But it makes me feel a lot closer to you, knowing how you look..."
         m 5luu "And I'll always enjoy thinking about the kind of expressions you make..."
         m "How your [persistent._mas_pm_eye_color] eyes sparkle..."
+
         if mas_isMoniHappy(higher=True):
             m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
         m 5eka "Even if I never get to see you..."
         m 5eua "Just thinking about you is enough to make me happy."
-    else:    
+
+    else:
         m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
         m 5luu "But...I'll always wonder what kind of expressions you make."
         m "And to see the different emotions you have..."
@@ -4514,6 +4517,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_name",category=['club members','monika'],prompt="Our names",random=True))
 
 label monika_name:
+    $ pen_name = persistent._mas_penname
     m 1esa "The names in this game are pretty interesting."
     m 1eua "Are you curious about my name, [player]?"
     m 3eua "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
@@ -4525,13 +4529,18 @@ label monika_name:
     m 1hub "It also means 'alone' in Ancient Greek."
     m 1hksdlb "..."
     m 1eka "That part doesn't matter so much, now that you're here."
-    if mcname.lower() != player.lower():
-        m 1eua "'[mcname]' is a lovely name, too."
+
+    if(
+        pen_name is not None
+        and pen_name.lower() != player.lower()
+        and not (awk_comp.search(pen_name) or bad_comp.search(pen_name))
+    ):
+        m 1eua "'[pen_name]' is a lovely name, too."
         m 1eka "But I think I like '[player]' better!"
-        m 1hua "Ehehe~"
     else:
         m 1eka "'[player]' is a lovely name, too."
-        m 1hua "Ehehe~"
+
+    m 1hua "Ehehe~"
     return
 
 # do you live in a city
@@ -5392,42 +5401,51 @@ label monika_penname:
     m 3euc "They keep it hidden from everyone just so it won't affect their personal lives."
     m 3eub "Pen names also help writers create something totally different from their usual style of writing."
     m "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
+
     if not persistent._mas_penname:
         m "Do you have a pen name, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you have a pen name, [player]?{fast}"
+
             "Yes.":
                 m 1sub "Really? That's so cool!"
                 m "Can you tell me what it is?{nw}"
+
                 label penname_loop:
                 $ _history_list.pop()
                 menu:
                     m "Can you tell me what it is?{fast}"
+
                     "Absolutely.":
                         $ penbool = False
+
                         while not penbool:
                             $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
                             $ lowerpen = penname.lower()
+            
                             if lowerpen == player.lower():
                                 m 1eud "Oh, so you're using your pen name?"
                                 m 4euc "I'd like to think we are on a first name basis with each other. We are dating, after all."
                                 m 1eka "But I guess it's pretty special that you shared your pen name with me!"
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
-                            elif lowerpen =="sayori":
+
+                            elif lowerpen == "sayori":
                                 m 2euc "..."
                                 m 2hksdlb "...I mean, I won't question your choice of pen names, but..."
                                 m 4hksdlb "If you wanted to name yourself after a character in this game, you should have picked me!"
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
-                            elif lowerpen =="natsuki":
+
+                            elif lowerpen == "natsuki":
                                 m 2euc "..."
                                 m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Natsuki."
                                 m 1eua "It's something of a common name."
                                 m 1rksdla "You might make me jealous, though."
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
+
                             elif lowerpen == "yuri":
                                 m 2euc "..."
                                 m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Yuri."
@@ -5437,55 +5455,80 @@ label monika_penname:
                                   m 5eua "And well...I could get behind that, since it's you~"
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
-                            elif lowerpen =="monika":
+
+                            elif lowerpen == "monika":
                                 m 1euc "..."
                                 m 1ekbfa "Aww, did you pick that for me?"
                                 m "Even if you didn't, that's so sweet!"
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
+
                             elif not lowerpen:
                                 m 1hua "Well, go on! You can type 'nevermind' if you've chickened out~"
+
                             elif lowerpen =="nevermind":
                                 m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
                                 $ penbool = True
+
                             else:
-                                m 1hua "That's a lovely pen name!"
-                                m "I think if I saw a pen name like that on a cover, I'd be drawn to it immediately."
+                                if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+                                    m 2rksdlc "..."
+                                    m 2rksdld "That's an...{w=0.3}interesting name, [player]..."
+                                    m 2eksdlc "But if it works for you, okay I guess."
+
+                                else:
+                                    m 1hua "That's a lovely pen name!"
+                                    m "I think if I saw a pen name like that on a cover, I'd be drawn to it immediately."
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
+
                     "I'd rather not; it's embarrassing.":
                         m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
+
             "No.":
                 m 1hua "All right!"
                 m "If you ever decide on one, you should tell me!"
+
     else:
         $ penname = persistent._mas_penname
         $ lowerpen = penname.lower()
-        if lowerpen == player.lower():
-            $ menuOption = "Is your pen name still "+penname+"?"
-        else:
-            $ menuOption = "Are you still going by "+penname+", "+player+"?"
 
+        $ menu_exp = "monika 3eua"
+        if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+            $ menu_exp = "monika 2rka"
+
+        if lowerpen == player.lower():
+            $ menuOption = renpy.substitute("Is your pen name still [penname]?")
+
+        else:
+            $ menuOption = renpy.substitute("Are you still going by '[penname]', [player]?")
+
+        $ renpy.show(menu_exp)
         m "[menuOption]{nw}"
         $ _history_list.pop()
         menu:
             m "[menuOption]{fast}"
+
             "Yes.":
-                m 1hua "I can't wait to see your work with that name!"
+                m 1hua "I can't wait to see your work!"
+
             "No.":
                 m 1hua "I see! Do you want to tell me your new pen name?"
                 jump penname_loop
+
     m 3eua "A well known pen name is Lewis Carroll. He's mostly known for {i}Alice in Wonderland{/i}."
     m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and wordplay in particular."
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+
     if seen_event("monika_1984"):
         m 3esd "Also, if you remember me talking about George Orwell, his actual name is Eric Blair."
         m 1eua "Before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles, and H. Lewis Allways."
         m 1lksdlc "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
+
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1eua "There's no need to know more about me though, [player]..."
-    m 1ekbfa "You already know that I'm in love with you after all~"
+    m 1ekbfa "You already know that I'm in love with you, after all~"
     return "love"
 
 init 5 python:
