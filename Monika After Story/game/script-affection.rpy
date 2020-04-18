@@ -1872,19 +1872,14 @@ init 20 python:
                     0.5 * time_difference.days
                 )
                 if new_aff < affection.AFF_TIME_CAP:
-                    if (
-                            time_difference >= datetime.timedelta(
-                                days=(365 * 10)
-                            )
-                        ):
-                        # 10 years later is an end-game situation
+                    #We can only lose so much here
+                    store.mas_affection.txt_audit("ABS", "capped loss")
+                    mas_setAffection(affection.AFF_TIME_CAP)
+
+                    #If over 10 years, then we need to FF
+                    if time_difference >= datetime.timedelta(days=(365 * 10)):
                         store.mas_affection.txt_audit("ABS", "10 year diff")
                         mas_loseAffection(200)
-
-                    else:
-                        # otherwise, you cant lose past a certain amount
-                        store.mas_affection.txt_audit("ABS", "capped loss")
-                        mas_setAffection(affection.AFF_TIME_CAP)
 
                 else:
                     store.mas_affection.txt_audit("ABS", "she missed you")
