@@ -621,7 +621,6 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     final_bg_idle = button_day_bg
                     final_bg_hover = button_day_bg_hover
                     final_bg_disabled = bg_disabled
-                    final_number_color = self.DAY_NUMBER_COLOR
 
                     # The date in current iteration is today
                     if (current_date.day == self.today.day) and (current_date.month == self.today.month) and (current_date.year == self.today.year):
