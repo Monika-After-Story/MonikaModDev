@@ -539,7 +539,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_changename",
-            category=['you','misc'],
+            category=['you'],
             prompt="Can you call me by a different name?",
             unlocked=False,
             pool=True,
