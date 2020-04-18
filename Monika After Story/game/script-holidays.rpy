@@ -195,7 +195,8 @@ init -810 python:
         end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
-#Images
+# Images
+# TODO: export lighting as its own layer
 image mas_o31_deco = ConditionSwitch(
     "mas_current_background.isFltDay()",
     "mod_assets/location/spaceroom/o31/halloween_deco.png",
@@ -6066,6 +6067,7 @@ init -810 python:
 define mas_bday_cake_lit = False
 
 # NOTE: maybe the cakes should be ACS
+# TODO: export lighting as its own layer
 image mas_bday_cake_monika = ConditionSwitch(
     "mas_bday_cake_lit and mas_current_background.isFltDay()",
     "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
@@ -6077,6 +6079,7 @@ image mas_bday_cake_monika = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
 )
 
+# TODO: export lighting as its own layer
 image mas_bday_cake_player = ConditionSwitch(
     "mas_bday_cake_lit and mas_current_background.isFltDay()",
     "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",

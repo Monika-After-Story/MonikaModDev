@@ -199,6 +199,88 @@ python early:
         return ConditionSwitch(*args)
 
 
+    def MASLiteralFilterSwitch(def_img, filterize_def, **flt_pairs):
+        """
+        Builds a filter switch that lets you explicitly define the images
+        for a filter.
+
+        NOTE: this is a bad choice to use UNLESS you have a good default.
+
+        IN:
+            def_img - the default image to use for any filter not defined.
+            filterize_def - True will apply filters to the default image
+                as appropraite, False will NOT apply filters. 
+                Setting this as False may result in a sprite that looks shit
+                in certain settings.
+            **flt_pairs - name=value args for specific filters:
+                name: filter enum (day/night/etc...)
+                value: the image value to use for that filter
+
+        RETURNS: ConditionSwitch with filter support
+        """
+        return MASDictFilterSwitch(def_img, filterize_def, flt_pairs)
+
+
+    def MASDictFilterSwitch(def_img, filterize_def, flt_pairs):
+        """
+        Builds a filter switch that lets you explicitly define the images
+        for a filter.
+
+        NOTE: this is a bad choice to use UNLESS you have a good default.
+
+        IN:
+            def_img - the default image to use for any filter not defined.
+            filterize_def - True will apply filters to the default image
+                as appropraite, False will NOT apply filters. 
+                Setting this as False may result in a sprite that looks shit
+                in certain settings.
+            flt_pairs - dict mapping filtesr to images
+                key: filter enum (day/night/etc...)
+                value: the image value to use for that filter
+
+        RETURNS: ConditionSwitch with filter support
+        """
+        args = []
+
+        # process explicit filter pairs
+        for flt in flt_pairs:
+            if flt in store.mas_sprites.FILTERS:
+                # condition
+                args.append(
+                    "store.mas_sprites.get_filter() == '{0}'".format(flt)
+                )
+
+                # image
+                args.append(flt_pairs[flt])
+
+        # add default
+        if filterize_def:
+
+            # default should be filterized
+            for flt in store.mas_sprites.FILTERS.iterkeys():
+
+                # only use the filtesr we have not already added
+                if flt not in flt_pairs:
+                    # condition
+                    args.append(
+                        "store.mas_sprites.get_filter() == '{0}'".format(flt)
+                    )
+
+                    # image
+                    args.append(store.mas_sprites._gen_im(flt, def_img))
+
+        else:
+            # otherwise set as just default
+            args.append("True")
+            args.append(def_img)
+
+        return ConditionSwitch(*args)
+
+
+    # TODO: variation of FilterSwitch with just Day/Night options
+    #   This would allow for generic day sprite and generic night sprite
+
+
     def MASFilteredSprite(flt, img):
         """
         Generates an already filtered version of the given image
