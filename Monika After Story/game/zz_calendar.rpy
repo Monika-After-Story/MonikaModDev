@@ -264,9 +264,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             self.selected_month = self.today.month
             self.selected_year = self.today.year
 
-            # store all buttons for easy rendering
+            # store all displayables for easy rendering
             self.const_buttons = []
             self.day_buttons = []
+            self.day_labels = []
 
             # button backgrounds
             button_close = Image(
@@ -508,6 +509,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # init day buttons array
             self.day_buttons = []
+            self.day_labels = []
 
             # get relevant date info
             day = datetime.timedelta(days=1)
@@ -602,6 +604,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         if self.can_select_date:
                             ret_val = current_date
 
+                    button_pos = (self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
+                        initial_y + (i * self.DAY_BUTTON_HEIGHT))
+
                     day_button = MASButtonDisplayable(
                         Null(),
                         Null(),
@@ -609,8 +614,8 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         button_day_bg,
                         button_day_bg_hover,
                         bg_disabled,
-                        self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
-                        initial_y + (i * self.DAY_BUTTON_HEIGHT),
+                        button_pos[0],
+                        button_pos[1],
                         self.DAY_BUTTON_WIDTH,
                         self.DAY_BUTTON_HEIGHT,
                         hover_sound=gui.hover_sound,
@@ -626,6 +631,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         outlines=[]
                     )
 
+                    # TODO: implement font switching depending on the day (e.g., holidays)
                     note_text = Text(
                         self.NOTE_DISPLAY_FORMAT.format(__(event_labels[0]), __(event_labels[1]), __(third_label)),
                         font="gui/font/m1.TTF",
@@ -639,7 +645,8 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         # disable the button
                         day_button.disable()
 
-                    self.day_buttons.append((day_button, day_number_text, note_text))
+                    self.day_buttons.append(day_button)
+                    self.day_labels.append((day_number_text, note_text, button_pos))
 
 
         def _showScrollableEventList(self,events):
@@ -690,7 +697,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 if ret_val:
                     return ret_val
 
-            for button, day_number, note in self.day_buttons:
+            for button in self.day_buttons:
                 ret_val = button.event(ev, x, y, st)
                 if ret_val:
                     return ret_val
@@ -895,19 +902,28 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             cal_r_buttons = [
                 (
                     x.render(width, height, st, at),
-                    (x.xpos, x.ypos),
-                    y.render(width, height, st, at),
-                    (x.xpos + self.DAY_BUTTON_WIDTH - y.render(width, height, st, at).get_size()[0] - 7, x.ypos + 5),
-                    z.render(width, height, st, at),
-                    (x.xpos + 8, x.ypos + 6)
+                    (x.xpos, x.ypos)
                 )
-                for x, y, z in self.day_buttons
+                for x in self.day_buttons
             ]
 
-            for vis_b, xy_b, vis_dn, xy_dn, vis_n, xy_n in cal_r_buttons:
-                r.blit(vis_b, xy_b)
-                r.blit(vis_dn, xy_dn)
-                r.blit(vis_n, xy_n)
+            for vis_b, xy in cal_r_buttons:
+                r.blit(vis_b, xy)
+
+            # blit the calendar button labels
+            cal_r_labels = []
+
+            for day_number_text, note_text, button_pos in self.day_labels:
+                dnt_r = day_number_text.render(width, height, st, at)
+                dnt_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - dnt_r.get_size()[0] - 7, button_pos[1] + 5)
+                cal_r_labels.append((dnt_r, dnt_xy))
+
+                nt_r = note_text.render(width, height, st, at)
+                nt_xy = (button_pos[0] + 8, button_pos[1] + 6)
+                cal_r_labels.append((nt_r, nt_xy))
+
+            for vis_t, xy in cal_r_labels:
+                r.blit(vis_t, xy)
 
             # Return the render.
             return r
