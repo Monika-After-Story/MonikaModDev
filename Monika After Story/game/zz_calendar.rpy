@@ -80,9 +80,6 @@ init -1 python:
         # Color used for the day number
         DAY_NUMBER_COLOR = "#000000" # PINK: "#ffb0ed"
 
-        # Color used for the today number
-        TODAY_NUMBER_COLOR = "#000000"
-
         # Color used for the note
         NOTE_COLOR = "#181818"
 
@@ -620,7 +617,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         if self.can_select_date:
                             ret_val = current_date
 
-                    # Set the final BGs/colors for the following displayables
+                    # Set the final BGs for the day button
                     final_bg_idle = button_day_bg
                     final_bg_hover = button_day_bg_hover
                     final_bg_disabled = bg_disabled
@@ -631,7 +628,6 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         final_bg_idle = button_today_bg
                         final_bg_hover = button_today_bg_hover
                         final_bg_disabled = today_bg_disabled
-                        final_number_color = self.TODAY_NUMBER_COLOR
 
                     button_pos = (self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
                         initial_y + (i * self.DAY_BUTTON_HEIGHT))
@@ -656,7 +652,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         self.DAY_NUMBER_DISPLAY_FORMAT.format(str(current_date.day)),
                         font=gui.default_font,
                         size=self.DAY_NUMBER_TEXT_SIZE,
-                        color=final_number_color,
+                        color=self.DAY_NUMBER_COLOR,
                         outlines=[]
                     )
 
