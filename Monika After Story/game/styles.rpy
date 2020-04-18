@@ -96,7 +96,7 @@ init python:
         IN:
             morning_flag - Light/dark mode switch
         """
-        if not base_name in mas_ui.style_stash:
+        if base_name not in mas_ui.style_stash:
             mas_ui.style_stash[base_name] = getattr(style, base_name)
 
         if morning_flag:
@@ -123,16 +123,14 @@ init python:
         """
         Check if selected style is a dark style.
         """
-        suffix_len = len(mas_ui.dark_suffix)
-        return len(style_name) > suffix_len and style_name[-suffix_len:] == mas_ui.dark_suffix
+        return style_name.endswith(mas_ui.dark_suffix)
 
     def mas_isTextDarkStyle(style_name):
         """
         Check if selected style is a text_dark style.
         """
-        complete_suffix = "_text" + mas_ui.dark_suffix
-        suffix_len = len(complete_suffix)
-        return len(style_name) > suffix_len and style_name[-suffix_len:] == complete_suffix
+        text_dark_suffix = "_text" + mas_ui.dark_suffix
+        return style_name.endswith(text_dark_suffix)
 
     def mas_darkMode(morning_flag=False):
         """
@@ -145,20 +143,20 @@ init python:
         # FIXME: could be done on startup for some speedup
         new_aliases = {}
 
-        for style_tuple, style_ptr in renpy.style.styles.items():
+        for style_tuple, style_ptr in renpy.style.styles.iteritems():
             style_name = style_tuple[0]
             if mas_isTextDarkStyle(style_name):
-                complete_suffix = "_text" + mas_ui.dark_suffix
-                suffix_len = len(complete_suffix)
+                text_dark_suffix = "_text" + mas_ui.dark_suffix
+                suffix_len = len(text_dark_suffix)
                 alias_name = style_name[:-suffix_len] + mas_ui.dark_suffix + "_text"
                 if not style.exists(alias_name):
                     new_aliases[alias_name] = style_ptr
 
-        for alias_name, alias_style_ptr in new_aliases.items():
+        for alias_name, alias_style_ptr in new_aliases.iteritems():
             setattr(style, alias_name, alias_style_ptr)
 
         # Automagically switch every style which has a dark variant
-        for style_tuple in renpy.style.styles:
+        for style_tuple in renpy.style.styles.keys():
             style_name = style_tuple[0]
             if not mas_isDarkStyle(style_name) and mas_hasDarkStyle(style_name):
                 dark_style_name = style_name + mas_ui.dark_suffix
