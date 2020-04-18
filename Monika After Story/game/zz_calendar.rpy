@@ -2113,6 +2113,8 @@ screen calendar_overlay():
     #     xalign 0.305
     #     yalign 0.4
     #
+    image "mod_assets/calendar/calendar_button_shadow.png" xpos 351 ypos 251
+
     if store.mas_calendar.enabled:
         imagebutton:
             idle ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png")
