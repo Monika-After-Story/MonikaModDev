@@ -264,6 +264,10 @@ style label_text is gui_text:
     size gui.label_text_size
     color gui.accent_color
 
+style label_text_dark is gui_text:
+    size gui.label_text_size
+    color gui.accent_color
+
 style prompt_text is gui_text:
     size gui.interface_text_size
     color gui.text_color
@@ -2305,6 +2309,14 @@ init python:
 define prev_adj = ui.adjustment()
 define main_adj = ui.adjustment()
 
+# Overrides for the UI elements which are placed on top of the classroom BG
+# FIXME: there might be a better way, but for now it does its job
+style classroom_vscrollbar is vscrollbar:
+    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
+
+style classroom_vscrollbar_dark is vscrollbar_dark:
+    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
+
 #Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
 
 # Scrollable
@@ -2409,7 +2421,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
     fixed:
         area left_area
 
-        bar adjustment prev_adj style "vscrollbar" xalign left_align
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign left_align
 
         viewport:
             yadjustment prev_adj
@@ -2439,7 +2451,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
         fixed:
             area right_area
 
-            bar adjustment main_adj style "vscrollbar" xalign right_align
+            bar adjustment main_adj style "classroom_vscrollbar" xalign right_align
 
             viewport:
                 yadjustment main_adj
@@ -2467,7 +2479,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
     fixed:
         area display_area
 
-        bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign scroll_align
 
         viewport:
             yadjustment prev_adj
@@ -2525,7 +2537,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
     fixed:
         area display_area
 
-        bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign scroll_align
 
         viewport:
             yadjustment prev_adj

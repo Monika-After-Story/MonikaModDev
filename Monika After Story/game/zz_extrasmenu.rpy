@@ -307,6 +307,12 @@ style mas_extra_menu_frame:
 style mas_extra_menu_frame_dark:
     background Frame("mod_assets/frames/trans_pink2pxborder100_d.png", Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
 
+style mas_extra_menu_label_text is hkb_button_text:
+    color "#FFFFFF"
+
+style mas_extra_menu_label_text_dark is hkb_button_text_dark:
+    color "#FD5BA2"
+
 style mas_adjust_vbar:
     xsize 18
     base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
@@ -345,7 +351,7 @@ screen mas_extramenu_area():
 
         # close button
         textbutton _("Close"):
-            area (61, 594, 120, 35)
+            area (60, 596, 120, 35)
             style "hkb_button"
             action Jump("mas_extra_menu_close")
 
@@ -356,7 +362,7 @@ screen mas_extramenu_area():
             vbox:
                 spacing 2
                 label "Zoom":
-                    text_style "hkb_button_text"
+                    text_style "mas_extra_menu_label_text"
                     xalign 0.5
 
                 # resets the zoom value back to default
