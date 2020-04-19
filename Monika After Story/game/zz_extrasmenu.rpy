@@ -319,12 +319,6 @@ style mas_adjust_vbar:
     thumb "gui/slider/horizontal_hover_thumb.png"
     bar_vertical True
 
-style mas_adjust_vbar_dark:
-    xsize 18
-    base_bar Frame("gui/scrollbar/vertical_poem_bar_d.png", tile=False)
-    thumb "gui/slider/horizontal_hover_thumb.png"
-    bar_vertical True
-
 style mas_adjustable_button is generic_button_light:
     xysize (None, None)
     padding (3, 3, 3, 3)
