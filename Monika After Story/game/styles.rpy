@@ -1166,6 +1166,20 @@ image menu_nav:
     menu_nav_move
 
 
+init -1 python:
+
+    # set default and interface font groups
+    # NOTE: this MUST be after -2
+    gui.default_font = FontGroup().add(
+        "gui/font/Aller_Rg.ttf", 0x0020, 0x007f
+    ).add(
+        "mod_assets/font/mplus-2p-regular.ttf", 0x000, 0xffff
+    )
+    gui.interface_font = gui.default_font
+    gui.button_text_font = gui.default_font
+    gui.choice_button_text_font = gui.default_font
+
+
 #START: gui definitions
 define gui.button_def_width = None
 define gui.button_def_height = 36
