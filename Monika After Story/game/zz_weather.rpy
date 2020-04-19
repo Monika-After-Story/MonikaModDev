@@ -208,9 +208,6 @@ init -20 python in mas_weather:
     PRECIP_TYPE_OVERCAST = "overcast"
     PRECIP_TYPE_SNOW = "snow"
 
-    #Whether or not we should scene change
-    should_scene_change = False
-
     #Keep a temp store of weather here for if we're changing backgrounds
     temp_weather_storage = None
 
@@ -239,7 +236,6 @@ init -20 python in mas_weather:
 
         #Otherwise we do stuff
         global weather_change_time
-        global should_scene_change
         #Set a time for startup
         if not weather_change_time:
             # TODO: make this a function so init can set the weather_change _time and prevent double weather setting
@@ -253,7 +249,11 @@ init -20 python in mas_weather:
             new_weather = store.mas_shouldRain()
             if new_weather is not None and new_weather != store.mas_current_weather:
                 #Let's see if we need to scene change
-                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, new_weather)
+                if store.mas_current_background.isChangingRoom(
+                        store.mas_current_weather,
+                        new_weather
+                ):
+                    store.mas_idle_mailbox.send_scene_change()
 
                 #Now we change weather
                 store.mas_changeWeather(new_weather)
@@ -265,7 +265,11 @@ init -20 python in mas_weather:
 
             elif store.mas_current_weather != store.mas_weather_def:
                 #Let's see if we need to scene change
-                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, store.mas_weather_def)
+                if store.mas_current_background.isChangingRoom(
+                        store.mas_current_weather,
+                        store.mas_weather_def
+                ):
+                    store.mas_idle_mailbox.send_scene_change()
 
                 store.mas_changeWeather(store.mas_weather_def)
                 return True
@@ -357,7 +361,7 @@ init -20 python in mas_weather:
         #We want this topic seen for the first time with aurora visible outside her window
         #But we also don't want it to machine gun other topics too
         if (
-            not store.morning_flag
+            store.mas_current_background.isFltNight()
             and not store.persistent.event_list
             and store.mas_getEV("monika_auroras").shown_count == 0
         ):
@@ -569,6 +573,7 @@ init -10 python:
             RETURNS:
                 image tag for the corresponding mask to use
             """
+            # TODO: swap to filter-based
             if day:
                 return self.sp_day
 
