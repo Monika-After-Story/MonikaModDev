@@ -1166,6 +1166,13 @@ image menu_nav:
     menu_nav_move
 
 
+# Initialize additional font styles
+init -1 python:
+    config.font_replacement_map["gui/font/Aller_Rg.ttf", False, True] = ("gui/font/Aller_It.ttf", False, False)
+    config.font_replacement_map["gui/font/Aller_Rg.ttf", True, False] = ("gui/font/Aller_Bd.ttf", False, False)
+    config.font_replacement_map["gui/font/Aller_Rg.ttf", True, True] = ("gui/font/Aller_BdIt.ttf", False, False)
+
+
 #START: gui definitions
 define gui.button_def_width = None
 define gui.button_def_height = 36
