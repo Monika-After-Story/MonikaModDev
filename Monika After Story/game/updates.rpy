@@ -395,6 +395,19 @@ label v0_11_1(version="v0_11_1"):
         if piano_unlock_ev and piano_unlock_ev.action:
             piano_unlock_ev.conditional="store.mas_xp.level() >= 12"
 
+        #Patch up existing users who were around when chess didn't have an actual formal unlock
+        if (
+            persistent._mas_chess_stats["wins"]
+            or persistent._mas_chess_stats["losses"]
+            or persistent._mas_chess_stats["ties"]
+        ):
+            mas_unlockGame("chess")
+            mas_stripEVL("mas_unlock_chess", list_pop=True)
+            persistent._seen_ever["mas_unlock_chess"] = True
+            chess_unlock_ev = mas_getEV("mas_unlock_chess")
+            if chess_unlock_ev:
+                chess_unlock_ev.shown_count = 1
+
         # add missing xp for new users
         if mas_isFirstSeshPast(datetime.date(2020, 4, 10)):
             # only care about users who basically started with 0.11.0
