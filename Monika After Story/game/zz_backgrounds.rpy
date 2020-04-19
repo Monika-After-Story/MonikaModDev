@@ -4,6 +4,12 @@ default persistent._mas_background_MBGdata = {}
 #START: Class definition
 init -10 python:
 
+    class MASBackgroundFilterManager(object):
+        """
+        Filter Management class for backgrounds
+        """
+
+
     # TODO: the background class needs to decide the filters to use.
     #   *AS WELL AS THE PROGRESSION*
     # TODO: move the current DAY/NIGHT filters from mas_sprites to here.
@@ -22,6 +28,7 @@ init -10 python:
             unlocked - whether or not this background is unlocked
             entry_pp - entry programming points for bgs
             exit_pp - exit programming points
+            filters - mapping of filters associated with this BG
         """
         import store.mas_background as mas_background
         import store.mas_weather as mas_weather
@@ -43,7 +50,7 @@ init -10 python:
             disable_progressive=None,
             unlocked=False,
             entry_pp=None,
-            exit_pp=None
+            exit_pp=None,
         ):
             """
             Constructor for background objects
