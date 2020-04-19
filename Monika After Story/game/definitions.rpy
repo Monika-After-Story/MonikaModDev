@@ -4478,17 +4478,33 @@ init -1 python:
 
 
     def mas_isSunny(_time):
+        """DEPRECATED
+        Use mas_isDay instead
         """
-        Checks if the sun is up during the given time
+        return mas_isDay(_time)
+
+
+    def mas_isDay(_time):
+        """
+        Checks if the sun would be up during the given time
 
         IN:
             _time - current time to check
                 NOTE: datetime.time object
 
-        RETURNS: True if it is sunny during the given time
+        RETURNS: True if it is day time during the given time
         """
-        _curr_minutes = (_time.hour * 60) + _time.minute
-        return persistent._mas_sunrise <= _curr_minutes < persistent._mas_sunset
+        _curr_mins = (_time.hour * 60) + _time.minute
+        return persistent._mas_sunrise <= _curr_mins < persistent._mas_sunset
+
+
+    def mas_isDayNow():
+        """
+        Checks if the sun would be up right now
+
+        RETURNS: True if the sun would be up now, False if not
+        """
+        return mas_isDay(datetime.datetime.now().time())
 
 
     def mas_isNight(_time):
@@ -4501,7 +4517,16 @@ init -1 python:
 
         RETURNS: True if it the sun is down during the given time
         """
-        return not mas_isSunny(_time)
+        return not mas_isDay(_time)
+
+
+    def mas_isNightNow():
+        """
+        Checks if the sun is down right now
+
+        RETURNS: True if it is night now, False if not
+        """
+        return not mas_isDayNow()
 
 
     def mas_cvToDHM(mins):

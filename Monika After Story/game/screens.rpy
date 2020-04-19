@@ -1136,7 +1136,7 @@ screen preferences():
                         action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
                         selected persistent._mas_dark_mode_enabled
                     textbutton _("UI: D/N Cycle"):
-                        action [Function(mas_darkMode, morning_flag), Function(mas_settings._auto_mode_toggle)]
+                        action [Function(mas_darkMode, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
                         selected persistent._mas_auto_mode_enabled
 
 
@@ -1521,7 +1521,7 @@ screen history():
                         if "color" in h.who_args:
                             text_color h.who_args["color"]
 
-                text h.what.replace("[","[[")
+                text h.what.replace("[","[[")  # ]" fix syntax highlight issue
 
         if not _history_list:
             label _("The dialogue history is empty.")

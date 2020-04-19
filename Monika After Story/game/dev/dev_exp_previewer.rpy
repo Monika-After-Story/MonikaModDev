@@ -19,12 +19,12 @@ label dev_exp_previewer:
     window hide
 
     $ HKBHideButtons()
-    $ prev_mflag = morning_flag
+    $ prev_flt = store.mas_sprites.get_filter()
+    $ store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
     $ prev_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
     $ prev_moni_state = monika_chr.save_state(True, True, True)
     $ monika_chr.reset_outfit()
-    $ morning_flag = True
 
     $ ui.add(MASExpPreviewer())
     $ result = ui.interact()
@@ -33,7 +33,7 @@ label dev_exp_previewer:
     $ monika_chr.load_state(prev_moni_state)
     $ store.mas_sprites.zoom_level = prev_zoom
     $ store.mas_sprites.adjust_zoom()
-    $ morning_flag = prev_mflag
+    $ store.mas_sprites.set_filter(prev_flt)
     $ HKBShowButtons()
 
     show monika at i11
@@ -281,8 +281,8 @@ init 999 python:
 #                "g": "Disgust",
             },
             "time": {
-                0: "Day",
-                1: "Night"
+                "day": "Day",
+                "night": "Night"
             }
         }
 
@@ -301,7 +301,7 @@ init 999 python:
             "Sweat: ",
             "Emote: ",
             "Mouth: ",
-            "Time: "
+            "Filter: "
         ]
 
     
@@ -416,9 +416,9 @@ init 999 python:
                 "t",
 #                "g",
             ],
-            "time": [
-                0,
-                1
+            "time": [ # actually means Filter now
+                "day",
+                "night",
             ]
         }
 
@@ -992,9 +992,7 @@ init 999 python:
         def _sel_time(self, direct):
             self._adj_sel(direct, "time")
             self._update_sel_tx("time")
-            global morning_flag
-            morning_flag = self.curr_sel["time"] == 0
-
+            self.mas_sprites.set_filter(self._get_spr_code("time"))
 
         def _sel_torso(self, direct):
             self._adj_sel(direct, "torso")

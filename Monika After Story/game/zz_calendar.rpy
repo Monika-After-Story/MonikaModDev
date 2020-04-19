@@ -192,6 +192,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
         I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
         """
         ]
+        # """  # adding comment here to stop syntax highlight messup
 
         # Year thresholds
         MIN_GLITCH_YEAR = 1700
@@ -222,8 +223,12 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             """
             super(renpy.Displayable, self).__init__()
 
+            # dont really feel like changing every image line to not do inline
+            # if statements so this will work for now.
+            self.day_mode = mas_current_background.isFltDay()
+
             # The calendar background
-            self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")
+            self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png" if self.day_mode else "mod_assets/calendar/calendar_bg-n.png")
 
             # Can we select dates?
             self.can_select_date = select_date
@@ -261,25 +266,25 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # button backgrounds
             button_close = Image(
-                ("mod_assets/calendar/calendar_close.png" if morning_flag else "mod_assets/calendar/calendar_close-n.png")
+                ("mod_assets/calendar/calendar_close.png" if self.day_mode else "mod_assets/calendar/calendar_close-n.png")
             )
             button_close_hover = Image(
-                ("mod_assets/calendar/calendar_close_hover.png" if morning_flag else "mod_assets/calendar/calendar_close_hover-n.png")
+                ("mod_assets/calendar/calendar_close_hover.png" if self.day_mode else "mod_assets/calendar/calendar_close_hover-n.png")
             )
             button_day_name = Image(
-                ("mod_assets/calendar/calendar_day_name_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_name_bg-n.png")
+                ("mod_assets/calendar/calendar_day_name_bg.png" if self.day_mode else "mod_assets/calendar/calendar_day_name_bg-n.png")
             )
             button_left_arrow = Image(
-                ("mod_assets/calendar/calendar_left_arrow.png" if morning_flag else "mod_assets/calendar/calendar_left_arrow-n.png")
+                ("mod_assets/calendar/calendar_left_arrow.png" if self.day_mode else "mod_assets/calendar/calendar_left_arrow-n.png")
             )
             button_right_arrow = Image(
-                ("mod_assets/calendar/calendar_right_arrow.png" if morning_flag else "mod_assets/calendar/calendar_right_arrow-n.png")
+                ("mod_assets/calendar/calendar_right_arrow.png" if self.day_mode else "mod_assets/calendar/calendar_right_arrow-n.png")
             )
             button_left_arrow_hover = Image(
-                ("mod_assets/calendar/calendar_left_arrow_hover.png" if morning_flag else "mod_assets/calendar/calendar_left_arrow_hover-n.png")
+                ("mod_assets/calendar/calendar_left_arrow_hover.png" if self.day_mode else "mod_assets/calendar/calendar_left_arrow_hover-n.png")
             )
             button_right_arrow_hover = Image(
-                ("mod_assets/calendar/calendar_right_arrow_hover.png" if morning_flag else "mod_assets/calendar/calendar_right_arrow_hover-n.png")
+                ("mod_assets/calendar/calendar_right_arrow_hover.png" if self.day_mode else "mod_assets/calendar/calendar_right_arrow_hover-n.png")
             )
 
             # Change title depending on flag
@@ -289,7 +294,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "Select a Date",
                     font=gui.default_font,
                     size=33,
-                    color=("#ffffff" if morning_flag else "#000000"),
+                    color=("#ffffff" if self.day_mode else "#000000"),
                     outlines=[]
                 )
             else:
@@ -298,7 +303,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "Calendar",
                     font=gui.default_font,
                     size=33,
-                    color=("#ffffff" if morning_flag else "#000000"),
+                    color=("#ffffff" if self.day_mode else "#000000"),
                     outlines=[]
                 )
 
@@ -468,11 +473,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # button backgrounds
             button_day_bg = Image(
-                ("mod_assets/calendar/calendar_day_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_bg-n.png")
+                ("mod_assets/calendar/calendar_day_bg.png" if self.day_mode else "mod_assets/calendar/calendar_day_bg-n.png")
             )
 
             button_day_bg_disabled = Image(
-                ("mod_assets/calendar/calendar_day_disabled_bg.png" if morning_flag else "mod_assets/calendar/calendar_day_disabled_bg-n.png")
+                ("mod_assets/calendar/calendar_day_disabled_bg.png" if self.day_mode else "mod_assets/calendar/calendar_day_disabled_bg-n.png")
             )
 
             button_day_bg_hover = Image(
@@ -1914,7 +1919,7 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #   mask - hex color that will be used for the mask that will cover the screen
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
-screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if morning_flag else "mod_assets/calendar/calendar_bg-n.png")):
+screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_bg-n.png")):
         style_prefix mas_ui.sm_style_prefix
 
         zorder 51
@@ -2052,7 +2057,7 @@ screen calendar_overlay():
     #
     if store.mas_calendar.enabled:
         imagebutton:
-            idle ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png")
+            idle ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"
             hover_sound gui.hover_sound
             activate_sound gui.activate_sound
@@ -2060,7 +2065,7 @@ screen calendar_overlay():
             xpos 360
             ypos 260
     else:
-        image ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
+        image ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
 
 init python:
 
