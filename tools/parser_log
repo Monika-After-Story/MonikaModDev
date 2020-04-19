@@ -1,0 +1,265 @@
+# script stuff that is actually easter eggs                                                                              | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+# sayori music chnage/scare                                                                                              | ST 1 | 0-0 | None ~ None ~ None
+label sayori_name_scare:                                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+    if persistent._mas_sensitive_mode:                                                                                   | ST 1 | 0-0 | None ~ None ~ None
+        return                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+    python:                                                                                                              | ST 1 | 0-0 | None ~ None ~ None
+        from store.songs import FP_SAYO_NARA, initMusicChoices                                                           | ST 1 | 0-0 | None ~ None ~ None
+        initMusicChoices(sayori=True)                                                                                    | ST 1 | 0-0 | None ~ None ~ None
+        play_song(FP_SAYO_NARA, set_per=True)                                                                            | ST 1 | 0-0 | None ~ None ~ None
+        store.mas_globals.show_s_light = True                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    return                                                                                                               | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+# yuri scare                                                                                                             | ST 1 | 0-0 | None ~ None ~ None
+label yuri_name_scare:                                                                                                   | ST 1 | 1-0 | None ~ None ~ None
+    if persistent._mas_sensitive_mode:                                                                                   | ST 1 | 0-0 | None ~ None ~ None
+        return                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+#    show yuri 3s zorder 2 at t11                                                                                        | ST 1 | 0-0 | None ~ None ~ None
+    # disable stuff                                                                                                      | ST 1 | 1-0 | None ~ None ~ None
+    $ HKBHideButtons()                                                                                                   | ST 1 | 2-0 | None ~ None ~ None
+    $ disable_esc()                                                                                                      | ST 1 | 2-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 2-0 | None ~ None ~ None
+    # this is the closet scene                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+    scene black                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+    show yuri eyes zorder 2 at t11                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+    play music hb                                                                                                        | ST 1 | 1-0 | None ~ None ~ None
+    show layer master at heartbeat                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+    show dark zorder 200                                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+    pause 4.0                                                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    hide yuri                                                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    hide dark                                                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    show layer master                                                                                                    | ST 1 | 1-0 | None ~ None ~ None
+    stop music                                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    # cleanup                                                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    $ HKBShowButtons()                                                                                                   | ST 1 | 1-0 | None ~ None ~ None
+    $ enable_esc()                                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+    return                                                                                                               | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+# natsuki scare                                                                                                          | ST 1 | 0-0 | None ~ None ~ None
+label natsuki_name_scare(playing_okayev=False):                                                                          | ST 1 | 1-0 | None ~ None ~ None
+    if persistent._mas_sensitive_mode:                                                                                   | ST 1 | 0-0 | None ~ None ~ None
+        return                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    # disable stuff                                                                                                      | ST 1 | 0-0 | None ~ None ~ None
+    $ HKBHideButtons()                                                                                                   | ST 1 | 1-0 | None ~ None ~ None
+    $ disable_esc()                                                                                                      | ST 1 | 1-0 | None ~ None ~ None
+    $ store.songs.enabled = False                                                                                        | ST 1 | 1-0 | None ~ None ~ None
+    $ quick_menu = False                                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+    $ scary_t5c = "bgm/5_ghost.ogg"                                                                                      | ST 1 | 1-0 | None ~ None ~ None
+    $ curr_vol = store.songs.getVolume("music")                                                                          | ST 1 | 1-0 | None ~ None ~ None
+    $ renpy.music.set_volume(1.0, channel="music")                                                                       | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    # music adjustment                                                                                                   | ST 1 | 0-0 | None ~ None ~ None
+    if playing_okayev:                                                                                                   | ST 1 | 1-0 | None ~ None ~ None
+        $ currentpos = get_pos(channel="music")                                                                          | ST 1 | 1-0 | None ~ None ~ None
+        $ adjusted_t5c = "<from " + str(currentpos) + " loop 4.444>" + scary_t5c                                         | ST 1 | 1-0 | None ~ None ~ None
+        stop music fadeout 2.0                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+        $ renpy.music.play(adjusted_t5c, fadein=2.0, tight=True)                                                         | ST 1 | 1-0 | None ~ None ~ None
+    else:                                                                                                                | ST 1 | 1-0 | None ~ None ~ None
+        stop music                                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+        $ play_song("<from 11>" + scary_t5c)                                                                             | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    # play with me scene setup                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+    scene black                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+    show darkred zorder 5                                                                                                | ST 1 | 1-0 | None ~ None ~ None
+    show natsuki ghost1 zorder 2 at t11                                                                                  | ST 1 | 1-0 | None ~ None ~ None
+    show n_rects_ghost1_instant zorder 4                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+    show n_rects_ghost2_instant zorder 4                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+    show n_rects_ghost3_instant zorder 4                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+    show natsuki_ghost_blood zorder 3                                                                                    | ST 1 | 1-0 | None ~ None ~ None
+#    $ style.say_dialogue = style.edited                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+#    n ghost2 "..."                                                                                                      | ST 1 | 2-0 | None ~ None ~ None
+#    n ghost2 "PLAY WITH ME!!!"                                                                                          | ST 1 | 3-0 | None ~ None ~ None
+#    $ style.say_dialogue = style.normal                                                                                 | ST 1 | 4-0 | None ~ None ~ None
+    pause 5                                                                                                              | ST 1 | 5-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 5-0 | None ~ None ~ None
+    # most of this section has been purely copied                                                                        | ST 1 | 0-0 | None ~ None ~ None
+    # neck crack                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    play sound "sfx/crack.ogg"                                                                                           | ST 1 | 2-0 | None ~ None ~ None
+    hide natsuki_ghost_blood                                                                                             | ST 1 | 2-0 | None ~ None ~ None
+    hide n_rects_ghost1_instant                                                                                          | ST 1 | 2-0 | None ~ None ~ None
+    hide n_rects_ghost2_instant                                                                                          | ST 1 | 2-0 | None ~ None ~ None
+    hide n_rects_ghost3_instant                                                                                          | ST 1 | 2-0 | None ~ None ~ None
+    show natsuki ghost3                                                                                                  | ST 1 | 2-0 | None ~ None ~ None
+    show n_rects_ghost4 onlayer front zorder 4                                                                           | ST 1 | 2-0 | None ~ None ~ None
+    show n_rects_ghost5 onlayer front zorder 4                                                                           | ST 1 | 2-0 | None ~ None ~ None
+    pause 0.5                                                                                                            | ST 1 | 2-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 2-0 | None ~ None ~ None
+    # running                                                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    hide natsuki                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    play sound "sfx/run.ogg"                                                                                             | ST 1 | 1-0 | None ~ None ~ None
+    show natsuki ghost4 on layer front at i11                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    pause 0.25                                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    # removal                                                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    window hide(None)                                                                                                    | ST 1 | 1-0 | None ~ None ~ None
+    hide natsuki onlayer front                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+    hide n_rects_ghost4 onlayer front                                                                                    | ST 1 | 1-0 | None ~ None ~ None
+    hide n_rects_ghost5 onlayer front                                                                                    | ST 1 | 1-0 | None ~ None ~ None
+    scene black                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+    with None                                                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    window auto                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+    scene black                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    # cleanup                                                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    python:                                                                                                              | ST 1 | 1-0 | None ~ None ~ None
+        HKBShowButtons()                                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+        enable_esc()                                                                                                     | ST 1 | 1-0 | None ~ None ~ None
+        store.songs.enabled = True                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+        quick_menu = True                                                                                                | ST 1 | 1-0 | None ~ None ~ None
+        renpy.music.set_volume(curr_vol, channel="music")                                                                | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    # we want to be back in the loop                                                                                     | ST 1 | 0-0 | None ~ None ~ None
+    if playing_okayev:                                                                                                   | ST 1 | 1-0 | None ~ None ~ None
+        $ currentpos = get_pos(channel="music")                                                                          | ST 1 | 1-0 | None ~ None ~ None
+        $ adjusted_okayev = "<from " + str(currentpos) + " loop 4.444>bgm/5_monika.ogg"                                  | ST 1 | 1-0 | None ~ None ~ None
+        stop music fadeout 2.0                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+        $ renpy.music.play(adjusted_okayev, fadein=2.0, tight=True)                                                      | ST 1 | 1-0 | None ~ None ~ None
+    else:                                                                                                                | ST 1 | 1-0 | None ~ None ~ None
+        stop music                                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+        $ play_song(store.songs.current_track)                                                                           | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    return                                                                                                               | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+# MODIFIED natsuki rects                                                                                                 | ST 1 | 0-0 | None ~ None ~ None
+image n_rects_ghost1_instant:                                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    RectCluster(Solid("#000"), 4, 15, 5).sm                                                                              | ST 1 | 1-0 | None ~ None ~ None
+    pos (580, 270)                                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+    size (20, 25)                                                                                                        | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+image n_rects_ghost2_instant:                                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    RectCluster(Solid("#000"), 4, 15, 5).sm                                                                              | ST 1 | 0-0 | None ~ None ~ None
+    pos (652, 264)                                                                                                       | ST 1 | 0-0 | None ~ None ~ None
+    size (20, 25)                                                                                                        | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+image n_rects_ghost3_instant:                                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    RectCluster(Solid("#000"), 4, 15, 5).sm                                                                              | ST 1 | 0-0 | None ~ None ~ None
+    pos (616, 310)                                                                                                       | ST 1 | 0-0 | None ~ None ~ None
+    size (25, 15)                                                                                                        | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+#modified hungry natsuki image animation                                                                                 | ST 1 | 0-0 | None ~ None ~ None
+define ns.NATSUKI_SCALE = 0.15                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+#image ns2_n_win = im.FactorScale("images/cg/n_cg1b.png", ns.NATSUKI_SCALE)(882,325)                                     | ST 1 | 1-0 | None ~ None ~ None
+image n_cg1bs = LiveComposite((1280,720), (10, 300), im.FactorScale(im.Flip("images/cg/n_cg1b.png",horizontal=True), ns.NATSUKI_SCALE), (64,347), "n_rects1", (85,360), "n_rects2", (71,370), "n_rects3") | ST 1 | 2-0 | None ~ None ~ None
+# regular                                                                                                                | ST 1 | 2-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 3-0 | None ~ None ~ None
+#modified rectangles for Natsuki's eyes and mouth                                                                        | ST 1 | 0-0 | None ~ None ~ None
+image n_rects1:                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+    RectCluster(Solid("#000"), 3, 5, 3).sm                                                                               | ST 1 | 1-0 | None ~ None ~ None
+    pos (0, 0)                                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+    size (7, 7)                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+image n_rects2:                                                                                                          | ST 1 | 0-0 | None ~ None ~ None
+    RectCluster(Solid("#000"), 2, 4, 2).sm                                                                               | ST 1 | 0-0 | None ~ None ~ None
+    pos (0, 0)                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+    size (5, 5)                                                                                                          | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+image n_rects3:                                                                                                          | ST 1 | 0-0 | None ~ None ~ None
+    RectCluster(Solid("#000"), 2, 1, 2).sm                                                                               | ST 1 | 0-0 | None ~ None ~ None
+    pos (0, 0)                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+    size (3, 3)                                                                                                          | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+#natsuki scare 2:                                                                                                        | ST 1 | 0-0 | None ~ None ~ None
+label natsuki_name_scare_hungry:                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    if persistent._mas_sensitive_mode:                                                                                   | ST 1 | 0-0 | None ~ None ~ None
+        return                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+#label natsuki_name_scare2:                                                                                              | ST 1 | 0-0 | None ~ None ~ None
+    # disable stuff                                                                                                      | ST 1 | 1-0 | None ~ None ~ None
+    $ HKBHideButtons()                                                                                                   | ST 1 | 2-0 | None ~ None ~ None
+    $ disable_esc()                                                                                                      | ST 1 | 2-0 | None ~ None ~ None
+    $ store.songs.enabled = False                                                                                        | ST 1 | 2-0 | None ~ None ~ None
+    $ quick_menu = False                                                                                                 | ST 1 | 2-0 | None ~ None ~ None
+    $ curr_music_vol = store.songs.getVolume("music")                                                                    | ST 1 | 2-0 | None ~ None ~ None
+    $ curr_sound_vol = store.songs.getVolume("sound")                                                                    | ST 1 | 2-0 | None ~ None ~ None
+    $ renpy.music.set_volume(0.0, channel="music") # kill music                                                          | ST 1 | 2-0 | None ~ None ~ None
+    $ renpy.sound.set_volume(1.0) # max sound                                                                            | ST 1 | 2-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 2-0 | None ~ None ~ None
+     # tear screen and glitch sound                                                                                      | ST 1 | 0-0 | None ~ None ~ None
+    show screen tear(20, 0.1, 0.1, 0, 40)                                                                                | ST 1 | 1-0 | None ~ None ~ None
+    play sound "sfx/s_kill_glitch1.ogg"                                                                                  | ST 1 | 1-0 | None ~ None ~ None
+    pause 0.2                                                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    stop sound                                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+    hide screen tear                                                                                                     | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    #show hungry Natsuki and Monika glitch, hide regular Monika                                                          | ST 1 | 0-0 | None ~ None ~ None
+    show n_cg1bs                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    show monika_body_glitch1 at t11 zorder MAS_MONIKA_Z                                                                  | ST 1 | 1-0 | None ~ None ~ None
+    hide monika                                                                                                          | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    #play special music and display glitch text.                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    $ adjusted_6g = "<from 6.0>bgm/6g.ogg"                                                                               | ST 1 | 1-0 | None ~ None ~ None
+    $ renpy.play(adjusted_6g, channel="sound")                                                                           | ST 1 | 1-0 | None ~ None ~ None
+    $ ntext = glitchtext(96)                                                                                             | ST 1 | 1-0 | None ~ None ~ None
+    $ style.say_dialogue = style.edited                                                                                  | ST 1 | 1-0 | None ~ None ~ None
+    n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"                                                                    | ST 1 | 1-0 | None ~ None ~ None
+    $ ntext = glitchtext(96)                                                                                             | ST 1 | 1-0 | None ~ None ~ None
+    n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"                                                                    | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    # tear screen and glitch sound to mark end of glitch.                                                                | ST 1 | 0-0 | None ~ None ~ None
+    show screen tear(20, 0.1, 0.1, 0, 40)                                                                                | ST 1 | 1-0 | None ~ None ~ None
+    play sound "sfx/s_kill_glitch1.ogg"                                                                                  | ST 1 | 1-0 | None ~ None ~ None
+    pause 0.2                                                                                                            | ST 1 | 1-0 | None ~ None ~ None
+    stop sound                                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+    hide screen tear                                                                                                     | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    #show Monika and hide Natsuki and glitch Monika.                                                                     | ST 1 | 0-0 | None ~ None ~ None
+    show monika 1 at t11 zorder MAS_MONIKA_Z                                                                             | ST 1 | 1-0 | None ~ None ~ None
+    hide n_cg1bs                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    hide monika_body_glitch1                                                                                             | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    $ mas_resetTextSpeed()                                                                                               | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    # cleanup                                                                                                            | ST 1 | 0-0 | None ~ None ~ None
+    python:                                                                                                              | ST 1 | 1-0 | None ~ None ~ None
+        HKBShowButtons()                                                                                                 | ST 1 | 1-0 | None ~ None ~ None
+        enable_esc()                                                                                                     | ST 1 | 1-0 | None ~ None ~ None
+        store.songs.enabled = True                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+        quick_menu = True                                                                                                | ST 1 | 1-0 | None ~ None ~ None
+        renpy.sound.stop()                                                                                               | ST 1 | 1-0 | None ~ None ~ None
+        renpy.sound.set_volume(curr_sound_vol)                                                                           | ST 1 | 1-0 | None ~ None ~ None
+        renpy.music.set_volume(curr_music_vol, channel="music")                                                          | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    #go back to dialog                                                                                                   | ST 1 | 0-0 | None ~ None ~ None
+    return                                                                                                               | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+#Zoomed in on ghost face, just like original ghost menu exit.                                                            | ST 1 | 0-0 | None ~ None ~ None
+transform zoom_ghost:                                                                                                    | ST 1 | 1-0 | None ~ None ~ None
+        zoom 1.5 yoffset 500                                                                                             | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+label mas_ghost_monika:                                                                                                  | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    scene black                                                                                                          | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    python:                                                                                                              | ST 1 | 0-0 | None ~ None ~ None
+        #plays music from ghost menu.                                                                                    | ST 1 | 0-0 | None ~ None ~ None
+        play_song(audio.ghostmenu)                                                                                       | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    show noise zorder 11:                                                                                                | ST 1 | 0-0 | None ~ None ~ None
+        alpha 0.5                                                                                                        | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    #show ghost monika                                                                                                   | ST 1 | 0-0 | None ~ None ~ None
+    show ghost_monika zorder MAS_MONIKA_Z at i11                                                                         | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    #wait 10 seconds (length of ghost menu music)                                                                        | ST 1 | 0-0 | None ~ None ~ None
+    $ renpy.pause(10, hard=True)                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    stop music                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+    hide noise                                                                                                           | ST 1 | 0-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 0-0 | None ~ None ~ None
+    #Show zoomed in ghost face.                                                                                          | ST 1 | 0-0 | None ~ None ~ None
+    show ghost_monika at zoom_ghost                                                                                      | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    #Time the original game displayed zoomed in face for.                                                                | ST 1 | 0-0 | None ~ None ~ None
+    pause 0.01                                                                                                           | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    #Prevent player from losing affection.                                                                               | ST 1 | 0-0 | None ~ None ~ None
+    $ persistent.closed_self = True                                                                                      | ST 1 | 1-0 | None ~ None ~ None
+                                                                                                                         | ST 1 | 1-0 | None ~ None ~ None
+    #Exit the game.                                                                                                      | ST 1 | 0-0 | None ~ None ~ None
+    jump _quit                                                                                                           | ST 1 | 1-0 | None ~ None ~ None
