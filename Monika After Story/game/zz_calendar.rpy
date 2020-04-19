@@ -93,12 +93,6 @@ init -1 python:
         DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday"]
 
-        # Format used for day number display
-        DAY_NUMBER_DISPLAY_FORMAT = "{0}"
-
-        # Format used for note display
-        NOTE_DISPLAY_FORMAT = "{0}\n{1}\n{2}"
-
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
             pygame.MOUSEMOTION,
@@ -268,7 +262,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # store all displayables for easy rendering
             self.const_buttons = []
             self.day_buttons = []
-            self.day_labels = []
+            self.day_numbers = []
+            self.day_notes = []
+            self.ellipses = []
 
             # button backgrounds
             button_close = Image(
@@ -520,7 +516,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # init day buttons array
             self.day_buttons = []
-            self.day_labels = []
+            self.day_numbers = []
+            self.day_notes = []
+            self.ellipses = []
 
             # get relevant date info
             day = datetime.timedelta(days=1)
@@ -559,12 +557,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     current_date = self.dates[j + (i * 7)]
                     ret_val = None
                     many_events = False
-                    bg_disabled = button_day_bg_disabled
+                    day_bg_disabled = button_day_bg_disabled
                     today_bg_disabled = button_today_bg_disabled
 
                     # current day events display helpers
                     event_labels = list()
-                    third_label = ""
 
                     # if this day is on the current month process the events that it may have
                     if current_date.month == self.selected_month:
@@ -589,38 +586,31 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                                     # add the non event
                                     event_labels.append(e[1])
 
-
-                        # if we have exactly 3 events
-                        if len(event_labels) == 3:
-                            # third_label should hold the event text
-                            third_label = event_labels[2]
                         if len(event_labels) > 3:
                             many_events = True
-                            if self.can_select_date:
-                                third_label = "and more events"
-                            else:
-                                third_label = "(Click to see more)"
+                            if not self.can_select_date:
                                 ret_val = event_labels
 
-                    # if we don't have any labels or less than 2
-                    if not event_labels or len(event_labels) < 2:
+                    # if we don't have any labels or less than 3
+                    if not event_labels or len(event_labels) < 3:
 
-                        # we can safely add 2 empty ones
-                        event_labels.append("")
-                        event_labels.append("")
+                        # we can safely add 3 empty ones
+                        event_labels.extend([""] * 3)
 
                     # Add button behaviour to it
                     if current_date.month == self.selected_month:
-                        bg_disabled = button_day_bg
+                        day_bg_disabled = button_day_bg
                         today_bg_disabled = button_today_bg
 
                         if self.can_select_date:
                             ret_val = current_date
 
+                    # The button itself
+
                     # Set the final BGs for the day button
                     final_bg_idle = button_day_bg
                     final_bg_hover = button_day_bg_hover
-                    final_bg_disabled = bg_disabled
+                    final_bg_disabled = day_bg_disabled
 
                     # The date in current iteration is today
                     if (current_date.day == self.today.day) and (current_date.month == self.today.month) and (current_date.year == self.today.year):
@@ -647,30 +637,53 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         return_value=ret_val
                     )
 
-                    day_number_text = Text(
-                        self.DAY_NUMBER_DISPLAY_FORMAT.format(str(current_date.day)),
-                        font=gui.default_font,
-                        size=self.DAY_NUMBER_TEXT_SIZE,
-                        color=self.DAY_NUMBER_COLOR,
-                        outlines=[]
-                    )
-
-                    # TODO: implement font switching depending on the day (e.g., holidays)
-                    note_text = Text(
-                        self.NOTE_DISPLAY_FORMAT.format(__(event_labels[0]), __(event_labels[1]), __(third_label)),
-                        font="gui/font/m1.TTF",
-                        size=self.NOTE_TEXT_SIZE,
-                        color=self.NOTE_COLOR,
-                        outlines=[]
-                    )
-
                     # if this day isn't on the current month
                     if current_date.month != self.selected_month or (not self.can_select_date and not many_events):
                         # disable the button
                         day_button.disable()
 
                     self.day_buttons.append(day_button)
-                    self.day_labels.append((day_number_text, note_text, button_pos))
+
+                    # Day number
+                    day_number_text = Text(
+                        str(current_date.day),
+                        font=gui.default_font,
+                        size=self.DAY_NUMBER_TEXT_SIZE,
+                        color=self.DAY_NUMBER_COLOR,
+                        outlines=[]
+                    )
+
+                    self.day_numbers.append((day_number_text, button_pos))
+
+                    # Day notes
+                    # TODO: implement font switching depending on the day (e.g., holidays)
+                    # FIXME: may cause an excessive number of attempts to render empty surfaces
+                    note_list = [(None, None)] * 3
+
+                    for k in range(3):
+                        note_text = Text(
+                            __(event_labels[k]),
+                            font="gui/font/m1.TTF",
+                            size=self.NOTE_TEXT_SIZE,
+                            color=self.NOTE_COLOR,
+                            outlines=[]
+                        )
+                        note_pos = (button_pos[0] + 8, button_pos[1] + 1 + k * 17)
+                        note_list[k] = (note_text, note_pos)
+
+                    self.day_notes.append(note_list)
+
+                    # Create an ellipsis if needed
+                    if many_events:
+                        ellipsis_text = Text(
+                            "...",
+                            font=gui.default_font,
+                            size=16,
+                            color=self.DAY_NUMBER_COLOR,
+                            outlines=[]
+                        )
+
+                        self.ellipses.append((ellipsis_text, button_pos))
 
 
         def _showScrollableEventList(self,events):
@@ -933,14 +946,20 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 for x in self.day_buttons
             ]
 
-            for day_number_text, note_text, button_pos in self.day_labels:
-                dnt_r = day_number_text.render(width, height, st, at)
-                dnt_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - dnt_r.get_size()[0] - 7, button_pos[1] + 5)
-                cal_r_displayables.append((dnt_r, dnt_xy))
-
-                nt_r = note_text.render(width, height, st, at)
-                nt_xy = (button_pos[0] + 8, button_pos[1] + 6)
+            for number_text, button_pos in self.day_numbers:
+                nt_r = number_text.render(width, height, st, at)
+                nt_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - nt_r.get_size()[0] - 7, button_pos[1] + 5)
                 cal_r_displayables.append((nt_r, nt_xy))
+
+            for note_list in self.day_notes:
+                for note_text, note_pos in note_list:
+                    nt_r = note_text.render(width, height, st, at)
+                    cal_r_displayables.append((nt_r, note_pos))
+
+            for ellipsis_text, button_pos in self.ellipses:
+                et_r = ellipsis_text.render(width, height, st, at)
+                et_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - et_r.get_size()[0] - 7, button_pos[1] + 43)
+                cal_r_displayables.append((et_r, et_xy))
 
             for vis_d, xy in cal_r_displayables:
                 r.blit(vis_d, xy)
