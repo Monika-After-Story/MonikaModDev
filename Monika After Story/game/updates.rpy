@@ -399,7 +399,7 @@ label v0_11_1(version="v0_11_1"):
         if (
             persistent._mas_chess_stats["wins"]
             or persistent._mas_chess_stats["losses"]
-            or persistent._mas_chess_stats["ties"]
+            or persistent._mas_chess_stats["draws"]
         ):
             mas_unlockGame("chess")
             mas_stripEVL("mas_unlock_chess", list_pop=True)
