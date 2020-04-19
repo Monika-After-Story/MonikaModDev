@@ -859,7 +859,13 @@ style music_menu_button is navigation_button:
 
 style music_menu_button_text is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
-    font "mod_assets/font/mplus-2p-regular.ttf"
+    font FontGroup().add( # use mplus as base
+        "mod_assets/font/SourceHanSansK-Regular.otf", 0xac00, 0xd7a3 # kr
+    ).add(
+        "mod_assets/font/SourceHanSansSC-Regular.otf", 0x4e00, 0x9faf # s-cn
+    ).add(
+        "mod_assets/font/mplus-2p-regular.ttf", 0x0000, 0xffff  # jp
+    )
     color "#fff"
     outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
     hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
