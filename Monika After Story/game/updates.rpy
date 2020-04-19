@@ -546,7 +546,7 @@ label v0_11_0(version="v0_11_0"):
                 persistent._seen_ever[new_evl] = True
 
                 #Adjust the shown count for the game
-                if mas_isGameUnlocked(game_evl_map.get(new_evl)):
+                if mas_isGameUnlocked(game_evl_map.get(new_evl, "")):
                     mas_getEV(new_evl).shown_count = 1
 
             #In the case of the intro topics, being gender and preferredname
