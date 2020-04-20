@@ -38,7 +38,7 @@ init -1 python:
         BUTTON_Y_START = 300 # 300 pixels down from the top.
         TEXT_L1_Y_START = 150 # description line
         TEXT_L2_Y_START = 185
-        TEXT_CURR_L1_Y_START = 220 # current renderer line
+        TEXT_CURR_L1_Y_START = 225 # current renderer line
         TEXT_CURR_L2_Y_START = 255
 
         # RENDER MAP
@@ -129,7 +129,7 @@ init -1 python:
                 color="#ffe6f4",
                 outlines=[],
                 xalign=0.5,
-                ypos=150
+                ypos=self.TEXT_L1_Y_START
             )
             self.add(text_instruct)
 
@@ -140,7 +140,7 @@ init -1 python:
                 color="#ffe6f4",
                 outlines=[],
                 xalign=0.5,
-                ypos=185
+                ypos=self.TEXT_L2_Y_START
             )
             self.add(text_restart)
 
@@ -151,7 +151,7 @@ init -1 python:
                 color="#ffe6f4",
                 outlines=[],
                 xalign=0.5,
-                ypos=225
+                ypos=self.TEXT_CURR_L1_Y_START
             )
             self.add(text_current)
 
@@ -168,7 +168,7 @@ init -1 python:
                 color="#ffe6f4",
                 outlines=[(1, "#ff99D2")],
                 xalign=0.5,
-                ypos=255
+                ypos=self.TEXT_CURR_L2_Y_START
             )
             self.add(text_curr_display)
 
