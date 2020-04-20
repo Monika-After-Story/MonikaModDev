@@ -662,21 +662,19 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
                     # Day notes
                     # TODO: implement font switching depending on the day (e.g., holidays)
-                    # FIXME: may cause an excessive number of attempts to render empty surfaces
-                    note_list = [(None, None)] * 3
-
                     for k in range(3):
-                        note_text = Text(
-                            __(event_labels[k]),
-                            font="gui/font/m1.TTF",
-                            size=self.NOTE_TEXT_SIZE,
-                            color=self.NOTE_COLOR,
-                            outlines=[]
-                        )
-                        note_pos = (button_pos[0] + 8, button_pos[1] + 1 + k * 17)
-                        note_list[k] = (note_text, note_pos)
+                        # This way we don't have to iterate and try to render empty text surfaces
+                        if len(event_labels[k]) != 0:
+                            note_text = Text(
+                                __(event_labels[k]),
+                                font="gui/font/m1.TTF",
+                                size=self.NOTE_TEXT_SIZE,
+                                color=self.NOTE_COLOR,
+                                outlines=[]
+                            )
+                            note_pos = (button_pos[0] + 8, button_pos[1] + 1 + k * 17)
 
-                    self.day_notes.append(note_list)
+                            self.day_notes.append((note_text, note_pos))
 
                     # Create an ellipsis if needed
                     if many_events:
@@ -956,10 +954,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 nt_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - nt_r.get_size()[0] - 7, button_pos[1] + 5)
                 cal_r_displayables.append((nt_r, nt_xy))
 
-            for note_list in self.day_notes:
-                for note_text, note_pos in note_list:
-                    nt_r = note_text.render(width, height, st, at)
-                    cal_r_displayables.append((nt_r, note_pos))
+            for note_text, note_pos in self.day_notes:
+                nt_r = note_text.render(width, height, st, at)
+                cal_r_displayables.append((nt_r, note_pos))
 
             for ellipsis_text, button_pos in self.ellipses:
                 et_r = ellipsis_text.render(width, height, st, at)
