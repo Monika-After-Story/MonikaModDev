@@ -780,21 +780,21 @@ init 5 python:
 
 label mas_song_amaranthine:
     m 1dso "{i}~Time goes by as day and nights are turning into years~{/i}"
-    m 1dka "{i}~But I'm lying in your arms~{/i}"
-    m 3ekb "{i}~It's the place~{/i}"
-    m 3hub "{i}~Where I know that I am closest to your heart~{/i}"
+    m 1dkbsa "{i}~But I'm lying in your arms~{/i}"
+    m 3ekbsb "{i}~It's the place~{/i}"
+    m 3hubsb "{i}~Where I know that I am closest to your heart~{/i}"
     m 1hua "{i}~Where the dark is torn apart~{/i}"
     m 1ekb "{i}~I know you feel the same as I inside~{/i}"
     m 3eka "{i}~It feels like in a dream where we can fly~{/i}"
     m 3hub "{i}~Like a sign, like a dream, you're my amaranthine~{/i}"
-    m 1eka "{i}~You are all I needed, believe me~{/i}"
+    m 1ekbla "{i}~You are all I needed, believe me~{/i}"
     m 3eub "{i}~Like we drift in a stream~{/i}"
     m 3hua "{i}~Your beauty serene~{/i}"
     m 1hub "{i}~There's nothing else in life I ever need~{/i}"
     m 1ekbsa "{i}~My dream, amaranthine~{/i}"
     show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsu "My life feels so complete with you in it, [player]."
-    m 5hubsu "I love you so much~"
+    m 5hubfu "I love you so much~"
     return "derandom|love"
 
 ################################ NON-DB SONGS############################################
