@@ -490,11 +490,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             )
 
             button_today_bg = Image(
-                ("mod_assets/calendar/calendar_today_bg.png" if morning_flag else "mod_assets/calendar/calendar_today_bg-n.png")
+                ("mod_assets/calendar/calendar_today_bg.png" if self.day_mode else "mod_assets/calendar/calendar_today_bg-n.png")
             )
 
             button_today_bg_disabled = Image(
-                ("mod_assets/calendar/calendar_today_disabled_bg.png" if morning_flag else "mod_assets/calendar/calendar_today_disabled_bg-n.png")
+                ("mod_assets/calendar/calendar_today_disabled_bg.png" if self.day_mode else "mod_assets/calendar/calendar_today_disabled_bg-n.png")
             )
 
             button_today_bg_hover = Image(
