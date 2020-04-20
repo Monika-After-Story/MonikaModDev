@@ -180,11 +180,11 @@ label mas_pick_a_game:
         play_menu_dlg = store.mas_affection.play_quip()[1]
 
         #Now let's get all of the unlocked games at the aff level
-        game_menuitems = [
+        game_menuitems = sorted([
             (ev.prompt, ev.eventlabel, False, False)
             for ev in mas_games.game_db.itervalues()
             if mas_isGameUnlocked(renpy.substitute(ev.prompt))
-        ]
+        ], key=lambda x:renpy.substitute(x[0]))
 
         ret_back = ("Nevermind.", False, False, False, 20)
 
