@@ -182,29 +182,23 @@ init -1 python:
             """
             Select renderer.
             """
-            if sel_rend:
-                # nonNone value returned
+            if sel_rend == self.curr_renderer:
+                # this means the user selected back
+                return sel_rend
 
-                if sel_rend == self.curr_renderer:
-                    # this means the user selected back
+            # otherwise, user selected a renderer, display the
+            # confirmation screen
+            store.mas_gmenu.sel_rend = self.RENDER_MAP.get(
+                sel_rend,
+                self.RENDER_UNK
+            )
+            confirmed = renpy.call_in_new_context(
+                "mas_gmenu_confirm_context"
+            )
 
-                    return sel_rend
-
-                # otherwise, user selected a renderer, display the
-                # confirmation screen
-                store.mas_gmenu.sel_rend = self.RENDER_MAP.get(
-                    sel_rend,
-                    self.RENDER_UNK
-                )
-                confirmed = renpy.call_in_new_context(
-                    "mas_gmenu_confirm_context"
-                )
-
-                if confirmed:
-                    # selection made and confirmed
-                    return sel_rend
-
-            return None
+            if confirmed:
+                # selection made and confirmed
+                return sel_rend
 
 
 # label for new context for confirm screen
