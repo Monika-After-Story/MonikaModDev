@@ -1,13 +1,24 @@
 # graphics selection menu
 # we do this instead of the actual one because the real one breaks everything
 
-image mas_dimmed_back = Solid("#000000B2")
-
 style graphics_menu_choice_button is choice_button:
     padding (5, 5, 5, 5)
 
-transform mas_entire_screen:
-    size (1280, 720)
+style graphics_menu_text:
+    font gui.default_font
+    size gui.text_size
+    color "#ffe6f4"
+    outlines []
+    xalign 0.5
+
+style graphics_menu_small_text is graphics_menu_text:
+    size 18
+
+style graphics_menu_small_heading_text is graphics_menu_text:
+    size 20
+
+style graphics_menu_current_renderer_text is graphics_menu_text:
+    outlines [(1, "#ff99D2")]
 
 init python in mas_gmenu:
 
@@ -73,8 +84,8 @@ init -1 python:
 
             # create teh buttons
             button_auto = TextButton("Automatically Choose",
-                style=style.graphics_menu_choice_button,
-                text_style=style.choice_button_text,
+                style="graphics_menu_choice_button",
+                text_style="choice_button_text",
                 pos=(button_x, button_y),
                 xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
                 clicked=lambda: self._select_renderer("auto")
@@ -82,8 +93,8 @@ init -1 python:
             self.add(button_auto)
 
             button_gl = TextButton("OpenGL",
-                style=style.graphics_menu_choice_button,
-                text_style=style.choice_button_text,
+                style="graphics_menu_choice_button",
+                text_style="choice_button_text",
                 pos=(button_x, button_y + self.BUTTON_SPACING + self.BUTTON_HEIGHT),
                 xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
                 clicked=lambda: self._select_renderer("gl")
@@ -92,8 +103,8 @@ init -1 python:
 
             if renpy.windows:
                 button_dx = TextButton("Angle/DirectX",
-                    style=style.graphics_menu_choice_button,
-                    text_style=style.choice_button_text,
+                    style="graphics_menu_choice_button",
+                    text_style="choice_button_text",
                     pos=(button_x, button_y + 2 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
                     xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
                     clicked=lambda: self._select_renderer("angle")
@@ -101,8 +112,8 @@ init -1 python:
                 self.add(button_dx)
 
             button_sw = TextButton("Software",
-                style=style.graphics_menu_choice_button,
-                text_style=style.choice_button_text,
+                style="graphics_menu_choice_button",
+                text_style="choice_button_text",
                 pos=(button_x, button_y + 3 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
                 xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
                 clicked=lambda: self._select_renderer("sw")
@@ -110,8 +121,8 @@ init -1 python:
             self.add(button_sw)
 
             button_ret = TextButton("Return",
-                style=style.graphics_menu_choice_button,
-                text_style=style.choice_button_text,
+                style="graphics_menu_choice_button",
+                text_style="choice_button_text",
                 pos=(button_x, button_y + (4 * self.BUTTON_HEIGHT) + (5 * self.BUTTON_SPACING)),
                 xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
                 clicked=lambda: self._select_renderer(self.curr_renderer)
@@ -119,38 +130,23 @@ init -1 python:
             self.add(button_ret)
 
             # texts
-            small_text_size = 18
-            small_text_heading = 20
-
             text_instruct = Text(
                 "Select a renderer to use:",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#ffe6f4",
-                outlines=[],
-                xalign=0.5,
+                style="graphics_menu_text",
                 ypos=self.TEXT_L1_Y_START
             )
             self.add(text_instruct)
 
             text_restart = Text(
                 "*Changing the renderer requires a restart to take effect",
-                font=gui.default_font,
-                size=small_text_size,
-                color="#ffe6f4",
-                outlines=[],
-                xalign=0.5,
+                style="graphics_menu_small_text",
                 ypos=self.TEXT_L2_Y_START
             )
             self.add(text_restart)
 
             text_current = Text(
                 "Current Renderer:",
-                font=gui.default_font,
-                size=small_text_heading,
-                color="#ffe6f4",
-                outlines=[],
-                xalign=0.5,
+                style="graphics_menu_small_heading_text",
                 ypos=self.TEXT_CURR_L1_Y_START
             )
             self.add(text_current)
@@ -163,11 +159,7 @@ init -1 python:
 
             text_curr_display = Text(
                 _renderer,
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#ffe6f4",
-                outlines=[(1, "#ff99D2")],
-                xalign=0.5,
+                style="graphics_menu_current_renderer_text",
                 ypos=self.TEXT_CURR_L2_Y_START
             )
             self.add(text_curr_display)
