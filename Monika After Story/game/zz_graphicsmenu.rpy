@@ -68,15 +68,9 @@ init -1 python:
             )
 
             # button backs
-            button_idle = Image(
-                "gui/button/scrollable_menu_dark_idle_background.png" if store.mas_globals.dark_mode else "gui/button/scrollable_menu_idle_background.png"
-            )
-            button_hover = Image(
-                "gui/button/scrollable_menu_dark_hover_background.png" if store.mas_globals.dark_mode else "gui/button/scrollable_menu_hover_background.png"
-            )
-            button_disable = Image(
-                "gui/button/scrollable_menu_dark_disable_background.png" if store.mas_globals.dark_mode else "gui/button/scrollable_menu_disable_background.png"
-            )
+            button_idle = Frame(mas_getTimeFile("mod_assets/buttons/generic/idle_bg.png"), Borders(5, 5, 5, 5))
+            button_hover = Frame(mas_getTimeFile("mod_assets/buttons/generic/hover_bg.png"), Borders(5, 5, 5, 5))
+            button_disable = Frame(mas_getTimeFile("mod_assets/buttons/generic/insensitive_bg.png"), Borders(5, 5, 5, 5))
 
             # Auto button
             button_text_auto_idle = Text(

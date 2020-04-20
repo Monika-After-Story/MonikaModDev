@@ -535,9 +535,9 @@ init:
                 self.BUTTON_Y_SPACING = 10
 
                 # hotkey button displayables
-                button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-                button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-                button_no = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+                button_idle = Frame(mas_getTimeFile("mod_assets/buttons/generic/idle_bg.png"), Borders(5, 5, 5, 5))
+                button_hover = Frame(mas_getTimeFile("mod_assets/buttons/generic/hover_bg.png"), Borders(5, 5, 5, 5))
+                button_no = Frame(mas_getTimeFile("mod_assets/buttons/generic/insensitive_bg.png"), Borders(5, 5, 5, 5))
 
                 # hotkey button text
                 # idle style/ disabled style:
