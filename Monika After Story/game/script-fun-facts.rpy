@@ -647,7 +647,7 @@ label mas_fun_fact_pando_forest:
     m 1esa "Supposedly, in the state of Utah, there's a forest that's actually made up of a single tree."
     m 3eua "It's called the Pando forest, and for all of its 43 hectares, its trunks are connected by a single root system."
     m 3eub "Not to mention, each of its thousands of trunks are essentially clones of each other."
-    m 1ruc"'A single organism that became an army of clones on its own, all connected to the same hivemind.'"
+    m 1ruc "'A single organism that became an army of clones on its own, all connected to the same hivemind.'"
     m 1eua "I think it could make a good science fiction or horror short-story, [player]. What do you think?"
     m 3eub "Anyway,{w=0.2} I feel like this really changes the meaning of the phrase 'missing the forest for the trees'{w=0.1}{nw} "
     extend 3hub "ahaha!"
@@ -667,7 +667,7 @@ init 5 python:
 label mas_fun_fact_immortal_jellyfish:
     m 3eub "Here's one!"
     m 1eua "Apparently, immortality has been achieved by one species of jellyfish."
-    m 3eua "The elegantly named immortal jellyfish has the ability to return to its polyp state once it has reproduced."
+    m 3eua "The aptly named immortal jellyfish has the ability to return to its polyp state once it has reproduced."
     m 1eub "...And it can keep doing this forever!{w=0.3} {nw}"
     extend 1rksdla "Unless of course it's eaten or infected by a disease."
     #Call the end
@@ -732,10 +732,10 @@ label mas_fun_fact_antarctica_brain:
 
     m 3eud "Apparently, spending a year in Antarctica can shrink one part of your brain by about 7 percent."
     m 3euc "It looks like it results in reduced memory capacity and spatial thinking ability."
-    m 1ekc "The research indicates that it's due to the social isolation and monotony of life and environment over there."
+    m 1ekc "The research indicates that it's due to social isolation, monotony of life, and the environment over there."
     m 1eud "I think this serves as a cautionary tale for us, [player]."
     m 3ekd "Even if you don't end up going to Antarctica, your brain can still get pretty messed up if you're isolated all the time, or stay cooped up in one room."
-    m 3eka "I love being with you [player], and I hope we can keep talking like this long into the future. [dlg_line]"
+    m 3eka "I love being with you [player], and I hope we can keep talking like this long into the future. {w=0.2}[dlg_line]"
     return
 
 init 5 python:
@@ -749,11 +749,11 @@ init 5 python:
 
 label mas_fun_fact_cloud_weight:
     m 3eub "Did you know that the average cloud weighs 500 tonnes?"
-    m 3eua "I have to admit, this one got me by surprise, moreso than some of the other facts."
+    m 3eua "I have to admit, this one caught me by surprise, more so than some of the other facts."
     m 1hua "I mean, they just look {i}really{/i} light and fluffy. " 
     extend 1eua "It's hard to imagine that something so heavy can just float in the air like that."
     m 3eub "It kind of reminds me of the classic question...what's heavier, a kilogram of steel or a kilogram of feathers?"
-    m 1tua "You most likely already know the answer to that though. Right, [player]? ehehe~"
+    m 1tua "You most likely already know the answer to that though, right [player]? Ehehe~"
     #Call the end
     call mas_fun_facts_end
     return
