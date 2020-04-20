@@ -644,12 +644,13 @@ init 5 python:
     )
 
 label mas_fun_fact_pando_forest:
-    m 1esa "Supposedly, somewhere in the world, there's a forest that's actually made up of a single tree."
-    m 3esa "It's called the Pando forest, and for all 43 of its hectares its trunks are connected by a single root system."
-    m 3eua "Not to mention, each of its thousands of trunks are essentially clones of each other."
+    m 1esa "Supposedly, in the state of Utah, there's a forest that's actually made up of a single tree."
+    m 3eua "It's called the Pando forest, and for all of its 43 hectares, its trunks are connected by a single root system."
+    m 3eub "Not to mention, each of its thousands of trunks are essentially clones of each other."
     m 1ruc"'A single organism that became an army of clones on its own, all connected to the same hivemind.'"
-    m 1esa "I think it could potentially make a good science fiction or horror short-story, [player].{w=0.2} What do you think?"
-    m 3eub "Anyway,{w=0.2} I feel like this really changes the meaning of the phrase 'missing the forest for the trees' ahaha!"
+    m 1eua "I think it could make a good science fiction or horror short-story, [player]. What do you think?"
+    m 3eub "Anyway,{w=0.2} I feel like this really changes the meaning of the phrase 'missing the forest for the trees'{w=0.1}{nw} "
+    extend 3hub "ahaha!"
     #Call the end
     call mas_fun_facts_end
     return
@@ -665,10 +666,10 @@ init 5 python:
 
 label mas_fun_fact_immortal_jellyfish:
     m 3eub "Here's one!"
-    m 3eua "Apparently, immortality has been achieved by one species of jellyfish."
-    m 3esa "Elegantly called {i}the immortal jellyfish{/i},{w=0.2} when it reaches old age it has the ability to change back into a kid again."
-    m 1eua "And it can keep doing this forever and ever and ever."
-    m 3eub "And ever,{w=0.2} aha!"
+    m 1eua "Apparently, immortality has been achieved by one species of jellyfish."
+    m 3eua "The elegantly named immortal jellyfish has the ability to return to its polyp state once it has reproduced."
+    m 1eub "...And it can keep doing this forever!{w=0.3} {nw}"
+    extend 1rksdla "Unless of course it's eaten or infected by a disease."
     #Call the end
     call mas_fun_facts_end
     return
@@ -683,13 +684,14 @@ init 5 python:
     )
 
 label mas_fun_fact_arrhichion:
-    m 3esa "Okay...{w=0.2}here's a historical one."
+    m 3eua "Okay...{w=0.2}here's a historical one."
     m 1esa "An ancient Greek athlete was able to win his fighting match even though he'd already died."
-    m 1eua "Reigning champ Arrhichion was fighting in a pankration match when his competitor started to choke him out using both his hands and legs."
+    m 1eua "Reigning champion Arrhichion was fighting in a pankration match when his competitor started to choke him out using both his hands and legs."
     m 3eua "Instead of yielding, Arrhichion still aimed for the win by dislocating his opponent's toe."
-    m 3ekd "The other guy quit from the pain, but when they went to announce Arrhichion as the victor they found him dead from suffocation."
-    m 1rsc "Some people are really dedicated to their ideals, to victory, and to honour. I think it's admirable, in a way."
-    m 1etc "But I do wonder, if we could ask Arrhichion now if he thought it was worth it, what would he say?"
+    m 3ekd "His opponent quit from the pain, but when they went to announce Arrhichion as the victor they found him dead from suffocation."
+    m 1rksdlc "Some people are really dedicated to their ideals to victory and to honour.{w=0.2} {nw}"
+    extend 3eka "I think it's admirable, in a way."
+    m 1etc "But I wonder...{w=0.2}if we could ask Arrhichion now if he thought it was worth it, what would he say?"
     #Call the end
     call mas_fun_facts_end
     return
@@ -704,12 +706,36 @@ init 5 python:
     )
 
 label mas_fun_fact_antarctica_brain:
+    #Do some setup for the last line
+    python:
+        has_friends = persistent._mas_pm_has_friends is not None
+
+        has_fam_to_talk = (
+            persistent._mas_pm_have_fam
+            and not persistent._mas_pm_have_fam_mess
+            or (persistent._mas_pm_have_fam_mess and persistent._mas_pm_have_fam_mess_better in ["YES", "MAYBE"])
+        )
+
+        dlg_prefix = "But make sure you keep up with your "
+
+        if has_fam_to_talk and has_friends:
+            dlg_line = dlg_prefix + "family and friends too, okay?"
+
+        elif has_fam_to_talk and not has_friends:
+            dlg_line = dlg_prefix + "family too, okay?"
+
+        elif has_friends and not has_fam_to_talk:
+            dlg_line = dlg_prefix + "friends too, okay?"
+
+        else:
+            dlg_line = "Just be sure you find some people to talk to in your reality too, okay?"
+
     m 3eud "Apparently, spending a year in Antarctica can shrink one part of your brain by about 7 percent."
-    m 3euc "Looks like it results in reduced memory capacity and spatial thinking ability."
-    m 1ekc "The research indicates that it's due to the social isolation and the monotony of life and environment over there."
-    m "I think this serves as a cautionary tale for us, [player]."
-    m 3ekd "Even if you don't end up going to Antarctica, your brain can still get pretty messed up if you're isolated all the time, or if you stay cooped up in one room."
-    m 3eka "I love being with you [player], and I hope we can keep talking like this long into the future. But make sure you keep up your relationships in your reality too, okay?"
+    m 3euc "It looks like it results in reduced memory capacity and spatial thinking ability."
+    m 1ekc "The research indicates that it's due to the social isolation and monotony of life and environment over there."
+    m 1eud "I think this serves as a cautionary tale for us, [player]."
+    m 3ekd "Even if you don't end up going to Antarctica, your brain can still get pretty messed up if you're isolated all the time, or stay cooped up in one room."
+    m 3eka "I love being with you [player], and I hope we can keep talking like this long into the future. [dlg_line]"
     return
 
 init 5 python:
@@ -726,8 +752,8 @@ label mas_fun_fact_cloud_weight:
     m 3eua "I have to admit, this one got me by surprise, moreso than some of the other facts."
     m 1hua "I mean, they just look {i}really{/i} light and fluffy. " 
     extend 1eua "It's hard to imagine that something so heavy can just float in the air like that."
-    m 3eub "It kind of reminds me of that classic question: 'what's heavier, a kilo of steel or a kilo of feathers?'"
-    m 1tua "You most likely already know the answer to that though. Right, [player]? ehehehe~"
+    m 3eub "It kind of reminds me of the classic question...what's heavier, a kilogram of steel or a kilogram of feathers?"
+    m 1tua "You most likely already know the answer to that though. Right, [player]? ehehe~"
     #Call the end
     call mas_fun_facts_end
     return
