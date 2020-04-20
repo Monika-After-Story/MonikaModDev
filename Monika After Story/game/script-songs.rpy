@@ -209,7 +209,7 @@ init 5 python:
 label mas_song_aiwfc:
     #Get current song
     $ curr_song = songs.current_track
-    if songs.getUserVolume("music") == 0.0:
+    if store.songs.hasMusicMuted():
         m 3eua "Don't forget to turn your in-game volume up, [player]."
 
     call monika_aiwfc_song
@@ -808,8 +808,10 @@ label mas_monika_plays_yr(skip_leadin=False):
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
 
-    if songs.getUserVolume("music") == 0.0:
+    if store.songs.hasMusicMuted():
+        $ enable_esc()
         m 6hua "Don't forget about your in-game volume, [player]!"
+        $ disable_esc()
 
     pause 2.0
     $ play_song(store.songs.FP_YOURE_REAL,loop=False)
@@ -913,8 +915,10 @@ label mas_monika_plays_or(skip_leadin=False):
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
 
-    if songs.getUserVolume("music") == 0.0:
+    if store.songs.hasMusicMuted():
+        $ enable_esc()
         m 6hua "Don't forget about your in-game volume, [player]!"
+        $ disable_esc()
 
     pause 2.0
     $ play_song(songs.FP_PIANO_COVER,loop=False)

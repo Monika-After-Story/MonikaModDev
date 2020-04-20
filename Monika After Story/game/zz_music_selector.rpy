@@ -103,6 +103,15 @@ init -1 python in songs:
         )
 
 
+    def hasMusicMuted():
+        """
+        Checks if the player has the music channel muted or the 'Mute All' option enabled.
+
+        RETURNS: True if the music channel is muted or the 'Mute All' option is enabled, False otherwise
+        """
+        return renpy.game.preferences.mute["music"] or getUserVolume("music") == 0.0
+
+
     def getPlayingMusicName():
         #
         # Gets the name of the currently playing song.

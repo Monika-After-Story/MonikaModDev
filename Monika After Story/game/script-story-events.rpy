@@ -2276,7 +2276,7 @@ label monika_credits_song:
             "Of course!":
                 m 3hub "Great!"
                 m 3eua "Make sure you have your speakers turned on and the in-game music volume turned up loud enough so you can hear."
-                if songs.getUserVolume("music") == 0.0:
+                if store.songs.hasMusicMuted():
                     m 3eksdla "I think you forgot about the in-game volume..."
                 m 1eub "Now please excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
@@ -2305,7 +2305,7 @@ label monika_credits_song:
             "Of course!":
                 m 3hub "Great!"
                 m 3eua "Make sure you have your speakers turned on and the in-game music volume turned up loud enough so you can hear."
-                if songs.getUserVolume("music") == 0.0:
+                if store.songs.hasMusicMuted():
                     m 3eksdla "I think you forgot about the in-game volume..."
                 m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
