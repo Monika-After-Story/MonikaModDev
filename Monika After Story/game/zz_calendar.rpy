@@ -6,6 +6,7 @@
 init -1 python:
 
     import json
+    from renpy.display.layout import Container
     from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
 
     class CustomEncoder(json.JSONEncoder):
@@ -267,9 +268,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # store all displayables for easy rendering
             self.const_buttons = []
             self.day_buttons = []
-            self.day_numbers = []
-            self.day_notes = []
-            self.ellipses = []
+            self.day_button_texts = []
 
             # button backgrounds
             button_close = Image(
@@ -521,9 +520,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # init day buttons array
             self.day_buttons = []
-            self.day_numbers = []
-            self.day_notes = []
-            self.ellipses = []
+            self.day_button_texts = []
 
             # get relevant date info
             day = datetime.timedelta(days=1)
@@ -649,16 +646,24 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
                     self.day_buttons.append(day_button)
 
+                    # Button text
+                    text_container = Container(
+                        pos=button_pos,
+                        xsize=self.DAY_BUTTON_WIDTH,
+                        ysize=self.DAY_BUTTON_HEIGHT
+                    )
+
                     # Day number
                     day_number_text = Text(
                         str(current_date.day),
                         font=gui.default_font,
                         size=self.DAY_NUMBER_TEXT_SIZE,
                         color=self.DAY_NUMBER_COLOR,
-                        outlines=[]
+                        outlines=[],
+                        pos=(self.DAY_BUTTON_WIDTH - 7, 5),
+                        xanchor=1.0
                     )
-
-                    self.day_numbers.append((day_number_text, button_pos))
+                    text_container.add(day_number_text)
 
                     # Day notes
                     # TODO: implement font switching depending on the day (e.g., holidays)
@@ -670,11 +675,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                                 font="gui/font/m1.TTF",
                                 size=self.NOTE_TEXT_SIZE,
                                 color=self.NOTE_COLOR,
-                                outlines=[]
+                                outlines=[],
+                                pos=(8, 1 + k * 17)
                             )
-                            note_pos = (button_pos[0] + 8, button_pos[1] + 1 + k * 17)
-
-                            self.day_notes.append((note_text, note_pos))
+                            text_container.add(note_text)
 
                     # Create an ellipsis if needed
                     if many_events:
@@ -683,10 +687,13 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                             font=gui.default_font,
                             size=16,
                             color=self.DAY_NUMBER_COLOR,
-                            outlines=[]
+                            outlines=[],
+                            pos=(self.DAY_BUTTON_WIDTH - 7, 43),
+                            xanchor=1.0
                         )
+                        text_container.add(ellipsis_text)
 
-                        self.ellipses.append((ellipsis_text, button_pos))
+                    self.day_button_texts.append((text_container, button_pos))
 
 
         def _showScrollableEventList(self,events):
@@ -949,19 +956,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 for x in self.day_buttons
             ]
 
-            for number_text, button_pos in self.day_numbers:
-                nt_r = number_text.render(width, height, st, at)
-                nt_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - nt_r.get_size()[0] - 7, button_pos[1] + 5)
-                cal_r_displayables.append((nt_r, nt_xy))
-
-            for note_text, note_pos in self.day_notes:
-                nt_r = note_text.render(width, height, st, at)
-                cal_r_displayables.append((nt_r, note_pos))
-
-            for ellipsis_text, button_pos in self.ellipses:
-                et_r = ellipsis_text.render(width, height, st, at)
-                et_xy = (button_pos[0] + self.DAY_BUTTON_WIDTH - et_r.get_size()[0] - 7, button_pos[1] + 43)
-                cal_r_displayables.append((et_r, et_xy))
+            for button_text, button_pos in self.day_button_texts:
+                text_r = button_text.render(width, height, st, at)
+                cal_r_displayables.append((text_r, button_pos))
 
             for vis_d, xy in cal_r_displayables:
                 r.blit(vis_d, xy)
