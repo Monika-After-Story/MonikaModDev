@@ -2,6 +2,8 @@
 # we do this instead of the actual one because the real one breaks everything
 
 style graphics_menu_choice_button is choice_button:
+    xalign 0.5
+    xysize (400, 35)
     padding (5, 5, 5, 5)
 
 style graphics_menu_text:
@@ -43,7 +45,6 @@ init -1 python:
         VIEW_HEIGHT = 720
 
         BUTTON_SPACING = 20
-        BUTTON_WIDTH = 400
         BUTTON_HEIGHT = 35
 
         BUTTON_Y_START = 300 # 300 pixels down from the top.
@@ -79,15 +80,11 @@ init -1 python:
 
             # calculate positions
             # top left x,y of button area
-            button_x = int((self.VIEW_WIDTH - self.BUTTON_WIDTH) / 2)
-            button_y = self.BUTTON_Y_START
-
             # create teh buttons
             button_auto = TextButton("Automatically Choose",
                 style="graphics_menu_choice_button",
                 text_style="choice_button_text",
-                pos=(button_x, button_y),
-                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                ypos=self.BUTTON_Y_START,
                 clicked=lambda: self._select_renderer("auto")
             )
             self.add(button_auto)
@@ -95,8 +92,7 @@ init -1 python:
             button_gl = TextButton("OpenGL",
                 style="graphics_menu_choice_button",
                 text_style="choice_button_text",
-                pos=(button_x, button_y + self.BUTTON_SPACING + self.BUTTON_HEIGHT),
-                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                ypos=self.BUTTON_Y_START + self.BUTTON_SPACING + self.BUTTON_HEIGHT,
                 clicked=lambda: self._select_renderer("gl")
             )
             self.add(button_gl)
@@ -105,8 +101,7 @@ init -1 python:
                 button_dx = TextButton("Angle/DirectX",
                     style="graphics_menu_choice_button",
                     text_style="choice_button_text",
-                    pos=(button_x, button_y + 2 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
-                    xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                    ypos=self.BUTTON_Y_START + 2 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT),
                     clicked=lambda: self._select_renderer("angle")
                 )
                 self.add(button_dx)
@@ -114,8 +109,7 @@ init -1 python:
             button_sw = TextButton("Software",
                 style="graphics_menu_choice_button",
                 text_style="choice_button_text",
-                pos=(button_x, button_y + 3 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
-                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                ypos=self.BUTTON_Y_START + 3 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT),
                 clicked=lambda: self._select_renderer("sw")
             )
             self.add(button_sw)
@@ -123,8 +117,7 @@ init -1 python:
             button_ret = TextButton("Return",
                 style="graphics_menu_choice_button",
                 text_style="choice_button_text",
-                pos=(button_x, button_y + (4 * self.BUTTON_HEIGHT) + (5 * self.BUTTON_SPACING)),
-                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                ypos=self.BUTTON_Y_START + (4 * self.BUTTON_HEIGHT) + (5 * self.BUTTON_SPACING),
                 clicked=lambda: self._select_renderer(self.curr_renderer)
             )
             self.add(button_ret)
