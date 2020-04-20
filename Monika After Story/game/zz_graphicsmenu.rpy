@@ -3,6 +3,9 @@
 
 image mas_dimmed_back = Solid("#000000B2")
 
+style graphics_menu_choice_button is choice_button:
+    padding (5, 5, 5, 5)
+
 transform mas_entire_screen:
     size (1280, 720)
 
@@ -15,13 +18,14 @@ init python in mas_gmenu:
     sel_rend = ""
 
 init -1 python:
+    from renpy.display.layout import Container
+    from renpy.display.behavior import TextButton
 
     # custom graphics menu
-    class MASGraphicsMenu(renpy.Displayable):
+    class MASGraphicsMenu(Container):
         """
         Custom graphics menu
         """
-        import pygame
 
         # CONSTANTS
         VIEW_WIDTH = 1280
@@ -46,117 +50,21 @@ init -1 python:
         }
         RENDER_UNK = "Unknown"
 
-        MOUSE_EVENTS = (
-            pygame.MOUSEMOTION,
-            pygame.MOUSEBUTTONUP,
-            pygame.MOUSEBUTTONDOWN
-        )
-
-        def __init__(self, curr_renderer):
+        def __init__(self, curr_renderer, **properties):
             """
             Constructor
             """
-            super(renpy.Displayable, self).__init__()
+            super(MASGraphicsMenu, self).__init__(**properties)
 
             self.curr_renderer = curr_renderer
 
             # background tile
-            self.background = Solid(
+            background = Solid(
                 "#000000B2",
                 xsize=self.VIEW_WIDTH,
                 ysize=self.VIEW_HEIGHT
             )
-
-            # button backs
-            button_idle = Image(
-                "gui/button/scrollable_menu_dark_idle_background.png" if store.mas_globals.dark_mode else "gui/button/scrollable_menu_idle_background.png"
-            )
-            button_hover = Image(
-                "gui/button/scrollable_menu_dark_hover_background.png" if store.mas_globals.dark_mode else "gui/button/scrollable_menu_hover_background.png"
-            )
-            button_disable = Image(
-                "gui/button/scrollable_menu_dark_disable_background.png" if store.mas_globals.dark_mode else "gui/button/scrollable_menu_disable_background.png"
-            )
-
-            # Auto button
-            button_text_auto_idle = Text(
-                "Automatically Choose",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_auto_hover = Text(
-                "Automatically Choose",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # GL button
-            button_text_gl_idle = Text(
-                "OpenGL",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_gl_hover = Text(
-                "OpenGL",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # DirectX button
-            button_text_dx_idle = Text(
-                "Angle/DirectX",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_dx_hover = Text(
-                "Angle/DirectX",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # Software button
-            button_text_sw_idle = Text(
-                "Software",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_sw_hover = Text(
-                "Software",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # Return button
-            button_text_ret_idle = Text(
-                "Return",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_ret_hover = Text(
-                "Return",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
+            self.add(background)
 
             # calculate positions
             # top left x,y of button area
@@ -164,106 +72,88 @@ init -1 python:
             button_y = self.BUTTON_Y_START
 
             # create teh buttons
-            self.button_auto = MASButtonDisplayable(
-                button_text_auto_idle,
-                button_text_auto_hover,
-                button_text_auto_idle,
-                button_idle,
-                button_hover,
-                button_disable,
-                button_x,
-                button_y,
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound,
-                return_value="auto"
+            button_auto = TextButton("Automatically Choose",
+                style=style.graphics_menu_choice_button,
+                text_style=style.choice_button_text,
+                pos=(button_x, button_y),
+                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                clicked=lambda: self._select_renderer("auto")
             )
-            self.button_gl = MASButtonDisplayable(
-                button_text_gl_idle,
-                button_text_gl_hover,
-                button_text_gl_idle,
-                button_idle,
-                button_hover,
-                button_disable,
-                button_x,
-                button_y + self.BUTTON_SPACING + self.BUTTON_HEIGHT,
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound,
-                return_value="gl"
+            self.add(button_auto)
+
+            button_gl = TextButton("OpenGL",
+                style=style.graphics_menu_choice_button,
+                text_style=style.choice_button_text,
+                pos=(button_x, button_y + self.BUTTON_SPACING + self.BUTTON_HEIGHT),
+                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                clicked=lambda: self._select_renderer("gl")
             )
-            self.button_dx = MASButtonDisplayable(
-                button_text_dx_idle,
-                button_text_dx_hover,
-                button_text_dx_idle,
-                button_idle,
-                button_hover,
-                button_disable,
-                button_x,
-                button_y + (2 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound,
-                return_value="angle"
+            self.add(button_gl)
+
+            if renpy.windows:
+                button_dx = TextButton("Angle/DirectX",
+                    style=style.graphics_menu_choice_button,
+                    text_style=style.choice_button_text,
+                    pos=(button_x, button_y + 2 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
+                    xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                    clicked=lambda: self._select_renderer("angle")
+                )
+                self.add(button_dx)
+
+            button_sw = TextButton("Software",
+                style=style.graphics_menu_choice_button,
+                text_style=style.choice_button_text,
+                pos=(button_x, button_y + 3 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
+                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                clicked=lambda: self._select_renderer("sw")
             )
-            self.button_sw = MASButtonDisplayable(
-                button_text_sw_idle,
-                button_text_sw_hover,
-                button_text_sw_idle,
-                button_idle,
-                button_hover,
-                button_disable,
-                button_x,
-                button_y + (3 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound,
-                return_value="sw"
+            self.add(button_sw)
+
+            button_ret = TextButton("Return",
+                style=style.graphics_menu_choice_button,
+                text_style=style.choice_button_text,
+                pos=(button_x, button_y + (4 * self.BUTTON_HEIGHT) + (5 * self.BUTTON_SPACING)),
+                xysize=(self.BUTTON_WIDTH, self.BUTTON_HEIGHT),
+                clicked=lambda: self._select_renderer(self.curr_renderer)
             )
-            self.button_ret = MASButtonDisplayable(
-                button_text_ret_idle,
-                button_text_ret_hover,
-                button_text_ret_idle,
-                button_idle,
-                button_hover,
-                button_disable,
-                button_x,
-                button_y + (4 * self.BUTTON_HEIGHT) + (5 * self.BUTTON_SPACING),
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound,
-                return_value=self.curr_renderer
-            )
+            self.add(button_ret)
 
             # texts
             small_text_size = 18
             small_text_heading = 20
-            self.text_instruct = Text(
+
+            text_instruct = Text(
                 "Select a renderer to use:",
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
-                outlines=[]
+                outlines=[],
+                xalign=0.5,
+                ypos=150
             )
-            self.text_restart = Text(
+            self.add(text_instruct)
+
+            text_restart = Text(
                 "*Changing the renderer requires a restart to take effect",
                 font=gui.default_font,
                 size=small_text_size,
                 color="#ffe6f4",
-                outlines=[]
+                outlines=[],
+                xalign=0.5,
+                ypos=185
             )
-            self.text_current = Text(
+            self.add(text_restart)
+
+            text_current = Text(
                 "Current Renderer:",
                 font=gui.default_font,
                 size=small_text_heading,
                 color="#ffe6f4",
-                outlines=[]
+                outlines=[],
+                xalign=0.5,
+                ypos=225
             )
+            self.add(text_current)
 
             # current render display text
             _renderer = self.RENDER_MAP.get(
@@ -271,158 +161,58 @@ init -1 python:
                 self.RENDER_UNK
             )
 
-            self.text_curr_display = Text(
+            text_curr_display = Text(
                 _renderer,
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
-                outlines=[(1, "#ff99D2")]
+                outlines=[(1, "#ff99D2")],
+                xalign=0.5,
+                ypos=255
             )
-
-            # grouped buttons
-            self.all_buttons = [
-                self.button_auto,
-                self.button_gl,
-                self.button_dx,
-                self.button_sw,
-                self.button_ret
-            ]
-
-            if not renpy.windows:
-                # non windows does not have angle
-                self.all_buttons.remove(self.button_dx)
+            self.add(text_curr_display)
 
             # disable a button
             if self.curr_renderer == "auto":
-                self.button_auto.disable()
-
-            elif self.curr_renderer == "angle":
-                self.button_dx.disable()
+                button_auto.clicked = None
 
             elif self.curr_renderer == "gl":
-                self.button_gl.disable()
+                button_gl.clicked = None
+
+            elif self.curr_renderer == "angle":
+                button_dx.clicked = None
 
             elif self.curr_renderer == "sw":
-                self.button_sw.disable()
+                button_sw.clicked = None
 
 
-        def _xcenter(self, v_width, width):
+        def _select_renderer(self, sel_rend):
             """
-            Returns the appropriate X location to center an object with the
-            given width
-
-            IN:
-                v_width - width of the view
-                width - width of the object to center
-
-            RETURNS:
-                appropiate X coord to center
+            Select renderer.
             """
-            return int((v_width - width) / 2)
+            if sel_rend:
+                # nonNone value returned
 
+                if sel_rend == self.curr_renderer:
+                    # this means the user selected back
 
-        def _button_select(self, ev, x, y, st):
-            """
-            Goes through the list of buttons and return the first non-None
-            value returned
+                    return sel_rend
 
-            RETURNS:
-                first non-none value returned
-            """
-            for button in self.all_buttons:
-                ret_val = button.event(ev, x, y, st)
-                if ret_val:
-                    return ret_val
+                # otherwise, user selected a renderer, display the
+                # confirmation screen
+                store.mas_gmenu.sel_rend = self.RENDER_MAP.get(
+                    sel_rend,
+                    self.RENDER_UNK
+                )
+                confirmed = renpy.call_in_new_context(
+                    "mas_gmenu_confirm_context"
+                )
+
+                if confirmed:
+                    # selection made and confirmed
+                    return sel_rend
 
             return None
-
-
-        def render(self, width, height, st, at):
-            """
-            RENDER
-            """
-            # first, do some renders
-            back = renpy.render(self.background, width, height, st, at)
-
-            # buttons
-            r_buttons = [
-                (
-                    x.render(width, height, st, at),
-                    (x.xpos, x.ypos)
-                )
-                for x in self.all_buttons
-            ]
-
-            # text
-            r_txt_ins = renpy.render(self.text_instruct, width, height, st, at)
-            r_txt_res = renpy.render(self.text_restart, width, height, st, at)
-            r_txt_cur = renpy.render(self.text_current, width, height, st, at)
-            r_txt_curd = renpy.render(
-                self.text_curr_display,
-                width,
-                height,
-                st,
-                at
-            )
-
-            # now do some calcs
-            insw, insh = r_txt_ins.get_size()
-            resw, resh = r_txt_res.get_size()
-            curw, curh = r_txt_cur.get_size()
-            curdw, curdh = r_txt_curd.get_size()
-
-            insx = self._xcenter(width, insw)
-            resx = self._xcenter(width, resw)
-            curx = self._xcenter(width, curw)
-            curdx = self._xcenter(width, curdw)
-
-            # now we blit!
-            r = renpy.Render(width, height)
-            r.blit(back, (0, 0))
-            r.blit(r_txt_ins, (insx, self.TEXT_L1_Y_START))
-            r.blit(r_txt_res, (resx, self.TEXT_L2_Y_START))
-            r.blit(r_txt_cur, (curx, self.TEXT_CURR_L1_Y_START))
-            r.blit(r_txt_curd, (curdx, self.TEXT_CURR_L2_Y_START))
-            for vis_b, xy in r_buttons:
-                r.blit(vis_b, xy)
-
-            return r
-
-        def event(self, ev, x, y, st):
-            """
-            EVENT
-            """
-            if ev.type in self.MOUSE_EVENTS:
-                # we only care about mousu
-
-                sel_rend = self._button_select(ev, x, y, st)
-
-                if sel_rend:
-                    # nonNone value returned
-
-                    if sel_rend == self.curr_renderer:
-                        # this means the user selected back
-
-                        return sel_rend
-
-                    # otherwise, user selected a renderer, display the
-                    # confirmation screen
-                    store.mas_gmenu.sel_rend = self.RENDER_MAP.get(
-                        sel_rend,
-                        self.RENDER_UNK
-                    )
-                    confirmed = renpy.call_in_new_context(
-                        "mas_gmenu_confirm_context"
-                    )
-
-                    if confirmed:
-                        # selection made and confirmed
-                        return sel_rend
-
-            # otherwise continue
-            renpy.redraw(self, 0)
-            raise renpy.IgnoreEvent()
-
 
 
 # label for new context for confirm screen
