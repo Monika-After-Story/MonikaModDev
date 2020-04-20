@@ -24,10 +24,7 @@ style graphics_menu_current_renderer_text is graphics_menu_text:
 
 init python in mas_gmenu:
 
-    # this will be true if a renderer has been selected
-#    renderer_selected = False
-
-    # this is the selected renderre
+    # this is the selected renderer
     sel_rend = ""
 
 init -1 python:
@@ -78,9 +75,7 @@ init -1 python:
             )
             self.add(background)
 
-            # calculate positions
-            # top left x,y of button area
-            # create teh buttons
+            # create the buttons
             button_auto = TextButton("Automatically Choose",
                 style="graphics_menu_choice_button",
                 text_style="choice_button_text",
