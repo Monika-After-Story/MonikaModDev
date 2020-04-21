@@ -1768,6 +1768,8 @@ label monika_rain:
 
             m 1hua "Then hold me, [player]..."
             show monika 6dubsa with dissolve
+            window hide
+
             $ mas_gainAffection()
             $ ui.add(PauseDisplayable())
             $ ui.interact()
@@ -1776,6 +1778,7 @@ label monika_rain:
             $ store.songs.enabled = True
             $ HKBShowButtons()
             call monika_holdme_end
+            window auto
 
             if mas_isMoniAff(higher=True):
                 m 1eua "If you want the rain to stop, just ask me, okay?"
