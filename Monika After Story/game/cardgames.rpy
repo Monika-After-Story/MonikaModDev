@@ -218,9 +218,9 @@ init 5 python in mas_nou:
             NOTE: always with interact = True
 
             IN:
-                what - a list of quips or a single quip to say
+                what - a list/tuple of quips or a single quip to say
             """
-            if isinstance(quips, list):
+            if isinstance(quips, list, tuple):
                 quip = renpy.random.choice(what)
 
             else:
@@ -821,8 +821,11 @@ init 5 python in mas_nou:
                         pulled_wdf = True
                         quip = renpy.substitute(renpy.random.choice(self.QUIPS_MONIKA_RESHUFFLE_DECK))
                         renpy.say(m, quip, True)
+                        renpy.pause(0.5, True)
 
-                    renpy.pause(0.5, True)
+                    else:
+                        renpy.pause(1, True)
+
                     self.drawpile.insert(47, card)
                     self.table.set_rotate(card, 0)
                     self.table.set_faceup(card, False)
@@ -837,6 +840,8 @@ init 5 python in mas_nou:
             if self.discardpile[-1].label == "Wild":
                 if current_player.isAI:
                     renpy.pause(0.5, True)
+                    # BUG: Moni will announce the new colour and then say that it's her turn
+                    # probably will fix it with the new changes I have in mind for choose_colour
                     self.discardpile[-1].colour = self.monika.choose_colour()
 
             # Unlucky! The 1st player should skip the turn
@@ -1023,6 +1028,7 @@ init 5 python in mas_nou:
                 time = 1 + renpy.random.random()
                 renpy.pause(time, True)
 
+                self.monika.shuffle_hand()
                 self.monika.guess_player_cards()
                 card_to_play = self.monika.choose_card()
                 self.monika.play_card(card_to_play)
@@ -1526,6 +1532,76 @@ init 5 python in mas_nou:
 
                 self.cards_data = new_cards_data
 
+            def shuffle_hand(self, chance=30):
+                """
+                Moves some cards in Monika's hand
+                This's just for visuals
+                NOTE: Since this changes cards' ids,
+                    either do this at the start of the turn (optimal),
+                    or update cards data again after shuffling (slow).
+
+                IN:
+                    chance - the chance for Monika to shuffle cards
+                """
+                if self.game.total_turns < 4:
+                    # no point in doing anything
+                    return
+
+                total_cards = len(self.hand)
+                if total_cards < 4:
+                    # no point in doing anything
+                    return
+
+                rng = renpy.random.randint(1, 100)
+                if rng > chance:
+                    # we failed, return
+                    return
+
+                # how we want to shuffle
+                shuffle_type = renpy.random.randint(0, 2)
+
+                # just one
+                if shuffle_type == 0:
+                    # choose the card
+                    card_id = renpy.random.randint(0, total_cards - 1)
+                    # all ids we can insert to
+                    free_ids = [id for id in range(total_cards - 1) if id != card_id]
+                    # choose the id
+                    insert_id = renpy.random.choice(free_ids)
+
+                    card = self.hand[card_id]
+                    self.hand.insert(insert_id, card)
+
+                # shuffle some
+                elif shuffle_type == 1:
+                    all_ids = [id for id in range(total_cards - 1)]
+                    ids_to_shuffle = list()
+
+                    # decide how much cards we'll shuffle
+                    if total_cards > 12:
+                        total_to_shuffle = 7
+                    else:
+                        total_to_shuffle = total_cards / 2
+
+                    # make a list of ids we'll shuffle
+                    for i in range(total_to_shuffle):
+                        id = renpy.random.choice(all_ids)
+                        all_ids.remove(id)
+                        ids_to_shuffle.append(id)
+
+                    for card_id in ids_to_shuffle:
+                        # oof
+                        free_ids = [id for id in range(total_cards - 1) if id != card_id]
+                        insert_id = renpy.random.choice(free_ids)
+                        card = self.hand[card_id]
+                        self.hand.insert(insert_id, card)
+
+                # shuffle (read sort) all
+                else:
+                    self.hand.cards.sort(key=lambda card: card.value.value, reverse=True)
+
+                renpy.pause(0.5, True)
+
             def choose_colour(self):
                 """
                 Moni chooses colour to set for Wild cards
@@ -1654,7 +1730,7 @@ init 5 python in mas_nou:
                     That especially will help in a situation where she
                     knows for sure that the palyer has only 1 colour
 
-                RETURN:
+                OUT:
                     card if we found or drew one
                     or None if we don't want to (or can't) play a card this turn
                 """
@@ -1811,7 +1887,7 @@ init 5 python in mas_nou:
                                 func_list - a list of tuples with func, args and kwargs,
                                     we call those to find the card
 
-                            RETURN:
+                            OUT:
                                 card if we found one,
                                 or None if no card was found
                             """
@@ -2507,7 +2583,7 @@ label .change_win_points_loop:
         )
 
         if points_cap < 0:
-            m 2rksdla "[player], how would we play with negative amount of point?"
+            m 2rksdla "[player], the game will never end, if the goal is negative."
             m 3ekb "Try again, silly!"
 
         elif points_cap == 0:
@@ -2517,7 +2593,7 @@ label .change_win_points_loop:
             $ ready = True
 
         elif points_cap < 50:
-            m 3rksdlb "Hmm, It doesn't make sense to play with {i}that{/i} little amount of points."
+            m 3rksdlb "Hmm, It doesn't make sense to play with a point total {i}that{/i} small."
             m 1eka "We can play without points if you wish.{nw}"
             $ _history_list.pop()
             menu:
@@ -2547,7 +2623,7 @@ label .change_win_points_loop:
                     m 3eua "Then choose again."
 
         else:
-            m 3eub "Okay, from now wins the first who reaches [points_cap] points!"
+            m 3eub "Okay, from now on, whoever reaches [points_cap] points, wins!"
             $ persistent._mas_game_nou_house_rules["win_points"] = points_cap
             $ ready = True
 
@@ -2636,7 +2712,7 @@ label monika_nou_explain_rules:
     m "We start the game with [persistent._mas_game_nou_house_rules[start_cards]] cards."
     m "Your goal is to play all your cards before I play mine."
     m 3eua "To play a card you need to match it by the color or the text on the card with the top card on the discard pile."
-    m "If you can't play card in your turn, you must draw one from the draw pile."
+    m "If you can't play a card in your turn, you must draw one from the draw pile."
     m 1eua "You don't have to play it, though."
     m "After you played a card or skipped your turn, my turn begins. And so on until someone wins."
     m 4eub "Besides the Number cards, there're also special cards known as Action and Wild cards."
@@ -2833,7 +2909,7 @@ label mas_nou_reaction_player_wins_round:
             m "[player]...{w=0.5}you keep winning..."
 
             if len(store.mas_nou.game.monika.hand) > 2:
-                m "I have no chances against you!"
+                m "I have no chance against you!"
 
             else:
                 m "Give me at least a chance~"
@@ -2962,10 +3038,10 @@ label mas_nou_reaction_player_wins_round:
 
             if len(store.mas_nou.game.monika.hand) < 4:
                 if store.mas_nou.player_win_streak > 0:
-                    m "And I almost win this time!"
+                    m "And I almost won this time!"
 
                 else:
-                    m "And I almost win!"
+                    m "And I almost won!"
 
                 m "Ahaha~ Well played!"
 
@@ -3009,7 +3085,7 @@ label mas_nou_reaction_player_wins_game:
     if not choice:
         m "Oh!{w=0.2} Actually you won this game!"
         # TODO: check here for saying NoU and total turns
-        m "I didn't notice you were so close to the victory."
+        m "I didn't notice you were so close to victory."
         m "Good job, ehehe~"
 
     elif choice == 1:
@@ -3055,7 +3131,7 @@ label mas_nou_reaction_monika_wins_round:
 
         else:
             m "There we go!"
-            m "I finally won you~"
+            m "I finally won~"
 
     elif store.mas_nou.player_win_streak > 2:
         $ choice = renpy.random.randint(0, 2)
@@ -3078,7 +3154,7 @@ label mas_nou_reaction_monika_wins_round:
         elif choice == 1:
             if len(store.mas_nou.game.player.hand) < 3:
                 m "That was tough, [player]!"
-                extend "You almost win this time."
+                extend "You almost won this time."
 
             else:
                 m "I have a feeling that you'll win next [_round!t]."
@@ -3139,10 +3215,10 @@ label mas_nou_reaction_monika_wins_round:
 
             if len(store.mas_nou.game.player.hand) < 4:
                 if store.mas_nou.monika_win_streak > 0:
-                    m "You even almost win this time."
+                    m "You almost won this time."
 
                 else:
-                    m "You even almost win."
+                    m "You almost won."
 
                 m "Ehehe~ Well played!"
 
@@ -3155,7 +3231,7 @@ label mas_nou_reaction_monika_wins_round:
         else:
             if len(store.mas_nou.game.player.hand) > 4:
                 m "Not bad, [player]."
-                m "I think you even could win this time if not all those card you've drawn."
+                m "I think you could even have won this time, if not for all those cards you drew"
 
             else:
                 # sparkle pls
@@ -3209,7 +3285,7 @@ label mas_nou_reaction_monika_wins_game:
                 "Maybe next time you'll win~"
 
     elif choice == 2:
-        m "I won the game too!"
+        m "I won this game too!"
         m "Ehehe~"
         m "Thanks for playing with me, [player]."
 
@@ -3286,7 +3362,7 @@ label mas_nou_reaction_monika_reflected_wdf(seen_count=0):
     jump mas_nou_game_loop
 
 label mas_nou_reaction_player_reflected_wdf(seen_count=0):
-    m "Fuck."
+    m "TODO: ME"
     jump mas_nou_game_loop
 
 label mas_nou_reaction_monika_reflected_act_after_wdf(seen_count=0):
@@ -3316,11 +3392,8 @@ label mas_nou_reaction_player_reflected_wcc(seen_count=0):
 
 # SL and stuff
 # NOTE: Can be used in other games in the future
-image bg cardgames desk = ConditionSwitch(
-    "store.morning_flag",
-    "[store.mas_nou.ASSETS]desk.png",
-    "not store.morning_flag",
-    "[store.mas_nou.ASSETS]desk-n.png"
+image bg cardgames desk = MASFilterSwitch(
+    "mod_assets/games/nou/desk.png"
 )
 # Points screen
 screen nou_stats():
@@ -3328,24 +3401,18 @@ screen nou_stats():
     zorder 0
 
     # TODO: this's temp, should use the generic func for changing styles
-    if store.morning_flag:
+    if mas_isDayNow():
         style_prefix "nou"
     else:
         style_prefix "nou_dark"
 
-    add ConditionSwitch(
-        "store.morning_flag",
-        "[store.mas_nou.ASSETS]note.png",
-        "not store.morning_flag",
-        "[store.mas_nou.ASSETS]note-n.png"
+    add MASFilterSwitch(
+        "mod_assets/games/nou/note.png"
     ) pos (7, 120) anchor (0, 0) at nou_note_rotate_left
 
     # NOTE: Thanks to Briar aka @kkrosie123 for Monika's pen
-    add ConditionSwitch(
-        "store.morning_flag",
-        "[store.mas_nou.ASSETS]pen.png",
-        "not store.morning_flag",
-        "[store.mas_nou.ASSETS]pen-n.png"
+    add MASFilterSwitch(
+        "mod_assets/games/nou/pen.png"
     ) pos (225, 370) anchor (0.5, 0.5) at nou_pen_rotate_right
 
     text _("Our score!") pos (89, 110) anchor (0, 0.5) at nou_note_rotate_left
@@ -3367,7 +3434,7 @@ screen nou_gui():
 
     zorder 50
     
-    if store.morning_flag:
+    if mas_isDayNow():
         style_prefix "nou"
     else:
         style_prefix "nou_dark"
@@ -3510,48 +3577,35 @@ screen nou_gui():
 # Styles for NoU GUI
 # TODO: use MAS dark theme
 
-style nou_button is button
-style nou_dark_button is button_dark
-style nou_button_text is button_text
-style nou_dark_button_text is button_text_dark
-
 style nou_vbox is vbox:
     spacing 5
 
 style nou_dark_vbox is nou_vbox
 
-style nou_button is default:
+style nou_button is generic_button_light:
     xsize 200
     ysize None
-    idle_background Frame("gui/button/scrollable_menu_idle_background.png", Borders(30, 30, 30, 30), tile=True)
-    hover_background Frame("gui/button/scrollable_menu_hover_background.png", Borders(30, 30, 30, 30), tile=True)
-    insensitive_background Frame("gui/button/scrollable_menu_disable_background.png", Borders(30, 30, 30, 30), tile=True)
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
     ypadding 5
 
-style nou_dark_button is nou_button:
-    idle_background Frame("gui/button/scrollable_menu_dark_idle_background.png", Borders(30, 30, 30, 30), tile=True)
-    hover_background Frame("gui/button/scrollable_menu_dark_hover_background.png", Borders(30, 30, 30, 30), tile=True)
-    insensitive_background Frame("gui/button/scrollable_menu_dark_disable_background.png", Borders(30, 30, 30, 30), tile=True)
+style nou_dark_button is generic_button_dark:
+    xsize 200
+    ysize None
+    ypadding 5
 
-style nou_button_text is default:
-    font gui.default_font
-    size gui.text_size
+style nou_button_text is generic_button_text_light:
+    # xalign 0.5
+    # yalign 0.5
     kerning 0.2
-    outlines []
-    idle_color  mas_ui.light_button_text_idle_color
-    hover_color mas_ui.light_button_text_hover_color
-    insensitive_color "#8C8C8C"
-    xalign 0.5
-    yalign 0.5
     layout "subtitle"
     text_align 0.5
+    # line_leading 2
 
-style nou_dark_button_text is nou_button_text:
-    idle_color  mas_ui.dark_button_text_idle_color
-    hover_color mas_ui.dark_button_text_hover_color
-    insensitive_color "#8C8C8C"
+style nou_dark_button_text is generic_button_text_dark:
+    # xalign 0.5
+    # yalign 0.5
+    kerning 0.2
+    layout "subtitle"
+    text_align 0.5
 
 style nou_text:
     size 30
@@ -3589,7 +3643,7 @@ transform nou_pen_rotate_right:
 init -10 python in mas_cardgames:
 
     import pygame
-    from store import RotoZoom, MASFilterableSprite
+    from store import RotoZoom, MASFilterSwitch
 
     # Drag type constants
     DRAG_NONE = 0
@@ -3697,17 +3751,16 @@ init -10 python in mas_cardgames:
             """
             super(renpy.Displayable, self).__init__(**kwargs)
 
-            # Image supports only these types
-            # TODO: use MASFilterSwitch instead (#5554)
+            # We supports only these types
             if isinstance(back, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
-                self.back = MASFilterableSprite(back)
+                self.back = MASFilterSwitch(back)
 
             # This's some kind of displayable or just None, but not an image
             else:
                 self.back = renpy.easy.displayable_or_none(back)
 
             if isinstance(base, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
-                self.base = MASFilterableSprite(base)
+                self.base = MASFilterSwitch(base)
 
             else:
                 self.base = renpy.easy.displayable_or_none(base)
@@ -4378,7 +4431,7 @@ init -10 python in mas_cardgames:
 
             # If None, the background is taken from the table.
             if isinstance(base, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
-                self.base = MASFilterableSprite(base)
+                self.base = MASFilterSwitch(base)
 
             elif base is not None:
                 self.base = base
@@ -4559,10 +4612,10 @@ init -10 python in mas_cardgames:
 
             self.value = value
 
-            self.face = MASFilterableSprite(face)
+            self.face = MASFilterSwitch(face)
 
             if isinstance(back, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
-                self.back = MASFilterableSprite(back)
+                self.back = MASFilterSwitch(back)
 
             elif back is not None:
                 self.back = back
