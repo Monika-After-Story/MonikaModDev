@@ -414,7 +414,7 @@ label v0_11_1(version="v0_11_1"):
 
             # calc avg hr per session
             ahs = (
-                store.mas_utils.td2hr(mas_getTotalPlaytime()) 
+                store.mas_utils.td2hr(mas_getTotalPlaytime())
                 / float(mas_getTotalSessions())
             )
 
@@ -425,7 +425,7 @@ label v0_11_1(version="v0_11_1"):
                 # only give users levels if they didn't earn what we 
                 # expected. If they have more levels gained then we expected,
                 # we won't change anything.
-                if persistent._mas_xp_lvl < lvls_gained:
+                if persistent._mas_xp_lvl < lvls_gained or lvls_gained == 0:
 
                     # give them the difference in levels as pool unlocks
                     persistent._mas_pool_unlocks += (
