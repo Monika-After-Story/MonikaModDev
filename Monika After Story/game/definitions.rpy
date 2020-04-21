@@ -1904,7 +1904,7 @@ python early:
             # pull out the current button back and text and render them
             render_text, render_back = self._button_states[self._state]
             render_text = renpy.render(render_text, width, height, st, at)
-            render_back = renpy.render(render_back, width, height, st, at)
+            render_back = renpy.render(render_back, self.width, self.height, st, at)
 
             # what is the text's with and height
             rt_w, rt_h = render_text.get_size()

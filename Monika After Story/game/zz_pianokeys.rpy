@@ -2345,9 +2345,9 @@ init 810 python:
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
             # button shit
-            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+            button_idle = Frame(mas_getTimeFile("mod_assets/buttons/generic/idle_bg.png"), Borders(5, 5, 5, 5))
+            button_hover = Frame(mas_getTimeFile("mod_assets/buttons/generic/hover_bg.png"), Borders(5, 5, 5, 5))
+            button_disabled = Frame(mas_getTimeFile("mod_assets/buttons/generic/insensitive_bg.png"), Borders(5, 5, 5, 5))
 
             # button text
             button_done_text_idle = Text(
