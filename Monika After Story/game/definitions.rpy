@@ -1688,7 +1688,6 @@ python early:
             # current state
             self._state = self._STATE_IDLE
 
-
         def _isOverMe(self, x, y):
             """
             Checks if the given x and y coodrinates are over this button.
@@ -1700,14 +1699,12 @@ python early:
                 and 0 <= (y - self.ypos) <= self.height
             )
 
-
         def _playActivateSound(self):
             """
             Plays the activate sound if we are allowed to.
             """
             if not self.disabled or self.sound_when_disabled:
                 renpy.play(self.activate_sound, channel="sound")
-
 
         def _playHoverSound(self):
             """
@@ -1716,6 +1713,133 @@ python early:
             if not self.disabled or self.sound_when_disabled:
                 renpy.play(self.hover_sound, channel="sound")
 
+        @staticmethod
+        def create_st(
+                text_str,
+                incl_disb_text,
+                *args,
+                **kwargs
+        ):
+            """
+            Creates a MASButtonDisplyable using a single text string.
+
+            Default font/textsize/colors/outlines are used here.
+
+            IN:
+                text_str - the text to use for the button
+                incl_disb_text - True if we may have a disabled state for
+                    this button, False if not
+                *args - positional args to pass into constructor.
+                    do NOT include:
+                        - idle_text
+                        - hover_text
+                        - disable_text
+                **kwargs - keyword args to pass into constructor
+
+            RETURNS: created MASButtondisplayable
+            """
+            if incl_disb_text:
+                disb_button = Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                )
+            else:
+                disb_button = Null()
+
+            return MASButtonDisplayable(
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[],
+                ),
+                disb_button,
+                *args,
+                **kwargs
+            )
+
+        @staticmethod
+        def create_stb(
+                text_str,
+                incl_disb_text,
+                *args,
+                **kwargs
+        ):
+            """
+            Creates a MASButtonDisplayable using a snigle text string and
+            standard button images.
+
+            IN:
+                text_str - the text to use for the button
+                incl_disb_text - True if we may have a disabled state for this
+                    button, False if not
+                *args - positional args to pass into constructor.
+                    do NOT include:
+                        - idle_text
+                        - hover_text
+                        - disable_text
+                        - idle_back
+                        - hover_back
+                        - disable_back
+                **kwargs - keyword args to pass into constructor
+            """
+            if incl_disb_text:
+                disb_button = Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                )
+                disb_back = Frame(
+                    mas_getTimeFile(
+                        "mod_assets/buttons/generic/insensitive_bg.png"
+                    ),
+                    Borders(5, 5, 5, 5)
+                )
+            else:
+                disb_button = Null()
+                disb_back = Null()
+
+            return MASButtonDisplayable(
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[],
+                ),
+                disb_button,
+                Frame(
+                    mas_getTimeFile("mod_assets/buttons/generic/idle_bg.png"),
+                    Borders(5, 5, 5, 5)
+                ),
+                Frame(
+                    mas_getTimeFile("mod_assets/buttons/generic/hover_bg.png"),
+                    Borders(5, 5, 5, 5)
+                ),
+                disb_back,
+                *args,
+                **kwargs
+            )
 
         def disable(self):
             """
@@ -1726,7 +1850,6 @@ python early:
             self.disabled = True
             self._state = self._STATE_DISABLED
 
-
         def enable(self):
             """
             Enables this button. This changes the internal state, so its
@@ -1735,7 +1858,6 @@ python early:
             """
             self.disabled = False
             self._state = self._STATE_IDLE
-
 
         def getSize(self):
             """
@@ -1747,7 +1869,6 @@ python early:
                     [1]: height
             """
             return (self.width, self.height)
-
 
         def ground(self):
             """
@@ -1766,7 +1887,6 @@ python early:
                 else:
                     self._state = self._STATE_IDLE
 
-
         def hover(self):
             """
             Hovers this button. This changes the internal state, so its
@@ -1778,7 +1898,6 @@ python early:
             if not self.disabled or self.enable_when_disabled:
                 self.hovered = True
                 self._state = self._STATE_HOVER
-
 
         def render(self, width, height, st, at):
 
@@ -1802,7 +1921,6 @@ python early:
 
             # return rendere
             return r
-
 
         def event(self, ev, x, y, st):
 

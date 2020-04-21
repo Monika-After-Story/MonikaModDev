@@ -164,13 +164,9 @@ init -1 python:
             button_y = self.BUTTON_Y_START
 
             # create teh buttons
-            self.button_auto = MASButtonDisplayable(
-                button_text_auto_idle,
-                button_text_auto_hover,
-                button_text_auto_idle,
-                button_idle,
-                button_hover,
-                button_disable,
+            self.button_auto = MASButtonDisplayable.create_stb(
+                "Automatically Choose",
+                True,
                 button_x,
                 button_y,
                 self.BUTTON_WIDTH,
@@ -180,9 +176,27 @@ init -1 python:
                 return_value="auto"
             )
             self.button_gl = MASButtonDisplayable(
-                button_text_gl_idle,
-                button_text_gl_hover,
-                button_text_gl_idle,
+                Text(
+                    "OpenGL",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    "OpenGL",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[]
+                ),
+                Text(
+                    "OpenGL",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                ),
                 button_idle,
                 button_hover,
                 button_disable,
@@ -195,9 +209,27 @@ init -1 python:
                 return_value="gl"
             )
             self.button_dx = MASButtonDisplayable(
-                button_text_dx_idle,
-                button_text_dx_hover,
-                button_text_dx_idle,
+                Text(
+                    "Angle/DirectX",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    "Angle/DirectX",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[]
+                ),
+                Text(
+                    "Angle/DirectX",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                ),
                 button_idle,
                 button_hover,
                 button_disable,
@@ -210,9 +242,27 @@ init -1 python:
                 return_value="angle"
             )
             self.button_sw = MASButtonDisplayable(
-                button_text_sw_idle,
-                button_text_sw_hover,
-                button_text_sw_idle,
+                Text(
+                    "Software",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    "Software",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[]
+                ),
+                Text(
+                    "Software",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                ),
                 button_idle,
                 button_hover,
                 button_disable,
@@ -224,13 +274,9 @@ init -1 python:
                 activate_sound=gui.activate_sound,
                 return_value="sw"
             )
-            self.button_ret = MASButtonDisplayable(
-                button_text_ret_idle,
-                button_text_ret_hover,
-                button_text_ret_idle,
-                button_idle,
-                button_hover,
-                button_disable,
+            self.button_ret = MASButtonDisplayable.create_stb(
+                "Return",
+                False,
                 button_x,
                 button_y + (4 * self.BUTTON_HEIGHT) + (5 * self.BUTTON_SPACING),
                 self.BUTTON_WIDTH,
