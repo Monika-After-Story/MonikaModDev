@@ -534,11 +534,6 @@ init:
                 self.BUTTON_X_SPACING = 10
                 self.BUTTON_Y_SPACING = 10
 
-                # hotkey button displayables
-                button_idle = Frame(mas_getTimeFile("mod_assets/buttons/generic/idle_bg.png"), Borders(5, 5, 5, 5))
-                button_hover = Frame(mas_getTimeFile("mod_assets/buttons/generic/hover_bg.png"), Borders(5, 5, 5, 5))
-                button_no = Frame(mas_getTimeFile("mod_assets/buttons/generic/insensitive_bg.png"), Borders(5, 5, 5, 5))
-
                 # calculate positions
                 self.drawn_board_x = int((1280 - self.BOARD_WIDTH) / 2)
                 self.drawn_board_y=  int((720 - self.BOARD_HEIGHT) / 2)
@@ -557,12 +552,9 @@ init:
                 )
 
                 # now the actual 3 buttons
-                self._button_save = MASButtonDisplayable.create_st(
+                self._button_save = MASButtonDisplayable.create_stb(
                     _("Save"),
                     True,
-                    button_idle,
-                    button_hover,
-                    button_no,
                     drawn_button_x,
                     drawn_button_y_top,
                     self.BUTTON_WIDTH,
@@ -570,12 +562,9 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_giveup = MASButtonDisplayable.create_st(
+                self._button_giveup = MASButtonDisplayable.create_stb(
                     _("Give Up"),
                     True,
-                    button_idle,
-                    button_hover,
-                    button_no,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
@@ -583,12 +572,9 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_done = MASButtonDisplayable.create_st(
+                self._button_done = MASButtonDisplayable.create_stb(
                     _("Done"),
                     False,
-                    button_idle,
-                    button_hover,
-                    button_no,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
