@@ -2418,7 +2418,7 @@ init 810 python:
             )
             self._button_quit = MASButtonDisplayable.create_stb(
                 _("Quit"),
-                True,
+                False,
                 pbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
                 pbutton_y_start,
                 self.BUTTON_WIDTH,
