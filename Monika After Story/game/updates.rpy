@@ -436,6 +436,13 @@ label v0_11_1(version="v0_11_1"):
                     persistent._mas_xp_tnl = xptnl
                     persistent._mas_xp_lvl = lvls_gained
 
+        credits_song_ev = mas_getEV('monika_credits_song')
+        if credits_song_ev and credits_song_ev.action:
+            credits_song_ev.conditional = (
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            )
+
     return
 
 #0.11.0

@@ -2259,9 +2259,12 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_credits_song",
-            conditional="store.mas_anni.pastOneMonth()",
+            conditional=(
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            ),
             action=EV_ACT_QUEUE,
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
