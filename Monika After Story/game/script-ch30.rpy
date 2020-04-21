@@ -107,6 +107,9 @@ init -10 python:
         SKIP_MID_LOOP_EVAL = 4
         # True if we want idle to skip mid loop eval once
 
+        SCENE_CHANGE = 5
+        # TRue if want the scene to change
+
         # end keys
 
 
@@ -116,7 +119,6 @@ init -10 python:
             """
             super(MASIdleMailbox, self).__init__()
 
-
         # NOTE: add additoinal functions below when appropriate.
         def send_rebuild_msg(self):
             """
@@ -124,20 +126,17 @@ init -10 python:
             """
             self.send(self.REBUILD_EV, True)
 
-
         def get_rebuild_msg(self):
             """
             Gets rebuild message
             """
             return self.get(self.REBUILD_EV)
 
-
         def send_ds_gre_type(self, gre_type):
             """
             Sends greeting type to mailbox
             """
             self.send(self.DOCKSTAT_GRE_TYPE, gre_type)
-
 
         def get_ds_gre_type(self, default=None):
             """
@@ -150,13 +149,11 @@ init -10 python:
                 return default
             return result
 
-
         def send_idle_cb(self, cb_label):
             """
             Sends idle callback label to mailbox
             """
             self.send(self.IDLE_MODE_CB_LABEL, cb_label)
-
 
         def get_idle_cb(self):
             """
@@ -164,19 +161,29 @@ init -10 python:
             """
             return self.get(self.IDLE_MODE_CB_LABEL)
 
-
         def send_skipmidloopeval(self):
             """
             Sends skip mid loop eval message to mailbox
             """
             self.send(self.SKIP_MID_LOOP_EVAL, True)
 
-
         def get_skipmidloopeval(self):
             """
             Gets skip midloop eval value
             """
             return self.get(self.SKIP_MID_LOOP_EVAL)
+
+        def send_scene_change(self):
+            """
+            Sends scene change message to mailbox
+            """
+            self.send(self.SCENE_CHANGE, True)
+
+        def get_scene_change(self):
+            """
+            Gets scene change value
+            """
+            return self.get(self.SCENE_CHANGE)
 
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -365,7 +372,6 @@ init python:
                 (Default; True)
 
         ASSUMES:
-            morning_flag
             mas_is_raining
             mas_is_snowing
         """
@@ -373,7 +379,10 @@ init python:
         renpy.hide("rm")
 
         # get current weather masks
-        mask = mas_current_weather.sp_window(morning_flag)
+        # TODO: change to pass in current filter 
+        mask = mas_current_weather.sp_window(
+            mas_isCurrentFlt("day")
+        )
 
         # should we use fallbacks instead?
         if persistent._mas_disable_animations:
@@ -442,25 +451,47 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
+
     def mas_isMorning():
-        # generate the times we need
-        sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
-        ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
-        sr_time = datetime.time(sr_hour, sr_min)
-        ss_time = datetime.time(ss_hour, ss_min)
+        """DEPRECATED
+        Checks if it is day or night via suntimes
+
+        NOTE: the wording of this function is bad. This does not literally
+            mean that it is morning. USE mas_isDayNow
+
+        RETURNS: True if day, false if not
+        """
+        return mas_isDayNow()
+
+
+    def mas_progressFilter():
+        """
+        Changes filter according to rules.
+
+        Call this when you want to update the filter.
+
+        RETURNS: True upon a filter change, False if not
+        """
+        # TODO: this should be deferred to the BG
+        curr_flt = store.mas_sprites.get_filter()
 
         now_time = datetime.datetime.now().time()
+        if mas_isDay(now_time):
+            new_flt = store.mas_sprites.FLT_DAY
 
-        return sr_time <= now_time < ss_time
+        else: # mas_isNight(now_time):
+            new_flt = store.mas_sprites.FLT_NIGHT
+
+        store.mas_sprites.set_filter(new_flt)
+
+        return curr_flt != new_flt
 
 
     def mas_shouldChangeTime():
+        """DEPRECATED
+        This no longer makes sense with the filtering system.
         """
-        Checks if we should change the day to night or night to day.
-
-        RETURNS: true if we should change day/night cycle, False otherwise
-        """
-        return morning_flag != mas_isMorning()
+        return False
 
 
     def mas_shouldRain():
@@ -723,8 +754,6 @@ init python:
 
         return derandlist
 
-init 1 python:
-    morning_flag = mas_isMorning()
 
 
 # IN:
@@ -766,7 +795,10 @@ init 1 python:
 #       if hide_monika is False - True will do nothing and False will hide
 #           emptydesk after Monika is shown.
 #       (Default: True)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True):
+#   progress_filter - True will progress the filter. False will not
+#       NOTE: use this if you explicity set the filter 
+#       (Default: True)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
 
     with None
 
@@ -780,27 +812,37 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if night_bg is None:
         $ night_bg = store.mas_current_background.getNightRoom()
 
+    # progress filter
+    # NOTE: filter progression MUST happen here because othrewise we many have
+    #   cases where the filter has changed (so Monika has changed)
+    #   but the BG has not (because BG is not inherently controleld by filter)
+    python:
+        if progress_filter and mas_progressFilter():
+            # NOTE: a filter change is like a scene change with all dissolve
+            scene_change = True
+            dissolve_all = True
+
+        day_mode = mas_current_background.isFltDay()
+
     if scene_change:
         scene black
 
     python:
         monika_room = None
 
-        # MORNING CHECK
-        # establishes correct room to use
-        if mas_isMorning():
-            if not morning_flag or scene_change:
-                morning_flag = True
+        # TODO: this will need some rework to work nicely with filter
+        #   progression. For now its just going to be customized for
+        #   our two filters.
+        if scene_change:
+            if day_mode:
                 monika_room = day_bg
 
-        else:
-            if morning_flag or scene_change:
-                morning_flag = False
+            else:
                 monika_room = night_bg
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(morning_flag)
+            mas_darkMode(day_mode)
         else:
             mas_darkMode(not persistent._mas_dark_mode_enabled)
 
@@ -1406,7 +1448,7 @@ label ch30_preloop:
         jump ch30_visual_skip
 
     # setup scene to change on initial launch
-    $ mas_weather.should_scene_change = True
+    $ mas_idle_mailbox.send_scene_change()
 
     # rain check
     # TODO: the weather progression alg needs to run here
@@ -1433,15 +1475,9 @@ label ch30_loop:
             and mas_isMoniNormal(higher=True)
         )
 
-        should_dissolve_all = (
-            mas_shouldChangeTime()
-            or mas_weather.should_scene_change
-        )
+        should_dissolve_all = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
-
-    #This should be set back to false so we're not constantly scene changing
-    $ mas_weather.should_scene_change = False
+    call spaceroom(scene_change=should_dissolve_all, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
