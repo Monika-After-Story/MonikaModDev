@@ -579,7 +579,7 @@ init:
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
                     self.BUTTON_HEIGHT,
-                    hover_sound=gui.activate_sound,
+                    hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
 

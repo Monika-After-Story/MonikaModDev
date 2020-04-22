@@ -242,7 +242,7 @@ style generic_button_dark is generic_button_base:
 style generic_button_text_base:
     font gui.default_font
     size gui.text_size
-    align (0.5, 0.5)
+    align (0.5, 0.1)
     outlines []
 
 style generic_button_text_light is generic_button_text_base:
