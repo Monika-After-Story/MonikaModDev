@@ -1794,6 +1794,7 @@ python early:
                         - disable_back
                 **kwargs - keyword args to pass into constructor
             """
+            # determine disabled stuff
             if incl_disb_text:
                 disb_button = Text(
                     text_str,
@@ -1802,12 +1803,7 @@ python early:
                     color=mas_globals.button_text_insensitive_color,
                     outlines=[]
                 )
-                disb_back = Frame(
-                    mas_getTimeFile(
-                        "mod_assets/buttons/generic/insensitive_bg.png"
-                    ),
-                    Borders(5, 5, 5, 5)
-                )
+                disb_back = MASButtonDisplayable._gen_bg("insensitive")
             else:
                 disb_button = Null()
                 disb_back = Null()
@@ -1828,18 +1824,41 @@ python early:
                     outlines=[],
                 ),
                 disb_button,
-                Frame(
-                    mas_getTimeFile("mod_assets/buttons/generic/idle_bg.png"),
-                    Borders(5, 5, 5, 5)
-                ),
-                Frame(
-                    mas_getTimeFile("mod_assets/buttons/generic/hover_bg.png"),
-                    Borders(5, 5, 5, 5)
-                ),
+                MASButtonDisplayable._gen_bg("idle"),
+                MASButtonDisplayable._gen_bg("hover"),
                 disb_back,
                 *args,
                 **kwargs
             )
+
+        @staticmethod
+        def _gen_bg(prefix):
+            """
+            Attempts to pull choice button's Frame and build an appropraite
+                image with it using the given prefix. 
+                This is specifically for MASButtonDisplayables.
+
+            IN:
+                prefix - prefix to use in the frame
+                    do NOT append "_"
+
+            RETURNS: Frame object to use
+            """
+            gen_frame = mas_prefixFrame(
+                mas_getPropFromStyle("choice_button", "background"),
+                prefix
+            )
+
+            if gen_frame is None:
+                # backup frame in case cannot find choice
+                return Frame(
+                    mas_getTimeFile(
+                        "mod_assets/buttons/generic/{0}_bg.png".format(prefix)
+                    ),
+                    Borders(5, 5, 5, 5)
+                )
+
+            return gen_frame
 
         def disable(self):
             """
