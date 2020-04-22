@@ -187,6 +187,9 @@ python early:
 
         RETURNS: ConditionSwitch for filters
         """
+        if isinstance(img, basestring):
+            img = renpy.substitute(img)
+
         args = []
         for flt in store.mas_sprites.FILTERS.iterkeys():
 
