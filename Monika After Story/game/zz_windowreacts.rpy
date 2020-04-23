@@ -277,6 +277,11 @@ init python:
             title: notification title
             body: notification body
         """
+        # Single quotes have to be escaped.
+        # Since single quoting in POSIX shell doesn't allow escaping,
+        # we have to close the quotation, insert a literal single quote and reopen the quotation.
+        body  = body.replace("'", "'\\''")
+        title = title.replace("'", "'\\''") # better safe than sorry
         os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):

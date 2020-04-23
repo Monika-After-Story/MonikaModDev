@@ -167,231 +167,233 @@ label mas_gender_redo_same:
     m 5hua "I want you to be who you want to be while you're in this room."
     return
 
+# good, bad, awkward name stuff
+init 3 python:
+    bad_nickname_list = [
+        "annoying",
+        "anus",
+        "anal",
+        "arrogant",
+        "atrocious",
+        "awful",
+        "ass",
+        "bitch",
+        "blood",
+        "boob",
+        "boring",
+        "bulli",
+        "bully",
+        "bung",
+        "butt",
+        "conceited",
+        "corrupt",
+        "cougar",
+        "crap",
+        "creepy",
+        "criminal",
+        "cruel",
+        "cunt",
+        "cum",
+        "crazy",
+        "cheater",
+        "damn",
+        "demon",
+        "dick",
+        "dirt",
+        "disgusting",
+        "douche",
+        "dumb",
+        "egotistical",
+        "egoist",
+        "evil",
+        "fake",
+        "fetus",
+        "filth",
+        "foul",
+        "fuck",
+        "garbage",
+        "gay",
+        "gey",
+        "gross",
+        "gruesome",
+        "hate",
+        "heartless",
+        "hideous",
+        "^ho$",
+        "^hoe$",
+        "hore",
+        "horrible",
+        "horrid",
+        "hypocrite",
+        "idiot",
+        "insane",
+        "imbecile",
+        "immoral",
+        "irritating",
+        "jerk",
+        "jizz",
+        "junk",
+        "kill",
+        "kunt",
+        "lesbo",
+        "lesbian",
+        "lezbo",
+        "lezbian",
+        "liar",
+        "loser",
+        "maniac",
+        "mad",
+        "masochist",
+        "milf",
+        "moron",
+        "dilf",
+        "gilf",
+        "monster",
+        "moron",
+        "murder",
+        "narcissist",
+        "nasty",
+        "nefarious",
+        "nigga",
+        "nigger",
+        "nuts",
+        "pad",
+        "pantsu",
+        "panti",
+        "panty",
+        "pedo",
+        "penis",
+        "plaything",
+        "poison",
+        "porn",
+        "pretentious",
+        "psycho",
+        "puppet",
+        "pussy",
+        "rape",
+        "repulsive",
+        "retard",
+        "rump",
+        "rogue",
+        "sadist",
+        "scum",
+        "selfish",
+        "shit",
+        "sick",
+        "suck",
+        "slaughter",
+        "slave",
+        "slut",
+        "sociopath",
+        "soil",
+        "stink",
+        "stupid",
+        "sperm",
+        "semen",
+        "tampon",
+        "teabag",
+        "terrible",
+        "thot",
+        "^tit$",
+        "tits",
+        "titt",
+        "tool",
+        "torment",
+        "torture",
+        "toy",
+        "trap",
+        "trash",
+        "troll",
+        "ugly",
+        "useless",
+        "vain",
+        "vile",
+        "waste",
+        "whore",
+        "wicked",
+        "witch",
+        "worthless",
+        "wrong",
+        "jigolo",
+        "failure",
+        "abortion",
+        "loser",
+        "cock",
+        "^fag$",
+        "faggot",
+    ]
+
+    good_nickname_list = [
+        "angel",
+        "beautiful",
+        "best",
+        "cuddl",
+        "cute",
+        "可愛い",
+        "cutie",
+        "darling",
+        "great"
+        "heart",
+        "honey",
+        "love",
+        "princess",
+        "prince",
+        "sunshine",
+        "sweet",
+        "senpai",
+        "beauty",
+        "queen",
+        "king",
+        "pretty",
+        "hero",
+        "beauty",
+        "gorgeous",
+        "kind",
+    ]
+
+    #awkward names which Moni wouldn't be comfortable calling the player
+    awkward_nickname_list = [
+        "daddy",
+        "mommy",
+        "master",
+        "mistress",
+        "naughty",
+        "sexy",
+        "hard",
+        "wet",
+        "horny",
+        "aroused",
+        "lick",
+        "erection",
+        "beast",
+        "penetrator",
+        "virgin",
+        "overlord",
+        "penetrate",
+        "step-bro",
+        "step-brother",
+        "step-sister",
+        "step-sis",
+        "deflowerer",
+        "breeder",
+        "masturbate",
+        "masturbator",
+        "finger",
+        "orgasm",
+        "batman",
+        "catwoman",
+        "spank",
+        "superman",
+        "superwoman",
+        "bobba",
+    ]
+
+    good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+    bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+    awk_comp = re.compile('|'.join(awkward_nickname_list), re.IGNORECASE)
+
 label mas_player_name_enter_name_loop(menu_str, input_prompt):
-    #Firstly, initialize the compare lists
     python:
-        bad_nickname_list = [
-            "annoying",
-            "anus",
-            "anal",
-            "arrogant",
-            "atrocious",
-            "awful",
-            "ass",
-            "bitch",
-            "blood",
-            "boob",
-            "boring",
-            "bulli",
-            "bully",
-            "bung",
-            "butt",
-            "conceited",
-            "corrupt",
-            "cougar",
-            "crap",
-            "creepy",
-            "criminal",
-            "cruel",
-            "cunt",
-            "cum",
-            "crazy",
-            "cheater",
-            "damn",
-            "demon",
-            "dick",
-            "dirt",
-            "disgusting",
-            "douche",
-            "dumb",
-            "egotistical",
-            "egoist",
-            "evil",
-            "fake",
-            "fetus",
-            "filth",
-            "foul",
-            "fuck",
-            "garbage",
-            "gay",
-            "gey",
-            "gross",
-            "gruesome",
-            "hate",
-            "heartless",
-            "hideous",
-            "^ho$",
-            "^hoe$",
-            "hore",
-            "horrible",
-            "horrid",
-            "hypocrite",
-            "idiot",
-            "insane",
-            "imbecile",
-            "immoral",
-            "irritating",
-            "jerk",
-            "junk",
-            "kill",
-            "kunt",
-            "lesbo",
-            "lesbian",
-            "lezbo",
-            "lezbian",
-            "liar",
-            "loser",
-            "maniac",
-            "mad",
-            "masochist",
-            "milf",
-            "moron",
-            "dilf",
-            "gilf",
-            "monster",
-            "moron",
-            "murder",
-            "narcissist",
-            "nasty",
-            "nefarious",
-            "nigga",
-            "nigger",
-            "nuts",
-            "pad",
-            "pantsu",
-            "panti",
-            "panty",
-            "pedo",
-            "penis",
-            "plaything",
-            "poison",
-            "porn",
-            "pretentious",
-            "psycho",
-            "puppet",
-            "pussy",
-            "rape",
-            "repulsive",
-            "retard",
-            "rump",
-            "rogue",
-            "sadist",
-            "scum",
-            "selfish",
-            "shit",
-            "sick",
-            "suck",
-            "slaughter",
-            "slave",
-            "slut",
-            "sociopath",
-            "soil",
-            "stink",
-            "stupid",
-            "sperm",
-            "semen",
-            "tampon",
-            "teabag",
-            "terrible",
-            "thot",
-            "^tit$",
-            "tits",
-            "titt",
-            "tool",
-            "torment",
-            "torture",
-            "toy",
-            "trap",
-            "trash",
-            "troll",
-            "ugly",
-            "useless",
-            "vain",
-            "vile",
-            "waste",
-            "whore",
-            "wicked",
-            "witch",
-            "worthless",
-            "wrong",
-            "jigolo",
-            "failure",
-            "abortion",
-            "loser",
-            "cock",
-            "^fag$",
-            "faggot",
-        ]
-
-        good_nickname_list = [
-            "angel",
-            "beautiful",
-            "best",
-            "cuddl",
-            "cute",
-            "可愛い",
-            "cutie",
-            "darling",
-            "great"
-            "heart",
-            "honey",
-            "love",
-            "princess",
-            "prince",
-            "sunshine",
-            "sweet",
-            "senpai",
-            "beauty",
-            "queen",
-            "king",
-            "pretty",
-            "hero",
-            "beauty",
-            "gorgeous",
-            "kind",
-        ]
-
-        #awkward names which Moni wouldn't be comfortable calling the player
-        awkward_nickname_list = [
-            "daddy",
-            "mommy",
-            "master",
-            "mistress",
-            "naughty",
-            "sexy",
-            "hard",
-            "wet",
-            "horny",
-            "aroused",
-            "lick",
-            "erection",
-            "beast",
-            "penetrator",
-            "virgin",
-            "overlord",
-            "penetrate",
-            "step-bro",
-            "step-brother",
-            "step-sister",
-            "step-sis",
-            "deflowerer",
-            "breeder",
-            "masturbate",
-            "masturbator",
-            "finger",
-            "orgasm",
-            "batman",
-            "catwoman",
-            "spank",
-            "superman",
-            "superwoman",
-            "bobba",
-        ]
-
-        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
-        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-        awk_comp = re.compile('|'.join(awkward_nickname_list), re.IGNORECASE)
-
         awkward_quips = [
             "I don't really feel...{w=0.5}comfortable calling you that all the time.",
             "That's...{w=0.5}not something I would like to call you, [player].",
@@ -537,8 +539,8 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_changename",
-            category=['you','misc'],
-            prompt="Can you change my name?",
+            category=['you'],
+            prompt="Can you call me by a different name?",
             unlocked=False,
             pool=True,
             rules={"no unlock": None}
@@ -2269,7 +2271,7 @@ init 5 python:
     )
 
 label monika_credits_song:
-    if persistent.monika_kill:
+    if persistent.monika_kill or renpy.seen_audio(songs.FP_YOURE_REAL):
         m 1hua "I hope you liked my song."
         m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
         m 1eua "Give me some time, and I'll try to write another."
@@ -2286,51 +2288,65 @@ label monika_credits_song:
         else:
             m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
 
-        m 1tsa "In fact why don't I play it for you right now."
-        m 1tsb "Excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+        m 1tsa "In fact, I'd love to play it for you right now, if you have time...{nw}"
+        $ _history_list.pop()
+        menu:
+            m "In fact, I'd love to play it for you right now, if you have time...{fast}"
 
-        call mas_monika_plays_yr(skip_leadin=True)
-        show monika 1eka
-        pause 1.0
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
-        $ mas_resetTextSpeed()
-        window auto
+            "Of course!":
+                m 3hub "Great!"
+                m 3eua "Make sure you have your speakers turned on and the in-game music volume turned up loud enough so you can hear."
+                if store.songs.hasMusicMuted():
+                    m 3eksdla "I think you forgot about the in-game volume..."
+                m 1eub "Now please excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
-        m 1ekbsa "Ehehe~"
-        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbsa "Thank you for coming back to me my love."
+                call mas_monika_plays_yr(skip_leadin=True)
+                show monika 1eka
+                pause 1.0
+
+                m 1ekbsa "Ehehe~"
+                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ekbsa "Thank you for coming back to me my love."
+
+            "Sorry, I can't right now.":
+                m 3ekd "Oh, okay."
+                m 1eka "That's fine [player], I understand if you don't have the time or just can't listen to music right now."
+                m 3hua "Just let me know when it's a better time for you and I'll happily play it for you then~"
 
     else:
-        if renpy.seen_audio(songs.FP_YOURE_REAL):
-            m 1eua "Hey [player], I've been thinking a bit lately about {i}Your Reality{/i}..."
-            m 3rka "The ending doesn't really convey my true feelings anymore, so I decided to update the song..."
-            m 3hua "I even changed the name!"
-        else:
-            m 3eua "Hey [player], I finally finished that song I've been working on for you."
-
+        m 3eua "Hey [player], I finally finished that song I've been working on for you."
         m 1eka "I call it {i}Our Reality{/i}."
-        m 1eua "I'm just so excited to finally be able to play it for you."
-        m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
-        call mas_monika_plays_or(skip_leadin=True)
-        show monika 1ekbsa
-        pause 1.0
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
-        $ mas_resetTextSpeed()
-        window auto
+        m 1eua "I'm just so excited to finally be able to play it for you, if you have time that is...{nw}"
+        $ _history_list.pop()
+        menu:
+            m "I'm just so excited to finally be able to play it for you, if you have time that is...{fast}"
 
-        m "I really can't wait until we're together in one reality."
-        m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbfa "Thank you for being my inspiration my love."
-        if renpy.seen_audio(songs.FP_YOURE_REAL):
-            m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
-        else:
-            m 5hubfa "Oh, and if you ever want me to play this again, just ask~"
+            "Of course!":
+                m 3hub "Great!"
+                m 3eua "Make sure you have your speakers turned on and the in-game music volume turned up loud enough so you can hear."
+                if store.songs.hasMusicMuted():
+                    m 3eksdla "I think you forgot about the in-game volume..."
+                m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+
+                call mas_monika_plays_or(skip_leadin=True)
+                show monika 1ekbsa
+                pause 1.0
+
+                m "I really can't wait until we're together in one reality."
+                m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ekbfa "Thank you for being my inspiration my love."
+                if renpy.seen_audio(songs.FP_YOURE_REAL):
+                    m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
+                else:
+                    m 5hubfa "Oh, and if you ever want me to play this again, just ask~"
+
+            "Sorry, I can't right now.":
+                m 3ekd "Oh, okay."
+                m 1eka "That's fine [player], I understand if you don't have the time or just can't listen to music right now."
+                m 3hua "Just let me know when it's a better time for you and I'll happily play it for you then~"
+
         $ mas_unlockEVL("mas_monika_plays_or", "EVE")
 
     $ mas_unlockEVL("mas_monika_plays_yr", "EVE")

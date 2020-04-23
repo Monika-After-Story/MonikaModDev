@@ -443,6 +443,8 @@ label v0_11_1(version="v0_11_1"):
                 "and seen_event('mas_unlock_piano')"
             )
 
+        if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
+            persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
     return
 
 #0.11.0
