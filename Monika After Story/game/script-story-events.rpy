@@ -29,7 +29,7 @@ label mas_gender:
         "Male.":
             $ persistent.gender = "M"
             call mas_set_gender
-            m 3eud "That's what I always assumed...{w=0.2}your character {i}was{/i} male after all."
+            m 3eua "Okay [player], thanks for confirming that for me."
             m 1hksdlb "Not that I would have been bothered if you answered differently, mind you!"
 
         "Female.":
@@ -37,7 +37,7 @@ label mas_gender:
             call mas_set_gender
             m 2eud "Oh? So you're a girl?"
             m 2hksdlb "I hope I didn't say anything to offend you before!"
-            m 7rksdla "I guess I just assumed you were male because your character was..."
+            m 7rksdlb "...I guess that's why they say you shouldn't make assumptions, ahaha!"
             m 3eka "But honestly, it doesn't matter to me at all..."
 
         "Neither.":
