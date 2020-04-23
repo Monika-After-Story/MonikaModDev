@@ -159,7 +159,7 @@ label mas_gender_redo_same:
 
 label mas_gender_redo_react:
     m 1eka "Okay, [player]..."
-    m 3ekbsa "Just as long as you're happy, that's all that matters to me!"
+    m 3ekbsa "Just as long as you're happy, that's all that matters to me."
     return
 
 # good, bad, awkward name stuff
