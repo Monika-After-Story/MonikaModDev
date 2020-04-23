@@ -212,7 +212,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
         EVENT_Y = 40
         EVENT_W = 450
         EVENT_H = 640
-        EVENT_XALIGN = 0.54
+        EVENT_XALIGN = 0.96
         EVENT_AREA = (EVENT_X, EVENT_Y, EVENT_W, EVENT_H)
         EVENT_RETURN = "< Go back"
 
@@ -522,6 +522,12 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             self.day_buttons = []
             self.day_button_texts = []
 
+            # set the note style attributes
+            note_font = "gui/font/m1.TTF"
+            note_text_size = self.NOTE_TEXT_SIZE
+            note_color = self.NOTE_COLOR
+            note_ystart = 1
+
             # get relevant date info
             day = datetime.timedelta(days=1)
             first_day = datetime.datetime(self.selected_year, self.selected_month, 1)
@@ -545,6 +551,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             else:
 
                 events = self._getEGMonthEvents()
+
+                note_font = gui.default_font
+                note_text_size = self.DAY_NUMBER_TEXT_SIZE
+                note_color = self.DAY_NUMBER_COLOR
+                note_ystart = 5
 
 
             # calculation to determine the initial y position
@@ -672,11 +683,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         if len(event_labels[k]) != 0:
                             note_text = Text(
                                 __(event_labels[k]),
-                                font="gui/font/m1.TTF",
-                                size=self.NOTE_TEXT_SIZE,
-                                color=self.NOTE_COLOR,
+                                font=note_font,
+                                size=note_text_size,
+                                color=note_color,
                                 outlines=[],
-                                pos=(8, 1 + k * 17)
+                                pos=(8, note_ystart + k * 17)
                             )
                             text_container.add(note_text)
 
@@ -1955,6 +1966,32 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
     return
 
 
+# Styles for the calendar event list, so we can easily swap prefixes between day and night
+style event_list_day_text is default
+
+style event_list_night_text is default:
+    color "#000000"
+    outlines [(2, "#00000000", 0, 0)] # Otherwise text size will be different
+
+style event_list_day_vscrollbar is classroom_vscrollbar
+
+style event_list_night_vscrollbar is classroom_vscrollbar
+
+style event_list_day_textbutton is generic_button_light:
+    xysize (None, None)
+    padding (0, 0, 0, 0)
+    background Null()
+
+style event_list_night_textbutton is generic_button_dark:
+    xysize (None, None)
+    padding (0, 0, 0, 0)
+    background Null()
+
+style event_list_day_textbutton_text is generic_button_text_light
+
+style event_list_night_textbutton_text is generic_button_text_light
+
+
 # Scrollable labels with return. This one takes the following params:
 # IN:
 #   items - list of items to display in the menu. Each item must be a tuple of
@@ -1969,7 +2006,7 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #           [2]: width of menu
 #           [3]: height of menu
 #   scroll_align - alignment of vertical scrollbar
-#   first_item - represents the first item(usually the title) of the list
+#   first_item - represents the first item (usually the title) of the list
 #       tuple of the following format:
 #           [0]: text of the button
 #           [1]: return value of the button
@@ -1991,62 +2028,79 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
 screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_bg-n.png")):
-        style_prefix "scrollable_menu"
+    style_prefix ("event_list_day" if mas_current_background.isFltDay() else "event_list_night")
 
-        zorder 51
+    zorder 51
 
-        if mask:
-            add Solid(mask)
+    if mask:
+        add Solid(mask)
 
+    frame:
+        area display_area
+
+        if frame:
+            background Frame(frame, 60, 60)
+
+        # Header
         fixed:
-            area display_area
-            if frame:
-                add Frame(frame, 60, 60)
+            xpos 0
+            ypos 0
+            xfill True
+            ysize 59
 
-            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+            if first_item:
+                text _(first_item[0]):
+                    xalign 0.5
+                    yalign 0.5
+                    if first_item[1]:
+                        italic True
+                    if first_item[2]:
+                        bold True
 
-            viewport:
-                yadjustment prev_adj
-                mousewheel True
+        # Footer
+        fixed:
+            xpos 0
+            ypos display_area[3] - 59
+            xfill True
+            ysize 59
 
-                vbox:
+            if final_item:
+                textbutton _(final_item[0]):
+                    style_suffix "textbutton"
+                    xpos 20
+                    yalign 0.5
+                    if final_item[2]:
+                        text_italic True
+                    if final_item[3]:
+                        text_bold True
+                    action Return(final_item[1])
 
-                    if first_item:
+        # Item list
+        viewport id "items":
+            xpos 0
+            ypos 69
+            xfill True
+            ysize display_area[3] - 128
+            yadjustment prev_adj
+            mousewheel True
 
-                        text _(first_item[0]):
-                            if first_item[1]:
-                                italic True
-                            if first_item[2]:
-                                bold True
-                            xpos 0.2
-                            ypos 0.5
+            vbox:
+                spacing 5
 
-                    null height 30
+                for item_prompt,is_italic,is_bold in items:
+                    text item_prompt:
+                        xpos 20
+                        if is_italic:
+                            italic True
+                        if is_bold:
+                            bold True
 
-
-                    for item_prompt,is_italic,is_bold in items:
-                        text item_prompt:
-                            if is_italic:
-                                italic True
-                            if is_bold:
-                                bold True
-                            xpos 0.05
-
-
-                    if final_item:
-                        if final_item[4] > 0:
-                            null height final_item[4]
-
-                        textbutton _(final_item[0]):
-                            if final_item[2]:
-                                text_italic True
-                            if final_item[3]:
-                                text_bold True
-                            background None
-                            hover_sound gui.hover_sound
-                            activate_sound gui.activate_sound
-
-                            action Return(final_item[1])
+        vbar:
+            value YScrollValue("items")
+            adjustment prev_adj
+            xalign scroll_align
+            ypos 69
+            ysize display_area[3] - 128
 
 
 label _first_time_calendar_use:
