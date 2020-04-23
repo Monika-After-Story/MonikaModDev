@@ -534,58 +534,6 @@ init:
                 self.BUTTON_X_SPACING = 10
                 self.BUTTON_Y_SPACING = 10
 
-                # hotkey button displayables
-                button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-                button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-                button_no = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-
-                # hotkey button text
-                # idle style/ disabled style:
-                button_text_save_idle = Text(
-                    _("Save"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-                button_text_giveup_idle = Text(
-                    _("Give Up"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-                button_text_done_idle = Text(
-                    _("Done"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-
-                # hover style
-                button_text_save_hover = Text(
-                    _("Save"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-                button_text_giveup_hover = Text(
-                    _("Give Up"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-                button_text_done_hover = Text(
-                    _("Done"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-
                 # calculate positions
                 self.drawn_board_x = int((1280 - self.BOARD_WIDTH) / 2)
                 self.drawn_board_y=  int((720 - self.BOARD_HEIGHT) / 2)
@@ -604,13 +552,9 @@ init:
                 )
 
                 # now the actual 3 buttons
-                self._button_save = MASButtonDisplayable(
-                    button_text_save_idle,
-                    button_text_save_hover,
-                    button_text_save_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_save = MASButtonDisplayable.create_stb(
+                    _("Save"),
+                    True,
                     drawn_button_x,
                     drawn_button_y_top,
                     self.BUTTON_WIDTH,
@@ -618,13 +562,9 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_giveup = MASButtonDisplayable(
-                    button_text_giveup_idle,
-                    button_text_giveup_hover,
-                    button_text_giveup_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_giveup = MASButtonDisplayable.create_stb(
+                    _("Give Up"),
+                    True,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
@@ -632,18 +572,14 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_done = MASButtonDisplayable(
-                    button_text_done_idle,
-                    button_text_done_hover,
-                    button_text_done_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_done = MASButtonDisplayable.create_stb(
+                    _("Done"),
+                    False,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
                     self.BUTTON_HEIGHT,
-                    hover_sound=gui.activate_sound,
+                    hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
 

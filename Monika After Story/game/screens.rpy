@@ -537,10 +537,13 @@ style choice_button_dark is generic_button_dark:
     xysize (420, None)
     padding (100, 5, 100, 5)
 
-style choice_button_text is generic_button_text_light
+style choice_button_text is generic_button_text_light:
+    text_align 0.5
+    layout "subtitle"
 
-style choice_button_text_dark is generic_button_text_dark
-
+style choice_button_text_dark is generic_button_text_dark:
+    text_align 0.5
+    layout "subtitle"
 
 init python:
     def RigMouse():
@@ -2452,9 +2455,11 @@ style twopane_scrollable_menu_button_dark is choice_button_dark:
 
 style twopane_scrollable_menu_button_text is choice_button_text:
     align (0.0, 0.0)
+    text_align 0.0
 
 style twopane_scrollable_menu_button_text_dark is choice_button_text_dark:
     align (0.0, 0.0)
+    text_align 0.0
 
 style twopane_scrollable_menu_new_button is twopane_scrollable_menu_button
 
