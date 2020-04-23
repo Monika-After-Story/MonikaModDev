@@ -701,7 +701,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
 
 
-        def _changeYear(self, ascend=True):
+        def _changeYear(self, ascend=True, set_to=None):
             """
             Changes the currently selected year by incrementing or decrementing it by one
             and refreshes the view
@@ -709,8 +709,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             IN:
                 ascend - flag that indicates wheter increment or decrement
                     (Defaults to True)
+                set_to - if not None, set year to this value instead
             """
-            if ascend:
+            if set_to is not None:
+                self.selected_year = set_to
+            elif ascend:
                 self.selected_year = self.selected_year + 1
             else:
                 self.selected_year = self.selected_year - 1
@@ -941,6 +944,33 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
                 # only re-render if mouse action
                 renpy.redraw(self, 0)
+
+            elif ev.type == pygame.KEYDOWN and config.developer:
+                # debug keys
+                curr_year = self.selected_year
+
+                if ev.key == pygame.K_m:
+                    # increment year by 1000
+                    self._changeYear(set_to=self.selected_year+1000)
+                elif ev.key == pygame.K_n:
+                    # increment yera by 100
+                    self._changeYear(set_to=self.selected_year+100)
+                elif ev.key == pygame.K_b:
+                    # incrementyera by 10
+                    self._changeYear(set_to=self.selected_year+10)
+                elif ev.key == pygame.K_v:
+                    # decrement yera by 10
+                    self._changeYear(set_to=self.selected_year-10)
+                elif ev.key == pygame.K_c:
+                    # decrement yera by 100
+                    self._changeYear(set_to=self.selected_year-100)
+                elif ev.key == pygame.K_x:
+                    # decrement year by 1000
+                    self._changeYear(set_to=self.selected_year-1000)
+
+                # only re-render if change
+                if self.selected_year != curr_year:
+                    renpy.redraw(self, 0)
 
             # otherwise continue
             raise renpy.IgnoreEvent()
