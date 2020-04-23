@@ -37,7 +37,7 @@ label mas_gender:
             call mas_set_gender
             m 2eud "Oh? So you're a girl?"
             m 2hksdlb "I hope I didn't say anything to offend you before!"
-            m 7rkslda "I guess I just assumed you were male because your character was..."
+            m 7rksdla "I guess I just assumed you were male because your character was..."
             m 3eka "But honestly, it doesn't matter to me at all..."
 
         "Neither.":
