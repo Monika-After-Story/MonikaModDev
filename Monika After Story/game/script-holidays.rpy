@@ -195,10 +195,12 @@ init -810 python:
         end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
-#Images
+# Images
+# TODO: export lighting as its own layer
 image mas_o31_deco = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco.png",
-    "not morning_flag", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+    "mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/o31/halloween_deco.png",
+    "True", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
 )
 
 #Functions
@@ -1600,24 +1602,22 @@ init -10 python in mas_d25_utils:
 ####START: d25 arts
 
 # window banners
-image mas_d25_banners = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/d25/bgdeco.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/d25/bgdeco-n.png"
+image mas_d25_banners = MASFilterSwitch(
+    "mod_assets/location/spaceroom/d25/bgdeco.png"
 )
 
-image mas_mistletoe = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/mistletoe.png",
-    "not morning_flag", "mod_assets/location/spaceroom/d25/mistletoe-n.png"
+image mas_mistletoe = MASFilterSwitch(
+    "mod_assets/location/spaceroom/d25/mistletoe.png"
 )
 
+# NOTE: this will need to be revaluated with every filter.
+#   Not very maintainable but it has to be done.
 image mas_d25_lights = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/lights_off.png",
-    "not morning_flag", ConditionSwitch(
+    "mas_isNightNow()", ConditionSwitch(
         "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/lights_on_1.png",
         "not persistent._mas_disable_animations", "mas_d25_night_lights_atl"
-    )
+    ),
+    "True", MASFilterSwitch("mod_assets/location/spaceroom/d25/lights_off.png")
 )
 
 image mas_d25_night_lights_atl:
@@ -1630,13 +1630,14 @@ image mas_d25_night_lights_atl:
         0.5
     repeat
 
-
+# NOTE: this will need to be revaluated with every filter.
+#   Not very maintainable but it has to be done.
 image mas_d25_garlands = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/garland.png",
-    "not morning_flag", ConditionSwitch(
+    "mas_isNightNow()", ConditionSwitch(
         "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/garland_on_1.png",
         "not persistent._mas_disable_animations", "mas_d25_night_garlands_atl"
-    )
+    ),
+    "True", MASFilterSwitch("mod_assets/location/spaceroom/d25/garland.png")
 )
 
 image mas_d25_night_garlands_atl:
@@ -1648,11 +1649,15 @@ image mas_d25_night_garlands_atl:
         5
         repeat
 
+# NOTE: this will need to be revaluated with every filter.
+#   Not very maintainable but it has to be done.
 image mas_d25_tree = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/tree_lights_off.png",
-    "not morning_flag", ConditionSwitch(
+    "mas_isNightNow()", ConditionSwitch(
         "persistent._mas_disable_animations", "mod_assets/location/spaceroom/d25/tree_lights_on_1.png",
         "not persistent._mas_disable_animations", "mas_d25_night_tree_lights_atl"
+    ),
+    "True", MASFilterSwitch(
+        "mod_assets/location/spaceroom/d25/tree_lights_off.png"
     )
 )
 
@@ -1674,22 +1679,19 @@ image mas_d25_gifts = ConditionSwitch(
     "len(persistent._mas_d25_gifts_given) == 0", "mod_assets/location/spaceroom/d25/gifts_0.png",
     "0 < len(persistent._mas_d25_gifts_given) < 3", "mas_d25_gifts_1",
     "3 <= len(persistent._mas_d25_gifts_given) <= 4", "mas_d25_gifts_2",
-    "len(persistent._mas_d25_gifts_given) > 4", "mas_d25_gifts_3"
+    "True", "mas_d25_gifts_3"
 )
 
-image mas_d25_gifts_1 = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/gifts_1.png",
-    "not morning_flag", "mod_assets/location/spaceroom/d25/gifts_1-n.png"
+image mas_d25_gifts_1 = MASFilterSwitch(
+    "mod_assets/location/spaceroom/d25/gifts_1.png"
 )
 
-image mas_d25_gifts_2 = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/gifts_2.png",
-    "not morning_flag", "mod_assets/location/spaceroom/d25/gifts_2-n.png"
+image mas_d25_gifts_2 = MASFilterSwitch(
+    "mod_assets/location/spaceroom/d25/gifts_2.png"
 )
 
-image mas_d25_gifts_3 = ConditionSwitch(
-    "morning_flag", "mod_assets/location/spaceroom/d25/gifts_3.png",
-    "not morning_flag", "mod_assets/location/spaceroom/d25/gifts_3-n.png"
+image mas_d25_gifts_3 = MASFilterSwitch(
+    "mod_assets/location/spaceroom/d25/gifts_3.png"
 )
 
 #autoload starter check
@@ -2648,17 +2650,21 @@ label monika_aiwfc:
         m 1eksdla "I hope you don't mind, but I prepared a song for you."
         m 3hksdlb "I know it's a little cheesy, but I think you might like it."
         m 3eksdla "If your volume is off, would you mind turning it on for me?"
-        if songs.getUserVolume("music") == 0.0:
-            m 3hksdlb "Oh, don't forget about your in game volume too!"
+        if store.songs.hasMusicMuted():
+            m 3hksdlb "Oh, don't forget about your in-game volume too!"
             m 3eka "I really want you to hear this."
         m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
 
     else:
         m 1hua "Ehehe..."
         m 3tuu "I hope you're ready, [player]..."
-        m "It {i}is{/i} that time of year again, after all..."
-        m 3hub "Make sure you have your volume up!"
-        m 1huu ".{w=0.5}.{w=0.5}.{nw}"
+
+        $ ending = "..." if store.songs.hasMusicMuted() else ".{w=0.5}.{w=0.5}.{nw}"
+
+        m "It {i}is{/i} that time of year again, after all[ending]"
+        if store.songs.hasMusicMuted():
+            m 3hub "Make sure you have your volume up!"
+            m 1huu ".{w=0.5}.{w=0.5}.{nw}"
 
     #Get current song
     $ curr_song = songs.current_track
@@ -6063,40 +6069,38 @@ init -810 python:
 
 ############### [HOL060]: IMAGES
 define mas_bday_cake_lit = False
+
+# NOTE: maybe the cakes should be ACS
+# TODO: export lighting as its own layer
 image mas_bday_cake_monika = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
+    "mas_bday_cake_lit and mas_current_background.isFltDay()",
     "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
+    "mas_bday_cake_lit and mas_current_background.isFltNight()",
     "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
+    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
+    "True",
     "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
 )
 
+# TODO: export lighting as its own layer
 image mas_bday_cake_player = ConditionSwitch(
-    "morning_flag and mas_bday_cake_lit",
+    "mas_bday_cake_lit and mas_current_background.isFltDay()",
     "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
-    "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
-    "not morning_flag and mas_bday_cake_lit",
+    "mas_bday_cake_lit and mas_current_background.isFltNight()",
     "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
-    "not morning_flag and not mas_bday_cake_lit",
+    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
+    "True",
     "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
 )
 
-image mas_bday_banners = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
+image mas_bday_banners = MASFilterSwitch(
+    "mod_assets/location/spaceroom/bday/birthday_decorations.png"
 )
 
-image mas_bday_balloons = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
-    "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+image mas_bday_balloons = MASFilterSwitch(
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png"
 )
 
 ############### [HOL060]: METHODS
@@ -6260,12 +6264,7 @@ init 10 python:
     ):
         pushEvent("mas_bday_surprise_party_hint")
 
-image chibi_peek = ConditionSwitch(
-    "morning_flag",
-    "mod_assets/other/chibi_peek.png",
-    "not morning_flag",
-    "mod_assets/other/chibi_peek-n.png"
-)
+image chibi_peek = MASFilterSwitch("mod_assets/other/chibi_peek.png")
 
 label mas_bday_surprise_party_hint:
     #Set up letters
