@@ -2182,7 +2182,10 @@ screen calendar_overlay():
     #
     image "mod_assets/calendar/calendar_button_shadow.png" xpos 351 ypos 251
 
-    if store.mas_calendar.enabled:
+    if (
+        store.mas_calendar.enabled
+        and renpy.get_screen("mas_calendar_screen") is None
+    ):
         imagebutton:
             idle ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"
