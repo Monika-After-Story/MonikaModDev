@@ -5394,7 +5394,8 @@ label monika_japanese:
 
     return "derandom"
 
-default persistent._mas_penname = ""
+default persistent._mas_penname = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
