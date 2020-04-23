@@ -1076,7 +1076,7 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
+    if persistent.closed_self and not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?
@@ -1108,7 +1108,7 @@ label i_greeting_monikaroom:
 
     #Set up dark mode
     if persistent._mas_auto_mode_enabled:
-        $ mas_darkMode(morning_flag)
+        $ mas_darkMode(mas_current_background.isFltDay())
     else:
         $ mas_darkMode(not persistent._mas_dark_mode_enabled)
 
@@ -3129,7 +3129,7 @@ label greeting_ourreality:
     m 4eub "Would you kindly look out the window, [player]"
     $ mas_OVLHide()
     $ disable_esc()
-    if morning_flag:
+    if mas_current_background.isFltDay():
         show mas_island_frame_day zorder 20
     else:
         show mas_island_frame_night zorder 20
@@ -3140,7 +3140,7 @@ label greeting_ourreality:
     m "It's also where I can keep practicing my programming skills."
     $ mas_OVLShow()
     $ enable_esc()
-    if morning_flag:
+    if mas_current_background.isFltDay():
         hide mas_island_frame_day
     else:
         hide mas_island_frame_night
