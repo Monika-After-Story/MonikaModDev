@@ -29,19 +29,23 @@ label mas_gender:
         "Male.":
             $ persistent.gender = "M"
             call mas_set_gender
-            call mas_gender_male
+            m 3eud "That's what I always assumed...{w=0.2}your character {i}was{/i} male after all."
+            m 1hksdlb "Not that I would have been bothered if you answered differently, mind you!"
 
         "Female.":
             $ persistent.gender = "F"
             call mas_set_gender
-            call mas_gender_female
+            m 2eud "Oh? So you're a girl?"
+            m 2hksdlb "I hope I didn't say anything to offend you before!"
+            m 7rkslda "I guess I just assumed you were male because your character was..."
+            m 3eka "But honestly, it doesn't matter to me at all..."
 
         "Neither.":
             $ persistent.gender = "X"
             call mas_set_gender
             call mas_gender_neither
 
-    m 1hub "Remember that I'll always love you unconditionally, [player]."
+    m 1ekbsa "I'll always love you for who you are, [player]~"
 
     #Unlock the gender redo event
     $ mas_unlockEVL("monika_gender_redo","EVE")
@@ -109,7 +113,7 @@ label monika_gender_redo:
             else:
                 $ persistent.gender = "M"
                 call mas_set_gender
-                call mas_gender_male
+                call mas_gender_redo_react
 
         "I'm a girl.":
             if persistent.gender == "F":
@@ -118,37 +122,23 @@ label monika_gender_redo:
             else:
                 $ persistent.gender = "F"
                 call mas_set_gender
-                call mas_gender_female
+                call mas_gender_redo_react
 
         "I'm neither.":
             if persistent.gender == "X":
                 m 1hksdlb "...That's the same as before, [player]...I'm sorry if that's not really the best way for you to describe it."
-                m 1eka "But just know that it doesn't matter what you are to me."
+                m 1eka "But just know that it doesn't matter to me..."
             else:
                 $ persistent.gender = "X"
                 call mas_set_gender
-                call mas_gender_neither
+                if renpy.seen_label("mas_gender_neither"):
+                    call mas_gender_redo_react
+                else:
+                    call mas_gender_neither
 
     show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hubsa "Just remember that I'll always love you unconditionally, [player]~"
+    m 5hubsa "I'll always love you for who you are~"
     return "love"
-
-label mas_gender_female:
-    m 2eud "Oh? So you're a girl?"
-    m 2hksdlb "I hope I didn't say anything to offend you before!"
-    m 2lksdla "Though I did suspect it a bit from the beginning...{w=0.2}just a little!"
-    m 7eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
-    m 3hua "It's very attractive, to tell you the truth!"
-    m 1eua "But don't worry, even if I might ask things like this, it's only out of curiosity."
-    return
-
-label mas_gender_male:
-    m 2eud "Oh? So you {i}are{/i} a guy?"
-    m 7hub "Ehehe, I suppose that makes sense!"
-    m 3eua "You certainly come across as manly and confident...{w=0.3} {nw}"
-    extend 3hub "Not that I would have been terribly bothered if you answered differently, mind you!"
-    m 3eksdla "Even I can be curious sometimes, you know?"
-    return
 
 label mas_gender_neither:
     m 1euc "You don't see yourself as a guy or a girl?"
@@ -165,6 +155,11 @@ label mas_gender_redo_same:
     m 3eua "If you're confused about how to answer, just pick whatever makes you happiest."
     m 3eka "It doesn't matter what your body looks like, so as long as you say you're a [gender_var], you're a [gender_var] to me, all right?"
     m 1eua "I want you to be who you want to be while you're in this room."
+    return
+
+label mas_gender_redo_react:
+    m 1eka "Okay, [player]..."
+    m 3ekbsa "Just as long as you're happy, that's all that matters to me!"
     return
 
 label mas_player_name_enter_name_loop(menu_str, input_prompt):
