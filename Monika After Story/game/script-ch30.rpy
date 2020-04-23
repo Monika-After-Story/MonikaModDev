@@ -2057,4 +2057,11 @@ label ch30_reset:
 
     #Set our TOD var
     $ mas_setTODVars()
+
+    python:
+        if seen_event('mas_gender'):
+            mas_unlockEVL("monika_gender_redo","EVE")
+
+        if seen_event('mas_preferredname'):
+            mas_unlockEVL("monika_changename","EVE")
     return

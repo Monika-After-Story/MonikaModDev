@@ -2650,17 +2650,21 @@ label monika_aiwfc:
         m 1eksdla "I hope you don't mind, but I prepared a song for you."
         m 3hksdlb "I know it's a little cheesy, but I think you might like it."
         m 3eksdla "If your volume is off, would you mind turning it on for me?"
-        if songs.getUserVolume("music") == 0.0:
-            m 3hksdlb "Oh, don't forget about your in game volume too!"
+        if store.songs.hasMusicMuted():
+            m 3hksdlb "Oh, don't forget about your in-game volume too!"
             m 3eka "I really want you to hear this."
         m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
 
     else:
         m 1hua "Ehehe..."
         m 3tuu "I hope you're ready, [player]..."
-        m "It {i}is{/i} that time of year again, after all..."
-        m 3hub "Make sure you have your volume up!"
-        m 1huu ".{w=0.5}.{w=0.5}.{nw}"
+
+        $ ending = "..." if store.songs.hasMusicMuted() else ".{w=0.5}.{w=0.5}.{nw}"
+
+        m "It {i}is{/i} that time of year again, after all[ending]"
+        if store.songs.hasMusicMuted():
+            m 3hub "Make sure you have your volume up!"
+            m 1huu ".{w=0.5}.{w=0.5}.{nw}"
 
     #Get current song
     $ curr_song = songs.current_track

@@ -707,6 +707,8 @@ screen navigation():
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
+        textbutton _("Hotkeys") action [ShowMenu("hot_keys")]
+
         #textbutton _("About") action ShowMenu("about")
 
         if renpy.variant("pc"):
@@ -1669,6 +1671,67 @@ screen notif_settings():
         xalign 0 yalign 1.0
         xoffset 300 yoffset -10
         style "main_menu_version"
+
+## hotkeys helper screen
+screen hot_keys():
+    tag menu
+
+    use game_menu(("Hotkeys"), scroll="viewport"):
+
+        default tooltip = Tooltip("")
+
+        # making each indivual list a vbox essentially lets us auto-align
+        vbox:
+            spacing 25
+
+            hbox:
+                style_prefix mas_ui.cbx_style_prefix
+                vbox:
+                    label _("General")
+                    spacing 10
+                    text _("Music")
+                    text _("Play")
+                    text _("Talk")
+                    text _("Bookmark")
+                    text _("Derandom")
+                    text _("Fullscreen")
+                    text _("Screenshot")
+                    text _("Settings")
+
+                vbox:
+                    label _("")
+                    spacing 10
+                    text _("M")
+                    text _("P")
+                    text _("T")
+                    text _("B")
+                    text _("X")
+                    text _("F")
+                    text _("S")
+                    text _("Esc")
+
+            hbox:
+                style_prefix mas_ui.cbx_style_prefix
+                vbox:
+                    label _("Music")
+                    spacing 10
+                    text _("Volume Up")
+                    text _("Volume Down")
+                    text _("Mute")
+
+                vbox:
+                    label _("")
+                    spacing 10
+                    text _("+")
+                    text _("-")
+                    text _("Shift-M")
+
+    # there are lesser used hotkeys in Help that aren't needed here
+    text "Click 'Help' for the complete list.":
+        xalign 1.0 yalign 0.0
+        xoffset -10
+        style mas_ui.mm_tt_style
+
 
 ## History screen ##############################################################
 ##
