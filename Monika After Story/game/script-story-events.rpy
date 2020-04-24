@@ -169,14 +169,19 @@ label mas_gender_redo_same:
 
 # good, bad, awkward name stuff
 init 3 python:
-    mas_bad_player_nickname_list = [
+    mas_bad_nickname_list = [
+        "^fag$",
+        "^ho$",
+        "^hoe$",
+        "^tit$",
+        "abortion",
+        "anal",
         "annoying",
         "anus",
-        "anal",
         "arrogant",
+        "ass",
         "atrocious",
         "awful",
-        "ass",
         "bitch",
         "blood",
         "boob",
@@ -185,27 +190,31 @@ init 3 python:
         "bully",
         "bung",
         "butt",
+        "cheater",
+        "cock",
         "conceited",
         "corrupt",
         "cougar",
         "crap",
+        "crazy",
         "creepy",
         "criminal",
         "cruel",
-        "cunt",
         "cum",
-        "crazy",
-        "cheater",
+        "cunt",
         "damn",
         "demon",
         "dick",
+        "dilf",
         "dirt",
         "disgusting",
         "douche",
         "dumb",
-        "egotistical",
         "egoist",
+        "egotistical",
         "evil",
+        "faggot",
+        "failure",
         "fake",
         "fetus",
         "filth",
@@ -214,41 +223,40 @@ init 3 python:
         "garbage",
         "gay",
         "gey",
+        "gilf",
         "gross",
         "gruesome",
         "hate",
         "heartless",
         "hideous",
-        "^ho$",
-        "^hoe$",
+        "hitler",
         "hore",
         "horrible",
         "horrid",
         "hypocrite",
         "idiot",
-        "insane",
         "imbecile",
         "immoral",
+        "insane",
         "irritating",
         "jerk",
+        "jigolo",
         "jizz",
         "junk",
         "kill",
         "kunt",
-        "lesbo",
         "lesbian",
-        "lezbo",
+        "lesbo",
         "lezbian",
+        "lezbo",
         "liar",
         "loser",
-        "maniac",
         "mad",
+        "maniac",
         "masochist",
         "milf",
-        "moron",
-        "dilf",
-        "gilf",
         "monster",
+        "moron",
         "moron",
         "murder",
         "narcissist",
@@ -258,8 +266,8 @@ init 3 python:
         "nigger",
         "nuts",
         "pad",
-        "pantsu",
         "panti",
+        "pantsu",
         "panty",
         "pedo",
         "penis",
@@ -273,28 +281,27 @@ init 3 python:
         "rape",
         "repulsive",
         "retard",
-        "rump",
         "rogue",
+        "rump",
         "sadist",
         "scum",
         "selfish",
+        "semen",
         "shit",
         "sick",
-        "suck",
         "slaughter",
         "slave",
         "slut",
         "sociopath",
         "soil",
+        "sperm",
         "stink",
         "stupid",
-        "sperm",
-        "semen",
+        "suck",
         "tampon",
         "teabag",
         "terrible",
         "thot",
-        "^tit$",
         "tits",
         "titt",
         "tool",
@@ -313,83 +320,80 @@ init 3 python:
         "wicked",
         "witch",
         "worthless",
-        "wrong",
-        "jigolo",
-        "failure",
-        "abortion",
-        "cock",
-        "^fag$",
-        "faggot",
+        "wrong"
     ]
 
-    mas_good_player_nickname_list = [
+    mas_good_nickname_list_base = [
+        "可愛い",
         "angel",
         "beautiful",
+        "beauty",
+        "beauty",
         "best",
         "cuddl",
         "cute",
-        "可愛い",
         "cutie",
         "darling",
-        "great"
-        "heart",
-        "honey",
-        "love",
-        "princess",
-        "prince",
-        "sunshine",
-        "sweet",
-        "senpai",
-        "beauty",
-        "queen",
-        "king",
-        "pretty",
-        "hero",
-        "beauty",
         "gorgeous",
+        "greatheart",
+        "hero",
+        "honey",
         "kind",
+        "love",
+        "pretty",
+        "princess",
+        "queen",
+        "senpai",
+        "sunshine",
+        "sweet"
     ]
 
-    #awkward names which Moni wouldn't be comfortable calling the player
-    mas_awkward_player_nickname_list = [
-        "daddy",
-        "mommy",
-        "master",
-        "mistress",
-        "naughty",
-        "sexy",
-        "hard",
-        "wet",
-        "horny",
+    mas_good_nickname_list_player_modifiers = [
+        "king",
+        "prince",
+    ]
+
+    mas_good_player_nickname_list = mas_good_nickname_list_base + mas_good_nickname_list_player_modifiers
+
+    #awkward names which Moni wouldn"t be comfortable calling the player or being called by the player
+    mas_awkward_nickname_list = [
+        "^dad$",
+        "^loli$",
+        "^mama$",
+        "^mom$",
+        "^wet$",
         "aroused",
-        "lick",
+        "breeder",
+        "daddy",
+        "deflowerer",
         "erection",
-        "beast",
-        "penetrator",
-        "virgin",
+        "horny",
+        "kaasan",
+        "kasan",
+        "lick",
+        "mistress",
+        "moani",
+        "momika",
+        "momma",
+        "mommy",
+        "mother",
+        "naughty",
+        "okaasan",
+        "okasan",
         "overlord",
         "penetrate",
-        "step-bro",
-        "step-brother",
-        "step-sister",
+        "pillows",
+        "sexy",
         "step-sis",
-        "deflowerer",
-        "breeder",
-        "masturbate",
-        "masturbator",
-        "finger",
-        "orgasm",
-        "batman",
-        "catwoman",
-        "spank",
-        "superman",
-        "superwoman",
-        "bobba",
+        "step-sister",
+        "thicc",
+        "thighs",
+        "virgin"
     ]
 
-    good_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
-    bad_comp = re.compile('|'.join(mas_bad_player_nickname_list), re.IGNORECASE)
-    awk_comp = re.compile('|'.join(mas_awkward_player_nickname_list), re.IGNORECASE)
+    mas_good_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
+    mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
+    mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
 
 label mas_player_name_enter_name_loop(menu_str, input_prompt):
     python:
@@ -441,12 +445,12 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
                     m 4hksdlb "That's the same name you have right now, silly!"
                     m 1eua "Try again~"
 
-                elif awk_comp.search(tempname):
+                elif mas_awk_name_comp.search(tempname):
                     $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
                     m 1rksdlb "[awkward_quip]"
                     m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
-                elif bad_comp.search(tempname):
+                elif mas_bad_name_comp.search(tempname):
                     $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
                     m 1ekd "[bad_quip]"
                     m 3eka "Please pick a nicer name for yourself, okay?"
@@ -482,7 +486,7 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
                         m "Either it really is your name or you're playing a joke on me."
                         m 1hua "But it's fine by me if that's what you want me to call you~"
 
-                    elif good_comp.search(tempname):
+                    elif mas_good_name_comp.search(tempname):
                         $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                         m 1sub "[good_quip]"
                         $ adjustNames(tempname)

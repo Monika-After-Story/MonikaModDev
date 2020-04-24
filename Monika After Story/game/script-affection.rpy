@@ -1904,223 +1904,19 @@ init 5 python:
         restartBlacklist=True
     )
 
-default persistent._mas_called_moni_a_bad_name = False
+#Whether or not the player has called Monika a bad name
+default persistent._mas_pm_called_moni_a_bad_name = False
+
+#Whether or not Monika has offered the player a nickname
 default persistent._mas_offered_nickname = False
+
+#The grandfathered nickname we'll use if the player's name is considered awkward
+default persistent._mas_grandfathered_nickname = None
 
 label monika_affection_nickname:
     python:
-        # NOTE: consider if we should read this from a file instead
-        bad_nickname_list = [
-            "annoying",
-            "anus",
-            "anal",
-            "arrogant",
-            "atrocious",
-            "awful",
-            "ass",
-            "bitch",
-            "blood",
-            "boob",
-            "boring",
-            "bulli",
-            "bully",
-            "bung",
-            "butt",
-            "conceited",
-            "corrupt",
-            "cougar",
-            "crap",
-            "creepy",
-            "criminal",
-            "cruel",
-            "cunt",
-            "cum",
-            "crazy",
-            "cheater",
-            "damn",
-            "demon",
-            "dick",
-            "dirt",
-            "disgusting",
-            "douche",
-            "dumb",
-            "egotistical",
-            "egoist",
-            "evil",
-            "fake",
-            "^fag$",
-            "faggot",
-            "fetus",
-            "filth",
-            "foul",
-            "fuck",
-            "garbage",
-            "gay",
-            "gey",
-            "gross",
-            "gruesome",
-            "hate",
-            "heartless",
-            "hideous",
-            "hitler",
-            "^ho$",
-            "^hoe$",
-            "hore",
-            "horrible",
-            "horrid",
-            "hypocrite",
-            "insane",
-            "immoral",
-            "irritating",
-            "jerk",
-            "junk",
-            "kill",
-            "kunt",
-            "^kys$",
-            "lesbo",
-            "lesbian",
-            "lezbo",
-            "lezbian",
-            "liar",
-            "loser",
-            "maniac",
-            "mad",
-            "masochist",
-            "milf",
-            "monster",
-            "moron",
-            "murder",
-            "narcissist",
-            "nasty",
-            "Natsuki",
-            "nefarious",
-            "nigga",
-            "nigger",
-            "nuts",
-            "pad",
-            "pantsu",
-            "panti",
-            "panty",
-            "pedo",
-            "penis",
-            "plaything",
-            "poison",
-            "porn",
-            "pretentious",
-            "psycho",
-            "puppet",
-            "pussy",
-            "rape",
-            "repulsive",
-            "retard",
-            "rump",
-            "rogue",
-            "sadist",
-            "Sayori",
-            "scum",
-            "selfish",
-            "shit",
-            "sick",
-            "suck",
-            "slaughter",
-            "slave",
-            "slut",
-            "sociopath",
-            "soil",
-            "stink",
-            "stupid",
-            "sperm",
-            "semen",
-            "tampon",
-            "teabag",
-            "terrible",
-            "thot",
-            "^tit$",
-            "tits",
-            "titt",
-            "tool",
-            "torment",
-            "torture",
-            "toy",
-            "trap",
-            "trash",
-            "troll",
-            "ugly",
-            "useless",
-            "vain",
-            "vile",
-            "waste",
-            "whore",
-            "wicked",
-            "witch",
-            "worthless",
-            "wrong",
-            "Yuri",
-        ]
-
-        good_nickname_list = [
-            "angel",
-            "beautiful",
-            "best",
-            "cuddl",
-            "cute",
-            "可愛い",
-            "cutie",
-            "darling",
-            "great"
-            "heart",
-            "honey",
-            "love",
-            "Mon",
-            "Moni",
-            "princess",
-            "sunshine",
-            "sweet",
-            "senpai",
-            "beauty",
-            "queen",
-            "pretty",
-        ]
-
-        #Stuff which isn't bad per-se, but shouldn't really be acceptable
-        awkward_nickname_list = [
-            "^loli$",
-            "aroused",
-            "breeder",
-            "^dad$",
-            "daddy",
-            "deflowerer",
-            "erection",
-            "horny",
-            "kaasan",
-            "kasan",
-            "lick",
-            "^mama$",
-            "mastermoani",
-            "mistress",
-            "^mom$",
-            "momika",
-            "momma",
-            "mommy",
-            "mother",
-            "naughty",
-            "okaasan",
-            "okasan",
-            "overlord",
-            "penetrate",
-            "pillows",
-            "sexy",
-            "step-sis",
-            "step-sister",
-            "thicc",
-            "thighs",
-            "virgin",
-            "^wet$"
-        ]
-
-        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
-        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-        awk_comp = re.compile('|'.join(awkward_nickname_list), re.IGNORECASE)
+        #NOTE: Moni nicknames use a slightly altered list to exclude male exclusive titles/nicknames
+        good_moni_nickname_comp = re.compile('|'.join(mas_good_nickname_list_base), re.IGNORECASE)
 
         # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
@@ -2188,29 +1984,34 @@ label monika_affection_nickname:
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
 
-                elif awk_comp.search(inputname):
+                elif persistent._mas_grandfathered_nickname and lowername == persistent._mas_grandfathered_nickname.lower():
+                    jump .neutral_accept
+
+                elif mas_awk_name_comp.search(inputname):
                     m 1rkc "..."
                     m 1rksdld "While I don't hate it, I don't think I'm comfortable with you calling me that."
                     m 1eka "Can you choose something more appropriate, [player]?"
 
                 else:
-                    if not bad_comp.search(inputname):
+                    if not mas_bad_name_comp.search(inputname):
                         if inputname == "Monika":
-                            m 1eua "Ehehe~ Back to the classics, I see."
+                            m 3hua "Ehehe, back to the classics I see~"
 
-                        elif good_comp.search(inputname):
+                        elif good_moni_nickname_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
-                            m 1eud "Well, it's not exactly my favorite."
-                            m 1eua "But I don't dislike it either."
-                            m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
+                            label .neutral_accept:
+                                pass
+
+                            m 1duu "[inputname]... That's a pretty nice name."
+                            m 3ekbsa "Thank you [player], you're so sweet~"
 
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
 
-                        m 2eua "Okay, [player]!"
+                        m 1eua "Okay!"
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
 
@@ -2253,6 +2054,7 @@ label monika_affection_nickname:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
+
                         $ persistent._mas_called_moni_a_bad_name = True
 
                         #reset nickname if not Monika
