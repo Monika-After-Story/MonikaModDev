@@ -317,7 +317,6 @@ init 3 python:
         "jigolo",
         "failure",
         "abortion",
-        "loser",
         "cock",
         "^fag$",
         "faggot",
