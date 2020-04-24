@@ -169,7 +169,7 @@ label mas_gender_redo_same:
 
 # good, bad, awkward name stuff
 init 3 python:
-    bad_nickname_list = [
+    mas_bad_player_nickname_list = [
         "annoying",
         "anus",
         "anal",
@@ -322,7 +322,7 @@ init 3 python:
         "faggot",
     ]
 
-    good_nickname_list = [
+    mas_good_player_nickname_list = [
         "angel",
         "beautiful",
         "best",
@@ -351,7 +351,7 @@ init 3 python:
     ]
 
     #awkward names which Moni wouldn't be comfortable calling the player
-    awkward_nickname_list = [
+    mas_awkward_player_nickname_list = [
         "daddy",
         "mommy",
         "master",
@@ -387,9 +387,9 @@ init 3 python:
         "bobba",
     ]
 
-    good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
-    bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-    awk_comp = re.compile('|'.join(awkward_nickname_list), re.IGNORECASE)
+    good_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
+    bad_comp = re.compile('|'.join(mas_bad_player_nickname_list), re.IGNORECASE)
+    awk_comp = re.compile('|'.join(mas_awkward_player_nickname_list), re.IGNORECASE)
 
 label mas_player_name_enter_name_loop(menu_str, input_prompt):
     python:
