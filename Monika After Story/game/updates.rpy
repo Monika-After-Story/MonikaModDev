@@ -449,7 +449,10 @@ label v0_11_1(version="v0_11_1"):
 
         #Rerandom all songs which aren't d25 exclusive
         for song_ev in mas_songs.song_db.itervalues():
-            if song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]:
+            if (
+                song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
+                and mas_songs.TYPE_LONG not in song_ev.category
+            ):
                 song_ev.random=True
     return
 
