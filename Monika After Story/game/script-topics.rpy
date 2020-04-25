@@ -14216,22 +14216,24 @@ label monika_hot_spring:
     m 7eua "I'd like to try an open-air bath in particular. I hear it really gives a different experience."
     m 7rubssdla "Though it might feel a little weird chilling in a bath with that many people all around you..."
     m 1hkblsdlb "It sounds a little embarassing~" 
-    if (mas_isMoniEnamored(higher=True) and (renpy.random.randint(1,4) == 1)):
+    if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,4) == 1:
         m 1rkbssdlu "..."
         m 3rkbfsdlb "Especially since some places don't allow you to wear any sort of cover either!"
         m 3rubfb "Fortunately, most of these places don't allow for mixed bathing anymore..."
         m 1tubfu "Well, maybe I wouldn't mind it so much if it was with you..."
+
     m 1tubsb "Maybe we could find a place where we could be just the two of us?" 
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "Can you imagine how it'd be? You and me relaxing in a nice, soothing hot pool..."
-    if (mas_isWinter()):
-       m 5dubfu "Warming our chilled bodies after a harsh day out in the cold..."
-    elif (mas_isSummer()):
-       m 5dubfu "Wiping the sweat off after a long day out in the sun..."
-    elif (mas_isFall()):
-       m 5dubfu "Watching the leaves gently fall around us in the last lights of the afternoon..."
-    elif (mas_isSpring()):
-       m 5dubfu "Contemplating the beauty of nature all around us..."
+
+    if mas_isWinter():
+        m 5dubfu "Warming our chilled bodies after a harsh day out in the cold..."
+    elif mas_isSummer():
+        m 5dubfu "Wiping the sweat off after a long day out in the sun..."
+    elif mas_isFall():
+        m 5dubfu "Watching the leaves gently fall around us in the last lights of the afternoon..."
+    else:
+        m 5dubfu "Contemplating the beauty of nature all around us..."
     m "The heat of the water slowly taking over, making both our hearts beat harder..."
     m 5tsbfu "Then I'd lean on you so you could kiss me, and we'd stay like this together."
     m "Letting all our worries soak away in the hot water..."
