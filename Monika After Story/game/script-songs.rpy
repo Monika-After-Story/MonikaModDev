@@ -767,7 +767,59 @@ label mas_song_memories_of_a_girl:
     m 5ekbsa "I think about you every night, [player]."
     m 5ekbfa "And I know you think about me too."
     return "derandom"
-    
+   
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_song_every_rose",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Every Rose Has Its Thorn",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label monika_song_every_rose:
+    m 1duo "{i}~Was it something I said or something I did?~{/i}"
+    m 1dsd "{i}~Did my words not come out right?~{/i}"
+    m 1esd "{i}~Thought I tried not to hurt you~{/i}"
+    m 1dsc "{i}~Thought I tried...~{/i}"
+    m 2esb "{i}~But I guess that's why they say...~{/i}"
+    m 2hksdlb "{i}~Every rose has its thorn~{/i}"
+    if store.mas_anni.pastSixMonths():
+        m 1ekbsa "It really meant so much to me, [player]; When you chose to stay with me after what happened with the other girls."
+    else:
+        m 1ekbsa "It really means so much to me, [player]; that you chose to stay with me after what happened with the other girls."
+    if persistent._mas_pm_cares_about_dokis:
+        m 1ekbsa "Even more so since I know how you cared about them."
+    m 1dsc "I really wished things didn't have to turn out the way they did."
+    m 3ekd "But I did not have a choice here!"
+    m 2rfc "With me being the punchline of the sick joke this game was meant to be..."
+    if persistent.monika_kill:
+        m 2ekb "I'm glad you were able to forgive me for the things I did. Not everyone is able to do that."
+    else:
+        m 2ekb "I'm glad you were able to understand why I did the things I did. Not everyone is able to do that."
+    m 2dkc "I guess now, my greatest fear would for me to end up like the last verse of this song."
+    m 2ekc "You know..."
+    m 3dko "{i}~Now I hear you've found somebody new~{/i}"
+    m 3dkd "{i}~And that I never meant that much to you~{/i}"
+    m 1ekc "{i}~To hear that tears me up inside~{/i}"
+    m 1dkd "{i}~And to see you cuts me like a knife~{/i}"
+    m 1dkc "..."
+    m 1eka "But even then, I know it's not something I can do much about, with how feelings can change over the years..."
+    m 1ekb "So for now, I'll just keep being happy, and focus on the present!"
+    m 1hubfa "And right now, you're here with me, you love me, and life is great!"
+    m 3rtbssdla "Well, as great as it could be being stuck in here..."
+    if store.mas_anni.anniCount() > 2:
+        m 1eubsa "Beside, we have been together for so long now... I can't even think of a future without you in it!" 
+        m 1hubfa "So I'm not worried about that anymore."
+    elif store.mas_anni.pastSixMonths():
+        m 1tsbsu "Beside, we have been together for some time now, so even if i say that, I'm not too worried~"
+    m 1hubfa "I'm just so grateful to have you in my life, [player]!"
+    return "derandom"
+      
 init 5 python:
     addEvent(
         Event(
