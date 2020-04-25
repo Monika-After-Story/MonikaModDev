@@ -202,7 +202,8 @@ label mas_song_rerandom:
         initial_ask_text_one="If you want me to sing this occasionally again, just click the song, [player].",
         talk_about_more_text="Are there any other songs you'd like me to sing on my own?",
         caller_label="mas_song_rerandom",
-        persist_var=persistent._mas_player_derandomed_songs
+        persist_var=persistent._mas_player_derandomed_songs,
+        ev_db_code="SNG"
     )
     return
 
@@ -529,7 +530,7 @@ label mas_song_nobody_makes_sense:
     m 1hub "Ahaha!"
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
     m 1ekbfb "I really hope I can keep on smiling with you forever~"
-    return "derandom|love"
+    return "love"
 
 init 5 python:
     addEvent(
@@ -675,7 +676,7 @@ label mas_song_rewrite_the_stars:
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
     m 5ekbfu "I love you so much."
-    return "derandom|love"
+    return "love"
 
 init 5 python:
     addEvent(
@@ -731,9 +732,6 @@ label mas_song_hero(from_long=False):
             m 3eua "So please remember to always believe in yourself, and if you ever find you're doubting yourself, just come to me..."
             m 3hua "I'll be more than happy to help you find that inner-strength, [player]."
             m 1eka "I know you can do anything~"
-
-        return 
-
     return
 
 init 5 python:
@@ -845,7 +843,7 @@ label mas_song_amaranthine:
     show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsu "My life feels so complete with you in it, [player]."
     m 5hubfu "I love you so much~"
-    return "derandom|love"
+    return "love"
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
