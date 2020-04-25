@@ -1757,6 +1757,7 @@ label ch30_reset:
             "chess": "mas_unlock_chess",
             mas_games.HANGMAN_NAME: "mas_unlock_hangman",
             "piano": "mas_unlock_piano",
+            "nou": "mas_reaction_gift_carddeck"
         }
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
