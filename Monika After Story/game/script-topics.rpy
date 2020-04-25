@@ -14232,8 +14232,8 @@ label monika_hot_spring:
        m 5dubfu "Watching the leaves gently fall around us in the last lights of the afternoon..."
     elif (mas_isSpring()):
        m 5dubfu "Contemplating the beauty of nature all around us..."
-    m "The heat of the water slowly taking over, making both our hearts beat faster..."
-    m 5tsbfu "Then I'd lean over to you so you could kiss me, and we'd stay like this together."
+    m "The heat of the water slowly taking over, making both our hearts beat harder..."
+    m 5tsbfu "Then I'd lean on you so you could kiss me, and we'd stay like this together."
     m "Letting all our worries soak away in the hot water..."
     m 5dkbfa "Aaah, I'm feeling a bit more relaxed just thinking about it~"
     return
