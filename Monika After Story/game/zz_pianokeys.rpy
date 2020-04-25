@@ -2344,97 +2344,6 @@ init 810 python:
             # lyric bar
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
-            # button shit
-            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-
-            # button text
-            button_done_text_idle = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_done_text_hover = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_cancel_text_idle = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_cancel_text_hover = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_reset_text_idle = Text(
-                "Reset",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_reset_text_hover = Text(
-                "Reset",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_resetall_text_idle = Text(
-                "Reset All",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_resetall_text_hover = Text(
-                "Reset All",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_config_text_idle = Text(
-                "Config",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_config_text_hover = Text(
-                "Config",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_quit_text_idle = Text(
-                "Quit",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_quit_text_hover = Text(
-                "Quit",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
             # calculate button locations
             # buttons should be spaced by BUTTONS_SPACING
             cbutton_x_start = (
@@ -2455,13 +2364,9 @@ init 810 python:
             pbutton_y_start = cbutton_y_start
 
             # the 4 config buttons we have
-            self._button_done = MASButtonDisplayable(
-                button_done_text_idle,
-                button_done_text_hover,
-                button_done_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_done = MASButtonDisplayable.create_stb(
+                _("Done"),
+                True,
                 cbutton_x_start,
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2469,13 +2374,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_cancel = MASButtonDisplayable(
-                button_cancel_text_idle,
-                button_cancel_text_hover,
-                button_cancel_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_cancel = MASButtonDisplayable.create_stb(
+                _("Cancel"),
+                True,
                 cbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2483,13 +2384,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_reset = MASButtonDisplayable(
-                button_reset_text_idle,
-                button_reset_text_hover,
-                button_reset_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_reset = MASButtonDisplayable.create_stb(
+                _("Reset"),
+                True,
                 cbutton_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2497,13 +2394,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_resetall = MASButtonDisplayable(
-                button_resetall_text_idle,
-                button_resetall_text_hover,
-                button_resetall_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_resetall = MASButtonDisplayable.create_stb(
+                _("Reset All"),
+                True,
                 cbutton_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2513,13 +2406,9 @@ init 810 python:
             )
 
             # the config button
-            self._button_config = MASButtonDisplayable(
-                button_config_text_idle,
-                button_config_text_hover,
-                button_config_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_config = MASButtonDisplayable.create_stb(
+                _("Config"),
+                True,
                 pbutton_x_start,
                 pbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2527,13 +2416,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_quit = MASButtonDisplayable(
-                button_quit_text_idle,
-                button_quit_text_hover,
-                button_quit_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_quit = MASButtonDisplayable.create_stb(
+                _("Quit"),
+                False,
                 pbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
                 pbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2554,14 +2439,14 @@ init 810 python:
 
             # config help text
             self._config_wait_help = Text(
-                "Click on a pink area to change the keymap for that piano key",
+                _("Click on a pink area to change the keymap for that piano key"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#fff",
                 outlines=[]
             )
             self._config_change_help = Text(
-                "Press the key you'd like to set this piano key to",
+                _("Press the key you'd like to set this piano key to"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#fff",

@@ -103,6 +103,15 @@ init -1 python in songs:
         )
 
 
+    def hasMusicMuted():
+        """
+        Checks if the player has the music channel muted or the 'Mute All' option enabled.
+
+        RETURNS: True if the music channel is muted or the 'Mute All' option is enabled, False otherwise
+        """
+        return renpy.game.preferences.mute["music"] or getUserVolume("music") == 0.0
+
+
     def getPlayingMusicName():
         #
         # Gets the name of the currently playing song.
@@ -882,7 +891,7 @@ style music_menu_button is navigation_button:
 
 style music_menu_button_text is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
-    font "mod_assets/font/mplus-2p-regular.ttf"
+    font store.mas_ui.music_menu_font
     color "#fff"
     outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
     hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
@@ -890,7 +899,7 @@ style music_menu_button_text is navigation_button_text:
 
 style music_menu_button_text_dark is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
-    font "mod_assets/font/mplus-2p-regular.ttf"
+    font store.mas_ui.music_menu_font
     color "#FFD9E8"
     outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
