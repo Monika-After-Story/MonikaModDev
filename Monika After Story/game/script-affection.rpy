@@ -2278,7 +2278,8 @@ init 5 python:
             eventlabel="monika_being_virtual",
             action=EV_ACT_QUEUE,
             aff_range=(None, mas_aff.DISTRESSED)
-        )
+        ),
+        skipCalendar=True
     )
 
 label monika_being_virtual:

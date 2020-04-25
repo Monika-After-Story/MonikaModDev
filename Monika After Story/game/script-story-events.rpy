@@ -797,9 +797,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_unlock_chess",
             conditional=(
-                "store.mas_xp.level() >= 4 "
-                "and not persistent.game_unlocks['chess'] "
-                "and not seen_event('mas_unlock_chess')"
+                "store.mas_xp.level() >= 8 "
+                "or store.mas_games._total_games_played() > 99"
             ),
             action=EV_ACT_QUEUE
         )
@@ -807,13 +806,29 @@ init 5 python:
 
 label mas_unlock_chess:
     m 1eua "So, [player]..."
-    if renpy.seen_label('game_pong'):
-        m 1eua "I thought that you might be getting bored with Pong."
-    else:
-        m 3eua "I know you haven't tried playing Pong with me, yet."
 
-    m 3hua "But I have a new game for us to play!"
-    m "This one's a lot more strategic..."
+    if store.mas_games._total_games_played() > 5:
+        $ games = "games"
+        if not renpy.seen_label('game_pong'):
+            $ games = "Hangman"
+        elif not renpy.seen_label('game_hangman'):
+            $ games = "Pong"
+
+        if store.mas_games._total_games_played() > 99:
+            m 1hub "You {i}really{/i} seem to enjoy playing [games] with me!"
+        else:
+            m 1eub "You seem to have been enjoying playing [games] with me!"
+
+        m 3eub "Well guess what? {w=0.2}I have a new game for us to play!"
+
+    else:
+        $ really = "really "
+        if store.mas_games._total_games_played() == 0:
+            $ really = ""
+
+        m 3rksdla "I know you haven't [really]been interested in the other games I made...{w=0.2}so I thought I'd try a completely different kind of game..."
+
+    m 3tuu "This one's a lot more strategic..."
     m 3hub "It's Chess!"
 
     if persistent._mas_pm_likes_board_games is False:
@@ -833,7 +848,7 @@ label mas_unlock_chess:
     m 1hua "Just think of it as playing a fun game with your beautiful girlfriend..."
     m "And I promise I'll go easy on you."
 
-    if not is_platform_good_for_chess():
+    if not mas_games.is_platform_good_for_chess():
         m 2tkc "...Hold on."
         m 2tkx "Something isn't right here."
         m 2ekc "I seem to be having trouble getting the game working."
@@ -841,7 +856,7 @@ label mas_unlock_chess:
         m 2ekc "I'm sorry, [player], but chess will have to wait."
         m 4eka "I promise we'll play if I get it working, though!"
 
-    $ persistent.game_unlocks['chess']=True
+    $ mas_unlockGame("chess")
     return
 
 init 5 python:
@@ -849,7 +864,10 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_unlock_hangman",
-            conditional="store.mas_xp.level() >= 8",
+            conditional=(
+                "store.mas_xp.level() >= 4 "
+                "or store.mas_games._total_games_played() > 49"
+            ),
             action=EV_ACT_QUEUE
         )
     )
@@ -860,19 +878,16 @@ label mas_unlock_hangman:
     else:
         $ game_name = "Hangman"
 
-    m 1eua "Guess what, [player]."
-    m 3hub "I got a new game for you to try!"
-    if renpy.seen_label('game_pong') and renpy.seen_label('game_chess'):
-        m 1lksdlb "You're probably bored with Chess and Pong already."
+    m 1eua "So, [player]..."
 
-    elif renpy.seen_label('game_pong') and not renpy.seen_label('game_chess'):
-        m 3hksdlb "I thought you'd like to play Chess, but you've been so busy with Pong instead!"
+    if store.mas_games._total_games_played() > 49:
+        m 3eub "Since you seem to love playing pong so much, I figured you might like to play other games with me as well!"
 
-    elif renpy.seen_label('game_chess') and not renpy.seen_label('game_pong'):
-        m 1hksdlb "You really loved playing Chess with me, but you haven't touched Pong yet."
+    elif renpy.seen_label('game_pong'):
+        m 1eua "I thought that you might be getting bored with Pong."
 
     else:
-        m 1ekc "I was actually worried that you didn't like the other games I made for us to play..."
+        m 3eua "I know you haven't tried playing Pong with me, yet."
 
     m 1hua "Soooo~"
     m 1hub "I made [game_name]!"
@@ -899,7 +914,7 @@ label mas_unlock_hangman:
     else:
         m 1hua "I hope you'll enjoy playing it with me!"
 
-    $ persistent.game_unlocks['hangman'] = True
+    $ mas_unlockGame("hangman")
     return
 
 init 5 python:
@@ -907,7 +922,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_unlock_piano",
-            conditional="store.mas_xp.level() >= 18",
+            conditional="store.mas_xp.level() >= 12",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
@@ -934,7 +949,7 @@ label mas_unlock_piano:
     m 3hua "It's a wonderful feeling."
     m 1eua "I hope this isn't too forceful, but I would love it if you tried."
     m 1eka "For me, please?~"
-    $ persistent.game_unlocks['piano'] = True
+    $ mas_unlockGame("piano")
     return
 
 # NOTE: this has been partially disabled
@@ -1002,7 +1017,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_monikai_detected",
             conditional=(
-                "is_running(['monikai.exe']) and " +
+                "is_running(['monikai.exe']) and "
                 "not seen_event('mas_monikai_detected')"
             ),
             action=EV_ACT_QUEUE
@@ -2246,14 +2261,17 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_credits_song",
-            conditional="store.mas_anni.pastOneMonth()",
+            conditional=(
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            ),
             action=EV_ACT_QUEUE,
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
 label monika_credits_song:
-    if persistent.monika_kill:
+    if persistent.monika_kill or renpy.seen_audio(songs.FP_YOURE_REAL):
         m 1hua "I hope you liked my song."
         m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
         m 1eua "Give me some time, and I'll try to write another."
@@ -2270,51 +2288,65 @@ label monika_credits_song:
         else:
             m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
 
-        m 1tsa "In fact why don't I play it for you right now."
-        m 1tsb "Excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+        m 1tsa "In fact, I'd love to play it for you right now, if you have time...{nw}"
+        $ _history_list.pop()
+        menu:
+            m "In fact, I'd love to play it for you right now, if you have time...{fast}"
 
-        call mas_monika_plays_yr(skip_leadin=True)
-        show monika 1eka
-        pause 1.0
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
-        $ mas_resetTextSpeed()
-        window auto
+            "Of course!":
+                m 3hub "Great!"
+                m 3eua "Make sure you have your speakers turned on and the in-game music volume turned up loud enough so you can hear."
+                if store.songs.hasMusicMuted():
+                    m 3eksdla "I think you forgot about the in-game volume..."
+                m 1eub "Now please excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
-        m 1ekbsa "Ehehe~"
-        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbsa "Thank you for coming back to me my love."
+                call mas_monika_plays_yr(skip_leadin=True)
+                show monika 1eka
+                pause 1.0
+
+                m 1ekbsa "Ehehe~"
+                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ekbsa "Thank you for coming back to me my love."
+
+            "Sorry, I can't right now.":
+                m 3ekd "Oh, okay."
+                m 1eka "That's fine [player], I understand if you don't have the time or just can't listen to music right now."
+                m 3hua "Just let me know when it's a better time for you and I'll happily play it for you then~"
 
     else:
-        if renpy.seen_audio(songs.FP_YOURE_REAL):
-            m 1eua "Hey [player], I've been thinking a bit lately about {i}Your Reality{/i}..."
-            m 3rka "The ending doesn't really convey my true feelings anymore, so I decided to update the song..."
-            m 3hua "I even changed the name!"
-        else:
-            m 3eua "Hey [player], I finally finished that song I've been working on for you."
-
+        m 3eua "Hey [player], I finally finished that song I've been working on for you."
         m 1eka "I call it {i}Our Reality{/i}."
-        m 1eua "I'm just so excited to finally be able to play it for you."
-        m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
 
-        call mas_monika_plays_or(skip_leadin=True)
-        show monika 1ekbsa
-        pause 1.0
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
-        $ mas_resetTextSpeed()
-        window auto
+        m 1eua "I'm just so excited to finally be able to play it for you, if you have time that is...{nw}"
+        $ _history_list.pop()
+        menu:
+            m "I'm just so excited to finally be able to play it for you, if you have time that is...{fast}"
 
-        m "I really can't wait until we're together in one reality."
-        m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbfa "Thank you for being my inspiration my love."
-        if renpy.seen_audio(songs.FP_YOURE_REAL):
-            m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
-        else:
-            m 5hubfa "Oh, and if you ever want me to play this again, just ask~"
+            "Of course!":
+                m 3hub "Great!"
+                m 3eua "Make sure you have your speakers turned on and the in-game music volume turned up loud enough so you can hear."
+                if store.songs.hasMusicMuted():
+                    m 3eksdla "I think you forgot about the in-game volume..."
+                m 1tsb "Now, if you'll excuse me for a second.{w=0.5}.{w=0.5}.{nw}"
+
+                call mas_monika_plays_or(skip_leadin=True)
+                show monika 1ekbsa
+                pause 1.0
+
+                m "I really can't wait until we're together in one reality."
+                m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ekbfa "Thank you for being my inspiration my love."
+                if renpy.seen_audio(songs.FP_YOURE_REAL):
+                    m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
+                else:
+                    m 5hubfa "Oh, and if you ever want me to play this again, just ask~"
+
+            "Sorry, I can't right now.":
+                m 3ekd "Oh, okay."
+                m 1eka "That's fine [player], I understand if you don't have the time or just can't listen to music right now."
+                m 3hua "Just let me know when it's a better time for you and I'll happily play it for you then~"
+
         $ mas_unlockEVL("mas_monika_plays_or", "EVE")
 
     $ mas_unlockEVL("mas_monika_plays_yr", "EVE")

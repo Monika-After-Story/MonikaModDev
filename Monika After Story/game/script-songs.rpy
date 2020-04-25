@@ -209,6 +209,9 @@ init 5 python:
 label mas_song_aiwfc:
     #Get current song
     $ curr_song = songs.current_track
+    if store.songs.hasMusicMuted():
+        m 3eua "Don't forget to turn your in-game volume up, [player]."
+
     call monika_aiwfc_song
 
     #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
@@ -826,10 +829,9 @@ label mas_monika_plays_yr(skip_leadin=False):
             m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     window hide
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
-    $ store.songs.enabled = False
-
+    $ mas_RaiseShield_piano()
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
     show monika at rs32
     hide monika
     pause 3.0
@@ -837,6 +839,12 @@ label mas_monika_plays_yr(skip_leadin=False):
     pause 5.0
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
+
+    if store.songs.hasMusicMuted():
+        $ enable_esc()
+        m 6hua "Don't forget about your in-game volume, [player]!"
+        $ disable_esc()
+
     pause 2.0
     $ play_song(store.songs.FP_YOURE_REAL,loop=False)
 
@@ -888,7 +896,6 @@ label mas_monika_plays_yr(skip_leadin=False):
     show monika 5dka with dissolve
     $ renpy.pause(5)
 
-    stop music
     show monika 6eua at rs32 with dissolve
     pause 1.0
     hide monika
@@ -896,14 +903,11 @@ label mas_monika_plays_yr(skip_leadin=False):
     hide mas_piano
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
-
-    if not skip_leadin:
-        pause 2.0
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
-        window auto
+    pause 1.0
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    $ mas_DropShield_piano()
+    window auto
+    $ play_song(None, 1.0)
 
     return
 
@@ -932,10 +936,9 @@ label mas_monika_plays_or(skip_leadin=False):
         $ gen = "their"
 
     window hide
-    $ mas_disableTextSpeed()
-    $ disable_esc()
-    $ mas_MUMURaiseShield()
-
+    $ mas_RaiseShield_piano()
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
     show monika at rs32
     hide monika
     pause 3.0
@@ -943,6 +946,12 @@ label mas_monika_plays_or(skip_leadin=False):
     pause 5.0
     show monika at ls32 zorder MAS_MONIKA_Z
     show monika 6dsa
+
+    if store.songs.hasMusicMuted():
+        $ enable_esc()
+        m 6hua "Don't forget about your in-game volume, [player]!"
+        $ disable_esc()
+
     pause 2.0
     $ play_song(songs.FP_PIANO_COVER,loop=False)
 
@@ -977,7 +986,6 @@ label mas_monika_plays_or(skip_leadin=False):
 
     show monika 1dkbsa
     pause 9.0
-    stop music
     show monika 6eua at rs32
     pause 1.0
     hide monika
@@ -985,13 +993,10 @@ label mas_monika_plays_or(skip_leadin=False):
     hide mas_piano
     pause 6.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
-
-    if not skip_leadin:
-        pause 2.0
-        $ mas_resetTextSpeed()
-        $ mas_MUMUDropShield()
-        $ enable_esc()
-        $ HKBShowButtons()
-        window auto
+    pause 1.0
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    $ mas_DropShield_piano()
+    window auto
+    $ play_song(None, 1.0)
 
     return
