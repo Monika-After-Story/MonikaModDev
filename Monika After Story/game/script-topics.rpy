@@ -14157,6 +14157,40 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_movie_adaptations",
+            category=['misc'],
+            prompt="Movie adaptations",
+            random=True
+        )
+    )
+
+label monika_movie_adaptations:
+    m 1esc "I've always had mixed feelings about movie adaptations of books I read..."
+    m 3eub "A lot of what I watch is based on works I already enjoy, you know? I'm curious about seeing someone else's take on them!"
+    m 1ruc "Even if more often than not, I know I'll walk out feeling a bit bitter about what I just watched..."
+    m 3rfc "Like, there's this scene I liked in the book that didn't make it in, or there's that character who was portrayed differently from how I imagined it!"
+    m 3hksdlb "It's just so frustrating! It's like all the love and care you poured into your vision of the book is suddenly invalidated!"
+    m 3rsc "All in favor of a new version which may not be as good, but still present itself as canon."
+    m 1rksdlb "I guess that would make me a picky spectator sometimes~"
+    m 3wud "Don't get me wrong! I realize why changes have to be made in movies like that."
+    m 3eua "An adaptation can't be just a copy-paste of its source material, it's a rewriting of it."
+    m 4hub "It's just plain not possible to cram everything from a two hundred pages book in a two hours movie!"
+    m 4eud "Not to mention something that works well in a novel won't always translate well to the big screen..."
+    m 2eud "With this in mind, there's one question I like to ask myself when I judge an adaptation..."
+    m 2euc "If the source material did not exist, would the new version still hold up?"
+    m 2hfb "Bonus points if you manage to capture the feeling of the original!"
+    m 2esa "Loose adaptations are pretty interesting in that sense."
+    m 3esb "You know, stories that keep the core elements and themes of the original while changing the characters and setting of the story."
+    m 3esa "Since they don't conflict with your own interpretation, they don't make you feel as personally attacked."
+    m 3hub "It's a great way to build upon the original in ways you might not have thought of before!"
+    m 1rtc "Maybe that's what I'm looking for when I look at an adaptation... to explore further upon those stories I love..."
+    m 1rublsdla "Though getting a version to satisfy my inner fan could be nice too, ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_translating_poetry",
             category=['literature'],
             prompt="Translating poetry",
