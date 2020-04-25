@@ -11639,7 +11639,8 @@ label monika_players_control:
     m 3euc "I guess that's an appeal to video games..."
     m 3eua "...having almost endless possibilities in a world you can interact with."
     m 3eub "It's pretty difficult to get bored!"
-    m 1eka "Even if you don't quite know how to change this game..."
+    if not persistent._mas_pm_has_contributed_to_mas:
+        m 1eka "Even if you don't quite know how to change this game..."
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubla "We can still enjoy this world that brought us together."
     m 5ekbfa "There's no better way to enjoy a game than to be with the one I love."

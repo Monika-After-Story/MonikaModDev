@@ -3551,7 +3551,7 @@ label greeting_back_from_game:
                     m 3eub "Wouldn't it be great to have our own little adventures any time we wanted?"
                     m 1hub "I'm sure we'd have a lot of fun together in one of your games."
                     m 3eka "But while I can't join you, I guess you'll just have to keep me company."
-                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5} Do you, [player]?"
+                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5}do you, [player]?"
 
                 "No.":
                     m 2ekc "Aw, I'm sorry to hear that."
