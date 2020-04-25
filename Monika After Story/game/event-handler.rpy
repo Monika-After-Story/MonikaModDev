@@ -2489,7 +2489,7 @@ label mas_bookmarks:
         # generate list of propmt/label tuples of bookmarks
         bookmarks_pl = [ 
             (renpy.substitute(ev.prompt), ev.eventlabel)
-            for ev in mas_get_player_bookmarks()
+            for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked)
         ]
         bookmarks_pl.sort()
         bookmarks_disp = gen_bk_disp(bookmarks_pl)

@@ -1,4 +1,8 @@
+#Event database for songs
 default persistent._mas_songs_database = dict()
+
+#All player derandomed songs
+default persistent._mas_player_derandomed_songs = list()
 
 init -10 python in mas_songs:
     # Event database for songs
@@ -158,7 +162,50 @@ label monika_sing_song_pool_menu:
 
     return
 
-#START: Random song delegate
+#START: Main Song Topics
+label mas_song_derandom:
+    $ prev_topic = persistent.flagged_monikatopic
+    m 1eka "Tired of hearing me sing that song, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Tired of hearing me sing that song, [player]?{fast}"
+
+        "A little.":
+            m 1eka "That's alright."
+            m 1eua "I'll sing it whenever you want me to then. Just let me know if you want to hear it."
+            python:
+                mas_hideEVL(prev_topic, "SNG", derandom=True)
+                persistent._mas_player_derandomed_songs.append(prev_topic)
+                mas_unlockEVL("mas_song_rerandom", "EVE")
+
+        "It's okay.":
+            m 1eua "Alright, [player]."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_song_rerandom",
+            prompt="Can you sing a song on your own again?",
+            category=['music'],
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label mas_song_rerandom:
+    $ renpy.call(
+        "mas_rerandom",
+        initial_ask_text_multiple="Which song do you want me to sing occasionally?",
+        initial_ask_text_one="If you want me to sing this occasionally again, just click the song, [player].",
+        talk_about_more_text="Are there any other songs you'd like me to sing on my own?",
+        caller_label="mas_song_rerandom",
+        persist_var=persistent._mas_player_derandomed_songs
+    )
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -276,7 +323,7 @@ label mas_song_lover_boy:
     m 4dso "{i}~Be a Valentino just for you~{/i}"
     m 1hub "Ahaha~"
     m 1ekbfa "Will you be my good old fashioned lover boy, [player]?"
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -299,7 +346,7 @@ label mas_song_need_you:
     m 1hubfb "{i}~I need you~{/i}"
     m 3esa "I know that song is about leaving someone, but I think it carries a good message."
     m 1ekbfa "And I really do need you, [player]~"
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -321,7 +368,7 @@ label mas_song_i_will:
     m 2hub "{i}~If you want me to I will~{/i}"
     m 1ekbfa "One day we'll be together, [player]."
     m 1hubfa "I just hope you'll still love me when that special day comes~"
-    return "derandom"
+    return
 
 init 5 python:
     addEvent(
@@ -346,7 +393,7 @@ label mas_song_belong_together:
     m 4eub "A lot of pop music back then followed this style which made for great love songs."
     m 3eub "And if you listen closely, you'll notice that my song actually follows the typical Doo-wop chord progression."
     m 1hua "I guess you could say I learned from the best."
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -373,7 +420,7 @@ label mas_song_your_song:
     m 1hua "Ahaha~"
     m 3eka "It's not often I find songs that relate to me as much as this one does."
     m 1hua "And I really do mean it when I say that 'Your Reality' is your song."
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -395,7 +442,7 @@ label mas_song_with_you:
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
     m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
     m 1hubfa "Ehehe~"
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -416,7 +463,7 @@ label mas_song_dream:
     m 2hub "{i}~Whenever I want you, all I have to do is dream~{/i}"
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
     m 1ekbfa "My dream finally came true."
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -455,7 +502,7 @@ label mas_song_im_glad_youre_evil_too:
     else:
         m 1ekbfa "I don't really think either of us are evil, [player]."
         m 1ekbfb "But it would be a dream come true to face the world together, side by side...{w=0.5} Don't you think?"
-    return "derandom"
+    return 
     
 init 5 python:
     addEvent(
@@ -510,7 +557,7 @@ label mas_song_yozurina:
     m 1ekbsa "I just thought it really matched our situation."
     m 3rkbsa "Vocaloid songs sure have a tendency for that if you can get behind them."
     m 3hubfb "I guess this is what happens when I try to express my love for you, ahaha!"
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -537,7 +584,7 @@ label mas_song_stand_by_me(from_long=False):
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
-    return "derandom"
+    return 
     
 init 5 python:
     addEvent(
@@ -567,7 +614,7 @@ label mas_song_drift_away:
     m 3eka "Our story ended much more happily than this song."
     m 3hua "You come to visit me as often as you can, and I'm so grateful for that."
     m 3eka "But even so, it can be very cathartic to follow a character who faces a major fear of yours."
-    return "derandom"
+    return 
 
 init 5 python:
     addEvent(
@@ -685,7 +732,7 @@ label mas_song_hero(from_long=False):
             m 3hua "I'll be more than happy to help you find that inner-strength, [player]."
             m 1eka "I know you can do anything~"
 
-        return "derandom"
+        return 
 
     return
 
@@ -766,7 +813,7 @@ label mas_song_memories_of_a_girl:
     m 5eub "{i}~Of a girl you haven't met yet who's wished upon the Pleiades?~{/i}"
     m 5ekbsa "I think about you every night, [player]."
     m 5ekbfa "And I know you think about me too."
-    return "derandom"
+    return 
     
 init 5 python:
     addEvent(

@@ -666,18 +666,27 @@ init python:
 
     def mas_check_player_derand():
         """
-        Checks the player derandom list for events that are not random and derandoms them
+        Checks the player derandom lists for events that are not random and derandoms them
         """
-        for ev_label in persistent._mas_player_derandomed:
-            #Get the ev
-            ev = mas_getEV(ev_label)
-            if ev and ev.random:
-                ev.random = False
+        deranded_evl_vars = [
+            persistent._mas_player_derandomed,
+            persistent._mas_player_derandomed_songs
+        ]
 
-    def mas_get_player_bookmarks():
+        for derandlist in deranded_evl_vars:
+            for ev_label in derandlist:
+                #Get the ev
+                ev = mas_getEV(ev_label)
+                if ev and ev.random:
+                    ev.random = False
+
+    def mas_get_player_bookmarks(bookmarked_evls):
         """
         Gets topics which are bookmarked by the player 
         Also cleans events which no longer exist
+
+        IN:
+            bookmarked_evls - appropriate persistent variable holding the bookmarked eventlabels
 
         OUT:
             List of bookmarked topics as evs
@@ -685,13 +694,13 @@ init python:
         bookmarkedlist = []
 
         #Iterate and add to bookmarked list
-        for index in range(len(persistent._mas_player_bookmarked)-1,-1,-1):
+        for index in range(len(bookmarked_evls)-1,-1,-1):
             #Get the ev
-            ev = mas_getEV(persistent._mas_player_bookmarked[index])
+            ev = mas_getEV(bookmarked_evls[index])
 
             #If no ev, we'll pop it as we shouldn't actually keep it here
             if not ev:
-                persistent._mas_player_bookmarked.pop(index)
+                bookmarked_evls.pop(index)
 
             #Otherwise, we add it to the menu item list
             elif ev.unlocked and ev.checkAffection(mas_curr_affection):
@@ -699,24 +708,27 @@ init python:
 
         return bookmarkedlist
 
-    def mas_get_player_derandoms():
+    def mas_get_player_derandoms(derandomed_evls):
         """
         Gets topics which are derandomed by the player (in gen-scrollable-menu format)
         Also cleans out events which no longer exist
 
+        IN:
+            derandomed_evls - appropriate variable holding the derandomed eventlabels
+
         OUT:
-            List of player-derandomed topics in mas_gen_scrollable_menu form
+            List of player derandomed topics in mas_gen_scrollable_menu form
         """
         derandlist = []
 
         #Iterate and add to derand list
-        for index in range(len(persistent._mas_player_derandomed)-1,-1,-1):
+        for index in range(len(derandomed_evls)-1,-1,-1):
             #Get the ev
-            ev = mas_getEV(persistent._mas_player_derandomed[index])
+            ev = mas_getEV(derandomed_evls[index])
 
             #No ev. Pop it as we shouldn't actually keep it here
             if not ev:
-                persistent._mas_player_derandomed.pop(index)
+                derandomed_evls.pop(index)
 
             #Ev exists. Add it to the menu item list
             elif ev.unlocked and ev.checkAffection(mas_curr_affection):

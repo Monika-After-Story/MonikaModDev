@@ -446,6 +446,11 @@ label v0_11_1(version="v0_11_1"):
 
         if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
             persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        #Rerandom all songs which aren't d25 exclusive
+        for song_ev in mas_songs.song_db.itervalues():
+            if song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]:
+                song_ev.random=True
     return
 
 #0.11.0
