@@ -1688,7 +1688,7 @@ screen hot_keys():
             spacing 25
 
             hbox:
-                style_prefix mas_ui.cbx_style_prefix
+                style_prefix "check"
                 vbox:
                     label _("General")
                     spacing 10
@@ -1714,7 +1714,7 @@ screen hot_keys():
                     text _("Esc")
 
             hbox:
-                style_prefix mas_ui.cbx_style_prefix
+                style_prefix "check"
                 vbox:
                     label _("Music")
                     spacing 10
@@ -1733,7 +1733,7 @@ screen hot_keys():
     text "Click 'Help' for the complete list.":
         xalign 1.0 yalign 0.0
         xoffset -10
-        style mas_ui.mm_tt_style
+        style "main_menu_version"
 
 
 ## History screen ##############################################################
