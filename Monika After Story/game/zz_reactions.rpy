@@ -2865,3 +2865,49 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+init 5 python:
+    if not renpy.seen_label("mas_reaction_gift_carddeck"):
+        addReaction("mas_reaction_gift_carddeck", "carddeck", is_good=True)
+
+label mas_reaction_gift_carddeck:
+    $ mas_giftCapGainAff(0.5)
+
+    if mas_isMoniNormal(higher=True):
+        m 1wub "Oh!{w=0.3} A deck of cards!"
+        m 3eua "And I think I know how to play this game!"
+        m 1eua "Have you ever played 'NoU', [player]?{w=0.3}{nw} "
+        extend 4eub "It's a popular card game where to win you need to play all your cards before your opponents."
+        # TODO: 2husdlb could work
+        m 1rssdlb "It sounds quite obvious, ahaha~"
+        m 3eub "But it really is a fun game to play with friends{w=0.4}{nw} "
+        extend 3hubsa "or your beloved one~"
+        m 1esc "I also heard it might {i}affect{/i} your relationships with people you're playing with."
+
+        if mas_isMoniAff(higher=True):
+            show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eubsa "But I know our relationship can stand much more than just a simple card game~"
+            m 5hubsa "Ehehe~"
+            m 3eub "Let me know when you want to play it."
+
+        else:
+            m 1hub "Ahaha!"
+            m 1eua "I'm just kidding, [player]."
+            m 3eub "Let's play it soon."
+
+    # TODO: tbh better have 2 paths
+    else:
+        m 1euc "A deck?"
+        m 1rka "Actually it might be...{nw}"
+        $ _history_list.pop()
+        m 1rkc "Nevermind..."
+        m 1esc "I'm not in the mood to play it right now, [player]."
+
+    python:
+        # She keeps the deck, it's locked behind the affection anyway
+        mas_unlockGame("nou")
+        mas_receivedGift("mas_reaction_gift_carddeck")
+        gift_ev = mas_getEV("mas_reaction_gift_carddeck")
+        if gift_ev:
+            store.mas_filereacts.delete_file(gift_ev.category)
+    return
