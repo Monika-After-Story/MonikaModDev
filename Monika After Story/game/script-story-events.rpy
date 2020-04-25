@@ -169,6 +169,7 @@ label mas_gender_redo_same:
 
 # good, bad, awkward name stuff
 init 3 python:
+    #Bad nicknames. All of the items in this will trigger bad reactions
     mas_bad_nickname_list = [
         "^fag$",
         "^ho$",
@@ -182,6 +183,8 @@ init 3 python:
         "ass",
         "atrocious",
         "awful",
+        "bastard",
+        "beast",
         "bitch",
         "blood",
         "boob",
@@ -193,6 +196,7 @@ init 3 python:
         "cheater",
         "cock",
         "conceited",
+        "condom",
         "corrupt",
         "cougar",
         "crap",
@@ -315,6 +319,7 @@ init 3 python:
         "useless",
         "vain",
         "vile",
+        "vomit",
         "waste",
         "whore",
         "wicked",
@@ -323,11 +328,12 @@ init 3 python:
         "wrong"
     ]
 
+    #Base list for good nicknames. Apply modifiers for specifying the use
+    #These trigger a good response
     mas_good_nickname_list_base = [
         "可愛い",
         "angel",
         "beautiful",
-        "beauty",
         "beauty",
         "best",
         "cuddl",
@@ -348,29 +354,45 @@ init 3 python:
         "sweet"
     ]
 
+    #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
         "king",
         "prince",
     ]
 
+    #Modifier for Monika's nickname choice
+    mas_good_nickname_list_monika_modifiers = [
+        "moni",
+    ]
+
     mas_good_player_nickname_list = mas_good_nickname_list_base + mas_good_nickname_list_player_modifiers
 
-    #awkward names which Moni wouldn"t be comfortable calling the player or being called by the player
+    #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
         "^dad$",
         "^loli$",
         "^mama$",
         "^mom$",
+        "^mum$",
+        "^papa$",
         "^wet$",
         "aroused",
+        "aunt",
+        "batman",
         "breeder",
+        "bobba",
+        "catwoman",
+        "cousin",
         "daddy",
         "deflowerer",
         "erection",
+        "finger",
         "horny",
         "kaasan",
         "kasan",
         "lick",
+        "master",
+        "masturbat",
         "mistress",
         "moani",
         "momika",
@@ -380,14 +402,19 @@ init 3 python:
         "naughty",
         "okaasan",
         "okasan",
+        "orgasm",
         "overlord",
-        "penetrate",
+        "penetrat",
         "pillows",
-        "sexy",
-        "step-sis",
-        "step-sister",
+        "sex",
+        "spank",
+        "step(-|\\s)+bro",
+        "step(-|\\s)+sis",
+        "superman",
+        "superwoman",
         "thicc",
         "thighs",
+        "uncle",
         "virgin"
     ]
 
@@ -395,7 +422,7 @@ init 3 python:
     mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
     mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
 
-label mas_player_name_enter_name_loop(menu_str, input_prompt):
+label mas_player_name_enter_name_loop(input_prompt):
     python:
         awkward_quips = [
             "I don't really feel...{w=0.5}comfortable calling you that all the time.",
@@ -420,93 +447,83 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
         ]
 
     #Now we prompt user
-    m 1eua "[menu_str]{nw}"
-    $ _history_list.pop()
-    menu:
-        m "[menu_str]{fast}"
-        "Yes.":
-            m 1eua "Just type 'nevermind' if you change your mind."
-            $ done = False
-            while not done:
-                $ tempname = renpy.input("[input_prompt]", length=20).strip(' \t\n\r')
-                $ lowername = tempname.lower()
-                if lowername == "nevermind":
-                    m 1ekc "Oh I see."
-                    m 1eka "Well, just tell me whenever you want to be called something else, [player]."
-                    $ done = True
-
-                elif lowername == "":
-                    m 1eksdla "..."
-                    m 3rksdlb "You have to give me a name to call you, [player]..."
-                    m 1eua "Try again!"
-
-                elif lowername == player.lower():
-                    m 2hua "..."
-                    m 4hksdlb "That's the same name you have right now, silly!"
-                    m 1eua "Try again~"
-
-                elif mas_awk_name_comp.search(tempname):
-                    $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
-                    m 1rksdlb "[awkward_quip]"
-                    m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
-
-                elif mas_bad_name_comp.search(tempname):
-                    $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
-                    m 1ekd "[bad_quip]"
-                    m 3eka "Please pick a nicer name for yourself, okay?"
-
-                else:
-                    #Sayori name check
-                    if tempname.lower() == "sayori":
-                        call sayori_name_scare
-
-                    elif (
-                            persistent.playername.lower() == "sayori"
-                            and not persistent._mas_sensitive_mode
-                        ):
-                        $ songs.initMusicChoices()
-
-                    python:
-                        def adjustNames(new_name):
-                            """
-                            Adjusts the names to the new names
-                            """
-                            global player
-
-                            persistent.mcname = player
-                            mcname = player
-                            persistent.playername = new_name
-                            player = new_name
-
-                    if lowername == "monika":
-                        $ adjustNames(tempname)
-                        m 1tkc "Really?"
-                        m "That's the same as mine!"
-                        m 1tku "Well..."
-                        m "Either it really is your name or you're playing a joke on me."
-                        m 1hua "But it's fine by me if that's what you want me to call you~"
-
-                    elif mas_good_name_comp.search(tempname):
-                        $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
-                        m 1sub "[good_quip]"
-                        $ adjustNames(tempname)
-                        m 3esa "Ok then! From now on, I'll call you '{i}[player]{/i}'."
-                        m 1hua "Ehehe~"
-                        $ done = True
-
-                    else:
-                        $ adjustNames(tempname)
-                        m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you '{i}[player]{/i}'."
-                        $ done = True
-
-                if not done:
-                    show monika 1eua
-
-        "No.":
+    m 1eua "Just type 'nevermind' if you change your mind."
+    $ done = False
+    while not done:
+        $ tempname = renpy.input("[input_prompt]", length=20).strip(' \t\n\r')
+        $ lowername = tempname.lower()
+        if lowername == "nevermind":
             m 1eka "Oh... Okay then, if you say so."
             m 3eua "Just let me know if you change your mind."
+            $ done = True
 
+        elif lowername == "":
+            m 1eksdla "..."
+            m 3rksdlb "You have to give me a name to call you, [player]..."
+            m 1eua "Try again!"
+
+        elif lowername == player.lower():
+            m 2hua "..."
+            m 4hksdlb "That's the same name you have right now, silly!"
+            m 1eua "Try again~"
+
+        elif mas_awk_name_comp.search(tempname):
+            $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
+            m 1rksdlb "[awkward_quip]"
+            m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+
+        elif mas_bad_name_comp.search(tempname):
+            $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
+            m 1ekd "[bad_quip]"
+            m 3eka "Please pick a nicer name for yourself, okay?"
+
+        else:
+            #Sayori name check
+            if tempname.lower() == "sayori":
+                call sayori_name_scare
+
+            elif (
+                    persistent.playername.lower() == "sayori"
+                    and not persistent._mas_sensitive_mode
+                ):
+                $ songs.initMusicChoices()
+
+            python:
+                def adjustNames(new_name):
+                    """
+                    Adjusts the names to the new names
+                    """
+                    global player
+
+                    persistent.mcname = player
+                    mcname = player
+                    persistent.playername = new_name
+                    player = new_name
+
+            if lowername == "monika":
+                $ adjustNames(tempname)
+                m 1tkc "Really?"
+                m "That's the same as mine!"
+                m 1tku "Well..."
+                m "Either it really is your name or you're playing a joke on me."
+                m 1hua "But it's fine by me if that's what you want me to call you~"
+
+            elif mas_good_name_comp.search(tempname):
+                $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
+                m 1sub "[good_quip]"
+                $ adjustNames(tempname)
+                m 3esa "Ok then! From now on, I'll call you '{i}[player]{/i}'."
+                m 1hua "Ehehe~"
+                $ done = True
+
+            else:
+                $ adjustNames(tempname)
+                m 1eub "Ok then!"
+                m 3eub "From now on, I'll call you '{i}[player]{/i}'."
+                $ done = True
+
+        if not done:
+            show monika 1eua
     return
 
 init 5 python:
@@ -529,7 +546,7 @@ label mas_preferredname:
         m "Either that or you must really like that pseudonym."
 
     #Let's call the changename loop
-    call mas_player_name_enter_name_loop("Do you want me to call you something else?", "Tell me, what is it?")
+    call mas_player_name_enter_name_loop("Tell me, what is it?")
 
     #Unlock the name change event
     $ mas_unlockEVL("monika_changename","EVE")
@@ -552,7 +569,7 @@ init 5 python:
     #NOTE: This needs to be unlocked by the random name change event
 
 label monika_changename:
-    call mas_player_name_enter_name_loop("You want to change your name?", "What do you want me to call you?")
+    call mas_player_name_enter_name_loop("What do you want me to call you?")
     return
 
 default persistent._mas_player_bday = None

@@ -1984,6 +1984,11 @@ label monika_affection_nickname:
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
 
+                elif re.findall("mon(-|\\s)+ika", lowername):
+                    m 2tfc "..."
+                    m 2esc "Try again."
+                    show monika 1eua
+
                 elif persistent._mas_grandfathered_nickname and lowername == persistent._mas_grandfathered_nickname.lower():
                     jump .neutral_accept
 
