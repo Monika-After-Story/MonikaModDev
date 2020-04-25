@@ -409,8 +409,9 @@ label v0_11_1(version="v0_11_1"):
                 chess_unlock_ev.shown_count = 1
 
         # add missing xp for new users
-        if mas_isFirstSeshPast(datetime.date(2020, 4, 10)):
-            # only care about users who basically started with 0.11.0
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only care about users who basically started with 0.11.0 + week
+            # ago
 
             # calc avg hr per session
             ahs = (
@@ -418,8 +419,8 @@ label v0_11_1(version="v0_11_1"):
                 / float(mas_getTotalSessions())
             )
 
-            # only care about users with under 1 hour session time avg
-            if ahs < 1:
+            # only care about users with under 2 hour session time avg
+            if ahs < 2:
                 lvls_gained, xptnl = store.mas_xp._grant_on_pt()
              
                 # only give users levels if they didn't earn what we 
