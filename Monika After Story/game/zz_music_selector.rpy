@@ -105,6 +105,15 @@ init -1 python in songs:
         )
 
 
+    def hasMusicMuted():
+        """
+        Checks if the player has the music channel muted or the 'Mute All' option enabled.
+
+        RETURNS: True if the music channel is muted or the 'Mute All' option is enabled, False otherwise
+        """
+        return renpy.game.preferences.mute["music"] or getUserVolume("music") == 0.0
+
+
     def getPlayingMusicName():
         #
         # Gets the name of the currently playing song.
@@ -828,31 +837,54 @@ init 10 python:
 #style music_menu_label_text is gui_label_text
 
 #style music_menu_return_button is navigation_button
-style music_menu_return_button_text is navigation_button_text
-style music_menu_prev_button_text is navigation_button_text:
-    min_width 135
-    text_align 1.0
-
-style music_menu_outer_frame is game_menu_outer_frame
 style music_menu_navigation_frame is game_menu_navigation_frame
+style music_menu_navigation_frame_dark is game_menu_navigation_frame
 style music_menu_content_frame is game_menu_content_frame
+style music_menu_content_frame_dark is game_menu_content_frame
 style music_menu_viewport is game_menu_viewport
 style music_menu_side is game_menu_side
 style music_menu_label is game_menu_label
+style music_menu_label_dark is game_menu_label_dark
 style music_menu_label_text is game_menu_label_text
+style music_menu_label_text_dark is game_menu_label_text_dark
 
 style music_menu_return_button is return_button:
     xminimum 0
     xmaximum 200
     xfill False
 
+style music_menu_return_button_dark is return_button:
+    xminimum 0
+    xmaximum 200
+    xfill False
+
+style music_menu_return_button_text is navigation_button_text
+
+style music_menu_return_button_text_dark is navigation_button_text_dark
+
 style music_menu_prev_button is return_button:
     xminimum 0
     xmaximum 135
     xfill False
 
-style music_menu_outer_frame:
+style music_menu_prev_button_dark is return_button:
+    xminimum 0
+    xmaximum 135
+    xfill False
+
+style music_menu_prev_button_text is navigation_button_text:
+    min_width 135
+    text_align 1.0
+
+style music_menu_prev_button_text_dark is navigation_button_text_dark:
+    min_width 135
+    text_align 1.0
+
+style music_menu_outer_frame is game_menu_outer_frame:
     background "mod_assets/music_menu.png"
+
+style music_menu_outer_frame_dark is game_menu_outer_frame_dark:
+    background "mod_assets/music_menu_d.png"
 
 style music_menu_button is navigation_button:
     size_group "navigation"
@@ -862,12 +894,19 @@ style music_menu_button is navigation_button:
 
 style music_menu_button_text is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
-    font "mod_assets/font/mplus-2p-regular.ttf"
+    font store.mas_ui.music_menu_font
     color "#fff"
     outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
     hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
     insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
 
+style music_menu_button_text_dark is navigation_button_text:
+    properties gui.button_text_properties("navigation_button")
+    font store.mas_ui.music_menu_font
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
 # Music menu 
 #
@@ -894,24 +933,24 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     zorder 200
 
-    style_prefix mas_ui.mms_style_prefix
+    style_prefix "music_menu"
 
     frame:
-        style mas_ui.mms_frame_outer_style
+        style "music_menu_outer_frame"
 
         hbox:
 
             frame:
-                style mas_ui.mms_frame_navigation_style
+                style "music_menu_navigation_frame"
 
             frame:
-                style mas_ui.mms_frame_content_style
+                style "music_menu_content_frame"
 
                 transclude
 
         # this part copied from navigation menu
         vbox:
-            style_prefix mas_ui.mms_style_prefix
+            style_prefix "music_menu"
 
             xpos gui.navigation_xpos
     #        yalign 0.4
@@ -930,12 +969,12 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             # dynamic prevous text, so we can keep button size alignments
             if page_num > 0:
                 textbutton _("<<<< Prev"):
-                    style mas_ui.mms_button_prev_style
+                    style "music_menu_prev_button"
                     action Return(page_num - 1)
 
             else:
                 textbutton _( " "):
-                    style mas_ui.mms_button_prev_style
+                    style "music_menu_prev_button"
                     sensitive False
 
 #                if more_pages:
@@ -947,15 +986,15 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
             if more_pages:
                 textbutton _("Next >>>>"):
-                    style mas_ui.mms_button_return_style
+                    style "music_menu_return_button"
                     action Return(page_num + 1)
 
         textbutton _(songs.NO_SONG): 
-            style mas_ui.mms_button_return_style
+            style "music_menu_return_button"
             action Return(songs.NO_SONG)
 
         textbutton _("Return"):
-            style mas_ui.mms_button_return_style
+            style "music_menu_return_button"
             action Return(return_value)
 
     label "Music Menu"
@@ -1115,4 +1154,3 @@ init python:
             else:
                 # otherwise we can enable interactions normally
                 mas_DropShield_mumu()
-

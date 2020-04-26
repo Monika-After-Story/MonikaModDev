@@ -1518,7 +1518,7 @@ label mas_reaction_hotchocolate:
     else:
         python:
             mas_giftCapGainAff(3)
-            those = "these" if not morning_flag and mas_isWinter() else "those"
+            those = "these" if mas_current_background.isFltNight() and mas_isWinter() else "those"
 
         m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
 

@@ -154,6 +154,7 @@ init python:
             - Extra hotkey
             - Music hotkey
             - Play button + hotkey
+            - Music controller hotkeys
 
         Intended Flow:
             - Idle mode ends
@@ -169,12 +170,53 @@ init python:
             - Extra hotkey
             - Music hotkey
             - Play button + hotkey
+            - Music controller hotkeys
 
         Intended Flow:
             - Idle mode starts
         """
         mas_HKRaiseShield()
         store.hkb_button.play_enabled = False
+
+
+    ################## Piano mode workflow ####################################
+    # used when Monika plays her piano
+
+    def mas_DropShield_piano():
+        """
+        Enables:
+            - text speed
+            - escape key
+            - Music button + hotkey
+            - Music Menu
+            - Calendar overlay
+
+        Shows:
+            - hotkey buttons
+        """
+        mas_resetTextSpeed()
+        enable_esc()
+        mas_MUMUDropShield()
+        mas_calDropOverlayShield()
+        HKBShowButtons()
+
+    def mas_RaiseShield_piano():
+        """
+        Disables:
+            - text speed
+            - escape key
+            - Music button + hotkey
+            - Music Menu
+            - Calendar overlay
+
+        Hides:
+            - hotkey buttons
+        """
+        mas_disableTextSpeed()
+        disable_esc()
+        mas_MUMURaiseShield()
+        mas_calRaiseOverlayShield()
+        HKBHideButtons()
 
 
 ################################## GENERALIZED ################################
@@ -210,6 +252,37 @@ init python:
         store.mas_hotkeys.music_enabled = False
         store.hkb_button.music_enabled = False
         store.songs.enabled = False
+
+
+    ################## Enable / Disable Music interactions ####################
+    # specifically for enabling and disabling all music-based interactions
+
+    def mas_MUINDropShield():
+        """
+        Enables:
+            - Music button + hotkey
+            - Music Menu
+            - Music controller keys
+
+        Intended Flow:
+            - Whenever all music-based interactions need to be enabled
+        """
+        mas_MUMUDropShield()
+        store.mas_hotkeys.mu_ctrl_enabled = True
+
+
+    def mas_MUINRaiseShield():
+        """
+        Disables:
+            - Music button + hotkey
+            - Music Menu
+            - Music controller keys
+
+        Intended Flow:
+            - Whenever all music-based interactions need to be disabled
+        """
+        mas_MUMURaiseShield()
+        store.mas_hotkeys.mu_ctrl_enabled = False
 
 
     ################## dlg <-> idle transitions ###############################
