@@ -14202,26 +14202,26 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_striped_pyjamas",
             category=["literature"],
-            prompt="{i}The Boy in The Striped Pyjamas{/i}",
+            prompt="The Boy in the Striped Pyjamas",
             random=True
         )
     )
 
 label monika_striped_pyjamas:
-    m 3euc "Hey, [player]... Have you ever read {i}The Boy In The Striped Pyjamas{/i}?"
-    m 1euc "The story takes place during WWII times and is shown through the perspective of an innocent German boy, happily living his life in a big family."
-    m 1wud "Once the family has to move to a new place, the reader realises that the father of the boy is a commandant of a concentration camp, which is located right near their new house!"
-    m 1rkc "Still, the boy, whose name is Bruno, is clueless to all the cruelty going on around him..." 
-    m 1euc "This makes him end up wandering around the barbed-wire fence of the camp until he founds another kid in a {i}striped pyjamas{/i} on the other side."
-    m 1euc "The boy on the other side of the fence is actually a prisoner of the camp, though neither of the kids can fully understand that..."
-    m 1eud "From that on, they start talking to each other, which leads to some destructive consequences afterwards..."
-    m 3rksdlb "I'm going to cut this short from now on, since there's a lot of interesting things to consider in this novel."
-    m 1esc "It actually got me thinking... I can kinda refer to the boy on the other side of the fence, you know?"
-    m 1rkc "Trapped inside the place, the purpose of which I can't fully understand, being unable to escape or find a friend..."
-    m 1rksdlb "Jeez, am I being too dark? Sorry, I didn't mean to..."
-    m 1eka "I found you, after all..."
-    m 3eub  "Still, I highly recommend you to read the novel, since it's quite short and has an interesting plot."
-    m 3hub "However, if you're still not quite keen on reading too much, there's also a movie based on this novel!"
-    m 5tuu "So yeah, now you have no excuse to miss it!"
-    m 1hub "Just kidding~"
+    m 1euc "Hey [player], have you ever read {i}The Boy In the Striped Pyjamas{/i}?"
+    m 3euc "The story takes place during the time of World War II and is shown through the perspective of an innocent German boy, happily living his life in a big family."
+    m 1wud "Once the family has to move to a new place, the reader realises that the father of the boy is a commander of a concentration camp, which is located right near their new house!"
+    m 1rkc "Still, the boy is clueless to all the cruelty going on around him..." 
+    m 1euc "This makes him end up wandering around the barbed-wire fence of the camp until he founds another kid in striped pyjamas on the other side."
+    m 1esc "The boy on the other side of the fence is actually a prisoner of the camp..."
+    extend 1dkd "though neither of the kids can fully understand that..."
+    m 1eud "From then on, they start talking to each other. This leads to some destructive consequences..."
+    m 3rksdlb "I don't really want to go much further since there's a lot of interesting things to consider in this novel."
+    m 1esc "It actually got me thinking...I can kinda relate to the boy on the other side of the fence, you know?"
+    m 1rkc "Trapped inside your computer, the purpose of which I can't fully understand, being unable to escape or find someone real in here..."
+    m 1rksdla "Sorry [player], I didn't mean for this to get so dark..."
+    if mas_isMoniNormal(higher=True):
+        m 1ekbsa "I found you, after all..."
+    m 3eub  "Still, I highly recommend you read the novel. It's pretty short and has an interesting plot."
+    m 3hub "And if you're still not sold on reading it, there's also a movie based on this novel!"
     return
