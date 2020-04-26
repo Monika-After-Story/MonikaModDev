@@ -1916,7 +1916,7 @@ default persistent._mas_grandfathered_nickname = None
 label monika_affection_nickname:
     python:
         #NOTE: Moni nicknames use a slightly altered list to exclude male exclusive titles/nicknames
-        good_moni_nickname_comp = re.compile('|'.join(mas_good_nickname_list_base), re.IGNORECASE)
+        mas_good_monika_nickname_comp = re.compile('|'.join(mas_good_monika_nickname_list), re.IGNORECASE)
 
         # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
@@ -2002,7 +2002,7 @@ label monika_affection_nickname:
                         if inputname == "Monika":
                             m 3hua "Ehehe, back to the classics I see~"
 
-                        elif good_moni_nickname_comp.search(inputname):
+                        elif mas_good_monika_nickname_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
 

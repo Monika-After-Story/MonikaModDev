@@ -366,6 +366,7 @@ init 3 python:
     ]
 
     mas_good_player_nickname_list = mas_good_nickname_list_base + mas_good_nickname_list_player_modifiers
+    mas_good_monika_nickname_list = mas_good_nickname_list_base + mas_good_nickname_list_monika_modifiers
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
@@ -405,11 +406,11 @@ init 3 python:
         "orgasm",
         "overlord",
         "penetrat",
-        "pillows",
+        "pillow",
         "sex",
         "spank",
-        "step(-|\\s)+bro",
-        "step(-|\\s)+sis",
+        "step(-|\\s)*bro",
+        "step(-|\\s)*sis",
         "superman",
         "superwoman",
         "thicc",
@@ -418,7 +419,7 @@ init 3 python:
         "virgin"
     ]
 
-    mas_good_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
+    mas_good_player_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
     mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
     mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
 
@@ -508,7 +509,7 @@ label mas_player_name_enter_name_loop(input_prompt):
                 m "Either it really is your name or you're playing a joke on me."
                 m 1hua "But it's fine by me if that's what you want me to call you~"
 
-            elif mas_good_name_comp.search(tempname):
+            elif mas_good_player_name_comp.search(tempname):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
                 $ adjustNames(tempname)
@@ -540,13 +541,23 @@ init 5 python:
 label mas_preferredname:
     m 1euc "I've been wondering about your name."
     m 1esa "Is '[player]' really your name?"
+
     if renpy.windows and currentuser.lower() == player.lower():
         m 3esa "I mean, it's the same as your computer's name..."
         m 1eua "You're using '[currentuser]' and '[player].'"
         m "Either that or you must really like that pseudonym."
 
-    #Let's call the changename loop
-    call mas_player_name_enter_name_loop("Tell me, what is it?")
+    m 1eua "Would you like me to call you something else?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like me to call you something else?{fast}"
+
+        "Yes.":
+            #Let's call the changename loop
+            call mas_player_name_enter_name_loop("Tell me, what is it?")
+
+        "No.":
+            m 3eua "Okay, just let me know if you change your mind."
 
     #Unlock the name change event
     $ mas_unlockEVL("monika_changename","EVE")
