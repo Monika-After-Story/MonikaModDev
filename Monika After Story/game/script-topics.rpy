@@ -14216,7 +14216,7 @@ label monika_thepassage:
     m 4eua "It's about a dystopian world filled with people infected by a strange virus which makes them act almost like vampires."
     m 6wud "But the thing is, they were infected on purpose by scientists."
     m 1rksdla "It's a bit... hard to explain."
-    m 3hub "Though, it's very interesting. I reccomend you read it!"
+    m 3hub "Though, it's very interesting. I recommend you read it!"
     m 5rub "Actually...{w=1.0} Have you read it?{nw}"
     $ _history_list.pop()
     menu:
