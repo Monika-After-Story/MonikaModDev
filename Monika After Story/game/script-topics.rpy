@@ -14195,3 +14195,48 @@ label monika_translating_poetry:
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_thepassage",
+            category=["literature"],
+            prompt="The Passage",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_thepassage:
+    m 5rub "Have you heard of The Passage?"
+    m 5hub "It's a wonderful book series by Justin Cronin."
+    m 3hksdlb "Well, actually, I haven't finished it yet."
+    m 1sub "But so far, I love it!"
+    m 4eua "It's about a dystopian world filled with people infected by a strange virus which makes them act almost like vampires."
+    m 6wud "But the thing is, they were infected on purpose by scientists."
+    m 1rksdla "It's a bit... hard to explain."
+    m 3hub "Though, it's very interesting. I reccomend you read it!"
+    m 5rub "Actually...{w=1.0} Have you read it?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Actually... Have you read it?{fast}"
+
+        "Yes.":
+            m 1sub "Oh! That's wonderful!"
+            m 1huu "Maybe we could talk about it some time?"
+            m 5dub "We could discuss our favorite characters... our favorite moments..."
+            m 3hub "I'd love that."
+            m 6hksdlb "...But no spoilers, please!"
+
+        "I'm still reading it.":
+            m 1sub "Oh! That's wonderful!"
+            m 1huu "Maybe we could talk about it some time?"
+            m 3tfu "Or a competition to see who finishes it first!"
+            m 5hub "Hehe, just kidding!"
+
+        "No.":
+            m 1rka "Aww..."
+            m 1hub "Well,{w=0.5}{nw}"
+            m 3hub "Well,{fast} if you ever get the time,{w=0.5} make sure you read it, okay?"
+    return
