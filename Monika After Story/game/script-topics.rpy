@@ -14206,14 +14206,14 @@ init 5 python:
         )
      )
 label monika_diving:
-        m 3eub "[player], have you heard about diving?"
-        m 3wub "It's very exciting. Just imagine you are diving."
-        m 3wub "You can see a wonderful underwater world full of different marine life."
-        m 7eub "There you can see: schools of fish, coral reefs, and sea greens."
-        m 2wub "There may be sharks."
-        m 3esb "If you meet a shark, then here is one rule for you."
-        m 3esb "Do not make sudden movements."
-        m 2euc "Although meeting a shark can be dangerous for you."
-        m 3eub "If you are afraid to dive alone, then I will keep you company, someday."
-        m 3tsu "You're not afraid to get wet."
+       m 3eub "[player], have you heard about diving?"
+       m 3wub "It's very exciting. Just imagine you are diving."
+       m 3wub "You can see a wonderful underwater world full of different marine life."
+       m 7eub "There you can see: schools of fish, coral reefs, and sea greens."
+       m 2wub "There may be sharks."
+       m 3esb "If you meet a shark, then here is one rule for you."
+       m 3esb "Do not make sudden movements."
+       m 2euc "Although meeting a shark can be dangerous for you."
+       m 3eub "If you are afraid to dive alone, then I will keep you company, someday."
+       m 3tsu "You're not afraid to get wet."
     return
