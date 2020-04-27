@@ -541,6 +541,14 @@ label mas_topic_rerandom:
     )
     return
 
+##Generic rerandom work label
+#IN:
+#   initial_ask_text_multiple - Initial question Monika asks if there's multiple items to rerandom
+#   initial_ask_text_one - Initial text Monika says if there's only one item to rerandom
+#   talk_about_more_text - Question Monika asks if there's more things you'd like to rerandom
+#   caller_label - The label that called this label
+#   persist_var - The persistent variable which stores the derandomed eventlabels
+#   ev_db_code - The event database code for the topics we're rerandoming (Default: "EVE")
 label mas_rerandom(initial_ask_text_multiple, initial_ask_text_one, talk_about_more_text, caller_label, persist_var, ev_db_code="EVE"):
     python:
         derandomlist = mas_get_player_derandoms(persist_var)
