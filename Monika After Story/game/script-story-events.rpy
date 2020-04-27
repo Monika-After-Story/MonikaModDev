@@ -513,14 +513,14 @@ label mas_player_name_enter_name_loop(input_prompt):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
                 $ adjustNames(tempname)
-                m 3esa "Ok then! From now on, I'll call you '{i}[player]{/i}'."
+                m 3esa "Ok then! From now on, I'll call you '[player].'"
                 m 1hua "Ehehe~"
                 $ done = True
 
             else:
                 $ adjustNames(tempname)
                 m 1eub "Ok then!"
-                m 3eub "From now on, I'll call you '{i}[player]{/i}'."
+                m 3eub "From now on, I'll call you '[player].'"
                 $ done = True
 
         if not done:

@@ -2021,7 +2021,7 @@ label monika_affection_nickname:
                             m 1hua "I'll go back to my name, then."
 
                         else:
-                            m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
+                            m 3hua "From now on, you can call me '[m_name].'"
                             m 1hua "Ehehe~"
                         $ done = True
 
