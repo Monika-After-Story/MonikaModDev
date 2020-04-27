@@ -792,9 +792,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_unlock_chess",
             conditional=(
-                "store.mas_xp.level() >= 4 "
-                "and not persistent.game_unlocks['chess'] "
-                "and not seen_event('mas_unlock_chess')"
+                "store.mas_xp.level() >= 8 "
+                "or store.mas_games._total_games_played() > 99"
             ),
             action=EV_ACT_QUEUE
         )
@@ -802,13 +801,29 @@ init 5 python:
 
 label mas_unlock_chess:
     m 1eua "So, [player]..."
-    if renpy.seen_label('game_pong'):
-        m 1eua "I thought that you might be getting bored with Pong."
-    else:
-        m 3eua "I know you haven't tried playing Pong with me, yet."
 
-    m 3hua "But I have a new game for us to play!"
-    m "This one's a lot more strategic..."
+    if store.mas_games._total_games_played() > 5:
+        $ games = "games"
+        if not renpy.seen_label('game_pong'):
+            $ games = "Hangman"
+        elif not renpy.seen_label('game_hangman'):
+            $ games = "Pong"
+
+        if store.mas_games._total_games_played() > 99:
+            m 1hub "You {i}really{/i} seem to enjoy playing [games] with me!"
+        else:
+            m 1eub "You seem to have been enjoying playing [games] with me!"
+
+        m 3eub "Well guess what? {w=0.2}I have a new game for us to play!"
+
+    else:
+        $ really = "really "
+        if store.mas_games._total_games_played() == 0:
+            $ really = ""
+
+        m 3rksdla "I know you haven't [really]been interested in the other games I made...{w=0.2}so I thought I'd try a completely different kind of game..."
+
+    m 3tuu "This one's a lot more strategic..."
     m 3hub "It's Chess!"
 
     if persistent._mas_pm_likes_board_games is False:
@@ -828,7 +843,7 @@ label mas_unlock_chess:
     m 1hua "Just think of it as playing a fun game with your beautiful girlfriend..."
     m "And I promise I'll go easy on you."
 
-    if not is_platform_good_for_chess():
+    if not mas_games.is_platform_good_for_chess():
         m 2tkc "...Hold on."
         m 2tkx "Something isn't right here."
         m 2ekc "I seem to be having trouble getting the game working."
@@ -836,7 +851,7 @@ label mas_unlock_chess:
         m 2ekc "I'm sorry, [player], but chess will have to wait."
         m 4eka "I promise we'll play if I get it working, though!"
 
-    $ persistent.game_unlocks['chess']=True
+    $ mas_unlockGame("chess")
     return
 
 init 5 python:
@@ -844,7 +859,10 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_unlock_hangman",
-            conditional="store.mas_xp.level() >= 8",
+            conditional=(
+                "store.mas_xp.level() >= 4 "
+                "or store.mas_games._total_games_played() > 49"
+            ),
             action=EV_ACT_QUEUE
         )
     )
@@ -855,19 +873,16 @@ label mas_unlock_hangman:
     else:
         $ game_name = "Hangman"
 
-    m 1eua "Guess what, [player]."
-    m 3hub "I got a new game for you to try!"
-    if renpy.seen_label('game_pong') and renpy.seen_label('game_chess'):
-        m 1lksdlb "You're probably bored with Chess and Pong already."
+    m 1eua "So, [player]..."
 
-    elif renpy.seen_label('game_pong') and not renpy.seen_label('game_chess'):
-        m 3hksdlb "I thought you'd like to play Chess, but you've been so busy with Pong instead!"
+    if store.mas_games._total_games_played() > 49:
+        m 3eub "Since you seem to love playing pong so much, I figured you might like to play other games with me as well!"
 
-    elif renpy.seen_label('game_chess') and not renpy.seen_label('game_pong'):
-        m 1hksdlb "You really loved playing Chess with me, but you haven't touched Pong yet."
+    elif renpy.seen_label('game_pong'):
+        m 1eua "I thought that you might be getting bored with Pong."
 
     else:
-        m 1ekc "I was actually worried that you didn't like the other games I made for us to play..."
+        m 3eua "I know you haven't tried playing Pong with me, yet."
 
     m 1hua "Soooo~"
     m 1hub "I made [game_name]!"
@@ -894,7 +909,7 @@ label mas_unlock_hangman:
     else:
         m 1hua "I hope you'll enjoy playing it with me!"
 
-    $ persistent.game_unlocks['hangman'] = True
+    $ mas_unlockGame("hangman")
     return
 
 init 5 python:
@@ -902,7 +917,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_unlock_piano",
-            conditional="store.mas_xp.level() >= 18",
+            conditional="store.mas_xp.level() >= 12",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
@@ -929,7 +944,7 @@ label mas_unlock_piano:
     m 3hua "It's a wonderful feeling."
     m 1eua "I hope this isn't too forceful, but I would love it if you tried."
     m 1eka "For me, please?~"
-    $ persistent.game_unlocks['piano'] = True
+    $ mas_unlockGame("piano")
     return
 
 # NOTE: this has been partially disabled
@@ -997,7 +1012,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_monikai_detected",
             conditional=(
-                "is_running(['monikai.exe']) and " +
+                "is_running(['monikai.exe']) and "
                 "not seen_event('mas_monikai_detected')"
             ),
             action=EV_ACT_QUEUE
@@ -2241,7 +2256,10 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_credits_song",
-            conditional="store.mas_anni.pastOneMonth()",
+            conditional=(
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            ),
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )

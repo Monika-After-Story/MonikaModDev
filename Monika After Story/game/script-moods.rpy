@@ -604,9 +604,9 @@ label mas_mood_bored:
 
     python:
         unlockedgames = [
-            game
-            for game in persistent.game_unlocks
-            if persistent.game_unlocks[game]
+            game_ev.prompt.lower()
+            for game_ev in mas_games.game_db.itervalues()
+            if mas_isGameUnlocked(game_ev.prompt)
         ]
 
         gamepicked = renpy.random.choice(unlockedgames)

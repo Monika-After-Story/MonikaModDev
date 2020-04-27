@@ -1688,7 +1688,6 @@ python early:
             # current state
             self._state = self._STATE_IDLE
 
-
         def _isOverMe(self, x, y):
             """
             Checks if the given x and y coodrinates are over this button.
@@ -1700,14 +1699,12 @@ python early:
                 and 0 <= (y - self.ypos) <= self.height
             )
 
-
         def _playActivateSound(self):
             """
             Plays the activate sound if we are allowed to.
             """
             if not self.disabled or self.sound_when_disabled:
                 renpy.play(self.activate_sound, channel="sound")
-
 
         def _playHoverSound(self):
             """
@@ -1716,6 +1713,152 @@ python early:
             if not self.disabled or self.sound_when_disabled:
                 renpy.play(self.hover_sound, channel="sound")
 
+        @staticmethod
+        def create_st(
+                text_str,
+                incl_disb_text,
+                *args,
+                **kwargs
+        ):
+            """
+            Creates a MASButtonDisplyable using a single text string.
+
+            Default font/textsize/colors/outlines are used here.
+
+            IN:
+                text_str - the text to use for the button
+                incl_disb_text - True if we may have a disabled state for
+                    this button, False if not
+                *args - positional args to pass into constructor.
+                    do NOT include:
+                        - idle_text
+                        - hover_text
+                        - disable_text
+                **kwargs - keyword args to pass into constructor
+
+            RETURNS: created MASButtondisplayable
+            """
+            if incl_disb_text:
+                disb_button = Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                )
+            else:
+                disb_button = Null()
+
+            return MASButtonDisplayable(
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[],
+                ),
+                disb_button,
+                *args,
+                **kwargs
+            )
+
+        @staticmethod
+        def create_stb(
+                text_str,
+                incl_disb_text,
+                *args,
+                **kwargs
+        ):
+            """
+            Creates a MASButtonDisplayable using a snigle text string and
+            standard button images.
+
+            IN:
+                text_str - the text to use for the button
+                incl_disb_text - True if we may have a disabled state for this
+                    button, False if not
+                *args - positional args to pass into constructor.
+                    do NOT include:
+                        - idle_text
+                        - hover_text
+                        - disable_text
+                        - idle_back
+                        - hover_back
+                        - disable_back
+                **kwargs - keyword args to pass into constructor
+            """
+            # determine disabled stuff
+            if incl_disb_text:
+                disb_button = Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                )
+                disb_back = MASButtonDisplayable._gen_bg("insensitive")
+            else:
+                disb_button = Null()
+                disb_back = Null()
+
+            return MASButtonDisplayable(
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[],
+                ),
+                disb_button,
+                MASButtonDisplayable._gen_bg("idle"),
+                MASButtonDisplayable._gen_bg("hover"),
+                disb_back,
+                *args,
+                **kwargs
+            )
+
+        @staticmethod
+        def _gen_bg(prefix):
+            """
+            Attempts to pull choice button's Frame and build an appropraite
+                image with it using the given prefix. 
+                This is specifically for MASButtonDisplayables.
+
+            IN:
+                prefix - prefix to use in the frame
+                    do NOT append "_"
+
+            RETURNS: Frame object to use
+            """
+            gen_frame = mas_prefixFrame(
+                mas_getPropFromStyle("choice_button", "background"),
+                prefix
+            )
+
+            if gen_frame is None:
+                # backup frame in case cannot find choice
+                return Frame(
+                    mas_getTimeFile(
+                        "mod_assets/buttons/generic/{0}_bg.png".format(prefix)
+                    ),
+                    Borders(5, 5, 5, 5)
+                )
+
+            return gen_frame
 
         def disable(self):
             """
@@ -1726,7 +1869,6 @@ python early:
             self.disabled = True
             self._state = self._STATE_DISABLED
 
-
         def enable(self):
             """
             Enables this button. This changes the internal state, so its
@@ -1735,7 +1877,6 @@ python early:
             """
             self.disabled = False
             self._state = self._STATE_IDLE
-
 
         def getSize(self):
             """
@@ -1747,7 +1888,6 @@ python early:
                     [1]: height
             """
             return (self.width, self.height)
-
 
         def ground(self):
             """
@@ -1766,7 +1906,6 @@ python early:
                 else:
                     self._state = self._STATE_IDLE
 
-
         def hover(self):
             """
             Hovers this button. This changes the internal state, so its
@@ -1779,13 +1918,12 @@ python early:
                 self.hovered = True
                 self._state = self._STATE_HOVER
 
-
         def render(self, width, height, st, at):
 
             # pull out the current button back and text and render them
             render_text, render_back = self._button_states[self._state]
             render_text = renpy.render(render_text, width, height, st, at)
-            render_back = renpy.render(render_back, width, height, st, at)
+            render_back = renpy.render(render_back, self.width, self.height, st, at)
 
             # what is the text's with and height
             rt_w, rt_h = render_text.get_size()
@@ -1802,7 +1940,6 @@ python early:
 
             # return rendere
             return r
-
 
         def event(self, ev, x, y, st):
 
@@ -3006,12 +3143,6 @@ init -1 python in _mas_root:
         renpy.game.persistent.seen_monika_in_room = False
         renpy.game.persistent.ever_won = {
             'pong':False,
-            'chess':False,
-            'hangman':False,
-            'piano':False
-        }
-        renpy.game.persistent.game_unlocks = {
-            'pong':True,
             'chess':False,
             'hangman':False,
             'piano':False
@@ -6249,7 +6380,6 @@ default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
-default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
