@@ -14195,3 +14195,63 @@ label monika_translating_poetry:
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_soft_rains",
+            category=['literature'],
+            prompt="Soft Rains",
+            random=True,
+            pool=False,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+label monika_soft_rains:
+    m 1rkc "..."
+    m 2rkc "..."
+    m 2ekc "Hey, [player].{w=0.5} I've been doing a little more reading recently, and I stumbled across something that..."
+    m 2ekc "Well,{w=0.4} gave me some pause for thought."
+    m 1eka "I'd really love to share it with you, [player]."
+    m "So,{w=0.5} how about it?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "So,{w=0.5} how about it?{fast}"
+        "Sure!":
+            m 1eub "Okay!"
+            m 1dsc "..."
+            m 1dsd "{i}There will come soft rains and the smell of the ground, {w=0.8}and swallows circling with their shimmering sound...{/i}"
+            m 1dsc "{i}And frogs in the pools singing at night, {w=0.8}and wild plum trees in tremulous white...{/i}"
+            m 3dsd "{i}Robins will wear their feathery fire, {w=0.8}whistling their whims on a low fence-wire...{/i}"
+            m 3dsc "{i}And not one will know of the war, {w=0.8}not one, {w=0.8}will care at last when it is done...{/i}"
+            m 6dsd "{i}Not one would mind, neither bird nor tree, {w=0.8}if mankind perished utterly...{/i}"
+            m 6dkc "{i}And Spring herself, when she woke at dawn..."
+            m 6ekd "{i}Would scarcely know that we were gone.{/i}"
+            m 2ekc "..."
+            m 2eka "So,{w=0.4} I really wanted to talk to you about this one, [player]..."
+            m 2eka "The author, {w=0.5}{i}Sara Teasdale,{/i}{w=0.5} penned this poem in a world consumed by war."
+            m 2rka "I know things are {i}relatively{/i} peaceful now..."
+            m 2ekc "But..."
+            m 3eka "Well, {w=0.6}the message remains, {w=0.6}doesn't it?"
+            m 4eka "We {i}are{/i} our own record, you know?"
+            m 1rksdlc "The world really {w=0.2}{i}wouldn't{/i}{w=0.2} care if we just...{w=0.7} {i}disappeared{/i}."
+            m 1eksdlc "But it made me think, [player]. If something - {w=0.6}{i}anything{/i}{w=0.6} - happened to you, {w=0.6}I wouldn't know either..."
+            m 1rksdld "I-{w=0.7}I wouldn't..."
+            m 6dkc "..."
+            m 6dktpd "[player],{w=0.7} I..."
+            m 6dktuc "..."
+            m 2dktda "..."
+            m 1ektua "I love you, [player]. {w=0.8}I love you so very much..."
+            m 1ektdc "Please, {w=0.6}always be careful for me, {w=0.8}okay?"
+            m 1ektda "I might not know,{w=0.6} but I will {b}always{/b} care,{w=0.6} [player]."
+            m 2ektda "And {w=0.6}[player]?"
+            m 1ektda "Thank you."
+            m 6rktda "..."
+            m 2eka "So..."
+            m 1ekbla "What else shall we do today, my love?"
+        "Maybe later.":
+            m 2eka "Oh.{w=0.6} Well, okay, [player]."
+            m 3eka "Just let me know if you change your mind, alright?"
+    return "love"
