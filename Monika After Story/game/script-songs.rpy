@@ -172,7 +172,7 @@ label mas_song_derandom:
 
         "A little.":
             m 1eka "That's alright."
-            m 1eua "I'll sing it whenever you want me to then. Just let me know if you want to hear it."
+            m 1eua "I'll only sing it when you want me to then. Just let me know if you want to hear it."
             python:
                 mas_hideEVL(prev_topic, "SNG", derandom=True)
                 persistent._mas_player_derandomed_songs.append(prev_topic)
