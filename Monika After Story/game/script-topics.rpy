@@ -14215,5 +14215,5 @@ init 5 python:
       m 3esb "Do not make sudden movements."
       m 2euc "Although meeting a shark can be dangerous for you."
       m 3eub "If you are afraid to dive alone, then I will keep you company,someday."
-      m 3tsu "You're not afraid to get wet.ehehe."
+      m 3tsu "You're not afraid to get wet."
    return
