@@ -199,7 +199,7 @@ init -950 python in mas_ev_data_ver:
             # go through verification map and verify
             verify = _verify_map.get(index, None)
             if verify is not None and not verify(ev_line[index]):
-                # verification failed! 
+                # verification failed!
                 return False
 
         return True
@@ -207,7 +207,7 @@ init -950 python in mas_ev_data_ver:
 
     def verify_event_data(per_db):
         """
-        Verifies event data of the given persistent data. Entries that are 
+        Verifies event data of the given persistent data. Entries that are
         invalid are removed. We only check the bits of data that we have, so
         data lines with smaller sizes are only validated for what they have.
 
@@ -317,10 +317,10 @@ init 4 python:
 #        persistent._mas_ev_reset_date = datetime.date.today()
 
 #    else:
-        # 
+        #
 
 
-    # the mapping is built here so events can use to build 
+    # the mapping is built here so events can use to build
     # map databses to a code
     mas_all_ev_db_map = {
         "EVE": store.evhand.event_database,
@@ -340,7 +340,7 @@ init 4 python:
 
 init 6 python:
     # here we combine the data from teh databases so we can have easy lookups.
-    
+
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
     mas_all_ev_db = {}
@@ -386,8 +386,8 @@ init 6 python:
 
     def mas_hideEVL(
             ev_label,
-            code, 
-            lock=False, 
+            code,
+            lock=False,
             derandom=False,
             depool=False,
             decond=False
@@ -418,8 +418,8 @@ init 6 python:
 
     def mas_showEVL(
             ev_label,
-            code, 
-            unlock=False, 
+            code,
+            unlock=False,
             _random=False,
             _pool=False,
         ):
@@ -588,7 +588,7 @@ init -880 python:
         A Delayed action consists of the following:
 
         All exceptions are logged
-      
+
         id - the unique ID of this DelayedAction
         ev - the event this action is associated with
         conditional - the logical conditional we want to check before performing
@@ -601,7 +601,7 @@ init -880 python:
             NOTE: this is not checked for existence
             NOTE: this can also be a callable
                 the event would be passd in as ev
-                if callable, make this return True upon success and false 
+                if callable, make this return True upon success and false
                     othrewise
         flowcheck - FC constant saying when this delayed action should be
             checked
@@ -610,7 +610,7 @@ init -880 python:
         executed - True if this delayed action has been executed
             - Delayed actions that have been executed CANNOT be executed again
         cond_is_callable - True if the conditional is a callable instead of
-            a eval check. 
+            a eval check.
             NOTE: we do not check callable for correctness
         """
         import store.mas_utils as m_util
@@ -618,7 +618,7 @@ init -880 python:
         ERR_COND = "[ERROR] delayed action has bad conditional '{0}' | {1}\n"
 
 
-        def __init__(self, 
+        def __init__(self,
                 _id,
                 ev,
                 conditional,
@@ -709,17 +709,17 @@ init -880 python:
                     else:
                         # action must be a callable
                         self.executed = self.action(ev=self.ev)
-                            
+
             except Exception as e:
                 self.m_util.writelog(self.ERR_COND.format(
                     self.conditional,
                     str(e)
-                ))                   
+                ))
 #                raise e
 
             return self.executed
 
-        
+
         @staticmethod
         def makeWithLabel(
                 _id,
@@ -814,7 +814,7 @@ init -880 python:
             action = mas_delayed_action_map[action_id]
 
             # bitcheck the flow
-            if (action.flowcheck & flow) > 0:                        
+            if (action.flowcheck & flow) > 0:
                 if action():
                     # then pop the item if it was successful
                     mas_removeDelayedAction(action_id)
@@ -866,7 +866,7 @@ init -880 python:
         """
         Creates delayed actions given ids as args
 
-        assumes each arg is a valid id 
+        assumes each arg is a valid id
         """
         mas_addDelayedActions_list(args)
 
@@ -884,7 +884,7 @@ init -880 python in mas_delact:
         Adds MASDelayedAction ids to the persistent mas delayed action list.
 
         NOTE: this is only meant for code that runs super early yet needs to
-        add MASDelayedActions. 
+        add MASDelayedActions.
 
         NOTE: This will NOT add duplicates.
 
@@ -948,7 +948,7 @@ init 994 python in mas_delact:
     # this is also where we initialize the delayed action map
     def loadDelayedActionMap():
         """
-        Checks the persistent delayed action list and generates the 
+        Checks the persistent delayed action list and generates the
         runtime map of delayed actions
         """
         store.mas_addDelayedActions_list(
@@ -959,7 +959,7 @@ init 994 python in mas_delact:
     def saveDelayedActionMap():
         """
         Checks the runtime map of delayed actions and saves them into the
-        persistent value. 
+        persistent value.
 
         NOTE: this does not ADD to the persistent's list. This recreates it
             entirely.
@@ -1238,7 +1238,7 @@ init -1 python in evhand:
         """
         _unlockEvent(eventdb.get(evlabel, None))
 
-    
+
     def addYearsetBlacklist(evl, expire_dt):
         """
         Adds the given evl to the yearset blacklist, with the given expiration
@@ -1288,29 +1288,38 @@ init python:
     import datetime
 
     def addEvent(
-            event,
-            eventdb=None,
-            skipCalendar=False,
-            restartBlacklist=False,
-            code="EVE"
-        ):
-        #
-        # Adds an event object to the given eventdb dict
-        # Properly checksfor label and conditional statements
-        # This function ensures that a bad item is not added to the database
-        #
-        # NOTE: this MUST be ran after init level 4.
-        #
-        # IN:
-        #   event - the Event object to add to database
-        #   eventdb - The Event databse (dict) we want to add to
-        #       NOTE: DEPRECATED. Use code instead.
-        #       NOTE: this can still be used for custom adds.
-        #       (Default: None)
-        #   skipCalendar - flag that marks wheter or not calendar check should
-        #       be skipped
-        #   code - code of the event database to add to.
-        #       (Default: EVE) - event database
+        event,
+        eventdb=None,
+        skipCalendar=False,
+        restartBlacklist=False,
+        defaultSeenever=False,
+        code="EVE"
+    ):
+        """
+        Adds an event object to the given eventdb dict
+        Properly checksfor label and conditional statements
+        This function ensures that a bad item is not added to the database
+
+        NOTE: this MUST be ran after init level 4.
+
+        IN:
+            event - the Event object to add to database
+            eventdb - The Event databse (dict) we want to add to
+                NOTE: DEPRECATED. Use code instead.
+                NOTE: this can still be used for custom adds.
+                (Default: None)
+            skipCalendar - flag that marks wheter or not calendar check should
+                be skipped
+
+            restartBlacklist - True if this topic should be added to the restart blacklist
+                (Default: False)
+
+            defaultSeenever - True if this topic should be `True` in persistent._seen_ever.
+                (Default: False)
+
+            code - code of the event database to add to.
+                (Default: EVE) - event database
+        """
         if eventdb is None:
             eventdb = mas_all_ev_db_map.get(code, None)
 
@@ -1340,6 +1349,9 @@ init python:
         # check whether we should add the event in the restart blacklist
         if restartBlacklist:
             evhand.RESTART_BLKLST.append(event.eventlabel)
+
+        if defaultSeenever:
+            persistent._seen_ever[event.eventlabel] = True
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
@@ -1484,7 +1496,7 @@ init python:
                 (Default: False)
         """
         if ev:
-            
+
             if unlock:
                 ev.unlocked = True
 
@@ -1592,7 +1604,7 @@ init python:
         """
         This adds low priority or order-sensitive events onto the bottom of
         the event list. This is slow, but rarely called and list should be small.
-        
+
         IN:
             @event_label - a renpy label for the event to be called
             notify - True will trigger a notification if appropriate, False
@@ -1967,7 +1979,7 @@ init python:
 init 1 python in evhand:
     # mainly to contain action-based functions and fill an appropriate action
     # map
-    # all action-based functions are designed for speed, so they don't 
+    # all action-based functions are designed for speed, so they don't
     # do any sort of sanity checks
     # NOTE: do NOT use these in dialogue code. These are designed for
     #   internal use only
@@ -2053,7 +2065,7 @@ label call_next_event:
         # TODO: we should have a way to keep track of how many topics/hr
         #   users tend to end up with. without this data we cant really do
         #   too many things based on topic freqeuency.
-        #if not seen_event(event_label): 
+        #if not seen_event(event_label):
         #    # give whatver the hourly rate is for unseens
         #    $ store.mas_xp._grant_xp(store.mas_xp.xp_rate)
 
@@ -2162,7 +2174,7 @@ label prompt_menu:
     $ mas_RaiseShield_dlg()
 
     if store.mas_globals.in_idle_mode:
-        # if talk is hit here, then we retrieve label from mailbox and 
+        # if talk is hit here, then we retrieve label from mailbox and
         # call it.
         # after the event is over, we drop shields return to idle flow
         $ cb_label = mas_idle_mailbox.get_idle_cb()
@@ -2228,7 +2240,7 @@ label prompt_menu:
         )
 
     #Top level menu
-    # NOTE: should we force this to a particualr exp considering that 
+    # NOTE: should we force this to a particualr exp considering that
     # monika now rotates
     # NOTE: actually we could use boredom setup in here.
     show monika at t21
@@ -2487,7 +2499,7 @@ label mas_bookmarks:
             ]
 
         # generate list of propmt/label tuples of bookmarks
-        bookmarks_pl = [ 
+        bookmarks_pl = [
             (renpy.substitute(ev.prompt), ev.eventlabel)
             for ev in mas_get_player_bookmarks()
         ]
@@ -2505,7 +2517,7 @@ label mas_bookmarks:
 
 
 label mas_bookmarks_loop:
-    
+
     # sanity check for bookmark data
     if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
         # ensure that we have at least 1 bookmark to deal with and the evs and
@@ -2595,7 +2607,7 @@ label mas_bookmarks_unbookmark_loop:
 
             # re-generate bookmarks disp
             bookmarks_disp = regen(bookmarks_pl)
-        
+
         show monika at t11
         m 1eua "Okay, [player]..."
 
@@ -2615,4 +2627,3 @@ label mas_bookmarks_unbookmark_loop:
             return bookmarks_disp
 
     jump mas_bookmarks_unbookmark_loop
-
