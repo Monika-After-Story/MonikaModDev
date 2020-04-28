@@ -366,4 +366,7 @@ label quit:
         # clear image caches
         store.mas_sprites._clear_caches()
 
+        # xp calc
+        store.mas_xp.grant()
+
     return
