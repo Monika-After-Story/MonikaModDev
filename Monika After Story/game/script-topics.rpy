@@ -14209,7 +14209,9 @@ init 5 python:
 
 label monika_hot_spring:    
     m 1eua "Have you ever been to a hot spring, [player]?"
-    m 3eub "I've never been to one myself, but it's something I'd like to try when I get here."
+    m 3eub "There are many kinds all over the world, but I'm specifically thinking about the ones that are actually regulated and you're allowed to bathe in."
+    m 3hksdlb "Don't go jumping into some random pool of boiling water just yet!"
+    m 1eub "I've never bathed in a hot spring myself, but it's something I'd like to try when I get here."
     m 3dka "They're supposed to be a great way to relieve stress and rest a little."
     m 3hub "Not to mention the many health benefits!"
     m 4eub "They help you get good blood circulation for one. There's also some minerals in the water that can help boost your immune system, too!"
