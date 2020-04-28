@@ -11646,6 +11646,7 @@ label monika_players_control:
         $ line = "Especially with you by my side~"
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubla "[line]"
+    m 5ekbfa "There's no better way to enjoy a game than to be with the one I love."
     return
 
 init 5 python:
