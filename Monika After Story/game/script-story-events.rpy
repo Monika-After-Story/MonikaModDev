@@ -1370,7 +1370,7 @@ label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
-    
+
         m 3ekc "Do you think it had something to do with your game?{nw}"
         $ _history_list.pop()
         menu:
@@ -1666,7 +1666,7 @@ label monika_rpy_files:
         m 2etc "Unless..."
         m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
         m 2eka "But in case you didn't, I figured I'd ask..."
-    
+
         m "Are you sure you installed the right version, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -1805,7 +1805,7 @@ label mas_bday_player_bday_select_select:
         m 2eksdlc "[player]..."
         m 2rksdlc "You know I'm asking for your exact date of birth, right?"
         m 2hksdlb "It's just I'm having a hard time believing you're {i}that{/i} young."
- 
+
     else:
         m 1eua "Alright, [player]."
 
@@ -1848,7 +1848,7 @@ label mas_bday_player_bday_select_select:
                 selected_date,
                 range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
- 
+
     else:
         python:
             store.mas_calendar.addRepeatable_d(
@@ -2104,7 +2104,7 @@ label mas_change_to_def:
     elif mas_isMoniNormal(lower=True) and monika_chr.clothes != mas_clothes_def:
         m 1eka "Hey [player], I miss my old school uniform..."
         m 3eka "I'm just going to go change, be right back..."
-        
+
         call mas_clothes_change()
 
         m "Okay, what else should we do today?"

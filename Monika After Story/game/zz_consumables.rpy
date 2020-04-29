@@ -1094,7 +1094,7 @@ init 5 python:
 
     def mas_useThermos():
         """
-        Gets Monika to put her drink into a thermos when taking her somewhere if it is eligible 
+        Gets Monika to put her drink into a thermos when taking her somewhere if it is eligible
         """
         #Firstly, if we're already wearing a thermos, we should do nothing
         if monika_chr.is_wearing_acs_type("thermos-mug"):

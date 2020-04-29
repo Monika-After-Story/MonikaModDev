@@ -463,7 +463,7 @@ init -1 python:
 
             else:
                 # just replcae dots with underscores, prefix v
-                parsed_version = "v" + latest_version.replace(".", "_") 
+                parsed_version = "v" + latest_version.replace(".", "_")
                 lv_is_old = parsed_version in store.updates.version_updates
 
             # okay we have a latest version, compare to the current version

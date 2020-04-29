@@ -4,7 +4,7 @@ screen main_menu():
     tag menu
 
     style_prefix "main_menu"
-    
+
     add "menu_bg"
     #Removed adding other char imgs to avoid red text error
     frame:
@@ -13,7 +13,7 @@ screen main_menu():
 ## The use statement includes another screen inside this one. The actual
 ## contents of the main menu are in the navigation screen.
     use navigation
-    
+
     add "menu_particles"
     add "menu_particles"
     add "menu_particles"

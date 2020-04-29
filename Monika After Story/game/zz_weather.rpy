@@ -141,7 +141,7 @@ init python in mas_weather:
             rolled_chance=None
         ):
         """
-        Determines if weather should be rainiy/thunder/overcase, or none of 
+        Determines if weather should be rainiy/thunder/overcase, or none of
         those.
 
         IN:
@@ -433,7 +433,7 @@ init -10 python:
             isbg_wf_night - image PATH for island bg nighttime with frame
             isbg_wof_night - image PATH for island bg nighttime without framme
 
-            entry_pp - programming point to execute when switching to this 
+            entry_pp - programming point to execute when switching to this
                 weather
             exit_pp - programming point to execute when leaving this weather
 
@@ -442,7 +442,7 @@ init -10 python:
         import store.mas_weather as mas_weather
 
         def __init__(
-                self, 
+                self,
                 weather_id,
                 prompt,
                 sp_day,
@@ -479,11 +479,11 @@ init -10 python:
                 isbg_wf_night - image PATH for island bg nighttime with frame
                     If None, we use isbg_wf_day
                     (Default: None)
-                isbg_wof_night - image PATH for island bg nighttime without 
+                isbg_wof_night - image PATH for island bg nighttime without
                     framme
                     If None, we use isbg_wof_day
                     (Default: None)
-                entry_pp - programming point to execute after switching to 
+                entry_pp - programming point to execute after switching to
                     this weather
                     (Default: None)
                 exit_pp - programming point to execute before leaving this
@@ -535,7 +535,7 @@ init -10 python:
                 return result
             return not result
 
-        
+
         def entry(self, old_weather):
             """
             Runs entry programming point
@@ -614,7 +614,7 @@ init -10 python:
 ### define weather objects here
 
 init -1 python:
-   
+
     # default weather (day + night)
     mas_weather_def = MASWeather(
         "def",
@@ -763,7 +763,7 @@ init 800 python:
         NOTE: this does NOt call exit programming points
 
         IN:
-            _weather - weather to set to. 
+            _weather - weather to set to.
         """
         global mas_current_weather
         old_weather = mas_current_weather
@@ -797,7 +797,7 @@ init 800 python:
 ## Changes weather if given a proper weather object
 # NOTE: we always scene change here
 # NOTE: if you need to change weather without chanign scene, use the
-#   set 
+#   set
 #
 # IN:
 #   new_weather - weather object to change to
@@ -898,7 +898,7 @@ label monika_change_weather:
 
     if sel_weather == mas_current_weather and mas_weather.force_weather:
         m 1hua "That's the current weather, silly."
-        m "Try again~" 
+        m "Try again~"
         jump monika_change_weather
 
     $ skip_outro = False
@@ -916,7 +916,7 @@ label monika_change_weather:
             m 2etc "Maybe you changed your mind?"
             m 1dsc "..."
             $ skip_leadin = True
-            
+
     # TODO: maybe react to snow?
 
     if not skip_leadin:

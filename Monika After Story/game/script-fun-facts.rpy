@@ -750,7 +750,7 @@ init 5 python:
 label mas_fun_fact_cloud_weight:
     m 3eub "Did you know that the average cloud weighs 500 tonnes?"
     m 3eua "I have to admit, this one caught me by surprise, more so than some of the other facts."
-    m 1hua "I mean, they just look {i}really{/i} light and fluffy. " 
+    m 1hua "I mean, they just look {i}really{/i} light and fluffy. "
     extend 1eua "It's hard to imagine that something so heavy can just float in the air like that."
     m 3eub "It kind of reminds me of the classic question...what's heavier, a kilogram of steel or a kilogram of feathers?"
     m 1tua "You most likely already know the answer to that though, right [player]? Ehehe~"
