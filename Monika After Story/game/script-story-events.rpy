@@ -331,7 +331,6 @@ init 3 python:
     #Base list for good nicknames. Apply modifiers for specifying the use
     #These trigger a good response
     mas_good_nickname_list_base = [
-        "可愛い",
         "angel",
         "beautiful",
         "beauty",
