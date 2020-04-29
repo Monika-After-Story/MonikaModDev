@@ -13957,7 +13957,7 @@ label monika_ship_of_theseus:
     m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
     m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
     m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced? {w=0.2}{nw}"
-    extend 3rksdla "...except for the ones which make up your heart and brain, that is."
+    extend 3rksdla "...Except for the ones which make up your heart and brain, that is."
     m 3euc "In other words, the vast majority of cells that made you, 'you' 7 years ago are no longer part of you."
     m 3eud "You could argue that you have no relation to that person, other than a consistent consciousness, and of course DNA."
     m 1etc "...There's also an extra thing to consider."
