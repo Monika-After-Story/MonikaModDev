@@ -50,7 +50,7 @@ init -1 python in mas_moods:
 
     # pane constants
     # most of these are the same as the unseen area consants
-    MOOD_RETURN = "...like talking about something else."
+    MOOD_RETURN = _("...like talking about something else.")
 
 ## FUNCTIONS ==================================================================
 
@@ -115,7 +115,7 @@ label mas_mood_start:
 ###############################################################################
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
     m 3hub "If you're hungry, go get something to eat, silly."
@@ -180,7 +180,7 @@ label mas_mood_sad:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
@@ -214,7 +214,7 @@ label mas_mood_proud:
             return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
@@ -223,7 +223,16 @@ label mas_mood_happy:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="...sick.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_sick",
+            prompt="...sick.",
+            category=[store.mas_moods.TYPE_BAD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
 
 label mas_mood_sick:
     $ session_time = mas_getSessionLength()
@@ -233,34 +242,39 @@ label mas_mood_sick:
             m 2ekd "You saying that so soon after arriving must mean it's pretty bad."
             m 2ekc "I know you wanted to spend some time with me and even though we've hardly been together today..."
             m 2eka "I think you should go and get some rest."
-            m 1eka "I'll still be here when you get better."
-            m 1hua "You'll always be in my thoughts, see you soon sweetie!"
+
         elif session_time > datetime.timedelta(hours=3):
             m 2wuo "[player]!"
             m 2wkd "You haven't been ill this entire time, have you?"
             m 2ekc "I really hope not, I've had lots of fun with you today but if you've been feeling bad this entire time..."
             m 2rkc "Well...just promise to tell me earlier next time."
             m 2eka "Now go get some rest, that's what you need."
-            m 2hub "I'll be waiting for a full recovery!"
-            m "Sweet dreams, my love."
+
         else:
             m 1ekc "Aw, I'm sorry to hear that, [player]."
             m "I hate knowing you're suffering like this."
             m 1eka "I know you love spending time with me, but maybe you should go get some rest."
-            m 1hua "Don't worry, I'll be here waiting for you when you get back."
-            m 3hub "Get well soon, my love!"
+
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
-        m 2eka "I'll be here waiting once you feel better."
-        m "Get well soon."
+
     $ persistent._mas_mood_sick = True
-    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
-    return 'quit'
+
+    m 2ekc "Will you do that for me?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Will you do that for me?{fast}"
+        "Yes.":
+            jump greeting_stillsickrest
+        "No.":
+            jump greeting_stillsicknorest
+        "I'm already resting.":
+            jump greeting_stillsickresting
 
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="...tired.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_tired",prompt="...tired.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_tired:
     # TODO: should we adjust for suntime?
@@ -306,7 +320,7 @@ label mas_mood_tired:
         m 1ekc "Still not ready to tackle the day, [player]?"
         m 1eka "Or is it just one of those days?"
         m 1hua "When that happens, I like to have a nice cup of coffee to start the day."
-        if not persistent._mas_acs_enable_coffee:
+        if not mas_getConsumable("coffee").enabled():
             m 1lksdla "If I'm not stuck here, that is..."
         m 1eua "You could also drink a glass of water."
         m 3eua "It's important to stay hydrated anyway, but having a glass of water when you wake up can help you feel refreshed and awake."
@@ -331,7 +345,7 @@ label mas_mood_tired:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lonely:
     m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
@@ -369,7 +383,7 @@ label mas_mood_angry:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="...anxious.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_scared",prompt="...anxious.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_scared:
     m 1euc "[player], are you alright?"
@@ -401,7 +415,7 @@ label mas_mood_scared:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="...inadequate.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_inadequate",prompt="...inadequate.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_inadequate:
     $ last_year = datetime.datetime.today().year-1
@@ -446,7 +460,7 @@ label mas_mood_inadequate:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lucky:
     m 2tfc "You gotta ask yourself."
@@ -460,7 +474,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_mood_database,
-            "mas_mood_lazy",
+            eventlabel="mas_mood_lazy",
             prompt="...lazy.",
             category=[store.mas_moods.TYPE_NEUTRAL],
             unlocked=True
@@ -554,7 +568,7 @@ label mas_mood_lazy:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="...bored.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_bored",prompt="...bored.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_bored:
     if mas_isMoniAff(higher=True):
@@ -590,9 +604,9 @@ label mas_mood_bored:
 
     python:
         unlockedgames = [
-            game
-            for game in persistent.game_unlocks
-            if persistent.game_unlocks[game]
+            game_ev.prompt.lower()
+            for game_ev in mas_games.game_db.itervalues()
+            if mas_isGameUnlocked(game_ev.prompt)
         ]
 
         gamepicked = renpy.random.choice(unlockedgames)

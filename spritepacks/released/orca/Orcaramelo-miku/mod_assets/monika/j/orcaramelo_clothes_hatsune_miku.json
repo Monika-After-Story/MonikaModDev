@@ -1,6 +1,6 @@
 {
     "__author": "Orcaramelo",
-    "version": 2,
+    "version": 3,
     "type": 2,
     "name": "orcaramelo_hatsune_miku",
     "img_sit": "orcaramelo_hatsune_miku",
@@ -16,15 +16,58 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "desired-hair-prop": "twintails"
+        "desired-hair-prop": "twintails",
+        "costume": "o31",
+        "cosplay": true,
+        "bare-right-shoulder": true
     },
     "select_info": {
         "display_name": "Hatsune Miku",
         "thumb": "orcaramelo_hatsune_miku",
         "group": "clothes",
         "select_dlg": [
-            "MIKU MIKU NI SHITE AGERU"
+            "The first sound of the future!",
+            "Ready for the stage!",
+            "Only missing a leek..."
         ]
+    },
+    "pose_arms": {
+        "crossed": {
+            "tag": "crossed",
+            "layers": "5^10"
+        },
+        "left-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "left-rest": {
+            "tag": "rest",
+            "layers": "10"
+        },
+        "right-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
+        },
+        "right-restpoint": {
+            "tag": "restpoint",
+            "layers": "10"
+        },
+        "steepling": {
+            "tag": "steepling",
+            "layers": "10"
+        },
+        "def|left-def": {
+            "tag": "def",
+            "layers": "10"
+        },
+        "def|right-def": {
+            "tag": "def",
+            "layers": "5^10"
+        }
     },
     "giftname": "hatsunemikucosplay"
 }

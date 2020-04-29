@@ -1,6 +1,6 @@
 {
     "__author": "Velius94",
-    "version": 2,
+    "version": 3,
     "type": 2,
     "name": "velius94_shirt_pink",
     "img_sit": "velius94_shirt_pink",
@@ -10,6 +10,9 @@
         "use_reg_for_l": true
     },
     "stay_on_start": true,
+    "ex_props": {
+        "bare-right-shoulder": true
+    },
     "select_info": {
         "display_name": "Shirt (Pink)",
         "thumb": "velius94_shirt_pink",
@@ -19,8 +22,5 @@
         ]
     },
     "giftname": "pinkshirt",
-    "pose_arms": {
-        "default": null,
-        "use_reg_for_l": true
-    }
+    "pose_arms": {}
 }

@@ -144,10 +144,10 @@ label mas_farewell_start:
             ]
 
             # add the random selection
-            bye_prompt_list.append(("Goodbye.", -1, False, False))
+            bye_prompt_list.append((_("Goodbye."), -1, False, False))
 
             # setup the last option
-            bye_prompt_back = ("Nevermind.", False, False, False, 20)
+            bye_prompt_back = (_("Nevermind."), False, False, False, 20)
 
         # call the menu
         call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)
@@ -537,7 +537,7 @@ label bye_prompt_sleep:
             m 6ekc "I'll see you after you get some rest...{w=1}hopefully."
 
         else:
-            6ckc "..."
+            m 6ckc "..."
 
     elif 5 <= curr_hour < 12:
         # you probably stayed up the whole night
@@ -990,48 +990,44 @@ label bye_going_somewhere_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
-        $ ellipsis_count = 1
-        $ give_me_a_second = "Give me a second to get ready."
+        m 1eua "Give me a second to get ready."
+
+        #Prepare the current drink to be removed if needed
+        python:
+            current_drink = MASConsumable._getCurrentDrink()
+            if current_drink and current_drink.portable:
+                current_drink.acs.keep_on_desk = False
+
+        #Get Moni off screen
+        call mas_transition_to_emptydesk
 
     elif promise.done():
         # i/o thread is done!
-        $ _history_list.pop()
-        m "Give me a second to get ready...{fast}{nw}"
         jump bye_going_somewhere_rtg
-
-    else:
-        #clean up the history list so only one "give me a second..." should show up
-        if ellipsis_count == 3:
-            $ ellipsis_count = 1
-            $ give_me_a_second = "Give me a second to get ready."
-
-        else:
-            $ ellipsis_count += 1
-            $ give_me_a_second += '.'
-
-        $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
     menu:
-        m "[give_me_a_second]{fast}"
-        "Wait, wait!":
+        "Hold on a second!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
     # fall thru to the wait wait flow
-    show monika 1ekc
     menu:
         m "What is it?"
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
+
+            #Show Monika again
+            call mas_transition_from_emptydesk("monika 1ekc")
+            call mas_dockstat_abort_post_show
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
             # if we get here, we should jump back to the top so we can
             # continue waiting
-            m 2hub "Oh, good! Let me finish getting ready."
+            m "Oh, good! Let me finish getting ready."
 
     # by default, continue looping
     jump bye_going_somewhere_iowait
@@ -1049,9 +1045,15 @@ label bye_going_somewhere_rtg:
                 store.mas_greetings.TYPE_GENERIC_RET
             )
 
-        #Otherwise we just use the normal outro
+        call mas_transition_from_emptydesk("monika 1eua")
+
+        #Use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
+
+
+    call mas_transition_from_emptydesk("monika 1ekc")
+    call mas_dockstat_abort_post_show
 
     # otherwise, we failed, so monika should tell player
     m 1ekc "Oh no..."
@@ -1496,7 +1498,7 @@ label bye_dinner_noon_to_mn:
         m 2euc "I guess it's dinner time for you."
         m 2esd "Well...{w=1}enjoy."
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -1519,7 +1521,7 @@ label bye_prompt_housework:
         m 2esc "Fine."
         m 2tsc "At least you're doing something responsible."
         m 2tfc "{cps=*2}...For once.{/cps}{nw}"
-        $ _history_list.pop()        
+        $ _history_list.pop()
         m 2esc "Goodbye."
     elif mas_isMoniDis():
         m 6ekc "I see..."

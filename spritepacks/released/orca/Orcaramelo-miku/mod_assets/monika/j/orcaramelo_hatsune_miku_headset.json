@@ -1,6 +1,6 @@
 {
     "__author": "Orcaramelo",
-    "version": 2,
+    "version": 3,
     "type": 0,
     "name": "orcaramelo_hatsune_miku_headset",
     "img_sit": "orcaramelo_hatsune_miku_headset",
@@ -8,7 +8,7 @@
         "default": "0",
         "l_default": "5"
     },
-    "rec_layer": 6,
+    "rec_layer": 5,
     "acs_type": "headset",
     "mux_type": [
         "headset",

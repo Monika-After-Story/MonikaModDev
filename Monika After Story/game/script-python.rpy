@@ -11,7 +11,7 @@
 #
 # META: Python things to talk about:
 # DONE:
-#   0 - intro 
+#   0 - intro
 #   1 - what is python?
 #   --- sugestion python compared to other languages/ how does it work
 #   --- suggestion mention syntax and probably how to get python maybe separate each part
@@ -41,6 +41,7 @@
 #   14 - String operations
 #   15 - start talking about renpy
 #
+#   Implement advanced python tips for users who have some experience (persistent._mas_advanced_py_tips)
 #
 # Also what about Renpy?
 #
@@ -97,7 +98,7 @@ init 4 python in mas_ptod:
 
         # now check the actual day
         return (
-            datetime.date.today() - tip_ev.unlock_date.date() 
+            datetime.date.today() - tip_ev.unlock_date.date()
             >= datetime.timedelta(days=1)
         )
 
@@ -134,7 +135,7 @@ init 5 python:
 label monika_ptod_tip000:
     m 3eub "You want to learn about Python?"
     m 3hub "I'm so happy you asked me!"
-    m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
+    m 1lksdlb "I don't know {i}that{/i} much about programming, but I'll try my best to explain."
     m 1esa "Let's start with what Python even is."
 
     $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)
@@ -161,7 +162,7 @@ init 5 python:
     )
 
 label monika_ptod_tip001:
-    
+
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
@@ -169,7 +170,7 @@ label monika_ptod_tip001:
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
     show monika 5eua with dissolve
     m "Wouldn't that be great, [player]?"
-    
+
     m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
     m "Even though this caused a rift in the Python community,{w=0.2} it's generally agreed that both versions of the language have their own strengths and weaknesses."
@@ -233,7 +234,7 @@ label monika_ptod_tip002:
     m "Anything surrounded in single quotes (') or double quotes (\") are strings."
     m 3eub "For example:"
     show monika 3eua
-    
+
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
@@ -316,7 +317,7 @@ label monika_ptod_tip003:
         m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
         m "Not that you would{fast}{nw}"
         $ _history_list.pop()
-        m 1eksdlb "I can't let you use this.{w=0.3} Sorry..." 
+        m 1eksdlb "I can't let you use this.{w=0.3} Sorry..."
         m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
 
         m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
@@ -352,7 +353,7 @@ label monika_ptod_tip004:
     # as this will talk about indentaiton. However, we could probably
     # have this after the first wave of lessons
     #
-    # Python code is incredibly simple to write. 
+    # Python code is incredibly simple to write.
 
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
@@ -360,7 +361,7 @@ label monika_ptod_tip004:
     show screen mas_py_console_teaching
 
     # [Show this once]
-    # Hopefully 
+    # Hopefully
     # [end]
     #
     # Oh well this may be a bit hard to explain here but I'll do my best for you [player]
@@ -619,7 +620,7 @@ label monika_ptod_tip006:
     call mas_wx_cmd("c_number", local_ctx)
 
     m 1hua "Python is able to find the symbol in the lookup table and won't give us an error."
-    
+
     m 1eua "The variables we created are all {i}integer{/i} types."
     m "We didn't have to explicitly say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
@@ -971,7 +972,7 @@ init -1 python in mas_ptod:
         """
         clear_console()
 
-    
+
     def ex_cn():
         """
         SEE exit_console
@@ -1027,7 +1028,7 @@ init -1 python in mas_ptod:
 
         if state == STATE_MULTI:
             # this is bad! You should execute the previous command first!
-            # in this case, we will clear your current command and reset 
+            # in this case, we will clear your current command and reset
             # state back to SINGLE
             cn_cmd = ""
             cn_line = ""
@@ -1115,7 +1116,7 @@ init -1 python in mas_ptod:
         # clear the console and add the 2 new lines
         clear_console()
         _update_console_history_list(start_lines)
-        
+
         # turn the console on
         state = STATE_SINGLE
 
@@ -1288,7 +1289,7 @@ init -1 python in mas_ptod:
 
         else:
             result = ""
-        
+
         ################### console history update #########################
 
         if block_mode and empty_line:
@@ -1344,7 +1345,7 @@ init -1 python in mas_ptod:
     def get_last_line():
         """
         Retrieves the last line from the console history
-        
+
         RETURNS:
             last line from console history as a string
         """
@@ -1374,7 +1375,7 @@ init -1 python in mas_ptod:
         global stack_level
         stack_level += 1
         indent_stack.append(indent_level)
-   
+
 
     def __popi():
         """
@@ -1497,7 +1498,7 @@ init -1 python in mas_ptod:
 
 
 screen mas_py_console_teaching():
-    
+
     frame:
         xanchor 0
         yanchor 0
@@ -1539,7 +1540,7 @@ screen mas_py_console_teaching():
             else:
                 # multi line statement, dont have the sym at all
                 $ cn_l_x = 5
-            
+
             # current line
             if len(store.mas_ptod.cn_line) > 0:
                 text "[store.mas_ptod.cn_line]":
@@ -1548,7 +1549,7 @@ screen mas_py_console_teaching():
                     xpos cn_l_x
                     ypos 433
 
-# does a write command and waits 
+# does a write command and waits
 label mas_w_cmd(cmd, wait=0.7):
     $ store.mas_ptod.w_cmd(cmd)
     $ renpy.pause(wait, hard=True)

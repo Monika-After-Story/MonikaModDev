@@ -12,30 +12,24 @@
 default persistent._mas_compliments_database = dict()
 
 
-# store containing stories-related things
-init -1 python in mas_compliments:
+# store containing compliment-related things
+init 3 python in mas_compliments:
 
-    # pane constants
-    COMPLIMENT_X = 680
-    COMPLIMENT_Y = 40
-    COMPLIMENT_W = 560
-    COMPLIMENT_H = 640
-    COMPLIMENT_XALIGN = -0.15
-    COMPLIMENT_AREA = (COMPLIMENT_X, COMPLIMENT_Y, COMPLIMENT_W, COMPLIMENT_H)
-    COMPLIMENT_RETURN = "Oh nevermind."
     compliment_database = dict()
 
     thanking_quips = [
-        "You're so sweet, [player].",
-        "I love it when you compliment me, [player].",
-        "Thanks for saying that again, [player]!",
-        "Thanks for telling me that again, my love!",
-        "You always make me feel special, [player].",
-        "Aww, [player]~",
-        "Thanks, [player]!",
-        "You always flatter me, [player]."
+        _("You're so sweet, [player]."),
+        _("I love it when you compliment me, [player]."),
+        _("Thanks for saying that again, [player]!"),
+        _("Thanks for telling me that again, my love!"),
+        _("You always make me feel special, [player]."),
+        _("Aww, [player]~"),
+        _("Thanks, [player]!"),
+        _("You always flatter me, [player].")
     ]
 
+    # set this here in case of a crash mid-compliment
+    thanks_quip = renpy.substitute(renpy.random.choice(thanking_quips))
 
 # entry point for compliments flow
 init 5 python:
@@ -74,18 +68,19 @@ label monika_compliments:
         compliments_menu_items.sort()
 
         # final quit item
-        final_item = (mas_compliments.COMPLIMENT_RETURN, False, False, False, 20)
+        final_item = ("Oh nevermind.", False, False, False, 20)
 
     # move Monika to the left
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_compliments.COMPLIMENT_AREA, mas_compliments.COMPLIMENT_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
         $ mas_gainAffection()
         $ pushEvent(_return)
+        $ mas_compliments.thanks_quip = renpy.substitute(renpy.random.choice(mas_compliments.thanking_quips))
         # move her back to center
         show monika at t11
 
@@ -133,11 +128,8 @@ label mas_compliment_beautiful_2:
     return
 
 label mas_compliment_beautiful_3:
-    python:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
     m 1hubfa "Ehehe~"
-    m 1ekbfa "[thanks_quip]"
+    m 1ekbfa "[mas_compliments.thanks_quip]"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
     return
@@ -180,10 +172,7 @@ label mas_compliment_eyes_2:
     return
 
 label mas_compliment_eyes_3:
-    python:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
-    m 1hubfb "[thanks_quip]"
+    m 1hubfb "[mas_compliments.thanks_quip]"
     m 2ekbfb "Stare into my eyes as much as you want~"
     return
 
@@ -230,10 +219,7 @@ label mas_compliment_awesome_2:
     return
 
 label mas_compliment_awesome_3:
-    python:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
-    m 1hub "[thanks_quip]"
+    m 1hub "[mas_compliments.thanks_quip]"
     m 1eub "You'll always be more awesome!"
     return
 
@@ -277,10 +263,7 @@ label mas_compliment_intelligent_2:
     return
 
 label mas_compliment_intelligent_3:
-    python:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
-    m 1ekbfa "[thanks_quip]"
+    m 1ekbfa "[mas_compliments.thanks_quip]"
     m 1hub "Remember that we'll have a lifetime of self-improvement together!"
     return
 
@@ -374,10 +357,7 @@ label mas_compliment_fit_2:
     return
 
 label mas_compliment_fit_3:
-    python:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
-    m 2eka "[thanks_quip]"
+    m 2eka "[mas_compliments.thanks_quip]"
     m 1hub "I hope you embark on a fitness journey with me!"
     return
 
@@ -451,10 +431,7 @@ label mas_compliment_smile_2:
     return
 
 label mas_compliment_smile_3:
-    python:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
-    m 1eub "[thanks_quip]"
+    m 1eub "[mas_compliments.thanks_quip]"
     m 1hua "I'll keep smiling just for you!"
     m "Ehehe~"
     return
@@ -532,10 +509,7 @@ label mas_compliment_cute_2:
     return
 
 label mas_compliment_cute_3:
-    python:
-        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
-        thanks_quip = renpy.substitute(thanks_quip)
-    m 1ekbfa "[thanks_quip]"
+    m 1ekbfa "[mas_compliments.thanks_quip]"
     m 1hubfa "You can be really cute a lot of the time too, you know~"
     return
 
@@ -668,14 +642,13 @@ label mas_compliment_lookuptoyou_2:
     return
 
 label mas_compliment_lookuptoyou_3:
-    $ thanks_quip = renpy.substitute(renpy.random.choice(store.mas_compliments.thanking_quips))
     $ should_tease = persistent._mas_pm_height is not None and renpy.random.randint(1,5) == 1
 
     if should_tease and persistent._mas_pm_height < mas_height_monika:
         m 1rksdlb "{cps=*2}Well yeah, I'm taller than you...{/cps}{nw}"
         $ _history_list.pop()
 
-    m 1hubfb "[thanks_quip]"
+    m 1hubfb "[mas_compliments.thanks_quip]"
     m 3hubfa "Hearing you say that never fails to make me smile!"
     m 3hubfb "I'll always look up to you too!"
 
@@ -684,4 +657,69 @@ label mas_compliment_lookuptoyou_3:
         $ _history_list.pop()
 
     m 1ekbfa "I love you, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_thinking_of_you",
+            prompt="I'm always thinking about you!",
+            unlocked=True
+        ),
+        code="CMP",
+    )
+
+label mas_compliment_thinking_of_you:
+    if not renpy.seen_label("mas_compliment_thinking_of_you_2"):
+        call mas_compliment_thinking_of_you_2
+    else:
+        call mas_compliment_thinking_of_you_3
+    return
+
+label mas_compliment_thinking_of_you_2:
+    m 1wubso "..."
+    m 1wubsu "You..."
+
+    if mas_isMoniNormal(higher=True):
+        m 3subsb "You have no idea what that means to me, [player]!"
+
+    elif mas_isMoniUpset():
+        m 2rkd "That you would say that..."
+        m 2dka "It means the world to me, [player]."
+
+    elif mas_isMoniDis():
+        m 6rkc "..."
+        m 6rka "That's such a relief."
+        m 6eka "Thank you."
+
+    else:
+        $ mas_gainAffection(2,bypass=True)
+        m 6dkd "Hmmm... Thanks."
+        m 6dkc "..."
+        return
+
+    menu:
+        "Thinking of you always brightens my day!":
+            $ mas_gainAffection(5,bypass=True)
+            m 1subfb "Aww, that's {i}so{/i} sweet, [player]!"
+            m 3hubfu "I feel the same way about you~"
+
+        "I dream of you every night!":
+            $ mas_gainAffection(5,bypass=True)
+            m 6hua "Aww~"
+            m 6subsa "[player]..."
+            m 7hubfu "{i}You{/i} are my dream~"
+
+        "It's very distracting...":
+            $ mas_loseAffection()
+            m 2esc "..."
+            m 2etc "..."
+            m 2rksdlc "Oh, umm...."
+            m 2rksdld "I'm sorry?"
+    return
+
+label mas_compliment_thinking_of_you_3:
+    m 1ekbsa "[mas_compliments.thanks_quip]"
+    m 3hubfb "You're the center of my world!"
     return

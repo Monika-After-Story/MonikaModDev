@@ -1,6 +1,6 @@
 {
     "__author": "Finale",
-    "version": 2,
+    "version": 3,
     "type": 2,
     "name": "finale_shirt_blue",
     "img_sit": "finale_shirt_blue",
@@ -27,57 +27,41 @@
     },
     "giftname": "blueshirt",
     "pose_arms": {
-        "default": null,
-        "use_reg_for_l": true,
-        "p1": {
-            "both": "steepling",
-            "bback": false,
-            "bfront": true
+        "crossed": {
+            "tag": "crossed",
+            "layers": "5^10"
         },
-        "p2": {
-            "both": "crossed",
-            "bback": true,
-            "bfront": true
+        "left-down": {
+            "tag": "down",
+            "layers": "0"
         },
-        "p3": {
-            "left": "rest",
-            "lback": false,
-            "lfront": true,
-            "right": "restpoint",
-            "rback": false,
-            "rfront": true
+        "left-rest": {
+            "tag": "rest",
+            "layers": "10"
         },
-        "p4": {
-            "left": "down",
-            "lback": true,
-            "lfront": false,
-            "right": "point",
-            "rback": true,
-            "rfront": false
+        "right-down": {
+            "tag": "down",
+            "layers": "0"
         },
-        "p5": {
-            "left": "def",
-            "lback": false,
-            "lfront": true,
-            "right": "def",
-            "rback": true,
-            "rfront": true
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
         },
-        "p6": {
-            "left": "down",
-            "lback": true,
-            "lfront": false,
-            "right": "down",
-            "rback": true,
-            "rfront": false
+        "right-restpoint": {
+            "tag": "restpoint",
+            "layers": "10"
         },
-        "p7": {
-            "left": "down",
-            "lback": true,
-            "lfront": false,
-            "right": "restpoint",
-            "rback": false,
-            "rfront": true
+        "steepling": {
+            "tag": "steepling",
+            "layers": "10"
+        },
+        "def|left-def": {
+            "tag": "def",
+            "layers": "10"
+        },
+        "def|right-def": {
+            "tag": "def",
+            "layers": "5^10"
         }
     }
 }

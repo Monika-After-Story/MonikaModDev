@@ -52,14 +52,20 @@ init -1 python in mas_globals:
     late_farewell = False
     # set to True if we had a late farewell
 
-    last_minute_dt = None
+    last_minute_dt = datetime.datetime.now()
     # last minute datetime (replaces calendar_last_chcked)
 
-    last_hour = None
+    last_hour = last_minute_dt.hour
     # number of the hour we last ran ch30_hour
 
-    last_day = None
+    last_day = last_minute_dt.day
     # numbr of the day we last ran ch30_day
+
+    time_of_day_4state = None
+    #Time of day, basically either morning, afternoon, evening, night. Set by ch30_hour, used in dlg
+
+    time_of_day_3state = None
+    #Time of day broken into 3 states. morning, afternoon, evening. Set by ch30_hour, used in dlg
 
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
@@ -101,6 +107,9 @@ init -10 python:
         SKIP_MID_LOOP_EVAL = 4
         # True if we want idle to skip mid loop eval once
 
+        SCENE_CHANGE = 5
+        # TRue if want the scene to change
+
         # end keys
 
 
@@ -110,7 +119,6 @@ init -10 python:
             """
             super(MASIdleMailbox, self).__init__()
 
-
         # NOTE: add additoinal functions below when appropriate.
         def send_rebuild_msg(self):
             """
@@ -118,20 +126,17 @@ init -10 python:
             """
             self.send(self.REBUILD_EV, True)
 
-
         def get_rebuild_msg(self):
             """
             Gets rebuild message
             """
             return self.get(self.REBUILD_EV)
 
-
         def send_ds_gre_type(self, gre_type):
             """
             Sends greeting type to mailbox
             """
             self.send(self.DOCKSTAT_GRE_TYPE, gre_type)
-
 
         def get_ds_gre_type(self, default=None):
             """
@@ -144,13 +149,11 @@ init -10 python:
                 return default
             return result
 
-
         def send_idle_cb(self, cb_label):
             """
             Sends idle callback label to mailbox
             """
             self.send(self.IDLE_MODE_CB_LABEL, cb_label)
-
 
         def get_idle_cb(self):
             """
@@ -158,19 +161,29 @@ init -10 python:
             """
             return self.get(self.IDLE_MODE_CB_LABEL)
 
-
         def send_skipmidloopeval(self):
             """
             Sends skip mid loop eval message to mailbox
             """
             self.send(self.SKIP_MID_LOOP_EVAL, True)
 
-
         def get_skipmidloopeval(self):
             """
             Gets skip midloop eval value
             """
             return self.get(self.SKIP_MID_LOOP_EVAL)
+
+        def send_scene_change(self):
+            """
+            Sends scene change message to mailbox
+            """
+            self.send(self.SCENE_CHANGE, True)
+
+        def get_scene_change(self):
+            """
+            Gets scene change value
+            """
+            return self.get(self.SCENE_CHANGE)
 
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -300,7 +313,7 @@ init python:
         """
         Jumps to the pick a game workflow
         """
-        renpy.jump('pick_a_game')
+        renpy.jump("mas_pick_a_game")
 
 
     def mas_getuser():
@@ -359,7 +372,6 @@ init python:
                 (Default; True)
 
         ASSUMES:
-            morning_flag
             mas_is_raining
             mas_is_snowing
         """
@@ -367,7 +379,10 @@ init python:
         renpy.hide("rm")
 
         # get current weather masks
-        mask = mas_current_weather.sp_window(morning_flag)
+        # TODO: change to pass in current filter
+        mask = mas_current_weather.sp_window(
+            mas_isCurrentFlt("day")
+        )
 
         # should we use fallbacks instead?
         if persistent._mas_disable_animations:
@@ -436,25 +451,47 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
+
     def mas_isMorning():
-        # generate the times we need
-        sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
-        ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
-        sr_time = datetime.time(sr_hour, sr_min)
-        ss_time = datetime.time(ss_hour, ss_min)
+        """DEPRECATED
+        Checks if it is day or night via suntimes
+
+        NOTE: the wording of this function is bad. This does not literally
+            mean that it is morning. USE mas_isDayNow
+
+        RETURNS: True if day, false if not
+        """
+        return mas_isDayNow()
+
+
+    def mas_progressFilter():
+        """
+        Changes filter according to rules.
+
+        Call this when you want to update the filter.
+
+        RETURNS: True upon a filter change, False if not
+        """
+        # TODO: this should be deferred to the BG
+        curr_flt = store.mas_sprites.get_filter()
 
         now_time = datetime.datetime.now().time()
+        if mas_isDay(now_time):
+            new_flt = store.mas_sprites.FLT_DAY
 
-        return sr_time <= now_time < ss_time
+        else: # mas_isNight(now_time):
+            new_flt = store.mas_sprites.FLT_NIGHT
+
+        store.mas_sprites.set_filter(new_flt)
+
+        return curr_flt != new_flt
 
 
     def mas_shouldChangeTime():
+        """DEPRECATED
+        This no longer makes sense with the filtering system.
         """
-        Checks if we should change the day to night or night to day.
-
-        RETURNS: true if we should change day/night cycle, False otherwise
-        """
-        return morning_flag != mas_isMorning()
+        return False
 
 
     def mas_shouldRain():
@@ -627,36 +664,6 @@ init python:
         """
         return store.mas_globals.text_speed_enabled
 
-    def mas_isGameUnlocked(gamename):
-        """
-        Checks if the given game is unlocked.
-        NOTE: this is using the game_unlocks database, which only cars about
-        whether or not you have reached the appropraite level to unlock a game.
-        Each game may be disabled for other reasons not handled via
-        this system.
-
-        IN:
-            gamename - name of the game to check
-
-        RETURNS: True if the game is unlocked, false if not
-        """
-        if persistent.game_unlocks is None:
-            return False
-
-        return persistent.game_unlocks.get(gamename, False)
-
-
-    def mas_unlockGame(gamename):
-        """
-        Unlocks the given game.
-
-        IN:
-            gamename - name of the game to unlock
-        """
-        if gamename in persistent.game_unlocks:
-            persistent.game_unlocks[gamename] = True
-
-
     def mas_check_player_derand():
         """
         Checks the player derandom list for events that are not random and derandoms them
@@ -669,7 +676,7 @@ init python:
 
     def mas_get_player_bookmarks():
         """
-        Gets topics which are bookmarked by the player 
+        Gets topics which are bookmarked by the player
         Also cleans events which no longer exist
 
         OUT:
@@ -717,8 +724,6 @@ init python:
 
         return derandlist
 
-init 1 python:
-    morning_flag = mas_isMorning()
 
 
 # IN:
@@ -760,7 +765,10 @@ init 1 python:
 #       if hide_monika is False - True will do nothing and False will hide
 #           emptydesk after Monika is shown.
 #       (Default: True)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True):
+#   progress_filter - True will progress the filter. False will not
+#       NOTE: use this if you explicity set the filter
+#       (Default: True)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
 
     with None
 
@@ -774,27 +782,37 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if night_bg is None:
         $ night_bg = store.mas_current_background.getNightRoom()
 
+    # progress filter
+    # NOTE: filter progression MUST happen here because othrewise we many have
+    #   cases where the filter has changed (so Monika has changed)
+    #   but the BG has not (because BG is not inherently controleld by filter)
+    python:
+        if progress_filter and mas_progressFilter():
+            # NOTE: a filter change is like a scene change with all dissolve
+            scene_change = True
+            dissolve_all = True
+
+        day_mode = mas_current_background.isFltDay()
+
     if scene_change:
         scene black
 
     python:
         monika_room = None
 
-        # MORNING CHECK
-        # establishes correct room to use
-        if mas_isMorning():
-            if not morning_flag or scene_change:
-                morning_flag = True
+        # TODO: this will need some rework to work nicely with filter
+        #   progression. For now its just going to be customized for
+        #   our two filters.
+        if scene_change:
+            if day_mode:
                 monika_room = day_bg
 
-        else:
-            if morning_flag or scene_change:
-                morning_flag = False
+            else:
                 monika_room = night_bg
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(morning_flag)
+            mas_darkMode(day_mode)
         else:
             mas_darkMode(not persistent._mas_dark_mode_enabled)
 
@@ -920,17 +938,14 @@ label ch30_main:
     # 1 - renable core interactions
     $ mas_DropShield_core()
 
-    # 2 - hotkey buttons enabled
-    $ store.hkb_button.enabled = True
-
-    # 3 - set keymaps
-    $ set_keymaps()
-
     # now we out of intro
     $ mas_in_intro_flow = False
 
     # set session data to startup values
     $ store._mas_root.initialSessionData()
+
+    # skip weather
+    $ skip_setting_weather = True
 
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
@@ -940,83 +955,7 @@ label ch30_main:
 
 label continue_event:
     m "Now, where was I..."
-
     return
-
-label pick_a_game:
-    # we can assume that getting here means we didnt cut off monika
-
-    $ mas_RaiseShield_dlg()
-
-    python:
-        # preprocessing for games
-
-        import datetime
-        _hour = datetime.timedelta(hours=1)
-        _now = datetime.datetime.now()
-
-        # chess has timed disabling
-        if persistent._mas_chess_timed_disable is not None:
-            if _now - persistent._mas_chess_timed_disable >= _hour:
-                chess_disabled = False
-                persistent._mas_chess_timed_disable = None
-
-            else:
-                chess_disabled = True
-
-        else:
-            chess_disabled = False
-
-        # single var for readibility
-        chess_unlocked = (
-            is_platform_good_for_chess()
-            and mas_isGameUnlocked("chess")
-            and not chess_disabled
-        )
-
-        # hangman text
-        if persistent._mas_sensitive_mode:
-            _hangman_text = "Word Guesser"
-        else:
-            _hangman_text = "Hangman"
-
-        # decide the say dialogue
-        play_menu_dlg = store.mas_affection.play_quip()[1]
-
-    menu:
-        m "[play_menu_dlg]"
-        "Pong." if mas_isGameUnlocked("pong"):
-            if not renpy.seen_label('game_pong'):
-                $grant_xp(xp.NEW_GAME)
-            call game_pong from _call_game_pong
-        "Chess." if chess_unlocked:
-            if not renpy.seen_label('game_chess'):
-                $grant_xp(xp.NEW_GAME)
-            call game_chess from _call_game_chess
-        "[_hangman_text]." if mas_isGameUnlocked('hangman'):
-            if not renpy.seen_label("game_hangman"):
-                $ grant_xp(xp.NEW_GAME)
-            call game_hangman from _call_game_hangman
-        "Piano." if mas_isGameUnlocked('piano'):
-            if not renpy.seen_label("mas_piano_start"):
-                $ grant_xp(xp.NEW_GAME)
-            call mas_piano_start from _call_play_piano
-        # "Movie":
-        #     if not renpy.seen_label("mas_monikamovie"):
-        #         $ grant_xp(xp.NEW_GAME)
-        #     call mas_monikamovie from _call_monikamovie
-        "Nevermind.":
-            # NOTE: changing this to no dialogue so we dont have to edit this
-            # for affection either
-            pass
-#            m "Alright. Maybe later?"
-
-    if not renpy.showing("monika idle"):
-        show monika idle at tinstant zorder MAS_MONIKA_Z with dissolve
-
-    $ mas_DropShield_dlg()
-
-    jump ch30_loop
 
 label ch30_noskip:
     show screen fake_skip_indicator
@@ -1111,7 +1050,7 @@ label ch30_autoload:
     $ mas_cleanEventList()
 
     # set the gender
-    call set_gender from _autoload_gender
+    call mas_set_gender
 
     # call reset stuff
     call ch30_reset
@@ -1309,29 +1248,12 @@ label ch30_post_restartevent_check:
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
             away_experience_time=datetime.datetime.now()-persistent.sessions['last_session_end'] #Time since end of previous session
-            away_xp=0
 
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
-                persistent.idlexp_total=0
 
                 #Grant good exp for closing the game correctly.
                 mas_gainAffection()
-
-            #Ignore anything beyond 3 days
-            if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
-                away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
-
-            #Give 5 xp per hour for everything beyond 1 day
-            if away_experience_time.total_seconds() > times.FULL_XP_AWAY_TIME:
-                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time.total_seconds()-times.FULL_XP_AWAY_TIME)/3600.0
-                away_experience_time = datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
-
-            #Give 10 xp per hour for the first 24 hours
-            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time.total_seconds()/3600.0
-
-            #Grant the away XP
-            grant_xp(away_xp)
 
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
@@ -1377,41 +1299,26 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
+    #Now we check if we should drink
+    $ MASConsumable._checkConsumables(startup=True)
+
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
     #     $ config.allow_skipping = False
 
-    window auto
-
-    if mas_skip_visuals:
-        # need to jump to initial setup, then we can jump to visual skip
-        jump ch30_preloop
-
-    # otherwise, we are NOT skipping visuals
-    $ set_keymaps()
-    $ mas_startup_song()
-
-    # rain check
-    # TODO: the weather progression alg needs to run here
-    # TODO: we actually might want to move this to preloop visual
-    #   setup as that makes more sense.
-    if not mas_weather.force_weather and not skip_setting_weather:
-        $ set_to_weather = mas_shouldRain()
-        if set_to_weather is not None:
-            $ mas_changeWeather(set_to_weather)
-
-    # FALL THROUGH
-
-label ch30_preloop_visualsetup:
-
-    # initial spaceroom
-    call spaceroom(dissolve_all=True, scene_change=True)
-
     # FALL THROUGH
 
 label ch30_preloop:
     # stuff that should happen right before we enter the loop
+
+    window auto
+
+    # NOTE: keymaps will be set, but all actions will be shielded unless
+    #   desired by the appropriate flow.
+    $ mas_HKRaiseShield()
+    $ mas_HKBRaiseShield()
+    $ set_keymaps()
 
     $ persistent.closed_self = False
     $ persistent._mas_game_crashed = True
@@ -1443,6 +1350,19 @@ label ch30_preloop:
         $ quick_menu = True
         jump ch30_visual_skip
 
+    # setup scene to change on initial launch
+    $ mas_idle_mailbox.send_scene_change()
+
+    # rain check
+    # TODO: the weather progression alg needs to run here
+    if not mas_weather.force_weather and not skip_setting_weather:
+        $ set_to_weather = mas_shouldRain()
+        if set_to_weather is not None:
+            $ mas_changeWeather(set_to_weather)
+
+    # otherwise, we are NOT skipping visuals
+    $ mas_startup_song()
+
     jump ch30_loop
 
 label ch30_loop:
@@ -1458,20 +1378,14 @@ label ch30_loop:
             and mas_isMoniNormal(higher=True)
         )
 
-        should_dissolve_all = (
-            mas_shouldChangeTime()
-            or mas_weather.should_scene_change
-        )
+        should_dissolve_all = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
-
-    #This should be set back to false so we're not constantly scene changing
-    $ mas_weather.should_scene_change = False
+    call spaceroom(scene_change=should_dissolve_all, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 
-# TODO: add label here to allow startup to hook past weather 
+# TODO: add label here to allow startup to hook past weather
 # TODO: move quick_menu to here
 
     # updater check in here just because
@@ -1523,6 +1437,14 @@ label ch30_post_mid_loop_eval:
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
+
+    # renable if not idle and currently disabled
+    if not mas_globals.in_idle_mode:
+        if not mas_HKIsEnabled():
+            $ mas_HKDropShield()
+        if not mas_HKBIsEnabled():
+            $ mas_HKBDropShield()
+
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
@@ -1683,18 +1605,6 @@ label ch30_minute(time_since_check):
         #Check if we should expire apologies
         mas_checkApologies()
 
-        # limit xp gathering to when we are not maxed
-        # and once per minute
-        if (persistent.idlexp_total < xp.IDLE_XP_MAX):
-
-            idle_xp = xp.IDLE_PER_MINUTE * ((time_since_check.total_seconds())/60.0)
-            persistent.idlexp_total += idle_xp
-            if persistent.idlexp_total >= xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                idle_xp = idle_xp - (persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
-                persistent.idlexp_total = xp.IDLE_XP_MAX
-
-            grant_xp(idle_xp)
-
         # runs actions for both conditionals and calendar-based events
         Event.checkEvents(evhand.event_database, rebuild_ev=False)
 
@@ -1727,14 +1637,23 @@ label ch30_minute(time_since_check):
 
 
 # label for things that should run about once per hour
-# NOTE: it only runs when the hour changes, so don't expect this to run 
+# NOTE: it only runs when the hour changes, so don't expect this to run
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+
+    #Runtime checks to see if we should have a consumable
+    $ MASConsumable._checkConsumables()
+
+    # xp calc
+    $ store.mas_xp.grant()
+
+    #Set our TOD var
+    $ mas_setTODVars()
     return
 
 # label for things that should run about once per day
-# NOTE: it only runs when the day changes, so don't expect this to run on 
+# NOTE: it only runs when the day changes, so don't expect this to run on
 #   staart right away
 label ch30_day:
     python:
@@ -1784,6 +1703,20 @@ label ch30_day:
 label ch30_reset:
 
     python:
+        # xp fixes and adjustments
+        if persistent._mas_xp_lvl < 0:
+            persistent._mas_xp_lvl = 0 # prevent negative issues
+
+        if persistent._mas_xp_tnl < 0:
+            persistent._mas_xp_tnl = store.mas_xp.XP_LVL_RATE
+
+        if persistent._mas_xp_hrx < 0:
+            persistent._mas_xp_hrx = 0.0
+
+        store.mas_xp.set_xp_rate()
+        store.mas_xp.prev_grant = mas_getCurrSeshStart()
+
+    python:
         # name eggs
         if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
@@ -1820,18 +1753,17 @@ label ch30_reset:
 
     # check for game unlocks
     python:
+        #TODO: Fix the game unlock/is unlocked system to account for conditions like these
+        #mas_isGameUnlocked should NOT return True if we're failing this condition because we use it elsewhere
         game_unlock_db = {
             "pong": "ch30_main", # pong should always be unlocked
-            "chess": "unlock_chess",
-            "hangman": "unlock_hangman",
-            "piano": "unlock_piano",
+            "chess": "mas_unlock_chess",
+            mas_games.HANGMAN_NAME: "mas_unlock_hangman",
+            "piano": "mas_unlock_piano",
         }
 
-        for game_name,game_startlabel in game_unlock_db.iteritems():
-            if (
-                    not mas_isGameUnlocked(game_name)
-                    and renpy.seen_label(game_startlabel)
-                ):
+        for game_name, game_startlabel in game_unlock_db.iteritems():
+            if not mas_isGameUnlocked(game_name) and renpy.seen_label(game_startlabel):
                 mas_unlockGame(game_name)
 
 
@@ -1847,8 +1779,7 @@ label ch30_reset:
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     ## custom sprite objects
-    python:
-        store.mas_selspr._validate_group_topics()
+    $ store.mas_selspr._validate_group_topics()
 
     # monika hair/acs
     $ monika_chr.load(startup=True)
@@ -1926,12 +1857,7 @@ label ch30_reset:
             if freeze_date is not None and freeze_date > today:
                 persistent._mas_affection["freeze_date"] = today
 
-    ## should we drink coffee?
-    $ _mas_startupCoffeeLogic()
-
-    ## shoujld we drink hot chocolate
-    $ _mas_startupHotChocLogic()
-
+    #Do startup checks
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
@@ -1969,28 +1895,22 @@ label ch30_reset:
             persistent._mas_filereacts_reacted_map = dict()
 
     # set any prompt variants for acs that can be removed here
-    python:
-        # TODO: all of these are in GRP TOPIC MAP, so we should create
-        #   a function to parse those and set appropriate prompts.
-        if not monika_chr.is_wearing_acs_type("left-hair-clip"):
-            store.mas_selspr.set_prompt("left-hair-clip", "wear")
+    $ store.mas_selspr.startup_prompt_check()
 
-        if not monika_chr.is_wearing_acs_type("left-hair-flower"):
-            store.mas_selspr.set_prompt("left-hair-flower", "wear")
-
-        if not monika_chr.is_wearing_acs_type("choker"):
-            store.mas_selspr.set_prompt("choker", "wear")
-
-        if not monika_chr.is_wearing_ribbon():
-            store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
     python:
         if store.mas_dockstat.retmoni_status is not None:
-            mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
@@ -2047,4 +1967,14 @@ label ch30_reset:
 
     #And check back in
     $ mas_scheduling.checkin()
+
+    #Set our TOD var
+    $ mas_setTODVars()
+
+    python:
+        if seen_event('mas_gender'):
+            mas_unlockEVL("monika_gender_redo","EVE")
+
+        if seen_event('mas_preferredname'):
+            mas_unlockEVL("monika_changename","EVE")
     return

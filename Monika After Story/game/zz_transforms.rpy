@@ -21,15 +21,109 @@ init -10 python:
         return renpy.display.image.images.get((char, expression), None)
 
 
+    def mas_getPropFromStyle(style_name, prop_name):
+        """
+        Retrieves a property from a style
+        Recursively checks parent styles until the property is found.
+
+        IN:
+            style_name - name of style as string
+            prop_name - property to find as string
+
+        RETURNS: value of the propery if we can find it, None if not found
+        """
+        style_name = (style_name,)
+        prop_not_found = True
+        while prop_not_found:
+            # pull from styles dict
+            # NOTE: directly accessing to avoid exceptions
+            style_obj = renpy.style.styles.get(style_name, None)
+            if style_obj is None:
+                return None
+
+            # sanity check to ensure properties exists
+            if len(style_obj.properties) > 0:
+
+                # check for the prop we want
+                if prop_name in style_obj.properties[0]:
+                    return style_obj.properties[0][prop_name]
+
+            # otherwise check parent
+            if style_obj.parent is None:
+                return None
+
+            # recurse
+            style_name = style_obj.parent
+
+        # should never be reached
+        return None
+
+
+    def mas_prefixFrame(frm, prefix):
+        """
+        Generates a frame object with the given prefix substitued into the
+        image. This effectively makes a copy of the given Frame object.
+
+        NOTE: cannot use _duplicate as it does shallow copy for some reason.
+
+        IN:
+            frm - Frame object
+            prefix - prefix to replace `prefix_`. "_" will be added if not
+                found
+
+        RETURNS: Frame object, or None if failed to make it
+        """
+        if not prefix.endswith("_"):
+            prefix += "_"
+
+        try:
+            # sve borders
+            frm_borders = {
+                "left": frm.left,
+                "top": frm.top,
+                "right": frm.right,
+                "bottom": frm.bottom,
+            }
+
+            # set image path
+            img_path = renpy.substitute(
+                frm.image.name,
+                scope={"prefix_": prefix}
+            )
+
+            # build frame
+            return Frame(img_path, **frm_borders)
+        except:
+            return None
+
+
 # user defined trasnforms
-transform leftin_slow(x=640, z=0.80):
+transform leftin_slow(x=640, z=0.80, t=1.00):
     xcenter -300 yoffset 0 yanchor 1.0 ypos 1.03 zoom z*1.00 alpha 1.00 subpixel True
-    easein 1.00 xcenter x
+    easein t xcenter x
 
 # transform positional shortcuts
 # NOTE: only the ones that we need are defined. Add them as you need em
 transform ls32:
-    leftin_slow(640)
+    leftin_slow(x=640)
+
+# piano slides in
+transform lps32:
+    leftin_slow(x=640,t=4.00)
+
+# used so things that slide in will also slide back out
+transform lslide(t=1.00, x=-600):
+    subpixel True
+    on hide:
+        easeout t xcenter x
+
+# used so Monika can slide back out
+transform rs32:
+    lslide()
+
+# used so piano can slide back out
+transform rps32:
+    lslide(t=4.00,x=-700)
 
 ### transforms for chibi monika
 transform mas_chdropin(x=640, y=405, travel_time=3.00):
@@ -37,7 +131,7 @@ transform mas_chdropin(x=640, y=405, travel_time=3.00):
     easein travel_time ypos y
 
 transform mas_chflip(dir):
-    # -1 to face right. 
+    # -1 to face right.
     # 1 to face left
     xzoom dir
 
@@ -60,6 +154,3 @@ transform mas_chmove(x, y, travel_time=1.0):
 transform mas_chriseup(x=300, y=405, travel_time=1.00):
     ypos 800 xcenter x
     easein travel_time ypos y
-
-
-
