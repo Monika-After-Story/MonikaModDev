@@ -250,7 +250,7 @@ init -10 python:
 
             RETURNS: True if flt is a "day" filter according to this bg
             """
-            # TODO: a BG will be in charge of which filters are "day" and 
+            # TODO: a BG will be in charge of which filters are "day" and
             #   which are "night". This will be implemented in the future.
             #   for now we just assume "day" is day and "night" is night
             if flt is None:

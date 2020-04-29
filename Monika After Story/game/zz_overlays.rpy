@@ -35,7 +35,7 @@ init 501 python:
         it prevents user interactions with the overlays.
         """
         # put all disabling functions here
-        mas_HKBRaiseShield() 
+        mas_HKBRaiseShield()
         mas_calRaiseOverlayShield()
 
 
@@ -46,6 +46,3 @@ init 501 python:
         # put all show functions
         HKBShowButtons()
         mas_calShowOverlay()
-
-
-
