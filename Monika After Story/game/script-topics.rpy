@@ -14195,3 +14195,31 @@ label monika_translating_poetry:
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_the_story_of_an_hour",
+            category=["literature"],
+            prompt="The Story of an Hour",
+            random=True
+        )
+    )
+
+label monika_the_story_of_an_hour:
+    m 3eua "Are you familiar with {i}The Story of an Hour{/i}, [player]?"
+    m 3euc "It is a really short story about a young woman, who found out her husband suddenly died in a railroad accident."
+    m 3eub "What makes this piece so special is that it captures the whole spectrum of emotions of a woman, starting with grief and slightly moving towards complete happiness."
+    m 1euc "She finds herself being absolutely overjoyed with her new freedom, though still admitting the fact that she loved her husband..."
+    m 1rud "This may say a lot about the destructiveness of an early marriage... Or about the saddening role of a woman in a then world... "
+    m 1hub "It is quite fascinating to see how many interpretations you can find for yourself in a ten-page story, don't you think?" 
+    extend 1eua " That is what literature is all about, after all."
+    m 1euc "However, by the end of the story it turns out the husband is alive... "
+    extend 1wud " Which leads to a woman's death {i}from the joy that kills{/i}..."
+    m 1ruc "Well, she actually died for a sort of heart attack, but that final line gives a reader..."
+    extend 1hksdlb " Some sense of irony, I guess?"
+    m 1eua "This is a pretty dense, yet a truthly interesting story, so make sure to take your time to read the whole piece, okay?"
+    m 1rusdlb "That would probably take somewhere around five miuntes, but still!" 
+    m 1hub "Ahaha~"
+    return 
