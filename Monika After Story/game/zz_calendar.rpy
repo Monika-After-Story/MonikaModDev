@@ -6,6 +6,7 @@
 init -1 python:
 
     import json
+    from renpy.display.layout import Container
     from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
 
     class CustomEncoder(json.JSONEncoder):
@@ -40,7 +41,7 @@ init -1 python:
         # exit button position and size
         EXIT_BUTTON_WIDTH = 74
         EXIT_BUTTON_HEIGHT = 74
-        EXIT_BUTTON_X = 1040
+        EXIT_BUTTON_X = 1041
         EXIT_BUTTON_Y = 60
 
         # day name related sizes
@@ -49,19 +50,23 @@ init -1 python:
         DAY_NAME_BUTTON_HEIGHT = 35
 
         # initial position for displaying things inside the calendar
-        INITIAL_POSITION_X = 193
+        INITIAL_POSITION_X = 192
         INITIAL_POSITION_Y = 155
 
         # position for the title
         TITLE_POSITION_Y = 115
-        TITLE_POSITION_X_1 = 560
-        TITLE_POSITION_X_2 = 530
+
+        # Internal area width
+        INTERNAL_WIDTH = DAY_BUTTON_WIDTH * 7
 
         # size for the arrow like button selectors
         ARROW_BUTTON_SIZE = 20
 
-        # Size of the day number and displayed data inside a day block
-        CALENDAR_DAY_TEXT_SIZE = 12
+        # Size of the day number inside a day block
+        DAY_NUMBER_TEXT_SIZE = 13
+
+        # Size of the note text inside a day block
+        NOTE_TEXT_SIZE = 19
 
         # X inside the close button size
         CALENDAR_CLOSE_X_SIZE = 45
@@ -74,7 +79,10 @@ init -1 python:
         CALENDAR_YEAR_DECREASE = "YEAR_DECR" # signals to decrease the current selected month
 
         # Color used for the day number
-        TEXT_DAY_COLOR = "#000000" # PINK: "#ffb0ed"
+        DAY_NUMBER_COLOR = "#000000" # PINK: "#ffb0ed"
+
+        # Color used for the note
+        NOTE_COLOR = "#181818"
 
         # Month names constant array
         MONTH_NAMES = ["Unknown", "January", "February",
@@ -85,9 +93,6 @@ init -1 python:
         # Day names constant array
         DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday"]
-
-        # Format used for calendar display
-        DATE_DISPLAY_FORMAT = "\t  \t  \t  \t  \t  \t  \t  {0}\n{1}\n{2}\n{3}"
 
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
@@ -207,7 +212,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
         EVENT_Y = 40
         EVENT_W = 450
         EVENT_H = 640
-        EVENT_XALIGN = 0.54
+        EVENT_XALIGN = 0.96
         EVENT_AREA = (EVENT_X, EVENT_Y, EVENT_W, EVENT_H)
         EVENT_RETURN = "< Go back"
 
@@ -260,9 +265,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             self.selected_month = self.today.month
             self.selected_year = self.today.year
 
-            # store all buttons for easy rendering
+            # store all displayables for easy rendering
             self.const_buttons = []
             self.day_buttons = []
+            self.day_button_texts = []
 
             # button backgrounds
             button_close = Image(
@@ -289,7 +295,6 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # Change title depending on flag
             if select_date:
-                self.title_position_x = self.TITLE_POSITION_X_2
                 self.text_title = Text(
                     "Select a Date",
                     font=gui.default_font,
@@ -298,7 +303,6 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     outlines=[]
                 )
             else:
-                self.title_position_x = self.TITLE_POSITION_X_1
                 self.text_title = Text(
                     "Calendar",
                     font=gui.default_font,
@@ -317,7 +321,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     "{#weekday}" + day,
                     font=gui.default_font,
                     size=17,
-                    color=self.TEXT_DAY_COLOR,
+                    color=self.DAY_NUMBER_COLOR,
                     outlines=[]
                 )
 
@@ -385,7 +389,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 outlines=[]
             )
 
-            # actual buttons that decrease/ increase the month and year values
+            # actual buttons that decrease/increase the month and year values
             self.button_month_decrease = MASButtonDisplayable(
                 button_empty_text,
                 button_empty_text,
@@ -393,7 +397,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_left_arrow,
                 button_left_arrow_hover,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 70,
+                self.INITIAL_POSITION_X + 100,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -409,7 +413,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_right_arrow,
                 button_right_arrow_hover,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 300,
+                self.INITIAL_POSITION_X + 330,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -425,7 +429,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_left_arrow,
                 button_left_arrow_hover,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 525,
+                self.INITIAL_POSITION_X + self.INTERNAL_WIDTH - self.ARROW_BUTTON_SIZE - 330,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -441,7 +445,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 button_right_arrow,
                 button_right_arrow_hover,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 770,
+                self.INITIAL_POSITION_X + self.INTERNAL_WIDTH - self.ARROW_BUTTON_SIZE - 100,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -484,13 +488,25 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 "mod_assets/calendar/calendar_day_hover_bg.png"
             )
 
+            button_today_bg = Image(
+                ("mod_assets/calendar/calendar_today_bg.png" if self.day_mode else "mod_assets/calendar/calendar_today_bg-n.png")
+            )
+
+            button_today_bg_disabled = Image(
+                ("mod_assets/calendar/calendar_today_disabled_bg.png" if self.day_mode else "mod_assets/calendar/calendar_today_disabled_bg-n.png")
+            )
+
+            button_today_bg_hover = Image(
+                "mod_assets/calendar/calendar_today_hover_bg.png"
+            )
+
 
             # constant month and year text labels
             self.text_current_month = Text(
                 "{#month}" + self.MONTH_NAMES[self.selected_month],
                 font=gui.default_font,
                 size=21,
-                color=self.TEXT_DAY_COLOR,
+                color=self.DAY_NUMBER_COLOR,
                 outlines=[]
             )
 
@@ -498,12 +514,19 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 str(self.selected_year),
                 font=gui.default_font,
                 size=21,
-                color=self.TEXT_DAY_COLOR,
+                color=self.DAY_NUMBER_COLOR,
                 outlines=[]
             )
 
             # init day buttons array
             self.day_buttons = []
+            self.day_button_texts = []
+
+            # set the note style attributes
+            note_font = "gui/font/m1.TTF"
+            note_text_size = self.NOTE_TEXT_SIZE
+            note_color = self.NOTE_COLOR
+            note_ystart = 1
 
             # get relevant date info
             day = datetime.timedelta(days=1)
@@ -529,6 +552,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
                 events = self._getEGMonthEvents()
 
+                note_font = gui.default_font
+                note_text_size = self.DAY_NUMBER_TEXT_SIZE
+                note_color = self.DAY_NUMBER_COLOR
+                note_ystart = 5
+
 
             # calculation to determine the initial y position
             initial_y = self.INITIAL_POSITION_Y + (self.DAY_NAME_BUTTON_HEIGHT * 2)
@@ -542,11 +570,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                     current_date = self.dates[j + (i * 7)]
                     ret_val = None
                     many_events = False
-                    bg_disabled = button_day_bg_disabled
+                    day_bg_disabled = button_day_bg_disabled
+                    today_bg_disabled = button_today_bg_disabled
 
                     # current day events display helpers
                     event_labels = list()
-                    third_label = ""
 
                     # if this day is on the current month process the events that it may have
                     if current_date.month == self.selected_month:
@@ -571,50 +599,50 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                                     # add the non event
                                     event_labels.append(e[1])
 
-
-                        # if we have exactly 3 events
-                        if len(event_labels) == 3:
-                            # third_label should hold the event text
-                            third_label = event_labels[2]
                         if len(event_labels) > 3:
                             many_events = True
-                            if self.can_select_date:
-                                third_label = "and more events"
-                            else:
-                                third_label = "(Click to see more)"
+                            if not self.can_select_date:
                                 ret_val = event_labels
 
-                    # if we don't have any labels or less than 2
-                    if not event_labels or len(event_labels) < 2:
+                    # if we don't have any labels or less than 3
+                    if not event_labels or len(event_labels) < 3:
 
-                        # we can safely add 2 empty ones
-                        event_labels.append("")
-                        event_labels.append("")
+                        # we can safely add 3 empty ones
+                        event_labels.extend([""] * 3)
 
                     # Add button behaviour to it
                     if current_date.month == self.selected_month:
-                        bg_disabled = button_day_bg
+                        day_bg_disabled = button_day_bg
+                        today_bg_disabled = button_today_bg
 
                         if self.can_select_date:
                             ret_val = current_date
 
-                    day_button_text = Text(
-                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), __(event_labels[0]), __(event_labels[1]), __(third_label)),
-                        font=gui.default_font,
-                        size=self.CALENDAR_DAY_TEXT_SIZE,
-                        color=self.TEXT_DAY_COLOR,
-                        outlines=[]
-                    )
+                    # The button itself
+
+                    # Set the final BGs for the day button
+                    final_bg_idle = button_day_bg
+                    final_bg_hover = button_day_bg_hover
+                    final_bg_disabled = day_bg_disabled
+
+                    # The date in current iteration is today
+                    if (current_date.day == self.today.day) and (current_date.month == self.today.month) and (current_date.year == self.today.year):
+                        final_bg_idle = button_today_bg
+                        final_bg_hover = button_today_bg_hover
+                        final_bg_disabled = today_bg_disabled
+
+                    button_pos = (self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
+                        initial_y + (i * self.DAY_BUTTON_HEIGHT))
 
                     day_button = MASButtonDisplayable(
-                        day_button_text,
-                        day_button_text,
-                        day_button_text,
-                        button_day_bg,
-                        button_day_bg_hover,
-                        bg_disabled,
-                        self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
-                        initial_y + (i * self.DAY_BUTTON_HEIGHT),
+                        Null(),
+                        Null(),
+                        Null(),
+                        final_bg_idle,
+                        final_bg_hover,
+                        final_bg_disabled,
+                        button_pos[0],
+                        button_pos[1],
                         self.DAY_BUTTON_WIDTH,
                         self.DAY_BUTTON_HEIGHT,
                         hover_sound=gui.hover_sound,
@@ -627,8 +655,56 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         # disable the button
                         day_button.disable()
 
-
                     self.day_buttons.append(day_button)
+
+                    # Button text
+                    text_container = Container(
+                        pos=button_pos,
+                        xsize=self.DAY_BUTTON_WIDTH,
+                        ysize=self.DAY_BUTTON_HEIGHT
+                    )
+
+                    # Day number
+                    day_number_text = Text(
+                        str(current_date.day),
+                        font=gui.default_font,
+                        size=self.DAY_NUMBER_TEXT_SIZE,
+                        color=self.DAY_NUMBER_COLOR,
+                        outlines=[],
+                        pos=(self.DAY_BUTTON_WIDTH - 7, 5),
+                        xanchor=1.0
+                    )
+                    text_container.add(day_number_text)
+
+                    # Day notes
+                    # TODO: implement font switching depending on the day (e.g., holidays)
+                    for k in range(3):
+                        # This way we don't have to iterate and try to render empty text surfaces
+                        if len(event_labels[k]) != 0:
+                            note_text = Text(
+                                __(event_labels[k]),
+                                font=note_font,
+                                size=note_text_size,
+                                color=note_color,
+                                outlines=[],
+                                pos=(8, note_ystart + k * 17)
+                            )
+                            text_container.add(note_text)
+
+                    # Create an ellipsis if needed
+                    if many_events:
+                        ellipsis_text = Text(
+                            "...",
+                            font=gui.default_font,
+                            size=16,
+                            color=self.DAY_NUMBER_COLOR,
+                            outlines=[],
+                            pos=(self.DAY_BUTTON_WIDTH - 7, 43),
+                            xanchor=1.0
+                        )
+                        text_container.add(ellipsis_text)
+
+                    self.day_button_texts.append((text_container, button_pos))
 
 
         def _showScrollableEventList(self,events):
@@ -848,11 +924,13 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             year_label = renpy.render(self.text_current_year, width, height, st, at)
 
             # now do some calcs
+            titlew, titleh = calendar_title.get_size()
             monw, monh = month_label.get_size()
             yearw, yearh = year_label.get_size()
 
-            monthx = self._xcenter(380, monw)
-            yearx = self._xcenter(380, yearw) + 460
+            titlex = self._xcenter(self.INTERNAL_WIDTH, titlew)
+            monthx = self._xcenter(250, monw) + 100
+            yearx = self.INTERNAL_WIDTH - yearw - self._xcenter(250, yearw) - 100
 
             # Get the size of the child.
             self.width, self.height = calendar_bg.get_size()
@@ -863,13 +941,13 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # blit the constant elements that make this UI
             r.blit(back,(0,0))
 
-            r.blit(calendar_bg, (192, 103))
+            r.blit(calendar_bg, (190, 103))
 
             r.blit(month_label, (self.INITIAL_POSITION_X + monthx, self.INITIAL_POSITION_Y + 8))
 
             r.blit(year_label, (self.INITIAL_POSITION_X + yearx, self.INITIAL_POSITION_Y + 8))
 
-            r.blit(calendar_title, (self.title_position_x, self.TITLE_POSITION_Y))
+            r.blit(calendar_title, (self.INITIAL_POSITION_X + titlex, self.TITLE_POSITION_Y))
 
             # blit the constant buttons
             c_r_buttons = [
@@ -884,7 +962,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 r.blit(vis_b, xy)
 
             # blit the calendar buttons
-            cal_r_buttons = [
+            cal_r_displayables = [
                 (
                     x.render(width, height, st, at),
                     (x.xpos, x.ypos)
@@ -892,8 +970,12 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 for x in self.day_buttons
             ]
 
-            for vis_b, xy in cal_r_buttons:
-                r.blit(vis_b, xy)
+            for button_text, button_pos in self.day_button_texts:
+                text_r = button_text.render(width, height, st, at)
+                cal_r_displayables.append((text_r, button_pos))
+
+            for vis_d, xy in cal_r_displayables:
+                r.blit(vis_d, xy)
 
             # Return the render.
             return r
@@ -1914,6 +1996,32 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
     return
 
 
+# Styles for the calendar event list, so we can easily swap prefixes between day and night
+style event_list_day_text is default
+
+style event_list_night_text is default:
+    color "#000000"
+    outlines [(2, "#00000000", 0, 0)] # Otherwise text size will be different
+
+style event_list_day_vscrollbar is classroom_vscrollbar
+
+style event_list_night_vscrollbar is classroom_vscrollbar
+
+style event_list_day_textbutton is generic_button_light:
+    xysize (None, None)
+    padding (0, 0, 0, 0)
+    background Null()
+
+style event_list_night_textbutton is generic_button_dark:
+    xysize (None, None)
+    padding (0, 0, 0, 0)
+    background Null()
+
+style event_list_day_textbutton_text is generic_button_text_light
+
+style event_list_night_textbutton_text is generic_button_text_light
+
+
 # Scrollable labels with return. This one takes the following params:
 # IN:
 #   items - list of items to display in the menu. Each item must be a tuple of
@@ -1928,7 +2036,7 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #           [2]: width of menu
 #           [3]: height of menu
 #   scroll_align - alignment of vertical scrollbar
-#   first_item - represents the first item(usually the title) of the list
+#   first_item - represents the first item (usually the title) of the list
 #       tuple of the following format:
 #           [0]: text of the button
 #           [1]: return value of the button
@@ -1950,62 +2058,79 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
 screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame=("mod_assets/calendar/calendar_bg.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_bg-n.png")):
-        style_prefix "scrollable_menu"
+    style_prefix ("event_list_day" if mas_current_background.isFltDay() else "event_list_night")
 
-        zorder 51
+    zorder 51
 
-        if mask:
-            add Solid(mask)
+    if mask:
+        add Solid(mask)
 
+    frame:
+        area display_area
+
+        if frame:
+            background Frame(frame, 60, 60)
+
+        # Header
         fixed:
-            area display_area
-            if frame:
-                add Frame(frame, 60, 60)
+            xpos 0
+            ypos 0
+            xfill True
+            ysize 59
 
-            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+            if first_item:
+                text _(first_item[0]):
+                    xalign 0.5
+                    yalign 0.5
+                    if first_item[1]:
+                        italic True
+                    if first_item[2]:
+                        bold True
 
-            viewport:
-                yadjustment prev_adj
-                mousewheel True
+        # Footer
+        fixed:
+            xpos 0
+            ypos display_area[3] - 59
+            xfill True
+            ysize 59
 
-                vbox:
+            if final_item:
+                textbutton _(final_item[0]):
+                    style_suffix "textbutton"
+                    xpos 20
+                    yalign 0.5
+                    if final_item[2]:
+                        text_italic True
+                    if final_item[3]:
+                        text_bold True
+                    action Return(final_item[1])
 
-                    if first_item:
+        # Item list
+        viewport id "items":
+            xpos 0
+            ypos 69
+            xfill True
+            ysize display_area[3] - 128
+            yadjustment prev_adj
+            mousewheel True
 
-                        text _(first_item[0]):
-                            if first_item[1]:
-                                italic True
-                            if first_item[2]:
-                                bold True
-                            xpos 0.2
-                            ypos 0.5
+            vbox:
+                spacing 5
 
-                    null height 30
+                for item_prompt,is_italic,is_bold in items:
+                    text item_prompt:
+                        xpos 20
+                        if is_italic:
+                            italic True
+                        if is_bold:
+                            bold True
 
-
-                    for item_prompt,is_italic,is_bold in items:
-                        text item_prompt:
-                            if is_italic:
-                                italic True
-                            if is_bold:
-                                bold True
-                            xpos 0.05
-
-
-                    if final_item:
-                        if final_item[4] > 0:
-                            null height final_item[4]
-
-                        textbutton _(final_item[0]):
-                            if final_item[2]:
-                                text_italic True
-                            if final_item[3]:
-                                text_bold True
-                            background None
-                            hover_sound gui.hover_sound
-                            activate_sound gui.activate_sound
-
-                            action Return(final_item[1])
+        vbar:
+            value YScrollValue("items")
+            adjustment prev_adj
+            xalign scroll_align
+            ypos 69
+            ysize display_area[3] - 128
 
 
 label _first_time_calendar_use:
@@ -2085,7 +2210,12 @@ screen calendar_overlay():
     #     xalign 0.305
     #     yalign 0.4
     #
-    if store.mas_calendar.enabled:
+    image "mod_assets/calendar/calendar_button_shadow.png" xpos 351 ypos 251
+
+    if (
+        store.mas_calendar.enabled
+        and renpy.get_screen("mas_calendar_screen") is None
+    ):
         imagebutton:
             idle ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"

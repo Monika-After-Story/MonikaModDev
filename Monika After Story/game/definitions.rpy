@@ -1335,7 +1335,7 @@ python early:
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
             """DEPRECATED
-            
+
             (remove when farewells is updated)
 
             Checks a single event against its repeat rules, which are evaled
@@ -1835,7 +1835,7 @@ python early:
         def _gen_bg(prefix):
             """
             Attempts to pull choice button's Frame and build an appropraite
-                image with it using the given prefix. 
+                image with it using the given prefix.
                 This is specifically for MASButtonDisplayables.
 
             IN:
@@ -1992,7 +1992,7 @@ python early:
             IN:
                 xdiff - difference in x coords (used in M)
                 ydiff - difference in y coords (used in M)
-                yint - y intercept 
+                yint - y intercept
             """
             self.xdiff = xdiff
             self.ydiff = ydiff
@@ -2075,7 +2075,7 @@ python early:
             Generates a MASLinearForm object using slope
 
             IN:
-                slope - the slope of the line 
+                slope - the slope of the line
                 yint - the yintercept of the line
 
             RETURNS: MASLinearForm object
@@ -2088,11 +2088,11 @@ python early:
             Returns the two points as an ordered tuple
 
             IN:
-                p1 - (x, y) point 
+                p1 - (x, y) point
                 p2 - (x, y) point
 
             RETURNS: tuple of the following format:
-                [0] - left most point 
+                [0] - left most point
                 [1] - right most point
             """
             if p1[0] < p2[0]:
@@ -2163,7 +2163,7 @@ python early:
     class MASEdge(object):
         """
         Representation of an edge (line with 2 points)
-        Has functions related to determining if a point will intersect with 
+        Has functions related to determining if a point will intersect with
         this edge (aka for point in polygon calculations)
         """
 
@@ -2231,14 +2231,14 @@ python early:
             if x < self.__bb_x_min:
                 return True
 
-            # otherwise, we are for sure within the bounding box. 
+            # otherwise, we are for sure within the bounding box.
 
             # vertical lines means we only have to check x
             if self._vertical:
                 # in this case, we treat on the line as passing
                 return x <= self.__bb_x_min
 
-            # now just run the inverse of the linear formula, and if 
+            # now just run the inverse of the linear formula, and if
             # our x is less than that, then the point is for sure before the
             # edge
             x, y = self._normalize((x, y))
@@ -2523,7 +2523,7 @@ python early:
 
             IN:
                 zones - dict of the following format:
-                    key: key of the zone, this is returned if the zone is 
+                    key: key of the zone, this is returned if the zone is
                         clicked
                     value: list of vertexes that make teh zone
                 button_down - button_down item to use for each clickzone
@@ -3147,12 +3147,6 @@ init -1 python in _mas_root:
             'hangman':False,
             'piano':False
         }
-        renpy.game.persistent.game_unlocks = {
-            'pong':True,
-            'chess':False,
-            'hangman':False,
-            'piano':False
-        }
         renpy.game.persistent.sessions={
             'last_session_end':datetime.datetime.now(),
             'current_session_start':datetime.datetime.now(),
@@ -3276,7 +3270,7 @@ init -995 python in mas_utils:
         #If we're here, we never found something greater. Let's return -1
         return -1
 
-init -990 python in mas_utils:
+init -991 python in mas_utils:
     import store
     import os
     import stat
@@ -3332,13 +3326,13 @@ init -990 python in mas_utils:
         if places > 1:
             for x in range(places):
                 acc /= 10.0
-        
+
         return abs(left-right) < acc
 
 
     def floatsplit(value):
         """
-        Splits a float into int and float parts (unlike _splitfloat which 
+        Splits a float into int and float parts (unlike _splitfloat which
         returns two ints)
 
         IN:
@@ -3355,7 +3349,7 @@ init -990 python in mas_utils:
     def pdget(key, table, validator=None, defval=None):
         """
         Protected Dict GET
-        Gets an item from a dict, using protections to ensure this item is 
+        Gets an item from a dict, using protections to ensure this item is
         valid
 
         IN:
@@ -6386,7 +6380,6 @@ default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
-default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
@@ -6633,36 +6626,36 @@ return
 #Please remember to update the list if you add more gender exclusive words. ^
 label mas_set_gender:
     if persistent.gender == "M":
-        $his = "his"
-        $he = "he"
-        $hes = "he's"
-        $heis = "he is"
-        $bf = "boyfriend"
-        $man = "man"
-        $boy = "boy"
-        $guy = "guy"
+        $ his = "his"
+        $ he = "he"
+        $ hes = "he's"
+        $ heis = "he is"
+        $ bf = "boyfriend"
+        $ man = "man"
+        $ boy = "boy"
+        $ guy = "guy"
         $ him = "him"
         $ himself = "himself"
     elif persistent.gender == "F":
-        $his = "her"
-        $he = "she"
-        $hes = "she's"
-        $heis = "she is"
-        $bf = "girlfriend"
-        $man = "woman"
-        $boy = "girl"
-        $guy = "girl"
+        $ his = "her"
+        $ he = "she"
+        $ hes = "she's"
+        $ heis = "she is"
+        $ bf = "girlfriend"
+        $ man = "woman"
+        $ boy = "girl"
+        $ guy = "girl"
         $ him = "her"
         $ himself = "herself"
     else:
-        $his = "their"
-        $he = "they"
-        $hes = "they're"
-        $heis = "they are"
-        $bf = "partner"
-        $man = "person"
-        $boy = "person"
-        $guy = "person"
+        $ his = "their"
+        $ he = "they"
+        $ hes = "they're"
+        $ heis = "they are"
+        $ bf = "partner"
+        $ man = "person"
+        $ boy = "person"
+        $ guy = "person"
         $ him = "them"
         $ himself = "themselves"
     return

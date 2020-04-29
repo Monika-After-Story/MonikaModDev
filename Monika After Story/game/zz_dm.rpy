@@ -23,7 +23,7 @@ init -999 python in _mas_dm_dm:
         store.persistent._mas_apology_database
     ]
 
-    # lock db 
+    # lock db
     lock_db = store.persistent._mas_event_init_lockdb
 
     ## internal utility functions DO NOT USE
@@ -64,9 +64,9 @@ init -999 python in _mas_dm_dm:
 
     def add_idxs(_db, _key, _exp_len, *idxs_d):
         """
-        Adds indexes to the given key 
+        Adds indexes to the given key
 
-        NOTE: indxs_d is added in reverse order. 
+        NOTE: indxs_d is added in reverse order.
 
         IN:
             _db - database to add indexes to
@@ -122,7 +122,7 @@ init -999 python in _mas_dm_dm:
             return
 
         __rm_idxs(_db, _key, _exp_len, sorted(idxs, reverse=True))
-        
+
 
     def rm_idxs_db(_db, _exp_len, *idxs):
         """
@@ -224,7 +224,7 @@ init -999 python in _mas_dm_dm:
         """
         # versions 073-074 means we have 15 props
         __dm_1_to_2_helper(15)
-        
+
 
     def _dm_2_to_1():
         """
@@ -236,7 +236,7 @@ init -999 python in _mas_dm_dm:
         ### needed vars
         rules_index = 14
         rules_data = {}
-        curr_len = 19 # number of properties ver 1 events have. 
+        curr_len = 19 # number of properties ver 1 events have.
 
         ### perform logic
 
@@ -276,7 +276,7 @@ init -999 python in _mas_dm_dm:
         """
         # if this value is None, but version number is not None, then the user
         # is coming from a post 0.5.0 install. They should have some data,
-        # but we only want to modify it if contains RULES. 
+        # but we only want to modify it if contains RULES.
         version, sp, ignore = store.persistent.version_number.partition("-")
         maj_ver, mid_ver, min_ver = version.split(".")
         ## NOTE: crash if this fails.
@@ -324,7 +324,7 @@ init -999 python in _mas_dm_dm:
 
         RETURNS tuple of the following format:
             [0]: data migration function found, Or none if not found
-            [1]: value of adj_ver when data migration found 
+            [1]: value of adj_ver when data migration found
         """
         if direction < 0:
             # if we are decreasing the adj_ver, then we want to stop when
@@ -407,8 +407,6 @@ init -897 python:
             persistent._mas_dm_data_version,
             store._mas_dm_dm.dm_data_version
         )
-    
+
         # NOTE: this should be the last thing we do
         persistent._mas_dm_data_version = store._mas_dm_dm.dm_data_version
-
-
