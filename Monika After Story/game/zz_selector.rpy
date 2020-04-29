@@ -19,7 +19,7 @@ init -150 python in mas_selspr:
     import store.mas_utils as mas_utils
 
     ## selector rules
-    # selector rules are functions that should be checked prior to unlocking 
+    # selector rules are functions that should be checked prior to unlocking
     # a selector.
     # NOTE: all selector rules are assumed to be ran at runtime
 
@@ -676,7 +676,7 @@ init -10 python in mas_selspr:
             else:
                 lock_prompt(group)
 
-    
+
     def _switch_to_wear_prompts():
         """
         Switches all prompts for grp_topic_list topics to use their wear prompt.
@@ -1705,7 +1705,7 @@ init -10 python in mas_selspr:
             Returns the value of the outfit checkbox visible message
 
             RETURNS:
-                True if the outfit checkbox should be visible, False otherwise    
+                True if the outfit checkbox should be visible, False otherwise
             """
             return self._read(MB_OCB_VISIBLE)
 
@@ -1721,7 +1721,7 @@ init -10 python in mas_selspr:
             """
             Returns the value of the restore enable message
 
-            RETURNS: True if the restore button should be enabled, False 
+            RETURNS: True if the restore button should be enabled, False
                 otherwise
             """
             return self._read(MB_RSTR_ENABLE)
@@ -2215,7 +2215,7 @@ init -1 python:
             """
             if selected:
                 color = mas_ui.light_button_text_hover_color
-                
+
             else:
                 color = mas_globals.button_text_idle_color
 
@@ -2758,7 +2758,7 @@ init -1 python:
                         if self._is_over_me(x, y):
                             if self.disabled:
                                 self._select_disabled()
-                            
+
                             elif not self.locked:
                                 self._select()
                                 renpy.redraw(self, 0)
@@ -3032,7 +3032,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup the mailbox
         if mailbox is None:
             mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
-        
+
         # save state
         prev_moni_state = monika_chr.save_state(True, True, True)
         mailbox.send_prev_state(prev_moni_state)
@@ -3215,7 +3215,7 @@ label mas_selector_sidebar_select_restore:
             monika_chr,
             force=True
         )
-    
+
         # restore monika back to previous
         monika_chr.restore(prev_moni_state)
 
@@ -3385,11 +3385,11 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
 #   idle_exp - the expression to use while the selector is runing.
 #       if None is passed in, we use the launch exp.
 #       (Default: None)
-#   sel_group - the selector group to use. 
+#   sel_group - the selector group to use.
 #       if None, we use the acs_type
 #       (Default: None)
 #   idle_dlg - dialogue shown while selector is running and nothing has been
-#       hovered/selected. 
+#       hovered/selected.
 #       if None, we use acs_type, which might be yuck:
 #       "Which <acs_type> would you like me to wear?"
 #       (Default: None)
@@ -3664,7 +3664,7 @@ label monika_ribbon_select:
                 )
             ):
                 use_acs.pop(index)
-        
+
         # make sure ot use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
             "ribbon",

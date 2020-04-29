@@ -715,7 +715,7 @@ init -1 python:
 
 
 init python:
-    # these rules are NOT actually event rules since they don't create rule 
+    # these rules are NOT actually event rules since they don't create rule
     # data in Event.
 
 
@@ -974,5 +974,3 @@ init python:
                 ev = mas_getEV(ev_label)
                 if ev is not None and MASStripDatesRule.evaluate_rule(ev):
                     ev.stripDates()
-                
-

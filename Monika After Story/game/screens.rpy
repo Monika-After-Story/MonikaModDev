@@ -537,10 +537,13 @@ style choice_button_dark is generic_button_dark:
     xysize (420, None)
     padding (100, 5, 100, 5)
 
-style choice_button_text is generic_button_text_light
+style choice_button_text is generic_button_text_light:
+    text_align 0.5
+    layout "subtitle"
 
-style choice_button_text_dark is generic_button_text_dark
-
+style choice_button_text_dark is generic_button_text_dark:
+    text_align 0.5
+    layout "subtitle"
 
 init python:
     def RigMouse():
@@ -1519,7 +1522,7 @@ style radio_button_text is gui_button_text:
 style radio_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("radio_button_dark")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C" 
+    color "#8C8C8C"
     hover_color "#FF80B7"
     selected_color "#DE367E"
     outlines []
@@ -1554,7 +1557,7 @@ style check_button_text is gui_button_text:
 style check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("check_button_dark")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C" 
+    color "#8C8C8C"
     hover_color "#FF80B7"
     selected_color "#DE367E"
     outlines []
@@ -1579,7 +1582,7 @@ style slider_label_text_dark is pref_label_text
 
 style slider_slider is gui_slider:
     xsize 350
-    
+
 style slider_slider_dark is gui_slider_dark:
     xsize 350
 
@@ -1685,7 +1688,7 @@ screen hot_keys():
             spacing 25
 
             hbox:
-                style_prefix mas_ui.cbx_style_prefix
+                style_prefix "check"
                 vbox:
                     label _("General")
                     spacing 10
@@ -1711,7 +1714,7 @@ screen hot_keys():
                     text _("Esc")
 
             hbox:
-                style_prefix mas_ui.cbx_style_prefix
+                style_prefix "check"
                 vbox:
                     label _("Music")
                     spacing 10
@@ -1730,7 +1733,7 @@ screen hot_keys():
     text "Click 'Help' for the complete list.":
         xalign 1.0 yalign 0.0
         xoffset -10
-        style mas_ui.mm_tt_style
+        style "main_menu_version"
 
 
 ## History screen ##############################################################
@@ -2452,9 +2455,11 @@ style twopane_scrollable_menu_button_dark is choice_button_dark:
 
 style twopane_scrollable_menu_button_text is choice_button_text:
     align (0.0, 0.0)
+    text_align 0.0
 
 style twopane_scrollable_menu_button_text_dark is choice_button_text_dark:
     align (0.0, 0.0)
+    text_align 0.0
 
 style twopane_scrollable_menu_new_button is twopane_scrollable_menu_button
 

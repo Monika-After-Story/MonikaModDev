@@ -189,7 +189,7 @@ init python:
         # Timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
         mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
-    
+
         # Reset the global flag
         mas_globals.change_textbox = True
 
@@ -242,7 +242,7 @@ style generic_button_dark is generic_button_base:
 style generic_button_text_base:
     font gui.default_font
     size gui.text_size
-    align (0.5, 0.5)
+    align (0.5, 0.1)
     outlines []
 
 style generic_button_text_light is generic_button_text_base:
@@ -276,3 +276,31 @@ image menu_nav:
         "not mas_globals.dark_mode", "gui/overlay/main_menu.png",
         "mas_globals.dark_mode", "gui/overlay/main_menu_d.png")
     menu_nav_move
+
+init -1 python:
+
+    # set default and interface font groups
+    # NOTE: this MUST be after -2
+    gui.default_font = FontGroup().add(
+        "mod_assets/font/SourceHanSansK-Regular.otf", 0xac00, 0xd7a3 # kr
+    ).add(
+        "mod_assets/font/SourceHanSansSC-Regular.otf", 0x4e00, 0x9faf # s-cn
+    ).add(
+        "mod_assets/font/mplus-2p-regular.ttf", 0x3000, 0x4dff  # jp + others
+    ).add(
+        "gui/font/Aller_Rg.ttf", 0x0000, 0xffff # latin-1
+    )
+    gui.interface_font = gui.default_font
+    gui.button_text_font = gui.default_font
+    gui.choice_button_text_font = gui.default_font
+
+init -1 python in mas_ui:
+    import store
+
+    music_menu_font = store.FontGroup().add( # use mplus as base
+        "mod_assets/font/SourceHanSansK-Regular.otf", 0xac00, 0xd7a3 # kr
+    ).add(
+        "mod_assets/font/SourceHanSansSC-Regular.otf", 0x4e00, 0x9faf # s-cn
+    ).add(
+        "mod_assets/font/mplus-2p-regular.ttf", 0x0000, 0xffff  # jp
+    )

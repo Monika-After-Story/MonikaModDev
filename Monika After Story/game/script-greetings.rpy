@@ -25,8 +25,8 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
-# cutoff for a greeting type. 
-# if timedelta, then we add this time to last session end to check if the 
+# cutoff for a greeting type.
+# if timedelta, then we add this time to last session end to check if the
 #   type should be cleared
 # if datetime, then we compare it to the current dt to check if type should be
 #   cleared
@@ -1888,7 +1888,7 @@ label greeting_japan:
         m 3eua "You know what that means, [player]?"
         m 4ekbfa "It means {i}'I'll be yours forever'~{/i}"
         return
-    
+
     m 4hub "Watashi wa itsumademo anata no mono desu!"
     if shown_count == 1:
         m 3eksdla "Last time I said that I made a mistake..."
@@ -2092,7 +2092,7 @@ label greeting_stillsicknorest:
     # setting greet type here even tho we aren't quitting so she remembers you're sick next load
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return
-    
+
 label greeting_stillsickresting:
     m 1eka "Oh, that's a relief to hear, [player]."
     m 3eka "I hope you're keeping yourself warm though."
@@ -3278,7 +3278,7 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
 
 label greeting_returned_home_morethan5mins_cleanup:
     pass
-    # TODO: re-evaluate this XP gain when rethinking XP. Going out with 
+    # TODO: re-evaluate this XP gain when rethinking XP. Going out with
     #   monika could be seen as gaining xp
     # $ grant_xp(xp.NEW_GAME)
     #FALL THROUGH
@@ -3672,7 +3672,7 @@ label greeting_rent:
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -3691,7 +3691,7 @@ label greeting_back_housework:
     elif mas_isMoniUpset():
         m 2esc "At least you didn't forget to come back, [player]."
     elif mas_isMoniDis():
-        m 6ekd "Ah, [player]. So you really were just busy..."    
+        m 6ekd "Ah, [player]. So you really were just busy..."
     else:
         m 6ckc "..."
     return
