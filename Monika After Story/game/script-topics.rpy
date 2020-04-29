@@ -11645,7 +11645,7 @@ label monika_players_control:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=not mas_isWinter()))
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['nature'],prompt="Backpacking",random=not mas_isWinter()))
 
 label monika_backpacking:
     m 1esa "You know what I've always wanted to do, [player]?"
@@ -14195,50 +14195,47 @@ label monika_translating_poetry:
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_hot_spring",
-            category=['nature','misc'],
+            category=['nature'],
             prompt="Hot springs",
-            random=True
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
         )
     )
 
-label monika_hot_spring:    
-    m 1eua "Have you ever been to a hot spring, [player]?"
-    m 3eub "There are many kinds all over the world, but I'm specifically thinking about the ones that are actually regulated and you're allowed to bathe in."
-    m 3hksdlb "Don't go jumping into some random pool of boiling water just yet!"
-    m 1eub "I've never bathed in a hot spring myself, but it's something I'd like to try when I get here."
-    m 3dka "They're supposed to be a great way to relieve stress and rest a little."
-    m 3hub "Not to mention the many health benefits!"
-    m 4eub "They help you get good blood circulation for one. There's also some minerals in the water that can help boost your immune system, too!"
-    m 7eua "I'd like to try an open-air bath in particular. I hear it really gives a different experience."
-    m 7rubssdla "Though it might feel a little weird chilling in a bath with that many people all around you..."
-    m 1hkblsdlb "It sounds a little embarassing~" 
-    if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,4) == 1:
-        m 1rkbssdlu "..."
-        m 3rkbfsdlb "Especially since some places don't allow you to wear any sort of cover either!"
-        m 3rubfb "Fortunately, most of these places don't allow for mixed bathing anymore..."
-        m 1tubfu "Well, maybe I wouldn't mind it so much if it was with you..."
-
-    m 1tubsb "Maybe we could find a place where we could be just the two of us?" 
+label monika_hot_spring:
+    m 3eua "Have you ever been to a hot spring, [player]?"
+    m 1esa "I've never been to one myself, but I'd like to try bathing in one when I get to your world."
+    m 1dka "They're supposed to be a great way to relieve stress and relax a little."
+    m 3eub "...Not to mention the many health benefits!"
+    m 3eua "They help with blood circulation, for one.{w=0.3} {nw}"
+    extend 3eub "Plus, the water often contains minerals that can help boost your immune system!"
+    m 3eud "There are many kinds all over the world, but I'm specifically thinking about the ones that are actually designated for public use."
+    m 3hksdlb "...So don't just go jumping into some random pool of boiling water, ahaha!"
+    m 1eua "I'd like to try an open-air bath in particular.{w=0.3} I hear they really give a unique experience."
+    m 3rubssdla "Though it might feel a little weird relaxing in a bath with that many people all around you...{w=0.3} {nw}"
+    extend 2hkblsdlb "Doesn't that sound kinda embarassing?"
+    m 2rkbssdlu "..."
+    m 7rkbfsdlb "...Especially since some places don't allow you to wear any sort of cover, either!"
+    m 1tubfu "...Although, I wouldn't mind that so much if it was just with you."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ekbfa "Can you imagine how it'd be? You and me relaxing in a nice, soothing hot pool..."
+    m 5ekbfa "Can you imagine it, [player]? {w=0.3}Both of us relaxing in a nice, soothing hot pool..."
 
     if mas_isWinter():
-        m 5dubfu "Warming our chilled bodies after a harsh day out in the cold..."
+        m 5dubfu "Warming our chilled bodies after a long day out in the harsh cold..."
     elif mas_isSummer():
-        m 5dubfu "Wiping the sweat off after a long day out in the sun..."
+        m 5dubfu "Letting the sweat wash away after a long day out in the sun..."
     elif mas_isFall():
         m 5dubfu "Watching the leaves gently fall around us in the last lights of the afternoon..."
     else:
         m 5dubfu "Contemplating the beauty of nature all around us..."
-    m "The heat of the water slowly taking over, making both our hearts beat harder..."
-    m 5tsbfu "Then I'd lean on you so you could kiss me, and we'd stay like this together."
-    m "Letting all our worries soak away in the hot water..."
-    m 5dkbfa "Aaah, I'm feeling a bit more relaxed just thinking about it~"
+
+    m "The heat of the water slowly taking over, making our hearts beat faster..."
+    m 5tsbfu "Then I'd lean in so you could kiss me and we'd stay locked together, while the hot water soaked all of our worries away..."
+    m 5dkbfa "Ahhh, just the thought of it makes me feel all tingly, [player]~"
     return
-    
