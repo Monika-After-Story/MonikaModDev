@@ -14200,7 +14200,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_hot_spring",
+            eventlabel="monika_hot_springs",
             category=['nature'],
             prompt="Hot springs",
             random=True,
@@ -14208,16 +14208,17 @@ init 5 python:
         )
     )
 
-label monika_hot_spring:
-    m 3eua "Have you ever been to a hot spring, [player]?"
-    m 1esa "I've never been to one myself, but I'd like to try bathing in one when I get to your world."
-    m 1dka "They're supposed to be a great way to relieve stress and relax a little."
-    m 3eub "...Not to mention the many health benefits!"
+label monika_hot_springs:
+    m 3esa "Have you ever been to a hot spring, [player]?"
+    m 1eua "I've never been to one myself, but I'd like to try bathing in one when I get to your world."
+    m "They're supposed to be a great way to relieve stress, relax a little, {nw}"
+    extend 3eub "and even offer many health benefits!"
     m 3eua "They help with blood circulation, for one.{w=0.3} {nw}"
     extend 3eub "Plus, the water often contains minerals that can help boost your immune system!"
-    m 3eud "There are many kinds all over the world, but I'm specifically thinking about the ones that are actually designated for public use."
+    m 3eud "There are many kinds all over the world..."
+    m 3rksdla "But I'm specifically thinking about the ones that are actually designated for public use."
     m 3hksdlb "...So don't just go jumping into some random pool of boiling water, ahaha!"
-    m 1eua "I'd like to try an open-air bath in particular.{w=0.3} I hear they really give a unique experience."
+    m 1eua "Anyway...I'd like to try an open-air bath in particular.{w=0.3} I hear they really give a unique experience."
     m 3rubssdla "Though it might feel a little weird relaxing in a bath with that many people all around you...{w=0.3} {nw}"
     extend 2hkblsdlb "Doesn't that sound kinda embarassing?"
     m 2rkbssdlu "..."
@@ -14237,5 +14238,6 @@ label monika_hot_spring:
 
     m "The heat of the water slowly taking over, making our hearts beat faster..."
     m 5tsbfu "Then I'd lean in so you could kiss me and we'd stay locked together, while the hot water soaked all of our worries away..."
-    m 5dkbfa "Ahhh, just the thought of it makes me feel all tingly, [player]~"
+    m 5dkbfb "Ahhh,{w=0.2} {nw}"
+    extend 5dkbfa "just the thought of it makes me feel all tingly, [player]~"
     return
