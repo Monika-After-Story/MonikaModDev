@@ -375,6 +375,9 @@ init python:
 
         ev = mas_getEV(ev_label)
 
+        if ev is None:
+            return
+
         #Get the label prefix
         label_prefix = __getLabelPrefix(ev_label, label_prefix_map.keys())
 
@@ -384,8 +387,7 @@ init python:
         #3. Must be a valid label (in the label prefix map)
         #4. Prompt must not be the same as the eventlabel (event must have a prompt)
         if (
-            ev is not None
-            and ev.random
+            ev.random
             and label_prefix
             and ev.prompt != ev_label
         ):
@@ -436,6 +438,9 @@ init python:
 
         ev = mas_getEV(ev_label)
 
+        if ev is None:
+            return
+
         #Get our label prefix
         label_prefix = __getLabelPrefix(ev_label, label_prefix_map.keys())
 
@@ -446,7 +451,6 @@ init python:
         #4. Prompt must not be the same as the eventlabel (event must have a prompt)
         if (
             mas_isMoniNormal(higher=True)
-            and ev is not None
             and (label_prefix or ev_label in bookmark_whitelist)
             and ev.prompt != ev_label
         ):
