@@ -1,0 +1,22 @@
+{
+    "__author": "Echo",
+    "version": 3,
+    "type": 1,
+    "name": "echo_downshort",
+    "img_sit": "echo_downshort",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "no-tails": true
+    },
+    "select_info": {
+        "display_name": "Short Down",
+        "thumb": "echo_downshort",
+        "group": "hair"
+    },
+    "unlock": true
+}
