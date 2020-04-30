@@ -70,7 +70,7 @@ init -2 python in mas_sprites:
         )
         if acs_to_wear is not None and store.mas_SELisUnlocked(acs_to_wear):
             _moni_chr.wear_acs(acs_to_wear)
-    
+
 
     def _acs_wear_if_in_tempstorage(_moni_chr, key):
         """
@@ -78,7 +78,7 @@ init -2 python in mas_sprites:
 
         IN:
             _moni_chr - MASMonika object
-            key - key in tempstorage 
+            key - key in tempstorage
         """
         acs_items = temp_storage.get(key, None)
         if acs_items is not None:
@@ -339,7 +339,7 @@ init -2 python in mas_sprites:
         _acs_ribbon_like_save_and_remove(_moni_chr)
 #        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
 #        if (
-#                prev_ribbon is not None 
+#                prev_ribbon is not None
 #                and prev_ribbon != store.mas_acs_ribbon_blank
 #            ):
 #            temp_storage["hair.ribbon"] = prev_ribbon
@@ -386,7 +386,7 @@ init -2 python in mas_sprites:
         # unlock hair down greeting if not unlocked
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
- 
+
         # wear ribbon if in tempstorage
         _acs_wear_if_in_tempstorage_s(_moni_chr, "hair.ribbon")
 
@@ -905,7 +905,7 @@ init -1 python:
     )
     store.mas_selspr.unlock_clothes(mas_clothes_def)
 
-    
+
     ### BLACK DRESS (OUR TIME)
     ## blackdress
     # Blackdress from Our Time Mod
@@ -1494,7 +1494,7 @@ init -1 python:
             "Ze~",
             "Tea time, tea time. Even if we have coffee, it's tea time. Ehehe~",
             "Eye of newt, toe of frog...",
-            "Now where did I leave that broom..."            
+            "Now where did I leave that broom..."
         ]
     )
 
@@ -2258,5 +2258,3 @@ default persistent._mas_acs_enable_quetzalplushie = False
 ### PROMISE RING ###
 default persistent._mas_acs_enable_promisering = False
 # True enables promise ring, False disables promise ring
-
-
