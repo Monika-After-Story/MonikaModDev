@@ -379,7 +379,7 @@ init python:
         renpy.hide("rm")
 
         # get current weather masks
-        # TODO: change to pass in current filter 
+        # TODO: change to pass in current filter
         mask = mas_current_weather.sp_window(
             mas_isCurrentFlt("day")
         )
@@ -682,7 +682,7 @@ init python:
 
     def mas_get_player_bookmarks(bookmarked_evls):
         """
-        Gets topics which are bookmarked by the player 
+        Gets topics which are bookmarked by the player
         Also cleans events which no longer exist
 
         IN:
@@ -778,7 +778,7 @@ init python:
 #           emptydesk after Monika is shown.
 #       (Default: True)
 #   progress_filter - True will progress the filter. False will not
-#       NOTE: use this if you explicity set the filter 
+#       NOTE: use this if you explicity set the filter
 #       (Default: True)
 label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
 
@@ -1397,7 +1397,7 @@ label ch30_loop:
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 
-# TODO: add label here to allow startup to hook past weather 
+# TODO: add label here to allow startup to hook past weather
 # TODO: move quick_menu to here
 
     # updater check in here just because
@@ -1649,7 +1649,7 @@ label ch30_minute(time_since_check):
 
 
 # label for things that should run about once per hour
-# NOTE: it only runs when the hour changes, so don't expect this to run 
+# NOTE: it only runs when the hour changes, so don't expect this to run
 #   on start right away
 label ch30_hour:
     $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
@@ -1665,7 +1665,7 @@ label ch30_hour:
     return
 
 # label for things that should run about once per day
-# NOTE: it only runs when the day changes, so don't expect this to run on 
+# NOTE: it only runs when the day changes, so don't expect this to run on
 #   staart right away
 label ch30_day:
     python:

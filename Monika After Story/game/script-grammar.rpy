@@ -47,7 +47,7 @@ init 4 python in mas_gtod:
 
         # now check the actual day
         return (
-            datetime.date.today() - tip_ev.unlock_date.date() 
+            datetime.date.today() - tip_ev.unlock_date.date()
             >= datetime.timedelta(days=1)
         )
 

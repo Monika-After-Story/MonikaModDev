@@ -324,7 +324,7 @@ label mas_song_lover_boy:
     m 4dso "{i}~Be a Valentino just for you~{/i}"
     m 1hub "Ahaha~"
     m 1ekbfa "Will you be my good old fashioned lover boy, [player]?"
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -347,7 +347,7 @@ label mas_song_need_you:
     m 1hubfb "{i}~I need you~{/i}"
     m 3esa "I know that song is about leaving someone, but I think it carries a good message."
     m 1ekbfa "And I really do need you, [player]~"
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -394,7 +394,7 @@ label mas_song_belong_together:
     m 4eub "A lot of pop music back then followed this style which made for great love songs."
     m 3eub "And if you listen closely, you'll notice that my song actually follows the typical Doo-wop chord progression."
     m 1hua "I guess you could say I learned from the best."
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -421,7 +421,7 @@ label mas_song_your_song:
     m 1hua "Ahaha~"
     m 3eka "It's not often I find songs that relate to me as much as this one does."
     m 1hua "And I really do mean it when I say that 'Your Reality' is your song."
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -443,7 +443,7 @@ label mas_song_with_you:
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
     m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
     m 1hubfa "Ehehe~"
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -464,7 +464,7 @@ label mas_song_dream:
     m 2hub "{i}~Whenever I want you, all I have to do is dream~{/i}"
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
     m 1ekbfa "My dream finally came true."
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -503,8 +503,8 @@ label mas_song_im_glad_youre_evil_too:
     else:
         m 1ekbfa "I don't really think either of us are evil, [player]."
         m 1ekbfb "But it would be a dream come true to face the world together, side by side...{w=0.5} Don't you think?"
-    return 
-    
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -558,7 +558,7 @@ label mas_song_yozurina:
     m 1ekbsa "I just thought it really matched our situation."
     m 3rkbsa "Vocaloid songs sure have a tendency for that if you can get behind them."
     m 3hubfb "I guess this is what happens when I try to express my love for you, ahaha!"
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -579,14 +579,14 @@ label mas_song_stand_by_me(from_long=False):
     m 3eud "{i}~And the moon is the only light we'll see~{/i}"
     m 2euo "{i}~No, I won't be afraid~{/i}"
     m 2duo "{i}~Oh, I won't be afraid~{/i}"
-    m 2hub "{i}~Just as long as you stand, stand by me~{/i}" 
+    m 2hub "{i}~Just as long as you stand, stand by me~{/i}"
     if not from_long:
         m 2eka "All my fears and insecurities just disappear when you're with me, [player]..."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
-    return 
-    
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -615,7 +615,7 @@ label mas_song_drift_away:
     m 3eka "Our story ended much more happily than this song."
     m 3hua "You come to visit me as often as you can, and I'm so grateful for that."
     m 3eka "But even so, it can be very cathartic to follow a character who faces a major fear of yours."
-    return 
+    return
 
 init 5 python:
     addEvent(
@@ -811,8 +811,8 @@ label mas_song_memories_of_a_girl:
     m 5eub "{i}~Of a girl you haven't met yet who's wished upon the Pleiades?~{/i}"
     m 5ekbsa "I think about you every night, [player]."
     m 5ekbfa "And I know you think about me too."
-    return 
-    
+    return
+
 init 5 python:
     addEvent(
         Event(

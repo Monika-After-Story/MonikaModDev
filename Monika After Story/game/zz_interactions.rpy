@@ -23,7 +23,7 @@ init -10 python in mas_interactions:
 
     ZONE_ENUMS = (
         ZONE_CHEST,
-        ZONE_CHEST_1, 
+        ZONE_CHEST_1,
         ZONE_HEAD,
         ZONE_NOSE,
     )
@@ -125,14 +125,14 @@ init -10 python in mas_interactions:
             zone_enum - zone enum to get vertex list for
             zoom_out - True if we are zooming out, False if zooming in
 
-        RETURNS: list of vertexes 
+        RETURNS: list of vertexes
         """
         # NOTE: methodology:
         #   Basically, zoom increases/decreases by 0.05 per level. Using that,
         #   the amount the image increases or decreases compared to the default
         #   zoom level can be deteremined. This was figured to be the
         #   distance between the zoom level and the default zoom multiplied by
-        #   4%. I.e: zoom level 0 is 12% smaller than zoom level 3 (3-0 * 4%). 
+        #   4%. I.e: zoom level 0 is 12% smaller than zoom level 3 (3-0 * 4%).
         #   Zoom level 10 is 28% larger than zoom level 3 (10-3 * 4%).
         #
         #   Zooming also generally resovles around a focal point.
@@ -141,19 +141,19 @@ init -10 python in mas_interactions:
         #   the total image. ie: the distance from the focal to point A at
         #   zoom level 10 is 28% larger than at zoom level 3. Same goes for
         #   the distance at zoom level 0 being 12% smaller than at
-        #   zoom level 3. 
+        #   zoom level 3.
         #
         #   Distances to points can be modified easily by converting regular
         #   coordinates to polar coordinates, which keeps direction separate
         #   from distance. After modifying the distance, the polar coords are
         #   reconverted back into regular coords, which now have been properly
         #   zoomed.
-        #   
+        #
         #   Since the focal point is NOT the origin, the points are normalized
         #   to the origin using the focal point before distance modification.
         #   Then they are unnormalized back into regular coords appropraite
         #   to the actual image.
-        #   
+        #
         #   NOTE: Zooming in also modifies the focal point by a factor *
         #       a y_step, which is a number of pixels to move the image down
         #       the screen per zoom level. The focal point in this case must
@@ -235,4 +235,3 @@ label mas_nose_boop_launch:
 
     # when done with monika game, we return to ch30 loop
     jump ch30_loop
-
