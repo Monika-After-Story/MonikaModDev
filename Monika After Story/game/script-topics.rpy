@@ -14251,12 +14251,12 @@ label monika_soft_rains:
             m 6eka "..." 
             m 2ekbsa "So..."
             m 1ekbfa "What else shall we do today, my love?"
-            return "love"
+            $ mas_ILY()
 
         "Maybe later.":
             m 2eka "Oh.{w=0.6} Well, okay, [player]."
             m 3eka "Just let me know if you change your mind, alright?"
-            return
+    return
 
 init 5 python:
     addEvent(
