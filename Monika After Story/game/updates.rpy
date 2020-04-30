@@ -422,8 +422,8 @@ label v0_11_1(version="v0_11_1"):
             # only care about users with under 2 hour session time avg
             if ahs < 2:
                 lvls_gained, xptnl = store.mas_xp._grant_on_pt()
-             
-                # only give users levels if they didn't earn what we 
+
+                # only give users levels if they didn't earn what we
                 # expected. If they have more levels gained then we expected,
                 # we won't change anything.
                 if persistent._mas_xp_lvl < lvls_gained or lvls_gained == 0:
@@ -626,7 +626,7 @@ label v0_11_0(version="v0_11_0"):
             persistent._mas_pool_unlocks = lvls_gained
 
             persistent.playerxp = None
-            
+
         #Fix for unstable users
         mas_unlockEVL("monika_good_tod", "EVE")
 
@@ -1271,7 +1271,7 @@ label v0_10_0(version="v0_10_0"):
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
-                mhs_922 is not None 
+                mhs_922 is not None
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
@@ -1314,7 +1314,7 @@ label v0_10_0(version="v0_10_0"):
         clothes_sel_ev = mas_getEV("monika_clothes_select")
         if clothes_sel_ev is not None:
             clothes_sel_ev.unlocked = True
-            
+
     return
 
 # 0.9.5
@@ -1350,7 +1350,7 @@ label v0_9_4(version="v0_9_4"):
         if outfit_ev is not None and renpy.seen_label(outfit_ev.eventlabel):
             outfit_ev.unlocked = True
 
-    return 
+    return
 
 # 0.9.2
 label v0_9_2(version="v0_9_2"):

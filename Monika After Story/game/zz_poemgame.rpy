@@ -40,7 +40,7 @@ init -4 python:
 
         def _merge(self, _poemword, mPoint):
             """
-            Merges a PoemWord into this MASPoemWord 
+            Merges a PoemWord into this MASPoemWord
 
             IN:
                 _poemword - PoemWord object to merge
@@ -119,8 +119,8 @@ init -4 python:
 
 
 
-    
-    # poemword list class. Allows us to dynamically create Poemwords for 
+
+    # poemword list class. Allows us to dynamically create Poemwords for
     # the poem minigame
     #
     # ATTIRBUTES:
@@ -161,7 +161,7 @@ init -4 python:
             #   wordfile - the filename/path of the file to read words
             with renpy.file(wordfile) as words:
                 for line in words:
-        
+
                     line = line.strip()
 
                     if line == '' or line[0] == '#': continue
@@ -169,13 +169,13 @@ init -4 python:
                     x = line.split(',')
                     self.wordlist.append(
                         MASPoemWord(
-                            x[0], 
-                            float(x[1]), 
-                            float(x[2]), 
+                            x[0],
+                            float(x[1]),
+                            float(x[2]),
                             float(x[3]),
                             float(x[4])
                         )
-                    )           
+                    )
 
 # FUNCTIONS -------------------------------------------------------------------
 
@@ -206,7 +206,7 @@ init -4 python:
 
 # poemgame related cosntants
 init -10 python in mas_poemgame_consts:
-    
+
     # girl names
     SAYORI = "sayori"
     NATSUKI = "natsuki"
@@ -252,7 +252,7 @@ init -10 python in mas_poemgame_consts:
 # store to handle mas_poemgame functions
 init -2 python in mas_poemgame_fun:
     import store.mas_poemgame_consts as mas_pgc
-    
+
     # functions
     def getPointValue(condition, point):
         #
@@ -330,7 +330,7 @@ init -2 python in mas_poemgame_fun:
         # RETURNS:
         #   True if flow is valid, false if not
         return (
-            flow == mas_pgc.DISPLAY_MODE 
+            flow == mas_pgc.DISPLAY_MODE
             or flow == mas_pgc.STOCK_MODE
             or flow == mas_pgc.MONIKA_MODE
         )
@@ -472,7 +472,7 @@ label zz_mas_poemgame_samplethree:
 
 ### BEGIN POEMGAME CALLS ======================================================
 #
-# Since the configurable poemgame call (mas_poem_minigame) is insanely 
+# Since the configurable poemgame call (mas_poem_minigame) is insanely
 # complex, I've added special wrapper labels that take of care the 3 major
 # poemgame configurations: (Act 1, Act 2, Act 3)
 #
@@ -480,7 +480,7 @@ label zz_mas_poemgame_samplethree:
 # is locked to what they were in stock game.
 #
 # NOTE: READ THE DOCUMENTATION. There's a ton of options here and whatever
-#   you want to do is probably adjustable via a param. 
+#   you want to do is probably adjustable via a param.
 #
 # NOTE: If you don't like passing in 2000 keyword arguments, learn a little
 #   more python and call the label using the renpy/python equivalent and
@@ -494,7 +494,7 @@ label zz_mas_poemgame_samplethree:
 
 # ACT 1 ------------------
 # silghty configrable poemgame call using mostly ACT 1 params.
-# 
+#
 # IN:
 # NOTE: SEE mas_poem_minigame documentation for full descriptions of the params
 #   gather_words - (Default: False)
@@ -618,7 +618,7 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 # IN:
 #   (REQUIRED)
 #   flow - what are we trying to do with this minigame. This changes the
-#       returned values: 
+#       returned values:
 #
 #       (these are from mas_poemgame_consts)
 #       DISPLAY_MODE - glitch/display mode.
@@ -627,7 +627,7 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 #           else:
 #               Nothing
 #
-#       STOCK_MODE - stock minigame mode. 
+#       STOCK_MODE - stock minigame mode.
 #           If only_winner is True:
 #               Returns only the winner and points as Tuple:
 #                   [0] -> name of winner (defined in mas_poemgame_consts)
@@ -635,7 +635,7 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 #               If gather_words is True:
 #                   [2] -> list of words selected
 #           else:
-#               Returns the point totals for each character in a dict of the 
+#               Returns the point totals for each character in a dict of the
 #               following format: (keys are defined in mas_poemgame_consts)
 #                   "sayori": <pts>
 #                   "natsuki": <pts>
@@ -656,14 +656,14 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 #
 #   (CONFIGURATION OPTIONS): (ORDER DOES NOT MATCH INPUT PARAMS)
 #
-#   gather_words - True will include a list of the selected words in the 
+#   gather_words - True will include a list of the selected words in the
 #       return, False will not
 #       NOTE: The types of objects in this list may be different:
-#           If we are in monika_mode, then this will be a list of 
+#           If we are in monika_mode, then this will be a list of
 #               MASPoemWord objects
 #           If poem_wordlist is not given, then this will be a list of
 #               PoemWord objects
-#           If poem_wordlist is given, then this will be a list of 
+#           If poem_wordlist is given, then this will be a list of
 #               MASPoemWord Objects
 #       NOTE: The returned objects are deepcopied
 #       (Default: False)
@@ -683,14 +683,14 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 #
 #   glitch_nb - True will use the glitched notebook. False will use regular
 #       one.
-#       (Default: False)   
+#       (Default: False)
 #
 #   glitch_words - Tuple of the following format:
 #           [0] -> True means display gltich words, false means no
 #               (If None, default False)
 #           [1] -> odds that a space appears instead of a letter (1 out of x)
 #               (If None, default is in glitchWord())
-#           [2] -> odds that a nonunicode appears instead of a letter (1 out 
+#           [2] -> odds that a nonunicode appears instead of a letter (1 out
 #               of x)
 #               (If None, default is in glitchWord())
 #       If the tuple is None (or is not of length 3), the default values are
@@ -730,18 +730,18 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 #   music_fadein - Number of seconds to fade in music at start of poem(float)
 #       (Default: 2.0)
 #
-#   music_fadeout - Number of seconds to fade out music at end of poem(float) 
+#   music_fadeout - Number of seconds to fade out music at end of poem(float)
 #       (Default: 2.0)
 #
-#   music_filename - filename of the music to play. 
-#       NOTE: Set to the string "BACK" to use background/currently playing 
-#           music. 
+#   music_filename - filename of the music to play.
+#       NOTE: Set to the string "BACK" to use background/currently playing
+#           music.
 #       NOTE: Setting this to None will stop playing music entirely
 #       NOTE: NO checks are made for the existence of this file. Please no
 #       bully.
 #       (Default: audio.t4 - the defualt poem game audio)
 #
-#   one_counter - True will apply the glitch that made the poem counter 
+#   one_counter - True will apply the glitch that made the poem counter
 #       display 1 over and over again instead of the approriate number. False
 #       will do regular counting
 #       (Default: False)
@@ -755,7 +755,7 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 #   poem_wordlist - MASPoemWordList of the poemwords to use this game.
 #       If None, the default full_wordlist defined in script-poemgame is used.
 #       NOTE: If this is None, monika will be visible but she will NOT receive
-#           points nor hop. This is to ensure compatibility with the stock 
+#           points nor hop. This is to ensure compatibility with the stock
 #           PoemWord class
 #
 #   sel_sound - Filename of the sound to play when a word is selected
@@ -770,12 +770,12 @@ label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
 #       (Default: None)
 #
 #   show_monika - True will display monika and her related actions. False will
-#       not. 
+#       not.
 #       NOTE: If poem_wordlist is None, monika will be visible but she will
 #           NOT hop nor will she get points
 #       (Default: True)
 #
-#   show_natsuki - True will display natsuki and her related actions. False 
+#   show_natsuki - True will display natsuki and her related actions. False
 #       will not.
 #       (Default: False)
 #
@@ -942,7 +942,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
     # flow validation
     if not mas_fun.validateFlow(flow):
         $ flow = mas_pgc.DISPLAY_MODE
-    
+
     # flow bools so we dont have == all the time
     $ in_display_mode = flow == mas_pgc.DISPLAY_MODE
     $ in_stock_mode = flow == mas_pgc.STOCK_MODE
@@ -950,18 +950,18 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
     # arg processing
     python:
-        
+
         # glitch word processing
         # not None, is length 3, and first item is True
         if (glitch_words is not None
-            and len(glitch_words) >= 3 
+            and len(glitch_words) >= 3
             and glitch_words[0]):
 
             # SPACE odds
             glitch_words_alspace = False
             if not glitch_words[1]: # None
                 glitch_words = (
-                    glitch_words[0], 
+                    glitch_words[0],
                     mas_pgc.ODDS_SPACE,
                     glitch_words[2]
                 )
@@ -985,7 +985,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         # glitch word scare processing
         # not None, is length 2, and first item is True
         if (glitch_wordscare is not None
-            and len(glitch_wordscare) >= 2 
+            and len(glitch_wordscare) >= 2
             and glitch_wordscare[0]):
 
             # sound wordscare glitch odds
@@ -1058,11 +1058,11 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 and len(show_yuri_scary) >= 3
                 and show_yuri_scary[0]
             ):
-    
+
                 # seen yuri scary
                 seen_yuri_scary = False
 
-                show_yuri_alscary = False 
+                show_yuri_alscary = False
                 if not show_yuri_scary[1]: # None
                     show_yuri_scary = (
                         show_yuri_scary[0],
@@ -1089,7 +1089,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             show_yuri_cut = False
 
         # eyes processing
-        if (show_eyes 
+        if (show_eyes
                 and len(show_eyes) >= 2
                 and show_eyes[0]):
 
@@ -1099,16 +1099,16 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         # no show eyes
         else:
             show_eyes = None
- 
+
     # glitch the notebook?
     if glitch_nb:
         scene bg notebook-glitch
     else:
         scene bg notebook
-    
+
     # bottom quick menu. atm, we probably dont need this
     # show screen quick_menu
-    
+
     # sticker positions. Our order is as followS:
     # sayori, natsuki, yuri, monika
     if in_monika_mode:
@@ -1167,7 +1167,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 #    $ config.skipping = False
 #    $ config.allow_skipping = False
 #    $ allow_skipping = False
-    
+
     # poem help screen
     if show_poemhelp:
         call screen dialog("It's time to write a poem!\n\nPick words you think your favorite club member\nwill like. Something good might happen with\nwhoever likes your poem the most!", ok_action=Return())
@@ -1193,7 +1193,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 mas_pgc.YURI: 0,
                 mas_pgc.MONIKA: 0
             }
-        
+
         # the list of words
         if not in_monika_mode:
             from copy import deepcopy
@@ -1205,8 +1205,8 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                 # NOTE: THIS IS VERY IMPORTANT
                 # THIS BLOCK MUST PROCEED THE STICKER SETTING.
-                show_monika = False 
-               
+                show_monika = False
+
                 wordlist = deepcopy(full_wordlist)
 
         # the following handles the positioning and time between a sticker
@@ -1230,10 +1230,10 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
             # word counter display
             ui.text(
-                pstring + "/" + str(numWords), 
-                style="poemgame_text", 
-                xpos=810, 
-                ypos=80, 
+                pstring + "/" + str(numWords),
+                style="poemgame_text",
+                xpos=810,
+                ypos=80,
                 color='#000'
             )
 
@@ -1248,12 +1248,12 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                     if in_monika_mode:
 
                         # are we displaying a word that causes glitch scare?
-                        if (glitch_wordscare 
+                        if (glitch_wordscare
                             and (
                                 glitch_wordscare_alscare or
                                 random.randint(1,glitch_wordscare[1]) == 1
                             )):
-                            
+
                             word = MASPoemWord(glitchtext(7), 0, 0, 0, 0, True)
 
                         # are we displaying a glitched Monika word
@@ -1294,16 +1294,16 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                     # display the word as a textbutton
                     ui.textbutton(
-                        word.word, 
-                        clicked=ui.returns(word), 
-                        text_style="poemgame_text", 
-                        xpos=x, 
+                        word.word,
+                        clicked=ui.returns(word),
+                        text_style="poemgame_text",
+                        xpos=x,
                         ypos=i * 56 + ystart
                     )
 
                 # close this ui i guess
                 ui.close()
-            
+
             # wait for user to hit a word
             t = ui.interact()
 
@@ -1326,10 +1326,10 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                 # we've been glitched!
                 elif poemgame_glitch:
-                    if (glitch_baa 
+                    if (glitch_baa
                         and (glitch_baa[2] or not played_baa)
                         and (
-                            glitch_baa_albaa 
+                            glitch_baa_albaa
                             or random.randint(1, glitch_baa[1]) == 1
                         )):
 
@@ -1346,7 +1346,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                         renpy.play(gui.activate_sound_glitch)
 
-            if not poemgame_glitch: 
+            if not poemgame_glitch:
                 if sel_sound:
                     renpy.play(sel_sound)
 
@@ -1375,7 +1375,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                         if (show_yuri_scary and (
                                 (
-                                    show_yuri_scary[2] 
+                                    show_yuri_scary[2]
                                     or not seen_yuri_scary
                                 )
                                 and (
@@ -1385,7 +1385,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                                     ) == 1
                                 ))):
                             renpy.show(yuristicker + " hopg")
-                       
+
                         # either regular yuri or cut yuri
                         else:
                             renpy.show(yuristicker + " hop")
@@ -1409,7 +1409,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         # if we only want the winner (and we in stock mode)
         results = None
         if in_stock_mode:
-           
+
             # only winner mode means that we only wnat he winner
             if only_winner:
 
@@ -1420,7 +1420,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                     if points > largestVal:
                         largest = girl
                         largestVal = points
-                
+
                 # do we want the words we selected
                 if gather_words:
                     results = (largest, largestVal, selected_words)

@@ -374,7 +374,7 @@ screen mas_extramenu_area():
                 $ store.mas_sprites.adjust_zoom()
 
         # TODO: frame for nose boop control
-        # TODO: only have available if certain affection + 
+        # TODO: only have available if certain affection +
         #   (Definitely not below normal)
 #        frame:
 #            area (280, 450, 80, 120)
@@ -382,6 +382,6 @@ screen mas_extramenu_area():
 #
 #            vbox:
 #                spacing 2
-#                
+#
 #                label "Boop":
 #                    style "hkb_button_text"

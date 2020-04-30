@@ -145,7 +145,7 @@ init 10 python in mas_seasons:
         """
         Programming point for summer
         """
-        
+
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
 
@@ -188,7 +188,7 @@ init 10 python in mas_seasons:
         # want to ensure first time we see the islands they are dead and covered in snow
         store.mas_lockEVL("greeting_ourreality", "GRE")
 
-    
+
     # seaonal pp id:
     # maps season IDs to the programming point
     _season_pp_map = {
@@ -251,7 +251,7 @@ init 10 python in mas_seasons:
         # otherwise, we need to step up
         while prev_season != curr_season:
             prev_season = _progression_map.get(prev_season, curr_season)
-            
+
             if prev_season in _season_pp_map:
                 _season_pp_map[prev_season]()
 
@@ -263,4 +263,3 @@ init 900 python:
     persistent._mas_current_season = store.mas_seasons._seasonalCatchup(
         persistent._mas_current_season
     )
-    

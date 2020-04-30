@@ -1522,7 +1522,7 @@ style radio_button_text is gui_button_text:
 style radio_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("radio_button_dark")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C" 
+    color "#8C8C8C"
     hover_color "#FF80B7"
     selected_color "#DE367E"
     outlines []
@@ -1557,7 +1557,7 @@ style check_button_text is gui_button_text:
 style check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("check_button_dark")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C" 
+    color "#8C8C8C"
     hover_color "#FF80B7"
     selected_color "#DE367E"
     outlines []
@@ -1582,7 +1582,7 @@ style slider_label_text_dark is pref_label_text
 
 style slider_slider is gui_slider:
     xsize 350
-    
+
 style slider_slider_dark is gui_slider_dark:
     xsize 350
 
