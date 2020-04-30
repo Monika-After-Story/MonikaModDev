@@ -1363,7 +1363,8 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    if persistent._mas_affection["affection"] >= 30:
+    #NOTE: Taking directly from persist here because aff funcs don't exist at init 5
+    if persistent._mas_affection.get("affection", 0) >= 400:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
