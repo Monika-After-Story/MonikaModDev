@@ -1948,6 +1948,383 @@ init python:
             [persistent._mas_first_kiss.year]
         )
 
+    #START: Scheduled calendar event functions
+    def mas_checkCalendarEvents():
+        """
+        Pushes the reminder label if we've got calendar events that we haven't seen
+        """
+        #If there's no event today, we do nothing
+        if not persistent._mcal_event_map.get(datetime.date.today()):
+            return
+
+        #Otherwise we do something
+        for mcal_event in persistent._mcal_event_map[datetime.date.today()]:
+            if not mas_inEVL('mas_calendar_reminder'):
+                pushEvent('mas_calendar_reminder')
+                mcal_event.last_seen = datetime.datetime.now()
+
+    def mas_buildMCalEventNameList(_date=None):
+        """
+        Builds an event name list from the custom calendar events for the day provided
+
+        IN:
+            _date:
+                the datetime.date you wish to verify the events for on the calendar
+                (Defaults to None, which means today is assumed)
+        """
+        if not _date:
+            _date = datetime.date.today()
+
+        #If we don't have anything for this key, we should just return an empty list
+        if _date not in persistent._mcal_event_map:
+            return list()
+
+        prompt_list = list()
+        for mcal_event in persistent._mcal_event_map[_date]:
+            prompt_list.append(mcal_event["name"])
+
+        return prompt_list
+
+    def mas_buildMCalEventNameListMenu(_date=None):
+        """
+        Builds an event name list from the custom calendar events for the day provided in gen-scrollable-menu format
+
+        IN:
+            _date:
+                the datetime.date you wish to verify the events for on the calendar
+                (Defaults to None, which means today is assumed)
+        """
+        prompt_list = mas_buildMCalEventNameList(_date)
+
+        #Got nothing? Return empty list
+        if not prompt_list:
+            return list()
+
+        #Otherwise, let's convert this to gen scrollable menu form and return it
+        return [
+            (prompt, prompt, False, False)
+            for prompt in prompt_list
+        ]
+
+    def mas_getCalendarEvent(event_name, event_date):
+        """
+        Gets the mcal event by the name provided on the date provided
+        """
+        #Don't have? Don't need to do anything
+        if event_date not in persistent._mcal_event_map:
+            return
+
+        #Otherwise let's search
+        for mcal_event in persistent._mcal_event_map[event_date]:
+            if mcal_event["name"] == event_name:
+                return mcal_event
+
+    def mas_getFreeCalendarEventId():
+        """
+        Goes through the calendar events map and looks for a free id
+        """
+        # get all id's of custom events
+        events_ids = sorted([ev["id"] for ev_list in persistent._mcal_event_map.itervalues() for ev in ev_list if ev["category"] == "custom"])
+        free_id = 0
+
+        while free_id in events_ids:
+            free_id += 1
+
+        return free_id
+
+    def mas_registerCalendarEvent(
+        ev_name,
+        ev_start_date,
+        ev_end_date=None,
+        ev_category=None,
+        _repeat=False,
+        repeat_freq=0,
+        auto_remove=False
+    ):
+        """
+        Registers calendar events (equivalent to addEvent for calendar stuff, essentially)
+
+        IN:
+            ev_name - name for event
+            ev_start_date - date on what day event starts
+            ev_end_date - date on what day event ends
+                NOTE: if None, will be set to ev_start_date
+                (Default: None)
+            ev_category - (?)
+                NOTE: right now I added these: 'default' (the base events), 'custom' (player added)
+                do we want them as constants? do we need more?
+                (Default: None)
+            _repeat - whether or not repeat event every year (?)
+                (Default: False)
+            repeat_freq - (?)
+                (Defaukt: 0)
+            auto_remove - whether or not automatically remove event after its end date
+                (Default: False)
+        """
+        if _repeat:
+            year_param = []
+        else:
+            year_param = [ev_start_date.year]
+
+        if ev_end_date is None:
+            ev_end_date = ev_start_date
+
+        ev_id = mas_getFreeCalendarEventId()
+
+        date = ev_start_date
+
+        while date <= ev_end_date:
+            if date not in persistent._mcal_event_map:
+                persistent._mcal_event_map[date] = list()
+
+            persistent._mcal_event_map[date].append({
+                "id": ev_id,
+                "name": ev_name,
+                "date_range": (ev_start_date, ev_end_date),
+                "category": ev_category,
+                "repeatable": _repeat,
+                "delet_my_existence": auto_remove
+            })
+
+            store.mas_calendar.addRepeatable_d(ev_id, ev_name, date, year_param)
+
+            date += datetime.timedelta(days=1)
+
+    def mas_removeCalendarEvent(event_name, event_date):
+        """
+        Removes a calendar event
+        """
+        # get the event we want to remove
+        mcal_event = mas_getCalendarEvent(event_name, event_date)
+
+        # No events for this date with the given name
+        if not mcal_event:
+            return
+
+        date = mcal_event["date_range"][0]
+
+        # If we have this event on multiple days, we need to remove the event from each day
+        while date <= mcal_event["date_range"][1]:
+            ev = mas_getCalendarEvent(event_name, date)
+
+            if ev:
+                persistent._mcal_event_map[date].remove(ev)
+
+                # no more events on this date, remove it from the map
+                if not persistent._mcal_event_map[date]:
+                    persistent._mcal_event_map.pop(date)
+
+                store.mas_calendar.removeRepeatable_d(
+                    ev["id"],
+                    date
+                )
+
+            date += datetime.timedelta(days=1)
+
+    def mas_dateRangeToSpeech(start_date, end_date):
+        """
+        Converts date range to human-like speech
+        NOTE: The text isn't capitalized and doesn't end with a period
+
+        IN:
+            start_date - a date object
+            end_date - a date object
+
+        ASSUMES:
+            start_date >= today >= end_date
+
+        OUT:
+            text - string that contains the date range
+        """
+        # this func adds suffixes to dates: 31 > 31st, 23 > 23rd and etc
+        from store.mas_calendar import _formatDay as formatDay
+
+        text = ""
+
+        curr_date = datetime.datetime.now().date()
+        curr_year, curr_week, curr_dayofweek = curr_date.isocalendar()
+
+        start_date_year, start_date_week, start_date_dayofweek = start_date.isocalendar()
+        start_date_dayofweek_name = start_date.strftime("%A")
+        start_date_day_name = "the " + formatDay(start_date.day)
+        start_date_month_name = start_date.strftime("%B")
+
+        end_date_year, end_date_week, end_date_dayofweek = end_date.isocalendar()
+        end_date_dayofweek_name = end_date.strftime("%A")
+        end_date_day_name = "the " + formatDay(end_date.day)
+        end_date_month_name = end_date.strftime("%B")
+
+        # sanity check
+        if end_date < start_date:
+            # this won't make sense, but at least you'll get an output
+            # according to the player's input
+            return "from {0} of {1} {2} to {3} of {4} {5}".format(
+                start_date_day_name,
+                start_date_month_name,
+                start_date_year,
+                end_date_day_name,
+                end_date_month_name,
+                end_date_year
+            )
+
+        # first let's adjust some days/months names
+        # TODO: do this via iteration or smth? bc it's 2 similar pieces of code
+        # TODO: include "yesterday" too
+        if start_date.year == curr_date.year:
+            if start_date.month == curr_date.month:
+                if (
+                    start_date.year == end_date.year == curr_date.year
+                    or (
+                        end_date.year - start_date.year == 1
+                        and start_date.month - end_date.month >= 9
+                    )
+                ):
+                    start_date_month_name = "this month"
+
+                if start_date.day == curr_date.day:
+                    start_date_dayofweek_name = "today"
+                    start_date_day_name = "today"
+
+                elif start_date.day == curr_date.day + 1:
+                    start_date_dayofweek_name = "tomorrow"
+                    start_date_day_name = "tomorrow"
+
+        if end_date.year == curr_date.year:
+            if end_date.month == curr_date.month:
+                # NOTE: unused
+                if (
+                    start_date.year == end_date.year == curr_date.year
+                    or (
+                        end_date.year - start_date.year == 1
+                        and start_date.month - end_date.month >= 9
+                    )
+                ):
+                    end_date_month_name = "this month"
+
+                if end_date.day == curr_date.day:
+                    end_date_dayofweek_name = "today"
+                    end_date_day_name = "today"
+
+                elif end_date.day == curr_date.day + 1:
+                    end_date_dayofweek_name = "tomorrow"
+                    end_date_day_name = "tomorrow"
+
+        # now let's make a formatted string
+
+        # one-day event
+        if start_date == end_date:
+            # it happens today
+            if start_date == curr_date:
+                text = "just for today"
+
+            # it happens tomorrow
+            elif start_date == curr_date + datetime.timedelta(days=1):
+                text = "just for tomorrow"
+
+            # it happens this week
+            elif (
+                start_date.year == curr_date.year
+                and start_date_week == curr_week
+            ):
+                text = "during this {0}".format(
+                    start_date_dayofweek_name
+                )
+
+            else:
+                if start_date.year == curr_date.year:
+                    year = ""
+                else:
+                    year = " {}".format(start_date.year)
+
+                text = "during {0} of {1}{2}".format(
+                    start_date_day_name,
+                    start_date_month_name,
+                    year
+                )
+
+        # the event happens during the current year or it's under 3 month in different years
+        elif (
+            start_date.year == end_date.year == curr_date.year
+            or (
+                end_date.year - start_date.year == 1
+                and start_date.month - end_date.month >= 9
+            )
+        ):
+            # the event happens during this week
+            if start_date_week == end_date_week == curr_week:
+                text = "from {0} and until {1}".format(
+                    start_date_dayofweek_name,
+                    end_date_dayofweek_name
+                )
+
+            # the event date range is under 1 week
+            elif (
+                start_date_week == curr_week
+                and end_date - start_date <= datetime.timedelta(weeks=1)
+            ):
+                if (
+                    start_date.day == curr_date.day
+                    or start_date.day == curr_date.day + 1
+                ):
+                    this = ""
+                else:
+                    this = "this "
+
+                text = "from {0}{1} and until next {2}".format(
+                    this,
+                    start_date_dayofweek_name,
+                    end_date_dayofweek_name
+                )
+
+            # the event happens during this month
+            elif start_date.month == end_date.month == curr_date.month:
+                text = "from {0} to {1}".format(
+                    start_date_day_name,
+                    end_date_day_name
+                )
+
+            # the event only starts this month
+            elif start_date.month == curr_date.month:
+                if (
+                    start_date.day == curr_date.day
+                    or start_date.day == curr_date.day + 1
+                ):
+                    of_this_month = ""
+                else:
+                    of_this_month = " of this month"
+
+                text = "from {0}{1} and until {2} of {3}".format(
+                    start_date_day_name,
+                    of_this_month,
+                    end_date_day_name,
+                    end_date_month_name
+                )
+
+            # anything else will give you day+month pairs
+            else:
+                text = "from {0} of {1} and until {2} of {3}".format(
+                    start_date_day_name,
+                    start_date_month_name,
+                    end_date_day_name,
+                    end_date_month_name
+                )
+
+        # or just give the full dates to be sure
+        else:
+            if start_date.year == curr_date.year:
+                start_date_year == "this year"
+
+            text = "from {0} of {1} {2} to {3} of {4} {5}".format(
+                start_date_day_name,
+                start_date_month_name,
+                start_date_year,
+                end_date_day_name,
+                end_date_month_name,
+                end_date_year
+            )
+
+        return text
+
 # Using init 2 so we can have access to the season dates
 init 2 python in mas_calendar:
     import store

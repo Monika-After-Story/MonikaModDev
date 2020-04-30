@@ -642,3 +642,366 @@ init python in mas_scheduling:
             return False
 
         return MIN_TD_CONF <= STD_DEV_TD_OUT[_type] <= MAX_TD_CONF
+
+#START: Scheduling topics
+default persistent._mcal_event_map = dict()
+
+#Startup calendar setup
+init 700 python:
+    for date, ev_list in persistent._mcal_event_map.iteritems():
+        for mcal_event in ev_list:
+            store.mas_calendar.addRepeatable_d(
+                mcal_event["id"],
+                mcal_event["name"],
+                date,
+                [] if mcal_event["repeatable"] else [date.year]
+            )
+
+
+#START: calendar event setup
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_calendar_event_setup",
+            category=['calendar'],
+            prompt="Can you put something on the calendar please?",
+            unlocked=True,
+            pool=True,
+        )
+    )
+
+label mas_calendar_event_setup:
+    m 1hub "Sure!"
+
+    label .sel_day_loop:
+        m 3eua "What day would you like the event to be on?"
+        call mas_start_calendar_select_date
+
+        if not _return:
+            m 1eka "Oh, alright."
+
+            m 1eua "Do you want to pick another date?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Do you want to pick another date?{fast}"
+
+                "Yes.":
+                    m 1eub "Okay, [player]!"
+                    jump .sel_day_loop
+
+                "No.":
+                    m 3eka "Alright, [player]."
+                    m 3eua "Just let me know if you want me to remind you of something."
+                    return
+
+        #Now that we've got a date, let's make sure it's valid
+        $ selected_date = _return.date()
+
+        if selected_date < datetime.date.today():
+            m 1hksdlb "We can't do something in the past silly."
+            m 3hua "Try again~"
+            jump .sel_day_loop
+
+        else:
+            m 1eua "Okay, [player]."
+            m 3eua "What would you like to call the event?"
+            label .sel_name_loop:
+                $ ev_name = renpy.input("What would you like to call the event?", allow=letters_only+numbers_only, length=20).strip('\t\n\r')
+
+                if mas_getCalendarEvent(ev_name, selected_date):
+                    # TODO: exp here pls
+                    m "[player], we already have an event with that name planned on that date!"
+                    m 3eua "Choose another name."
+                    jump .sel_name_loop
+
+            m "Would you like me to repeat this event for you?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Would you like me to repeat this event for you?{fast}"
+
+                "Yes please.":
+                    $ repeatable = True
+
+                "No thanks.":
+                    $ repeatable = False
+
+            #TODO: How often would you like me to repeat this?
+
+            m "Would you like me to remove the event after it ends?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Would you like me to remove the event after it ends?{fast}"
+
+                "Yes.":
+                    $ auto_remove = True
+
+                "No.":
+                    $ auto_remove = False
+
+            m 1hua "Perfect!"
+            m 2dsa "Now let me just write that down.{w=0.5}.{w=0.5}.{nw}"
+
+            $ mas_registerCalendarEvent(ev_name, selected_date, ev_category="custom", _repeat=repeatable, auto_remove=auto_remove)
+
+            m 1hua "And done!"
+
+    if persistent._mcal_event_map:
+       $ mas_unlockEVL("mas_calendar_event_removal", "EVE")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_calendar_event_removal",
+            prompt="Can you remove something from the calendar?",
+            category=['calendar'],
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label mas_calendar_event_removal:
+    $ removed_event = False
+
+    m 1hub "Sure!"
+    m 1eua "Pick the date which has the event you want to remove."
+
+    label .sel_day_loop:
+        call mas_start_calendar_select_date
+
+        if not _return:
+            m 1eka "Oh, alright."
+
+            label .pick_again_menu:
+                m 1eua "Would you like to pick another date?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Would you like to pick another date?{fast}"
+
+                    "Yes.":
+                        m 1eub "Okay, [player]!"
+                        $ removed_event = False
+                        jump .sel_day_loop
+
+                    "No.":
+                        m 3eka "Alright, [player]."
+                        return
+
+        #Now that we've got a date, let's make sure it's valid
+        $ selected_date = _return.date()
+
+        if selected_date not in persistent._mcal_event_map:
+            m 1rksdlb "[player]... You never added something to the calendar on that date."
+            jump .pick_again_menu
+
+        else:
+            label .remove_ev_loop:
+                $ ev_list = persistent._mcal_event_map[selected_date]
+
+                if len(ev_list) == 1:
+                    if not removed_event:
+                        m 3eua "Alright [player].{w=0.5} {nw}"
+                        m 2esa "Let me just remove that for you.{w=0.5}.{w=0.5}.{nw}"
+
+                    else:
+                        m "Let me remove that last event from that day.{w=0.5}.{w=0.5}.{nw}"
+                    $ mas_removeCalendarEvent(ev_list[0]["name"], selected_date)
+                    m 1hub "Done!"
+
+                    # TODO: exp
+                    if persistent._mcal_event_map:
+                        m "Would you like to remove something else?{nw}"
+                        $ _history_list.pop()
+                        menu:
+                            m "Would you like to remove something else?{fast}"
+
+                            "Yes.":
+                                m 1eub "Okay, [player]!"
+                                $ removed_event = False
+                                jump .sel_day_loop
+
+                            "No.":
+                                m "Alright."
+
+                else:
+                    if not removed_event:
+                        m 3eua "Looks like you've added more than one event on that day."
+
+                    else:
+                        m 3eua "Looks like you have more than one event on that day left, [player]."
+                    show monika 1eua
+
+                    python:
+                        mcal_events = mas_buildMCalEventNameListMenu(selected_date)
+
+                        final_item = ("Nevermind.", False, False, False, 20)
+
+                        renpy.say(m, "Which event would you like to remove?", interact=False)
+
+                    call screen mas_gen_scrollable_menu(mcal_events, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+                    $ selected_event = _return
+
+                    if selected_event:
+                        m 3eua "Alright [player].{w=0.5} {nw}"
+                        m 2dsa "Let me just remove that for you.{w=0.5}.{w=0.5}.{nw}"
+                        $ mas_removeCalendarEvent(selected_event, selected_date)
+                        m 1hub "Done!"
+                        # TODO: exp
+                        if len(persistent._mcal_event_map) == 1:
+                            $ button_yes = "Yes."
+                        else:
+                            $ button_yes = "Yes, from the same date."
+
+                        m "Would you like to remove another event?{nw}"
+                        $ _history_list.pop()
+                        menu:
+                            m "Would you like to remove another event?{fast}"
+
+                            "Yes, from another date." if len(persistent._mcal_event_map) > 1:
+                                m 1eub "Okay, [player]!"
+                                jump .sel_day_loop
+
+                            "[button_yes]":
+                                m 1eub "Okay, [player]!"
+                                $ removed_event = True
+                                jump .remove_ev_loop
+
+                            "No.":
+                                m "Alright."
+
+                    else:
+                        m 1eka "Alright [player]."
+
+    if not persistent._mcal_event_map:
+       $ mas_lockEVL("mas_calendar_event_removal", "EVE")
+
+    return
+
+label mas_calendar_reminder:
+    $ todays_event_str = mas_buildVerbalList(mas_buildMCalEventNameList())
+    $ display_notif(m_name, ["It's [todays_event_str], [player]!"], "Reminders")
+    if len(todays_event_str) == 1:
+        m 1hub "It's [todays_event_str], [player]!"
+
+    else:
+        m 1eua "Hey, [player]!"
+        m 3hub "Today's [todays_event_str]!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_scheduling_player_set_vacation_interval",
+            prompt="I'm taking a vacation",
+            # TODO: should it go in 'you' or 'calendar'?
+            category=['calendar'],
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label mas_scheduling_player_set_vacation_interval:
+    # TODO: what if you're alreay on vacation? Like you get some more days off?
+    m "Taking a break from work, [player]?"
+    m "Thanks for letting me know."
+    m "Maybe I'll find something fun for us to do..."
+    m "Could you tell me the timeframe of your vacation? {w=0.5}{nw}"
+    extend "I'm your girlfriend after all~"
+    # TODO: this's kinda forcibly? Like you have to choose
+    # maybe ask if the player is ok to tell it?
+    # TODO: what if the player don't know the end date?
+    call mas_scheduling_select_interval
+    # this _return should contain either a tuple of dates or None
+
+    return
+
+# NOTE: you'll need to queue this event via your scheduling system
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_scheduling_monika_ask_vacation_interval"
+        )
+    )
+
+label mas_scheduling_monika_ask_vacation_interval:
+    m "[player]..."
+    m "I noticed that you've skipped some of your working days lately."
+    m "It's just a guess, but..."
+    m "Did you take some days off?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Did you take some days off?{fast}"
+
+        "Yes.":
+            m "Oh, that's cool!"
+            m "Do you mind if I ask the timeframe of your vacation?"
+            call mas_scheduling_select_interval
+            # this _return should contain either a tuple of dates or None
+
+        "No.":
+            m "Oh, alright."
+
+        # "I got sick":
+        #     pass
+
+        # "I changed my working schedule.":
+        #     pass
+    return
+
+label mas_scheduling_select_interval:
+    label .sel_interval_loop:
+        m "Please select two dates: the day it starts and the day it ends."
+        call mas_start_calendar_select_dates
+        $ vacation_interval = _return
+
+    if not vacation_interval:
+        m "[player], you need to choose a day."
+        jump .sel_interval_loop
+
+    elif len(vacation_interval) < 2:
+        m "You need to select two dates, [player]."
+        jump .sel_interval_loop
+
+    elif vacation_interval[0] > vacation_interval[1]:
+        m 1rksdlb "The vacation can't end in the past, [player]."
+        m "Choose again~"
+        jump .sel_interval_loop
+
+    # we passed all checks, now let's ask the player if they chose the right dates
+    $ text = mas_dateRangeToSpeech(vacation_interval[0], vacation_interval[1])
+
+    m 3eua "So it's [text], right?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "So it's [text], right?{fast}"
+
+        "Yes.":
+            # TODO: she could mention what it's a long vacation or just a few days off
+            m 1hub "Alright!"
+            m "I hope the both of us will be able to enjoy your vacation~"
+            m "Ahaha~"
+
+        "No.":
+            m 1eka "Oh, then... {w=0.5}{nw}"
+            extend 3hua "Would you like to choose another two dates?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Oh, then... Would you like to choose another two dates?{fast}"
+
+                "Yes.":
+                    jump .sel_interval_loop
+
+                "No.":
+                    m 1eka "Okay."
+                    m "I really would like to spend more time with you~"
+                    m "And getting some rest would never hurt you!"
+                    m "Please let me know when you'll have a vacation."
+                    return None
+
+    return vacation_interval

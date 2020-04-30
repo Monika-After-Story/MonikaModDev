@@ -5159,6 +5159,31 @@ init 2 python:
             return "an " + ref_str
         return "a " + ref_str
 
+    def mas_buildVerbalList(items=None):
+        """
+        Builds a verbal version of a list (to be spoken by Monika)
+        """
+        if not items:
+            return ""
+
+        items_len = len(items)
+        event_verbal_list = ""
+        item_counter = 0
+
+        #If it's just one item, just return that.
+        if items_len == 1:
+            return items[0]
+
+        #Otherwise we need to iterate and add commas/an and as necessary
+        for ev in items:
+            if items_len != item_counter + 1:
+                event_verbal_list += ev + ", "
+                item_counter += 1
+            else:
+                event_verbal_list += "and " + ev
+
+        return event_verbal_list
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
