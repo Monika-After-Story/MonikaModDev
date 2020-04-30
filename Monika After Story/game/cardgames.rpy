@@ -73,6 +73,9 @@ init 5 python in mas_nou:
         PLAYER_CARDS_OFFSET = 0
         MONIKA_CARDS_OFFSET = -6
 
+        # Maximum cards in hand
+        HAND_CARDS_LIMIT = 30
+
         # Quips for when we get a wdf as the first card for the discardpile
         QUIPS_MONIKA_RESHUFFLE_DECK = (
             _("Oh, let me shuffle it again.{w=1.5}{nw}"),
@@ -124,8 +127,13 @@ init 5 python in mas_nou:
         if persistent._mas_chess_skip_file_checks:
             QUIPS_PLAYER_CLICKS_MONIKA_CARDS.append(_("Are you trying to cheat again?"))
 
-        # Maximum cards in hand
-        HAND_CARDS_LIMIT = 30
+        # Quips when you reach the cards cap
+        QUIPS_MONIKA_CARDS_LIMIT = (
+            _("[player]...{w=0.2}look I can't hold all these cards!{w=0.5} And I can't draw more either, ehehe~")
+        )
+        QUIPS_PLAYER_CARDS_LIMIT = (
+            _("There's no way you could hold more cards, ahaha!{w=0.5} You don't have to draw more this turn, [player].")
+        )
 
         def __init__(self):
             """
@@ -213,7 +221,7 @@ init 5 python in mas_nou:
             IN:
                 what - a list/tuple of quips or a single quip to say
             """
-            if isinstance(quips, list, tuple):
+            if isinstance(what, (list, tuple)):
                 quip = renpy.random.choice(what)
 
             else:
@@ -501,19 +509,21 @@ init 5 python in mas_nou:
             current_player.should_skip_turn = False
             current_player.plays_turn = False
 
-            # now that we wrote 'should_skip_turn' in the log, we can set it to 0 if player reached the cap
-            if len(next_player.hand) >= self.HAND_CARDS_LIMIT:
+            # now that we wrote 'should_draw_cards' in the log, we can set it to 0 if player reached the cap
+            if (
+                next_player.should_draw_cards
+                and len(next_player.hand) >= self.HAND_CARDS_LIMIT
+            ):
                 # turn this off so you don't skip the dlg
                 self.set_sensitive(False)
 
                 if next_player.isAI:
-                    renpy.say(m, "There's no way you could hold more cards, ahaha!", True)
-                    renpy.say(m, "You don't have to draw more this turn, [player].", True)
+                    quips = self.QUIPS_PLAYER_CARDS_LIMIT
 
                 else:
-                    renpy.say(m, "[player]...{w=0.2}look I can't hold all these cards!", True)
-                    renpy.say(m, "And I can't draw more either, ehehe~", True)
+                    quips = self.QUIPS_MONIKA_CARDS_LIMIT
 
+                self.__say_quip(quips)
                 next_player.should_draw_cards = 0
 
             next_player.drew_card = False
@@ -812,8 +822,9 @@ init 5 python in mas_nou:
                 if card.label == "Wild Draw Four":
                     if not pulled_wdf:
                         pulled_wdf = True
-                        quip = renpy.substitute(renpy.random.choice(self.QUIPS_MONIKA_RESHUFFLE_DECK))
-                        renpy.say(m, quip, True)
+                        self.__say_quip(
+                            self.QUIPS_MONIKA_RESHUFFLE_DECK
+                        )
                         renpy.pause(0.5, True)
 
                     else:
@@ -859,35 +870,35 @@ init 5 python in mas_nou:
             # FIXME: big oooof, how to improve these spaghetti?
             if current_player.isAI:
                 if current_player.should_skip_turn:
-                    can_reflect = current_player.choose_card()
+                    can_reflect = current_player.choose_card(should_draw=False)
                     current_player.forced_card = can_reflect
 
                     if can_reflect:
-                        quips_to_use = self.QUIPS_MONIKA_WILL_REFLECT
+                        quips = self.QUIPS_MONIKA_WILL_REFLECT
 
                     elif current_player.should_draw_cards:
-                        quips_to_use = self.QUIPS_MONIKA_DRAWS_CARDS
+                        quips = self.QUIPS_MONIKA_DRAWS_CARDS
 
                     else:
-                        quips_to_use = self.QUIPS_MONIKA_SKIPS_TURN
+                        quips = self.QUIPS_MONIKA_SKIPS_TURN
 
                 else:
-                    quips_to_use = self.QUIPS_MONIKA_PLAYS_TURN
+                    quips = self.QUIPS_MONIKA_PLAYS_TURN
 
             else:
                 if current_player.should_skip_turn:
                     if current_player.should_draw_cards:
-                        quips_to_use = self.QUIPS_PLAYER_DRAWS_CARDS
+                        quips = self.QUIPS_PLAYER_DRAWS_CARDS
 
                     else:
-                        quips_to_use = self.QUIPS_PLAYER_SKIPS_TURN
+                        quips = self.QUIPS_PLAYER_SKIPS_TURN
 
                 else:
-                    quips_to_use = self.QUIPS_PLAYER_PLAYS_TURN
+                    quips = self.QUIPS_PLAYER_PLAYS_TURN
 
-            quip = renpy.substitute(renpy.random.choice(quips_to_use))
-
-            renpy.say(m, quip, True)
+            self.__say_quip(
+                quips
+            )
 
             # Finally allow to interact with cards
             current_player.plays_turn = True
@@ -1002,11 +1013,9 @@ init 5 python in mas_nou:
                             evt.stack is self.monika.hand
                             and not renpy.random.randint(0, 19)
                         ):
-                            quip = renpy.substitute(renpy.random.choice(
+                            self.__say_quip(
                                 self.QUIPS_PLAYER_CLICKS_MONIKA_CARDS
-                                )
                             )
-                            renpy.say(m, quip, True)
 
         def monika_turn_loop(self):
             """
@@ -1740,7 +1749,7 @@ init 5 python in mas_nou:
                     announce_colour(colour)
                     return colour
 
-            def choose_card(self):
+            def choose_card(self, should_draw=True):
                 """
                 Monika chooses a card to play
                 There are different variants depending on the game state
@@ -1750,6 +1759,14 @@ init 5 python in mas_nou:
                     if that will lead to their victory (<2 card?)
                     That especially will help in a situation where she
                     knows for sure that the palyer has only 1 colour
+
+                IN:
+                    should_draw - should Monika draw a card
+                        if she've not found one to play
+                        (Default: True)
+                        NOTE: basically always True, the only exception is
+                            when we use this method for a reaction at the start
+                            of the game
 
                 OUT:
                     card if we found or drew one
@@ -1933,7 +1950,10 @@ init 5 python in mas_nou:
                             return card
 
                     # Monika doesn't have the right card, and should draw some more
-                    if self.should_draw_cards:
+                    if (
+                        self.should_draw_cards
+                        and should_draw
+                    ):
                         self.game.deal_cards(self, self.should_draw_cards)
                         # fall through
 
@@ -2016,22 +2036,23 @@ init 5 python in mas_nou:
                                 return card
 
                         # Come here when Monika has nothing to play (or doesn't want to), must draw a card, then
-                        self.game.deal_cards(self)
-                        card = self.hand[-1]
+                        if should_draw:
+                            self.game.deal_cards(self)
+                            card = self.hand[-1]
 
-                        if (
-                            self.game.__is_matching_card(self, card)
-                            # don't play it if it will make the player draw a card next turn
-                            and (
-                                # but always play if we have just 2 cards left
-                                len(self.hand) < 3
-                                # play if the player may have that colour
-                                or self.game.discardpile[-1].colour not in self.player_cards_data["lacks_colours"]
-                                # 1/5 to play anyway
-                                or not renpy.random.randint(0, 4)
-                            )
-                        ):
-                            return card
+                            if (
+                                self.game.__is_matching_card(self, card)
+                                # don't play it if it will make the player draw a card next turn
+                                and (
+                                    # but always play if we have just 2 cards left
+                                    len(self.hand) < 3
+                                    # play if the player may have that colour
+                                    or self.game.discardpile[-1].colour not in self.player_cards_data["lacks_colours"]
+                                    # 1/5 to play anyway
+                                    or not renpy.random.randint(0, 4)
+                                )
+                            ):
+                                return card
 
                 # Come here when we don't want to/can't play a card
                 return None
@@ -2475,7 +2496,7 @@ init 5 python:
             conditional="persistent._mas_game_nou_wins['Monika'] or persistent._mas_game_nou_wins['Player']",
             action=EV_ACT_UNLOCK,
             rules={"no unlock": None},
-            aff_range=(mas_aff.HAPPY, None)
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -2695,7 +2716,7 @@ label .change_starting_cards_loop:
             m 3ekb "Try again, silly~"
 
         elif starting_cards < 4:
-            m 2eka "I don't think this will makes sense, [player]..."
+            m 2eka "I don't think this will make sense, [player]..."
             m 3eka "Let's start with at least 4 cards?{nw}"
             $ _history_list.pop()
             menu:
@@ -2724,7 +2745,7 @@ label .change_starting_cards_loop:
 
         else:
             $ _round = _("round") if persistent._mas_game_nou_house_rules["win_points"] else _("game")
-            m 3eub "Okay, from now we will start each [_round!t] with [starting_cards] cards!"
+            m 3eub "Okay, from now on, we will start each [_round!t] with [starting_cards] cards!"
             $ persistent._mas_game_nou_house_rules["start_cards"] = starting_cards
             $ ready = True
 
@@ -2746,7 +2767,7 @@ init 5 python:
             conditional="renpy.seen_label('mas_reaction_gift_carddeck')",
             action=EV_ACT_UNLOCK,
             rules={"no unlock": None},
-            aff_range=(mas_aff.HAPPY, None)
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -3456,14 +3477,11 @@ image bg cardgames desk = MASFilterSwitch(
 )
 # Points screen
 screen nou_stats():
+
     layer "master"
     zorder 0
 
-    # TODO: this's temp, should use the generic func for changing styles
-    if mas_isDayNow():
-        style_prefix "nou"
-    else:
-        style_prefix "nou_dark"
+    style_prefix "nou"
 
     add MASFilterSwitch(
         "mod_assets/games/nou/note.png"
@@ -3492,11 +3510,8 @@ screen nou_stats():
 screen nou_gui():
 
     zorder 50
-    
-    if mas_isDayNow():
-        style_prefix "nou"
-    else:
-        style_prefix "nou_dark"
+
+    style_prefix "nou"
 
     # $ turns = store.mas_nou.game.total_turns
     $ played_card = store.mas_nou.game.player.played_card
@@ -3637,14 +3652,15 @@ screen nou_gui():
 style nou_vbox is vbox:
     spacing 5
 
-style nou_dark_vbox is nou_vbox
+style nou_vbox_dark is vbox:
+    spacing 5
 
 style nou_button is generic_button_light:
     xsize 200
     ysize None
     ypadding 5
 
-style nou_dark_button is generic_button_dark:
+style nou_button_dark is generic_button_dark:
     xsize 200
     ysize None
     ypadding 5
@@ -3657,7 +3673,7 @@ style nou_button_text is generic_button_text_light:
     text_align 0.5
     # line_leading 2
 
-style nou_dark_button_text is generic_button_text_dark:
+style nou_button_text_dark is generic_button_text_dark:
     # xalign 0.5
     # yalign 0.5
     kerning 0.2
@@ -3670,7 +3686,11 @@ style nou_text:
     outlines []
     font "gui/font/m1.ttf"
 
-style nou_dark_text is nou_text
+style nou_text_dark:
+    size 30
+    color "#000"
+    outlines []
+    font "gui/font/m1.ttf"
 
 transform nou_note_rotate_left:
     rotate -23
@@ -3812,15 +3832,22 @@ init -10 python in mas_cardgames:
             if isinstance(back, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
                 self.back = MASFilterSwitch(back)
 
-            # This's some kind of displayable or just None, but not an image
+            # This's some kind of displayable, but not an image
+            elif isinstance(back, renpy.display.core.Displayable):
+                self.back = back
+
+            # It's something what we don't support
             else:
-                self.back = renpy.easy.displayable_or_none(back)
+                self.back = None
 
             if isinstance(base, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
                 self.base = MASFilterSwitch(base)
 
+            elif isinstance(base, renpy.display.core.Displayable):
+                self.base = base
+
             else:
-                self.base = renpy.easy.displayable_or_none(base)
+                self.base = None
 
             self.springback = springback
 
@@ -4486,9 +4513,10 @@ init -10 python in mas_cardgames:
             if isinstance(base, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
                 self.base = MASFilterSwitch(base)
 
-            elif base is not None:
+            elif isinstance(base, renpy.display.core.Displayable):
                 self.base = base
 
+            # for when the base is None
             elif self.table.base is not None:
                 self.base = self.table.base
 
@@ -4671,7 +4699,7 @@ init -10 python in mas_cardgames:
             if isinstance(back, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
                 self.back = MASFilterSwitch(back)
 
-            elif back is not None:
+            elif isinstance(back, renpy.display.core.Displayable):
                 self.back = back
 
             elif self.table.back is not None:
