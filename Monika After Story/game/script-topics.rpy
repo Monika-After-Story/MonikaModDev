@@ -14204,7 +14204,7 @@ init 5 python:
             category=['literature'],
             prompt="Soft Rains",
             random=True,
-            aff_range=(mas_aff.AFFECTIONATE, None)
+            aff_range=(mas_aff.LOVE, None)
         )
     )
 
