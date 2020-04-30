@@ -3449,7 +3449,7 @@ init 5 python:
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
     #Selectors shouldn't be in unseen
@@ -3532,7 +3532,7 @@ init 5 python:
             aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
         ),
         restartBlacklist=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_event_clothes_select:
@@ -3599,7 +3599,7 @@ init 5 python:
             rules={"no unlock": None}
         ),
         restartBlacklist=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_hair_select:
@@ -3711,7 +3711,7 @@ init 5 python:
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_hairclip_select:
@@ -3735,7 +3735,7 @@ init 5 python:
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_hairflower_select:
@@ -3785,7 +3785,7 @@ init 5 python:
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_choker_select:
@@ -3809,7 +3809,7 @@ init 5 python:
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_hat_select:

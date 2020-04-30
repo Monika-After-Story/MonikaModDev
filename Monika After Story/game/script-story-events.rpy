@@ -59,7 +59,7 @@ init 5 python:
             pool=True,
             rules={"no unlock": None}
         ),
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_gender_redo:
@@ -544,7 +544,7 @@ init 5 python:
             pool=True,
             rules={"no unlock": None}
         ),
-        defaultSeenever=True
+        markSeen=True
     )
     #NOTE: This needs to be unlocked by the random name change event
 

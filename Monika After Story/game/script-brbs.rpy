@@ -1,6 +1,6 @@
 ## This script file holds all of the brb topics
 # Some conventions:
-#   - All brbs should have their defaultSeenever set to True so they don't show up in unseen
+#   - All brbs should have their markSeen set to True so they don't show up in unseen
 #   - Brbs should return "idle" to move into idle mode
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
 #       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
@@ -15,7 +15,7 @@ init 5 python:
             pool=True,
             unlocked=True
         ),
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_brb_idle:
@@ -73,7 +73,7 @@ init 5 python:
             pool=True,
             unlocked=True
         ),
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_writing_idle:
@@ -120,7 +120,7 @@ init 5 python:
             pool=True,
             unlocked=True
         ),
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_idle_shower:
@@ -202,7 +202,7 @@ init 5 python:
             pool=True,
             unlocked=True
         ),
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_idle_game:

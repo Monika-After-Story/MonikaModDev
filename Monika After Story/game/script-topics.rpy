@@ -5235,7 +5235,7 @@ init 5 python:
             unlocked=True,
             pool=True
         ),
-        defaultSeenever=True
+        markSeen=True
     )
 
 label monika_good_tod:

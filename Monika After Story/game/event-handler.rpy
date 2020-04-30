@@ -1292,7 +1292,7 @@ init python:
         eventdb=None,
         skipCalendar=False,
         restartBlacklist=False,
-        defaultSeenever=False,
+        markSeen=False,
         code="EVE"
     ):
         """
@@ -1314,7 +1314,7 @@ init python:
             restartBlacklist - True if this topic should be added to the restart blacklist
                 (Default: False)
 
-            defaultSeenever - True if this topic should be `True` in persistent._seen_ever.
+            markSeen - True if this topic should be `True` in persistent._seen_ever.
                 (Default: False)
 
             code - code of the event database to add to.
@@ -1350,7 +1350,7 @@ init python:
         if restartBlacklist:
             evhand.RESTART_BLKLST.append(event.eventlabel)
 
-        if defaultSeenever:
+        if markSeen:
             persistent._seen_ever[event.eventlabel] = True
 
         # now this event has passsed checks, we can add it to the db

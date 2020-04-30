@@ -6347,7 +6347,7 @@ init 5 python:
         ),
         code="CMP",
         skipCalendar=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
     #Create the undo action rule
@@ -6402,7 +6402,7 @@ init 5 python:
         ),
         code="CMP",
         skipCalendar=True,
-        defaultSeenever=True
+        markSeen=True
     )
 
 label mas_bday_pool_happy_belated_bday:
