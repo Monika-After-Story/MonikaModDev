@@ -186,7 +186,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_song_rerandom",
+            eventlabel="mas_sing_song_rerandom",
             prompt="Can you sing a song on your own again?",
             category=['music'],
             pool=True,
@@ -195,7 +195,7 @@ init 5 python:
         )
     )
 
-label mas_song_rerandom:
+label mas_sing_song_rerandom:
     $ renpy.call(
         "mas_rerandom",
         initial_ask_text_multiple="Which song do you want me to sing occasionally?",

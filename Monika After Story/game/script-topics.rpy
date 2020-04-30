@@ -415,6 +415,8 @@ init python:
         # that don't otherwise meet our requirements
         bookmark_whitelist = [
             "mas_monika_islands",
+            "mas_monika_plays_yr",
+            "mas_monika_plays_or"
         ]
 
         #Allows more open ended messages in the notify screen
@@ -423,6 +425,9 @@ init python:
                 "bookmark_text": _("Topic bookmarked."),
                 "unbookmark_text": _("Bookmark removed."),
                 "persist_key": "_mas_player_bookmarked"
+            },
+            "mas_song_": {
+                "bookmark_text": _("Song bookmarked.")
             }
         }
 
