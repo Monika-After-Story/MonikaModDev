@@ -1288,29 +1288,38 @@ init python:
     import datetime
 
     def addEvent(
-            event,
-            eventdb=None,
-            skipCalendar=False,
-            restartBlacklist=False,
-            code="EVE"
-        ):
-        #
-        # Adds an event object to the given eventdb dict
-        # Properly checksfor label and conditional statements
-        # This function ensures that a bad item is not added to the database
-        #
-        # NOTE: this MUST be ran after init level 4.
-        #
-        # IN:
-        #   event - the Event object to add to database
-        #   eventdb - The Event databse (dict) we want to add to
-        #       NOTE: DEPRECATED. Use code instead.
-        #       NOTE: this can still be used for custom adds.
-        #       (Default: None)
-        #   skipCalendar - flag that marks wheter or not calendar check should
-        #       be skipped
-        #   code - code of the event database to add to.
-        #       (Default: EVE) - event database
+        event,
+        eventdb=None,
+        skipCalendar=False,
+        restartBlacklist=False,
+        markSeen=False,
+        code="EVE"
+    ):
+        """
+        Adds an event object to the given eventdb dict
+        Properly checksfor label and conditional statements
+        This function ensures that a bad item is not added to the database
+
+        NOTE: this MUST be ran after init level 4.
+
+        IN:
+            event - the Event object to add to database
+            eventdb - The Event databse (dict) we want to add to
+                NOTE: DEPRECATED. Use code instead.
+                NOTE: this can still be used for custom adds.
+                (Default: None)
+            skipCalendar - flag that marks wheter or not calendar check should
+                be skipped
+
+            restartBlacklist - True if this topic should be added to the restart blacklist
+                (Default: False)
+
+            markSeen - True if this topic should be `True` in persistent._seen_ever.
+                (Default: False)
+
+            code - code of the event database to add to.
+                (Default: EVE) - event database
+        """
         if eventdb is None:
             eventdb = mas_all_ev_db_map.get(code, None)
 
@@ -1340,6 +1349,9 @@ init python:
         # check whether we should add the event in the restart blacklist
         if restartBlacklist:
             evhand.RESTART_BLKLST.append(event.eventlabel)
+
+        if markSeen:
+            persistent._seen_ever[event.eventlabel] = True
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)

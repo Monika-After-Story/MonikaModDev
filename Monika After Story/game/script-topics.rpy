@@ -5234,11 +5234,9 @@ init 5 python:
             prompt="Good [mas_globals.time_of_day_3state]",
             unlocked=True,
             pool=True
-        )
+        ),
+        markSeen=True
     )
-
-    #Ideally, we don't really want this in unseen as it's pretty general
-    persistent._seen_ever["monika_good_tod"] = True
 
 label monika_good_tod:
     $ curr_hour = datetime.datetime.now().time().hour
@@ -12190,9 +12188,9 @@ label monika_add_custom_music_instruct:
     m 3hub "See, [player], I told you it was easy, ahaha!"
 
     # unlock the topic as a pool topic, also mark it as seen
-    $ unlockEventLabel("monika_add_custom_music")
+    $ mas_unlockEVL("monika_add_custom_music", "EVE")
     $ persistent._seen_ever["monika_add_custom_music"] = True
-    $ unlockEventLabel("monika_load_custom_music")
+    $ mas_unlockEVL("monika_load_custom_music", "EVE")
     $ persistent._seen_ever["monika_load_custom_music"] = True
     return
 

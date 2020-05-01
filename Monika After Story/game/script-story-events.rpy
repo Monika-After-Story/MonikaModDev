@@ -49,7 +49,6 @@ label mas_gender:
 
     #Unlock the gender redo event
     $ mas_unlockEVL("monika_gender_redo","EVE")
-    $ persistent._seen_ever["monika_gender_redo"] = True # dont want this in unseen
 
     return "love"
 
@@ -63,7 +62,8 @@ init 5 python:
             unlocked=False,
             pool=True,
             rules={"no unlock": None}
-        )
+        ),
+        markSeen=True
     )
 
 label monika_gender_redo:
@@ -525,7 +525,6 @@ label mas_preferredname:
 
     #Unlock the name change event
     $ mas_unlockEVL("monika_changename","EVE")
-    $ persistent._seen_ever["monika_changename"] = True
     return
 
 
@@ -539,7 +538,8 @@ init 5 python:
             unlocked=False,
             pool=True,
             rules={"no unlock": None}
-        )
+        ),
+        markSeen=True
     )
     #NOTE: This needs to be unlocked by the random name change event
 
