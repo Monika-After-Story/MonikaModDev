@@ -1974,7 +1974,7 @@ label monika_affection_nickname:
                     m "I swear you're just so silly sometimes."
                     m 1eka "Try again!"
 
-                elif lowername == player.lower():
+                elif lowername != "monika" and lowername == player.lower():
                     m 1euc "..."
                     m 1lksdlb "That's your name, [player]! Give me my own!"
                     m 1eka "Try again~"
