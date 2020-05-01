@@ -14269,3 +14269,55 @@ label monika_hot_springs:
     m 5dkbfb "Ahhh,{w=0.2} {nw}"
     extend 5dkbfa "just the thought of it makes me feel all tingly, [player]~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_using_computers_healthily",
+            category=['advice','life', 'you'],
+            prompt="Using computers healthily",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+label monika_using_computers_healthily:
+    m 1rsc "Hmm..."
+    m 1etc "Hey, [player]. {w=0.7}Are you sitting comfortably?"
+    m 1hksdlb "No, {w=0.6}really!{w=0.4} {nw}"
+    extend 1eksdla "Are you?"
+    m 3eka "I know you have to be at your computer to spend time with me..."
+    m 2eka "So I just wanted to make sure you aren't accidentally damaging your health when you're here."
+    m 3ekc "I've read that spending too long looking at a screen can cause headaches, {w=0.3}make you feel tired, {w=0.3}and even impact your eyesight over time."
+    m 2tkx "Posture issues and pain from bad sitting habits are no joke either!"
+    m 3tku "Fortunately for you, {w=0.3}I've put together a little checklist to help prevent these sorts of problems..."
+    m 4hub "So let's go through it together, [player]~!"
+    m 3eub "Firstly, {w=0.2}try to keep sitting upright!"
+    m 3eua "Have your chair adjusted properly so your feet lay flat on the floor, {w=0.2}your eyes are level with the top of the screen, {w=0.2}and you aren't slouching."
+    m 7hub "You should feel {i}supported{/i} -{w=0.1} and comfortable -{w=0.1} in your seat!"
+    m 2eub "Next, {w=0.2}make sure you have some distance between yourself and the display - about an arm's length is fine. "
+    extend 3hksdlb "Keep your keyboard and mouse within easy reach, though!"
+    m 3hua "Of course, {w=0.2}lighting is important too - try to keep the room well-lit, but not so much that light is glaring on the screen."
+    m 3eub "In addition, remember to take frequent breaks! Look away from the screen, {w=0.2}ideally at something far away, {w=0.2}and perhaps do a few stretches. "
+    m 1hua "Since it's important to stay hydrated too, {w=0.2}you could always fetch some fresh water while you're up from your desk."
+    m 3ekd "Above all else, if you ever start to feel unwell..."
+    m 3eka "Just stop what you're doing, {w=0.3}rest, {w=0.3}and then make sure everything is alright before you continue. "
+    extend 1eka "Ask for help, if you need to."
+    m 4eub "...And that's about it!"
+    m 2hksdlb "Ah...{w=0.4}Sorry, I didn't mean to go on for that long! {w=0.2}{nw}"
+    extend 2eka "You probably knew all that stuff already, anyway."
+    m 4eka "As for me?"
+
+    if mas_curr_affection == mas_aff.LOVE:
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "You're the only comfort I need, {w=0.3}my love."
+    elif mas_curr_affection == mas_aff.ENAMOURED:
+        show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbla "I'm as comfortable as can be when you're here, {w=0.3}[player]."
+    else:
+        show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubla "I feel so comfortable when you're here with me, {w=0.2}[player]."
+
+    m 5hubfb "But hopefully you're a little more comfortable now too~"
+    return
