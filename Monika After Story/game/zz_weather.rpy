@@ -141,7 +141,7 @@ init python in mas_weather:
             rolled_chance=None
         ):
         """
-        Determines if weather should be rainiy/thunder/overcase, or none of 
+        Determines if weather should be rainiy/thunder/overcase, or none of
         those.
 
         IN:
@@ -208,9 +208,6 @@ init -20 python in mas_weather:
     PRECIP_TYPE_OVERCAST = "overcast"
     PRECIP_TYPE_SNOW = "snow"
 
-    #Whether or not we should scene change
-    should_scene_change = False
-
     #Keep a temp store of weather here for if we're changing backgrounds
     temp_weather_storage = None
 
@@ -239,9 +236,9 @@ init -20 python in mas_weather:
 
         #Otherwise we do stuff
         global weather_change_time
-        global should_scene_change
         #Set a time for startup
         if not weather_change_time:
+            # TODO: make this a function so init can set the weather_change _time and prevent double weather setting
             weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
 
         elif weather_change_time < datetime.datetime.now():
@@ -252,7 +249,11 @@ init -20 python in mas_weather:
             new_weather = store.mas_shouldRain()
             if new_weather is not None and new_weather != store.mas_current_weather:
                 #Let's see if we need to scene change
-                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, new_weather)
+                if store.mas_current_background.isChangingRoom(
+                        store.mas_current_weather,
+                        new_weather
+                ):
+                    store.mas_idle_mailbox.send_scene_change()
 
                 #Now we change weather
                 store.mas_changeWeather(new_weather)
@@ -264,7 +265,11 @@ init -20 python in mas_weather:
 
             elif store.mas_current_weather != store.mas_weather_def:
                 #Let's see if we need to scene change
-                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, store.mas_weather_def)
+                if store.mas_current_background.isChangingRoom(
+                        store.mas_current_weather,
+                        store.mas_weather_def
+                ):
+                    store.mas_idle_mailbox.send_scene_change()
 
                 store.mas_changeWeather(store.mas_weather_def)
                 return True
@@ -356,7 +361,7 @@ init -20 python in mas_weather:
         #We want this topic seen for the first time with aurora visible outside her window
         #But we also don't want it to machine gun other topics too
         if (
-            not store.morning_flag
+            store.mas_current_background.isFltNight()
             and not store.persistent.event_list
             and store.mas_getEV("monika_auroras").shown_count == 0
         ):
@@ -428,7 +433,7 @@ init -10 python:
             isbg_wf_night - image PATH for island bg nighttime with frame
             isbg_wof_night - image PATH for island bg nighttime without framme
 
-            entry_pp - programming point to execute when switching to this 
+            entry_pp - programming point to execute when switching to this
                 weather
             exit_pp - programming point to execute when leaving this weather
 
@@ -437,7 +442,7 @@ init -10 python:
         import store.mas_weather as mas_weather
 
         def __init__(
-                self, 
+                self,
                 weather_id,
                 prompt,
                 sp_day,
@@ -474,11 +479,11 @@ init -10 python:
                 isbg_wf_night - image PATH for island bg nighttime with frame
                     If None, we use isbg_wf_day
                     (Default: None)
-                isbg_wof_night - image PATH for island bg nighttime without 
+                isbg_wof_night - image PATH for island bg nighttime without
                     framme
                     If None, we use isbg_wof_day
                     (Default: None)
-                entry_pp - programming point to execute after switching to 
+                entry_pp - programming point to execute after switching to
                     this weather
                     (Default: None)
                 exit_pp - programming point to execute before leaving this
@@ -530,7 +535,7 @@ init -10 python:
                 return result
             return not result
 
-        
+
         def entry(self, old_weather):
             """
             Runs entry programming point
@@ -568,6 +573,7 @@ init -10 python:
             RETURNS:
                 image tag for the corresponding mask to use
             """
+            # TODO: swap to filter-based
             if day:
                 return self.sp_day
 
@@ -608,11 +614,11 @@ init -10 python:
 ### define weather objects here
 
 init -1 python:
-   
+
     # default weather (day + night)
     mas_weather_def = MASWeather(
         "def",
-        "Default",
+        "Clear",
 
         # sp day
         "def_weather_day",
@@ -757,7 +763,7 @@ init 800 python:
         NOTE: this does NOt call exit programming points
 
         IN:
-            _weather - weather to set to. 
+            _weather - weather to set to.
         """
         global mas_current_weather
         old_weather = mas_current_weather
@@ -791,7 +797,7 @@ init 800 python:
 ## Changes weather if given a proper weather object
 # NOTE: we always scene change here
 # NOTE: if you need to change weather without chanign scene, use the
-#   set 
+#   set
 #
 # IN:
 #   new_weather - weather object to change to
@@ -892,7 +898,7 @@ label monika_change_weather:
 
     if sel_weather == mas_current_weather and mas_weather.force_weather:
         m 1hua "That's the current weather, silly."
-        m "Try again~" 
+        m "Try again~"
         jump monika_change_weather
 
     $ skip_outro = False
@@ -910,7 +916,7 @@ label monika_change_weather:
             m 2etc "Maybe you changed your mind?"
             m 1dsc "..."
             $ skip_leadin = True
-            
+
     # TODO: maybe react to snow?
 
     if not skip_leadin:

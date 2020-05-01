@@ -3,6 +3,11 @@ default persistent._mas_background_MBGdata = {}
 
 #START: Class definition
 init -10 python:
+
+    # TODO: the background class needs to decide the filters to use.
+    #   *AS WELL AS THE PROGRESSION*
+    # TODO: move the current DAY/NIGHT filters from mas_sprites to here.
+    # NOTE: I will do this when adding sunset progression
     class MASBackground(object):
         """
         Background class to get display props for bgs
@@ -234,6 +239,38 @@ init -10 python:
             """
             return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
 
+        def isFltDay(self, flt=None):
+            """
+            Checks if the given filter is considered a "day" filter according
+            to this background.
+
+            IN:
+                flt - filter to check
+                    if None, we use the current filter
+
+            RETURNS: True if flt is a "day" filter according to this bg
+            """
+            # TODO: a BG will be in charge of which filters are "day" and
+            #   which are "night". This will be implemented in the future.
+            #   for now we just assume "day" is day and "night" is night
+            if flt is None:
+                flt = store.mas_sprites.get_filter()
+
+            return flt == store.mas_sprites.FLT_DAY
+
+        def isFltNight(self, flt=None):
+            """
+            Checks if the given filter is considered a "night" filter according
+            to this background.
+
+            IN:
+                flt - filter to check
+                    if None, we use the current filter
+
+            RETURNS: True if flt is a "night" filter according to this BG
+            """
+            # TODO: see isFltDay
+            return not self.isFltDay(flt)
 
 
 #Helper methods and such

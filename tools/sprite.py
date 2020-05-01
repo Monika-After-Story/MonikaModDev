@@ -1,5 +1,9 @@
 # definitions of sprite objects
 
+DRAW_MONIKA = "mas_drawmonika"
+DRAW_MONIKA_IM = "mas_drawmonika_rk"
+
+draw_function = DRAW_MONIKA_IM
 
 class StaticSprite(object):
     """
@@ -216,7 +220,7 @@ class StaticSprite(object):
             self.spcode,
             "_static = DynamicDisplayable(\n",
             self._tab,
-            "mas_drawmonika",
+            draw_function,
             cnl,
 
             self._tab,

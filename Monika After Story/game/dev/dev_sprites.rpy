@@ -74,6 +74,56 @@ init 100 python:
         abc.close()
 
 
+    def mas_matrix_cache_report():
+        mb_size = 1000.0
+        sum_line = "{0}: {1} - {2:.3f} KB\n"
+
+        def _cro(cache, name, cache_log):
+            cache_size = 0
+
+            # header
+            cache_log.write("\n\n==================================\n")
+            cache_log.write("# Logging cache for {0}\n".format(name))
+            cache_log.write("==================================\n")
+
+            # output elements
+            for img_key in cache:
+                item = cache[img_key]
+                cache_log.write("{0}: {1}\n".format(img_key, item))
+                cache_size += sys.getsizeof(item)
+
+            return cache_size
+
+        # build temp dict for this
+        names = (
+            "Face",
+            "Arms",
+            "Body",
+            "Hair",
+            "ACS",
+            "TableChair",
+            "Highlight",
+        )
+        name_map = {}
+        for index in range(len(names)):
+            name_map[names[index]] = store.mas_sprites._gc(index+1)
+
+        with open("cache_report.log", "w") as cache_log:
+            # write each caceh out
+            size_map = {}
+            for name in names:
+                size_map[name] = _cro(name_map[name], name, cache_log)
+
+            # summary report
+            cache_log.write("\n\n---- Size Summary ----\n")
+            for name in names:
+                cache_log.write(sum_line.format(
+                    name,
+                    len(name_map[name]),
+                    size_map[name] / mb_size
+                ))
+
+
 init 5 python:
     addEvent(
         Event(
@@ -230,6 +280,66 @@ label dev_sp_obj_pp_test_sp_select:
 
     jump dev_sp_obj_pp_test_sp_select
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_empty_desk_test",
+            category=["dev"],
+            prompt="TEST EMPTY DESK",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_empty_desk_test:
+    m 1eua "I will test empty desk"
+    m 2eua "First i will wear the plush"
+    $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+    m 1eua "then i will show the empty desk but behind me"
+    show emptydesk at i11 zorder 9
+    m 1eua "now i will fade away"
+    hide monika with dissolve
+    m 1eua "i should be gone, but asc should be there"
+    m 2eua "now i will appear"
+    $ renpy.show("monika 1eua", tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
+    $ renpy.with_statement(dissolve)
+    m 1eua "I am back"
+    hide emptydesk
+    m 1eua "i hid the empty desk"
+    $ monika_chr.remove_acs(mas_acs_quetzalplushie)
+    m 2eua "plush gone"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_empty_desk_test_labels",
+            category=["dev"],
+            prompt="TEST EMPTY DESK (using transition labels)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_empty_desk_test_labels:
+    m 1eua "I will test empty desk with transition labels"
+    m 2eua "First i will wear the plush"
+    $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+
+    m 1eua "now i will hide"
+    call mas_transition_to_emptydesk
+
+    m "i am gone. but i will return with crossed arms and a diff exp"
+    call mas_transition_from_emptydesk("monika 2tfu")
+
+    m "i am here, but now to remove plush"
+    $ monika_chr.remove_acs(mas_acs_quetzalplushie)
+    m 2eua "plush gone"
+    m "try with zoom"
+    return
 
 ## dev functions for mas sprites that WILL cause exceptions
 

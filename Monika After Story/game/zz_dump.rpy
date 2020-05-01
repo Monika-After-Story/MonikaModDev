@@ -1,8 +1,6 @@
 ## dumps file for unstablers
 
 init 999 python:
-
-
     def mas_eventDataDump():
         """
         Data dump for purely events stats
@@ -79,7 +77,11 @@ init 999 python:
             def calcAvgs(self):
                 """
                 Calculates averages
-                
+<<<<<<< HEAD
+
+=======
+
+>>>>>>> upstream/content
                 Returns tuple:
                     [0]: show count avg
                     [1]: pool show count avg
@@ -104,7 +106,11 @@ init 999 python:
                 elif self.most_seen_ev.shown_count < ev.shown_count:
                     self.most_seen_ev = ev
 
-        
+<<<<<<< HEAD
+
+=======
+
+>>>>>>> upstream/content
             def inDB(self, ev):
                 """
                 returns true if the given ev is in this db
@@ -142,7 +148,11 @@ init 999 python:
 
                 return _seen
 
-        
+<<<<<<< HEAD
+
+=======
+
+>>>>>>> upstream/content
             def __str__(self):
                 """
                 to String
@@ -232,7 +242,7 @@ init 999 python:
         """
         This is a function called on startup and performs data dumps.
 
-        Please add your data dump to a different file than dumps.log if its 
+        Please add your data dump to a different file than dumps.log if its
         a large dump.
 
         Thank you.
@@ -284,7 +294,7 @@ init 999 python:
         outstr = (
             "First session: {0}\n" +
             "Total sessions: {1}\n" +
-            "Total playtime: {2}\n" + 
+            "Total playtime: {2}\n" +
             "Avg playtime per session: {3}\n" +
             "Last session start: {4}\n" +
             "Last session end: {5}\n\n"
@@ -292,7 +302,6 @@ init 999 python:
 
         return outstr.format(*output)
 
-    
     def mas_varDataDump():
         """
         Dumps other kinds of data.
@@ -306,12 +315,34 @@ init 999 python:
         with open(_var_data_fp, "w") as _var_data_file:
             _var_data_file.write(config.version + "\n\n")
 
-            # add data lines here
-            _var_data_file.write("CUPS OF COFFEE DRANK: {0}".format(
-                persistent._mas_coffee_cups_drank
-            ))
+            #Add data lines here
+            #Consumables stuff
+            for consumable_id in persistent._mas_consumable_map.keys():
+                consumable = mas_getConsumable(consumable_id)
+
+                #Need to account for consumables which were removed
+                if consumable:
+                    _var_data_file.write(
+                        "{0}S OF {1} {2}: {3}\n".format(
+                        consumable.container.upper(),
+                        consumable.disp_name.upper(),
+                        "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
+                        consumable.getAmountHad()
+                        )
+                    )
 
 
-    if persistent._mas_unstable_mode or mas_r7_mode:
+    def mas_dataDumpFlag():
+        """
+        Checks if the data dump flag (file) exists
+        """
+        try:
+            return os.path.isfile(
+                os.path.normcase(renpy.config.basedir + "/givedata.txt")
+            )
+        except:
+            return False
+
+
+    if persistent._mas_unstable_mode or mas_dataDumpFlag():
         mas_unstableDataDump()
-

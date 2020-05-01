@@ -245,7 +245,7 @@ label mas_island_cherry_blossom4:
 label mas_island_sky:
     python:
 
-        if morning_flag:
+        if mas_current_background.isFltDay():
             _mas_sky_events = [
                 "mas_island_day1",
                 "mas_island_day2",
@@ -480,10 +480,16 @@ init 500 python in mas_island_event:
             image filepath to show
         """
         if store.mas_isWinter():
-            return store.mas_weather_snow.isbg_window(store.morning_flag, store._mas_island_window_open)
+            return store.mas_weather_snow.isbg_window(
+                store.mas_current_background.isFltDay(),
+                store._mas_island_window_open
+            )
 
         else:
-            return store.mas_current_weather.isbg_window(store.morning_flag, store._mas_island_window_open)
+            return store.mas_current_weather.isbg_window(
+                store.mas_current_background.isFltDay(),
+                store._mas_island_window_open
+            )
 
 screen mas_islands_background:
 
@@ -507,7 +513,7 @@ screen mas_islands_background:
             zoom 0.5
 
 screen mas_show_islands():
-    style_prefix mas_ui.fli_style_prefix
+    style_prefix "island"
     imagemap:
 
         ground mas_island_event.getBackground()
@@ -555,24 +561,20 @@ screen mas_show_islands():
 # Defining a new style for buttons, because other styles look ugly
 
 # properties for these island view buttons
-# copied from hkb
-define gui.island_button_height = None
-define gui.island_button_width = 205
-define gui.island_button_tile = False
-define gui.island_button_text_font = gui.default_font
-define gui.island_button_text_size = gui.text_size
-define gui.island_button_text_xalign = 0.5
-define gui.island_button_text_idle_color = mas_ui.light_button_text_idle_color
-define gui.island_button_text_hover_color = mas_ui.light_button_text_hover_color
-define gui.island_button_text_kerning = 0.2
-
-style island_button is button
-style island_button_text is button_text
-
 style island_button is default:
     properties gui.button_properties("island_button")
     idle_background  "mod_assets/island_idle_background.png"
     hover_background "mod_assets/island_hover_background.png"
+    xysize (205, None)
+    ypadding 5
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style island_button_dark is default:
+    properties gui.button_properties("island_button_dark")
+    idle_background  "mod_assets/island_idle_background_d.png"
+    hover_background "mod_assets/island_hover_background_d.png"
+    xysize (205, None)
     ypadding 5
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
@@ -581,6 +583,24 @@ style island_button_text is default:
     properties gui.button_text_properties("island_button")
     idle_background  "mod_assets/island_idle_background.png"
     hover_background "mod_assets/island_hover_background.png"
+    font gui.default_font
+    size gui.text_size
+    xalign 0.5
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_hover_color
+    kerning 0.2
+    outlines []
+
+style island_button_text_dark is default:
+    properties gui.button_text_properties("island_button_dark")
+    idle_background  "mod_assets/island_idle_background_d.png"
+    hover_background "mod_assets/island_hover_background_d.png"
+    font gui.default_font
+    size gui.text_size
+    xalign 0.5
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
+    kerning 0.2
     outlines []
 
 # mini moni ATL

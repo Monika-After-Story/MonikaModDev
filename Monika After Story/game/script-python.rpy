@@ -11,7 +11,7 @@
 #
 # META: Python things to talk about:
 # DONE:
-#   0 - intro 
+#   0 - intro
 #   1 - what is python?
 #   --- sugestion python compared to other languages/ how does it work
 #   --- suggestion mention syntax and probably how to get python maybe separate each part
@@ -41,6 +41,7 @@
 #   14 - String operations
 #   15 - start talking about renpy
 #
+#   Implement advanced python tips for users who have some experience (persistent._mas_advanced_py_tips)
 #
 # Also what about Renpy?
 #
@@ -97,7 +98,7 @@ init 4 python in mas_ptod:
 
         # now check the actual day
         return (
-            datetime.date.today() - tip_ev.unlock_date.date() 
+            datetime.date.today() - tip_ev.unlock_date.date()
             >= datetime.timedelta(days=1)
         )
 
@@ -134,7 +135,7 @@ init 5 python:
 label monika_ptod_tip000:
     m 3eub "You want to learn about Python?"
     m 3hub "I'm so happy you asked me!"
-    m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
+    m 1lksdlb "I don't know {i}that{/i} much about programming, but I'll try my best to explain."
     m 1esa "Let's start with what Python even is."
 
     $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)
@@ -161,18 +162,18 @@ init 5 python:
     )
 
 label monika_ptod_tip001:
-    
+
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
-    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w} which is built off of Python."
+    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w=0.2} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
     show monika 5eua with dissolve
     m "Wouldn't that be great, [player]?"
-    
-    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w} Python2 and Python3."
+
+    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
-    m "Even though this caused a rift in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
+    m "Even though this caused a rift in the Python community,{w=0.2} it's generally agreed that both versions of the language have their own strengths and weaknesses."
     m 3eub "I'll tell you about those differences in another lesson."
 
     m 1eua "Since this mod runs on a Ren'Py version that uses Python2, I won't be talking about Python3 too often."
@@ -210,7 +211,7 @@ label monika_ptod_tip002:
     show screen mas_py_console_teaching
 
     ### numbers
-    m 1eua "Python has two types to represent numbers:{w} {i}integers{/i}, or {b}ints{/b},{w} and {i}floats{/i}."
+    m 1eua "Python has two types to represent numbers:{w=0.3} {i}integers{/i}, or {b}ints{/b},{w=0.3} and {i}floats{/i}."
 
     ## integers
     m 1eua "Integers are used to represent whole numbers; basically anything that isn't a decimal."
@@ -233,12 +234,12 @@ label monika_ptod_tip002:
     m "Anything surrounded in single quotes (') or double quotes (\") are strings."
     m 3eub "For example:"
     show monika 3eua
-    
+
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
     m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it's basically the same thing."
-    m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
+    m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w=0.2} I'll talk about them another day."
 
     ### booleans
     m "Booleans are special types that represent {b}True{/b} or {b}False{/b} values."
@@ -248,7 +249,7 @@ label monika_ptod_tip002:
     m 1eua "I'll go into more detail about what booleans are and what they are used for in another lesson."
 
     ### Nones
-    m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w} This type represents the absence of any data."
+    m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w=0.2} This type represents the absence of any data."
     m "If you're familiar with other programing languages, this is like a {i}null{/i} or {i}undefined{/i} type."
     m "The keyword {i}None{/i} represents NoneTypes in Python."
     show monika 1eua
@@ -316,7 +317,7 @@ label monika_ptod_tip003:
         m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
         m "Not that you would{fast}{nw}"
         $ _history_list.pop()
-        m 1eksdlb "I can't let you use this.{w} Sorry..." 
+        m 1eksdlb "I can't let you use this.{w=0.3} Sorry..."
         m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
 
         m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
@@ -352,7 +353,7 @@ label monika_ptod_tip004:
     # as this will talk about indentaiton. However, we could probably
     # have this after the first wave of lessons
     #
-    # Python code is incredibly simple to write. 
+    # Python code is incredibly simple to write.
 
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
@@ -360,7 +361,7 @@ label monika_ptod_tip004:
     show screen mas_py_console_teaching
 
     # [Show this once]
-    # Hopefully 
+    # Hopefully
     # [end]
     #
     # Oh well this may be a bit hard to explain here but I'll do my best for you [player]
@@ -438,7 +439,7 @@ label monika_ptod_tip005:
         m 1eksdlb "{i}That{/i} is what I meant when I said that comparison expressions evaluate to booleans."
 
     m 1eua "It's also possible to chain multiple comparison expressions together by using the keywords {b}and{/b} and {b}or{/b}. These are also known as {i}logical operators{/i}."
-    m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
+    m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w=0.3} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
     m 1hua "Let's go through some examples."
 
     $ val_a = local_ctx["a"]
@@ -470,7 +471,7 @@ label monika_ptod_tip005:
 
     m 1eub "Again, when using the {b}and{/b} operator, the result is {b}True{/b} if and only if both comparisons evaluate to {b}True{/b}."
 
-    m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
+    m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w=0.3} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
     m 3eua "Let's go through some examples."
 
     call mas_w_cmd("a == b or a == c")
@@ -508,9 +509,9 @@ label monika_ptod_tip005:
     m "Note that I'm using parentheses to group the comparisons together. The code in the parentheses is evaluated first, then the result of that comparison is inverted with {b}not{/b}."
     m 1eua "If I drop the parentheses:"
     call mas_wx_cmd("not a == b and a == c")
-    m 3eua "We get a different result!{w} This is because the {b}not{/b} gets applied to the 'a == b' comparison before being linked to the second comparison by the {b}and{/b}."
+    m 3eua "We get a different result!{w=0.2} This is because the {b}not{/b} gets applied to the 'a == b' comparison before being linked to the second comparison by the {b}and{/b}."
 
-    m 3eka "Earlier I mentioned that the exclamation point is used as the logical 'not' operator in other programming languages.{w} Python, however, uses the word 'not' instead for easier readability."
+    m 3eka "Earlier I mentioned that the exclamation point is used as the logical 'not' operator in other programming languages.{w=0.2} Python, however, uses the word 'not' instead for easier readability."
 
     m 1eua "Lastly, since the comparisons get evaluated to booleans, we can store the result of a comparison in a variable."
     call mas_wx_cmd("d = a == b and a >= c")
@@ -594,14 +595,14 @@ label monika_ptod_tip006:
     m 1eub "That is called assignment, where we take whatever is on the left of the equals sign and point it to, or {i}assign{/i} it, the value of whatever is on the right."
 
     # b_number
-    m 1eua "Assignment is executed in right-to-left order.{w} To illustrate this, let's create a new variable, 'b_number'."
+    m 1eua "Assignment is executed in right-to-left order.{w=0.3} To illustrate this, let's create a new variable, 'b_number'."
     call mas_w_cmd("b_number = a_number  -  " + b_num_store)
 
-    m "In assignment, the right side of the equal sign is evaluated first,{w} then its data type is inferred and an appropriate amount of memory is reserved."
+    m "In assignment, the right side of the equal sign is evaluated first,{w=0.2} then its data type is inferred and an appropriate amount of memory is reserved."
     m "That memory is linked to the symbol on the left via a lookup table."
-    m 1eub "When Python encounters a symbol,{w} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
+    m 1eub "When Python encounters a symbol,{w=0.2} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
 
-    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
+    m 3eub "Here, 'a_number' would be replaced with [num_store],{w=0.2} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
     show monika 3eua
     call mas_x_cmd(local_ctx)
 
@@ -619,7 +620,7 @@ label monika_ptod_tip006:
     call mas_wx_cmd("c_number", local_ctx)
 
     m 1hua "Python is able to find the symbol in the lookup table and won't give us an error."
-    
+
     m 1eua "The variables we created are all {i}integer{/i} types."
     m "We didn't have to explicitly say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
@@ -628,7 +629,7 @@ label monika_ptod_tip006:
     m 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
 
     if tip_ev.last_seen is None:
-        m 1eud "Whew!{w} That was a mouthful!"
+        m 1eud "Whew!{w=0.2} That was a mouthful!"
 
     m "Did you understand all that?{nw}"
     $ _history_list.pop()
@@ -638,7 +639,7 @@ label monika_ptod_tip006:
             m 1hua "Yay!"
 
         "I'm a bit confused.":
-            m 1eksdla "That's okay.{w} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
+            m 1eksdla "That's okay.{w=0.3} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
             m "The symbol / value names are really only useful for hinting at how variables work under the hood, so don't feel bad if you didn't understand it all."
             m 1eua "Just knowing how to work with variables is enough for future lessons."
             m "Anyway..."
@@ -971,7 +972,7 @@ init -1 python in mas_ptod:
         """
         clear_console()
 
-    
+
     def ex_cn():
         """
         SEE exit_console
@@ -1027,7 +1028,7 @@ init -1 python in mas_ptod:
 
         if state == STATE_MULTI:
             # this is bad! You should execute the previous command first!
-            # in this case, we will clear your current command and reset 
+            # in this case, we will clear your current command and reset
             # state back to SINGLE
             cn_cmd = ""
             cn_line = ""
@@ -1115,7 +1116,7 @@ init -1 python in mas_ptod:
         # clear the console and add the 2 new lines
         clear_console()
         _update_console_history_list(start_lines)
-        
+
         # turn the console on
         state = STATE_SINGLE
 
@@ -1288,7 +1289,7 @@ init -1 python in mas_ptod:
 
         else:
             result = ""
-        
+
         ################### console history update #########################
 
         if block_mode and empty_line:
@@ -1344,7 +1345,7 @@ init -1 python in mas_ptod:
     def get_last_line():
         """
         Retrieves the last line from the console history
-        
+
         RETURNS:
             last line from console history as a string
         """
@@ -1374,7 +1375,7 @@ init -1 python in mas_ptod:
         global stack_level
         stack_level += 1
         indent_stack.append(indent_level)
-   
+
 
     def __popi():
         """
@@ -1497,7 +1498,7 @@ init -1 python in mas_ptod:
 
 
 screen mas_py_console_teaching():
-    
+
     frame:
         xanchor 0
         yanchor 0
@@ -1539,7 +1540,7 @@ screen mas_py_console_teaching():
             else:
                 # multi line statement, dont have the sym at all
                 $ cn_l_x = 5
-            
+
             # current line
             if len(store.mas_ptod.cn_line) > 0:
                 text "[store.mas_ptod.cn_line]":
@@ -1548,7 +1549,7 @@ screen mas_py_console_teaching():
                     xpos cn_l_x
                     ypos 433
 
-# does a write command and waits 
+# does a write command and waits
 label mas_w_cmd(cmd, wait=0.7):
     $ store.mas_ptod.w_cmd(cmd)
     $ renpy.pause(wait, hard=True)

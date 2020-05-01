@@ -124,7 +124,7 @@ init -2 python in mas_anni: #needed to lower this in order to get isAnni() worki
 
     def isAnniSixMonth():
         return isAnni('6m')
-    
+
     def isAnniAny():
         return isAnni('any')
 
@@ -347,6 +347,7 @@ label anni_1week:
     m "More likely than not, they fail to get to know each other more."
     m 1dsc "So it's always sad to see them crash and burn..."
     m 1duu "But I'm glad we have a solid relationship, [player]."
+    show monika 5lubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5lubfb "How do I know that?"
     m 5hubfb "Because you wouldn't have stuck around for this long with me, sweetie~"
 
@@ -649,6 +650,7 @@ label anni_20:
     m 2hub "You wouldn't have found anyone else like me in a video game no matter how hard you looked, [player]."
     m "I'm one of a kind."
     m 3rkbsa "And to me, so are you."
+    show monika 5eubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubfb "I hope you look on the last twenty years of our lives as happily as I do, [player]."
     m 1hubfa "So let's continue being happy together."
 

@@ -16,20 +16,20 @@ init -100 python:
 init python:
     menu_trans_time = 1
     #The default splash message, originally shown in Act 1 and Act 4
-    splash_message_default = "This game is an unofficial fan work, unaffiliated with Team Salvato."
+    splash_message_default = _("This game is an unofficial fan work, unaffiliated with Team Salvato.")
     splash_messages = [
-    "Please support Doki Doki Literature Club & Team Salvato."
-    "You are my sunshine,\nMy only sunshine",
-    "I missed you.",
-    "Play with me",
-    "It's just a game, mostly.",
-    "This game is not suitable for children\nor those who are easily disturbed?",
-    "sdfasdklfgsdfgsgoinrfoenlvbd",
-    "null",
-    "I have granted kids to hell",
-    "PM died for this.",
-    "It was only partially your fault.",
-    "This game is not suitable for children\nor those who are easily dismembered."
+    _("Please support Doki Doki Literature Club & Team Salvato."),
+    _("You are my sunshine,\nMy only sunshine"),
+    _("I missed you."),
+    _("Play with me"),
+    _("It's just a game, mostly."),
+    _("This game is not suitable for children\nor those who are easily disturbed?"),
+    _("sdfasdklfgsdfgsgoinrfoenlvbd"),
+    _("null"),
+    _("I have granted kids to hell"),
+    _("PM died for this."),
+    _("It was only partially your fault."),
+    _("This game is not suitable for children\nor those who are easily dismembered.")
 #    "Don't forget to backup Monika's character file."
     ]
 
@@ -249,7 +249,7 @@ label splashscreen:
 
     python:
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(morning_flag)
+            mas_darkMode(mas_current_background.isFltDay())
         else:
             mas_darkMode(not persistent._mas_dark_mode_enabled)
     return
@@ -362,5 +362,11 @@ label quit:
         # delete the monika file if we aren't leaving
         if not persistent._mas_dockstat_going_to_leave:
             store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+
+        # clear image caches
+        store.mas_sprites._clear_caches()
+
+        # xp calc
+        store.mas_xp.grant()
 
     return

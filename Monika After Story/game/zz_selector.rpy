@@ -19,7 +19,7 @@ init -150 python in mas_selspr:
     import store.mas_utils as mas_utils
 
     ## selector rules
-    # selector rules are functions that should be checked prior to unlocking 
+    # selector rules are functions that should be checked prior to unlocking
     # a selector.
     # NOTE: all selector rules are assumed to be ran at runtime
 
@@ -53,6 +53,12 @@ init -100 python in mas_selspr:
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
             # TODO: min-items
+        },
+        "hat": {
+            "_ev": "monika_hat_select",
+            "_min-items": 1,
+            "change": "Can you change your hat?",
+            "wear": "Can you wear a hat?",
         },
         "left-hair-clip": {
             "_ev": "monika_hairclip_select",
@@ -179,6 +185,25 @@ init -100 python in mas_selspr:
             store.mas_unlockEVL(evl, "EVE")
 
 
+    def startup_prompt_check():
+        """
+        Checks all prompts and adjusts them if needed
+        """
+        # ribbon is its own thing
+        if store.monika_chr.is_wearing_ribbon():
+            set_prompt("ribbon", "change")
+        else:
+            set_prompt("ribbon", "wear")
+
+        # now for the rest
+        for group in GRP_TOPIC_LIST:
+            if group != "ribbon":
+                if store.monika_chr.is_wearing_acs_type(group):
+                    set_prompt(group, "change")
+                else:
+                    set_prompt(group, "wear")
+
+
 init -20 python:
 
     class MASSelectableSprite(object):
@@ -207,6 +232,9 @@ init -20 python:
             select_dlg - list text to display everytime you select this sprite
                 (after the first time)
             selected - True if this item is selected, False if not
+            disabled_type - disable type to use in the displayable in selector.
+                NOTE: this property may be set by the selector labels.
+                Do NOT expect this property to be respected if set manually.
         """
 
 
@@ -259,6 +287,7 @@ init -20 python:
             self.first_select_dlg = first_select_dlg
             self.select_dlg = select_dlg
             self.selected = False
+            self.disable_type = store.mas_selspr.DISB_NONE
 
             # by default
             # NOTE: only ACS can override this
@@ -347,7 +376,7 @@ init -20 python:
                     not
                     (Default: False)
             """
-            if type(_sprite_object) != MASAccessory:
+            if not isinstance(_sprite_object, MASAccessoryBase):
                 raise Exception("not an acs: {0}".format(group))
             if remover and store.mas_selspr._has_remover(group):
                 raise Exception(
@@ -574,6 +603,7 @@ init -10 python in mas_selspr:
 
     GRP_TOPIC_LIST = [
         "choker",
+        "hat",
         "left-hair-clip",
         "left-hair-flower",
         "ribbon",
@@ -592,6 +622,28 @@ init -10 python in mas_selspr:
         "Just what I was thinking!",
         "Just what I had in mind!"
     ]
+
+    # disable constants
+    DISB_NONE = 0
+    DISB_HAIR_BC_CLOTH = 1
+    DISB_ACS_BC_HAIR = 2
+
+    # disable select dlg quips
+    disable_sel_dlg_quips = {
+        DISB_NONE: None,
+        DISB_HAIR_BC_CLOTH: [
+            "That hairstyle doesn't really work with my clothes.",
+            "I don't think this hairstyle really works with this outfit.",
+            "That hairstyle doesn't really work with this outfit.",
+            "I think this hairstyle works better with a different outfit."
+        ],
+        DISB_ACS_BC_HAIR: [
+            "That doesn't really work with my hair.",
+            "I don't think this really works with my hairstyle.",
+            "This might work with a different hairstyle.",
+            "I don't really think this goes with my hair."
+        ],
+    }
 
 
     def selectable_key(selectable):
@@ -624,7 +676,7 @@ init -10 python in mas_selspr:
             else:
                 lock_prompt(group)
 
-    
+
     def _switch_to_wear_prompts():
         """
         Switches all prompts for grp_topic_list topics to use their wear prompt.
@@ -1374,6 +1426,40 @@ init -10 python in mas_selspr:
         return HAIR_SEL_MAP.get(hair.name, None)
 
 
+    def is_hairacs_compatible(hair, acs_sel):
+        """
+        Wrapper around mas_sprites.is_hairacs_compatible that uses an ACS
+        selector.
+
+        IN:
+            hair - hair to check
+            acs_sel - ACS selector to check
+
+        RETURNS: True if hair+acs is compatible, False if not
+        """
+        return store.mas_sprites.is_hairacs_compatible(
+            hair,
+            acs_sel.get_sprobj()
+        )
+
+
+    def is_clotheshair_compatible(clothes, hair_sel):
+        """
+        Wrapper around mas_sprites.is_clotheshair_compatible that uses a
+        hair selector.
+
+        IN:
+            clothes - clothes to check
+            hair_sel - hair selector to check
+
+        RETURNS: True if clothes+hair is compatible, false if not
+        """
+        return store.mas_sprites.is_clotheshair_compatible(
+            clothes,
+            hair_sel.get_sprobj()
+        )
+
+
     def _lock_item(item, select_type):
         """
         Locks the given item's selectable.
@@ -1415,6 +1501,44 @@ init -10 python in mas_selspr:
             hair - MASHair object to lock
         """
         _lock_item(hair, SELECT_HAIR)
+
+
+    def set_compat_acs(acs_sels, hair):
+        """
+        Checks compatibility of the given list of acs selectors to the given
+        hair sprite object and sets appropriate flags
+
+        IN:
+            acs_sels - list of acs selectors to check
+            hair - hair sprite object to check
+
+        OUT:
+            acs_sels - acs selectors with modified flags for compatibility
+        """
+        for acs_sel in acs_sels:
+            if is_hairacs_compatible(hair, acs_sel):
+                acs_sel.disable_type = store.mas_selspr.DISB_NONE
+            else:
+                acs_sel.disable_type = store.mas_selspr.DISB_ACS_BC_HAIR
+
+
+    def set_compat_hair(hair_sels, clothes):
+        """
+        Checks compatiblity of the given list of hair selectors to the given
+        clothing sprite object and sets appropriate flags.
+
+        IN:
+            hair_sels - list of hair selectors to check
+            clothes - clothing sprite object to check
+
+        OUT:
+            hair_sels - hair selectors with modified flags for compatibility
+        """
+        for hair_sel in hair_sels:
+            if is_clotheshair_compatible(clothes, hair_sel):
+                hair_sel.disable_type = store.mas_selspr.DISB_NONE
+            else:
+                hair_sel.disable_type = store.mas_selspr.DISB_HAIR_BC_CLOTH
 
 
     def _unlock_item(item, select_type):
@@ -1581,7 +1705,7 @@ init -10 python in mas_selspr:
             Returns the value of the outfit checkbox visible message
 
             RETURNS:
-                True if the outfit checkbox should be visible, False otherwise    
+                True if the outfit checkbox should be visible, False otherwise
             """
             return self._read(MB_OCB_VISIBLE)
 
@@ -1597,7 +1721,7 @@ init -10 python in mas_selspr:
             """
             Returns the value of the restore enable message
 
-            RETURNS: True if the restore button should be enabled, False 
+            RETURNS: True if the restore button should be enabled, False
                 otherwise
             """
             return self._read(MB_RSTR_ENABLE)
@@ -1784,6 +1908,7 @@ init -1 python:
         elif allow_lock:
             store.mas_selspr.lock_prompt(group)
 
+
     def mas_hasUnlockedClothesWithExprop(exprop, value=None):
         """
         Checks if we have unlocked clothes with a specific exprop
@@ -1798,15 +1923,31 @@ init -1 python:
                 True if we have unlocked clothes with the exprop + value provided
                 False otherwise
         """
-        clothes_with_exprop = MASClothes.by_exprop(exprop, value)
-
-        if not clothes_with_exprop:
-            return False
-
-        for clothes in clothes_with_exprop:
+        for clothes in MASClothes.by_exprop(exprop, value):
             if mas_SELisUnlocked(clothes):
                 return True
         return False
+
+
+    def mas_hasLockedClothesWithExprop(exprop, value=None):
+        """
+        Checks if we have locked clothes with a specific exprop
+
+        IN:
+            exprop - exprop to look for
+            value - value the exprop should be. Set to None to ignore.
+            (Default: None)
+
+        OUT:
+            boolean:
+                True if we have locked clothes with the exprop + value provided
+                False otherwise
+        """
+        for clothes in MASClothes.by_exprop(exprop, value):
+            if not mas_SELisUnlocked(clothes):
+                return True
+        return False
+
 
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
@@ -1814,7 +1955,7 @@ init -1 python:
         Custom button for the selectable items.
         """
         import pygame
-        from store.mas_selspr import MB_DISP
+        from store.mas_selspr import MB_DISP, DISB_NONE, DISB_HAIR_BC_CLOTH
 
         # constnats
         THUMB_DIR = "mod_assets/thumbs/"
@@ -1841,13 +1982,13 @@ init -1 python:
         )
         MOUSE_WHEEL = (4, 5)
 
-
         def __init__(self,
                 _selectable,
                 select_map,
                 viewport_bounds,
-                mailbox={},
-                multi_select=False
+                mailbox=None,
+                multi_select=False,
+                disable_type=store.mas_selspr.DISB_NONE
             ):
             """
             Constructor for this displayable
@@ -1864,18 +2005,27 @@ init -1 python:
                     [4]: border size
                 mailbox - dict to send messages to outside from this
                     displayable.
-                    (Default: {})
+                    (Default: None)
                 multi_select - True means we can select more than one item.
                     False otherwise
                     (Default: False)
+                disable_type - pass in a disable constant to disable this item
+                    for the specified reason.
+                    (Default: 0 - DISB_NONE)
             """
             super(MASSelectableImageButtonDisplayable, self).__init__()
 
+            if mailbox is None:
+                self.mailbox = {}
+            else:
+                self.mailbox = mailbox
+
             self.selectable = _selectable
             self.select_map = select_map
-            self.mailbox = mailbox
             self.multi_select = multi_select
             self.been_selected = False
+            self.disable_type = disable_type
+            self.disabled = disable_type != self.DISB_NONE
 
             # if this is a remover, we don't use the thumb
             if self.selectable.remover:
@@ -2065,7 +2215,7 @@ init -1 python:
             """
             if selected:
                 color = mas_ui.light_button_text_hover_color
-                
+
             else:
                 color = mas_globals.button_text_idle_color
 
@@ -2094,15 +2244,16 @@ init -1 python:
                 renpy.play(gui.hover_sound, channel="sound")
 
                 # send out hover dlg
-                if self.selectable.hover_dlg is not None:
-                    self._send_hover_text()
-                    self.end_interaction = True
-
-                else:
-                    self.mailbox.send_disp_fast()
-
-                # always reset on a hover
-                self.end_interaction = True
+                # NOTE: keep in case we want hover text again
+#                if self.selectable.hover_dlg is not None:
+#                    self._send_hover_text()
+#                    self.end_interaction = True
+#
+#                else:
+#                    self.mailbox.send_disp_fast()
+#
+#                # always reset on a hover
+#                self.end_interaction = True
 
 
         def _hypen_render_split(self, line, lines_list, st, at, tokens=None):
@@ -2239,7 +2390,6 @@ init -1 python:
                 at
             )
 
-
         def _render_top_frame(self, hover, st, at):
             """
             Renders the top renders, returns a list of the renders in order of
@@ -2267,7 +2417,6 @@ init -1 python:
 
             return [_main_piece]
 
-
         def _render_top_frame_piece(self, piece, st, at):
             """
             Renders a top frame piece. No Text, please
@@ -2279,7 +2428,6 @@ init -1 python:
                 st,
                 at
             )
-
 
         def _select(self):
             """
@@ -2351,6 +2499,15 @@ init -1 python:
             # always reset interaction if something has been selected
             self.end_interaction = True
 
+        def _select_disabled(self):
+            """
+            Called when selecting a disabled item.
+            """
+            renpy.play(gui.activate_sound_glitch, channel="sound")
+            self._send_disabled_select_text()
+            self.mailbox.send_disp_fast()
+            self.end_interaction = True
+
         def _send_first_select_text(self):
             """
             Sends first select text to mailbox
@@ -2362,6 +2519,19 @@ init -1 python:
                     self.selectable.first_select_dlg
                 )
             )
+
+        def _send_disabled_select_text(self):
+            """
+            Sends disabled select text to mailbox
+
+            ASSUMES we are disabled
+            """
+            sendable_txts = store.mas_selspr.disable_sel_dlg_quips.get(
+                self.disable_type,
+                None
+            )
+            if sendable_txts:
+                self._send_msg_disp_text(self._rand_select_dlg(sendable_txts))
 
         def _send_generic_select_text(self):
             """
@@ -2585,16 +2755,20 @@ init -1 python:
 
                     elif ev.button == 1:
                         # left click
-                        if not self.locked and self._is_over_me(x, y):
-                            self._select()
-                            renpy.redraw(self, 0)
+                        if self._is_over_me(x, y):
+                            if self.disabled:
+                                self._select_disabled()
+
+                            elif not self.locked:
+                                self._select()
+                                renpy.redraw(self, 0)
 
 #                        elif self.selected and not self.multi_select:
 #                            self.selected = False
 #                            renpy.redraw(self, 0)
 
             # apply hover dialogue logic if not selected
-            if not self.selected and not self.locked:
+            if not self.selected and not self.locked and not self.disabled:
                 self._hover()
 
             if self.end_interaction:
@@ -2615,13 +2789,24 @@ init -1 python:
                 self._setup_display_name(st, at)
 
                 # now save the render cache
-                if self.locked:
-                    _locked_bot_renders = [
-                        self._render_bottom_frame_piece(
+                if self.locked or self.disabled:
+                    if self.locked:
+                        thumb_render = self._render_bottom_frame_piece(
                             self.locked_thumb,
                             st,
                             at
                         ),
+                    else:
+                        # disabled
+                        thumb_render = self._render_bottom_frame_piece(
+                            self.thumb,
+                            st,
+                            at
+                        )
+
+                    # otherwise, locked and disabled is basically the same
+                    _locked_bot_renders = [
+                        thumb_render,
                         self._render_bottom_frame_piece(
                             self.thumb_overlay_locked,
                             st,
@@ -2663,7 +2848,7 @@ init -1 python:
                 self.first_render = False
 
             # now which renders are we going to select
-            if self.locked:
+            if self.locked or self.disabled:
                 _suffix = ""
             elif self.hovered or self.selected:
                 _suffix = "_hover"
@@ -2726,6 +2911,8 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
         vbox:
             xsize 200
             xalign 0.5
+            spacing 5
+
             viewport id "sidebar_scroll":
                 mousewheel True
                 arrowkeys True
@@ -2747,12 +2934,12 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
                     null height 1
 
-            null height 10
+            null height 5
 
             if mailbox.read_outfit_checkbox_visible():
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
-                    style mas_ui.st_cbx_style
+                    style "outfit_check_button"
                     activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocb"),
@@ -2765,35 +2952,26 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
-                    style store.mas_ui.hkb_button_style
+                    style "hkb_button"
                     xalign 0.5
                     action Jump(confirm)
             else:
-                frame:
-                    ypadding 5
-                    xsize 120
+                textbutton _("Confirm"):
+                    style "hkb_button"
                     xalign 0.5
-
-                    background Image(store.mas_ui.hkb_disabled_bg)
-                    text "Confirm" style store.mas_ui.hkb_text_style
 
             if mailbox.read_restore_enable():
                 textbutton _("Restore"):
-                    style store.mas_ui.hkb_button_style
+                    style "hkb_button"
                     xalign 0.5
                     action Jump(restore)
-
             else:
-                frame:
-                    ypadding 5
-                    xsize 120
+                textbutton _("Restore"):
+                    style "hkb_button"
                     xalign 0.5
 
-                    background Image(store.mas_ui.hkb_disabled_bg)
-                    text "Restore" style store.mas_ui.hkb_text_style
-
             textbutton _("Cancel"):
-                style store.mas_ui.hkb_button_style
+                style "hkb_button"
                 xalign 0.5
                 action Jump(cancel)
 #                action Function(mailbox.mas_send_return, -1)
@@ -2854,7 +3032,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup the mailbox
         if mailbox is None:
             mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
-        
+
         # save state
         prev_moni_state = monika_chr.save_state(True, True, True)
         mailbox.send_prev_state(prev_moni_state)
@@ -2923,7 +3101,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                     item,
                     select_map,
                     viewport_bounds,
-                    mailbox
+                    mailbox,
+                    False, # TODO: multi-select
+                    item.disable_type
                 )
                 for item in items
                 if item.unlocked
@@ -2935,7 +3115,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                     item,
                     select_map,
                     viewport_bounds,
-                    mailbox
+                    mailbox,
+                    False, # TODO: multi-select
+                    item.disable_type
                 )
                 for item in items
             ]
@@ -3015,7 +3197,8 @@ label mas_selector_sidebar_select_midloop:
 
         #Clear repeated lines
         if prev_line != disp_text:
-            _history_list.pop()
+            if len(_history_list) > 0:
+                _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
 
@@ -3032,7 +3215,7 @@ label mas_selector_sidebar_select_restore:
             monika_chr,
             force=True
         )
-    
+
         # restore monika back to previous
         monika_chr.restore(prev_moni_state)
 
@@ -3047,7 +3230,8 @@ label mas_selector_sidebar_select_restore:
 
         #Clear repeated lines
         if prev_line != disp_text:
-            _history_list.pop()
+            if len(_history_list) > 0:
+                _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
 
@@ -3182,6 +3366,73 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
     return _return
 
 
+# generic sidebar-based ACS select
+# standardized code for ACS selections. If you need custom filtering,
+# DONT use this.
+# NOTE: this will always show remover (for now)
+# NOTE: this wil only show unlocked ACS.
+#
+# IN:
+#   acs_type - acs type of the ACS we want to show
+#   use_acs - list of acs to use. if None, we use standard filter
+#       (Default: None)
+#   set_compat_flags - True will adjust the use_acs using compatibly filter
+#       False will not
+#       (Default: True)
+#   launch_exp - the expression to use when saying "Sure [player]!" before
+#       showing the selector.
+#       (Default: monika 1eua)
+#   idle_exp - the expression to use while the selector is runing.
+#       if None is passed in, we use the launch exp.
+#       (Default: None)
+#   sel_group - the selector group to use.
+#       if None, we use the acs_type
+#       (Default: None)
+#   idle_dlg - dialogue shown while selector is running and nothing has been
+#       hovered/selected.
+#       if None, we use acs_type, which might be yuck:
+#       "Which <acs_type> would you like me to wear?"
+#       (Default: None)
+label mas_selector_generic_sidebar_select_acs(acs_type, use_acs=None, set_compat_flags=True, launch_exp="monika 1eua", idle_exp=None, sel_group=None, idle_dlg=None):
+    python:
+        # initial setup
+        if sel_group is None:
+            sel_group = acs_type
+        if idle_dlg is None:
+            idle_dlg = "Which {0} would you like me to wear?".format(acs_type)
+
+        # filter for acs
+        if use_acs is None:
+            use_acs = store.mas_selspr.filter_acs(True, group=sel_group)
+
+        # set compatibilities
+        if set_compat_flags:
+            store.mas_selspr.set_compat_acs(use_acs, monika_chr.hair)
+
+        # setup mailbox and select map
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(idle_dlg)
+        sel_map = {}
+
+    $ renpy.show(launch_exp)
+    m "Sure [player]!"
+
+    if idle_exp is not None and idle_exp != launch_exp:
+        $ renpy.show(idle_exp)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type(acs_type):
+        $ store.mas_selspr.set_prompt(acs_type, "change")
+    else:
+        $ store.mas_selspr.set_prompt(acs_type, "wear")
+
+    return
+
+
 ########################## SELECTOR TOPICS ####################################
 # [MONSEL]
 
@@ -3197,18 +3448,18 @@ init 5 python:
             unlocked=True,
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
+    #Selectors shouldn't be in unseen
+    persistent._seen_ever
 default persistent._mas_setting_ocb = False
 # Outfit CheckBox setting
 
 label monika_clothes_select:
-    # setup
+    #Setup
     python:
-        # set the other clothes selector to seen
-        persistent._seen_ever['monika_event_clothes_select'] = True
-
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
@@ -3280,15 +3531,13 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_event_clothes_select:
     # setup
     python:
-        # set the other clothes selector to seen
-        persistent._seen_ever['monika_clothes_select'] = True
-
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Do you want me to change?"
         )
@@ -3337,64 +3586,6 @@ label monika_event_clothes_select:
 #### ends Monika clothes topic
 
 ##### monika hair topics [MONHAIR]
-# TODO: as we introduce addiotinal hair types, we need to change the dialogue
-# for these.
-
-#init 5 python:
-    # NOTE: this event is DEPRECATED
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_hair_ponytail",
-#            category=["monika"],
-#            prompt="Can you tie your hair into a ponytail?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None}
-#        )
-#    )
-
-label monika_hair_ponytail:
-    m 1eua "Sure thing!"
-    m "Just give me a second."
-    show monika 1dsc
-    pause 1.0
-
-    # this should auto lock/unlock stuff
-    $ monika_chr.reset_hair()
-
-    m 3hub "All done!"
-    m 1eua "If you want me to let my hair down, just ask, okay?"
-
-    return
-
-#init 5 python:
-    # NOTE: this is DEPRECATED
-    # TODO: remove this event after version 0.8.10
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_hair_down",
-#            category=["monika"],
-#            prompt="Can you let your hair down?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None}
-#        )
-#    )
-
-label monika_hair_down:
-    m 1eua "Sure thing, [player]."
-    m "Just give me a moment."
-    show monika 1dsc
-    pause 1.0
-
-    $ monika_chr.change_hair(mas_hair_down)
-
-    m 3hub "And it's down!"
-    m 1eua "If you want my hair in a ponytail again, just ask away, [player]~"
-
-    return
 
 init 5 python:
     addEvent(
@@ -3407,7 +3598,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None}
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_hair_select:
@@ -3418,6 +3610,9 @@ label monika_hair_select:
             "Which hairstyle would you like me to wear?"
         )
         sel_map = {}
+
+        # process hair
+        store.mas_selspr.set_compat_hair(sorted_hair, monika_chr.clothes)
 
     # initial dialogue
     m 1hua "Sure!"
@@ -3447,10 +3642,14 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("ribbon", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL, None)
         ),
         restartBlacklist=True
     )
+
+    #NOTE: This does not default persistent._seen_ever as True to give the users an idea
+    #That these are things which show up under the appearance tab
 
 label monika_ribbon_select:
     python:
@@ -3468,7 +3667,7 @@ label monika_ribbon_select:
                 )
             ):
                 use_acs.pop(index)
-        
+
         # make sure ot use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
             "ribbon",
@@ -3511,31 +3710,12 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_hairclip_select:
-    python:
-        use_acs = store.mas_selspr.filter_acs(True, group="left-hair-clip")
-
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which hairclip would you like me to wear?"
-        )
-        sel_map = {}
-
-    m 1eua "Sure [player]!"
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
-
-    if not _return:
-        m 1eka "Oh, alright."
-
-    # set the appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type('left-hair-clip'):
-        $ store.mas_selspr.set_prompt("left-hair-clip", "change")
-    else:
-        $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
-
+    call mas_selector_generic_sidebar_select_acs("left-hair-clip", idle_dlg="Which hairclip would you like me to wear?")
     return
 
 
@@ -3554,7 +3734,8 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_hairflower_select:
@@ -3603,34 +3784,39 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_choker_select:
-    python:
-        use_acs = store.mas_selspr.filter_acs(True, group="choker")
-
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which choker would you like me to wear?"
-        )
-        sel_map = {}
-
-    m 6eua "Sure [player]!"
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
-
-    if not _return:
-        m 1eka "Oh, alright."
-
-    # set the appropriate prompt and dialogue
-    if monika_chr.get_acs_of_type("choker"):
-        $ store.mas_selspr.set_prompt("choker", "change")
-    else:
-        $ store.mas_selspr.set_prompt("choker", "wear")
-
+    call mas_selector_generic_sidebar_select_acs("choker", idle_exp="monika 6eua")
     return
 
 #### End choker
+
+#### hat
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hat_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("hat", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True,
+        markSeen=True
+    )
+
+label monika_hat_select:
+    call mas_selector_generic_sidebar_select_acs("hat")
+    return
+
+#### end hat
 
 
 ############### END SELECTOR TOPICS ###########################################

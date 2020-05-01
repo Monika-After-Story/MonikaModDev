@@ -1,6 +1,6 @@
 {
     "__author": "Orcaramelo & moniking",
-    "version": 2,
+    "version": 3,
     "type": 2,
     "name": "orcaramelo_sweater_shoulderless",
     "img_sit": "orcaramelo_sweater_shoulderless",
@@ -15,6 +15,9 @@
         "p7": true
     },
     "stay_on_start": true,
+    "ex_props": {
+        "bare-right-shoulder": true
+    },
     "select_info": {
         "display_name": "Sweater (Shoulderless)",
         "thumb": "orcaramelo_sweater_shoulderless",
@@ -25,5 +28,43 @@
             "It's very warm..."
         ]
     },
-    "giftname": "shoulderlesssweater"
+    "giftname": "shoulderlesssweater",
+    "pose_arms": {
+        "crossed": {
+            "tag": "crossed",
+            "layers": "5^10"
+        },
+        "left-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "left-rest": {
+            "tag": "rest",
+            "layers": "10"
+        },
+        "right-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
+        },
+        "right-restpoint": {
+            "tag": "restpoint",
+            "layers": "10"
+        },
+        "steepling": {
+            "tag": "steepling",
+            "layers": "10"
+        },
+        "def|left-def": {
+            "tag": "def",
+            "layers": "10"
+        },
+        "def|right-def": {
+            "tag": "def",
+            "layers": "5^10"
+        }
+    }
 }

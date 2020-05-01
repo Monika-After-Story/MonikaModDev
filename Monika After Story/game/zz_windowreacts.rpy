@@ -277,6 +277,11 @@ init python:
             title: notification title
             body: notification body
         """
+        # Single quotes have to be escaped.
+        # Since single quoting in POSIX shell doesn't allow escaping,
+        # we have to close the quotation, insert a literal single quote and reopen the quotation.
+        body  = body.replace("'", "'\\''")
+        title = title.replace("'", "'\\''") # better safe than sorry
         os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
@@ -541,23 +546,28 @@ init 5 python:
     )
 
 label mas_wrs_twitter:
-    $ temp_line = renpy.substitute("I love you, [player].")
-    $ temp_len = len(temp_line)
+    python:
+        temp_line = renpy.substitute("I love you, [player].")
+        temp_len = len(temp_line)
 
-    $ wrs_success = display_notif(
-        m_name,
-        [
-            "See anything you want to share with me, [player]?",
-            "Anything interesting to share, [player]?",
-            "280 characters? I only need [temp_len]...\n[temp_line]"
-        ],
-        'Window Reactions'
-    )
+        # quip: is_ily
+        ily_quips_map = {
+            "See anything you want to share with me, [player]?": False,
+            "Anything interesting to share, [player]?": False,
+            "280 characters? I only need [temp_len]...\n[temp_line]": True
+        }
+        quip = renpy.random.choice(ily_quips_map.keys())
+
+        wrs_success = display_notif(
+            m_name,
+            [quip],
+            'Window Reactions'
+        )
 
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
-    return
+    return "love" if ily_quips_map[quip] else None
 
 init 5 python:
     addEvent(
@@ -687,4 +697,116 @@ label mas_wrs_reddit:
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_reddit')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_mal",
+            category=['myanimelist'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_mal:
+    python:
+        myanimelist_quips = [
+            "Maybe we could watch anime together someday, [player]~",
+        ]
+
+        if persistent._mas_pm_watch_mangime is None:
+            myanimelist_quips.append("So you like anime and manga, [player]?")
+
+        wrs_success = display_notif(m_name, myanimelist_quips, 'Window Reactions')
+
+        #Unlock again if we failed
+        if not wrs_success:
+            mas_unlockFailedWRS('mas_wrs_mal')
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_deviantart",
+            category=['deviantart'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_deviantart:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "There's so much talent here!",
+            "I'd love to learn how to draw someday...",
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_deviantart')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_netflix",
+            category=['netflix'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_netflix:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "I'd love to watch a romance movie with you [player]!",
+            "What are we watching today, [player]?",
+            "What are you going to watch [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_netflix')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_twitch",
+            category=['-twitch'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_twitch:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Watching a stream, [player]?",
+            "Do you mind if I watch with you?",
+            "What are we watching today, [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_twitch')
     return

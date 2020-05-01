@@ -129,75 +129,6 @@ init -1 python:
                 ysize=self.FRAME_HEIGHT
             )
 
-            # button backs
-            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-
-            # ok button text
-            button_text_ok_idle = Text(
-                "Ok",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_ok_hover = Text(
-                "Ok",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # cancel button text
-            button_text_cancel_idle = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_cancel_hover = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # update button text
-            button_text_update_idle = Text(
-                "Update",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_update_hover = Text(
-                "Update",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # retry button text
-            button_text_retry_idle = Text(
-                "Retry",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_retry_hover = Text(
-                "Retry",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
             # calculate positions
             # top left x, y
             self._confirm_x = int((self.VIEW_WIDTH - self.FRAME_WIDTH) / 2)
@@ -229,13 +160,9 @@ init -1 python:
             button_left_y = button_center_y
 
             # create the buttons
-            self._button_ok = MASButtonDisplayable(
-                button_text_ok_idle,
-                button_text_ok_hover,
-                button_text_ok_idle,
-                button_idle,
-                button_hover,
-                button_idle,
+            self._button_ok = MASButtonDisplayable.create_stb(
+                _("Ok"),
+                False,
                 button_center_x,
                 button_center_y,
                 self.BUTTON_WIDTH,
@@ -244,13 +171,9 @@ init -1 python:
                 activate_sound=gui.activate_sound
             )
 
-            self._button_cancel = MASButtonDisplayable(
-                button_text_cancel_idle,
-                button_text_cancel_hover,
-                button_text_cancel_idle,
-                button_idle,
-                button_hover,
-                button_idle,
+            self._button_cancel = MASButtonDisplayable.create_stb(
+                _("Cancel"),
+                False,
                 button_left_x + self.BUTTON_WIDTH + self.BUTTON_SPACING,
                 button_left_y,
                 self.BUTTON_WIDTH,
@@ -259,13 +182,9 @@ init -1 python:
                 activate_sound=gui.activate_sound
             )
 
-            self._button_update = MASButtonDisplayable(
-                button_text_update_idle,
-                button_text_update_hover,
-                button_text_update_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_update = MASButtonDisplayable.create_stb(
+                _("Update"),
+                True,
                 button_left_x,
                 button_left_y,
                 self.BUTTON_WIDTH,
@@ -274,13 +193,9 @@ init -1 python:
                 activate_sound=gui.activate_sound
             )
 
-            self._button_retry = MASButtonDisplayable(
-                button_text_retry_idle,
-                button_text_retry_hover,
-                button_text_retry_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_retry = MASButtonDisplayable.create_stb(
+                _("Retry"),
+                True,
                 button_left_x,
                 button_left_y,
                 self.BUTTON_WIDTH,
@@ -291,42 +206,42 @@ init -1 python:
 
             # confirm text
             self._text_checking = Text(
-                "Checking for updates...",
+                _("Checking for updates..."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_update = Text(
-                "New update available!",
+                _("New update available!"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_noupdate = Text(
-                "No update found.",
+                _("No update found."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_timeout = Text(
-                "Connection timed out.",
+                _("Connection timed out."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badresponse = Text(
-                "Server returned bad response.",
+                _("Server returned bad response."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badjson = Text(
-                "Server returned bad JSON.",
+                _("Server returned bad JSON."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
@@ -550,7 +465,7 @@ init -1 python:
 
             else:
                 # just replcae dots with underscores, prefix v
-                parsed_version = "v" + latest_version.replace(".", "_") 
+                parsed_version = "v" + latest_version.replace(".", "_")
                 lv_is_old = parsed_version in store.updates.version_updates
 
             # okay we have a latest version, compare to the current version
@@ -888,10 +803,10 @@ init -894 python:
 
 label mas_updater_steam_issue:
     show monika at t11
-    m 1eub "[player]!{w} I see you're using Steam."
+    m 1eub "[player]!{w=0.2} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
+    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w=0.2} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 
@@ -926,6 +841,8 @@ label mas_updater_rpy_issue:
             $ mas_rmallEVL("monika_rpy_files")
 
             m 2dsc "Now let me just run the updater.{w=0.5}.{w=0.5}.{nw}"
+            window hide
+
             #Run the updater
             jump update_now
 
