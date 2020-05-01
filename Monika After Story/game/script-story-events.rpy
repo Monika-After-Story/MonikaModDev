@@ -368,6 +368,8 @@ init 3 python:
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
+        "^(step(-|\\s)*)?bro(ther|tha(h)?)?$",
+        "^(step(-|\\s)*)?sis(ter|ta(h)?)?$",
         "^dad$",
         "^loli$",
         "^mama$",
@@ -409,8 +411,6 @@ init 3 python:
         "pillow",
         "sex",
         "spank",
-        "(step(-|\\s)*)?bro(ther)?$",
-        "(step(-|\\s)*)?sis(ter)?$",
         "superman",
         "superwoman",
         "thicc",
