@@ -261,7 +261,6 @@ init 3 python:
         "milf",
         "monster",
         "moron",
-        "moron",
         "murder",
         "narcissist",
         "nasty",
