@@ -77,11 +77,6 @@ init 999 python:
             def calcAvgs(self):
                 """
                 Calculates averages
-<<<<<<< HEAD
-
-=======
-
->>>>>>> upstream/content
                 Returns tuple:
                     [0]: show count avg
                     [1]: pool show count avg
@@ -106,11 +101,6 @@ init 999 python:
                 elif self.most_seen_ev.shown_count < ev.shown_count:
                     self.most_seen_ev = ev
 
-<<<<<<< HEAD
-
-=======
-
->>>>>>> upstream/content
             def inDB(self, ev):
                 """
                 returns true if the given ev is in this db
@@ -148,11 +138,6 @@ init 999 python:
 
                 return _seen
 
-<<<<<<< HEAD
-
-=======
-
->>>>>>> upstream/content
             def __str__(self):
                 """
                 to String
