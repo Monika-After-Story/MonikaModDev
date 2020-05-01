@@ -14267,3 +14267,33 @@ label monika_hot_springs:
     m 5dkbfb "Ahhh,{w=0.2} {nw}"
     extend 5dkbfa "just the thought of it makes me feel all tingly, [player]~"
     return
+    
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_languagenuances',
+            prompt="Language nuances",
+            category=['literature', 'trivia'],
+            random=True
+        )
+    )
+
+label monika_languagenuances:
+    m 1eua "Hey [player], have you ever tried reading through a dictionary?"
+    m 3eua "Not necessarily because there was some word or expression you didn't know the meaning of, but just... {w=0.2}because?"
+    m 3lksdlb "Doesn't exactly sound like the most engaging of pastimes, I know."
+    m 3esb "But it can certainly be an interesting, even rewarding, way to spend some free time. Especially if it's a dictionary of a language you're still learning."
+    m 1esb "Many words have multiple meanings and, aside from the obvious benefits, knowing those can really help you see the finer points of the language."
+    m 1esa "Understanding these subleties can save you a lot of embarassment when you actually speak to someone."
+    m 3esb "Take English for example."
+    m 1esd "'Good morning', 'Good afternoon', 'Good evening'{w=0.2} - all of these are normal greetings you hear every day."
+    m 1tsb "Following this pattern, 'Good day' should be just fine as well, right? It works in so many other languages after all."
+    m 1euc "While it used to be just as acceptable, as you can see in some older works, that's just not the case anymore."
+    m 3euc "In modern English, saying 'Good day' to someone carries a note of dismissal, or even annoyance. It can be seen as declaring the conversation over."
+    m 1eud "If you're lucky, your partner might think you're old-fashioned, or just being silly on purpose."
+    m 1euc "If not, you might offend them without even noticing."
+    m 3eub "It really is fascinating how even such an innocent looking phrase can be loaded with layers of hidden meaning."
+    m 1tsb "So good day to you, [player]. Ahaha~"
+    return
