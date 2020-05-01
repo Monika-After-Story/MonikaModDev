@@ -2734,7 +2734,7 @@ style chibika_note_text:
 screen submods():
     tag menu
 
-    use game_menu(("Submods"), scroll="viewport"):
+    use game_menu(("Submods"), scroll=None):
 
         default tooltip = Tooltip("")
 
@@ -2766,8 +2766,6 @@ screen submods():
                             xmaximum 1000
                             text submod.description
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
-
-        vbar value YScrollValue("scrollme")
 
     text tooltip.value:
         xalign 0 yalign 1.0
