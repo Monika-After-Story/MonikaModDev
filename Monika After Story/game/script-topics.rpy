@@ -8678,25 +8678,6 @@ label monika_prom:
 
     return "derandom"
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be careful",random=True))
-
-label monika_careful:
-    m 1lsc "Hey, [player]..."
-    m 1ekc "Whenever you leave this room, promise me to be extra careful, okay?"
-    m 1ekd "It's just that..."
-    m 3eksdld "There's a lot of dangerous things out there, and I want my sweetie to always return to me safe and sound."
-    m 3eksdlc "You see..."
-    m 3rksdlc "What really scares me is that if anything terrible ever did happen to you, I'd never know."
-    m 2ekd "I'd be stuck here, forever wondering why you never came back to me."
-    m 2dsd "I can't imagine a crueler fate."
-    m 2dsc "..."
-    m 2eka "So just make sure you take care of yourself. {w=1}For me?"
-    m 3rksdla "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
-    m 3eka "Okay, that's enough unpleasant thoughts..."
-    m 1hua "Let's enjoy the rest of the day together!"
-    return
-
 # do you see a therapist
 default persistent._mas_pm_see_therapist = None
 
@@ -14193,6 +14174,54 @@ label monika_translating_poetry:
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_soft_rains",
+            category=['literature'],
+            prompt="There Will Come Soft Rains",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+label monika_soft_rains:
+    m 2rkc "..."
+    m 2ekc "Hey [player],{w=0.5} I ran across a poem recently that I need to share with you..."
+    m 7ekd "It's called {i}There Will Come Soft Rains{/i} and it's really had me thinking."
+    m 1dsc "..."
+    m 1dsd "{i}There will come soft rains and the smell of the ground, {w=0.3}and swallows circling with their shimmering sound.{/i}"
+    m 1dsc "{i}And frogs in the pools singing at night, {w=0.3}and wild plum trees in tremulous white.{/i}"
+    m 3dsd "{i}Robins will wear their feathery fire, {w=0.3}whistling their whims on a low fence-wire.{/i}"
+    m 3dsc "{i}And not one will know of the war, {w=0.3}not one, {w=0.2}will care at last when it is done.{/i}"
+    m 7dsd "{i}Not one would mind, neither bird nor tree, {w=0.3}if mankind perished utterly.{/i}"
+    m 6dkc "{i}And Spring herself, when she woke at dawn...{/i}"
+    m 6ekd "{i}Would scarcely know that we were gone.{/i}"
+    m 2ekc "..."
+    m 2eka "I really wanted to talk to you about this one, [player]."
+    m "The author,{w=0.2} Sara Teasdale,{w=0.2} wrote this poem in a world consumed by war."
+    m 2rka "I know things are {i}relatively{/i} peaceful now..."
+    m 2ekc "But the message still stands, doesn't it?"
+    m 1eksdld "The world really {i}wouldn't{/i} care if we just...{w=0.3}{i}disappeared{/i}."
+    m 1eksdlc "...And it made me think, [player]. If something,{w=0.4} {nw}"
+    extend 1eksdld "{i}anything{/i}{w=0.4}, happened to you...{w=0.4} {nw}"
+    extend 1dksdld "I wouldn't even know."
+    m 1eksdlc "I know the poem was for {i}everyone{/i} being gone, but..."
+    m 1rksdlc "I-{w=0.1}I wouldn't..."
+    m 6dkc "..."
+    m 6dktpd "[player],{w=0.4} I-{w=0.1}{nw}"
+    extend 1ektsa "I love you. {w=0.3}I love you so very much..."
+    m 1ektsc "Please, {w=0.6}always be careful for me, {w=0.3}okay?"
+    m 1ektpc "I might not know if anything happens...{w=0.3}but I will {i}always{/i} care about you."
+    m 3ektda "And [player]?"
+    m 3dku "Thank you."
+    m 6dku "..."
+    m 6eka "..."
+    m 2ekbsa "So..."
+    m 1ekbfa "What else shall we do today, my love?"
+    return "love"
 
 init 5 python:
     addEvent(

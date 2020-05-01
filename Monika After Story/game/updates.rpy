@@ -375,6 +375,10 @@ label v0_3_1(version=version): # 0.3.1
 #0.11.1
 label v0_11_1(version="v0_11_1"):
     python:
+        #Remove this topic
+        mas_eraseTopic("monika_careful")
+
+        #We no longer need this var
         safeDel("game_unlocks")
 
         chess_unlock_ev = mas_getEV("mas_unlock_chess")
