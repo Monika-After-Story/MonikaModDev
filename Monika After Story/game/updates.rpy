@@ -451,6 +451,18 @@ label v0_11_1(version="v0_11_1"):
         if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
             persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
 
+        #Prep the grandfathering of Moni nickname
+        #If the current name is considered awkward now,
+        #we should keep that stored so the user can always come back to it
+        if persistent._mas_monika_nickname != "Monika" and mas_awk_name_comp.search(persistent._mas_monika_nickname):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        #Make this a pm var
+        persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+
+        #Delete some excess stuff
+        safeDel("_mas_called_moni_a_bad_name")
+
         #Penname should default to None
         if not persistent._mas_penname:
             persistent._mas_penname = None
