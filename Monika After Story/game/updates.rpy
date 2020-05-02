@@ -450,6 +450,11 @@ label v0_11_1(version="v0_11_1"):
 
         if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
             persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        #Penname should default to None
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
     return
 
 #0.11.0

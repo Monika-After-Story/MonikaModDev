@@ -1363,7 +1363,8 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    if persistent._mas_affection["affection"] >= 30:
+    #NOTE: Taking directly from persist here because aff funcs don't exist at init 5
+    if persistent._mas_affection.get("affection", 0) >= 400:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
@@ -3548,10 +3549,10 @@ label greeting_back_from_game:
                     m 1hua "That's nice."
                     m 1eua "I'm glad you enjoyed yourself."
                     m 2eka "I really wish I could join you in your other games sometimes."
-                    m 3eub "Wouldn't it be great to have our own little adventures anytime we wanted?"
+                    m 3eub "Wouldn't it be great to have our own little adventures any time we wanted?"
                     m 1hub "I'm sure we'd have a lot of fun together in one of your games."
                     m 3eka "But while I can't join you, I guess you'll just have to keep me company."
-                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5} Do you, [player]?"
+                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5}do you, [player]?"
 
                 "No.":
                     m 2ekc "Aw, I'm sorry to hear that."
