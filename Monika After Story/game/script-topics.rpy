@@ -14250,7 +14250,7 @@ label monika_hot_springs:
     m 3hksdlb "...So don't just go jumping into some random pool of boiling water, ahaha!"
     m 1eua "Anyway...{w=0.2}I'd like to try an open-air bath in particular.{w=0.3} I hear they really give a unique experience."
     m 3rubssdla "Though it might feel a little weird relaxing in a bath with that many people all around you...{w=0.3} {nw}"
-    extend 2hkblsdlb "Doesn't that sound kinda embarassing?"
+    extend 2hkblsdlb "Doesn't that sound kinda embarrassing?"
     m 2rkbssdlu "..."
     m 7rkbfsdlb "...Especially since some places don't allow you to wear any sort of cover, either!"
     m 1tubfu "...Although, I wouldn't mind that so much if it was just with you."
