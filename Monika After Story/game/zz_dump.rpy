@@ -78,7 +78,7 @@ init 999 python:
             def calcAvgs(self):
                 """
                 Calculates averages
-                
+
                 Returns tuple:
                     [0]: show count avg
                     [1]: pool show count avg
@@ -103,7 +103,7 @@ init 999 python:
                 elif self.most_seen_ev.shown_count < ev.shown_count:
                     self.most_seen_ev = ev
 
-        
+
             def inDB(self, ev):
                 """
                 returns true if the given ev is in this db
@@ -141,7 +141,7 @@ init 999 python:
 
                 return _seen
 
-        
+
             def __str__(self):
                 """
                 to String
@@ -231,7 +231,7 @@ init 999 python:
         """
         This is a function called on startup and performs data dumps.
 
-        Please add your data dump to a different file than dumps.log if its 
+        Please add your data dump to a different file than dumps.log if its
         a large dump.
 
         Thank you.
@@ -283,7 +283,7 @@ init 999 python:
         outstr = (
             "First session: {0}\n" +
             "Total sessions: {1}\n" +
-            "Total playtime: {2}\n" + 
+            "Total playtime: {2}\n" +
             "Avg playtime per session: {3}\n" +
             "Last session start: {4}\n" +
             "Last session end: {5}\n\n"
@@ -291,7 +291,7 @@ init 999 python:
 
         return outstr.format(*output)
 
-    
+
     def mas_varDataDump():
         """
         Dumps other kinds of data.
@@ -336,4 +336,3 @@ init 999 python:
 
     if persistent._mas_unstable_mode or mas_dataDumpFlag():
         mas_unstableDataDump()
-

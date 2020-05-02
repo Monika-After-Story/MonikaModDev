@@ -36,7 +36,7 @@ init -10 python:
         prop_not_found = True
         while prop_not_found:
             # pull from styles dict
-            # NOTE: directly accessing to avoid exceptions 
+            # NOTE: directly accessing to avoid exceptions
             style_obj = renpy.style.styles.get(style_name, None)
             if style_obj is None:
                 return None
@@ -61,7 +61,7 @@ init -10 python:
 
     def mas_prefixFrame(frm, prefix):
         """
-        Generates a frame object with the given prefix substitued into the 
+        Generates a frame object with the given prefix substitued into the
         image. This effectively makes a copy of the given Frame object.
 
         NOTE: cannot use _duplicate as it does shallow copy for some reason.
@@ -131,7 +131,7 @@ transform mas_chdropin(x=640, y=405, travel_time=3.00):
     easein travel_time ypos y
 
 transform mas_chflip(dir):
-    # -1 to face right. 
+    # -1 to face right.
     # 1 to face left
     xzoom dir
 
@@ -154,6 +154,3 @@ transform mas_chmove(x, y, travel_time=1.0):
 transform mas_chriseup(x=300, y=405, travel_time=1.00):
     ypos 800 xcenter x
     easein travel_time ypos y
-
-
-
