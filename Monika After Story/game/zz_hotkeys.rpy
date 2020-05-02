@@ -219,7 +219,7 @@ init python:
         if not _windows_hidden:
             prev_disable_animations = persistent._mas_disable_animations
             renpy.call_in_new_context(
-                "_game_menu", 
+                "_game_menu",
                 _game_menu_screen=screen_name
             )
 
@@ -283,4 +283,3 @@ init python:
         config.underlay.append(renpy.Keymap(mas_hide_windows=_mas_hide_windows))
         config.underlay.append(renpy.Keymap(derandom_topic=_mas_hk_derandom_topic))
         config.underlay.append(renpy.Keymap(bookmark_topic=_mas_hk_bookmark_topic))
-
