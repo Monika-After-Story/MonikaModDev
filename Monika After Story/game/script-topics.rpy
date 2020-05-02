@@ -14239,4 +14239,5 @@ label monika_thepassage:
             m 1rka "Aww..."
             m 1hub "Well,{w=0.5}{nw}"
             m 3hub "Well,{fast} if you ever get the time,{w=0.5} make sure you read it, okay?"
+            m 5tuu "I can't wait to read it with you, [player]."
     return
