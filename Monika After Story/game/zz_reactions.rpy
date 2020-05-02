@@ -1518,7 +1518,7 @@ label mas_reaction_hotchocolate:
     else:
         python:
             mas_giftCapGainAff(3)
-            those = "these" if not morning_flag and mas_isWinter() else "those"
+            those = "these" if mas_current_background.isFltNight() and mas_isWinter() else "those"
 
         m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
 
@@ -1775,7 +1775,7 @@ label mas_reaction_candy:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candy")
     if times_candy_given == 0:
         $ mas_o31CapGainAff(7)
-        m 1wua "Oh...{w=1}what's this?"
+        m 1wua "Oh...{w=0.5}what's this?"
         m 1sua "You got me candy, [player], yay!"
         m 1eka "That's so {i}sweet{/i}..."
         m 1hub "Ahaha!"
@@ -1848,7 +1848,7 @@ label mas_reaction_candycorn:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candycorn")
     if times_candy_given == 0:
         $ mas_o31CapGainAff(3)
-        m 1wua "Oh...{w=1} What's this?"
+        m 1wua "Oh...{w=0.5}what's this?"
         m 1eka "Aww did you get me candy, [player]?"
         m 1hua "Yay!"
         m 3eub "Let's see what you got for me..."

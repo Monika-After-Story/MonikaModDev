@@ -372,6 +372,103 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.1
+label v0_11_1(version="v0_11_1"):
+    python:
+        #Remove this topic
+        mas_eraseTopic("monika_careful")
+
+        #We no longer need this var
+        safeDel("game_unlocks")
+
+        chess_unlock_ev = mas_getEV("mas_unlock_chess")
+        if chess_unlock_ev and chess_unlock_ev.action:
+            chess_unlock_ev.conditional = (
+                "store.mas_xp.level() >= 8 "
+                "or store.mas_games._total_games_played() > 99"
+            )
+
+        hangman_unlock_ev = mas_getEV("mas_unlock_hangman")
+        if hangman_unlock_ev and hangman_unlock_ev.action:
+            hangman_unlock_ev.conditional = (
+                "store.mas_xp.level() >= 4 "
+                "or store.mas_games._total_games_played() > 49"
+            )
+
+        piano_unlock_ev = mas_getEV("mas_unlock_piano")
+        if piano_unlock_ev and piano_unlock_ev.action:
+            piano_unlock_ev.conditional="store.mas_xp.level() >= 12"
+
+        #Patch up existing users who were around when chess didn't have an actual formal unlock
+        if (
+            persistent._mas_chess_stats["wins"]
+            or persistent._mas_chess_stats["losses"]
+            or persistent._mas_chess_stats["draws"]
+        ):
+            mas_unlockGame("chess")
+            mas_stripEVL("mas_unlock_chess", list_pop=True)
+            persistent._seen_ever["mas_unlock_chess"] = True
+            chess_unlock_ev = mas_getEV("mas_unlock_chess")
+            if chess_unlock_ev:
+                chess_unlock_ev.shown_count = 1
+
+        # add missing xp for new users
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only care about users who basically started with 0.11.0 + week
+            # ago
+
+            # calc avg hr per session
+            ahs = (
+                store.mas_utils.td2hr(mas_getTotalPlaytime())
+                / float(mas_getTotalSessions())
+            )
+
+            # only care about users with under 2 hour session time avg
+            if ahs < 2:
+                lvls_gained, xptnl = store.mas_xp._grant_on_pt()
+
+                # only give users levels if they didn't earn what we
+                # expected. If they have more levels gained then we expected,
+                # we won't change anything.
+                if persistent._mas_xp_lvl < lvls_gained or lvls_gained == 0:
+
+                    # give them the difference in levels as pool unlocks
+                    persistent._mas_pool_unlocks += (
+                        lvls_gained - persistent._mas_xp_lvl
+                    )
+
+                    # and set with averages
+                    persistent._mas_xp_tnl = xptnl
+                    persistent._mas_xp_lvl = lvls_gained
+
+        credits_song_ev = mas_getEV('monika_credits_song')
+        if credits_song_ev and credits_song_ev.action:
+            credits_song_ev.conditional = (
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            )
+
+        if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
+            persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        #Prep the grandfathering of Moni nickname
+        #If the current name is considered awkward now,
+        #we should keep that stored so the user can always come back to it
+        if persistent._mas_monika_nickname != "Monika" and mas_awk_name_comp.search(persistent._mas_monika_nickname):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        #Make this a pm var
+        persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+
+        #Delete some excess stuff
+        safeDel("_mas_called_moni_a_bad_name")
+
+        #Penname should default to None
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
+    return
+
 #0.11.0
 label v0_11_0(version="v0_11_0"):
     python:
@@ -486,14 +583,14 @@ label v0_11_0(version="v0_11_0"):
 
             #If we've seen this event before, then we shouldn't allow its conditions to be true again
             #So we'll remove its conditional and action
-            if seen_event(new_evl) or mas_isGameUnlocked(game_evl_map.get(new_evl)):
+            if seen_event(new_evl) or mas_isGameUnlocked(game_evl_map.get(new_evl, "")):
                 mas_stripEVL(new_evl, list_pop=True)
 
                 #Fix the persistent data for the games
                 persistent._seen_ever[new_evl] = True
 
                 #Adjust the shown count for the game
-                if mas_isGameUnlocked(game_evl_map.get(new_evl)):
+                if mas_isGameUnlocked(game_evl_map.get(new_evl, "")):
                     mas_getEV(new_evl).shown_count = 1
 
             #In the case of the intro topics, being gender and preferredname
@@ -550,7 +647,7 @@ label v0_11_0(version="v0_11_0"):
             persistent._mas_pool_unlocks = lvls_gained
 
             persistent.playerxp = None
-            
+
         #Fix for unstable users
         mas_unlockEVL("monika_good_tod", "EVE")
 
@@ -1195,7 +1292,7 @@ label v0_10_0(version="v0_10_0"):
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
-                mhs_922 is not None 
+                mhs_922 is not None
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
@@ -1238,7 +1335,7 @@ label v0_10_0(version="v0_10_0"):
         clothes_sel_ev = mas_getEV("monika_clothes_select")
         if clothes_sel_ev is not None:
             clothes_sel_ev.unlocked = True
-            
+
     return
 
 # 0.9.5
@@ -1274,7 +1371,7 @@ label v0_9_4(version="v0_9_4"):
         if outfit_ev is not None and renpy.seen_label(outfit_ev.eventlabel):
             outfit_ev.unlocked = True
 
-    return 
+    return
 
 # 0.9.2
 label v0_9_2(version="v0_9_2"):
@@ -2152,7 +2249,7 @@ label v0_7_0(version="v0_7_0"):
 
         #Unlock chess if they've already played it
         if seen_event('game_chess'):
-            persistent.game_unlocks['chess']=True
+            mas_unlockGame("chess")
 
         #Unlock the name change topic if the name change topic has been seen
         if seen_event('preferredname'):

@@ -6,7 +6,7 @@ init -750 python in mas_threading:
     class MASAsyncWrapper(object):
         """
         Class designed for calling a function asynchronously and returning
-        the result. 
+        the result.
 
         This uses threading.
 
@@ -40,9 +40,9 @@ init -750 python in mas_threading:
                 False means thread is still running
         """
 
-        def __init__(self, 
-                async_fun, 
-                async_args=[], 
+        def __init__(self,
+                async_fun,
+                async_args=[],
                 async_kwargs={}
             ):
             """
@@ -107,11 +107,11 @@ init -750 python in mas_threading:
 
         def get(self):
             """
-            Retrieves value set by thread and resets everything so we can 
+            Retrieves value set by thread and resets everything so we can
             spawn a new thread.
 
             RETURNS:
-                value returned from async call. 
+                value returned from async call.
                 or None if the async call is still returning. (or if your
                     async call returned None)
             """
@@ -167,6 +167,3 @@ init -750 python in mas_threading:
             self._th_result = None
             self._th_done = True
             self.ready = True
-
-
-

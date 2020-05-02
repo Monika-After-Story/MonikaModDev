@@ -602,5 +602,158 @@ label mas_fun_fact_getting_older:
         import time
         time.sleep(5)
 
-    m 1hubfa "Aha, I thought so!"
+    m 1hubfa "Ahaha, I thought so!"
+
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_dancing_plague",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_dancing_plague:
+    m 3esa "Oh, this one's pretty weird..."
+    m 1eua "Apparently, Europe has been afflicted by outbreaks of a 'dancing plague' in the past."
+    m 3wud "People, {w=0.2}sometimes hundreds at once, {w=0.2}would involuntarily dance for days at a time, with some even dying from exhaustion!"
+    m 3eksdla "They tried to treat it by having people play music alongside the dancers, but you can imagine that didn't work out so well."
+    m 1euc "To this day, they're still unsure exactly what caused it."
+    m 3rka "The whole thing seems kind of unbelievable to me...{w=0.2}{nw}"
+    extend 3eud "but it has been independently documented and observed by multiple sources across centuries..."
+    m 3hksdlb "Reality really is stranger than fiction, I guess!"
+    m 1eksdlc "Gosh, I can't imagine dancing for days on end."
+    m 1rsc "Though...{w=0.3}{nw}"
+    extend 1eubla "I guess I wouldn't mind if it was with you."
+    m 3tsu "...Just for a bit, ehehe~"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_pando_forest",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_pando_forest:
+    m 1esa "Supposedly, in the state of Utah, there's a forest that's actually made up of a single tree."
+    m 3eua "It's called the Pando forest, and for all of its 43 hectares, its trunks are connected by a single root system."
+    m 3eub "Not to mention, each of its thousands of trunks are essentially clones of each other."
+    m 1ruc "'A single organism that became an army of clones on its own, all connected to the same hivemind.'"
+    m 1eua "I think it could make a good science fiction or horror short-story, [player]. What do you think?"
+    m 3eub "Anyway,{w=0.2} I feel like this really changes the meaning of the phrase 'missing the forest for the trees'{w=0.1}{nw} "
+    extend 3hub "ahaha!"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_immortal_jellyfish",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_immortal_jellyfish:
+    m 3eub "Here's one!"
+    m 1eua "Apparently, immortality has been achieved by one species of jellyfish."
+    m 3eua "The aptly named immortal jellyfish has the ability to return to its polyp state once it has reproduced."
+    m 1eub "...And it can keep doing this forever!{w=0.3} {nw}"
+    extend 1rksdla "Unless of course it's eaten or infected by a disease."
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_arrhichion",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_arrhichion:
+    m 3eua "Okay...{w=0.2}here's a historical one."
+    m 1esa "An ancient Greek athlete was able to win his fighting match even though he'd already died."
+    m 1eua "Reigning champion Arrhichion was fighting in a pankration match when his competitor started to choke him out using both his hands and legs."
+    m 3eua "Instead of yielding, Arrhichion still aimed for the win by dislocating his opponent's toe."
+    m 3ekd "His opponent quit from the pain, but when they went to announce Arrhichion as the victor they found him dead from suffocation."
+    m 1rksdlc "Some people are really dedicated to their ideals to victory and to honour.{w=0.2} {nw}"
+    extend 3eka "I think it's admirable, in a way."
+    m 1etc "But I wonder...{w=0.2}if we could ask Arrhichion now if he thought it was worth it, what would he say?"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_antarctica_brain",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_antarctica_brain:
+    #Do some setup for the last line
+    python:
+        has_friends = persistent._mas_pm_has_friends is not None
+
+        has_fam_to_talk = (
+            persistent._mas_pm_have_fam
+            and not persistent._mas_pm_have_fam_mess
+            or (persistent._mas_pm_have_fam_mess and persistent._mas_pm_have_fam_mess_better in ["YES", "MAYBE"])
+        )
+
+        dlg_prefix = "But make sure you keep up with your "
+
+        if has_fam_to_talk and has_friends:
+            dlg_line = dlg_prefix + "family and friends too, okay?"
+
+        elif has_fam_to_talk and not has_friends:
+            dlg_line = dlg_prefix + "family too, okay?"
+
+        elif has_friends and not has_fam_to_talk:
+            dlg_line = dlg_prefix + "friends too, okay?"
+
+        else:
+            dlg_line = "Just be sure you find some people to talk to in your reality too, okay?"
+
+    m 3eud "Apparently, spending a year in Antarctica can shrink one part of your brain by about 7 percent."
+    m 3euc "It looks like it results in reduced memory capacity and spatial thinking ability."
+    m 1ekc "The research indicates that it's due to social isolation, monotony of life, and the environment over there."
+    m 1eud "I think this serves as a cautionary tale for us, [player]."
+    m 3ekd "Even if you don't end up going to Antarctica, your brain can still get pretty messed up if you're isolated all the time, or stay cooped up in one room."
+    m 3eka "I love being with you [player], and I hope we can keep talking like this long into the future. {w=0.2}[dlg_line]"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_cloud_weight",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_cloud_weight:
+    m 3eub "Did you know that the average cloud weighs 500 tonnes?"
+    m 3eua "I have to admit, this one caught me by surprise, more so than some of the other facts."
+    m 1hua "I mean, they just look {i}really{/i} light and fluffy.{w=0.3} {nw}"
+    extend 1eua "It's hard to imagine that something so heavy can just float in the air like that."
+    m 3eub "It kind of reminds me of the classic question...what's heavier, a kilogram of steel or a kilogram of feathers?"
+    m 1tua "You most likely already know the answer to that though, right [player]? Ehehe~"
+    #Call the end
+    call mas_fun_facts_end
     return

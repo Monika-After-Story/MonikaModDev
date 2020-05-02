@@ -124,7 +124,7 @@ init -2 python in mas_anni: #needed to lower this in order to get isAnni() worki
 
     def isAnniSixMonth():
         return isAnni('6m')
-    
+
     def isAnniAny():
         return isAnni('any')
 

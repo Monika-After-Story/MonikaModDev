@@ -302,6 +302,7 @@ init -1 python in mas_affection:
     log = renpy.store.mas_utils.getMASLog("log/aff_log", append=True)
     log_open = log.open()
     log.raw_write = True
+    log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
     # LOG messages
     # [current datetime]: monikatopic | magnitude | prev -> new
@@ -375,6 +376,21 @@ init -1 python in mas_affection:
             change,
             old,
             new
+        ))
+
+
+    def txt_audit(tag, msg):
+        """
+        Generic auditing in the aff log
+
+        IN:
+            tag - a string to label thsi audit
+            msg - message to show
+        """
+        log.write("[{0}]: {1} | {2}\n".format(
+            datetime.datetime.now(),
+            tag,
+            msg
         ))
 
 
@@ -1134,11 +1150,18 @@ init -10 python:
             ):
             if persistent._mas_aff_backup is None:
                 new_value = 0
+                store.mas_affection.txt_audit("LOAD", "No backup found")
+
             else:
                 new_value = persistent._mas_aff_backup
+                store.mas_affection.txt_audit("LOAD", "Loading from backup")
 
         else:
             new_value = persistent._mas_affection["affection"]
+            store.mas_affection.txt_audit("LOAD", "Loading from system")
+
+        # audit the amount loaded
+        store.mas_affection.raw_audit(0, new_value, new_value, "LOAD?")
 
         # if the back is None, set the backup
         if persistent._mas_aff_backup is None:
@@ -1157,6 +1180,10 @@ init -10 python:
             # restore from backup if we have a mismatch
             if new_value != persistent._mas_aff_backup:
                 persistent._mas_aff_mismatches += 1
+                store.mas_affection.txt_audit(
+                    "MISMATCHES",
+                    persistent._mas_aff_mismatches
+                )
                 store.mas_affection.raw_audit(
                     new_value,
                     persistent._mas_aff_backup,
@@ -1166,7 +1193,7 @@ init -10 python:
                 new_value = persistent._mas_aff_backup
 
         # audit this change
-        store.mas_affection.audit(new_value, new_value, ldsv="LOAD")
+        store.mas_affection.audit(new_value, new_value, ldsv="LOAD COMPLETE")
 
         # and set what we got
         persistent._mas_affection["affection"] = new_value
@@ -1683,7 +1710,7 @@ init 20 python:
             reason=None,
             ev_label=None,
             apology_active_expiry=datetime.timedelta(hours=3),
-            apology_overall_expiry=datetime.timedelta(weeks=1)
+            apology_overall_expiry=datetime.timedelta(weeks=1),
         ):
 
         if amount is None:
@@ -1710,11 +1737,19 @@ init 20 python:
             mas_updateAffectionExp()
 
 
-    def mas_setAffection(
-            amount=None
-        ):
-        # NOTE: never use this to add / lower affection unless its to
-        #   strictly set affection to a level for some reason.
+    def mas_setAffection(amount=None, logmsg="SET"):
+        """
+        Sets affection to a value
+
+        NOTE: never use this to add / lower affection unless its to
+          strictly set affection to a level for some reason.
+
+        IN:
+            amount - amount to set affection to
+            logmsg - msg to show in the log
+                (Default: SET)
+        """
+
 #        frozen = (
 #            persistent._mas_affection_badexp_freeze
 #            or persistent._mas_affection_goodexp_freeze
@@ -1723,7 +1758,7 @@ init 20 python:
             amount = _mas_getAffection()
 
         # audit the change (or attempt)
-        affection.audit(amount, amount, False)
+        affection.audit(amount, amount, False, ldsv=logmsg)
 
         # NOTE: we should NEVER freeze set affection.
         # Otherwise, use the value passed in the argument.
@@ -1837,19 +1872,17 @@ init 20 python:
                     0.5 * time_difference.days
                 )
                 if new_aff < affection.AFF_TIME_CAP:
-                    if (
-                            time_difference >= datetime.timedelta(
-                                days=(365 * 10)
-                            )
-                        ):
-                        # 10 years later is an end-game situation
+                    #We can only lose so much here
+                    store.mas_affection.txt_audit("ABS", "capped loss")
+                    mas_setAffection(affection.AFF_TIME_CAP)
+
+                    #If over 10 years, then we need to FF
+                    if time_difference >= datetime.timedelta(days=(365 * 10)):
+                        store.mas_affection.txt_audit("ABS", "10 year diff")
                         mas_loseAffection(200)
 
-                    else:
-                        # otherwise, you cant lose past a certain amount
-                        mas_setAffection(affection.AFF_TIME_CAP)
-
                 else:
+                    store.mas_affection.txt_audit("ABS", "she missed you")
                     mas_setAffection(new_aff)
 
 
@@ -1871,203 +1904,19 @@ init 5 python:
         restartBlacklist=True
     )
 
-default persistent._mas_called_moni_a_bad_name = False
+#Whether or not the player has called Monika a bad name
+default persistent._mas_pm_called_moni_a_bad_name = False
+
+#Whether or not Monika has offered the player a nickname
 default persistent._mas_offered_nickname = False
+
+#The grandfathered nickname we'll use if the player's name is considered awkward
+default persistent._mas_grandfathered_nickname = None
 
 label monika_affection_nickname:
     python:
-        import re
-
-        # NOTE: consider if we should read this from a file instead
-        bad_nickname_list = [
-            "annoying",
-            "anus",
-            "anal",
-            "arrogant",
-            "atrocious",
-            "awful",
-            "ass",
-            "bitch",
-            "blood",
-            "boob",
-            "boring",
-            "bulli",
-            "bully",
-            "bung",
-            "butt",
-            "conceited",
-            "corrupt",
-            "cougar",
-            "crap",
-            "creepy",
-            "criminal",
-            "cruel",
-            "cunt",
-            "cum",
-            "crazy",
-            "cheater",
-            "damn",
-            "demon",
-            "dick",
-            "dirt",
-            "disgusting",
-            "douche",
-            "dumb",
-            "egotistical",
-            "egoist",
-            "evil",
-            "fake",
-            "fetus",
-            "filth",
-            "foul",
-            "fuck",
-            "garbage",
-            "gay",
-            "gey",
-            "gross",
-            "gruesome",
-            "hate",
-            "heartless",
-            "hideous",
-            "^ho$",
-            "^hoe$",
-            "hore",
-            "horrible",
-            "horrid",
-            "hypocrite",
-            "insane",
-            "immoral",
-            "irritating",
-            "jerk",
-            "junk",
-            "kill",
-            "kunt",
-            "lesbo",
-            "lesbian",
-            "lezbo",
-            "lezbian",
-            "liar",
-            "loser",
-            "maniac",
-            "mad",
-            "masochist",
-            "milf",
-            "monster",
-            "moron",
-            "murder",
-            "narcissist",
-            "nasty",
-            "Natsuki",
-            "nefarious",
-            "nigga",
-            "nigger",
-            "nuts",
-            "pad",
-            "pantsu",
-            "panti",
-            "panty",
-            "pedo",
-            "penis",
-            "plaything",
-            "poison",
-            "porn",
-            "pretentious",
-            "psycho",
-            "puppet",
-            "pussy",
-            "rape",
-            "repulsive",
-            "retard",
-            "rump",
-            "rogue",
-            "sadist",
-            "Sayori",
-            "scum",
-            "selfish",
-            "shit",
-            "sick",
-            "suck",
-            "slaughter",
-            "slave",
-            "slut",
-            "sociopath",
-            "soil",
-            "stink",
-            "stupid",
-            "sperm",
-            "semen",
-            "tampon",
-            "teabag",
-            "terrible",
-            "thot",
-            "^tit$",
-            "tits",
-            "titt",
-            "tool",
-            "torment",
-            "torture",
-            "toy",
-            "trap",
-            "trash",
-            "troll",
-            "ugly",
-            "useless",
-            "vain",
-            "vile",
-            "waste",
-            "whore",
-            "wicked",
-            "witch",
-            "worthless",
-            "wrong",
-            "Yuri",
-        ]
-
-        # TODO: potential special responses for:
-        # okasa (OKASA MONIKA)
-        # imouto
-        # nee-chan
-        # maybe more?
-        good_nickname_list = [
-            "angel",
-            "beautiful",
-            "best",
-            "cuddl",
-            "cute",
-            "可愛い",
-            "cutie",
-            "darling",
-            "great"
-            "heart",
-            "honey",
-            "love",
-            "Mon",
-            "Moni",
-            "princess",
-            "sunshine",
-            "sweet",
-            "senpai",
-            "beauty",
-            "queen",
-            "pretty",
-        ]
-
-        # mom list
-        mom_nickname_list = [
-            "mom",
-            "momma",
-            "mother",
-            "momika",
-            "mama",
-            "mommy",
-            "okasan",
-            "okaasan",
-            "kaasan",
-            "kasan",
-        ]
-
-        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
-        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+        #NOTE: Moni nicknames use a slightly altered list to exclude male exclusive titles/nicknames
+        good_monika_nickname_comp = re.compile('|'.join(mas_good_monika_nickname_list), re.IGNORECASE)
 
         # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
@@ -2075,8 +1924,10 @@ label monika_affection_nickname:
     if not persistent._mas_offered_nickname:
         m 1euc "I've been thinking, [player]..."
         m 3eud "You know how there are potentially infinite Monikas right?"
+
         if renpy.seen_label('monika_clones'):
             m 3eua "We did discuss this before after all."
+
         m 3hua "Well, I thought of a solution!"
         m 3eua "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
         m 3eka "And it would mean a lot if you choose one for me~"
@@ -2101,8 +1952,15 @@ label monika_affection_nickname:
             $ done = False
             m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
-                $ inputname = renpy.input(_("So what do you want to call me?"),allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
-                $ lowername = inputname.lower()
+                python:
+                    inputname = renpy.input(
+                        _("So what do you want to call me?"),
+                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+                        length=10
+                    ).strip(' \t\n\r')
+
+                    lowername = inputname.lower()
+
                 # lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
                     m 1euc "Oh, I see."
@@ -2116,7 +1974,7 @@ label monika_affection_nickname:
                     m "I swear you're just so silly sometimes."
                     m 1eka "Try again!"
 
-                elif lowername == player.lower():
+                elif lowername != "monika" and lowername == player.lower():
                     m 1euc "..."
                     m 1lksdlb "That's your name, [player]! Give me my own!"
                     m 1eka "Try again~"
@@ -2126,39 +1984,45 @@ label monika_affection_nickname:
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
 
-                elif lowername in mom_nickname_list:
-                    # mother flow
-                    m 1tku "Oh, you're a momma's [boy], huh?"
-                    $ persistent._mas_monika_nickname = inputname
-                    $ m_name = inputname
+                elif re.findall("mon(-|\\s)+ika", lowername):
+                    m 2tfc "..."
+                    m 2esc "Try again."
+                    show monika 1eua
 
-                    m 2tfu "I'll be your mommy."
-                    $ done = True
+                elif persistent._mas_grandfathered_nickname and lowername == persistent._mas_grandfathered_nickname.lower():
+                    jump .neutral_accept
+
+                elif mas_awk_name_comp.search(inputname):
+                    m 1rkc "..."
+                    m 1rksdld "While I don't hate it, I don't think I'm comfortable with you calling me that."
+                    m 1eka "Can you choose something more appropriate, [player]?"
 
                 else:
-                    if not bad_comp.search(inputname):
+                    if not mas_bad_name_comp.search(inputname) and lowername not in ["yuri", "sayori", "natsuki"]:
                         if inputname == "Monika":
-                            m 1eua "Ehehe~ Back to the classics, I see."
+                            m 3hua "Ehehe, back to the classics I see~"
 
-                        elif good_comp.search(inputname):
+                        elif good_monika_nickname_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
-                            m 1eud "Well, it's not exactly my favorite."
-                            m 1eua "But I don't dislike it either."
-                            m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
+                            label .neutral_accept:
+                                pass
+
+                            m 1duu "[inputname]... That's a pretty nice name."
+                            m 3ekbsa "Thank you [player], you're so sweet~"
 
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
 
-                        m 2eua "Okay, [player]!"
+                        m 1eua "Okay!"
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
 
                         else:
-                            m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
-                            m 1hub "Ehehe~"
+                            m 3hua "From now on, you can call me '[m_name].'"
+                            m 1hua "Ehehe~"
                         $ done = True
 
                     else:
@@ -2195,6 +2059,7 @@ label monika_affection_nickname:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
+
                         $ persistent._mas_called_moni_a_bad_name = True
 
                         #reset nickname if not Monika
@@ -2245,7 +2110,8 @@ init 5 python:
             eventlabel="monika_being_virtual",
             action=EV_ACT_QUEUE,
             aff_range=(None, mas_aff.DISTRESSED)
-        )
+        ),
+        skipCalendar=True
     )
 
 label monika_being_virtual:
