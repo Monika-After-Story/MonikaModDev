@@ -101,6 +101,14 @@ init -991 python in mas_submod_utils:
             except:
                 raise SubmodError("Version number '{0}' is invalid.".format(version))
 
+            #Make sure author and name are proper label names
+            import re
+            prog = re.compile(ur'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
+            if not prog.match(author):
+                raise SubmodError("Author '{0}' is invalid.".format(author))
+            if not prog.match(name):
+                raise SubmodError("Name '{0}' is invalid.".format(name))
+
             #With verification done, let's make the object
             self.author = author
             self.name = name
