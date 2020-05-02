@@ -256,7 +256,6 @@ init 3 python:
         "milf",
         "monster",
         "moron",
-        "moron",
         "murder",
         "narcissist",
         "nasty",
@@ -364,6 +363,8 @@ init 3 python:
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
+        "^(step(-|\\s)*)?bro(ther|tha(h)?)?$",
+        "^(step(-|\\s)*)?sis(ter|ta(h)?)?$",
         "^dad$",
         "^loli$",
         "^mama$",
@@ -376,6 +377,7 @@ init 3 python:
         "batman",
         "breeder",
         "bobba",
+        "boss",
         "catwoman",
         "cousin",
         "daddy",
@@ -399,12 +401,11 @@ init 3 python:
         "okasan",
         "orgasm",
         "overlord",
+        "owner",
         "penetrat",
         "pillow",
         "sex",
         "spank",
-        "step(-|\\s)*bro",
-        "step(-|\\s)*sis",
         "superman",
         "superwoman",
         "thicc",
