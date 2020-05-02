@@ -4536,7 +4536,7 @@ label monika_name:
     if(
         pen_name is not None
         and pen_name.lower() != player.lower()
-        and not (awk_comp.search(pen_name) or bad_comp.search(pen_name))
+        and not (mas_awk_name_comp.search(pen_name) or mas_bad_name_comp.search(pen_name))
     ):
         m 1eua "'[pen_name]' is a lovely name, too."
         m 1eka "But I think I like '[player]' better!"
@@ -5473,7 +5473,7 @@ label monika_penname:
                                 $ penbool = True
 
                             else:
-                                if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+                                if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
                                     m 2rksdlc "..."
                                     m 2rksdld "That's an...{w=0.3}interesting name, [player]..."
                                     m 2eksdlc "But if it works for you, okay I guess."
@@ -5496,7 +5496,7 @@ label monika_penname:
         $ lowerpen = penname.lower()
 
         $ menu_exp = "monika 3eua"
-        if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+        if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
             $ menu_exp = "monika 2rka"
 
         if lowerpen == player.lower():
