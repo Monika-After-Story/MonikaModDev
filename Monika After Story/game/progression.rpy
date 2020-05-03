@@ -224,6 +224,11 @@ init python in mas_xp:
 
         # unlock prompts
         for x in range(lvl_gained):
+            # do 5 per level
+            store.queueEvent("unlock_prompt")
+            store.queueEvent("unlock_prompt")
+            store.queueEvent("unlock_prompt")
+            store.queueEvent("unlock_prompt")
             store.queueEvent("unlock_prompt")
 
         # set xp and lvls
