@@ -423,7 +423,7 @@ label bye_prompt_to_work:
             m 3hub "Work hard, [player]! Make me proud!"
         elif session_time < datetime.timedelta(hours=1):
             m 1hksdlb "Oh! Alright! I was starting to get really comfortable, ahaha."
-            m 1rusdlb "I was expecting us to be a here a bit longer, but you're a busy [guy]!"
+            m 1rusdlb "I was expecting us to be here a bit longer, but you're a busy [guy]!"
             m 1eka "It was great seeing you, even if it wasn't as long as I wanted..."
             m 1kua "But then if it were up to me I'd have you all day!"
             m 1hua "I'll be here waiting for you to get back home from work!"
