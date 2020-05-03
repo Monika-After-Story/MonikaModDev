@@ -602,7 +602,7 @@ label mas_story_genie_end:
     m 3rksdld "He never told his friends that he wasn't human, as he still wanted to be treated as one."
     m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them one wish."
     m 1dsc "This made him think about everything he had been through;{w=0.5} from back to when he granted wishes to when he gave it up for a simple life."
-    m 1dsd "...Everything that had lead up to this moment, where he could make his own wish for the first time in a long while."
+    m 1dsd "...Everything that had led up to this moment, where he could make his own wish for the first time in a long while."
     m 1dsc "..."
     m 2eud "He wished to die."
     m 2ekc "Confused, his friend asked why and where it came from all of a sudden."
