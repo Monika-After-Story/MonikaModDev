@@ -540,15 +540,39 @@ init 5 python:
     )
 
 label mas_topic_rerandom:
-    $ renpy.call(
-        "mas_rerandom",
-        initial_ask_text_multiple="Which topic are you okay with talking about again?",
-        initial_ask_text_one="If you're sure it's alright to talk about this again, just click the topic, [player].",
-        talk_about_more_text="Are there any other topics you are okay with talking about?",
-        caller_label="mas_topic_rerandom",
-        persist_var=persistent._mas_player_derandomed
-    )
+    python:
+        mas_bookmarks_derand.initial_ask_text_multiple = "Which topic are you okay with talking about again?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you're sure it's alright to talk about this again, just click the topic, [player]."
+        mas_bookmarks_derand.talk_about_more_text = "Are there any other topics you are okay with talking about?"
+        mas_bookmarks_derand.caller_label = "mas_topic_rerandom"
+        mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed
+        mas_bookmarks_derand.ev_db_code = "EVE"
+
+    call mas_rerandom
     return
+
+init python in mas_bookmarks_derand:
+    initial_ask_text_multiple = None
+    initial_ask_text_one = None
+    talk_about_more_text = None
+    caller_label = None
+    persist_var = None
+    ev_db_code = "EVE"
+
+    def resetDefaultValues():
+        """
+        Resets the globals to their default values
+        """
+        global initial_ask_text_multiple, initial_ask_text_one, talk_about_more_text
+        global caller_label, persist_var, ev_db_code
+
+        initial_ask_text_multiple = None
+        initial_ask_text_one = None
+        talk_about_more_text = None
+        caller_label = None
+        persist_var = None
+        ev_db_code = "EVE"
+        return
 
 ##Generic rerandom work label
 #IN:
@@ -558,20 +582,20 @@ label mas_topic_rerandom:
 #   caller_label - The label that called this label
 #   persist_var - The persistent variable which stores the derandomed eventlabels
 #   ev_db_code - The event database code for the topics we're rerandoming (Default: "EVE")
-label mas_rerandom(initial_ask_text_multiple, initial_ask_text_one, talk_about_more_text, caller_label, persist_var, ev_db_code="EVE"):
+label mas_rerandom:
     python:
-        derandomlist = mas_get_player_derandoms(persist_var)
+        derandomlist = mas_get_player_derandoms(mas_bookmarks_derand.persist_var)
 
         derandomlist.sort()
         return_prompt_back = ("Nevermind", False, False, False, 20)
 
     show monika 1eua at t21
     if len(derandomlist) > 1:
-        $ renpy.say(m, initial_ask_text_multiple, interact=False)
+        $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_multiple, interact=False)
     else:
-        $ renpy.say(m, initial_ask_text_one, interact=False)
+        $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_one, interact=False)
 
-    call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    call screen mas_gen_scrollable_menu(derandomlist, (evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
 
     $ topic_choice = _return
 
@@ -580,30 +604,33 @@ label mas_rerandom(initial_ask_text_multiple, initial_ask_text_one, talk_about_m
 
     else:
         show monika at t11
-        $ mas_showEVL(topic_choice, ev_db_code, _random=True)
+        $ mas_showEVL(topic_choice, mas_bookmarks_derand.ev_db_code, _random=True)
         #Pop the derandom
-        $ persist_var.pop(persist_var.index(topic_choice))
+        $ mas_bookmarks_derand.persist_var.pop(mas_bookmarks_derand.persist_var.index(topic_choice))
         #Prep the renpy substitution
-        $ talk_about_more_text = renpy.substitute(talk_about_more_text)
+        $ talk_about_more_text = renpy.substitute(mas_bookmarks_derand.talk_about_more_text)
         m 1eua "Okay, [player]..."
 
-        if len(persist_var) > 0:
+        if len(mas_bookmarks_derand.persist_var) > 0:
             m 1eka "[talk_about_more_text]{nw}"
             $ _history_list.pop()
             menu:
                 m "[talk_about_more_text]{fast}"
                 "Yes.":
                     jump mas_rerandom
+
                 "No.":
                     m 3eua "Okay."
 
         else:
             m 3hua "All done!"
-            $ mas_lockEVL(caller_label, "EVE")
+            $ mas_lockEVL(mas_bookmarks_derand.caller_label, "EVE")
 
     # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
     # to be derandomed out of season is still derandomed
     $ persistent._mas_current_season = store.mas_seasons._seasonalCatchup(persistent._mas_current_season)
+    #Now reset the vars
+    $ mas_bookmarks_derand.resetDefaultValues()
     return
 
 default persistent._mas_unsee_unseen = None

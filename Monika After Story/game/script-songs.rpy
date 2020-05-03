@@ -196,15 +196,15 @@ init 5 python:
     )
 
 label mas_sing_song_rerandom:
-    $ renpy.call(
-        "mas_rerandom",
-        initial_ask_text_multiple="Which song do you want me to sing occasionally?",
-        initial_ask_text_one="If you want me to sing this occasionally again, just click the song, [player].",
-        talk_about_more_text="Are there any other songs you'd like me to sing on my own?",
-        caller_label="mas_song_rerandom",
-        persist_var=persistent._mas_player_derandomed_songs,
-        ev_db_code="SNG"
-    )
+    python:
+        mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
+        mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
+        mas_bookmarks_derand.caller_label = "mas_song_rerandom"
+        mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
+        mas_bookmarks_derand.ev_db_code = "SNG"
+
+    call mas_rerandom
     return
 
 init 5 python:
