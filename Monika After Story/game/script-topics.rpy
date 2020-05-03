@@ -4116,7 +4116,7 @@ default persistent._mas_pm_would_like_mt_peak = None
 label monika_mountain:
     m 1eua "Have you ever been in the mountains, [player]?"
     m 1rksdla "I don't mean driving through them or in a mountain town..."
-    m 3hua "I mean {i}really{/i} up there. In the fresh air, thousands of feet up, seeing the rest of world below you."
+    m 3hua "I mean {i}really{/i} up there. In the fresh air, thousands of feet up, seeing the rest of the world below you."
     m 2dtc "..."
     m 3eub "I've always wanted to try that, but I've never had the chance. I've only read about it."
     m 3wuo "The stories were breathtaking though!"
