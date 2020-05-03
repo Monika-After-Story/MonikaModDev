@@ -4001,7 +4001,7 @@ label mas_nye_monika_nye_dress_intro:
         m 3eua "Maybe you guessed it already, but it's because of the color choice."
 
     m "White represents a lot of positive feelings, like goodness, purity, safety..."
-    m 3eub "However, what I wanted this outfit to highlight was a succesful beginning."
+    m 3eub "However, what I wanted this outfit to highlight was a successful beginning."
 
     #If we fresh started last year
     if mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
