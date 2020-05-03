@@ -2463,7 +2463,7 @@ label mas_covid19:
     m 2eka "Oh, and if you're having a hard time washing your hands long enough, I found a neat way for you to make sure you're doing it for 20 whole seconds..."
     m 4hub "Just go to {a=https://washyourlyrics.com}{i}{u}washyourlyrics.com{/u}{/i}{/a} and type {i}Your Reality{/i} for the song title and {i}Monika{/i} for the song artist!"
     m 4eub "Just download the picture it creates with the lyrics from my song and it'll show you the best way to wash your hands and how long to do it for!"
-    m 2hua "Then everytime you wash your hands, you can remember how much I love you~"
+    m 2hua "Then every time you wash your hands, you can remember how much I love you~"
     m 2eka "..."
     m 7eksdla "You know [player], if I could, I'd bring you here with me until this is all over so you couldn't get sick..."
     m "But since I can't, please do your best to stay safe."
