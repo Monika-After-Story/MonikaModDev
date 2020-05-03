@@ -192,7 +192,7 @@ init -810 python:
         start_dt=datetime.datetime(2019, 10, 31),
 
         # end is 1 day out in case of an overnight trick or treat
-        end_dt=datetime.datetime(2019, 11, 2) 
+        end_dt=datetime.datetime(2019, 11, 2)
     ))
 
 # Images
@@ -293,7 +293,7 @@ init -10 python:
             manually later.
 
         IN:
-            selection_pool - pool to select clothes from. If NOne, we get a 
+            selection_pool - pool to select clothes from. If NOne, we get a
                 default list of clothes with costume exprop
 
         RETURNS: a single MASClothes object of what to wear. None if cannot
@@ -325,7 +325,7 @@ init -10 python:
                     filt_sel_pool.append(cloth)
                 else:
                     wearing_costume = True
-                
+
 
         selection_pool = filt_sel_pool
 
@@ -1597,7 +1597,7 @@ init -10 python in mas_d25_utils:
             "mas_reaction_end",
             mas_frs._pick_starter_label()
         )
-    
+
 
 ####START: d25 arts
 
@@ -1873,7 +1873,7 @@ label mas_d25_gift_end:
             extend 3dku "Just having you here with me was more than enough."
         else:
             extend 3dku "Just being with you was all I wanted."
-        m 1eka "But the fact you took the time to get me something...{w=0.5}{nw}" 
+        m 1eka "But the fact you took the time to get me something...{w=0.5}{nw}"
         extend 3ekbsa "well I can't thank you enough."
         m 3ekbfa "It really makes me feel loved."
 
@@ -2650,17 +2650,21 @@ label monika_aiwfc:
         m 1eksdla "I hope you don't mind, but I prepared a song for you."
         m 3hksdlb "I know it's a little cheesy, but I think you might like it."
         m 3eksdla "If your volume is off, would you mind turning it on for me?"
-        if songs.getUserVolume("music") == 0.0:
-            m 3hksdlb "Oh, don't forget about your in game volume too!"
+        if store.songs.hasMusicMuted():
+            m 3hksdlb "Oh, don't forget about your in-game volume too!"
             m 3eka "I really want you to hear this."
         m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
 
     else:
         m 1hua "Ehehe..."
         m 3tuu "I hope you're ready, [player]..."
-        m "It {i}is{/i} that time of year again, after all..."
-        m 3hub "Make sure you have your volume up!"
-        m 1huu ".{w=0.5}.{w=0.5}.{nw}"
+
+        $ ending = "..." if store.songs.hasMusicMuted() else ".{w=0.5}.{w=0.5}.{nw}"
+
+        m "It {i}is{/i} that time of year again, after all[ending]"
+        if store.songs.hasMusicMuted():
+            m 3hub "Make sure you have your volume up!"
+            m 1huu ".{w=0.5}.{w=0.5}.{nw}"
 
     #Get current song
     $ curr_song = songs.current_track
@@ -5112,7 +5116,7 @@ init 20 python:
  One where I{i}'{/i}m free,
  One where all my troubles are gone,
  One where all of my dreams come true.
- 
+
  But today is not any day,
  Today is special; today is your day.
  A day I can appreciate you even more for what you do.
@@ -5246,7 +5250,7 @@ label mas_pf14_monika_lovey_dovey:
 
     if mas_HistVerifyAll_k(True, "f14.actions.spent_f14"):
         m 3ekbsa "Valentine's Day is coming soon, and it just makes me so overwhelmingly happy knowing you're still by my side."
-        
+
     else:
         m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
 
@@ -6113,7 +6117,7 @@ init -1 python:
             _date = datetime.date.today()
 
         return (
-            _date.month == mas_monika_birthday.month 
+            _date.month == mas_monika_birthday.month
             and _date.day == mas_monika_birthday.day
         )
 
@@ -6342,7 +6346,8 @@ init 5 python:
             years=[]
         ),
         code="CMP",
-        skipCalendar=True
+        skipCalendar=True,
+        markSeen=True
     )
 
     #Create the undo action rule
@@ -6396,7 +6401,8 @@ init 5 python:
             years=[]
         ),
         code="CMP",
-        skipCalendar=True
+        skipCalendar=True,
+        markSeen=True
     )
 
 label mas_bday_pool_happy_belated_bday:
@@ -7041,7 +7047,7 @@ label greeting_returned_home_bday:
         mas_isMonikaBirthday()
         and mas_isplayer_bday()
         and mas_isMoniNormal(higher=True)
-        and not persistent._mas_player_bday_in_player_bday_mode 
+        and not persistent._mas_player_bday_in_player_bday_mode
         and not persistent._mas_bday_sbp_reacted
         and checkout_time.date() < mas_monika_birthday
 
