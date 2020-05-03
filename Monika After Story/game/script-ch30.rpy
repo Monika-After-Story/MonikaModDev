@@ -685,6 +685,8 @@ init python:
         Gets topics which are bookmarked by the player
         Also cleans events which no longer exist
 
+        NOTE: Will NOT add events which fail the aff range check
+
         IN:
             bookmarked_evls - appropriate persistent variable holding the bookmarked eventlabels
 
@@ -731,7 +733,7 @@ init python:
                 derandomed_evls.pop(index)
 
             #Ev exists. Add it to the menu item list
-            elif ev.unlocked and ev.checkAffection(mas_curr_affection):
+            elif ev.unlocked:
                 derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
 
         return derandlist

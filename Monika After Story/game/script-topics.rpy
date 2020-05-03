@@ -574,6 +574,7 @@ init python in mas_bookmarks_derand:
             if test_str.startswith(label_prefix):
                 return label_prefix
         return ""
+
 ##Generic rerandom work label
 #IN:
 #   initial_ask_text_multiple - Initial question Monika asks if there's multiple items to rerandom
