@@ -327,24 +327,6 @@ default persistent.flagged_monikatopic = None
 # var set when we flag a topic for derandom
 
 init python:
-    def __getLabelPrefix(test_str, list_prefixes):
-        """
-        Checks if test_str starts with anything in the list of prefixes, and if so, returns the matching prefix
-
-        IN:
-            test_str - string to test
-            list_prefixes - list of strings that test_str should start with
-
-        OUT:
-            string:
-                - label_prefix if test_string starts with a prefix in list_prefixes
-                - empty string otherwise
-        """
-        for label_prefix in list_prefixes:
-            if test_str.startswith(label_prefix):
-                return label_prefix
-        return ""
-
     def mas_derandom_topic(ev_label=None):
         """
         Function for the derandom hotkey, 'x'
@@ -379,7 +361,7 @@ init python:
             return
 
         #Get the label prefix
-        label_prefix = __getLabelPrefix(ev_label, label_prefix_map.keys())
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
 
         #CRITERIA:
         #1. Must have an ev
@@ -442,7 +424,7 @@ init python:
             return
 
         #Get our label prefix
-        label_prefix = __getLabelPrefix(ev_label, label_prefix_map.keys())
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
 
         #CRITERIA:
         #1. Must be normal+
@@ -513,6 +495,7 @@ label mas_topic_derandom:
     $ _history_list.pop()
     menu:
         m "Are you sure you don't want me to bring this up anymore?{fast}"
+
         "Please don't.":
             $ mas_hideEVL(prev_topic, "EVE", derandom=True)
             $ persistent._mas_player_derandomed.append(prev_topic)
@@ -574,6 +557,23 @@ init python in mas_bookmarks_derand:
         ev_db_code = "EVE"
         return
 
+    def getLabelPrefix(test_str, list_prefixes):
+        """
+        Checks if test_str starts with anything in the list of prefixes, and if so, returns the matching prefix
+
+        IN:
+            test_str - string to test
+            list_prefixes - list of strings that test_str should start with
+
+        OUT:
+            string:
+                - label_prefix if test_string starts with a prefix in list_prefixes
+                - empty string otherwise
+        """
+        for label_prefix in list_prefixes:
+            if test_str.startswith(label_prefix):
+                return label_prefix
+        return ""
 ##Generic rerandom work label
 #IN:
 #   initial_ask_text_multiple - Initial question Monika asks if there's multiple items to rerandom
@@ -587,7 +587,7 @@ label mas_rerandom:
         derandomlist = mas_get_player_derandoms(mas_bookmarks_derand.persist_var)
 
         derandomlist.sort()
-        return_prompt_back = ("Nevermind", False, False, False, 20)
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
     if len(derandomlist) > 1:

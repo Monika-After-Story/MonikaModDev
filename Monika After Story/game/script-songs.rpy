@@ -85,6 +85,16 @@ init python in mas_songs:
         """
         return len(getRandomSongs()) > 0
 
+    def getPromptSuffix(ev):
+        """
+        Gets the suffix for songs to display in the bookmarks menu
+
+        OUT:
+            Suffix for song prompt
+        """
+        return " (Full)" if TYPE_LONG in ev.category else " (Short)"
+
+
 #START: Pool delegate for songs
 init 5 python:
     addEvent(
@@ -121,7 +131,7 @@ label monika_sing_song_pool_menu:
         else:
             space = 20
 
-        ret_back = ("Nevermind", False, False, False, space)
+        ret_back = ("Nevermind.", False, False, False, space)
         switch = ("I'd like to hear a [switch_str] song instead", "monika_sing_song_pool_menu", False, False, 20)
 
         unlocked_song_list = mas_songs.getUnlockedSongs(length=song_length)
