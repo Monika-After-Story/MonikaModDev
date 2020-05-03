@@ -2934,7 +2934,7 @@ label greeting_back_from_work:
                 m 1lksdld "Oh... {w=0.5}It can really ruin your day to see someone else get the recognition you thought you deserved."
                 m 2lfd "{i}Especially{/i} when you've done so much and it seemingly goes unnoticed."
                 m 1ekc "You might seem a bit pushy if you say anything, so you just have to keep doing your best and one day I'm sure it'll pay off."
-                m 1eua "As long as keep trying your hardest, you'll continue to do great things and get recognition someday."
+                m 1eua "As long as you keep trying your hardest, you'll continue to do great things and get recognition someday."
                 m 1hub "And just remember...{w=0.5}I'll always be proud of you, [player]!"
                 m 3eka "I hope knowing that makes you feel just a little better~"
 
