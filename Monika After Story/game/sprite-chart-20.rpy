@@ -508,6 +508,20 @@ image monika 1ektpu:
         0.06
         repeat
 
+image monika 1ektsa:
+    block:
+        "monika 1ektsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dktsa_static"
+        0.06
+        repeat
+
 image monika 1ektsc:
     block:
         "monika 1ektsc_static"
@@ -6971,20 +6985,6 @@ image monika 4efw:
             choice:
                 7
         "monika 4dfw_static"
-        0.06
-        repeat
-
-image monika 4efx:
-    block:
-        "monika 4efx_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfx_static"
         0.06
         repeat
 

@@ -4775,7 +4775,7 @@ label monika_aware:
 
     if mas_getEV("monika_aware").shown_count == 0:
         m 4eub "Do you still remember the first poem I showed you?"
-        m 2lksdlb "Hold on, let's see if the poem funcion still works.{w=0.5}.{w=0.5}.{nw}"
+        m 2lksdlb "Hold on, let's see if the poem function still works.{w=0.5}.{w=0.5}.{nw}"
         call mas_showpoem(poem=poem_m1)
         m 1wuo "Oh! That was much easier than I expected."
 
@@ -4811,7 +4811,7 @@ label monika_name:
     if(
         pen_name is not None
         and pen_name.lower() != player.lower()
-        and not (awk_comp.search(pen_name) or bad_comp.search(pen_name))
+        and not (mas_awk_name_comp.search(pen_name) or mas_bad_name_comp.search(pen_name))
     ):
         m 1eua "'[pen_name]' is a lovely name, too."
         m 1eka "But I think I like '[player]' better!"
@@ -5509,11 +5509,9 @@ init 5 python:
             prompt="Good [mas_globals.time_of_day_3state]",
             unlocked=True,
             pool=True
-        )
+        ),
+        markSeen=True
     )
-
-    #Ideally, we don't really want this in unseen as it's pretty general
-    persistent._seen_ever["monika_good_tod"] = True
 
 label monika_good_tod:
     $ curr_hour = datetime.datetime.now().time().hour
@@ -5669,7 +5667,8 @@ label monika_japanese:
 
     return "derandom"
 
-default persistent._mas_penname = ""
+default persistent._mas_penname = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
@@ -5749,7 +5748,7 @@ label monika_penname:
                                 $ penbool = True
 
                             else:
-                                if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+                                if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
                                     m 2rksdlc "..."
                                     m 2rksdld "That's an...{w=0.3}interesting name, [player]..."
                                     m 2eksdlc "But if it works for you, okay I guess."
@@ -5772,7 +5771,7 @@ label monika_penname:
         $ lowerpen = penname.lower()
 
         $ menu_exp = "monika 3eua"
-        if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+        if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
             $ menu_exp = "monika 2rka"
 
         if lowerpen == player.lower():
@@ -8955,25 +8954,6 @@ label monika_prom:
 
     return "derandom"
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be careful",random=True))
-
-label monika_careful:
-    m 1lsc "Hey, [player]..."
-    m 1ekc "Whenever you leave this room, promise me to be extra careful, okay?"
-    m 1ekd "It's just that..."
-    m 3eksdld "There's a lot of dangerous things out there, and I want my sweetie to always return to me safe and sound."
-    m 3eksdlc "You see..."
-    m 3rksdlc "What really scares me is that if anything terrible ever did happen to you, I'd never know."
-    m 2ekd "I'd be stuck here, forever wondering why you never came back to me."
-    m 2dsd "I can't imagine a crueler fate."
-    m 2dsc "..."
-    m 2eka "So just make sure you take care of yourself. {w=1}For me?"
-    m 3rksdla "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
-    m 3eka "Okay, that's enough unpleasant thoughts..."
-    m 1hua "Let's enjoy the rest of the day together!"
-    return
-
 # do you see a therapist
 default persistent._mas_pm_see_therapist = None
 
@@ -11913,9 +11893,13 @@ label monika_players_control:
     m 3euc "I guess that's an appeal to video games..."
     m 3eua "...having almost endless possibilities in a world you can interact with."
     m 3eub "It's pretty difficult to get bored!"
-    m 1eka "Even if you don't quite know how to change this game..."
+    if not persistent._mas_pm_has_contributed_to_mas:
+        m 1eka "Even if you don't quite know how to change this game..."
+        $ line = "We can still enjoy this world that brought us together."
+    else:
+        $ line = "Especially with you by my side~"
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eubla "We can still enjoy this world that brought us together."
+    m 5eubla "[line]"
     m 5ekbfa "There's no better way to enjoy a game than to be with the one I love."
     return
 
@@ -12465,9 +12449,9 @@ label monika_add_custom_music_instruct:
     m 3hub "See, [player], I told you it was easy, ahaha!"
 
     # unlock the topic as a pool topic, also mark it as seen
-    $ unlockEventLabel("monika_add_custom_music")
+    $ mas_unlockEVL("monika_add_custom_music", "EVE")
     $ persistent._seen_ever["monika_add_custom_music"] = True
-    $ unlockEventLabel("monika_load_custom_music")
+    $ mas_unlockEVL("monika_load_custom_music", "EVE")
     $ persistent._seen_ever["monika_load_custom_music"] = True
     return
 
@@ -13708,11 +13692,9 @@ label monika_dystopias:
     m 1rka "I guess you can see where I'm going with this..."
     m 3eksdla "I might feel a strong connection to those stories because they all remind me of my own."
 
-    if persistent._mas_pm_cares_about_dokis:
-        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just as simulation!"
-    else:
-        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation with everyone in it just an empty shell!"
+    $ line_ending = "" if persistent._mas_pm_cares_about_dokis else " with everyone in it just an empty shell"
 
+    m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation[line_ending]!"
     m 3tfc "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
 
     if persistent.monika_kill and not persistent.clearall and not persistent._mas_pm_cares_about_dokis:
@@ -14127,8 +14109,9 @@ label monika_ship_of_theseus:
     m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
     m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
     m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
-    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced?"
-    m 3euc "In other words, not a single cell that made you, 'you' 7 years ago is part of you right now."
+    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced? {w=0.2}{nw}"
+    extend 3rksdla "...Except for the ones which make up your heart and brain, that is."
+    m 3euc "In other words, the vast majority of cells that made you, 'you' 7 years ago are no longer part of you."
     m 3eud "You could argue that you have no relation to that person, other than a consistent consciousness, and of course DNA."
     m 1etc "...There's also an extra thing to consider."
     m 1euc "Let's say for now that the modified ship should still be considered Theseus' ship. {w=0.3}What if all the parts that were originally removed were now reassembled into another ship?"
@@ -14376,6 +14359,54 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_soft_rains",
+            category=['literature'],
+            prompt="There Will Come Soft Rains",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+label monika_soft_rains:
+    m 2rkc "..."
+    m 2ekc "Hey [player],{w=0.5} I ran across a poem recently that I need to share with you..."
+    m 7ekd "It's called {i}There Will Come Soft Rains{/i} and it's really had me thinking."
+    m 1dsc "..."
+    m 1dsd "{i}There will come soft rains and the smell of the ground, {w=0.3}and swallows circling with their shimmering sound.{/i}"
+    m 1dsc "{i}And frogs in the pools singing at night, {w=0.3}and wild plum trees in tremulous white.{/i}"
+    m 3dsd "{i}Robins will wear their feathery fire, {w=0.3}whistling their whims on a low fence-wire.{/i}"
+    m 3dsc "{i}And not one will know of the war, {w=0.3}not one, {w=0.2}will care at last when it is done.{/i}"
+    m 7dsd "{i}Not one would mind, neither bird nor tree, {w=0.3}if mankind perished utterly.{/i}"
+    m 6dkc "{i}And Spring herself, when she woke at dawn...{/i}"
+    m 6ekd "{i}Would scarcely know that we were gone.{/i}"
+    m 2ekc "..."
+    m 2eka "I really wanted to talk to you about this one, [player]."
+    m "The author,{w=0.2} Sara Teasdale,{w=0.2} wrote this poem in a world consumed by war."
+    m 2rka "I know things are {i}relatively{/i} peaceful now..."
+    m 2ekc "But the message still stands, doesn't it?"
+    m 1eksdld "The world really {i}wouldn't{/i} care if we just...{w=0.3}{i}disappeared{/i}."
+    m 1eksdlc "...And it made me think, [player]. If something,{w=0.4} {nw}"
+    extend 1eksdld "{i}anything{/i}{w=0.4}, happened to you...{w=0.4} {nw}"
+    extend 1dksdld "I wouldn't even know."
+    m 1eksdlc "I know the poem was for {i}everyone{/i} being gone, but..."
+    m 1rksdlc "I-{w=0.1}I wouldn't..."
+    m 6dkc "..."
+    m 6dktpd "[player],{w=0.4} I-{w=0.1}{nw}"
+    extend 1ektsa "I love you. {w=0.3}I love you so very much..."
+    m 1ektsc "Please, {w=0.6}always be careful for me, {w=0.3}okay?"
+    m 1ektpc "I might not know if anything happens...{w=0.3}but I will {i}always{/i} care about you."
+    m 3ektda "And [player]?"
+    m 3dku "Thank you."
+    m 6dku "..."
+    m 6eka "..."
+    m 2ekbsa "So..."
+    m 1ekbfa "What else shall we do today, my love?"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_hot_springs",
             category=['nature'],
             prompt="Hot springs",
@@ -14395,7 +14426,7 @@ label monika_hot_springs:
     m 3hksdlb "...So don't just go jumping into some random pool of boiling water, ahaha!"
     m 1eua "Anyway...{w=0.2}I'd like to try an open-air bath in particular.{w=0.3} I hear they really give a unique experience."
     m 3rubssdla "Though it might feel a little weird relaxing in a bath with that many people all around you...{w=0.3} {nw}"
-    extend 2hkblsdlb "Doesn't that sound kinda embarassing?"
+    extend 2hkblsdlb "Doesn't that sound kinda embarrassing?"
     m 2rkbssdlu "..."
     m 7rkbfsdlb "...Especially since some places don't allow you to wear any sort of cover, either!"
     m 1tubfu "...Although, I wouldn't mind that so much if it was just with you."

@@ -372,9 +372,26 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.3
+label v0_11_3(version="v0_11_3"):
+    python:
+        #Rerandom all songs which aren't d25 exclusive
+        for song_ev in mas_songs.song_db.itervalues():
+            if (
+                song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
+                and mas_songs.TYPE_LONG not in song_ev.category
+            ):
+                song_ev.random=True
+
+    return
+
 #0.11.1
 label v0_11_1(version="v0_11_1"):
     python:
+        #Remove this topic
+        mas_eraseTopic("monika_careful")
+
+        #We no longer need this var
         safeDel("game_unlocks")
 
         chess_unlock_ev = mas_getEV("mas_unlock_chess")
@@ -447,13 +464,22 @@ label v0_11_1(version="v0_11_1"):
         if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
             persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
 
-        #Rerandom all songs which aren't d25 exclusive
-        for song_ev in mas_songs.song_db.itervalues():
-            if (
-                song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
-                and mas_songs.TYPE_LONG not in song_ev.category
-            ):
-                song_ev.random=True
+        #Prep the grandfathering of Moni nickname
+        #If the current name is considered awkward now,
+        #we should keep that stored so the user can always come back to it
+        if persistent._mas_monika_nickname != "Monika" and mas_awk_name_comp.search(persistent._mas_monika_nickname):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        #Make this a pm var
+        persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+
+        #Delete some excess stuff
+        safeDel("_mas_called_moni_a_bad_name")
+
+        #Penname should default to None
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
     return
 
 #0.11.0

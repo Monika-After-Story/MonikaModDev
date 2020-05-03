@@ -722,7 +722,8 @@ screen navigation():
             ## The quit button is banned on iOS and unnecessary on Android.
             textbutton _("Quit") action Quit(confirm=_confirm_quit)
 
-
+        if not main_menu:
+            textbutton _("Return") action Return()
 
 style navigation_button is gui_button:
     size_group "navigation"
@@ -928,11 +929,6 @@ screen game_menu(title, scroll=None):
 
     # if not main_menu and not persistent.menu_bg_m and renpy.random.randint(0, 49) == 0:
     #     on "show" action Show("game_menu_m")
-
-    textbutton _("Return"):
-        style "return_button"
-
-        action Return()
 
     label title style "game_menu_label"
 
