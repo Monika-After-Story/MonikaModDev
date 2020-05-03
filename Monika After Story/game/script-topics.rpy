@@ -13404,7 +13404,7 @@ label monika_dystopias:
     m 3euc "'Fahrenheit 451', on censorship, and the indifference of most people to it..."
     m 3eud "And 'Brave New World', about the disappearance of individuality."
     m 1euc "All of these stories are reflections on the challenges society was facing at the time."
-    m 3eud "Some of these challenges are still very relevant today, which is why theses stories remain so powerful."
+    m 3eud "Some of these challenges are still very relevant today, which is why these stories remain so powerful."
     m 3rksdlc "...Even if they can get a bit grim sometimes."
     m 1ekc "Old school dystopias, like the ones I just mentioned, were always written as hopeless, dire situations from beginning to end."
     m 3eka "They almost never had a happy ending. {w=0.3}The most you'll get out of them is a silver-lining, at best."
