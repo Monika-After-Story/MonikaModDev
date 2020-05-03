@@ -207,6 +207,16 @@ init -10 python:
                 self._times[change_time] = bg_flt
                 store.mas_utils.insert_sort_keyless(self._slices, change_time)
 
+        def verify(self, day, night):
+            """
+            Verifies the filters in this filter manager.
+            Assumed to be called at least at init level 0
+            Filters should all exist and the filter times should be ordered
+            such that we start with a night, then move to day, then back to
+            night.
+            """
+            # TODO
+
 
     # TODO: the background class needs to decide the filters to use.
     #   *AS WELL AS THE PROGRESSION*
