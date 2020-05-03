@@ -3849,6 +3849,68 @@ init -100 python in mas_utils:
         )
 
 
+    def insert_sort(sort_list, item, key):
+        """
+        Performs a round of insertion sort.
+        This does least to greatest sorting
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+            key - function to call using the given item to retrieve sort key
+
+        OUT:
+            sort_list - list with 1 additonal element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and key(sort_list[index]) > key(item):
+            index -= 1
+
+        sort_list.insert(index + 1, item)
+
+
+    def insert_sort_compare(sort_list, item, cmp_func):
+        """
+        Performs a round of insertion sort using comparison function
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+            cmp_func - function to compare items with.
+                first arg will be item in the list
+                second arg will always be the item being inserted
+                This should return True if the item is not in the correct place
+                False when the item is in the correct place
+
+        OUT:
+            sort_list - list with 1 additional element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and cmp_func(sort_list[index], item):
+            index -= 1
+
+        sort_list.insert(index + 1, item)
+
+
+    def insert_sort_keyless(sort_list, item):
+        """
+        Performs a round of insertion sort for natural comparison objects.
+        This does least to greatest sorting.
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+
+        OUT:
+            sort_list - list with 1 additional element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and sort_list[index] > item:
+            index -= 1
+
+        sort_list.insert(index + 1, item)
+
+
     def normalize_points(points, offsets, add=True):
         """
         normalizes a list of points using the given offsets

@@ -369,6 +369,18 @@ init -99 python in mas_sprites:
         return __flt_global
 
 
+    def is_filter(flt):
+        """
+        Checks if the given filter is a valid filter
+
+        IN:
+            flt - filter enum to check
+
+        RETURNS: True if valid filter, False if not
+        """
+        return flt in FILTERS
+
+
     def set_filter(flt_enum):
         """
         Sets the current filter if it is valid.

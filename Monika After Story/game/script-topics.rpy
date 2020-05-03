@@ -137,11 +137,7 @@ init -1 python:
         OUT:
             sort_list - list with 1 additonal element, sorted
         """
-        index = len(sort_list) - 1
-        while index >= 0 and key(sort_list[index]) > key(item):
-            index -= 1
-
-        sort_list.insert(index + 1, item)
+        store.mas_utils.insert_sort(sort_list, item, key)
 
 
     def mas_splitSeenEvents(sorted_seen):

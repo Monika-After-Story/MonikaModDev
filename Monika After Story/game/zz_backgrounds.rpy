@@ -4,10 +4,208 @@ default persistent._mas_background_MBGdata = {}
 #START: Class definition
 init -10 python:
 
+    class MASBackgroundFilter(object):
+        """
+        Represntation of a filter for a MASBackground.
+        this is related to the sprite filters, but gives each filter extra
+        oomph. 
+
+        BG filters are designed to be flexible to work with BGs.
+        See the MASBackgroundFilterManager for more info on how this works.
+
+        PROPERTIES:
+            name - the name of this filter. This should be a filter ENUM.
+                NOTE: this not checked until init level 0
+            minlength - the amount of time in seconds that this filter must
+                be able to be used for it to be shown. If the filter cannot be
+                shown for this amount of time, it will not be shown at all.
+            priority - the priority of this filter object. Lower number means
+                higher priority. Lower priority means filter will be removed
+                first.
+            flt - the filter (imagematrix) objects to use. OPTIONAL.
+                if this is None, it is assumed the filter data is handled
+                elsewhere.
+        """
+
+        def __init__(self, name, minlength, priority=10, flt=None):
+            """
+            Constructor
+
+            IN:
+                name - name of the filter. This is NOT checked against filter
+                    ENUMS until init level 0.
+                minlength - amount of time in seconds that this filter must
+                    be at least shown for.
+                priority - priority of this filter object. Lower number means
+                    higher priority.
+                    (Default: 10)
+                flt - imagemanip/matrix compatible filter to use. 
+                    only pass in if you wish to use the `add_to_filters` 
+                    function
+                    (Default: None)
+            """
+            self.name = name
+            self.minlength = minlength
+            self.priority = priority
+            self.flt = flt
+
+        def add_to_filters(self):
+            """
+            Adds this filter to the filters dict. Wil fail and log if used
+            after init level -1.
+            Only works if self.flt is not None.
+            """
+            if self.flt is not None:
+                store.mas_sprites.add_filter(self.name, self.flt)
+
+        def can_fit(self, seconds):
+            """
+            Checks if this filter can fit in the time allotted
+
+            IN:
+                seconds - number of seconds to check
+
+            RETURNS: True if this filter can fit in the given number of seconds
+                FAlse if not
+            """
+            return self.minlength <= seconds
+
+        def can_fit_td(self, td):
+            """
+            Checks if the filter can fit in the time allotted
+
+            IN:
+                td - timedelta object to check
+
+            RETURNS: True if this filter can fit in the given timedelta,
+                False if not
+            """
+            return self.minlength <= int(td.total_seconds())
+
+        def verify(self):
+            """
+            Verifies if this filter's name is a valid filter. Call this
+            after init level -1.
+
+            RETURNS: True if filter is valid, False if not
+            """
+            return store.mas_sprites.is_filter(self.name)
+
+
     class MASBackgroundFilterManager(object):
         """
         Filter Management class for backgrounds
+
+        The BG filter system slices a day into a set of ranges for a filter
+        to be used on. The ranges done in a way where slices are intelligently
+        picked depending on the suntimes. This allows for handling of cases
+        where there isn't enough time for each slice to exist.
+
+        Each slice is a MASBackgroundFilter object that has a minlength. That
+        minimum length is used to determine if an object can fit in its 
+        allocated time slice. Priorities of each object is used to determine
+        which slices to keep. By default we try to keep every slice we can.
+
+        Slices are defined by a datetime.time to change to the that filter.
+        Slices start at midnight, which is the base slice. This slice by
+        default will always take priority over any other slice.
+
+        Code can be ran during a filter change by passing in function to 
+        appropriate param. Any exceptions are caught and loggged.
+
+        PROPERTIES:
+            None
         """
+
+        def __init__(self, mn_flt, *slices, pp=None):
+            """
+            Constructor
+
+            IN:
+                mn_flt - the base (midnight) filter. priority here is ignored,
+                    defaulting to the highest priority.
+                *slices - slice arguments. There should be an even number of
+                    these. Each slice is a set of two args:
+                        - 1st arg should be a datetime.time
+                            (any duplicate times will override existing data
+                            and will be logged)
+                        - 2nd arg should be a MASBackgroundFilter
+                pp - progpoint to run on a filter change (or slice change)
+                    the following args are passed to the progpoint:
+                        flt_old - the outgoing filter 
+                        flt_new - the incoming filter 
+                        curr_time - the current time
+                    (Default: None)
+            """
+            if not isinstance(mn_flt, MASBackgroundFilter):
+                raise Exception("Expected MASBackgroundFilter object")
+
+            self._mn_flt = mn_flt
+            # base filter
+
+            self._times = {}
+            # times associatd to filter objects
+            # key: datetime.time object
+            # value: filter associated with the object
+
+            self._slices = []
+            # times in proper sorted order
+
+            self._eff_slices = []
+            # times that we actually are using in proper sorted order
+
+            self._pp = pp
+            # progpoint
+
+            self._index = 0
+            # the index in eff_slices of the last filter change
+
+            self._parse_slices(slices)
+
+        def build(self, sunrise, sunset):
+            """
+            Builds the effective slices array using the given suntimes as 
+            guidance.
+
+            slices are built in a greedy fashion starting from midnight.
+
+            IN:
+                sunrise - time for sunrise as number of minutes from midnight
+                sunset - time for sunset as number of minutes from midnight
+            """
+            # TODO: i need to know if a filter should be day or night!
+
+
+        def filters(self):
+            """
+            RETURNS: list of all the filters associatd with this filter manager
+                (list of strings)
+            """
+            # use a dict so we only return each filter once
+            filters = {}
+            for bg_flt in self_times.itervalues():
+                filters[bg_flt.name] = None
+            filters[self._mn_flt.name] = None
+
+            return filters.keys()
+
+        def _parse_slices(self, slices):
+            """
+            Parses the slices data
+            """
+            # verify slices
+            if len(slices) % 2 != 0:
+                raise Exception("slice count should be even")
+
+            for change_time, bg_flt in zip(slices[0::2], slices[1::2]):
+                if not isinstance(change_time, datetime.time):
+                    raise Exception("Expected datetime.time object")
+                if not isinstance(bg_flt, MASBackgroundFilter):
+                    raise Exception("Expected MASBackgroundFilter object")
+
+                # add to times and slices
+                self._times[change_time] = bg_flt
+                store.mas_utils.insert_sort_keyless(self._slices, change_time)
 
 
     # TODO: the background class needs to decide the filters to use.
