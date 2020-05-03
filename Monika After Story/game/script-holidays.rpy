@@ -5442,7 +5442,7 @@ label mas_f14_sun_dress_outro:
 label mas_f14_intro_generic:
     m 1ekbsa "I'm just so grateful you are spending time with me today."
     m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
-    m 3ekbsa "I don't care if we go on a romantice date, or just spend the day together here..."
+    m 3ekbsa "I don't care if we go on a romantic date, or just spend the day together here..."
     m 1fkbsu "It really doesn't matter to me as long as we're together."
     return
 
