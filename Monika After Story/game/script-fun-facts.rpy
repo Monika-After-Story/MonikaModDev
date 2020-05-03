@@ -92,10 +92,10 @@ init 5 python:
         ),
         code="FFF"
     )
-
+#TODO: Update label to correct spelling
 label mas_fun_fact_librocubiculartist:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
-    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
+    m 3eub "It's 'librocubicularist.' It looks difficult to pronounce at first glance."
     m 3rksdld "It's a real shame some words just never get used in general."
     m 3eud "But if you say that word, most people wouldn't really know what you're talking about."
     m 3euc "You'd probably have to explain what it means, but that kind of defeats the point of using the word."
