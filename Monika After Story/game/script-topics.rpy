@@ -1321,10 +1321,6 @@ label monika_outfit:
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     return
 
-# random infinite loop check
-python:
-    renpy.not_infinite_loop(60)
-
 default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
 
@@ -1442,9 +1438,6 @@ label monika_rap:
             m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
             m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
     return "derandom"
-
-python:
-    renpy.not_infinite_loop(60)
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
