@@ -176,7 +176,7 @@ label mas_song_derandom:
             python:
                 mas_hideEVL(prev_topic, "SNG", derandom=True)
                 persistent._mas_player_derandomed_songs.append(prev_topic)
-                mas_unlockEVL("mas_song_rerandom", "EVE")
+                mas_unlockEVL("mas_sing_song_rerandom", "EVE")
 
         "It's okay.":
             m 1eua "Alright, [player]."
@@ -200,7 +200,7 @@ label mas_sing_song_rerandom:
         mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
         mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
         mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
-        mas_bookmarks_derand.caller_label = "mas_song_rerandom"
+        mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
         mas_bookmarks_derand.ev_db_code = "SNG"
 
