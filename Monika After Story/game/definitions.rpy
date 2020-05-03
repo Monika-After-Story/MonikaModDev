@@ -19,7 +19,7 @@ python early:
     import traceback
     _dev_tb_list = []
 
-    def dummy():
+    def dummy(*args, **kwargs):
         """
         Dummy function that does nothing
         """
