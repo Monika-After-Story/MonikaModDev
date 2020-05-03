@@ -7109,7 +7109,7 @@ label monika_writingtip1:
     m "So if we're talking about writing, a novel might be too much at first."
     m 4esa "Why not try some short stories?"
     m 1esa "The great thing about short stories is that you can focus on just one thing that you want to do right."
-    m 1eua "That goes for small projects in general - you can really focus on the one or two things."
+    m 1eua "That goes for small projects in general - you can really focus on one or two things."
     m 3esa "It's such a good learning experience and stepping stone."
     m 1euc "Oh, one more thing..."
     m 1eua "Writing isn't something where you just reach into your heart and something beautiful comes out."
