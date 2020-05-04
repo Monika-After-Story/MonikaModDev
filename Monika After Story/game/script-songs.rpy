@@ -456,7 +456,7 @@ label mas_song_im_glad_youre_evil_too:
         m 1ekbfa "I don't really think either of us are evil, [player]."
         m 1ekbfb "But it would be a dream come true to face the world together, side by side...{w=0.5} Don't you think?"
     return "derandom"
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -531,14 +531,14 @@ label mas_song_stand_by_me(from_long=False):
     m 3eud "{i}~And the moon is the only light we'll see~{/i}"
     m 2euo "{i}~No, I won't be afraid~{/i}"
     m 2duo "{i}~Oh, I won't be afraid~{/i}"
-    m 2hub "{i}~Just as long as you stand, stand by me~{/i}" 
+    m 2hub "{i}~Just as long as you stand, stand by me~{/i}"
     if not from_long:
         m 2eka "All my fears and insecurities just disappear when you're with me, [player]..."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
     return "derandom"
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -767,7 +767,7 @@ label mas_song_memories_of_a_girl:
     m 5ekbsa "I think about you every night, [player]."
     m 5ekbfa "And I know you think about me too."
     return "derandom"
-    
+
 init 5 python:
     addEvent(
         Event(
