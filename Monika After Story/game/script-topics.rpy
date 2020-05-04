@@ -11460,7 +11460,7 @@ label monika_player_appearance:
                         $ persistent._mas_pm_hair_color = "black"
 
                         m 2wuo "Black hair is so beautiful!"
-                        m 3eub "You know, there's this really irritating trope about people with black hair have a more prickly or ill-tempered personality than others..."
+                        m 3eub "You know, there's this really irritating trope about people with black hair having a more prickly or ill-tempered personality than others..."
                         m 4hub "But you've obviously disproven that myth. Personally, I think black hair is very attractive."
                         m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you'd find that it's not even a hundred percent dark."
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
