@@ -175,8 +175,10 @@ label monika_idle_shower_callback:
 
     else:
         m 1hua "I hope you had a nice shower."
-        m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
-        m 1hub "Ahaha!"
+
+        if mas_getEV("monika_idle_shower").shown_count == 0:
+            m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
+            m 1hub "Ahaha!"
     return
 
 label bye_brb_shower_timeout:
