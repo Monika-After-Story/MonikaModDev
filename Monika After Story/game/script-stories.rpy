@@ -456,7 +456,7 @@ label mas_story_fisherman:
     call mas_story_begin
     m 1euc "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
     m 1eud "The Fisherman was about to put it in his basket when the little Fish spoke."
-    m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal!'"
+    m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worthwhile to carry me home. When I am bigger, I shall make you a much better meal!'"
     m 1eud "But the Fisherman quickly put the fish into his basket."
     m 3tfu "'How foolish I should be,' he said, 'to throw you back. However small you may be, you are better than nothing at all.'"
     m 3esa "The moral of this story is, a small gain is worth more than a large promise."
