@@ -6200,7 +6200,7 @@ label monika_daydream:
 
         #Player appearance related thing
         if not persistent._mas_pm_hair_length == "bald":
-            daydream_quips_enamplus.append("me gently playing with your hair while your head rests my lap...")
+            daydream_quips_enamplus.append("me gently playing with your hair while your head rests in my lap...")
 
         #Pick the quip
         if mas_isMoniEnamored(higher=True):
