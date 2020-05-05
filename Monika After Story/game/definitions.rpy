@@ -4272,14 +4272,6 @@ init -985 python:
         """
         return store.mas_globals.tt_detected
 
-
-init -101 python:
-    import os
-
-    # TODO: we should move this to utils at some point.
-
-
-
 init -1 python:
     import datetime # for mac issues i guess.
 
