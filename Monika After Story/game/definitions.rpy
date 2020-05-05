@@ -4272,6 +4272,14 @@ init -985 python:
         """
         return store.mas_globals.tt_detected
 
+init -101 python:
+    def is_file_present(filename):
+        """DEPRECIATED
+
+        Use mas_utils.is_file_present instead
+        """
+        return store.mas_utils.is_file_present(filename)
+
 init -1 python:
     import datetime # for mac issues i guess.
 
@@ -4308,7 +4316,6 @@ init -1 python:
                 pass
         return []
 
-
     def is_running(proc_list):
         """
         Checks if a process in the given list is currently running.
@@ -4326,10 +4333,8 @@ init -1 python:
         # otherwise, not found
         return False
 
-
     def is_apology_present():
         return store.mas_utils.is_file_present('/characters/imsorry') or store.mas_utils.is_file_present('/characters/imsorry.txt')
-
 
     def mas_cvToHM(mins):
         """
@@ -4344,7 +4349,6 @@ init -1 python:
                 [1] - minutes
         """
         return (int(mins / 60), int(mins % 60))
-
 
     def mas_isSTtoAny(_time, _suntime, _hour, _min):
         """
@@ -4369,7 +4373,6 @@ init -1 python:
         _upper_minutes = (_hour * 60) + _min
         return _suntime <= _curr_minutes < _upper_minutes
 
-
     def mas_isSRtoAny(_time, _hour, _min=0):
         """
         Checks if the given time is within Sunrise time to the given _hour
@@ -4390,7 +4393,6 @@ init -1 python:
         """
         return mas_isSTtoAny(_time, persistent._mas_sunrise, _hour, _min)
 
-
     def mas_isSStoAny(_time, _hour, _min=0):
         """
         Checks if the given time is within sunset to the given _hour and minute
@@ -4409,7 +4411,6 @@ init -1 python:
             hour/min, False otherwise
         """
         return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
-
 
     def mas_isMNtoAny(_time, _hour, _min=0):
         """
@@ -4431,7 +4432,6 @@ init -1 python:
         """
         return mas_isSTtoAny(_time, 0, _hour, _min)
 
-
     def mas_isNtoAny(_time, _hour, _min=0):
         """
         Checks if the given time is within noon to the given hour/min.
@@ -4450,7 +4450,6 @@ init -1 python:
             /min, False otherwise
         """
         return mas_isSTtoAny(_time, 12*60, _hour, _min)
-
 
     def mas_isAnytoST(_time, _hour, _min, _suntime):
         """
@@ -4475,7 +4474,6 @@ init -1 python:
         _lower_minutes = (_hour * 60) + _min
         return _lower_minutes <= _curr_minutes < _suntime
 
-
     def mas_isAnytoSR(_time, _hour, _min=0):
         """
         Checks if the given time is within a given hour and minute to sunrise
@@ -4496,7 +4494,6 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunrise)
 
-
     def mas_isAnytoSS(_time, _hour, _min=0):
         """
         Checks if the given time is within a given hour/min to sunset time
@@ -4515,7 +4512,6 @@ init -1 python:
             and sunset, False otherwise
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
-
 
     def mas_isAnytoMN(_time, _hour, _min=0):
         """
@@ -4538,7 +4534,6 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, 24*60)
 
-
     def mas_isAnytoN(_time, _hour, _min=0):
         """
         Checks if the given time is within a given hour/min to noon.
@@ -4558,7 +4553,6 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, 12*60)
 
-
     def mas_isMNtoSR(_time):
         """
         Checks if the given time is within midnight to sunrise
@@ -4570,7 +4564,6 @@ init -1 python:
         RETURNS: True if the given time is within midnight to sunrise
         """
         return mas_isAnytoSR(_time, 0)
-
 
     def mas_isSRtoN(_time):
         """
@@ -4584,7 +4577,6 @@ init -1 python:
         """
         return mas_isSRtoAny(_time, 12)
 
-
     def mas_isNtoSS(_time):
         """
         Checks if the given time is within noon to sunset
@@ -4596,7 +4588,6 @@ init -1 python:
         RETURNS: True if the given time is within noon to sunset
         """
         return mas_isAnytoSS(_time, 12)
-
 
     def mas_isSStoMN(_time):
         """
@@ -4610,13 +4601,11 @@ init -1 python:
         """
         return mas_isSStoAny(_time, 24)
 
-
     def mas_isSunny(_time):
         """DEPRECATED
         Use mas_isDay instead
         """
         return mas_isDay(_time)
-
 
     def mas_isDay(_time):
         """
@@ -4631,7 +4620,6 @@ init -1 python:
         _curr_mins = (_time.hour * 60) + _time.minute
         return persistent._mas_sunrise <= _curr_mins < persistent._mas_sunset
 
-
     def mas_isDayNow():
         """
         Checks if the sun would be up right now
@@ -4639,7 +4627,6 @@ init -1 python:
         RETURNS: True if the sun would be up now, False if not
         """
         return mas_isDay(datetime.datetime.now().time())
-
 
     def mas_isNight(_time):
         """
@@ -4653,7 +4640,6 @@ init -1 python:
         """
         return not mas_isDay(_time)
 
-
     def mas_isNightNow():
         """
         Checks if the sun is down right now
@@ -4661,7 +4647,6 @@ init -1 python:
         RETURNS: True if it is night now, False if not
         """
         return not mas_isDayNow()
-
 
     def mas_cvToDHM(mins):
         """
@@ -4677,7 +4662,6 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-
 
     def mas_genDateRange(_start, _end):
         """
@@ -4706,7 +4690,6 @@ init -1 python:
 
         return _date_range
 
-
     def mas_EVgenYDT(_start, _end, for_start):
         """
         Creates a valid start or end datetime for Event creation, given the
@@ -4729,7 +4712,6 @@ init -1 python:
             datetime.datetime.now(),
             for_start
         )
-
 
     def mas_EVgenYD(
             _start,
@@ -4760,9 +4742,6 @@ init -1 python:
             ),
             _time
         )
-
-
-
 
     def mas_isSpecialDay():
         """
