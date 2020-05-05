@@ -14134,7 +14134,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_movie_adaptations",
-            category=['misc'],
+            category=['media','literature'],
             prompt="Movie adaptations",
             random=True
         )
@@ -14142,25 +14142,26 @@ init 5 python:
 
 label monika_movie_adaptations:
     m 1esc "I've always had mixed feelings about movie adaptations of books I read..."
-    m 3eub "A lot of what I watch is based on works I already enjoy, you know? I'm curious about seeing someone else's take on them!"
-    m 1ruc "Even if more often than not, I know I'll walk out feeling a bit bitter about what I just watched..."
-    m 3rfc "Like, there's this scene I liked in the book that didn't make it in, or there's that character who was portrayed differently from how I imagined it!"
-    m 3hksdlb "It's just so frustrating! It's like all the love and care you poured into your vision of the book is suddenly invalidated!"
-    m 3rsc "All in favor of a new version which may not be as good, but still present itself as canon."
-    m 1rksdlb "I guess that would make me a picky spectator sometimes~"
-    m 3wud "Don't get me wrong! I realize why changes have to be made in movies like that."
-    m 3eua "An adaptation can't be just a copy-paste of its source material, it's a rewriting of it."
-    m 4hub "It's just plain not possible to cram everything from a two hundred pages book in a two hours movie!"
-    m 4eud "Not to mention something that works well in a novel won't always translate well to the big screen..."
-    m 2eud "With this in mind, there's one question I like to ask myself when I judge an adaptation..."
-    m 2euc "If the source material did not exist, would the new version still hold up?"
-    m 2hfb "Bonus points if you manage to capture the feeling of the original!"
-    m 2esa "Loose adaptations are pretty interesting in that sense."
-    m 3esb "You know, stories that keep the core elements and themes of the original while changing the characters and setting of the story."
-    m 3esa "Since they don't conflict with your own interpretation, they don't make you feel as personally attacked."
-    m 3hub "It's a great way to build upon the original in ways you might not have thought of before!"
-    m 1rtc "Maybe that's what I'm looking for when I look at an adaptation... to explore further upon those stories I love..."
-    m 1rublsdla "Though getting a version to satisfy my inner fan could be nice too, ehehe~"
+    m 3eub "A lot of what I watch is based on works I already enjoy and I'm excited to see that story come to life!"
+    m 2rsc "...Even if more often than not, I know I'll walk out feeling a bit bitter about what I just watched."
+    m 2rfc "Like, there's this scene I liked in the book that didn't make it in, or there's that character who was portrayed differently from how I imagined it."
+    m 4efsdld "It's just so frustrating! {w=0.3}It's like all the love and care you poured into your vision of the book is suddenly invalidated!"
+    m 4rkc "...All in favor of a new version which may not be as good, but still presents itself as canon."
+    m 2hksdlb "I guess that would make me a picky spectator sometimes, ahaha!"
+    m 7wud "Don't get me wrong, though! {w=0.3}{nw}"
+    extend 7eua "I realize why changes have to be made in these types of movies."
+    m 3eud "An adaptation can't be just a copy-paste of its source material; it's a rewriting of it."
+    m 1hub "It's just plain not possible to cram everything from a two hundred page book into a two hour movie!"
+    m 3euc "...Not to mention something that works well in a novel won't always translate well to the big screen."
+    m 1eud "With that in mind, there's one question I like to ask myself when I judge an adaptation..."
+    m 3euc "If the source material did not exist, would the new version still hold up?"
+    m 3hub "...Bonus points if you manage to capture the feeling of the original!"
+    m 1esa "Loose adaptations are pretty interesting in that sense."
+    m 3eud "You know, stories that keep the core elements and themes of the original while changing the characters and setting of the story."
+    m 1eua "Since they don't conflict with your own interpretation, they don't make you feel as personally attacked."
+    m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
+    m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
+    m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
     return
 
 init 5 python:
