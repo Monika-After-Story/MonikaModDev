@@ -4832,59 +4832,114 @@ init -1 python:
         # otherwise we passed the cases
         return True
 
-
     def get_pos(channel='music'):
+        """
+        Gets the current position in what's playing on the provided channel
+
+        IN:
+            channel - The channel to get the sound position for
+                (Default: 'music')
+        """
         pos = renpy.music.get_pos(channel=channel)
-        if pos: return pos
+        if pos:
+            return pos
         return 0
+
     def delete_all_saves():
+        """
+        Deletes all saved states
+        """
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
+
     def delete_character(name):
-        if persistent.do_not_delete: return
-        import os
-        try: os.remove(config.basedir + "/characters/" + name + ".chr")
-        except: pass
+        """
+        Deletes a .chr file for a character
+
+        IN:
+            name of the character who's chr file we want to delete
+        """
+        if persistent.do_not_delete:
+            return
+
+        try:
+            os.remove(config.basedir + "/characters/" + name + ".chr")
+
+        except:
+            pass
+
     def pause(time=None):
+        """
+        Pauses for the given amount of time
+
+        IN:
+            time - The time to pause for. If None, a pause until the user progresses is assumed
+                (Default: None)
+        """
         if not time:
             renpy.ui.saybehavior(afm=" ")
             renpy.ui.interact(mouse='pause', type='pause', roll_forward=None)
             return
-        if time <= 0: return
+
+        #Verify valid time
+        if time <= 0:
+            return
+
         renpy.pause(time)
 
         # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
+        """
+        Gets installed steam application IDs from the main steam install directory
+
+        OUT:
+            List of application IDs
+
+        NOTE: Does NOT work if the user has edited their game install directory for windows at all
+        """
         installPath=""
         if renpy.windows:
             import _winreg    # mod specific
             # Grab first steam installation directory
             # If you're like me, it will miss libraries installed on another drive
             aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
+
             try:
                 # Check 32 bit
                 keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam")
+
             except:
                 # Check 64 bit
                 try:
                    keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
+
                 except:
                    # No Steam
                    return None
+
             for i in range(4):
                 # Value Name, Value Data, Value Type
                 n,installPath,t = _winreg.EnumValue(keyVal, i)
-                if n=="InstallPath": break
+                if n=="InstallPath":
+                    break
+
             installPath+="/steamapps"
+
         elif renpy.mac:
             installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
+
         elif renpy.linux:
             installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
             # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program?
+
+        #Ideally we should never end up here, but in the case we do, we should prevent any work from being done
+        #That's not necessary
         else:
             return None
+
         try:
             appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
+
         except:
             appIds = None
         return appIds
