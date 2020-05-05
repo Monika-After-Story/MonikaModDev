@@ -3690,6 +3690,19 @@ init -991 python in mas_utils:
             return macLogOpen(name, append=append, developer=developer, flush=flush)
         return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
 
+    def is_file_present(filename):
+        """
+        Checks if a file is present
+        """
+        if not filename.startswith("/"):
+            filename = "/" + filename
+
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
 
     # unstable should never delete logs
     if store.persistent._mas_unstable_mode:
@@ -3700,6 +3713,7 @@ init -991 python in mas_utils:
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
     mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
+
 
 
 init -100 python in mas_utils:
@@ -4263,16 +4277,7 @@ init -101 python:
     import os
 
     # TODO: we should move this to utils at some point.
-    def is_file_present(filename):
-        if not filename.startswith("/"):
-            filename = "/" + filename
 
-        filepath = renpy.config.basedir + filename
-
-        try:
-            return os.access(os.path.normcase(filepath), os.F_OK)
-        except:
-            return False
 
 
 init -1 python:
@@ -4331,7 +4336,7 @@ init -1 python:
 
 
     def is_apology_present():
-        return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
+        return store.mas_utils.is_file_present('/characters/imsorry') or store.mas_utils.is_file_present('/characters/imsorry.txt')
 
 
     def mas_cvToHM(mins):
