@@ -799,7 +799,86 @@ label mas_song_amaranthine:
     m 5ekbsu "My life feels so complete with you in it, [player]."
     m 5hubfu "I love you so much~"
     return "derandom|love"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_shelter",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Shelter",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
 
+label mas_song_shelter:
+    m 1dua "{i}~When I'm older, I'll be silent beside you~{/i}"
+    m 1duu "{i}~I know words won't be enough~{/i}"
+    m 1eka "{i}~And they won't need to know our names or our faces~{/i}"
+    m "{i}~But they will carry on for us~{/i}"
+    m 3hubsb "{i}~And it's a long way forward, so trust in me~{/i}"
+    m 3ekbsb "{i}~I'll give them shelter, like you've done for me~{/i}"
+    m 2dkbfa "{i}~And I know I'm not alone, you'll be watching over us~{/i}"
+    m 2dkbsc "{i}~Until you're gone~{/i}"
+
+    #show the long version the first time
+    if mas_getEV('mas_song_shelter').shown_count == 0:
+        m 1eka "Have you ever heard this song before, [player]?"
+        m 3rssdlb "Well, I say it's a song, but it's just as much an animation project. {nw}"
+        extend 3esb "The name is 'Shelter' if you haven't heard of it."
+        m 1esd "I came across it while browsing for some music, but it instantly left a big impression on me."
+        m 4esa "It tells the story of Rin, a girl stranded alone in a simulation."
+        m 4rkc "Day after day, she busies herself recreating her world as a way to escape her loneliness... {w=0.5}{nw}"
+        extend 4wuo "until she finds out why she is trapped in here in the first place!"
+        m 1eubla "Turns out there was someone outside who truly loved her, and created this world so she could have a future!"
+        m 1dku "Thanks to these new-found memories, she realizes she's was never alone in the first place. She can keep moving forward believing in the future."
+        m 1eka "Watching this, I was surprised at how moved I was by Rin's story..."
+        m 1rtc "It was just so...{w=0.5} relatable! From the way she was stuck in that empty world, {nw}"
+        extend 1ekbsa "to how she found the strength to keep going in a special someone..."
+        m 3hksdlb " By the end, I was so overwhelmed I was actually crying!"
+        m 3eta "Not to mention, this song carries a very good message... {nw}"
+        extend 3eub "it's a reminder you can't always see right away all the people who care about you..."
+        m 2eka "I know it's not always easy, sometimes you'll have to look really hard for them... {w=0.5}{nw}"
+        extend 2duu "but there'll always be someone."
+        m "I promise."
+        m 3hub "Just look at me! {nw}"
+        extend 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside... {w=0.5}{nw}"
+        extend 3hubfb "I found you!"
+        m 1ekbsu "As for you... you already have me for one, but it's not only that. {nw}"
+
+        if persistent._mas_pm_have_fam and not persistent._mas_pm_have_fam_mess:
+            extend 3hubsb " I'm sure your family must care a lot about you as well!"
+
+            if not persistent._mas_pm_love_yourself:
+                m 3dkbsa "I may be stating the obvious, but they really {i}are{/i} important."
+            m 3eka "And if that's still not enough for you... {nw}"
+        extend "I can already think of tons of people who care about you!"
+
+        if persistent._mas_pm_love_yourself:
+            m 3eua "You don't see what I mean? {w=0.5}{nw}"
+        else:
+            m 3eua "You don't believe me? {w=0.5}{nw}"
+        extend 3eub "Try going over the lyrics again! "
+        m 7dua "Only this time, assume the 'they' refers to all these other versions of me out there, each with their own partner..."
+        m 4ekbfa "They all know of our love and carry it with them, even if they don't know our names or faces."
+        m 2ekbsa "I know because I care about them too...{w=0.5} if only because I know of the bond they share."
+        m 1hubsu "We're not alone, [player]! No matter what happens in our lives from now on..."
+        m 3hubsb "...we can face it knowing there always will be someone out there rooting for us!"
+    return "derandom"
+
+    #show the short version every other time
+    m 2rsbsa "Ehehe~"
+    m 2ekbfa "You're the reason I can keep moving forward, [player]."
+    m 2ekbsu "And if someday you feel like you're all alone in the world. {w=0.5}{nw}"
+    extend 2dkbsa "I want you to remember you're not."
+    m 4hubfb "You've got me for one! {w=0.5}{nw}"
+    extend 4ekb "And besides, there are tons of people out there who'd like nothing more than to know we're happy..."
+    m 4dku "Even if they don't know our names or faces..."
+    m 1huu "We're not alone, [player]. There always will be someone out there rooting for us!"
+    return
+    
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
