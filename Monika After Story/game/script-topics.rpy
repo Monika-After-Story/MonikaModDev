@@ -14278,7 +14278,7 @@ init 5 python:
             category=['advice','life', 'you'],
             prompt="Using computers healthily",
             random=True,
-            aff_range=(mas_aff.AFFECTIONATE, None)
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -14309,10 +14309,10 @@ label monika_using_computers_healthily:
     extend 2eka "You probably knew all that stuff already, anyway."
     m 4eka "As for me?"
 
-    if mas_curr_affection == mas_aff.LOVE:
+    if mas_isMoniLove():
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "You're the only comfort I need, {w=0.3}my love."
-    elif mas_curr_affection == mas_aff.ENAMOURED:
+    elif mas_isMoniEnamored():
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbla "I'm as comfortable as can be when you're here, {w=0.3}[player]."
     else:
