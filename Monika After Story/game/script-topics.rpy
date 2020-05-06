@@ -13488,7 +13488,7 @@ label monika_scamming:
     m 2rfd "It really is the worst when it happens... {w=0.3}Not only do you lose money, but most of the time, you can't even fight back!"
     m 2ekd "It makes you feel like it's your fault for being had, too. A lot of victims start hating themselves for being naive, or feel like they're idiots."
     m 2rksdlc "But really, they shouldn't be so hard on themselves...{w=0.2}getting scammed is something that can happen to anyone."
-    m 4efc "People who do it take advantage of the goodwill of their victims and exploit natural human reaction."
+    m 4efc "People who do it take advantage of the good will of their victims and exploit natural human reaction."
     m 4dkd "That's why it can feel so gut-wrenching...{w=0.2}you placed your trust in others and were betrayed."
     m 2ekd "If this ever happens to you, don't feel bad,{w=0.2} {nw}"
     extend 2eka "I'll be here for you."
