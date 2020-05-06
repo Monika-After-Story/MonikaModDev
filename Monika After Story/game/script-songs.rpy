@@ -833,7 +833,7 @@ label mas_song_shelter:
         m 4rkc "Day after day, she busies herself recreating her world as a way to escape her loneliness... {w=0.5}{nw}"
         extend 4wuo "until she finds out why she is trapped in here in the first place!"
         m 1eubla "Turns out there was someone outside who truly loved her, and created this world so she could have a future!"
-        m 1dku "Thanks to these new-found memories, she realizes she's was never alone in the first place. She can keep moving forward believing in the future."
+        m 1dku "Thanks to these new-found memories, she realizes she was never alone in the first place. She can keep moving forward believing in the future."
         m 1eka "Watching this, I was surprised at how moved I was by Rin's story..."
         m 1rtc "It was just so...{w=0.5} relatable! From the way she was stuck in that empty world, {nw}"
         extend 1ekbsa "to how she found the strength to keep going in a special someone..."
