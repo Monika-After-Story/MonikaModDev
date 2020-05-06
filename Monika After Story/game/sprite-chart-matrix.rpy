@@ -7,6 +7,39 @@ python early:
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
 
+    class MASFilterException(Exception):
+        """
+        General filter exceptions
+        """
+
+        def __init__(self, msg):
+            """
+            Constructor
+
+            IN:
+                msg - messgae to show
+            """
+            self.msg = msg
+
+        def __str__(self):
+            return self.msg
+
+
+    class MASInvalidFilterException(MASFilterException):
+        """
+        Use when an invalid filter is being used
+        """
+
+        def __init__(self, bad_flt):
+            """
+            Constructor
+
+            IN:
+                bad_flt - the invalid filter being used
+            """
+            self.msg = "'{0}' is not a valid filter".format(bad_flt)
+
+
     class MASFilterable(renpy.Displayable):
         """
         Special displayable that adjusts its image based on filter.

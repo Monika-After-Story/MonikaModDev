@@ -4,14 +4,35 @@ default persistent._mas_background_MBGdata = {}
 #START: Class definition
 init -10 python:
 
-    class MASBackgroundFilter(object):
+    class MASBackgroundFilterTypeException(Exception):
+        """
+        Type exception for MASBackgroundFilter objects
+        """
+
+        def __init__(self, obj, mbf_type):
+            """
+            Constructor
+
+            IN:
+                obj - object that was not what we expected
+                mbf_type - type we expected
+            """
+            self.msg = "{0} is not of {1}".format(obj, mbf_type)
+
+        def __str__(self):
+            """
+            String
+            """
+            return self.msg
+
+    class MASBackgroundFilterSlice(object):
         """
         Represntation of a filter for a MASBackground.
         this is related to the sprite filters, but gives each filter extra
         oomph. 
 
         BG filters are designed to be flexible to work with BGs.
-        See the MASBackgroundFilterManager for more info on how this works.
+        See the MASBackgroundFilterChunk for more info on how this works.
 
         PROPERTIES:
             name - the name of this filter. This should be a filter ENUM.
@@ -26,6 +47,9 @@ init -10 python:
                 if this is None, it is assumed the filter data is handled
                 elsewhere.
         """
+        cache = {}
+        # internal cache of MASBackgroundFilterSlice objects to avoid
+        #   building duplicates.
 
         def __init__(self, name, minlength, priority=10, flt=None):
             """
@@ -49,6 +73,35 @@ init -10 python:
             self.priority = priority
             self.flt = flt
 
+            # store in cache
+            self.cache[hash(self)] = self
+
+        def __eq__(self, other):
+            """
+            EQ implementation.
+            Based on hash
+            """
+            if isinstance(self, other.__class__):
+                return hash(self) == hash(other)
+            return False
+
+        def __hash__(self):
+            """
+            Hash implementation. FilterSlices are unique based on name,
+            minlength and priority
+            """
+            return MASBackgroundFilterSlice.gen_hash(
+                self.name,
+                self.minlength,
+                self.priority
+            )
+
+        def __ne__(eslf, other):
+            """
+            Not equals implementation
+            """
+            return not self.__eq__(other)
+
         def add_to_filters(self):
             """
             Adds this filter to the filters dict. Wil fail and log if used
@@ -57,6 +110,27 @@ init -10 python:
             """
             if self.flt is not None:
                 store.mas_sprites.add_filter(self.name, self.flt)
+
+        @classmethod
+        def cachecreate(cls, name, minlength, priority=10, flt=None):
+            """
+            Builds a MASBackgroundFilterSlice unless we have one in cache
+
+            IN:
+                See Constructor
+
+            RETURNS: MASBackgroundFilterSlice object
+            """
+            hash_key = cls.gen_hash(name, minlength, priority)
+            if hash_key in cls.cache:
+                return cls.cache[hash_key]
+
+            return MASBackgroundFilterSlice(
+                name,
+                minlength,
+                priority=priority,
+                flt=flt
+            )
 
         def can_fit(self, seconds):
             """
@@ -82,6 +156,21 @@ init -10 python:
             """
             return self.minlength <= int(td.total_seconds())
 
+        @staticmethod
+        def gen_hash(name, minlength, priority):
+            """
+            Generates a hash of the components of a MASBackgroundFilterSlice
+
+            IN:
+                name - name to use
+                minlength - minlength to use
+                priority - priority to use
+
+            RETURNS: hash of the object that would be created with the given
+                properties.
+            """
+            return hash("-".join((name, minlength, priority)))
+
         def verify(self):
             """
             Verifies if this filter's name is a valid filter. Call this
@@ -92,44 +181,49 @@ init -10 python:
             return store.mas_sprites.is_filter(self.name)
 
 
-    class MASBackgroundFilterManager(object):
+    class MASBackgroundFilterChunk(object):
         """
-        Filter Management class for backgrounds
+        Chunk of filters for backgrounds.
 
-        The BG filter system slices a day into a set of ranges for a filter
-        to be used on. The ranges done in a way where slices are intelligently
-        picked depending on the suntimes. This allows for handling of cases
-        where there isn't enough time for each slice to exist.
+        A BG filter chunk is a set of slices that represent a progression
+        of filters througout the time range. The slices are handled in a way
+        where they are intelligently picked depending on suntimes. This allows
+        for handling of cases where there isn't enough time for each slice to
+        exist.
 
-        Each slice is a MASBackgroundFilter object that has a minlength. That
-        minimum length is used to determine if an object can fit in its 
-        allocated time slice. Priorities of each object is used to determine
-        which slices to keep. By default we try to keep every slice we can.
+        Each slice is a MASBackgroundFilterSlice object. The minlength property
+        is used to determine if the object canfit in its allocated time slice.
+        Priorities are used to determine the slices to keep. By default we
+        try to keep every slice we can.
 
-        Slices are defined by a datetime.time to change to the that filter.
-        Slices start at midnight, which is the base slice. This slice by
-        default will always take priority over any other slice.
+        Slices are organized by an offset. The offset value is the number of
+        seconds from the start of the chunk to start showing the filter.
+        The base slice is the initial filter to show for a chunk, and will
+        always take priority over any other slice.
 
         Code can be ran during a filter change by passing in function to 
         appropriate param. Any exceptions are caught and loggged.
 
         PROPERTIES:
-            None
+            is_day - True if this is a day chunk, False if not
         """
 
-        def __init__(self, mn_flt, *slices, pp=None):
+        def __init__(self, is_day, base_slice, *slices, pp=None):
             """
             Constructor
 
             IN:
-                mn_flt - the base (midnight) filter. priority here is ignored,
-                    defaulting to the highest priority.
+                is_day - True if this is a "Day" chunk. False if not
+                base_slice - the initial filter slice to use.
+                    This defaults to the highest priority.
                 *slices - slice arguments. There should be an even number of
                     these. Each slice is a set of two args:
-                        - 1st arg should be a datetime.time
-                            (any duplicate times will override existing data
-                            and will be logged)
-                        - 2nd arg should be a MASBackgroundFilter
+                        - 1st arg should be an integer, the desired number of
+                            seconds since the start of the chunk to 
+                            switch to this filter. Duplicates are 
+                            logged and overwritten.
+                            Offsets of zero are logged and ignored.
+                        - 2nd arg should be a MASBackgroundFilterSlice
                 pp - progpoint to run on a filter change (or slice change)
                     the following args are passed to the progpoint:
                         flt_old - the outgoing filter 
@@ -137,10 +231,15 @@ init -10 python:
                         curr_time - the current time
                     (Default: None)
             """
-            if not isinstance(mn_flt, MASBackgroundFilter):
-                raise Exception("Expected MASBackgroundFilter object")
+            if not isinstance(base_slice, MASBackgroundFilterSlice):
+                raise MASBackgroundFilterTypeException(
+                    base_slice,
+                    MASBackgroundFilterSlice
+                )
 
-            self._mn_flt = mn_flt
+            self.is_day = is_day
+
+            self._base_slice = base_slice
             # base filter
 
             self._times = {}
@@ -162,18 +261,17 @@ init -10 python:
 
             self._parse_slices(slices)
 
-        def build(self, sunrise, sunset):
+        def build(self, length):
             """
-            Builds the effective slices array using the given suntimes as 
+            Builds the effective slices array using the given length as
             guidance.
 
-            slices are built in a greedy fashion starting from midnight.
+            slices are built in a greedy fashion starting from 0
 
             IN:
-                sunrise - time for sunrise as number of minutes from midnight
-                sunset - time for sunset as number of minutes from midnight
+                length - the amount of seconds this chunk encompasses
             """
-            # TODO: i need to know if a filter should be day or night!
+            # TODO: complex alg
 
 
         def filters(self):
@@ -197,23 +295,81 @@ init -10 python:
             if len(slices) % 2 != 0:
                 raise Exception("slice count should be even")
 
-            for change_time, bg_flt in zip(slices[0::2], slices[1::2]):
-                if not isinstance(change_time, datetime.time):
-                    raise Exception("Expected datetime.time object")
-                if not isinstance(bg_flt, MASBackgroundFilter):
-                    raise Exception("Expected MASBackgroundFilter object")
+            for offset, bg_flt in zip(slices[0::2], slices[1::2]):
+                if not isinstance(bg_flt, MASBackgroundFilterSlice):
+                    raise MASBackgroundFilterTypeException(
+                        base_slice,
+                        MASBackgroundFilterSlice
+                    )
 
-                # add to times and slices
-                self._times[change_time] = bg_flt
-                store.mas_utils.insert_sort_keyless(self._slices, change_time)
+                if offset in self._times:
+                    # log the issue
+                    store.mas_utils.writelog(
+                        "Duplicate offset {0} for filter '{1}'\n".format(
+                            offset,
+                            bg_flt.name
+                        )
+                    )
 
-        def verify(self, day, night):
+                if offset > 0:
+                    # add to times and slices
+                    self._times[offset] = bg_flt
+                    store.mas_utils.insert_sort_keyless(self._slices, offset)
+
+                else:
+                    # log a zero offset
+                    store.mas_utils.writelog(
+                        "Zero offset found for filter '{0}', ignoring...\n".format(
+                            bg_flt.name
+                        )
+                    )
+
+        def verify(self):
             """
             Verifies the filters in this filter manager.
             Assumed to be called at least at init level 0
-            Filters should all exist and the filter times should be ordered
-            such that we start with a night, then move to day, then back to
-            night.
+            Filters should all exist.
+
+            Exceptions are raised if a bad filter is found.
+            """
+            for flt in self._times.itervalues():
+                if not flt.verify():
+                    raise MASInvalidFilterException(flt.name)
+
+    class MASBackgroundFilterManager(object):
+        """
+        Filter Management class for backgrounds.
+
+        The BG filter system slices a day into 3 chunks.
+        these chunks correspond to the suntimes system.
+        MidNight to SunRise (MN - SR)
+        SunRise to SunSet (SR - SS)
+        SunSet to MidNignt (SS - MN)
+
+        Each chunk is marked day/night, and is used when determining if a 
+        filter is day or night. This means two separate chunks with different
+        day/night settings can NOT contain same filters. If you need the same
+        filter content to be considerd day AND night, make two separate filter
+        enums. This is to avoid ambiguities.
+
+        PROPERTIES:
+            None
+        """
+
+        def __init__(self, mn_sr, sr_ss, ss_mn, pp=None):
+            """
+            Constructor
+
+            IN:
+                mn_sr - MASBackgroundFilterChunk for midnight to sunrise
+                sr_ss - MASBackgroundFilterChunk for sunrise to sunset
+                ss_mn - MASBackgroundFilterChunk for sunset to midnight
+                pp - progpoint to run on a chunk change
+                    the following args ar epassed to the progpoint:
+                        chunk_old - the outgoing chunk
+                        chunk_new - the incoming chunk
+                        curr_time - the current time
+                    (Default: None)
             """
             # TODO
 
