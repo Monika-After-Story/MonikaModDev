@@ -245,7 +245,7 @@ label monika_sing_song_analysis:
             which = "Which"
 
     show monika 1eua at t21
-    $ renpy.say(m, "[which] song would you like me to sing?", interact=False)
+    $ renpy.say(m, "[which] song would you like to talk about?", interact=False)
 
     call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
@@ -291,7 +291,7 @@ label monika_sing_song_random:
             mas_unlockEVL(rand_song + "_analysis", "SNG")
 
             #If we have unlocked analyses for our current aff level, let's unlock the label
-            if hasUnlockedSongAnalyses():
+            if store.mas_songs.hasUnlockedSongAnalyses():
                 mas_unlockEVL("monika_sing_song_analysis", "EVE")
 
     #We have no songs! let's pull back the shown count for this and derandom
