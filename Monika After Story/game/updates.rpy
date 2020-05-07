@@ -383,6 +383,14 @@ label v0_11_3(version="v0_11_3"):
             ):
                 song_ev.random=True
 
+        # give extra pool unlocks for recent players
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only 0.11.0 + week ago
+
+            # NOTE: multiply by 4 becaue everyone should already have level
+            #   number of pool unlocks given
+            persistent._mas_pool_unlocks += store.mas_xp.level() * 4
+
     return
 
 #0.11.1

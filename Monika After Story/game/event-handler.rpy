@@ -3,6 +3,9 @@
 #   persistent.event_list
 #   persistent.current_monikatopic
 
+# keep track of number of pool unlocks
+default persistent._mas_pool_unlocks = 0
+
 # NOTE: proof oc concept
 # transform to have monika just chill
 image monika_waiting_img:
@@ -1946,34 +1949,43 @@ init python:
         return cleaned_list
 
 
-    def mas_unlockPrompt():
+    def mas_unlockPrompt(count=1):
         """
         Unlocks a pool event
+
+        IN:
+            count - number of pool events to unlock
+                (Default: 1)
 
         RETURNS:
             True if an event was unlocked. False otherwise
         """
-        pool_events = Event.filterEvents(
-            evhand.event_database,
-            unlocked=False,
-            pool=True
-        )
-        pool_event_keys = [
-            evlabel
-            for evlabel in pool_events
-            if "no unlock" not in pool_events[evlabel].rules
+        # get locked pool topics that are not banned from unlocking
+        pool_evs = [
+            ev
+            for ev in evhand.event_database.itervalues()
+            if (
+                Event._filterEvent(ev, unlocked=False, pool=True)
+                and "no unlock" not in ev.rules
+            )
         ]
+        u_count = count
 
-        if len(pool_event_keys)>0:
-            sel_evlabel = renpy.random.choice(pool_event_keys)
+        # unlock until we out of available ones or unlock credits
+        while len(pool_evs) > 0 and u_count > 0:
+            ev_index = renpy.random.randint(0, len(pool_evs)-1)
+            ev = pool_evs.pop(ev_index)
+            mas_unlockEvent(ev)
+            ev.unlock_date = datetime.datetime.now()
+            u_count -= 1
 
-            evhand.event_database[sel_evlabel].unlocked = True
-            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
+        # save remaining to pool unlocks
+        if u_count > 0:
+            persistent._mas_pool_unlocks += u_count
 
-            return True
-
-        # otherwise we didnt unlock anything because nothing available
-        return False
+        # determine return value
+        # if these are different, then we unlocked something
+        return u_count != count
 
 
 init 1 python in evhand:
@@ -2150,20 +2162,6 @@ label call_next_event:
         show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
 
     return False
-
-# keep track of number of pool unlocks
-default persistent._mas_pool_unlocks = 0
-
-# This either picks an event from the pool or events or, sometimes offers a set
-# of three topics to get an event from.
-label unlock_prompt:
-    python:
-        if not mas_unlockPrompt():
-            # we dont have any unlockable pool topics?
-            # lets count this so we can use it later
-            persistent._mas_pool_unlocks += 1
-
-    return
 
 #The prompt menu is what pops up when hitting the "Talk" button, it shows a list
 #of options for talking to Monika, including the ability to ask her questions

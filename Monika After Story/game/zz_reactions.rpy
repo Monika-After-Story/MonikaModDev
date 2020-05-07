@@ -996,14 +996,14 @@ init python:
                 None
             )
             if giftname is None:
-                return (None, None, None, None)
+                return (None, None, None, None, None)
 
         elif len(persistent._mas_filereacts_sprite_reacted) > 0:
             sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
             giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
 
         else:
-            return (None, None, None, None)
+            return (None, None, None, None, None)
 
         # check if this gift has already been gifted
         gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
