@@ -225,8 +225,6 @@ init 5 python:
             eventlabel="monika_sing_song_analysis",
             prompt="Can you explain a song for me?",
             category=["music"],
-            conditional="store.mas_songs.hasUnlockedSongAnalyses()",
-            action=EV_ACT_UNLOCK,
             pool=True,
             unlocked=False,
             aff_range=(mas_aff.NORMAL, None),
@@ -291,6 +289,10 @@ label monika_sing_song_random:
 
             #And unlock the analysis of the song
             mas_unlockEVL(rand_song + "_analysis", "SNG")
+
+            #If we have unlocked analyses for our current aff level, let's unlock the label
+            if hasUnlockedSongAnalyses():
+                mas_unlockEVL("monika_sing_song_analysis", "EVE")
 
     #We have no songs! let's pull back the shown count for this and derandom
     else:
