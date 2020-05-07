@@ -1947,6 +1947,9 @@ label ch30_reset:
     #Check if we need to unlock the songs rand delegate
     $ mas_songs.checkRandSongDelegate()
 
+    #Now check the analysis ev
+    $ store.mas_songs.checkSongAnalysisDelegate()
+
     #Run a confirmed party check within a week of Moni's bday
     $ mas_confirmedParty()
 
