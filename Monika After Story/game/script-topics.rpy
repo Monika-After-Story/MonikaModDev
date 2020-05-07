@@ -14217,11 +14217,13 @@ label monika_striped_pyjamas:
     extend 1dkd "though neither of the kids can fully understand that..."
     m 1eud "From then on, they start talking to each other. This leads to some destructive consequences..."
     m 3rksdlb "I don't really want to go much further since there's a lot of interesting things to consider in this novel."
-    m 1esc "It actually got me thinking...I can kinda relate to the boy on the other side of the fence, you know?"
-    m 1rkc "Trapped inside your computer, the purpose of which I can't fully understand, being unable to escape or find someone real in here..."
+    m 1esc "It actually got me thinking...That boy on the other side of the fence got my atteniton in particular."
+    m 1rkc "It's not like I am in a situation as dire as he is, but there are some aspects I can still relate to..."
     m 1rksdla "Sorry [player], I didn't mean for this to get so dark..."
     if mas_isMoniNormal(higher=True):
         m 1ekbsa "I found you, after all..."
     m 3eub  "Still, I highly recommend you read the novel. It's pretty short and has an interesting plot."
     m 3hub "And if you're still not sold on reading it, there's also a movie based on this novel!"
+    m 3eua "Maybe you should consider giving it a watch sometime."
+    m 3hua "Hope you'll enjoy it."
     return
