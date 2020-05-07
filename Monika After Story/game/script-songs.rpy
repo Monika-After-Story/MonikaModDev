@@ -198,12 +198,15 @@ label monika_sing_song_pool_menu:
             if song_length == "short":
                 $ song_length = "long"
                 $ switch_str = "short"
+
             else:
                 $ song_length = "short"
                 $ switch_str = "full"
+
             $ end = "{fast}"
             $ _history_list.pop()
             jump monika_sing_song_pool_menu
+
         else:
             $ pushEvent(sel_song, skipeval=True)
             show monika at t11
@@ -249,10 +252,16 @@ label monika_sing_song_analysis:
     call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_analysis = _return
-    $ pushEvent(sel_analysis, skipeval=True)
-    show monika at t11
-    m 3hub "Alright!"
+
+    if sel_analysis:
+        $ pushEvent(sel_analysis, skipeval=True)
+        show monika at t11
+        m 3hub "Alright!"
+
+    else:
+        return "prompt"
     return
+
 #START: Random song delegate
 init 5 python:
     addEvent(
