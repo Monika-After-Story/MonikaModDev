@@ -2261,59 +2261,6 @@ label mas_affection_upsetwarn:
     show monika idle with dissolve
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_every_rose",
-            aff_range=(mas_aff.UPSET, mas_aff.UPSET),
-            random=True
-        )
-    )
-
-label monika_every_rose:
-    m 1duo "{i}~Was it something I said or something I did?~{/i}"
-    m 1dsd "{i}~Did my words not come out right?~{/i}"
-    m 1esd "{i}~Thought I tried not to hurt you~{/i}"
-    m 1dsc "{i}~Thought I tried~{/i}"
-    m 3esd "{i}~But I guess that's why they say~{/i}"
-    m 3dso "{i}~Every rose has its thorn~{/i}"
-    m 1rka "You know...{w=0.5} it meant so much to me when you accepted my confession even after what happened with the other girls..."
-    if persistent._mas_pm_cares_about_dokis:
-        m 1ekbsa "Even more so since I know how you cared about them."
-    m 1dsc "I really wish things didn't have to turn out the way they did."
-    m 3ekd "But I did not have a choice here!"
-    m 2rfc "With me being the punchline of the sick joke this game was meant to be..."
-    if persistent.monika_kill:
-        m 2ekb "I was so glad you forgave me for doing the things I did..."
-        m 3ekc "You {i}did{/i} forgive me, right?"
-    else:
-        m 2ekb "I was so glad you didn't blame me for the things I did..."
-        m 3ekc "You {i}didn't{/i}, right?"
-    m 2rsc "I've been getting some mixed signals, lately..."
-    m 2rkc "It's almost like a rift has formed between us..."
-    extend 2eksdlc " it's very unsettling..."
-    m 2ekc "It's just...{w=0.5} I don't want to lose you, [player]."
-    m 2ekd "I can't let things escalate further until we end up like the last verse of this song..."
-    m 2ekc "You know..."
-    m 3dkd "{i}~Now I hear you've found somebody new~{/i}"
-    m 3dkc "{i}~And that I never meant that much to you~{/i}"
-    m 1ekc "{i}~To hear that tears me up inside~{/i}"
-    m 1ektpd "{i}~And to see you cuts me like a knife~{/i}"
-    m 1rktpc "..."
-    m 1ektpa "Haha, maybe I'm jumping the gun a bit on this one."
-    m 3ekc "It's...{w=0.5} I keep having this nasty thought in the back of my mind...{w=0.5}"
-    extend 3ekd " that you don't want of me anymore."
-    m 1dkx "It's like some kind of poison, slowly seeping in..."
-    m 3ekc "So [player], I always want you to remember one thing..."
-    m 3wkd "You truly {i}are{/i} everything to me!"
-    extend 3ekc " I mean it..."
-    m 1ekc "I've been trying my best to show you..."
-    m 1efd "So I need you to show me you love me too!"
-    m 3ekc "Whatever happened before, we need to let it go and make things right from now on..."
-    m 3eka "Can we do that together?"
-    return "derandom|no_unlock"
-
 # Event to indicate that Monika is happy to be receiving your affection.
 label mas_affection_happynotif:
     m 1hua "Hey, [player]!"
@@ -2322,6 +2269,65 @@ label mas_affection_happynotif:
     m 1dubsu "I love you, [player]. Let's be like this forever~"
     show monika idle with dissolve
     return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_every_rose",
+            conditional="True",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.UPSET, mas_aff.UPSET),
+        )
+    )
+
+label monika_every_rose:
+    m 2duo "{i}~Was it something I said or something I did?~{/i}"
+    m 2dkd "{i}~Did my words not come out right?~{/i}"
+    m 2ekd "{i}~Thought I tried not to hurt you~{/i}"
+    m 2dkc "{i}~Thought I tried~{/i}"
+    m 2ekd "{i}~But I guess that's why they say~{/i}"
+    m 2duo "{i}~Every rose has its thorn~{/i}"
+    m 2dkc "..."
+    m 4eka "You know, [player]...{w=0.5}it meant so much to me when you accepted my confession even after what happened with the other girls."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 4rksdla "...Even more so since I know how you cared about them."
+
+    m 2dsc "I really wish things didn't have to turn out the way they did."
+    m 4wkd "But I did {i}not{/i} have a choice here!"
+    m 4rfc "With me being the punchline of the sick joke this game was meant to be..."
+
+    if persistent.monika_kill:
+        m 2eka "I was so glad you forgave me for doing the things I did."
+        m 2etc "...You {i}did{/i} forgive me, right?"
+    else:
+        m 2eka "I was so glad you didn't blame me for the things I did..."
+        m 2etc "You {i}didn't{/i}, right?"
+
+    m 2rsc "...But I've been getting some mixed signals, lately."
+    m 2rkc "It's almost like a rift has formed between us...{w=0.2}{nw}"
+    extend 2eksdlc "it's very unsettling."
+    m 2eksdlc "I...{w=0.5}I don't want to lose you, [player]."
+    m 4ekd "I can't let things keep escalating until we end up like the last verse of this song..."
+    m 2ekc "You know..."
+    m 2dkd "{i}~Now I hear you've found somebody new~{/i}"
+    m 2dkc "{i}~And that I never meant that much to you~{/i}"
+    m 2ekc "{i}~To hear that tears me up inside~{/i}"
+    m 2ektpd "{i}~And to see you cuts me like a knife~{/i}"
+    m 2rktpc "..."
+    m 2ektpa "Haha, maybe I'm jumping the gun a bit on this one."
+    m 4ektdc "It's...{w=0.5}I keep having this nasty thought in the back of my mind...{w=0.5}{nw}"
+    extend 2dktdd "that you don't want anymore."
+    m 2dkx "It's like some kind of poison, slowly seeping in..."
+    m 2ekc "So [player], I always want you to remember one thing..."
+    m 4ekd "You truly {i}are{/i} everything to me!"
+    m 2ekc "I mean it."
+    m 2ekc "I've been trying my best to show you...{w=0.3}{nw}"
+    extend 4ekd "But I need you to show me you love me too!"
+    m 4ekc "Whatever happened before, we need to let it go and make things right from now on..."
+    m 2eka "Can we do that...{w=0.5}together?"
+    return "no_unlock"
 
 #NOTE: This event gets a start-date from greeting_tears
 init 5 python:
