@@ -62,6 +62,8 @@ init -10 python:
                     be at least shown for.
                 priority - priority of this filter object. Lower number means
                     higher priority.
+                    Must be between 1 and 10, inclusive.
+                    Defaults to 10 if invalid.
                     (Default: 10)
                 flt - imagemanip/matrix compatible filter to use. 
                     only pass in if you wish to use the `add_to_filters` 
@@ -70,8 +72,12 @@ init -10 python:
             """
             self.name = name
             self.minlength = minlength
-            self.priority = priority
             self.flt = flt
+
+            if 1 <= priority <= 10:
+                self.priority = priority
+            else:
+                self.priority = 10
 
             # store in cache
             self.cache[hash(self)] = self
@@ -181,6 +187,81 @@ init -10 python:
             return store.mas_sprites.is_filter(self.name)
 
 
+    class MASBackgroundFilterSliceOffset(object):
+        """
+        Relates a MASBackgroundFilterSlice to its offsets
+
+        PROPERTIES:
+            eff_offset - the offset we are actually using for this slice.
+            offset - the offset associated with this slice
+            flt_slice - the slice to associate
+        """
+
+        def __init__(self, offset, flt_slice):
+            """
+            Constructor
+
+            IN:
+                offset - the offset to associate with this slice
+                flt_slice - the slice to associate with this offset
+            """
+            self.eff_offset = offset
+            self.offset = offset
+            self.flt_slice = flt_slice
+
+        def __gt__(self, other):
+            """
+            Greater than uses offsets
+            """
+            if isinstance(other, MASBackgroundFilterSliceOffset):
+                return self.offset > other.offset
+            return NotImplemented
+
+        def __lt__(self, other):
+            """
+            Less than uses offsets
+            """
+            if isinstance(other, MASBackgroundFilterSliceOffset):
+                return self.offset < other.offset
+            return NotImplemented
+
+        @staticmethod
+        def highest_priority(sl_off_list):
+            """
+            Finds the MASBackgroundFilterSliceOffset with the highest priority
+            and returns its index
+
+            IN:
+                sl_off_list - list containig MASBackgroundFilterSliceOffset
+                    objects to check
+
+            RETURNS: index of the MASBackgroundFilterSliceOffset with the
+                highest priority
+            """
+            h_priority = 0
+            h_index = 0
+            for index in range(len(sl_off_list)):
+                if sl_off_list[index].flt_slice.priority > h_priority:
+                    h_priority = sl_off_list[index].flt_slice.priority
+                    h_index = index
+
+            return h_index
+
+        @staticmethod
+        def sk(obj):
+            """
+            offset sort key
+            """
+            return obj.offset
+
+        @staticmethod
+        def ske(obj):
+            """
+            effective offset sort key
+            """
+            return obj.eff_offset
+
+
     class MASBackgroundFilterChunk(object):
         """
         Chunk of filters for backgrounds.
@@ -244,14 +325,15 @@ init -10 python:
 
             self._times = {}
             # times associatd to filter objects
-            # key: datetime.time object
-            # value: filter associated with the object
+            # key: offset in seconds from 0
+            # value: MASBackgroundFilterSliceOffset
 
             self._slices = []
-            # times in proper sorted order
+            # MASBackgroundFilterSliceOffset objects in standard offset order
 
             self._eff_slices = []
-            # times that we actually are using in proper sorted order
+            # MASBackgroundFilterSliceOffset objects that we are actually
+            # using
 
             self._pp = pp
             # progpoint
@@ -266,14 +348,47 @@ init -10 python:
             Builds the effective slices array using the given length as
             guidance.
 
-            slices are built in a greedy fashion starting from 0
+            slices are built in a greedy fashion starting from 0, respecting
+            priorities and etc.
 
             IN:
                 length - the amount of seconds this chunk encompasses
             """
-            # TODO: complex alg
+            # always start with the minimum length expansion alg
+            leftovers = self._min_fill(length)
 
+            if len(leftovers) > 0:
+                return
+                # TODO: do complicated alg
 
+            # otherwise, we can do expansion alg and be done!
+            self._expand(length)
+
+        def _expand(self, length):
+            """
+            Expands all slices in effective slices until it fills the given 
+            length
+
+            IN:
+                length - the amount of length we need to fill
+            """
+            es_count = len(self._eff_slices)
+            diff = length - self._eff_slices[-1].eff_offset
+
+            # make a list of inc amounts for easy looping
+            inc_amts = [diff / es_count] * es_count
+
+            # now calculate any leftover amounts and reverse add them
+            leftovers = diff % es_count
+            index = es_count - 1
+            while leftovers > 0 and index >= 0:
+                inc_amts[index] += 1
+                leftovers -= 1
+
+            # and lastly, apply each inc amount
+            for index in range(es_count):
+                self._eff_slices[index].eff_offset += inc_amts[index]
+            
         def filters(self):
             """
             RETURNS: list of all the filters associatd with this filter manager
@@ -281,11 +396,55 @@ init -10 python:
             """
             # use a dict so we only return each filter once
             filters = {}
-            for bg_flt in self_times.itervalues():
-                filters[bg_flt.name] = None
-            filters[self._mn_flt.name] = None
+            for flt_off in self_times.itervalues():
+                filters[flt_off.flt_slice.name] = None
+            filters[self._base_slice.name] = None
 
             return filters.keys()
+
+        def _min_fill(self, length):
+            """
+            Fills the effective slices using minlength logic.
+
+            IN:
+                length - the length we are filling
+            
+            RETURNS: leftovers - contains slices that we could not fit. Could 
+                be empty if we managed to fit all slices.
+            """
+            built_length = 0
+            index = 0
+
+            # always start with the base
+            built_length = self._base_slice.minlength
+            self._eff_slices = []
+
+            # add slices
+            while built_length < length and index < len(self._slices):
+                # retrieve slice info for this index
+                curr_slice_off = self._slices[index]
+
+                # add the slice
+                curr_slice_off.eff_offset = built_length
+                self._eff_slices.append(curr_slice_off)
+
+                # increment built length
+                built_length += curr_slice.flt_slice.minlength
+                index += 1
+
+            if built_length < length
+                # we managed to fit every slice! 
+                return []
+
+            # otherwise, we have a leftover slice in some way
+            last_sl_off = self._eff_slices.pop()
+            leftovers = [last_sl_off]
+
+            # and add any remaining slices
+            leftovers.extend(self._slices[index:])
+
+            # return filled length
+            return self._eff_slices[-1].eff_offset
 
         def _parse_slices(self, slices):
             """
@@ -294,6 +453,10 @@ init -10 python:
             # verify slices
             if len(slices) % 2 != 0:
                 raise Exception("slice count should be even")
+
+            if len(slices) < 2:
+                # no slice data. that is ok
+                return
 
             for offset, bg_flt in zip(slices[0::2], slices[1::2]):
                 if not isinstance(bg_flt, MASBackgroundFilterSlice):
@@ -312,9 +475,15 @@ init -10 python:
                     )
 
                 if offset > 0:
+                    flt_off = MASBackgroundFilterSliceOffset(offset, bg_flt)
+
                     # add to times and slices
-                    self._times[offset] = bg_flt
-                    store.mas_utils.insert_sort_keyless(self._slices, offset)
+                    self._times[offset] = flt_off
+                    store.mas_utils.insert_sort(
+                        self._slices,
+                        flt_off,
+                        MASBackgroundFilterSliceOffset.sk
+                    )
 
                 else:
                     # log a zero offset
@@ -324,6 +493,40 @@ init -10 python:
                         )
                     )
 
+        def _priority_fill(self, length, leftovers):
+            """
+            Fills the effective slices using priority logic.
+            This assumes the eff slices has been filled with minimal logic
+
+            IN:
+                length - the amount of length we need to fill
+                leftovers - slices that have not been added yet
+            """
+            # Gist:
+            #   1. reverse through the eff_slices, removing elements with
+            #       lower priorities than leftovers, and adding high priority
+            #       elements from leftovers.
+            #   2. stop upon reaching the first slice.
+
+            for es_index in range(len(self._eff_slices)-1, -1, -1):
+                
+                c_sl_off = self._eff_slices[es_index]
+                hlop_index = MASBackgroundFilterSliceOffset.highest_priority(
+                    leftovers
+                )
+                h_sl_off = leftovers[hlop_index]
+                if c_sl_off.flt_slice.priority < h_sl_off.flt_slice.priority:
+                    # current has a lower priority, begin add alg
+                    est_index = es_index
+
+                    while est_index < len(self._eff_slices):
+                        # loop until we find the correct place
+                        # TODO
+                        pass
+
+
+
+
         def verify(self):
             """
             Verifies the filters in this filter manager.
@@ -332,9 +535,11 @@ init -10 python:
 
             Exceptions are raised if a bad filter is found.
             """
-            for flt in self._times.itervalues():
-                if not flt.verify():
-                    raise MASInvalidFilterException(flt.name)
+            for fltoff in self._times.itervalues():
+                flt_slice = fltoff.flt_slice
+                if not flt_slice.verify():
+                    raise MASInvalidFilterException(flt_slice.name)
+
 
     class MASBackgroundFilterManager(object):
         """
