@@ -40,7 +40,7 @@ init -10 python:
             minlength - the amount of time in seconds that this filter must
                 be able to be used for it to be shown. If the filter cannot be
                 shown for this amount of time, it will not be shown at all.
-            priority - the priority of this filter object. Lower number means
+            priority - the priority of this filter object. Larger number means
                 higher priority. Lower priority means filter will be removed
                 first.
             flt - the filter (imagematrix) objects to use. OPTIONAL.
@@ -51,7 +51,7 @@ init -10 python:
         # internal cache of MASBackgroundFilterSlice objects to avoid
         #   building duplicates.
 
-        def __init__(self, name, minlength, priority=10, flt=None):
+        def __init__(self, name, minlength, priority=1, flt=None):
             """
             Constructor
 
@@ -60,7 +60,7 @@ init -10 python:
                     ENUMS until init level 0.
                 minlength - amount of time in seconds that this filter must
                     be at least shown for.
-                priority - priority of this filter object. Lower number means
+                priority - priority of this filter object. Larger number means
                     higher priority.
                     Must be between 1 and 10, inclusive.
                     Defaults to 10 if invalid.
@@ -225,6 +225,14 @@ init -10 python:
                 return self.offset < other.offset
             return NotImplemented
 
+        def eff_minlength(self):
+            """
+            Calculates the ending offset assuming min length
+
+            RETURNS: eff_offset + minlength
+            """
+            return self.eff_offset + self.flt_slice.minlength
+
         @staticmethod
         def highest_priority(sl_off_list):
             """
@@ -246,6 +254,28 @@ init -10 python:
                     h_index = index
 
             return h_index
+
+        @staticmetohd
+        def lowest_priority(sl_off_list):
+            """
+            Finds the MASBackgroundFilterSliceOffset with the lowest priority
+            and returns its index
+
+            IN:
+                sl_off_list - list containing MASBackgroundFilterSliceOffset
+                    objects to check
+
+            RETURNS: index of the MASBackgroundFilterSliceOffset with the 
+                lowest priority
+            """
+            l_priority = 10
+            l_index = 0
+            for index in range(len(sl_off_list)):
+                if sl_off_list[index].flt_slice.priority < l_priority:
+                    l_priority = sl_off_list[index].flt_slice.priority
+                    l_index = index
+
+            return l_index
 
         @staticmethod
         def sk(obj):
@@ -343,6 +373,19 @@ init -10 python:
 
             self._parse_slices(slices)
 
+        def _adjust_eff_off(self, index, amt):
+            """
+            Adjust effective offset of all eff_slices, starting from the given
+            index.
+
+            IN:
+                index - index to start adjusting effective offsets.
+                amt - amount to add to effective offsets. can be negative to
+                    subtract.
+            """
+            for sl_off in self._eff_slices[index:]:
+                sl_off.eff_offset += amt
+
         def build(self, length):
             """
             Builds the effective slices array using the given length as
@@ -358,11 +401,19 @@ init -10 python:
             leftovers = self._min_fill(length)
 
             if len(leftovers) > 0:
-                return
-                # TODO: do complicated alg
+                # if we have leftovers, then use complex alg
+                self._priority_fill(length, leftovers)
 
-            # otherwise, we can do expansion alg and be done!
+            # lastly, expand to fill voids
             self._expand(length)
+
+        def _eff_chunk_min_end(self):
+            """
+            Gets the minimal chunk end length.
+
+            RETURNS: last eff_slice's eff_offset + its minlength
+            """
+            return self._eff_slice[-1].eff_minlength()
 
         def _expand(self, length):
             """
@@ -372,8 +423,8 @@ init -10 python:
             IN:
                 length - the amount of length we need to fill
             """
-            es_count = len(self._eff_slices)
-            diff = length - self._eff_slices[-1].eff_offset
+            es_count = 1 + len(self._eff_slices)
+            diff = length - self._eff_chunk_min_end()
 
             # make a list of inc amounts for easy looping
             inc_amts = [diff / es_count] * es_count
@@ -386,7 +437,10 @@ init -10 python:
                 leftovers -= 1
 
             # and lastly, apply each inc amount
-            for index in range(es_count):
+            # NOTE: -1 here because we actually only have 1 offset ino the list
+            #   less than we have for incremented slices. This is because the
+            #   last slice does not have an ending offset. 
+            for index in range(es_count-1):
                 self._eff_slices[index].eff_offset += inc_amts[index]
             
         def filters(self):
@@ -438,13 +492,9 @@ init -10 python:
 
             # otherwise, we have a leftover slice in some way
             last_sl_off = self._eff_slices.pop()
-            leftovers = [last_sl_off]
 
             # and add any remaining slices
-            leftovers.extend(self._slices[index:])
-
-            # return filled length
-            return self._eff_slices[-1].eff_offset
+            return [last_sl_off] + self._slices[index:]
 
         def _parse_slices(self, slices):
             """
@@ -493,6 +543,34 @@ init -10 python:
                         )
                     )
 
+        def _pf_insert(self, index, sl_off):
+            """
+            Inserts a filter slice offset into the effective slices list 
+            based on a starting index.
+
+            IN:
+                index - starting index
+                sl_off - the slice offset to insert
+            """
+            # get current slice and how long it is
+            rm_len = self._eff_slices[index].flt_slice.minlength
+
+            # looop, finding the right place for the sl_off
+            while (
+                    index < len(self._eff_slices)
+                    and self._eff_slices[index] < sl_off
+            ):
+                self._eff_slices[index].eff_offset -= rm_len
+                index += 1
+
+            # we must have the correct location now
+            # determine the eff offset to use
+            sl_off.eff_offset = self._eff_slicse[index-1].eff_minlength()
+            self._eff_slices.insert(index, sl_off)
+
+            # now adjust eff offsets for all remaining sloffs
+            self._adjust_eff_off(index + 1, sl_off.flt_slice.minlength)
+
         def _priority_fill(self, length, leftovers):
             """
             Fills the effective slices using priority logic.
@@ -508,24 +586,51 @@ init -10 python:
             #       elements from leftovers.
             #   2. stop upon reaching the first slice.
 
+            # highest priority in leftovers
+            hp_sl_off = leftovers.pop(
+                MASBackgroundFilterSliceOffset.highest_priority(leftovers)
+            )
+
             for es_index in range(len(self._eff_slices)-1, -1, -1):
-                
+               
+                # get current slice
                 c_sl_off = self._eff_slices[es_index]
-                hlop_index = MASBackgroundFilterSliceOffset.highest_priority(
-                    leftovers
+
+                if c_sl_off.flt_slice.priority < hp_sl_off.flt_slice.priority:
+                    # current has a lower priority
+
+                    # add the higher priority item
+                    self._pf_insert(es_index, hp_sl_off)
+
+                    # remove the lower priority item, and store in leftovers
+                    leftovers.insert(0, self._eff_slices.pop(es_index))
+
+                    # then clean up the eff offsets
+                    self._adjust_eff_off(
+                        es_index + 1,
+                        c_sl_off.flt_slice.min_length
+                    )
+
+                    # and find newest high leftover priority
+                    hp_sl_off = leftovers.pop(
+                        MASBackgroundFilterSliceOffset.highest_priority(
+                            leftovers
+                        )
+                    )
+
+            # clean up if our current min length is too large
+            while (
+                    self._eff_chunk_min_end() > length
+                    and len(self._eff_slices) > 0
+            ):
+                # obtain lowest priority filter slice offset object and remove
+                llop_index = MASBackgroundFilterSliceOffset.lowest_priority(
+                    self._eff_slices
                 )
-                h_sl_off = leftovers[hlop_index]
-                if c_sl_off.flt_slice.priority < h_sl_off.flt_slice.priority:
-                    # current has a lower priority, begin add alg
-                    est_index = es_index
+                lp_sl_off = self._eff_slices.pop(llop_index)
 
-                    while est_index < len(self._eff_slices):
-                        # loop until we find the correct place
-                        # TODO
-                        pass
-
-
-
+                # fix eff offsets
+                self._adjust_eff_off(llop_index, lp_sl_off.flt_slice.minlength)
 
         def verify(self):
             """
