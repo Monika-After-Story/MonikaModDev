@@ -395,14 +395,6 @@ init python:
             ev_label - label of the event we want to bookmark.
                 (Optional, defaults to persistent.current_monikatopic)
         """
-        # expandable whitelist for topics that we are fine with bookmarking
-        # that don't otherwise meet our requirements
-        bookmark_whitelist = [
-            "mas_monika_islands",
-            "mas_monika_plays_yr",
-            "mas_monika_plays_or"
-        ]
-
         #Allows more open ended messages in the notify screen
         label_prefix_map = {
             "monika_": {
@@ -430,16 +422,25 @@ init python:
         #1. Must be normal+
         #2. Must have an ev
         #3. Must be a valid label (in the label prefix map or in the bookmark whitelist)
+        #4. Must not be a bookmark blacklisted topic
         #4. Prompt must not be the same as the eventlabel (event must have a prompt)
         if (
             mas_isMoniNormal(higher=True)
-            and (label_prefix or ev_label in bookmark_whitelist)
+            and (label_prefix or store.mas_bookmarks_derand.WHITELIST in ev.rules)
+            and (store.mas_bookmarks_derand.BLACKLIST not in ev.rules)
             and ev.prompt != ev_label
         ):
-            #Now we do some var setup to clean the following
-            persist_key = label_prefix_map[label_prefix].get("persist_key", "_mas_player_bookmarked")
-            bookmark_add_text = label_prefix_map[label_prefix].get("bookmark_text", _("Bookmark added."))
-            bookmark_remove_text = label_prefix_map[label_prefix].get("unbookmark_text", _("Bookmark removed."))
+            #If this was only a whitelisted topic, we need to do a bit of extra work
+            if not label_prefix:
+                persist_key = "_mas_player_bookmarked"
+                bookmark_add_text = "Bookmark added."
+                bookmark_remove_text = "Bookmark removed."
+
+            else:
+                #Now we do some var setup to clean the following
+                persist_key = label_prefix_map[label_prefix].get("persist_key", "_mas_player_bookmarked")
+                bookmark_add_text = label_prefix_map[label_prefix].get("bookmark_text", _("Bookmark added."))
+                bookmark_remove_text = label_prefix_map[label_prefix].get("unbookmark_text", _("Bookmark removed."))
 
             #For safety, we'll initialize this key.
             #NOTE: You should NEVER pass in a non-existent key.
@@ -535,6 +536,11 @@ label mas_topic_rerandom:
     return
 
 init python in mas_bookmarks_derand:
+    #Rule constants
+    WHITELIST = "whitelist_bookmark"
+    BLACKLIST = "blacklist_bookmark"
+
+    #Vars for mas_rerandom flows
     initial_ask_text_multiple = None
     initial_ask_text_one = None
     talk_about_more_text = None

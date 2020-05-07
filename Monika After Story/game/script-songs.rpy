@@ -868,7 +868,7 @@ init 5 python:
             prompt="Can you play 'Your Reality' for me?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no unlock": None, store.mas_bookmarks_derand.WHITELIST: None}
         )
     )
 
@@ -975,7 +975,7 @@ init 5 python:
             prompt="Can you play 'Our Reality' for me?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no unlock": None, store.mas_bookmarks_derand.WHITELIST: None}
         )
     )
 
