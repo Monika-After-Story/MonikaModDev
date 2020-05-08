@@ -1321,10 +1321,6 @@ label monika_outfit:
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     return
 
-# random infinite loop check
-python:
-    renpy.not_infinite_loop(60)
-
 default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
 
@@ -1442,9 +1438,6 @@ label monika_rap:
             m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
             m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
     return "derandom"
-
-python:
-    renpy.not_infinite_loop(60)
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
@@ -14134,6 +14127,41 @@ label monika_toxin_puzzle:
     m 1eud "In some cases it may not be helpful to anyone if you rigidly stuck to your word."
     m 3eua "That's why it's important to use your head when it comes to these kinds of things."
     m 3hub "Anyway, to sum it all up...{w=0.2}let's strive to keep our promises, [player]!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_movie_adaptations",
+            category=['media','literature'],
+            prompt="Movie adaptations",
+            random=True
+        )
+    )
+
+label monika_movie_adaptations:
+    m 1esc "I've always had mixed feelings about movie adaptations of books I read..."
+    m 3eub "A lot of what I watch is based on works I already enjoy and I'm excited to see that story come to life!"
+    m 2rsc "...Even if more often than not, I know I'll walk out feeling a bit bitter about what I just watched."
+    m 2rfc "Like, there's this scene I liked in the book that didn't make it in, or there's that character who was portrayed differently from how I imagined it."
+    m 4efsdld "It's just so frustrating! {w=0.3}It's like all the love and care you poured into your vision of the book is suddenly invalidated!"
+    m 4rkc "...All in favor of a new version which may not be as good, but still presents itself as canon."
+    m 2hksdlb "I guess that would make me a picky spectator sometimes, ahaha!"
+    m 7wud "Don't get me wrong, though! {w=0.3}{nw}"
+    extend 7eua "I realize why changes have to be made in these types of movies."
+    m 3eud "An adaptation can't be just a copy-paste of its source material; it's a rewriting of it."
+    m 1hub "It's just plain not possible to cram everything from a two hundred page book into a two hour movie!"
+    m 3euc "...Not to mention something that works well in a novel won't always translate well to the big screen."
+    m 1eud "With that in mind, there's one question I like to ask myself when I judge an adaptation..."
+    m 3euc "If the source material did not exist, would the new version still hold up?"
+    m 3hub "...Bonus points if you manage to capture the feeling of the original!"
+    m 1esa "Loose adaptations are pretty interesting in that sense."
+    m 3eud "You know, stories that keep the core elements and themes of the original while changing the characters and setting of the story."
+    m 1eua "Since they don't conflict with your own interpretation, they don't make you feel as personally attacked."
+    m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
+    m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
+    m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
     return
 
 init 5 python:
