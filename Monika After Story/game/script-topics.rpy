@@ -14269,18 +14269,18 @@ label monika_hot_springs:
     return
     
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel='monika_languagenuances',
+            eventlabel='monika_language_nuances',
             prompt="Language nuances",
             category=['literature', 'trivia'],
             random=True
         )
     )
 
-label monika_languagenuances:
+label monika_language_nuances:
     m 1eua "Hey [player], have you ever tried reading through a dictionary?"
     m 3eua "Not necessarily because there was some word or expression you didn't know the meaning of, but just... {w=0.2}because?"
     m 3lksdlb "Doesn't exactly sound like the most engaging of pastimes, I know."
