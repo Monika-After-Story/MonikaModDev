@@ -2150,7 +2150,7 @@ label monika_every_rose:
     m 2rktpc "..."
     m 2ektpa "Ahaha...{w=0.3}maybe I'm jumping the gun a bit on this one."
     m 4ektdc "It's...{w=0.5}I keep having this nasty thought in the back of my mind...{w=0.5}{nw}"
-    extend 2dktdd "that you don't want anymore."
+    extend 2dktdd "that you don't want to be with me anymore."
     m 2dkx "It's like some kind of poison, slowly seeping in..."
     m 2ekc "So [player], I always want you to remember one thing..."
     m 4ekd "You truly {i}are{/i} everything to me!"
