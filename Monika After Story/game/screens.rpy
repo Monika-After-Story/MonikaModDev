@@ -2757,7 +2757,8 @@ screen submods():
                             text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
                             text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
 
-                        text submod.description
+                        if submod.description:
+                            text submod.description
 
                     if submod.settings_pane:
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
