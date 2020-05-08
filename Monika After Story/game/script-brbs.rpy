@@ -1,6 +1,6 @@
 ## This script file holds all of the brb topics
 # Some conventions:
-#   - All brbs should have their persistent._seen_ever as True so they don't show up in unseen
+#   - All brbs should have their markSeen set to True so they don't show up in unseen
 #   - Brbs should return "idle" to move into idle mode
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
 #       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
@@ -14,11 +14,9 @@ init 5 python:
             category=['be right back'],
             pool=True,
             unlocked=True
-        )
+        ),
+        markSeen=True
     )
-
-    #BRBs should be seen
-    persistent._seen_ever["monika_brb_idle"] = True
 
 label monika_brb_idle:
     if mas_isMoniAff(higher=True):
@@ -74,11 +72,9 @@ init 5 python:
             category=['be right back'],
             pool=True,
             unlocked=True
-        )
+        ),
+        markSeen=True
     )
-
-    #BRBs should be seen
-    persistent._seen_ever["monika_writing_idle"] = True
 
 label monika_writing_idle:
     if random.randint(1,5) == 1:
@@ -123,11 +119,9 @@ init 5 python:
             category=['be right back'],
             pool=True,
             unlocked=True
-        )
+        ),
+        markSeen=True
     )
-
-    #BRBs should be seen
-    persistent._seen_ever["monika_idle_shower"] = True
 
 label monika_idle_shower:
     if mas_isMoniLove():
@@ -207,11 +201,9 @@ init 5 python:
             prompt="I'm going to game for a bit",
             pool=True,
             unlocked=True
-        )
+        ),
+        markSeen=True
     )
-
-    #BRBs should be seen
-    persistent._seen_ever["monika_idle_game"] = True
 
 label monika_idle_game:
     m 1eud "Oh, you're going to play another game?"
@@ -224,7 +216,7 @@ label monika_idle_game:
             _("Enjoy your game!"),
             _("I'll be cheering you on!"),
             _("Do your best!")
-            ]
+        ]
         gaming_quip=renpy.random.choice(gaming_quips)
 
     m 3hub "[gaming_quip]"

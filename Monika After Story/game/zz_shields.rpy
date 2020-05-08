@@ -16,7 +16,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
-            - Extra button + hotkey 
+            - Extra button + hotkey
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
             - Calendar overlay
@@ -75,7 +75,7 @@ init python:
         store.mas_hotkeys.derandom_enabled = False
         store.mas_hotkeys.bookmark_enabled = False
 
-    
+
     def mas_RaiseShield_dlg():
         """
         Disables:
@@ -134,7 +134,7 @@ init python:
             - Extra button + hotkey
             - Music button
             - Play button + hotkey
-            - Calendar overlay           
+            - Calendar overlay
 
         Intended Flow:
             - The Music menu is opened
@@ -221,7 +221,7 @@ init python:
 
 ################################## GENERALIZED ################################
     # NOTE: only generalized functions that are mult-module encompassing
-    # are allowed here. IF a generalized function is mostly related to 
+    # are allowed here. IF a generalized function is mostly related to
     # a specific store/module, make it there. NOT here.
 
     ################## Enable / Disable Music Menu ############################
@@ -296,7 +296,7 @@ init python:
 
         Disables:
             - Music hotkey
-        
+
         Unsets:
             - dialogue workflow flag
 
@@ -309,7 +309,7 @@ init python:
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
 
-    
+
     def mas_coreToIdleShield():
         """
         Enables:

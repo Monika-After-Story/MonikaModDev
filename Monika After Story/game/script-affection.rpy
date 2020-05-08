@@ -1904,203 +1904,19 @@ init 5 python:
         restartBlacklist=True
     )
 
-default persistent._mas_called_moni_a_bad_name = False
+#Whether or not the player has called Monika a bad name
+default persistent._mas_pm_called_moni_a_bad_name = False
+
+#Whether or not Monika has offered the player a nickname
 default persistent._mas_offered_nickname = False
+
+#The grandfathered nickname we'll use if the player's name is considered awkward
+default persistent._mas_grandfathered_nickname = None
 
 label monika_affection_nickname:
     python:
-        import re
-
-        # NOTE: consider if we should read this from a file instead
-        bad_nickname_list = [
-            "annoying",
-            "anus",
-            "anal",
-            "arrogant",
-            "atrocious",
-            "awful",
-            "ass",
-            "bitch",
-            "blood",
-            "boob",
-            "boring",
-            "bulli",
-            "bully",
-            "bung",
-            "butt",
-            "conceited",
-            "corrupt",
-            "cougar",
-            "crap",
-            "creepy",
-            "criminal",
-            "cruel",
-            "cunt",
-            "cum",
-            "crazy",
-            "cheater",
-            "damn",
-            "demon",
-            "dick",
-            "dirt",
-            "disgusting",
-            "douche",
-            "dumb",
-            "egotistical",
-            "egoist",
-            "evil",
-            "fake",
-            "fetus",
-            "filth",
-            "foul",
-            "fuck",
-            "garbage",
-            "gay",
-            "gey",
-            "gross",
-            "gruesome",
-            "hate",
-            "heartless",
-            "hideous",
-            "^ho$",
-            "^hoe$",
-            "hore",
-            "horrible",
-            "horrid",
-            "hypocrite",
-            "insane",
-            "immoral",
-            "irritating",
-            "jerk",
-            "junk",
-            "kill",
-            "kunt",
-            "lesbo",
-            "lesbian",
-            "lezbo",
-            "lezbian",
-            "liar",
-            "loser",
-            "maniac",
-            "mad",
-            "masochist",
-            "milf",
-            "monster",
-            "moron",
-            "murder",
-            "narcissist",
-            "nasty",
-            "Natsuki",
-            "nefarious",
-            "nigga",
-            "nigger",
-            "nuts",
-            "pad",
-            "pantsu",
-            "panti",
-            "panty",
-            "pedo",
-            "penis",
-            "plaything",
-            "poison",
-            "porn",
-            "pretentious",
-            "psycho",
-            "puppet",
-            "pussy",
-            "rape",
-            "repulsive",
-            "retard",
-            "rump",
-            "rogue",
-            "sadist",
-            "Sayori",
-            "scum",
-            "selfish",
-            "shit",
-            "sick",
-            "suck",
-            "slaughter",
-            "slave",
-            "slut",
-            "sociopath",
-            "soil",
-            "stink",
-            "stupid",
-            "sperm",
-            "semen",
-            "tampon",
-            "teabag",
-            "terrible",
-            "thot",
-            "^tit$",
-            "tits",
-            "titt",
-            "tool",
-            "torment",
-            "torture",
-            "toy",
-            "trap",
-            "trash",
-            "troll",
-            "ugly",
-            "useless",
-            "vain",
-            "vile",
-            "waste",
-            "whore",
-            "wicked",
-            "witch",
-            "worthless",
-            "wrong",
-            "Yuri",
-        ]
-
-        # TODO: potential special responses for:
-        # okasa (OKASA MONIKA)
-        # imouto
-        # nee-chan
-        # maybe more?
-        good_nickname_list = [
-            "angel",
-            "beautiful",
-            "best",
-            "cuddl",
-            "cute",
-            "可愛い",
-            "cutie",
-            "darling",
-            "great"
-            "heart",
-            "honey",
-            "love",
-            "Mon",
-            "Moni",
-            "princess",
-            "sunshine",
-            "sweet",
-            "senpai",
-            "beauty",
-            "queen",
-            "pretty",
-        ]
-
-        # mom list
-        mom_nickname_list = [
-            "mom",
-            "momma",
-            "mother",
-            "momika",
-            "mama",
-            "mommy",
-            "okasan",
-            "okaasan",
-            "kaasan",
-            "kasan",
-        ]
-
-        good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
-        bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+        #NOTE: Moni nicknames use a slightly altered list to exclude male exclusive titles/nicknames
+        good_monika_nickname_comp = re.compile('|'.join(mas_good_monika_nickname_list), re.IGNORECASE)
 
         # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
@@ -2108,8 +1924,10 @@ label monika_affection_nickname:
     if not persistent._mas_offered_nickname:
         m 1euc "I've been thinking, [player]..."
         m 3eud "You know how there are potentially infinite Monikas right?"
+
         if renpy.seen_label('monika_clones'):
             m 3eua "We did discuss this before after all."
+
         m 3hua "Well, I thought of a solution!"
         m 3eua "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
         m 3eka "And it would mean a lot if you choose one for me~"
@@ -2134,8 +1952,15 @@ label monika_affection_nickname:
             $ done = False
             m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
-                $ inputname = renpy.input(_("So what do you want to call me?"),allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
-                $ lowername = inputname.lower()
+                python:
+                    inputname = renpy.input(
+                        _("So what do you want to call me?"),
+                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+                        length=10
+                    ).strip(' \t\n\r')
+
+                    lowername = inputname.lower()
+
                 # lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
                     m 1euc "Oh, I see."
@@ -2149,7 +1974,7 @@ label monika_affection_nickname:
                     m "I swear you're just so silly sometimes."
                     m 1eka "Try again!"
 
-                elif lowername == player.lower():
+                elif lowername != "monika" and lowername == player.lower():
                     m 1euc "..."
                     m 1lksdlb "That's your name, [player]! Give me my own!"
                     m 1eka "Try again~"
@@ -2159,39 +1984,45 @@ label monika_affection_nickname:
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
 
-                elif lowername in mom_nickname_list:
-                    # mother flow
-                    m 1tku "Oh, you're a momma's [boy], huh?"
-                    $ persistent._mas_monika_nickname = inputname
-                    $ m_name = inputname
+                elif re.findall("mon(-|\\s)+ika", lowername):
+                    m 2tfc "..."
+                    m 2esc "Try again."
+                    show monika 1eua
 
-                    m 2tfu "I'll be your mommy."
-                    $ done = True
+                elif persistent._mas_grandfathered_nickname and lowername == persistent._mas_grandfathered_nickname.lower():
+                    jump .neutral_accept
+
+                elif mas_awk_name_comp.search(inputname):
+                    m 1rkc "..."
+                    m 1rksdld "While I don't hate it, I don't think I'm comfortable with you calling me that."
+                    m 1eka "Can you choose something more appropriate, [player]?"
 
                 else:
-                    if not bad_comp.search(inputname):
+                    if not mas_bad_name_comp.search(inputname) and lowername not in ["yuri", "sayori", "natsuki"]:
                         if inputname == "Monika":
-                            m 1eua "Ehehe~ Back to the classics, I see."
+                            m 3hua "Ehehe, back to the classics I see~"
 
-                        elif good_comp.search(inputname):
+                        elif good_monika_nickname_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
-                            m 1eud "Well, it's not exactly my favorite."
-                            m 1eua "But I don't dislike it either."
-                            m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
+                            label .neutral_accept:
+                                pass
+
+                            m 1duu "[inputname]... That's a pretty nice name."
+                            m 3ekbsa "Thank you [player], you're so sweet~"
 
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
 
-                        m 2eua "Okay, [player]!"
+                        m 1eua "Okay!"
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
 
                         else:
-                            m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
-                            m 1hub "Ehehe~"
+                            m 3hua "From now on, you can call me '[m_name].'"
+                            m 1hua "Ehehe~"
                         $ done = True
 
                     else:
@@ -2228,6 +2059,7 @@ label monika_affection_nickname:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
+
                         $ persistent._mas_called_moni_a_bad_name = True
 
                         #reset nickname if not Monika
@@ -2269,6 +2101,65 @@ label mas_affection_happynotif:
     m 1dubsu "I love you, [player]. Let's be like this forever~"
     show monika idle with dissolve
     return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_every_rose",
+            conditional="True",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.UPSET, mas_aff.UPSET),
+        )
+    )
+
+label monika_every_rose:
+    m 2duo "{i}~Was it something I said or something I did?~{/i}"
+    m 2dkd "{i}~Did my words not come out right?~{/i}"
+    m 2ekd "{i}~Thought I tried not to hurt you~{/i}"
+    m 2dkc "{i}~Thought I tried~{/i}"
+    m 2ekd "{i}~But I guess that's why they say~{/i}"
+    m 2duo "{i}~Every rose has its thorn~{/i}"
+    m 2dkc "..."
+    m 4eka "You know, [player]...{w=0.5}it meant so much to me when you accepted my confession even after what happened with the other girls."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 4rksdla "...Even more so since I know how you cared about them."
+
+    m 2dsc "I really wish things didn't have to turn out the way they did."
+    m 4wkd "But I did {i}not{/i} have a choice here!"
+    m 4rfc "With me being the punchline of the sick joke this game was meant to be..."
+
+    if persistent.monika_kill:
+        m 2eka "I was so glad you forgave me for doing the things I did."
+        m 2etc "...You {i}did{/i} forgive me, right?"
+    else:
+        m 2eka "I was so glad you didn't blame me for the things I did..."
+        m 2etc "You {i}didn't{/i}, right?"
+
+    m 2rsc "...But I've been getting some mixed signals, lately."
+    m 2rkc "It's almost like a rift has formed between us...{w=0.2}{nw}"
+    extend 2eksdlc "it's very unsettling."
+    m 2eksdlc "I...{w=0.5}I don't want to lose you, [player]."
+    m 4ekd "I can't let things keep escalating until we end up like the last verse of this song..."
+    m 2ekc "You know..."
+    m 2dkd "{i}~Now I hear you've found somebody new~{/i}"
+    m 2dkc "{i}~And that I never meant that much to you~{/i}"
+    m 2ekc "{i}~To hear that tears me up inside~{/i}"
+    m 2ektpd "{i}~And to see you cuts me like a knife~{/i}"
+    m 2rktpc "..."
+    m 2ektpa "Ahaha...{w=0.3}maybe I'm jumping the gun a bit on this one."
+    m 4ektdc "It's...{w=0.5}I keep having this nasty thought in the back of my mind...{w=0.5}{nw}"
+    extend 2dktdd "that you don't want anymore."
+    m 2dkx "It's like some kind of poison, slowly seeping in..."
+    m 2ekc "So [player], I always want you to remember one thing..."
+    m 4ekd "You truly {i}are{/i} everything to me!"
+    m 2ekc "I mean it."
+    m 2ekc "I've been trying my best to show you...{w=0.3}{nw}"
+    extend 4ekd "but I need you to show me you love me too!"
+    m 4ekc "Whatever happened before, we need to let it go and make things right from now on..."
+    m 2eka "Can we do that...{w=0.5}together?"
+    return "no_unlock"
 
 #NOTE: This event gets a start-date from greeting_tears
 init 5 python:
