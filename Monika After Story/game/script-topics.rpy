@@ -1321,10 +1321,6 @@ label monika_outfit:
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     return
 
-# random infinite loop check
-python:
-    renpy.not_infinite_loop(60)
-
 default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
 
@@ -1442,9 +1438,6 @@ label monika_rap:
             m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
             m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
     return "derandom"
-
-python:
-    renpy.not_infinite_loop(60)
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
@@ -4500,7 +4493,7 @@ label monika_aware:
 
     if mas_getEV("monika_aware").shown_count == 0:
         m 4eub "Do you still remember the first poem I showed you?"
-        m 2lksdlb "Hold on, let's see if the poem funcion still works.{w=0.5}.{w=0.5}.{nw}"
+        m 2lksdlb "Hold on, let's see if the poem function still works.{w=0.5}.{w=0.5}.{nw}"
         call mas_showpoem(poem=poem_m1)
         m 1wuo "Oh! That was much easier than I expected."
 
@@ -4536,7 +4529,7 @@ label monika_name:
     if(
         pen_name is not None
         and pen_name.lower() != player.lower()
-        and not (awk_comp.search(pen_name) or bad_comp.search(pen_name))
+        and not (mas_awk_name_comp.search(pen_name) or mas_bad_name_comp.search(pen_name))
     ):
         m 1eua "'[pen_name]' is a lovely name, too."
         m 1eka "But I think I like '[player]' better!"
@@ -5392,7 +5385,8 @@ label monika_japanese:
 
     return "derandom"
 
-default persistent._mas_penname = ""
+default persistent._mas_penname = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
@@ -5472,7 +5466,7 @@ label monika_penname:
                                 $ penbool = True
 
                             else:
-                                if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+                                if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
                                     m 2rksdlc "..."
                                     m 2rksdld "That's an...{w=0.3}interesting name, [player]..."
                                     m 2eksdlc "But if it works for you, okay I guess."
@@ -5495,7 +5489,7 @@ label monika_penname:
         $ lowerpen = penname.lower()
 
         $ menu_exp = "monika 3eua"
-        if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+        if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
             $ menu_exp = "monika 2rka"
 
         if lowerpen == player.lower():
@@ -11617,9 +11611,13 @@ label monika_players_control:
     m 3euc "I guess that's an appeal to video games..."
     m 3eua "...having almost endless possibilities in a world you can interact with."
     m 3eub "It's pretty difficult to get bored!"
-    m 1eka "Even if you don't quite know how to change this game..."
+    if not persistent._mas_pm_has_contributed_to_mas:
+        m 1eka "Even if you don't quite know how to change this game..."
+        $ line = "We can still enjoy this world that brought us together."
+    else:
+        $ line = "Especially with you by my side~"
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eubla "We can still enjoy this world that brought us together."
+    m 5eubla "[line]"
     m 5ekbfa "There's no better way to enjoy a game than to be with the one I love."
     return
 
@@ -13412,11 +13410,9 @@ label monika_dystopias:
     m 1rka "I guess you can see where I'm going with this..."
     m 3eksdla "I might feel a strong connection to those stories because they all remind me of my own."
 
-    if persistent._mas_pm_cares_about_dokis:
-        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just as simulation!"
-    else:
-        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation with everyone in it just an empty shell!"
+    $ line_ending = "" if persistent._mas_pm_cares_about_dokis else " with everyone in it just an empty shell"
 
+    m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation[line_ending]!"
     m 3tfc "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
 
     if persistent.monika_kill and not persistent.clearall and not persistent._mas_pm_cares_about_dokis:
@@ -13930,8 +13926,9 @@ label monika_ship_of_theseus:
     m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
     m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
     m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
-    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced?"
-    m 3euc "In other words, not a single cell that made you, 'you' 7 years ago is part of you right now."
+    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced? {w=0.2}{nw}"
+    extend 3rksdla "...Except for the ones which make up your heart and brain, that is."
+    m 3euc "In other words, the vast majority of cells that made you, 'you' 7 years ago are no longer part of you."
     m 3eud "You could argue that you have no relation to that person, other than a consistent consciousness, and of course DNA."
     m 1etc "...There's also an extra thing to consider."
     m 1euc "Let's say for now that the modified ship should still be considered Theseus' ship. {w=0.3}What if all the parts that were originally removed were now reassembled into another ship?"
@@ -14136,6 +14133,41 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_movie_adaptations",
+            category=['media','literature'],
+            prompt="Movie adaptations",
+            random=True
+        )
+    )
+
+label monika_movie_adaptations:
+    m 1esc "I've always had mixed feelings about movie adaptations of books I read..."
+    m 3eub "A lot of what I watch is based on works I already enjoy and I'm excited to see that story come to life!"
+    m 2rsc "...Even if more often than not, I know I'll walk out feeling a bit bitter about what I just watched."
+    m 2rfc "Like, there's this scene I liked in the book that didn't make it in, or there's that character who was portrayed differently from how I imagined it."
+    m 4efsdld "It's just so frustrating! {w=0.3}It's like all the love and care you poured into your vision of the book is suddenly invalidated!"
+    m 4rkc "...All in favor of a new version which may not be as good, but still presents itself as canon."
+    m 2hksdlb "I guess that would make me a picky spectator sometimes, ahaha!"
+    m 7wud "Don't get me wrong, though! {w=0.3}{nw}"
+    extend 7eua "I realize why changes have to be made in these types of movies."
+    m 3eud "An adaptation can't be just a copy-paste of its source material; it's a rewriting of it."
+    m 1hub "It's just plain not possible to cram everything from a two hundred page book into a two hour movie!"
+    m 3euc "...Not to mention something that works well in a novel won't always translate well to the big screen."
+    m 1eud "With that in mind, there's one question I like to ask myself when I judge an adaptation..."
+    m 3euc "If the source material did not exist, would the new version still hold up?"
+    m 3hub "...Bonus points if you manage to capture the feeling of the original!"
+    m 1esa "Loose adaptations are pretty interesting in that sense."
+    m 3eud "You know, stories that keep the core elements and themes of the original while changing the characters and setting of the story."
+    m 1eua "Since they don't conflict with your own interpretation, they don't make you feel as personally attacked."
+    m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
+    m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
+    m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_translating_poetry",
             category=['literature'],
             prompt="Translating poetry",
@@ -14246,7 +14278,7 @@ label monika_hot_springs:
     m 3hksdlb "...So don't just go jumping into some random pool of boiling water, ahaha!"
     m 1eua "Anyway...{w=0.2}I'd like to try an open-air bath in particular.{w=0.3} I hear they really give a unique experience."
     m 3rubssdla "Though it might feel a little weird relaxing in a bath with that many people all around you...{w=0.3} {nw}"
-    extend 2hkblsdlb "Doesn't that sound kinda embarassing?"
+    extend 2hkblsdlb "Doesn't that sound kinda embarrassing?"
     m 2rkbssdlu "..."
     m 7rkbfsdlb "...Especially since some places don't allow you to wear any sort of cover, either!"
     m 1tubfu "...Although, I wouldn't mind that so much if it was just with you."

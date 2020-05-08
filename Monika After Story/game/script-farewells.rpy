@@ -1363,7 +1363,7 @@ label bye_prompt_eat:
                         m 3tku "There's no way you're just having breakfast now, [player]."
                         m 3hub "It's the evening!"
                         m 1eua "Or maybe you're just having breakfast for dinner; I know some people do that occasionally."
-                        m 1tsb "Well, either way, I hope you enjoy your '{i}breakfast{/i}', ehehe~"
+                        m 1tsb "Well, either way, I hope you enjoy your 'breakfast,' ehehe~"
                     else:
                         m 2euc "..."
                         m 4eud "So...you're having a snack."
