@@ -668,17 +668,15 @@ init python:
         """
         Checks the player derandom lists for events that are not random and derandoms them
         """
-        deranded_evl_vars = [
-            persistent._mas_player_derandomed,
-            persistent._mas_player_derandomed_songs
-        ]
 
-        for derandlist in deranded_evl_vars:
-            for ev_label in derandlist:
-                #Get the ev
-                ev = mas_getEV(ev_label)
-                if ev and ev.random:
-                    ev.random = False
+        derand_list = store.mas_bookmarks_derand.getDerandomedEVLs()
+
+        #Now iter through this to derand what's rand
+        for ev_label in derand_list:
+            #Get the ev
+            ev = mas_getEV(ev_label)
+            if ev and ev.random:
+                ev.random = False
 
     def mas_get_player_bookmarks(bookmarked_evls):
         """

@@ -336,21 +336,8 @@ init python:
                 (Optional. If None, persistent.current_monikatopic is used)
                 (Default: None)
         """
-
-        #Allows more open ended messages in the notify screen
-        #The keys in the inner dict essentially act as kwargs here
-        label_prefix_map = {
-            "monika_": {
-                "derand_text": _("Topic flagged for removal."),
-                "underand_text": _("Topic flag removed."),
-                "push_label": "mas_topic_derandom"
-            },
-            "mas_song_": {
-                "derand_text": _("Song flagged for removal."),
-                "underand_text": _("Song flag removed."),
-                "push_label": "mas_song_derandom"
-            }
-        }
+        #Let's just shorthand this for use later
+        label_prefix_map = store.mas_bookmarks_derand.label_prefix_map
 
         if ev_label is None:
             ev_label = persistent.current_monikatopic
@@ -374,8 +361,8 @@ init python:
             and ev.prompt != ev_label
         ):
             #Now we do a bit of var setup to clean up the following work
-            derand_flag_add_text = label_prefix_map[label_prefix].get("derand_text", _("Topic flagged for removal."))
-            derand_flag_remove_text = label_prefix_map[label_prefix].get("underand_text", _("Topic flag removed."))
+            derand_flag_add_text = label_prefix_map[label_prefix].get("derand_text", _("Flagged for removal."))
+            derand_flag_remove_text = label_prefix_map[label_prefix].get("underand_text", _("Flag removed."))
             push_label = label_prefix_map[label_prefix].get("push_label", "mas_topic_derandom")
 
             if mas_findEVL(push_label) < 0:
@@ -395,17 +382,8 @@ init python:
             ev_label - label of the event we want to bookmark.
                 (Optional, defaults to persistent.current_monikatopic)
         """
-        #Allows more open ended messages in the notify screen
-        label_prefix_map = {
-            "monika_": {
-                "bookmark_text": _("Topic bookmarked."),
-                "unbookmark_text": _("Bookmark removed."),
-                "persist_key": "_mas_player_bookmarked"
-            },
-            "mas_song_": {
-                "bookmark_text": _("Song bookmarked.")
-            }
-        }
+        #Let's just shorthand this for use later
+        label_prefix_map = store.mas_bookmarks_derand.label_prefix_map
 
         if ev_label is None:
             ev_label = persistent.current_monikatopic
@@ -432,24 +410,24 @@ init python:
         ):
             #If this was only a whitelisted topic, we need to do a bit of extra work
             if not label_prefix:
-                persist_key = "_mas_player_bookmarked"
+                bookmark_persist_key = "_mas_player_bookmarked"
                 bookmark_add_text = "Bookmark added."
                 bookmark_remove_text = "Bookmark removed."
 
             else:
                 #Now we do some var setup to clean the following
-                persist_key = label_prefix_map[label_prefix].get("persist_key", "_mas_player_bookmarked")
+                bookmark_persist_key = label_prefix_map[label_prefix].get("bookmark_persist_key", "_mas_player_bookmarked")
                 bookmark_add_text = label_prefix_map[label_prefix].get("bookmark_text", _("Bookmark added."))
                 bookmark_remove_text = label_prefix_map[label_prefix].get("unbookmark_text", _("Bookmark removed."))
 
             #For safety, we'll initialize this key.
             #NOTE: You should NEVER pass in a non-existent key.
             #While this system handles it, it's not ideal and is bad for documentation
-            if persist_key not in persistent.__dict__:
-                persistent.__dict__[persist_key] = list()
+            if bookmark_persist_key not in persistent.__dict__:
+                persistent.__dict__[bookmark_persist_key] = list()
 
             #Now create the pointer
-            persist_pointer = persistent.__dict__[persist_key]
+            persist_pointer = persistent.__dict__[bookmark_persist_key]
 
             if ev_label not in persist_pointer:
                 persist_pointer.append(ev_label)
@@ -485,6 +463,13 @@ init python:
 
         return len(mas_get_player_bookmarks(persist_var)) > 0
 
+    def shouldRerand(eventlabel):
+        """
+        Checks if we should rerandom the given eventlabel
+
+        IN:
+            eventlabel
+        """
 #START: UTILITY TOPICS (bookmarks/derand, show/hide unseen)
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
@@ -536,9 +521,41 @@ label mas_topic_rerandom:
     return
 
 init python in mas_bookmarks_derand:
+    import store
+
     #Rule constants
     WHITELIST = "whitelist_bookmark"
     BLACKLIST = "blacklist_bookmark"
+
+    #Label prefixes and their respective rules
+    #The items in the inner dicts act as kwargs to override the default generic values
+    #The 'monika_' entry in this dict shows all existing keys
+    #Default values are as follows:
+    #  - bookmark_text: "Bookmark added."
+    #  - unbookmark_text: "Bookmark removed."
+    #  - derand_text: "Flagged for removal."
+    #  - underand_text: "Flag removed."
+    #  - push_label: "mas_topic_derandom"
+    #  - bookmark_persist_key: "_mas_player_bookmarked"
+    #  - derand_persist_key: "_mas_player_derandomed"
+    label_prefix_map = {
+        "monika_": {
+            "bookmark_text": _("Topic bookmarked."),
+            "unbookmark_text": _("Bookmark removed."),
+            "derand_text": _("Topic flagged for removal."),
+            "underand_text": _("Topic flag removed."),
+            "push_label": "mas_topic_derandom",
+            "bookmark_persist_key": "_mas_player_bookmarked",
+            "derand_persist_key": "_mas_player_derandomed"
+        },
+        "mas_song_": {
+            "bookmark_text": _("Song bookmarked."),
+            "derand_text": _("Song flagged for removal."),
+            "underand_text": _("Song flag removed."),
+            "push_label": "mas_song_derandom",
+            "derand_persist_key": "_mas_player_derandomed_songs"
+        }
+    }
 
     #Vars for mas_rerandom flows
     initial_ask_text_multiple = None
@@ -580,6 +597,44 @@ init python in mas_bookmarks_derand:
             if test_str.startswith(label_prefix):
                 return label_prefix
         return ""
+
+    def getDerandomedEVLs():
+        """
+        Gets a list of derandomed eventlabels
+
+        OUT:
+            list of derandomed eventlabels
+        """
+        #Firstly, let's get our derandom keys
+        derand_keys = [
+            label_prefix_data["derand_persist_key"]
+            for label_prefix_data in label_prefix_map.itervalues()
+            if "derand_persist_key" in label_prefix_data
+        ]
+
+        deranded_evl_list = list()
+
+        for derand_key in derand_keys:
+            #For safey, we'll .get() this and return an empty list if the key doesn't exist
+            derand_list = store.persistent.__dict__.get(derand_key, list())
+
+            for evl in derand_list:
+                deranded_evl_list.append(evl)
+
+        return deranded_evl_list
+
+    def shouldRandom(eventlabel):
+        """
+        Checks if we should random the given eventlabel
+        This is determined by whether or not the event is in any derandom list
+
+        IN:
+            eventlabel to check if we should random_seen
+
+        OUT:
+            boolean: True if we should random this event, False otherwise
+        """
+        return eventlabel not in getDerandomedEVLs()
 
 ##Generic rerandom work label
 #IN:

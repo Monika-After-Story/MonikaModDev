@@ -1499,11 +1499,10 @@ init python:
                 (Default: False)
         """
         if ev:
-
             if unlock:
                 ev.unlocked = True
 
-            if _random:
+            if _random and store.mas_bookmarks_derand.shouldRandom(ev.eventlabel):
                 ev.random = True
 
             if _pool:
