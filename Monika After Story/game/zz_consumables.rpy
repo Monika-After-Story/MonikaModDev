@@ -1432,8 +1432,7 @@ init 5 python:
 
 label mas_consumables_generic_queued_running_out:
     $ low_cons = MASConsumable._getLowCons()
-    if low_cons:
-        call mas_consumables_generic_queued_running_out_dlg(low_cons)
+    call mas_consumables_generic_queued_running_out_dlg(low_cons)
     return "no_unlock"
 
 init 5 python:
@@ -1446,12 +1445,15 @@ init 5 python:
 
 label mas_consumables_generic_running_out_absentuse:
     $ low_cons = MASConsumable._getLowConsNotWarned()
-    if low_cons:
-        call mas_consumables_generic_queued_running_out_dlg(low_cons)
+    call mas_consumables_generic_queued_running_out_dlg(low_cons)
     return "no_unlock"
 
 
 label mas_consumables_generic_queued_running_out_dlg(low_cons):
+    # sanity check for non-empty list
+    if not low_cons:
+        return
+
     m 1esc "By the way, [player]..."
     if len(low_cons) > 2:
         $ mas_generateShoppingList(low_cons)
