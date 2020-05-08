@@ -14286,7 +14286,7 @@ label monika_languagenuances:
     m 3lksdlb "Doesn't exactly sound like the most engaging of pastimes, I know."
     m 3esb "But it can certainly be an interesting, even rewarding, way to spend some free time. Especially if it's a dictionary of a language you're still learning."
     m 1esb "Many words have multiple meanings and, aside from the obvious benefits, knowing those can really help you see the finer points of the language."
-    m 1esa "Understanding these subleties can save you a lot of embarassment when you actually speak to someone."
+    m 1esa "Understanding these subtleties can save you a lot of embarrassment when you actually speak to someone."
     m 3esb "Take English for example."
     m 1esd "'Good morning', 'Good afternoon', 'Good evening'{w=0.2} - all of these are normal greetings you hear every day."
     m 1tsb "Following this pattern, 'Good day' should be just fine as well, right? It works in so many other languages after all."
