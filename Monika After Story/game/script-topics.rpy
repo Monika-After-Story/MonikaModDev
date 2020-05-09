@@ -13525,6 +13525,7 @@ label monika_auroras:
     m 5hubsu "I can't wait until we can turn that into reality."
     $ mas_showEVL("monika_auroras","EVE",_random=True)
     return
+
 init 5 python:
     addEvent(
         Event(
@@ -14162,6 +14163,7 @@ label monika_movie_adaptations:
     m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
     m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
     m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
+    $ mas_showEVL("monika_striped_pajamas","EVE",_random=True)
     return
 
 init 5 python:
@@ -14205,6 +14207,39 @@ label monika_translating_poetry:
         m 5eubsa "Are there any poems in that language you'd recommend?"
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
+    return
+
+# this is randomized via _movie_adaptations
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_striped_pajamas",
+            category=["literature"],
+            prompt="The Boy in the Striped Pajamas",
+            random=False
+        )
+    )
+
+label monika_striped_pajamas:
+    m 1euc "Hey [player], have you ever read {i}The Boy in the Striped Pajamas{/i}?"
+    m 3euc "The story takes place during World War II and is shown through the perspective of an innocent German boy, happily living his life in a big family."
+    m 3eud "Once the family has to move to a new place, {w=0.2}{nw}"
+    extend 3wud "the reader realizes that the father of the boy is a commander of a concentration camp, which is located right near their new house!"
+    m 1rksdlc "Still, the boy is clueless to all the cruelty going on around him..."
+    m 1euc "He ends up wandering around the barbed-wire fence of the camp until he finds a kid in 'striped pajamas' on the other side."
+    m 3esc "Turns out, that kid is actually a prisoner of the camp...{w=0.2}{nw}"
+    extend 1ekc "though neither of them fully understand that."
+    m 3eud "From then on, they form a strong friendship and start talking to each other regularly."
+    m 2dkc "...This ends up leading to some destructive consequences."
+    m 2eka "I don't really want to go much further since there's a lot of interesting things to consider in this novel which you'd be better off reading for yourself."
+    m 7eud "But it actually got me thinking...{w=0.2}although obviously my situation isn't nearly as dire, it's hard not to draw some comparisons between their relationship and ours."
+    m 3euc "In both situations, there are two people from different worlds that neither fully understand, separated by a barrier."
+    m 1eka "...And yet, just like us, they are able to form a meaningful relationship anyway."
+    m 3eua "I highly recommend you read the novel if you get the chance, it's pretty short and has an interesting plot."
+    m 3euc "And if you're still not sold on reading it, there {i}is{/i} a movie based on this novel that you could watch."
+    m 1rksdla "Although you know my feelings on movie adaptations of novels, so if you do watch the movie, I still recommend reading the book as well."
+    m 3eua "I hope you'll enjoy it."
     return
 
 init 5 python:
