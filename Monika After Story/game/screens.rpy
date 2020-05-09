@@ -666,9 +666,22 @@ style quick_button_text_dark:
 ## This screen is included in the main and game menus, and provides navigation
 ## to other menus, and to start the game.
 
-init python:
+init 4 python:
     def FinishEnterName():
-        if not player: return
+        global player
+
+        if not player:
+            return
+
+        if (
+            mas_bad_name_comp.search(player)
+            or mas_awk_name_comp.search(player)
+        ):
+            renpy.play("sfx/glitch3.ogg")
+            player = ""
+            return
+
+        # if the name is correct, set it
         persistent.playername = player
         renpy.hide_screen("name_input")
         renpy.jump_out_of_context("start")
