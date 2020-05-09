@@ -796,11 +796,13 @@ init 800 python:
         Runs a weather startup alg, checking whether or not persistent weather should be used
         Sets weather accordingly
         """
-        #If the current bg doesn't support weather, we'll just return
-        if store.mas_current_background.disable_progressive:
-            return
-
-        elif not store.mas_weather.force_weather and not store.skip_setting_weather:
+        #If the current bg doesn't support weather, we don't do anything
+        #Same if we forced weather or we're to skip setting weather
+        if (
+            not store.mas_current_background.disable_progressive
+            and not store.mas_weather.force_weather
+            and not store.skip_setting_weather
+        ):
             #Let's check for persistent weather. If persistent is auto or no longer a thing, we revert to standard progressive
             if (
                 persistent._mas_current_weather == "auto"

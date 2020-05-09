@@ -348,6 +348,9 @@ init 800 python:
         if by_user is not None:
             mas_background.force_background = bool(by_user)
 
+        if set_persistent:
+            persistent._mas_current_background = new_background.background_id
+
         mas_current_background.exit(new_background)
         mas_setBackground(new_background)
 
@@ -365,15 +368,27 @@ init 800 python:
             if background_to_set.disable_progressive:
                 store.skip_setting_weather = True
 
+        #If for whatever reason, we are no longer able to use the persistent background now, we reset to spaceroom
+        else:
+            persistent._mas_current_background = "spaceroom"
+
+    def mas_checkBackgroundChangeDelegate():
+        """
+        Checks to see if the background change delegate should be locked or unlocked and changes its state accordingly
+
+        Key rule: at least 2 available backgrounds
+        """
+        if mas_background.getUnlockedBGCount() < 2:
+            mas_lockEVL("monika_change_background","EVE")
+        else:
+            mas_unlockEVL("monika_change_background", "EVE")
+
+
     #Just set us to the normal room here
     mas_current_background = None
     mas_setBackground(mas_background_def)
 
-    #Make sure the bg selector is only available with at least 2 bgs unlocked
-    if mas_background.getUnlockedBGCount() < 2:
-        mas_lockEVL("monika_change_background","EVE")
-    else:
-        mas_unlockEVL("monika_change_background", "EVE")
+
 
 #START: Programming points
 init -2 python in mas_background:

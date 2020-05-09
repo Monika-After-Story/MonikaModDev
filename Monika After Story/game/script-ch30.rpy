@@ -1973,4 +1973,7 @@ label ch30_reset:
 
         if seen_event('mas_preferredname'):
             mas_unlockEVL("monika_changename","EVE")
+
+    #Check BGSel topic unlocked state
+    $ mas_checkBackgroundChangeDelegate()
     return
