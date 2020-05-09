@@ -249,7 +249,7 @@ label splashscreen:
 
     python:
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(mas_current_background.isFltDay())
+            mas_darkMode(mas_isDayNow())
         else:
             mas_darkMode(not persistent._mas_dark_mode_enabled)
     return
