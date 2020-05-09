@@ -2039,9 +2039,10 @@ init 1 python in evhand:
             ev - event to random
             rebuild_ev - True if we wish to notify idle to rebuild events
         """
-        ev.random = True
-        if kwargs.get("rebuild_ev", False):
-            store.mas_idle_mailbox.send_rebuild_msg()
+        if store.mas_bookmarks_derand.shouldRandom(ev.eventlabel):
+            ev.random = True
+            if kwargs.get("rebuild_ev", False):
+                store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def actionPool(ev, **kwargs):
