@@ -14339,6 +14339,57 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_using_pcs_healthily",
+            category=['advice'],
+            prompt="Using computers healthily",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_using_pcs_healthily:
+    m 1rtc "Hmm..."
+    m 1etc "Hey, [player]...{w=0.3}are you sitting comfortably?"
+    m 1hksdlb "No, really!{w=0.3} {nw}"
+    extend 3eksdla "Are you?"
+    m 3eka "I know you have to be at your computer to spend time with me..."
+    m 2eka "So I just wanted to make sure you aren't accidentally damaging your health while you're here."
+    m 4ekd "I've read that spending too long looking at a screen can cause headaches, make you feel tired, and even impact your eyesight over time."
+    m 2tkx "Posture issues and pain from bad sitting habits are no joke either!"
+    m 2tku "Fortunately for you, I've put together a little checklist to help prevent these sorts of problems."
+    m 4hub "...So let's go through it together, [player]!"
+    m 4eub "First, {w=0.2}try to keep sitting up straight!"
+    m 2eua "...Have your chair adjusted properly so your feet stay flat on the floor, your eyes are level with the top of the screen, and you aren't slouching."
+    m 4eub "You should feel supported and comfortable in your seat!"
+    m 4eua "Next, make sure you have some distance between yourself and the display...{w=0.2}about an arm's length is fine."
+    m 2hksdlb "...Keep your keyboard and mouse within easy reach, though!"
+    m 4eub "Of course, lighting is important too! {w=0.3}{nw}"
+    extend 2eua "Try to keep the room well-lit, but not so much that light is glaring off the screen."
+    m 4eud "In addition, remember to take frequent breaks. {w=0.3}Look away from the screen, {w=0.2}ideally at something far away, {w=0.2}and perhaps do a few stretches. "
+    m 2eud "Since it's important to stay hydrated too, you could always fetch some fresh water while you're up from your desk."
+    m 4eksdlc "Above all else, if you ever start to feel unwell, just stop what you're doing, rest, and then make sure everything is okay before you continue. "
+    m 4eua "...And that's about it."
+    m 2hksdlb "Ah...{w=0.3}sorry, I didn't mean to go on for that long!"
+    m 2rka "...You probably knew all that stuff already, anyway."
+    m 2eka "As for me?"
+
+    if mas_isMoniLove():
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "You're the only comfort I need, my love."
+    elif mas_isMoniEnamored():
+        show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbsa "I'm as comfortable as can be when you're here, [player]."
+    else:
+        show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubsa "I'm comfortable whenever you're here with me, [player]."
+
+    m 5hubfu "And hopefully you're a little more comfortable now too~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel='monika_language_nuances',
             prompt="Language nuances",
             category=['literature', 'trivia'],
