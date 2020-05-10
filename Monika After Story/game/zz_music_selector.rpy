@@ -40,8 +40,8 @@ init -1 python in songs:
     FP_JUST_MONIKA = "bgm/m1.ogg"
     FP_YOURE_REAL = "bgm/credits.ogg"
     FP_STILL_LOVE = "bgm/monika-end.ogg"
-    FP_MY_FEELS = "<loop 3.172>bgm/9.ogg" 
-    FP_MY_CONF =  "<loop 5.861>bgm/10.ogg" 
+    FP_MY_FEELS = "<loop 3.172>bgm/9.ogg"
+    FP_MY_CONF =  "<loop 5.861>bgm/10.ogg"
     FP_OKAY_EV_MON = "<loop 4.444>bgm/5_monika.ogg"
     FP_DDLC_MT_80 = (
         "<loop 17.451 to 119.999>mod_assets/bgm/ddlc_maintheme_80s.ogg"
@@ -89,7 +89,7 @@ init -1 python in songs:
     def getUserVolume(channel):
         """
         Gets user-defined slider volume of the given channel.
-        NOTE: this is indepenent of the actual channel volume. 
+        NOTE: this is indepenent of the actual channel volume.
             Using set_volume will NOT affect this.
 
         IN:
@@ -101,6 +101,15 @@ init -1 python in songs:
             renpy.audio.audio.get_channel(channel).mixer,
             0.0
         )
+
+
+    def hasMusicMuted():
+        """
+        Checks if the player has the music channel muted or the 'Mute All' option enabled.
+
+        RETURNS: True if the music channel is muted or the 'Mute All' option is enabled, False otherwise
+        """
+        return renpy.game.preferences.mute["music"] or getUserVolume("music") == 0.0
 
 
     def getPlayingMusicName():
@@ -196,13 +205,13 @@ init -1 python in songs:
 
     def setUserVolume(value, channel):
         """
-        Sets user volume to the given value. 
+        Sets user volume to the given value.
         NOTE: this does a preference edit, so there's no delay options.
         NOTE: this changes mixer volume, so it may affect other channels.
 
         IN:
             value - value to set volume to. Should be between 0.0 and 1.0.
-            channel - channel to set.  
+            channel - channel to set.
         """
         chan = renpy.audio.audio.get_channel(channel)
         if chan.mixer in renpy.game.preferences.volumes:
@@ -250,7 +259,7 @@ init -1 python in songs:
 
         return pages_dict
 
-        
+
     def __genPage(music_list):
         """
         Generates the a page of music choices
@@ -404,7 +413,7 @@ init -1 python in songs:
 
         return ""
 
-    
+
     def _getMP3(filepath):
         """
         Attempts to retrieve the MP3 object from the given audio file
@@ -413,7 +422,7 @@ init -1 python in songs:
             filepath - full filepath to the mp3 file want tags from
 
         RETURNS:
-            mutagen.mp3.EasyMP3 object, or None if we coudlnt do it 
+            mutagen.mp3.EasyMP3 object, or None if we coudlnt do it
         """
         try:
             return muta3.EasyMP3(filepath)
@@ -435,7 +444,7 @@ init -1 python in songs:
         #   does
         return _getOggName(_audio_file)
 
-    
+
     def _getOgg(filepath):
         """
         Attempts to retreive the Ogg object from the given audio file
@@ -445,7 +454,7 @@ init -1 python in songs:
 
         RETURNS:
             mutagen.ogg.OggVorbis or None if we coudlnt get the info
-        """        
+        """
         try:
             return mutaogg.OggVorbis(filepath)
         except:
@@ -555,7 +564,7 @@ init -1 python in songs:
         # now we can build the tag
         _tag_elems = [RPY_START]
 
-        if loopstart is not None: 
+        if loopstart is not None:
             _tag_elems.append(RPY_FROM)
             _tag_elems.append(str(loopstart))
 
@@ -638,7 +647,7 @@ init -1 python in songs:
         Attempts to retrieve the Opus object from the given audio file
 
         IN:
-            filepath - full filepath to the opus file 
+            filepath - full filepath to the opus file
 
         RETURNS:
             mutagen.ogg.OggOpus or None if we couldnt get the info
@@ -664,7 +673,7 @@ init -1 python in songs:
                 return True
 
         return False
-    
+
 
     def cleanGUIText(unclean):
         """
@@ -825,31 +834,54 @@ init 10 python:
 #style music_menu_label_text is gui_label_text
 
 #style music_menu_return_button is navigation_button
-style music_menu_return_button_text is navigation_button_text
-style music_menu_prev_button_text is navigation_button_text:
-    min_width 135
-    text_align 1.0
-
-style music_menu_outer_frame is game_menu_outer_frame
 style music_menu_navigation_frame is game_menu_navigation_frame
+style music_menu_navigation_frame_dark is game_menu_navigation_frame
 style music_menu_content_frame is game_menu_content_frame
+style music_menu_content_frame_dark is game_menu_content_frame
 style music_menu_viewport is game_menu_viewport
 style music_menu_side is game_menu_side
 style music_menu_label is game_menu_label
+style music_menu_label_dark is game_menu_label_dark
 style music_menu_label_text is game_menu_label_text
+style music_menu_label_text_dark is game_menu_label_text_dark
 
 style music_menu_return_button is return_button:
     xminimum 0
     xmaximum 200
     xfill False
 
+style music_menu_return_button_dark is return_button:
+    xminimum 0
+    xmaximum 200
+    xfill False
+
+style music_menu_return_button_text is navigation_button_text
+
+style music_menu_return_button_text_dark is navigation_button_text_dark
+
 style music_menu_prev_button is return_button:
     xminimum 0
     xmaximum 135
     xfill False
 
-style music_menu_outer_frame:
+style music_menu_prev_button_dark is return_button:
+    xminimum 0
+    xmaximum 135
+    xfill False
+
+style music_menu_prev_button_text is navigation_button_text:
+    min_width 135
+    text_align 1.0
+
+style music_menu_prev_button_text_dark is navigation_button_text_dark:
+    min_width 135
+    text_align 1.0
+
+style music_menu_outer_frame is game_menu_outer_frame:
     background "mod_assets/music_menu.png"
+
+style music_menu_outer_frame_dark is game_menu_outer_frame_dark:
+    background "mod_assets/music_menu_d.png"
 
 style music_menu_button is navigation_button:
     size_group "navigation"
@@ -859,14 +891,21 @@ style music_menu_button is navigation_button:
 
 style music_menu_button_text is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
-    font "mod_assets/font/mplus-2p-regular.ttf"
+    font store.mas_ui.music_menu_font
     color "#fff"
     outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
     hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
     insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
 
+style music_menu_button_text_dark is navigation_button_text:
+    properties gui.button_text_properties("navigation_button")
+    font store.mas_ui.music_menu_font
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
-# Music menu 
+# Music menu
 #
 # IN:
 #   music_page - current page of music
@@ -891,24 +930,24 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     zorder 200
 
-    style_prefix mas_ui.mms_style_prefix
+    style_prefix "music_menu"
 
     frame:
-        style mas_ui.mms_frame_outer_style
+        style "music_menu_outer_frame"
 
         hbox:
 
             frame:
-                style mas_ui.mms_frame_navigation_style
+                style "music_menu_navigation_frame"
 
             frame:
-                style mas_ui.mms_frame_content_style
+                style "music_menu_content_frame"
 
                 transclude
 
         # this part copied from navigation menu
         vbox:
-            style_prefix mas_ui.mms_style_prefix
+            style_prefix "music_menu"
 
             xpos gui.navigation_xpos
     #        yalign 0.4
@@ -927,32 +966,32 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             # dynamic prevous text, so we can keep button size alignments
             if page_num > 0:
                 textbutton _("<<<< Prev"):
-                    style mas_ui.mms_button_prev_style
+                    style "music_menu_prev_button"
                     action Return(page_num - 1)
 
             else:
                 textbutton _( " "):
-                    style mas_ui.mms_button_prev_style
+                    style "music_menu_prev_button"
                     sensitive False
 
 #                if more_pages:
 #                    textbutton _(" | "):
 #                        xsize 50
-#                        text_font "gui/font/Halogen.ttf" 
+#                        text_font "gui/font/Halogen.ttf"
 #                        text_align 0.5
 #                        sensitive False
 
             if more_pages:
                 textbutton _("Next >>>>"):
-                    style mas_ui.mms_button_return_style
+                    style "music_menu_return_button"
                     action Return(page_num + 1)
 
-        textbutton _(songs.NO_SONG): 
-            style mas_ui.mms_button_return_style
+        textbutton _(songs.NO_SONG):
+            style "music_menu_return_button"
             action Return(songs.NO_SONG)
 
         textbutton _("Return"):
-            style mas_ui.mms_button_return_style
+            style "music_menu_return_button"
             action Return(return_value)
 
     label "Music Menu"
@@ -971,7 +1010,7 @@ label display_music_menu:
 
         # setup pages
         $ music_page = songs.music_pages.get(curr_page, None)
-            
+
         if music_page is None:
             # this should never happen. Immediately quit with None
             return songs.NO_SONG
@@ -1029,7 +1068,7 @@ init python:
         curr_volume = songs.getUserVolume("music")
         # sayori cannot mute
         if (
-                curr_volume > 0.0 
+                curr_volume > 0.0
                 and (
                     persistent.playername.lower() != "sayori"
                     or persistent._mas_sensitive_mode
@@ -1107,9 +1146,8 @@ init python:
 
             elif store.mas_globals.in_idle_mode:
                 # to idle
-                mas_mumuToIdleShield() 
+                mas_mumuToIdleShield()
 
             else:
                 # otherwise we can enable interactions normally
                 mas_DropShield_mumu()
-

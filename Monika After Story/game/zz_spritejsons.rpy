@@ -30,7 +30,7 @@
 #       - additional properties to apply to this sprite object. used for
 #            a variety of things. This will be more publicly documented
 #           in the future.
-#       - NOTE: arbitrary properties can only exist 1 level. (aka no 
+#       - NOTE: arbitrary properties can only exist 1 level. (aka no
 #           collections as values of these props)
 #       - keys should be strings.
 #       - acceptable values are int/string/bool.
@@ -68,7 +68,7 @@
 #       - default 10
 #   "acs_type": "type of this acs"
 #       - optional
-#       - this is not necessary, but used in conjunction with mux_type to 
+#       - this is not necessary, but used in conjunction with mux_type to
 #           remove potential conflicting acs types
 #       - an ACS cannot have multiple types, but it can have multiple
 #           conflicting types
@@ -105,7 +105,7 @@
 # {
 #   "giftname": "filename of the gift that unlocks this item",
 #       - optional
-#       - NOTE: if not provided, and this item is not unlocked or used 
+#       - NOTE: if not provided, and this item is not unlocked or used
 #           under other means, this item will NOT be selectable or usable.
 #       - do not include extension
 #       - default None
@@ -129,8 +129,8 @@
 #           this clothing item, if the current hair is in this map, the
 #           value is used instead.
 #       - Use "all" as a key to signify a default for everything to map to.
-#       - Both keys and values should be strings and should match to an 
-#           existing hair ID. 
+#       - Both keys and values should be strings and should match to an
+#           existing hair ID.
 #       - default empty dict
 #   "pose_arms": {Pose Arms object}
 #       - optional
@@ -191,9 +191,9 @@
 #       - this is the "downleftpointright" pose
 #       - default None
 # }
-#       
+#
 # ACS (pose_map):
-#   Values should be acs ID code (string). This code is part of the filename 
+#   Values should be acs ID code (string). This code is part of the filename
 #   for an ACS. This allows you to use a specific ACS image for certain poses.
 #
 # ACS (arm_split):
@@ -237,7 +237,7 @@
 #       - boolean
 #       - locked items will show the locked item thumbnail
 #       - default True
-#   "hover_dlg": [List of text to show when mouse is hovered over this in 
+#   "hover_dlg": [List of text to show when mouse is hovered over this in
 #       selector],
 #       - optional
 #       - list of strings
@@ -409,7 +409,7 @@ init -21 python in mas_sprites_json:
     sprite_station = store.MASDockingStation(
         renpy.config.basedir + "/game/mod_assets/monika/j/"
     )
-    # docking station for custom sprites. 
+    # docking station for custom sprites.
 
     # verification dicts
     # We use key for O(1) and repeats
@@ -486,7 +486,7 @@ init -21 python in mas_sprites_json:
     BAD_ACS_LAYER = "invalid ACS layer '{0}'"
     BAD_LIST_TYPE = "property '{0}' index '{1}' - expected type {2}, got {3}"
     EMPTY_LIST = "property '{0}' cannot be an empty list"
-   
+
     DUPE_GIFTNAME = "giftname '{0}' already exists"
     MATCH_GIFT = (
         "cannot associate giftname '{0}' with sprite object type {1} name "
@@ -529,7 +529,7 @@ init -21 python in mas_sprites_json:
     MHM_NOT_DICT = "Highlight object must be of type {0}. got {1}"
     MHM_S_NOT_DICT = "Highlight split object must be of type {0}. got {1}"
 
-    ## MASFilterMap 
+    ## MASFilterMap
     MFM_LOADING = "loading Filter object in '{0}'..."
     MFM_SUCCESS = "Filter object '{0}' loaded successfully!"
     MFM_NONE_FLT = "filter '{0}' set to null, ignoring"
@@ -634,7 +634,7 @@ init -21 python in mas_sprites_json:
         if val is None:
             return allow_none
         return val in SP_CONSTS
-            
+
 
     ## param names
     ## with expected types and verifications, as well as msg to
@@ -670,8 +670,8 @@ init -21 python in mas_sprites_json:
 
     OPT_ACS_PARAM_NAMES = {
         # this is handled differently
-#        "rec_layer": None, 
-#        "mux_type": (None, _verify_muxtype, 
+#        "rec_layer": None,
+#        "mux_type": (None, _verify_muxtype,
 
         "priority": (int, _verify_int),
         "acs_type": (str, _verify_str),
@@ -687,7 +687,7 @@ init -21 python in mas_sprites_json:
 
     OPT_HAIR_PARAM_NAMES = {
         # object-based verification is different
-#        "split": None,     
+#        "split": None,
         "unlock": (bool, _verify_bool),
     }
 
@@ -843,7 +843,7 @@ init 189 python in mas_sprites_json:
         """
         sp_type = sp_obj.gettype()
         sp_name = sp_obj.name
-        
+
         # sanity check
         if sp_type not in SP_CONSTS:
             return
@@ -883,7 +883,7 @@ init 189 python in mas_sprites_json:
 
         IN:
             sp_obj - sprite object to build strings from
-            sel_obj - selectable to build thumb string from. 
+            sel_obj - selectable to build thumb string from.
                 Ignored if None
                 (Default: None)
 
@@ -895,7 +895,7 @@ init 189 python in mas_sprites_json:
         # in the /a/ folder
         # + night versions
         #
-        # HAIR: images consist of upright and leaning items in /h/ 
+        # HAIR: images consist of upright and leaning items in /h/
         # folder
         # + night versions
         #
@@ -1013,7 +1013,7 @@ init 189 python in mas_sprites_json:
             name - name of sprite object
             ind_lvl - indent level
             progname - name of progpoint (do not include suffix)
-        
+
         OUT:
             save_obj - dict to save progpoint to
             msg_log - list to save messages to
@@ -1108,7 +1108,7 @@ init 189 python in mas_sprites_json:
         IN:
             json_obj - json object to validate
             indent_lvl - indtenation lvl to use
-        
+
         OUT:
             msg_log - list to save error messages to
                 if nothing was addeed to this list, the mux_type is valid
@@ -1220,7 +1220,7 @@ init 189 python in mas_sprites_json:
         is_bad = False
         for index in range(len(iterval)):
             item = iterval[index]
-            
+
             if not _verify_str(item):
                 msg_log.append((
                     MSG_ERR_T,
@@ -1238,8 +1238,8 @@ init 189 python in mas_sprites_json:
 
 
     def _validate_params(
-            jobj, 
-            save_obj, 
+            jobj,
+            save_obj,
             param_dict,
             required,
             msg_log,
@@ -1271,7 +1271,7 @@ init 189 python in mas_sprites_json:
             if param_name in jobj:
                 param_val = jobj.pop(param_name)
                 desired_type, verifier = verifier_info
-        
+
                 if not verifier(param_val, allow_none):
                     # failed verification
                     msg_log.append((
@@ -1581,7 +1581,7 @@ init 189 python in mas_sprites_json:
         Props validated:
             - unlock
             - highlight
-        
+
         IN:
             jobj - json object to parse
             obj_based - dict of object-based items
@@ -1703,7 +1703,7 @@ init 189 python in mas_sprites_json:
                 # key
                 if _verify_str(hair_key):
                     if (
-                            not dry_run 
+                            not dry_run
                             and hair_key != "all"
                             and hair_key not in HAIR_MAP
                         ):
@@ -2015,7 +2015,7 @@ init 189 python in mas_sprites_json:
 
     def _validate_selectable(jobj, save_obj, obj_based, msg_log, indent_lvl):
         """
-        Validates selectable 
+        Validates selectable
 
         Props validated:
             - select_info
@@ -2094,7 +2094,7 @@ init 189 python in mas_sprites_json:
 
         # success, lets save
         msg_log.append((MSG_INFO_T, indent_lvl, SI_SUCCESS))
-        
+
         # NOTE: item is already saved into the dict
         return True
 
@@ -2142,7 +2142,7 @@ init 189 python in mas_sprites_json:
             if jkey.startswith("__"):
                 jobj.pop(jkey)
 
-        # determine version. Versions must match SP_JSON_VER. 
+        # determine version. Versions must match SP_JSON_VER.
         if VERSION_TXT not in jobj:
             writelog(MSG_ERR.format(VER_NOT_FOUND))
             return
@@ -2569,7 +2569,7 @@ init 189 python in mas_sprites_json:
         for giftname in giftname_map:
             if not giftname.startswith("__"):
                 sp_data = giftname_map[giftname]
-                
+
                 # no testing labels
                 if sp_data in msj_gifts:
                     # alrady unlocked, but overwrite data
@@ -2582,7 +2582,7 @@ init 189 python in mas_sprites_json:
                 _addGift(giftname, 1)
 
         writelog(MSG_INFO.format(GR_SUCCESS))
-                
+
 
 init 190 python in mas_sprites_json:
     # NOTE: must be before 200, which is when saved selector data is loaded

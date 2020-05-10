@@ -418,14 +418,6 @@ init:
         class ArchitectureError(RuntimeError):
             pass
 
-        def is_platform_good_for_chess():
-            import platform
-            import sys
-            if sys.maxsize > 2**32:
-                return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
-            else:
-                return platform.system() == 'Windows'
-
         def get_mouse_pos():
             vw = config.screen_width * 10000
             vh = config.screen_height * 10000
@@ -461,7 +453,7 @@ init:
                 return self.msg
 
         # only add chess folder if we can even do chess
-        if is_platform_good_for_chess():
+        if mas_games.is_platform_good_for_chess():
             # first create the folder for this
             try:
                 file_path = os.path.normcase(
@@ -534,58 +526,6 @@ init:
                 self.BUTTON_X_SPACING = 10
                 self.BUTTON_Y_SPACING = 10
 
-                # hotkey button displayables
-                button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-                button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-                button_no = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-
-                # hotkey button text
-                # idle style/ disabled style:
-                button_text_save_idle = Text(
-                    _("Save"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-                button_text_giveup_idle = Text(
-                    _("Give Up"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-                button_text_done_idle = Text(
-                    _("Done"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-
-                # hover style
-                button_text_save_hover = Text(
-                    _("Save"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-                button_text_giveup_hover = Text(
-                    _("Give Up"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-                button_text_done_hover = Text(
-                    _("Done"),
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-
                 # calculate positions
                 self.drawn_board_x = int((1280 - self.BOARD_WIDTH) / 2)
                 self.drawn_board_y=  int((720 - self.BOARD_HEIGHT) / 2)
@@ -604,13 +544,9 @@ init:
                 )
 
                 # now the actual 3 buttons
-                self._button_save = MASButtonDisplayable(
-                    button_text_save_idle,
-                    button_text_save_hover,
-                    button_text_save_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_save = MASButtonDisplayable.create_stb(
+                    _("Save"),
+                    True,
                     drawn_button_x,
                     drawn_button_y_top,
                     self.BUTTON_WIDTH,
@@ -618,13 +554,9 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_giveup = MASButtonDisplayable(
-                    button_text_giveup_idle,
-                    button_text_giveup_hover,
-                    button_text_giveup_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_giveup = MASButtonDisplayable.create_stb(
+                    _("Give Up"),
+                    True,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
@@ -632,18 +564,14 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_done = MASButtonDisplayable(
-                    button_text_done_idle,
-                    button_text_done_hover,
-                    button_text_done_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_done = MASButtonDisplayable.create_stb(
+                    _("Done"),
+                    False,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
                     self.BUTTON_HEIGHT,
-                    hover_sound=gui.activate_sound,
+                    hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
 
@@ -659,7 +587,7 @@ init:
 
                 # Stockfish engine provides AI for the game.
                 # Launch the appropriate version based on the architecture and OS.
-                if not is_platform_good_for_chess():
+                if not mas_games.is_platform_good_for_chess():
                     # This is the last-resort check, the availability of the chess game should be checked independently beforehand.
                     raise ArchitectureError('Your operating system does not support the chess game.')
 
@@ -674,9 +602,11 @@ init:
                         self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x64.exe',startupinfo)
                     else:
                         self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x32.exe',startupinfo)
+
                 elif platform.system() == 'Linux' and is_64_bit:
                     os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_linux_x64',0755)
                     self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_linux_x64')
+
                 elif platform.system() == 'Darwin' and is_64_bit:
                     os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_macosx_x64',0755)
                     self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_macosx_x64')
@@ -1615,6 +1545,11 @@ label mas_chess_playagain:
         m "Do you want to play again?{fast}"
 
         "Yes.":
+            $ chess_ev = mas_getEV("mas_chess")
+            if chess_ev:
+                # each game counts as a game played
+                $ chess_ev.shown_count += 1
+
             jump mas_chess_new_game_start
         "No.":
             pass
@@ -1989,10 +1924,12 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     # TODO: this makes sense compared to the go_ham event since
     # its just throwing away stuff instead of cheating
     # disable chess forever!
-    $ mas_loseAffection(modifier=10)
-    $ persistent.game_unlocks["chess"] = False
-    # workaround to deal with peeople who havent seen the unlock chess label
-    $ persistent._seen_ever["mas_unlock_chess"] = True
+    python:
+        mas_loseAffection(modifier=10)
+        #NOTE: Chess is automatically locked due to its conditional. No need to manually lock it here
+        mas_stripEVL("mas_unlock_chess")
+        #Workaround to deal with peeople who havent seen the unlock chess label
+        persistent._seen_ever["mas_unlock_chess"] = True
 
     m 2dfc "..."
     m 2efc "[player],{w=0.3} I don't believe you."
@@ -2094,9 +2031,9 @@ label mas_chess_dlg_qf_lost_may_3:
 
 # maybe monika, but player removed the file again!
 label mas_chess_dlg_qf_lost_may_removed:
-    $ import datetime
-    $ persistent._mas_chess_timed_disable = datetime.datetime.now()
-    $ mas_loseAffection(modifier=0.5)
+    python:
+        persistent._mas_chess_timed_disable = datetime.datetime.now()
+        mas_loseAffection(modifier=0.5)
 
     m 2wfw "[player]!"
     m 2wfx "You removed the save again."
@@ -2213,7 +2150,6 @@ label mas_chess_dlg_qf_edit_y_1:
 # 2nd time yes edit
 label mas_chess_dlg_qf_edit_y_2:
     python:
-        import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
         mas_loseAffection(modifier=0.5)
 
@@ -2319,7 +2255,6 @@ label mas_chess_dlg_qf_edit_n_3_s:
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
     python:
-        import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
         mas_loseAffection()
 

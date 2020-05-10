@@ -117,7 +117,7 @@ init 11 python in mas_poems:
 
             unseen:
                 whether or not we only want unseen poems
-                defaults to True 
+                defaults to True
 
         OUT:
             A random poem

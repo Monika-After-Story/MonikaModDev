@@ -16,7 +16,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
-            - Extra button + hotkey 
+            - Extra button + hotkey
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
             - Calendar overlay
@@ -75,7 +75,7 @@ init python:
         store.mas_hotkeys.derandom_enabled = False
         store.mas_hotkeys.bookmark_enabled = False
 
-    
+
     def mas_RaiseShield_dlg():
         """
         Disables:
@@ -134,7 +134,7 @@ init python:
             - Extra button + hotkey
             - Music button
             - Play button + hotkey
-            - Calendar overlay           
+            - Calendar overlay
 
         Intended Flow:
             - The Music menu is opened
@@ -154,6 +154,7 @@ init python:
             - Extra hotkey
             - Music hotkey
             - Play button + hotkey
+            - Music controller hotkeys
 
         Intended Flow:
             - Idle mode ends
@@ -169,6 +170,7 @@ init python:
             - Extra hotkey
             - Music hotkey
             - Play button + hotkey
+            - Music controller hotkeys
 
         Intended Flow:
             - Idle mode starts
@@ -177,9 +179,49 @@ init python:
         store.hkb_button.play_enabled = False
 
 
+    ################## Piano mode workflow ####################################
+    # used when Monika plays her piano
+
+    def mas_DropShield_piano():
+        """
+        Enables:
+            - text speed
+            - escape key
+            - Music button + hotkey
+            - Music Menu
+            - Calendar overlay
+
+        Shows:
+            - hotkey buttons
+        """
+        mas_resetTextSpeed()
+        enable_esc()
+        mas_MUMUDropShield()
+        mas_calDropOverlayShield()
+        HKBShowButtons()
+
+    def mas_RaiseShield_piano():
+        """
+        Disables:
+            - text speed
+            - escape key
+            - Music button + hotkey
+            - Music Menu
+            - Calendar overlay
+
+        Hides:
+            - hotkey buttons
+        """
+        mas_disableTextSpeed()
+        disable_esc()
+        mas_MUMURaiseShield()
+        mas_calRaiseOverlayShield()
+        HKBHideButtons()
+
+
 ################################## GENERALIZED ################################
     # NOTE: only generalized functions that are mult-module encompassing
-    # are allowed here. IF a generalized function is mostly related to 
+    # are allowed here. IF a generalized function is mostly related to
     # a specific store/module, make it there. NOT here.
 
     ################## Enable / Disable Music Menu ############################
@@ -212,6 +254,37 @@ init python:
         store.songs.enabled = False
 
 
+    ################## Enable / Disable Music interactions ####################
+    # specifically for enabling and disabling all music-based interactions
+
+    def mas_MUINDropShield():
+        """
+        Enables:
+            - Music button + hotkey
+            - Music Menu
+            - Music controller keys
+
+        Intended Flow:
+            - Whenever all music-based interactions need to be enabled
+        """
+        mas_MUMUDropShield()
+        store.mas_hotkeys.mu_ctrl_enabled = True
+
+
+    def mas_MUINRaiseShield():
+        """
+        Disables:
+            - Music button + hotkey
+            - Music Menu
+            - Music controller keys
+
+        Intended Flow:
+            - Whenever all music-based interactions need to be disabled
+        """
+        mas_MUMURaiseShield()
+        store.mas_hotkeys.mu_ctrl_enabled = False
+
+
     ################## dlg <-> idle transitions ###############################
     # specifically for transitioning between DLg and idle modes
     def mas_dlgToIdleShield():
@@ -223,7 +296,7 @@ init python:
 
         Disables:
             - Music hotkey
-        
+
         Unsets:
             - dialogue workflow flag
 
@@ -236,7 +309,7 @@ init python:
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
 
-    
+
     def mas_coreToIdleShield():
         """
         Enables:

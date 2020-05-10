@@ -25,8 +25,8 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
-# cutoff for a greeting type. 
-# if timedelta, then we add this time to last session end to check if the 
+# cutoff for a greeting type.
+# if timedelta, then we add this time to last session end to check if the
 #   type should be cleared
 # if datetime, then we compare it to the current dt to check if type should be
 #   cleared
@@ -1076,7 +1076,7 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
+    if persistent.closed_self and not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?
@@ -1108,7 +1108,7 @@ label i_greeting_monikaroom:
 
     #Set up dark mode
     if persistent._mas_auto_mode_enabled:
-        $ mas_darkMode(morning_flag)
+        $ mas_darkMode(mas_current_background.isFltDay())
     else:
         $ mas_darkMode(not persistent._mas_dark_mode_enabled)
 
@@ -1363,7 +1363,8 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    if persistent._mas_affection["affection"] >= 30:
+    #NOTE: Taking directly from persist here because aff funcs don't exist at init 5
+    if persistent._mas_affection.get("affection", 0) >= 400:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
@@ -1888,7 +1889,7 @@ label greeting_japan:
         m 3eua "You know what that means, [player]?"
         m 4ekbfa "It means {i}'I'll be yours forever'~{/i}"
         return
-    
+
     m 4hub "Watashi wa itsumademo anata no mono desu!"
     if shown_count == 1:
         m 3eksdla "Last time I said that I made a mistake..."
@@ -2092,7 +2093,7 @@ label greeting_stillsicknorest:
     # setting greet type here even tho we aren't quitting so she remembers you're sick next load
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return
-    
+
 label greeting_stillsickresting:
     m 1eka "Oh, that's a relief to hear, [player]."
     m 3eka "I hope you're keeping yourself warm though."
@@ -3129,7 +3130,7 @@ label greeting_ourreality:
     m 4eub "Would you kindly look out the window, [player]"
     $ mas_OVLHide()
     $ disable_esc()
-    if morning_flag:
+    if mas_current_background.isFltDay():
         show mas_island_frame_day zorder 20
     else:
         show mas_island_frame_night zorder 20
@@ -3140,7 +3141,7 @@ label greeting_ourreality:
     m "It's also where I can keep practicing my programming skills."
     $ mas_OVLShow()
     $ enable_esc()
-    if morning_flag:
+    if mas_current_background.isFltDay():
         hide mas_island_frame_day
     else:
         hide mas_island_frame_night
@@ -3278,7 +3279,7 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
 
 label greeting_returned_home_morethan5mins_cleanup:
     pass
-    # TODO: re-evaluate this XP gain when rethinking XP. Going out with 
+    # TODO: re-evaluate this XP gain when rethinking XP. Going out with
     #   monika could be seen as gaining xp
     # $ grant_xp(xp.NEW_GAME)
     #FALL THROUGH
@@ -3548,10 +3549,10 @@ label greeting_back_from_game:
                     m 1hua "That's nice."
                     m 1eua "I'm glad you enjoyed yourself."
                     m 2eka "I really wish I could join you in your other games sometimes."
-                    m 3eub "Wouldn't it be great to have our own little adventures anytime we wanted?"
+                    m 3eub "Wouldn't it be great to have our own little adventures any time we wanted?"
                     m 1hub "I'm sure we'd have a lot of fun together in one of your games."
                     m 3eka "But while I can't join you, I guess you'll just have to keep me company."
-                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5} Do you, [player]?"
+                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5}do you, [player]?"
 
                 "No.":
                     m 2ekc "Aw, I'm sorry to hear that."
@@ -3672,7 +3673,7 @@ label greeting_rent:
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -3691,7 +3692,7 @@ label greeting_back_housework:
     elif mas_isMoniUpset():
         m 2esc "At least you didn't forget to come back, [player]."
     elif mas_isMoniDis():
-        m 6ekd "Ah, [player]. So you really were just busy..."    
+        m 6ekd "Ah, [player]. So you really were just busy..."
     else:
         m 6ckc "..."
     return
