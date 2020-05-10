@@ -3941,6 +3941,172 @@ init -100 python in mas_utils:
         return normal_pts
 
 
+    def nz_count(value_list):
+        """
+        NonZero Count
+
+        Counts all non-zero values in the given list
+
+        IN:
+            value_list - list to count nonzero values for
+
+        RETURNS: number of nonzero values in list
+        """
+        count = 0
+        for value in value_list:
+            count += int(value != 0)
+
+        return count
+
+    
+    def ev_distribute(value_list, amt, nz=False):
+        """
+        EVen Distribute
+
+        Evenly distributes the given value to a given value list.
+        NOTE: only for ints
+
+        IN:
+            value_list - list of numbers to distribute to
+            amt - amount to evenly distribute
+            nz - True will make distribution only apply to non-zero values,
+                False will distribute to all
+                (Default: False)
+
+        OUT:
+            value_list - even distribution amount added to each appropriate
+                item in this list
+
+        RETURNS: leftover amount
+        """
+        # determine effective size
+        size = len(value_list)
+        if nz:
+            size -= nz_count(value_list)
+
+        # deteremine distribution amount
+        d_amt = amt / size
+
+        # now distribute
+        for index in range(len(value_list)):
+            if not nz or value_list[index] > 0:
+                value_list[index] += d_amt
+
+        # leftovers
+        return amt % size
+
+
+    def fz_distribute(value_list):
+        """
+        Flipped Zero Distribute
+
+        Redistributes values in the given list such that:
+        1. any index with a value larger than 0 is set to 0
+        2. any index with a value of 0 now has a nonzero value
+        3. the nonzero is evenly divided among the appropriate indexes
+
+        IN:
+            value_list - list of numbers to flip zero distribute
+
+        OUT:
+            value_list - flip-zero distributed list of numbers
+
+        RETURNS: any leftover amount
+        """
+        # determine amt to distribute
+        amt = sum(value_list)
+
+        # dont do anything if nothing to distribute
+        if amt < 1:
+            return 0
+
+        # determine distribution amount
+        size = len(value_list) - nz_count(value_list)
+        d_amt = amt / size
+
+        # now apply the amount to zero and clear non-zero values
+        for index in range(len(value_list)):
+            if value_list[index] > 0:
+                value_list[index] = 0
+            else:
+                value_list[index] = d_amt
+
+        # and return leftovers
+        return amt % size
+
+
+    def ip_distribute(value_list, amt_list):
+        """
+        In Place Distribute
+
+        Distributes values from one list to the other list, based on index.
+        Mismatched list sizes are allowed. There is no concept of leftovers
+        here.
+
+        IN:
+            value_list - list of numbers to distribute to
+            amt_list - list of amounts to distribute
+
+        OUT:
+            value_list - each corresponding index in amt_list added to 
+                corresponding index in value_list
+        """
+        vindex = 0
+        amtindex = 0
+        while vindex < len(value_list) and amtindex < len(amt_list):
+            value_list[vindex] += amt_list[amtindex]
+
+
+    def lo_distribute(value_list, leftovers, reverse=False, nz=False):
+        """
+        LeftOver Distribute
+        Applies leftovers to the given value list. 
+
+        If leftovers are larger than the value list, we do ev_distribute first
+
+        IN:
+            value_list - list of numbers to distribute to
+            leftovers - amount of leftover to distribute
+            reverse - True will add in reverse order, false will not
+                (Default: False)
+            nz - True will only apply leftovers to non-zero values
+                False will not
+                (Default: False)
+
+        OUT:
+            value_list - some items will have leftovers added to them
+        """
+        # determine effective size
+        if nz:
+            size = nz_count(value_list)
+        else:
+            size = len(value_list)
+
+        # apply ev distribute if leftovesr is too large
+        if leftovers >= size:
+            leftovers = ev_distribute(value_list, leftovers, nz=nz)
+
+        # dont add leftovers if none leftover
+        if leftovers < 1:
+            return
+
+        # determine direction
+        if reverse:
+            indexes = range(len(value_list)-1, -1, -1)
+        else:
+            indexes = range(len(value_list))
+
+        # apply leftovers
+        index = 0
+        while leftovers > 0 and index < len(indexes):
+            real_index = indexes[index]
+            if not nz or value_list[real_index] > 0:
+                value_list[real_index] += 1
+                leftovers -= 1
+
+            index += 1
+
+
     def _EVgenY(_start, _end, current, for_start):
         """
         Generates/decides if a given start/end datetime/date should have its

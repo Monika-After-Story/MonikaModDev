@@ -60,6 +60,9 @@ init -10 python:
             minlength - the amount of time in seconds that this filter must
                 be able to be used for it to be shown. If the filter cannot be
                 shown for this amount of time, it will not be shown at all.
+            maxlength - the amount of time in seconds that this filter can
+                be shown. The filter will never be shown more than this amt
+                of seconds. If None, then max is unbounded.
             priority - the priority of this filter object. Larger number means
                 higher priority. Lower priority means filter will be removed
                 first.
@@ -74,6 +77,7 @@ init -10 python:
         def __init__(self,
                 name,
                 minlength,
+                maxlength=None,
                 priority=1,
                 flt=None,
                 cache=True
@@ -86,6 +90,10 @@ init -10 python:
                     ENUMS until init level 0.
                 minlength - amount of time in seconds that this filter must
                     be at least shown for.
+                maxlength - amount of time in seconds that this at most can be
+                    shown for.
+                    if None, max time is unbounded
+                    (Default: None)
                 priority - priority of this filter object. Larger number means
                     higher priority.
                     Must be between 1 and 10, inclusive.
@@ -101,6 +109,7 @@ init -10 python:
             """
             self.name = name
             self.minlength = minlength
+            self.maxlength = maxlength
             self.flt = flt
 
             if 1 <= priority <= 10:
@@ -142,10 +151,11 @@ init -10 python:
             """
             Slice as string
             """
-            return "M: {1:>6}|N: {0} |P: {2}".format(
+            return "M: {1:>6}|X: {3:>6}|N: {0} |P: {2}".format(
                 self.name,
                 self.minlength,
-                self.priority
+                self.priority,
+                self.maxlength
             )
 
         def add_to_filters(self):
@@ -203,19 +213,40 @@ init -10 python:
             return self.minlength <= int(td.total_seconds())
 
         @staticmethod
-        def gen_hash(name, minlength, priority):
+        def gen_hash(name, minlength, maxlength, priority):
             """
             Generates a hash of the components of a MASBackgroundFilterSlice
 
             IN:
                 name - name to use
                 minlength - minlength to use
+                maxlength - maxlength to use
                 priority - priority to use
 
             RETURNS: hash of the object that would be created with the given
                 properties.
             """
-            return hash("-".join((name, minlength, priority)))
+            return hash("-".join((
+                name,
+                str(minlength),
+                str(maxlength),
+                priority
+            )))
+
+        def is_max(self, value):
+            """
+            Checks if the given vlaue is larger than max length.
+            If this slice is unbounded, this will always return False
+
+            IN:
+                value - value to check
+
+            RETURNS: True if the value is larger than maxlength, False if not
+            """
+            if self.maxlength is None:
+                return False
+
+            return value > self.maxlength
 
         def verify(self):
             """
@@ -233,6 +264,7 @@ init -10 python:
 
         PROPERTIES:
             offset - the offset associated with this slice
+            length - the length of this slice data
             order - the order associated to this slice
             flt_slice - the slice to associate
         """
@@ -248,6 +280,7 @@ init -10 python:
             self.order = order
             self.offset = order
             self.flt_slice = flt_slice
+            self.length = flt_slice.minlength
 
         def __gt__(self, other):
             """
@@ -269,11 +302,18 @@ init -10 python:
             """
             strings are offset + order + name
             """
-            return "{0:>5}|ORD: {1} |{2}".format(
+            return "{0:>5}|ORD: {1} |AL: {3}|{2}".format(
                 self.offset,
                 self.order,
-                self.flt_slice
+                self.flt_slice,
+                self.length
             )
+
+        def __len__(self):
+            """
+            Returns length
+            """
+            return self.length
 
         def eff_minlength(self):
             """
@@ -360,8 +400,6 @@ init -10 python:
 
         Slices are organized by an order. The order value determines the 
         desired order of slices.
-        The base slice is the initial filter to show for a chunk, and will
-        always take priority over any other slice.
 
         Code can be ran during a filter change by passing in function to 
         appropriate param. Any exceptions are caught and loggged.
@@ -370,14 +408,12 @@ init -10 python:
             is_day - True if this is a day chunk, False if not
         """
 
-        def __init__(self, is_day, base_slice, pp, *slices):
+        def __init__(self, is_day, pp, *slices):
             """
             Constructor
 
             IN:
                 is_day - True if this is a "Day" chunk. False if not
-                base_slice - the initial filter slice to use.
-                    This defaults to the highest priority.
                 pp - progpoint to run on a filter change (or slice change)
                     the following args are passed to the progpoint:
                         flt_old - the outgoing filter 
@@ -385,18 +421,11 @@ init -10 python:
                         curr_time - the current time
                     pass None to not use a progpoint
                 *slices - slice arguments. Each item should be a 
-                    MASBackgroundFilterSlice object
+                    MASBackgroundFilterSlice object.
+                    This should be in the desired order.
+                    NOTE: there must be at least one slice with unbounded time
             """
-            if not isinstance(base_slice, MASBackgroundFilterSlice):
-                raise MASBackgroundFilterTypeException(
-                    base_slice,
-                    MASBackgroundFilterSlice
-                )
-
             self.is_day = is_day
-
-            self._base_slice = base_slice
-            # base filter
 
             self._slices = []
             # MASBackgroundFilterSliceData objects in standard order
@@ -426,18 +455,6 @@ init -10 python:
                 "Slices:",
             ]
 
-            # calc effective size of base slice
-            if len(self._eff_slices) > 0:
-                es = self._eff_slices[0].offset
-            else:
-                es = ""
-
-            # string base slice
-            output.append("ES: {0:>5}|    0| BASE |{1}".format(
-                es,
-                self._base_slice
-            ))
-
             # string other slices
             for index in range(len(self._eff_slices)):
 
@@ -455,6 +472,12 @@ init -10 python:
                 ))
 
             return "\n".join(output)
+
+        def __len__(self):
+            """
+            Length of this chunk
+            """
+            return self._length
 
         def _adjust_offset(self, index, amt):
             """
@@ -481,8 +504,18 @@ init -10 python:
             """
             self._length = length
 
-            if len(self._slices) < 1:
-                # dont do anything if we dont even have any slices to do
+            if length < 1:
+                # this chunk has no length. clear it out
+                self._eff_slices = []
+                return
+
+            if len(self._slices) < 2:
+                # with only once slice, just set that slice as the
+                # main slice
+                sl_data = self._slices[0]
+                sl_data.length = length
+                sl_data.offset = 0
+                self._eff_slices = [sl_data]
                 return
 
             # always start with the minimum length expansion alg
@@ -491,6 +524,10 @@ init -10 python:
             if len(leftovers) > 0:
                 # if we have leftovers, then use complex alg
                 self._priority_fill(length, leftovers)
+
+            # set everyones length to minimum
+            for sl_data in self._eff_slices:
+                sl_data.length = sl_data.flt_slice.minlength
 
             # lastly, expand to fill voids
             self._expand(length)
@@ -501,11 +538,7 @@ init -10 python:
 
             RETURNS: last eff_slice's eff_offset + its minlength
             """
-            if len(self._eff_slices) > 0:
-                return self._eff_slices[-1].eff_minlength()
-
-            # if no slices at all, then just the base slice works
-            return self._base_slice.minlength
+            return self._eff_slices[-1].eff_minlength()
 
         def _expand(self, length):
             """
@@ -515,31 +548,90 @@ init -10 python:
             IN:
                 length - the amount of length we need to fill
             """
-            es_count = 1 + len(self._eff_slices)
+            es_count = len(self._eff_slices)
             diff = length - self._eff_chunk_min_end()
 
             # make a list of inc amounts for easy looping
             inc_amts = [diff / es_count] * es_count
 
-            # now calculate any leftover amounts and reverse add them
-            leftovers = diff % es_count
-            index = es_count - 1
-            while leftovers > 0 and index >= 0:
-                inc_amts[index] += 1
-                leftovers -= 1
-                index -= 1
+            # reverse add lefovers
+            store.mas_utils.lo_distribute(
+                inc_amts,
+                diff % es_count,
+                reverse=True
+            )
 
-            # and lastly, apply each inc amount
-            # start by figuring the base slice new length
-            st_off = self._base_slice.minlength + inc_amts[0]
-            for index in range(es_count-1):
-                sl_data = self._eff_slices[index]
+            # apply amounts to values until we are out
+            while sum(inc_amts) > 0:
+                self._expand_once(inc_amts)
 
-                # the new length is always the next slice's start
-                sl_data.offset = st_off
+                # reform inc_amts so we continue adding leftover amounts to
+                # slices that can still be expanded
+                leftovers = store.mas_utils.fz_distribute(inc_amts)
+                if leftovers > 0:
+                    store.mas_utils.lo_distribute(
+                        inc_amts,
+                        leftovers,
+                        reverse=True,
+                        nz=True
+                    )
 
-                # calculate new length
-                st_off += sl_data.flt_slice.minlength + inc_amts[index+1]
+        def _expand_once(self, value_list):
+            """
+            Runs expansion alg. This will add index-based numbers from the
+            given value list to effective slice offsets and subtract added amts
+            from the given corresponding position in value list.
+
+            IN:
+                value_list - list of amounts to add to individual items in 
+                    eff_slices
+
+            OUT:
+                value_list - leftover amounts to distribute to eff_slices
+            """
+            # apply inc amounts
+            # start by figuring the base new length
+            c_off = 0
+            for index in range(len(self._eff_slices)):
+                c_off = self._expand_sld(index, value_list, c_off)
+
+        def _expand_sld(self, index, value_list, c_off):
+            """
+            Expands a slicedata item. Also adjusts value list as appropriate
+
+            IN:
+                index - position to expand slice data and value list
+                value_list - list of amounts to add to individual items in 
+                    eff_slices
+                c_off - current offset value
+
+            OUT:
+                value_list - value at index changed to leftover amounts or 0
+
+            RETURNS: new current offset value
+            """
+            # get sl data
+            sl_data = self._eff_slices[index]
+
+            # the current offset is always this sl data's new start
+            sl_data.offset = c_off
+
+            # how long is this slice?
+            sl_len = sl_data.length + value_list[index]
+
+            # if too big, adjust
+            if sl_data.flt_slice.is_max(sl_len):
+                diff = sl_len - sl_data.flt_slice.maxlength
+                value_list[index] = diff
+                sl_len = sl_data.flt_slice.maxlength
+            else:
+                value_list[index] = 0
+
+            # and set new length
+            sl_data.length = sl_len
+
+            # calculate next offset
+            return c_off + sl_len
             
         def filters(self):
             """
@@ -566,11 +658,12 @@ init -10 python:
                 be empty if we managed to fit all slices.
             """
             built_length = 0
-            index = 0
+            index = 1
+            # start at the 2nd slice as thats where we start adjusting offsets
 
-            # always start with the base
-            built_length = self._base_slice.minlength
-            self._eff_slices = []
+            # always start with the first slice
+            built_length = self._slices[0].flt_slice.minlength
+            self._eff_slices = [self._slices[0]]
 
             # add slices
             while built_length < length and index < len(self._slices):
@@ -601,9 +694,9 @@ init -10 python:
             """
             # verify slices
             if len(slices) < 1:
-                # no slice data. that is ok
-                return
+                raise Exception("No slices found")
 
+            has_unbounded = False
             for index in range(len(slices)):
                 bg_flt = slices[index]
 
@@ -614,12 +707,22 @@ init -10 python:
                         MASBackgroundFilterSlice
                     )
 
+                if bg_flt.maxlength is None:
+                    has_unbounded = True
+                    bg_flt.priority = 11 # force this slice to be important
+
                 # add to slices
                 store.mas_utils.insert_sort(
                     self._slices,
                     MASBackgroundFilterSliceData(index, bg_flt),
                     MASBackgroundFilterSliceData.sk
                 )
+
+            if not has_unbounded:
+                raise Exception("No unbounded slice found")
+
+            # set offset of initial slice to 0
+            self._slices[0].offset = 0
 
         def _pf_insert(self, index, sl_data):
             """
@@ -630,20 +733,19 @@ init -10 python:
                 index - starting index
                 sl_data - the slice data to insert
             """
-            # get current slice and how long it is
-            rm_len = self._eff_slices[index].flt_slice.minlength
-
             # looop, finding the right place for the sl_off
             while (
                     index < len(self._eff_slices)
-                    and self._eff_slices[index] < sl_off
+                    and self._eff_slices[index] < sl_data
             ):
-                self._eff_slices[index].offset -= rm_len
                 index += 1
 
             # we must have the correct location now
             # determine the offset to use
-            sl_data.offset = self._eff_slices[index-1].eff_minlength()
+            if index == 0:
+                sl_data.offset = 0
+            else:
+                sl_data.offset = self._eff_slices[index-1].eff_minlength()
             self._eff_slices.insert(index, sl_data)
 
             # now adjust offsets for all remaining sl datas
@@ -662,7 +764,6 @@ init -10 python:
             #   1. reverse through the eff_slices, removing elements with
             #       lower priorities than leftovers, and adding high priority
             #       elements from leftovers.
-            #   2. stop upon reaching the first slice.
 
             # highest priority in leftovers
             hpsl_data = leftovers.pop(
@@ -677,17 +778,17 @@ init -10 python:
                 if csl_data.flt_slice.priority < hpsl_data.flt_slice.priority:
                     # current has a lower priority
 
-                    # add the higher priority item
-                    self._pf_insert(es_index, hpsl_data)
-
                     # remove the lower priority item, and store in leftovers
                     leftovers.insert(0, self._eff_slices.pop(es_index))
 
                     # then clean up the offsets
                     self._adjust_offset(
-                        es_index + 1,
-                        csl_data.flt_slice.min_length
+                        es_index,
+                        csl_data.flt_slice.minlength * -1
                     )
+
+                    # add the higher priority item
+                    self._pf_insert(es_index, hpsl_data)
 
                     # and find newest high leftover priority
                     hpsl_data = leftovers.pop(
@@ -698,7 +799,7 @@ init -10 python:
 
             # clean up if our current min length is too large
             while (
-                    len(self._eff_slices) > 0
+                    len(self._eff_slices) > 1
                     and self._eff_chunk_min_end() > length
             ):
                 # obtain lowest priority filter slice offset object and remove
@@ -708,7 +809,13 @@ init -10 python:
                 lpsl_data = self._eff_slices.pop(llop_index)
 
                 # fix eff offsets
-                self._adjust_offset(llop_index, lpsl_data.flt_slice.minlength)
+                self._adjust_offset(
+                    llop_index,
+                    lpsl_data.flt_slice.minlength * -1
+                )
+
+            # ensure first slice has 0 offset
+            self._eff_slices[0].offset = 0
 
         def verify(self):
             """
