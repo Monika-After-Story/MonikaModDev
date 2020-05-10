@@ -1450,6 +1450,10 @@ label mas_consumables_generic_running_out_absentuse:
 
 
 label mas_consumables_generic_queued_running_out_dlg(low_cons):
+    # sanity check for non-empty list
+    if not low_cons:
+        return
+
     m 1esc "By the way, [player]..."
     if len(low_cons) > 2:
         $ mas_generateShoppingList(low_cons)
@@ -1487,6 +1491,7 @@ label mas_consumables_remove_thermos:
         m 1eua "Give me a second [player], I'm going to put this thermos away."
 
     $ thermos = monika_chr.get_acs_of_type("thermos-mug")
+    window hide
     call mas_transition_to_emptydesk
 
     python:
@@ -1496,6 +1501,7 @@ label mas_consumables_remove_thermos:
         renpy.pause(2.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
+    window auto
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"

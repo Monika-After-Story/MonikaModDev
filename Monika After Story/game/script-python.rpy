@@ -89,17 +89,10 @@ init 4 python in mas_ptod:
             None
         )
 
-        if tip_ev is None:
-            return False
-
-        # otherwise, unlocked date is our key
-        if tip_ev.unlock_date is None or tip_ev.shown_count == 0:
-            return False
-
-        # now check the actual day
         return (
-            datetime.date.today() - tip_ev.unlock_date.date()
-            >= datetime.timedelta(days=1)
+            tip_ev is not None
+            and tip_ev.last_seen is not None
+            and tip_ev.timePassedSinceLastSeen_d(datetime.timedelta(days=1))
         )
 
     def has_day_past_tips(*tip_nums):
@@ -138,17 +131,14 @@ label monika_ptod_tip000:
     m 1lksdlb "I don't know {i}that{/i} much about programming, but I'll try my best to explain."
     m 1esa "Let's start with what Python even is."
 
+    # hide the intro topic after viewing
     $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)
 
     # enable tip 1
-    $ import datetime
-    $ tip_ev = mas_getEV("monika_ptod_tip001")
-    $ tip_ev.pool = True
-    $ tip_ev.unlocked = True
-    $ tip_ev.unlock_date = datetime.datetime.now()
-    $ tip_ev.shown_count = 1
-
-    jump monika_ptod_tip001
+    $ tip_label = "monika_ptod_tip001"
+    $ mas_showEVL(tip_label, "EVE", unlock=True, _pool=True)
+    $ pushEvent(tip_label,skipeval=True)
+    return
 
 ###############################################################################
 init 5 python:
@@ -168,13 +158,11 @@ label monika_ptod_tip001:
     m 1hua "This mod!"
     m 1eua "DDLC uses a visual novel engine called Ren'Py,{w=0.2} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
-    show monika 5eua with dissolve
-    m "Wouldn't that be great, [player]?"
-
-    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
+    m 1hua "Wouldn't that be great, [player]?"
+    m 3eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
     m "Even though this caused a rift in the Python community,{w=0.2} it's generally agreed that both versions of the language have their own strengths and weaknesses."
-    m 3eub "I'll tell you about those differences in another lesson."
+    m 1eub "I'll tell you about those differences in another lesson."
 
     m 1eua "Since this mod runs on a Ren'Py version that uses Python2, I won't be talking about Python3 too often."
     m 1hua "But I'll mention it when it's appropriate."
@@ -191,8 +179,10 @@ init 5 python:
             eventlabel="monika_ptod_tip002",
             category=["python tips"],
             prompt="Types",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(3)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":None}
         )
     )
 
@@ -276,8 +266,10 @@ init 5 python:
             eventlabel="monika_ptod_tip003", # may change order, you decide on this
             category=["python tips"],
             prompt="An Interpreted Language",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(1)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":None}
         )
     )
 
@@ -340,8 +332,10 @@ label monika_ptod_tip003:
 #            eventlabel="monika_ptod_tip004",
 #            category=["python tips"],
 #            prompt="What does python code look like?",
+#            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(3)",
-#            action=EV_ACT_POOL
+#            action=EV_ACT_UNLOCK,
+#            rules={"no unlock":None}
 #        )
 #    )
 
@@ -383,8 +377,10 @@ init 5 python:
             eventlabel="monika_ptod_tip005",
             category=["python tips"],
             prompt="Comparisons and Booleans",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":None}
         )
     )
 
@@ -555,8 +551,10 @@ init 5 python:
             eventlabel="monika_ptod_tip006",
             category=["python tips"],
             prompt="Variables and Assignment",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(2)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":None}
         )
     )
 
@@ -663,8 +661,10 @@ label monika_ptod_tip006:
 #            eventlabel="monika_ptod_tip007",
 #            category=["python tips"],
 #            prompt="Variable Sizes",
+#            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(6)",
-#            action=EV_ACT_POOL
+#            action=EV_ACT_UNLOCK,
+#            rules={"no unlock":None}
 #        )
 #    )
 
@@ -697,8 +697,10 @@ init 5 python:
             eventlabel="monika_ptod_tip008",
             category=["python tips"],
             prompt="Literals",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":None}
         )
     )
 
@@ -780,8 +782,10 @@ init 5 python:
             eventlabel="monika_ptod_tip009",
             category=["python tips"],
             prompt="Truth Values",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(5)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":None}
         )
     )
 
@@ -867,7 +871,8 @@ label monika_ptod_tip009:
 #            prompt="Evaluation Order and Short Circuiting",
 # TODO: this should be after if statements.
 #            conditional="store.mas_ptod.has_day_past_tip(2)",
-#            action=EV_ACT_POOL
+#            action=EV_ACT_UNLOCK,
+#            rules={"no unlock":None}
 #        )
 #    )
 

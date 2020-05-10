@@ -305,6 +305,15 @@ init 999 python:
         with open(_var_data_fp, "w") as _var_data_file:
             _var_data_file.write(config.version + "\n\n")
 
+            # xp and levels
+            _var_data_file.write(
+                "LEVELS: {0}\nXPTNL: {1}\nUNLOCKS: {2}\n\n".format(
+                    persistent._mas_xp_lvl,
+                    persistent._mas_xp_tnl,
+                    persistent._mas_pool_unlocks
+                )
+            )
+
             # add data lines here
             #Consumables stuff
             for consumable_id in persistent._mas_consumable_map.keys():

@@ -996,14 +996,14 @@ init python:
                 None
             )
             if giftname is None:
-                return (None, None, None, None)
+                return (None, None, None, None, None)
 
         elif len(persistent._mas_filereacts_sprite_reacted) > 0:
             sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
             giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
 
         else:
-            return (None, None, None, None)
+            return (None, None, None, None, None)
 
         # check if this gift has already been gifted
         gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
@@ -1775,7 +1775,7 @@ label mas_reaction_candy:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candy")
     if times_candy_given == 0:
         $ mas_o31CapGainAff(7)
-        m 1wua "Oh...{w=1}what's this?"
+        m 1wua "Oh...{w=0.5}what's this?"
         m 1sua "You got me candy, [player], yay!"
         m 1eka "That's so {i}sweet{/i}..."
         m 1hub "Ahaha!"
@@ -1848,7 +1848,7 @@ label mas_reaction_candycorn:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candycorn")
     if times_candy_given == 0:
         $ mas_o31CapGainAff(3)
-        m 1wua "Oh...{w=1} What's this?"
+        m 1wua "Oh...{w=0.5}what's this?"
         m 1eka "Aww did you get me candy, [player]?"
         m 1hua "Yay!"
         m 3eub "Let's see what you got for me..."

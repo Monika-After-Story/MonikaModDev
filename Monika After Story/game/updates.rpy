@@ -372,6 +372,47 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+label v0_11_3(version="v0_11_3"):
+    python:
+        # give extra pool unlocks for recent players
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only 0.11.0 + week ago
+
+            # NOTE: multiply by 4 becaue everyone should already have level
+            #   number of pool unlocks given
+            persistent._mas_pool_unlocks += store.mas_xp.level() * 4
+
+        tod_list = [
+            "monika_gtod_tip002",
+            "monika_gtod_tip003",
+            "monika_gtod_tip004",
+            "monika_gtod_tip005",
+            "monika_gtod_tip006",
+            "monika_gtod_tip007",
+            "monika_gtod_tip008",
+            "monika_gtod_tip009",
+            "monika_gtod_tip010",
+            "monika_ptod_tip002",
+            "monika_ptod_tip003",
+            "monika_ptod_tip005",
+            "monika_ptod_tip006",
+            "monika_ptod_tip008",
+            "monika_ptod_tip009"
+        ]
+
+        for tod_label in tod_list:
+            tod_ev = mas_getEV(tod_label)
+
+            if tod_ev is not None:
+                if tod_ev.pool:
+                    tod_ev.unlocked = True
+
+                else:
+                    tod_ev.pool = True
+                    tod_ev.action = EV_ACT_UNLOCK
+    return
+
 #0.11.1
 label v0_11_1(version="v0_11_1"):
     python:
@@ -450,6 +491,23 @@ label v0_11_1(version="v0_11_1"):
 
         if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
             persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        #Prep the grandfathering of Moni nickname
+        #If the current name is considered awkward now,
+        #we should keep that stored so the user can always come back to it
+        if persistent._mas_monika_nickname != "Monika" and mas_awk_name_comp.search(persistent._mas_monika_nickname):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        #Make this a pm var
+        persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+
+        #Delete some excess stuff
+        safeDel("_mas_called_moni_a_bad_name")
+
+        #Penname should default to None
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
     return
 
 #0.11.0

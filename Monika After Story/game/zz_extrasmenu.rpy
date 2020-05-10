@@ -115,7 +115,6 @@ label mas_extra_menu_close:
 
 label mas_idle_loop:
     pause 10.0
-    $ renpy.not_infinite_loop(60)
     jump mas_idle_loop
 
 default persistent._mas_opened_extra_menu = False

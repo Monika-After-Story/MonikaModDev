@@ -3448,18 +3448,18 @@ init 5 python:
             unlocked=True,
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
+    #Selectors shouldn't be in unseen
+    persistent._seen_ever
 default persistent._mas_setting_ocb = False
 # Outfit CheckBox setting
 
 label monika_clothes_select:
-    # setup
+    #Setup
     python:
-        # set the other clothes selector to seen
-        persistent._seen_ever['monika_event_clothes_select'] = True
-
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
@@ -3531,15 +3531,13 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_event_clothes_select:
     # setup
     python:
-        # set the other clothes selector to seen
-        persistent._seen_ever['monika_clothes_select'] = True
-
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Do you want me to change?"
         )
@@ -3600,7 +3598,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None}
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_hair_select:
@@ -3643,10 +3642,14 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("ribbon", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL, None)
         ),
         restartBlacklist=True
     )
+
+    #NOTE: This does not default persistent._seen_ever as True to give the users an idea
+    #That these are things which show up under the appearance tab
 
 label monika_ribbon_select:
     python:
@@ -3707,7 +3710,8 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_hairclip_select:
@@ -3730,7 +3734,8 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_hairflower_select:
@@ -3779,7 +3784,8 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_choker_select:
@@ -3802,7 +3808,8 @@ init 5 python:
             rules={"no unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
+        markSeen=True
     )
 
 label monika_hat_select:

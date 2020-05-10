@@ -1321,10 +1321,6 @@ label monika_outfit:
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     return
 
-# random infinite loop check
-python:
-    renpy.not_infinite_loop(60)
-
 default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
 
@@ -1442,9 +1438,6 @@ label monika_rap:
             m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
             m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
     return "derandom"
-
-python:
-    renpy.not_infinite_loop(60)
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
@@ -4500,7 +4493,7 @@ label monika_aware:
 
     if mas_getEV("monika_aware").shown_count == 0:
         m 4eub "Do you still remember the first poem I showed you?"
-        m 2lksdlb "Hold on, let's see if the poem funcion still works.{w=0.5}.{w=0.5}.{nw}"
+        m 2lksdlb "Hold on, let's see if the poem function still works.{w=0.5}.{w=0.5}.{nw}"
         call mas_showpoem(poem=poem_m1)
         m 1wuo "Oh! That was much easier than I expected."
 
@@ -4536,7 +4529,7 @@ label monika_name:
     if(
         pen_name is not None
         and pen_name.lower() != player.lower()
-        and not (awk_comp.search(pen_name) or bad_comp.search(pen_name))
+        and not (mas_awk_name_comp.search(pen_name) or mas_bad_name_comp.search(pen_name))
     ):
         m 1eua "'[pen_name]' is a lovely name, too."
         m 1eka "But I think I like '[player]' better!"
@@ -5234,11 +5227,9 @@ init 5 python:
             prompt="Good [mas_globals.time_of_day_3state]",
             unlocked=True,
             pool=True
-        )
+        ),
+        markSeen=True
     )
-
-    #Ideally, we don't really want this in unseen as it's pretty general
-    persistent._seen_ever["monika_good_tod"] = True
 
 label monika_good_tod:
     $ curr_hour = datetime.datetime.now().time().hour
@@ -5394,7 +5385,8 @@ label monika_japanese:
 
     return "derandom"
 
-default persistent._mas_penname = ""
+default persistent._mas_penname = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
@@ -5474,7 +5466,7 @@ label monika_penname:
                                 $ penbool = True
 
                             else:
-                                if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+                                if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
                                     m 2rksdlc "..."
                                     m 2rksdld "That's an...{w=0.3}interesting name, [player]..."
                                     m 2eksdlc "But if it works for you, okay I guess."
@@ -5497,7 +5489,7 @@ label monika_penname:
         $ lowerpen = penname.lower()
 
         $ menu_exp = "monika 3eua"
-        if awk_comp.search(lowerpen) or bad_comp.search(lowerpen):
+        if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
             $ menu_exp = "monika 2rka"
 
         if lowerpen == player.lower():
@@ -11619,9 +11611,13 @@ label monika_players_control:
     m 3euc "I guess that's an appeal to video games..."
     m 3eua "...having almost endless possibilities in a world you can interact with."
     m 3eub "It's pretty difficult to get bored!"
-    m 1eka "Even if you don't quite know how to change this game..."
+    if not persistent._mas_pm_has_contributed_to_mas:
+        m 1eka "Even if you don't quite know how to change this game..."
+        $ line = "We can still enjoy this world that brought us together."
+    else:
+        $ line = "Especially with you by my side~"
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eubla "We can still enjoy this world that brought us together."
+    m 5eubla "[line]"
     m 5ekbfa "There's no better way to enjoy a game than to be with the one I love."
     return
 
@@ -12171,9 +12167,9 @@ label monika_add_custom_music_instruct:
     m 3hub "See, [player], I told you it was easy, ahaha!"
 
     # unlock the topic as a pool topic, also mark it as seen
-    $ unlockEventLabel("monika_add_custom_music")
+    $ mas_unlockEVL("monika_add_custom_music", "EVE")
     $ persistent._seen_ever["monika_add_custom_music"] = True
-    $ unlockEventLabel("monika_load_custom_music")
+    $ mas_unlockEVL("monika_load_custom_music", "EVE")
     $ persistent._seen_ever["monika_load_custom_music"] = True
     return
 
@@ -13414,11 +13410,9 @@ label monika_dystopias:
     m 1rka "I guess you can see where I'm going with this..."
     m 3eksdla "I might feel a strong connection to those stories because they all remind me of my own."
 
-    if persistent._mas_pm_cares_about_dokis:
-        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just as simulation!"
-    else:
-        m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation with everyone in it just an empty shell!"
+    $ line_ending = "" if persistent._mas_pm_cares_about_dokis else " with everyone in it just an empty shell"
 
+    m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation[line_ending]!"
     m 3tfc "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
 
     if persistent.monika_kill and not persistent.clearall and not persistent._mas_pm_cares_about_dokis:
@@ -13531,6 +13525,7 @@ label monika_auroras:
     m 5hubsu "I can't wait until we can turn that into reality."
     $ mas_showEVL("monika_auroras","EVE",_random=True)
     return
+
 init 5 python:
     addEvent(
         Event(
@@ -13932,8 +13927,9 @@ label monika_ship_of_theseus:
     m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
     m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
     m "This same thought experiment can be applied to us. {w=0.3}For me, so long as my code is being updated, I'm constantly changing."
-    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced?"
-    m 3euc "In other words, not a single cell that made you, 'you' 7 years ago is part of you right now."
+    m 1euc "And as for you...{w=0.2}did you know that every 7 to 10 years every present cell in your body dies and is replaced? {w=0.2}{nw}"
+    extend 3rksdla "...Except for the ones which make up your heart and brain, that is."
+    m 3euc "In other words, the vast majority of cells that made you, 'you' 7 years ago are no longer part of you."
     m 3eud "You could argue that you have no relation to that person, other than a consistent consciousness, and of course DNA."
     m 1etc "...There's also an extra thing to consider."
     m 1euc "Let's say for now that the modified ship should still be considered Theseus' ship. {w=0.3}What if all the parts that were originally removed were now reassembled into another ship?"
@@ -14138,6 +14134,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_movie_adaptations",
+            category=['media','literature'],
+            prompt="Movie adaptations",
+            random=True
+        )
+    )
+
+label monika_movie_adaptations:
+    m 1esc "I've always had mixed feelings about movie adaptations of books I read..."
+    m 3eub "A lot of what I watch is based on works I already enjoy and I'm excited to see that story come to life!"
+    m 2rsc "...Even if more often than not, I know I'll walk out feeling a bit bitter about what I just watched."
+    m 2rfc "Like, there's this scene I liked in the book that didn't make it in, or there's that character who was portrayed differently from how I imagined it."
+    m 4efsdld "It's just so frustrating! {w=0.3}It's like all the love and care you poured into your vision of the book is suddenly invalidated!"
+    m 4rkc "...All in favor of a new version which may not be as good, but still presents itself as canon."
+    m 2hksdlb "I guess that would make me a picky spectator sometimes, ahaha!"
+    m 7wud "Don't get me wrong, though! {w=0.3}{nw}"
+    extend 7eua "I realize why changes have to be made in these types of movies."
+    m 3eud "An adaptation can't be just a copy-paste of its source material; it's a rewriting of it."
+    m 1hub "It's just plain not possible to cram everything from a two hundred page book into a two hour movie!"
+    m 3euc "...Not to mention something that works well in a novel won't always translate well to the big screen."
+    m 1eud "With that in mind, there's one question I like to ask myself when I judge an adaptation..."
+    m 3euc "If the source material did not exist, would the new version still hold up?"
+    m 3hub "...Bonus points if you manage to capture the feeling of the original!"
+    m 1esa "Loose adaptations are pretty interesting in that sense."
+    m 3eud "You know, stories that keep the core elements and themes of the original while changing the characters and setting of the story."
+    m 1eua "Since they don't conflict with your own interpretation, they don't make you feel as personally attacked."
+    m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
+    m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
+    m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
+    $ mas_showEVL("monika_striped_pajamas","EVE",_random=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_translating_poetry",
             category=['literature'],
             prompt="Translating poetry",
@@ -14175,6 +14207,39 @@ label monika_translating_poetry:
         m 5eubsa "Are there any poems in that language you'd recommend?"
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
+    return
+
+# this is randomized via _movie_adaptations
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_striped_pajamas",
+            category=["literature"],
+            prompt="The Boy in the Striped Pajamas",
+            random=False
+        )
+    )
+
+label monika_striped_pajamas:
+    m 1euc "Hey [player], have you ever read {i}The Boy in the Striped Pajamas{/i}?"
+    m 3euc "The story takes place during World War II and is shown through the perspective of an innocent German boy, happily living his life in a big family."
+    m 3eud "Once the family has to move to a new place, {w=0.2}{nw}"
+    extend 3wud "the reader realizes that the father of the boy is a commander of a concentration camp, which is located right near their new house!"
+    m 1rksdlc "Still, the boy is clueless to all the cruelty going on around him..."
+    m 1euc "He ends up wandering around the barbed-wire fence of the camp until he finds a kid in 'striped pajamas' on the other side."
+    m 3esc "Turns out, that kid is actually a prisoner of the camp...{w=0.2}{nw}"
+    extend 1ekc "though neither of them fully understand that."
+    m 3eud "From then on, they form a strong friendship and start talking to each other regularly."
+    m 2dkc "...This ends up leading to some destructive consequences."
+    m 2eka "I don't really want to go much further since there's a lot of interesting things to consider in this novel which you'd be better off reading for yourself."
+    m 7eud "But it actually got me thinking...{w=0.2}although obviously my situation isn't nearly as dire, it's hard not to draw some comparisons between their relationship and ours."
+    m 3euc "In both situations, there are two people from different worlds that neither fully understand, separated by a barrier."
+    m 1eka "...And yet, just like us, they are able to form a meaningful relationship anyway."
+    m 3eua "I highly recommend you read the novel if you get the chance, it's pretty short and has an interesting plot."
+    m 3euc "And if you're still not sold on reading it, there {i}is{/i} a movie based on this novel that you could watch."
+    m 1rksdla "Although you know my feelings on movie adaptations of novels, so if you do watch the movie, I still recommend reading the book as well."
+    m 3eua "I hope you'll enjoy it."
     return
 
 init 5 python:
@@ -14248,7 +14313,7 @@ label monika_hot_springs:
     m 3hksdlb "...So don't just go jumping into some random pool of boiling water, ahaha!"
     m 1eua "Anyway...{w=0.2}I'd like to try an open-air bath in particular.{w=0.3} I hear they really give a unique experience."
     m 3rubssdla "Though it might feel a little weird relaxing in a bath with that many people all around you...{w=0.3} {nw}"
-    extend 2hkblsdlb "Doesn't that sound kinda embarassing?"
+    extend 2hkblsdlb "Doesn't that sound kinda embarrassing?"
     m 2rkbssdlu "..."
     m 7rkbfsdlb "...Especially since some places don't allow you to wear any sort of cover, either!"
     m 1tubfu "...Although, I wouldn't mind that so much if it was just with you."
@@ -14320,4 +14385,35 @@ label monika_using_computers_healthily:
         m 5eubla "I feel so comfortable when you're here with me, {w=0.2}[player]."
 
     m 5hubfb "But hopefully you're a little more comfortable now too~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_language_nuances',
+            prompt="Language nuances",
+            category=['literature', 'trivia'],
+            random=True
+        )
+    )
+
+label monika_language_nuances:
+    m 3eua "Hey [player], have you ever tried reading through a dictionary?"
+    m 1etc "Not necessarily because there was some word or expression you didn't know the meaning of, but just...{w=0.2}because?"
+    m 1hksdlb "I know it doesn't exactly sound like the most engaging of pastimes, ahaha!"
+    m 3eua "But it can certainly be an interesting, even rewarding, way to spend some free time. {w=0.2}Especially if it's a dictionary of a language you're still learning."
+    m 3eud "Many words have multiple meanings and, aside from the obvious benefits, knowing those can really help you see the finer points of the language."
+    m 1rksdla "Understanding these subtleties can save you a lot of embarrassment when you actually speak to someone."
+    m 3eud "A prime example of this in English is 'Good morning,' 'Good afternoon,' and 'Good evening.'"
+    m 1euc "All of these are normal greetings you hear and use every day."
+    m 3etc "Following this pattern, 'Good day' should be just fine as well, right? {w=0.2}It works in so many other languages, after all."
+    m 3eud "While it used to be just as acceptable, as you can see in some older works, that's just not the case anymore."
+    m 1euc "In modern English, saying 'Good day' to someone carries a note of dismissal, or even annoyance. {w=0.2}It can be seen as declaring the conversation over."
+    m 1eka "If you're lucky, your conversation partner might think you're old-fashioned, or just being silly on purpose."
+    m 1rksdla "If not, you might offend them without even noticing...{w=0.3} {nw}"
+    extend 1hksdlb "Oops!"
+    m 3eua "It really is fascinating how even such an innocent looking phrase can be loaded with layers of hidden meanings."
+    m 1tsu "So good day to you, [player].{w=0.3} {nw}"
+    extend 1hub "Ahaha~"
     return
