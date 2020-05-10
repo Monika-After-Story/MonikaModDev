@@ -31,7 +31,6 @@ image mas_update_available = ConditionSwitch(
 )
 
 init -1 python:
-
     # custom displayable for the updater screen
     class MASUpdaterDisplayable(renpy.Displayable):
         # this displayable will handle UpdateVersion on its own while enabling
@@ -652,7 +651,7 @@ init -1 python:
 
 
 init python in mas_updater:
-
+    import store
 
     def checkUpdate():
         """
@@ -709,6 +708,54 @@ init python in mas_updater:
 
         return None
 
+    def update_override(url, base=None, force=False, public_key=None, simulate=None, add=[], restart=True):
+        """
+        Override of the base renpy updater function
+
+        Updates this Ren'Py game to the latest version.
+
+        IN:
+            url:
+                The URL to the updates.json file.
+
+            base:
+                The base directory that will be updated. Defaults to the base
+                of the current game. (This can usually be ignored.)
+
+            force:
+                Force the update to occur even if the version numbers are
+                the same. (Used for testing.)
+
+            public_key:
+                The path to a PEM file containing a public key that the
+                update signature is checked against. (This can usually be ignored.)
+
+            simulate:
+                This is used to test update guis without actually performing
+                an update. This can be:
+
+                * None to perform an update.
+                * "available" to test the case where an update is available.
+                * "not_available" to test the case where no update is available.
+                * "error" to test an update error.
+
+            add:
+                A list of packages to add during this update. This is only necessary
+                for dlc.
+
+            restart:
+                Restart the game after the update.
+        """
+
+        store.updater.installed_packages_cache
+
+        u = store.updater.Updater(url=url, base=base, force=force, public_key=public_key, simulate=simulate, add=add, restart=restart)
+        ui.timer(.1, repeat=True, action=renpy.restart_interaction)
+        u.can_proceed = True
+        u.proceed()
+        renpy.call_screen("updater", u=u)
+
+    store.updater.update = update_override
 
 init 10 python:
 

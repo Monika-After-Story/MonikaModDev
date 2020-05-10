@@ -2209,7 +2209,6 @@ screen updater:
                     text _("Checking for updates.")
                 elif u.state == u.UPDATE_AVAILABLE:
                     text _("Version [u.version] is available. Do you want to install it?")
-
                 elif u.state == u.UPDATE_NOT_AVAILABLE:
                     text _("Monika After Story is up to date.")
                 elif u.state == u.PREPARING:
@@ -2235,14 +2234,14 @@ screen updater:
                     null height gui._scale(10)
                     bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff" if not mas_globals.dark_mode else "#13060d") thumb None
 
-        hbox:
-            spacing gui._scale(25)
-
-            if u.can_proceed:
-                textbutton _("Proceed") action u.proceed
-
-            if u.can_cancel:
-                textbutton _("Cancel") action Return()
+#        hbox:
+#            spacing gui._scale(25)
+#
+#            if u.can_proceed:
+#                textbutton _("Proceed") action u.proceed
+#
+#            if u.can_cancel:
+#                textbutton _("Cancel") action Return()
 
 
 style updater_button is confirm_button
