@@ -8333,8 +8333,11 @@ label monika_asks_family:
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = False
             $ persistent._mas_pm_no_talk_fam = False
-            #Rerandom this family based topics since you do have a family
-            $ mas_showEVL("monika_familygathering","EVE",_random=True)
+
+            #Make sure we didn't answer this already
+            if persistent._mas_pm_fam_like_monika is None:
+                #Rerandom this family based topics since you do have a family
+                $ mas_showEVL("monika_familygathering", "EVE", _random=True)
 
             m 1hua "That's wonderful!"
             m 3hua "Your family must be great~"
@@ -13860,7 +13863,7 @@ label monika_auroras:
     show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubsa "That would be an experience to remember, don't you think, [player]?"
     m 5hubsu "I can't wait until we can turn that into reality."
-    $ mas_showEVL("monika_auroras","EVE",_random=True)
+    $ mas_protectedShowEVL("monika_auroras","EVE", _random=True)
     return
 init 5 python:
     addEvent(
@@ -14254,7 +14257,7 @@ label monika_allegory_of_the_cave:
     m 3hub "Ahaha!"
     m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
-    $ mas_showEVL("monika_multi_perspective_approach","EVE",_random=True)
+    $ mas_protectedShowEVL("monika_multi_perspective_approach", "EVE", _random=True)
     return
 
 #Whether or not the player works out

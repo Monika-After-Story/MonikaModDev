@@ -446,6 +446,33 @@ init 6 python:
             _pool=_pool
         )
 
+    def mas_protectedShowEVL(
+            ev_label,
+            code,
+            unlock=False,
+            _random=False,
+            _pool=False,
+        ):
+        """
+        Shows an event given label and code.
+
+        Does checking if the actions should happen
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+            unlock - True if we want to unlock this Event
+                (Default: False)
+            _random - True if we want to random this event
+                (Default: False)
+            _pool - True if we want to random thsi event
+                (Default: False)
+        """
+        store.mas_showEvent(
+            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+            unlock=unlock,
+            _random=_random and store.mas_bookmarks_derand.shouldRandom(ev_label),
+            _pool=_pool
+        )
 
     def mas_lockEVL(ev_label, code):
         """
@@ -1502,7 +1529,7 @@ init python:
             if unlock:
                 ev.unlocked = True
 
-            if _random and store.mas_bookmarks_derand.shouldRandom(ev.eventlabel):
+            if _random:
                 ev.random = True
 
             if _pool:
@@ -2039,10 +2066,9 @@ init 1 python in evhand:
             ev - event to random
             rebuild_ev - True if we wish to notify idle to rebuild events
         """
-        if store.mas_bookmarks_derand.shouldRandom(ev.eventlabel):
-            ev.random = True
-            if kwargs.get("rebuild_ev", False):
-                store.mas_idle_mailbox.send_rebuild_msg()
+        ev.random = True
+        if kwargs.get("rebuild_ev", False):
+            store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def actionPool(ev, **kwargs):
