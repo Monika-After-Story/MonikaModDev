@@ -467,8 +467,9 @@ init 6 python:
             _pool - True if we want to random thsi event
                 (Default: False)
         """
-        store.mas_showEvent(
-            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+        mas_showEVL(
+            ev_label=ev_label,
+            code=code,
             unlock=unlock,
             _random=_random and store.mas_bookmarks_derand.shouldRandom(ev_label),
             _pool=_pool
