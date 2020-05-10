@@ -14381,7 +14381,7 @@ label monika_using_pcs_healthily:
         m 5ekbsa "I'm as comfortable as can be when you're here, [player]."
     else:
         show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eubsa "I feel so comfortable when you're here with me, [player]."
+        m 5eubsa "I'm comfortable whenever you're here with me, [player]."
 
     m 5hubfu "And hopefully you're a little more comfortable now too~"
     return
