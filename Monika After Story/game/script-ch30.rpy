@@ -70,6 +70,9 @@ init -1 python in mas_globals:
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
 
+    pushed_from_talk = False
+    # So we can tell if we got to a topic from rand chatter or Talk menu
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 

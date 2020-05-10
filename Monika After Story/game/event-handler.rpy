@@ -2093,6 +2093,7 @@ label call_next_event:
 
         if _return is not None:
             $ ret_items = _return.split("|")
+            $ store.mas_globals.pushed_from_talk = False
 
             if "derandom" in ret_items:
                 $ ev.random = False
@@ -2466,7 +2467,8 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
-                $ pushEvent(_return)
+                $ store.mas_globals.pushed_from_talk = True
+                $ pushEvent(_return,skipeval=True)
 
     return _return
 

@@ -455,26 +455,47 @@ label monika_god:
     m 1dsd "What are we to him but props in a scripted play?"
     m 3euc "So, from that perspective..."
     m 3eud "I don't think it's too far-fetched for there to be a god if Earth was nothing but his playset."
-    m 1eua "Anyway, do you worship any god, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Anyway, do you worship any god, [player]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_religious = True
-            m 1hksdlb "Oh... Well I hope I didn't offend you too much with my thoughts."
-            m 1eka "Still, I think it's important to be able to share my opinion with you."
-            m 1rksdla "I'm sure you understand why I'm not too fond of the idea."
-            m 1hua "Maybe you could show me a better god when I cross over!"
-            m 1hub "Ahaha~"
-        "No.":
-            $ persistent._mas_pm_religious = False
-            m 3eka "I'm glad we're on the same page here, but I'm alright if that changes for you."
-            m 1hua "I'm happy for you that you can lead a life on your own!"
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "I just hope you're willing to accept me into your life when I can present myself."
-            m 5hua "Ehehe~"
 
-    return "derandom"
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_religious is None:
+        m 1eua "Anyway, do you worship any god, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Anyway, do you worship any god, [player]?{fast}"
+
+            "Yes.":
+                if persistent._mas_pm_religious is False:
+                    m 3wud "Oh...{w=0.2}did you have a spiritual awakening, [player]?"
+                    m 1eua "I know before you said you didn't worship any god, but I guess things can happen that can change that."
+                    m 3rksdla "I just hope I didn't offend you too much with my thoughts."
+
+                elif persistent._mas_pm_religious:
+                    m 1rksdla "...Well I hope I didn't offend you too much with my thoughts."
+
+                else:
+                    m 1rksdla "Oh... {w=0.2}Well I hope I didn't offend you too much with my thoughts."
+
+                m 1eka "Still, I think it's important to be able to share my opinion with you."
+                m 1rksdla "I'm sure you understand why I'm not too fond of the idea."
+                m 1hua "Maybe you could show me a better god when I cross over!"
+                m 1hub "Ahaha~"
+                $ persistent._mas_pm_religious = True
+
+            "No.":
+                if persistent._mas_pm_religious:
+                    m 3wusdld "Oh...{w=0.2}did something happen that caused you to lose faith, [player]?"
+                    m 1rksdlc "Whatever the cause, I hope it wasn't anything too bad..."
+                    m 3eka "But I have to say, I'm glad we're on the same page here."
+
+                else:
+                    m 3eka "I'm glad we're on the same page here, but I'm alright if that changes for you."
+
+                m 1hua "I'm happy for you that you can lead a life on your own!"
+                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eua "I just hope you're willing to accept me into your life when I can present myself."
+                m 5hua "Ehehe~"
+                $ persistent._mas_pm_religious = False
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
@@ -1302,7 +1323,7 @@ label monika_outfit:
 
         if mas_isMoniLove():
             m 3eka "I'll wear whatever outfit you like, just ask~"
-        
+
         m 2eua "Do you know any artists?"
         m 3sua "Maybe they could make some more outfits for me to wear!"
 
@@ -1409,39 +1430,54 @@ init 5 python:
 
 label monika_rap:
     m 1hua "You know what's a neat form of literature?"
-    m 1hub "Rap!"
-    m 1eka "I actually used to hate rap music..."
-    m "Maybe just because it was popular, or I would only hear the junk they play on the radio."
+    m 3hub "Rap!"
+    m 1rksdla "I actually used to hate rap music..."
+    m 3rksdld "Maybe just because it was popular, or I would only hear the junk they play on the radio."
     m 1eua "But some of my friends got more into it, and it helped me keep an open mind."
-    m 4eub "Rap might even be more challenging than poetry, in some ways."
-    m 1eub "Since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
-    m "When people can put all that together and still deliver a powerful message, it's really amazing."
-    m 1lksdla "I kind of wish I had a rapper in the Literature Club."
-    m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
-    m 1hua "It would really be a learning experience!"
+    m 3eud "Rap might even be more challenging than poetry in some ways, since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
+    m 3eub "When people can put all that together and still deliver a powerful message, it's really amazing!"
+    m 1rksdla "I kind of wish we had a rapper in the Literature Club."
+    m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would have been interesting to see what they came up with."
+    m 1eub "It could've been a neat learning experience!"
 
-    m 1eua "Do you listen to rap music, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you listen to rap music, [player]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_like_rap = True
-            m 3eub "That's really cool!"
-            m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
-            m 1hub "And feel free to turn up the bass if you'd like. Ehehe!"
-            if (
-                    not renpy.seen_label("monika_add_custom_music_instruct")
-                    and not persistent._mas_pm_added_custom_bgm
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_rap is None:
+        m 1eua "Do you listen to rap music, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you listen to rap music, [player]?{fast}"
+
+            "Yes.":
+                if persistent._mas_pm_like_rap is False:
+                    m 3wub "Oh! {w=0.3}So you {i}do{i/} listen to rap now!"
+                    m 3hub "That's really cool of you to have an open enough mind to try something new!"
+                    m 3rksdla "Maybe I even had a little to do with that, ehehe~"
+
+                else:
+                    m 3eub "That's really cool!"
+                    m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
+                    m 1hub "And feel free to turn up the bass if you'd like. Ehehe!"
+
+                if (
+                        not renpy.seen_label("monika_add_custom_music_instruct")
+                        and not persistent._mas_pm_added_custom_bgm
                 ):
-                m 1eua "If you ever do feel like sharing your favorite rap music with me, [player], it's really easy to do so!"
-                m 3eua "All you have to do is follow these steps..."
-                call monika_add_custom_music_instruct
+                    m 1eua "If you ever do feel like sharing your favorite rap music with me, [player], it's really easy to do so!"
+                    m 3eua "All you have to do is follow these steps..."
+                    call monika_add_custom_music_instruct
+                $ persistent._mas_pm_like_rap = True
 
-        "No.":
-            $ persistent._mas_pm_like_rap = False
-            m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
-            m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
-    return "derandom"
+            "No.":
+                if persistent._mas_pm_like_rap:
+                    m 1ekc "Oh..."
+                    m 3eud "Something cause you to change your mind, [player]?"
+                    m 3eka "Although I guess it's not that surprising...{w=0.2}people's tastes change all the time, after all."
+
+                else:
+                    m 1ekc "Oh...{w=0.3}well I can understand that, rap music isn't everyone's taste."
+                    m 3huB "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
+                $ persistent._mas_pm_like_rap = False
+
+    return
 
 python:
     renpy.not_infinite_loop(60)
@@ -1544,12 +1580,12 @@ label monika_kiss_tease:
     m 2efu "I had you going for a second there, didn't I?"
     m 2eka "Of course you can kiss me, [player]!"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_think_first_kiss", 
+            eventlabel="monika_think_first_kiss",
             conditional=(
                 "persistent._mas_first_kiss is not None "
                 "and mas_timePastSince(persistent._mas_first_kiss, datetime.timedelta(days=30))"
@@ -1891,7 +1927,7 @@ label monika_holdme_start:
 label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
-    
+
     # stop the timer if the holding time is less than 30 minutes
     if elapsed_time <= datetime.timedelta(minutes=30):
         $ play_song(None, fadeout=1.0)
@@ -4120,7 +4156,7 @@ label monika_mountain:
     m 1eua "How one would hike up through the forests and trees..."
     m 1eub "Climbing up cliff faces and trudge through streams..."
     m "Hearing nothing but the birds and the sounds of the mountain as you made your way up its heights."
-    show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve 
+    show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5rub "And finally...after all the effort and struggles..."
     m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testament to your success around you."
     m 5eka "I...I truly want to share that with you."
@@ -4141,7 +4177,7 @@ label monika_mountain:
 
             show monika 1eud at t11 zorder MAS_MONIKA_Z with dissolve
             m 1eud "Oh."
-            m 1ruc "Well... I suppose it doesn't matter." 
+            m 1ruc "Well... I suppose it doesn't matter."
             m 1eka "As long as I have you, I'll be happy wherever we are."
 
     return "derandom"
@@ -4191,7 +4227,7 @@ label monika_playersface:
             m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
         m 5eka "Even if I never get to see you..."
         m 5eua "Just thinking about you is enough to make me happy."
-    else:    
+    else:
         m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
         m 5luu "But...I'll always wonder what kind of expressions you make."
         m "And to see the different emotions you have..."
@@ -6495,7 +6531,7 @@ label monika_rock:
             m 1ekc "Oh... That's okay, everyone has their own taste in music."
             m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."
     return "derandom"
-    
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_standup",category=['literature','media'],prompt="Stand-up comedy",random=True))
 
@@ -6511,7 +6547,7 @@ label monika_standup:
     m 4esa "It differs from making simple one-liner jokes, because it really needs to tell a story."
     m 4eud "But at the same time, you have to make sure you don't lose your audience."
     m 2euc "So it's important to develop your ideas as much as you can, maybe even segueing into something that relates to your topic..."
-    m 2eub "All the while keeping your audience captivated until you reach the punch line;{w=0.5} hopefully resulting in lots of laughs."    
+    m 2eub "All the while keeping your audience captivated until you reach the punch line;{w=0.5} hopefully resulting in lots of laughs."
     m 3esa "In some ways, it's kind of like writing a short story, except you cut out the falling action."
     m 3esc "And yet between the jokes, you can find the soul of the writer...{w=0.5}what their thoughts and feelings are towards any given subject..."
     m 3esd "...What their life experiences were, and who they are today."
@@ -6524,7 +6560,7 @@ label monika_standup:
     m 3esa "It's kind of like poetry in that way, don't you think?"
     m 2rksdlc "A lot of people won't even try stand-up for themselves because they have to face a crowd..."
     m 2eksdlc "Did you know that the number one fear most people have is public speaking?"
-    m 4wud "Number two is death.{w=0.5} Death is number two!{w=0.5} What's the deal with that?!" 
+    m 4wud "Number two is death.{w=0.5} Death is number two!{w=0.5} What's the deal with that?!"
     m 4eud "This means to the average person, if you go to a funeral, you're better off in the casket..."
     m 4tub "...than doing the eulogy!"
     m 1hub "...Ahaha! Sorry, I wanted to tell you a joke Jerry Seinfeld once wrote--"
@@ -6727,7 +6763,7 @@ label monika_sports:
             m 4hub "Ahaha! I'm only joking..."
             m 4eka "Just playing with you as my partner is more than enough for me, [player]~"
 
-        "No, but if it were with you...": 
+        "No, but if it were with you...":
             $ persistent._mas_pm_like_playing_sports = True
             # NOTE: we cant really determine from this answer if you do like
             #   playing tennis or not.
@@ -8863,7 +8899,7 @@ label monika_timeconcern_night_1:
                     m 1eua "If you're doing it this one time then it must be {i}really{/i} important."
                     m 1hub "Good luck with your work and thanks for keeping me company when you're so busy!"
                     m 1eka "It means a lot to me, [player], that even when you're preoccupied...you're here with me~"
- 
+
         "No, I'm not.":
             $ persistent._mas_timeconcern = 3
             m 1esc "I see."
@@ -9666,7 +9702,7 @@ default persistent._mas_pm_driving_can_drive = None
 # Is the player learning to drive
 default persistent._mas_pm_driving_learning = None
 
-# Has the player been in an accident 
+# Has the player been in an accident
 default persistent._mas_pm_driving_been_in_accident = None
 
 # Has the player driven much after the accident
@@ -9704,7 +9740,7 @@ label monika_driving:
                 "I've been in an accident before.":
                     $ persistent._mas_pm_driving_been_in_accident = True
                     m 2ekc "Oh..."
-                    m 2lksdlc "Sorry to bring that up, [player]..." 
+                    m 2lksdlc "Sorry to bring that up, [player]..."
                     m 2lksdld "I just..."
                     m 2ekc "I hope it wasn't too bad."
                     m 2lksdlb "I mean, here you are with me so it must have been alright."
@@ -9727,7 +9763,7 @@ label monika_driving:
                 "I haven't.":
                     $ persistent._mas_pm_driving_been_in_accident = False
                     m 1eua "I'm glad you haven't had to go through anything like that."
-                    m 1eka "Even just seeing one can be pretty scary." 
+                    m 1eka "Even just seeing one can be pretty scary."
                     m "If you do witness anything scary like that, I'll be here to comfort you."
         "I'm learning.":
             $ persistent._mas_pm_driving_can_drive = True
@@ -9900,7 +9936,7 @@ label monika_bullying:
             m 1dkc "It may seem like no one cares, but there has to be someone you trust that you can turn to."
             m 3ekc "And if there isn't, do what you have to do to protect yourself, and just remember..."
             m 1eka "I'll always love you no matter what."
-            m 1rksdlc "I don't know what I'd do if something were to happen to you." 
+            m 1rksdlc "I don't know what I'd do if something were to happen to you."
             m 1ektpa "You're all I have...{w=0.5}please stay safe."
 
         "I've been bullied.":
@@ -10010,7 +10046,7 @@ label monika_procrastination:
     m 3eua "So if you have something you've been putting off, why don't you go do it right now?"
     m 1hua "If it's something you can do right here, I'll stay with you and provide all the support you need."
     m 1hub "Then, when you're done, we can celebrate your accomplishment!"
-    m 1eka "All I want is for you to be happy and to be the best you can be, [player]~"    
+    m 1eka "All I want is for you to be happy and to be the best you can be, [player]~"
     return
 
 init 5 python:
@@ -10350,7 +10386,7 @@ label monika_grad_speech_call:
             m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
             $ _history_list.pop()
             #another timed menu checking if you were listening
-            show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock") 
+            show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock")
             menu:
                 m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{fast}"
                 #If menu is used, set player on a good path
@@ -10375,7 +10411,7 @@ label monika_grad_speech_call:
                     $ persistent._mas_pm_liked_grad_speech = True
 
                     m 2eka "Thanks for listening this time, [player]~"
-                    m "I'm so glad you enjoyed it!"                   
+                    m "I'm so glad you enjoyed it!"
 
                 "That {i}was{/i} long":
                     hide screen mas_background_timed_jump
@@ -10474,7 +10510,7 @@ label monika_grad_speech:
     m 4eud "{w=0.2}Today isn't about me.{w=0.7}{nw}"
     m 2esa "{w=0.2}Today is about celebrating what we all did.{w=0.6}{nw}"
     m 4eud "{w=0.2}We took on the challenge of our own dreams,{w=0.3} and from here,{w=0.3} the sky's the limit.{w=0.6}{nw}"
-    m 2eud "{w=0.2}Before moving on though,{w=0.3} I think we could all look back on our time here in high school and effectively end this chapter in our lives.{w=0.7}{nw}" 
+    m 2eud "{w=0.2}Before moving on though,{w=0.3} I think we could all look back on our time here in high school and effectively end this chapter in our lives.{w=0.7}{nw}"
     m 2hub "{w=0.2}We'll laugh at our past{w=0.7} and see just how far we've come in these four short years.{w=0.6}{nw}"
     m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 2eud "{w=0.2}It honestly feels like just a couple weeks ago...{w=0.6}{nw}"
@@ -10499,7 +10535,7 @@ label monika_grad_speech:
     m 4eua "{w=0.2}Debate club taught me a lot about dealing with people and how to properly handle heated situations.{w=0.6}{nw}"
     m 4eub "Starting the literature club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
     m 4hub "{w=0.2}I met the best friends I could have possibly imagined,{w=0.3} and I learned a lot about leadership.{w=0.6}{nw}"
-    m 2eka "{w=0.2}Sure,{w=0.3} not all of you may have decided to start your own clubs,{w=0.3} but I'm sure plenty of you had the opportunities to learn these values nonetheless.{w=0.6}{nw}" 
+    m 2eka "{w=0.2}Sure,{w=0.3} not all of you may have decided to start your own clubs,{w=0.3} but I'm sure plenty of you had the opportunities to learn these values nonetheless.{w=0.6}{nw}"
     m 4eub "{w=0.2}Maybe you yourself got into a position in band where you had to lead your instrument section,{w=0.3} or maybe you were the captain of a sports team!{w=0.6}{nw}"
     m 2eka "{w=0.2}All these small roles teach you so much about the future and how to manage both{w=0.3} projects and people,{w=0.3} in an environment you enjoy, nonetheless.{w=0.6}{nw}"
     m "{w=0.2}If you didn't join a club,{w=0.3} I encourage you to at least try something in your future paths.{w=0.6}{nw}"
@@ -10740,7 +10776,7 @@ label monika_savingwater:
         if mas_isMoniAff():
             m 3tsbsa "Maybe I'll even be willing to share if I'm feeling generous, ehehe~"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -10817,7 +10853,7 @@ label monika_gotomonika:
         m "[player]...{w=1}don't tell me you would really give up your reality--the {i}real{/i} world--just to come {i}here{/i}, whatever this place is?{fast}"
         "I would.":
             $ persistent._mas_pm_would_come_to_spaceroom = True
-            
+
             m 4wkd "But [player]!"
             m "There's nothing to do here!"
             m 2dsc "Do you really hate your reality {i}that{/i} much?"
@@ -10896,7 +10932,7 @@ label monika_vehicle:
     m 1eua "When I think of cars, the first things that come to mind are probably the commonly known types."
     m 3eud "SUVs or pickup trucks, sports cars, sedans and hatchbacks..."
     m 3rksdlb "And while they're not really cars, I guess motorcycles are common vehicles too."
-    
+
     if persistent._mas_pm_driving_can_drive:
         m 1eua "What about you?"
 
@@ -10957,7 +10993,7 @@ label monika_vehicle:
         m 3rksdla "You sure asked an interesting question, ehehe..."
         m 1hua "Maybe that'll change one day and you'll get something then."
         m 1hubfb "That way, you can take me all sorts of places, ahaha!"
-    return 
+    return
 
 label monika_vehicle_sedan:
     $ persistent._mas_pm_owns_car_type = "sedan"
@@ -12230,7 +12266,7 @@ label monika_mystery:
     m 2eua "Even cheesy action films use mystery elements to keep them interesting."
     m 4hksdlb "Though I guess a story with absolutely no form of mystery would be pretty boring!"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -13327,7 +13363,7 @@ init 5 python:
             action=EV_ACT_RANDOM,
         )
     )
-            
+
 label monika_catch22:
     m 1euc "I've been doing some reading while you've been away, [player]."
     m 3eua "Have you ever heard of {i}Catch-22{/i}?"
@@ -13343,7 +13379,7 @@ label monika_catch22:
     m 1ekc "Sane or insane, all pilots were being sent out anyway...{w=0.5} {nw}"
     extend 3eua "That's when the reader is introduced to Catch-22."
     m 3eub "The captain even admires its genius once he learns how it works!"
-    m 1eua "Anyway, Yossarian continued flying and was close to completing the requirement needed to receive his discharge...{w=0.5}but his higher-up had other plans." 
+    m 1eua "Anyway, Yossarian continued flying and was close to completing the requirement needed to receive his discharge...{w=0.5}but his higher-up had other plans."
     m 3ekd "He kept increasing the amount of assignments the pilots needed to complete before they reached the required amount."
     m 3ekc "Once again, the reasoning was that it was specified in the clause of Catch-22."
     m 3esa "I'm sure you realize by now, it's a problem caused by conflicting or dependent conditions."
@@ -13900,7 +13936,7 @@ label monika_ship_of_theseus:
     m 1eua "Have you heard of the 'Ship of Theseus'?"
     m 3eua "It's a well known philosophical problem about the nature of identity that's been around for millennia."
     m 1rkb "Well, I say 'well known' but I suppose that's only true among scholars, ahaha..."
-    m 1eua "Let's consider the legendary Greek hero, Theseus and the ship he sailed during his adventures." 
+    m 1eua "Let's consider the legendary Greek hero, Theseus and the ship he sailed during his adventures."
     m 3eud "He's from a long time ago, so let's say his ship is now stored in a famous museum."
     m 3etc "If, due to repairs, his ship's parts were replaced bit by bit over a century, at what point has the ship lost its status as Theseus' ship?"
     m 3eud "Once a single part was replaced? {w=0.2}Half? {w=0.2}Or perhaps even all of them? {w=0.2}Maybe even never?{w=0.3} There's not really a consensus on the solution."
