@@ -2255,8 +2255,21 @@ label mas_dockstat_decrement_date_counts:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    # reset zoom before showing spaceroom
-    $ store.mas_sprites.reset_zoom()
+    python:
+        #Make sure O31 effects show
+        if persistent._mas_o31_in_o31_mode:
+            mas_globals.show_vignette = True
+            #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+            if mas_current_weather != mas_weather_thunder:
+                mas_changeWeather(mas_weather_thunder, True)
+
+        else:
+            #Now setup weather
+            mas_startupWeather()
+            skip_setting_weather = True
+
+        # reset zoom before showing spaceroom
+        store.mas_sprites.reset_zoom()
 
     call spaceroom(hide_monika=True, scene_change=True)
 
@@ -2289,20 +2302,6 @@ label mas_dockstat_empty_desk_preloop:
         disable_esc()
         mas_enable_quit()
         promise = mas_dockstat.monikafind_promise
-
-        #Make sure O31 effects show
-        if persistent._mas_o31_in_o31_mode:
-            mas_globals.show_vignette = True
-            #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
-            if mas_current_weather != mas_weather_thunder:
-                mas_changeWeather(mas_weather_thunder, True)
-
-        else:
-            #Now setup weather
-            mas_startupWeather()
-            skip_setting_weather = True
-
-    call spaceroom(scene_change=True, hide_monika=True)
 
 label mas_dockstat_empty_desk_from_empty:
 
