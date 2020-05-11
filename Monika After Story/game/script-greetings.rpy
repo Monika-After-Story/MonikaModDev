@@ -1076,7 +1076,17 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if persistent.closed_self and not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
+    # and if we're not in the spaceroom
+    if (
+        persistent.closed_self
+        and not (
+            mas_isO31()
+            or mas_isD25Season()
+            or mas_isplayer_bday()
+            or mas_isF14()
+        )
+        and persistent._mas_current_background == "spaceroom"
+    ):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?

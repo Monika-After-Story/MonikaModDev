@@ -359,7 +359,8 @@ init 800 python:
         Sets up the spaceroom to start up in the background you left in if it is unlocked and still exists
         """
         if (
-            persistent._mas_current_background in store.mas_background.BACKGROUND_MAP
+            mas_isMoniEnamored(higher=True)
+            and persistent._mas_current_background in store.mas_background.BACKGROUND_MAP
             and store.mas_background.BACKGROUND_MAP[persistent._mas_current_background].unlocked
         ):
             background_to_set = store.mas_background.BACKGROUND_MAP[persistent._mas_current_background]
@@ -436,6 +437,8 @@ init -1 python:
         exit_pp=store.mas_background._def_background_exit
     )
 
+    #Now load data
+    store.mas_background.loadMBGData()
 
 #START: Image definitions
 #Spaceroom
@@ -460,7 +463,7 @@ init 5 python:
             pool=True,
             unlocked=False,
             rules={"no unlock": None},
-            aff_range=(mas_aff.AFFECTIONATE, None)
+            aff_range=(mas_aff.ENAMORED, None)
         )
     )
 
