@@ -1571,19 +1571,19 @@ label monikaroom_greeting_opendoor_locked:
             "...the textbox...":
                 if mas_isMoniNormal(higher=True):
                     m 1lksdlb "Oops! I'm still learning how to do this."
-                    m 1lksdla "Let me just change this flag here...{w=1.5}{nw}"
+                    m 1lksdla "Let me just change this flag here.{w=0.5}.{w=0.5}.{nw}"
                     $ style.say_window = style.window
                     m 1hua "All fixed!"
 
                 elif mas_isMoniUpset():
                     m 2dfc "Hmph. I'm still learning how to do this."
-                    m 2esc "Let me just change this flag here...{w=1.5}{nw}"
+                    m 2esc "Let me just change this flag here.{w=0.5}.{w=0.5}.{nw}"
                     $ style.say_window = style.window
                     m "There."
 
                 else:
                     m 6dkc "Oh...{w=0.5}I'm still learning how to do this."
-                    m 6ekc "Let me just change this flag here...{w=1.5}{nw}"
+                    m 6ekc "Let me just change this flag here.{w=0.5}.{w=0.5}.{nw}"
                     $ style.say_window = style.window
                     m "Okay, fixed."
 
