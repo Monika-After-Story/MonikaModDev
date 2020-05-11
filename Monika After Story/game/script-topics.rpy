@@ -1482,7 +1482,17 @@ label monika_date:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True,unlocked=True,aff_range=(mas_aff.NORMAL, None)))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kiss",
+            category=['romance'],
+            prompt="Kiss me",
+            pool=True,
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
@@ -7418,7 +7428,16 @@ label monika_how_soon:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True,aff_range=(mas_aff.NORMAL, None)))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_marriage",
+            category=['romance'],
+            prompt="Will you marry me?",
+            pool=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_marriage:
     $ mas_gainAffection()
