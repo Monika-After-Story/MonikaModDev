@@ -90,6 +90,7 @@ init 5 python:
             should_restock_warn - whether or not Monika should warn the player that she's running out of this consumable
             late_entry_list - list of integers storing the hour which would be considered a late entry
             max_re_serve - amount of times Monika can get a re-serving of this consumable
+            max_stock_amount - maximum stock amount of this consumable to hold
             cons_chance - likelihood of Monika to keep having this consumable
             prep_low - bottom bracket of preparation time (NOTE: Should be passed in as number of seconds)
             prep_high - top bracket of preparation time (NOTE: Should be passed in as number of seconds)
@@ -130,6 +131,7 @@ init 5 python:
             should_restock_warn=True,
             late_entry_list=None,
             max_re_serve=None,
+            max_stock_amount=150,
             cons_chance=80,
             cons_low=10*60,
             cons_high=2*3600,
@@ -181,6 +183,9 @@ init 5 python:
 
                 max_re_serve - amount of times Monika can get a refill of this consumable
                     (Default: None)
+
+                max_stock_amount - maximum amount of this consumable we can stock
+                    (Default: 150)
 
                 cons_chance - chance for Monika to continue having this consumable
                     (Default: 80/100)
@@ -237,6 +242,7 @@ init 5 python:
                 self.late_entry_list=late_entry_list
 
             self.max_re_serve=max_re_serve
+            self.max_stock_amount=max_stock_amount
             self.re_serves_had=0
 
             self.dlg_props = dlg_props if dlg_props else dict()
@@ -350,7 +356,7 @@ init 5 python:
 
         def restock(self, servings=100, clear_flag=True):
             """
-            Adds more servings of the consumable
+            Adds more servings of the consumable, protected by max_stock_amount
 
             IN:
                 servings - amount of servings to add
@@ -358,6 +364,11 @@ init 5 python:
                 clear_flag - whether or not we should clear the has_restock_warned flag
                 (Default: True)
             """
+            max_to_add = self.max_stock_amount - self.getStock()
+
+            #Verify we're not going to go over the max
+            servings = max_to_add if servings > max_to_add else servings
+
             persistent._mas_consumable_map[self.consumable_id]["servings_left"] += servings
 
             if clear_flag:
@@ -372,6 +383,17 @@ init 5 python:
                     - The amount of servings left for the consumable
             """
             return persistent._mas_consumable_map[self.consumable_id]["servings_left"]
+
+        def isMaxedStock(self):
+            """
+            Checks if the current stock of the consumable is the max
+
+            OUT:
+                boolean:
+                    - True if stock is maxed
+                    - False otherwise
+            """
+            return self.getStock() == self.max_stock_amount
 
         def getAmountHad(self):
             """
