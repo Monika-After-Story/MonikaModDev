@@ -19,6 +19,15 @@ python early:
     import traceback
     _dev_tb_list = []
 
+    def dummy(*args, **kwargs):
+        """
+        Dummy function that does nothing
+        """
+        return
+
+    # clear this so no more traceback. We expect node loops anyway
+    renpy.execution.check_infinite_loop = dummy
+
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -3204,9 +3213,6 @@ init -1 python in _mas_root:
 
 init -999 python:
     import os
-
-    # this is initially set to 60 seconds
-    renpy.not_infinite_loop(120)
 
     # create the log folder if not exist
     if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
