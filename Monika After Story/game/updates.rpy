@@ -389,6 +389,36 @@ label v0_11_3(version="v0_11_3"):
 
             if cons and cons.getStock() > cons.max_stock_amount:
                 persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
+
+        #Fix tip of the day bits
+        tod_list = [
+            "monika_gtod_tip002",
+            "monika_gtod_tip003",
+            "monika_gtod_tip004",
+            "monika_gtod_tip005",
+            "monika_gtod_tip006",
+            "monika_gtod_tip007",
+            "monika_gtod_tip008",
+            "monika_gtod_tip009",
+            "monika_gtod_tip010",
+            "monika_ptod_tip002",
+            "monika_ptod_tip003",
+            "monika_ptod_tip005",
+            "monika_ptod_tip006",
+            "monika_ptod_tip008",
+            "monika_ptod_tip009"
+        ]
+
+        for tod_label in tod_list:
+            tod_ev = mas_getEV(tod_label)
+
+            if tod_ev is not None:
+                if tod_ev.pool:
+                    tod_ev.unlocked = True
+
+                else:
+                    tod_ev.pool = True
+                    tod_ev.action = EV_ACT_UNLOCK
     return
 
 #0.11.1
