@@ -807,12 +807,17 @@ init 800 python:
             if (
                 persistent._mas_current_weather == "auto"
                 or persistent._mas_current_weather not in mas_weather.WEATHER_MAP
+                or store.mas_isMoniHappy(lower=True)
             ):
                 set_to_weather = mas_shouldRain()
+                #In the case that the weather object no longer exists, we'll set current weather to auto
+                persistent._mas_current_weather = "auto"
 
             #Otherwise, we'll set to the persistent weather
             else:
                 set_to_weather = mas_weather.WEATHER_MAP.get(persistent._mas_current_weather)
+                #And since we have persistent weather, we know weather is forced
+                store.mas_weather.force_weather = True
 
             #Now set weather accordingly
             if set_to_weather is not None:
