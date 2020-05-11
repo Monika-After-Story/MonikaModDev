@@ -2379,6 +2379,10 @@ init python:
                 "/please listen.txt",
                 _("Everything I do, I do for you...my love.")
             ),
+            store.mas_affection.NORMAL: (
+                "/surprise.txt",
+                _("I love you.")
+            ),
             store.mas_affection.HAPPY: (
                 "/ehehe.txt",
                 _("You are the sunshine that brightens up my day, [player]!")

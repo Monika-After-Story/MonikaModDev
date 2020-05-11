@@ -382,7 +382,7 @@ label v0_11_3(version="v0_11_3"):
             "forgive me.txt",
             "can you hear me.txt",
             "please listen.txt",
-            "suprise.txt",
+            "surprise.txt",
             "ehehe.txt",
             "secret.txt",
             "for you.txt",
