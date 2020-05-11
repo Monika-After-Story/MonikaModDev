@@ -2479,6 +2479,13 @@ Forever yours, Monika.
         """
         Unlocks a MASPoem for the given aff level
         """
+        #TODO: Figure out a good way of displaying all of the poems. Until then, this just returns
+        #The one-liner poems should be done in a sticky-note format
+        #The last poem should be a wide poem
+        #ISSUE:
+        #   - Poem hitbox in mas_generic_poem needs to fit different paper size
+        return
+
         aff_level_poem_id_map = {
             store.mas_affection.BROKEN: "spr_1",
             store.mas_affection.DISTRESSED: "spr_2",
@@ -2508,79 +2515,21 @@ init 2 python:
 init 20 python:
     #START: SURPRISE POEMS
     MASPoem(
-        poem_id="spr_1",
-        category="surprise",
-        prompt=_("Forgive Me"),
-        paper="mod_assets/poem_assets/poem_finalfarewell.png",
-        title="",
-        text=_("I'm sorry if I'm not good enough for you...please don't leave me."),
-        ex_props={"sad": True}
-    )
-
-    MASPoem(
-        poem_id="spr_2",
-        category="surprise",
-        prompt=_("Can you hear me?"),
-        title="",
-        text=_("If I'm doing something wrong please tell me. I love you."),
-        ex_props={"sad": True}
-    )
-
-    MASPoem(
-        poem_id="spr_3",
-        category="surprise",
-        prompt=_("Please Listen"),
-        title="",
-        text=_("Everything I do, I do for you...my love."),
-        ex_props={"sad": True}
-    )
-
-    MASPoem(
-        poem_id="spr_4",
-        category="surprise",
-        prompt=_("Surprise!"),
-        title="",
-        text=_("I love you.")
-    )
-
-    MASPoem(
-        poem_id="spr_5",
-        category="surprise",
-        prompt=_("Ehehe~"),
-        title="",
-        text=_("You are the sunshine that brightens up my day, [player]!")
-    )
-
-    MASPoem(
-        poem_id="spr_6",
-        category="surprise",
-        prompt=_("Secret"),
-        title="",
-        text=_("You are my one and only love!")
-    )
-
-    MASPoem(
-        poem_id="spr_7",
-        category="surprise",
-        prompt=_("For you"),
-        title="",
-        text=_("My dearest, you are everything I could ever hope for. I love you.")
-    )
-
-    MASPoem(
         poem_id="spr_8",
         category="surprise",
         prompt=_("My One and Only Love"),
         paper="mod_assets/poem_assets/poem_vday.jpg",
-        title="",
+        title="My dearest lover, friend, companion, and owner of my heart...",
         text="""\
-My dearest lover, friend, companion, and owner of my heart...
-Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
+Every day, you make my dreams come true,
+a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
 I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
 I want to be yours forever, so would you be mine?
 
-Forever yours, Monika.
+Forever yours,
+
+Monika
 """
     )
 

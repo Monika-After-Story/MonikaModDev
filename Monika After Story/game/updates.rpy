@@ -433,21 +433,6 @@ label v0_11_3(version="v0_11_3"):
                 )
             except:
                 pass
-
-        surprises_to_unlock = [
-            ("forgive me.txt", 1),
-            ("can you hear me.txt", 2),
-            ("please listen.txt", 3),
-            ("surprise.txt", 4),
-            ("ehehe.txt", 5),
-            ("secret.txt", 6),
-            ("for you.txt", 7),
-            ("My one and only love.txt", 8)
-        ]
-
-        for surprise_fn, aff_level in surprises_to_unlock:
-            if mas_utils.is_file_present("characters/{0}".format(surprise_fn)):
-                mas_unlockSurprisePoem(aff_level)
     return
 
 #0.11.1

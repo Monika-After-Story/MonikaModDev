@@ -5637,9 +5637,9 @@ label monika_surprise:
     if mas_isMoniUpset(lower=True):
         m 2dsc ".{w=0.5}.{w=0.5}.{nw}"
         m 1euc "Alright..."
-        m "Please go take a look"
+        m 1ekc "Please go take a look."
         m 1eka "I wrote it just for you."
-        m 1dsc "And it would mean a lot to me if you would read it."
+        m 1dsc "It would mean a lot to me if you would read it."
         return
 
     elif mas_isMoniAff(higher=True):

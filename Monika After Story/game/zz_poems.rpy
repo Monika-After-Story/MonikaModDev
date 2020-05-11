@@ -342,4 +342,15 @@ label monika_showpoem:
 
     if not is_sad:
         m 3eka "I hope you liked it, [player]."
+
+    m 1eka "Would you like to read another poem?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to read another poem?{fast}"
+
+        "Yes.":
+            jump monika_showpoem
+
+        "No.":
+            m 1eua "Alright, [player]."
     return
