@@ -208,6 +208,14 @@ init -20 python in mas_weather:
     PRECIP_TYPE_OVERCAST = "overcast"
     PRECIP_TYPE_SNOW = "snow"
 
+    # all precip types
+    PRECIP_TYPES = (
+        PRECIP_TYPE_DEF,
+        PRECIP_TYPE_RAIN,
+        PRECIP_TYPE_OVERCAST,
+        PRECIP_TYPE_SNOW
+    )
+
     #Keep a temp store of weather here for if we're changing backgrounds
     temp_weather_storage = None
 
@@ -416,6 +424,7 @@ init -20 python in mas_weather:
 
 
 init -10 python:
+
     # weather class
     class MASWeather(object):
         """
@@ -448,6 +457,9 @@ init -10 python:
                 sp_day,
                 sp_night=None,
                 precip_type=store.mas_weather.PRECIP_TYPE_DEF,
+                # NOTE: consider moving island images to bg? 
+                #   with filters, we kind of need everything to be in one
+                #   spot. Might be hard to do atm.
                 isbg_wf_day=None,
                 isbg_wof_day=None,
                 isbg_wf_night=None,
@@ -609,6 +621,79 @@ init -10 python:
                 [0]: unlocked property
             """
             return (self.unlocked,)
+
+
+    class MASWeatherMap(object):
+        """
+        A weather map is an extension of MASHighlightMap except using precip
+        types as keys.
+
+        NOTE: actual implementation is by wrapping around MASHighlightMap.
+        This is to avoid calling functions that would crash.
+
+        PROPERTIES:
+            None
+        """
+
+        def __init__(self, precip_map=None):
+            """
+            Constructor
+
+            IN:
+                precip_map - mapping of precip types and values to map to
+                    key: precip type
+                    value: value to map to precip type
+                    NOTE: not required, you can also use add functions instead
+                    NOTE: PRECIP_TYPE_DEF is used as a default if given.
+            """
+            self.__mhm = MASHighlightMap.create_from_mapping(
+                store.mas_weather.PRECIP_TYPES,
+                None,
+                precip_map
+            )
+
+        def __iter__(self):
+            """
+            Returns MHM iterator
+            """
+            return iter(self.__mhm)
+
+        def add(self, key, value):
+            """
+            Adds value to map.
+            See MASHighlightMap.add
+            """
+            self.__mhm.add(key, value)
+
+        def apply(self, mapping):
+            """
+            Applies a dict mapping to this map.
+            See MASHlightMap.apply
+            """
+            self.__mhm.apply(mapping)
+
+        def get(self, key):
+            """
+            Gets value with the given key
+
+            Uses PRECIP_TYPE_DEF as a default if key not found
+
+            See MASHighlightMap.get
+            """
+            value = self.__mhm.get(key)
+            if value is None:
+                return self.__mhm.get(store.mas_weather.PRECIP_TYPE_DEF)
+
+            return value
+
+        def _mhm(self):
+            """
+            Returns the internal MASHighlightMap. Only use if you know what
+            you are doing.
+
+            RETURNS: MASHighlightMap object
+            """
+            return self.__mhm
 
 
 ### define weather objects here

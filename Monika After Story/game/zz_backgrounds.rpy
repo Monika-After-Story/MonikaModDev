@@ -1025,31 +1025,75 @@ init -10 python:
             self._ss_mn.verify()
 
 
-    # TODO: the background class needs to decide the filters to use.
-    #   *AS WELL AS THE PROGRESSION*
-    # TODO: move the current DAY/NIGHT filters from mas_sprites to here.
-    # NOTE: I will do this when adding sunset progression
-    class MASBackground(object):
+    class MASBackgroundFilterMap(object):
         """
-        Background class to get display props for bgs
+        Extension of MASFilterMap.
+
+        Use this to map weather maps to filters.
+
+        NOTE: actual implementation is by wrapping around MASFilterMap.
+
+        NOTE: this is verified after init level -1
 
         PROPERTIES:
-            background_id - the id which defines this bg
-            prompt - button label for the bg
-            image_map - Dict mapping all images for the bgs, keys are precip types (See MASWeather)
-            hide_calendar - whether or not we display the calendar with this
-            hide_masks - whether or not we display the window masks
-            disable_progressive - weather or not we disable progesssive weather
-            unlocked - whether or not this background is unlocked
-            entry_pp - entry programming points for bgs
-            exit_pp - exit programming points
-            filters - mapping of filters associated with this BG
+            None
         """
-        import store.mas_background as mas_background
-        import store.mas_weather as mas_weather
 
-        def __init__(
-            self,
+        def __init__(self, **filter_pairs):
+            """
+            Constructor
+
+            Will throw exceptions if not given MASWeatherMap objects
+
+            IN:
+                **filter_pairs - filter=val args to use. Invalid filters are
+                    ignored. Values should be MASWeatherMap objects.
+            """
+            # validate MASWeatherMap objects
+            for wmap in filter_pairs.itervalues():
+                if not isinstance(wmap, MASWeatherMap):
+                    raise TypeError(
+                        "Expected MASWeatherMap object, not {0}".format(
+                            type(wmap)
+                        )
+                    )
+
+            self.__mfm = MASFilterMap(
+                default=None,
+                cache=False,
+                **filter_pairs
+            )
+
+        def flts(self):
+            """
+            Gets all filter names in this filter map
+
+            RETURNS: list of all filter names in this map
+            """
+            return self.__mfm.map.keys()
+
+        def get(self, flt):
+            """
+            Gets value from map based on filter
+
+            IN:
+                flt - filter to lookup
+
+            RETURNS: value for the given filter
+            """
+            return self.__mfm.get(flt)
+
+        def _mfm(self):
+            """
+            Returns the intenral MASFilterMap. Only use if you know what you
+            are doing.
+
+            RETURNS: MASFilterMap
+            """
+            return self.__mfm
+
+
+    def MASBackground(
             background_id,
             prompt,
             image_day,
@@ -1060,6 +1104,111 @@ init -10 python:
             image_overcast_night=None,
             image_snow_day=None,
             image_snow_night=None,
+            hide_calendar=False,
+            hide_masks=False,
+            disable_progressive=None,
+            unlocked=False,
+            entry_pp=None,
+            exit_pp=None
+    ):
+        """DEPRECATED
+        Old-style MASBackground objects.
+        This is mapped to a MASFilterableBackground with default 
+        (aka spaceroom) slice management
+
+        IN:
+            background_id:
+                id that defines the background object
+                NOTE: Must be unique
+
+            prompt:
+                button label for this bg
+
+            image_day:
+                the renpy.image object we use for this bg during the day
+                NOTE: Mandatory
+
+            image_night:
+                the renpy.image object we use for this bg during the night
+                NOTE: Mandatory
+
+            image_rain_day:
+                the image tag we use for the background while it's raining (day)
+                (Default: None, not required)
+
+            image_rain_night:
+                the image tag we use for the background while it's raining (night)
+                (Default: None, not required)
+
+            image_overcast_day:
+                the image tag we use for the background while it's overcast (day)
+                (Default: None, not required)
+
+            image_overcast_night:
+                the image tag we use for the background while it's overcast (night)
+                (Default: None, not required)
+
+            image_snow_day:
+                the image tag we use for the background while it's snowing (day)
+                (Default: None, not required)
+
+            image_snow_night:
+                the image tag we use for the background while it's snowing (night)
+                (Default: None, not required)
+
+            hide_calendar:
+                whether or not we want to display the calendar
+                (Default: False)
+
+            hide_masks:
+                weather or not we want to show the windows
+                (Default: False)
+
+            disable_progressive:
+                weather or not we want to disable progressive weather
+                (Default: None, if hide masks is true and this is not provided, we assume True, otherwise False)
+
+            unlocked:
+                whether or not this background starts unlocked
+                (Default: False)
+
+            entry_pp:
+                Entry programming point for the background
+                (Default: None)
+
+            exit_pp:
+                Exit programming point for this background
+                (Default: None)
+
+        RETURNS: MASFilterableBackground object
+        """
+        pass # TODO
+
+    class MASFilterableBackground(object):
+        """
+        Background class to get display props for bgs
+
+        PROPERTIES:
+            background_id - the id which defines this bg
+            prompt - button label for the bg
+            image_map - MASBackgroundFilterMap object containing mappings of
+                filter + weather to images
+            hide_calendar - whether or not we display the calendar with this
+            hide_masks - whether or not we display the window masks
+            disable_progressive - weather or not we disable progesssive weather
+            unlocked - whether or not this background is unlocked
+            entry_pp - entry programming points for bgs
+            exit_pp - exit programming points
+        """
+        import store.mas_background as mas_background
+        import store.mas_weather as mas_weather
+
+        def __init__(
+            self,
+            background_id,
+            prompt,
+            image_map,
+            filter_man,
             hide_calendar=False,
             hide_masks=False,
             disable_progressive=None,
@@ -1078,37 +1227,12 @@ init -10 python:
                 prompt:
                     button label for this bg
 
-                image_day:
-                    the renpy.image object we use for this bg during the day
-                    NOTE: Mandatory
+                image_map:
+                    MASBackgroundFilterMap of bg images to use.
+                    Use image tags for MASWeatherMap values.
 
-                image_night:
-                    the renpy.image object we use for this bg during the night
-                    NOTE: Mandatory
-
-                image_rain_day:
-                    the image tag we use for the background while it's raining (day)
-                    (Default: None, not required)
-
-                image_rain_night:
-                    the image tag we use for the background while it's raining (night)
-                    (Default: None, not required)
-
-                image_overcast_day:
-                    the image tag we use for the background while it's overcast (day)
-                    (Default: None, not required)
-
-                image_overcast_night:
-                    the image tag we use for the background while it's overcast (night)
-                    (Default: None, not required)
-
-                image_snow_day:
-                    the image tag we use for the background while it's snowing (day)
-                    (Default: None, not required)
-
-                image_snow_night:
-                    the image tag we use for the background while it's snowing (night)
-                    (Default: None, not required)
+                filter_man:
+                    MASBackgroundFilterManager to use
 
                 hide_calendar:
                     whether or not we want to display the calendar
@@ -1134,16 +1258,26 @@ init -10 python:
                     Exit programming point for this background
                     (Default: None)
             """
-
+            # sanity checks
             if background_id in self.mas_background.BACKGROUND_MAP:
                 raise Exception("duplicate background ID")
+            if not isinstance(image_map, MASBackgroundFilterMap):
+                raise TypeError(
+                    "Expected MASBackgroundFilterMap, got {0}".format(
+                        type(image_map)
+                    )
+                )
+            if not isinstance(filter_man, MASBackgroundFilterManager):
+                raise TypeError(
+                    "Exepcted MASBackroundFilterManager, got {0}".format(
+                        type(filter_man)
+                    )
+                )
 
             self.background_id = background_id
             self.prompt = prompt
-            self.image_day = image_day
-            self.image_night = image_night
 
-
+            # TODO: remove this
             self.image_map = {
                 #Def
                 mas_weather.PRECIP_TYPE_DEF: (image_day, image_night),
@@ -1154,6 +1288,8 @@ init -10 python:
                 #Snow
                 mas_weather.PRECIP_TYPE_SNOW: (image_snow_day if image_snow_day else image_day, image_snow_night if image_snow_night else image_night)
             }
+            self.image_map = image_map
+            self._flt_man = filter_man
 
             #Then the other props
             self.hide_calendar = hide_calendar

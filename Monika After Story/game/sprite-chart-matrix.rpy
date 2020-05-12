@@ -371,15 +371,31 @@ init -99 python in mas_sprites:
         NOTE: if you plan to use this, please use it before init level -1
         Filters beyond this level will be ignored.
 
+        NOn-pythonable filter names are ignored
+
         IN:
             flt_enum - enum key to use as a filter.
             imx - image matrix to use as filter
         """
+        # check init
         if __ignore_filters:
             mas_utils.writelog(
                 "[Warning!]: Cannot add filter '{0}' after init -1\n".format(
                     flt_enum
                 )
+            )
+            return
+
+        # check name arg able
+        fake_context = {flt_enum: True}
+        try:
+            eval(flt_enum)
+        except:
+            mas_utils.writelog(
+                (
+                    "[Warning!]: Cannot add filter '{0}'. Name is not "
+                    "python syntax friendly\n"
+                ).format(flt_enum)
             )
             return
 
@@ -2124,11 +2140,18 @@ init -4 python in mas_sprites:
         return rk_list
 
 
-init -2 python:
+init -10 python:
 
     class MASFilterMap(object):
-        """
+        """SEALED
         The FilterMap connects filters to values
+
+        DO NOT EXTEND THIS CLASS. if you need similar functionality, just
+        make a wrapper class. There are functions in this class that will
+        cause crashes if used in unexpected contexts.
+
+        NOTE: you can make filtermaps with non-string values, just dont
+            use the hash/eq/ne operators.
 
         PROPERTIES:
             map - dict containg filter to string map
@@ -2137,21 +2160,35 @@ init -2 python:
         """
         import store.mas_sprites_json as msj
 
-        def __init__(self, default=None, **filter_pairs):
+        def __init__(self,
+                default=None,
+                cache=True,
+                verify=True,
+                **filter_pairs
+        ):
             """
             Constructor
 
             IN:
                 default - default code to apply to all filters
                     (Default: None)
+                cache - True will cache the MFM, False will not
+                    (Default: True)
+                verify - True will verify the filters, False will not.
+                    NOTE: if passing False, use the verify function to
+                    verify flts.
+                    (Default: True)
                 **filter_pairs - filter=val args to use. invalid filters are
                     ignored.
                     See FILTERS dict. Example:
                         day=None
                         night="0"
             """
+            # TODO: add verify 
             self.map = MASFilterMap.clean_flt_pairs(default, filter_pairs)
-            store.mas_sprites.MFM_CACHE[hash(self)] = self
+
+            if cache:
+                store.mas_sprites.MFM_CACHE[hash(self)] = self
 
         def __eq__(self, other):
             """
@@ -2428,6 +2465,9 @@ init -2 python:
                     vals.append(value)
 
             return vals
+
+
+init -2 python:
 
 
     def mas_drawmonika_rk(
