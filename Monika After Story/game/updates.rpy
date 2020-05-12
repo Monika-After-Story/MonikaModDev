@@ -383,6 +383,10 @@ label v0_11_3(version="v0_11_3"):
             #   number of pool unlocks given
             persistent._mas_pool_unlocks += store.mas_xp.level() * 4
 
+        # unlock monika_kiss
+        mas_unlockEVL("monika_kiss", "EVE")
+
+        # unlock currently pooled tod topics and pool the ones that aren't
         tod_list = [
             "monika_gtod_tip002",
             "monika_gtod_tip003",
@@ -411,6 +415,7 @@ label v0_11_3(version="v0_11_3"):
                 else:
                     tod_ev.pool = True
                     tod_ev.action = EV_ACT_UNLOCK
+
     return
 
 #0.11.1

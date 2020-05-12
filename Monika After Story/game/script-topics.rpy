@@ -1482,7 +1482,17 @@ label monika_date:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True,aff_range=(mas_aff.NORMAL, None)))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kiss",
+            category=['romance'],
+            prompt="Kiss me",
+            pool=True,
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
@@ -7418,7 +7428,16 @@ label monika_how_soon:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_marriage",
+            category=['romance'],
+            prompt="Will you marry me?",
+            pool=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_marriage:
     $ mas_gainAffection()
@@ -7437,8 +7456,8 @@ label monika_marriage:
     else:
         m 2wubsw "M-marriage?"
         m 4rksdlb "I think it's a bit too early for marriage..."
-        m 2ekbfa "I mean, I'm really happy that you want that, [player]."
-        m 2lkbsa "But I think I should get out of here before we can do that."
+        m 2ekbfa "I mean, I'm really happy that you want that, [player]..."
+        m 2lkbsa "But I think I should get out of here first."
         m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
         m 2dkbsu "I want that special moment to happen when we can finally be together..."
         m 1hubfa "So until then, save yourself for me, [player]~"
