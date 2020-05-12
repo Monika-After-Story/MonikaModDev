@@ -7655,7 +7655,7 @@ label monika_breakup:
                 m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
 
             else:
-                m 2dsc "Are you...{w}really..."
+                m 2dsc "Are you...{w=0.5}really..."
                 m "..."
                 m 2hub "Ahaha!"
                 m 1tfu "Gotcha, [player]."
