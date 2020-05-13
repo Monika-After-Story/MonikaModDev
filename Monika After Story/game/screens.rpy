@@ -2740,26 +2740,27 @@ screen submods():
 
             vbox:
                 style_prefix "check"
-                box_wrap False
-                xmaximum 1000
                 xfill True
+                xmaximum 1000
 
                 for submod in sorted(store.mas_submod_utils.submod_map.values(), key=lambda x: x.name):
-                    if submod.settings_pane:
+                    vbox:
+                        xfill True
+                        xmaximum 1000
+
                         label submod.name yanchor 0 xalign 0
+
                         hbox:
-                            box_wrap False
                             spacing 20
                             xmaximum 1000
 
                             text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
                             text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
 
-                        vbox:
-                            box_wrap False
-                            xfill True
-                            xmaximum 1000
+                        if submod.description:
                             text submod.description
+
+                    if submod.settings_pane:
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
 
         vbar value YScrollValue("scrollme")
