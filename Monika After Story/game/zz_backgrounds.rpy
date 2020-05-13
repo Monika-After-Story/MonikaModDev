@@ -979,6 +979,18 @@ init -10 python:
             """
             return self._night_filters.keys()
 
+        def is_flt_day(self, flt):
+            """
+            Checks if the given filter is day according to this filter manager
+            NOTE: assumes we are organized already.
+
+            IN:
+                flt - filter to check
+
+            RETURNS: True if day, false if not
+            """
+            return flt in self._day_filters
+
         def _organize(self):
             """
             Organize filters into day and night dicts
@@ -1114,7 +1126,7 @@ init -10 python:
         """DEPRECATED
         Old-style MASBackground objects.
         This is mapped to a MASFilterableBackground with default 
-        (aka spaceroom) slice management
+        (aka pre0.11.3 filters) slice management
 
         IN:
             background_id:
@@ -1182,7 +1194,36 @@ init -10 python:
 
         RETURNS: MASFilterableBackground object
         """
-        pass # TODO
+        # build map data
+        img_map_data = {
+            store.mas_sprites.FLT_DAY: MASWeatherMap(precip_map={
+                store.mas_weather.PRECIP_TYPE_DEF: image_day,
+                store.mas_weather.PRECIP_TYPE_RAIN: image_rain_day,
+                store.mas_weather.PRECIP_TYPE_OVERCAST: image_overcast_day,
+                store.mas_weather.PRECIP_TYPE_SNOW: image_snow_day,
+            }),
+            store.mas_sprites.FLT_NIGHT: MASWeatherMap(precip_map={
+                store.mas_weather.PRECIP_TYPE_DEF: image_night,
+                store.mas_weather.PRECIP_TYPE_RAIN: image_rain_night,
+                store.mas_weather.PRECIP_TYPE_OVERCAST: image_overcast_night,
+                store.mas_weather.PRECIP_TYPE_SNOW: image_snow_night,
+            }),
+        }
+
+        # build object
+        return MASFilterableBackground(
+            background_id,
+            prompt,
+            MASBackgroundFilterMap(**img_map_data),
+            store.mas_background.default_MBGFM(),
+            hide_calendar=hide_calendar,
+            hide_masks=hide_masks,
+            disable_progressive=disable_progressive,
+            unlocked=unlocked,
+            entry_pp=entry_pp,
+            exit_pp=exit_pp
+        )
+
 
     class MASFilterableBackground(object):
         """
@@ -1203,8 +1244,7 @@ init -10 python:
         import store.mas_background as mas_background
         import store.mas_weather as mas_weather
 
-        def __init__(
-            self,
+        def __init__(self,
             background_id,
             prompt,
             image_map,
@@ -1276,18 +1316,6 @@ init -10 python:
 
             self.background_id = background_id
             self.prompt = prompt
-
-            # TODO: remove this
-            self.image_map = {
-                #Def
-                mas_weather.PRECIP_TYPE_DEF: (image_day, image_night),
-                #Rain
-                mas_weather.PRECIP_TYPE_RAIN: (image_rain_day if image_rain_day else image_day, image_rain_night if image_rain_night else image_night),
-                #Overcast
-                mas_weather.PRECIP_TYPE_OVERCAST: (image_overcast_day if image_overcast_day else image_day, image_overcast_night if image_overcast_night else image_night),
-                #Snow
-                mas_weather.PRECIP_TYPE_SNOW: (image_snow_day if image_snow_day else image_day, image_snow_night if image_snow_night else image_night)
-            }
             self.image_map = image_map
             self._flt_man = filter_man
 
@@ -1308,12 +1336,10 @@ init -10 python:
             # add to background map
             self.mas_background.BACKGROUND_MAP[background_id] = self
 
-
         def __eq__(self, other):
             if isinstance(other, MASBackground):
                 return self.background_id == other.background_id
             return NotImplemented
-
 
         def __ne__(self, other):
             result = self.__eq__(other)
@@ -1321,6 +1347,17 @@ init -10 python:
                 return result
             return not result
 
+        def build(self):
+            """
+            Builds filter slices using current suntimes
+
+            NOTE: recommended to only call this after the suntimes change or
+            on init.
+            """
+            self._flt_man.build(
+                persistent._mas_sunrise * 60,
+                persistent._mas_sunset * 60
+            )
 
         def entry(self, old_background):
             """
@@ -1329,14 +1366,12 @@ init -10 python:
             if self.entry_pp is not None:
                 self.entry_pp(old_background)
 
-
         def exit(self, new_background):
             """
             Run the exit programming point
             """
             if self.exit_pp is not None:
                 self.exit_pp(new_background)
-
 
         def fromTuple(self, data_tuple):
             """
@@ -1347,7 +1382,6 @@ init -10 python:
                     [0]: unlocked property
             """
             self.unlocked = data_tuple[0]
-
 
         def toTuple(self):
             """
@@ -1362,6 +1396,7 @@ init -10 python:
             """
             Returns the day masks to use given the conditions/availablity of present assets
             """
+            # TODO: check
             if weather is None:
                 weather = store.mas_current_weather
 
@@ -1371,6 +1406,7 @@ init -10 python:
             """
             Returns the night masks to use given the conditions/availablity of present assets
             """
+            # TODO: check
             if weather is None:
                 weather = store.mas_current_weather
 
@@ -1395,6 +1431,7 @@ init -10 python:
             If the room has a different look for the new weather we're going into, the room is "changing" and we need to flag this to
             scene change and dissolve the spaceroom in the spaceroom label
             """
+            # TODO: progress filter might take care of this already
             return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
 
         def isFltDay(self, flt=None):
@@ -1408,13 +1445,10 @@ init -10 python:
 
             RETURNS: True if flt is a "day" filter according to this bg
             """
-            # TODO: a BG will be in charge of which filters are "day" and
-            #   which are "night". This will be implemented in the future.
-            #   for now we just assume "day" is day and "night" is night
             if flt is None:
                 flt = store.mas_sprites.get_filter()
 
-            return flt == store.mas_sprites.FLT_DAY
+            return self._flt_man.is_flt_day(flt)
 
         def isFltNight(self, flt=None):
             """
@@ -1427,8 +1461,22 @@ init -10 python:
 
             RETURNS: True if flt is a "night" filter according to this BG
             """
-            # TODO: see isFltDay
             return not self.isFltDay(flt)
+
+        def progress(self):
+            """
+            Progresses the filter.
+            """
+            # TODO
+            pass
+
+        def verify(self):
+            """
+            Verifies all internal filter and weather data is valid.
+            Raises exception upon errors.
+            """
+            # TODO
+            pass
 
 
 #Helper methods and such
@@ -1436,6 +1484,42 @@ init -20 python in mas_background:
     import store
     BACKGROUND_MAP = {}
     BACKGROUND_RETURN = "Nevermind"
+
+
+    def default_MBGFM():
+        """
+        Generates a MASBackgroundFilterManager using the default 
+        (aka pre0.11.3) settings.
+
+        RETURNS: MASBackgroundFilterManager object
+        """
+        return store.MASBackgroundFilterManager(
+            store.MASBackgroundFilterChunk(
+                False,
+                None,
+                store.MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_NIGHT,
+                    60
+                )
+            ),
+            store.MASBackgroundFilterChunk(
+                True,
+                None,
+                store.MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_DAY,
+                    60
+                )
+            ),
+            store.MASBackgroundFilterChunk(
+                False,
+                None,
+                store.MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_NIGHT,
+                    60
+                )
+            ),
+        )
+
 
     def loadMBGData():
         """
