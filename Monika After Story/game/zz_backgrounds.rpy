@@ -411,6 +411,10 @@ init -2 python in mas_background:
             elif store.mas_isD25():
                 store.mas_changeWeather(store.mas_weather_snow, by_user=True)
 
+        #Weather should always be unlocked for spaceroom
+        #This catches the potential of a deleted background which does not support weather
+        store.mas_unlockEVL("monika_change_weather", "EVE")
+
     def _def_background_exit(_new):
         """
         Exit programming point for befault background
