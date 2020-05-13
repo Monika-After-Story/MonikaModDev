@@ -782,9 +782,10 @@ init 799 python:
             by_user - flag for if user changes weather or not
             set_persistent - whether or not we want to make this weather persistent
         """
-        #If the current background doesn't support weather, we'll just return here to be safe
+        #If the current background doesn't support weather, we set to def weather instead
+        #Since it has no sfx or anything
         if store.mas_current_background.disable_progressive:
-            return
+            new_weather = store.mas_weather_def
 
         if by_user is not None:
             mas_weather.force_weather = bool(by_user)
