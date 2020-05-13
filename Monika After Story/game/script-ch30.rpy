@@ -1363,8 +1363,10 @@ label ch30_preloop:
     $ mas_idle_mailbox.send_scene_change()
 
     # rain check
-    # TODO: the weather progression alg needs to run here
     $ mas_startupWeather()
+
+    #We've skipped the initial weather set, we can now clear this flag
+    $ skip_setting_weather = False
 
     # otherwise, we are NOT skipping visuals
     $ mas_startup_song()

@@ -402,6 +402,13 @@ init -2 python in mas_background:
         if store.seen_event("mas_monika_islands"):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
 
+        #Since these holidays demand a specific weather, we'll set them here
+        if store.mas_isO31():
+            store.mas_changeWeather(store.mas_weather_thunder, by_user=True)
+
+        elif store.mas_isD25():
+            store.mas_changeWeather(store.mas_weather_snow, by_user=True)
+
     def _def_background_exit(_new):
         """
         Exit programming point for befault background
