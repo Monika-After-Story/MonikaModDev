@@ -3719,15 +3719,22 @@ label greeting_surprised2:
     return
 
 init 5 python:
+    # set a slightly higher priority than the open door gre has
+    ev_rules = dict()
+    ev_rules.update(MASPriorityRule.create_rule(49))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back_from_restart",
             unlocked=True,
             category=[store.mas_greetings.TYPE_RESTART],
+            rules=ev_rules
         ),
         code="GRE"
     )
+
+    del[ev_rules]
 
 label greeting_back_from_restart:
     if mas_isMoniNormal(higher=True):
