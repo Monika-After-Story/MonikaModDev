@@ -753,7 +753,8 @@ init -1 python:
     store.mas_weather.loadMWData()
 
 # sets up weather
-init 800 python:
+#NOTE: MUST be before BGs
+init 799 python:
     def mas_setWeather(_weather):
         """
         Sets the initial weather.
@@ -781,6 +782,9 @@ init 800 python:
             by_user - flag for if user changes weather or not
             set_persistent - whether or not we want to make this weather persistent
         """
+        #If the current background doesn't support weather, we'll just return here to be safe
+        if store.mas_current_background.disable_progressive:
+            return
 
         if by_user is not None:
             mas_weather.force_weather = bool(by_user)
