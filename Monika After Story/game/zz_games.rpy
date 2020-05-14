@@ -113,7 +113,8 @@ init 5 python:
             prompt="Pong",
             unlocked=True
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_pong:
@@ -147,7 +148,8 @@ init 5 python:
             eventlabel="mas_hangman",
             prompt="[mas_games.HANGMAN_NAME]"
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_hangman:
@@ -161,7 +163,8 @@ init 5 python:
             eventlabel="mas_piano",
             prompt="Piano"
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_piano:
