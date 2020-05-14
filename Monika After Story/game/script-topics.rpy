@@ -3643,7 +3643,7 @@ label monika_trolley:
     m 1dsc "Hmmm..."
     m 3esa "The classic trolley problem has us choose between letting the trolley run over 5 people, or switching to the track where only 1 person will be killed."
     m 1esb "I think this problem is too easy. Of course I would switch."
-    m 1esc "It takes a rare kind of moral cowardice not to save 4 lives, just to avoid personal responsibility for that one person's death."
+    m 1esc "It takes a rare kind of moral cowardice not to save 5 lives, just to avoid personal responsibility for that one person's death."
     m 1eub "A more interesting variant is if the one person is someone you care about."
     m 3eub "Like if it were you, [player]? I guess that's easy too!"
     m 1tuu "I wouldn't switch."
