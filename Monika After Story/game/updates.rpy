@@ -390,7 +390,10 @@ label v0_11_3(version="v0_11_3"):
             if cons and cons.getStock() > cons.max_stock_amount:
                 persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
 
-        #Fix tip of the day bits
+        # unlock monika_kiss
+        mas_unlockEVL("monika_kiss", "EVE")
+
+        # unlock currently pooled tod topics and pool the ones that aren't
         tod_list = [
             "monika_gtod_tip002",
             "monika_gtod_tip003",
@@ -419,6 +422,7 @@ label v0_11_3(version="v0_11_3"):
                 else:
                     tod_ev.pool = True
                     tod_ev.action = EV_ACT_UNLOCK
+
     return
 
 #0.11.1
