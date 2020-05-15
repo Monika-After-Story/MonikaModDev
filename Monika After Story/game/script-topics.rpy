@@ -14435,3 +14435,39 @@ label monika_language_nuances:
     m 1tsu "So good day to you, [player].{w=0.3} {nw}"
     extend 1hub "Ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_fear',
+            prompt="Fear",
+            category=[''],
+            conditional=("renpy.seen_label('monika_soft_rains')"),
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_worst_fear:
+    m 3eud "Say, [player]..."
+    m 1eud "This is kind of a weird question, but... {w=0.5} Is there something you're afraid of?"
+    m 1eub "I don't mean the everyday, mundane kind of fear, like spilling a drink and ruining your favorite shirt."
+    m 1euc "I mean, like, the kind of deep-seated fear that fills you with dread when you even think about it."
+    m 1ruc "For me, losing you would obviously be on the top of {i}that{/i} particular list."
+    m 1ekd "I told you before, didn't I? {w=0.5} I don't know what I'd do if something happened to you."
+    m 1dkd "I'm not even sure I could find the will to go on."
+    m 1ruc "It's hard to imagine a scenario even worse than that."
+    m 3eua "But as long as we're being hypothetical..."
+    m 2esc "What truly terrifies me is the thought that none of this is real."
+    m "That one day I'll wake up, back in my bed, and realize it was all just a dream."
+    m "That there is no game,{w=0.2} no epiphany,{w=0.2} no... {w=0.5}"
+    extend 2fkc "you."
+    m 2fkc "That you, your love, perhaps even the entirety of the literature club were all nothing but a figment of my own imagination."
+    m "That my old world, as grey and meaningless as it now seems, is all there truly is."
+    m 2lkc "..."
+    m 1rksdlb "Ahaha~"
+    extend 1eksdlb "Sorry, that got pretty dark, didn't it?"
+    m 1eksdla "I feel kinda silly now.{w=0.5}"
+    extend 3eua "After all, there's no way something like that could be true, right?"
+    m 1rkc "Yeah..."
+    return "derandom"
