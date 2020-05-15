@@ -14435,3 +14435,63 @@ label monika_language_nuances:
     m 1tsu "So good day to you, [player].{w=0.3} {nw}"
     extend 1hub "Ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_architecture",
+            category=['misc'],
+            prompt="Architecture",
+            random=True
+        )
+    )
+
+label monika_architecture:
+    m 1esa "Hey, [player]! You know, I think there's this one major art branch that we've been missing to talk about all the time..."
+    m 3eub "Architecture!"
+    m 3esa "I have been reading a bit about it lately, so I find it quite interesting to discuss..."
+    m 1eua " If you come to think of it, architecture is one of the most common kinds of art in an everyday life."
+    m 1tub "Unless you live in a complete wasteland of some kind..."
+    extend 1hub " Ahaha~" 
+    m 1eka "But really, I am fascinated by how humanity tend to turn every craft into an art.{w=0.5}{nw}" 
+    extend 1eua " I think architecture is the greatest example of it."
+    m 1eub "Architecture can also tell a lot about the culture of a certain country it is located in: different monuments, statues, historical buildings, towers..."
+    m 1eua "I think it makes it even more exciting to explore the place you're visiting."
+    m 1rka "It is also important to place the buildings in the most convinient way for people to use, which is a tough task to deal with, too."
+    m 1euc "However, if you prefer viewing architecture only from the art perspective, some modern tendencies may disappoint you."
+    m 1ruc "Nowaday architecture focuses more on getting things done in a more practical way."
+    m 1euc "In my opinion, it can be either good or bad for multiple reasons." 
+    m 3euc "Still, I do believe the most important part is to keep things balanced."
+    m 1tkc "Overly-practical buildings can look flat and uninspired just as the overly-artistic buildings can serve absolutely no purpose rather than looking out of place."
+    m 3eua "I think the true beauty lies in those buildings which can combine both form and function with a little bit of uniqueness."
+    m 1eka "I do hope you're happy with how your surroundings look."
+    m 1ekb "It has been proven multiple times that architecture has a big impact on your mental health."
+    m 1ruc "Moreover, residential areas with poorly-made buildings around can easily become criminal areas in some cases."
+    m 1eka "It was once said that the ugliness of the outside world cause the ugliness on the inside...{w=0.5}{nw}" 
+    extend 3esa " which I can probably agree with."   
+    if mas_isMoniAff(higher=True):
+        m 1euc "Yet, judging by {i}your{/i} personality... {w=1}{nw}"
+        m 1tua "You probably live in some kind of a paradise."
+        m 1hub "Ahaha~"
+    m 1eka "[player]... {w=1}Seeing the world with you is the biggest dreams of mine."
+
+if persistent._mas_pm_likes_travelling:
+    m 3eka "I already know you enjoy travelling, so wouldn't it be nice to explore something new together?"
+    m 3hua "I am one hundred percent sure it would be!"
+    m 3eka "Even at the very edge of the world... I'll still love you, [player]."
+    m 3dka "I always will."
+    return "love" 
+
+elif persistent._mas_pm_likes_travelling is False:
+    m 3rka "I know you're not too fond of travelling a lot, but I would love to see the place you live in."
+    m 3eka "As long as you stay by my side, that would be more than enough."
+    m 1eka "I love you, [player]. Always remember that."
+    return "love" 
+
+else:
+    m 1dka "Imagine taking a stroll through the narrow streets of an old city..."
+    m 1eka "Or walking down the park together, breathing fresh evening air..."
+    m 1ekb "I believe it will happen one day or another. And I hope you do too, [player]."
+    m 1eka "I love you."
+    return "love" 
