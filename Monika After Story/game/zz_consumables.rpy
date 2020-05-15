@@ -1533,7 +1533,7 @@ label mas_consumables_generic_running_out(consumable):
             plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
 
             #We need to parse the dialogue depending on the given dlg_props
-            if mcontainer:
+            if container:
                 line_ender = renpy.substitute("[container]s of [consumable.disp_name][plur] left.")
 
             #Otherwise we use the object reference for this
