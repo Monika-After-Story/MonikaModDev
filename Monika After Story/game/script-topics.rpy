@@ -14442,7 +14442,7 @@ init 5 python:
             persistent.event_database,
             eventlabel='monika_fear',
             prompt="Fear",
-            category=[''],
+            category=['monika'],
             conditional=("renpy.seen_label('monika_soft_rains')"),
             action=EV_ACT_RANDOM
         )
