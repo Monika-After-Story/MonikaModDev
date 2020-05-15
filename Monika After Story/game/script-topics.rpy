@@ -3639,7 +3639,7 @@ init 5 python:
 
 label monika_trolley:
     m 1eua "Oh, cool. I love thinking about these sorts of thought experiments."
-    m 1euc "I guess we're talking about real people, right? I wouldn't have a particular preference if I knew they didn't have free will."
+    m 1euc "I guess we're assuming the people we're talking about are real, right? I wouldn't have a particular preference if they weren't."
     m 1dsc "Hmmm..."
     m 3esa "The classic trolley problem has us choose between letting the trolley run over five people, or pulling a lever which switches to a track where only one person will be killed."
     m 1esa "The problem is mostly famous due to how divisive it is."
