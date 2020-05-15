@@ -5161,10 +5161,21 @@ init 2 python:
         OUT:
             string prefixed with a/an
         """
-        if ref_str[0] in "aeiou":
-            return "an " + ref_str
-        return "a " + ref_str
+        return "{0} {1}".format(mas_a_an(ref_str), ref_str)
 
+    def mas_a_an(ref_str):
+        """
+        Takes in a reference string and returns either a/an based on the first letter of the word
+
+        IN:
+            ref_str - string in question to prefix
+
+        OUT:
+            string prefixed with a/an
+        """
+        if ref_str[0] in "aeiou":
+            return "an"
+        return "a"
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme

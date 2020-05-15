@@ -1326,15 +1326,17 @@ label mas_consumables_generic_get(consumable):
 
         #We need to parse the dialogue depending on the given dlg_props
         if container:
-            line_starter = renpy.substitute("I'm going to get a [container] of [consumable.disp_name][plur].")
+            a_an = mas_a_an(container)
+            line_starter = renpy.substitute("I'm going to get [a_an] [container] of [consumable.disp_name][plur].")
 
         #Otherwise we use the object reference for this
         elif obj_ref:
-            line_starter = renpy.substitute("I'm going to get a [obj_ref] of [consumable.disp_name][plur].")
+            a_an = mas_a_an(obj_ref)
+            line_starter = renpy.substitute("I'm going to get [a_an] [obj_ref] of [consumable.disp_name][plur].")
 
         #No valid dlg props
         else:
-            a_an = "some" if plur else "a"
+            a_an = "some" if plur else mas_a_an(consumable.disp_name)
             line_starter = renpy.substitute("I'm going to get [a_an] [consumable.disp_name][plur].")
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
