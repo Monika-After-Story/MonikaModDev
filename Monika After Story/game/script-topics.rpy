@@ -14469,29 +14469,27 @@ label monika_architecture:
     m 1ekb "It has been proven multiple times that architecture has a big impact on your mental health."
     m 1ruc "Moreover, residential areas with poorly-made buildings around can easily become criminal areas in some cases."
     m 1eka "It was once said that the ugliness of the outside world cause the ugliness on the inside...{w=0.5}{nw}" 
-    extend 3esa " which I can probably agree with."   
+    extend 3esa "which I can probably agree with."   
     if mas_isMoniAff(higher=True):
         m 1euc "Yet, judging by {i}your{/i} personality... {w=1}{nw}"
         m 1tua "You probably live in some kind of a paradise."
         m 1hub "Ahaha~"
     m 1eka "[player]... {w=1}Seeing the world with you is the biggest dreams of mine."
 
-if persistent._mas_pm_likes_travelling:
-    m 3eka "I already know you enjoy travelling, so wouldn't it be nice to explore something new together?"
-    m 3hua "I am one hundred percent sure it would be!"
-    m 3eka "Even at the very edge of the world... I'll still love you, [player]."
-    m 3dka "I always will."
-    return "love" 
+    if persistent._mas_pm_likes_travelling:
+        m 3eka "I already know you enjoy travelling, so wouldn't it be nice to explore something new together?"
+        m 3hua "I am one hundred percent sure it would be!"
+        m 3eka "Even at the very edge of the world... I'll still love you, [player]."
+        m 3dka "I always will."
 
-elif persistent._mas_pm_likes_travelling is False:
-    m 3rka "I know you're not too fond of travelling a lot, but I would love to see the place you live in."
-    m 3eka "As long as you stay by my side, that would be more than enough."
-    m 1eka "I love you, [player]. Always remember that."
-    return "love" 
+    elif persistent._mas_pm_likes_travelling is False:
+        m 3rka "I know you're not too fond of travelling a lot, but I would love to see the place you live in."
+        m 3eka "As long as you stay by my side, that would be more than enough."
+        m 1eka "I love you, [player]. Always remember that."
 
-else:
-    m 1dka "Imagine taking a stroll through the narrow streets of an old city..."
-    m 1eka "Or walking down the park together, breathing fresh evening air..."
-    m 1ekb "I believe it will happen one day or another. And I hope you do too, [player]."
-    m 1eka "I love you."
-    return "love" 
+    else:
+        m 1dka "Imagine taking a stroll through the narrow streets of an old city..."
+        m 1eka "Or walking down the park together, breathing fresh evening air..."
+        m 1ekb "I believe it will happen one day or another. And I hope you do too, [player]."
+        m 1eka "I love you."
+    return "love"
