@@ -780,7 +780,7 @@ label mas_story_o_tei:
     m 3esa "As she came to, she had no memory of what happened at the inn."
     m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
     return
-    
+
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_crow_and_pitcher",
         prompt="The Crow and the Pitcher",unlocked=False),code="STY")

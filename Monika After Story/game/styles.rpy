@@ -189,7 +189,7 @@ init python:
         # Timefile changes
         mas_ui.cm_bg = mas_getTimeFile(mas_ui.CNF_BG)
         mas_ui.sel_sb_frame = mas_getTimeFile(mas_ui.SEL_SB_FRAME)
-    
+
         # Reset the global flag
         mas_globals.change_textbox = True
 
@@ -304,4 +304,3 @@ init -1 python in mas_ui:
     ).add(
         "mod_assets/font/mplus-2p-regular.ttf", 0x0000, 0xffff  # jp
     )
-

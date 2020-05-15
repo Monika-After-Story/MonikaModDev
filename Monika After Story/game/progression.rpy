@@ -70,7 +70,7 @@ init python in mas_xp:
             xp_gain += diff_hr * xp_rate
 
         else:
-            # since diff is larger/equal than completion, apply the 
+            # since diff is larger/equal than completion, apply the
             # current rate to the comp amt and run alg on the remaining
             xp_gain += comp_amt * xp_rate
             alg_amt = diff_hr - comp_amt
@@ -124,7 +124,7 @@ init python in mas_xp:
         # 1. first 2 hours of playtime is used at the given start rate
         # 2. every subsequent 2 hours is gets multipled by half the given
         #   rate. This is recurisve
-        # 3. once the rate is below 1, the rate stays at 1 
+        # 3. once the rate is below 1, the rate stays at 1
 
         hours = duration
         rate = start_rate
@@ -153,7 +153,7 @@ init python in mas_xp:
     def calc_by_time(duration, start_rate):
         """
         Calculates total xp gain given a duration and starting rate using
-        the new XP model 
+        the new XP model
 
         IN:
             duration - amount of time to grant xp for (timedelta)
@@ -224,7 +224,7 @@ init python in mas_xp:
 
         # unlock prompts
         for x in range(lvl_gained):
-            store.queueEvent("unlock_prompt")
+            store.mas_unlockPrompt(5)
 
         # set xp and lvls
         store.persistent._mas_xp_lvl += lvl_gained
@@ -267,7 +267,7 @@ init python in mas_xp:
 
         RETURNS: tuple of the following format:
             [0] - lvls gained
-            [1] - remainig xp 
+            [1] - remainig xp
         """
         lvls, lvl_frac = mas_utils.floatsplit(xp / XP_LVL_RATE)
         return lvls, lvl_frac * XP_LVL_RATE

@@ -377,9 +377,58 @@ label v0_12_0(version="v0_12_0"):
     python:
         persistent.ever_won["nou"] = False
 
+label v0_11_3(version="v0_11_3"):
+    python:
+        # give extra pool unlocks for recent players
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only 0.11.0 + week ago
+
+            # NOTE: multiply by 4 becaue everyone should already have level
+            #   number of pool unlocks given
+            persistent._mas_pool_unlocks += store.mas_xp.level() * 4
+
+        # unlock monika_kiss
+        mas_unlockEVL("monika_kiss", "EVE")
+
+        # unlock currently pooled tod topics and pool the ones that aren't
+        tod_list = [
+            "monika_gtod_tip002",
+            "monika_gtod_tip003",
+            "monika_gtod_tip004",
+            "monika_gtod_tip005",
+            "monika_gtod_tip006",
+            "monika_gtod_tip007",
+            "monika_gtod_tip008",
+            "monika_gtod_tip009",
+            "monika_gtod_tip010",
+            "monika_ptod_tip002",
+            "monika_ptod_tip003",
+            "monika_ptod_tip005",
+            "monika_ptod_tip006",
+            "monika_ptod_tip008",
+            "monika_ptod_tip009"
+        ]
+
+        for tod_label in tod_list:
+            tod_ev = mas_getEV(tod_label)
+
+            if tod_ev is not None:
+                if tod_ev.pool:
+                    tod_ev.unlocked = True
+
+                else:
+                    tod_ev.pool = True
+                    tod_ev.action = EV_ACT_UNLOCK
+
+    return
+
 #0.11.1
 label v0_11_1(version="v0_11_1"):
     python:
+        #Remove this topic
+        mas_eraseTopic("monika_careful")
+
+        #We no longer need this var
         safeDel("game_unlocks")
 
         chess_unlock_ev = mas_getEV("mas_unlock_chess")
@@ -427,8 +476,8 @@ label v0_11_1(version="v0_11_1"):
             # only care about users with under 2 hour session time avg
             if ahs < 2:
                 lvls_gained, xptnl = store.mas_xp._grant_on_pt()
-             
-                # only give users levels if they didn't earn what we 
+
+                # only give users levels if they didn't earn what we
                 # expected. If they have more levels gained then we expected,
                 # we won't change anything.
                 if persistent._mas_xp_lvl < lvls_gained or lvls_gained == 0:
@@ -451,6 +500,23 @@ label v0_11_1(version="v0_11_1"):
 
         if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
             persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        #Prep the grandfathering of Moni nickname
+        #If the current name is considered awkward now,
+        #we should keep that stored so the user can always come back to it
+        if persistent._mas_monika_nickname != "Monika" and mas_awk_name_comp.search(persistent._mas_monika_nickname):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        #Make this a pm var
+        persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+
+        #Delete some excess stuff
+        safeDel("_mas_called_moni_a_bad_name")
+
+        #Penname should default to None
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
     return
 
 #0.11.0
@@ -631,7 +697,7 @@ label v0_11_0(version="v0_11_0"):
             persistent._mas_pool_unlocks = lvls_gained
 
             persistent.playerxp = None
-            
+
         #Fix for unstable users
         mas_unlockEVL("monika_good_tod", "EVE")
 
@@ -1276,7 +1342,7 @@ label v0_10_0(version="v0_10_0"):
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
-                mhs_922 is not None 
+                mhs_922 is not None
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
@@ -1319,7 +1385,7 @@ label v0_10_0(version="v0_10_0"):
         clothes_sel_ev = mas_getEV("monika_clothes_select")
         if clothes_sel_ev is not None:
             clothes_sel_ev.unlocked = True
-            
+
     return
 
 # 0.9.5
@@ -1355,7 +1421,7 @@ label v0_9_4(version="v0_9_4"):
         if outfit_ev is not None and renpy.seen_label(outfit_ev.eventlabel):
             outfit_ev.unlocked = True
 
-    return 
+    return
 
 # 0.9.2
 label v0_9_2(version="v0_9_2"):
