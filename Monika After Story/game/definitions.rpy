@@ -4333,8 +4333,14 @@ init -1 python:
         # otherwise, not found
         return False
 
+    # TODO: Remove the basedir file checks before the next full release
     def is_apology_present():
-        return store.mas_utils.is_file_present('/characters/imsorry') or store.mas_utils.is_file_present('/characters/imsorry.txt')
+        return (
+            store.mas_utils.is_file_present('/characters/imsorry')
+            or store.mas_utils.is_file_present('/characters/imsorry.txt')
+            or store.mas_utils.is_file_present('imsorry')
+            or store.mas_utils.is_file_present('/imsorry.txt')
+        )
 
     def mas_cvToHM(mins):
         """
