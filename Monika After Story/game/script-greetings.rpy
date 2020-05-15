@@ -1107,6 +1107,10 @@ init 5 python:
 label i_greeting_monikaroom:
 
     #Set up dark mode
+
+    # Progress the filter here so that the greeting uses the correct styles
+    $ mas_progressFilter()
+
     if persistent._mas_auto_mode_enabled:
         $ mas_darkMode(mas_current_background.isFltDay())
     else:
