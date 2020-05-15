@@ -133,7 +133,8 @@ init 5 python:
                 "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
             )
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_chess:
