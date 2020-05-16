@@ -2234,95 +2234,97 @@ label mas_dockstat_abort_gen:
 
 #Call this label to reset the date vars
 label mas_dockstat_decrement_date_counts:
-    # we are not leaving
-    $ persistent._mas_dockstat_going_to_leave = False
+    python:
+        #We are not leaving
+        persistent._mas_dockstat_going_to_leave = False
 
-    # we are not leaving and need to reset these
-    if persistent._mas_player_bday_left_on_bday:
-        $ persistent._mas_player_bday_left_on_bday = False
-        $ persistent._mas_player_bday_date -= 1
+        # we are not leaving and need to reset these
+        if persistent._mas_player_bday_left_on_bday:
+            persistent._mas_player_bday_left_on_bday = False
+            persistent._mas_player_bday_date -= 1
 
-    if persistent._mas_f14_on_date:
-        $ persistent._mas_f14_on_date = False
-        $ persistent._mas_f14_date_count -= 1
+        if persistent._mas_f14_on_date:
+            persistent._mas_f14_on_date = False
+            persistent._mas_f14_date_count -= 1
 
-    if persistent._mas_bday_on_date:
-        $ persistent._mas_bday_on_date = False
-        $ persistent._mas_bday_date_count -= 1
+        if persistent._mas_bday_on_date:
+            persistent._mas_bday_on_date = False
+            persistent._mas_bday_date_count -= 1
     return
 
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    #NOTE: this needs to be done prior to a spaceroom call otherwise it doesn't update
-    #Make sure O31 effects show
-    if persistent._mas_o31_in_o31_mode:
-        $ mas_globals.show_vignette = True
-        #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
-        if mas_current_weather != mas_weather_thunder:
-            $ mas_changeWeather(mas_weather_thunder, True)
+    python:
+        #Make sure O31 effects show
+        if persistent._mas_o31_in_o31_mode:
+            mas_globals.show_vignette = True
+            #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+            if mas_current_weather != mas_weather_thunder:
+                mas_changeWeather(mas_weather_thunder, True)
 
+        else:
+            #Now setup weather
+            mas_startupWeather()
+            skip_setting_weather = True
 
-    # TODO: else this with the o31 mode
-    # set weather here
-    # TODO: run the yet-to-be-made weather alg running function etc
-    $ set_to_weather = mas_shouldRain()
-    if set_to_weather is not None:
-        $ mas_changeWeather(set_to_weather)
-        $ skip_setting_weather = True
-
-    # reset zoom before showing spaceroom
-    $ store.mas_sprites.reset_zoom()
+        # reset zoom before showing spaceroom
+        store.mas_sprites.reset_zoom()
 
     call spaceroom(hide_monika=True, scene_change=True)
-    $ mas_from_empty = True
 
-    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
+    python:
+        mas_from_empty = True
 
-    if mas_isD25Season() and persistent._mas_d25_deco_active:
-        $ store.mas_d25ShowVisuals()
+        checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
-    if mas_confirmedParty() and mas_isMonikaBirthday():
-        $ persistent._mas_bday_visuals = True
-        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+        if mas_isD25Season() and persistent._mas_d25_deco_active:
+            store.mas_d25ShowVisuals()
 
-    #NOTE: elif'd so we don't try and show two types of visuals here
-    elif persistent._mas_player_bday_decor:
-        $ store.mas_surpriseBdayShowVisuals()
+        if mas_confirmedParty() and mas_isMonikaBirthday():
+            persistent._mas_bday_visuals = True
+            store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
+        #NOTE: elif'd so we don't try and show two types of visuals here
+        elif persistent._mas_player_bday_decor:
+            store.mas_surpriseBdayShowVisuals()
+
+    #FALL THROUGH
 
 label mas_dockstat_empty_desk_preloop:
+    python:
+        import store.mas_dockstat as mas_dockstat
 
-    # setup ui hiding
-    $ import store.mas_dockstat as mas_dockstat
-    $ mas_OVLHide()
-    $ mas_calRaiseOverlayShield()
-    $ mas_calShowOverlay()
-    $ disable_esc()
-    $ mas_enable_quit()
-    $ promise = mas_dockstat.monikafind_promise
+        #Setup ui hiding
+        mas_OVLHide()
+        mas_calRaiseOverlayShield()
+        mas_calShowOverlay()
+        disable_esc()
+        mas_enable_quit()
+        promise = mas_dockstat.monikafind_promise
 
 label mas_dockstat_empty_desk_from_empty:
 
-    # begin the find thread
-    if promise.ready:
-        $ promise.start()
+    python:
+        #Begin the find thread
+        if promise.ready:
+            promise.start()
 
-    # wait 1 seconds before checking again
-    $ renpy.pause(1.0, hard=True)
+        #wait 1 seconds before checking again
+        renpy.pause(1.0, hard=True)
 
-    # check for surprise visuals
-    if mas_confirmedParty() and mas_isMonikaBirthday():
-        $ persistent._mas_bday_visuals = True
-        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+        #Check for surprise visuals
+        if mas_confirmedParty() and mas_isMonikaBirthday():
+            persistent._mas_bday_visuals = True
+            store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-    # check for monika
-    if promise.done():
-        # we have a result! lets get and then check if we found anything.
-        $ _status, _data_line = promise.get()
-        $ mas_dockstat.retmoni_status = _status
-        $ mas_dockstat.retmoni_data = _data_line
-        $ mas_dockstat.triageMonika(True)
+        #Check for monika
+        if promise.done():
+            # we have a result! lets get and then check if we found anything.
+            _status, _data_line = promise.get()
+            mas_dockstat.retmoni_status = _status
+            mas_dockstat.retmoni_data = _data_line
+            mas_dockstat.triageMonika(True)
 
     # otherwise we still havent' found monika, so lets just continue
     # the loop
