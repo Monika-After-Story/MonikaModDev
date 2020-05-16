@@ -1450,6 +1450,10 @@ label mas_consumables_generic_running_out_absentuse:
 
 
 label mas_consumables_generic_queued_running_out_dlg(low_cons):
+    # sanity check for non-empty list
+    if not low_cons:
+        return
+
     m 1esc "By the way, [player]..."
     if len(low_cons) > 2:
         $ mas_generateShoppingList(low_cons)
