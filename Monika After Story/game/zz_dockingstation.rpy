@@ -1216,7 +1216,7 @@ init -11 python in mas_dockstat:
                 )
 
             except Exception as e:
-                rd_log.write(
+                mas_utils.writelog(
                     "[ERROR] failed to decode '{0}' | {1}\n".format(
                         b64_name,
                         str(e)
