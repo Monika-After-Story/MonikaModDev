@@ -1478,9 +1478,31 @@ init -10 python:
             """
             Verifies all internal filter and weather data is valid.
             Raises exception upon errors.
+            Assumed to be called at least at init level 0
             """
-            # TODO
-            pass
+            self._flt_man.verify()
+            self._verify_img_flts(self._flt_man._day_filters.keys())
+            self._verify_img_flts(self._flt_man._night_filters.keys())
+            # TODO: anymore?
+
+        def _verify_img_flts(self, flts):
+            """
+            Verifies that at least one image exists for the given flts
+
+            Raises an exception if no images found
+
+            IN:
+                flts - list of filters to check
+            """
+            for flt in flts:
+                wm = self.image_map.get(flt)
+                if wm is not None:
+                    img = wm.get(store.mas_weather.PRECIP_TYPE_DEF)
+                    if img is not None:
+                        # we have at least one image for this flt
+                        return
+
+            raise Exception("No images found for these filters")
 
 
 #Helper methods and such
