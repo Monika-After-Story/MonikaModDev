@@ -1714,6 +1714,9 @@ label ch30_reset:
 
         if persistent._mas_xp_tnl < 0:
             persistent._mas_xp_tnl = store.mas_xp.XP_LVL_RATE
+        elif int(persistent._mas_xp_tnl) > (2* int(store.mas_xp.XP_LVL_RATE)):
+            # likely time travel
+            persistent._mas_xp_tnl = 2 * store.mas_xp.XP_LVL_RATE
 
         if persistent._mas_xp_hrx < 0:
             persistent._mas_xp_hrx = 0.0
