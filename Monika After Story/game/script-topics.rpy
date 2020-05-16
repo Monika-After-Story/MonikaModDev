@@ -14456,7 +14456,7 @@ label monika_architecture:
     extend 1hub " Ahaha~"
     m 1eka "But really, I am fascinated by how humanity tends to turn every craft into an art.{w=0.5}{nw}" 
     extend 1eua " I think architecture is the greatest example of it."
-    m 1eub "Architecture can also tell you a lot about the culture of a country it is located in: different monuments, statues, historical buildings, towers..."
+    m 1eub "Architecture can also tell you a lot about the culture of the country it is located in: different monuments, statues, historical buildings, towers..."
     m 1eua "I think that makes it even more exciting to explore the place you're visiting."
     m 1rka "It is also important to place the buildings in the most convenient way for people to use, which is a tough task to deal with, too."
     m 1euc "However, if you prefer viewing architecture only from the art perspective, some modern tendencies may disappoint you."
@@ -14468,7 +14468,7 @@ label monika_architecture:
     m 1eka "I do hope you're happy with how your surroundings look."
     m 1ekb "It has been proven multiple times that architecture has a big impact on your mental health."
     m 1ruc "Moreover, residential areas with poorly-made buildings around can easily become criminal areas in some cases."
-    m 1eka "It was once said that the ugliness of the outside world causes the ugliness on the inside...{w=0.5}{nw}" 
+    m 1eka "It was once said that the ugliness of the outside world causes ugliness on the inside...{w=0.5}{nw}" 
     extend 3esa "which I can probably agree with."   
     if mas_isMoniAff(higher=True):
         m 1euc "Yet, judging by {i}your{/i} personality... {w=1}{nw}"
