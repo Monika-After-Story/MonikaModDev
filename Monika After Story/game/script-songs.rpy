@@ -180,6 +180,8 @@ label monika_sing_song_pool:
     if mas_songs.hasUnlockedSongs(length="long") and mas_songs.hasUnlockedSongs(length="short"):
         $ have_both_types = True
 
+    #FALL THROUGH
+
 label monika_sing_song_pool_menu:
     python:
         if have_both_types:
@@ -231,53 +233,7 @@ label monika_sing_song_pool_menu:
 
     return
 
-#START: Main Song Topics
-label mas_song_derandom:
-    $ prev_topic = persistent.flagged_monikatopic
-    m 1eka "Tired of hearing me sing that song, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Tired of hearing me sing that song, [player]?{fast}"
-
-        "A little.":
-            m 1eka "That's alright."
-            m 1eua "I'll only sing it when you want me to then. Just let me know if you want to hear it."
-            python:
-                mas_hideEVL(prev_topic, "SNG", derandom=True)
-                persistent._mas_player_derandomed_songs.append(prev_topic)
-                mas_unlockEVL("mas_sing_song_rerandom", "EVE")
-
-        "It's okay.":
-            m 1eua "Alright, [player]."
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_sing_song_rerandom",
-            prompt="Can you sing a song on your own again?",
-            category=['music'],
-            pool=True,
-            unlocked=False,
-            aff_range=(mas_aff.NORMAL, None),
-            rules={"no unlock": None}
-        )
-    )
-
-label mas_sing_song_rerandom:
-    python:
-        mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
-        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
-        mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
-        mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
-        mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
-        mas_bookmarks_derand.ev_db_code = "SNG"
-
-    call mas_rerandom
-    return
-
-#START: Song analysis delegate
+#Song analysis delegate
 init 5 python:
     addEvent(
         Event(
@@ -318,6 +274,53 @@ label monika_sing_song_analysis:
     else:
         return "prompt"
     return
+
+#Rerandom song delegate
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_sing_song_rerandom",
+            prompt="Can you sing a song on your own again?",
+            category=['music'],
+            pool=True,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None),
+            rules={"no unlock": None}
+        )
+    )
+
+label mas_sing_song_rerandom:
+    python:
+        mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
+        mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
+        mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
+        mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
+        mas_bookmarks_derand.ev_db_code = "SNG"
+
+    call mas_rerandom
+    return
+
+label mas_song_derandom:
+    $ prev_topic = persistent.flagged_monikatopic
+    m 1eka "Tired of hearing me sing that song, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Tired of hearing me sing that song, [player]?{fast}"
+
+        "A little.":
+            m 1eka "That's alright."
+            m 1eua "I'll only sing it when you want me to then. Just let me know if you want to hear it."
+            python:
+                mas_hideEVL(prev_topic, "SNG", derandom=True)
+                persistent._mas_player_derandomed_songs.append(prev_topic)
+                mas_unlockEVL("mas_sing_song_rerandom", "EVE")
+
+        "It's okay.":
+            m 1eua "Alright, [player]."
+    return
+
 
 #START: Random song delegate
 init 5 python:
