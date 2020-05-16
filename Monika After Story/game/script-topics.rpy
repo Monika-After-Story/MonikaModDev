@@ -463,13 +463,6 @@ init python:
 
         return len(mas_get_player_bookmarks(persist_var)) > 0
 
-    def shouldRerand(eventlabel):
-        """
-        Checks if we should rerandom the given eventlabel
-
-        IN:
-            eventlabel
-        """
 #START: UTILITY TOPICS (bookmarks/derand, show/hide unseen)
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
