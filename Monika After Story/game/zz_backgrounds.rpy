@@ -481,7 +481,8 @@ init 5 python:
             unlocked=False,
             rules={"no unlock": None},
             aff_range=(mas_aff.ENAMORED, None)
-        )
+        ),
+        restartBlacklist=True
     )
 
 label monika_change_background:
