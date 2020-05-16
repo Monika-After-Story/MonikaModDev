@@ -39,6 +39,7 @@ init python in mas_consumables:
 #2. Foods always go on Monika's left
 
 init 5 python:
+    import random
     #MASConsumable class
     class MASConsumable():
         """
@@ -1140,7 +1141,6 @@ init 6 python:
 #START: Finished brewing/drinking evs
 ##Finished brewing
 init 5 python:
-    import random
     #This event gets its params via _checkConsumables()
     addEvent(
         Event(
@@ -1159,7 +1159,6 @@ label mas_finished_brewing:
 
 ###Drinking done
 init 5 python:
-    import random
     #Like finshed_brewing, this event gets its params from
     addEvent(
         Event(
@@ -1197,7 +1196,6 @@ label mas_get_drink:
 
 #START: Generic food evs
 init 5 python:
-    import random
     #This event gets its params via _startupDrinkLogic()
     addEvent(
         Event(
@@ -1217,7 +1215,6 @@ label mas_finished_prepping:
 
 ###Drinking done
 init 5 python:
-    import random
     #Like finshed_brewing, this event gets its params from
     addEvent(
         Event(
