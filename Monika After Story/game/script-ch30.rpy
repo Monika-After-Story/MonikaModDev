@@ -1034,20 +1034,24 @@ label ch30_nope:
 label ch30_autoload:
     # This is where we check a bunch of things to see what events to push to the
     # event list
-    $ m.display_args["callback"] = slow_nodismiss
-    $ m.what_args["slow_abortable"] = config.developer
-    $ import store.evhand as evhand
-    if not config.developer:
-        $ config.allow_skipping = False
-    $ mas_resetTextSpeed()
-    $ quick_menu = True
-    $ startup_check = True #Flag for checking events at game startup
-    $ mas_skip_visuals = False
+    python:
+        import store.evhand as evhand
 
-    # set flag to True to prevent ch30 from running weather alg
-    $ skip_setting_weather = False
+        m.display_args["callback"] = slow_nodismiss
+        m.what_args["slow_abortable"] = config.developer
 
-    $ mas_cleanEventList()
+        if not config.developer:
+            config.allow_skipping = False
+
+        mas_resetTextSpeed()
+        quick_menu = True
+        startup_check = True #Flag for checking events at game startup
+        mas_skip_visuals = False
+
+        #Set flag to True to prevent ch30 from running weather alg
+        skip_setting_weather = False
+
+        mas_cleanEventList()
 
     # set the gender
     call mas_set_gender
@@ -1057,16 +1061,17 @@ label ch30_autoload:
 
     #Affection will trigger a final farewell mode
     #If we got a fresh start, then -50 is the cutoff vs -115.
-    if (
-        persistent._mas_pm_got_a_fresh_start
-        and _mas_getAffection() <= -50
-    ):
-        $ persistent._mas_load_in_finalfarewell_mode = True
-        $ persistent._mas_finalfarewell_poem_id = "ff_failed_promise"
+    python:
+        if (
+            persistent._mas_pm_got_a_fresh_start
+            and _mas_getAffection() <= -50
+        ):
+            persistent._mas_load_in_finalfarewell_mode = True
+            persistent._mas_finalfarewell_poem_id = "ff_failed_promise"
 
-    elif _mas_getAffection() <= -115:
-        $ persistent._mas_load_in_finalfarewell_mode = True
-        $ persistent._mas_finalfarewell_poem_id = "ff_affection"
+        elif _mas_getAffection() <= -115:
+            persistent._mas_load_in_finalfarewell_mode = True
+            persistent._mas_finalfarewell_poem_id = "ff_affection"
 
 
     #If we should go into FF mode, we do.
@@ -1075,6 +1080,9 @@ label ch30_autoload:
 
     # set this to None for now
     $ selected_greeting = None
+
+    #We'll set up the background here, so other flows don't need to adjust it unless its for a specific reason
+    $ mas_startupBackground()
 
     # check if we took monika out
     # NOTE:
@@ -1314,35 +1322,36 @@ label ch30_preloop:
 
     window auto
 
-    # NOTE: keymaps will be set, but all actions will be shielded unless
-    #   desired by the appropriate flow.
-    $ mas_HKRaiseShield()
-    $ mas_HKBRaiseShield()
-    $ set_keymaps()
+    python:
+        # NOTE: keymaps will be set, but all actions will be shielded unless
+        #   desired by the appropriate flow.
+        mas_HKRaiseShield()
+        mas_HKBRaiseShield()
+        set_keymaps()
 
-    $ persistent.closed_self = False
-    $ persistent._mas_game_crashed = True
-    $ startup_check = False
-    $ mas_checked_update = False
-    $ mas_globals.last_minute_dt = datetime.datetime.now()
-    $ mas_globals.last_hour = mas_globals.last_minute_dt.hour
-    $ mas_globals.last_day = mas_globals.last_minute_dt.day
+        persistent.closed_self = False
+        persistent._mas_game_crashed = True
+        startup_check = False
+        mas_checked_update = False
+        mas_globals.last_minute_dt = datetime.datetime.now()
+        mas_globals.last_hour = mas_globals.last_minute_dt.hour
+        mas_globals.last_day = mas_globals.last_minute_dt.day
 
-    # delayed actions in here please
-    $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
+        # delayed actions in here please
+        mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
-    #Unlock windowreact topics
-    $ mas_resetWindowReacts()
+        #Unlock windowreact topics
+        mas_resetWindowReacts()
 
-    #Then prepare the notifs
-    $ mas_updateFilterDict()
+        #Then prepare the notifs
+        mas_updateFilterDict()
 
-    # save here before we enter the loop
-    $ renpy.save_persistent()
+        # save here before we enter the loop
+        renpy.save_persistent()
 
-    # check if we need to rebulid ev
-    if mas_idle_mailbox.get_rebuild_msg():
-        $ mas_rebuildEventLists()
+        # check if we need to rebulid ev
+        if mas_idle_mailbox.get_rebuild_msg():
+            mas_rebuildEventLists()
 
     if mas_skip_visuals:
         $ mas_OVLHide()
@@ -1354,11 +1363,10 @@ label ch30_preloop:
     $ mas_idle_mailbox.send_scene_change()
 
     # rain check
-    # TODO: the weather progression alg needs to run here
-    if not mas_weather.force_weather and not skip_setting_weather:
-        $ set_to_weather = mas_shouldRain()
-        if set_to_weather is not None:
-            $ mas_changeWeather(set_to_weather)
+    $ mas_startupWeather()
+
+    #We've skipped the initial weather set, we can now clear this flag
+    $ skip_setting_weather = False
 
     # otherwise, we are NOT skipping visuals
     $ mas_startup_song()
@@ -1967,4 +1975,7 @@ label ch30_reset:
 
         if seen_event('mas_preferredname'):
             mas_unlockEVL("monika_changename","EVE")
+
+    #Check BGSel topic unlocked state
+    $ mas_checkBackgroundChangeDelegate()
     return

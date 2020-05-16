@@ -1076,7 +1076,17 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if persistent.closed_self and not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
+    # and if we're not in the spaceroom
+    if (
+        persistent.closed_self
+        and not (
+            mas_isO31()
+            or mas_isD25Season()
+            or mas_isplayer_bday()
+            or mas_isF14()
+        )
+        and persistent._mas_current_background == "spaceroom"
+    ):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?
@@ -1302,6 +1312,7 @@ label monikaroom_greeting_ear_narration:
         # clear out var
         $ willchange_ev = None
 
+    $ mas_startupWeather()
     call spaceroom(dissolve_all=True, scene_change=True)
 
     if mas_isMoniNormal(higher=True):
@@ -1555,6 +1566,7 @@ label monikaroom_greeting_opendoor_locked:
 
     hide paper_glitch2
     $ mas_globals.change_textbox = False
+    $ mas_startupWeather()
     call spaceroom(scene_change=True)
 
     if renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
@@ -1677,6 +1689,7 @@ label monikaroom_greeting_opendoor_post2:
 #    else:
 #        m 3eua "Let me fix this scene up."
     m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
+    $ mas_startupWeather()
     call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     show monika 4eua_static zorder MAS_MONIKA_Z at i11
     m "Tada!"
@@ -1693,6 +1706,7 @@ label monikaroom_greeting_opendoor:
     # reset outfit since standing is stock
     $ monika_chr.reset_outfit(False)
     $ monika_chr.wear_acs(mas_acs_ribbon_def)
+    $ mas_startupWeather()
 
     call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False)
 
@@ -1734,6 +1748,7 @@ label monikaroom_greeting_opendoor:
             m 2hua_static "All fixed!"
             show monika 1eua_static at lhide
             hide monika
+
     $ persistent.seen_monika_in_room = True
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
@@ -1766,6 +1781,7 @@ label monikaroom_greeting_knock:
                 if persistent.seen_monika_in_room:
                     m "Thanks for knocking."
 
+            $ mas_startupWeather()
             call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=False)
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
