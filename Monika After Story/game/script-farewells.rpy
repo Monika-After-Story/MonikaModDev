@@ -482,6 +482,7 @@ label bye_prompt_sleep:
     if 20 <= curr_hour < 24:
         # decent time to sleep
         if mas_isMoniNormal(higher=True):
+            call bye_prompt_sleep_idle
             m 1eua "Alright, [player]."
             m 1hua "Sweet dreams!"
 
@@ -497,6 +498,7 @@ label bye_prompt_sleep:
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
         if mas_isMoniNormal(higher=True):
+            call bye_prompt_sleep_idle
             m 1eua "Alright, [player]."
             m 3eka "But you should sleep a little earlier next time."
             m 1hua "Anyway, goodnight!"
@@ -506,7 +508,7 @@ label bye_prompt_sleep:
             m 2esc "Goodnight."
 
         elif mas_isMoniDis():
-            m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
+            m 6rkc "Maybe you should start going to bed a little earlier, [player]..."
             m 6dkc "It might make you--{w=1}us--{w=1}happier."
 
         else:
