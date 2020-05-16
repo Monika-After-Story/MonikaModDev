@@ -9,13 +9,20 @@ init -10 python in mas_songs:
     song_db = {}
 
     #Song type constants
-    #NOTE: TYPE_SHORT will never be picked in the random delegate, these are filters for that
+    #NOTE: TYPE_LONG will never be picked in the random delegate, these are filters for that
+
     #TYPE_LONG songs should either be unlocked via a 'preview' song of TYPE_SHORT or (for ex.) some story event
     #TYPE_LONG songs would essentially be songs longer than 10-15 lines
     #NOTE: TYPE_LONG songs must have the same label name as their short song counterpart with '_long' added to the end so they unlock correctly
-    #Example: the long song for short song mas_song_example would be mas_song_example_long
+    #Example: the long song for short song mas_song_example would be: mas_song_example_long
+
+    #TYPE_ANALYSIS songs are events which provide an analysis for a song
+    #NOTE: Like TYPE_LONG songs, these must have the same label as the short counterpart, but with '_analysis' appended onto the end
+    #Using the example song above, the analysis label would be: mas_song_example_analysis
+
     TYPE_LONG = "long"
     TYPE_SHORT = "short"
+    TYPE_ANALYSIS = "analysis"
 
 init python in mas_songs:
     import store
@@ -35,7 +42,9 @@ init python in mas_songs:
         IN:
             length - a filter for the type of song we want. "long" for songs of TYPE_LONG
                 "short" for TYPE_SHORT or None for all songs. (Default None)
-        OUT: list of unlocked all songs of the desired length in tuple format for a scrollable menu
+
+        OUT:
+            list of unlocked all songs of the desired length in tuple format for a scrollable menu
         """
         if length is None:
             return [
@@ -62,6 +71,53 @@ init python in mas_songs:
             for ev_label, ev in song_db.iteritems()
             if ev.random and TYPE_SHORT in ev.category and ev.checkAffection(store.mas_curr_affection)
         ]
+
+    def checkSongAnalysisDelegate(curr_aff=None):
+        """
+        Checks to see if the song analysis topic should be unlocked or locked and does the appropriate action
+
+        IN:
+            curr_aff - Affection level to ev.checkAffection with. If none, mas_curr_affection is assumed
+                (Default: None)
+        """
+        if hasUnlockedSongAnalyses(curr_aff):
+            store.mas_unlockEVL("monika_sing_song_analysis", "EVE")
+        else:
+            store.mas_lockEVL("monika_sing_song_analysis", "EVE")
+
+    def getUnlockedSongAnalyses(curr_aff=None):
+        """
+        Gets a list of all song analysis evs in scrollable menu format
+
+        IN:
+            curr_aff - Affection level to ev.checkAffection with. If none, mas_curr_affection is assumed
+                (Default: None)
+
+        OUT:
+            List of unlocked song analysis topics in mas_gen_scrollable_menu format
+        """
+        if curr_aff is None:
+            curr_aff = store.mas_curr_affection
+
+        return [
+            (ev.prompt, ev_label, False, False)
+            for ev_label, ev in song_db.iteritems()
+            if ev.unlocked and TYPE_ANALYSIS in ev.category and ev.checkAffection(curr_aff)
+        ]
+
+    def hasUnlockedSongAnalyses(curr_aff=None):
+        """
+        Checks if there's any unlocked song analysis topics available
+
+        IN:
+            curr_aff - Affection level to ev.checkAffection with. If none, mas_curr_affection is assumed
+                (Default: None)
+        OUT:
+            boolean:
+                True if we have unlocked song analyses
+                False otherwise
+        """
+        return len(getUnlockedSongAnalyses(curr_aff)) > 0
 
     def hasUnlockedSongs(length=None):
         """
@@ -95,7 +151,7 @@ init python in mas_songs:
         return " (Full)" if TYPE_LONG in ev.category else " (Short)"
 
 
-#START: Pool delegate for songs
+#START: Pool delegates for songs
 init 5 python:
     addEvent(
         Event(
@@ -156,12 +212,15 @@ label monika_sing_song_pool_menu:
             if song_length == "short":
                 $ song_length = "long"
                 $ switch_str = "short"
+
             else:
                 $ song_length = "short"
                 $ switch_str = "full"
+
             $ end = "{fast}"
             $ _history_list.pop()
             jump monika_sing_song_pool_menu
+
         else:
             $ pushEvent(sel_song, skipeval=True)
             show monika at t11
@@ -201,6 +260,7 @@ init 5 python:
             category=['music'],
             pool=True,
             unlocked=False,
+            aff_range=(mas_aff.NORMAL, None),
             rules={"no unlock": None}
         )
     )
@@ -217,6 +277,49 @@ label mas_sing_song_rerandom:
     call mas_rerandom
     return
 
+#START: Song analysis delegate
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sing_song_analysis",
+            prompt="Can you explain a song for me?",
+            category=["music"],
+            pool=True,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL, None),
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_sing_song_analysis:
+    python:
+        ret_back = ("Nevermind.", False, False, False, 20)
+
+        unlocked_analyses = mas_songs.getUnlockedSongAnalyses()
+
+        if mas_isO31():
+            which = "Witch"
+        else:
+            which = "Which"
+
+    show monika 1eua at t21
+    $ renpy.say(m, "[which] song would you like to talk about?", interact=False)
+
+    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+
+    $ sel_analysis = _return
+
+    if sel_analysis:
+        $ pushEvent(sel_analysis, skipeval=True)
+        show monika at t11
+        m 3hub "Alright!"
+
+    else:
+        return "prompt"
+    return
+
+#START: Random song delegate
 init 5 python:
     addEvent(
         Event(
@@ -241,7 +344,14 @@ label monika_sing_song_random:
             mas_unlockEVL(rand_song, "SNG")
 
             #Unlock the long version of the song
-            mas_unlockEVL(rand_song+"_long","SNG")
+            mas_unlockEVL(rand_song + "_long", "SNG")
+
+            #And unlock the analysis of the song
+            mas_unlockEVL(rand_song + "_analysis", "SNG")
+
+            #If we have unlocked analyses for our current aff level, let's unlock the label
+            if store.mas_songs.hasUnlockedSongAnalyses():
+                mas_unlockEVL("monika_sing_song_analysis", "EVE")
 
     #We have no songs! let's pull back the shown count for this and derandom
     else:
