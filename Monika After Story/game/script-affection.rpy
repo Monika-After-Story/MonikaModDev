@@ -494,6 +494,9 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate()
+
 
     def _normalToUpset():
         """
@@ -530,6 +533,9 @@ init 15 python in mas_affection:
         # remove change to def outfit event in case it's been pushed
         store.mas_rmallEVL("mas_change_to_def")
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(HAPPY)
+
 
     def _happyToNormal():
         """
@@ -548,6 +554,9 @@ init 15 python in mas_affection:
         if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
             store.pushEvent("mas_change_to_def",skipeval=True)
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(NORMAL)
+
 
     def _happyToAff():
         """
@@ -564,6 +573,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
     def _affToHappy():
         """
@@ -587,6 +598,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(HAPPY)
 
     def _affToEnamored():
         """
@@ -608,6 +621,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
     def _enamoredToAff():
         """
@@ -620,6 +635,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
     def _enamoredToLove():
         """
@@ -634,6 +651,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(LOVE)
 
     def _loveToEnamored():
         """
@@ -646,6 +665,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
     def _gSadToNormal():
         """
