@@ -5176,6 +5176,27 @@ init 2 python:
         if ref_str[0] in "aeiou":
             return "an"
         return "a"
+
+#EXTRA TEXT TAGS
+init python:
+    def a_an_tag(tag, argument, contents):
+        """
+        Handles a/an mid-string
+
+        NOTE: This should ONLY surround the exact word needing to be prefixed with a/an
+        All text tags should be kept OUTSIDE of the opening and closing tags for this function
+
+        Usage: I bought [player] {a_an}[tempvar]{/a_an}.
+
+        If tempvar was 'item,' the output is: I bought [player] an item.
+        If tempvar was 'coffee,' the output is: I bought [player] a coffee.
+        """
+        for kind, _text in contents:
+            if kind == renpy.TEXT_TEXT:
+                return [(kind, mas_a_an_str(_text))]
+
+    config.custom_text_tags["a_an"] = a_an_tag
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme

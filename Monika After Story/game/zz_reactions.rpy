@@ -2440,10 +2440,8 @@ label mas_reaction_new_ribbon:
     return
 
 label mas_reaction_old_ribbon:
-    m 1rksdlb "[player]..."
-    #Need to handle vowels lol
-    show monika 1rusdlb
-    $ renpy.say(m, "You already gave me {0} ribbon!".format(mas_a_an_str(_mas_new_ribbon_color)))
+    m 1rksdla "[player]..."
+    m 1hksdlb "You already gave me {a_an}[_mas_new_ribbon_color]{/a_an} ribbon!"
     return
 
 init 5 python:

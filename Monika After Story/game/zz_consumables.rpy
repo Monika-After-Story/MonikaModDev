@@ -1326,13 +1326,12 @@ label mas_consumables_generic_get(consumable):
 
         #We need to parse the dialogue depending on the given dlg_props
         if container:
-            a_an = mas_a_an(container)
-            line_starter = renpy.substitute("I'm going to get [a_an] [container] of [consumable.disp_name][plur].")
+            line_starter = renpy.substitute("I'm going to get {a_an}[container]{/a_an} of [consumable.disp_name][plur].")
 
         #Otherwise we use the object reference for this
         elif obj_ref:
             a_an = mas_a_an(obj_ref)
-            line_starter = renpy.substitute("I'm going to get [a_an] [obj_ref] of [consumable.disp_name][plur].")
+            line_starter = renpy.substitute("I'm going to get {a_an}[obj_ref]{/a_an} of [consumable.disp_name][plur].")
 
         #No valid dlg props
         else:
