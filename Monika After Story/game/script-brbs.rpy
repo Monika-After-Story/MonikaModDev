@@ -199,7 +199,7 @@ label bye_prompt_sleep_idle:
     menu:
         m "Are you going to leave the game open?{fast}"
         "Yes.":
-            m 1hua "Alright, I'll try and keep that bad dreams away while you rest."
+            m 1hua "Alright, I'll try and keep the bad dreams away while you rest."
             m 1hub "Sweet dreams, my love~"
             # set return label when done with idle
             $ mas_idle_mailbox.send_idle_cb("monika_idle_going_to_sleep_callback")
