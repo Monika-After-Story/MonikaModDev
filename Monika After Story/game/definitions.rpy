@@ -3483,6 +3483,34 @@ init -991 python in mas_utils:
                 outfile.close()
 
 
+    def logcreate(filepath, append=False, flush=False, addversion=False):
+        """
+        Creates a log at the given filepath. 
+        This also opens the log and sets raw_write to True.
+        This also adds per version number if desired
+
+        IN:
+            filepath - filepath of the log to create (extension is added)
+            append - True will append to the log. False will overwrite
+                (Default: False)
+            flush - True will flush every operation, False will not
+                (Default: False)
+            addversion - True will add the version, False will not
+                You dont need this if you create the log in runtime,
+                (Default: False)
+
+        RETURNS: created log object. 
+        """
+        new_log = getMASLog(filepath, append=append, flush=flush)
+        new_log.open()
+        new_log.raw_write = True
+        if addversion:
+            new_log.write("VERSION: {0}\n".format(
+                store.persistent.version_number
+            ))
+        return new_log
+
+
     def logrotate(logpath, filename):
         """
         Does a log rotation. Log rotations contstantly increase. We defualt
