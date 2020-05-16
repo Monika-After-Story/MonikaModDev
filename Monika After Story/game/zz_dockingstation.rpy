@@ -2054,7 +2054,7 @@ init 200 python in mas_dockstat:
 
         if checkin_len != checkout_len:
             # mis match logs, please log this.
-            rd_log.write(
+            mas_utils.writelog(
                 (
                     "[WARNING]: checkin is {0}, checkout is {1}. "
                     "Going to pop.\n"
