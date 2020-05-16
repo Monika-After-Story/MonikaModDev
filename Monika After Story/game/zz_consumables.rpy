@@ -1330,7 +1330,6 @@ label mas_consumables_generic_get(consumable):
 
         #Otherwise we use the object reference for this
         elif obj_ref:
-            a_an = mas_a_an(obj_ref)
             line_starter = renpy.substitute("I'm going to get {a_an}[obj_ref]{/a_an} of [consumable.disp_name][plur].")
 
         #No valid dlg props
