@@ -421,6 +421,10 @@ init -2 python in mas_background:
         """
         store.mas_lockEVL("mas_monika_islands", "EVE")
 
+        #Lock the weather is the background we are changing to does not support it
+        if _new.disable_progressive:
+            store.mas_lockEVL("monika_change_weather", "EVE")
+
 
 #START: bg defs
 init -1 python:
