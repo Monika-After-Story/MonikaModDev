@@ -1771,7 +1771,7 @@ label monikaroom_greeting_post:
         m 2eua_static "Now, just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 1eua at ls32 zorder MAS_MONIKA_Z
-        $ today = "today" if mas_globals.time_of_day_3state in ["morning", "afternoon"] else "tonight"
+        $ today = "today" if mas_globals.time_of_day_4state != "night" else "tonight"
         m 1eua "What shall we do [today], [player]?"
 
     elif mas_isMoniUpset():
