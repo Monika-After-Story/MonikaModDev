@@ -145,10 +145,22 @@ init python in mas_songs:
         """
         Gets the suffix for songs to display in the bookmarks menu
 
+        IN:
+            ev - event object to get the prompt suffix for
+
         OUT:
             Suffix for song prompt
+
+        ASSUMES:
+            - ev.category isn't an empty list
+            - ev.category contains only one type
         """
-        return " (Full)" if TYPE_LONG in ev.category else " (Short)"
+        prompt_suffix_map = {
+            TYPE_SHORT: " (Short)",
+            TYPE_LONG: " (Long)",
+            TYPE_ANALYSIS: " (Analysis)"
+        }
+        return prompt_suffix_map.get(ev.category[0], "")
 
 
 #START: Pool delegates for songs
