@@ -5161,9 +5161,15 @@ init 2 python:
         OUT:
             string prefixed with a/an
         """
-        return "{0} {1}".format(mas_a_an(ref_str), ref_str)
+        return ("{0} {1}".format(
+            mas_a_an(
+                ref_str,
+                should_capitalize=ref_str[0].isupper()
+            ),
+            ref_str.lower() if ref_str[0].isupper() and not ref_str.isupper() else ref_str
+        ))
 
-    def mas_a_an(ref_str):
+    def mas_a_an(ref_str, should_capitalize):
         """
         Takes in a reference string and returns either a/an based on the first letter of the word
 
@@ -5173,9 +5179,9 @@ init 2 python:
         OUT:
             string prefixed with a/an
         """
-        if ref_str[0] in "aeiou":
-            return "an"
-        return "a"
+        if ref_str[0] in "aeiouAEIOU":
+            return "An" if should_capitalize else "an"
+        return "A" if should_capitalize else "a"
 
 #EXTRA TEXT TAGS
 init python:
@@ -5191,9 +5197,15 @@ init python:
         If tempvar was 'item,' the output is: I bought [player] an item.
         If tempvar was 'coffee,' the output is: I bought [player] a coffee.
         """
+        list_to_return = list()
         for kind, _text in contents:
+            #We want to modify only text
             if kind == renpy.TEXT_TEXT:
-                return [(kind, mas_a_an_str(_text))]
+                list_to_return.append((kind, mas_a_an_str(_text)))
+            else:
+                list_to_return.append((kind, _text))
+
+        return list_to_return
 
     config.custom_text_tags["a_an"] = a_an_tag
 
