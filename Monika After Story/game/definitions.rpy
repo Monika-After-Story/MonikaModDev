@@ -5197,15 +5197,13 @@ init python:
         If tempvar was 'item,' the output is: I bought [player] an item.
         If tempvar was 'coffee,' the output is: I bought [player] a coffee.
         """
-        list_to_return = list()
-        for kind, _text in contents:
+        for _id, _tuple in enumerate(contents):
             #We want to modify only text
-            if kind == renpy.TEXT_TEXT:
-                list_to_return.append((kind, mas_a_an_str(_text)))
-            else:
-                list_to_return.append((kind, _text))
+            if _tuple[0] == renpy.TEXT_TEXT:
+                contents[_id] = (_tuple[0], mas_a_an_str(_tuple[1]))
+                break
 
-        return list_to_return
+        return contents
 
     config.custom_text_tags["a_an"] = a_an_tag
 
