@@ -342,9 +342,9 @@ init -10 python:
             """
             h_priority = 0
             h_index = 0
-            for index in range(len(sl_data_list)):
-                if sl_data_list[index].flt_slice.priority > h_priority:
-                    h_priority = sl_data_list[index].flt_slice.priority
+            for index, sl_data in enumerate(sl_data_list):
+                if sl_data.flt_slice.priority > h_priority:
+                    h_priority = sl_data.flt_slice.priority
                     h_index = index
 
             return h_index
@@ -364,9 +364,9 @@ init -10 python:
             """
             l_priority = 10
             l_index = 0
-            for index in range(len(sl_data_list)):
-                if sl_data_list[index].flt_slice.priority < l_priority:
-                    l_priority = sl_data_list[index].flt_slice.priority
+            for index, sl_data in enumerate(sl_data_list):
+                if sl_data.flt_slice.priority < l_priority:
+                    l_priority = sl_data.flt_slice.priority
                     l_index = index
 
             return l_index
@@ -701,8 +701,7 @@ init -10 python:
                 raise Exception("No slices found")
 
             has_unbounded = False
-            for index in range(len(slices)):
-                bg_flt = slices[index]
+            for index, bg_flt in enumerate(slices):
 
                 # check slice
                 if not isinstance(bg_flt, MASBackgroundFilterSlice):
