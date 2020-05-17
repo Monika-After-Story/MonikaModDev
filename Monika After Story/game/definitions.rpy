@@ -5151,32 +5151,34 @@ init 2 python:
         #If we're here, that means we need to do some returns based on the values we put in
         return seen_all
 
-    def mas_a_an_str(ref_str):
+    def mas_a_an_str(ref_str, ignore_case=False):
         """
         Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
 
         IN:
             ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and not adjust the capitalization of ref_str
 
         OUT:
             string prefixed with a/an
         """
         return ("{0} {1}".format(
-            mas_a_an(ref_str),
-            ref_str.lower() if ref_str[0].isupper() and not ref_str.isupper() else ref_str
+            mas_a_an(ref_str, ignore_case),
+            ref_str.lower() if not ignore_case and (ref_str[0].isupper() and not ref_str.isupper()) else ref_str
         ))
 
-    def mas_a_an(ref_str):
+    def mas_a_an(ref_str, ignore_case=False):
         """
         Takes in a reference string and returns either a/an based on the first letter of the word
 
         IN:
             ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and just use lowercase
 
         OUT:
             a/an based on the ref string
         """
-        should_capitalize = ref_str[0].isupper()
+        should_capitalize = not ignore_case and ref_str[0].isupper()
 
         if ref_str[0] in "aeiouAEIOU":
             return "An" if should_capitalize else "an"

@@ -1334,7 +1334,7 @@ label mas_consumables_generic_get(consumable):
 
         #No valid dlg props
         else:
-            a_an = "some" if plur else mas_a_an(consumable.disp_name)
+            a_an = "some" if plur else mas_a_an(consumable.disp_name, ignore_case=True)
             line_starter = renpy.substitute("I'm going to get [a_an] [consumable.disp_name][plur].")
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
