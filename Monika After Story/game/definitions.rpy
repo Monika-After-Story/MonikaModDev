@@ -5162,14 +5162,11 @@ init 2 python:
             string prefixed with a/an
         """
         return ("{0} {1}".format(
-            mas_a_an(
-                ref_str,
-                should_capitalize=ref_str[0].isupper()
-            ),
+            mas_a_an(ref_str),
             ref_str.lower() if ref_str[0].isupper() and not ref_str.isupper() else ref_str
         ))
 
-    def mas_a_an(ref_str, should_capitalize):
+    def mas_a_an(ref_str):
         """
         Takes in a reference string and returns either a/an based on the first letter of the word
 
@@ -5179,6 +5176,8 @@ init 2 python:
         OUT:
             string prefixed with a/an
         """
+        should_capitalize = ref_str[0].isupper()
+
         if ref_str[0] in "aeiouAEIOU":
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
