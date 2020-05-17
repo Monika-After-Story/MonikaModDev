@@ -5174,7 +5174,7 @@ init 2 python:
             ref_str - string in question to prefix
 
         OUT:
-            string prefixed with a/an
+            a/an based on the ref string
         """
         should_capitalize = ref_str[0].isupper()
 
