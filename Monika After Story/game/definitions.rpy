@@ -6718,20 +6718,17 @@ style jpn_text:
 
 # functions related to ily2
 init python:
-    def mas_passedILY(pass_time, check_time=None):
+    def mas_passedILY(pass_time):
         """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
             pass_time - a timedelta corresponding to the time limit we want to check against
-            check_time - the time at which we want to check, will typically be datetime.datetime.now()
-                which is the default
 
         RETURNS:
             boolean indicating if we are within the time limit
         """
-        if check_time is None:
-            check_time = datetime.datetime.now()
+        check_time = datetime.datetime.now()
 
         # if a backward TT is detected here, return False and reset persistent._mas_last_monika_ily
         if persistent._mas_last_monika_ily is None or persistent._mas_last_monika_ily > check_time:
