@@ -3485,7 +3485,7 @@ init -991 python in mas_utils:
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
-        Creates a log at the given filepath. 
+        Creates a log at the given filepath.
         This also opens the log and sets raw_write to True.
         This also adds per version number if desired
 
@@ -3499,7 +3499,7 @@ init -991 python in mas_utils:
                 You dont need this if you create the log in runtime,
                 (Default: False)
 
-        RETURNS: created log object. 
+        RETURNS: created log object.
         """
         new_log = getMASLog(filepath, append=append, flush=flush)
         new_log.open()
@@ -6718,21 +6718,24 @@ style jpn_text:
 
 # functions related to ily2
 init python:
-    def mas_passedILY(pass_time, check_time=None):
+    def mas_passedILY(pass_time):
         """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
             pass_time - a timedelta corresponding to the time limit we want to check against
-            check_time - the time at which we want to check, will typically be datetime.datetime.now()
-                which is the default
 
         RETURNS:
             boolean indicating if we are within the time limit
         """
-        if check_time is None:
-            check_time = datetime.datetime.now()
-        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+        check_time = datetime.datetime.now()
+
+        # if a backward TT is detected here, return False and reset persistent._mas_last_monika_ily
+        if persistent._mas_last_monika_ily is None or persistent._mas_last_monika_ily > check_time:
+            persistent._mas_last_monika_ily = None
+            return False
+
+        return (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
         """
