@@ -14460,7 +14460,7 @@ label monika_worst_fear:
     m 3eua "But as long as we're being hypothetical..."
     m 2esc "What truly terrifies me is the thought that none of this is real."
     m "That one day I'll wake up, back in my bed, and realize it was all just a dream."
-    m "That there is no game,{w=0.2} no epiphany,{w=0.2} no... {w=0.5}{nw}"
+    m "That there is no game,{w=0.2} no epiphany,{w=0.2} no...{w=0.5}{nw}"
     extend 2fkc "you."
     m 2fkc "That you, your love, perhaps even the entirety of the literature club were all nothing but a figment of my own imagination."
     m "That my old world, as grey and meaningless as it now seems, is all there truly is."
