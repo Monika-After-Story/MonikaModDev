@@ -14467,7 +14467,7 @@ label monika_worst_fear:
     m 2lkc "..."
     m 1rksdlb "Ahaha~ {nw}"
     extend 1eksdlb "Sorry, that got pretty dark, didn't it?"
-    m 1eksdla "I feel kinda silly now.{w=0.5}{nw}"
+    m 1eksdla "I feel kinda silly now.{w=0.5} {nw}"
     extend 3eua "After all, there's no way something like that could be true, right?"
     m 1rkc "Yeah..."
     return "derandom"
