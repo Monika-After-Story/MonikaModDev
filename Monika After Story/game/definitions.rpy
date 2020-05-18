@@ -3485,7 +3485,7 @@ init -991 python in mas_utils:
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
-        Creates a log at the given filepath. 
+        Creates a log at the given filepath.
         This also opens the log and sets raw_write to True.
         This also adds per version number if desired
 
@@ -3499,7 +3499,7 @@ init -991 python in mas_utils:
                 You dont need this if you create the log in runtime,
                 (Default: False)
 
-        RETURNS: created log object. 
+        RETURNS: created log object.
         """
         new_log = getMASLog(filepath, append=append, flush=flush)
         new_log.open()
@@ -6732,7 +6732,7 @@ init python:
         """
         if check_time is None:
             check_time = datetime.datetime.now()
-        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+        return persistent._mas_last_monika_ily is not None and abs(check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
         """
