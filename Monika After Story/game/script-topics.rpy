@@ -14450,7 +14450,7 @@ init 5 python:
 
 label monika_worst_fear:
     m 3eud "Say, [player]..."
-    m 1eud "This is kind of a weird question, but... {w=0.5} Is there something you're afraid of?"
+    m 1eud "This is kind of a weird question, but...{w=0.5}is there something you're afraid of?"
     m 1eub "I don't mean the everyday, mundane kind of fear, like spilling a drink and ruining your favorite shirt."
     m 1euc "I mean, like, the kind of deep-seated fear that fills you with dread when you even think about it."
     m 1ruc "For me, losing you would obviously be on the top of {i}that{/i} particular list."
