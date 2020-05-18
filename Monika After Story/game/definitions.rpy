@@ -6732,7 +6732,13 @@ init python:
         """
         if check_time is None:
             check_time = datetime.datetime.now()
-        return persistent._mas_last_monika_ily is not None and abs(check_time - persistent._mas_last_monika_ily) <= pass_time
+
+        # if a backward TT is detected here, return False and reset persistent._mas_last_monika_ily
+        if persistent._mas_last_monika_ily is None or persistent._mas_last_monika_ily > check_time:
+            persistent._mas_last_monika_ily = None
+            return False
+
+        return (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
         """
