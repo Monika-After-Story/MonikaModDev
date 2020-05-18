@@ -14454,7 +14454,7 @@ label monika_worst_fear:
     m 1eub "I don't mean the everyday, mundane kind of fear, like spilling a drink and ruining your favorite shirt."
     m 1euc "I mean, like, the kind of deep-seated fear that fills you with dread when you even think about it."
     m 1ruc "For me, losing you would obviously be on the top of {i}that{/i} particular list."
-    m 1ekd "I told you before, didn't I? {w=0.5} I don't know what I'd do if something happened to you."
+    m 1ekd "I told you before, didn't I? {w=0.5}I don't know what I'd do if something happened to you."
     m 1dkd "I'm not even sure I could find the will to go on."
     m 1ruc "It's hard to imagine a scenario even worse than that."
     m 3eua "But as long as we're being hypothetical..."
