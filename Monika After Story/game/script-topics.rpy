@@ -1503,11 +1503,11 @@ label monika_kiss:
             python:
                 # these don't use ILY
                 kiss_quips_again = [
-                    "I wouldn't mind to kiss more~",
-                    "I could do it again...{w=0.2}and again~",
-                    "I'll never get tired of it~",
-                    "Kiss me as many times us you want, [player]~",
-                    "We can do it the whole day~"
+                    _("I wouldn't mind to kiss more~"),
+                    _("I could do it again...{w=0.2}and again~"),
+                    _("I'll never get tired of it~"),
+                    _("Kiss me as many times us you want, [player]~"),
+                    _("We can do it the whole day~")
                 ]
                 kiss_quip = renpy.random.choice(kiss_quips_again)
 
@@ -1524,12 +1524,12 @@ label monika_kiss:
             python:
                 # these use ILY
                 kiss_quips_after = [
-                    "I love you, [player]~",
-                    "I love you so much, [player]~",
-                    "I love you more than you'll ever know, [player]~",
-                    "I love you so much, [player]. You mean everything to me~",
-                    "No words can describe how deeply in love I'm with you~",
-                    "I'm so in love with you~"
+                    _("I love you, [player]~"),
+                    _("I love you so much, [player]~"),
+                    _("I love you more than you'll ever know, [player]~"),
+                    _("I love you so much, [player]. You mean everything to me~"),
+                    _("No words can describe how deeply in love I'm with you~"),
+                    _("I'm so in love with you~")
                 ]
                 kiss_quip = renpy.random.choice(kiss_quips_after)
 
