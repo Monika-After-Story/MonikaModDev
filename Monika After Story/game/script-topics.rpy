@@ -1496,28 +1496,55 @@ init 5 python:
 
 label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
-        python:
-            kiss_quips_after = [
-                "I love you, [player]~",
-                "I love you so much, [player]~",
-                "I love you more than you'll ever know, [player]~",
-                "I love you so much, [player]. You mean everything to me~"
-            ]
+        if (
+            persistent._mas_last_kiss is not None
+            and datetime.datetime.now() - persistent._mas_last_kiss <= datetime.timedelta(minutes=1)
+        ):
+            python:
+                # these don't use ILY
+                kiss_quips_again = [
+                    "I wouldn't mind to kiss more~",
+                    "I could do it again...{w=0.2}and again~",
+                    "I'll never get tired of it~",
+                    "Kiss me as many times us you want, [player]~",
+                    "We can do it the whole day~"
+                ]
+                kiss_quip = renpy.random.choice(kiss_quips_again)
 
-            kiss_quip = renpy.random.choice(kiss_quips_after)
-
-        if renpy.random.randint(1,50) == 1:
-            call monika_kiss_tease
-
-        else:
-            show monika 2eka
+            show monika 2tkbsu
             pause 2.0
 
-        call monika_kissing_motion_short
+            # like monika_kissing_motion_short, but with diff exps
+            call monika_kissing_motion(duration=0.5, initial_exp="6hubsa", final_exp="6tkbfu", fade_duration=0.5)
 
-        show monika 6ekbfa
-        $ renpy.say(m,kiss_quip)
-        return "love"
+            show monika 6tkbfu
+            $ renpy.say(m, kiss_quip)
+
+        else:
+            python:
+                # these use ILY
+                kiss_quips_after = [
+                    "I love you, [player]~",
+                    "I love you so much, [player]~",
+                    "I love you more than you'll ever know, [player]~",
+                    "I love you so much, [player]. You mean everything to me~",
+                    "No words can describe how deeply in love I'm with you~",
+                    "I'm so in love with you~"
+                ]
+                kiss_quip = renpy.random.choice(kiss_quips_after)
+
+            if renpy.random.randint(1,50) == 1:
+                call monika_kiss_tease
+
+            else:
+                show monika 2eka
+                pause 2.0
+
+            call monika_kissing_motion_short
+
+            show monika 6ekbfa
+            $ renpy.say(m, kiss_quip)
+            $ mas_ILY()
 
     else:
         m 1wubsw "Eh? D-Did you say...k...kiss?"
