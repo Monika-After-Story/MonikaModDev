@@ -197,22 +197,21 @@ label bye_prompt_sleep_idle:
     python:
         import datetime
         curr_hour = datetime.datetime.now().hour
-    if 20 <= curr_hour < 24 or 0 <= curr_hour < 3:
-        m 1esa "Going to sleep, [player]?"
-        m "Are you going to leave the game open?{nw}"
-        menu:
-            m "Are you going to leave the game open?{fast}"
-            "Yes.":
-                m 1hua "Alright, I'll try and keep the bad dreams away while you rest."
-                m 1hub "Sweet dreams, my love~"
-                $ start_time = datetime.datetime.now()
-                # set return label when done with idle
-                $ mas_idle_mailbox.send_idle_cb("monika_idle_going_to_sleep_callback")
-                #Then the idle data
-                $ persistent._mas_idle_data["monika_idle_sleep"] = True
-                return "idle"
-            "No.":
-                pass
+    m 1esa "Going to sleep, [player]?"
+    m "Are you going to leave the game open?{nw}"
+    menu:
+        m "Are you going to leave the game open?{fast}"
+        "Yes.":
+            m 1hua "Alright, I'll try and keep the bad dreams away while you rest."
+            m 1hub "Sweet dreams, my love~"
+            $ start_time = datetime.datetime.now()
+            # set return label when done with idle
+            $ mas_idle_mailbox.send_idle_cb("monika_idle_going_to_sleep_callback")
+            #Then the idle data
+            $ persistent._mas_idle_data["monika_idle_sleep"] = True
+            return "idle"
+        "No.":
+            pass
     call bye_prompt_sleep
     return "quit"
 
@@ -256,7 +255,7 @@ label monika_idle_going_to_sleep_callback:
             m 3hksdlb "I was really starting to miss you, but now you're finally back!"
             m 1rksdla "There's no way you actually slept all the way up until now, is there?"
             m 3eka "Did you just forget to stop by and say hi when you woke up?"
-            m 1hua "Anyway, I know you're here with me now, so now you can spend the rest of the day with me~"
+            m 1hua "Anyway, now that you're here with me, we can spend the rest of the day together~"
     return
 
 init 5 python:
