@@ -462,7 +462,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
-            eventlabel="bye_prompt_sleep",
+            eventlabel="bye_prompt_sleep_idle",
             unlocked=True,
             prompt="I'm going to sleep.",
             pool=True
@@ -482,7 +482,6 @@ label bye_prompt_sleep:
     if 20 <= curr_hour < 24:
         # decent time to sleep
         if mas_isMoniNormal(higher=True):
-            call bye_prompt_sleep_idle
             m 1eua "Alright, [player]."
             m 1hua "Sweet dreams!"
 
@@ -498,7 +497,6 @@ label bye_prompt_sleep:
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
         if mas_isMoniNormal(higher=True):
-            call bye_prompt_sleep_idle
             m 1eua "Alright, [player]."
             m 3eka "But you should sleep a little earlier next time."
             m 1hua "Anyway, goodnight!"
