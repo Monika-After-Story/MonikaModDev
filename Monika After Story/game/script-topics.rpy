@@ -1498,15 +1498,15 @@ label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
         if (
             persistent._mas_last_kiss is not None
-            and datetime.datetime.now() - persistent._mas_last_kiss <= datetime.timedelta(minutes=1)
+            and not mas_timePastSince(persistent._mas_last_kiss, datetime.timedelta(minutes=1))
         ):
             python:
                 # these don't use ILY
                 kiss_quips_again = [
-                    _("I wouldn't mind to kiss more~"),
+                    _("I wouldn't mind another kiss~"),
                     _("I could do it again...{w=0.2}and again~"),
-                    _("I'll never get tired of it~"),
-                    _("Kiss me as many times us you want, [player]~"),
+                    _("I'll never get tired of kissing you~"),
+                    _("You can kiss me as many times as you like, [player]~"),
                     _("We can do it the whole day~")
                 ]
                 kiss_quip = renpy.random.choice(kiss_quips_again)
@@ -1528,8 +1528,8 @@ label monika_kiss:
                     _("I love you so much, [player]~"),
                     _("I love you more than you'll ever know, [player]~"),
                     _("I love you so much, [player]. You mean everything to me~"),
-                    _("No words can describe how deeply in love I'm with you~"),
-                    _("I'm so in love with you~")
+                    _("No words can describe how deeply I'm in love with you, [player]~"),
+                    _("I'm so in love with you, [player]~")
                 ]
                 kiss_quip = renpy.random.choice(kiss_quips_after)
 
