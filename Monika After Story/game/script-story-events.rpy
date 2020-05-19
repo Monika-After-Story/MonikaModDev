@@ -1105,9 +1105,7 @@ default persistent._mas_crashed_trynot = False
 
 # start of crash flow
 label mas_crashed_start:
-
     if persistent._mas_crashed_before:
-
         # preshort setup
         call mas_crashed_preshort
 
@@ -1118,7 +1116,6 @@ label mas_crashed_start:
         call mas_crashed_post
 
     else:
-
         # long setup (includes scene black)
         call mas_crashed_prelong
 
@@ -1146,8 +1143,11 @@ label mas_crashed_start:
     return
 
 label mas_crashed_prelong:
+    #Setup weather
+    #Since we're in the room but the lights are off, if it's raining we want it to be audible here
+    $ mas_startupWeather()
 
-    # otherwise continue to long flow
+    #Setup the rest of the scene
     $ persistent._mas_crashed_before = True
     scene black
     $ HKBHideButtons()
@@ -1358,12 +1358,14 @@ label mas_crashed_long_fluster:
 
 
 label mas_crashed_preshort:
+    #Setup weather
+    $ mas_startupWeather()
+
     # we can call spaceroom appropriately here
     call spaceroom(scene_change=True)
     return
 
 label mas_crashed_short:
-
     python:
         # generate a quiplist
         q_list = MASQuipList()
