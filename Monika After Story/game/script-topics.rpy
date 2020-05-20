@@ -404,8 +404,8 @@ init python:
         #4. Prompt must not be the same as the eventlabel (event must have a prompt)
         if (
             mas_isMoniNormal(higher=True)
-            and (label_prefix or store.mas_bookmarks_derand.WHITELIST in ev.rules)
-            and (store.mas_bookmarks_derand.BLACKLIST not in ev.rules)
+            and (label_prefix or ev.rules.get("bookmark_rule") == store.mas_bookmarks_derand.WHITELIST)
+            and (ev.rules.get("bookmark_rule") != store.mas_bookmarks_derand.BLACKLIST)
             and ev.prompt != ev_label
         ):
             #If this was only a whitelisted topic, we need to do a bit of extra work
@@ -517,8 +517,8 @@ init python in mas_bookmarks_derand:
     import store
 
     #Rule constants
-    WHITELIST = "whitelist_bookmark"
-    BLACKLIST = "blacklist_bookmark"
+    WHITELIST = "whitelist"
+    BLACKLIST = "blacklist"
 
     #Label prefixes and their respective rules
     #The items in the inner dicts act as kwargs to override the default generic values

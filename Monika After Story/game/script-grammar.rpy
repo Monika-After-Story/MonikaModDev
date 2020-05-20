@@ -53,7 +53,7 @@ init 5 python:
             category=["grammar tips"],
             prompt="Can you teach me about grammar?",
             pool=True,
-            rules={store.mas_bookmarks_derand.BLACKLIST: None}
+            rules={"bookmark_rule": store.mas_bookmarks_derand.BLACKLIST}
         )
     )
 
