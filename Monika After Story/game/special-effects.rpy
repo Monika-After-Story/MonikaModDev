@@ -434,6 +434,7 @@ transform mas_smooth_transition:
     i11 # this one may not be needed but I keep it just in case
     function zoom_smoothly
 
+# labels to handle the prep and wrap up for timed text events
 label mas_timed_text_events_prep:
     $ renpy.pause(0.5)
     $ mas_RaiseShield_timedtext()
