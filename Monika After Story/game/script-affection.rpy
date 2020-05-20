@@ -2104,6 +2104,21 @@ label monika_affection_nickname_bad_lock:
     m 1efc "Let's talk about something else."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_affection_playernickname",
+            conditional="True",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+label mas_affection_playernickname:
+    m "Hey [player]?"
+    return
+
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
     m 1dsc "Hey, [player]..."

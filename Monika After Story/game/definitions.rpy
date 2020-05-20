@@ -3485,7 +3485,7 @@ init -991 python in mas_utils:
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
-        Creates a log at the given filepath. 
+        Creates a log at the given filepath.
         This also opens the log and sets raw_write to True.
         This also adds per version number if desired
 
@@ -3499,7 +3499,7 @@ init -991 python in mas_utils:
                 You dont need this if you create the log in runtime,
                 (Default: False)
 
-        RETURNS: created log object. 
+        RETURNS: created log object.
         """
         new_log = getMASLog(filepath, append=append, flush=flush)
         new_log.open()
@@ -5192,6 +5192,37 @@ init 2 python:
         if ref_str[0] in "aeiou":
             return "an " + ref_str
         return "a " + ref_str
+
+    def mas_get_player_nickname():
+        """
+        Picks a nickname for the player at random based on accepted nicknames
+
+        NOTE: If affection is below affectionate, we just use the player name
+        """
+        #If we're at or below happy, we just use playername
+        if mas_isMoniHappy(lower=True):
+            return player
+
+        acceptable_nickname_list = [
+            "sweetie",
+            "honey",
+            "darling",
+            "love"
+        ]
+
+        return random.choice(acceptable_nickname_list)
+
+    def playernick_tag(tag, argument, contents):
+        """
+        Text tag function for player nickname
+
+        Picks a player nickname at random and inserts it into the string where the tag is placed
+        """
+        if argument:
+            nickname = mas_get_player_nickname().capitalize()
+        return [(renpy.TEXT_TEXT, nickname), (renpy.TEXT_TAG, "/player_nickname")]
+
+    config.custom_text_tags["player_nickname"] = playernick_tag
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
