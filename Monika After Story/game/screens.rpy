@@ -2389,17 +2389,21 @@ style scrollable_menu_vbox is vbox:
     spacing 5
 
 style scrollable_menu_button is choice_button:
+    selected_background Frame("mod_assets/buttons/generic/insensitive_bg.png", Borders(5, 5, 5, 5), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_dark is choice_button_dark:
+    selected_background Frame("mod_assets/buttons/generic/insensitive_bg_d.png", Borders(5, 5, 5, 5), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_text is choice_button_text:
+    selected_color mas_ui.light_button_text_insensitive_color
     align (0.0, 0.0)
 
 style scrollable_menu_button_text_dark is choice_button_text_dark:
+    selected_color mas_ui.dark_button_text_insensitive_color
     align (0.0, 0.0)
 
 style scrollable_menu_new_button is scrollable_menu_button
@@ -2633,6 +2637,62 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                         elif final_items[3]:
                             style "scrollable_menu_special_button"
                         action Return(final_items[1])
+
+# Scrollable menu with checkboxes. Toggles values between True/False
+# Won't close itself until the user clicks on the return button
+
+# IN:
+#     items - list of tuples of the following format:
+#         (prompt, key, value, is_italic, is_bold)
+#         NOTE: keys must be unique
+#     display_area - area to display the menu in of the following format:
+#         (x, y, width, height)
+#     scroll_align - alignment of the scroll bar for the menu
+#     return_button_prompt - prompt for the return button
+#         (Default: 'Done')
+#     return_all - whether or not we return all items or only the items with True in their values
+#         (Default: False)
+
+# OUT:
+#     dict of keys and values
+screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done", return_all=False):
+    default rv = {_tuple[1]: _tuple[2] for _tuple in items}
+
+    python:
+        def return_values(rv, return_all):
+            return {_tuple[0]: _tuple[1] for _tuple in rv.iteritems() if _tuple[1] or return_all}
+
+    style_prefix "scrollable_menu"
+
+    fixed:
+        area display_area
+
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign scroll_align
+
+        viewport:
+            yadjustment prev_adj
+            mousewheel True
+
+            vbox:
+                for button_prompt, button_key, button_value, is_italic, is_bold in items:
+                    textbutton button_prompt:
+                        if is_italic and is_bold:
+                            style "scrollable_menu_crazy_button"
+
+                        elif is_italic:
+                            style "scrollable_menu_new_button"
+
+                        elif is_bold:
+                            style "scrollable_menu_special_button"
+
+                        selected not rv[button_key]
+
+                        action ToggleDict(rv, button_key)
+
+                null height 20
+
+                textbutton return_button_prompt:
+                    action Function(return_values, rv, return_all)
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
