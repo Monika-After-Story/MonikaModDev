@@ -2655,7 +2655,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 
 # IN:
 #     items - list of tuples of the following format:
-#         (prompt, key, value, is_italic, is_bold)
+#         (prompt, key, default_value, is_selected, true_value, false_value)
 #         NOTE: keys must be unique
 #     display_area - area to display the menu in of the following format:
 #         (x, y, width, height)
@@ -2666,23 +2666,47 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 #         (Default: False)
 
 # OUT:
-#     dict of keys and values
+#     dict of buttons keys and new values
 screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done", return_all=False):
-    default rv = {_tuple[1]: _tuple[2] for _tuple in items}
+    default buttons_data = {
+        _tuple[1]: {
+            "value": _tuple[2],
+            "is_selected": _tuple[3],
+            "true_value": _tuple[4],
+            "false_value": _tuple[5]
+        }
+        for _tuple in items
+    }
 
     python:
-        def return_values(rv, return_all):
+        def _toggle_button(key, buttons_data):
             """
-            A wrapper which only returns True values
+            A method to toggle both buttons values and selection state
 
             IN:
-                rv - dict with key-value pairs
+                key - key corresponding to button to change
+                buttons_data - the screens buttons data
+            """
+            if buttons_data[key]["value"] == buttons_data[key]["true_value"]:
+                buttons_data[key]["value"] = buttons_data[key]["false_value"]
+
+            else:
+                buttons_data[key]["value"] = buttons_data[key]["true_value"]
+
+            buttons_data[key]["is_selected"] = not buttons_data[key]["is_selected"]
+
+        def _return_values(buttons_data, return_all):
+            """
+            A wrapper which only returns pairs key-value
+
+            IN:
+                buttons_data - dict with key-value pairs
                 return_all - whether or not we return all items
 
             OUT:
                 dict with key-value pairs
             """
-            return {_tuple[0]: _tuple[1] for _tuple in rv.iteritems() if _tuple[1] or return_all}
+            return {item[0]: item[1]["value"] for item in buttons_data.iteritems() if item[1]["value"] or return_all}
 
     style_prefix "scrollable_menu"
 
@@ -2696,26 +2720,17 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
             mousewheel True
 
             vbox:
-                for button_prompt, button_key, button_value, is_italic, is_bold in items:
+                for button_prompt, button_key, button_value, is_selected, true_value, false_value in items:
                     textbutton button_prompt:
-                        if is_italic and is_bold:
-                            style "scrollable_menu_crazy_button"
-
-                        elif is_italic:
-                            style "scrollable_menu_new_button"
-
-                        elif is_bold:
-                            style "scrollable_menu_special_button"
-
-                        selected not rv[button_key]
+                        selected not buttons_data[button_key]["is_selected"]
                         xsize display_area[2]
-                        action ToggleDict(rv, button_key)
+                        action Function(_toggle_button, button_key, buttons_data)
 
                 null height 20
 
                 textbutton return_button_prompt:
                     xsize display_area[2]
-                    action Function(return_values, rv, return_all)
+                    action Function(_return_values, buttons_data, return_all)
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
