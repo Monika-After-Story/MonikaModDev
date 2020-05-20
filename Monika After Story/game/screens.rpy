@@ -2655,7 +2655,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 
 # IN:
 #     items - list of tuples of the following format:
-#         (prompt, key, default_value, is_selected, true_value, false_value)
+#         (prompt, key, start_selected, true_value, false_value)
 #         NOTE: keys must be unique
 #     display_area - area to display the menu in of the following format:
 #         (x, y, width, height)
@@ -2670,10 +2670,10 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done", return_all=False):
     default buttons_data = {
         _tuple[1]: {
-            "value": _tuple[2],
-            "is_selected": _tuple[3],
-            "true_value": _tuple[4],
-            "false_value": _tuple[5]
+            "return_value": _tuple[3] if _tuple[2] else _tuple[4],
+            "selected": _tuple[2],
+            "true_value": _tuple[3],
+            "false_value": _tuple[4]
         }
         for _tuple in items
     }
@@ -2685,28 +2685,28 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
 
             IN:
                 key - key corresponding to button to change
-                buttons_data - the screens buttons data
+                buttons_data - the screen buttons data
             """
-            if buttons_data[key]["value"] == buttons_data[key]["true_value"]:
-                buttons_data[key]["value"] = buttons_data[key]["false_value"]
+            if buttons_data[key]["return_value"] == buttons_data[key]["true_value"]:
+                buttons_data[key]["return_value"] = buttons_data[key]["false_value"]
 
             else:
-                buttons_data[key]["value"] = buttons_data[key]["true_value"]
+                buttons_data[key]["return_value"] = buttons_data[key]["true_value"]
 
-            buttons_data[key]["is_selected"] = not buttons_data[key]["is_selected"]
+            buttons_data[key]["selected"] = not buttons_data[key]["selected"]
 
         def _return_values(buttons_data, return_all):
             """
-            A wrapper which only returns pairs key-value
+            A method to return buttons keys and values
 
             IN:
-                buttons_data - dict with key-value pairs
+                buttons_data - the screen buttons data
                 return_all - whether or not we return all items
 
             OUT:
-                dict with key-value pairs
+                dict of key-value pairs
             """
-            return {item[0]: item[1]["value"] for item in buttons_data.iteritems() if item[1]["value"] or return_all}
+            return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
 
     style_prefix "scrollable_menu"
 
@@ -2720,9 +2720,9 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
             mousewheel True
 
             vbox:
-                for button_prompt, button_key, button_value, is_selected, true_value, false_value in items:
+                for button_prompt, button_key, start_selected, true_value, false_value in items:
                     textbutton button_prompt:
-                        selected not buttons_data[button_key]["is_selected"]
+                        selected not buttons_data[button_key]["selected"]
                         xsize display_area[2]
                         action Function(_toggle_button, button_key, buttons_data)
 
