@@ -2399,11 +2399,15 @@ style scrollable_menu_button_dark is choice_button_dark:
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_text is choice_button_text:
-    selected_color mas_ui.light_button_text_insensitive_color
+    selected_hover_color mas_ui.light_button_text_hover_color
+    selected_idle_color mas_ui.light_button_text_insensitive_color
+    text_align 0.0
     align (0.0, 0.0)
 
 style scrollable_menu_button_text_dark is choice_button_text_dark:
-    selected_color mas_ui.dark_button_text_insensitive_color
+    selected_hover_color mas_ui.dark_button_text_hover_color
+    selected_idle_color mas_ui.dark_button_text_insensitive_color
+    text_align 0.0
     align (0.0, 0.0)
 
 style scrollable_menu_new_button is scrollable_menu_button
@@ -2619,10 +2623,14 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                     textbutton item_prompt:
                         if is_italic and is_bold:
                             style "scrollable_menu_crazy_button"
+
                         elif is_italic:
                             style "scrollable_menu_new_button"
+
                         elif is_bold:
                             style "scrollable_menu_special_button"
+
+                        xsize display_area[2]
                         action Return(item_value)
 
                 for final_items in args:
@@ -2632,10 +2640,14 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                     textbutton _(final_items[0]):
                         if final_items[2] and final_items[3]:
                             style "scrollable_menu_crazy_button"
+
                         elif final_items[2]:
                             style "scrollable_menu_new_button"
+
                         elif final_items[3]:
                             style "scrollable_menu_special_button"
+
+                        xsize display_area[2]
                         action Return(final_items[1])
 
 # Scrollable menu with checkboxes. Toggles values between True/False
@@ -2660,6 +2672,16 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
 
     python:
         def return_values(rv, return_all):
+            """
+            A wrapper which only returns True values
+
+            IN:
+                rv - dict with key-value pairs
+                return_all - whether or not we return all items
+
+            OUT:
+                dict with key-value pairs
+            """
             return {_tuple[0]: _tuple[1] for _tuple in rv.iteritems() if _tuple[1] or return_all}
 
     style_prefix "scrollable_menu"
@@ -2686,12 +2708,13 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
                             style "scrollable_menu_special_button"
 
                         selected not rv[button_key]
-
+                        xsize display_area[2]
                         action ToggleDict(rv, button_key)
 
                 null height 20
 
                 textbutton return_button_prompt:
+                    xsize display_area[2]
                     action Function(return_values, rv, return_all)
 
 # background timed jump screen
