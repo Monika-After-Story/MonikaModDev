@@ -433,3 +433,26 @@ init python:
 transform mas_smooth_transition:
     i11 # this one may not be needed but I keep it just in case
     function zoom_smoothly
+
+label mas_timed_text_events_prep:
+    $ renpy.pause(0.5)
+    $ mas_RaiseShield_timedtext()
+    $ curr_song = songs.current_track
+    $ play_song(None, 1.0)
+    $ amb_vol = songs.getVolume("backsound")
+    $ renpy.music.set_volume(0.0, 1.0, "background")
+    $ renpy.music.set_volume(0.0, 1.0, "backsound")
+    return
+
+label mas_timed_text_events_wrapup:
+    $ renpy.pause(0.5)
+    $ mas_DropShield_timedtext()
+
+    if curr_song != store.songs.FP_MONIKA_LULLABY:
+        $ play_song(curr_song, 1.0)
+    else:
+        $ play_song(None, 1.0)
+
+    $ renpy.music.set_volume(amb_vol, 1.0, "background")
+    $ renpy.music.set_volume(amb_vol, 1.0, "backsound")
+    return

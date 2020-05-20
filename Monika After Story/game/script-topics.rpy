@@ -10493,15 +10493,9 @@ label monika_grad_speech_ignored_lock:
     return
 
 label monika_grad_speech:
-    # clear selected track
-    $ play_song(None, fadeout=1.0)
-    $ songs.current_track = songs.FP_NO_SONG
-    $ songs.selected_track = songs.FP_NO_SONG
-    #play some grad music
-    play music "mod_assets/sounds/amb/PaC.ogg" fadein 1.0
-    $ mas_MUMURaiseShield()
-    #Disable text speed
-    $ mas_disableTextSpeed()
+    call mas_timed_text_events_prep
+
+    $ play_song("mod_assets/bgm/PaC.ogg",loop=False)
 
     m 2dsc "Ahem...{w=0.7}{nw}"
     m ".{w=0.3}.{w=0.3}.{w=0.6}{nw}"
@@ -10563,11 +10557,7 @@ label monika_grad_speech:
     m 4hub "{w=0.2}We did it everyone!{w=0.7} Thanks for listening~{w=0.6}{nw}"
     m 2hua "{w=0.2}.{w=0.3}.{w=0.3}.{w=1}{nw}"
 
-    #stop grad music
-    $ mas_MUMUDropShield()
-    stop music fadeout 1.0
-    #Re-enable text speed
-    $ mas_resetTextSpeed()
+    call mas_timed_text_events_wrapup
     return
 
 init 5 python:
