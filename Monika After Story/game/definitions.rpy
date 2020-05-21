@@ -3855,6 +3855,18 @@ init -100 python in mas_utils:
         )
 
 
+    def time2sec(_time):
+        """
+        Converts a time value to seconds
+
+        IN:
+            time - datetime.time object to convert
+
+        RETURNS: number of seconds
+        """
+        return (_time.hour * 3600) + (_time.hour * 60) + _time.seconds
+
+
     def insert_sort(sort_list, item, key):
         """
         Performs a round of insertion sort.

@@ -419,6 +419,8 @@ init -10 python:
             IN:
                 is_day - True if this is a "Day" chunk. False if not
                 pp - progpoint to run on a filter change (or slice change)
+                    This is ran multiple times if multiple filter changes
+                    occur, but NOT at all if a chunk change occurs.
                     the following args are passed to the progpoint:
                         flt_old - the outgoing filter 
                         flt_new - the incoming filter 
@@ -536,6 +538,41 @@ init -10 python:
             # lastly, expand to fill voids
             self._expand(length)
 
+        def current(self):
+            """
+            Gets current filter
+
+            RETURNS: current filter, or None if could not
+            """
+            if 0 <= self._index < len(self._eff_slices):
+                return self._eff_slices[self._index].flt_slice.name
+            return None
+
+        def current_pos(self):
+            """
+            Generates internal information related to current position
+
+            RETURNS: tuple:
+                [0] - current slice index
+                [1] - beginning offset of the current slice
+                [2] - beginning offset of the next slice
+                    NOTE: this is -1 if no next slice
+            """
+            if 0 <= self._index < len(self._eff_slices)-1:
+                next_offset = self._eff_slices[self._index+1].offset
+            else:
+                next_offset = -1
+
+            return (self._index, self._current_sldata().offset, next_offset)
+
+        def _current_sldata(self):
+            """
+            Gets current slice data
+
+            RETURNS: current slice data 
+            """
+            return self._eff_slices[self._index]
+
         def _eff_chunk_min_end(self):
             """
             Gets the minimal chunk end length.
@@ -637,13 +674,22 @@ init -10 python:
             # calculate next offset
             return c_off + sl_len
             
-        def filters(self):
+        def filters(self, ordered=False):
             """
+            Gets list of filters
+
+            IN:
+                ordered - True will return the filters in an ordered list.
+                    This may contain duplicates.
+
             RETURNS: list of all the filters associatd with this filter chunk
                 (list of strings)
-                NOTE: does not contain duplicates.
             """
-            # use a dict so we only return each filter once
+            if ordered:
+                # ordered list
+                return [sl_data.flt_slice.name for sl_data in self._slices]
+
+            # otherwise use a dict so we only return each filter once
             filters = {}
             for sl_data in self._slices:
                 filters[sl_data.flt_slice.name] = None
@@ -862,8 +908,10 @@ init -10 python:
                 mn_sr - MASBackgroundFilterChunk for midnight to sunrise
                 sr_ss - MASBackgroundFilterChunk for sunrise to sunset
                 ss_mn - MASBackgroundFilterChunk for sunset to midnight
-                pp - progpoint to run on a chunk change
-                    the following args ar epassed to the progpoint:
+                pp - progpoint to run on a chunk change.
+                    This may run multiple times if multiple chunk changes 
+                    have occurred. 
+                    the following args are passed to the progpoint:
                         chunk_old - the outgoing chunk
                         chunk_new - the incoming chunk
                         curr_time - the current time
@@ -907,7 +955,7 @@ init -10 python:
             # value: Ignored
             # NOTE: organized in verify.
 
-            self._chunk_index = 0
+            self._index = 0
             # the index in _chunks of the current chunk
 
         def __str__(self):
@@ -918,14 +966,14 @@ init -10 python:
             
             # mn to sr chunk
             chunk_name = "Midnight to Sunrise"
-            if self._chunk_index == 0:
+            if self._index == 0:
                 chunk_name += "| CURRENT CHUNK"
             output.append(chunk_name)
             output.append(str(self._mn_sr))
 
             # sr to ss chunk
             chunk_name = "Sunrise to Sunset"
-            if self._chunk_index == 1:
+            if self._index == 1:
                 chunk_name += "| CURRENT CHUNK"
             output.append("")
             output.append(chunk_name)
@@ -933,13 +981,88 @@ init -10 python:
 
             # ss to mn chunk
             chunk_name = "Sunset to Midnight"
-            if self._chunk_index == 2:
+            if self._index == 2:
                 chunk_name += "| CURRENT CHUNK"
             output.append("")
             output.append(chunk_name)
             output.append(str(self._ss_mn))
 
             return "\n".join(output)
+
+        def backmap(self, anchors):
+            """
+            Generates a backwords lookback map with a set of anchors.
+            Basically, this creates a mapping of the internal filters such that
+            each filter is mapped to an "anchor" filter, based on the order
+            of the filters. The lookback for determining an anchor also loops
+            upon reaching the end of a day.
+
+            Example:
+                Anchors: flt_1, flt_3
+                Order: flt_0, flt_1, flt_2, flt_3, flt_4, flt_5
+                Resulting mapping:
+                    flt_0: flt_3 - (because we loop to flt_5 when looking back
+                                    from flt_0)
+                    flt_1: flt_1
+                    flt_2: flt_1 - (flt_1 is the closest previous anchor from 
+                                    flt_2)
+                    flt_3: flt_3
+                    flt_4: flt_3
+                    flt_5: flt_3
+
+            IN:
+                anchors - dict of anchors. Set the keys to the anchor filters.
+
+            OUT:
+                anchors - the values will be set to lists of all filtesr mapped
+                    to those anchors
+
+            RETURNS: reverse map where each filter is a key, and the values are
+                anchors.
+            """
+            if len(anchors) < 1:
+                return {}
+
+            # organize all filters in order
+            ordered_flts = []
+            for chunk in self._chunks:
+                ordered_flts.extend(chunk.filters(True))
+
+            if len(ordered_flts) < 1:
+                return {}
+
+            # init anchors lists
+            for anc_key in anchors:
+                anchors[anc_key] = []
+
+            # init reverse map
+            r_map = {}
+
+            # loop over filters
+            curr_anchor = None
+            orphans = []
+            for flt in ordered_flts:
+                # check for new anchor
+                if flt in anchors:
+                    curr_anchor = flt
+
+                # now organize
+                if curr_anchor is None:
+                    # orphans are added to the last anchor
+                    orphans.append(flt)
+
+                else:
+                    # have anchor, add to lists and maps
+                    r_map[flt] = curr_anchor
+                    anchors[curr_anchor].append(flt)
+
+            # add orphans to the last filter
+            if curr_anchor is not None:
+                anchors[curr_anchor].extend(orphans)
+                for orphan in orphans:
+                    r_map[orphan] = curr_anchor
+
+            return r_map
 
         def build(self, sunrise, sunset):
             """
@@ -952,6 +1075,65 @@ init -10 python:
             self._mn_sr.build(sunrise)
             self._sr_ss.build(sunset - sunrise)
             self._ss_mn.build((3600 * 24) - sunset)
+
+        def current(self):
+            """
+            Gets current filter
+
+            RETURNS: current filter
+            """
+            return self._chunks[self._index].current()
+
+        def _current_chunk(self):
+            """
+            Gets current chunk
+
+            RETURNS: current chunk
+            """
+            return self._chunks[self._index]
+
+        def current_pos(self):
+            """
+            Generates internal informatiom related to the current position
+
+            RETURNS: tuple:
+                [0] - current chunk index
+                [1] - beginning offset of the current chunk
+                [2] - beginning offset of the next chunk
+                    NOTE: this is -1 if no next chunk
+                [3] - current slice index
+                [4] - beginning offset of the current slice
+                [5] - beginning offset of the next slice
+                    NOTE: this is set to the next chunk offset if no next
+                        slice
+            """
+            # current offset is add up chunk lengths
+            curr_offset = 0
+            for index in range(self._index):
+                curr_offset += len(self._chunks[index])
+
+            # next offset is next chunk length + current offset
+            if 0 <= self._index < len(self._chunks)-1:
+                next_offset = curr_offset + self._chunks[self._index+1]
+            else:
+                next_offset = -1
+
+            # now get slice info
+            sl_index, sl_begin, sl_end = self._current_chunk().current_pos()
+
+            # end sl might be different
+            if sl_end < 0:
+                sl_end = next_offset
+
+            # and return info
+            return (
+                self._index,
+                curr_offset,
+                next_offset,
+                sl_index,
+                sl_begin,
+                sl_end
+            )
 
         def filters(self):
             """
@@ -1016,6 +1198,30 @@ init -10 python:
 
             for flt in chunk.filters():
                 flt_d[flt] = None
+
+        def progress(self):
+            """
+            Progresses the filter, running progpoints and updating indexes.
+
+            Progpoint execution rules:
+            * progression remains in the same chunk:
+                1. progpoint in that chunk is ran for every slice change.
+            * progression moves to next chunk:
+                1. progpoint from chunk to chunk is ran.
+                2. progpoints in the NEW chunk is ran for every slice change.
+            * progression moves through multiple chunks:
+                1. progpoint from chunk to chunk is ran for every chunk change.
+                2. progpoints in the chunk we END UP IN is ran for every
+                    slice change.
+
+            RETURNS: the current filter after progression
+            """
+            # seconds from midnight
+            sfmn = store.mas_utils.time2sec(datetime.datetime.now().time())
+
+            # first, determine our current position range
+            # TODO
+
 
         def verify(self):
             """
@@ -1277,6 +1483,9 @@ init -10 python:
                 filter_man:
                     MASBackgroundFilterManager to use
 
+                backup_img:
+                    image tag/image path to use as a backup
+
                 hide_calendar:
                     whether or not we want to display the calendar
                     (Default: False)
@@ -1322,6 +1531,20 @@ init -10 python:
             self.image_map = image_map
             self._flt_man = filter_man
 
+            # internal mapping of filters to their latest image.
+            # see MASBackgroundFilterManager.backmap for explanation.
+            # we use this to ensure that every filter has an appropriate
+            # set of BG images to use.
+            # key: filter
+            # value: filter to check for images
+            self._flt_img_map = {}
+
+            # reverse map of the above, mapping filters-with-images to lists
+            # of dependent filters.
+            # key: filter
+            # value: list of filters that use the key's images.
+            self._flt_img_anc = {}
+
             #Then the other props
             self.hide_calendar = hide_calendar
             self.hide_masks = hide_masks
@@ -1352,15 +1575,20 @@ init -10 python:
 
         def build(self):
             """
-            Builds filter slices using current suntimes
+            Builds filter slices using current suntimes.
+            Also builds appropraite BG image maps.
 
             NOTE: recommended to only call this after the suntimes change or
-            on init.
+            on init. Also do this after verifying.
             """
+            # build filter slices
             self._flt_man.build(
                 persistent._mas_sunrise * 60,
                 persistent._mas_sunset * 60
             )
+
+            # now build flt image maps
+            self._flt_img_map = self._flt_man.backmap(self._flt_img_anc)
 
         def entry(self, old_background):
             """
@@ -1395,47 +1623,152 @@ init -10 python:
             """
             return (self.unlocked,)
 
-        def getDayRoom(self, weather=None):
+        def getRoom(self, flt, weather=None):
             """
-            Returns the day masks to use given the conditions/availablity of present assets
-            """
-            # TODO: check
-            if weather is None:
-                weather = store.mas_current_weather
+            Gets room associated with the given flt and weather
+            This performs lookback and other checks to try and find an image.
 
-            return self.image_map[weather.precip_type][0]
+            Calling this before init level 0 may result in undefined behavior.
+
+            IN:
+                flt - filter to check
+                weather - weather to check. If None, we use the current
+                    weather
+                    (Default: None)
+
+            RETURNS: room image, or None if not found
+            """
+            precip_type = MASWeather.getPrecipTypeFrom(weather)
+
+            # get image using normal ways
+            img = self._get_image(flt, precip_type)
+            if img is None:
+                # no image, so we should try lookback
+                m_w_m = self._lookback(flt)
+                if m_w_m is not None:
+                    img = m_w_m.get(precip_type)
+
+            return img
+
+        def getCurrentRoom(self):
+            """
+            Gets current Room
+
+            RETURNS: Current room image, may be None if this BG is badly built
+            """
+            return self.getRoom(self.current())
+
+        def getDayRoom(self, weather=None):
+            """DEPRECATED
+            Can't use this anymore since there's no single image that defines
+            "day" anymore. It's all filter based.
+            See getDayRooms instead
+            """
+            pass
+
+        def getDayRooms(self, weather=None):
+            """
+            Gets all day images for a weather.
+
+            IN:
+                weather - weather to check. If None, we use the current 
+                    weather.
+                    (Default: None)
+
+            RETURNS: dict of the following format:
+                key: flt
+                value: day according to the weather.
+                NOTE: only filters that have a room with the given weather
+                    are returned. No lookback.
+            """
+            precip_type = MASWeather.getPrecipTypeFrom(weather)
+
+            results = {}
+            for flt in self._flt_man.filters_day():
+                img = self._get_image(flt, precip_type)
+                if img is not None:
+                    results[flt] = img
+
+            return results
+
+        def _get_image(self, flt, precip_type):
+            """
+            Gets image associated with the given flt and precip_type
+            does NOT perform lookback checks.
+
+            IN:
+                flt - filter to check
+                precip_type - precip type to check
+
+            RETURNS: image, or None if not found
+            """
+            m_w_m = self.image_map.get(flt)
+            if m_w_m is None:
+                return None
+            return m_w_m.get(precip_type)
 
         def getNightRoom(self, weather=None):
+            """DEPRECATED
+            Can't use this anymore since there's no single image that defines
+            "night" anymore. It's all filter-based
+            See getNightRooms instead
             """
-            Returns the night masks to use given the conditions/availablity of present assets
-            """
-            # TODO: check
-            if weather is None:
-                weather = store.mas_current_weather
+            pass
 
-            return self.image_map[weather.precip_type][1]
+        def getNightRooms(self, weather=None):
+            """
+            Gets all night images for a weather.
+
+            IN:
+                weather - weather to check. If None, we use the current
+                    weather.
+                    (Default: None)
+
+            RETURNS: dict of the following format:
+                key: flt
+                value: night according to the weather.
+                NOTE: only filters that have a room with the given weather
+                    are returned. No lookback.
+            """
+            precip_type = MASWeather.getPrecipTypeFrom(weather)
+
+            results = {}
+            for flt in self._flt_man.filters_night():
+                img = self._get_image(flt, precip_type)
+                if img is not None:
+                    results[flt] = img
+
+            return results
 
         def getRoomForTime(self, weather=None):
             """
-            Gets the room for the current time
+            Gets the room for the current time and desired weather
+
+            NOTE: if you just want current room to use, use getCurrentRoom.
 
             IN:
                 weather - get the room bg for the time and weather
                 (Default: current weather)
+
+            RETURNS: room image for the current weather and time
             """
-            if weather is None:
-                weather = store.mas_current_weather
-            if store.mas_isMorning():
-                return self.getDayRoom(weather)
-            return self.getNightRoom(weather)
+            return self.getRoom(self.current(), weather)
 
         def isChangingRoom(self, old_weather, new_weather):
             """
-            If the room has a different look for the new weather we're going into, the room is "changing" and we need to flag this to
-            scene change and dissolve the spaceroom in the spaceroom label
+            Checks if the room would change because of a change in weather
+
+            IN:
+                old_weather - weather to start from
+                new_weather - weather to change to
+
+            RETURNS: true if the room would change, False otherwise
             """
-            # TODO: progress filter might take care of this already
-            return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
+            curr_flt = self.current()
+            return (
+                self._get_image(curr_flt, old_weather.precip_type)
+                != self._get_image(curr_flt, new_weather.precip_type)
+            )
 
         def isFltDay(self, flt=None):
             """
@@ -1466,12 +1799,22 @@ init -10 python:
             """
             return not self.isFltDay(flt)
 
+        def _lookback(self, flt):
+            """
+            Gets MASWeatherMap for a filter, using lookback
+
+            IN:
+                flt - filter to check
+
+            RETURNS: MASWeatherMap, or None if not found
+            """
+            return self.image_map.get(self._flt_img_map.get(flt))
+
         def progress(self):
             """
             Progresses the filter.
             """
             # TODO
-            pass
 
         def verify(self):
             """
@@ -1486,22 +1829,26 @@ init -10 python:
 
         def _verify_img_flts(self, flts):
             """
-            Verifies that at least one image exists for the given flts
+            Verifies that at least one image exists for the given flts.
+            Also organizes filters that have a default image
 
             Raises an exception if no images found
 
             IN:
                 flts - list of filters to check
             """
+            img_found = False
             for flt in flts:
-                wm = self.image_map.get(flt)
-                if wm is not None:
-                    img = wm.get(store.mas_weather.PRECIP_TYPE_DEF)
+                m_w_m = self.image_map.get(flt)
+                if m_w_m is not None:
+                    img = m_w_m.get(store.mas_weather.PRECIP_TYPE_DEF)
                     if img is not None:
-                        # we have at least one image for this flt
+                        img_found = True
+                        self._flt_img_anc[flt] = []
                         return
 
-            raise Exception("No images found for these filters")
+            if not img_found:
+                raise Exception("No images found for these filters")
 
 
 #Helper methods and such

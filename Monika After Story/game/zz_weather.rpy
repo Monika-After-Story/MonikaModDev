@@ -563,6 +563,21 @@ init -10 python:
             if self.exit_pp is not None:
                 self.exit_pp(new_weather)
 
+        @staticmethod
+        def getPrecipTypeFrom(weather=None):
+            """
+            Gets precip type of the given weather object.
+
+            IN:
+                weather - weather object to get precip type for.
+                    if None, we use the current weather
+                    (Default: None)
+
+            RETURNS: precip_type
+            """
+            if weather is None:
+                return mas_current_weather.precip_type
+            return weather.precip_type
 
         def fromTuple(self, data_tuple):
             """
