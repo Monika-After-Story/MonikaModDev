@@ -1039,7 +1039,7 @@ label mas_monika_plays_or(skip_leadin=False):
         $ gen = "their"
 
     window hide
-    call mas_timed_text_events_wrapup
+    call mas_timed_text_events_prep
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     show monika at rs32
