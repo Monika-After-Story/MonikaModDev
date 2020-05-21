@@ -234,6 +234,7 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
     play sound page_turn
 
     window hide
+    $ afm_pref = renpy.game.preferences.afm_enable
     $ renpy.game.preferences.afm_enable = False
 
     #Handle the poem screen we use
@@ -251,8 +252,9 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
     #And hide it
     hide screen mas_generic_poem
 
-
     with Dissolve(.5)
+
+    $ renpy.game.preferences.afm_enable = afm_pref
     window auto
 
     #Flag this poem as seen
