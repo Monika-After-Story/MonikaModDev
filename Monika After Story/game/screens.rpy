@@ -1257,16 +1257,17 @@ screen preferences():
                 vbox:
                     style_prefix "check"
                     label _("Gameplay")
-                    if persistent._mas_unstable_mode:
-                        textbutton _("Unstable"):
-                            action SetField(persistent, "_mas_unstable_mode", False)
-                            selected persistent._mas_unstable_mode
+                    if not main_menu:
+                        if persistent._mas_unstable_mode:
+                            textbutton _("Unstable"):
+                                action SetField(persistent, "_mas_unstable_mode", False)
+                                selected persistent._mas_unstable_mode
 
-                    else:
-                        textbutton _("Unstable"):
-                            action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
-                            selected persistent._mas_unstable_mode
-                            hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
+                        else:
+                            textbutton _("Unstable"):
+                                action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
+                                selected persistent._mas_unstable_mode
+                                hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
 
                     textbutton _("Repeat Topics"):
                         action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
