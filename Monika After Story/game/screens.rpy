@@ -720,7 +720,8 @@ screen navigation():
             textbutton _("Help") action Help("README.html")
 
             ## The quit button is banned on iOS and unnecessary on Android.
-            textbutton _("Quit") action Quit(confirm=_confirm_quit)
+            #If we're on the main menu, we don't want to confirm quit as Monika isn't back yet
+            textbutton _("Quit") action Quit(confirm=(None if main_menu else _confirm_quit))
 
         if not main_menu:
             textbutton _("Return") action Return()
@@ -1440,9 +1441,12 @@ screen preferences():
 
 
             hbox:
-                textbutton _("Update Version"):
-                    action Function(renpy.call_in_new_context, 'forced_update_now')
-                    style "navigation_button"
+                #We disable updating on the main menu because it causes graphical issues
+                #due to the spaceroom not being loaded in
+                if not main_menu:
+                    textbutton _("Update Version"):
+                        action Function(renpy.call_in_new_context, 'forced_update_now')
+                        style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
