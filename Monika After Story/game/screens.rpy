@@ -2671,7 +2671,6 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
     default buttons_data = {
         _tuple[1]: {
             "return_value": _tuple[3] if _tuple[2] else _tuple[4],
-            "selected": _tuple[2],
             "true_value": _tuple[3],
             "false_value": _tuple[4]
         }
@@ -2692,8 +2691,6 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
 
             else:
                 buttons_data[key]["return_value"] = buttons_data[key]["true_value"]
-
-            buttons_data[key]["selected"] = not buttons_data[key]["selected"]
 
         def _return_values(buttons_data, return_all):
             """
@@ -2722,7 +2719,7 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
             vbox:
                 for button_prompt, button_key, start_selected, true_value, false_value in items:
                     textbutton button_prompt:
-                        selected not buttons_data[button_key]["selected"]
+                        selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["false_value"]
                         xsize display_area[2]
                         action Function(_toggle_button, button_key, buttons_data)
 
