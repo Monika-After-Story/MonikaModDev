@@ -14437,7 +14437,14 @@ label monika_language_nuances:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_aliens",category=["misc", "society"],prompt="Do you believe in aliens ?",pool=True))
+        addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_aliens",
+            category=["misc", "society"],
+            prompt="Do you believe in aliens?",
+            pool=True)
+        )
 
 label monika_aliens:
 
@@ -14467,12 +14474,12 @@ label monika_aliens:
     extend 2eud "but when you think about it a little, it doesn't sound so unlikely..."
     m 4eksdla "After all, saying the universe is vast would be {i}quite{/i} the understatement."
     m 4eua "All you need is just one planet with the right conditions and environment to be favorable for life to develop, right?"
-    m 4esb "And there are 8 planets in our Solar System alone... {w=0.5}{nw}" 
-    extend 4eub "...But of course, there are many more Solar Systems, each with their own planets within them."
-    m 4dsc "Now, consider that our galaxy, the Milky Way, supposedly contains hundreds of billions of stars. And that's only counting one galaxy, obviously..."
-    m 4esd "Galaxies are usually held together in groups by gravity. We live in the 'Local Group', which contain about 60 galaxies."
-    m 1esd "Go further than that, and you'll start to see galaxy clusters, which are much larger groups of galaxies. The closest one from us, the 'Virgo Cluster', is estimated to contain at least a thousand galaxies."
-    m 1eud"But you can go even further, as groups and clusters of galaxies are themselves part of even bigger entities known as superclusters."
+    m 4esb "And there are 8 planets in our system alone... {w=0.5}{nw}" 
+    extend 4eub "...But of course, there are many more star systems, each with their own planets within them."
+    m 4dsc "Now, consider that our galaxy, the 'Milky Way,' supposedly contains hundreds of billions of stars. And that's only counting one galaxy, obviously..."
+    m 4esd "Galaxies are usually held together in groups by gravity. We live in the 'Local Group,' which contain about 60 galaxies."
+    m 1esd "Go further than that, and you'll start to see galaxy clusters, which are much larger groups of galaxies. The closest one from us, the 'Virgo Cluster,' is estimated to contain at least a thousand galaxies."
+    m 1eud "But you can go even further, as groups and clusters of galaxies are themselves part of even bigger entities known as superclusters."
     m 1wud "And we could keep going, as we aren't even sure of how big the universe is. Its size could be infinite, for all we know."
     m 1lud "If it isn't, we could take into consideration the idea that there might be something beyond the boundaries of our universe."
     
@@ -14492,6 +14499,7 @@ label monika_aliens:
     m 2dkc "All in all, I guess the one thing that saddens me a little is that if there {i}are{/i} intelligent, extra-terrestrial life-forms out there, we might very well never get to meet them within our lifetime."
 
     if mas_isMoniAff(higher=True): 
+        show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5rua "But, at the end of the day... {w=0.5}{nw}"
         extend 5ekbla "I still got to meet you, and that's really everything I could ever possibly need."
         m 5hubfa "Ehehe~"
