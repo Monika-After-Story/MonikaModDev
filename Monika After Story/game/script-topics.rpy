@@ -14436,7 +14436,7 @@ label monika_language_nuances:
     extend 1hub "Ahaha~"
     return
 
-    returninit 5 python:
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_aliens",category=["misc", "society"],prompt="Do you believe in aliens ?",pool=True))
 
 label monika_aliens:
