@@ -14437,14 +14437,15 @@ label monika_language_nuances:
     return
 
 init 5 python:
-        addEvent(
+    addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_aliens",
             category=["misc", "society"],
             prompt="Do you believe in aliens?",
-            pool=True)
+            pool=True
         )
+    )
 
 label monika_aliens:
 
