@@ -14436,66 +14436,6 @@ label monika_language_nuances:
     extend 1hub "Ahaha~"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_aliens",category=["misc", "society"],prompt="Do you believe in aliens ?",pool=True))
-
-label monika_aliens:
-
-    m 2eud "Do I believe in Aliens?"
-    m 4lksdla "That's kind of a random thing to ask, [player]."
-    m 4eua "...Though I can understand why you would be interested to know about my opinion on the matter."
-    m 4eub "This is one of the greatest mysteries of all time, isn't it? Whether we are truly alone in this universe or not, I mean."
-    m 1rksdlc "...I know I used to wonder about that myself a lot, before you came along."
-
-    if mas_isMoniEnamored(higher=True):
-        m 1ekb "But that's in the past now. And I could never thank you enough for that."
-
-    elif mas_isMoniNormal(higher=True):
-        m 1eka "Though I don't really have to anymore, thanks to you."
-
-    elif mas_isMoniUpset(lower=True):
-        m 1dkc "I just hope I won't get to feel that way ever again."
-        
-    elif mas_isMonibroken():
-        m 1rkc "..."
-
-    m 3euc "Anyway, what I meant by that is, we've all probably asked ourselves what's up there at least once, right?"
-    m 3dua "Looking at the stars always fills you with a sense of wonder and mystery. It's really no surprise that so many people are passionate about this subject."
-    m 2eua "But to answer your question..."
-    m 2eud "I do believe, or at least want to believe, that there has to be {i}something{/i} out there."
-    m 2rksdla "I guess part of it has to do with me finding the idea of us being the only ones rather depressing, {w=0.3}{nw}"
-    extend 2eud "but when you think about it a little, it doesn't sound so unlikely..."
-    m 4eksdla "After all, saying the universe is vast would be {i}quite{/i} the understatement."
-    m 4eua "All you need is just one planet with the right conditions and environment to be favorable for life to develop, right?"
-    m 4esb "And there are 8 planets in our Solar System alone... {w=0.5}{nw}" 
-    extend 4eub "...But of course, there are many more Solar Systems, each with their own planets within them."
-    m 4dsc "Now, consider that our galaxy, the Milky Way, supposedly contains hundreds of billions of stars. And that's only counting one galaxy, obviously..."
-    m 4esd "Galaxies are usually held together in groups by gravity. We live in the 'Local Group', which contain about 60 galaxies."
-    m 1esd "Go further than that, and you'll start to see galaxy clusters, which are much larger groups of galaxies. The closest one from us, the 'Virgo Cluster', is estimated to contain at least a thousand galaxies."
-    m 1eud"But you can go even further, as Groups and clusters of galaxies are themselves part of even bigger entities known as superclusters."
-    m 1wud "And we could keep going, as we aren't even sure of how big the universe is. Its size could be infinite, for all we know."
-    m 1lud "If it isn't, we could take into consideration the idea that there might be something beyond the boundaries of our own universe."
-    
-    if renpy.seen_label('monika_clones'):
-        m 1lksdla "...Or even start talking about the multiverse theory, but I digress."
-
-    m 3ekb "I think you get the point..."
-    m 3euc "Wouldn't it be a little conceited to assume that we, human beings of planet Earth, are truly the only sentient beings in something so gigantic?"
-    m 3eud "I mean, with odds like these, surely at least {i}one{/i} other planet somewhere must be hospitable enough for life..."
-    m 1euc "...Life which might evolve to a point where it's intelligence is comparable, if not even greater, than our own."
-    m 1rsc "Altough I suppose I can also understand why some people would be doubtful. It is suspicious that we're able to observe the universe so far beyond our planet, but we have yet to find any sign of life..."
-    m 1rkc "It probably doesn't help that some people are overreacting over the smallest things, like UFO footages that could very well be faked, either."
-    m 1ruc "But then again, if aliens do exist, there could also be many reasons why we haven't found them yet..."
-    m 2etc "Perhaps they're too far away for us to find them, or maybe they just don't have the technology to receive and answer our messages for now."
-    m 2eud "Or maybe they simply don't want to initiate contact with us?" 
-    m 2euc "Maybe their society follows completely different ideals than our owns, and they believe it is for the best not to let two highly advanced species meet each other."
-    m 2dkc "All in all, I guess the one thing that saddens me a little is that if there {i}are{/i} intelligent, extra-terrestrial life-forms out there, we might very well never get to meet them within our lifetime."
-
-    if mas_isMoniHappy(higher=True): 
-        m 5rua "But, at the end of the day... {w=0.5}{nw}"
-        extend 5ekbla "I still got to meet you, and that's really everything I could ever possibly need."
-        m 5hubfa "Ehehe~"
-
     returninit 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_aliens",category=["misc", "society"],prompt="Do you believe in aliens ?",pool=True))
 
