@@ -416,6 +416,7 @@ label v0_11_3(version="v0_11_3"):
                     tod_ev.pool = True
                     tod_ev.action = EV_ACT_UNLOCK
 
+        # add to the default unlocked pool topics
         pool_unlock_list = [
             "monika_meta",
             "monika_difficulty",
