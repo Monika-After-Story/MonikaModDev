@@ -2678,20 +2678,6 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
     }
 
     python:
-        def _toggle_button(key, buttons_data):
-            """
-            A method to toggle both buttons values and selection state
-
-            IN:
-                key - key corresponding to button to change
-                buttons_data - the screen buttons data
-            """
-            if buttons_data[key]["return_value"] == buttons_data[key]["true_value"]:
-                buttons_data[key]["return_value"] = buttons_data[key]["false_value"]
-
-            else:
-                buttons_data[key]["return_value"] = buttons_data[key]["true_value"]
-
         def _return_values(buttons_data, return_all):
             """
             A method to return buttons keys and values
@@ -2721,7 +2707,7 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
                     textbutton button_prompt:
                         selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["false_value"]
                         xsize display_area[2]
-                        action Function(_toggle_button, button_key, buttons_data)
+                        action ToggleDict(buttons_data[button_key], "return_value", true_value, false_value)
 
                 null height 20
 
