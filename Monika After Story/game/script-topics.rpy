@@ -5931,7 +5931,7 @@ label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
         m 1dfc "..."
         m 1efc "This is the [take_counter]th time already."
         m 2tkc "You're not messing with me, are you?"
-        m 2ekc "I'm trying my best for you [player]."
+        m 2ekc "I'm trying my best for you, [player]."
     return
 
 init 5 python:
