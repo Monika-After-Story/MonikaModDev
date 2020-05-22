@@ -2652,7 +2652,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 
 # Scrollable menu with checkboxes. Toggles values between True/False
 # Won't close itself until the user clicks on the return button
-
+#
 # IN:
 #     items - list of tuples of the following format:
 #         (prompt, key, start_selected, true_value, false_value)
@@ -2664,7 +2664,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 #         (Default: 'Done')
 #     return_all - whether or not we return all items or only the items with True in their values
 #         (Default: False)
-
+#
 # OUT:
 #     dict of buttons keys and new values
 screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done", return_all=False):
