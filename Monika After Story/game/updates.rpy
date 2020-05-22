@@ -372,7 +372,6 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-
 label v0_11_3(version="v0_11_3"):
     python:
         # give extra pool unlocks for recent players
@@ -415,6 +414,29 @@ label v0_11_3(version="v0_11_3"):
                 else:
                     tod_ev.pool = True
                     tod_ev.action = EV_ACT_UNLOCK
+
+        #Store all the files we need to rename
+        filenames_to_rename = [
+            "imsorry",
+            "imsorry.txt",
+            "forgive me.txt",
+            "can you hear me.txt",
+            "please listen.txt",
+            "surprise.txt",
+            "ehehe.txt",
+            "secret.txt",
+            "for you.txt",
+            "My one and only love.txt"
+        ]
+
+        for fn in filenames_to_rename:
+            try:
+                os.rename(
+                    renpy.config.basedir + "/{0}".format(fn),
+                    renpy.config.basedir + "/characters/{0}".format(fn)
+                )
+            except:
+                pass
 
         # add to the default unlocked pool topics
         pool_unlock_list = [
