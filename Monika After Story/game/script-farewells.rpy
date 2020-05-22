@@ -788,7 +788,7 @@ label bye_long_absence:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
     m 1ekc "Aw...that's pretty saddening..."
-    m 1eka "I really am going to miss you [player]!"
+    m 1eka "I really am going to miss you, [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3esa "Thank you for warning me first, though. It really does help."
     m 2lksdlb "I would be worried sick otherwise!"
@@ -883,7 +883,7 @@ label bye_long_absence:
         m "Are you going to leave straight away?{fast}"
         "Yes.":
             m 3ekc "I see..."
-            m "I really will miss you [player]..."
+            m "I really will miss you, [player]..."
             m 1eka "But I know you'll do wonderful things no matter where you are."
             m "Just remember that I'll be waiting here for you."
             m 2hua "Make me proud, [player]!"
