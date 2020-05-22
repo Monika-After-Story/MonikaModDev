@@ -9428,7 +9428,7 @@ label monika_fastfood:
             m 3eka "I know some people can find cooking overwhelming..."
             m 3ekc "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
             m 1eka "But I think the results are worth the effort."
-            m 3eua "Are you any good at cooking [player]?"
+            m 3eua "Are you any good at cooking, [player]?"
             m 1hua "It doesn't matter if you're not. I'd eat anything you prepared for me!"
             m 1rksdla "As long as it's not charcoal or meat that is. Ehehe~"
     return
