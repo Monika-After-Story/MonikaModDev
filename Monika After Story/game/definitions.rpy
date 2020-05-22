@@ -5202,7 +5202,7 @@ init python:
             #We want to modify only text
             if _tuple[0] == renpy.TEXT_TEXT:
                 contents[_id] = (_tuple[0], mas_a_an_str(_tuple[1]))
-                break
+                return contents
 
         return contents
 
