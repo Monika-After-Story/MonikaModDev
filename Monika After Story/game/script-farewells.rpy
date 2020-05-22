@@ -845,7 +845,7 @@ label bye_long_absence:
                 m 3rksdlb "That's...{w=0.5}well that's a little scary, [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
                 m 1eka "But I know you wouldn't leave me by myself if you could help it."
-                m "I love you [player], and I know you love me too."
+                m "I love you, [player], and I know you love me too."
                 m 1hua "So I'll wait for you for however long I need to."
             else:
                 m 3esc "You have to be joking."
