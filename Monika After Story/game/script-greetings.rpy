@@ -425,7 +425,7 @@ init 5 python:
     )
 
 label greeting_visit:
-    m 1eua "There you are [player], it's so nice of you to visit."
+    m 1eua "There you are, [player], it's so nice of you to visit."
     m 1eka "You're always so thoughtful."
     m 1hua "Thanks for spending so much time with me~"
     return
