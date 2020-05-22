@@ -1337,7 +1337,7 @@ label monika_horror:
 
         "I do.":
             $ persistent._mas_pm_likes_horror = True
-            m 3hub "That's great [player]!"
+            m 3hub "That's great, [player]!"
 
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
