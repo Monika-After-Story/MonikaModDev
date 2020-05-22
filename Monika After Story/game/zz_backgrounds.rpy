@@ -412,6 +412,11 @@ init -10 python:
             is_day - True if this is a day chunk, False if not
         """
 
+        _ERR_PP_STR = (
+            "[ERROR] error in slice pp | {0}\n"
+            "=====FROM: {1} -> {2}\n"
+        )
+
         def __init__(self, is_day, pp, *slices):
             """
             Constructor
@@ -421,9 +426,11 @@ init -10 python:
                 pp - progpoint to run on a filter change (or slice change)
                     This is ran multiple times if multiple filter changes
                     occur, but NOT at all if a chunk change occurs.
+                    This is NOT guaranteed to run if more a than day goes by
+                    between progressions.
                     the following args are passed to the progpoint:
-                        flt_old - the outgoing filter 
-                        flt_new - the incoming filter 
+                        flt_old - the outgoing filter (string)
+                        flt_new - the incoming filter (string)
                         curr_time - the current time
                     pass None to not use a progpoint
                 *slices - slice arguments. Each item should be a 
@@ -496,6 +503,50 @@ init -10 python:
             """
             for sl_data in self._eff_slices[index:]:
                 sl_data.offset += amt
+
+        def adv_slice(self, sfco, st_index, run_pp, curr_time):
+            """
+            Runs advance slice alg, running progpoints, but does NOT actually
+            set new index.
+
+            IN:
+                sfco - seconds from chunk offset
+                st_index - index to start at
+                run_pp - True will run the progpoints, False will not
+                curr_time - passed to the progpoint, should be current time
+                    as a datetime.time object
+
+            RETURNS: new slice index
+            """
+            # slices length
+            s_len = len(self._eff_slices)
+
+            # determine current slice offsets
+            csl_data = self._eff_slices[st_index]
+            cb_off = csl_data.offset
+
+            # loop until sfco in range of current slice
+            # or we reach last slice
+            while st_index < s_len-1 and sfco < cb_off:
+                # get current and next slice
+                csl_data = self._eff_slices[st_index]
+                nsl_data = self._eff_slices[st_index + 1]
+
+                # determine the next current offset and next index
+                # NOTE: we can assume we never loop
+                # NOTE: we can also assume there is index + 1
+                cb_off = nsl_data.offset
+                st_index += 1
+
+                # run prog if needed
+                if run_pp:
+                    self._pp_exec(
+                        csl_data.flt_slice.name,
+                        nsl_data.flt_slice.name,
+                        curr_time
+                    )
+
+            return st_index
 
         def build(self, length):
             """
@@ -800,6 +851,29 @@ init -10 python:
             # now adjust offsets for all remaining sl datas
             self._adjust_offset(index + 1, sl_data.flt_slice.minlength)
 
+        def _pp_exec(self, flt_old, flt_new, curr_time):
+            """
+            Executes a progpoint
+
+            Exceptions are logged
+
+            IN:
+                flt_old - outgoing filter (string)
+                flt_new - incoming filter (string)
+                curr_time - current time as datetime.time
+            """
+            if self._pp is None:
+                return
+
+            try:
+                self._pp(flt_old=flt_old, flt_new=flt_new, curr_time=curr_time)
+            except Error as e:
+                store.mas_utils.writelog(self._ERR_PP_STR.format(
+                    repr(e),
+                    flt_old,
+                    flt_new
+                ))
+
         def _priority_fill(self, length, leftovers):
             """
             Fills the effective slices using priority logic.
@@ -866,6 +940,31 @@ init -10 python:
             # ensure first slice has 0 offset
             self._eff_slices[0].offset = 0
 
+        def progress(self, sfco, curr_time):
+            """
+            Progresses the filter, running progpoints and updating indexes
+
+            NOTE: we assume that our next target is in this chunk.
+
+            Progpoints are ran for every slice we go through.
+
+            IN:
+                sfco - seconds from chunk offset to progress to
+                curr_time - current time in datetime.time
+
+            RETURNS: current filter after progression
+            """
+            # advance slices
+            self._index = self.adv_slice(sfco, self._index, True, curr_time)
+
+            return self.current()
+
+        def reset_index(self):
+            """
+            Resets slice index to 0
+            """
+            self._index = 0
+
         def verify(self):
             """
             Verifies the filters in this filter Chunk
@@ -900,6 +999,12 @@ init -10 python:
             None
         """
 
+        _ERR_PP_STR = (
+            "[ERROR] error in chunk pp | {0}\n\n"
+            "=====FROM:\n{1}\n\n"
+            "=====TO\n{2}\n"
+        )
+
         def __init__(self, mn_sr, sr_ss, ss_mn, pp=None):
             """
             Constructor
@@ -911,9 +1016,11 @@ init -10 python:
                 pp - progpoint to run on a chunk change.
                     This may run multiple times if multiple chunk changes 
                     have occurred. 
+                    This is NOT guaranteed to run if more than a day of time
+                    passes between progressions.
                     the following args are passed to the progpoint:
-                        chunk_old - the outgoing chunk
-                        chunk_new - the incoming chunk
+                        chunk_old - the outgoing chunk (MBGFChunk)
+                        chunk_new - the incoming chunk (MBGFChunk)
                         curr_time - the current time
                     (Default: None)
             """
@@ -988,6 +1095,58 @@ init -10 python:
             output.append(str(self._ss_mn))
 
             return "\n".join(output)
+
+        def adv_chunk(self, sfmn, st_index, run_pp, curr_time, force_co):
+            """
+            Runs advance chunks alg, running progpoints but does NOT actually
+            set new index. This WILL SET SLICE INDEXES.
+
+            IN:
+                sfmn - number of seconds since midnight
+                st_index - index to start at
+                run_pp - True will run the progpoints, FAlse will not
+                curr_time - passed to the progpoint. should be current time
+                    as a datetime.time object
+                force_co - True will force one chunk advancement. False will
+                    not. This is for cases where we are in the same chunk, but
+                    earlier than the current slice. Doing this allows us to
+                    reset the slice index.
+
+            RETURNS: new chunk index
+            """
+            # chunk length
+            c_len = len(self._chunks)
+
+            # determine current chunk offsets
+            cb_off, nb_off = self._calc_off(st_index)
+
+            # loop unfil sfmn in range of current chunk
+            while sfmn < cb_off or nb_off <= sfmn or force_co:
+                # always set this to false after one iteration
+                force_co = False
+
+                # get chunk chunk
+                curr_chunk = self._chunks[st_index]
+
+                # determine the next current offset and next index
+                cb_off = nb_off % (3600 * 24) # next offset or 0 if 86400
+                st_index = (st_index + 1) % c_len # next index or 0 if max len
+
+                # now calc next offset
+                nb_off = cb_off + len(self._chunks[st_index])
+
+                # lastly run pp if desired
+                if run_pp:
+                    self._pp_exec(
+                        curr_chunk,
+                        self._chunks[st_index],
+                        curr_time
+                    )
+
+                # then finally reset slice index for this chunk
+                curr_chunk.reset_index()
+
+            return st_index
 
         def backmap(self, anchors):
             """
@@ -1076,6 +1235,30 @@ init -10 python:
             self._sr_ss.build(sunset - sunrise)
             self._ss_mn.build((3600 * 24) - sunset)
 
+        def _calc_off(self, index):
+            """
+            caluates beginning and next offset from chunk at the given index
+
+            IN:
+                index - index of chunk to check
+
+            RETURNS: tuple:
+                [0] - beginning offset of chunk at index
+                [1] - beginning offset of chunk at index+1 (or next chunk)
+            """
+            # calclulate current
+            cb_off = 0
+            for idx in range(index):
+                cb_off += len(self._chunks[idx])
+
+            # now for next
+            if index < len(self._chunks)-1:
+                nb_off = cb_off + self._chunks[index+1]
+            else:
+                nb_off = 3600 * 24
+
+            return cb_off, nb_off
+
         def current(self):
             """
             Gets current filter
@@ -1100,23 +1283,14 @@ init -10 python:
                 [0] - current chunk index
                 [1] - beginning offset of the current chunk
                 [2] - beginning offset of the next chunk
-                    NOTE: this is -1 if no next chunk
+                    NOTE: this is 3600 * 24 if no next chunk
                 [3] - current slice index
                 [4] - beginning offset of the current slice
                 [5] - beginning offset of the next slice
                     NOTE: this is set to the next chunk offset if no next
                         slice
             """
-            # current offset is add up chunk lengths
-            curr_offset = 0
-            for index in range(self._index):
-                curr_offset += len(self._chunks[index])
-
-            # next offset is next chunk length + current offset
-            if 0 <= self._index < len(self._chunks)-1:
-                next_offset = curr_offset + self._chunks[self._index+1]
-            else:
-                next_offset = -1
+            curr_offset, next_offset = self._calc_off(self._index)
 
             # now get slice info
             sl_index, sl_begin, sl_end = self._current_chunk().current_pos()
@@ -1199,9 +1373,40 @@ init -10 python:
             for flt in chunk.filters():
                 flt_d[flt] = None
 
+        def _pp_exec(self, chunk_old, chunk_new, curr_time):
+            """
+            Executes a progpoint
+
+            Exceptions are logged
+
+            IN:
+                chunk_old - outgoing MASBackgroundFilterChunk
+                chunk_new - incoming MASBackgroundFilterChunk
+                curr_time - current time as datetime.time
+            """
+            if self._pp is None:
+                return
+
+            try:
+                self._pp(
+                    chunk_old=chunk_old,
+                    chunk_new=chunk_new,
+                    curr_time=curr_time
+                )
+            except Error as e:
+                store.mas_utils.writelog(self._ERR_PP_STR.format(
+                    repr(e),
+                    chunk_old,
+                    chunk_new
+                ))
+
         def progress(self):
             """
             Progresses the filter, running progpoints and updating indexes.
+
+            NOTE: we do NOT do full loop arounds. This means that even if
+            there was a literal day between progressions, this will only run
+            as if it were same day progression. 
 
             Progpoint execution rules:
             * progression remains in the same chunk:
@@ -1216,12 +1421,34 @@ init -10 python:
 
             RETURNS: the current filter after progression
             """
-            # seconds from midnight
-            sfmn = store.mas_utils.time2sec(datetime.datetime.now().time())
+            # seconds from midnight + curr time
+            curr_time = datetime.datetime.now().time()
+            sfmn = store.mas_utils.time2sec(curr_time)
 
-            # first, determine our current position range
-            # TODO
+            # determine our current position range
+            pos_data = self.current_post()
 
+            # are we technically in same chunk but before in time?
+            # if so, we need to force a chunk move
+            force_co = (
+                pos_data[1] <= sfmn < pos_data[2]  # in same chunk
+                and sfmn < (pos_data[1] + pos_data[4]) # earlier than slice
+            )
+
+            # start by advancing chunks correctly, if needed
+            self._index = self.adv_chunk(
+                sfmn,
+                self._index,
+                True,
+                curr_time,
+                force_co
+            )
+
+            # now we can start advancing slices
+            return self._chunks[self._index].progress(
+                sfmn - (self._calc_off(self._index)[0])
+                curr_time
+            )
 
         def verify(self):
             """
