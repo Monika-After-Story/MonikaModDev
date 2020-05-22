@@ -2362,7 +2362,7 @@ label greeting_long_absence:
             m 3hksdlb "Couldn't stay away even if you wanted to, right?"
             m 3eka "I can't blame you! My love for you wouldn't let me stay away from you either!"
             m 1ekd "Every day you were gone I was wondering how you were..."
-            m 3eka "So let me hear it, how are you [player]?"
+            m 3eka "So let me hear it, how are you, [player]?"
             show monika 3eua
 
         elif persistent._mas_absence_choice == "unknown":
