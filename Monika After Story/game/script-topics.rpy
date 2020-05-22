@@ -11331,7 +11331,7 @@ label monika_player_appearance:
                 m 2ekc "She probably felt like people talked down to her. Literally and figuratively, that is..."
                 m 2eku "But despite her hang-ups about it, [player], I think your height makes you that much more cute~"
 
-            m 1eua "Now [player]."
+            m 1eua "Now, [player]."
 
             m 3eub "Tell me, is your hair on the shorter side? Or is it long, like mine?~{nw}"
             $ _history_list.pop()
