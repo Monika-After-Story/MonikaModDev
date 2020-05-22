@@ -430,6 +430,7 @@ init -10 python:
                     between progressions.
                     the following args are passed to the progpoint:
                         flt_old - the outgoing filter (string)
+                            NOTE: this is None if we are starting the game
                         flt_new - the incoming filter (string)
                         curr_time - the current time
                     pass None to not use a progpoint
@@ -1020,6 +1021,7 @@ init -10 python:
                     passes between progressions.
                     the following args are passed to the progpoint:
                         chunk_old - the outgoing chunk (MBGFChunk)
+                            NOTE: this is None if we are staring the game
                         chunk_new - the incoming chunk (MBGFChunk)
                         curr_time - the current time
                     (Default: None)

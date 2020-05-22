@@ -48,7 +48,34 @@ python early:
         EV_ACT_POOL
     ]
 
+    #### bitmask flags
+    # all bitmask flags apply until next restart or the flag is unset.
+    # NOTE: do NOT add a bitmask flag if you want to save its value.
+    #   if you need saved data, add a new prop or use an existing one.
 
+    EV_FLAG_HFM = 2
+    # Hidden From Menus
+    # this flag marks an event as temporarily hidden from all menus
+    
+    EV_FLAG_HFRS = 4
+    # Hidden From Random Selection
+    # this flag marks an event as temporarily hidden from all random-based
+    # selection 
+    # Random-based selection consists of:
+    #   - startup greetings
+    #   - randomly selected farewells
+    #   - random topics
+
+    EV_FLAG_HFNAS = EV_FLAG_HFM | EV_FLAG_HFRS
+    # Hidden from Non-Active Selection
+    # combines hidden from menu and random select
+
+    # TODO: when needed:
+    # Hidden From Check Events - ignored in Event.checkEvents 
+    #   NOTE: this is potentially dangerous, so maybe we dont need
+    # Hidden From Active Selection - like blacklisting queue/push actions
+
+    #### End bitmask flags
 
     # custom event exceptions
     class EventException(Exception):
@@ -137,7 +164,7 @@ python early:
     #   show_in_idle - True if this Event can be shown during idle
     #       False if not
     #       (Default: False)
-    #   flags - bitmask system that acts as unchanging flags.
+    #   flags - bitmask system that acts as unchanging or temporary flags.
     #       (Default: 0)
     class Event(object):
 
@@ -172,6 +199,22 @@ python early:
             "rules",
             "diary_entry",
             "flags"
+        )
+
+        # filterables
+        FLT = (
+            "category", # 0
+            "unlocked", # 1
+            "random", # 2
+            "pool", # 3
+            "action", # 4
+            "seen", # 5
+            "excl_cat", # 6
+            "moni_wants", # 7
+            "sensitive", # 8
+            "aff", # 9
+            "flag_req", # 10
+            "flag_ban", # 11
         )
 
         # other constants
@@ -492,7 +535,6 @@ python early:
             low, high = self.aff_range
             return store.mas_affection._betweenAff(low, aff_level, high)
 
-
         def canRepeat(self):
             """
             Checks if this event has the vars to enable repeat
@@ -505,6 +547,14 @@ python early:
                 and self.years is not None
             )
 
+        def flag(self, flags):
+            """
+            Adds flags from the given flags to this event's flags
+
+            IN:
+                flags - flags to add to this event
+            """
+            self.flags |= flags
 
         def prepareRepeat(self, force=False):
             """
@@ -597,6 +647,15 @@ python early:
             NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
             """
             return mas_timePastSince(self.last_seen, time_passed, _now)
+
+        def unflag(self, flags):
+            """
+            Removes given flags from this event's flags
+
+            IN:
+                flags - flags to remove from this event
+            """
+            self.flags &= ~flags
 
         @staticmethod
         def getSortPrompt(ev):
@@ -892,22 +951,30 @@ python early:
                 moni_wants=None,
                 sensitive=None,
                 aff=None,
-            ):
-            #
-            # Filters the given event object accoridng to the given filters
-            # NOTE: NO SANITY CHECKS
-            #
-            # For variable explanations, please see the static method
-            #   filterEvents
-            #
-            # RETURNS:
-            #   True if this event passes the filter, False if not
+                flag_req=None,
+                flag_ban=None
+        ):
+            """
+            Filters the given event object accoridng to the given filters
+            NOTE: NO SANITY CHECKS
+
+            For variable explanations, please see the static method
+            filterEvents
+
+            RETURNS:
+                True if this event passes the filter, False if not
+            """
 
             # collections allow us to match all
             from collections import Counter
 
+            # NOTE: this is done in an order to minimize branching.
+
             # now lets filter
             if unlocked is not None and event.unlocked != unlocked:
+                return False
+
+            if aff is not None and not event.checkAffection(aff):
                 return False
 
             if random is not None and event.random != random:
@@ -916,7 +983,10 @@ python early:
             if pool is not None and event.pool != pool:
                 return False
 
-            if aff is not None and not event.checkAffection(aff):
+            if flag_ban is not None and (event.flags & flag_ban) != 0:
+                return False
+
+            if flag_req is not None and (event.flags & flag_req) == 0:
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:
@@ -956,108 +1026,101 @@ python early:
             return True
 
         @staticmethod
-        def filterEvents(
-                events,
-#                full_copy=False,
-                category=None,
-                unlocked=None,
-                random=None,
-                pool=None,
-                action=None,
-                seen=None,
-                excl_cat=None,
-                moni_wants=None,
-                sensitive=None,
-                aff=None
-            ):
-            #
-            # Filters the given events dict according to the given filters.
-            # HOW TO USE: Use ** to pass in a dict of filters. they must match
-            # the names we use here.
-            #
-            # IN:
-            #   events - the dict of events we want to filter
-            #   full_copy - True means we create a new dict with deepcopies of
-            #       the events. False will only copy references
-            #       (Default: False)
-            #       DEPRECATEDE
-            #
-            #   FILTERING RULES: (recommend to use **kwargs)
-            #   NOTE: None means we ignore that filtering rule
-            #   category - Tuple of the following format:
-            #       [0]: True means we use OR logic. False means AND logic.
-            #       [1]: Tuple/list of strings that to match category.
-            #       (Default: None)
-            #       NOTE: If either element is None, we ignore this filteirng
-            #           rule.
-            #   unlocked - boolean value to match unlocked attribute.
-            #       (Default: None)
-            #   random - boolean value to match random attribute
-            #       (Default: None)
-            #   pool - boolean value to match pool attribute
-            #       (Default: None)
-            #   action - Tuple/list of strings/EV_ACTIONS to match action
-            #       NOTE: OR logic is applied
-            #       (Default: None)
-            #   seen - boolean value to match renpy.seen_label
-            #       (True means include seen, False means dont include seen)
-            #       (Default: None)
-            #   excl_cat - list of categories to exclude, if given an empty
-            #       list it filters out events that have a non-None category
-            #       (Default: None)
-            #   moni_wants - boolean value to match if the event has the monika
-            #       wants this first.
-            #       (Default: None )
-            #   sensitive - boolean value to match if the event is sensitive
-            #       or not
-            #       NOTE: if None, we use inverse of _mas_sensitive_mode, only
-            #           if sensitive mode is True.
-            #           AKA: we only filter sensitve topics if sensitve mode is
-            #           enabled.
-            #       (Default: None)
-            #   aff - affection level to match aff_range
-            #       (Default: None)
-            #
-            # RETURNS:
-            #   if full_copy is True, we return a completely separate copy of
-            #   Events (in a new dict) with the given filters applied
-            #   If full_copy is False, we return a copy of references of the
-            #   Events (in a new dict) with the given filters applied
-            #   if the given events is None, empty, or no filters are given,
-            #   events is returned
+        def filterEvents(events, **flt_args):
+            """
+            Filters the given events dict according to the given filters.
+            HOW TO USE: Use ** to pass in a dict of filters. they must match
+            the names we use here.
 
+            IN:
+                events - the dict of events we want to filter
+                **flt_args - see FILTERING RULES below for name=value rules
+
+            FILTERING RULES: (recommend to use **kwargs)
+            NOTE: None means we ignore that filtering rule
+                category - Tuple of the following format:
+                    [0]: True means we use OR logic. False means AND logic.
+                    [1]: Tuple/list of strings that to match category.
+                    (Default: None)
+                    NOTE: If either element is None, we ignore this
+                        filtering rule.
+                unlocked - boolean value to match unlocked attribute.
+                    (Default: None)
+                random - boolean value to match random attribute
+                    (Default: None)
+                pool - boolean value to match pool attribute
+                    (Default: None)
+                action - Tuple/list of strings/EV_ACTIONS to match action
+                    NOTE: OR logic is applied
+                    (Default: None)
+                seen - boolean value to match renpy.seen_label
+                    (True means include seen, False means dont include seen)
+                    (Default: None)
+                excl_cat - list of categories to exclude, if given an empty
+                    list it filters out events that have a non-None category
+                    (Default: None)
+                moni_wants - boolean value to match if the event has the monika
+                    wants this first.
+                    (Default: None )
+                sensitive - boolean value to match if the event is sensitive
+                    or not
+                    NOTE: if None, we use inverse of _mas_sensitive_mode, only
+                        if sensitive mode is True.
+                        AKA: we only filter sensitve topics if sensitve mode is
+                        enabled.
+                    (Default: None)
+                aff - affection level to match aff_range
+                    (Default: None)
+                flag_req - flags that the event must match 
+                    (Default: None)
+                flag_ban - flags that the event must NOT have
+                    (Default: None)
+
+            RETURNS: copy of references of the Events in a new dict with
+                the given filters applied.
+                if the given events is None, empty, or no filters are given,
+                events is returned
+            """
             # sanity check
-            if (not events or len(events) == 0 or (
-                    category is None
-                    and unlocked is None
-                    and random is None
-                    and pool is None
-                    and action is None
-                    and seen is None
-                    and excl_cat is None
-                    and moni_wants is None
-                    and sensitive is None
-                    and aff is None)):
+            if (
+                    not events
+                    or len(events) == 0
+                    or store.mas_utils.all_none(data=flt_args)
+            ):
                 return events
 
             # copy check
 #            if full_copy:
 #                from copy import deepcopy
 
-            # setting up rules
-            if (category and (
-                    len(category) < 2
-                    or category[0] is None
-                    or category[1] is None
-                    or len(category[1]) == 0)):
-                category = None
+            # setup keys
+            cat_key = self.FLT[0]
+            act_key = self.FLT[4]
+            sns_key = self.FLT[8]
+
+            # validate filter rules
+            category = flt_args.get(cat_key)
+            if (
+                    category
+                    and (
+                        len(category) < 2
+                        or category[0] is None
+                        or category[1] is None
+                        or len(category[1]) == 0
+                    )
+            ):
+                flt_args[cat_key] = None
+
+            action = flt_args.get(act_key)
             if action and len(action) == 0:
-                action = None
+                flt_args[act_key] = None
+
+            sensitive = flt_args.get(sns_key)
             if sensitive is None:
                 try:
                     # i have no idea if this is reachable from here
                     if persistent._mas_sensitive_mode:
-                        sensitive = False
+                        flt_args[sns_key] = False
                 except:
                     pass
 
@@ -1066,11 +1129,7 @@ python early:
             # python 2
             for k,v in events.iteritems():
                 # time to apply filtering rules
-                if Event._filterEvent(v,category=category, unlocked=unlocked,
-                        random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat,moni_wants=moni_wants,
-                        sensitive=sensitive, aff=aff):
-
+                if Event._filterEvent(v, **flt_args):
                     filt_ev_dict[k] = v
 
             return filt_ev_dict
@@ -3299,6 +3358,32 @@ init -991 python in mas_utils:
         "{": "{{",
         "[": "[["
     }
+
+    def all_none(data=None, lata=None):
+        """
+        Checks if a dict and/or list is all None
+
+        IN:
+            data - Dict of data. values are checked for None-ness
+                (Default: None)
+            lata - List of data. values are checked for None-ness
+                (Default: None)
+
+        RETURNS: True if all data is None, False otherwise
+        """
+        # check dicts
+        if data is not None:
+            for value in data.itervalues():
+                if value is not None:
+                    return False
+
+        # now lists
+        if lata is not None:
+            for value in lata:
+                if value is not None:
+                    return False
+
+        return True
 
 
     def clean_gui_text(text):

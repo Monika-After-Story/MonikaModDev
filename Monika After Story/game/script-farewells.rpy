@@ -131,7 +131,8 @@ label mas_farewell_start:
             evhand.farewell_database,
             unlocked=True,
             pool=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
     if len(bye_pool_events) > 0:

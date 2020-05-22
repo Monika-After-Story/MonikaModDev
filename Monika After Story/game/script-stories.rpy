@@ -96,14 +96,16 @@ label monika_short_stories_menu:
                 mas_stories.story_database,
                 category=(True,[mas_stories.TYPE_SCARY]),
                 pool=False,
-                aff=mas_curr_affection
+                aff=mas_curr_affection,
+                flag_ban=EV_FLAG_HFM
             )
         else:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
                 excl_cat=list(),
                 pool=False,
-                aff=mas_curr_affection
+                aff=mas_curr_affection,
+                flag_ban=EV_FLAG_HFM
             )
 
         # build menu list
