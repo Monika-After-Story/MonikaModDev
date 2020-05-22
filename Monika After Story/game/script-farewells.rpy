@@ -1209,7 +1209,7 @@ label bye_prompt_game:
             "No.":
                 if mas_isMoniNormal(higher=True):
                     m 2ekc "Aww..."
-                    m 3ekc "Alright, [player], but you better come back soon."
+                    m 3ekc "Alright [player], but you better come back soon."
                     m 3tsb "I might get jealous if you spend too much time in another game without me."
                     m 1hua "Anyway, I hope you have fun!"
                 else:
