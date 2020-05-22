@@ -2793,7 +2793,7 @@ label greeting_back_from_school:
                         return "love"
 
                     "It was caused by people.":
-                        m 2ekc "Oh no [player]...{w=0.5} That must have been terrible to experience."
+                        m 2ekc "Oh no, [player]...{w=0.5} That must have been terrible to experience."
                         m 2dsc "It's one thing to just have something bad happen to you..."
                         m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
                         if persistent._mas_pm_currently_bullied or persistent._mas_pm_is_bullying_victim:
