@@ -10305,7 +10305,7 @@ label monika_grad_speech_call:
                         $ persistent._mas_pm_liked_grad_speech = True
                         $ persistent._mas_pm_listened_to_grad_speech = True
 
-                        m 2eua "Thanks [player]!"
+                        m 2eua "Thanks, [player]!"
                         m 4hub "I'm glad you enjoyed it!"
 
                     "That {i}was{/i} long":
