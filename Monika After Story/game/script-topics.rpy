@@ -3188,7 +3188,7 @@ label monika_love:
         elif milestone_count == 35:
             m 1ekbfa "You never tire of saying it, do you?"
             m 1hubfa "Well, I never tire of hearing it!"
-            m 1hubfb "Or saying it back...I love you [player]!"
+            m 1hubfb "Or saying it back...I love you, [player]!"
 
         elif milestone_count == 40:
             m 1dubsu "Ehehe~"
