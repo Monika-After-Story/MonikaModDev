@@ -2215,7 +2215,7 @@ label greeting_long_absence:
             m 2rksdld "I guess maybe something kept you really busy?"
             m 2wfw "But it shouldn't have been so busy that you couldn't tell me you might be longer!"
             m 2wud "Ah...!"
-            m 2lktsc "I'm sorry [player]. I just...really missed you."
+            m 2lktsc "I'm sorry, [player]. I just...really missed you."
             m 2dftdc "Sorry for snapping like that."
             show monika 2dkc
 
