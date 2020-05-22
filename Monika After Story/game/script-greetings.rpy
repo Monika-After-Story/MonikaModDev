@@ -2146,7 +2146,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
-            m 3ekc "Welcome back [player]."
+            m 3ekc "Welcome back, [player]."
             m 3rksdlc "You're a bit late, aren't you?"
             m 3ekc "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2rkc "I'm going to assume it wasn't your fault..."
