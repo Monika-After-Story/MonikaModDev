@@ -11292,7 +11292,7 @@ label monika_player_appearance:
                 persistent._mas_pm_height = height
 
             if persistent._mas_pm_height >= mas_height_tall:
-                m 3eua "Wow, you're pretty tall [player]!"
+                m 3eua "Wow, you're pretty tall, [player]!"
                 m 1eud "I can't say I've really met anybody who I'd consider to be tall."
                 m 3rksdla "I don't know my actual height, to be fair, so I can't really draw an accurate comparison..."
 
