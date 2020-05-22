@@ -481,6 +481,34 @@ init 6 python:
             _pool=_pool
         )
 
+    def mas_protectedShowEVL(
+            ev_label,
+            code,
+            unlock=False,
+            _random=False,
+            _pool=False,
+        ):
+        """
+        Shows an event given label and code.
+
+        Does checking if the actions should happen
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+            unlock - True if we want to unlock this Event
+                (Default: False)
+            _random - True if we want to random this event
+                (Default: False)
+            _pool - True if we want to random thsi event
+                (Default: False)
+        """
+        mas_showEVL(
+            ev_label=ev_label,
+            code=code,
+            unlock=unlock,
+            _random=_random and store.mas_bookmarks_derand.shouldRandom(ev_label),
+            _pool=_pool
+        )
 
     def mas_lockEVL(ev_label, code):
         """
@@ -1534,7 +1562,6 @@ init python:
                 (Default: False)
         """
         if ev:
-
             if unlock:
                 ev.unlocked = True
 
@@ -2524,6 +2551,12 @@ init 5 python:
 label mas_bookmarks:
     show monika idle
     python:
+        #Map for label prefixes: label_suffix_get_function
+        #NOTE: The function MUST take in the event object as a parameter
+        prompt_suffix_map = {
+            "mas_song_": store.mas_songs.getPromptSuffix
+        }
+
         # local function that generats indexed based list for bookmarks
         def gen_bk_disp(bkpl):
             return [
@@ -2532,10 +2565,19 @@ label mas_bookmarks:
             ]
 
         # generate list of propmt/label tuples of bookmarks
-        bookmarks_pl = [
-            (renpy.substitute(ev.prompt), ev.eventlabel)
-            for ev in mas_get_player_bookmarks()
-        ]
+        bookmarks_pl = []
+        for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
+            label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
+
+            #Get the suffix function
+            suffix_func = prompt_suffix_map.get(label_prefix)
+
+            #Now call it if it exists to get the suffix
+            prompt_suffix = suffix_func(ev) if suffix_func else ""
+
+            #Now append based on the delegate
+            bookmarks_pl.append((renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel))
+
         bookmarks_pl.sort()
         bookmarks_disp = gen_bk_disp(bookmarks_pl)
 

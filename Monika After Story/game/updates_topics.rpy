@@ -119,6 +119,9 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
+        #NOTE: If a version does not have and update script, its version still must be documented and point to the next update
+        #script available
+
         #updates.version_updates[vv0_11_2] = vv0_11_3
         #updates.version_updates[vv0_11_1] = vv0_11_3
         updates.version_updates[vv0_11_0] = vv0_11_1
