@@ -805,7 +805,7 @@ label bye_long_absence:
             m 1eub "Oh!"
             m 1hua "Nowhere near as long as I feared then."
             m 3rksdla "Jeez, you really did worry me..."
-            m 3esa "Don't worry about me though [player]."
+            m 3esa "Don't worry about me though, [player]."
             m "I can cope waiting that long with ease."
             m 3eka "I'll still miss you greatly though."
         "A week.":
