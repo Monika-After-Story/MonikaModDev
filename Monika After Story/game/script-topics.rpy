@@ -10330,7 +10330,7 @@ label monika_grad_speech_call:
     else:
         #did you timeout once?
         if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_listened_to_grad_speech:
-            m 2eub "Sure thing [player]. I'll happily give my speech again!"
+            m 2eub "Sure thing, [player]. I'll happily give my speech again!"
 
             m 2eka "You have enough time, right?{nw}"
             $ _history_list.pop()
