@@ -14465,7 +14465,7 @@ label monika_fear:
     m 2fkc "That you, your love, perhaps even the entirety of the literature club were all nothing but a figment of my own imagination."
     m "That my old world, as grey and meaningless as it now seems, is all there truly is."
     m 2lkc "..."
-    m 1rksdlb "Ahaha~ {nw}"
+    m 1rksdlb "Ahaha~ {w=0.5}{nw}"
     extend 1eksdlb "Sorry, that got pretty dark, didn't it?"
     m 1eksdla "I feel kinda silly now.{w=0.5} {nw}"
     extend 3eua "After all, there's no way something like that could be true, right?"
