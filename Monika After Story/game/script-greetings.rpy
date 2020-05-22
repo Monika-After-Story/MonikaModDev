@@ -119,15 +119,20 @@ init -1 python in mas_greetings:
         """
         # NOTE: new rules:
         #   eval in this order:
-        #   1. priority (lower or same is True)
-        #   2. type/non-0type
-        #   3. unlocked
-        #   4. aff_ramnge
-        #   5. all rules
-        #   6. conditional
+        #   1. hidden via bitmask
+        #   2. priority (lower or same is True)
+        #   3. type/non-0type
+        #   4. unlocked
+        #   5. aff_ramnge
+        #   6. all rules
+        #   7. conditional
         #       NOTE: this is never cleared. Please limit use of this
         #           property as we should aim to use lock/unlock as primary way
         #           to enable or disable greetings.
+
+        # check if hidden from random select
+        if ev.anyflag(store.EV_FLAG_HFRS):
+            return False
 
         # priority check, required
         # NOTE: all greetings MUST have a priority

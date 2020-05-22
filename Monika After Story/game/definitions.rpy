@@ -516,6 +516,27 @@ python early:
                 and "monika wants this first" in self.rules
             )
 
+        def allflags(self, flags):
+            """
+            Checks if this event has ALL flags from flags
+
+            IN:
+                flags - flags to check
+
+            RETURNS: True if all flags from flags is in this event's flags
+            """
+            return (flags & ~self.flags) == 0
+
+        def anyflags(self, flags):
+            """
+            Checks if this event has ANY flag from flags
+
+            IN:
+                flags - flags to check
+
+            RETURNS: True if any flag from flags is in this event's flag
+            """
+            return (self.flags & flags) != 0
 
         def checkAffection(self, aff_level):
             """
@@ -983,10 +1004,10 @@ python early:
             if pool is not None and event.pool != pool:
                 return False
 
-            if flag_ban is not None and (event.flags & flag_ban) != 0:
+            if flag_ban is not None and event.anyflags(flag_ban):
                 return False
 
-            if flag_req is not None and (event.flags & flag_req) == 0:
+            if flag_req is not None and event.allflags(flag_req):
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:

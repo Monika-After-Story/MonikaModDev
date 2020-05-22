@@ -13,6 +13,7 @@
 default persistent.mas_late_farewell = False
 
 init -1 python in mas_farewells:
+    import store
 
     # custom farewell functions
     def selectFarewell():
@@ -29,9 +30,9 @@ init -1 python in mas_farewells:
             renpy.store.evhand.farewell_database,
             unlocked=True,
             pool=False, # may as well not filter these
-            moni_wants=True
+            moni_wants=True,
+            flag_ban=store.EV_FLAG_HFRS
         )
-
 
         if moni_wants_farewells is not None and len(moni_wants_farewells) > 0:
 
@@ -44,7 +45,8 @@ init -1 python in mas_farewells:
         unlocked_farewells = renpy.store.Event.filterEvents(
             renpy.store.evhand.farewell_database,
             unlocked=True,
-            pool=False
+            pool=False,
+            flag_ban=store.EV_FLAG_HFRS
         )
 
         # filter farewells using the affection rules dict

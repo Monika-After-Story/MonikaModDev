@@ -416,6 +416,10 @@ init -10 python:
             "[ERROR] error in slice pp | {0}\n"
             "=====FROM: {1} -> {2}\n"
         )
+        _ERR_PP_STR_G = (
+            "[ERROR] error in global slice pp | {0}\n"
+            "=====FROM: {1} -> {2}\n"
+        )
 
         def __init__(self, is_day, pp, *slices):
             """
@@ -546,6 +550,20 @@ init -10 python:
                         nsl_data.flt_slice.name,
                         curr_time
                     )
+
+                # but always run the global prog
+                try:
+                    store.mas_background._gbl_flt_change(
+                        csl_data.flt_slice.name,
+                        nsl_data.flt_slice.name,
+                        curr_time
+                    )
+                except Error as e:
+                    store.mas_utils.writelog(self._ERR_PP_STR_G.format(
+                        repr(e),
+                        csl_data.flt_slice.name,
+                        nsl_data.flt_slice.name
+                    ))
 
             return st_index
 
@@ -1005,6 +1023,11 @@ init -10 python:
             "=====FROM:\n{1}\n\n"
             "=====TO\n{2}\n"
         )
+        _ERR_PP_STR_G = (
+            "[ERROR] error in global chunk pp | {0}\n\n"
+            "=====FROM:\n{1}\n\n"
+            "=====TO\n{2}\n"
+        )
 
         def __init__(self, mn_sr, sr_ss, ss_mn, pp=None):
             """
@@ -1137,13 +1160,30 @@ init -10 python:
                 # now calc next offset
                 nb_off = cb_off + len(self._chunks[st_index])
 
+                # new chunk is
+                new_chunk = self._chunks[st_index]
+
                 # lastly run pp if desired
                 if run_pp:
                     self._pp_exec(
                         curr_chunk,
-                        self._chunks[st_index],
+                        new_chunk,
                         curr_time
                     )
+
+                # always run global after
+                try:
+                    store.mas_background._gbl_chunk_change(
+                        curr_chunk,
+                        new_chunk,
+                        curr_time
+                    )
+                except Error as e:
+                    store.mas_utils.writelog(self._ERR_PP_STR_G.format(
+                        repr(e),
+                        str(curr_chunk),
+                        str(new_chunk),
+                    ))
 
                 # then finally reset slice index for this chunk
                 curr_chunk.reset_index()
@@ -1398,8 +1438,8 @@ init -10 python:
             except Error as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
-                    chunk_old,
-                    chunk_new
+                    str(chunk_old),
+                    str(chunk_new)
                 ))
 
         def progress(self):
@@ -2233,6 +2273,48 @@ init 800 python:
 #START: Programming points
 init -2 python in mas_background:
     import store
+    import store.mas_sprites as mspr
+
+
+    def _gbl_flt_change(old_flt, new_flt, curr_time):
+        """
+        Runs when a filter change occurs
+
+        IN:
+            old_flt - outgoing filter. Will be None on startup.
+            new_flt - incoming filter.
+            curr_time - current time as datetime.time
+        """
+        # TODO: how should we deal with islands ?
+        if new_flt != mspr.FLT_DAY and new_flt != mspr.FLT_NIGHT:
+            # hide islands
+            store.mas_flagEVL("mas_monika_islands", "EVE", store.EV_FLAG_HFM)
+            store.mas_flagEVL("greeting_ourreality", "GRE", store.EV_FLAG_HFRS)
+        else:
+            # allow islands to be shown
+            store.mas_unflagEVL(
+                "mas_monika_islands",
+                "EVE",
+                store.EV_FLAG_HFM
+            )
+            store.mas_unflagEVL(
+                "greeting_ourreality",
+                "GRE",
+                store.EV_FLAG_HFRS
+            )
+
+
+    def _gbl_chunk_change(old_chunk, new_chunk, curr_time):
+        """
+        Runs when a chunk change occurs
+
+        IN:
+            old_chunk - outgoing chunk, will be None on startup
+            new_flt - incoming chunk
+            curr_time - current time as datetime.time
+        """
+        pass
+
 
     def _def_background_entry(_old):
         """
