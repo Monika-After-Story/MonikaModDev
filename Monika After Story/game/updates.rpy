@@ -382,6 +382,13 @@ label v0_11_3(version="v0_11_3"):
             #   number of pool unlocks given
             persistent._mas_pool_unlocks += store.mas_xp.level() * 4
 
+        #Adjust consumables to be at their max stock amount
+        for consumable_id in persistent._mas_consumable_map.iterkeys():
+            cons = mas_getConsumable(consumable_id)
+
+            if cons and cons.getStock() > cons.max_stock_amount:
+                persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
+
         # unlock monika_kiss
         mas_unlockEVL("monika_kiss", "EVE")
 
