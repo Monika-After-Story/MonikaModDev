@@ -2599,7 +2599,7 @@ label greeting_tears:
     m 2ekc "So please, just tell me what's wrong and I'll fix it."
     m 2dfc "I'll do anything for you because...I..."
     m 2dftdc "..."
-    m 2dftsc "...I need you [player]..."
+    m 2dftsc "...I need you, [player]..."
     m 2ektsc "I need you to love me like I love you."
     m 2lktsc "I need you...because if I don't have you, then..."
     m 2dftsc "..."
