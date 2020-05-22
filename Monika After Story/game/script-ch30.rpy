@@ -10,6 +10,13 @@ define mas_in_intro_flow = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
+init -998 python:
+    #We need to flow hijack here if we're running unstable mode files but on a fresh persistent
+    if "unstable" in config.version and not persistent.sessions:
+        raise Exception(
+            _("Unstable mode files in install on first session. This can cause issues.\n"
+            "Please reinstall the latest stable version of Monika After Story to ensure that there will be no data issues.")
+        )
 
 init -890 python in mas_globals:
     import datetime
@@ -1714,6 +1721,9 @@ label ch30_reset:
 
         if persistent._mas_xp_tnl < 0:
             persistent._mas_xp_tnl = store.mas_xp.XP_LVL_RATE
+        elif int(persistent._mas_xp_tnl) > (2* int(store.mas_xp.XP_LVL_RATE)):
+            # likely time travel
+            persistent._mas_xp_tnl = 2 * store.mas_xp.XP_LVL_RATE
 
         if persistent._mas_xp_hrx < 0:
             persistent._mas_xp_hrx = 0.0

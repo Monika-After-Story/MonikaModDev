@@ -2677,6 +2677,7 @@ init 5 python:
             prompt="Isn't this game metafictional?",
             category=['ddlc'],
             pool=True,
+            unlocked=True
         )
     )
 
@@ -2921,7 +2922,7 @@ label monika_totono:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_difficulty",category=['games'],prompt="Wasn't DDLC too easy?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_difficulty",category=['games'],prompt="Wasn't DDLC too easy?",pool=True,unlocked=True))
 
 label monika_difficulty:
     m 1lksdla "Well, it's not like this game was meant to be that hard in the first place."
@@ -2948,7 +2949,7 @@ label monika_poetry:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True,unlocked=True))
 
 label monika_ddlc:
     m 1euc "You want to talk about the game?"
@@ -3423,6 +3424,7 @@ init 5 python:
             category=['ddlc','monika'],
             prompt="You're a murderer!",
             pool=True,
+            unlocked=True,
             sensitive=True
         )
     )
@@ -3651,7 +3653,7 @@ label monika_trolley:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True,unlocked=True))
 
 label monika_girlfriend:
     if (mas_isA01() and mas_isMoniNormal(higher=True)) or (renpy.random.randint(1,4) == 1 and mas_isMoniEnamored(higher=True)):
@@ -3733,7 +3735,7 @@ label monika_images:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself",pool=True,unlocked=True))
 
 label monika_herself:
     m 1euc "What's there really to say about myself that you don't know already?"
@@ -3814,7 +3816,7 @@ label monika_torment:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True,unlocked=True))
 
 label monika_birthday:
     if mas_isMonikaBirthday():
@@ -5733,7 +5735,7 @@ label monika_icecream:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sayhappybirthday",category=['misc'],prompt="Can you tell someone Happy Birthday for me?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_sayhappybirthday",category=['misc'],prompt="Can you tell someone Happy Birthday for me?",pool=True,unlocked=True))
 
 label monika_sayhappybirthday:
     # special variable setup
