@@ -11410,7 +11410,7 @@ label monika_player_appearance:
                             $ persistent._mas_pm_shaves_hair = False
                             $ persistent._mas_pm_no_hair_no_talk = False
 
-                            m 1ekd "I'm sorry to hear that [player]..."
+                            m 1ekd "I'm sorry to hear that, [player]..."
                             m 1eka "But just know that I don't care how much hair you have, you'll always look beautiful to me!"
                             m "And if you ever feel insecure or just want to talk about it, I'm always up for listening."
 
