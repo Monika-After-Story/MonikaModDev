@@ -10,6 +10,13 @@ define mas_in_intro_flow = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
+init -998 python:
+    #We need to flow hijack here if we're running unstable mode files but on a fresh persistent
+    if "unstable" in config.version and not persistent.sessions:
+        raise Exception(
+            _("Unstable mode files in install on first session. This can cause issues.\n"
+            "Please reinstall the latest stable version of Monika After Story to ensure that there will be no data issues.")
+        )
 
 init -890 python in mas_globals:
     import datetime
@@ -1034,20 +1041,24 @@ label ch30_nope:
 label ch30_autoload:
     # This is where we check a bunch of things to see what events to push to the
     # event list
-    $ m.display_args["callback"] = slow_nodismiss
-    $ m.what_args["slow_abortable"] = config.developer
-    $ import store.evhand as evhand
-    if not config.developer:
-        $ config.allow_skipping = False
-    $ mas_resetTextSpeed()
-    $ quick_menu = True
-    $ startup_check = True #Flag for checking events at game startup
-    $ mas_skip_visuals = False
+    python:
+        import store.evhand as evhand
 
-    # set flag to True to prevent ch30 from running weather alg
-    $ skip_setting_weather = False
+        m.display_args["callback"] = slow_nodismiss
+        m.what_args["slow_abortable"] = config.developer
 
-    $ mas_cleanEventList()
+        if not config.developer:
+            config.allow_skipping = False
+
+        mas_resetTextSpeed()
+        quick_menu = True
+        startup_check = True #Flag for checking events at game startup
+        mas_skip_visuals = False
+
+        #Set flag to True to prevent ch30 from running weather alg
+        skip_setting_weather = False
+
+        mas_cleanEventList()
 
     # set the gender
     call mas_set_gender
@@ -1057,16 +1068,17 @@ label ch30_autoload:
 
     #Affection will trigger a final farewell mode
     #If we got a fresh start, then -50 is the cutoff vs -115.
-    if (
-        persistent._mas_pm_got_a_fresh_start
-        and _mas_getAffection() <= -50
-    ):
-        $ persistent._mas_load_in_finalfarewell_mode = True
-        $ persistent._mas_finalfarewell_poem_id = "ff_failed_promise"
+    python:
+        if (
+            persistent._mas_pm_got_a_fresh_start
+            and _mas_getAffection() <= -50
+        ):
+            persistent._mas_load_in_finalfarewell_mode = True
+            persistent._mas_finalfarewell_poem_id = "ff_failed_promise"
 
-    elif _mas_getAffection() <= -115:
-        $ persistent._mas_load_in_finalfarewell_mode = True
-        $ persistent._mas_finalfarewell_poem_id = "ff_affection"
+        elif _mas_getAffection() <= -115:
+            persistent._mas_load_in_finalfarewell_mode = True
+            persistent._mas_finalfarewell_poem_id = "ff_affection"
 
 
     #If we should go into FF mode, we do.
@@ -1075,6 +1087,9 @@ label ch30_autoload:
 
     # set this to None for now
     $ selected_greeting = None
+
+    #We'll set up the background here, so other flows don't need to adjust it unless its for a specific reason
+    $ mas_startupBackground()
 
     # check if we took monika out
     # NOTE:
@@ -1314,35 +1329,36 @@ label ch30_preloop:
 
     window auto
 
-    # NOTE: keymaps will be set, but all actions will be shielded unless
-    #   desired by the appropriate flow.
-    $ mas_HKRaiseShield()
-    $ mas_HKBRaiseShield()
-    $ set_keymaps()
+    python:
+        # NOTE: keymaps will be set, but all actions will be shielded unless
+        #   desired by the appropriate flow.
+        mas_HKRaiseShield()
+        mas_HKBRaiseShield()
+        set_keymaps()
 
-    $ persistent.closed_self = False
-    $ persistent._mas_game_crashed = True
-    $ startup_check = False
-    $ mas_checked_update = False
-    $ mas_globals.last_minute_dt = datetime.datetime.now()
-    $ mas_globals.last_hour = mas_globals.last_minute_dt.hour
-    $ mas_globals.last_day = mas_globals.last_minute_dt.day
+        persistent.closed_self = False
+        persistent._mas_game_crashed = True
+        startup_check = False
+        mas_checked_update = False
+        mas_globals.last_minute_dt = datetime.datetime.now()
+        mas_globals.last_hour = mas_globals.last_minute_dt.hour
+        mas_globals.last_day = mas_globals.last_minute_dt.day
 
-    # delayed actions in here please
-    $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
+        # delayed actions in here please
+        mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
-    #Unlock windowreact topics
-    $ mas_resetWindowReacts()
+        #Unlock windowreact topics
+        mas_resetWindowReacts()
 
-    #Then prepare the notifs
-    $ mas_updateFilterDict()
+        #Then prepare the notifs
+        mas_updateFilterDict()
 
-    # save here before we enter the loop
-    $ renpy.save_persistent()
+        # save here before we enter the loop
+        renpy.save_persistent()
 
-    # check if we need to rebulid ev
-    if mas_idle_mailbox.get_rebuild_msg():
-        $ mas_rebuildEventLists()
+        # check if we need to rebulid ev
+        if mas_idle_mailbox.get_rebuild_msg():
+            mas_rebuildEventLists()
 
     if mas_skip_visuals:
         $ mas_OVLHide()
@@ -1354,11 +1370,10 @@ label ch30_preloop:
     $ mas_idle_mailbox.send_scene_change()
 
     # rain check
-    # TODO: the weather progression alg needs to run here
-    if not mas_weather.force_weather and not skip_setting_weather:
-        $ set_to_weather = mas_shouldRain()
-        if set_to_weather is not None:
-            $ mas_changeWeather(set_to_weather)
+    $ mas_startupWeather()
+
+    #We've skipped the initial weather set, we can now clear this flag
+    $ skip_setting_weather = False
 
     # otherwise, we are NOT skipping visuals
     $ mas_startup_song()
@@ -1706,6 +1721,9 @@ label ch30_reset:
 
         if persistent._mas_xp_tnl < 0:
             persistent._mas_xp_tnl = store.mas_xp.XP_LVL_RATE
+        elif int(persistent._mas_xp_tnl) > (2* int(store.mas_xp.XP_LVL_RATE)):
+            # likely time travel
+            persistent._mas_xp_tnl = 2 * store.mas_xp.XP_LVL_RATE
 
         if persistent._mas_xp_hrx < 0:
             persistent._mas_xp_hrx = 0.0
@@ -1947,6 +1965,9 @@ label ch30_reset:
     #Check if we need to unlock the songs rand delegate
     $ mas_songs.checkRandSongDelegate()
 
+    #Now check the analysis ev
+    $ store.mas_songs.checkSongAnalysisDelegate()
+
     #Run a confirmed party check within a week of Moni's bday
     $ mas_confirmedParty()
 
@@ -1967,4 +1988,7 @@ label ch30_reset:
 
         if seen_event('mas_preferredname'):
             mas_unlockEVL("monika_changename","EVE")
+
+    #Check BGSel topic unlocked state
+    $ mas_checkBackgroundChangeDelegate()
     return

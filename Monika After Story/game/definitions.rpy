@@ -3483,6 +3483,34 @@ init -991 python in mas_utils:
                 outfile.close()
 
 
+    def logcreate(filepath, append=False, flush=False, addversion=False):
+        """
+        Creates a log at the given filepath.
+        This also opens the log and sets raw_write to True.
+        This also adds per version number if desired
+
+        IN:
+            filepath - filepath of the log to create (extension is added)
+            append - True will append to the log. False will overwrite
+                (Default: False)
+            flush - True will flush every operation, False will not
+                (Default: False)
+            addversion - True will add the version, False will not
+                You dont need this if you create the log in runtime,
+                (Default: False)
+
+        RETURNS: created log object.
+        """
+        new_log = getMASLog(filepath, append=append, flush=flush)
+        new_log.open()
+        new_log.raw_write = True
+        if addversion:
+            new_log.write("VERSION: {0}\n".format(
+                store.persistent.version_number
+            ))
+        return new_log
+
+
     def logrotate(logpath, filename):
         """
         Does a log rotation. Log rotations contstantly increase. We defualt
@@ -4316,6 +4344,7 @@ init -1 python:
                 pass
         return []
 
+
     def is_running(proc_list):
         """
         Checks if a process in the given list is currently running.
@@ -4333,6 +4362,7 @@ init -1 python:
         # otherwise, not found
         return False
 
+
     # TODO: Remove the basedir file checks before the next full release
     def is_apology_present():
         return (
@@ -4341,6 +4371,7 @@ init -1 python:
             or store.mas_utils.is_file_present('imsorry')
             or store.mas_utils.is_file_present('/imsorry.txt')
         )
+
 
     def mas_cvToHM(mins):
         """
@@ -4355,6 +4386,7 @@ init -1 python:
                 [1] - minutes
         """
         return (int(mins / 60), int(mins % 60))
+
 
     def mas_isSTtoAny(_time, _suntime, _hour, _min):
         """
@@ -4379,6 +4411,7 @@ init -1 python:
         _upper_minutes = (_hour * 60) + _min
         return _suntime <= _curr_minutes < _upper_minutes
 
+
     def mas_isSRtoAny(_time, _hour, _min=0):
         """
         Checks if the given time is within Sunrise time to the given _hour
@@ -4399,6 +4432,7 @@ init -1 python:
         """
         return mas_isSTtoAny(_time, persistent._mas_sunrise, _hour, _min)
 
+
     def mas_isSStoAny(_time, _hour, _min=0):
         """
         Checks if the given time is within sunset to the given _hour and minute
@@ -4417,6 +4451,7 @@ init -1 python:
             hour/min, False otherwise
         """
         return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
+
 
     def mas_isMNtoAny(_time, _hour, _min=0):
         """
@@ -4438,6 +4473,7 @@ init -1 python:
         """
         return mas_isSTtoAny(_time, 0, _hour, _min)
 
+
     def mas_isNtoAny(_time, _hour, _min=0):
         """
         Checks if the given time is within noon to the given hour/min.
@@ -4456,6 +4492,7 @@ init -1 python:
             /min, False otherwise
         """
         return mas_isSTtoAny(_time, 12*60, _hour, _min)
+
 
     def mas_isAnytoST(_time, _hour, _min, _suntime):
         """
@@ -4480,6 +4517,7 @@ init -1 python:
         _lower_minutes = (_hour * 60) + _min
         return _lower_minutes <= _curr_minutes < _suntime
 
+
     def mas_isAnytoSR(_time, _hour, _min=0):
         """
         Checks if the given time is within a given hour and minute to sunrise
@@ -4500,6 +4538,7 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunrise)
 
+
     def mas_isAnytoSS(_time, _hour, _min=0):
         """
         Checks if the given time is within a given hour/min to sunset time
@@ -4518,6 +4557,7 @@ init -1 python:
             and sunset, False otherwise
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
+
 
     def mas_isAnytoMN(_time, _hour, _min=0):
         """
@@ -4540,6 +4580,7 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, 24*60)
 
+
     def mas_isAnytoN(_time, _hour, _min=0):
         """
         Checks if the given time is within a given hour/min to noon.
@@ -4559,6 +4600,7 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, 12*60)
 
+
     def mas_isMNtoSR(_time):
         """
         Checks if the given time is within midnight to sunrise
@@ -4570,6 +4612,7 @@ init -1 python:
         RETURNS: True if the given time is within midnight to sunrise
         """
         return mas_isAnytoSR(_time, 0)
+
 
     def mas_isSRtoN(_time):
         """
@@ -4583,6 +4626,7 @@ init -1 python:
         """
         return mas_isSRtoAny(_time, 12)
 
+
     def mas_isNtoSS(_time):
         """
         Checks if the given time is within noon to sunset
@@ -4594,6 +4638,7 @@ init -1 python:
         RETURNS: True if the given time is within noon to sunset
         """
         return mas_isAnytoSS(_time, 12)
+
 
     def mas_isSStoMN(_time):
         """
@@ -4607,11 +4652,13 @@ init -1 python:
         """
         return mas_isSStoAny(_time, 24)
 
+
     def mas_isSunny(_time):
         """DEPRECATED
         Use mas_isDay instead
         """
         return mas_isDay(_time)
+
 
     def mas_isDay(_time):
         """
@@ -4626,6 +4673,7 @@ init -1 python:
         _curr_mins = (_time.hour * 60) + _time.minute
         return persistent._mas_sunrise <= _curr_mins < persistent._mas_sunset
 
+
     def mas_isDayNow():
         """
         Checks if the sun would be up right now
@@ -4633,6 +4681,7 @@ init -1 python:
         RETURNS: True if the sun would be up now, False if not
         """
         return mas_isDay(datetime.datetime.now().time())
+
 
     def mas_isNight(_time):
         """
@@ -4646,6 +4695,7 @@ init -1 python:
         """
         return not mas_isDay(_time)
 
+
     def mas_isNightNow():
         """
         Checks if the sun is down right now
@@ -4653,6 +4703,7 @@ init -1 python:
         RETURNS: True if it is night now, False if not
         """
         return not mas_isDayNow()
+
 
     def mas_cvToDHM(mins):
         """
@@ -4668,6 +4719,7 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
+
 
     def mas_genDateRange(_start, _end):
         """
@@ -4696,6 +4748,7 @@ init -1 python:
 
         return _date_range
 
+
     def mas_EVgenYDT(_start, _end, for_start):
         """
         Creates a valid start or end datetime for Event creation, given the
@@ -4718,6 +4771,7 @@ init -1 python:
             datetime.datetime.now(),
             for_start
         )
+
 
     def mas_EVgenYD(
             _start,
@@ -4749,6 +4803,7 @@ init -1 python:
             _time
         )
 
+
     def mas_isSpecialDay():
         """
         Checks if today is a special day(birthday, anniversary or holiday)
@@ -4765,6 +4820,7 @@ init -1 python:
             or mas_isNYE()
             or mas_isF14()
         )
+
 
     def mas_maxPlaytime():
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
@@ -4817,6 +4873,7 @@ init -1 python:
         # otherwise we passed the cases
         return True
 
+
     def get_pos(channel='music'):
         """
         Gets the current position in what's playing on the provided channel
@@ -4830,12 +4887,14 @@ init -1 python:
             return pos
         return 0
 
+
     def delete_all_saves():
         """
         Deletes all saved states
         """
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
+
 
     def delete_character(name):
         """
@@ -4852,6 +4911,7 @@ init -1 python:
 
         except:
             pass
+
 
     def pause(time=None):
         """
@@ -4871,6 +4931,7 @@ init -1 python:
             return
 
         renpy.pause(time)
+
 
         # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
@@ -4928,6 +4989,7 @@ init -1 python:
         except:
             appIds = None
         return appIds
+
 
 init 2 python:
     import re
@@ -6727,21 +6789,24 @@ style jpn_text:
 
 # functions related to ily2
 init python:
-    def mas_passedILY(pass_time, check_time=None):
+    def mas_passedILY(pass_time):
         """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
             pass_time - a timedelta corresponding to the time limit we want to check against
-            check_time - the time at which we want to check, will typically be datetime.datetime.now()
-                which is the default
 
         RETURNS:
             boolean indicating if we are within the time limit
         """
-        if check_time is None:
-            check_time = datetime.datetime.now()
-        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+        check_time = datetime.datetime.now()
+
+        # if a backward TT is detected here, return False and reset persistent._mas_last_monika_ily
+        if persistent._mas_last_monika_ily is None or persistent._mas_last_monika_ily > check_time:
+            persistent._mas_last_monika_ily = None
+            return False
+
+        return (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
         """

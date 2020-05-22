@@ -438,6 +438,21 @@ label v0_11_3(version="v0_11_3"):
             except:
                 pass
 
+        # add to the default unlocked pool topics
+        pool_unlock_list = [
+            "monika_meta",
+            "monika_difficulty",
+            "monika_ddlc",
+            "monika_justification",
+            "monika_girlfriend",
+            "monika_herself",
+            "monika_birthday",
+            "monika_sayhappybirthday"
+        ]
+
+        for pool_label in pool_unlock_list:
+            mas_unlockEVL(pool_label,"EVE")
+
     return
 
 #0.11.1

@@ -720,7 +720,8 @@ screen navigation():
             textbutton _("Help") action Help("README.html")
 
             ## The quit button is banned on iOS and unnecessary on Android.
-            textbutton _("Quit") action Quit(confirm=_confirm_quit)
+            #If we're on the main menu, we don't want to confirm quit as Monika isn't back yet
+            textbutton _("Quit") action Quit(confirm=(None if main_menu else _confirm_quit))
 
         if not main_menu:
             textbutton _("Return") action Return()
@@ -1256,16 +1257,17 @@ screen preferences():
                 vbox:
                     style_prefix "check"
                     label _("Gameplay")
-                    if persistent._mas_unstable_mode:
-                        textbutton _("Unstable"):
-                            action SetField(persistent, "_mas_unstable_mode", False)
-                            selected persistent._mas_unstable_mode
+                    if not main_menu:
+                        if persistent._mas_unstable_mode:
+                            textbutton _("Unstable"):
+                                action SetField(persistent, "_mas_unstable_mode", False)
+                                selected persistent._mas_unstable_mode
 
-                    else:
-                        textbutton _("Unstable"):
-                            action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
-                            selected persistent._mas_unstable_mode
-                            hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
+                        else:
+                            textbutton _("Unstable"):
+                                action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
+                                selected persistent._mas_unstable_mode
+                                hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
 
                     textbutton _("Repeat Topics"):
                         action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
@@ -1440,9 +1442,12 @@ screen preferences():
 
 
             hbox:
-                textbutton _("Update Version"):
-                    action Function(renpy.call_in_new_context, 'forced_update_now')
-                    style "navigation_button"
+                #We disable updating on the main menu because it causes graphical issues
+                #due to the spaceroom not being loaded in
+                if not main_menu:
+                    textbutton _("Update Version"):
+                        action Function(renpy.call_in_new_context, 'forced_update_now')
+                        style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
@@ -2729,7 +2734,7 @@ style chibika_note_text:
 screen submods():
     tag menu
 
-    use game_menu(("Submods"), scroll="viewport"):
+    use game_menu(("Submods")):
 
         default tooltip = Tooltip("")
 
@@ -2762,8 +2767,6 @@ screen submods():
 
                     if submod.settings_pane:
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
-
-        vbar value YScrollValue("scrollme")
 
     text tooltip.value:
         xalign 0 yalign 1.0
