@@ -159,6 +159,41 @@ init -999 python in mas_ev_data_ver:
             return self.verifier(value, self.allow_none)
 
 
+init -998 python in mas_ev_data_ver:
+    import time
+    import renpy
+    import store
+
+    def _verify_per_mtime():
+        """
+        verifies persistent data and ensure mod times are not in the future
+        """
+        curr_time = time.time()
+
+        # check renpy persistent mtime
+        if renpy.persistent.persistent_mtime > curr_time:
+            renpy.persistent.persistent_mtime = curr_time
+
+        # then save location mtime
+        if renpy.loadsave.location is not None:
+            locs = renpy.loadsave.location.locations
+            if locs is not None and len(locs) > 0 and locs[0] is not None:
+                if locs[0].persistent_mtime > curr_time:
+                    locs[0].persistent_mtime = curr_time
+
+        # then individual mtimes
+        for varkey in store.persistent._changed:
+            if store.persistent._changed[varkey] > curr_time:
+                store.persistent._changed[varkey] = curr_time
+
+    # verify
+    try:
+        _verify_per_mtime()
+        valid_times = True
+    except:
+        valid_times = False
+        renpy.log("failed to verify mtimes")
+
 init -950 python in mas_ev_data_ver:
     import store
 

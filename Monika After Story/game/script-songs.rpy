@@ -390,16 +390,11 @@ init 5 python:
     )
 
 label mas_song_aiwfc:
-    #Get current song
-    $ curr_song = songs.current_track
     if store.songs.hasMusicMuted():
         m 3eua "Don't forget to turn your in-game volume up, [player]."
 
     call monika_aiwfc_song
 
-    #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
-    if curr_song != store.songs.FP_MONIKA_LULLABY:
-        $ play_song(curr_song, fadein=1.0)
     return
 
 init 5 python:
@@ -1009,7 +1004,7 @@ label mas_monika_plays_yr(skip_leadin=False):
             m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     window hide
-    $ mas_RaiseShield_piano()
+    call mas_timed_text_events_prep
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     show monika at rs32
@@ -1085,9 +1080,8 @@ label mas_monika_plays_yr(skip_leadin=False):
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     pause 1.0
     call monika_zoom_transition(mas_temp_zoom_level,1.0)
-    $ mas_DropShield_piano()
+    call mas_timed_text_events_wrapup
     window auto
-    $ play_song(None, 1.0)
 
     return
 
@@ -1116,7 +1110,7 @@ label mas_monika_plays_or(skip_leadin=False):
         $ gen = "their"
 
     window hide
-    $ mas_RaiseShield_piano()
+    call mas_timed_text_events_prep
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     show monika at rs32
@@ -1175,8 +1169,7 @@ label mas_monika_plays_or(skip_leadin=False):
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     pause 1.0
     call monika_zoom_transition(mas_temp_zoom_level,1.0)
-    $ mas_DropShield_piano()
+    call mas_timed_text_events_wrapup
     window auto
-    $ play_song(None, 1.0)
 
     return

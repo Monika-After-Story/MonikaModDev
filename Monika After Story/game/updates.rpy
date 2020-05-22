@@ -391,6 +391,13 @@ label v0_11_3(version="v0_11_3"):
             #   number of pool unlocks given
             persistent._mas_pool_unlocks += store.mas_xp.level() * 4
 
+        #Adjust consumables to be at their max stock amount
+        for consumable_id in persistent._mas_consumable_map.iterkeys():
+            cons = mas_getConsumable(consumable_id)
+
+            if cons and cons.getStock() > cons.max_stock_amount:
+                persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
+
         # unlock monika_kiss
         mas_unlockEVL("monika_kiss", "EVE")
 
@@ -423,6 +430,44 @@ label v0_11_3(version="v0_11_3"):
                 else:
                     tod_ev.pool = True
                     tod_ev.action = EV_ACT_UNLOCK
+
+        #Store all the files we need to rename
+        filenames_to_rename = [
+            "imsorry",
+            "imsorry.txt",
+            "forgive me.txt",
+            "can you hear me.txt",
+            "please listen.txt",
+            "surprise.txt",
+            "ehehe.txt",
+            "secret.txt",
+            "for you.txt",
+            "My one and only love.txt"
+        ]
+
+        for fn in filenames_to_rename:
+            try:
+                os.rename(
+                    renpy.config.basedir + "/{0}".format(fn),
+                    renpy.config.basedir + "/characters/{0}".format(fn)
+                )
+            except:
+                pass
+
+        # add to the default unlocked pool topics
+        pool_unlock_list = [
+            "monika_meta",
+            "monika_difficulty",
+            "monika_ddlc",
+            "monika_justification",
+            "monika_girlfriend",
+            "monika_herself",
+            "monika_birthday",
+            "monika_sayhappybirthday"
+        ]
+
+        for pool_label in pool_unlock_list:
+            mas_unlockEVL(pool_label,"EVE")
 
     return
 
