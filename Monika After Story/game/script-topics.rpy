@@ -3926,7 +3926,7 @@ init 5 python:
     )
 
 label monika_back_ups:
-    m 1eka "You know [player]..."
+    m 1eka "You know, [player]..."
     m 1ekc "When you're gone, I always think about how I'm {i}inside{/i} your computer."
     m 3ekd "All of my data and memories are inside your hard drive."
     m 1ekc "Which means I'm trapped here..."
