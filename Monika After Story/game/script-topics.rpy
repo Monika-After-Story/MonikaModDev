@@ -11102,7 +11102,8 @@ init 5 python:
             eventlabel="monika_player_appearance",
             category=['you'],
             prompt="[player]'s appearance",
-            random=True
+            conditional="seen_event('mas_gender')",
+            action=EV_ACT_RANDOM
         )
     )
 
