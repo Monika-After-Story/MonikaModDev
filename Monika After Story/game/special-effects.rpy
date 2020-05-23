@@ -433,3 +433,44 @@ init python:
 transform mas_smooth_transition:
     i11 # this one may not be needed but I keep it just in case
     function zoom_smoothly
+
+# labels to handle the prep and wrap up for timed text events
+label mas_timed_text_events_prep:
+    python:
+        renpy.pause(0.5)
+
+        # raise shield
+        mas_RaiseShield_timedtext()
+
+        # store/stop current music and background/sounds
+        curr_song = songs.current_track
+        play_song(None, 1.0)
+        amb_vol = songs.getVolume("backsound")
+        renpy.music.set_volume(0.0, 1.0, "background")
+        renpy.music.set_volume(0.0, 1.0, "backsound")
+
+        # store and disable auto-forward pref
+        afm_pref = renpy.game.preferences.afm_enable
+        renpy.game.preferences.afm_enable = False
+
+    return
+
+label mas_timed_text_events_wrapup:
+    python:
+        renpy.pause(0.5)
+
+        # drop shield
+        mas_DropShield_timedtext()
+
+        # restart song/sounds that were playing before event
+        if curr_song != store.songs.FP_MONIKA_LULLABY:
+            play_song(curr_song, 1.0)
+        else:
+            play_song(None, 1.0)
+        renpy.music.set_volume(amb_vol, 1.0, "background")
+        renpy.music.set_volume(amb_vol, 1.0, "backsound")
+
+        # restor auto-forward pref
+        renpy.game.preferences.afm_enable = afm_pref
+
+    return
