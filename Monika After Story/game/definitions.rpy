@@ -5,6 +5,62 @@ define config.developer = False #This is the flag for Developer tools
 init 1 python:
     persistent.steam = "steamapps" in config.basedir.lower()
 
+### Overrides of core renpy things
+python early in mas_overrides:
+    def dummy(*args, **kwargs):
+        """
+        Dummy function that does nothing
+        """
+        return
+
+    # clear this so no more traceback. We expect node loops anyway
+    renpy.execution.check_infinite_loop = dummy
+
+    def get_field_override(self, field_name, args, kwargs):
+        """
+        Originally this method returns objects by references
+        This override allows us to eval functions when appropriate, e.g. "Text [myfunc(arg1)]."
+        and use negative indexes for iterables, e.g. "Text [_list[-2]]."
+
+        IN:
+            field_name - the reference to the object
+            args - not sure, but renpy doesn't use it (passes in an empty tuple)
+            kwargs - the store modules where renpy will look for the object
+
+        OUT:
+            tuple of the object and its key
+        """
+        first, rest = field_name._formatter_field_name_split()
+
+        # if it's a function call, we eval it
+        if "(" in field_name:
+            # if the module/func isn't in the def store,
+            # we use the one in kwargs to call the func from there
+            if isinstance(kwargs, renpy.substitutions.MultipleDict):
+                _store = [name for name, store in sys.modules.iteritems() if store is kwargs.dicts[0]][0]
+            else:
+                _store = "renpy.store"
+
+            obj = eval("{0}.{1}".format(_store, field_name))
+
+        # otherwise just get the object by reference
+        else:
+            obj = self.get_value(first, args, kwargs)
+
+            for is_attr, i in rest:
+                if is_attr:
+                    obj = getattr(obj, i)
+
+                else:
+                    if not isinstance(i, long):
+                        i = long(i)
+                    obj = obj[i]
+
+        return obj, first
+
+    # allows us to use a more advanced string formatting
+    renpy.substitutions.Formatter.get_field = get_field_override
+
 python early:
     import singleton
     me = singleton.SingleInstance()
@@ -18,16 +74,6 @@ python early:
     # uncomment when needed
     import traceback
     _dev_tb_list = []
-
-    def dummy(*args, **kwargs):
-        """
-        Dummy function that does nothing
-        """
-        return
-
-    # clear this so no more traceback. We expect node loops anyway
-    renpy.execution.check_infinite_loop = dummy
-
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
