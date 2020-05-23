@@ -3,6 +3,9 @@
 #An event is crated by only adding a label and adding a requirement (see comment below).
 #Requirements must be created/added in script-ch30.rpy under label ch30_autoload.
 
+# pm var for transgender players
+default persistent._mas_pm_is_trans = False
+
 init 5 python:
     addEvent(
         Event(
@@ -21,18 +24,20 @@ label mas_gender:
     m 3eksdla "...The main character was, after all."
     m 3eua "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
-    m "So, what's your gender?{nw}"
+    m 1eua "So, what's your gender?{nw}"
     $ _history_list.pop()
     menu:
         m "So, what's your gender?{fast}"
 
         "Male.":
+            $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "M"
             call mas_set_gender
             m 3eua "Okay [player], thanks for confirming that for me."
             m 1hksdlb "Not that I would have been bothered if you answered differently, mind you!"
 
         "Female.":
+            $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "F"
             call mas_set_gender
             m 2eud "Oh? So you're a girl?"
@@ -41,9 +46,16 @@ label mas_gender:
             m 3eka "But honestly, it doesn't matter to me at all..."
 
         "Neither.":
+            $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "X"
             call mas_set_gender
             call mas_gender_neither
+
+        "I'm transgender.":
+            call mas_gender_trans
+
+            if persistent.gender != "X":
+                m 1eka "Thanks for telling me, and just remember..."
 
     m 1ekbsa "I'll always love you for who you are, [player]~"
 
@@ -107,6 +119,7 @@ label monika_gender_redo:
         m "So, what's your gender?{fast}"
 
         "I'm a boy.":
+            $ persistent._mas_pm_is_trans = False
             if persistent.gender == "M":
                 $ gender_var = "boy"
                 call mas_gender_redo_same
@@ -116,6 +129,7 @@ label monika_gender_redo:
                 call mas_gender_redo_react
 
         "I'm a girl.":
+            $ persistent._mas_pm_is_trans = False
             if persistent.gender == "F":
                 $ gender_var = "girl"
                 call mas_gender_redo_same
@@ -125,9 +139,9 @@ label monika_gender_redo:
                 call mas_gender_redo_react
 
         "I'm neither.":
+            $ persistent._mas_pm_is_trans = False
             if persistent.gender == "X":
-                m 1hksdlb "...That's the same as before, [player]...I'm sorry if that's not really the best way for you to describe it."
-                m 1eka "But just know that it doesn't matter to me..."
+                call mas_gender_redo_neither_same
             else:
                 $ persistent.gender = "X"
                 call mas_set_gender
@@ -135,6 +149,12 @@ label monika_gender_redo:
                     call mas_gender_redo_react
                 else:
                     call mas_gender_neither
+
+        "I'm transgender":
+            call mas_gender_trans
+
+            if persistent.gender != "X":
+                call mas_gender_redo_react
 
     show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubsa "I'll always love you for who you are~"
@@ -151,7 +171,7 @@ label mas_gender_neither:
     return
 
 label mas_gender_redo_same:
-    m 1hksdlb "...That's the same as before, [player]."
+    m 1hksdlb "...That's the same as before, [player]!"
     m 3eua "If you're confused about how to answer, just pick whatever makes you happiest."
     m 3eka "It doesn't matter what your body looks like, so as long as you say you're a [gender_var], you're a [gender_var] to me, all right?"
     m 1eua "I want you to be who you want to be while you're in this room."
@@ -160,6 +180,42 @@ label mas_gender_redo_same:
 label mas_gender_redo_react:
     m 1eka "Okay, [player]..."
     m 3ekbsa "Just as long as you're happy, that's all that matters to me."
+    return
+
+label mas_gender_redo_neither_same:
+    m 1hksdlb "...That's the same as before, [player]...{w=0.3}I'm sorry if that's not really the best way for you to describe it."
+    m 1eka "But just know that it doesn't matter to me..."
+    return
+
+label mas_gender_trans:
+    if persistent._mas_pm_is_trans:
+        $ menu_question = "And what gender do you identify as?"
+    else:
+        $ menu_question = "Oh, okay! {w=0.3}And what gender do you identify as?"
+
+    m 3eub "[menu_question]{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[menu_question]{fast}"
+
+        "Male":
+            $ persistent.gender = "M"
+            call mas_set_gender
+
+        "Female":
+            $ persistent.gender = "F"
+            call mas_set_gender
+
+        "Neither":
+            if persistent.gender == "X":
+                call mas_gender_redo_neither_same
+
+            else:
+                $ persistent.gender = "X"
+                call mas_set_gender
+                call mas_gender_neither
+
+    $ persistent._mas_pm_is_trans = True
     return
 
 # good, bad, awkward name stuff
