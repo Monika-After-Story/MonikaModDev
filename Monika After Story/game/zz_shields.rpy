@@ -182,7 +182,7 @@ init python:
     ################## Piano mode workflow ####################################
     # used when Monika plays her piano
 
-    def mas_DropShield_piano():
+    def mas_DropShield_timedtext():
         """
         Enables:
             - text speed
@@ -190,6 +190,7 @@ init python:
             - Music button + hotkey
             - Music Menu
             - Calendar overlay
+            - Window hiding
 
         Shows:
             - hotkey buttons
@@ -199,8 +200,9 @@ init python:
         mas_MUMUDropShield()
         mas_calDropOverlayShield()
         HKBShowButtons()
+        mas_hotkeys.no_window_hiding = False
 
-    def mas_RaiseShield_piano():
+    def mas_RaiseShield_timedtext():
         """
         Disables:
             - text speed
@@ -208,6 +210,7 @@ init python:
             - Music button + hotkey
             - Music Menu
             - Calendar overlay
+            - Window hiding
 
         Hides:
             - hotkey buttons
@@ -217,6 +220,7 @@ init python:
         mas_MUMURaiseShield()
         mas_calRaiseOverlayShield()
         HKBHideButtons()
+        mas_hotkeys.no_window_hiding = True
 
 
 ################################## GENERALIZED ################################

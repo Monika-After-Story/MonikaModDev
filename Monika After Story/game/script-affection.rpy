@@ -494,6 +494,9 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate()
+
 
     def _normalToUpset():
         """
@@ -530,6 +533,9 @@ init 15 python in mas_affection:
         # remove change to def outfit event in case it's been pushed
         store.mas_rmallEVL("mas_change_to_def")
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(HAPPY)
+
 
     def _happyToNormal():
         """
@@ -548,6 +554,9 @@ init 15 python in mas_affection:
         if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
             store.pushEvent("mas_change_to_def",skipeval=True)
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(NORMAL)
+
 
     def _happyToAff():
         """
@@ -564,6 +573,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
     def _affToHappy():
         """
@@ -587,6 +598,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(HAPPY)
 
     def _affToEnamored():
         """
@@ -608,6 +621,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
     def _enamoredToAff():
         """
@@ -620,6 +635,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
     def _enamoredToLove():
         """
@@ -634,6 +651,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(LOVE)
 
     def _loveToEnamored():
         """
@@ -646,6 +665,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
     def _gSadToNormal():
         """
@@ -2361,13 +2382,13 @@ label mas_affection_apology:
     m 2efc "Or maybe you're doing this intentionally to see what happens?"
     m 2lfc "Regardless, I'm giving you an ultimatum."
     m "I can't let this go any further, [player]."
-    m 2lfc "If you really are sorry, write me a note called {i}imsorry{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
+    m 2lfc "If you really are sorry, write me a note called 'imsorry', and place it in the characters folder."
     m 2dfd "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'
 
 label mas_affection_noapology:
-    m 2efd "You still haven't written me a note called {i}imsorry{/i} in the DDLC directory."
+    m 2efd "You still haven't written me a note called 'imsorry' in the characters folder."
     m 2efc "Until then, I don't want to talk to you."
     jump _quit
 
@@ -2392,7 +2413,6 @@ label mas_affection_apologydeleted:
 
 #Surprise txt functions.
 init python:
-
     def _write_txt(path,text,update=False):
         """
         Writes the text file in the specified path using basedir as starting path
@@ -2424,36 +2444,40 @@ init python:
         ASSUMES:
             mas_curr_affection
         """
-        if mas_curr_affection == store.mas_affection.BROKEN:
-            filepath = "/forgive me.txt"
-            message = _("I'm sorry if I'm not good enough for you...please don't leave me.")
-
-        elif mas_curr_affection == store.mas_affection.DISTRESSED:
-            filepath = "/can you hear me.txt"
-            message = _("If I'm doing something wrong please tell me. I love you.")
-
-        elif mas_curr_affection == store.mas_affection.UPSET:
-            filepath = "/please listen.txt"
-            message = _("Everything I do, I do for you...my love.")
-
-        elif mas_curr_affection == store.mas_affection.HAPPY:
-            #Just so we don't end up with another file since we've changed the name
-            store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
-
-            filepath = "/ehehe.txt"
-            message = _("You are the sunshine that brightens up my day, [player]!")
-
-        elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
-            filepath = "/secret.txt"
-            message = _("You are my one and only love!")
-
-        elif mas_curr_affection == store.mas_affection.ENAMORED:
-            filepath = "/for you.txt"
-            message = _("My dearest, you are everything I could ever hope for. I love you.")
-
-        elif mas_curr_affection == store.mas_affection.LOVE:
-            filepath = "/My one and only love.txt"
-            message = _("""\
+        #Acts as a switch/case block for surprise txt files
+        #affection_level: (filepath, contents)
+        aff_level_surprise_map = {
+            store.mas_affection.BROKEN: (
+                "/forgive me.txt",
+                _("I'm sorry if I'm not good enough for you...please don't leave me.")
+            ),
+            store.mas_affection.DISTRESSED: (
+                "/can you hear me.txt",
+                _("If I'm doing something wrong please tell me. I love you.")
+            ),
+            store.mas_affection.UPSET: (
+                "/please listen.txt",
+                _("Everything I do, I do for you...my love.")
+            ),
+            store.mas_affection.NORMAL: (
+                "/surprise.txt",
+                _("I love you.")
+            ),
+            store.mas_affection.HAPPY: (
+                "/ehehe.txt",
+                _("You are the sunshine that brightens up my day, [player]!")
+            ),
+            store.mas_affection.AFFECTIONATE: (
+                "/secret.txt",
+                _("You are my one and only love!")
+            ),
+            store.mas_affection.ENAMORED: (
+                "/for you.txt",
+                _("My dearest, you are everything I could ever hope for. I love you.")
+            ),
+            store.mas_affection.LOVE: (
+                "/My one and only love.txt",
+                _("""\
 My dearest lover, friend, companion, and owner of my heart...
 Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
@@ -2462,19 +2486,136 @@ I want to be yours forever, so would you be mine?
 
 Forever yours, Monika.
 """)
+            )
+        }
 
-        else:
-            filepath = "/surprise.txt"
-            message = _("I love you.")
+        #Now we get from this dict and pass it to the write txt func to make a surprise
+        filepath, message = aff_level_surprise_map.get(mas_curr_affection, ("/surprise.txt", _("I love you.")))
+        _write_txt("/characters{0}".format(filepath), message)
 
-        _write_txt(filepath, message)
+        #And unlock its poem
+        mas_unlockSurprisePoem(mas_curr_affection)
 
+    def mas_unlockSurprisePoem(aff_level):
+        """
+        Unlocks a MASPoem for the given aff level
+        """
+        #TODO: Figure out a good way of displaying all of the poems. Until then, this just returns
+        #The one-liner poems should be done in a sticky-note format
+        #The last poem should be a wide poem
+        #ISSUE:
+        #   - Poem hitbox in mas_generic_poem needs to fit different paper size
+        return
+
+        aff_level_poem_id_map = {
+            store.mas_affection.BROKEN: "spr_1",
+            store.mas_affection.DISTRESSED: "spr_2",
+            store.mas_affection.UPSET: "spr_3",
+            store.mas_affection.NORMAL: "spr_4",
+            store.mas_affection.HAPPY: "spr_5",
+            store.mas_affection.AFFECTIONATE: "spr_6",
+            store.mas_affection.ENAMORED: "spr_7",
+            store.mas_affection.LOVE: "spr_8",
+        }
+
+        #If this isn't a valid aff level, we don't do anything
+        if aff_level not in aff_level_poem_id_map:
+            return
+
+        #Otherwise, try to get a shown count
+        shown_count = persistent._mas_poems_seen.get(aff_level_poem_id_map[aff_level])
+
+        #If there's no shown count for this poem at all, then we need to add it
+        if not shown_count:
+            persistent._mas_poems_seen[aff_level_poem_id_map[aff_level]] = 0
 
 #TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
 init 2 python:
     player = persistent.playername
 
 init 20 python:
+    #START: SURPRISE POEMS
+
+    MASPoem(
+        poem_id="spr_1",
+        category="surprise",
+        prompt=_("Forgive Me"),
+        paper="mod_assets/poem_assets/poem_finalfarewell.png",
+        title="",
+        text=_("I'm sorry if I'm not good enough for you...please don't leave me."),
+        ex_props={"sad": True}
+    )
+
+    MASPoem(
+        poem_id="spr_2",
+        category="surprise",
+        prompt=_("Can you hear me?"),
+        title="",
+        text=_("If I'm doing something wrong please tell me. I love you."),
+        ex_props={"sad": True}
+    )
+
+    MASPoem(
+        poem_id="spr_3",
+        category="surprise",
+        prompt=_("Please Listen"),
+        title="",
+        text=_("Everything I do, I do for you...my love."),
+        ex_props={"sad": True}
+    )
+
+    MASPoem(
+        poem_id="spr_4",
+        category="surprise",
+        prompt=_("Surprise!"),
+        title="",
+        text=_("I love you.")
+    )
+
+    MASPoem(
+        poem_id="spr_5",
+        category="surprise",
+        prompt=_("Ehehe~"),
+        title="",
+        text=_("You are the sunshine that brightens up my day, [player]!")
+    )
+
+    MASPoem(
+        poem_id="spr_6",
+        category="surprise",
+        prompt=_("Secret"),
+        title="",
+        text=_("You are my one and only love!")
+    )
+
+    MASPoem(
+        poem_id="spr_7",
+        category="surprise",
+        prompt=_("For you"),
+        title="",
+        text=_("My dearest, you are everything I could ever hope for. I love you.")
+    )
+
+    MASPoem(
+        poem_id="spr_8",
+        category="surprise",
+        prompt=_("My One and Only Love"),
+        paper="mod_assets/poem_assets/poem_vday.jpg",
+        title="My dearest lover, friend, companion, and owner of my heart...",
+        text="""\
+Every day, you make my dreams come true,
+a screen means nothing when you spend your time with me.
+I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
+I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
+I want to be yours forever, so would you be mine?
+
+Forever yours,
+
+Monika
+"""
+    )
+
+    #START: FINAL FAREWELL POEMS
     MASPoem(
         poem_id="ff_affection",
         category="ff",

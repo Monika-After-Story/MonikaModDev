@@ -15,7 +15,6 @@ define mas_did_monika_battery = False
 define mas_sensitive_limit = 3
 
 init -2 python in mas_topics:
-
     # CONSTANTS
     # most / top weights
     # MOST seen is the percentage of seen topics
@@ -299,7 +298,6 @@ init -1 python:
             return "MASTopicLabelException: " + self.msg
 
 init 11 python:
-
     # sort out the seen / most seen / unseen
     mas_rev_unseen = []
     mas_rev_seen = []
@@ -335,27 +333,46 @@ init python:
 
         IN:
             ev_label - label of the event we want to derandom.
-                (Optional, defaults to persistent.current_monikatopic)
+                (Optional. If None, persistent.current_monikatopic is used)
+                (Default: None)
         """
+        #Let's just shorthand this for use later
+        label_prefix_map = store.mas_bookmarks_derand.label_prefix_map
+
         if ev_label is None:
             ev_label = persistent.current_monikatopic
 
         ev = mas_getEV(ev_label)
 
+        if ev is None:
+            return
+
+        #Get the label prefix
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
+
+        #CRITERIA:
+        #1. Must have an ev
+        #2. Must be a topic which is random
+        #3. Must be a valid label (in the label prefix map)
+        #4. Prompt must not be the same as the eventlabel (event must have a prompt)
         if (
-            ev is not None
-            and ev.random
-            and ev_label.startswith("monika_")
-            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
+            ev.random
+            and label_prefix
             and ev.prompt != ev_label
         ):
-            if mas_findEVL("mas_topic_derandom") < 0:
+            #Now we do a bit of var setup to clean up the following work
+            derand_flag_add_text = label_prefix_map[label_prefix].get("derand_text", _("Flagged for removal."))
+            derand_flag_remove_text = label_prefix_map[label_prefix].get("underand_text", _("Flag removed."))
+            push_label = label_prefix_map[label_prefix].get("push_label", "mas_topic_derandom")
+
+            if mas_findEVL(push_label) < 0:
                 persistent.flagged_monikatopic = ev_label
-                pushEvent('mas_topic_derandom',skipeval=True)
-                renpy.notify(__("Topic flagged for removal."))
+                pushEvent(push_label, skipeval=True)
+                renpy.notify(derand_flag_add_text)
+
             else:
-                mas_rmEVL("mas_topic_derandom")
-                renpy.notify(__("Topic flag removed."))
+                mas_rmEVL(push_label)
+                renpy.notify(derand_flag_remove_text)
 
     def mas_bookmark_topic(ev_label=None):
         """
@@ -365,46 +382,359 @@ init python:
             ev_label - label of the event we want to bookmark.
                 (Optional, defaults to persistent.current_monikatopic)
         """
+        #Let's just shorthand this for use later
+        label_prefix_map = store.mas_bookmarks_derand.label_prefix_map
+
         if ev_label is None:
             ev_label = persistent.current_monikatopic
 
         ev = mas_getEV(ev_label)
 
-        # expandable whitelist for topics that we are fine with bookmarking
-        # that don't otherwise meet our requirements
-        bookmark_whitelist = [
-            "mas_monika_islands",
-        ]
+        if ev is None:
+            return
 
+        #Get our label prefix
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
+
+        #CRITERIA:
+        #1. Must be normal+
+        #2. Must have an ev
+        #3. Must be a valid label (in the label prefix map or in the bookmark whitelist)
+        #4. Must not be a bookmark blacklisted topic
+        #4. Prompt must not be the same as the eventlabel (event must have a prompt)
         if (
             mas_isMoniNormal(higher=True)
-            and ev is not None
-            and (ev_label.startswith("monika_") or ev_label in bookmark_whitelist)
-            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
+            and (label_prefix or ev.rules.get("bookmark_rule") == store.mas_bookmarks_derand.WHITELIST)
+            and (ev.rules.get("bookmark_rule") != store.mas_bookmarks_derand.BLACKLIST)
             and ev.prompt != ev_label
         ):
-            if ev_label not in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked.append(ev_label)
-                renpy.notify(__("Topic bookmarked."))
-            else:
-                persistent._mas_player_bookmarked.pop(persistent._mas_player_bookmarked.index(ev_label))
-                renpy.notify(__("Bookmark removed."))
+            #If this was only a whitelisted topic, we need to do a bit of extra work
+            if not label_prefix:
+                bookmark_persist_key = "_mas_player_bookmarked"
+                bookmark_add_text = "Bookmark added."
+                bookmark_remove_text = "Bookmark removed."
 
-    def mas_hasBookmarks():
+            else:
+                #Now we do some var setup to clean the following
+                bookmark_persist_key = label_prefix_map[label_prefix].get("bookmark_persist_key", "_mas_player_bookmarked")
+                bookmark_add_text = label_prefix_map[label_prefix].get("bookmark_text", _("Bookmark added."))
+                bookmark_remove_text = label_prefix_map[label_prefix].get("unbookmark_text", _("Bookmark removed."))
+
+            #For safety, we'll initialize this key.
+            #NOTE: You should NEVER pass in a non-existent key.
+            #While this system handles it, it's not ideal and is bad for documentation
+            if bookmark_persist_key not in persistent.__dict__:
+                persistent.__dict__[bookmark_persist_key] = list()
+
+            #Now create the pointer
+            persist_pointer = persistent.__dict__[bookmark_persist_key]
+
+            if ev_label not in persist_pointer:
+                persist_pointer.append(ev_label)
+                renpy.notify(bookmark_add_text)
+
+            else:
+                persist_pointer.pop(persist_pointer.index(ev_label))
+                renpy.notify(bookmark_remove_text)
+
+    def mas_hasBookmarks(persist_var=None):
         """
         Checks to see if we have bookmarks to show
 
         Bookmarks are restricted to Normal+ affection
         and to topics that are unlocked and are available
         based on current affection
+
+        IN:
+            persist_var - appropriate variable holding the bookedmarked eventlabels.
+                If None, persistent._mas_player_bookmarked is assumed
+                (Default: None)
+
+        OUT:
+            boolean:
+                True if there are bookmarks in the curent var
+                False otherwise
         """
         if mas_isMoniUpset(lower=True):
             return False
 
-        return len(mas_get_player_bookmarks()) > 0
+        elif persist_var is None:
+            persist_var = persistent._mas_player_bookmarked
+
+        return len(mas_get_player_bookmarks(persist_var)) > 0
+
+#START: UTILITY TOPICS (bookmarks/derand, show/hide unseen)
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
+
+label mas_topic_derandom:
+    #NOTE: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
+    $ prev_topic = persistent.flagged_monikatopic
+    m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you sure you don't want me to bring this up anymore?{fast}"
+
+        "Please don't.":
+            $ mas_hideEVL(prev_topic, "EVE", derandom=True)
+            $ persistent._mas_player_derandomed.append(prev_topic)
+            $ mas_unlockEVL('mas_topic_rerandom', 'EVE')
+
+            m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
+            m 2dksdld "If it upset you in any way, I'm really sorry...{w=0.5} I'd never do that intentionally."
+            m 2eksdla "...But thanks for letting me know;{w=0.5} I appreciate the honesty."
+
+        "It's okay.":
+            m 1eka "Alright, [player]."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_topic_rerandom",
+            category=['you'],
+            prompt="I'm okay with talking about...",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label mas_topic_rerandom:
+    python:
+        mas_bookmarks_derand.initial_ask_text_multiple = "Which topic are you okay with talking about again?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you're sure it's alright to talk about this again, just click the topic, [player]."
+        mas_bookmarks_derand.talk_about_more_text = "Are there any other topics you are okay with talking about?"
+        mas_bookmarks_derand.caller_label = "mas_topic_rerandom"
+        mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed
+        mas_bookmarks_derand.ev_db_code = "EVE"
+
+    call mas_rerandom
+    return
+
+init python in mas_bookmarks_derand:
+    import store
+
+    #Rule constants
+    WHITELIST = "whitelist"
+    BLACKLIST = "blacklist"
+
+    #Label prefixes and their respective rules
+    #The items in the inner dicts act as kwargs to override the default generic values
+    #The 'monika_' entry in this dict shows all existing keys
+    #Default values are as follows:
+    #  - bookmark_text: "Bookmark added."
+    #  - unbookmark_text: "Bookmark removed."
+    #  - derand_text: "Flagged for removal."
+    #  - underand_text: "Flag removed."
+    #  - push_label: "mas_topic_derandom"
+    #  - bookmark_persist_key: "_mas_player_bookmarked"
+    #  - derand_persist_key: "_mas_player_derandomed"
+    label_prefix_map = {
+        "monika_": {
+            "bookmark_text": _("Topic bookmarked."),
+            "unbookmark_text": _("Bookmark removed."),
+            "derand_text": _("Topic flagged for removal."),
+            "underand_text": _("Topic flag removed."),
+            "push_label": "mas_topic_derandom",
+            "bookmark_persist_key": "_mas_player_bookmarked",
+            "derand_persist_key": "_mas_player_derandomed"
+        },
+        "mas_song_": {
+            "bookmark_text": _("Song bookmarked."),
+            "derand_text": _("Song flagged for removal."),
+            "underand_text": _("Song flag removed."),
+            "push_label": "mas_song_derandom",
+            "derand_persist_key": "_mas_player_derandomed_songs"
+        }
+    }
+
+    #Vars for mas_rerandom flows
+    initial_ask_text_multiple = None
+    initial_ask_text_one = None
+    talk_about_more_text = None
+    caller_label = None
+    persist_var = None
+    ev_db_code = "EVE"
+
+    def resetDefaultValues():
+        """
+        Resets the globals to their default values
+        """
+        global initial_ask_text_multiple, initial_ask_text_one, talk_about_more_text
+        global caller_label, persist_var, ev_db_code
+
+        initial_ask_text_multiple = None
+        initial_ask_text_one = None
+        talk_about_more_text = None
+        caller_label = None
+        persist_var = None
+        ev_db_code = "EVE"
+        return
+
+    def getLabelPrefix(test_str, list_prefixes):
+        """
+        Checks if test_str starts with anything in the list of prefixes, and if so, returns the matching prefix
+
+        IN:
+            test_str - string to test
+            list_prefixes - list of strings that test_str should start with
+
+        OUT:
+            string:
+                - label_prefix if test_string starts with a prefix in list_prefixes
+                - empty string otherwise
+        """
+        for label_prefix in list_prefixes:
+            if test_str.startswith(label_prefix):
+                return label_prefix
+        return ""
+
+    def getDerandomedEVLs():
+        """
+        Gets a list of derandomed eventlabels
+
+        OUT:
+            list of derandomed eventlabels
+        """
+        #Firstly, let's get our derandom keys
+        derand_keys = [
+            label_prefix_data["derand_persist_key"]
+            for label_prefix_data in label_prefix_map.itervalues()
+            if "derand_persist_key" in label_prefix_data
+        ]
+
+        deranded_evl_list = list()
+
+        for derand_key in derand_keys:
+            #For safey, we'll .get() this and return an empty list if the key doesn't exist
+            derand_list = store.persistent.__dict__.get(derand_key, list())
+
+            for evl in derand_list:
+                deranded_evl_list.append(evl)
+
+        return deranded_evl_list
+
+    def shouldRandom(eventlabel):
+        """
+        Checks if we should random the given eventlabel
+        This is determined by whether or not the event is in any derandom list
+
+        IN:
+            eventlabel to check if we should random_seen
+
+        OUT:
+            boolean: True if we should random this event, False otherwise
+        """
+        return eventlabel not in getDerandomedEVLs()
+
+##Generic rerandom work label
+#IN:
+#   initial_ask_text_multiple - Initial question Monika asks if there's multiple items to rerandom
+#   initial_ask_text_one - Initial text Monika says if there's only one item to rerandom
+#   talk_about_more_text - Question Monika asks if there's more things you'd like to rerandom
+#   caller_label - The label that called this label
+#   persist_var - The persistent variable which stores the derandomed eventlabels
+#   ev_db_code - The event database code for the topics we're rerandoming (Default: "EVE")
+label mas_rerandom:
+    python:
+        derandomlist = mas_get_player_derandoms(mas_bookmarks_derand.persist_var)
+
+        derandomlist.sort()
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+    show monika 1eua at t21
+    if len(derandomlist) > 1:
+        $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_multiple, interact=False)
+    else:
+        $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_one, interact=False)
+
+    call screen mas_gen_scrollable_menu(derandomlist, (evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+
+    $ topic_choice = _return
+
+    if not _return:
+        return "prompt"
+
+    else:
+        show monika at t11
+        $ mas_showEVL(topic_choice, mas_bookmarks_derand.ev_db_code, _random=True)
+        #Pop the derandom
+        $ mas_bookmarks_derand.persist_var.pop(mas_bookmarks_derand.persist_var.index(topic_choice))
+        #Prep the renpy substitution
+        $ talk_about_more_text = renpy.substitute(mas_bookmarks_derand.talk_about_more_text)
+        m 1eua "Okay, [player]..."
+
+        if len(mas_bookmarks_derand.persist_var) > 0:
+            m 1eka "[talk_about_more_text]{nw}"
+            $ _history_list.pop()
+            menu:
+                m "[talk_about_more_text]{fast}"
+                "Yes.":
+                    jump mas_rerandom
+
+                "No.":
+                    m 3eua "Okay."
+
+        else:
+            m 3hua "All done!"
+            $ mas_lockEVL(mas_bookmarks_derand.caller_label, "EVE")
+
+    # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
+    # to be derandomed out of season is still derandomed
+    $ persistent._mas_current_season = store.mas_seasons._seasonalCatchup(persistent._mas_current_season)
+    #Now reset the vars
+    $ mas_bookmarks_derand.resetDefaultValues()
+    return
+
+default persistent._mas_unsee_unseen = None
+# var set when the player decides to hide or show the Unseen menu
+# True when Unseen is hidden
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_hide_unseen",
+            prompt="I don't want to see this menu anymore.",
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label mas_hide_unseen:
+    $ persistent._mas_unsee_unseen = True
+    m 3esd "Oh, okay, [player]..."
+    if mas_getEV('mas_hide_unseen').shown_count == 0:
+        m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
+        m 3hub "Ahaha!"
+    m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}.{nw}"
+    m 3eub "There you go! If you want to see the menu again, just ask."
+    return
 
 
-#BEGIN ORIGINAL TOPICS
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_show_unseen",
+            category=['you'],
+            prompt="I would like to see 'Unseen' again",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label mas_show_unseen:
+    $ persistent._mas_unsee_unseen = False
+    m 3eub "Sure, [player]!"
+    m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
+    m 3hua "There you go!"
+    return
+
+#START: ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
 
@@ -1482,7 +1812,17 @@ label monika_date:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True,aff_range=(mas_aff.NORMAL, None)))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kiss",
+            category=['romance'],
+            prompt="Kiss me",
+            pool=True,
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
@@ -2671,6 +3011,7 @@ init 5 python:
             prompt="Isn't this game metafictional?",
             category=['ddlc'],
             pool=True,
+            unlocked=True
         )
     )
 
@@ -2915,7 +3256,7 @@ label monika_totono:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_difficulty",category=['games'],prompt="Wasn't DDLC too easy?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_difficulty",category=['games'],prompt="Wasn't DDLC too easy?",pool=True,unlocked=True))
 
 label monika_difficulty:
     m 1lksdla "Well, it's not like this game was meant to be that hard in the first place."
@@ -2942,7 +3283,7 @@ label monika_poetry:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True,unlocked=True))
 
 label monika_ddlc:
     m 1euc "You want to talk about the game?"
@@ -3417,6 +3758,7 @@ init 5 python:
             category=['ddlc','monika'],
             prompt="You're a murderer!",
             pool=True,
+            unlocked=True,
             sensitive=True
         )
     )
@@ -3645,7 +3987,7 @@ label monika_trolley:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True,unlocked=True))
 
 label monika_girlfriend:
     if (mas_isA01() and mas_isMoniNormal(higher=True)) or (renpy.random.randint(1,4) == 1 and mas_isMoniEnamored(higher=True)):
@@ -3727,7 +4069,7 @@ label monika_images:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself",pool=True,unlocked=True))
 
 label monika_herself:
     m 1euc "What's there really to say about myself that you don't know already?"
@@ -3808,7 +4150,7 @@ label monika_torment:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True,unlocked=True))
 
 label monika_birthday:
     if mas_isMonikaBirthday():
@@ -5633,13 +5975,13 @@ label monika_surprise:
     m 1euc "You know what? Maybe I should do it again..."
     m 1eua "Yeah, that's a good idea."
     $ mas_surprise()
-    # TODO decide with a writer what's going on for this one
+
     if mas_isMoniUpset(lower=True):
         m 2dsc ".{w=0.5}.{w=0.5}.{nw}"
         m 1euc "Alright..."
-        m "Please go take a look"
+        m 1ekc "Please go take a look."
         m 1eka "I wrote it just for you."
-        m 1dsc "And it would mean a lot to me if you would read it."
+        m 1dsc "It would mean a lot to me if you would read it."
         return
 
     elif mas_isMoniAff(higher=True):
@@ -5727,7 +6069,7 @@ label monika_icecream:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sayhappybirthday",category=['misc'],prompt="Can you tell someone Happy Birthday for me?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_sayhappybirthday",category=['misc'],prompt="Can you tell someone Happy Birthday for me?",pool=True,unlocked=True))
 
 label monika_sayhappybirthday:
     # special variable setup
@@ -7418,7 +7760,16 @@ label monika_how_soon:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_marriage",
+            category=['romance'],
+            prompt="Will you marry me?",
+            pool=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_marriage:
     $ mas_gainAffection()
@@ -7437,8 +7788,8 @@ label monika_marriage:
     else:
         m 2wubsw "M-marriage?"
         m 4rksdlb "I think it's a bit too early for marriage..."
-        m 2ekbfa "I mean, I'm really happy that you want that, [player]."
-        m 2lkbsa "But I think I should get out of here before we can do that."
+        m 2ekbfa "I mean, I'm really happy that you want that, [player]..."
+        m 2lkbsa "But I think I should get out of here first."
         m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
         m 2dkbsu "I want that special moment to happen when we can finally be together..."
         m 1hubfa "So until then, save yourself for me, [player]~"
@@ -7996,8 +8347,11 @@ label monika_asks_family:
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = False
             $ persistent._mas_pm_no_talk_fam = False
-            #Rerandom this family based topics since you do have a family
-            $ mas_showEVL("monika_familygathering","EVE",_random=True)
+
+            #Make sure we didn't answer this already
+            if persistent._mas_pm_fam_like_monika is None:
+                #Rerandom this family based topics since you do have a family
+                $ mas_showEVL("monika_familygathering", "EVE", _random=True)
 
             m 1hua "That's wonderful!"
             m 3hua "Your family must be great~"
@@ -10474,15 +10828,9 @@ label monika_grad_speech_ignored_lock:
     return
 
 label monika_grad_speech:
-    # clear selected track
-    $ play_song(None, fadeout=1.0)
-    $ songs.current_track = songs.FP_NO_SONG
-    $ songs.selected_track = songs.FP_NO_SONG
-    #play some grad music
-    play music "mod_assets/sounds/amb/PaC.ogg" fadein 1.0
-    $ mas_MUMURaiseShield()
-    #Disable text speed
-    $ mas_disableTextSpeed()
+    call mas_timed_text_events_prep
+
+    $ play_song("mod_assets/bgm/PaC.ogg",loop=False)
 
     m 2dsc "Ahem...{w=0.7}{nw}"
     m ".{w=0.3}.{w=0.3}.{w=0.6}{nw}"
@@ -10544,11 +10892,7 @@ label monika_grad_speech:
     m 4hub "{w=0.2}We did it everyone!{w=0.7} Thanks for listening~{w=0.6}{nw}"
     m 2hua "{w=0.2}.{w=0.3}.{w=0.3}.{w=1}{nw}"
 
-    #stop grad music
-    $ mas_MUMUDropShield()
-    stop music fadeout 1.0
-    #Re-enable text speed
-    $ mas_resetTextSpeed()
+    call mas_timed_text_events_wrapup
     return
 
 init 5 python:
@@ -13524,8 +13868,9 @@ label monika_auroras:
     show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubsa "That would be an experience to remember, don't you think, [player]?"
     m 5hubsu "I can't wait until we can turn that into reality."
-    $ mas_showEVL("monika_auroras","EVE",_random=True)
+    $ mas_protectedShowEVL("monika_auroras","EVE", _random=True)
     return
+
 init 5 python:
     addEvent(
         Event(
@@ -13605,105 +13950,6 @@ label monika_social_norms:
     m 1ekb "So please, always be yourself, [player]. Everybody else is already taken, after all."
     if mas_isMoniHappy(higher=True):
         m 1dkbfu "You don't have to go along with the crowd to be {i}my{/i} perfect [bf]."
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
-
-label mas_topic_derandom:
-    # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
-    $ prev_topic = persistent.flagged_monikatopic
-    m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Are you sure you don't want me to bring this up anymore?{fast}"
-        "Please don't.":
-            $ mas_hideEVL(prev_topic, "EVE", derandom=True)
-            $ persistent._mas_player_derandomed.append(prev_topic)
-            $ mas_unlockEVL('mas_topic_rerandom', 'EVE')
-
-            m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
-            m 2dksdld "If it upset you in any way, I'm really sorry...{w=0.5} I'd never do that intentionally."
-            m 2eksdla "...But thanks for letting me know;{w=0.5} I appreciate the honesty."
-
-        "It's okay.":
-            m 1eka "Alright, [player]."
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topic_rerandom",category=['you'],prompt="I'm okay with talking about...",pool=True,unlocked=False,rules={"no unlock":None}))
-
-label mas_topic_rerandom:
-    python:
-        derandomlist = mas_get_player_derandoms()
-
-        derandomlist.sort()
-        return_prompt_back = ("Nevermind", False, False, False, 20)
-
-    show monika 1eua at t21
-    if len(derandomlist) > 1:
-        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False)
-    else:
-        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False)
-
-    call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
-
-    $ topic_choice = _return
-
-    if not _return:
-        return "prompt"
-
-    else:
-        show monika at t11
-        $ mas_showEVL(topic_choice, "EVE", _random=True)
-        $ persistent._mas_player_derandomed.pop(persistent._mas_player_derandomed.index(topic_choice))
-        m 1eua "Okay, [player]..."
-
-        if len(persistent._mas_player_derandomed) > 0:
-            m 1eka "Are there any other topics you are okay with talking about?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Are there any other topics you are okay with talking about?{fast}"
-                "Yes.":
-                    jump mas_topic_rerandom
-                "No.":
-                    m 3eua "Okay."
-
-        else:
-            m 3hua "All done!"
-            $ mas_lockEVL("mas_topic_rerandom", "EVE")
-
-    # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
-    # to be derandomed out of season is still derandomed
-    $ persistent._mas_current_season = store.mas_seasons._seasonalCatchup(persistent._mas_current_season)
-    return
-
-default persistent._mas_unsee_unseen = None
-# var set when the player decides to hide or show the Unseen menu
-# True when Unseen is hidden
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_hide_unseen",prompt="I don't want to see this menu anymore.",unlocked=False,rules={"no unlock":None}))
-
-label mas_hide_unseen:
-    $ persistent._mas_unsee_unseen = True
-    m 3esd "Oh, okay, [player]..."
-    if mas_getEV('mas_hide_unseen').shown_count == 0:
-        m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
-        m 3hub "Ahaha!"
-    m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}.{nw}"
-    m 3eub "There you go! If you want to see the menu again, just ask."
-    return
-
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_show_unseen",category=['you'],prompt="I would like to see 'Unseen' again",pool=True,unlocked=False,rules={"no unlock":None}))
-
-label mas_show_unseen:
-    $ persistent._mas_unsee_unseen = False
-    m 3eub "Sure, [player]!"
-    m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
-    m 3hua "There you go!"
     return
 
 init 5 python:
@@ -14017,7 +14263,7 @@ label monika_allegory_of_the_cave:
     m 3hub "Ahaha!"
     m 1hksdlb "I think we might be looking too much into things at this point..."
     m 1ekbfa "I just want you to know that you {i}are{/i} the truth of my reality, and I hope I can be part of yours someday, [player]."
-    $ mas_showEVL("monika_multi_perspective_approach","EVE",_random=True)
+    $ mas_protectedShowEVL("monika_multi_perspective_approach", "EVE", _random=True)
     return
 
 #Whether or not the player works out
@@ -14163,6 +14409,7 @@ label monika_movie_adaptations:
     m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
     m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
     m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
+    $ mas_showEVL("monika_striped_pajamas","EVE",_random=True)
     return
 
 init 5 python:
@@ -14206,6 +14453,39 @@ label monika_translating_poetry:
         m 5eubsa "Are there any poems in that language you'd recommend?"
         m 5ekbsa "It would be nice if you could read some of them for me sometime..."
         m 5rkbsu "You'd have to translate them for me first, though~"
+    return
+
+# this is randomized via _movie_adaptations
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_striped_pajamas",
+            category=["literature"],
+            prompt="The Boy in the Striped Pajamas",
+            random=False
+        )
+    )
+
+label monika_striped_pajamas:
+    m 1euc "Hey [player], have you ever read {i}The Boy in the Striped Pajamas{/i}?"
+    m 3euc "The story takes place during World War II and is shown through the perspective of an innocent German boy, happily living his life in a big family."
+    m 3eud "Once the family has to move to a new place, {w=0.2}{nw}"
+    extend 3wud "the reader realizes that the father of the boy is a commander of a concentration camp, which is located right near their new house!"
+    m 1rksdlc "Still, the boy is clueless to all the cruelty going on around him..."
+    m 1euc "He ends up wandering around the barbed-wire fence of the camp until he finds a kid in 'striped pajamas' on the other side."
+    m 3esc "Turns out, that kid is actually a prisoner of the camp...{w=0.2}{nw}"
+    extend 1ekc "though neither of them fully understand that."
+    m 3eud "From then on, they form a strong friendship and start talking to each other regularly."
+    m 2dkc "...This ends up leading to some destructive consequences."
+    m 2eka "I don't really want to go much further since there's a lot of interesting things to consider in this novel which you'd be better off reading for yourself."
+    m 7eud "But it actually got me thinking...{w=0.2}although obviously my situation isn't nearly as dire, it's hard not to draw some comparisons between their relationship and ours."
+    m 3euc "In both situations, there are two people from different worlds that neither fully understand, separated by a barrier."
+    m 1eka "...And yet, just like us, they are able to form a meaningful relationship anyway."
+    m 3eua "I highly recommend you read the novel if you get the chance, it's pretty short and has an interesting plot."
+    m 3euc "And if you're still not sold on reading it, there {i}is{/i} a movie based on this novel that you could watch."
+    m 1rksdla "Although you know my feelings on movie adaptations of novels, so if you do watch the movie, I still recommend reading the book as well."
+    m 3eua "I hope you'll enjoy it."
     return
 
 init 5 python:
@@ -14299,4 +14579,86 @@ label monika_hot_springs:
     m 5tsbfu "Then I'd lean in so you could kiss me and we'd stay locked together, while the hot water soaked all of our worries away..."
     m 5dkbfb "Ahhh,{w=0.2} {nw}"
     extend 5dkbfa "just the thought of it makes me feel all tingly, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_using_pcs_healthily",
+            category=['advice'],
+            prompt="Using computers healthily",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_using_pcs_healthily:
+    m 1rtc "Hmm..."
+    m 1etc "Hey, [player]...{w=0.3}are you sitting comfortably?"
+    m 1hksdlb "No, really!{w=0.3} {nw}"
+    extend 3eksdla "Are you?"
+    m 3eka "I know you have to be at your computer to spend time with me..."
+    m 2eka "So I just wanted to make sure you aren't accidentally damaging your health while you're here."
+    m 4ekd "I've read that spending too long looking at a screen can cause headaches, make you feel tired, and even impact your eyesight over time."
+    m 2tkx "Posture issues and pain from bad sitting habits are no joke either!"
+    m 2tku "Fortunately for you, I've put together a little checklist to help prevent these sorts of problems."
+    m 4hub "...So let's go through it together, [player]!"
+    m 4eub "First, {w=0.2}try to keep sitting up straight!"
+    m 2eua "...Have your chair adjusted properly so your feet stay flat on the floor, your eyes are level with the top of the screen, and you aren't slouching."
+    m 4eub "You should feel supported and comfortable in your seat!"
+    m 4eua "Next, make sure you have some distance between yourself and the display...{w=0.2}about an arm's length is fine."
+    m 2hksdlb "...Keep your keyboard and mouse within easy reach, though!"
+    m 4eub "Of course, lighting is important too! {w=0.3}{nw}"
+    extend 2eua "Try to keep the room well-lit, but not so much that light is glaring off the screen."
+    m 4eud "In addition, remember to take frequent breaks. {w=0.3}Look away from the screen, {w=0.2}ideally at something far away, {w=0.2}and perhaps do a few stretches. "
+    m 2eud "Since it's important to stay hydrated too, you could always fetch some fresh water while you're up from your desk."
+    m 4eksdlc "Above all else, if you ever start to feel unwell, just stop what you're doing, rest, and then make sure everything is okay before you continue. "
+    m 4eua "...And that's about it."
+    m 2hksdlb "Ah...{w=0.3}sorry, I didn't mean to go on for that long!"
+    m 2rka "...You probably knew all that stuff already, anyway."
+    m 2eka "As for me?"
+
+    if mas_isMoniLove():
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "You're the only comfort I need, my love."
+    elif mas_isMoniEnamored():
+        show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbsa "I'm as comfortable as can be when you're here, [player]."
+    else:
+        show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubsa "I'm comfortable whenever you're here with me, [player]."
+
+    m 5hubfu "And hopefully you're a little more comfortable now too~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_language_nuances',
+            prompt="Language nuances",
+            category=['literature', 'trivia'],
+            random=True
+        )
+    )
+
+label monika_language_nuances:
+    m 3eua "Hey [player], have you ever tried reading through a dictionary?"
+    m 1etc "Not necessarily because there was some word or expression you didn't know the meaning of, but just...{w=0.2}because?"
+    m 1hksdlb "I know it doesn't exactly sound like the most engaging of pastimes, ahaha!"
+    m 3eua "But it can certainly be an interesting, even rewarding, way to spend some free time. {w=0.2}Especially if it's a dictionary of a language you're still learning."
+    m 3eud "Many words have multiple meanings and, aside from the obvious benefits, knowing those can really help you see the finer points of the language."
+    m 1rksdla "Understanding these subtleties can save you a lot of embarrassment when you actually speak to someone."
+    m 3eud "A prime example of this in English is 'Good morning,' 'Good afternoon,' and 'Good evening.'"
+    m 1euc "All of these are normal greetings you hear and use every day."
+    m 3etc "Following this pattern, 'Good day' should be just fine as well, right? {w=0.2}It works in so many other languages, after all."
+    m 3eud "While it used to be just as acceptable, as you can see in some older works, that's just not the case anymore."
+    m 1euc "In modern English, saying 'Good day' to someone carries a note of dismissal, or even annoyance. {w=0.2}It can be seen as declaring the conversation over."
+    m 1eka "If you're lucky, your conversation partner might think you're old-fashioned, or just being silly on purpose."
+    m 1rksdla "If not, you might offend them without even noticing...{w=0.3} {nw}"
+    extend 1hksdlb "Oops!"
+    m 3eua "It really is fascinating how even such an innocent looking phrase can be loaded with layers of hidden meanings."
+    m 1tsu "So good day to you, [player].{w=0.3} {nw}"
+    extend 1hub "Ahaha~"
     return
