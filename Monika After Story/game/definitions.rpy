@@ -7,6 +7,8 @@ init 1 python:
 
 ### Overrides of core renpy things
 python early in mas_overrides:
+    from store import *
+
     def dummy(*args, **kwargs):
         """
         Dummy function that does nothing
