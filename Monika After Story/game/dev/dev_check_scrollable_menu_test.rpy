@@ -16,7 +16,7 @@ label dev_check_scrollable_menu_test:
 
     $ checked_buttons = store.mas_utils.tryparseint(
         renpy.input(
-            "How much checked buttons you want in the menu?",
+            "How many {b}checked{/b} buttons you would like in the menu?",
             allow=numbers_only,
             length=2
         ).strip("\t\n\r"),
@@ -25,7 +25,7 @@ label dev_check_scrollable_menu_test:
 
     $ unchecked_buttons = store.mas_utils.tryparseint(
         renpy.input(
-            "How much unchecked buttons you want in the menu?",
+            "How many {b}unchecked{/b} buttons you would like in the menu?",
             allow=numbers_only,
             length=2
         ).strip("\t\n\r"),
@@ -36,16 +36,16 @@ label dev_check_scrollable_menu_test:
         m 2rksdla "I can't build a menu w/o buttons."
         return
 
-    m 1eub "Would you like me to return all items, or only items with true values?{nw}"
+    m 1eub "Would you like the menu to return the items with true values, or any items?{nw}"
     $ _history_list.pop()
     menu:
-        m "Would you like me to return all items, or only items with true values?{fast}"
-
-        "All":
-            $ return_all = True
+        m "Would you like the menu to return the items with true values, or any items?{fast}"
 
         "Only with true values":
             $ return_all = False
+
+        "Any":
+            $ return_all = True
 
     m 1eua "Shall we use True or False as the true value?{nw}"
     $ _history_list.pop()
@@ -87,10 +87,10 @@ label dev_check_scrollable_menu_test:
 
     if _return:
         $ result = str(_return).replace("{", "{{")
-        m 1dsa "And we got this from the screen.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+        m 1dsa "And this's what we got from the menu.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
         m 4eua "[result]"
 
     else:
-        m 4eub "The screen returned an empty dict."
+        m 4eub "The menu returned an empty dict."
 
     return
