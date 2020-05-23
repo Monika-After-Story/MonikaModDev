@@ -469,6 +469,14 @@ label v0_11_3(version="v0_11_3"):
         for pool_label in pool_unlock_list:
             mas_unlockEVL(pool_label,"EVE")
 
+        #Add conditional to player appearance if not seen
+        if not seen_event("monika_player_appearance"):
+            player_appearance_ev = mas_getEV("monika_player_appearance")
+            if player_appearance_ev:
+                player_appearance_ev.random = False
+                player_appearance_ev.conditional = "seen_event('mas_gender')"
+                player_appearance_ev.action = EV_ACT_RANDOM
+
     return
 
 #0.11.1
