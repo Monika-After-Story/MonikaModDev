@@ -22,6 +22,9 @@ install:
     # copy over files from game/
     - cp -Rf MonikaModDev/Monika\ After\ Story/* mas0105/
 
+    # touch file to tell code to not raise exceptions for some things
+    - touch mas105/trb
+
 # environment to handle alsa issues
 env:
     - SDL_AUDIODRIVER=dummy
