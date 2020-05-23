@@ -32,14 +32,12 @@ label mas_gender:
         "Male.":
             $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "M"
-            call mas_set_gender
             m 3eua "Okay [player], thanks for confirming that for me."
             m 1hksdlb "Not that I would have been bothered if you answered differently, mind you!"
 
         "Female.":
             $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "F"
-            call mas_set_gender
             m 2eud "Oh? So you're a girl?"
             m 2hksdlb "I hope I didn't say anything to offend you before!"
             m 7rksdlb "...I guess that's why they say you shouldn't make assumptions, ahaha!"
@@ -48,7 +46,6 @@ label mas_gender:
         "Neither.":
             $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "X"
-            call mas_set_gender
             call mas_gender_neither
 
         "I'm transgender.":
@@ -61,7 +58,8 @@ label mas_gender:
 
     #Unlock the gender redo event
     $ mas_unlockEVL("monika_gender_redo","EVE")
-
+    # set pronouns
+    call mas_set_gender
     return "love"
 
 init 5 python:
@@ -119,24 +117,22 @@ label monika_gender_redo:
         m "So, what's your gender?{fast}"
 
         "I'm a boy.":
-            $ persistent._mas_pm_is_trans = False
-            if persistent.gender == "M":
+            if persistent.gender == "M" and not persistent._mas_pm_is_trans:
                 $ gender_var = "boy"
                 call mas_gender_redo_same
             else:
                 $ persistent.gender = "M"
-                call mas_set_gender
                 call mas_gender_redo_react
+            $ persistent._mas_pm_is_trans = False
 
         "I'm a girl.":
-            $ persistent._mas_pm_is_trans = False
-            if persistent.gender == "F":
+            if persistent.gender == "F" and not persistent._mas_pm_is_trans:
                 $ gender_var = "girl"
                 call mas_gender_redo_same
             else:
                 $ persistent.gender = "F"
-                call mas_set_gender
                 call mas_gender_redo_react
+            $ persistent._mas_pm_is_trans = False
 
         "I'm neither.":
             $ persistent._mas_pm_is_trans = False
@@ -144,20 +140,21 @@ label monika_gender_redo:
                 call mas_gender_redo_neither_same
             else:
                 $ persistent.gender = "X"
-                call mas_set_gender
                 if renpy.seen_label("mas_gender_neither"):
                     call mas_gender_redo_react
                 else:
                     call mas_gender_neither
 
-        "I'm transgender":
+        "I'm transgender.":
             call mas_gender_trans
-
             if persistent.gender != "X":
                 call mas_gender_redo_react
 
     show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubsa "I'll always love you for who you are~"
+
+    # set pronouns
+    call mas_set_gender
     return "love"
 
 label mas_gender_neither:
@@ -200,11 +197,9 @@ label mas_gender_trans:
 
         "Male":
             $ persistent.gender = "M"
-            call mas_set_gender
 
         "Female":
             $ persistent.gender = "F"
-            call mas_set_gender
 
         "Neither":
             if persistent.gender == "X":
@@ -212,7 +207,6 @@ label mas_gender_trans:
 
             else:
                 $ persistent.gender = "X"
-                call mas_set_gender
                 call mas_gender_neither
 
     $ persistent._mas_pm_is_trans = True
