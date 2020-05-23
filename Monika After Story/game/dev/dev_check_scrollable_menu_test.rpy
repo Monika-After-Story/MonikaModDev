@@ -16,7 +16,7 @@ label dev_check_scrollable_menu_test:
 
     $ checked_buttons = store.mas_utils.tryparseint(
         renpy.input(
-            "How many {b}checked{/b} buttons you would like in the menu?",
+            "How many {b}checked{/b} buttons would you like in the menu?",
             allow=numbers_only,
             length=2
         ).strip("\t\n\r"),
@@ -25,7 +25,7 @@ label dev_check_scrollable_menu_test:
 
     $ unchecked_buttons = store.mas_utils.tryparseint(
         renpy.input(
-            "How many {b}unchecked{/b} buttons you would like in the menu?",
+            "How many {b}unchecked{/b} buttons would you like in the menu?",
             allow=numbers_only,
             length=2
         ).strip("\t\n\r"),
