@@ -1595,7 +1595,7 @@ label mas_thermos_mug_handler(thermos_acs, disp_name, giftname):
 
     elif persistent._mas_given_thermos_before:
         m 1wud "Oh!{w=0.3} Another thermos!"
-        m 1hua "And it's {_an}[disp_name]{/a_an} one this time."
+        m 1hua "And it's {a_an}[disp_name]{/a_an} one this time."
         m 1hub "Thanks so much, [player], I can't wait to use it!"
 
     else:
