@@ -3,7 +3,7 @@
 #   - All brbs should have their markSeen set to True so they don't show up in unseen
 #   - Brbs should return "idle" to move into idle mode
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
-#       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
+#       A good practice for these should be no more than 10 lines will be said before you go into idle mode/when coming out of idle mode.
 
 init 5 python:
     addEvent(
@@ -194,53 +194,57 @@ label bye_brb_shower_timeout:
 
 #Enters from the sleep farewell prompt
 label bye_prompt_sleep_idle:
+    m 1eka "Alright [player], I'll try and keep the bad dreams away while you rest."
+    m 1hua "Sweet dreams, my love~"
+
     python:
-        import datetime
-        curr_hour = datetime.datetime.now().hour
-    m 1esa "Going to sleep, [player]?"
-    m "Are you going to leave the game open?{nw}"
-    menu:
-        m "Are you going to leave the game open?{fast}"
-        "Yes.":
-            m 1hua "Alright, I'll try and keep the bad dreams away while you rest."
-            m 1hub "Sweet dreams, my love~"
-            $ start_time = datetime.datetime.now()
-            # set return label when done with idle
-            $ mas_idle_mailbox.send_idle_cb("monika_idle_going_to_sleep_callback")
-            #Then the idle data
-            $ persistent._mas_idle_data["monika_idle_sleep"] = True
-            return "idle"
-        "No.":
-            pass
-    call bye_prompt_sleep
-    return "quit"
+        start_dt = datetime.datetime.now()
+        #Set return label when done with idle
+        mas_idle_mailbox.send_idle_cb("monika_idle_going_to_sleep_callback")
+        #Then the idle data
+        persistent._mas_idle_data["monika_idle_sleep"] = True
+    return "idle"
 
 label monika_idle_going_to_sleep_callback:
-    $ elapsed_time = datetime.datetime.now() - start_time
-    if elapsed_time < datetime.timedelta(hours=4):
+    python:
+        elapsed_time = datetime.datetime.now() - start_dt
+        start_time = start_dt.time()
+
+        #Time shouldn't be constant here, so let's set up some time ranges
+        if mas_isSRtoN(start_time) or mas_isNtoSS(start_time):
+            min_sleep_time = 2
+        else:
+            min_sleep_time = 5
+
+    if elapsed_time <= datetime.timedelta(hours=min_sleep_time):
         m 2euc "Uh, [player]?"
         m 1hksdlb "Back already?"
         m 3rksdlb "Did you really go to sleep and wake up that quickly?"
         m 1eka "I'm happy to see you back, but if you're feeling tired, you should go back to bed."
         m 1hub "Or maybe I'm enough to fill you with energy as is, ahaha!"
+
     else:
         $ _now = datetime.datetime.now().time()
         if mas_isMNtoSR(_now):
             m 1eub "Morning, [player]!"
             m 2rksdla "It's a bit early, isn't it?"
             m 1hua "Still, I'm not complaining about having you back so early~"
+
         elif mas_isSRtoN(_now):
             m 1eub "Good morning, [player]~"
             m 1hua "It's nice to see you up nice and early."
             m 3eub "Don't forget to get breakfast if you haven't already."
+
         elif mas_isNtoSS(_now):
             if renpy.random.randint(1,2) == 1:
                 m 1eub "Good morn-{nw}"
                 $ _history_list.pop()
-                m 3rksdlb "Good{fast} {i}afternoon{/i}, [player]."
+                m 3rksdlb "Good {fast}{i}afternoon{/i}, [player]."
                 m 1hub "Ahaha!"
+
             else:
                 m 1eua "Good afternoon, [player]."
+
             m 1eka "I was starting to miss you."
             m 3tubfu "Maybe you would have woken up earlier if I had given you a kiss?"
             show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
@@ -248,6 +252,7 @@ label monika_idle_going_to_sleep_callback:
             show monika 1hubfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 1hubfu "Well, I guess I don't have to anymore, now that you're finally here."
             m 1eub "Now you can finally start the day with me."
+
         #SStoMN
         else:
             m 1eua "..."

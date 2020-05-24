@@ -462,7 +462,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
-            eventlabel="bye_prompt_sleep_idle",
+            eventlabel="bye_prompt_sleep",
             unlocked=True,
             prompt="I'm going to sleep.",
             pool=True
@@ -471,13 +471,22 @@ init 5 python:
     )
 
 label bye_prompt_sleep:
-
     python:
         import datetime
         curr_hour = datetime.datetime.now().hour
 
-    # these conditions are in order of most likely to happen with our target
-    # audience
+    #These conditions are in order of most likely to happen with our target audience
+    m 1esa "Going to sleep?"
+
+    m "Are you going to leave the game open?{nw}"
+    $ _history_list.pop
+    menu:
+        m "Are you going to leave the game open?{fast}"
+        "Yes.":
+            jump bye_prompt_sleep_idle
+
+        "No.":
+            pass
 
     if 20 <= curr_hour < 24:
         # decent time to sleep
@@ -489,7 +498,7 @@ label bye_prompt_sleep:
             m 2esc "Goodnight, [player]."
 
         elif mas_isMoniDis():
-            m 6ekc "Okay...{w=1} Goodnight, [player]."
+            m 6ekc "Okay...{w=0.5} Goodnight, [player]."
 
         else:
             m 6ckc "..."
@@ -569,7 +578,7 @@ label bye_prompt_sleep:
             m 1eua "Taking an afternoon nap, I see."
             # TODO: monika says she'll join you, use sleep sprite here
             # and setup code for napping
-            m 1hua "Ahaha~ Have a good nap, [player]."
+            m 1hua "Ahaha, have a good nap, [player]."
 
         elif mas_isMoniUpset():
             m 2esc "Taking a nap, [player]?"
@@ -596,10 +605,12 @@ label bye_prompt_sleep:
                     m 1hua "Yay!"
                     m "Thanks, [player]."
                     return
+
                 "Sorry, I'm really tired.":
                     m 1eka "Aw, that's okay."
                     m 1hua "Goodnight, [player]."
                 # TODO: now that is tied we may also add more dialogue?
+
                 "No.":
                     $ mas_loseAffection()
                     m 2dsd "..."
