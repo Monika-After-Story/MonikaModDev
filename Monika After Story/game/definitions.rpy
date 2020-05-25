@@ -66,12 +66,15 @@ python early in mas_overrides:
                             scope_store_name = "renpy.{0}.".format(stores_names_list[0])
                             break
 
+                # if we got to this, you passed in something undefined
+                else:
+                    scope_store_name = ""
+
             # if you've not passed anything, use the base store
             elif first in kwargs:
                 scope_store_name = "renpy.store."
 
             # if we got to this, you passed in something undefined
-            # and eval will crash you
             else:
                 scope_store_name = ""
 
