@@ -32,21 +32,56 @@ python early in mas_overrides:
         OUT:
             tuple of the object and its key
         """
-        first, rest = field_name._formatter_field_name_split()
-
-        # if it's a function call, we eval it
+        # if it's a function, we eval it
         if "(" in field_name:
-            # if the module/func isn't in the def store,
-            # we use the one in kwargs to call the func from there
-            if isinstance(kwargs, renpy.substitutions.MultipleDict):
-                _store = [name for name, store in sys.modules.iteritems() if store is kwargs.dicts[0]][0]
+            # id to split the string
+            split_index = field_name.index("(")
+            # get the func's name
+            func_name = field_name[:split_index]
+            # get the arg and kwargs
+            args = field_name[split_index:]
+
+            # it still may include store modules, get the 1st if there's any
+            if "." in func_name:
+                func_store_name, func_name = func_name.split(".", 1)
+                first = func_store_name
+                func_store_name += "."
+
             else:
-                _store = "renpy.store"
+                func_store_name = ""
+                first = func_name
 
-            obj = eval("{0}.{1}".format(_store, field_name))
+            # now we find the store's name to use in eval
+            # iterate through all the scopes you passed in to find the one
+            # where the function/module was defined
+            if isinstance(kwargs, renpy.substitutions.MultipleDict):
+                for scope in kwargs.dicts:
+                    if first in scope:
+                        stores_names_list = [
+                            store_obj_name
+                            for store_obj_name, store_obj in sys.modules.iteritems()
+                            if store_obj and store_obj.__dict__ is scope
+                        ]
+                        if stores_names_list:
+                            scope_store_name = "renpy.{0}.".format(stores_names_list[0])
+                            break
 
-        # otherwise just get the object by reference
+            # if you've not passed anything, use the base store
+            elif first in kwargs:
+                scope_store_name = "renpy.store."
+
+            # if we got to this, you passed in something undefined
+            # and eval will crash you
+            else:
+                scope_store_name = ""
+
+            # finally get the value from the function
+            obj = eval("{0}{1}{2}{3}".format(scope_store_name, func_store_name, func_name, args))
+
+        # otherwise just get the reference
         else:
+            first, rest = field_name._formatter_field_name_split()
+
             obj = self.get_value(first, args, kwargs)
 
             for is_attr, i in rest:
