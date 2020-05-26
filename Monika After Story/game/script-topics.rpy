@@ -7778,7 +7778,7 @@ default persistent._mas_pm_do_smoke = None
 default persistent._mas_pm_do_smoke_quit = None
 
 # succesfully quit at least once?
-default persistent._mas_pm_do_smoke_quit_succeeded_once = None
+default persistent._mas_pm_do_smoke_quit_succeeded_before = None
 
 # player said he smoked but never did
 default persistent._mas_pm_do_smoke_lied = None
@@ -7796,10 +7796,8 @@ label monika_smoking:
     m 4tkd "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
     m 1lsc "I really do despise them..."
 
-    if persistent._mas_pm_do_smoke_quit_succeeded_once:
-
+    if persistent._mas_pm_do_smoke_quit_succeeded_before:
         if persistent._mas_pm_do_smoke:
-
             m 1ekc "It's a shame you fell back into this bad habit.{nw}"
             extend 1ekd " After all the trouble you went through to quit and everything..."
             m 3dkc "It really pains my heart, [player]..."
@@ -7809,6 +7807,7 @@ label monika_smoking:
                 m 1lua "You told me you still wanted to quit, after all..."
 
             m 3eub "So just in case, I'd like to ask you once more..."
+
         else:
             m 1hubfb "That's why I'm really proud you quit smoking!"
             m 1dubsu "It's such a relief to know you're taking care of your health..."
@@ -7817,31 +7816,30 @@ label monika_smoking:
     else:
         m 1euc "As for you..."
 
-    python:
-        if persistent._mas_pm_do_smoke:
-            smoking_question = "Do you still smoke cigarettes, "
-        else:
-            smoking_question = "You don't smoke cigarettes, right "
+    $ smoking_question = "Do you still smoke cigarettes, " if persistent._mas_pm_do_smoke else "You don't smoke cigarettes, do you "
 
     m 1eud "[smoking_question][player]?{nw}"
     $ _history_list.pop()
     menu:
         m "[smoking_question][player]?{fast}"
+
         "Yes, I do.":
-            $ persistent._mas_pm_do_smoke = True
-            $ persistent._mas_pm_do_smoke_quit = False
+            python:
+                persistent._mas_pm_do_smoke = True
+                persistent._mas_pm_do_smoke_quit = False
+
             m 1wud "..."
             m 1eka "Thank you for being honest with me, [player]..."
             m 1ekc "It's quite disheartening to hear that, though."
 
-            if persistent._mas_pm_do_smoke_quit_succeeded_once:
+            if persistent._mas_pm_do_smoke_quit_succeeded_before:
                 m 3rkc "Especially after all the trouble you went through to quit the last time."
                 m 1dkd "I really thought you were done for good with cigarettes..."
                 m 1dkc "But I guess it's just not that simple, right?"
 
             m 1ekc "Could you...promise me that you'll stop?"
 
-            if persistent._mas_pm_do_smoke_quit_succeeded_once:
+            if persistent._mas_pm_do_smoke_quit_succeeded_before:
                 m 3wuo "You've done it once before, so I'm sure you can do it again!"
 
             m 1ekc "I don't want you to deteriorate your health like that..."
@@ -7850,46 +7848,48 @@ label monika_smoking:
             m 2euc "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
             m 2ekc "Please take care of your body. I want to always be with you."
             m 1ekbfa "I love you so much."
-            return "derandom|love"
+            $ mas_ILY()
 
         "No, I don't.":
-            #follow-up event should not trigger if player does not smoke anymore
-            call monika_abort_smoking_quit_event
+            python:
+                persistent._mas_pm_do_smoke = False
+                persistent._mas_pm_do_smoke_quit = False
 
-            #if the players says 'I don't smoke' at least 2 weeks after saying he wants to quit, we can assume he is trying to tell Monika he quit smoking
+                #Follow-up event should not trigger if player does not smoke anymore
+                mas_stripEVL("monika_smoking_quit", list_pop=True)
+
+            #If the player says 'I don't smoke' at least 2 weeks after saying he wants to quit
+            #we can assume they are trying to tell Monika they quit smoking
             if persistent._mas_pm_do_smoke_quit:
+                $ smoking_ev = mas_getEV("monika_smoking")
 
-                python:
-                    smoking_ev = mas_getEV("monika_smoking") #does event already exist on first viewing? if so we don't need the python call
-                    call_quit_success = smoking_ev and smoking_ev.timePassedSinceLastSeen_d(datetime.timedelta(weeks=2))
+                if smoking_ev and smoking_ev.timePassedSinceLastSeen_d(datetime.timedelta(weeks=2)):
+                    call monika_smoking_quit_success
 
-                if call_quit_success:
-                    jump monika_smoking_quit_success
-
-            $ persistent._mas_pm_do_smoke = False
-            $ persistent._mas_pm_do_smoke_quit = False
             m 1hub "Ah, I'm relieved to hear that, [player]!"
             m 3eua "Just stay away from it as much as you can."
             m 1eka "It's an awful habit and won't do much more than slowly kill you."
             m 1hua "Thank you, [player], for not smoking~"
 
         "I'm trying to quit.":
-            call monika_plan_smoking_quit_event
+            python:
+                persistent._mas_pm_do_smoke = True
+                persistent._mas_pm_do_smoke_quit = True
+
+            call monika_smoking_quit_requeue_setup
             #Monika just learns the player has been smoking again
-            if persistent._mas_pm_do_smoke_quit_succeeded_once and not persistent._mas_pm_do_smoke:
+            if persistent._mas_pm_do_smoke_quit_succeeded_before and not persistent._mas_pm_do_smoke:
                 m 1esc "Oh?"
                 m 1ekc "Does that mean you fell back into it?"
                 m 1dkd "That's too bad, [player]...{w=0.5}{nw}"
                 extend 3rkd " but not entirely unexpected."
                 m 3esc "Most people fall into relapse several times before they manage to quit smoking for good."
                 m 3eua "In any case, trying to quit again is a really good decision."
+
             else:
                 m 3eua "That's a really good decision."
-            
-            $ persistent._mas_pm_do_smoke = True
-            $ persistent._mas_pm_do_smoke_quit = True
 
-            if persistent._mas_pm_do_smoke_quit_succeeded_once:
+            if persistent._mas_pm_do_smoke_quit_succeeded_before:
                 m 3eka "You probably already know since you've been through this before, but try to remember this..."
             else:
                 m 1eka "I know the entire process of quitting can be really difficult, especially in the beginning."
@@ -7902,7 +7902,7 @@ label monika_smoking:
 
     return "derandom"
 
-#NOTE: This event gets its initial start-dae from monika_smoking, then set its date again on the appropriate path.
+#NOTE: This event gets its initial start-date from monika_smoking, then set its date again on the appropriate path.
 init 5 python:
     addEvent(
         Event(
@@ -7916,13 +7916,15 @@ init 5 python:
 label monika_smoking_quit:
     m 1esc "[player], do you remember last time we talked about smoking?"
     m 3rsc "If I remember you told me you wanted to quit."
-    m 1eua "I just want to know... did you succeed?" 
+    m 1eua "I just want to know...did you succeed?"
+
     m "Did you manage to quit?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you manage to quit?{fast}"
+
         "Yes.":
-            jump monika_smoking_quit_success
+            call monika_smoking_quit_success
 
         "No.":
             m 2ekc "Aww..."
@@ -7930,12 +7932,16 @@ label monika_smoking_quit:
             extend 2eku "but one failure isn't the end you know?"
             m "Most people fall back into it several times before they finally manage to quit for good."
             m 4dku "Don't let a small setback get in the way of your resolve, [player]. Your health is really important!"
+
             m 4eka "You will try to quit again, won't you?{nw}"
             $ _history_list.pop()
             menu:
                 m "You will try to quit again, won't you?{fast}"
+
                 "Yes":
-                    jump monika_smoking_quit_will_retry
+                    call monika_smoking_quit_will_retry
+                    $ mas_ILY()
+
                 "No":
                     m 4wkd "[player]!"
                     m "Don't give up now!"
@@ -7947,7 +7953,9 @@ label monika_smoking_quit:
                     menu:
                         m "Please, [player], would you consider making another try? For me?{fast}"
                         "Yes":
-                            jump monika_smoking_quit_will_retry
+                            call monika_smoking_quit_will_retry
+                            $ mas_ILY()
+
                         "No":
                             $ persistent._mas_pm_do_smoke_quit = False
                             m 2ekc "...{w=0.5} Very well, [player]."
@@ -7958,57 +7966,60 @@ label monika_smoking_quit:
                             m 2eka "But if that's your choice, I'll respect it."
                             m 2esc "I still wish you'd consider giving it another try though..."
                             m 7eua "Let me know I you decide to do so."
-                            return "no_unlock"
 
         "It's too soon to say.":
-            call monika_plan_smoking_quit_event
+            call monika_smoking_quit_requeue_setup
             m 1eksdla "Oh. It's still too soon to say you're off for good, isn't it?"
             m 3rssdlc "Sorry for reminding you, I know it must be hard for you right now..."
             m 4hua "But at the same time, it means you succeeded in staying off until now!"
             m 4hubfb "Good job, [player]! Keep it up!"
+
             if not persistent._mas_pm_cares_about_dokis:
                 m 2ekbfu "Just a little more and you'll finally be able to tell cigarettes 'sayonara' for good!"
             else:
                 m 2ekbfu "Just a little more and you'll finally be done for good with cigarettes!"
+
             m 4hubfb "Your loving girlfriend believes in you! I'm sure you can do it!"
-            return "no_unlock"
 
         #safeguard for players who tried all options on monika_smoking
         "I never smoked.":
             $ persistent._mas_pm_do_smoke = False
             $ persistent._mas_pm_do_smoke_quit = False
-            $ persistent._mas_pm_do_smoke_quit_succeeded_once = False
+            $ persistent._mas_pm_do_smoke_quit_succeeded_before = False
 
             if persistent._mas_pm_do_smoke_lied:
-                $ mas_loseAffection(modifier=10)
+                $ mas_loseAffection(amount=10)
                 m 2wfc "You said that last time, [player]!"
-                m 2ekc "I just want to see you be the best you can be... but you keep lying to me."
-                m 2dfd "Just forget it...{w=0.5}"
-                extend 2efd "I'm not going to ask anymore."
-                $ mas_lockEventLabel("monika_smoking")
-                return "no_unlock"
+                m 2ekc "I just want to see you be the best you can be...{w=0.5}{nw}"
+                m 2dkd "but you keep lying to me."
+                m 2dfc "Just forget it...{w=0.5}"
+                extend 2rfd "I'm not going to ask anymore."
+                $ mas_lockEVL("monika_smoking", "EVE")
 
-            $ persistent._mas_pm_do_smoke_lied = True
-            $ mas_loseAffection(reason=13,modifier=3)
-            m 1wud "Wha--" 
-            m "But you said..."
-            m 2esc "I clearly remember you telling me you smoked, [player]..."
-            m 4efc "That's no joke, you know? I'm worried about your health!"
-            m 4esc "Was it a mistake when you said that? You wouldn't lie to me on purpose, would you?"
-            m 2dsc "I'll forgive you this time...{w=0.5O} {nw}"
-            extend 2esc "but please take me seriously when I ask these questions."
-            return "no_unlock"
+            else:
+                $ persistent._mas_pm_do_smoke_lied = True
+                $ mas_loseAffection(reason=13, modifier=3)
+                m 1wud "Wha--"
+                m "But you said..."
+                m 2esc "I clearly remember you telling me you smoked, [player]..."
+                m 4efc "That's no joke, you know? I'm worried about your health!"
+                m 4esc "Was it a mistake when you said that? You wouldn't lie to me on purpose, would you?"
+                m 2dsc "I'll forgive you this time...{w=0.5} {nw}"
+                extend 2esc "but please take me seriously when I ask these questions."
+    return "no_unlock"
 
 label monika_smoking_quit_success:
-    $ persistent._mas_pm_do_smoke_quit_succeeded_once = True
-    $ persistent._mas_pm_do_smoke_quit = False
-    $ persistent._mas_pm_do_smoke = False
+    python:
+        persistent._mas_pm_do_smoke_quit_succeeded_before = True
+        persistent._mas_pm_do_smoke_quit = False
+        persistent._mas_pm_do_smoke = False
+
     m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
     m 2ekbsa "It's such a relief to know you quit smoking! {nw}"
     extend 2dkbsu "I'll sleep much better at night knowing you're as far as possible from this nightmare."
     m 4hubfb "Congratulations, my love! I couldn't be more proud to have a [bf] such as you!"
     m 1rkbfu "Ehehe, if I was here with you I'd treat you to your favorite dish {nw}"
-    
+
     if mas_globals.time_of_day_3state == "evening":
         extend "tomorrow."
     else:
@@ -8023,40 +8034,27 @@ label monika_smoking_quit_success:
     m 4wud "You can't give in, not even once! That's how you fall into relapse!"
     m 2hubfa "But knowing you, you won't let that happen, won't you?"
     m 2ekbfa "Considering what you've already done, I know you're stronger than this..."
-    return "no_unlock"
+    return
 
 label monika_smoking_quit_will_retry:
-    call monika_plan_smoking_quit_event
+    call monika_smoking_quit_requeue_setup
     $ persistent.mas_pm_do_smoke_quit = True
     m 4hub "That's my [player]!"
     m 2ekbfa "Despite everything, you always find the strength to get back up and try again."
     m 2dkbfu "That's something I admire about you...{w=0.5} being able to keep going through adversity is important."
     m 7hubfb "I love you, [player]! I'm sure you'll get it right next time!"
-    return "love|no_unlock"
+    return
 
 #set monika_smoking_quit to trigger in a month if not already planned
-label monika_plan_smoking_quit_event:
-
+label monika_smoking_quit_requeue_setup:
     python:
         smoking_quit_ev = mas_getEV("monika_smoking_quit")
         #don't change the start date if the event is already planned in the future
         if not smoking_quit_ev.start_date or datetime.date.today() >= smoking_quit_ev.start_date.date():
             smoking_quit_ev.start_date = mas_utils.add_months(datetime.date.today(), 1)
             smoking_quit_ev.action = EV_ACT_QUEUE
-
     return
 
-#prevent the smoking_quit_event from triggering if currently planned
-label monika_abort_smoking_quit_event:
-
-    python:
-        smoking_quit_ev = mas_getEV("monika_smoking_quit")
-        if smoking_quit_ev:
-            smoking_quit_ev.start_date = None
-            smoking_quit_ev.action = None
-
-    return
-    
 init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
 
