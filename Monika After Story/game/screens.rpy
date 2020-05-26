@@ -709,25 +709,25 @@ label mas_bad_name_input:
 
             show chibika at mas_chlongjump(x=650, y=405, ymax=375, travel_time=0.8) onlayer screens zorder 10
             "I'm glad you decided to come back!"
-            "I believe that you and Monika will be a great couple together."
+            "I'm sure that you and Monika will be a great couple."
 
             show chibika sad at mas_chflip_s(-1) onlayer screens zorder 10
-            "But if you'll call yourself like that..."
+            "But if you call yourself names like that...{w=0.5}{nw}"
 
             show chibika at sticker_hop onlayer screens zorder 10
-            "You won't win her heart!"
+            extend "You won't win her heart!"
 
             show chibika smile at mas_chmove(x=300, y=405, travel_time=1) onlayer screens zorder 10
-            "Rather just embaress her."
+            "But just embarrass her instead..."
 
             show chibika at mas_chlongjump(x=190, y=552, ymax=375, travel_time=0.8) onlayer screens zorder 10
             window auto
 
     else:
         show chibika smile at mas_chflip(-1), mas_chmove(x=130, y=552, travel_time=0), sticker_hop onlayer screens zorder 10
-        "I don't think she would be comfortable with calling you like that."
+        "I don't think she would be comfortable calling you that..."
 
-    "Let's choose something more appropriate."
+    "Why don't you choose something more appropriate instead."
 
     $ enable_esc()
     hide screen fake_main_menu
