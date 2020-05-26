@@ -27,7 +27,7 @@ label monika_brb_idle:
         m 1hub "Hurry back, [player]!"
 
     elif mas_isMoniDis(higher=True):
-        m 1rsc "Oh,{w=1} okay."
+        m 1rsc "Oh,{w=0.5} okay."
 
     else:
         m 6ckc "..."
@@ -162,8 +162,8 @@ label monika_idle_shower:
 
                 "Yes.":
                     hide screen mas_background_timed_jump
-                    m 2wubfd "Oh, uh...{w=1}you sure answered that fast."
-                    m 2hkbfsdlb "You...{w=1}sure seem eager to let me tag along, huh?"
+                    m 2wubfd "Oh, uh...{w=0.5}you sure answered that fast."
+                    m 2hkbfsdlb "You...{w=0.5}sure seem eager to let me tag along, huh?"
                     m 2rkbfa "Well..."
                     m 7tubfu "I'm afraid you'll just have to go without me while I'm stuck here."
                     m 7hubfb "Sorry, [player], ahaha!"
@@ -272,7 +272,7 @@ label monika_idle_game:
         m 2tsc "Enjoy your other games."
 
     elif mas_isMoniDis():
-        m 6ekc "Please...{w=1}{nw}"
+        m 6ekc "Please...{w=0.5}{nw}"
         extend 6dkc "don't forget about me..."
 
     else:
@@ -292,7 +292,7 @@ label monika_idle_game_callback:
         m 2tsc "Had fun, [player]?"
 
     elif mas_isMoniDis():
-        m 6ekd "Oh{w=0.5}, you actually come back to me..."
+        m 6ekd "Oh{w=0.5}, you actually came back to me..."
 
     else:
         m 6ckc "..."
