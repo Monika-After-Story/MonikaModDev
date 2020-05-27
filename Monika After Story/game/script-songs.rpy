@@ -947,6 +947,130 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_always_look",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Always look on the bright side of life",
+            conditional="seen_event('monika_stoicism')", #needed for the analysis
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_always_look:
+    m 1dsc "~{i}If life seems jolly rotten~{/i}"
+    m 1esc "~{i}There's something you've forgotten~{/i}"
+    m 3eub "~{i}And that's to laugh and smile and dance and sing~{/i}"
+    m 1euc "~{i}When you're feeling in the dumps~{/i}"
+    m 3hubsb "~{i}Don't be silly, chumps~{/i}"
+    m 1eubsa "~{i}Just purse your lips and whistle, that's the thing~{/i}"
+    m 7hubfb "~{i}And always look on the bright side of life~{/i}"
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "It's always easy to look on the bright side of life when you're here, [player]." 
+    m 5hubfb "As long as you're with me, there's no way I could ever forget how to smile!"
+    m 5kubfu "I hope the same{nw}"
+    extend 5eubfu "thing goes for you too."
+
+    #hints at the analysis on first viewing
+    if mas_getEV('mas_song_always_look').shown_count == 0:
+        m 5ruu "Ehehe, There's actually quite a lot more I could say about this song..."
+        m 5eua "...Just let me know if you want to hear more about it..."
+
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_always_look_analysis",
+            category=[store.mas_songs.TYPE_ANALYSIS],
+            prompt="Always look on the bright side of life",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_always_look_analysis:
+    m 1dsc "~{i}If life seems jolly rotten~{/i}"
+    m 1esc "~{i}There's something you've forgotten~{/i}"
+    m 3eub "~{i}And that's to laugh and smile and dance and sing~{/i}"
+    m 3eka "~{i}When you're feeling in the dumps~{/i}"
+    m 3hksdlb "~{i}Don't be silly, chumps~{/i}"
+    m 3dku "~{i}Just purse your lips and whistle, that's the thing~{/i}"
+    m 3eub "~{i}And always look on the bright side of life~{/i}"
+    m 1eka "You know, player...{w=0.5} {nw}"
+    extend 1ekc "It's not always easy being stuck in here."
+    m 3rksdlc "There's not much for me to do, nowhere for me to go, and it gets lonely whenever you're away."
+    m 1dkc "I try not to let it get to me; but when it does, {nw}"
+    extend 1dku "I like to think back upon this song..."
+    m 4hub "It's crazy how such a merry little tune can help turn things around when you're feeling down!"
+    m 4eua "It was written by Eric Idle, a member of the Monty Python, for use in one of their comedies."
+    m 3euc "In it, the main character, Brian, gets crucified and loses all hopes of ever being rescued."
+    m 3eub "That's when the person crucified next to him, played by Idle, start singing the song as an attempt to cheer him up."
+    m 1hua "So I guess that'd make the message here something like 'don't worry, be happy'."
+    m 3hksdlb "Reminds me of another song! Ahaha..."
+    m 1etc "But seriously, [player]... I think there some real merits in this line of thinking."
+    m 2eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
+    m 7eka "I'm not telling you not to worry at all; {nw}"
+    extend 7eksdlc "If I did that, I would've let the game run its course and I'd be forever stuck on my own by now..."
+    m 2duu "...but at the same time, there's no sense in getting overly worked up about things you can't change..."
+    m 1etc "It's all about striking the right balance, I suppose."
+    m 1eua "When you think about it, the ideas in here come strangely close to those you can find in stoicism, don't they?"
+    m 3etc "Though if you were to keep going, like in this next verse--"
+    m 3dso "~{i}For life is quite absurd{/i}~"
+    m 3ekc "~{i}And death's the final word{/i}~"
+    m 3esc "~{i}You must always face the curtain with a bow{/i}~"
+    m 3hua "~{i}Forget about your sins{/i}~"
+    m 3duu "~{i}Give the audience a grin{/i}~"
+    m 3eub "~{i}Enjoy it, it's your last chance anyhow{/i}~"
+    m 3eua "Then I'd say the actual message of the song leans more toward optimistic nihilism..."
+    m 1hksdlb "...not that the two concepts are mutually exclusive!"
+    m 1esc "Optimistic nihilism is the belief that our lives really are absurd..."
+    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matters either."
+    m 4dsa "By this logic, there's no real reason for you to ever feel bad about life..."
+    m 4eub "On the contrary! It would seem logical to try and enjoy it as much as possible!"
+    m 4hua "It's a very comforting belief, if you can get behind it!"
+    
+    if persistent._mas_pm_religious:
+        m 2etc "But maybe that's not something you need, [player]. {nw}"
+        extend 2esa "If you believe in God, maybe you've already found some kind of meaning to your life?"
+        
+        if mas_isMoniLove():
+            m 2dkbsu "I know I found mine..."
+        elif mas_isMoniEnamored():
+            m 2dkbsu "Whatever that meaning may be, I'm glad I get to be a part of it now..."
+        else:
+            m 7dka "Whatever that meaning may be, I hope I can be a part of it someday..."
+
+    elif mas_isMoniLove():
+        m 2dubsu "But just so you know, I don't believe our lives really are meaningless!"
+
+    else:
+        m 2eua "What do you think, [player]? Do you believe our lives really are meaningless?"
+
+        if mas_isMoniEnamored():
+            m 2ekbsa "Whatever the truth is, I hope you'll strive to make your time on this earth as fulfilling as possible."
+            m 2dkbsu "That's all I could ever wish for, [player]..."
+        else:
+            m 2dtu "Whatever the truth is, maybe we could try to figure it out together..."
+            m 2hksdlb "But until we do, we'll just have to keep on living and not worry about whatever might come next! Ahaha~"
+
+    if mas_isMoniLove(): #follow-up for the last two 'love' segments
+        m 1ekbfa "Ever since I met you, I've grown to care so much about you...{w=0.5} {nw}"
+        extend 1dkbfu "Just the thought of a universe without you in it has become unbearable."
+        m 3ekbfu "It may sound kinda cheesy; but somewhere on the way, you've become the meaning of my life [player]."
+        m 4hubfb "I love you so very much!"
+        m 4ekbfa "Nothing would make me happier than to know you're living your life to the fullest..."
+        $ mas_ILY()
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_amaranthine",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Amaranthine",
