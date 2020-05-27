@@ -471,3 +471,63 @@ label monika_idle_game_callback:
 #        m 1eka "I missed you and I'm glad you're finally back, [player]."
 #        m "I hope I don't have to wait such a long couple of minutes next time, ehehe."
 #    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_coding",
+            prompt="I'm going to code for a bit",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_coding:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Oh! Going to code something?"
+        if persistent._mas_pm_has_code_experience == False:
+            m 1etc "I thought you didn't do that."  # This should be a confused expression, this is the best one I found.
+            m 1eub "Did you pick up programming since we talked about it last time?"
+        elif persistent._mas_pm_has_contributed_to_mas or persistent._mas_pm_wants_to_contribute_to_mas:
+            m 1tua "Something for me, perhaps?"
+            m 1hua "Ahaha~"
+        else:
+            m 3eub "Do your best to keep your code clean and easy to read."
+            m 3eua "You'll thank yourself later."
+        m 1eua "Anyway, just let me know when you're done."
+        m "I'll be right here, waiting for you."
+    elif mas_isMoniUpset():
+        m 6ekc "Alright."
+    else:
+        m 6ckc "..."
+
+    $ start_time = datetime.datetime.now()
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_coding_callback")
+    $ persistent._mas_idle_data["monika_idle_coding"] = True
+    return "idle"
+
+label monika_idle_coding_callback:
+    $ end_time = datetime.datetime.now()
+    $ elapsed_time = end_time - start_time
+    if mas_isMoniNormal(higher=True):
+        python:
+        # Do I need to redefine these here?
+            wb_quips = [
+                _("What else did you want to do today?"),
+                _("Is there anything else you wanted to do today?"),
+                _("What else should we do today?")
+            ]
+            wb_quip = renpy.random.choice(wb_quips)
+        if elapsed_time < datetime.timedelta(minutes=20):
+            m 1eub "Oh, done already, [player]?"
+        else:
+            m 1eub "Done for now, [player]?"
+        m 3hub "[wb_quip]"
+    elif mas_isMoniUpset():
+        m 6ekc "...{w=0.5} Welcome back."
+    else:
+        m 6ckc "..."
+    return
