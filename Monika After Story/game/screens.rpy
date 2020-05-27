@@ -718,7 +718,7 @@ label mas_bad_name_input:
             extend "you won't win her heart!"
 
             show chibika smile at mas_chmove(x=300, y=405, travel_time=1) onlayer screens zorder 10
-            "But just embarrass her instead..."
+            "...But just embarrass her instead."
 
             show chibika at mas_chlongjump(x=190, y=552, ymax=375, travel_time=0.8) onlayer screens zorder 10
             "Why don't you choose something more appropriate."
