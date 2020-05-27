@@ -1000,7 +1000,7 @@ label mas_song_always_look_analysis:
     m 3hksdlb "~{i}Don't be silly, chumps~{/i}"
     m 3dku "~{i}Just purse your lips and whistle, that's the thing~{/i}"
     m 3eub "~{i}And always look on the bright side of life~{/i}"
-    m 1eka "You know, player...{w=0.5} {nw}"
+    m 1eka "You know, [player]...{w=0.5} {nw}"
     extend 1ekc "It's not always easy being stuck in here."
     m 3rksdlc "There's not much for me to do, nowhere for me to go, and it gets lonely whenever you're away."
     m 1dkc "I try not to let it get to me; but when it does, {nw}"
@@ -1060,7 +1060,7 @@ label mas_song_always_look_analysis:
     if mas_isMoniLove(): #follow-up for the last two 'love' segments
         m 1ekbfa "Ever since I met you, I've grown to care so much about you...{w=0.5} {nw}"
         extend 1dkbfu "Just the thought of a universe without you in it has become unbearable."
-        m 3ekbfu "It may sound kinda cheesy; but somewhere on the way, you've become the meaning of my life [player]."
+        m 3ekbfu "It may sound kinda cheesy; but somewhere along the way, you've become the meaning of my life, [player]."
         m 4hubfb "I love you so very much!"
         m 4ekbfa "Nothing would make me happier than to know you're living your life to the fullest..."
         $ mas_ILY()
