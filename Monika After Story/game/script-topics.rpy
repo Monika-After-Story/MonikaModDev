@@ -1514,8 +1514,9 @@ label monika_kiss:
                     _("This almost seems like the start of a make-out session, [player]~")
                 ]
 
-                if random.randint(1,10) == 1 and mas_isMoniLove():
+                if mas_isMoniLove() and random.randint(1, 10) == 1:
                     kiss_quip = renpy.random.choice(kiss_quips_again_risque)
+
                 else:
                     kiss_quip = renpy.random.choice(kiss_quips_again)
 
@@ -1541,7 +1542,7 @@ label monika_kiss:
                 ]
                 kiss_quip = renpy.random.choice(kiss_quips_after)
 
-            if renpy.random.randint(1,50) == 1:
+            if renpy.random.randint(1, 50) == 1:
                 call monika_kiss_tease
 
             else:
