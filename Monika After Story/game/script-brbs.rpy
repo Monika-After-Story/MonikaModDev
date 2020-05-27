@@ -27,7 +27,7 @@ label monika_brb_idle:
         m 1hub "Hurry back, [player]!"
 
     elif mas_isMoniDis(higher=True):
-        m 1rsc "Oh,{w=0.5} okay."
+        m 2rsc "Oh...{w=0.5}okay."
 
     else:
         m 6ckc "..."
@@ -57,7 +57,7 @@ label monika_brb_idle_callback:
         m 1eua "[wb_quip]"
 
     elif mas_isMoniDis(higher=True):
-        m 1esc "Oh, back already?"
+        m 2esc "Oh, back already?"
 
     else:
         m 6ckc "..."
@@ -90,7 +90,7 @@ label monika_writing_idle:
             m 1eub "Oh! You're going to go write something?"
 
         m 1hua "That makes me so glad!"
-        m 3eua "Maybe someday you could share it with me, {nw}"
+        m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
         extend 3hua "I'd love to read your work, [player]!"
         m 3eua "Anyway, just let me know when you're done."
         m 1hua "I'll be waiting right here for you~"
@@ -130,7 +130,7 @@ label monika_writing_idle_callback:
         m 2esc "Done? Welcome back, [player]."
 
     elif mas_isMoniDis():
-        m 6ekc "Oh{w=0.5}, you're back..."
+        m 6ekc "Oh...{w=0.5} You're back..."
 
     else:
         m 6ckc "..."
@@ -187,7 +187,8 @@ label monika_idle_shower:
         m 1eua "See you when you're done~"
 
     elif mas_isMoniUpset():
-        m 2esc "See you with a more clear mind, [player]."
+        m 2esd "Enjoy your shower, [player]..."
+        m 2rkc "Hopefully it'll help you clear your mind."
 
     elif mas_isMoniDis():
         m 6ekc "Hmm?{w=0.5} Have a nice shower, [player]."
@@ -292,7 +293,7 @@ label monika_idle_game_callback:
         m 2tsc "Had fun, [player]?"
 
     elif mas_isMoniDis():
-        m 6ekd "Oh{w=0.5}, you actually came back to me..."
+        m 6ekd "Oh...{w=0.5} You actually came back to me..."
 
     else:
         m 6ckc "..."
