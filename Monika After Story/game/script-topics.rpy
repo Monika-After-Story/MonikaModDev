@@ -3638,27 +3638,27 @@ init 5 python:
     )
 
 label monika_trolley:
-    m 1eub "Oh, cool. I love thinking about these sorts of thought experiments."
-    m 1euc "I guess we're assuming the people we're talking about are real, right? I wouldn't have a particular preference if they weren't."
+    m 1eub "Oh, cool...{w=0.2}I love thinking about these sorts of thought experiments!"
+    m 1euc "I guess we're assuming the people we're talking about are real, right? {w=0.2}I wouldn't have a particular preference if they weren't."
     m 1dsc "Hmm..."
     m 3eud "The classic trolley problem has us choose between letting the trolley run over five people, or pulling a lever which switches to a track where only one person will be killed."
     m 1lua "The problem is mostly famous due to how divisive it is..."
     m 3eua "Regardless of whether they'd pull the lever or not, most people believe that their choice simply must be the correct one."
-    m 3eud "Aside from the two obvious choices, there are also people who'd advocate for a third path...{w=0.5} {nw}"
-    extend 3euc "Refusing to take part in the scenario at all."
-    m 1rsc "Though in the end, that really is the same as choosing not to pull the lever. You can't really go back to being a bystander once given the option to act."
+    m 3eud "Aside from the two obvious choices, there are also people who'd advocate for a third path...{w=0.5}{nw}"
+    extend 3euc "refusing to take part in the scenario at all."
+    m 1rsc "Though in the end, that really is the same as choosing not to pull the lever. {w=0.2}You can't really go back to being a bystander once given the option to act."
     m 1esc "After all, choosing not to choose is a choice in and of itself."
-    m 3eua "But as far as I'm concerned, the answer seems fairly obvious. Of course I would switch."
+    m 3eua "But as far as I'm concerned, the answer seems fairly obvious...{w=0.2} Of course I would switch."
     m 1eua "There's no way I could let five people die just to avoid personal responsibility for that one person's death."
     m 3esd "A more interesting variant of this problem is if the one person is someone you care about."
-    m 3eub "Like if it were you, [player]? Well, that's easy too!"
+    m 3eub "Like if it were you, [player]? {w=0.2}Well, that's easy too!"
     m 1tuu "I wouldn't switch."
-    m 1rsc "It feels nice to say that you'd do the right thing, doesn't it? But people only say that when nobody in the example matters to them."
+    m 1rsc "It feels nice to say that you'd do the right thing, doesn't it? {w=0.2}But people only say that when nobody in the example matters to them."
     m 1esc "If that one person was someone they cared about, they'd kill the other five people easily."
-    m 3eua "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it in little ways every day."
+    m 3eua "The truth is, humans are fine with sacrificing other lives to make themselves happy. {w=0.2}They do it in little ways every day."
     m 3tku "They just don't like to come face-to-face with that fact and get really upset when you point it out."
     m 1tuu "Generic human life isn't really that valuable to anyone."
-    m 1ekbsa "It's definitely nothing compared to our love. So just do whatever you can to be happy, [player]."
+    m 1ekbsa "It's definitely nothing compared to our love. {w=0.2}So just do whatever you can to be happy, [player]."
     return
 
 init 5 python:
