@@ -489,7 +489,7 @@ label monika_idle_coding:
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh! Going to code something?"
         if persistent._mas_pm_has_code_experience == False:
-            m 1etc "I thought you didn't do that."  # This should be a confused expression, this is the best one I found.
+            m 1etc "I thought you didn't do that."
             m 1eub "Did you pick up programming since we talked about it last time?"
         elif persistent._mas_pm_has_contributed_to_mas or persistent._mas_pm_wants_to_contribute_to_mas:
             m 1tua "Something for me, perhaps?"
