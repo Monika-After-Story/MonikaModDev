@@ -1504,12 +1504,20 @@ label monika_kiss:
                 # these don't use ILY
                 kiss_quips_again = [
                     _("I wouldn't mind another kiss~"),
-                    _("I could do it again...{w=0.2}and again~"),
                     _("I'll never get tired of kissing you~"),
-                    _("You can kiss me as many times as you like, [player]~"),
-                    _("We can do it the whole day~")
+                    _("I could do that again...{w=0.2}and again...{w=0.7}and again~"),
+                    _("You can kiss me as many times as you like, [player]~")
                 ]
-                kiss_quip = renpy.random.choice(kiss_quips_again)
+
+                kiss_quips_again_risque = [
+                    _("We can do it the whole day~"),
+                    _("This almost seems like the start of a make-out session, [player]~")
+                ]
+
+                if random.randint(1,10) == 1 and mas_isMoniLove():
+                    kiss_quip = renpy.random.choice(kiss_quips_again_risque)
+                else:
+                    kiss_quip = renpy.random.choice(kiss_quips_again)
 
             show monika 2tkbsu
             pause 2.0
