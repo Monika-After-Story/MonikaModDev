@@ -14449,7 +14449,7 @@ init 5 python:
 
 label monika_aliens:
 
-    m 2eud "Do I believe in the existence of Aliens?"
+    m 2eud "Do I believe in the existence of aliens?"
     m 4lksdla "That's kind of a random thing to ask, [player]."
     m 4eua "...Though I can see why you would be interested to know about my opinion on the matter."
     m 4eub "This is one of the greatest mysteries of all time, isn't it? Whether we are truly alone in this universe or not, I mean."
