@@ -182,7 +182,7 @@ label mas_apology_generic:
         10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better.",
         11: "not listening to my speech. I worked really hard on it.",
         12: "calling me evil. I know you don't really think that.",
-        13: "not taking my questions me seriously. I know you'll be honest with me from now on."
+        13: "not taking my questions seriously. I know you'll be honest with me from now on."
     }
 
     #If there's no reason to apologize
