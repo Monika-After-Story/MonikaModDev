@@ -4,6 +4,40 @@
 #   - Brbs should return "idle" to move into idle mode
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
 #       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
+init 10 python in mas_brbs:
+    import store
+
+    def get_wb_quip():
+        """
+        Picks a random welcome back quip and returns it
+        Should be used for normal+ quips
+
+        OUT:
+            A randomly selected quip for coming back to the spaceroom
+        """
+
+        return renpy.substitute(renpy.random.choice([
+            _("So, what else did you want to do today?"),
+            _("What else did you want to do today?"),
+            _("Is there anything else you wanted to do today?"),
+            _("What else should we do today?"),
+        ]))
+
+    def was_idle_for_at_least(idle_time, brb_evl):
+        """
+        Checks if the user was idle (from the brb_evl provided) for at least idle_time
+
+        IN:
+            idle_time - Minimum amount of time the user should have been idle for in order to return True
+            brb_evl - Eventlabel of the brb to use for the start time
+
+        OUT:
+            boolean:
+                - True if it has been at least idle_time since seeing the brb_evl
+                - False otherwise
+        """
+        brb_ev = store.mas_getEV(brb_evl)
+        return brb_ev and brb_ev.timePassedSinceLastSeen_dt(idle_time)
 
 init 5 python:
     addEvent(
@@ -39,14 +73,7 @@ label monika_brb_idle:
     return "idle"
 
 label monika_brb_idle_callback:
-    python:
-        wb_quips = [
-            _("So, what else did you want to do today?"),
-            _("Is there anything else you wanted to do today?"),
-            _("What else should we do today?"),
-        ]
-
-        wb_quip = renpy.random.choice(wb_quips)
+    $ wb_quip = mas_brbs.get_wb_quip()
 
     if mas_isMoniAff(higher=True):
         m 1hub "Welcome back, [player]. I missed you~"
@@ -81,8 +108,10 @@ label monika_writing_idle:
         m 1eub "Oh! You're going to{cps=*2} write me a love letter, [player]?{/cps}{nw}"
         $ _history_list.pop()
         m "Oh! You're going to{fast} go write something?"
+
     else:
         m 1eub "Oh! You're going to go write something?"
+
     m 1hua "That makes me so glad!"
     m 3eua "Maybe someday you could share it with me, {nw}"
     extend 3hua "I'd love to read your work, [player]!"
@@ -96,16 +125,7 @@ label monika_writing_idle:
     return "idle"
 
 label monika_writing_idle_callback:
-    python:
-        wb_quips = [
-            "What else did you want to do today?",
-            "Is there anything else you wanted to do today?",
-            "What else should we do today?",
-            "Welcome back!"
-        ]
-
-        wb_quip = renpy.random.choice(wb_quips)
-
+    $ wb_quip = mas_brbs.get_wb_quip()
     m 1eua "Done writing, [player]?"
     m 1eub "[wb_quip]"
     return
@@ -168,7 +188,7 @@ label monika_idle_shower:
 
 label monika_idle_shower_callback:
     m 1eua "Welcome back, [player]."
-    if mas_isMoniLove() and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
+    if mas_isMoniLove() and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1, 20) == 1:
         m 3tubfb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
         m 1hubsa "You could just relax with me some more~"
         m 1hub "Ahaha!"
@@ -257,13 +277,13 @@ label monika_idle_coding:
 
         else:
             m 3eub "Do your best to keep your code clean and easy to read."
-            m 3eua "You'll thank yourself later."
+            m 3hksdlb "...You'll thank yourself later!"
 
         m 1eua "Anyway, just let me know when you're done."
-        m "I'll be right here, waiting for you."
+        m 1hua "I'll be right here, waiting for you~"
 
     elif mas_isMoniUpset():
-        m 2esc "Oh, you're going to code?"
+        m 2euc "Oh, you're going to code?"
         m 2tsc "Well, don't let me stop you."
 
     elif mas_isMoniDis():
@@ -278,22 +298,13 @@ label monika_idle_coding:
 
 label monika_idle_coding_callback:
     if mas_isMoniNormal(higher=True):
-        python:
-            coding_brb_start = mas_getEV("monika_idle_coding").last_seen
-            wb_quips = [
-                _("What else did you want to do today?"),
-                _("Is there anything else you wanted to do today?"),
-                _("What else should we do today?")
-            ]
-            wb_quip = renpy.random.choice(wb_quips)
-
-        if not mas_timePastSince(coding_brb_start, datetime.timedelta(minutes=20)):
-            m 1eub "Oh, done already, [player]?"
-
+        $ wb_quip = mas_brbs.get_wb_quip()
+        if mas_brbs.was_idle_for_at_least("monika_idle_coding", datetime.timedelta(minutes=20)):
+            m 1eua "Oh, done already, [player]?"
         else:
-            m 1eub "Done for now, [player]?"
+            m 1eua "Done for now, [player]?"
 
-        m 3hub "[wb_quip]"
+        m 3eub "[wb_quip]"
 
     elif mas_isMoniUpset():
         m 2esc "Welcome back."
