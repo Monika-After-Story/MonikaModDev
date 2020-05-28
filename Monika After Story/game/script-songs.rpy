@@ -1028,7 +1028,7 @@ label mas_song_always_look_analysis:
     m 3eua "Then I'd say the actual message of the song leans more toward optimistic nihilism..."
     m 1hksdlb "...not that the two concepts are mutually exclusive!"
     m 1esc "Optimistic nihilism is the belief that our lives really are absurd..."
-    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matters either."
+    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matter either."
     m 4dsa "By this logic, there's no real reason for you to ever feel bad about life..."
     m 4eub "On the contrary! It would seem logical to try and enjoy it as much as possible!"
     m 4hua "It's a very comforting belief, if you can get behind it!"
