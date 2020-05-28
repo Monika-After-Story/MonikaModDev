@@ -1023,8 +1023,11 @@ init 5 python:
             #Verify persist data
             MASConsumable._validatePersistentData(_type)
 
+            if curr_cons:
+                curr_finish_prep_ev = mas_getEV(curr_cons.finish_prep_evl)
+
             #Reset if we're having a consumable we shouldn't be having now and we opened the game after its consume time
-            #or if we're still prepping something but we're past the consumable's prepping time
+            #or if we're still prepping something but the consumable's finish prepping event doesn't have conditionals
             if (
                 (
                     MASConsumable._isHaving(_type)
@@ -1035,7 +1038,8 @@ init 5 python:
                 )
                 or (
                     persistent._mas_current_consumable[_type]["prep_time"] is not None
-                    and curr_cons not in available_cons
+                    and curr_finish_prep_ev
+                    and curr_finish_prep_ev.conditional is None
                 )
             ):
                 MASConsumable._reset(_type)
