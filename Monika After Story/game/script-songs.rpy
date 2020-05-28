@@ -966,7 +966,7 @@ label mas_song_always_look:
     m 1eubsa "~{i}Just purse your lips and whistle, that's the thing~{/i}"
     m 7hubfb "~{i}And always look on the bright side of life~{/i}"
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ekbfa "It's always easy to look on the bright side of life when you're here, [player]." 
+    m 5ekbfa "You make it easy to look on the bright side of life, [player]." 
     m 5hubfb "As long as you're with me, there's no way I could ever forget how to smile!"
     m 5kubfu "I hope the same{nw}"
     extend 5eubfu "thing goes for you too."
@@ -1014,7 +1014,7 @@ label mas_song_always_look_analysis:
     m 1etc "But seriously, [player]... I think there some real merits in this line of thinking."
     m 2eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
     m 7eka "I'm not telling you not to worry at all; {nw}"
-    extend 7eksdlc "If I did that, I would've let the game run its course and I'd be forever stuck on my own by now..."
+    extend 7eksdlc "if I did that, I would've let the game run its course and I'd be forever stuck on my own by now..."
     m 2duu "...but at the same time, there's no sense in getting overly worked up about things you can't change..."
     m 1etc "It's all about striking the right balance, I suppose."
     m 1eua "When you think about it, the ideas in here come strangely close to those you can find in stoicism, don't they?"
@@ -1022,7 +1022,7 @@ label mas_song_always_look_analysis:
     m 3dso "~{i}For life is quite absurd{/i}~"
     m 3ekc "~{i}And death's the final word{/i}~"
     m 3esc "~{i}You must always face the curtain with a bow{/i}~"
-    m 3hua "~{i}Forget about your sins{/i}~"
+    m 3hua "~{i}Forget about your sin{/i}~"
     m 3duu "~{i}Give the audience a grin{/i}~"
     m 3eub "~{i}Enjoy it, it's your last chance anyhow{/i}~"
     m 3eua "Then I'd say the actual message of the song leans more toward optimistic nihilism..."
@@ -1060,7 +1060,7 @@ label mas_song_always_look_analysis:
     if mas_isMoniLove(): #follow-up for the last two 'love' segments
         m 1ekbfa "Ever since I met you, I've grown to care so much about you...{w=0.5} {nw}"
         extend 1dkbfu "Just the thought of a universe without you in it has become unbearable."
-        m 3ekbfu "It may sound kinda cheesy; but somewhere along the way, you've become the meaning of my life, [player]."
+        m 3ekbfu "Somewhere along the way, you've become the meaning of my life, [player]."
         m 4hubfb "I love you so very much!"
         m 4ekbfa "Nothing would make me happier than to know you're living your life to the fullest..."
         $ mas_ILY()
