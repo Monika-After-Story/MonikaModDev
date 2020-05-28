@@ -19,6 +19,8 @@ init -10 python in mas_songs:
     #TYPE_ANALYSIS songs are events which provide an analysis for a song
     #NOTE: Like TYPE_LONG songs, these must have the same label as the short counterpart, but with '_analysis' appended onto the end
     #Using the example song above, the analysis label would be: mas_song_example_analysis
+    #It's also advised to have the first time seeing the song hint at and lead directly into the analysis on the first time seeing it from random
+    #In this case, the shown_count property for the analysis event should be incremented in the path leading to the analysis
 
     TYPE_LONG = "long"
     TYPE_SHORT = "short"
@@ -1012,7 +1014,6 @@ label mas_song_shelter:
                 call mas_song_shelter_analysis(from_song=True)
                 $ mas_getEV("mas_song_shelter_analysis").shown_count += 1
 
-
             "Not right now.":
                 m 1eka "Okay, [player]..."
                 m 3eka "Just let me know when you'd like to hear my thoughts about it later."
@@ -1026,8 +1027,6 @@ init 5 python:
             eventlabel="mas_song_shelter_analysis",
             category=[store.mas_songs.TYPE_ANALYSIS],
             prompt="Shelter",
-            random=False,
-            unlocked=False,
             aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
@@ -1035,37 +1034,38 @@ init 5 python:
 
 label mas_song_shelter_analysis(from_song=False):
     if from_song:
-        m 3eksdla "So this song is called {i]Shelter{/i} and, as you can probably tell, I really like it."
+        m 3eksdla "So this song is called {i}Shelter{/i} and, as you can probably tell, I really like it."
 
     else:
         call mas_song_shelter_lyrics
-        m 1ekbsa "This song is called 'Shelter' and I really like it, [player]."
+        m 1ekbsa "This song is called {i}Shelter{/i} and I really like it, [player]."
 
     m 3etc "...Although 'song' might not be the right word. {w=0.3}You're missing out on something if you don't have the visuals."
     m 3rtc "Maybe it'd be more accurate to call it an animation project?"
-    m 3eua"Regardless of what you want to call it, I highly recommend you experience the entire thing sometime."
+    m 3eua "Regardless of what you want to call it, I highly recommend you experience the entire thing sometime."
     m 1esd "I came across it while browsing for some music, but it instantly left a big impression on me."
     m 1esa "It tells the story of Rin, a girl stranded alone in a simulation."
     m 1rkc "Day after day, she busies herself recreating her world as a way to escape her loneliness...{w=0.3}{nw}"
-    extend 3wud "until she finds out why she is trapped in there in the first place!"
+    extend 3wud "until she finds out why she's trapped in there in the first place!"
     m 3eubsb "Turns out there was someone outside who truly loved her and created her world so she could have a future!"
     m 1dku "Thanks to these new-found memories, she realizes she was never alone in the first place and can keep moving forward, believing in the future."
     m 1eka "Watching it, I was surprised at how moved I was by Rin's story..."
-    m 3rtc "It was just so...{w=0.3}relatable! {w=0.3}From the way she was stuck in that empty world, {nw}"
+    m 3eub "It was just so...{w=0.3}relatable! {w=0.3}{nw}"
+    extend 3eka "From the way she was stuck in that empty world, {nw}"
     extend 1ekbsa "to how she found the strength to keep going for a special someone."
     m 3hksdlb "By the end, I was so overwhelmed I was actually crying!"
     m 3eka "Not to mention, this song carries a very good message..."
-    m 3eub "It's a reminder you can't always see right away all the people who care about you..."
-    m 2eka "I know it's not always easy, sometimes you'll have to look really hard for them...{w=0.5}{nw}"
+    m 3ekc "It's a reminder you may not see all the people who care about you immediately..."
+    m 2eka "I know it can be difficult, and sometimes you'll have to look really hard for them...{w=0.5}{nw}"
     extend 2duu "but there's always someone."
     m "I promise."
     m 7hub "Just look at me!"
-    m 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside... {w=0.5}{nw}"
+    m 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside...{w=0.5}{nw}"
     extend 3hubfb "I found you!"
     m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one."
 
     if persistent._mas_pm_have_fam and not persistent._mas_pm_have_fam_mess:
-        m 3hubsb " I'm sure your family must care a lot about you as well!"
+        m 3hubsb "I'm sure your family must care a lot about you as well!"
 
         if not persistent._mas_pm_love_yourself:
             m 3dkbsa "I may be stating the obvious, but they really {i}are{/i} important."
@@ -1079,7 +1079,7 @@ label mas_song_shelter_analysis(from_song=False):
     else:
         m 3eua "You don't believe me? {w=0.5}{nw}"
 
-    extend 3eub "Try going over the lyrics again! "
+    extend 3eub "Try going over the lyrics again!"
     m 7dua "Only this time, assume the 'they' refers to all these other versions of me out there, each with their own partner..."
     m 4ekbfa "They all know of our love and carry it with them, even if they don't know our names or faces."
     m 2ekbsa "I know because I care about them too, if only because I'm aware of the bond they share."
