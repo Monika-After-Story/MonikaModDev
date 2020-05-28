@@ -1076,7 +1076,17 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if persistent.closed_self and not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
+    # and if we're not in the spaceroom
+    if (
+        persistent.closed_self
+        and not (
+            mas_isO31()
+            or mas_isD25Season()
+            or mas_isplayer_bday()
+            or mas_isF14()
+        )
+        and persistent._mas_current_background == "spaceroom"
+    ):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?
@@ -1107,6 +1117,10 @@ init 5 python:
 label i_greeting_monikaroom:
 
     #Set up dark mode
+
+    # Progress the filter here so that the greeting uses the correct styles
+    $ mas_progressFilter()
+
     if persistent._mas_auto_mode_enabled:
         $ mas_darkMode(mas_current_background.isFltDay())
     else:
@@ -1298,6 +1312,7 @@ label monikaroom_greeting_ear_narration:
         # clear out var
         $ willchange_ev = None
 
+    $ mas_startupWeather()
     call spaceroom(dissolve_all=True, scene_change=True)
 
     if mas_isMoniNormal(higher=True):
@@ -1363,7 +1378,8 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    if persistent._mas_affection["affection"] >= 30:
+    #NOTE: Taking directly from persist here because aff funcs don't exist at init 5
+    if persistent._mas_affection.get("affection", 0) >= 400:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
@@ -1550,6 +1566,7 @@ label monikaroom_greeting_opendoor_locked:
 
     hide paper_glitch2
     $ mas_globals.change_textbox = False
+    $ mas_startupWeather()
     call spaceroom(scene_change=True)
 
     if renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
@@ -1672,6 +1689,7 @@ label monikaroom_greeting_opendoor_post2:
 #    else:
 #        m 3eua "Let me fix this scene up."
     m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
+    $ mas_startupWeather()
     call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
     show monika 4eua_static zorder MAS_MONIKA_Z at i11
     m "Tada!"
@@ -1688,6 +1706,7 @@ label monikaroom_greeting_opendoor:
     # reset outfit since standing is stock
     $ monika_chr.reset_outfit(False)
     $ monika_chr.wear_acs(mas_acs_ribbon_def)
+    $ mas_startupWeather()
 
     call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False)
 
@@ -1729,6 +1748,7 @@ label monikaroom_greeting_opendoor:
             m 2hua_static "All fixed!"
             show monika 1eua_static at lhide
             hide monika
+
     $ persistent.seen_monika_in_room = True
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
@@ -1761,6 +1781,7 @@ label monikaroom_greeting_knock:
                 if persistent.seen_monika_in_room:
                     m "Thanks for knocking."
 
+            $ mas_startupWeather()
             call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=False)
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
@@ -3548,10 +3569,10 @@ label greeting_back_from_game:
                     m 1hua "That's nice."
                     m 1eua "I'm glad you enjoyed yourself."
                     m 2eka "I really wish I could join you in your other games sometimes."
-                    m 3eub "Wouldn't it be great to have our own little adventures anytime we wanted?"
+                    m 3eub "Wouldn't it be great to have our own little adventures any time we wanted?"
                     m 1hub "I'm sure we'd have a lot of fun together in one of your games."
                     m 3eka "But while I can't join you, I guess you'll just have to keep me company."
-                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5} Do you, [player]?"
+                    m 2tub "You don't mind spending time with your girlfriend...{w=0.5}do you, [player]?"
 
                 "No.":
                     m 2ekc "Aw, I'm sorry to hear that."
@@ -3718,15 +3739,22 @@ label greeting_surprised2:
     return
 
 init 5 python:
+    # set a slightly higher priority than the open door gre has
+    ev_rules = dict()
+    ev_rules.update(MASPriorityRule.create_rule(49))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back_from_restart",
             unlocked=True,
             category=[store.mas_greetings.TYPE_RESTART],
+            rules=ev_rules
         ),
         code="GRE"
     )
+
+    del[ev_rules]
 
 label greeting_back_from_restart:
     if mas_isMoniNormal(higher=True):

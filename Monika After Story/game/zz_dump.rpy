@@ -305,6 +305,15 @@ init 999 python:
         with open(_var_data_fp, "w") as _var_data_file:
             _var_data_file.write(config.version + "\n\n")
 
+            # xp and levels
+            _var_data_file.write(
+                "LEVELS: {0}\nXPTNL: {1}\nUNLOCKS: {2}\n\n".format(
+                    persistent._mas_xp_lvl,
+                    persistent._mas_xp_tnl,
+                    persistent._mas_pool_unlocks
+                )
+            )
+
             # add data lines here
             #Consumables stuff
             for consumable_id in persistent._mas_consumable_map.keys():
@@ -312,15 +321,28 @@ init 999 python:
 
                 #Need to account for consumables which were removed
                 if consumable:
-                    _var_data_file.write(
-                        "{0}S OF {1} {2}: {3}\n".format(
-                        consumable.container.upper(),
-                        consumable.disp_name.upper(),
-                        "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
-                        consumable.getAmountHad()
-                        )
-                    )
+                    #Some prep
+                    dlg_props = consumable.dlg_props
 
+                    ref = dlg_props.get(mas_consumables.PROP_CONTAINER, dlg_props.get(mas_consumables.PROP_OBJ_REF))
+                    if ref:
+                        _var_data_file.write(
+                            "{0}S OF {1} {2}: {3}\n".format(
+                                ref.upper(),
+                                consumable.disp_name.upper(),
+                                "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
+                                consumable.getAmountHad()
+                            )
+                        )
+
+                    else:
+                        _var_data_file.write(
+                            "{0}S {1}: {2}\n".format(
+                                consumable.disp_name.upper(),
+                                "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
+                                consumable.getAmountHad()
+                            )
+                        )
 
     def mas_dataDumpFlag():
         """
