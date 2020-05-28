@@ -367,10 +367,10 @@ label monika_idle_coding:
 label monika_idle_coding_callback:
     if mas_isMoniNormal(higher=True):
         $ wb_quip = mas_brbs.get_wb_quip()
-        if not mas_brbs.was_idle_for_at_least("monika_idle_coding", datetime.timedelta(minutes=20)):
-            m 1eua "Oh, done already, [player]?"
-        else:
+        if mas_brbs.was_idle_for_at_least("monika_idle_coding", datetime.timedelta(minutes=20)):
             m 1eua "Done for now, [player]?"
+        else:
+            m 1eua "Oh, done already, [player]?"
 
         m 3eub "[wb_quip]"
 
