@@ -1043,11 +1043,18 @@ init 5 python:
             MASConsumable._validatePersistentData(_type)
 
             #Reset if we're having a consumable we shouldn't be having now and we opened the game after its consume time
+            #or if we're still prepping something but we're past the consumable's prepping time
             if (
-                MASConsumable._isHaving(_type)
-                and (
-                    not MASConsumable._isStillCons(_type)
-                    and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
+                (
+                    MASConsumable._isHaving(_type)
+                    and (
+                        not MASConsumable._isStillCons(_type)
+                        and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
+                    )
+                )
+                or (
+                    persistent._mas_current_consumable[_type]["prep_time"] is not None
+                    and curr_cons not in available_cons
                 )
             ):
                 MASConsumable._reset(_type)
