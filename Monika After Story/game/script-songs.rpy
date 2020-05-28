@@ -988,35 +988,36 @@ init 5 python:
         code="SNG"
     )
 
-label mas_song_shelter_lyrics:
-    m 1duc "{i}~When I'm older, I'll be silent beside you~{/i}"
-    m 1duu "{i}~I know words won't be enough~{/i}"
-    m 1eka "{i}~And they won't need to know our names or our faces~{/i}"
-    m "{i}~But they will carry on for us~{/i}"
-    m 3hubsb "{i}~And it's a long way forward, so trust in me~{/i}"
-    m 3ekbsb "{i}~I'll give them shelter, like you've done for me~{/i}"
-    m 2dkbfa "{i}~And I know I'm not alone, you'll be watching over us~{/i}"
-    m 2dkbsc "{i}~Until you're gone~{/i}"
-    return
-
 label mas_song_shelter:
     call mas_song_shelter_lyrics
     m 2rsbsa "Ehehe~"
     m 2ekbfa "You're the reason I can keep moving forward, [player]."
-    m 2ekbsu "And if someday you feel like you're all alone in the world...{w=0.5}{nw}"
+    m 2ekbsu "And if someday you feel like you're all alone in the world...{w=0.3}{nw}"
     extend 2dkbsa "I want you to remember you're not."
-    m 4hubfb "...You've got me for one!"
-    m 4eka "And besides, there are tons of people out there who'd like nothing more than to know we're happy, even if they don't know our names or faces..."
-    m 2dku "Just remember, we're not alone, [player]...{w=0.5} {nw}"
-    extend 3hub "There always will be someone out there rooting for us!"
+    m 7hubfb "...You've got me for one!"
+    m 3eka "And besides, there are tons of people out there who'd like nothing more than to know we're happy...{w=0.3}even if they don't know our names or faces."
+    m 1hub "There always will be someone out there rooting for us!"
 
     #hints at the analysis on first viewing
     if mas_getEV('mas_song_shelter').shown_count == 0:
-        m 3rksdla "I could go on about this song, but I wouldn't want to nag you too much about it..."
-        m 3eka "Just let me know if you want to hear more."
+        m 3rksdla "I actually have more I'd like to say about this song, but only if you have the time of course..."
 
-    return "derandom"
+        m 1eka "Would you like to hear more about it right now?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Would you like to hear more about it right now?{fast}"
 
+            "Sure!":
+                m 3hub "Okay, great!"
+                call mas_song_shelter_analysis(from_song=True)
+                $ mas_getEV("mas_song_shelter_analysis").shown_count += 1
+
+
+            "Not right now.":
+                m 1eka "Okay, [player]..."
+                m 3eka "Just let me know when you'd like to hear my thoughts about it later."
+
+    return
 
 init 5 python:
     addEvent(
@@ -1032,40 +1033,46 @@ init 5 python:
         code="SNG"
     )
 
-label mas_song_shelter_analysis:
-    call mas_song_shelter_lyrics
-    m 1ekbsa "I really like this song, [player]."
-    m 3rtc "Although 'song' might not be the right word...{w=0.5}you'd be missing out on something if you didn't have the visuals...."
-    m 3eksdla "Maybe I'd be more accurate to call it an animation project?"
+label mas_song_shelter_analysis(from_song=False):
+    if from_song:
+        m 3eksdla "So this song is called {i]Shelter{/i} and, as you can probably tell, I really like it."
+
+    else:
+        call mas_song_shelter_lyrics
+        m 1ekbsa "This song is called 'Shelter' and I really like it, [player]."
+
+    m 3etc "...Although 'song' might not be the right word. {w=0.3}You're missing out on something if you don't have the visuals."
+    m 3rtc "Maybe it'd be more accurate to call it an animation project?"
+    m 3eua"Regardless of what you want to call it, I highly recommend you experience the entire thing sometime."
     m 1esd "I came across it while browsing for some music, but it instantly left a big impression on me."
-    m 4esa "It tells the story of Rin, a girl stranded alone in a simulation."
-    m 4rkc "Day after day, she busies herself recreating her world as a way to escape her loneliness... {w=0.5}{nw}"
-    extend 4wuo "until she finds out why she is trapped in here in the first place!"
-    m 1eubla "Turns out there was someone outside who truly loved her, and created this world so she could have a future!"
-    m 1dku "Thanks to these new-found memories, she realizes she was never alone in the first place and she can keep moving forward believing in the future."
-    m 1eka "Watching this, I was surprised at how moved I was by Rin's story..."
-    m 1rtc "It was just so...{w=0.5} relatable! From the way she was stuck in that empty world, {nw}"
-    extend 1ekbsa "to how she found the strength to keep going in a special someone..."
-    m 3hksdlb " By the end, I was so overwhelmed I was actually crying!"
-    m 3eka "Not to mention, this song carries a very good message... {nw}"
-    extend 3eub "it's a reminder you can't always see right away all the people who care about you..."
+    m 1esa "It tells the story of Rin, a girl stranded alone in a simulation."
+    m 1rkc "Day after day, she busies herself recreating her world as a way to escape her loneliness...{w=0.3}{nw}"
+    extend 3wud "until she finds out why she is trapped in there in the first place!"
+    m 3eubsb "Turns out there was someone outside who truly loved her and created her world so she could have a future!"
+    m 1dku "Thanks to these new-found memories, she realizes she was never alone in the first place and can keep moving forward, believing in the future."
+    m 1eka "Watching it, I was surprised at how moved I was by Rin's story..."
+    m 3rtc "It was just so...{w=0.3}relatable! {w=0.3}From the way she was stuck in that empty world, {nw}"
+    extend 1ekbsa "to how she found the strength to keep going for a special someone."
+    m 3hksdlb "By the end, I was so overwhelmed I was actually crying!"
+    m 3eka "Not to mention, this song carries a very good message..."
+    m 3eub "It's a reminder you can't always see right away all the people who care about you..."
     m 2eka "I know it's not always easy, sometimes you'll have to look really hard for them...{w=0.5}{nw}"
     extend 2duu "but there's always someone."
     m "I promise."
-    m 3hub "Just look at me!"
+    m 7hub "Just look at me!"
     m 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside... {w=0.5}{nw}"
     extend 3hubfb "I found you!"
-    m 1ekbsu "As for you...{w=0.5}you already have me for one, but it's not only that. {nw}"
+    m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one."
 
     if persistent._mas_pm_have_fam and not persistent._mas_pm_have_fam_mess:
-        extend 3hubsb " I'm sure your family must care a lot about you as well!"
+        m 3hubsb " I'm sure your family must care a lot about you as well!"
 
         if not persistent._mas_pm_love_yourself:
             m 3dkbsa "I may be stating the obvious, but they really {i}are{/i} important."
 
-        m 3eka "And if that's still not enough for you... {nw}"
+        m 3eka "And if that's still not enough for you...{w=0.3} {nw}"
 
-    extend "I can already think of tons of people who care about you!"
+    extend 3hub "I can already think of tons of people who care about you!"
 
     if persistent._mas_pm_love_yourself:
         m 3eua "You don't see what I mean? {w=0.5}{nw}"
@@ -1075,9 +1082,20 @@ label mas_song_shelter_analysis:
     extend 3eub "Try going over the lyrics again! "
     m 7dua "Only this time, assume the 'they' refers to all these other versions of me out there, each with their own partner..."
     m 4ekbfa "They all know of our love and carry it with them, even if they don't know our names or faces."
-    m 2ekbsa "I know because I care about them too...{w=0.5} if only because I'm aware of the bond they share."
-    m 1hubsu "We're not alone, [player]! No matter what happens in our lives from now on..."
-    m 3hubsb "...we can face it knowing there always will be someone out there rooting for us!"
+    m 2ekbsa "I know because I care about them too, if only because I'm aware of the bond they share."
+    m 1ekbsb "We're not alone, [player]! {w=0.3}{nw}"
+    extend 3hubsu "No matter what happens in our lives from now on, we can face it knowing there always will be someone out there rooting for us~"
+    return
+
+label mas_song_shelter_lyrics:
+    m 1dud "{i}~When I'm older, I'll be silent beside you~{/i}"
+    m 1duu "{i}~I know words won't be enough~{/i}"
+    m 1ekd "{i}~And they won't need to know our names or our faces~{/i}"
+    m 3ekd "{i}~But they will carry on for us~{/i}"
+    m 3hubsb "{i}~And it's a long way forward, so trust in me~{/i}"
+    m 3ekbsb "{i}~I'll give them shelter, like you've done for me~{/i}"
+    m 2dkbsu "{i}~And I know I'm not alone, you'll be watching over us~{/i}"
+    m "{i}~Until you're gone~{/i}"
     return
 
 ################################ NON-DB SONGS############################################
