@@ -564,25 +564,6 @@ init 5 python:
             #Increment cup count
             self.increment()
 
-        def isStillPrep(self, _now):
-            """
-            Checks if we're still prepping something of this type
-
-            IN:
-                _now - datetime.datetime object representing current time
-
-            OUT:
-                boolean:
-                    - True if we're still prepping something
-                    - False otherwise
-            """
-            _time = persistent._mas_current_consumable[self.consumable_type]["prep_time"]
-            return (
-                _time is not None
-                and _time.date() == _now.date()
-                and self.isDrinkTime(_time)
-            )
-
         def isConsTime(self, _now=None):
             """
             Checks if we're in the time range for this consumable
