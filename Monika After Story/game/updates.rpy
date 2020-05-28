@@ -469,6 +469,27 @@ label v0_11_3(version="v0_11_3"):
         for pool_label in pool_unlock_list:
             mas_unlockEVL(pool_label,"EVE")
 
+        #Handle the preferred name and gender change topics again
+        gender_ev = mas_getEV("mas_gender")
+        if gender_ev:
+            preferredname_ev = mas_getEV("mas_preferredname")
+
+            #Remove the gender ev's conditional
+            gender_ev.conditional = None
+
+            #If we have the preferredname ev, we need to remove the conditional anyway
+            if preferredname_ev:
+                preferredname_ev.conditional = None
+
+            #If the gender topic has a last seen and the preferredname ev hasn't been seen yet
+            #We need to set up its start date
+            if gender_ev.last_seen:
+                if preferredname_ev and not preferredname_ev.last_seen:
+                    preferredname_ev.start_date = gender_ev.last_seen + datetime.timedelta(hours=2)
+
+            #If the gender topic has not been seen, then it needs its start_date set up
+            else:
+                gender_ev.start_date = mas_getFirstSesh() + datetime.timedelta(minutes=30)
     return
 
 #0.11.1
