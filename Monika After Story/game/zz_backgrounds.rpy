@@ -2390,7 +2390,11 @@ init -1 python:
     store.mas_background.loadMBGData()
 
 
-init 1 python in mas_ba
+init 1 python in mas_backgrounds:
+
+    # verify all backgrounds
+    for flt_bg in BACKGROUND_MAP.itervalues():
+        flt_bg.verify()
 
 #START: Image definitions
 #Spaceroom
