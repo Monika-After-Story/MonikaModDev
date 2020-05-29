@@ -2082,8 +2082,15 @@ init -10 python:
         def progress(self):
             """
             Progresses the filter.
+
+            RETURNS: the new filter
             """
-            # TODO
+            return self._flt_man.progress()
+
+        def update(self, curr_time=None):
+            """
+            Updates the internal indexes
+            """
 
         def verify(self):
             """
@@ -2199,16 +2206,20 @@ init 800 python:
         """
         Sets the initial bg
 
+        Does not do anything if the current bg is same.
+
         NOTE: We don't handle exit pp's here
 
         IN:
             _background:
-                The background we're changing to
+                The background we're changing to. 
+                Assumes this is already built.
         """
-        global mas_current_background
-        old_background = mas_current_background
-        mas_current_background = _background
-        mas_current_background.entry(old_background)
+        if _background != mas_current_background:
+            global mas_current_background
+            old_background = mas_current_background
+            mas_current_background = _background
+            mas_current_background.entry(old_background)
 
     def mas_changeBackground(new_background, by_user=None, set_persistent=False):
         """
@@ -2377,6 +2388,9 @@ init -1 python:
 
     #Now load data
     store.mas_background.loadMBGData()
+
+
+init 1 python in mas_ba
 
 #START: Image definitions
 #Spaceroom

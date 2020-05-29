@@ -479,16 +479,8 @@ init python:
 
         RETURNS: True upon a filter change, False if not
         """
-        # TODO: this should be deferred to the BG
         curr_flt = store.mas_sprites.get_filter()
-
-        now_time = datetime.datetime.now().time()
-        if mas_isDay(now_time):
-            new_flt = store.mas_sprites.FLT_DAY
-
-        else: # mas_isNight(now_time):
-            new_flt = store.mas_sprites.FLT_NIGHT
-
+        new_flt = mas_current_background.progress()
         store.mas_sprites.set_filter(new_flt)
 
         return curr_flt != new_flt
