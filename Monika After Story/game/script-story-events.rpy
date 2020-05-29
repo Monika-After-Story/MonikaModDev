@@ -13,7 +13,8 @@ init 5 python:
             eventlabel="mas_gender",
             start_date=mas_getFirstSesh() + datetime.timedelta(minutes=30),
             action=EV_ACT_QUEUE
-        )
+        ),
+        skipCalendar=True
     )
     #NOTE: This unlocks the monika_gender_redo event
 
@@ -585,7 +586,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_preferredname",
             action=EV_ACT_QUEUE
-        )
+        ),
+        skipCalendar=True
     )
     #NOTE: This unlocks the player name change event
     #NOTE: This gets its start_date from mas_gender
