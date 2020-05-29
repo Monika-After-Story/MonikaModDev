@@ -14440,10 +14440,10 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel='monika_fear',
+            eventlabel="monika_fear",
             prompt="Fear",
             category=['monika'],
-            conditional=("renpy.seen_label('monika_soft_rains')"),
+            conditional="renpy.seen_label('monika_soft_rains')",
             action=EV_ACT_RANDOM
         )
     )
