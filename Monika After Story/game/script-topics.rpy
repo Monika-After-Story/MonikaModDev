@@ -14466,7 +14466,7 @@ label monika_fear:
     m 2dktpc "That my old world, as grey and meaningless as it now seems, is all there truly is."
     m 2dktpc "..."
     m 2rktdb "Ahaha~ {w=0.5}{nw}"
-    extend 2eksdla "Sorry, that got pretty dark, didn't it?"
+    extend 2ektdsdla "Sorry, that got pretty dark, didn't it?"
     m 2rksdla "I feel kinda silly now...{w=0.3} {nw}"
     extend 4eud "After all, there's no way something like that could be true, right?"
     m 2rka "Yeah..."
