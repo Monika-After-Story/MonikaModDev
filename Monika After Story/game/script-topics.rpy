@@ -9643,7 +9643,7 @@ init 5 python:
     )
 
 label monika_dating:
-    m 1eud "You know I've been really curious lately, [player]..."
+    m 1eud "You, know I've been really curious lately, [player]..."
     m 3rka "We've been together a while now, so I think it's the right time to ask..."
     m 1eud "How much dating experience do you have?"
     m 1luc "Like...have you ever been in a relationship before?"
@@ -9675,10 +9675,10 @@ label monika_dating:
             $ persistent._mas_pm_had_relationships_many = False
             $ persistent._mas_pm_had_relationships_just_one = True
 
-            m 1eka "Ah, not a lot of experience huh?"
+            m 1eka "Ah, so I guess you don't have a lot of experience, huh?"
             m 3eua "That's okay [player], I can relate too so don't worry."
-            m 3lksdlb "Yeah I may appear like a girl who gets all the guys but really I don't, ahaha!"
-            m 2lksdla "Especially with how occupied I've kept myself over the years I just never had the time."
+            m 3lksdlb "Yeah, I may appear like a girl who gets all the guys but really I don't, ahaha!"
+            m 2lksdla "Especially with how occupied I've kept myself over the years, I just never had the time."
             m 2eka "Not that it matters anyway, none of it was real."
             show monika 5ekbsa zorder MAS_MONIKA_Z with dissolve
             m 5ekbsa "But I think I'm ready for something special...{w=0.5}{nw}"
@@ -9691,7 +9691,7 @@ label monika_dating:
 
             m 1wubsw "What? I-I'm your first?"
             m 1tsbsb "Oh...{w=0.3} I see."
-            m 1tfu "You're just saying that to make me feel extra special aren't you, [player]?"
+            m 1tfu "You're just saying that to make me feel extra special, aren't you [player]?"
             m 1tku "There's no way someone like you has never dated before..."
             m 3hubsb "You're the definition of cute and sweet!"
             m 3ekbfa "Well...{w=0.3} If you're not just messing with me and actually telling me the truth then...{w=0.3}{nw}"
