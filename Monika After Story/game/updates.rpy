@@ -469,6 +469,9 @@ label v0_11_3(version="v0_11_3"):
         for pool_label in pool_unlock_list:
             mas_unlockEVL(pool_label,"EVE")
 
+        #Fix the islands event
+        if not mas_isWinter() and not seen_event("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
     return
 
 #0.11.1

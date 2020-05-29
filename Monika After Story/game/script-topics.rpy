@@ -13297,6 +13297,11 @@ label monika_hemispheres:
             m 3rksdld "Like the terrible travel conditions, having to shovel it..."
             call monika_snow_nogets_snow
 
+    python:
+        #Now that hemi has changed, set the current season and run prog points
+        persistent._mas_current_season = store.mas_seasons._seasonalCatchup(
+            persistent._mas_current_season
+        )
     return "derandom|rebuild_ev"
 
 # player has snow, hemisphere version
