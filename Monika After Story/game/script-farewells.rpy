@@ -214,7 +214,7 @@ init 5 python:
 
 label bye_goodbye:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Goodbye, [player]!"
+        m 1eua "Goodbye, [player]!" #TODO: Nickname here
 
     elif mas_isMoniUpset():
         m 2esc "Goodbye."
@@ -244,7 +244,7 @@ init 5 python:
     del rules
 
 label bye_sayanora:
-    m 1hua "Sayonara, [player]~"
+    m 1hua "Sayonara, [player]~" #TODO: Nickname here
     return 'quit'
 
 init 5 python:
@@ -283,7 +283,7 @@ init 5 python:
 
 label bye_untilwemeetagain:
     m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, Until we meet again.{/i}'"
-    m "Ehehe, 'till then, [player]!"
+    m "Ehehe, 'till then, [player]!" #TODO: Nickname here
     return 'quit'
 
 init 5 python:
@@ -303,7 +303,7 @@ init 5 python:
 
 
 label bye_take_care:
-    m 1eua "Don't forget that I always love you, [player]~"
+    m 1eua "Don't forget that I always love you, [player]~" #TODO: Nickname here
     m 1hub "Take care!"
     return 'quit'
 
@@ -323,7 +323,7 @@ init 5 python:
 
 label bye_going_to_sleep:
     if mas_isMoniNormal(higher=True):
-        m 1esa "Are you going to sleep, [player]?"
+        m 1esa "Are you going to sleep, [player]?" #TODO: Nickname here
         m 1eka "I'll be seeing you in your dreams."
 
     elif mas_isMoniUpset():
@@ -368,17 +368,17 @@ label bye_prompt_to_class:
             m 2eka "Study hard [player], I'm sure you'll do great!"
             m 2hua "See you when you get back!"
         elif session_time < datetime.timedelta(hours=1):
-            m 2eua "Alright, thanks for spending some time with me, [player]!"
+            m 2eua "Alright, thanks for spending some time with me, [player]!" #TODO: Nickname here
             m 2eka "I honestly wish it could have been longer...but you're a busy [guy]."
             m 2hua "Nothing is more important than a good education."
             m 3eub "Teach me something when you get back!"
             m "See you soon!"
         elif session_time < datetime.timedelta(hours=6):
-            m 1hua "Study hard, [player]!"
+            m 1hua "Study hard, [player]!" #TODO: Nickname here
             m 1eua "Nothing is more attractive than a [guy] with good grades."
             m 1hua "See you later!"
         else:
-            m 2ekc "Umm...you've been here with me for quite a while, [player]."
+            m 2ekc "Umm...you've been here with me for quite a while, [player]." #TODO: Nickname here
             m 2ekd "Are you sure you've had enough rest for it?"
             m 2eka "Make sure you take it easy, okay?"
             m "If you're not feeling too well, I'm sure {i}one day{/i} off won't hurt."
@@ -420,7 +420,7 @@ label bye_prompt_to_work:
             m 2eka "Aw, okay! Just checking in on me before heading out?"
             m 3eka "You must be really short on time if you're leaving already."
             m "It was really sweet of you to see me, even when you're so busy!"
-            m 3hub "Work hard, [player]! Make me proud!"
+            m 3hub "Work hard, [player]! Make me proud!" #TODO: Nickname here
         elif session_time < datetime.timedelta(hours=1):
             m 1hksdlb "Oh! Alright! I was starting to get really comfortable, ahaha."
             m 1rusdlb "I was expecting us to be a here a bit longer, but you're a busy [guy]!"
@@ -441,7 +441,7 @@ label bye_prompt_to_work:
             m 2ekc "Try not to overexert yourself, okay?"
             m 2ekd "Don't be afraid to take a breather if you need to!"
             m 3eka "Just come home to me happy and healthy."
-            m 3eua "Stay safe, [player]!"
+            m 3eua "Stay safe, [player]!" #TODO: Nickname here
 
     elif mas_isMoniUpset():
         m 2esc "Fine, [player], guess I'll see you after work."
@@ -482,7 +482,7 @@ label bye_prompt_sleep:
     if 20 <= curr_hour < 24:
         # decent time to sleep
         if mas_isMoniNormal(higher=True):
-            m 1eua "Alright, [player]."
+            m 1eua "Alright, [player]." #TODO: Nickname here
             m 1hua "Sweet dreams!"
 
         elif mas_isMoniUpset():
@@ -497,7 +497,7 @@ label bye_prompt_sleep:
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
         if mas_isMoniNormal(higher=True):
-            m 1eua "Alright, [player]."
+            m 1eua "Alright, [player]." #TODO: Nickname here
             m 3eka "But you should sleep a little earlier next time."
             m 1hua "Anyway, goodnight!"
 
@@ -598,7 +598,7 @@ label bye_prompt_sleep:
                     return
                 "Sorry, I'm really tired.":
                     m 1eka "Aw, that's okay."
-                    m 1hua "Goodnight, [player]."
+                    m 1hua "Goodnight, [player]." #TODO: Nickname here
                 # TODO: now that is tied we may also add more dialogue?
                 "No.":
                     $ mas_loseAffection()
@@ -619,7 +619,7 @@ label bye_prompt_sleep:
             m 6ckc "..."
     else:
         # otheerwise
-        m 1eua "Alright, [player]."
+        m 1eua "Alright, [player]." #TODO: Nickname here
         m 1hua "Sweet dreams!"
 
 
@@ -653,7 +653,7 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
 
 label bye_haveagoodday:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Have a good day today, [player]."
+        m 1eua "Have a good day today, [player]." #TODO: Nickname here
         m 3eua "I hope you accomplish everything you had planned."
         m 1hua "I'll be here waiting for you when you get back."
 
@@ -685,7 +685,7 @@ init 5 python:
 
 label bye_enjoyyourafternoon:
     if mas_isMoniNormal(higher=True):
-        m 1ekc "I hate to see you go so early, [player]."
+        m 1ekc "I hate to see you go so early, [player]." #TODO: Nickname here
         m 1eka "I do understand that you're busy though."
         m 1eua "Promise me you'll enjoy your afternoon, okay?"
         m 1hua "Goodbye~"
@@ -720,7 +720,7 @@ init 5 python:
 label bye_goodevening:
     if mas_isMoniNormal(higher=True):
         m 1hua "I had fun today."
-        m 1eka "Thank you for spending so much time with me, [player]."
+        m 1eka "Thank you for spending so much time with me, [player]." #TODO: Nickname here
         m 1eua "Until then, have a good evening."
 
     elif mas_isMoniUpset():
@@ -753,7 +753,7 @@ init 5 python:
 
 label bye_goodnight:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Goodnight, [player]."
+        m 1eua "Goodnight, [player]." #TODO: Nickname here
         m 1eka "I'll see you tomorrow, okay?"
         m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
         m 1ekbfa "I love you~"
@@ -788,7 +788,7 @@ label bye_long_absence:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
     m 1ekc "Aw...that's pretty saddening..."
-    m 1eka "I really am going to miss you [player]!"
+    m 1eka "I really am going to miss you [player]!" #TODO: Nickname here
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3esa "Thank you for warning me first, though. It really does help."
     m 2lksdlb "I would be worried sick otherwise!"
@@ -872,7 +872,7 @@ label bye_long_absence:
             m 1ekd "I don't know what I'd do here all alone."
             m 3rksdlb "It's not like I can go anywhere either, ahaha..."
             m 3eub "Anyway, just let me know if you're going to go out. Maybe you can even take me with you!"
-            m 1hua "I don't care where we go, as long as I'm with you, [player]."
+            m 1hua "I don't care where we go, as long as I'm with you, [player]." #TODO: Nickname here
             return
 
     m 2euc "Honestly I'm a little afraid to ask but..."

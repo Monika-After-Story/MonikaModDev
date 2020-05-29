@@ -5203,11 +5203,13 @@ init 2 python:
         if mas_isMoniHappy(lower=True):
             return player
 
+        #TODO: Change this out for the dynamic nickname list
         acceptable_nickname_list = [
             "sweetie",
             "honey",
             "darling",
-            "love"
+            "love",
+            "my love"
         ]
 
         return random.choice(acceptable_nickname_list)

@@ -500,7 +500,7 @@ init:
                 self.piece_highlight_magenta_image = Image("mod_assets/games/chess/piece_highlight_magenta.png")
                 self.move_indicator_player = Image("mod_assets/games/chess/move_indicator_player.png")
                 self.move_indicator_monika = Image("mod_assets/games/chess/move_indicator_monika.png")
-                self.player_move_prompt = Text(_("It's your turn, [player]!"), size=36)
+                self.player_move_prompt = Text(_("It's your turn, [player]!"), size=36) #TODO: Nickname here
                 self.num_turns = 0
                 self.surrendered = False
 

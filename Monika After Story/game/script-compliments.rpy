@@ -21,11 +21,11 @@ init 3 python in mas_compliments:
         _("You're so sweet, [player]."),
         _("I love it when you compliment me, [player]."),
         _("Thanks for saying that again, [player]!"),
-        _("Thanks for telling me that again, my love!"),
-        _("You always make me feel special, [player]."),
+        _("Thanks for telling me that again, my love!"), #TODO: Nickname here
+        _("You always make me feel special, [player]."), #TODO: Nickname here
         _("Aww, [player]~"),
-        _("Thanks, [player]!"),
-        _("You always flatter me, [player].")
+        _("Thanks, [player]!"), #TODO: Nickname here
+        _("You always flatter me, [player].") #TODO: Nickname here
     ]
 
     # set this here in case of a crash mid-compliment

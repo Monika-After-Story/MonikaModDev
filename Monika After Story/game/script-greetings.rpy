@@ -3094,22 +3094,29 @@ label greeting_siat:
     return "love"
 
 init 5 python:
-    if not mas_cannot_decode_islands:
-        ev_rules = {}
-        ev_rules.update(MASGreetingRule.create_rule(override_type=True))
-        ev_rules.update(MASPriorityRule.create_rule(40))
+    ev_rules = {}
+    ev_rules.update(MASGreetingRule.create_rule(override_type=True))
+    ev_rules.update(MASPriorityRule.create_rule(40))
 
-        addEvent(
-            Event(
-                persistent.greeting_database,
-                eventlabel="greeting_ourreality",
-                unlocked=True,
-                rules=ev_rules,
-                aff_range=(mas_aff.ENAMORED, None),
-            ),
-            code="GRE"
-        )
-        del ev_rules
+    island_ev = Event(
+        persistent.greeting_database,
+        eventlabel="greeting_ourreality",
+        unlocked=True,
+        rules=ev_rules,
+        aff_range=(mas_aff.ENAMORED, None),
+    )
+
+    addEvent(
+        island_ev,
+        code="GRE"
+    )
+    del ev_rules
+
+    island_ev.unlocked = (
+        not mas_cannot_decode_islands
+        and not mas_isWinter()
+        and not seen_event("greeting_ourreality")
+    )
 
 
 init -876 python in mas_delact:
