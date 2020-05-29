@@ -472,13 +472,12 @@ label v0_11_3(version="v0_11_3"):
         #Handle the preferred name and gender change topics again
         gender_ev = mas_getEV("mas_gender")
         if gender_ev:
-            preferredname_ev = mas_getEV("mas_preferredname")
-
             #Remove the gender ev's conditional
             gender_ev.conditional = None
 
-            #If we have the preferredname ev, we need to remove the conditional anyway
+            preferredname_ev = mas_getEV("mas_preferredname")
             if preferredname_ev:
+                #If we have the preferredname ev, we need to remove the conditional anyway
                 preferredname_ev.conditional = None
 
             #If the gender topic has a last seen and the preferredname ev hasn't been seen yet
