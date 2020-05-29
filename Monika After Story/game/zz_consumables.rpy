@@ -818,6 +818,53 @@ init 5 python:
                 cons_reset(MASConsumable._getCurrentFood())
 
         @staticmethod
+        def __shouldReset(_type, curr_cons, available_cons):
+            """
+            Checks if we should reset the current consumable type
+
+            CONDITIONS:
+                1. We're having a consumable we shouldn't be having now and we opened the game after its consume time or
+                2. We're still prepping something but
+                    - The consumable's finish prepping event doesn't have conditionals or
+                    - It's no longer time for this consumable
+
+            IN:
+                _type - type of consumable to reset
+                curr_cons - current_consumable (of _type)
+                available_cons - available consumables for the current time
+
+            OUT:
+                boolean:
+                    - True if we should reset the current consumable type
+                    - False otherwise
+            """
+            #If we have no consumable, then there's no point in doing anything
+            if not curr_cons:
+                return False
+
+            prep_ev = mas_getEV(curr_cons.finish_prep_evl)
+
+            return (
+                (
+                    MASConsumable._isHaving(_type)
+                    and (
+                        not MASConsumable._isStillCons(_type)
+                        and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
+                    )
+                )
+                or (
+                    persistent._mas_current_consumable[_type]["prep_time"] is not None
+                    and (
+                            (
+                                prep_ev
+                                and prep_ev.conditional is None
+                            )
+                        or curr_cons not in available_cons
+                    )
+                )
+            )
+
+        @staticmethod
         def _getCurrentDrink():
             """
             Gets the MASConsumable object for the current drink or None if we're not drinking
@@ -1023,25 +1070,8 @@ init 5 python:
             #Verify persist data
             MASConsumable._validatePersistentData(_type)
 
-            if curr_cons:
-                curr_finish_prep_ev = mas_getEV(curr_cons.finish_prep_evl)
-
-            #Reset if we're having a consumable we shouldn't be having now and we opened the game after its consume time
-            #or if we're still prepping something but the consumable's finish prepping event doesn't have conditionals
-            if (
-                (
-                    MASConsumable._isHaving(_type)
-                    and (
-                        not MASConsumable._isStillCons(_type)
-                        and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
-                    )
-                )
-                or (
-                    persistent._mas_current_consumable[_type]["prep_time"] is not None
-                    and curr_finish_prep_ev
-                    and curr_finish_prep_ev.conditional is None
-                )
-            ):
+            #Check if we should reset the current consumable type
+            if MASConsumable.__shouldReset(_type, curr_cons, available_cons):
                 MASConsumable._reset(_type)
 
             #If we're currently prepping/having anything, we don't need to do anything else
