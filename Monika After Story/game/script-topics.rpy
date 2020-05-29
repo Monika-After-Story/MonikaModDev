@@ -14201,22 +14201,21 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_diving",
             category=["nature"],
-            prompt="scuba diving",
+            prompt="Scuba diving",
             random=True
         )
      )
 label monika_diving:
-    m 3eub "[player], have you heard about scuba diving?"
-    m 3eub "after immersion in water, you can see a wonderful underwater world full of diverse marine life."
-    m 7eub "There you will meet:schools of fish, coral reefs, and sea greens,jellyfish's."
-    m 4eub "There may also be sharks."
+    m 3eub "Hey [player], have you heard about scuba diving?"
+    m 3eub "After immersion in water, you can see a wonderful underwater world full of diverse marine life."
+    m 7eub "There, you can see schools of fish, coral reefs,jellyfish, and sea greens
+    m 4eub "There may also be sharks,but only in specific places."
     m 2eud "As a rule, they are not in special places for diving."
-    m 7eud "And if there is,then be careful."
-    m 2euc "Although the chance of shark attack is very small."
+    m 7eud "And if there  are,then be careful."
+    m 2euc "Although, shark attacks rarely ever happen, so it's not much of a risk."
     m 3esb "But if you meet a shark, here is one rule for you."
     m 3esb "Stay calm."
-    m 2euc "Although meeting a shark can be dangerous for you."
-    m 3eub "But, mostly sharks swim to people because of curiosity."
+    m 2euc "Although coming face to face with a shark can be scary, they usually approach people out of curiosity."
     m 3eud "Sharks are also less likely to attack large groups of people."
     m 3eub "If you are afraid to dive alone, then I will keep you company, someday."
 return
