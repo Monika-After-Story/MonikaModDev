@@ -9,14 +9,6 @@ init -989 python:
     #Run dependency checks
     store.mas_submod_utils.Submod._checkDependencies()
 
-init -990 python in mas_ui:
-    import store
-    has_submod_settings = len([
-        submod
-        for submod in store.mas_submod_utils.submod_map.values()
-        if submod.settings_pane is not None
-    ]) > 0
-
 init -991 python in mas_submod_utils:
     import re
     import store

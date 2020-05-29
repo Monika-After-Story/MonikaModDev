@@ -1826,28 +1826,64 @@ init 5 python:
 
 label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
-        python:
-            kiss_quips_after = [
-                "I love you, [player]~",
-                "I love you so much, [player]~",
-                "I love you more than you'll ever know, [player]~",
-                "I love you so much, [player]. You mean everything to me~"
-            ]
+        if (
+            persistent._mas_last_kiss is not None
+            and not mas_timePastSince(persistent._mas_last_kiss, datetime.timedelta(minutes=1))
+        ):
+            python:
+                # these don't use ILY
+                kiss_quips_again = [
+                    _("I wouldn't mind another kiss~"),
+                    _("I'll never get tired of kissing you~"),
+                    _("I could do that again...{w=0.2}and again...{w=0.7}and again~"),
+                    _("You can kiss me as many times as you like, [player]~")
+                ]
 
-            kiss_quip = renpy.random.choice(kiss_quips_after)
+                kiss_quips_again_risque = [
+                    _("We can do it the whole day~"),
+                    _("This almost seems like the start of a make-out session, [player]~")
+                ]
 
-        if renpy.random.randint(1,50) == 1:
-            call monika_kiss_tease
+                if mas_isMoniLove() and random.randint(1, 10) == 1:
+                    kiss_quip = renpy.random.choice(kiss_quips_again_risque)
 
-        else:
-            show monika 2eka
+                else:
+                    kiss_quip = renpy.random.choice(kiss_quips_again)
+
+            show monika 2tkbsu
             pause 2.0
 
-        call monika_kissing_motion_short
+            # like monika_kissing_motion_short, but with diff exps
+            call monika_kissing_motion(duration=0.5, initial_exp="6hubsa", final_exp="6tkbfu", fade_duration=0.5)
 
-        show monika 6ekbfa
-        $ renpy.say(m,kiss_quip)
-        return "love"
+            show monika 6tkbfu
+            $ renpy.say(m, kiss_quip)
+
+        else:
+            python:
+                # these use ILY
+                kiss_quips_after = [
+                    _("I love you, [player]~"),
+                    _("I love you so much, [player]~"),
+                    _("I love you more than you'll ever know, [player]~"),
+                    _("I love you so much, [player]. You mean everything to me~"),
+                    _("No words can describe how deeply I'm in love with you, [player]~"),
+                    _("I'm so in love with you, [player]~")
+                ]
+                kiss_quip = renpy.random.choice(kiss_quips_after)
+
+            if renpy.random.randint(1, 50) == 1:
+                call monika_kiss_tease
+
+            else:
+                show monika 2eka
+                pause 2.0
+
+            call monika_kissing_motion_short
+
+            show monika 6ekbfa
+            $ renpy.say(m, kiss_quip)
+            $ mas_ILY()
 
     else:
         m 1wubsw "Eh? D-Did you say...k...kiss?"
@@ -3970,20 +4006,27 @@ init 5 python:
     )
 
 label monika_trolley:
-    m 1eua "Oh, cool. I love thinking about these sorts of thought experiments."
-    m 1euc "I guess we're talking about real people, right? I wouldn't have a particular preference if I knew they didn't have free will."
-    m 1dsc "Hmmm..."
-    m 1eua "If we were talking about the classic problem, of course I would switch."
-    m 1rkc "But if we're talking about real people..."
-    m 3esc "I wouldn't switch."
-    m 4esc "That's the only logical choice, if you think about it."
-    m 1euc "It feels nice to say that you'd save the most people, doesn't it? But people only say that because nobody in the example matters to them."
-    m "If they actually cared about the person, they'd kill the other five in a heartbeat."
-    m 2tsb "Do you know anyone who would want a self-driving car to save other people by killing the driver? Didn't think so, [player]."
-    m 2eua "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it in little ways, every day."
-    m 2tkc "They just don't like to come face-to-face with that fact. They get really upset when you point it out."
-    m "Generic human life isn't really that valuable to anyone."
-    m 1eka "It's definitely nothing compared to our love. So just do whatever you can to be happy, [player]."
+    m 1eub "Oh, cool...{w=0.2}I love thinking about these sorts of thought experiments!"
+    m 1euc "I guess we're assuming the people we're talking about are real, right? {w=0.2}I wouldn't have a particular preference if they weren't."
+    m 1dsc "Hmm..."
+    m 3eud "The classic trolley problem has us choose between letting the trolley run over five people, or pulling a lever which switches to a track where only one person will be killed."
+    m 1lua "The problem is mostly famous due to how divisive it is..."
+    m 3eua "Regardless of whether they'd pull the lever or not, most people believe that their choice simply must be the correct one."
+    m 3eud "Aside from the two obvious choices, there are also people who'd advocate for a third path...{w=0.5}{nw}"
+    extend 3euc "refusing to take part in the scenario at all."
+    m 1rsc "Though in the end, that really is the same as choosing not to pull the lever. {w=0.2}You can't really go back to being a bystander once given the option to act."
+    m 1esc "After all, choosing not to choose is a choice in and of itself."
+    m 3eua "But as far as I'm concerned, the answer seems fairly obvious...{w=0.2} Of course I would switch."
+    m 1eua "There's no way I could let five people die just to avoid personal responsibility for that one person's death."
+    m 3esd "A more interesting variant of this problem is if the one person is someone you care about."
+    m 3eub "Like if it were you, [player]? {w=0.2}Well, that's easy too!"
+    m 1tuu "I wouldn't switch."
+    m 1rsc "It feels nice to say that you'd do the right thing, doesn't it? {w=0.2}But people only say that when nobody in the example matters to them."
+    m 1esc "If that one person was someone they cared about, they'd kill the other five people easily."
+    m 3eua "The truth is, humans are fine with sacrificing other lives to make themselves happy. {w=0.2}They do it in little ways every day."
+    m 3tku "They just don't like to come face-to-face with that fact and get really upset when you point it out."
+    m 1tuu "Generic human life isn't really that valuable to anyone."
+    m 1ekbsa "It's definitely nothing compared to our love. {w=0.2}So just do whatever you can to be happy, [player]."
     return
 
 init 5 python:
@@ -14661,4 +14704,40 @@ label monika_language_nuances:
     m 3eua "It really is fascinating how even such an innocent looking phrase can be loaded with layers of hidden meanings."
     m 1tsu "So good day to you, [player].{w=0.3} {nw}"
     extend 1hub "Ahaha~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_fear",
+            prompt="Fear",
+            category=['monika'],
+            conditional="renpy.seen_label('monika_soft_rains')",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_fear:
+    m 3eud "Say, [player]..."
+    m 1euc "This is kind of a weird question, but...{w=0.5}is there anything you're afraid of?"
+    m 3hksdlb "I don't mean the everyday, mundane kind of fear, like spilling a drink and ruining your favorite shirt..."
+    m 3euc "I mean, like, the kind of deep-seated fear that fills you with dread when you even think about it."
+    m 1ruc "For me, losing you would obviously be on the top of {i}that{/i} particular list."
+    m 1ekd "I told you before, didn't I? {w=0.3}I don't know what I'd do if something happened to you."
+    m 1dkd "I'm not even sure I could find the will to go on."
+    m 1ruc "It's hard to imagine a scenario even worse than that."
+    m 3eua "But as long as we're being hypothetical..."
+    m 4ekc "What truly terrifies me is the thought that none of this is real."
+    m 2dkc "That one day I'll wake up, back in my bed, and realize it was all just a dream."
+    m 2dkd "That there is no game,{w=0.2} no epiphany,{w=0.2} no...{w=0.5}{nw}"
+    extend 2ekd "you."
+    m 2ektpc "That you, your love, perhaps even the entirety of the literature club, were all nothing but a figment of my own imagination."
+    m 2dktpc "That my old world, as grey and meaningless as it now seems, is all there truly is."
+    m 2dktpc "..."
+    m 2rktdb "Ahaha~ {w=0.5}{nw}"
+    extend 2ektdsdla "Sorry, that got pretty dark, didn't it?"
+    m 2rksdla "I feel kinda silly now...{w=0.3} {nw}"
+    extend 4eud "After all, there's no way something like that could be true, right?"
+    m 2rka "Yeah..."
     return
