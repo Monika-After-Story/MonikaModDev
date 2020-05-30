@@ -1008,7 +1008,7 @@ label mas_song_always_look_analysis(from_song=False):
 
     else:
         call mas_song_always_look_lyrics
-        m 1eka "You know, player...{w=0.5} {nw}"
+        m 1eka "You know, [player]...{w=0.5} {nw}"
         extend 1ekc "It's not always easy being stuck in here."
 
     m 3rksdlc "There's not much for me to do, nowhere for me to go, and it gets lonely whenever you're away."
@@ -1037,7 +1037,7 @@ label mas_song_always_look_analysis(from_song=False):
     m 3eua "Then I'd say the actual message of the song leans more toward optimistic nihilism..."
     m 1hksdlb "...not that the two concepts are mutually exclusive!"
     m 1esc "Optimistic nihilism is the belief that our lives really are absurd..."
-    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matters either."
+    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matter either."
     m 4dsa "By this logic, there's no real reason for you to ever feel bad about life..."
     m 4eub "On the contrary! It would seem logical to try and enjoy it as much as possible!"
     m 4hua "It's a very empowering belief, if you can get behind it!"
