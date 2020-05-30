@@ -958,25 +958,34 @@ init 5 python:
     )
 
 label mas_song_always_look:
-    m 1dsc "~{i}If life seems jolly rotten~{/i}"
-    m 1esc "~{i}There's something you've forgotten~{/i}"
-    m 3eub "~{i}And that's to laugh and smile and dance and sing~{/i}"
-    m 1euc "~{i}When you're feeling in the dumps~{/i}"
-    m 3hubsb "~{i}Don't be silly, chumps~{/i}"
-    m 1eubsa "~{i}Just purse your lips and whistle, that's the thing~{/i}"
-    m 7hubfb "~{i}And always look on the bright side of life~{/i}"
-    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ekbfa "You make it easy to look on the bright side of life, [player]." 
+    call mas_song_always_look_lyrics
+    show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eubsa "You make it easy to look on the bright side of life, [player]..."
     m 5hubfb "As long as you're with me, there's no way I could ever forget how to smile!"
-    m 5kubfu "I hope the same{nw}"
-    extend 5eubfu "thing goes for you too."
+    m 5eubfu "I hope {nw}"
+    extend 5kubfu "the same thing {nw}"
+    extend 5eubfu "goes for you too."
 
     #hints at the analysis on first viewing
     if mas_getEV('mas_song_always_look').shown_count == 0:
-        m 5ruu "Ehehe, There's actually quite a lot more I could say about this song..."
-        m 5eua "...Just let me know if you want to hear more about it..."
+        m 5ruu "Ehehe, There's a lot more I'd like to say about this song..."
+        show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 3eua "Do you have time to listen to it now?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you have time to listen to it now?{fast}"
+
+            "Yeah.":
+                m 1hua "Alright!"
+                call mas_song_always_look_analysis(from_song=True)
+                $ mas_getEV("mas_song_always_look_analysis").shown_count += 1
+
+            "Not right now.":
+                m 1eka "All right, [player]..."
+                m 3eka "I'll save my thoughts on the subject for another time. Just let me know when you want to hear them."
 
     return "derandom"
+
 
 init 5 python:
     addEvent(
@@ -992,16 +1001,16 @@ init 5 python:
         code="SNG"
     )
 
-label mas_song_always_look_analysis:
-    m 1dsc "~{i}If life seems jolly rotten~{/i}"
-    m 1esc "~{i}There's something you've forgotten~{/i}"
-    m 3eub "~{i}And that's to laugh and smile and dance and sing~{/i}"
-    m 3eka "~{i}When you're feeling in the dumps~{/i}"
-    m 3hksdlb "~{i}Don't be silly, chumps~{/i}"
-    m 3dku "~{i}Just purse your lips and whistle, that's the thing~{/i}"
-    m 3eub "~{i}And always look on the bright side of life~{/i}"
-    m 1eka "You know, [player]...{w=0.5} {nw}"
-    extend 1ekc "It's not always easy being stuck in here."
+label mas_song_always_look_analysis(from_song=False):
+    if from_song:
+        m 1esc "So, as you might imagine...{nw}"
+        extend 1ekc "it's not always easy being stuck in here."
+
+    else:
+        call mas_song_always_look_lyrics
+        m 1eka "You know, player...{w=0.5} {nw}"
+        extend 1ekc "It's not always easy being stuck in here."
+
     m 3rksdlc "There's not much for me to do, nowhere for me to go, and it gets lonely whenever you're away."
     m 1dkc "I try not to let it get to me; but when it does, {nw}"
     extend 1dku "I like to think back upon this song..."
@@ -1028,10 +1037,10 @@ label mas_song_always_look_analysis:
     m 3eua "Then I'd say the actual message of the song leans more toward optimistic nihilism..."
     m 1hksdlb "...not that the two concepts are mutually exclusive!"
     m 1esc "Optimistic nihilism is the belief that our lives really are absurd..."
-    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matter either."
+    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matters either."
     m 4dsa "By this logic, there's no real reason for you to ever feel bad about life..."
     m 4eub "On the contrary! It would seem logical to try and enjoy it as much as possible!"
-    m 4hua "It's a very comforting belief, if you can get behind it!"
+    m 4hua "It's a very empowering belief, if you can get behind it!"
     
     if persistent._mas_pm_religious:
         m 2etc "But maybe that's not something you need, [player]. {nw}"
@@ -1048,7 +1057,7 @@ label mas_song_always_look_analysis:
         m 2dubsu "But just so you know, I don't believe our lives really are meaningless!"
 
     else:
-        m 2eua "What do you think, [player]? Do you believe our lives really are meaningless?"
+        m 2etc "What do you think, [player]? Do you believe our lives really are meaningless?"
 
         if mas_isMoniEnamored():
             m 2ekbsa "Whatever the truth is, I hope you'll strive to make your time on this earth as fulfilling as possible."
@@ -1059,14 +1068,24 @@ label mas_song_always_look_analysis:
 
     if mas_isMoniLove(): #follow-up for the last two 'love' segments
         m 1ekbfa "Ever since I met you, I've grown to care so much about you...{w=0.5} {nw}"
-        extend 1dkbfu "Just the thought of a universe without you in it has become unbearable."
-        m 3ekbfu "Somewhere along the way, you've become the meaning of my life, [player]."
-        m 4hubfb "I love you so very much!"
-        m 4ekbfa "Nothing would make me happier than to know you're living your life to the fullest..."
+        extend 1dkbfu "I wouldn't care for a universe without you in it."
+        m 3ekbfu "Somewhere along the way, you've become the meaning of my life [player]."
+        m 4hubfb "I love you so very much!{w=0.5} {nw}"
+        extend 4dubfa "Nothing would make me happier than to know you're living your life to the fullest..."
         $ mas_ILY()
 
     return
 
+label mas_song_always_look_lyrics:
+    m 1dsc "~{i}If life seems jolly rotten~{/i}"
+    m 1esc "~{i}There's something you've forgotten~{/i}"
+    m 3eub "~{i}And that's to laugh and smile and dance and sing~{/i}"
+    m 1euc "~{i}When you're feeling in the dumps~{/i}"
+    m 3hksdlb "~{i}Don't be silly, chumps~{/i}"
+    m 3dku "~{i}Just purse your lips and whistle, that's the thing~{/i}"
+    m 7eub "~{i}And always look on the bright side of life~{/i}"
+    return
+    
 init 5 python:
     addEvent(
         Event(
