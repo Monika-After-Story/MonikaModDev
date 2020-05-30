@@ -982,7 +982,7 @@ label mas_song_always_look:
 
             "Not right now.":
                 m 1eka "All right, [player]..."
-                m 3eka "I'll save my thoughts on the subject for another time. Just let me know when you want to hear them."
+                m 3eka "I'll save my thoughts on the subject for another time. Be sure to let me know when you want to hear them."
 
     return "derandom"
 
