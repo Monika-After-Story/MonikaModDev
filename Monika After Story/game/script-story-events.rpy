@@ -11,9 +11,10 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_gender",
-            conditional="store.mas_xp.level() >= 1",
+            start_date=mas_getFirstSesh() + datetime.timedelta(minutes=30),
             action=EV_ACT_QUEUE
-        )
+        ),
+        skipCalendar=True
     )
     #NOTE: This unlocks the monika_gender_redo event
 
@@ -60,6 +61,12 @@ label mas_gender:
     $ mas_unlockEVL("monika_gender_redo","EVE")
     # set pronouns
     call mas_set_gender
+
+    #Set up the preferredname topic
+    python:
+        preferredname_ev = mas_getEV("mas_preferredname")
+        if preferredname_ev:
+            preferredname_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
     return "love"
 
 init 5 python:
@@ -578,11 +585,12 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_preferredname",
-            conditional="store.mas_xp.level() >= 2",
             action=EV_ACT_QUEUE
-        )
+        ),
+        skipCalendar=True
     )
     #NOTE: This unlocks the player name change event
+    #NOTE: This gets its start_date from mas_gender
 
 label mas_preferredname:
     m 1euc "I've been wondering about your name."
