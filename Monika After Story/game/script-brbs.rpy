@@ -384,6 +384,96 @@ label monika_idle_coding_callback:
         m 6ckc "..."
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_workout",
+            prompt="I'm going to work out for a bit",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_workout:
+    if mas_isMoniNormal(higher=True):
+        m "Oh, alright."
+        if persistent._mas_pm_works_out is False:
+            m "Working out is a great way to take care of yourself."
+            m "I know it might be hard to start out, but it's definitely a habit worth forming."
+        else:
+            m "It's good to know you're taking care of your body."
+        m "You know how the saying goes - a healthy mind in a healthy body."
+        m "So go work up a good sweat, [player]~"
+        m "Just let me know when you've had enough."
+
+    elif mas_isMoniUpset():
+        m "Good to know you're taking care of{cps=*2} something, at least.{/cps}{nw}"
+        $ _history_list.pop()
+        m "Good to know you're taking care of{fast} yourself, [player]."
+        m "I'll be waiting for you to get back."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_workout_callback")
+    $ persistent._mas_idle_data["monika_idle_workout"] = True
+    return "idle"
+
+label monika_idle_workout_callback:
+    if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=60), "monika_idle_workout"):
+            """ In the future I'm planning on writing another topic which would
+                unlock once the player has seen this specific path some number of times.
+                The two ways of doing this that come to mind are putting a persistent counter here,
+                or making a separate label for this and using shown_count.
+                Both seem kinda awkward."""
+            m "You sure took your time, [player]. Must've been one hell of a workout."
+            m "It's good to push your limits, but you shouldn't overdo it."
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_workout"):
+            m "Done with your workout, [player]?"
+
+        else:
+            m "Back already, [player]? I'm sure you can go on for a bit longer if you try."
+            m "Taking breaks is fine, but you shouldn't leave your workouts unfinished."
+            m "Are you sure you can't keep going?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are you sure you can't keep going?{fast}"
+
+                "Yes":
+                    m "Oh, okay."
+                    m "I'm sure you did your best, [player]~"
+
+                "No":
+                    # continue workout and return Monika to idle state
+                    m "That's the spirit!"
+
+                    $ mas_idle_mailbox.send_idle_cb("monika_idle_workout_callback")
+                    return "idle"
+
+        m "Make sure to rest properly, and maybe get a snack to keep your energy up."
+        m 3eub "[wb_quip]"
+
+    elif mas_isMoniUpset():
+        m "Done with your workout, [player]?"
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh, you came back."
+
+    else:
+        m 6ckc "..."
+    return
+
+
 #Rai's og game idle
 #label monika_idle_game:
 #    m 1eub "That sounds fun!"
