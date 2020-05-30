@@ -1037,26 +1037,24 @@ init python:
 
 
     def dec_musicvol():
-        #
-        # decreases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        # ASSUMES:
-        #   persistent.playername
+        """
+        Decreases the volume of the music channel by the value defined in songs.vol_bump
 
+        ASSUMES:
+            persistent.playername
+        """
         # sayori cannot make the volume quieter
         if (
-                persistent.playername.lower() != "sayori"
-                or persistent._mas_sensitive_mode
-            ):
+            persistent.playername.lower() != "sayori"
+            or persistent._mas_sensitive_mode
+        ):
             songs.adjustVolume(up=False)
 
 
     def inc_musicvol():
-        #
-        # increases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
+        """
+        increases the volume of the music channel by the value defined in songs.vol_bump
+        """
         songs.adjustVolume()
 
 
@@ -1084,20 +1082,29 @@ init python:
             songs.setUserVolume(songs.music_volume, "music")
 
 
-    def play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0):
-        #
-        # literally just plays a song onto the music channel
-        # Also sets the currentt track
-        #
-        # IN:
-        #   song - song to play. If None, the channel is stopped
-        #   fadein - number of seconds to fade in the song
-        #   loop - True if we should loop the song if possible, False to not
-        #       loop.
-        #   set_per - True if we should set persistent track, False if not
+    def play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0, if_changed=False):
+        """
+        literally just plays a song onto the music channel
+        Also sets the currentt track
+
+        IN:
+            song - Song to play. If None, the channel is stopped
+            fadein - Number of seconds to fade the song in
+                (Default: 0.0)
+            loop - True if we should loop the song if possible, False to not loop.
+                (Default: True)
+            set_per - True if we should set persistent track, False if not
+                (Default: False)
+            fadeout - Number of seconds to fade the song out
+                (Default: 0.0)
+            if_changed - Whether or not to only set the song if it's changing
+                (Use to play the same song again without it being restarted)
+                (Default: False)
+        """
         if song is None:
             song = songs.FP_NO_SONG
             renpy.music.stop(channel="music", fadeout=fadeout)
+
         else:
             renpy.music.play(
                 song,
@@ -1105,7 +1112,8 @@ init python:
                 loop=loop,
                 synchro_start=True,
                 fadein=fadein,
-                fadeout=fadeout
+                fadeout=fadeout,
+                if_changed=if_changed
             )
 
         songs.current_track = song
@@ -1122,7 +1130,7 @@ init python:
         Meant for usage in startup processes.
         """
         if persistent.current_track is not None:
-            play_song(persistent.current_track)
+            play_song(persistent.current_track, if_changed=True)
 
 
     def select_music():
