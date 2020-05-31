@@ -1385,8 +1385,8 @@ label mas_consumables_generic_finish_having(consumable):
 
         container = dlg_props.get(mas_consumables.PROP_CONTAINER)
         obj_ref = dlg_props.get(mas_consumables.PROP_OBJ_REF)
-
         plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
+
         dlg_map = {
             mas_consumables.PROP_CONTAINER: {
                 0: "I'm going to put this [container] away.",
@@ -1528,8 +1528,8 @@ label mas_consumables_generic_running_out(consumable):
         python:
             dlg_props = consumable.dlg_props
 
-            container = dlg_props[mas_consumables.PROP_CONTAINER]
-            obj_ref = dlg_props[mas_consumables.PROP_OBJ_REF]
+            container = dlg_props.get(mas_consumables.PROP_CONTAINER)
+            obj_ref = dlg_props.get(mas_consumables.PROP_OBJ_REF)
             plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
 
             #We need to parse the dialogue depending on the given dlg_props
