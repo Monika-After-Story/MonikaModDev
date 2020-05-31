@@ -13,101 +13,152 @@
 default persistent.mas_late_farewell = False
 
 init -1 python in mas_farewells:
+    import bisect
+    import datetime
+    import store
+
+    def _filterFarewell(
+            ev,
+            curr_pri,
+            aff,
+            check_time,
+        ):
+        """
+        Filters a farewell for the given type, among other things.
+
+        IN:
+            ev - ev to filter
+            curr_pri - current loweset priority to compare to
+            aff - affection to use in aff_range comparisons
+            check_time - datetime to check against timed rules
+
+        RETURNS:
+            True if this ev passes the filter, False otherwise
+        """
+        # NOTE: new rules:
+        #   eval in this order:
+        #   1. priority (lower or same is True)
+        #   2. type/non-0type
+        #   3. unlocked
+        #   4. aff_range
+        #   5. all rules
+        #   6. conditional
+        #       NOTE: this is never cleared. Please limit use of this
+        #           property as we should aim to use lock/unlock as primary way
+        #           to enable or disable greetings.
+
+        # priority check, required
+        # NOTE: all farewells MUST have a priority
+        if store.MASPriorityRule.get_priority(ev) > curr_pri:
+            return False
+
+        #If the event is pooled, then we cannot have this in the selection
+        if ev.pool:
+            return False
+
+        # unlocked check, required
+        if not ev.unlocked:
+            return False
+
+        # aff range check, required
+        if not ev.checkAffection(aff):
+            return False
+
+        # rule checks
+        if not (
+            store.MASSelectiveRepeatRule.evaluate_rule(check_time, ev, defval=True)
+            and store.MASNumericalRepeatRule.evaluate_rule(check_time, ev, defval=True)
+            and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+        ):
+            return False
+
+        # conditional check
+        if ev.conditional is not None and not eval(ev.conditional):
+            return False
+
+        # otherwise, we passed all tests
+        return True
+
+    #TODO: Make this work better with probability rule, also generalize this
+    def weightChoice(choice_weight_tuple_list):
+        """
+        Returns a random item based on weighting
+
+        IN:
+            choice_weight_tuple_list - List of tuples with the form (choice, weighting)
+
+        OUT:
+            random choice value picked using choice weights
+        """
+        #No items? Just return None
+        if not choice_weight_tuple_list:
+            return None
+
+        choices, weights = zip(*choice_weight_tuple_list)
+        total_weight = 0
+        cumulative_weights = list()
+
+        #Now we collect all the weights and geneate a cumulative and total weight amount
+        for weight in weights:
+            total_weight += weight
+            cumulative_weights.append(total_weight)
+
+        #Pick a random spot in the total weight
+        x = renpy.random.random() * total_weight
+
+        #Now bisect the cumulative weight using that random point
+        r_index = bisect.bisect(cumulative_weights, x)
+
+        return choices[r_index]
 
     # custom farewell functions
-    def selectFarewell():
+    def selectFarewell(check_time=None):
         """
-        Selects a farewell to be used. This evaluates rules and stuff
-        appropriately.
+        Selects a farewell to be used. This evaluates rules and stuff appropriately.
+
+        IN:
+            check_time - time to use when doing date checks
+                If None, we use current datetime
+                (Default: None)
 
         RETURNS:
             a single farewell (as an Event) that we want to use
         """
+        # local reference of the gre database
+        fare_db = store.evhand.farewell_database
 
-        # check if we have moni_wants farewells
-        moni_wants_farewells = renpy.store.Event.filterEvents(
-            renpy.store.evhand.farewell_database,
-            unlocked=True,
-            pool=False, # may as well not filter these
-            moni_wants=True
-        )
+        # setup some initial values
+        fare_pool = []
+        curr_priority = 1000
+        aff = store.mas_curr_affection
 
+        if check_time is None:
+            check_time = datetime.datetime.now()
 
-        if moni_wants_farewells is not None and len(moni_wants_farewells) > 0:
+        # now filter
+        for ev_label, ev in fare_db.iteritems():
+            if _filterFarewell(
+                    ev,
+                    curr_priority,
+                    aff,
+                    check_time
+            ):
+                # change priority levels and stuff if needed
+                ev_priority = store.MASPriorityRule.get_priority(ev)
+                if ev_priority < curr_priority:
+                    curr_priority = ev_priority
+                    fare_pool = []
 
-            # select one label randomly
-            return moni_wants_farewells[
-                renpy.random.choice(moni_wants_farewells.keys())
-            ]
+                # add to pool
+                fare_pool.append((
+                    ev, store.MASProbabilityRule.get_probability(ev)
+                ))
 
-        # now filter events by their unlocked property
-        unlocked_farewells = renpy.store.Event.filterEvents(
-            renpy.store.evhand.farewell_database,
-            unlocked=True,
-            pool=False
-        )
+        # not having a greeting to show means no greeting.
+        if len(fare_pool) == 0:
+            return None
 
-        # filter farewells using the affection rules dict
-        unlocked_farewells = renpy.store.Event.checkAffectionRules(
-            unlocked_farewells,
-            keepNoRule=True
-        )
-
-        # filter farewells using the special rules dict
-        random_farewells_dict = renpy.store.Event.checkRepeatRules(
-            unlocked_farewells
-        )
-
-        # check if we have a farewell that actually should be shown now
-        if len(random_farewells_dict) > 0:
-
-            # select one label randomly
-            return random_farewells_dict[
-                renpy.random.choice(random_farewells_dict.keys())
-            ]
-
-        # since we don't have special farewells for this time we now check for special random chance
-        # pick a farewell filtering by special random chance rule
-        random_farewells_dict = renpy.store.Event.checkFarewellRules(
-            unlocked_farewells
-        )
-
-        # check if we have a farewell that actually should be shown now
-        if len(random_farewells_dict) > 0:
-
-            # select on label randomly
-            return random_farewells_dict[
-                renpy.random.choice(random_farewells_dict.keys())
-            ]
-
-        # We couldn't find a suitable farewell we have to default to normal random selection
-        # filter random events normally
-        random_unlocked_farewells = renpy.store.Event.filterEvents(
-            unlocked_farewells,
-            random=True
-        )
-
-        # check if we have farewell available to display with current filter
-        if len(random_unlocked_farewells) > 0:
-            # select one randomly
-            return random_unlocked_farewells[
-               renpy.random.choice(random_unlocked_farewells.keys())
-            ]
-
-        # We couldn't find a suitable farewell we have to default to normal random selection
-        # filter random events normally
-        renpy.log("rip we need update script")
-        random_farewells_dict = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database,
-            unlocked=True,
-            random=True,
-            excl_cat=list()
-        )
-
-        # select one randomly
-        return random_farewells_dict[
-            renpy.random.choice(random_farewells_dict.keys())
-        ]
+        return weightChoice(fare_pool)
 
 # farewells selection label
 label mas_farewell_start:
@@ -178,27 +229,22 @@ label mas_farewell_start:
 ###
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_leaving_already",
             unlocked=True,
-            random=True,#TODO update script
-            rules=rules
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_leaving_already:
     m 1tkc "Aw, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3eua "Just be sure to come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
-    #Don't show this farewell again
-    $evhand.farewell_database["bye_leaving_already"].random=False
     return 'quit'
 
 init 5 python:
@@ -229,57 +275,48 @@ label bye_goodbye:
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_sayanora",#sayanora? yes
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_sayanora:
     m 1hua "Sayonara, [player]~"
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_farewellfornow",
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_farewellfornow:
     m 1eka "Farewell for now, my love~"
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_untilwemeetagain",
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_untilwemeetagain:
     m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, Until we meet again.{/i}'"
@@ -287,19 +324,16 @@ label bye_untilwemeetagain:
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_take_care",
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 
 label bye_take_care:
@@ -310,6 +344,7 @@ label bye_take_care:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
+    rules.update(MASProbabilityRule.create_rule(80))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -640,6 +675,7 @@ label bye_illseeyou:
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
+    rules.update(MASProbabilityRule.create_rule(80))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -672,6 +708,7 @@ label bye_haveagoodday:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(12,16)))
+    rules.update(MASProbabilityRule.create_rule(80))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -706,6 +743,7 @@ label bye_enjoyyourafternoon:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(17,19)))
+    rules.update(MASProbabilityRule.create_rule(80))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -740,6 +778,7 @@ label bye_goodevening:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
+    rules.update(MASProbabilityRule.create_rule(80))
     addEvent(
         Event(
             persistent.farewell_database,

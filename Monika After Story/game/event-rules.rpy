@@ -14,6 +14,7 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
+    EV_RULE_PROBABILITY = "rule_probability"
 
 
     # special constants for numerical repeat rules
@@ -713,6 +714,63 @@ init -1 python:
             """
             return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
 
+
+    class MASProbabilityRule(object):
+        """
+        Static class used to create probability rules.
+
+        Priority rules are just integers that determine the probability of something being selected.
+
+        Probabilities lie between 1 and 100, with a default of 20
+        """
+        DEF_PROBABILITY = 20
+
+        @staticmethod
+        def create_rule(probability, ev=None):
+            """
+            IN:
+                probability - the probability to set.
+                    If None is passed in, we use the default priority value.
+                    NOTE: If it is outside the bounds, it will be formatted to fit the bounds
+                    NOTE: 100 probability does NOT mean a 100% chance of selecting something
+                ev - Event to add this rule to. This will replace existing
+                    rules of the same key.
+                    (Default: None)
+            """
+            if probability is None:
+                probability = MASProbabilityRule.DEF_PROBABILITY
+
+            elif probability > 100:
+                probability = 100
+
+            elif probability < 1:
+                probability = 1
+
+            if type(probability) is not int:
+                raise Exception(
+                    "'{0}' is not a valid in priority".format(probability)
+                )
+
+            rule = {EV_RULE_PROBABILITY: probability}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
+
+        @staticmethod
+        def get_probability(ev):
+            """
+            Gets the probability of the given event.
+
+            IN:
+                ev - event to get probability of
+
+            OUT:
+                The probability of the given event, or def if no ProbilityRule is found
+            """
+            return ev.rules.get(EV_RULE_PROBABILITY, MASProbabilityRule.DEF_PROBABILITY)
 
 init python:
     # these rules are NOT actually event rules since they don't create rule
