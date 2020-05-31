@@ -1115,9 +1115,9 @@ python early:
 #                from copy import deepcopy
 
             # setup keys
-            cat_key = self.FLT[0]
-            act_key = self.FLT[4]
-            sns_key = self.FLT[8]
+            cat_key = Event.FLT[0]
+            act_key = Event.FLT[4]
+            sns_key = Event.FLT[8]
 
             # validate filter rules
             category = flt_args.get(cat_key)
@@ -3859,6 +3859,8 @@ init -100 python in mas_utils:
     import math
     from cStringIO import StringIO as fastIO
 
+    __secInDay = 24 * 60 * 60
+
     __FLIMIT = 1000000
 
     def tryparsefloat(value, default=0):
@@ -4003,6 +4005,13 @@ init -100 python in mas_utils:
         )
 
 
+    def secInDay():
+        """
+        RETURNS: number of seconds in a day
+        """
+        return __secInDay
+
+
     def time2sec(_time):
         """
         Converts a time value to seconds
@@ -4012,7 +4021,7 @@ init -100 python in mas_utils:
 
         RETURNS: number of seconds
         """
-        return (_time.hour * 3600) + (_time.hour * 60) + _time.seconds
+        return (_time.hour * 3600) + (_time.hour * 60) + _time.second
 
 
     def insert_sort(sort_list, item, key):

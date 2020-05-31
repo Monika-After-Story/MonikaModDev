@@ -547,7 +547,7 @@ init 6 python:
             flags - flags to unset
         """
         ev = mas_all_ev_db_map.get(code, {}).get(ev_label, None)
-        if ev is not None;
+        if ev is not None:
             ev.unflag(flags)
 
 

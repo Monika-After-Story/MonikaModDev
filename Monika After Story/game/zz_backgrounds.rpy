@@ -142,6 +142,7 @@ init -10 python:
             return MASBackgroundFilterSlice.gen_hash(
                 self.name,
                 self.minlength,
+                self.maxlength,
                 self.priority
             )
 
@@ -172,7 +173,13 @@ init -10 python:
                 store.mas_sprites.add_filter(self.name, self.flt)
 
         @classmethod
-        def cachecreate(cls, name, minlength, priority=10, flt=None):
+        def cachecreate(cls,
+                name,
+                minlength,
+                maxlength=None,
+                priority=10,
+                flt=None
+        ):
             """
             Builds a MASBackgroundFilterSlice unless we have one in cache
 
@@ -181,7 +188,7 @@ init -10 python:
 
             RETURNS: MASBackgroundFilterSlice object
             """
-            hash_key = cls.gen_hash(name, minlength, priority)
+            hash_key = cls.gen_hash(name, minlength, maxlength, priority)
             if hash_key in cls.cache:
                 return cls.cache[hash_key]
 
@@ -234,7 +241,7 @@ init -10 python:
                 name,
                 str(minlength),
                 str(maxlength),
-                priority
+                str(priority),
             )))
 
         def is_max(self, value):
@@ -552,18 +559,11 @@ init -10 python:
                     )
 
                 # but always run the global prog
-                try:
-                    store.mas_background._gbl_flt_change(
-                        csl_data.flt_slice.name,
-                        nsl_data.flt_slice.name,
-                        curr_time
-                    )
-                except Error as e:
-                    store.mas_utils.writelog(self._ERR_PP_STR_G.format(
-                        repr(e),
-                        csl_data.flt_slice.name,
-                        nsl_data.flt_slice.name
-                    ))
+                store.mas_background.run_gbl_flt_change(
+                    csl_data.flt_slice.name,
+                    nsl_data.flt_slice.name,
+                    curr_time
+                )
 
             return st_index
 
@@ -763,7 +763,6 @@ init -10 python:
             filters = {}
             for sl_data in self._slices:
                 filters[sl_data.flt_slice.name] = None
-            filters[self._base_slice.name] = None
 
             return filters.keys()
 
@@ -822,7 +821,7 @@ init -10 python:
                 # check slice
                 if not isinstance(bg_flt, MASBackgroundFilterSlice):
                     raise MASBackgroundFilterTypeException(
-                        base_slice,
+                        bg_flt,
                         MASBackgroundFilterSlice
                     )
 
@@ -978,6 +977,29 @@ init -10 python:
 
             return self.current()
 
+        def update(self, ct_off):
+            """
+            Updates the internal indexes.
+            NOTE: this will NOT call any progpoints
+
+            IN:
+                ct_off - offset of current time, with respect to the chunk this
+                    slice is in.
+            """
+            s_len = len(self._eff_slices)
+
+            # determine current slice offsets
+            sidx = 0
+            boff = self._eff_slices[sidx].offset
+
+            while sidx < s_len-1 and ct_off < boff:
+                # deteremine next current offset and next index
+                sidx += 1
+                boff = self._eff_slices[sidx].offset
+
+            # now we should have the correct index probably
+            self._index = sidx
+
         def reset_index(self):
             """
             Resets slice index to 0
@@ -1090,6 +1112,12 @@ init -10 python:
             self._index = 0
             # the index in _chunks of the current chunk
 
+            self._prev_flt = None
+            # set to the current filter if update was used
+
+            self._updated = False
+            # set to True upon an update, set to False upon progress
+
         def __str__(self):
             """
             Shows chunks and curr chunk information
@@ -1154,7 +1182,9 @@ init -10 python:
                 curr_chunk = self._chunks[st_index]
 
                 # determine the next current offset and next index
-                cb_off = nb_off % (3600 * 24) # next offset or 0 if 86400
+
+                # next offset or 0 if 86400
+                cb_off = nb_off % (store.mas_utils.secInDay()) 
                 st_index = (st_index + 1) % c_len # next index or 0 if max len
 
                 # now calc next offset
@@ -1275,7 +1305,7 @@ init -10 python:
             """
             self._mn_sr.build(sunrise)
             self._sr_ss.build(sunset - sunrise)
-            self._ss_mn.build((3600 * 24) - sunset)
+            self._ss_mn.build((store.mas_utils.secInDay()) - sunset)
 
         def _calc_off(self, index):
             """
@@ -1295,9 +1325,9 @@ init -10 python:
 
             # now for next
             if index < len(self._chunks)-1:
-                nb_off = cb_off + self._chunks[index+1]
+                nb_off = cb_off + len(self._chunks[index])
             else:
-                nb_off = 3600 * 24
+                nb_off = store.mas_utils.secInDay()
 
             return cb_off, nb_off
 
@@ -1325,7 +1355,7 @@ init -10 python:
                 [0] - current chunk index
                 [1] - beginning offset of the current chunk
                 [2] - beginning offset of the next chunk
-                    NOTE: this is 3600 * 24 if no next chunk
+                    NOTE: this is number of seconds in day if no next chunk
                 [3] - current slice index
                 [4] - beginning offset of the current slice
                 [5] - beginning offset of the next slice
@@ -1446,6 +1476,9 @@ init -10 python:
             """
             Progresses the filter, running progpoints and updating indexes.
 
+            NOTE: if update was called before this, then we only run the
+            global filter change progpoint if there was a filter change.
+
             NOTE: we do NOT do full loop arounds. This means that even if
             there was a literal day between progressions, this will only run
             as if it were same day progression. 
@@ -1467,8 +1500,22 @@ init -10 python:
             curr_time = datetime.datetime.now().time()
             sfmn = store.mas_utils.time2sec(curr_time)
 
+            if self._updated:
+                # if we just updated, then we just need to run global prog
+                # point upon flt change and return new
+                new_flt = self.current()
+                self._updated = False
+                if new_flt != self._prev_flt:
+                    store.mas_background.run_gbl_flt_change(
+                        self._prev_flt,
+                        new_flt,
+                        curr_time
+                    )
+
+                return new_flt
+
             # determine our current position range
-            pos_data = self.current_post()
+            pos_data = self.current_pos()
 
             # are we technically in same chunk but before in time?
             # if so, we need to force a chunk move
@@ -1488,9 +1535,47 @@ init -10 python:
 
             # now we can start advancing slices
             return self._chunks[self._index].progress(
-                sfmn - (self._calc_off(self._index)[0])
+                sfmn - (self._calc_off(self._index)[0]),
                 curr_time
             )
+
+        def update(self, curr_time=None):
+            """
+            Updates the internal indexes.
+            NOTE: this will NOT call any progpoints. Call progress after this
+                to run (some) progpoints if needed
+
+            IN:
+                curr_time - datetime.time object to update internal indexes
+                    to.
+                    If NOne, then we use current.
+                    (Default: None)
+            """
+            if curr_time is None:
+                curr_time = datetime.datetime.now().time()
+
+            # keep track of current filter
+            self._prev_flt = self.current()
+
+            # establish seconds
+            sfmn = store.mas_utils.time2sec(curr_time)
+
+            # establish chunk index
+            boff, eoff = self._calc_off(0)
+            cindex = 0
+            while cindex < len(self._chunks)-1 and (sfmn < boff or eoff <= sfmn):
+                # determine next offsets
+                boff = eoff
+                cindex += 1
+                eoff = boff + len(self._chunks[cindex])
+
+            # we should now be in the correct index probably
+            self._chunks[self._index].reset_index()
+            self._index = cindex
+            self._chunks[cindex].update(sfmn - boff)
+
+            # mark that we used update
+            self._updated = True
 
         def verify(self):
             """
@@ -1832,7 +1917,7 @@ init -10 python:
             self.mas_background.BACKGROUND_MAP[background_id] = self
 
         def __eq__(self, other):
-            if isinstance(other, MASBackground):
+            if isinstance(other, MASFilterableBackground):
                 return self.background_id == other.background_id
             return NotImplemented
 
@@ -1925,7 +2010,7 @@ init -10 python:
 
             RETURNS: Current room image, may be None if this BG is badly built
             """
-            return self.getRoom(self.current())
+            return self.getRoom(self._flt_man.current())
 
         def getDayRoom(self, weather=None):
             """DEPRECATED
@@ -2021,7 +2106,7 @@ init -10 python:
 
             RETURNS: room image for the current weather and time
             """
-            return self.getRoom(self.current(), weather)
+            return self.getRoom(self._flt_man.current(), weather)
 
         def isChangingRoom(self, old_weather, new_weather):
             """
@@ -2033,7 +2118,7 @@ init -10 python:
 
             RETURNS: true if the room would change, False otherwise
             """
-            curr_flt = self.current()
+            curr_flt = self._flt_man.current()
             return (
                 self._get_image(curr_flt, old_weather.precip_type)
                 != self._get_image(curr_flt, new_weather.precip_type)
@@ -2082,6 +2167,8 @@ init -10 python:
         def progress(self):
             """
             Progresses the filter.
+            If update was called before this, then we only run the global
+            filter change progpoint if there was a filter change.
 
             RETURNS: the new filter
             """
@@ -2089,8 +2176,16 @@ init -10 python:
 
         def update(self, curr_time=None):
             """
-            Updates the internal indexes
+            Updates the internal indexes.
+            NOTE: this will NOT call any progpoints. Call progress after this
+                to run (some) progpoints if needed.
+
+            IN:
+                curr_time - datetime.time object to update internal indexes to
+                    if None, then we use current.
+                    (Default: None)
             """
+            self._flt_man.update(curr_time)
 
         def verify(self):
             """
@@ -2132,6 +2227,14 @@ init -20 python in mas_background:
     import store
     BACKGROUND_MAP = {}
     BACKGROUND_RETURN = "Nevermind"
+
+
+    def build():
+        """
+        Builds all background objects using current time settings.
+        """
+        for flt_bg in BACKGROUND_MAP.itervalues():
+            flt_bg.build()
 
 
     def default_MBGFM():
@@ -2280,11 +2383,29 @@ init 800 python:
     mas_setBackground(mas_background_def)
 
 
-
 #START: Programming points
 init -2 python in mas_background:
     import store
     import store.mas_sprites as mspr
+
+
+    def run_gbl_flt_change(old_flt, new_flt, curr_time):
+        """
+        Runs global filter change progpoint, logging for errors
+
+        IN:
+            See _gbl_flt_change
+        """
+        try:
+            _gbl_flt_change(old_flt, new_flt, curr_time)
+        except Error as e:
+            store.mas_utils.writelog(
+                store.MASBackgroundFilterChunk._ERR_PP_STR_G.format(
+                    repr(e),
+                    old_flt, 
+                    new_flt
+                )
+            )
 
 
     def _gbl_flt_change(old_flt, new_flt, curr_time):
@@ -2390,7 +2511,7 @@ init -1 python:
     store.mas_background.loadMBGData()
 
 
-init 1 python in mas_backgrounds:
+init 1 python in mas_background:
 
     # verify all backgrounds
     for flt_bg in BACKGROUND_MAP.itervalues():

@@ -218,6 +218,9 @@ init python:
         """
         if not _windows_hidden:
             prev_disable_animations = persistent._mas_disable_animations
+            prev_sr_time = store.mas_suntime.sunrise
+            prev_ss_time = store.mas_suntime.sunset
+
             renpy.call_in_new_context(
                 "_game_menu",
                 _game_menu_screen=screen_name
@@ -226,6 +229,13 @@ init python:
             # call backs for the game menu
             if prev_disable_animations != persistent._mas_disable_animations:
                 mas_drawSpaceroomMasks(dissolve_masks=False)
+
+            if (
+                    prev_sr_time != store.mas_suntime.sunrise
+                    or prev_ss_time != store.mas_suntime.sunset
+            ):
+                store.mas_backgrounds.build()
+                store.mas_current_background.update()
 
 
     def _mas_hide_windows():

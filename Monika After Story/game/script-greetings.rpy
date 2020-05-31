@@ -131,7 +131,7 @@ init -1 python in mas_greetings:
         #           to enable or disable greetings.
 
         # check if hidden from random select
-        if ev.anyflag(store.EV_FLAG_HFRS):
+        if ev.anyflags(store.EV_FLAG_HFRS):
             return False
 
         # priority check, required
