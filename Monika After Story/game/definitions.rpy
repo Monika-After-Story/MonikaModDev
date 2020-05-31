@@ -3288,6 +3288,7 @@ init -991 python in mas_utils:
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
+    from bisect import bisect
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
@@ -3743,6 +3744,37 @@ init -991 python in mas_utils:
     mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
 
+    def weightedChoice(choice_weight_tuple_list):
+        """
+        Returns a random item based on weighting.
+        NOTE: That weight essentially corresponds to the equivalent of how many times to duplicate the choice
+
+        IN:
+            choice_weight_tuple_list - List of tuples with the form (choice, weighting)
+
+        OUT:
+            random choice value picked using choice weights
+        """
+        #No items? Just return None
+        if not choice_weight_tuple_list:
+            return None
+
+        choices, weights = zip(*choice_weight_tuple_list)
+        total_weight = 0
+        cumulative_weights = list()
+
+        #Now we collect all the weights and geneate a cumulative and total weight amount
+        for weight in weights:
+            total_weight += weight
+            cumulative_weights.append(total_weight)
+
+        #Now bisect the cumulative weight using a random point
+        r_index = bisect(
+            cumulative_weights,
+            renpy.random.random() * total_weight
+        )
+
+        return choices[r_index]
 
 init -100 python in mas_utils:
     # utility functions for other stores.

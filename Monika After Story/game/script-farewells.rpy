@@ -13,7 +13,6 @@
 default persistent.mas_late_farewell = False
 
 init -1 python in mas_farewells:
-    import bisect
     import datetime
     import store
 
@@ -37,34 +36,37 @@ init -1 python in mas_farewells:
         """
         # NOTE: new rules:
         #   eval in this order:
-        #   1. priority (lower or same is True)
-        #   2. type/non-0type
-        #   3. unlocked
-        #   4. aff_range
-        #   5. all rules
-        #   6. conditional
+        #   1. unlocked
+        #   2. not pooled
+        #   3. aff_range unlocked
+        #   4. conditional
+        #   5. priority (lower or same is True)
+        #   6. all rules
         #       NOTE: this is never cleared. Please limit use of this
         #           property as we should aim to use lock/unlock as primary way
         #           to enable or disable greetings.
 
-        # priority check, required
-        # NOTE: all farewells MUST have a priority
-        if store.MASPriorityRule.get_priority(ev) > curr_pri:
+        #Make sure the ev is unlocked
+        if not ev.unlocked:
             return False
 
         #If the event is pooled, then we cannot have this in the selection
         if ev.pool:
             return False
 
-        # unlocked check, required
-        if not ev.unlocked:
-            return False
-
-        # aff range check, required
+        #Verify we're within the aff bounds
         if not ev.checkAffection(aff):
             return False
 
-        # rule checks
+        #Conditional check
+        if ev.conditional is not None and not eval(ev.conditional):
+            return False
+
+        #Priority check
+        if store.MASPriorityRule.get_priority(ev) > curr_pri:
+            return False
+
+        #Since this event checks out in the other areas, finally we'll evaluate the rules
         if not (
             store.MASSelectiveRepeatRule.evaluate_rule(check_time, ev, defval=True)
             and store.MASNumericalRepeatRule.evaluate_rule(check_time, ev, defval=True)
@@ -72,44 +74,8 @@ init -1 python in mas_farewells:
         ):
             return False
 
-        # conditional check
-        if ev.conditional is not None and not eval(ev.conditional):
-            return False
-
         # otherwise, we passed all tests
         return True
-
-    #TODO: Make this work better with probability rule, also generalize this
-    def weightChoice(choice_weight_tuple_list):
-        """
-        Returns a random item based on weighting
-
-        IN:
-            choice_weight_tuple_list - List of tuples with the form (choice, weighting)
-
-        OUT:
-            random choice value picked using choice weights
-        """
-        #No items? Just return None
-        if not choice_weight_tuple_list:
-            return None
-
-        choices, weights = zip(*choice_weight_tuple_list)
-        total_weight = 0
-        cumulative_weights = list()
-
-        #Now we collect all the weights and geneate a cumulative and total weight amount
-        for weight in weights:
-            total_weight += weight
-            cumulative_weights.append(total_weight)
-
-        #Pick a random spot in the total weight
-        x = renpy.random.random() * total_weight
-
-        #Now bisect the cumulative weight using that random point
-        r_index = bisect.bisect(cumulative_weights, x)
-
-        return choices[r_index]
 
     # custom farewell functions
     def selectFarewell(check_time=None):
@@ -158,7 +124,7 @@ init -1 python in mas_farewells:
         if len(fare_pool) == 0:
             return None
 
-        return weightChoice(fare_pool)
+        return store.mas_utils.weightedChoice(fare_pool)
 
 # farewells selection label
 label mas_farewell_start:
@@ -235,13 +201,14 @@ init 5 python:
             eventlabel="bye_leaving_already",
             unlocked=True,
             random=True,
+            conditional="mas_getSessionLength() <= datetime.timedelta(minutes=20)",
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
 
 label bye_leaving_already:
-    m 1tkc "Aw, leaving already?"
+    m 1ekc "Aw, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3eua "Just be sure to come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
@@ -344,7 +311,7 @@ label bye_take_care:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
-    rules.update(MASProbabilityRule.create_rule(80))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -675,7 +642,7 @@ label bye_illseeyou:
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
-    rules.update(MASProbabilityRule.create_rule(80))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -708,7 +675,7 @@ label bye_haveagoodday:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(12,16)))
-    rules.update(MASProbabilityRule.create_rule(80))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -743,7 +710,7 @@ label bye_enjoyyourafternoon:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(17,19)))
-    rules.update(MASProbabilityRule.create_rule(80))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -778,7 +745,7 @@ label bye_goodevening:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
-    rules.update(MASProbabilityRule.create_rule(80))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,

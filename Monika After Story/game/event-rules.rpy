@@ -721,9 +721,9 @@ init -1 python:
 
         Priority rules are just integers that determine the probability of something being selected.
 
-        Probabilities lie between 1 and 100, with a default of 20
+        Probabilities lie between 1 and 10, with a default of 1
         """
-        DEF_PROBABILITY = 20
+        DEF_PROBABILITY = 1
 
         @staticmethod
         def create_rule(probability, ev=None):
@@ -740,8 +740,8 @@ init -1 python:
             if probability is None:
                 probability = MASProbabilityRule.DEF_PROBABILITY
 
-            elif probability > 100:
-                probability = 100
+            elif probability > 10:
+                probability = 10
 
             elif probability < 1:
                 probability = 1
