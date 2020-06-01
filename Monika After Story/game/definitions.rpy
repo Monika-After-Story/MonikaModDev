@@ -3743,7 +3743,6 @@ init -991 python in mas_utils:
     mas_log.raw_write = True
     mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
-
     def weightedChoice(choice_weight_tuple_list):
         """
         Returns a random item based on weighting.
@@ -3759,7 +3758,13 @@ init -991 python in mas_utils:
         if not choice_weight_tuple_list:
             return None
 
+        #Firstly, sort the choice_weight_tuple_list
+        choice_weight_tuple_list.sort(key=lambda x: x[1])
+
+        #Now split our tuples into individual lists for choices and weights
         choices, weights = zip(*choice_weight_tuple_list)
+
+        #Some var setup
         total_weight = 0
         cumulative_weights = list()
 
@@ -3768,12 +3773,14 @@ init -991 python in mas_utils:
             total_weight += weight
             cumulative_weights.append(total_weight)
 
-        #Now bisect the cumulative weight using a random point
+        #NOTE: At first glance this useage of bisect seems incorrect, however it is used to find the closest weight
+        #To the randomly selected weight. This is used to return the appropriate choice.
         r_index = bisect(
             cumulative_weights,
             renpy.random.random() * total_weight
         )
 
+        #And return the weighted choice
         return choices[r_index]
 
 init -100 python in mas_utils:

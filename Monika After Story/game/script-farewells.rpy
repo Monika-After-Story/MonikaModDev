@@ -38,10 +38,10 @@ init -1 python in mas_farewells:
         #   eval in this order:
         #   1. unlocked
         #   2. not pooled
-        #   3. aff_range unlocked
-        #   4. conditional
-        #   5. priority (lower or same is True)
-        #   6. all rules
+        #   3. aff_range
+        #   4. priority (lower or same is True)
+        #   5. all rules
+        #   6. conditional
         #       NOTE: this is never cleared. Please limit use of this
         #           property as we should aim to use lock/unlock as primary way
         #           to enable or disable greetings.
@@ -58,10 +58,6 @@ init -1 python in mas_farewells:
         if not ev.checkAffection(aff):
             return False
 
-        #Conditional check
-        if ev.conditional is not None and not eval(ev.conditional):
-            return False
-
         #Priority check
         if store.MASPriorityRule.get_priority(ev) > curr_pri:
             return False
@@ -72,6 +68,10 @@ init -1 python in mas_farewells:
             and store.MASNumericalRepeatRule.evaluate_rule(check_time, ev, defval=True)
             and store.MASGreetingRule.evaluate_rule(ev, defval=True)
         ):
+            return False
+
+        #Conditional check (Since it's ideally least likely to be used)
+        if ev.conditional is not None and not eval(ev.conditional):
             return False
 
         # otherwise, we passed all tests

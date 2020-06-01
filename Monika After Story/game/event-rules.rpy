@@ -723,6 +723,9 @@ init -1 python:
 
 
         Probabilities lie between 1 and 10, with a default of 1
+
+        This value is designed to be used with mas_utils.weightedChoice, and acts essentially akin to duplicating
+        the choice `probability` times in the list
         """
         DEF_PROBABILITY = 1
 
@@ -733,7 +736,8 @@ init -1 python:
                 probability - the probability to set.
                     If None is passed in, we use the default priority value.
                     NOTE: If it is outside the bounds, it will be formatted to fit the bounds
-                    NOTE: 100 probability does NOT mean a 100% chance of selecting something
+                    NOTE: 10 probability does NOT mean a 100% chance of selecting something
+
                 ev - Event to add this rule to. This will replace existing
                     rules of the same key.
                     (Default: None)
@@ -749,7 +753,7 @@ init -1 python:
 
             if not store.mas_ev_data_ver._verify_int(probability, allow_none=False):
                 raise Exception(
-                    "'{0}' is not a valid in priority".format(probability)
+                    "'{0}' is not a valid in probability".format(probability)
                 )
 
             rule = {EV_RULE_PROBABILITY: probability}
