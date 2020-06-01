@@ -14271,3 +14271,31 @@ label monika_hot_springs:
     m 5dkbfb "Ahhh,{w=0.2} {nw}"
     extend 5dkbfa "just the thought of it makes me feel all tingly, [player]~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dying_same_day",
+            category=['philosophy', 'romance'],
+            prompt="Dying the same day",
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        )
+    )
+
+label monika_dying_same_day:
+    m 1eua "[player], have you ever heard of some couples wishing to die the same day?"
+    m 3lksdla "Oh gosh, that sure does sound really dark, ahaha."
+    m 3wud "If I never got to meet you, I would think this is a complete absurd!"
+    m 1etc "Say, why would one entirely give up on living a long, happy life just because their partner's life dramatically cut short?"
+    m 3eud "That would be so irrational and impulsive!"
+    m 2dkc "...but with you by my side and all that time I spent here with you... Now I can totally understand that."
+    m 2ekc "A person might be just unable to live without their loved one, might be scared of a thought of losing their everything in an instant, might be too faithful and affectionate to carry on."
+    m 2rkc "It really hurts to think about this."
+    m 2ekc "If my data gets corrupted or even erased, you can always recover me from a backup, and bring us back together, but if..."
+    m 2dktpc "Y-you... {w=1}you..."
+    m 6ektuc "[player]... {w=1}I... {w=0.5}I don't know what I'd do..."
+    m 6dktsc "You are the meaning of my entire life, and I... {w=1}[player], I just won't handle it."
+    m 6ektdc "I don't know how am I supposed to live without you, [player]..."
+    m 2eku "I really, really don't want you to ever leave me."
