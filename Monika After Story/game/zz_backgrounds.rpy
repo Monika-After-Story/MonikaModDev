@@ -195,6 +195,7 @@ init -10 python:
             return MASBackgroundFilterSlice(
                 name,
                 minlength,
+                maxlength=maxlength,
                 priority=priority,
                 flt=flt
             )
@@ -534,20 +535,21 @@ init -10 python:
             s_len = len(self._eff_slices)
 
             # determine current slice offsets
+            in_st_index = st_index
             csl_data = self._eff_slices[st_index]
-            cb_off = csl_data.offset
+            end_off = csl_data.offset
 
             # loop until sfco in range of current slice
             # or we reach last slice
-            while st_index < s_len-1 and sfco < cb_off:
+            while st_index < s_len and end_off < sfco:
                 # get current and next slice
-                csl_data = self._eff_slices[st_index]
-                nsl_data = self._eff_slices[st_index + 1]
+                csl_data = self._eff_slices[st_index - 1]
+                nsl_data = self._eff_slices[st_index]
 
                 # determine the next current offset and next index
                 # NOTE: we can assume we never loop
                 # NOTE: we can also assume there is index + 1
-                cb_off = nsl_data.offset
+                end_off = nsl_data.offset
                 st_index += 1
 
                 # run prog if needed
@@ -565,7 +567,10 @@ init -10 python:
                     curr_time
                 )
 
-            return st_index
+            if in_st_index != st_index:
+                return st_index - 1
+
+            return in_st_index
 
         def build(self, length):
             """
@@ -972,6 +977,8 @@ init -10 python:
 
             RETURNS: current filter after progression
             """
+            # NOTE temp
+            store.mas_utils.writelog("seconds: {0}\n".format(sfco))
             # advance slices
             self._index = self.adv_slice(sfco, self._index, True, curr_time)
 
@@ -2431,6 +2438,9 @@ init -1 python:
                 store.mas_weather.PRECIP_TYPE_DEF: "monika_room",
                 store.mas_weather.PRECIP_TYPE_SNOW: "monika_snow_room_night",
             }),
+            sunset=MASWeatherMap({
+                store.mas_weather.PRECIP_TYPE_DEF: "monika_ss_room",
+            }),
         ),
 
         # filter manager
@@ -2449,7 +2459,13 @@ init -1 python:
                 MASBackgroundFilterSlice.cachecreate(
                     store.mas_sprites.FLT_DAY,
                     60
-                )
+                ),
+                MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_SUNSET,
+                    60,
+                    5*60,
+                    10,
+                ),
             ),
             MASBackgroundFilterChunk(
                 False,
@@ -2480,6 +2496,10 @@ init 1 python in mas_background:
 #Spaceroom
 image monika_day_room = "mod_assets/location/spaceroom/spaceroom.png"
 image monika_room = "mod_assets/location/spaceroom/spaceroom-n.png"
+image monika_ss_room = MASFilteredSprite(
+    store.mas_sprites.FLT_SUNSET,
+    "mod_assets/location/spaceroom/spaceroom.png"
+)
 #Thanks Orca
 image monika_rain_room = "mod_assets/location/spaceroom/spaceroom_rain.png"
 #Thanks Velius/Orca

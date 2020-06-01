@@ -4021,7 +4021,7 @@ init -100 python in mas_utils:
 
         RETURNS: number of seconds
         """
-        return (_time.hour * 3600) + (_time.hour * 60) + _time.second
+        return (_time.hour * 3600) + (_time.minute * 60) + _time.second
 
 
     def insert_sort(sort_list, item, key):
