@@ -400,21 +400,22 @@ init 5 python:
 
 label monika_idle_workout:
     if mas_isMoniNormal(higher=True):
-        m "Oh, alright."
+        m 1eua "Oh, alright."
         if persistent._mas_pm_works_out is False:
-            m "Working out is a great way to take care of yourself."
-            m "I know it might be hard to start out, but it's definitely a habit worth forming."
+            m 1eub "Working out is a great way to take care of yourself."
+            m 1eka "I know it might be hard to start out,{w=0.3}"
+            extend 3esa " but it's definitely a habit worth forming."
         else:
-            m "It's good to know you're taking care of your body."
-        m "You know how the saying goes - a healthy mind in a healthy body."
-        m "So go work up a good sweat, [player]~"
-        m "Just let me know when you've had enough."
+            m 1eub "It's good to know you're taking care of your body."
+        m 3eub "You know how the saying goes - a healthy mind in a healthy body."
+        m 3hub "So go work up a good sweat, [player]~"
+        m 1eub "Just let me know when you've had enough."
 
     elif mas_isMoniUpset():
-        m "Good to know you're taking care of{cps=*2} something, at least.{/cps}{nw}"
+        m 2esc "Good to know you're taking care of{cps=*2} something, at least.{/cps}{nw}"
         $ _history_list.pop()
-        m "Good to know you're taking care of{fast} yourself, [player]."
-        m "I'll be waiting for you to get back."
+        m 2esc "Good to know you're taking care of{fast} yourself, [player]."
+        m 2euc "I'll be waiting for you to get back."
 
     elif mas_isMoniDis():
         m 6ekc "Alright."
@@ -435,36 +436,38 @@ label monika_idle_workout_callback:
                 The two ways of doing this that come to mind are putting a persistent counter here,
                 or making a separate label for this and using shown_count.
                 Both seem kinda awkward."""
-            m "You sure took your time, [player]. Must've been one hell of a workout."
-            m "It's good to push your limits, but you shouldn't overdo it."
+            m 2esa "You sure took your time, [player].{w=0.3}"
+            extend 2eub " Must've been one hell of a workout."
+            m 2eka "It's good to push your limits, but you shouldn't overdo it."
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_workout"):
-            m "Done with your workout, [player]?"
+            m 1esa "Done with your workout, [player]?"
 
         else:
-            m "Back already, [player]? I'm sure you can go on for a bit longer if you try."
-            m "Taking breaks is fine, but you shouldn't leave your workouts unfinished."
-            m "Are you sure you can't keep going?{nw}"
+            m 1euc "Back already, [player]?{w=0.3}"
+            extend 1eka " I'm sure you can go on for a bit longer if you try."
+            m 3eka "Taking breaks is fine, but you shouldn't leave your workouts unfinished."
+            m 3ekb "Are you sure you can't keep going?{nw}"
             $ _history_list.pop()
             menu:
                 m "Are you sure you can't keep going?{fast}"
 
                 "Yes":
-                    m "Oh, okay."
-                    m "I'm sure you did your best, [player]~"
+                    m 1eka "That's okay."
+                    m 1hua "I'm sure you did your best, [player]~"
 
                 "No":
                     # continue workout and return Monika to idle state
-                    m "That's the spirit!"
+                    m 1eub "That's the spirit!"
 
                     $ mas_idle_mailbox.send_idle_cb("monika_idle_workout_callback")
                     return "idle"
 
-        m "Make sure to rest properly, and maybe get a snack to keep your energy up."
+        m 1eua "Make sure to rest properly, and maybe get a snack to get some energy back."
         m 3eub "[wb_quip]"
 
     elif mas_isMoniUpset():
-        m "Done with your workout, [player]?"
+        m 2euc "Done with your workout, [player]?"
 
     elif mas_isMoniDis():
         m 6ekc "Oh, you came back."
