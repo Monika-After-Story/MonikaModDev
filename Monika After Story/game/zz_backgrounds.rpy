@@ -535,22 +535,21 @@ init -10 python:
             s_len = len(self._eff_slices)
 
             # determine current slice offsets
-            in_st_index = st_index
             csl_data = self._eff_slices[st_index]
             end_off = csl_data.offset
 
             # loop until sfco in range of current slice
             # or we reach last slice
-            while st_index < s_len and end_off < sfco:
+            while st_index < s_len-1 and end_off < sfco:
+                st_index += 1
+
                 # get current and next slice
-                csl_data = self._eff_slices[st_index - 1]
                 nsl_data = self._eff_slices[st_index]
 
                 # determine the next current offset and next index
                 # NOTE: we can assume we never loop
                 # NOTE: we can also assume there is index + 1
                 end_off = nsl_data.offset
-                st_index += 1
 
                 # run prog if needed
                 if run_pp:
@@ -567,10 +566,9 @@ init -10 python:
                     curr_time
                 )
 
-            if in_st_index != st_index:
-                return st_index - 1
+                csl_data = nsl_data
 
-            return in_st_index
+            return st_index
 
         def build(self, length):
             """
@@ -997,9 +995,9 @@ init -10 python:
 
             # determine current slice offsets
             sidx = 0
-            boff = self._eff_slices[sidx].offset
+            boff = 0
 
-            while sidx < s_len-1 and ct_off < boff:
+            while sidx < s_len-1 and boff < ct_off:
                 # deteremine next current offset and next index
                 sidx += 1
                 boff = self._eff_slices[sidx].offset
