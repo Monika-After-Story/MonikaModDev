@@ -198,17 +198,49 @@ init python:
         if store.mas_hotkeys.bookmark_enabled and not _windows_hidden:
             mas_bookmark_topic()
 
+
+    def _mas_game_menu_start(scope):
+        """
+        Runs code prior to opening the game menu in any way.
+
+        OUT:
+            scope - use this dict as temp space
+        """
+        scope["disb_ani"] = persistent._mas_disable_animations
+        scope["sr_time"] = store.mas_suntime.sunrise
+        scope["ss_time"] = store.mas_suntime.sunset
+
+
+    def _mas_game_menu_end(scope):
+        """
+        Runs code after exiting the game menu in any way.
+
+        IN:
+            scope - temp space used in `_mas_game_menu_start`
+        """
+        # call backs for the game menu
+        if scope.get("disb_ani") != persistent._mas_disable_animations:
+            mas_drawSpaceroomMasks(dissolve_masks=False)
+
+        if (
+                scope.get("sr_time") != store.mas_suntime.sunrise
+                or scope.get("ss_time") != store.mas_suntime.sunset
+        ):
+            store.mas_background.build()
+            store.mas_current_background.update()
+
+
     def _mas_game_menu():
         """
         Wrapper aound _invoke_game_menu that follows additional ui rules
         """
         if not _windows_hidden:
-            prev_disable_animations = persistent._mas_disable_animations
+            temp_space = {}
+            _mas_game_menu_start(temp_space)
+
             _invoke_game_menu()
 
-            # call backs for the game menu
-            if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks(dissolve_masks=False)
+            _mas_game_menu_end(temp_space)
 
 
     def _mas_quick_menu_cb(screen_name):
@@ -217,25 +249,15 @@ init python:
         NOTE: no checks are done here, please do not fuck this.
         """
         if not _windows_hidden:
-            prev_disable_animations = persistent._mas_disable_animations
-            prev_sr_time = store.mas_suntime.sunrise
-            prev_ss_time = store.mas_suntime.sunset
+            temp_space = {}
+            _mas_game_menu_start(temp_space)
 
             renpy.call_in_new_context(
                 "_game_menu",
                 _game_menu_screen=screen_name
             )
 
-            # call backs for the game menu
-            if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks(dissolve_masks=False)
-
-            if (
-                    prev_sr_time != store.mas_suntime.sunrise
-                    or prev_ss_time != store.mas_suntime.sunset
-            ):
-                store.mas_backgrounds.build()
-                store.mas_current_background.update()
+            _mas_game_menu_end(temp_space)
 
 
     def _mas_hide_windows():

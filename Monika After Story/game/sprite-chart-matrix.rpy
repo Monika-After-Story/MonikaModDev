@@ -344,15 +344,19 @@ init -99 python in mas_sprites:
     # TODO: consider making the filter dict use Curryables so custom filters
     #   can use non-Matrixcolor-based logic
     #   import renpy.curry.Curry # but do we really need this?
+    # TODO: please add some sort of filter fallback system, aka use this flt
+    #   if an image or object does not have an appropraite flt. 
 
     # filter enums
     FLT_DAY = "day"
     FLT_NIGHT = "night"
+    FLT_SUNSET = "sunset" # TODO: implement
 
     # filter dict
     FILTERS = {
         FLT_DAY: store.im.matrix.identity(),
         FLT_NIGHT: store.im.matrix.tint(0.59, 0.49, 0.55),
+        FLT_SUNSET: store.im.matrix.tint(0.93, 0.82, 0.78),
     }
 
     # should be false until init -1

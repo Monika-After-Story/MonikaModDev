@@ -426,6 +426,11 @@ init -20 python in mas_weather:
 init -10 python:
 
     # weather class
+    # TODO: need to establish filtering for weathers
+    # TODO: need to decouple islands out of here. Islands should be
+    #   using the FilterWeatherMap. Well actually it should be like a special
+    #   type of image because it needs to be decoded. Probably using some 
+    #   sort of dyndisp similar to ConditionSwitch but not quite.
     class MASWeather(object):
         """
         Weather class to determine some props for weather
@@ -709,6 +714,74 @@ init -10 python:
             RETURNS: MASHighlightMap object
             """
             return self.__mhm
+
+
+    class MASFilterWeatherMap(object):
+        """
+        Extension of MASFilterMap.
+
+        Use this to map weather maps to filters.
+
+        NOTE: actual implementation is by wrapping around MASFilterMap.
+
+        NOTE: this does NOT verify filters.
+
+        PROPERTIES:
+            None
+        """
+
+        def __init__(self, **filter_pairs):
+            """
+            Constructor
+
+            Will throw exceptions if not given MASWeatherMap objects
+
+            IN:
+                **filter_pairs - filter=val args to use. Invalid filters are
+                    ignored. Values should be MASWeatherMap objects.
+            """
+            # validate MASWeatherMap objects
+            for wmap in filter_pairs.itervalues():
+                if not isinstance(wmap, MASWeatherMap):
+                    raise TypeError(
+                        "Expected MASWeatherMap object, not {0}".format(
+                            type(wmap)
+                        )
+                    )
+
+            self.__mfm = MASFilterMap(
+                default=None,
+                cache=False,
+                **filter_pairs
+            )
+
+        def flts(self):
+            """
+            Gets all filter names in this filter map
+
+            RETURNS: list of all filter names in this map
+            """
+            return self.__mfm.map.keys()
+
+        def get(self, flt):
+            """
+            Gets value from map based on filter
+
+            IN:
+                flt - filter to lookup
+
+            RETURNS: value for the given filter
+            """
+            return self.__mfm.get(flt)
+
+        def _mfm(self):
+            """
+            Returns the intenral MASFilterMap. Only use if you know what you
+            are doing.
+
+            RETURNS: MASFilterMap
+            """
+            return self.__mfm
 
 
 ### define weather objects here

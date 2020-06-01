@@ -1600,74 +1600,6 @@ init -10 python:
             self._ss_mn.verify()
 
 
-    class MASBackgroundFilterMap(object):
-        """
-        Extension of MASFilterMap.
-
-        Use this to map weather maps to filters.
-
-        NOTE: actual implementation is by wrapping around MASFilterMap.
-
-        NOTE: this is verified after init level -1
-
-        PROPERTIES:
-            None
-        """
-
-        def __init__(self, **filter_pairs):
-            """
-            Constructor
-
-            Will throw exceptions if not given MASWeatherMap objects
-
-            IN:
-                **filter_pairs - filter=val args to use. Invalid filters are
-                    ignored. Values should be MASWeatherMap objects.
-            """
-            # validate MASWeatherMap objects
-            for wmap in filter_pairs.itervalues():
-                if not isinstance(wmap, MASWeatherMap):
-                    raise TypeError(
-                        "Expected MASWeatherMap object, not {0}".format(
-                            type(wmap)
-                        )
-                    )
-
-            self.__mfm = MASFilterMap(
-                default=None,
-                cache=False,
-                **filter_pairs
-            )
-
-        def flts(self):
-            """
-            Gets all filter names in this filter map
-
-            RETURNS: list of all filter names in this map
-            """
-            return self.__mfm.map.keys()
-
-        def get(self, flt):
-            """
-            Gets value from map based on filter
-
-            IN:
-                flt - filter to lookup
-
-            RETURNS: value for the given filter
-            """
-            return self.__mfm.get(flt)
-
-        def _mfm(self):
-            """
-            Returns the intenral MASFilterMap. Only use if you know what you
-            are doing.
-
-            RETURNS: MASFilterMap
-            """
-            return self.__mfm
-
-
     def MASBackground(
             background_id,
             prompt,
@@ -1777,7 +1709,7 @@ init -10 python:
         return MASFilterableBackground(
             background_id,
             prompt,
-            MASBackgroundFilterMap(**img_map_data),
+            MASFilterWeatherMap(**img_map_data),
             store.mas_background.default_MBGFM(),
             hide_calendar=hide_calendar,
             hide_masks=hide_masks,
@@ -1795,7 +1727,7 @@ init -10 python:
         PROPERTIES:
             background_id - the id which defines this bg
             prompt - button label for the bg
-            image_map - MASBackgroundFilterMap object containing mappings of
+            image_map - MASFilterWeatherMap object containing mappings of
                 filter + weather to images
             hide_calendar - whether or not we display the calendar with this
             hide_masks - whether or not we display the window masks
@@ -1831,7 +1763,7 @@ init -10 python:
                     button label for this bg
 
                 image_map:
-                    MASBackgroundFilterMap of bg images to use.
+                    MASFilterWeatherMap of bg images to use.
                     Use image tags for MASWeatherMap values.
 
                 filter_man:
@@ -1867,9 +1799,9 @@ init -10 python:
             # sanity checks
             if background_id in self.mas_background.BACKGROUND_MAP:
                 raise Exception("duplicate background ID")
-            if not isinstance(image_map, MASBackgroundFilterMap):
+            if not isinstance(image_map, MASFilterWeatherMap):
                 raise TypeError(
-                    "Expected MASBackgroundFilterMap, got {0}".format(
+                    "Expected MASFilterWeatherMap, got {0}".format(
                         type(image_map)
                     )
                 )
@@ -2482,29 +2414,56 @@ init -2 python in mas_background:
 #START: bg defs
 init -1 python:
     #Default spaceroom
-    mas_background_def = MASBackground(
-        #Identification
+    mas_background_def = MASFilterableBackground(
+        # ID
         "spaceroom",
         "Spaceroom",
 
-        #Day/Night
-        "monika_day_room",
-        "monika_room",
+        # mapping of filters to MASWeatherMaps
+        MASFilterWeatherMap(
+            day=MASWeatherMap({
+                store.mas_weather.PRECIP_TYPE_DEF: "monika_day_room",
+                store.mas_weather.PRECIP_TYPE_RAIN: "monika_rain_room",
+                store.mas_weather.PRECIP_TYPE_OVERCAST: "monika_rain_room",
+                store.mas_weather.PRECIP_TYPE_SNOW: "monika_snow_room_day",
+            }),
+            night=MASWeatherMap({
+                store.mas_weather.PRECIP_TYPE_DEF: "monika_room",
+                store.mas_weather.PRECIP_TYPE_SNOW: "monika_snow_room_night",
+            }),
+        ),
 
-        #Rain Day/Night
-        image_rain_day="monika_rain_room",
+        # filter manager
+        MASBackgroundFilterManager(
+            MASBackgroundFilterChunk(
+                False,
+                None,
+                MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_NIGHT,
+                    60
+                )
+            ),
+            MASBackgroundFilterChunk(
+                True,
+                None,
+                MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_DAY,
+                    60
+                )
+            ),
+            MASBackgroundFilterChunk(
+                False,
+                None,
+                MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_NIGHT,
+                    60
+                )
+            )
+        ),
 
-        image_overcast_day="monika_rain_room",
-
-        image_snow_day="monika_snow_room_day",
-        image_snow_night="monika_snow_room_night",
-
-        #Def room should always be unlocked
         unlocked=True,
-
-        #Programming points for the spaceroom
         entry_pp=store.mas_background._def_background_entry,
-        exit_pp=store.mas_background._def_background_exit
+        exit_pp=store.mas_background._def_background_exit,
     )
 
     #Now load data
