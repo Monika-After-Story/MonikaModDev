@@ -431,11 +431,14 @@ label monika_idle_workout_callback:
     if mas_isMoniNormal(higher=True):
         $ wb_quip = mas_brbs.get_wb_quip()
         if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=60), "monika_idle_workout"):
-            """ In the future I'm planning on writing another topic which would
-                unlock once the player has seen this specific path some number of times.
-                The two ways of doing this that come to mind are putting a persistent counter here,
-                or making a separate label for this and using shown_count.
-                Both seem kinda awkward."""
+            """
+            In the future I'm planning on writing another topic which would
+            unlock once the player has seen this specific path some number of times.
+            The two ways of doing this that come to mind are putting a persistent counter here,
+            or making a separate label for this and using shown_count.
+            Both seem kinda awkward.
+            """
+
             m 2esa "You sure took your time, [player].{w=0.3}"
             extend 2eub " Must've been one hell of a workout."
             m 2eka "It's good to push your limits, but you shouldn't overdo it."
