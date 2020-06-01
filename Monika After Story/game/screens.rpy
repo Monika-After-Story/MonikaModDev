@@ -2389,24 +2389,20 @@ style scrollable_menu_vbox is vbox:
     spacing 5
 
 style scrollable_menu_button is choice_button:
-    selected_background Frame("mod_assets/buttons/generic/insensitive_bg.png", Borders(5, 5, 5, 5), tile=False)
+    selected_background Frame("mod_assets/buttons/generic/selected_bg.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_dark is choice_button_dark:
-    selected_background Frame("mod_assets/buttons/generic/insensitive_bg_d.png", Borders(5, 5, 5, 5), tile=False)
+    selected_background Frame("mod_assets/buttons/generic/selected_bg_d.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_text is choice_button_text:
-    selected_hover_color mas_ui.light_button_text_hover_color
-    selected_idle_color mas_ui.light_button_text_insensitive_color
     text_align 0.0
     align (0.0, 0.0)
 
 style scrollable_menu_button_text_dark is choice_button_text_dark:
-    selected_hover_color mas_ui.dark_button_text_hover_color
-    selected_idle_color mas_ui.dark_button_text_insensitive_color
     text_align 0.0
     align (0.0, 0.0)
 
@@ -2705,7 +2701,7 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
             vbox:
                 for button_prompt, button_key, start_selected, true_value, false_value in items:
                     textbutton button_prompt:
-                        selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["false_value"]
+                        selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
                         xsize display_area[2]
                         action ToggleDict(buttons_data[button_key], "return_value", true_value, false_value)
 
