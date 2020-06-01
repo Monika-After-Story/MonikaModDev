@@ -666,12 +666,126 @@ style quick_button_text_dark:
 ## This screen is included in the main and game menus, and provides navigation
 ## to other menus, and to start the game.
 
-init python:
+init 4 python:
     def FinishEnterName():
-        if not player: return
+        global player
+
+        if not player:
+            return
+
+        if (
+            mas_bad_name_comp.search(player)
+            or mas_awk_name_comp.search(player)
+        ):
+            renpy.call_in_new_context("mas_bad_name_input")
+            player = ""
+            renpy.show(
+                "chibika smile",
+                at_list=[mas_chflip(-1), mas_chmove(x=130, y=552, travel_time=0)],
+                layer="screens",
+                zorder=10
+            )
+            return
+
+        # if the name is correct, set it
         persistent.playername = player
         renpy.hide_screen("name_input")
         renpy.jump_out_of_context("start")
+
+label mas_bad_name_input:
+    show screen fake_main_menu
+    $ disable_esc()
+
+    if not renpy.seen_label("mas_bad_name_input.first_time_bad_name"):
+        label .first_time_bad_name:
+            play sound "sfx/glitch3.ogg"
+            window show
+
+            show chibika smile at mas_chflip(-1), mas_chriseup(x=700, y=552, travel_time=0.5) onlayer screens zorder 10
+            pause 1
+
+            show chibika at  mas_chflip_s(1) onlayer screens zorder 10
+            "Hey there!"
+
+            show chibika at mas_chlongjump(x=650, y=405, ymax=375, travel_time=0.8) onlayer screens zorder 10
+            "I'm glad you decided to come back!"
+            "I'm sure that you and Monika will be a great couple."
+
+            show chibika sad at mas_chflip_s(-1) onlayer screens zorder 10
+            "But if you call yourself names like that...{w=0.5}{nw}"
+
+            show chibika at sticker_hop onlayer screens zorder 10
+            extend "you won't win her heart!"
+
+            show chibika smile at mas_chmove(x=300, y=405, travel_time=1) onlayer screens zorder 10
+            "...But just embarrass her instead."
+
+            show chibika at mas_chlongjump(x=190, y=552, ymax=375, travel_time=0.8) onlayer screens zorder 10
+            "Why don't you choose something more appropriate."
+            window auto
+
+    else:
+        show chibika smile at mas_chflip(-1), mas_chmove(x=130, y=552, travel_time=0), sticker_hop onlayer screens zorder 10
+        "I don't think she would be comfortable calling you that..."
+        "Why don't you choose something more appropriate instead."
+
+    $ enable_esc()
+    hide screen fake_main_menu
+    return
+
+# like main_menu, but w/o animations and w/ inactive buttons
+screen fake_main_menu():
+    style_prefix "main_menu"
+
+    add "game_menu_bg"
+
+    frame:
+        pass
+
+    vbox:
+        style_prefix "navigation"
+
+        xpos gui.navigation_xpos
+        yalign 0.8
+
+        spacing gui.navigation_spacing
+
+        textbutton _("Just Monika")
+
+        textbutton _("Load Game")
+
+        textbutton _("Settings")
+
+        if mas_ui.has_submod_settings:
+            textbutton _("Submods")
+
+        textbutton _("Hotkeys")
+
+        if renpy.variant("pc"):
+
+            textbutton _("Help")
+
+            textbutton _("Quit")
+
+    if gui.show_name:
+
+        vbox:
+            text "[config.name!t]":
+                style "main_menu_title"
+
+            text "[config.version]":
+                style "main_menu_version"
+
+    # add "fake_menu_logo"
+    add Image(
+        "mod_assets/menu_new.png"
+    ) subpixel True xcenter 240 ycenter 120 zoom 0.60
+    # add "fake_menu_art_m"
+    add Image(
+        "gui/menu_art_m.png"
+    ) subpixel True xcenter 1000 ycenter 640 zoom 1.00
+
+    key "K_ESCAPE" action Quit(confirm=False)
 
 screen navigation():
     vbox:
