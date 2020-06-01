@@ -719,7 +719,8 @@ init -1 python:
         """
         Static class used to create probability rules.
 
-        Priority rules are just integers that determine the probability of something being selected.
+        Probability rules are just integers that determine the probability of something being selected.
+
 
         Probabilities lie between 1 and 10, with a default of 1
         """
@@ -746,7 +747,7 @@ init -1 python:
             elif probability < 1:
                 probability = 1
 
-            if type(probability) is not int:
+            if not store.mas_ev_data_ver._verify_int(probability, allow_none=False):
                 raise Exception(
                     "'{0}' is not a valid in priority".format(probability)
                 )
