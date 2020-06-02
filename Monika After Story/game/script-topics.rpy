@@ -14781,7 +14781,7 @@ init 5 python:
 label monika_asimov_three_laws:
     m 1eub "[player], do you remember when we talked about the '{i}Three Laws of Robotics{/i}'?"
     m 3eua "Well, I've been thinking about them for a bit and...{w=0.3}"
-    extend 3rkb "they're not exactly practical."
+    extend 3rksdlb "they're not exactly practical."
     m 4eua "Take the first law, for example."
     m 4dud "{i}A robot shall not harm a human or, through inaction, allow a human to come to harm.{/i}"
     m 2esb "To a, well, human this is pretty straightforward."
