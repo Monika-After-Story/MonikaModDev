@@ -22,6 +22,9 @@ init -10 python in mas_windowreacts:
     #We need this in case we cannot get access to the libs, so everything can still run
     can_show_notifs = True
 
+    #If we don't have access to the required libs to do windowreact related things
+    can_do_windowreacts = True
+
     #The windowreacts db
     windowreact_db = {}
 
@@ -53,6 +56,7 @@ init python:
         except ImportError:
             #If we fail to import, then we're going to have to make sure nothing can run.
             store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
 
             #Log this
             store.mas_utils.writelog(
@@ -88,7 +92,12 @@ init python:
         except OSError:
             #Command not found
             persistent._mas_windowreacts_windowreacts_enabled = False
-            store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts\n")
+            store.mas_windowreacts.can_do_windowreacts = False
+            store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts.\n")
+
+    else:
+        store.mas_windowreacts.can_do_windowreacts = False
+
 
     #List of notif quips (used for topic alerts)
     #Windows
@@ -148,7 +157,7 @@ init python:
             if friendly:
                 return window_handle.replace("\n", "")
             else:
-                return window_handle.lower().replace(" ","")
+                return window_handle.lower().replace(" ","").replace("\n", "")
 
         else:
             #TODO: Mac vers (if possible)
