@@ -2080,7 +2080,7 @@ label mas_notification_windowreact:
 
         $ dlg_line = "And"
         #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
-        if not store.mas_windowreacts.can_do_windowreacts
+        if not store.mas_windowreacts.can_do_windowreacts:
             m 3rksdla "And maybe if you install that, you could install the xdotool command too..."
             m 3eua "That would allow me to see your active window!"
             $ dlg_line = "Of course, you don't have to install the second one, but"
