@@ -71,15 +71,24 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
+        import subprocess
         try:
-            import subprocess
             subprocess.call(['notify-send', '--version'])
+
         except OSError as e:
             #Command wasn't found
             store.mas_windowreacts.can_show_notifs = False
             store.mas_utils.writelog(
                 "[WARNING]: notify-send not found, disabling notifications.\n"
             )
+
+        try:
+            subprocess.call(["xdotool", "--version"])
+
+        except OSError:
+            #Command not found
+            persistent._mas_windowreacts_windowreacts_enabled = False
+            store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts\n")
 
     #List of notif quips (used for topic alerts)
     #Windows
@@ -118,16 +127,29 @@ init python:
             friendly: whether or not the active window name is returned in a state usable by the user
         """
         if (
-                renpy.windows
-                and mas_windowreacts.can_show_notifs
-                and mas_canCheckActiveWindow()
-            ):
+            renpy.windows
+            and mas_windowreacts.can_show_notifs
+            and mas_canCheckActiveWindow()
+        ):
             from win32gui import GetWindowText, GetForegroundWindow
 
-            if not friendly:
-                return GetWindowText(GetForegroundWindow()).lower().replace(" ","")
+            window_handle = GetWindowText(GetForegroundWindow())
+            if friendly:
+                return window_handle
             else:
-                return GetWindowText(GetForegroundWindow())
+                return window_handle.lower().replace(" ","")
+
+        elif (
+            renpy.linux
+            and mas_windowreacts.can_show_notifs
+            and mas_canCheckActiveWindow()
+        ):
+            window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
+            if friendly:
+                return window_handle.replace("\n", "")
+            else:
+                return window_handle.lower().replace(" ","")
+
         else:
             #TODO: Mac vers (if possible)
             #NOTE: We return "" so this doesn't rule out notifications
@@ -183,10 +205,10 @@ init python:
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
-                    (mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules) and ev.unlocked and ev.checkAffection(mas_curr_affection))
-                    and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
-                    and ("notif-group" not in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
-                ):
+                (mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules) and ev.unlocked and ev.checkAffection(mas_curr_affection))
+                and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
+                and ("notif-group" not in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
+            ):
                 #If we have a conditional, eval it and queue if true
                 if ev.conditional and eval(ev.conditional):
                     queueEvent(ev_label)
@@ -253,10 +275,10 @@ init python:
             ev_label: eventlabel of the wrs
         """
         if (
-                ev_label
-                and renpy.has_label(ev_label)
-                and ev_label not in persistent._mas_windowreacts_no_unlock_list
-            ):
+            ev_label
+            and renpy.has_label(ev_label)
+            and ev_label not in persistent._mas_windowreacts_no_unlock_list
+        ):
             mas_unlockEVL(ev_label,"WRS")
 
     def mas_tryShowNotificationOSX(title, body):
