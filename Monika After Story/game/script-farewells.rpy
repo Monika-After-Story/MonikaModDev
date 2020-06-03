@@ -311,7 +311,7 @@ label bye_take_care:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
-    rules.update(MASProbabilityRule.create_rule(6))
+    rules.update(MASPriorityRule.create_rule(50))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -745,7 +745,7 @@ label bye_goodevening:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
-    rules.update(MASProbabilityRule.create_rule(6))
+    rules.update(MASPriorityRule.create_rule(50))
     addEvent(
         Event(
             persistent.farewell_database,
