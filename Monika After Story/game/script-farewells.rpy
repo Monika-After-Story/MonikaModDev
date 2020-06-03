@@ -317,15 +317,26 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_going_to_sleep",
             unlocked=True,
-            rules = rules
+            rules=rules
         ),
         code="BYE"
     )
     del rules
 
 label bye_going_to_sleep:
+    #TODO: TC-O things
     if mas_isMoniNormal(higher=True):
-        m 1esa "Are you going to sleep, [player]?"
+        m 1esa "Are you going to sleep, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Are you going to sleep, [player]?{fast}"
+
+            "Yeah.":
+                m 1eka "I'll be seeing you in your dreams."
+
+            "Not yet.":
+                m 1eka "Okay. {w=0.3}Have a good evening~"
+
         m 1eka "I'll be seeing you in your dreams."
 
     elif mas_isMoniUpset():
@@ -751,18 +762,30 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_goodnight",
             unlocked=True,
-            rules = rules
+            rules=rules
         ),
         code="BYE"
     )
     del rules
 
 label bye_goodnight:
+    #TODO: Dlg flow for TC-O things
     if mas_isMoniNormal(higher=True):
-        m 1eua "Goodnight, [player]."
-        m 1eka "I'll see you tomorrow, okay?"
-        m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
-        m 1ekbfa "I love you~"
+        m 3eka "Going to sleep?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Going to sleep?{fast}"
+
+            "Yeah.":
+                m 1eua "Goodnight, [player]."
+                m 1eka "I'll see you tomorrow, okay?"
+                m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
+                m 1ekbfa "I love you~"
+
+            "Not yet.":
+                m 1eka "Okay, [player]..."
+                m 3hub "Enjoy your evening!"
+                m 3rksdlb "Try not to stay up too late, ehehe~"
 
     elif mas_isMoniUpset():
         m 2esc "Goodnight."
