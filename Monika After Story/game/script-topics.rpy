@@ -14790,21 +14790,21 @@ label monika_asimov_three_laws:
     extend 1esc " how do you define a human?"
 
     if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
-        m 3esb "I think we can both agree that you're a human, I'm a human, and that the adorable green friend I have sitting on my desk isn't."
+        m 3esb "I think we can both assume that I'm a human, you're a human, and that the adorable green friend I have sitting on my desk isn't."
     else:
-        m 3esb "I think we can both agree that you're a human, I'm a human, and that the monitor on your desk isn't."
+        m 3esb "I think we can both assume that I'm a human, you're a human, and that the monitor on your desk isn't."
 
     m 3esc "The problems come when we move to the fringe cases."
     m 4esc "For example, do dead people count as human?"
     m 1ruc "If you say no, the robot could ignore someone who's just had a heart attack."
     m 1eud "People like that can still be brought back, but your robot won't help them because they're technically dead."
     m 3esd "If, on the other hand, you say yes, your robot might start digging up graves to 'help' people who've been dead for years."
-    m 1esd "And the list goes on. Do cryogenically preserved people count as human? Do people in vegetative state count? What about people who haven't been born yet?"
+    m 1esd "And the list goes on.{w=0.3} Do cryogenically preserved people count as human?{w=0.3} Do people in vegetative state count?{w=0.3} What about people who haven't been born yet?"
     m 1tkc "And that's not even getting started on the definition of 'harm'."
-    m 3eud "The point is - in order to implement Asimov's laws you'd need to take some solid stance on pretty much all of ethics."
+    m 3eud "The point is -{w=0.1} in order to implement Asimov's laws you'd need to take some solid stance on pretty much all of ethics."
     m 2rsc "..."
-    m 1eub "I suppose it makes sense when you think about it."
-    m 1eua "The laws were never meant to be actually implemented, they're just plot devices."
+    m 1eua "I suppose it makes sense when you think about it."
+    m 1eub "The laws were never meant to be actually implemented, they're just plot devices."
     m 3eua "A good amount of Asimov's stories show just how badly things could turn out if they were applied."
     m 3hksdlb "So I guess they aren't really something we need to worry about. Ahaha~"
     return
