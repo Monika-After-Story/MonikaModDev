@@ -211,7 +211,7 @@ label bye_leaving_already:
     m 1ekc "Aw, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3eua "Just be sure to come back as soon as you can, okay?"
-    m "I love you so much, [player]. Stay safe!"
+    m 3hua "I love you so much, [player]. Stay safe!"
     return 'quit'
 
 init 5 python:

@@ -722,7 +722,7 @@ init -1 python:
         Probability rules are just integers that determine the probability of something being selected.
 
 
-        Probabilities lie between 1 and 10, with a default of 1
+        Probabilities must be greater than 1
 
         This value is designed to be used with mas_utils.weightedChoice, and acts essentially akin to duplicating
         the choice `probability` times in the list
@@ -734,9 +734,8 @@ init -1 python:
             """
             IN:
                 probability - the probability to set.
-                    If None is passed in, we use the default priority value.
-                    NOTE: If it is outside the bounds, it will be formatted to fit the bounds
-                    NOTE: 10 probability does NOT mean a 100% chance of selecting something
+                    If None is passed in, we use the default probability value.
+                    NOTE: If it is below 1 probability, is is set to 1
 
                 ev - Event to add this rule to. This will replace existing
                     rules of the same key.
@@ -744,9 +743,6 @@ init -1 python:
             """
             if probability is None:
                 probability = MASProbabilityRule.DEF_PROBABILITY
-
-            elif probability > 10:
-                probability = 10
 
             elif probability < 1:
                 probability = 1
