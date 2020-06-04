@@ -337,8 +337,6 @@ label bye_going_to_sleep:
             "Not yet.":
                 m 1eka "Okay. {w=0.3}Have a good evening~"
 
-        m 1eka "I'll be seeing you in your dreams."
-
     elif mas_isMoniUpset():
         m 2esc "Going to sleep, [player]?"
         m "Goodnight."
