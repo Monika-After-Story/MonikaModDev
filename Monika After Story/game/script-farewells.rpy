@@ -71,7 +71,7 @@ init -1 python in mas_farewells:
             return False
 
         #Conditional check (Since it's ideally least likely to be used)
-        if ev.conditional is not None and not eval(ev.conditional):
+        if ev.conditional is not None and not store.eval(ev, store.__dict__):
             return False
 
         # otherwise, we passed all tests
@@ -104,10 +104,10 @@ init -1 python in mas_farewells:
         # now filter
         for ev_label, ev in fare_db.iteritems():
             if _filterFarewell(
-                    ev,
-                    curr_priority,
-                    aff,
-                    check_time
+                ev,
+                curr_priority,
+                aff,
+                check_time
             ):
                 # change priority levels and stuff if needed
                 ev_priority = store.MASPriorityRule.get_priority(ev)
