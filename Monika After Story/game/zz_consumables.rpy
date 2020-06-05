@@ -1571,6 +1571,10 @@ label mas_consumables_generic_running_out(consumable):
     else:
         m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name][plur]."
 
+    if not renpy.seen_label("mas_consumables_generic_running_out(consumable)"):
+        m 3esb "I could just duplicate the stock I have now, and I already tried that but...{w=0.1}"
+        extend 1rksdlb "I must be missing something, because I just can't replicate the taste."
+
     m 1eka "You wouldn't mind getting some more for me, would you?"
     return
 
