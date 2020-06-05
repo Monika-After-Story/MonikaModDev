@@ -30,13 +30,38 @@ init python in mas_songs:
     import store
     def checkRandSongDelegate():
         """
-        Checks if we have random songs available, and if so unlocks the random delegate if locked
+        Handles locking/unlocking of the random song delegate
+
+        Ensures that songs cannot be repeated (derandoms the delegate) if the repeat topics flag is disabled and there's no unseen songs
+        And that songs can be repeated if the flag is enabled (re-randoms the delegate)
         """
         #Get ev
         rand_delegate_ev = store.mas_getEV("monika_sing_song_random")
 
-        if rand_delegate_ev and not rand_delegate_ev.random and hasRandomSongs():
-            rand_delegate_ev.random = True
+        if rand_delegate_ev:
+            #If the delegate is random, let's verify whether or not it should still be random
+            #Rules for this are:
+            #1. If repeat topics is disabled and we have no unseen random songs
+            #2. OR we just have no random songs in general
+            if (
+                rand_delegate_ev.random
+                and (
+                    (not store.persistent._mas_enable_random_repeats and not hasRandomSongs(unseen_only=True))
+                    or not hasRandomSongs()
+                )
+            ):
+                rand_delegate_ev.random = False
+
+            #Alternatively, if we have random unseen songs, or repeat topics are enabled and we have random songs
+            #We should random the delegate
+            elif (
+                not rand_delegate_ev.random
+                and (
+                    hasRandomSongs(unseen_only=True)
+                    or (store.persistent._mas_enable_random_repeats and hasRandomSongs())
+                )
+            ):
+                rand_delegate_ev.random = True
 
     def getUnlockedSongs(length=None):
         """
@@ -79,7 +104,7 @@ init python in mas_songs:
                 if (
                     not store.seen_event(ev_label)
                     and ev.random
-                    and TYPE_LONG in ev.category
+                    and TYPE_SHORT in ev.category
                     and ev.checkAffection(store.mas_curr_affection)
                 )
             ]
