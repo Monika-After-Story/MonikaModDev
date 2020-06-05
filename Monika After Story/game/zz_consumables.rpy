@@ -1543,8 +1543,10 @@ label mas_consumables_generic_finished_prepping(consumable):
 
 label mas_consumables_refill_explain:
     # provide in-universe explanation why Monika can't just dupe stuff, only shown once
-    m 3esb "I could just duplicate what I have now, and I already tried that but...{w=0.1}"
-    extend 1rksdlb "I must be missing something, because I just can't replicate the taste."
+    m 2eka "I could just duplicate what I have now, and I already tried that but...{w=0.5}{nw}"
+    extend 2rksdlb "I must be missing something, because I just can't replicate the taste."
+    if mas_isMoniHappy(higher=True):
+        m 1ekbsu "Or maybe it's just your everlasting love what makes it special~"
     return
 
 label mas_consumables_generic_running_out(consumable):
