@@ -1541,6 +1541,12 @@ label mas_consumables_generic_finished_prepping(consumable):
         m 1eua "Okay, what else should we do today?"
     return
 
+label mas_consumables_refill_explain:
+    # provide in-universe explanation why Monika can't just dupe stuff, only shown once
+    m 3esb "I could just duplicate the stock I have now, and I already tried that but...{w=0.1}"
+    extend 1rksdlb "I must be missing something, because I just can't replicate the taste."
+    return
+
 label mas_consumables_generic_running_out(consumable):
     $ amt_left = consumable.getStock()
 
@@ -1568,12 +1574,11 @@ label mas_consumables_generic_running_out(consumable):
 
         m 3eud "I just wanted to let you know I only have [amt_left] [line_ender]"
 
+        if not renpy.seen_label("mas_consumables_refill_explain"):
+            call mas_consumables_refill_explain
+
     else:
         m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name][plur]."
-
-    if not renpy.seen_label("mas_consumables_generic_running_out(consumable)"):
-        m 3esb "I could just duplicate the stock I have now, and I already tried that but...{w=0.1}"
-        extend 1rksdlb "I must be missing something, because I just can't replicate the taste."
 
     m 1eka "You wouldn't mind getting some more for me, would you?"
     return
@@ -1601,6 +1606,10 @@ label mas_consumables_generic_critical_low(consumable):
 
     m 1euc "Hey, [player]..."
     m 3eua "I only have one [line_ender]"
+
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
+
     m 3eka "Would you mind getting me some more sometime?"
     m 1hua "Thanks~"
     return
@@ -1654,6 +1663,9 @@ label mas_consumables_generic_queued_running_out_dlg(low_cons):
 
         m 3rksdla "I'm running out of [items_running_out_of]."
         $ them = "some more"
+
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
 
     m 1eka "You wouldn't mind getting [them] for me, would you?"
 
