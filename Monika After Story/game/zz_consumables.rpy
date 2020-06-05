@@ -1543,7 +1543,7 @@ label mas_consumables_generic_finished_prepping(consumable):
 
 label mas_consumables_refill_explain:
     # provide in-universe explanation why Monika can't just dupe stuff, only shown once
-    m 3esb "I could just duplicate the stock I have now, and I already tried that but...{w=0.1}"
+    m 3esb "I could just duplicate what I have now, and I already tried that but...{w=0.1}"
     extend 1rksdlb "I must be missing something, because I just can't replicate the taste."
     return
 
