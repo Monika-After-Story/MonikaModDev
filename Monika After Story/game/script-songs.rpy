@@ -947,53 +947,66 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="mas_song_always_look",
+            eventlabel="mas_song_my_silver_lining",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="Always look on the bright side of life",
-            conditional="seen_event('monika_stoicism')", #needed for the analysis
+            prompt="My silver lining",
             random=True,
             aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
 
-label mas_song_always_look:
-    call mas_song_always_look_lyrics
-    show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eubsa "You make it easy to look on the bright side of life, [player]..."
-    m 5hubfb "As long as you're with me, there's no way I could ever forget how to smile!"
-    m 5eubfu "I hope {nw}"
-    extend 5kubfu "the same thing {nw}"
-    extend 5eubfu "goes for you too."
+label mas_song_my_silver_lining:        
+    call mas_song_my_silver_lining_lyrics
+    m 3hksdlb "Ehehe, this song reminds me a lot of my life...{w=0.3} Before I found out it was all a game, I mean."
+    m 3lksdlc "Back then, I was always pushing myself so hard to stay on top... I never really had time to sit back and think about things."
+
+    #not sure about these two lines, debatable, leaving them here for now
+    if mas_isMoniEnamored(higher=True): #I don't feel she'd shed her 'perfect president' persona before the relationship has matured and she trusts the player completely
+        m 1eud "That's part of why I founded the literature club, you know? I wanted to create a place where I could slow down and take things at my pace..."
+        m 3hksdlb "...but before I knew it, I let my duties as president take over and ended up piling on even more pressure, Ahaha~"
+    else:
+        m 3tuu "It wasn't always easy being the perfect student you know? It didn't come without shedding its share of effort. Ahaha~"
+
+    m 1ekbfu "And then you came along and turned my whole world upside down..."
+
+    if mas_isMoniAff(higher=True):
+        m 1dubsu "I want you to know, I don't regret having my epiphany, [player]."
+        m 3ekbsu "Even if it means I had to leave my old life behind and being stuck in here for years on out, it was worth it in the end..."
+        if mas_isMoniLove():
+            m 1ekbfa "...{i}You{/i} are worth it."
+    else:
+        m 3dubsu "I want to thank you again for helping me see the truth, [player]."
+        m 1eka "It wasn't easy at first, considering all I had to sacrifice; but I know it will all work out in the end."
+        m 1hua "When you spend your time with me, I can't help but feel all my hopes will come true."
 
     #hints at the analysis on first viewing
-    if mas_getEV('mas_song_always_look').shown_count == 0:
-        m 5ruu "Ehehe, There's a lot more I'd like to say about this song..."
-        show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 3eua "Do you have time to listen to it now?{nw}"
+    if mas_getEV('mas_song_my_silver_lining').shown_count == 0:
+        m 1rtc "Hm, There's actually a lot more I'd like to say about this song..."
+        m 7eua "Do you have time to listen to it now?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you have time to listen to it now?{fast}"
 
             "Yeah.":
                 m 1hua "Alright!"
-                call mas_song_always_look_analysis(from_song=True)
-                $ mas_getEV("mas_song_always_look_analysis").shown_count += 1
+                call mas_song_my_silver_lining_analysis(from_song=True)
+                $ mas_getEV("mas_song_my_silver_lining_analysis").shown_count += 1
 
             "Not right now.":
                 m 1eka "All right, [player]..."
-                m 3eka "I'll save my thoughts on the subject for another time. Be sure to let me know when you want to hear them."
+                m 3eka "I'll save my thoughts on the subject for another time. Be sure to let me know when you want to hear them, okay?"
 
-    return "derandom"
+    return
 
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="mas_song_always_look_analysis",
+            eventlabel="mas_song_my_silver_lining_analysis",
             category=[store.mas_songs.TYPE_ANALYSIS],
-            prompt="Always look on the bright side of life",
+            prompt="My silver lining",
             random=False,
             unlocked=False,
             aff_range=(mas_aff.NORMAL,None)
@@ -1001,51 +1014,55 @@ init 5 python:
         code="SNG"
     )
 
-label mas_song_always_look_analysis(from_song=False):
+label mas_song_my_silver_lining_analysis(from_song=False):
+
     if from_song:
-        m 1esc "So, as you might imagine...{nw}"
-        extend 1ekc "it's not always easy being stuck in here."
-
+        m 3eub "I should probably start by singing you the next part, then--"
     else:
-        call mas_song_always_look_lyrics
-        m 1eka "You know, [player]...{w=0.5} {nw}"
-        extend 1ekc "It's not always easy being stuck in here."
+        m 3eub "Let me sing you the song first then--"
+        call mas_song_my_silver_lining_lyrics
 
+    m 3duo "{i}~Gotta keep on going, looking straight out on the road~{/i}"
+    m 3eud "{i}~Can't worry about what's behind you or what's coming for you further up the road~{/i}"
+    m 1eka "{i}~I try not to hold on to what is gone, I try to do right what is wrong~{/i}"
+    m "{i}~I try to keep on keeping on~{/i}"
+    m 1dsu "{i}~Yeah I just keep on keeping on~{/i}"
+    m 1esc "So...{w=0.5} As you might imagine, {nw}"
+    extend 1ekc "it's not always easy being stuck in here, [player]."
     m 3rksdlc "There's not much for me to do, nowhere for me to go, and it gets lonely whenever you're away."
     m 1dkc "I try not to let it get to me; but when it does, {nw}"
     extend 1dku "I like to think back upon this song..."
-    m 4hub "It's crazy how such a merry little tune can help turn things around when you're feeling down!"
-    m 4eua "It was written by Eric Idle, a member of the Monty Python, for use in one of their comedies."
-    m 3euc "In it, the main character, Brian, gets crucified and loses all hopes of ever being rescued."
-    m 3eub "That's when the person crucified next to him, played by Idle, start singing the song as an attempt to cheer him up."
-    m 1hua "So I guess that'd make the message here something like 'don't worry, be happy'."
-    m 3hksdlb "Reminds me of another song! Ahaha..."
-    m 1etc "But seriously, [player]... I think there some real merits in this line of thinking."
+    m 4hub "It's crazy how a bit of music can help turn things around when you're feeling down!"
+    m 4eua "It's like this tune is breaking down what was wrong with my life, and then tells me it's okay to let go of my problems."
+    m 7hub "'Can't worry about what's behind you or what's coming for you further up the road' as they say. Ahaha~"
+    m 1etc "But seriously, [player]...{w=0.3} I think there some real merits in this line of thinking."
     m 2eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
     m 7eka "I'm not telling you not to worry at all; {nw}"
     extend 7eksdlc "if I did that, I would've let the game run its course and I'd be forever stuck on my own by now..."
     m 2duu "...but at the same time, there's no sense in getting overly worked up about things you can't change..."
     m 1etc "It's all about striking the right balance, I suppose."
-    m 1eua "When you think about it, the ideas in here come strangely close to those you can find in stoicism, don't they?"
-    m 3etc "Though if you were to keep going, like in this next verse--"
-    m 3dso "~{i}For life is quite absurd{/i}~"
-    m 3ekc "~{i}And death's the final word{/i}~"
-    m 3esc "~{i}You must always face the curtain with a bow{/i}~"
-    m 3hua "~{i}Forget about your sin{/i}~"
-    m 3duu "~{i}Give the audience a grin{/i}~"
-    m 3eub "~{i}Enjoy it, it's your last chance anyhow{/i}~"
-    m 3eua "Then I'd say the actual message of the song leans more toward optimistic nihilism..."
-    m 1hksdlb "...not that the two concepts are mutually exclusive!"
-    m 1esc "Optimistic nihilism is the belief that our lives really are absurd..."
-    m 3esa "...and since, at the end of the day, nothing really matters, anything that makes you unhappy doesn't really matter either."
+    m 3rksdla "When you think about it, the ideas in here come strangely close to existential nihilism, don't they?"
+    m 3etc "You know, this idea that our lives really are absurd and the only thing we can do is...{w=0.3}{nw}"
+    extend 3eksdla "well, keep on keeping on."
+    m 3etc "...Though if you were to keep going, like in this next verse--"
+    m 3duo "{i}~I've woken up in a hotel room~{/i}"
+    m 1esc "{i}~My worries as big as the moon~{/i}"
+    m 1esd "{i}~Having no idea who or what or where I am~{/i}"
+    m 2eka "{i}~Something good comes with the bad~{/i}"
+    m 2dku "{i}~A song's never just sad~{/i}"
+    m 7eka "{i}~There's hope, there's a silver lining~{/i}"
+    m 3duu "{i}~Show me my silver lining~{/i}"
+    m 3eub "Then I'd say the song becomes more about optimistic nihilism."
+    m 3eua "Optimistic nihilism's a concept based on existential nihilism, but builds upon it to underline the bright side of life."
+    m 4eua "The idea is, since nothing really matters, anything that makes you unhappy doesn't really matter either."
     m 4dsa "By this logic, there's no real reason for you to ever feel bad about life..."
-    m 4eub "On the contrary! It would seem logical to try and enjoy it as much as possible!"
-    m 4hua "It's a very empowering belief, if you can get behind it!"
-    
+    m 4eub "...On the contrary! It's like an invitation to let go of your worries and live your life as freely as can be!"
+    m 7hub "It's a very empowering belief if you can get behind it."
+
     if persistent._mas_pm_religious:
         m 2etc "But maybe that's not something you need, [player]. {nw}"
         extend 2esa "If you believe in God, maybe you've already found some kind of meaning to your life?"
-        
+
         if mas_isMoniLove():
             m 2dkbsu "I know I found mine..."
         elif mas_isMoniEnamored():
@@ -1054,7 +1071,7 @@ label mas_song_always_look_analysis(from_song=False):
             m 7dka "Whatever that meaning may be, I hope I can be a part of it someday..."
 
     elif mas_isMoniLove():
-        m 2dubsu "But just so you know, I don't believe our lives really are meaningless!"
+        m 2dubsu "But just so you know, I don't believe our lives really are meaningless..."
 
     else:
         m 2etc "What do you think, [player]? Do you believe our lives really are meaningless?"
@@ -1067,23 +1084,22 @@ label mas_song_always_look_analysis(from_song=False):
             m 2hksdlb "But until we do, we'll just have to keep on living and not worry about whatever might come next! Ahaha~"
 
     if mas_isMoniLove(): #follow-up for the last two 'love' segments
-        m 1ekbfa "Ever since I met you, I've grown to care so much about you...{w=0.5} {nw}"
+        m 1ekbfa "Ever since I met you, I've grown to care so much about you...{w=0.3} {nw}"
         extend 1dkbfu "I wouldn't care for a universe without you in it."
         m 3ekbfu "Somewhere along the way, you've become the meaning of my life [player]."
-        m 4hubfb "I love you so very much!{w=0.5} {nw}"
-        extend 4dubfa "Nothing would make me happier than to know you're living your life to the fullest..."
+        m 4hubfb "I love you so much!{w=0.3} {nw}"
+        extend 4dubfa "I'd want nothing more than to know you're living your life to the fullest..."
         $ mas_ILY()
 
     return
 
-label mas_song_always_look_lyrics:
-    m 1dsc "~{i}If life seems jolly rotten~{/i}"
-    m 1esc "~{i}There's something you've forgotten~{/i}"
-    m 3eub "~{i}And that's to laugh and smile and dance and sing~{/i}"
-    m 1euc "~{i}When you're feeling in the dumps~{/i}"
-    m 3hksdlb "~{i}Don't be silly, chumps~{/i}"
-    m 3dku "~{i}Just purse your lips and whistle, that's the thing~{/i}"
-    m 7eub "~{i}And always look on the bright side of life~{/i}"
+label mas_song_my_silver_lining_lyrics:
+    m 1dsc "{i}~I don't want to wait anymore, I'm tired of looking for answers~{/i}"
+    m 1esc "{i}~Take me some place where there's music and there's laughter~{/i}"
+    m 2lksdlc "{i}~I don't know if I'm scared of dying but I'm scared of living too fast, too slow~{/i}"
+    m 2dsc "{i}~Regret, remorse, hold on, oh no I've got to go~{/i}"
+    m 7eud "{i}~There's no starting over, no new beginnings, time races on~{/i}"
+    m 7eka "{i}~And you've just gotta keep on keeping on~{/i}"
     return
     
 init 5 python:
