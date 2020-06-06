@@ -12552,7 +12552,7 @@ label monika_add_custom_music_instruct:
     m "Put your music files in that folder..."
     m "Then either let me know that you added some music or restart the game."
     m 3eua "And that's it! Your music will be available to listen to, right here with me, simply by pressing the 'm' key."
-    m 3hub "See, [player], I told you it was easy, ahaha!"
+    m 3hub "See, [player]? I told you it was easy, ahaha!"
 
     # unlock the topic as a pool topic, also mark it as seen
     $ mas_unlockEVL("monika_add_custom_music", "EVE")
