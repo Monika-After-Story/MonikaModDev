@@ -78,16 +78,12 @@ python early:
                 # split the string into its components
                 func_name, paren, args = field_name.partition("(")
 
-                # it still may include store modules, get the first if there's any
-                if "." in func_name:
-                    func_store_name, dot, func_name = func_name.partition(".")
-                    first = func_store_name
+                # it still may include store modules, try to split it
+                func_store_name, dot, func_name = func_name.partition(".")
 
-                # otherwise work with just function
-                else:
-                    func_store_name = ""
-                    dot = ""
-                    first = func_name
+                # with partition we'll always get the right bit in the first position
+                # be it store module or function
+                first = func_store_name
 
                 # now we find the store's name to use in eval
                 if isinstance(kwargs, renpy.substitutions.MultipleDict):
