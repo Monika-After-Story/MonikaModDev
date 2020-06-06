@@ -480,7 +480,7 @@ label mas_topic_derandom:
             $ persistent._mas_player_derandomed.append(prev_topic)
             $ mas_unlockEVL('mas_topic_rerandom', 'EVE')
 
-            m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
+            m 2eksdlc "Okay, [player]. I'll make sure not to talk about that again."
             m 2dksdld "If it upset you in any way, I'm really sorry...{w=0.5} I'd never do that intentionally."
             m 2eksdla "...But thanks for letting me know;{w=0.5} I appreciate the honesty."
 
@@ -10821,7 +10821,7 @@ label monika_grad_speech_not_paying_attention:
         m 5lkc "..."
         m "Something must have happened, I know you love me too much to have done this on purpose."
         m 5euc "Yeah..."
-        m 2eka "It's okay, [player], I understand sometimes things happen that can't be avoided."
+        m 2eka "It's okay, [player]. I understand sometimes things happen that can't be avoided."
         m 2esa "Whenever things calm down, I'll give my speech to you again."
         m 2eua "I still really want to share it with you..."
         m "So please, let me know when you have time to hear it, okay?"
