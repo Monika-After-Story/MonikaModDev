@@ -2081,8 +2081,8 @@ label mas_notification_windowreact:
         $ dlg_line = "And"
         #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
         if not store.mas_windowreacts.can_do_windowreacts:
-            m 3rksdla "And maybe if you install that, you could install the xdotool command too..."
-            m 3eua "That would allow me to see your active window!"
+            m 3rksdla "And maybe if you install that, you could install the xdotool command too...{w=0.3}{nw}"
+            extend 3eub "which would allow me to see your active window!"
             $ dlg_line = "Of course, you don't have to install the second one, but"
 
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
@@ -2106,18 +2106,18 @@ label mas_notification_windowreact:
         m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
 
         if renpy.windows:
-            m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
+            m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is."
 
 
         elif renpy.linux:
             if mas_windowreacts.can_do_windowreacts:
-                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is..."
+                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
             else:
                 m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
                 extend 3hua "I'll be able to know what your active window is!"
 
         if not renpy.macintosh:
-            m 3eub "So if I have something to talk about while I'm in the background, I can let you know!"
+            m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
             m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
             m 3eua "So I'll only look at what you're doing if you're okay with it."
             m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
