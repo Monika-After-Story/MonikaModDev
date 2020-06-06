@@ -330,6 +330,12 @@ python early:
         return renpy.easy.displayable(store.mas_sprites._gen_im(flt, img))
 
 
+    def MASFilterWeatherDisplayable(**filter_pairs):
+        """
+
+        """
+
+
 init -1 python in mas_sprites:
 
     __ignore_filters = True

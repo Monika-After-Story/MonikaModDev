@@ -184,14 +184,13 @@ init python in mas_weather:
         return None
 
 
-init -20 python in mas_weather:
+init -99 python in mas_weather:
     import random
     import datetime
     import store
 
     #NOTE: Not persistent since weather changes on startup
     force_weather = False
-
 
     WEATHER_MAP = {}
 
@@ -218,6 +217,8 @@ init -20 python in mas_weather:
 
     #Keep a temp store of weather here for if we're changing backgrounds
     temp_weather_storage = None
+
+init -20 python in mas_weather:
 
 #    def canChangeWeather():
 #        """
