@@ -2508,17 +2508,21 @@ style scrollable_menu_vbox is vbox:
     spacing 5
 
 style scrollable_menu_button is choice_button:
+    selected_background Frame("mod_assets/buttons/generic/selected_bg.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_dark is choice_button_dark:
+    selected_background Frame("mod_assets/buttons/generic/selected_bg_d.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_text is choice_button_text:
+    text_align 0.0
     align (0.0, 0.0)
 
 style scrollable_menu_button_text_dark is choice_button_text_dark:
+    text_align 0.0
     align (0.0, 0.0)
 
 style scrollable_menu_new_button is scrollable_menu_button
@@ -2734,10 +2738,14 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                     textbutton item_prompt:
                         if is_italic and is_bold:
                             style "scrollable_menu_crazy_button"
+
                         elif is_italic:
                             style "scrollable_menu_new_button"
+
                         elif is_bold:
                             style "scrollable_menu_special_button"
+
+                        xsize display_area[2]
                         action Return(item_value)
 
                 for final_items in args:
@@ -2747,11 +2755,80 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                     textbutton _(final_items[0]):
                         if final_items[2] and final_items[3]:
                             style "scrollable_menu_crazy_button"
+
                         elif final_items[2]:
                             style "scrollable_menu_new_button"
+
                         elif final_items[3]:
                             style "scrollable_menu_special_button"
+
+                        xsize display_area[2]
                         action Return(final_items[1])
+
+# Scrollable menu with checkboxes. Toggles values between True/False
+# Won't close itself until the user clicks on the return button
+#
+# IN:
+#     items - list of tuples of the following format:
+#         (prompt, key, start_selected, true_value, false_value)
+#         NOTE: keys must be unique
+#     display_area - area to display the menu in of the following format:
+#         (x, y, width, height)
+#     scroll_align - alignment of the scroll bar for the menu
+#     return_button_prompt - prompt for the return button
+#         (Default: 'Done')
+#     return_all - whether or not we return all items or only the items with True in their values
+#         (Default: False)
+#
+# OUT:
+#     dict of buttons keys and new values
+screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done", return_all=False):
+    default buttons_data = {
+        _tuple[1]: {
+            "return_value": _tuple[3] if _tuple[2] else _tuple[4],
+            "true_value": _tuple[3],
+            "false_value": _tuple[4]
+        }
+        for _tuple in items
+    }
+
+    python:
+        def _return_values(buttons_data, return_all):
+            """
+            A method to return buttons keys and values
+
+            IN:
+                buttons_data - the screen buttons data
+                return_all - whether or not we return all items
+
+            OUT:
+                dict of key-value pairs
+            """
+            return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
+
+    style_prefix "scrollable_menu"
+
+    fixed:
+        area display_area
+
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign scroll_align
+
+        viewport:
+            yadjustment prev_adj
+            mousewheel True
+
+            vbox:
+                for button_prompt, button_key, start_selected, true_value, false_value in items:
+                    textbutton button_prompt:
+                        selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
+                        xsize display_area[2]
+                        action ToggleDict(buttons_data[button_key], "return_value", true_value, false_value)
+
+                null height 20
+
+                textbutton return_button_prompt:
+                    xsize display_area[2]
+                    action Function(_return_values, buttons_data, return_all)
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
