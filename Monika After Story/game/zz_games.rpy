@@ -113,7 +113,8 @@ init 5 python:
             prompt="Pong",
             unlocked=True
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_pong:
@@ -132,7 +133,8 @@ init 5 python:
                 "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
             )
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_chess:
@@ -147,7 +149,8 @@ init 5 python:
             eventlabel="mas_hangman",
             prompt="[mas_games.HANGMAN_NAME]"
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_hangman:
@@ -161,7 +164,8 @@ init 5 python:
             eventlabel="mas_piano",
             prompt="Piano"
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_piano:

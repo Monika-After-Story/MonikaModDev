@@ -121,7 +121,8 @@ init 5 python:
             eventlabel="monika_ptod_tip000",
             category=["python tips"],
             prompt="Can you teach me about Python?",
-            pool=True
+            pool=True,
+            rules={"bookmark_rule": store.mas_bookmarks_derand.BLACKLIST}
         )
     )
 
