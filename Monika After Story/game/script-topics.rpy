@@ -13413,7 +13413,7 @@ label monika_relationship_comfort:
         m 1hubfb "Maybe you're just that special, but know that no matter how slow it goes, I'll never get bored with you."
     else:
         m 2eka "We've been together for so long already that I know you're not with me just for the thrill of it..."
-        m 1hubfb "It really makes you that much more special to me [player], more than anyone!"
+        m 1hubfb "It really makes you that much more special to me, [player]- more than anyone!"
     m 4eua "It might just be me, but I think it's important to learn how to be comfortable when it does slow down."
     m 4eub "I mean, at the end of the day it's the little things that matter isn't it? And that's true even in a relationship."
     m 2ekb "You'll miss the small comforts that only a partner can bring, and that's much more valuable than some excitement."
