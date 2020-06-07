@@ -7,6 +7,7 @@ init python in mas_poems:
     poem_map = dict()
 
     poem_sort_key = lambda x:x.category
+    poem_menu_sort_key = lambda x:x[1].category
 
     paper_cat_map = {
         "f14": "mod_assets/poem_assets/poem_vday.jpg",
@@ -97,16 +98,16 @@ init 11 python in mas_poems:
 
     def getSeenPoemsMenu():
         """
-        Gets a list of seen poems in scrollable menu format
+        Gets a list of seen poems in scrollable menu format (ordered by category)
 
         OUT:
             A list of seen poems in the format for a mas gen scrollable menu
         """
-        return [
+        return sorted([
             (poem.prompt, poem, False, False)
             for poem in poem_map.itervalues()
             if poem.is_seen()
-        ]
+        ], key=poem_menu_sort_key)
 
     def getRandomPoem(category,unseen=True):
         """
@@ -136,15 +137,20 @@ init 11 python in mas_poems:
         return getPoemsByCategory(category, unseen=unseen)[poem_num]
 
 init 10 python:
+    #Used ex_props:
+    # KEY : VALUE
+    # sad : ignored - Whether or not we should use sad dialogue pre-poem show/post poem show in the show poem topic
     class MASPoem:
         def __init__(
             self,
             poem_id,
             category,
             prompt,
+            paper=None,
             title="",
             text="",
             author="monika",
+            ex_props=None
         ):
             """
             MASPoem constructor
@@ -162,15 +168,26 @@ init 10 python:
             prompt:
                 prompt for this poem (So it can be viewed by a scrollable menu)
 
+            paper:
+                paper to use for this poem. If None, assumes from the paper category map
+                    (Default: None)
+
             title:
                 poem title (supports renpy substitution)
+                    (Default: '')
 
             text:
                 poem contents (supports renpy substitution)
+                    (Default: '')
 
             author:
                 poem author
                 (Default: monika)
+
+            ex_props:
+                extra tags for the poem (used for dialogue flow based on it)
+                If None, an empty dict is assumed
+                    (Default: None)
             """
             if poem_id in store.mas_poems.poem_map:
                 raise Exception ("poem_id {0} already exists in the poem map.".format(poem_id))
@@ -178,9 +195,11 @@ init 10 python:
             self.poem_id=poem_id
             self.category=category
             self.prompt=prompt
+            self.paper=paper
             self.title=title
             self.text=text
             self.author=author
+            self.ex_props = dict() if ex_props is None else ex_props
 
             #And add this to map
             store.mas_poems.poem_map[poem_id] = self
@@ -213,7 +232,7 @@ init 10 python:
 #IN:
 #   poem - poem to show
 #   paper - paper to use
-#       If None, and the poem is a MASPoem, it attempts to get paper by the category.
+#       If None, and the poem is a MASPoem, it attempts to get paper by the category if the poem object itself does not have paper passed in
 #       If nothing can be found, it defaults to paper.
 #       Normal poems use the standard paper by default if None.
 #       (Default: None)
@@ -224,9 +243,10 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
         return
 
     $ is_maspoem = isinstance(poem, MASPoem)
-    if not paper:
+    if paper is None:
         if is_maspoem:
-            $ paper = mas_poems.paper_cat_map.get(poem.category, "paper")
+            $ paper = poem.paper if poem.paper is not None else mas_poems.paper_cat_map.get(poem.category, "paper")
+
         else:
             $ paper = "paper"
 
@@ -234,6 +254,7 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
     play sound page_turn
 
     window hide
+    $ afm_pref = renpy.game.preferences.afm_enable
     $ renpy.game.preferences.afm_enable = False
 
     #Handle the poem screen we use
@@ -251,8 +272,9 @@ label mas_showpoem(poem=None, paper=None, background_action_label=None):
     #And hide it
     hide screen mas_generic_poem
 
-
     with Dissolve(.5)
+
+    $ renpy.game.preferences.afm_enable = afm_pref
     window auto
 
     #Flag this poem as seen
@@ -294,9 +316,9 @@ label monika_showpoem:
             ("Happy End", poem_m4, False, False)
         ]
 
-        ret_back = ("Nevermind", False, False, False, 20)
+        ret_back = ("Nevermind.", False, False, False, 20)
         #Extend the new poems
-        poems_list.extend(sorted(mas_poems.getSeenPoemsMenu()))
+        poems_list.extend(mas_poems.getSeenPoemsMenu())
 
         renpy.say(m, "Which poem would you like to read?", interact=False)
 
@@ -307,8 +329,30 @@ label monika_showpoem:
     if not _poem:
         return "prompt"
 
-    show monika 3hua at t11
-    m 3hua "Alright!"
+
+    show monika at t11
+
+    $ is_sad = isinstance(_poem, MASPoem) and "sad" in _poem.ex_props
+    if is_sad:
+        m 1rkc "Alright, [player]..."
+        show monika 1esc
+
+    else:
+        m 3hua "Alright!"
+
     call mas_showpoem(_poem)
-    m 3eka "I hope you liked it, [player]."
+
+    if not is_sad:
+        m 3eka "I hope you liked it, [player]."
+
+    m 1eka "Would you like to read another poem?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to read another poem?{fast}"
+
+        "Yes.":
+            jump monika_showpoem
+
+        "No.":
+            m 1eua "Alright, [player]."
     return

@@ -3718,6 +3718,19 @@ init -991 python in mas_utils:
             return macLogOpen(name, append=append, developer=developer, flush=flush)
         return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
 
+    def is_file_present(filename):
+        """
+        Checks if a file is present
+        """
+        if not filename.startswith("/"):
+            filename = "/" + filename
+
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
 
     # unstable should never delete logs
     if store.persistent._mas_unstable_mode:
@@ -3728,6 +3741,7 @@ init -991 python in mas_utils:
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
     mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
+
 
 
 init -100 python in mas_utils:
@@ -4286,22 +4300,13 @@ init -985 python:
         """
         return store.mas_globals.tt_detected
 
-
 init -101 python:
-    import os
-
-    # TODO: we should move this to utils at some point.
     def is_file_present(filename):
-        if not filename.startswith("/"):
-            filename = "/" + filename
+        """DEPRECIATED
 
-        filepath = renpy.config.basedir + filename
-
-        try:
-            return os.access(os.path.normcase(filepath), os.F_OK)
-        except:
-            return False
-
+        Use mas_utils.is_file_present instead
+        """
+        return store.mas_utils.is_file_present(filename)
 
 init -1 python:
     import datetime # for mac issues i guess.
@@ -4358,8 +4363,14 @@ init -1 python:
         return False
 
 
+    # TODO: Remove the basedir file checks before the next full release
     def is_apology_present():
-        return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
+        return (
+            store.mas_utils.is_file_present('/characters/imsorry')
+            or store.mas_utils.is_file_present('/characters/imsorry.txt')
+            or store.mas_utils.is_file_present('imsorry')
+            or store.mas_utils.is_file_present('/imsorry.txt')
+        )
 
 
     def mas_cvToHM(mins):
@@ -4793,8 +4804,6 @@ init -1 python:
         )
 
 
-
-
     def mas_isSpecialDay():
         """
         Checks if today is a special day(birthday, anniversary or holiday)
@@ -4811,6 +4820,7 @@ init -1 python:
             or mas_isNYE()
             or mas_isF14()
         )
+
 
     def mas_maxPlaytime():
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
@@ -4865,60 +4875,121 @@ init -1 python:
 
 
     def get_pos(channel='music'):
+        """
+        Gets the current position in what's playing on the provided channel
+
+        IN:
+            channel - The channel to get the sound position for
+                (Default: 'music')
+        """
         pos = renpy.music.get_pos(channel=channel)
-        if pos: return pos
+        if pos:
+            return pos
         return 0
+
+
     def delete_all_saves():
+        """
+        Deletes all saved states
+        """
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
+
+
     def delete_character(name):
-        if persistent.do_not_delete: return
-        import os
-        try: os.remove(config.basedir + "/characters/" + name + ".chr")
-        except: pass
+        """
+        Deletes a .chr file for a character
+
+        IN:
+            name of the character who's chr file we want to delete
+        """
+        if persistent.do_not_delete:
+            return
+
+        try:
+            os.remove(config.basedir + "/characters/" + name + ".chr")
+
+        except:
+            pass
+
+
     def pause(time=None):
+        """
+        Pauses for the given amount of time
+
+        IN:
+            time - The time to pause for. If None, a pause until the user progresses is assumed
+                (Default: None)
+        """
         if not time:
             renpy.ui.saybehavior(afm=" ")
             renpy.ui.interact(mouse='pause', type='pause', roll_forward=None)
             return
-        if time <= 0: return
+
+        #Verify valid time
+        if time <= 0:
+            return
+
         renpy.pause(time)
+
 
         # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
+        """
+        Gets installed steam application IDs from the main steam install directory
+
+        OUT:
+            List of application IDs
+
+        NOTE: Does NOT work if the user has edited their game install directory for windows at all
+        """
         installPath=""
         if renpy.windows:
             import _winreg    # mod specific
             # Grab first steam installation directory
             # If you're like me, it will miss libraries installed on another drive
             aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
+
             try:
                 # Check 32 bit
                 keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam")
+
             except:
                 # Check 64 bit
                 try:
                    keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
+
                 except:
                    # No Steam
                    return None
+
             for i in range(4):
                 # Value Name, Value Data, Value Type
                 n,installPath,t = _winreg.EnumValue(keyVal, i)
-                if n=="InstallPath": break
+                if n=="InstallPath":
+                    break
+
             installPath+="/steamapps"
+
         elif renpy.mac:
             installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
+
         elif renpy.linux:
             installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
             # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program?
+
+        #Ideally we should never end up here, but in the case we do, we should prevent any work from being done
+        #That's not necessary
         else:
             return None
+
         try:
             appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
+
         except:
             appIds = None
         return appIds
+
 
 init 2 python:
     import re
@@ -5179,19 +5250,62 @@ init 2 python:
         #If we're here, that means we need to do some returns based on the values we put in
         return seen_all
 
-    def mas_a_an_str(ref_str):
+    def mas_a_an_str(ref_str, ignore_case=False):
         """
         Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
 
         IN:
             ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and not adjust the capitalization of ref_str
 
         OUT:
             string prefixed with a/an
         """
-        if ref_str[0] in "aeiou":
-            return "an " + ref_str
-        return "a " + ref_str
+        return ("{0} {1}".format(
+            mas_a_an(ref_str, ignore_case),
+            ref_str.lower() if not ignore_case and (ref_str[0].isupper() and not ref_str.isupper()) else ref_str
+        ))
+
+    def mas_a_an(ref_str, ignore_case=False):
+        """
+        Takes in a reference string and returns either a/an based on the first letter of the word
+
+        IN:
+            ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and just use lowercase
+
+        OUT:
+            a/an based on the ref string
+        """
+        should_capitalize = not ignore_case and ref_str[0].isupper()
+
+        if ref_str[0] in "aeiouAEIOU":
+            return "An" if should_capitalize else "an"
+        return "A" if should_capitalize else "a"
+
+#EXTRA TEXT TAGS
+init python:
+    def a_an_tag(tag, argument, contents):
+        """
+        Handles a/an mid-string
+
+        NOTE: This should ONLY surround the exact word needing to be prefixed with a/an
+        All text tags should be kept OUTSIDE of the opening and closing tags for this function
+
+        Usage: I bought [player] {a_an}[tempvar]{/a_an}.
+
+        If tempvar was 'item,' the output is: I bought [player] an item.
+        If tempvar was 'coffee,' the output is: I bought [player] a coffee.
+        """
+        for _id, _tuple in enumerate(contents):
+            #We want to modify only text
+            if _tuple[0] == renpy.TEXT_TEXT:
+                contents[_id] = (_tuple[0], mas_a_an_str(_tuple[1]))
+                return contents
+
+        return contents
+
+    config.custom_text_tags["a_an"] = a_an_tag
 
     def mas_get_player_nickname():
         """
@@ -6751,21 +6865,24 @@ style jpn_text:
 
 # functions related to ily2
 init python:
-    def mas_passedILY(pass_time, check_time=None):
+    def mas_passedILY(pass_time):
         """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
             pass_time - a timedelta corresponding to the time limit we want to check against
-            check_time - the time at which we want to check, will typically be datetime.datetime.now()
-                which is the default
 
         RETURNS:
             boolean indicating if we are within the time limit
         """
-        if check_time is None:
-            check_time = datetime.datetime.now()
-        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+        check_time = datetime.datetime.now()
+
+        # if a backward TT is detected here, return False and reset persistent._mas_last_monika_ily
+        if persistent._mas_last_monika_ily is None or persistent._mas_last_monika_ily > check_time:
+            persistent._mas_last_monika_ily = None
+            return False
+
+        return (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
         """
