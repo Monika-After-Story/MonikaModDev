@@ -1914,7 +1914,7 @@ label greeting_japan:
     if shown_count == 1:
         m 3eksdla "Last time I said that I made a mistake..."
         m "In that sentence, you're supposed to say 'wa', not 'ha', like I did before."
-        m 4eka "Don't worry, [player], the meaning is still the same."
+        m 4eka "Don't worry, [player]. The meaning is still the same."
         m 4ekbfa "I'll still be yours forever~"
     else:
         m 3eua "Remember what that means, [player]?"
