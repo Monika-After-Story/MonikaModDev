@@ -4659,7 +4659,7 @@ label mas_player_bday_card:
     m 6dkbsu "..."
     if mas_isMonikaBirthday():
         m 6sub "Oh!"
-        m 6ekbsu "I made a card for you, [player], I hope you like it..."
+        m 6ekbsu "I made a card for you, [player]. I hope you like it..."
     elif not mas_HistVerify("player_bday.spent_time",True)[0]:
         m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     else:
