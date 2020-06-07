@@ -2877,7 +2877,7 @@ label greeting_back_from_school:
 
             "Bad.":
                 m 6rkc "Oh..."
-                m 6ekc "That's too bad, [player], I'm sorry to hear that."
+                m 6ekc "That's too bad, [player]. I'm sorry to hear that."
                 m 6dkc "I know what bad days are like..."
 
     else:
