@@ -3557,7 +3557,7 @@ label mas_nye_monika_nyd:
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
-    m 4ekc "It's not too late for us, [player], we can still make each other so happy."
+    m 4ekc "It's not too late for us, [player]. We can still make each other so happy."
     m 4eka "It's all I've ever wanted."
 
     m "What do you say, [player]?{nw}"
