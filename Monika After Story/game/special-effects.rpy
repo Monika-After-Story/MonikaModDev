@@ -463,10 +463,11 @@ label mas_timed_text_events_wrapup:
         mas_DropShield_timedtext()
 
         # restart song/sounds that were playing before event
-        if curr_song != store.songs.FP_MONIKA_LULLABY:
+        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
             play_song(curr_song, 1.0)
         else:
             play_song(None, 1.0)
+
         renpy.music.set_volume(amb_vol, 1.0, "background")
         renpy.music.set_volume(amb_vol, 1.0, "backsound")
 
