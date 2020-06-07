@@ -42,11 +42,11 @@ init 10 python in mas_brbs:
 # label to use if we want to get back into idle from a callback
 label mas_brb_back_to_idle:
     # sanity check
-    if globals().get("brb_label", -1) is -1:
+    if globals().get("brb_label", -1) == -1:
         return
 
     python:
-        mas_idle_mailbox.send_idle_cb(brb_label+"_callback")
+        mas_idle_mailbox.send_idle_cb(brb_label + "_callback")
         persistent._mas_idle_data[brb_label] = True
         mas_globals.in_idle_mode = True
         persistent._mas_in_idle_mode = True
@@ -473,7 +473,7 @@ label monika_idle_workout_callback:
 
                 "I'll try to keep going.":
                     # continue workout and return Monika to idle state
-                    m 1eub "That's the spirit!"
+                    m 1hub "That's the spirit!"
 
                     $ brb_label = "monika_idle_workout"
                     $ pushEvent("mas_brb_back_to_idle",skipeval=True)
