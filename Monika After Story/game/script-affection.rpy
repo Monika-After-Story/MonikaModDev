@@ -2109,14 +2109,155 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_affection_playernickname",
-            conditional="True",
+            conditional="seen_event('monika_affection_nickname')",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
+default persistent._mas_player_nicknames = list()
+
 label mas_affection_playernickname:
-    m "Hey [player]?"
+    python:
+        #A list of names we always want to have
+        base_nicknames = [
+            ("Darling", "darling", True, True, False),
+            ("Honey", "honey", True, True, False),
+            ("Love", "love", True, True, False),
+            ("My love", "my love", True, True, False),
+            ("Sweetheart", "sweetheart", True, True, False),
+            ("Sweetie", "sweetie", True, True, False),
+        ]
+
+    m 1euc "Hey [player]?"
+    m 1eka "Since you can call me by a nickname now, I was wondering if I could call you by a nickname."
+
+    m 1etc "Is that alright with you?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Is that alright with you?{fast}"
+
+        "Sure, [m_name].":
+            m 1hua "Great!"
+            m 3eud "I should ask though, what names are you comfortable with?"
+            call mas_player_nickname_loop("Diselect the names you're not comfortable with me calling you", base_nicknames)
+
+        "No.":
+            m 1eka "Alright, [player]."
+            m 3eua "Just let me know if you ever change your mind, okay?"
+
+    #Now unlock the nickname change ev
+    $ mas_unlockEVL("monika_change_player_nicknames", "EVE")
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_change_player_nicknames",
+            prompt="Can you call me different nicknames?",
+            category=['you'],
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        )
+    )
+
+label monika_change_player_nicknames:
+    m 1hub "Sure [player]!"
+
+    python:
+        #Generate a list of names we're using now so we can set things
+        current_nicknames = [
+            (nickname.capitalize(), nickname, True, True, False)
+            for nickname in persistent._mas_player_nicknames
+        ]
+
+        if not current_nicknames:
+            current_nicknames = [
+                ("Darling", "darling", True, True, False),
+                ("Honey", "honey", True, True, False),
+                ("Love", "love", True, True, False),
+                ("My love", "my love", True, True, False),
+                ("Sweetheart", "sweetheart", True, True, False),
+                ("Sweetie", "sweetie", True, True, False),
+            ]
+
+    call mas_player_nickname_loop("Deselect the names you don't want me to call you anymore.", current_nicknames)
+    return
+
+label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
+    show monika 1eua at t21 zorder MAS_MONIKA_Z with dissolve
+    $ renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
+    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
+
+    $ acceptable_nicknames = _return.keys()
+    $ done = False
+
+    while not done:
+        m 1eua "Is there anything else you'd like me to call you?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Is there anything else you'd like me to call you?{fast}"
+
+            "Yes.":
+                m 3eua "Sure, just type 'nevermind' if you change your mind."
+
+                label .name_enter_skip_loop:
+                    pass
+
+                #Now parse this
+                python:
+                    lowername = renpy.input(
+                        _("So what do you want me to call you?"),
+                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+                        length=10
+                    ).strip(' \t\n\r').lower()
+
+                #Now validate
+                if lowername == "nevermind":
+                    $ done = True
+
+                elif lowername == "":
+                    m 1eksdla "..."
+                    m 3rksdlb "You have to give me a name to call you, [player]..."
+                    m 1eua "Try again~"
+                    jump .name_enter_skip_loop
+
+                elif lowername == player.lower():
+                    m 2hua "..."
+                    m 4hksdlb "That's the same name you have right now, silly!"
+                    m 1eua "Try again~"
+                    jump .name_enter_skip_loop
+
+                elif mas_awk_name_comp.search(lowername):
+                    $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
+                    m 1rksdlb "[awkward_quip]"
+                    m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+
+                elif mas_bad_name_comp.search(lowername):
+                    $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
+                    m 1ekd "[bad_quip]"
+                    m 3eka "Please pick a nicer name for yourself, okay?"
+
+                elif lowername in acceptable_nicknames:
+                    m 3rksdla "You already told me I can call you that, [player]..."
+                    m 1hua "Try again~"
+                    jump .name_enter_skip_loop
+
+                else:
+                    #If this is all good, then we'll add this to a list of things to add
+                    $ acceptable_nicknames.append(lowername)
+
+            "No.":
+                $ done = True
+
+    m 1hua "Alright, [player]."
+    m 3eub "Just let me know if you ever want me to call you some other names, okay?"
+
+    #Now set persistent
+    $ persistent._mas_player_nicknames = acceptable_nicknames
     return
 
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.

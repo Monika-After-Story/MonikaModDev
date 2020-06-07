@@ -471,27 +471,27 @@ init 3 python:
         "virgin"
     ]
 
+    mas_awkward_quips = [
+        "I don't really feel...{w=0.5}comfortable calling you that all the time.",
+        "That's...{w=0.5}not something I would like to call you, [player].",
+        "That is...{w=0.5}not something I would like to call you, [player].",
+        "Not that it's bad but...",
+        "Are you trying to embarrass me, [player]?"
+    ]
+
+    mas_bad_quips = [
+        "[player]...{w=0.5}why would you even consider calling yourself that?",
+        "[player]...{w=0.5}why would I ever call you that?",
+        "I couldn't ever call you anything like that, [player].",
+        "What? Please [player],{w=0.5} don't call yourself bad names."
+    ]
+
     mas_good_player_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
     mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
     mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
 
 label mas_player_name_enter_name_loop(input_prompt):
     python:
-        awkward_quips = [
-            "I don't really feel...{w=0.5}comfortable calling you that all the time.",
-            "That's...{w=0.5}not something I would like to call you, [player].",
-            "That is...{w=0.5}not something I would like to call you, [player].",
-            "Not that it's bad but...",
-            "Are you trying to embarrass me, [player]?"
-        ]
-
-        bad_quips = [
-            "[player]...{w=0.5}why would you even consider calling yourself that?",
-            "[player]...{w=0.5}why would I ever call you that?",
-            "I couldn't ever call you anything like that, [player].",
-            "What? Please [player],{w=0.5} don't call yourself bad names."
-        ]
-
         good_quips = [
             "That's a wonderful name!",
             "I like that a lot, [player].",
@@ -521,12 +521,12 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 1eua "Try again~"
 
         elif mas_awk_name_comp.search(tempname):
-            $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
+            $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
             m 1rksdlb "[awkward_quip]"
             m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
         elif mas_bad_name_comp.search(tempname):
-            $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
+            $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
             m 1ekd "[bad_quip]"
             m 3eka "Please pick a nicer name for yourself, okay?"
 

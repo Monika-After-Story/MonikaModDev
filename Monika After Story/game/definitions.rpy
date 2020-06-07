@@ -5307,38 +5307,20 @@ init python:
 
     config.custom_text_tags["a_an"] = a_an_tag
 
-    def mas_get_player_nickname():
+    def mas_get_player_nickname(capitalize=False):
         """
         Picks a nickname for the player at random based on accepted nicknames
 
-        NOTE: If affection is below affectionate, we just use the player name
+        IN:
+            capitalize - Whether or not we should capitalize the first character
+
+        NOTE: If affection is below affectionate or player has no nicknames set, we just use the player name
         """
         #If we're at or below happy, we just use playername
-        if mas_isMoniHappy(lower=True):
+        if mas_isMoniHappy(lower=True) or not persistent._mas_player_nicknames:
             return player
 
-        #TODO: Change this out for the dynamic nickname list
-        acceptable_nickname_list = [
-            "sweetie",
-            "honey",
-            "darling",
-            "love",
-            "my love"
-        ]
-
-        return random.choice(acceptable_nickname_list)
-
-    def playernick_tag(tag, argument, contents):
-        """
-        Text tag function for player nickname
-
-        Picks a player nickname at random and inserts it into the string where the tag is placed
-        """
-        if argument:
-            nickname = mas_get_player_nickname().capitalize()
-        return [(renpy.TEXT_TEXT, nickname), (renpy.TEXT_TAG, "/player_nickname")]
-
-    config.custom_text_tags["player_nickname"] = playernick_tag
+        return random.choice(persistent._mas_player_nicknames).capitalize()
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
