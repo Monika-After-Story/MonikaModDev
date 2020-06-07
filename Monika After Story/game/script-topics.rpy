@@ -7916,22 +7916,21 @@ init 5 python:
 label monika_smoking_quit:
     m 1esc "[player], do you remember last time we talked about smoking?"
     m 3rsc "If I remember you told me you wanted to quit."
-    m 1eua "I just want to know...did you succeed?"
 
-    m "Did you manage to quit?{nw}"
+    m "I just want to know...{w=0.2}did you manage to quit?{nw}"
     $ _history_list.pop()
     menu:
-        m "Did you manage to quit?{fast}"
+        m "I just want to know...did you manage to quit?{fast}"
 
         "Yes.":
             call monika_smoking_quit_success
 
         "No.":
             m 2ekc "Aww..."
-            m "It's a little disheartening to hear that. {nw}"
-            extend 2eku "but one failure isn't the end you know?"
+            m "That's a little disheartening to hear...{w=0.2}{nw}"
+            extend 2eku "but one failure isn't the end, you know?"
             m "Most people fall back into it several times before they finally manage to quit for good."
-            m 4dku "Don't let a small setback get in the way of your resolve, [player]. Your health is really important!"
+            m 4dku "Don't let a small setback get in the way of your resolve, [player]. {w=0.2}Your health is really important!"
 
             m 4eka "You will try to quit again, won't you?{nw}"
             $ _history_list.pop()
@@ -7946,9 +7945,9 @@ label monika_smoking_quit:
                     m 4wkd "[player]!"
                     m "Don't give up now!"
                     m 2dkc "I'm sure it must have been very hard for someone like you to give up."
-                    m 2rkc "Addiction truly seems like a frightening thing..."
-                    m 4wkd "But your health is much more important than that!"
-                    m 4eka "Please, [player], would you consider making another try? For me?{nw}"
+                    m 2rkc "Addiction truly seems like a frightening thing."
+                    m 4wkd "...But your health is much more important than that!"
+                    m 4eka "Please [player], would you consider making another try? For me?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Please, [player], would you consider making another try? For me?{fast}"
@@ -7965,21 +7964,21 @@ label monika_smoking_quit:
                             m 2rsc "It's not like I can force you to do it, {fast}though it'd be good for you."
                             m 2eka "But if that's your choice, I'll respect it."
                             m 2esc "I still wish you'd consider giving it another try though..."
-                            m 7eua "Let me know I you decide to do so."
+                            m 7eua "Let me know if you decide to do so."
 
         "It's too soon to say.":
             call monika_smoking_quit_requeue_setup
-            m 1eksdla "Oh. It's still too soon to say you're off for good, isn't it?"
+            m 1eksdla "Oh. {w=0.3}It's still too soon to say you're off for good, isn't it?"
             m 3rssdlc "Sorry for reminding you, I know it must be hard for you right now..."
-            m 4hua "But at the same time, it means you succeeded in staying off until now!"
+            m 4hua "But at the same time, it means you've succeeded in staying away from smoking until now!"
             m 4hubfb "Good job, [player]! Keep it up!"
 
             if not persistent._mas_pm_cares_about_dokis:
                 m 2ekbfu "Just a little more and you'll finally be able to tell cigarettes 'sayonara' for good!"
             else:
-                m 2ekbfu "Just a little more and you'll finally be done for good with cigarettes!"
+                m 2ekbfu "Just a little more and you'll finally be done with cigarettes for good!"
 
-            m 4hubfb "Your loving girlfriend believes in you! I'm sure you can do it!"
+            m 4hubfb "Your loving girlfriend believes in you! {w=0.2}I'm sure you can do it!"
 
         #safeguard for players who tried all options on monika_smoking
         "I never smoked.":
@@ -8017,8 +8016,8 @@ label monika_smoking_quit_success:
     m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
     m 2ekbsa "It's such a relief to know you quit smoking! {nw}"
     extend 2dkbsu "I'll sleep much better at night knowing you're as far as possible from this nightmare."
-    m 4hubfb "Congratulations, my love! I couldn't be more proud to have a [bf] such as you!"
-    m 1rkbfu "Ehehe, if I was here with you I'd treat you to your favorite dish {nw}"
+    m 4hubfb "Congratulations, my love! {w=0.3}I couldn't be more proud to have a [bf] such as you!"
+    m 1rkbfu "Ehehe, if I was there with you I'd treat you to your favorite dish {nw}"
 
     if mas_globals.time_of_day_3state == "evening":
         extend "tomorrow."
@@ -8032,7 +8031,7 @@ label monika_smoking_quit_success:
     extend 2euc "but I need you to stay careful from now on."
     m 4rsc "Many former smokers feel urges to smoke again at some point or another..."
     m 4wud "You can't give in, not even once! That's how you fall into relapse!"
-    m 2hubfa "But knowing you, you won't let that happen, won't you?"
+    m 2hubfa "But knowing you, you won't let that happen, right?"
     m 2ekbfa "Considering what you've already done, I know you're stronger than this..."
     return
 
@@ -8041,7 +8040,7 @@ label monika_smoking_quit_will_retry:
     $ persistent.mas_pm_do_smoke_quit = True
     m 4hub "That's my [player]!"
     m 2ekbfa "Despite everything, you always find the strength to get back up and try again."
-    m 2dkbfu "That's something I admire about you...{w=0.5} being able to keep going through adversity is important."
+    m 2dkbfu "That's something I admire about you...{w=0.3}being able to keep going through adversity is important."
     m 7hubfb "I love you, [player]! I'm sure you'll get it right next time!"
     return
 
