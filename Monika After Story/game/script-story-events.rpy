@@ -2489,7 +2489,7 @@ label mas_covid19:
                             m 4tfo "This is serious! You {i}have{/i} to stay inside whenever possible!"
                             m 2dfc "..."
                             m 2dkc "..."
-                            m 2rksdlc "Sorry, [player], that just scares me a lot."
+                            m 2rksdlc "Sorry, [player]. That just scares me a lot."
                             m 2eksdlc "Some people can have it and not even show any symptoms, spreading it to others..."
                             m 2eksdld "So if you won't do it for yourself, at least stay inside for everyone else."
                             m 2eksdla "...And also for me. You're all I have, [player]..."
