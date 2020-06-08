@@ -1541,6 +1541,14 @@ label mas_consumables_generic_finished_prepping(consumable):
         m 1eua "Okay, what else should we do today?"
     return
 
+label mas_consumables_refill_explain:
+    # provide in-universe explanation why Monika can't just dupe stuff, only shown once
+    m 3rksdla "I'd duplicate what I have now...but when I tried before, it just wasn't the same..."
+    m 1eksdla "I guess I must be missing something because I just can't seem to replicate the taste."
+    if mas_isMoniHappy(higher=True):
+        m 1ekbsu "...Or maybe it's your everlasting love that makes it special~"
+    return
+
 label mas_consumables_generic_running_out(consumable):
     $ amt_left = consumable.getStock()
 
@@ -1567,6 +1575,9 @@ label mas_consumables_generic_running_out(consumable):
                 line_ender = renpy.substitute("[consumable.disp_name][plur] left.")
 
         m 3eud "I just wanted to let you know I only have [amt_left] [line_ender]"
+
+        if not renpy.seen_label("mas_consumables_refill_explain"):
+            call mas_consumables_refill_explain
 
     else:
         m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name][plur]."
@@ -1597,6 +1608,10 @@ label mas_consumables_generic_critical_low(consumable):
 
     m 1euc "Hey, [player]..."
     m 3eua "I only have one [line_ender]"
+
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
+
     m 3eka "Would you mind getting me some more sometime?"
     m 1hua "Thanks~"
     return
@@ -1650,6 +1665,9 @@ label mas_consumables_generic_queued_running_out_dlg(low_cons):
 
         m 3rksdla "I'm running out of [items_running_out_of]."
         $ them = "some more"
+
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
 
     m 1eka "You wouldn't mind getting [them] for me, would you?"
 
