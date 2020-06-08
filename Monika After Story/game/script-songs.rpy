@@ -30,13 +30,38 @@ init python in mas_songs:
     import store
     def checkRandSongDelegate():
         """
-        Checks if we have random songs available, and if so unlocks the random delegate if locked
+        Handles locking/unlocking of the random song delegate
+
+        Ensures that songs cannot be repeated (derandoms the delegate) if the repeat topics flag is disabled and there's no unseen songs
+        And that songs can be repeated if the flag is enabled (re-randoms the delegate)
         """
         #Get ev
         rand_delegate_ev = store.mas_getEV("monika_sing_song_random")
 
-        if rand_delegate_ev and not rand_delegate_ev.random and hasRandomSongs():
-            rand_delegate_ev.random = True
+        if rand_delegate_ev:
+            #If the delegate is random, let's verify whether or not it should still be random
+            #Rules for this are:
+            #1. If repeat topics is disabled and we have no unseen random songs
+            #2. OR we just have no random songs in general
+            if (
+                rand_delegate_ev.random
+                and (
+                    (not store.persistent._mas_enable_random_repeats and not hasRandomSongs(unseen_only=True))
+                    or not hasRandomSongs()
+                )
+            ):
+                rand_delegate_ev.random = False
+
+            #Alternatively, if we have random unseen songs, or repeat topics are enabled and we have random songs
+            #We should random the delegate
+            elif (
+                not rand_delegate_ev.random
+                and (
+                    hasRandomSongs(unseen_only=True)
+                    or (store.persistent._mas_enable_random_repeats and hasRandomSongs())
+                )
+            ):
+                rand_delegate_ev.random = True
 
     def getUnlockedSongs(length=None):
         """
@@ -62,12 +87,28 @@ init python in mas_songs:
                 if ev.unlocked and length in ev.category
             ]
 
-    def getRandomSongs():
+    def getRandomSongs(unseen_only=False):
         """
         Gets a list of all random songs
 
+        IN:
+            unseen_only - Whether or not the list of random songs should contain unseen only songs
+            (Default: False)
+
         OUT: list of all random songs within aff_range
         """
+        if unseen_only:
+            return [
+                ev_label
+                for ev_label, ev in song_db.iteritems()
+                if (
+                    not store.seen_event(ev_label)
+                    and ev.random
+                    and TYPE_SHORT in ev.category
+                    and ev.checkAffection(store.mas_curr_affection)
+                )
+            ]
+
         return [
             ev_label
             for ev_label, ev in song_db.iteritems()
@@ -134,14 +175,16 @@ init python in mas_songs:
         """
         return len(getUnlockedSongs(length)) > 0
 
-    def hasRandomSongs():
+    def hasRandomSongs(unseen_only=False):
         """
         Checks if there are any songs with the random property
 
+        IN:
+            unseen_only - Whether or not we should check for only unseen songs
         OUT:
             True if there are songs which are random, False otherwise
         """
-        return len(getRandomSongs()) > 0
+        return len(getRandomSongs(unseen_only)) > 0
 
     def getPromptSuffix(ev):
         """
@@ -351,12 +394,28 @@ init 5 python:
 label monika_sing_song_random:
     #We only want short songs in random. Long songs should be unlocked by default or have another means to unlock
     #Like a "preview" version of it which unlocks the full song in the pool delegate
-    if mas_songs.hasRandomSongs():
+
+    #We need to make sure we don't repeat these automatically if repeat topics is disabled
+    if (
+        (persistent._mas_enable_random_repeats and mas_songs.hasRandomSongs())
+        or (not persistent._mas_enable_random_repeats and mas_songs.hasRandomSongs(unseen_only=True))
+    ):
         python:
+            #First, get unseen songs
+            random_unseen_songs = mas_songs.getRandomSongs(unseen_only=True)
+
+            #If we have randomed unseen songs, we'll prioritize that
+            if random_unseen_songs:
+                rand_song = random.choice(random_unseen_songs)
+
+            #Otherwise, just go for random
+            else:
+                rand_song = random.choice(mas_songs.getRandomSongs())
+
             #Unlock pool delegate
             mas_unlockEVL("monika_sing_song_pool", "EVE")
 
-            rand_song = renpy.random.choice(mas_songs.getRandomSongs())
+            #Now push the random song and unlock it
             pushEvent(rand_song, skipeval=True, notify=True)
             mas_unlockEVL(rand_song, "SNG")
 
