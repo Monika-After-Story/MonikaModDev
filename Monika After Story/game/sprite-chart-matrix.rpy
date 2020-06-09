@@ -332,6 +332,7 @@ python early:
 
     def MASFilterWeatherDisplayable(**filter_pairs):
         """
+        Generates a dynamic displayable that maps
 
         """
 
