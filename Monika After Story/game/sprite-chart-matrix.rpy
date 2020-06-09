@@ -332,9 +332,38 @@ python early:
 
     def MASFilterWeatherDisplayable(**filter_pairs):
         """
-        Generates a dynamic displayable that maps
+        Generates a dynamic displayable that maps filters to weathers for
+        arbitrary objects.
 
+        IN:
+            **filter_pairs - fitler pairs to pass directly to 
+                MASFilterWeatherMap
+
+        RETURNS: DynamicDisplayable that respects Filters and weather.
         """
+        # build new MASFilterWeatherMap
+        new_map = MASFilterWeatherMap(**filter_pairs)
+
+        # add to DB and set ID
+        new_id = store.mas_sprites.FW_ID + 1
+        store.mas_sprites.FW_DB[new_id] = new_map
+        store.mas_sprites.FW_ID += 1
+
+        # return DynDisp
+        return DynamicDisplayable(mas_fwm_select, new_map)
+
+
+init 1 python in mas_sprites:
+
+    def _verify_fwm_db():
+        """
+        Verifies that data in the FW_DB is correct.
+        MASFilterWeatherMaps are valid if TODO
+        """
+        pass
+        # NOTE: for now we will just allow runtime crashes until we can
+        # determine the best way to do verification.
+        # the mas_fwm_select function will raise exceptions
 
 
 init -1 python in mas_sprites:
@@ -347,6 +376,14 @@ init -99 python in mas_sprites:
     import store
     import store.mas_utils as mas_utils
 
+    FW_ID = 1
+
+    FW_DB = {}
+    # internal collection of all MASFitlerWeatherDisplayable flt objects.
+    # (basically a dict of MASFilterWeatherMap objects)
+    # this is primarily used for verification later.
+    # IDs are generic integers.
+
     # Filtering Framework
     # TODO: consider making the filter dict use Curryables so custom filters
     #   can use non-Matrixcolor-based logic
@@ -357,7 +394,7 @@ init -99 python in mas_sprites:
     # filter enums
     FLT_DAY = "day"
     FLT_NIGHT = "night"
-    FLT_SUNSET = "sunset" # TODO: implement
+    FLT_SUNSET = "sunset"
 
     # filter dict
     FILTERS = {
@@ -365,6 +402,11 @@ init -99 python in mas_sprites:
         FLT_NIGHT: store.im.matrix.tint(0.59, 0.49, 0.55),
         FLT_SUNSET: store.im.matrix.tint(0.93, 0.82, 0.78),
     }
+
+    FLT_DEP = {}
+    # filter dependency dict
+    # key: filter
+    # value: filter that should be considered "base" filter
 
     # should be false until init -1
     __ignore_filters = False
@@ -374,7 +416,7 @@ init -99 python in mas_sprites:
     __flt_global = FLT_DAY
 
 
-    def add_filter(flt_enum, imx):
+    def add_filter(flt_enum, imx, base=None):
         """
         Adds a filter to the global filters
         You can also use this to override built-in filters.
@@ -387,6 +429,14 @@ init -99 python in mas_sprites:
         IN:
             flt_enum - enum key to use as a filter.
             imx - image matrix to use as filter
+            base - filter to use as a backup for this filter. Any images
+                that are unable to be shown for flt_enum will be revert to
+                the base filter. 
+                This should also be a FLT_ENUM.
+                This is checked to make sure it is a valid, preexisting enum,
+                so if chaining multiple bases, add them in order.
+                If None, no base is given for the flt.
+                (Default: None)
         """
         # check init
         if __ignore_filters:
@@ -398,17 +448,24 @@ init -99 python in mas_sprites:
             return
 
         # check name arg able
-        fake_context = {flt_enum: True}
-        try:
-            eval(flt_enum)
-        except:
-            mas_utils.writelog(
-                (
-                    "[Warning!]: Cannot add filter '{0}'. Name is not "
-                    "python syntax friendly\n"
-                ).format(flt_enum)
-            )
+        if not _test_filter(flt_enum):
             return
+
+        # check base if given
+        if base is not None:
+            if base not in FILTERS:
+                mas_utils.writelog(
+                    (
+                        "[Warning!]: Cannot add filter '{0}' with base '{1}', "
+                        "base flt not exist\n"
+                    ).format(flt_enum, base)
+                )
+                return
+
+            if not _test_filter(base):
+                return
+
+            FLT_DEP[flt_enum] = base
 
         FILTERS[flt_enum] = imx
 
@@ -441,6 +498,18 @@ init -99 python in mas_sprites:
         return flt in FILTERS
 
 
+    def _rslv_flt(flt):
+        """
+        Gets base filter for a flt.
+
+        IN:
+            flt - flt to get base filter for
+
+        RETURNS: base flt for flt, or the flt itself if no base
+        """
+        return FLT_DEP.get(flt, flt)
+
+
     def set_filter(flt_enum):
         """
         Sets the current filter if it is valid.
@@ -452,6 +521,32 @@ init -99 python in mas_sprites:
         global __flt_global
         if flt_enum in FILTERS:
             __flt_global = flt_enum
+
+
+    def _test_filter(flt_enum):
+        """
+        Checks if this filter enum can be a filter enum.
+
+        Logs to mas log if there are errors
+
+        IN:
+            flt_enum - filter enum to test
+
+        RETURNS: True if passed test, False if not
+        """
+        fake_context = {flt_enum: True}
+        try:
+            eval(flt_enum, fake_context)
+            return True
+        except:
+            mas_utils.writelog(
+                (
+                    "[Warning!]: Cannot add filter '{0}'. Name is not "
+                    "python syntax friendly\n"
+                ).format(flt_enum)
+            )
+
+        return False
 
 
 init -98 python:
@@ -469,6 +564,22 @@ init -98 python:
         RETURNS: True if flt is the current filter, false if not
         """
         return store.mas_sprites.get_filter() == flt
+
+
+    def mas_fwm_select(fwm):
+        """
+        Generates image to use based on a filter and weather. This is meant
+        for use in MASFilterWeatherDisplaybles.
+
+        IN:
+            fwm - MASFilterWeatherMap object to select image for
+
+        RETURNS: appropriate data for dynamic displayable.
+        """
+        # NOTE: how this works:
+        #   1. determine the current filter and weather
+        #   2. determine the filter to select from this fwm
+
 
 
 # this should be after sprite-chart's initialization
