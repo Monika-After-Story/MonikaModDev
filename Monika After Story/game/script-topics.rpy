@@ -8032,7 +8032,7 @@ label monika_smoking_quit_success:
     m 4rsc "Many former smokers feel urges to smoke again at some point or another..."
     m 4wud "You can't give in, not even once! That's how you fall into relapse!"
     m 2hubfa "But knowing you, you won't let that happen, right?"
-    m 2ekbfa "Considering what you've already done, I know you're stronger than this..."
+    m 2ekbfa "Considering what you've already done, I know you're stronger than this~"
     return
 
 label monika_smoking_quit_will_retry:
