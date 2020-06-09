@@ -1665,6 +1665,9 @@ label ch30_minute(time_since_check):
         # split affection values prior to saving
         _mas_AffSave()
 
+        #Check if we need to lock/unlock the songs rand delegate
+        mas_songs.checkRandSongDelegate()
+
         # save the persistent
         renpy.save_persistent()
 
@@ -1986,7 +1989,7 @@ label ch30_reset:
         $ persistent._mas_filereacts_gift_aff_gained = 0
         $ persistent._mas_filereacts_last_aff_gained_reset_date = today
 
-    #Check if we need to unlock the songs rand delegate
+    #Check if we need to lock/unlock the songs rand delegate
     $ mas_songs.checkRandSongDelegate()
 
     #Now check the analysis ev

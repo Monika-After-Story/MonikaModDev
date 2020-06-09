@@ -564,25 +564,6 @@ init 5 python:
             #Increment cup count
             self.increment()
 
-        def isStillPrep(self, _now):
-            """
-            Checks if we're still prepping something of this type
-
-            IN:
-                _now - datetime.datetime object representing current time
-
-            OUT:
-                boolean:
-                    - True if we're still prepping something
-                    - False otherwise
-            """
-            _time = persistent._mas_current_consumable[self.consumable_type]["prep_time"]
-            return (
-                _time is not None
-                and _time.date() == _now.date()
-                and self.isDrinkTime(_time)
-            )
-
         def isConsTime(self, _now=None):
             """
             Checks if we're in the time range for this consumable
@@ -837,6 +818,53 @@ init 5 python:
                 cons_reset(MASConsumable._getCurrentFood())
 
         @staticmethod
+        def __shouldReset(_type, curr_cons, available_cons):
+            """
+            Checks if we should reset the current consumable type
+
+            CONDITIONS:
+                1. We're having a consumable we shouldn't be having now and we opened the game after its consume time or
+                2. We're still prepping something but
+                    - The consumable's finish prepping event doesn't have conditionals or
+                    - It's no longer time for this consumable
+
+            IN:
+                _type - type of consumable to reset
+                curr_cons - current_consumable (of _type)
+                available_cons - available consumables for the current time
+
+            OUT:
+                boolean:
+                    - True if we should reset the current consumable type
+                    - False otherwise
+            """
+            #If we have no consumable, then there's no point in doing anything
+            if not curr_cons:
+                return False
+
+            prep_ev = mas_getEV(curr_cons.finish_prep_evl)
+
+            return (
+                (
+                    MASConsumable._isHaving(_type)
+                    and (
+                        not MASConsumable._isStillCons(_type)
+                        and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
+                    )
+                )
+                or (
+                    persistent._mas_current_consumable[_type]["prep_time"] is not None
+                    and (
+                            (
+                                prep_ev
+                                and prep_ev.conditional is None
+                            )
+                        or curr_cons not in available_cons
+                    )
+                )
+            )
+
+        @staticmethod
         def _getCurrentDrink():
             """
             Gets the MASConsumable object for the current drink or None if we're not drinking
@@ -1042,14 +1070,8 @@ init 5 python:
             #Verify persist data
             MASConsumable._validatePersistentData(_type)
 
-            #Reset if we're having a consumable we shouldn't be having now and we opened the game after its consume time
-            if (
-                MASConsumable._isHaving(_type)
-                and (
-                    not MASConsumable._isStillCons(_type)
-                    and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
-                )
-            ):
+            #Check if we should reset the current consumable type
+            if MASConsumable.__shouldReset(_type, curr_cons, available_cons):
                 MASConsumable._reset(_type)
 
             #If we're currently prepping/having anything, we don't need to do anything else
@@ -1519,6 +1541,14 @@ label mas_consumables_generic_finished_prepping(consumable):
         m 1eua "Okay, what else should we do today?"
     return
 
+label mas_consumables_refill_explain:
+    # provide in-universe explanation why Monika can't just dupe stuff, only shown once
+    m 3rksdla "I'd duplicate what I have now...but when I tried before, it just wasn't the same..."
+    m 1eksdla "I guess I must be missing something because I just can't seem to replicate the taste."
+    if mas_isMoniHappy(higher=True):
+        m 1ekbsu "...Or maybe it's your everlasting love that makes it special~"
+    return
+
 label mas_consumables_generic_running_out(consumable):
     $ amt_left = consumable.getStock()
 
@@ -1545,6 +1575,9 @@ label mas_consumables_generic_running_out(consumable):
                 line_ender = renpy.substitute("[consumable.disp_name][plur] left.")
 
         m 3eud "I just wanted to let you know I only have [amt_left] [line_ender]"
+
+        if not renpy.seen_label("mas_consumables_refill_explain"):
+            call mas_consumables_refill_explain
 
     else:
         m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name][plur]."
@@ -1575,6 +1608,10 @@ label mas_consumables_generic_critical_low(consumable):
 
     m 1euc "Hey, [player]..."
     m 3eua "I only have one [line_ender]"
+
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
+
     m 3eka "Would you mind getting me some more sometime?"
     m 1hua "Thanks~"
     return
@@ -1628,6 +1665,9 @@ label mas_consumables_generic_queued_running_out_dlg(low_cons):
 
         m 3rksdla "I'm running out of [items_running_out_of]."
         $ them = "some more"
+
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
 
     m 1eka "You wouldn't mind getting [them] for me, would you?"
 
