@@ -2666,9 +2666,6 @@ label monika_aiwfc:
             m 3hub "Make sure you have your volume up!"
             m 1huu ".{w=0.5}.{w=0.5}.{nw}"
 
-    #Get current song
-    $ curr_song = songs.current_track
-
     call monika_aiwfc_song
 
     #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
@@ -2684,10 +2681,6 @@ label monika_aiwfc:
         m 1ekbsa "You'll always be the only gift I'll ever need."
         m 1ekbfa "I love you~"
 
-    #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
-    if curr_song != store.songs.FP_MONIKA_LULLABY:
-        $ play_song(curr_song, fadein=1.0)
-
     #Unlock the song
     $ mas_unlockEVL("mas_song_aiwfc", "SNG")
     return "no_unlock|love"
@@ -2695,22 +2688,7 @@ label monika_aiwfc:
 
 label monika_aiwfc_song:
 
-    #Disable text speed, escape button and music button for this
-    $ mas_disableTextSpeed()
-    $ disable_esc()
-    $ mas_MUMURaiseShield()
-
-    # always unmute the music channel (or at least attempt to)
-    # TODO: there should probably be handling for sayori name case.
-    if songs.getVolume("music") == 0.0:
-        $ renpy.music.set_volume(1.0, channel="music")
-
-    # save background sound for later
-    $ amb_vol = songs.getVolume("backsound")
-
-    $ play_song(None, 1.0)
-    $ renpy.music.set_volume(0.0, 1.0, "background")
-    $ renpy.music.set_volume(0.0, 1.0, "backsound")
+    call mas_timed_text_events_prep
 
     $ play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
@@ -2745,15 +2723,8 @@ label monika_aiwfc_song:
     m 4hksdlb "{i}{cps=10}What more{/cps}{cps=15} can I{/cps}{cps=8} doooo?{w=0.3}{/cps}{/i}{nw}"
     m 4ekbfb "{i}{cps=20}Cause baby{/cps}{cps=12} all I want for Christmas{w=0.3} is yoooooooou~{w=2.3}{/cps}{/i}{nw}"
     m "{i}{cps=9}Yoooooooou, baaaaby~{w=2.5}{/cps}{/i}{nw}"
-    stop music fadeout 0.5
 
-    #Now we re-enable text speed, escape button and music button
-    $ mas_resetTextSpeed()
-    $ enable_esc()
-    $ mas_MUMUDropShield()
-
-    $ renpy.music.set_volume(amb_vol, 1.0, "background")
-    $ renpy.music.set_volume(amb_vol, 1.0, "backsound")
+    call mas_timed_text_events_wrapup
     return
 
 init 5 python:

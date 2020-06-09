@@ -116,13 +116,13 @@ init 10 python in mas_seasons:
         """
 
         # show spring topics
-        store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
-        store.mas_showEVL("monika_outdoors", "EVE", _random=True)
-        store.mas_showEVL("monika_backpacking", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_enjoyingspring", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_outdoors", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_backpacking", "EVE", _random=True)
 
         #Since this is a player model topic, we only rerandom if we need to
         if store.persistent._mas_pm_would_like_mt_peak is None:
-            store.mas_showEVL("monika_mountain", "EVE", _random=True)
+            store.mas_protectedShowEVL("monika_mountain", "EVE", _random=True)
 
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
@@ -164,17 +164,17 @@ init 10 python in mas_seasons:
 
         # show winter topics
         if not renpy.seen_label("monika_snow"):
-            store.mas_showEVL("monika_snow", "EVE", _random=True)
-        store.mas_showEVL("monika_sledding", "EVE", _random=True)
-        store.mas_showEVL("monika_snowcanvas", "EVE", _random=True)
-        store.mas_showEVL("monika_cozy", "EVE", _random=True)
-        store.mas_showEVL("monika_winter", "EVE", _random=True)
-        store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
+            store.mas_protectedShowEVL("monika_snow", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_sledding", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_snowcanvas", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_cozy", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_winter", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_winter_dangers", "EVE", _random=True)
         store.mas_unlockEVL("monika_snowballfight", "EVE")
 
         #For if you get snow (or we don't know if you get snow or not)
         if store.persistent._mas_pm_gets_snow is not False:
-            store.mas_showEVL("monika_snowmen", "EVE", _random=True)
+            store.mas_protectedShowEVL("monika_snowmen", "EVE", _random=True)
 
         # hide non-winter topics
         store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
