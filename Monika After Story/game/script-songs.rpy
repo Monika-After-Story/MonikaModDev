@@ -1000,3 +1000,37 @@ label mas_monika_plays_or(skip_leadin=False):
     $ play_song(None, 1.0)
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_abstract_nonsense",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Abstract Nonsense",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_abstract_nonsense:
+    m 2dfd "{i}~This is useless,{w=0.5}{nw}{/i}"
+    m 2rkd "{i}~This is useless,{fast} I want it to stop,{w=0.5}{nw}{/i}"
+    m 6rkc "{i}~This is useless,{fast} I want it to stop,{fast} I put my face out the window~{/i}"
+    m 2dfd "{i}~This is boring,{w=0.5}{nw}{/i}"
+    m 2rkd "{i}~This is boring,{fast} I'm tired of it,{w=0.5}{nw}{/i}"
+    m 6rkc "{i}~This is boring,{fast} I'm tired of it,{fast} but I don't have the courage to die~{/i}"
+    m 2dfd "{i}~This is useless,{w=0.5}{nw}{/i}"
+    m 2rkd "{i}~This is useless,{fast} I want it to stop,{w=0.5}{nw}{/i}"
+    m 5rkc "{i}~This is useless,{fast} I want it to stop,{fast} I'm injecting my wrist~{/i}"
+    m 2dfd "{i}~This is boring,{w=0.5}{nw}{/i}"
+    m 2rkd "{i}~This is boring,{fast} I'm tired of it,{w=0.5}{nw}{/i}"
+    m 1tsc "{i}~This is boring,{fast} I'm tired of it,{fast} I eat the cake{nw}{/i}"
+    m 6dsd "{i}~This is boring,{fast} I'm tired of it, I eat the cake{fast} and take a deep breath~{/i}"
+    m 1ekd "You know, [player], I really feel bad for the main character of this song..."
+    m 3wkd "And one of the worst parts is that a lot of people really relate to how she feels."
+    m 6dkd "...It really breaks my heart."
+    m 1ekd "Please remember that I'll always be here for you and that you're never really alone."
+    m 1dkb "I really do love you."
+    return "derandom" "love"
