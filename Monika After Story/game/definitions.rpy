@@ -5605,19 +5605,62 @@ init 2 python:
         #If we're here, that means we need to do some returns based on the values we put in
         return seen_all
 
-    def mas_a_an_str(ref_str):
+    def mas_a_an_str(ref_str, ignore_case=False):
         """
         Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
 
         IN:
             ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and not adjust the capitalization of ref_str
 
         OUT:
             string prefixed with a/an
         """
-        if ref_str[0] in "aeiou":
-            return "an " + ref_str
-        return "a " + ref_str
+        return ("{0} {1}".format(
+            mas_a_an(ref_str, ignore_case),
+            ref_str.lower() if not ignore_case and (ref_str[0].isupper() and not ref_str.isupper()) else ref_str
+        ))
+
+    def mas_a_an(ref_str, ignore_case=False):
+        """
+        Takes in a reference string and returns either a/an based on the first letter of the word
+
+        IN:
+            ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and just use lowercase
+
+        OUT:
+            a/an based on the ref string
+        """
+        should_capitalize = not ignore_case and ref_str[0].isupper()
+
+        if ref_str[0] in "aeiouAEIOU":
+            return "An" if should_capitalize else "an"
+        return "A" if should_capitalize else "a"
+
+#EXTRA TEXT TAGS
+init python:
+    def a_an_tag(tag, argument, contents):
+        """
+        Handles a/an mid-string
+
+        NOTE: This should ONLY surround the exact word needing to be prefixed with a/an
+        All text tags should be kept OUTSIDE of the opening and closing tags for this function
+
+        Usage: I bought [player] {a_an}[tempvar]{/a_an}.
+
+        If tempvar was 'item,' the output is: I bought [player] an item.
+        If tempvar was 'coffee,' the output is: I bought [player] a coffee.
+        """
+        for _id, _tuple in enumerate(contents):
+            #We want to modify only text
+            if _tuple[0] == renpy.TEXT_TEXT:
+                contents[_id] = (_tuple[0], mas_a_an_str(_tuple[1]))
+                return contents
+
+        return contents
+
+    config.custom_text_tags["a_an"] = a_an_tag
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

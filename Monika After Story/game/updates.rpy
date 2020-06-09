@@ -372,8 +372,17 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.3
 label v0_11_3(version="v0_11_3"):
     python:
+        #Rerandom all songs which aren't d25 exclusive
+        for song_ev in mas_songs.song_db.itervalues():
+            if (
+                song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
+                and mas_songs.TYPE_LONG not in song_ev.category
+            ):
+                song_ev.random=True
+
         # give extra pool unlocks for recent players
         if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
             # only 0.11.0 + week ago
@@ -381,6 +390,13 @@ label v0_11_3(version="v0_11_3"):
             # NOTE: multiply by 4 becaue everyone should already have level
             #   number of pool unlocks given
             persistent._mas_pool_unlocks += store.mas_xp.level() * 4
+
+        #Adjust consumables to be at their max stock amount
+        for consumable_id in persistent._mas_consumable_map.iterkeys():
+            cons = mas_getConsumable(consumable_id)
+
+            if cons and cons.getStock() > cons.max_stock_amount:
+                persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
 
         # unlock monika_kiss
         mas_unlockEVL("monika_kiss", "EVE")
@@ -453,6 +469,30 @@ label v0_11_3(version="v0_11_3"):
         for pool_label in pool_unlock_list:
             mas_unlockEVL(pool_label,"EVE")
 
+        #Fix the islands event
+        if not mas_isWinter() and not seen_event("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
+
+        #Handle the preferred name and gender change topics again
+        gender_ev = mas_getEV("mas_gender")
+        if gender_ev:
+            #Remove the gender ev's conditional
+            gender_ev.conditional = None
+
+            preferredname_ev = mas_getEV("mas_preferredname")
+            if preferredname_ev:
+                #If we have the preferredname ev, we need to remove the conditional anyway
+                preferredname_ev.conditional = None
+
+            #If the gender topic has a last seen and the preferredname ev hasn't been seen yet
+            #We need to set up its start date
+            if gender_ev.last_seen:
+                if preferredname_ev and not preferredname_ev.last_seen:
+                    preferredname_ev.start_date = gender_ev.last_seen + datetime.timedelta(hours=2)
+
+            #If the gender topic has not been seen, then it needs its start_date set up
+            else:
+                gender_ev.start_date = mas_getFirstSesh() + datetime.timedelta(minutes=30)
     return
 
 #0.11.1
