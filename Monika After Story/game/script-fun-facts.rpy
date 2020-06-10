@@ -781,6 +781,6 @@ label mas_fun_fact_coffeelegends:
     m 1eub "But when word of his discovery spread, Omar was asked to return and was made a saint."
     m 1esa "Whether or not that was truly its first use, coffee became very prevalent in the Islamic world after its discovery.{w=0.2} For example, during fasting periods it was used to ease hunger and remain energized."
     m 3eub "When its use spread to Europe, many countries initially used it for medicinal purposes. By the 17th century, coffeehouses were becoming plentiful and popular."
-    m 3hub "And I can certainly attest that our love of coffee has remained strong to this day."
+    m 3hub "And I for one can certainly attest that our love of coffee has remained strong to this day."
     call mas_fun_facts_end
     return
