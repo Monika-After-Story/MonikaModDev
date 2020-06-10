@@ -772,7 +772,7 @@ label mas_fun_fact_coffeelegends:
     m 3euc "You see, the use of coffee is recorded consistently around the 15th century, but...{w=0.2}it's unclear {i}how{/i} exactly it was found. There are quite a few legends claiming to be the very first."
     m 1eua "Several accounts involve farmers or monks observing animals acting oddly after eating some strange, bitter berries."
     m 1hub "When they tried them for themselves, they were startled to find themselves energized as well!"
-    m 2euc "One particular myth claims that an Ethiopian monk named Kaldi brought the berries to a nearby monastery, wanting to share what he'd found.{w=0.1}{nw}"
+    m 2euc "One such myth claims that an Ethiopian monk named Kaldi brought the berries to a nearby monastery, wanting to share what he'd found.{w=0.1}{nw}"
     extend 2eksdld "But when he did so, he was met with disapproval, and the coffee beans were thrown into a fire."
     m 1dub "As they burned, however...the beans began to let off the most {i}delicious{/i} aroma. It was so enticing that the monks scrambled to save the beans and put them in water."
     m 1dua "Thus producing the first cup of coffee."
