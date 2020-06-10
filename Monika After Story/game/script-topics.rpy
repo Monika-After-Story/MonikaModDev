@@ -14206,8 +14206,8 @@ init 5 python:
         )
      )
 label monika_diving:
-    m 3eub "You know, I recently read about swimming. There are so many species.  But I was attracted the most by scuba diving.
-    m 3eub "Hey [player], have you heard about scuba diving?"
+    m 3eub "You know, I recently thought about water sports that we could do. How about diving?"
+    m 3eub "By the way [player], have you heard about scuba diving?"
     m 3eub "After immersion in water, you can see a wonderful underwater world full of diverse marine life."
     m 7eub "There, you can see schools of fish, coral reefs, jellyfish, and sea greens."
     m 4eub "There may also be sharks, but only in specific places."
