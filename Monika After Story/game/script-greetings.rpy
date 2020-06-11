@@ -1334,45 +1334,27 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_loveme")
 
 label monikaroom_greeting_ear_loveme:
-    $ cap_he = he.capitalize()
-    if cap_he == "They":
+    python:
+        cap_he = he.capitalize()
+        loves = "love" if cap_he == "They" else "loves"
 
-        m "[cap_he] love me.{w=0.2} [cap_he] love me not."
-        m "[cap_he] {i}love{/i} me.{w=0.2} [cap_he] love me {i}not{/i}."
+    m "[cap_he] [loves] me.{w=0.3} [cap_he] [loves] me not."
+    m "[cap_he] {i}[loves]{/i} me.{w=0.3} [cap_he] [loves] me {i}not{/i}."
 
-        if mas_isMoniNormal(higher=True):
-            m "[cap_he] love me."
-            m "...{w=0.5} [cap_he] love me!"
+    if mas_isMoniNormal(higher=True):
+        m "[cap_he] [loves] me."
+        m "...{w=0.5}[cap_he] [loves] me!"
 
-        elif mas_isMoniUpset():
-            m "...[cap_he]...{w=0.3} [cap_he]...{w=0.3}love me not."
-            m "...{w=0.3} No...{w=0.3} That...{w=0.3}can't be."
-            m "...{w=0.5} Can it?"
-
-        else:
-            m "...{w=0.5} [cap_he] love me not."
-            m "..."
-            m "I wonder if [he] ever did."
-            m "I doubt it more every single day."
+    elif mas_isMoniUpset():
+        m "...[cap_he]...{w=0.3}[cap_he]...{w=0.3}[loves] me not."
+        m "...{w=0.3}No...{w=0.3} That...{w=0.3}can't be."
+        m "...{w=0.5}Can it?"
 
     else:
-        m "[cap_he] loves me.{w=0.3} [cap_he] loves me not."
-        m "[cap_he] {i}loves{/i} me.{w=0.3} [cap_he] loves me {i}not{/i}."
-
-        if mas_isMoniNormal(higher=True):
-            m "[cap_he] loves me."
-            m "...{w=0.5} [cap_he] loves me!"
-
-        elif mas_isMoniUpset():
-            m "...[cap_he]...{w=0.3} [cap_he]...{w=0.3}loves me not."
-            m "...{w=0.3} No...{w=0.3} That...{w=0.3}can't be."
-            m "...{w=0.5} Can it?"
-
-        else:
-            m "...{w=0.5} [cap_he] loves me not."
-            m "..."
-            m "I wonder if [he] ever did..."
-            m "I doubt it more every single day."
+        m "...{w=0.5}[cap_he] [loves] me not."
+        m "..."
+        m "I wonder if [he] ever did..."
+        m "I doubt it more every single day."
 
     jump monikaroom_greeting_choice
 
