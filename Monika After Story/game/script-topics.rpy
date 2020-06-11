@@ -14300,3 +14300,4 @@ label monika_dying_same_day:
     m 6dktsc "You are the meaning of my entire life, and I... {w=1}[player], I just won't handle it."
     m 6ektdc "I don't know how am I supposed to live without you, [player]..."
     m 2eku "I really, really don't want you to ever leave me."
+    return
