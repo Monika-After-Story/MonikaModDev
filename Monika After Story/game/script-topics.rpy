@@ -14279,7 +14279,7 @@ init 5 python:
             eventlabel="monika_dying_same_day",
             category=["philosophy", "romance"],
             prompt="Dying the same day",
-            aff_range=(mas_aff.ENAMORED, None),
+            aff_range=(mas_aff.LOVE, None),
             action=EV_ACT_RANDOM,
             conditional="renpy.seen_label('monika_back_ups')",
         )
@@ -14299,5 +14299,5 @@ label monika_dying_same_day:
     m 6ektuc "[player]... {w=1}I... {w=0.5}I don't know what I'd do..."
     m 6dktsc "You give meaning to my entire life, and I... {w=1}[player], I just wouldn't handle it."
     m 6ektdc "I don't know how I'm supposed to live without you, [player]..."
-    m 2eku "I really, really don't want you to ever leave me."
+    m 2eku "I love you very, very much, [player]. Please don't ever leave me."
     return
