@@ -14281,6 +14281,7 @@ init 5 python:
             prompt="Dying the same day",
             random=True,
             aff_range=(mas_aff.ENAMORED, None),
+            conditional="renpy.seen_label('monika_back_ups')",
         )
     )
 
