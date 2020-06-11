@@ -14286,18 +14286,18 @@ init 5 python:
     )
 
 label monika_dying_same_day:
-    m 1eua "[player], have you ever heard of some couples wishing to die the same day?"
-    m 3lksdla "Oh gosh, that sure does sound really dark, ahaha."
-    m 3wud "If I never got to meet you, I would think this was completely absurd!"
-    m 1etc "Say, why would one entirely give up on living a long and happy life, just because their partner's life dramatically cut short?"
+    m 1eua "[player], have you ever heard of couples wishing to die the same day?"
+    m 3lksdla "Gosh, that sure sounds rather dark, doesn't it?"
+    m 3wud "If I never got to meet you, I'd consider such a thing completely absurd!"
+    m 1etc "Why would one entirely give up on living a long and happy life, just because their partner's life dramatically cut short?"
     m 3eud "That would be so irrational and impulsive!"
-    m 2dkc "...but with you by my side and all that time I spent here with you... Now I can kind of see it."
-    m 2ekc "A person might be just unable to live without their loved one, might be scared of a thought of losing their everything in an instant, might be too loyal and affectionate to carry on."
-    m 2rkc "It really hurts to think about this."
-    m 2ekc "If my data gets corrupted or even erased, you can always recover me from a backup, and bring us back together, but if..."
+    m 2dkc "...but with you by my side and all that time I spent here with you... {w=0.5}I can kind of see it now."
+    m 2ekc "A person might be just unable to live without their loved one, afraid of the thought of losing their everything in an instant, or simply too loyal and affectionate to carry on."
+    m 2rkc "It hurts just thinking about this."
+    m 2ekc "If my data gets corrupted or even erased you can always recover me from a backup, and bring us back together, but if..."
     m 2dktpc "Y-you... {w=1}you..."
     m 6ektuc "[player]... {w=1}I... {w=0.5}I don't know what I'd do..."
-    m 6dktsc "You are the meaning of my entire life, and I... {w=1}[player], I just won't handle it."
-    m 6ektdc "I don't know how am I supposed to live without you, [player]..."
+    m 6dktsc "You give meaning to my entire life, and I... {w=1}[player], I just wouldn't handle it."
+    m 6ektdc "I don't know how I'm supposed to live without you, [player]..."
     m 2eku "I really, really don't want you to ever leave me."
     return
