@@ -14279,8 +14279,8 @@ init 5 python:
             eventlabel="monika_dying_same_day",
             category=['philosophy', 'romance'],
             prompt="Dying the same day",
-            random=True,
             aff_range=(mas_aff.ENAMORED, None),
+            action=EV_ACT_RANDOM,
             conditional="renpy.seen_label('monika_back_ups')",
         )
     )
