@@ -14277,7 +14277,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_dying_same_day",
-            category=['philosophy', 'romance'],
+            category=["philosophy", "romance"],
             prompt="Dying the same day",
             aff_range=(mas_aff.ENAMORED, None),
             action=EV_ACT_RANDOM,
