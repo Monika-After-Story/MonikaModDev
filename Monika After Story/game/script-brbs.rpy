@@ -4,6 +4,57 @@
 #   - Brbs should return "idle" to move into idle mode
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
 #       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
+init 10 python in mas_brbs:
+    import store
+
+    def get_wb_quip():
+        """
+        Picks a random welcome back quip and returns it
+        Should be used for normal+ quips
+
+        OUT:
+            A randomly selected quip for coming back to the spaceroom
+        """
+
+        return renpy.substitute(renpy.random.choice([
+            _("So, what else did you want to do today?"),
+            _("What else did you want to do today?"),
+            _("Is there anything else you wanted to do today?"),
+            _("What else should we do today?"),
+        ]))
+
+    def was_idle_for_at_least(idle_time, brb_evl):
+        """
+        Checks if the user was idle (from the brb_evl provided) for at least idle_time
+
+        IN:
+            idle_time - Minimum amount of time the user should have been idle for in order to return True
+            brb_evl - Eventlabel of the brb to use for the start time
+
+        OUT:
+            boolean:
+                - True if it has been at least idle_time since seeing the brb_evl
+                - False otherwise
+        """
+        brb_ev = store.mas_getEV(brb_evl)
+        return brb_ev and brb_ev.timePassedSinceLastSeen_dt(idle_time)
+
+# label to use if we want to get back into idle from a callback
+label mas_brb_back_to_idle:
+    # sanity check
+    if globals().get("brb_label", -1) == -1:
+        return
+
+    python:
+        mas_idle_mailbox.send_idle_cb(brb_label + "_callback")
+        persistent._mas_idle_data[brb_label] = True
+        mas_globals.in_idle_mode = True
+        persistent._mas_in_idle_mode = True
+        renpy.save_persistent()
+        mas_dlgToIdleShield()
+
+    return "idle"
+
 
 init 5 python:
     addEvent(
@@ -39,14 +90,7 @@ label monika_brb_idle:
     return "idle"
 
 label monika_brb_idle_callback:
-    python:
-        wb_quips = [
-            _("So, what else did you want to do today?"),
-            _("Is there anything else you wanted to do today?"),
-            _("What else should we do today?"),
-        ]
-
-        wb_quip = renpy.random.choice(wb_quips)
+    $ wb_quip = mas_brbs.get_wb_quip()
 
     if mas_isMoniAff(higher=True):
         m 1hub "Welcome back, [player]. I missed you~"
@@ -112,17 +156,9 @@ label monika_writing_idle:
     return "idle"
 
 label monika_writing_idle_callback:
+
     if mas_isMoniNormal(higher=True):
-        python:
-            wb_quips = [
-                _("What else did you want to do today?"),
-                _("Is there anything else you wanted to do today?"),
-                _("What else should we do today?"),
-                _("Welcome back!")
-            ]
-
-            wb_quip = renpy.random.choice(wb_quips)
-
+        $ wb_quip = mas_brbs.get_wb_quip()
         m 1eua "Done writing, [player]?"
         m 1eub "[wb_quip]"
 
@@ -299,6 +335,164 @@ label monika_idle_game_callback:
     else:
         m 6ckc "..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_coding",
+            prompt="I'm going to code for a bit",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_coding:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Oh! Going to code something?"
+
+        if persistent._mas_pm_has_code_experience is False:
+            m 1etc "I thought you didn't do that."
+            m 1eub "Did you pick up programming since we talked about it last time?"
+
+        elif persistent._mas_pm_has_contributed_to_mas or persistent._mas_pm_wants_to_contribute_to_mas:
+            m 1tua "Something for me, perhaps?"
+            m 1hub "Ahaha~"
+
+        else:
+            m 3eub "Do your best to keep your code clean and easy to read."
+            m 3hksdlb "...You'll thank yourself later!"
+
+        m 1eua "Anyway, just let me know when you're done."
+        m 1hua "I'll be right here, waiting for you~"
+
+    elif mas_isMoniUpset():
+        m 2euc "Oh, you're going to code?"
+        m 2tsc "Well, don't let me stop you."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_coding_callback")
+    $ persistent._mas_idle_data["monika_idle_coding"] = True
+    return "idle"
+
+label monika_idle_coding_callback:
+    if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=20), "monika_idle_coding"):
+            m 1eua "Done for now, [player]?"
+        else:
+            m 1eua "Oh, done already, [player]?"
+
+        m 3eub "[wb_quip]"
+
+    elif mas_isMoniUpset():
+        m 2esc "Welcome back."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh, you're back."
+
+    else:
+        m 6ckc "..."
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_workout",
+            prompt="I'm going to work out for a bit",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_workout:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Okay, [player]!"
+        if persistent._mas_pm_works_out is False:
+            m 3eub "Working out is a great way to take care of yourself!"
+            m 1eka "I know it might be hard to start out,{w=0.2}{nw}"
+            extend 3hua " but it's definitely a habit worth forming."
+        else:
+            m 1eub "It's good to know you're taking care of your body!"
+        m 3esa "You know how the saying goes, 'A healthy mind in a healthy body.'"
+        m 3hua "So go work up a good sweat, [player]~"
+        m 1tub "Just let me know when you've had enough."
+
+    elif mas_isMoniUpset():
+        m 2esc "Good to know you're taking care of{cps=*2} something, at least.{/cps}{nw}"
+        $ _history_list.pop()
+        m "Good to know you're taking care of{fast} yourself, [player]."
+        m 2euc "I'll be waiting for you to get back."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_workout_callback")
+    $ persistent._mas_idle_data["monika_idle_workout"] = True
+    return "idle"
+
+label monika_idle_workout_callback:
+    if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=60), "monika_idle_workout"):
+            # TODO: In the future add another topic which would
+            # unlock once the player has seen this specific path some number of times.
+
+            m 2esa "You sure took your time, [player].{w=0.3}"
+            extend 2eub " That must've been one heck of a workout."
+            m 2eka "It's good to push your limits, but you shouldn't overdo it."
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=10), "monika_idle_workout"):
+            m 1esa "Done with your workout, [player]?"
+
+        else:
+            m 1euc "Back already, [player]?"
+            m 1eka "I'm sure you can go on for a bit longer if you try."
+            m 3eka "Taking breaks is fine, but you shouldn't leave your workouts unfinished."
+            m 3ekb "Are you sure you can't keep going?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are you sure you can't keep going?{fast}"
+
+                "I'm sure.":
+                    m 1eka "That's okay."
+                    m 1hua "I'm sure you did your best, [player]~"
+
+                "I'll try to keep going.":
+                    # continue workout and return Monika to idle state
+                    m 1hub "That's the spirit!"
+
+                    $ brb_label = "monika_idle_workout"
+                    $ pushEvent("mas_brb_back_to_idle",skipeval=True)
+                    return
+
+        m 7eua "Make sure to rest properly and maybe get a snack to get some energy back."
+        m 7eub "[wb_quip]"
+
+    elif mas_isMoniUpset():
+        m 2euc "Done with your workout, [player]?"
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh, you came back."
+
+    else:
+        m 6ckc "..."
+    return
+
 
 #Rai's og game idle
 #label monika_idle_game:

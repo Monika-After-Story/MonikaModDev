@@ -1548,9 +1548,10 @@ label mas_reaction_hotchocolate:
             m 1hua "But for now, at least I can enjoy it here."
             m 1hub "Thanks again, [player]!"
 
-            #If we're currently brewing/drinking anything or if it's not winter, we won't have this
+            #If we're currently brewing/drinking anything, or it's not time for this consumable, or if it's not winter, we won't have this
             if (
-                not mas_isWinter()
+                not hotchoc.isConsTime()
+                or not mas_isWinter()
                 or bool(MASConsumable._getCurrentDrink())
             ):
                 m 3eua "I'll be sure to have some later!"
