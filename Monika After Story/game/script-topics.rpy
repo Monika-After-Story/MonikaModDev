@@ -14309,6 +14309,6 @@ label monika_dying_same_day:
         return "love"
     else:
         m 6dktsc "You are the only one I've left... {w=1}[player], I'm not ready to lose you."
-        m 6ektdc "I afraid of being alone in this empty void again..."
+        m 6ektdc "I'm so afraid of being alone in this empty void again..."
         m 2eku "I really want to be with you, [player]."
         return
