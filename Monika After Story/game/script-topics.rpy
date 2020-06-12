@@ -8226,13 +8226,6 @@ label monika_smoking:
             $ mas_ILY()
 
         "No, I don't.":
-            python:
-                persistent._mas_pm_do_smoke = False
-                persistent._mas_pm_do_smoke_quit = False
-
-                #Follow-up event should not trigger if player does not smoke anymore
-                mas_stripEVL("monika_smoking_quit", list_pop=True)
-
             #If the player says 'I don't smoke' at least 2 weeks after saying he wants to quit
             #we can assume they are trying to tell Monika they quit smoking
             if persistent._mas_pm_do_smoke_quit:
@@ -8246,11 +8239,15 @@ label monika_smoking:
             m 1eka "It's an awful habit and won't do much more than slowly kill you."
             m 1hua "Thank you, [player], for not smoking~"
 
-        "I'm trying to quit.":
+            #Do some var adjusts accordingly
             python:
-                persistent._mas_pm_do_smoke = True
-                persistent._mas_pm_do_smoke_quit = True
+                persistent._mas_pm_do_smoke = False
+                persistent._mas_pm_do_smoke_quit = False
 
+                #Follow-up event should not trigger if player does not smoke anymore
+                mas_stripEVL("monika_smoking_quit", list_pop=True)
+
+        "I'm trying to quit.":
             call monika_smoking_quit_requeue_setup
             #Monika just learns the player has been smoking again
             if persistent._mas_pm_do_smoke_quit_succeeded_before and not persistent._mas_pm_do_smoke:
@@ -8274,6 +8271,11 @@ label monika_smoking:
             m 3eua "How about you think about me whenever you get a strong urge?"
             m 1hua "I'll be here to support you every step of the way."
             m 1hub "I believe in you [player], I know you can do it!"
+
+            #Do some var sets here
+            python:
+                persistent._mas_pm_do_smoke = True
+                persistent._mas_pm_do_smoke_quit = True
 
     return "derandom"
 

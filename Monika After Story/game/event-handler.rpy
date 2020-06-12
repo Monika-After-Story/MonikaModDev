@@ -532,20 +532,27 @@ init 6 python:
         mas_showEVL(ev_label, code, unlock=True)
 
 
-    def mas_stripEVL(ev_label, list_pop=False):
+    def mas_stripEVL(ev_label, list_pop=False, remove_dates=True):
         """
-        Strips the conditional and action from an event given the label
+        Strips the conditional and action properties from an event given its label
+        start_date and end_date will be removed if remove_dates is True
         Also removes the event from the event list if present (optional)
 
         IN:
             ev_label - label of event to strip
             list_pop - True if we want to remove the event from the event list
                 (Default: False)
+            remove_dates - True if we want to remove start/end_dates from the event
+                (Default: True)
         """
         ev = mas_getEV(ev_label)
         if ev is not None:
             ev.conditional = None
             ev.action = None
+
+            if remove_dates:
+                ev.start_date = None
+                ev.end_date = None
 
             if list_pop:
                 mas_rmEVL(ev_label)
