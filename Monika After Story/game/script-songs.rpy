@@ -1188,7 +1188,7 @@ label mas_song_cant_help_falling_in_love:
     extend 3ekbsb" are meant to be~{/i}"
     m 1dud "{i}~Take my hand~{/i}"
     m 1dub "{i}~Take my whole life, too~{/i}"
-    m 1dud "{i}~For I can't help{nw}"
+    m 1dud "{i}~For I can't help{w=0.1}"
     extend 1ekbfb " falling in love with you~{/i}"
 
     m 1dkbsa "..."
