@@ -1157,6 +1157,48 @@ label mas_song_shelter_lyrics:
     m "{i}~Until you're gone~{/i}"
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_cant_help_falling_in_love",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Can't help falling in love",
+            random=True,
+            aff_range=(mas_aff.HAPPY,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_cant_help_falling_in_love:
+    m 1dud "{i}~Wise men say~{/i}"
+    m 1dub "{i}~Only fools rush in~{/i}"
+    m 1dud "{i}~But I can't help{w=0.1}"
+    extend 1ekbsb " falling in love with you~{/i}"
+    m 3ekasb "{i}~Shall I stay?~{/i}"
+    m 3dkb "{i}~Would it be a sin~{/i}"
+    m 1dud "{i}~If I can't help{w=0.1}"
+    extend 1dubsb " falling in love with you?~{/i}"
+
+    m 1dud "{i}~Like a river flows~{/i}"
+    m 1dub "{i}~Surely to the sea~{/i}"
+    m 1ekbsb "{i}~Darling, so it goes~{/i}"
+    m 1ekbsa"{i}~Some things{w=0.1}"
+    extend 3ekbsb" are meant to be~{/i}"
+    m 1dud "{i}~Take my hand~{/i}"
+    m 1dub "{i}~Take my whole life, too~{/i}"
+    m 1dud "{i}~For I can't help{nw}"
+    extend 1ekbfb " falling in love with you~{/i}"
+
+    m 1dkbsa "..."
+    m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{nw}"
+    extend 5hubsb " Ahaha~"
+    m 1ekbsa "I love you~"
+
+    return "love"
+
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
