@@ -769,17 +769,17 @@ init 5 python:
 
 label mas_fun_fact_coffeelegends:
     m 3eub "The last time I had a cup of coffee, I got a little curious about where it was first discovered."
-    m 3euc "You see, the use of coffee is recorded consistently around the 15th century, but...{w=0.2}it's unclear {i}how{/i} exactly it was found. There are quite a few legends claiming to be the very first."
+    m 3euc "You see, the use of coffee has been recorded consistently since around the 15th century, but...{w=0.2}it's unclear {i}how{/i} exactly it was found. There are quite a few legends claiming to be the very first."
     m 1eua "Several accounts involve farmers or monks observing animals acting oddly after eating some strange, bitter berries."
-    m 1hub "When they tried them for themselves, they were startled to find themselves energized as well!"
+    m 1hub "And when they tried them for themselves, they were startled to find themselves energized as well!"
     m 2euc "One such myth claims that an Ethiopian monk named Kaldi brought the berries to a nearby monastery, wanting to share what he'd found.{w=0.1}{nw}"
     extend 2eksdld "But when he did so, he was met with disapproval, and the coffee beans were thrown into a fire."
-    m 1dub "As they burned, however...the beans began to let off the most {i}delicious{/i} aroma. It was so enticing that the monks scrambled to save the beans and put them in water."
+    m 1dub "As they burned, however...{w=0.2}the beans began to let off the most {i}delicious{/i} aroma. It was so enticing that the monks scrambled to save the beans and put them in water."
     m 1dua "Thus producing the first cup of coffee."
     m 2euc "Another claim states that an Islamic scholar named Omar discovered coffee beans during his exile from Mecca. {nw}"
     extend 2ekd "At the time, he was starving and struggling to survive. If not for the energy they provided, he may have died."
     m 1eub "But when word of his discovery spread, Omar was asked to return and was made a saint."
-    m 1esa "Whether or not that was truly its first use, coffee became very prevalent in the Islamic world after its discovery.{w=0.2} For example, during fasting periods it was used to ease hunger and remain energized."
+    m 1esa "Whether or not that was truly its first use, coffee became very prevalent in the Islamic world after its discovery.{w=0.2} For example, during fasting periods it was used to ease hunger and help people remain energized."
     m 3eub "When its use spread to Europe, many countries initially used it for medicinal purposes. By the 17th century, coffeehouses were becoming plentiful and popular."
     m 3hub "And I for one can certainly attest that our love of coffee has remained strong to this day."
     call mas_fun_facts_end
