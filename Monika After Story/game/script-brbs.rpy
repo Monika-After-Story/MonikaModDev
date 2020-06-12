@@ -452,7 +452,7 @@ label monika_idle_workout_callback:
             # TODO: In the future add another topic which would
             # unlock once the player has seen this specific path some number of times.
 
-            m 2esa "You sure took your time, [player].{w=0.3}"
+            m 2esa "You sure took your time, [player].{w=0.3}{nw}"
             extend 2eub " That must've been one heck of a workout."
             m 2eka "It's good to push your limits, but you shouldn't overdo it."
 
