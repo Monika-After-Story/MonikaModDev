@@ -1172,27 +1172,31 @@ init 5 python:
     )
 
 label mas_song_cant_help_falling_in_love:
-    m 1dud "{i}~Wise men say~{/i}"
-    m 1dub "{i}~Only fools rush in~{/i}"
-    m 1dud "{i}~But I can't help{w=0.1}{nw}"
-    extend 1ekbsb " falling in love with you~{/i}"
-    m 3ekbsa "{i}~Shall I stay?~{/i}"
-    m 3dkb "{i}~Would it be a sin~{/i}"
-    m 1dud "{i}~If I can't help{w=0.1}{nw}"
-    extend 1dubsb " falling in love with you?~{/i}"
+    # these are only here for easy timing manipulation - change to explicit values before merging
+    $ pause_s = 0.3
+    $ pause_m = 0.5
+    $ pause_l = 1.0
+    m 1dud "{cps=16}{i}~Wise{w=[pause_m]} men{w=[pause_m]} say~"
+    m 1dub "{cps=16}{i}~Only{w=[pause_m]} fools{w=[pause_l]} rush{w=[pause_m]} in~"
+    m 1dud "{cps=16}{i}~But I{w=[pause_m]} can't{w=[pause_s]} help{w=[pause_s]}{nw}"
+    extend 1ekbsb " falling in love{w=[pause_l]} with{w=[pause_s]} you~"
+    m 3ekbsa "{cps=16}{i}~Shall{w=[pause_m]} I{w=[pause_m]} stay?~"
+    m 3dkb "{cps=16}{i}~Would it be{w=[pause_m]} a{w=[pause_m]} sin~"
+    m 1dud "{cps=16}{i}~If I{w=[pause_m]} can't{w=[pause_m]} help{w=[pause_s]}{nw}"
+    extend 1dubsb " falling in love{w=[pause_l]} with{w=[pause_s]} you?~"
 
-    m 1dud "{i}~Like a river flows~{/i}"
-    m 1dub "{i}~Surely to the sea~{/i}"
-    m 1ekbsb "{i}~Darling, so it goes~{/i}"
-    m 1ekbsa"{i}~Some things{w=0.1}{nw}"
-    extend 3ekbsb" are meant to be~{/i}"
-    m 1dud "{i}~Take my hand~{/i}"
-    m 1dub "{i}~Take my whole life, too~{/i}"
-    m 1dud "{i}~For I can't help{w=0.1}{nw}"
-    extend 1ekbfb " falling in love with you~{/i}"
+    m 1dud "{cps=16}{i}~Like a river flows~"
+    m 1dub "{cps=16}{i}~Surely to the sea~"
+    m 1ekbsb "{cps=16}{i}~Darling,{w=[pause_s]} so it goes~"
+    m 1ekbsa"{cps=16}{i}~Some things{w=[pause_m]}{nw}"
+    extend 3ekbsb" are meant to be~"
+    m 1dud "{cps=16}{i}~Take{w=[pause_m]} my{w=[pause_m]} hand~"
+    m 1dub "{cps=16}{i}~Take my whole{w=[pause_m]} life,{w=[pause_m]} too~"
+    m 1dud "{cps=16}{i}~For I{w=[pause_m]} can't{w=[pause_m]} help{w=[pause_m]}{nw}"
+    extend 1ekbfb " falling in love{w=[pause_l]} with{w=[pause_m]} you~"
 
     m 1dkbsa "..."
-    m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{nw}"
+    m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{w=0.5}{nw}"
     extend 5hubsb " Ahaha~"
     m 1ekbsa "I love you~"
 
