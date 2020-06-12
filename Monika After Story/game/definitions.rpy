@@ -6,7 +6,6 @@ init 1 python:
     persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
-    import re
     import singleton
     me = singleton.SingleInstance()
     # define the zorders
@@ -34,7 +33,7 @@ python early:
         if renpy.config.reject_backslash and "\\" in name:
             raise Exception("Backslash in filename, use '/' instead: %r" % name)
 
-        name = re.sub(r'/+', '/', name)
+        name = renpy.re.sub(r'/+', '/', name)
 
         for p in renpy.loader.get_prefixes():
             rv = renpy.loader.load_core(p + name)
