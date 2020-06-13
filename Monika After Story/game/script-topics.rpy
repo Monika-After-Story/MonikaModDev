@@ -8582,7 +8582,7 @@ label monika_concerts:
 
             else:
                 $ persistent._mas_pm_like_other_music = False
-                m 1eua "Ok, [player], we'll just choose from the other types of music we've already discussed!"
+                m 1eua "Okay, [player], we'll just choose from the other types of music we've already discussed!"
 
     m 1hua "Just imagine us..."
     if persistent._mas_pm_like_orchestral_music:
@@ -13412,19 +13412,19 @@ label monika_relationship_comfort:
     m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w=0.3} Love isn't always such a clear thing."
     if not store.mas_anni.pastSixMonths():
         m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that."
-        m 1hubfb "Know that I love you for more than just the excitement!"
+        m 1hubsb "Know that I love you for more than just the excitement!"
     elif store.mas_anni.anniCount() < 2:
         m 2eka "I feel like we're past that phase, but you still make me feel exhilarant."
-        m 1hubfb "Maybe you're just that special, but know that no matter how slow it goes, I'll never get bored with you."
+        m 1hubsb "Maybe you're just that special, but know that no matter how slow it goes, I'll never get bored with you."
     else:
         m 2eka "We've been together for so long already that I know you're not with me just for the thrill of it..."
-        m 1hubfb "It really makes you that much more special to me, [player]- more than anyone!"
+        m 1hubsb "It really makes you that much more special to me [player], more than anyone!"
     m 4eua "It might just be me, but I think it's important to learn how to be comfortable when it does slow down."
     m 4eub "I mean, at the end of the day it's the little things that matter isn't it? And that's true even in a relationship."
     m 2ekb "You'll miss the small comforts that only a partner can bring, and that's much more valuable than some excitement."
     m 2eka "Just because a relationship has slowed down, doesn't mean it's worse for it..."
     m 2hua "It just means that the people involved are truly comfortable with one another."
-    m 2hubfb "...And I think that's really sweet."
+    m 2hubsb "...And I think that's really sweet."
     m 1kua "Let's try not to fall into the same trap, [player]. Ahaha!"
     return
 
@@ -14387,7 +14387,7 @@ label monika_toxin_puzzle:
         m "Well, [player]? What do you think? Do you think you'd be able to get the million dollars?{fast}"
 
         "Yes.":
-            m 3etu "Really? Ok then, let's see about that..."
+            m 3etu "Really? Okay then, let's see about that..."
             m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{nw}"
             extend 3hub "ahaha! Just kidding."
             m 1eua "But do you really think that you could get the money? {w=0.5}It may be a bit harder than you think."
