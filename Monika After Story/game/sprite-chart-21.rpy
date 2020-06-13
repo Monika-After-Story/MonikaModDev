@@ -205,13 +205,13 @@ image monika 4ektsc:
         "monika 4ektsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 4dktsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 4esa:
@@ -387,13 +387,13 @@ image monika 4lftsc:
         "monika 4lftsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 4dftsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 4lfu:
@@ -569,13 +569,13 @@ image monika 4lktsc:
         "monika 4lktsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 4dktsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 4lsbsa:
@@ -891,13 +891,13 @@ image monika 4rktsc:
         "monika 4rktsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 4dktsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 4rsc:
@@ -975,13 +975,13 @@ image monika 4subftsb:
         "monika 4subftsb_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 4dubftsb_static"
-        0.06
+        0.15
         repeat
 
 image monika 4sutsa:
@@ -989,13 +989,13 @@ image monika 4sutsa:
         "monika 4sutsa_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 4dutsa_static"
-        0.06
+        0.15
         repeat
 
 image monika 4tfb:
@@ -1269,13 +1269,13 @@ image monika 4wktsw:
         "monika 4wktsw_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 4dktsw_static"
-        0.06
+        0.15
         repeat
 
 image monika 4wua:
@@ -2267,13 +2267,13 @@ image monika 6eftsc:
         "monika 6eftsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dftsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 6eka:
@@ -2519,13 +2519,13 @@ image monika 6ektsa:
         "monika 6ektsa_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dktsa_static"
-        0.06
+        0.15
         repeat
 
 image monika 6ektsc:
@@ -2533,13 +2533,13 @@ image monika 6ektsc:
         "monika 6ektsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dktsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 6ektud:
@@ -2547,13 +2547,13 @@ image monika 6ektud:
         "monika 6ektud_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dktud_static"
-        0.06
+        0.15
         repeat
 
 image monika 6esa:
@@ -2631,13 +2631,13 @@ image monika 6lftsc:
         "monika 6lftsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dftsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 6lkc:
@@ -2687,13 +2687,13 @@ image monika 6lktsc:
         "monika 6lktsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dktsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 6lsc:
@@ -2827,13 +2827,13 @@ image monika 6rktsc:
         "monika 6rktsc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dktsc_static"
-        0.06
+        0.15
         repeat
 
 image monika 6rktuc:
@@ -2841,13 +2841,13 @@ image monika 6rktuc:
         "monika 6rktuc_static"
         block:
             choice:
-                3
+                9
             choice:
-                5
+                11
             choice:
-                7
+                12
         "monika 6dktuc_static"
-        0.06
+        0.15
         repeat
 
 image monika 6ska:
