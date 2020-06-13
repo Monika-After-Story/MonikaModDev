@@ -785,6 +785,6 @@ label mas_fun_fact_coffee_origin:
     m 1esd "Whether or not that was truly its first use, coffee became very prevalent in the Islamic world after its discovery."
     m 3eud "For example, during fasting periods it was used to ease hunger and help people remain energized."
     m 3eua "When its use spread to Europe, many countries initially used it for medicinal purposes. {w=0.3}By the 17th century, coffeehouses were becoming plentiful and popular."
-    m 3hub "...And I for one can certainly attest that our love of coffee has remained strong to this day!"
+    m 3hub "...And I for one can certainly attest that the love of coffee has remained strong to this day!"
     call mas_fun_facts_end
     return
