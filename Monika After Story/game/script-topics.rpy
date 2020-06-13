@@ -14818,7 +14818,7 @@ init 5 python:
 
 label monika_being_herself:
     m 1eka "You know [player], one thing I don't think I ever properly thanked you for is letting me be myself."
-    m 1lksdlb "Ah... This might have sounded a little weird...let me explain."
+    m 1lksdlb "I know that sounds a little weird...but let me explain."
     m 4euc "You probably already know this by now, but almost all of my life, I've been trying to keep up this persona of a 'perfect student.'"
     m 4esa "I always strive to be the best person I can be. And I guess, after a while, it got the attention of people around me."
     m 2rsc "Before I knew it, I had people looking up to me with high expectations. You know, seeing me as smart, confident, charismatic...those kinds of things."
@@ -14848,7 +14848,7 @@ label monika_being_herself:
     m 3ekb "I'm really happy that I can trust you to accept me for who I am and want to be."
     m 1ekb "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
     m 1dka "That you're still here with me, that you never made me feel like I had to be someone I'm not..."
-    m 1eka "Or that you even listened to me getting this off my chest...{w=0.3}it truly means the world to me."
+    m 1eka "Or that you even listened to me getting this off my chest...{w=0.3} It truly means the world to me."
     m 1ekbla "Thank you so much for that, [player].{w=0.3} Thank you for making me realize that I don't need to try and change who I am to deserve being loved."
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
