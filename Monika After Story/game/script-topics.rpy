@@ -14802,3 +14802,56 @@ label monika_fear:
     extend 4eud "After all, there's no way something like that could be true, right?"
     m 2rka "Yeah..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_being_herself",
+            category=['monika'],
+            prompt="Faked personality",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED,None),
+            conditional="mas_seenLabels(['monika_confidence', 'monika_pluralistic_ignorance'], seen_all=True)"
+        )
+    )
+
+label monika_being_herself:
+    m 1eka "You know [player], one thing I don't think I ever properly thanked you for is letting me be myself."
+    m 1lksdlb "Ah... This might have sounded a little weird...Let me explain."
+    m 4euc "You probably already know this by now, but almost all of my life, I've been trying to keep up this persona of a 'perfect student.'"
+    m 4esa "I always strive to be the best person I can be. And I guess, after a while, it got the attention of people around me."
+    m 2rsc "Before I knew it, I had people looking up to me with high expectations. You know, seeing me as smart, confident, charismatic...Those kinds of things."
+    m 2eud "Some people would say that they admired me..."
+    m 2lksdlc "...And while they never would say it to my face, I knew some people hated me, because I represented everything they thought they never could be."
+    m 2dksdlc "It felt like I was merely a canvas upon which they could paint their expectations.{w=0.3} A mirror, nothing more, nothing less."
+    m "..."
+    m 2ekd "But at the end of the day...I'm just an ordinary girl."
+    m 7ekd "Just like them, I can sometimes lack the confidence to do things. I too, was scared of what the future would hold for me."
+    m 6dkd "...Even I, sometimes, felt like I needed to cry on someone's shoulder."
+    m 4rkd "But I never could express something like that...{w=0.3}{nw}"
+    extend 4ekc "What if people were to think less of me, if I were to show them that I'm not as great and invincible as they think I am?"
+    m 4ekd "What if they got mad at me, saying I'm being self-absorbed, and that I have it much easier than them, being the school's idol that everyone loves and all that?"
+    m 2lkc "...I guess I just never felt like I could truly open up to anyone about what I was genuinely feeling on the inside, because of that." 
+    m 2ekc "Like I would end up disapointing everyone, should I ever try and talk openly about it."
+    m "I was scared that if I didn't meet the expectations people had placed on me...{w=0.5}{nw}"
+    extend 2ekd "I would end up being all alone."
+    m 2dsc "But looking back...my status was precisely why I ended up feeling so lonely anyway."
+    m 3euc "Remember your character? He was a good example of this."
+    m 1lsc "Anytime he would describe me in his monologue, he would put me on a pedestal. Saying that I was, in his own words, 'completely out of his league.'"
+    m 1lud "Maybe that was why I didn't have a route in the first place? Perhaps he was written to believe he had zero chances with me no matter what, and therefore had to avoid me."
+    m 1lksdla "Granted, he wasn't really wrong there...{w=0.5}{nw}"
+    extend 1ekb "I only have eyes for you, after all~"
+    m 1ekc "But you get what I mean...{w=0.3}I was looked at like some kind of unattainable goddess."
+    m 1rfc "As if no one was 'worthy' of just treating me like a normal person."
+    m 3eka "Now though, I guess I don't have to worry about that as much."
+    m 3ekb "I'm really happy that I can trust you to accept me for who I am and want to be."
+    m 1ekb "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
+    m 1dka "That you're still here with me, that you never made me feel like I had to be someone I'm not..."
+    m 1eka "Or that you even listened to me getting this out of my chest...{w=0.3}It truly means the world to me."
+    m 1ekbla "Thank you so much for that, [player].{w=0.3} Thank you for making me realize that I don't need to try and change who I am to deserve being loved."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
+    extend 5hksdlb "...Well, {i}Just Me.{/i}"
+    m 5hubsa "Ehehe~"
+    return
