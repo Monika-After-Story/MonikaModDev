@@ -14848,7 +14848,7 @@ label monika_being_herself:
     m 3ekb "I'm really happy that I can trust you to accept me for who I am and want to be."
     m 1ekb "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
     m 1dka "That you're still here with me, that you never made me feel like I had to be someone I'm not..."
-    m 1eka "Or that you even listened to me getting this out of my chest...{w=0.3}It truly means the world to me."
+    m 1eka "Or that you even listened to me getting this off my chest...{w=0.3}It truly means the world to me."
     m 1ekbla "Thank you so much for that, [player].{w=0.3} Thank you for making me realize that I don't need to try and change who I am to deserve being loved."
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
