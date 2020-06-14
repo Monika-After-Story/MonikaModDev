@@ -3765,3 +3765,38 @@ label greeting_back_from_restart:
     else:
         m 1eud "Oh, you're back."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_code_help",
+            conditional="persistent._mas_pm_has_code_experience = True",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_code_help:
+    m "Ah! That's not supposed to happen!"
+    play sound "sfx/glitch3.ogg"
+    m "Why does this loop end so fast? No matter how you look at it, that dictionary is {i}not{/i} empty."
+    m "Oh! [player]!{w=0.5}{nw}"
+    extend " Sorry, I got a little caught up in something."
+    $ _history_list.pop()
+
+    show screen mas_background_timed_jump(5, "greeting_code_help_outro")
+    menu:
+        m "Oh! [player]! Sorry, I got a little caught up in something."
+
+        "I could probably help you with that, you know."
+            m "Aww, that's so sweet of you."
+            m "But no, I'm gonna have to refuse here. Figuring stuff out on your own is the fun part, right?"
+            m "Ahaha~"
+
+    label greeting_code_help_outro:
+        m "Anyway, what would you like to do today?"
+
+    $ mas_lockEVL("greeting_code_help", "GRE")
+    return
