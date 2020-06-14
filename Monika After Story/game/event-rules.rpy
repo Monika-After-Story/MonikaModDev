@@ -835,12 +835,16 @@ init python:
             OUT:
                 True if we are past the stored end date and we need to
             """
+            #If the ev doesn't exist, we cannot do any work. This should be removed
+            if not ev:
+                return None
+
             #NOTE: This should be used AFTER init 7
             _start_date, _end_date = persistent._mas_undo_action_rules.get(ev.eventlabel, (None, None))
 
             #Check for invalid data
-            if not ev or not _start_date or not _end_date:
-                #This ev doesn't exist and/or it doesn't exist in the rules dict. We should set this to be removed
+            if not _start_date or not _end_date:
+                #No start or end date? That can't be right. We should remove this
                 return None
 
             #Need to turn

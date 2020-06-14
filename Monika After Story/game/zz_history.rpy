@@ -969,6 +969,7 @@ init -810 python:
             "_mas_pm_driving_learning": "pm.lifestyle.learning_to_drive",
             "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
             "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
+            "_mas_pm_is_trans": "pm.lifestyle.is_trans",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",

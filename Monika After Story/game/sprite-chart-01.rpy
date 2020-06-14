@@ -320,6 +320,17 @@ image monika 2rkssdlb_static = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2rktdb_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    arms="crossed",
+    tears="dried"
+)
+
 image monika 2rktpc_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -2577,6 +2588,17 @@ image monika 3hubsb_static = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 3hubsu_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smug",
+    arms="restleftpointright",
+    blush="shade"
+)
+
 image monika 3lfb_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -3117,6 +3139,16 @@ image monika 3rssdrc_static = DynamicDisplayable(
     mouth="smirk",
     arms="restleftpointright",
     sweat="right"
+)
+
+image monika 3rtc_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    arms="restleftpointright"
 )
 
 image monika 3rubfb_static = DynamicDisplayable(
@@ -3705,6 +3737,17 @@ image monika 4dfo_static = DynamicDisplayable(
     nose="def",
     mouth="gasp",
     arms="pointright"
+)
+
+image monika 4dfsdld_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    arms="pointright",
+    sweat="def"
 )
 
 image monika 4dft_static = DynamicDisplayable(
@@ -4330,6 +4373,17 @@ image monika 4efo_static = DynamicDisplayable(
     nose="def",
     mouth="gasp",
     arms="pointright"
+)
+
+image monika 4efsdld_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    arms="pointright",
+    sweat="def"
 )
 
 image monika 4eft_static = DynamicDisplayable(
@@ -5532,4 +5586,3 @@ image monika 4wua_static = DynamicDisplayable(
     mouth="smile",
     arms="pointright"
 )
-

@@ -3354,6 +3354,20 @@ image monika 7tubfu:
         0.06
         repeat
 
+image monika 7wkd:
+    block:
+        "monika 7wkd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 7dkd_static"
+        0.06
+        repeat
+
 image monika 7wubsw:
     block:
         "monika 7wubsw_static"
@@ -3368,3 +3382,16 @@ image monika 7wubsw:
         0.06
         repeat
 
+image monika 7wud:
+    block:
+        "monika 7wud_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 7dud_static"
+        0.06
+        repeat
