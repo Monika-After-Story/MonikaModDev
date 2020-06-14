@@ -14633,7 +14633,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_dying_same_day",
-            category=["philosophy"],
+            category=["monika"],
             prompt="Dying the same day",
             aff_range=(mas_aff.NORMAL, None),
             random=True
@@ -14641,11 +14641,11 @@ init 5 python:
     )
 
 label monika_dying_same_day:
-    m 1eua "[player], have you ever heard of couples wishing to die on the same day?"
-    m 3rksdla "...Gosh, that sure sounds rather dark, doesn't it?"
-    m 3rfd "If I never got to meet you, I'd consider such a thing completely absurd!"
-    m 1etc "Why would one entirely give up on living a long and happy life, just because their partner's life was dramatically cut short?"
-    m 3rfd "That would be so irrational and impulsive!"
+    m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
+    m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
+    m 3rfd "Before I met you, I thought the idea was completely absurd!"
+    m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
+    m 3rfd "It would be irrational and impulsive to do so!"
 
     if mas_isMoniEnamored(higher=True):
         m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
