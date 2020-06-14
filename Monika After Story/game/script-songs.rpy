@@ -1163,7 +1163,7 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_lamour_toujours",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="I'll Fly with You",
+            prompt="L'Amour Toujours",
             random=True,
             aff_range=(mas_aff.AFFECTIONATE, None)
         ),
@@ -1186,7 +1186,7 @@ label mas_song_lamour_toujours:
     m 1ekb "{i}~And I'll fly with you~{/i}"
     m 1dkb "{i}~I'll fly with you~{/i}"
 
-    m 1dkbsa "..."
+    m 1dkbsu "..."
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
     return
