@@ -7110,7 +7110,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_sports",
-            category=['misc'],
+            category=["sports"],
             prompt="Being athletic",
             random=True
         )
@@ -8689,7 +8689,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_beach",
-            category=['misc'],
+            category=["location"],
             prompt="The beach",
             random=True
         )
@@ -8718,6 +8718,7 @@ label monika_beach:
             $ persistent._mas_pm_live_near_beach = False
             m 1eka "That's alright. I mean, what are the chances? Most people don't."
             m 1hub "That just means we'll make do by visiting one on an all-day trip!"
+
     m 1eua "There's so many things we'll be able to do one day."
     m 1hua "Just imagining the many sensations we could experience is kind of exciting!"
     m 3eua "The fresh sea air, the sound of seagulls."
@@ -13186,7 +13187,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_hemispheres",
-            category=["you", "life", "location"],
+            category=["you", "location"],
             prompt="Hemispheres",
             random=True
         )
