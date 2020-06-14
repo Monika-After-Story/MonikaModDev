@@ -1355,3 +1355,33 @@ label mas_monika_plays_or(skip_leadin=False):
     window auto
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_ageage_again",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Ageage Again",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_ageage_again:
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3duu "{i}~If you recall this song suddenly~{/i}"
+    m 1hub "{i}~Party, party, party, party, party time!~{/i}"
+    m 3hubsa "{i}~I am by your side~{/i}"
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3rubsu "{i}~If I recall your smile~{/i}"
+    m 1subsb "{i}~Love, love, love, love, I'm in love!~{/i}"
+    m 3hubsa "{i}~Want to feel the same rhythm~{/i}"
+    m 3eua "You know, I love how upbeat and happy this song is."
+    m 1rksdld "There are a lot of other Vocaloid songs that {i}sound{/i} upbeat, but their lyrics are sad and sometimes disturbing..."
+    m 3hksdlb "But I'm glad that at least this song isn't one of them."
+    m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
+    m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
+    m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    return "derandom"
