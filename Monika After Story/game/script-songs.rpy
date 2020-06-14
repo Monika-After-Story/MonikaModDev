@@ -1157,6 +1157,40 @@ label mas_song_shelter_lyrics:
     m "{i}~Until you're gone~{/i}"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_lamour_toujours",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="L'Amour Toujours",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_lamour_toujours:
+    m 1dud "{i}~I still believe in your eyes~{/i}"
+    m 1dub "{i}~I just don't care what you've done in your life~{/i}"
+    m 3ekbsb "{i}~Baby, I'll always be here by your side~{/i}"
+    m 1dsbsd "{i}~Don't leave me waiting too long, {w=0.3}{nw}"
+    extend 1ekbsu "please come by~{/i}"
+
+    m 1dud "{i}~I still believe in your eyes~{/i}"
+    m "{i}~There is no choice, {w=0.3}{nw}"
+    extend 3hubsb "I belong to your life~{/i}"
+    m 3dubsb "{i}~Because I'll live to love you some day~{/i}"
+    m 1hubsa "{i}~You'll be my baby and we'll fly away~{/i}"
+
+    m 1ekb "{i}~And I'll fly with you~{/i}"
+    m 1dkb "{i}~I'll fly with you~{/i}"
+
+    m 1dkbsu "..."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
