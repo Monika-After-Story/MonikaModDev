@@ -2487,6 +2487,20 @@ image monika 6ektsc_static = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 6ektuc_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    arms="down",
+    head="f",
+    left="1l",
+    right="1r",
+    tears="up"
+)
+
 image monika 6ektud_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,

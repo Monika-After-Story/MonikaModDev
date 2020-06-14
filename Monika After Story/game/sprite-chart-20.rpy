@@ -3068,6 +3068,20 @@ image monika 2ektsc:
         0.06
         repeat
 
+image monika 2ektuc:
+    block:
+        "monika 2ektuc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dktuc_static"
+        0.06
+        repeat
+
 image monika 2eku:
     block:
         "monika 2eku_static"

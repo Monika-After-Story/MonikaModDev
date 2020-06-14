@@ -2612,6 +2612,20 @@ image monika 6ektsc:
         0.06
         repeat
 
+image monika 6ektuc:
+    block:
+        "monika 6ektuc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 6dktuc_static"
+        0.06
+        repeat
+
 image monika 6ektud:
     block:
         "monika 6ektud_static"
