@@ -1487,7 +1487,7 @@ label bye_prompt_housework:
         m 1eub "Doing your chores, [player]?"
         m 1ekc "I would like to help you out, but there's not really much I can do since I'm stuck in here..."
         m 3eka "Just make sure to come back as soon as you're done, okay?"
-        m 3hub "I'll be waiting here for you."
+        m 3hub "I'll be waiting here for you~"
     elif mas_isMoniUpset():
         m 2esc "Fine."
         m 2tsc "At least you're doing something responsible."

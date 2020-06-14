@@ -3690,7 +3690,7 @@ init 5 python:
 label greeting_back_housework:
     if mas_isMoniNormal(higher=True):
         m 1eua "All done, [player]?"
-        m 1hub "Let's spend some more time together."
+        m 1hub "Let's spend some more time together!"
     elif mas_isMoniUpset():
         m 2esc "At least you didn't forget to come back, [player]."
     elif mas_isMoniDis():
