@@ -701,9 +701,9 @@ init -10 python:
 
             See MASHighlightMap.get
             """
-            value = self.__mhm.get(key)
+            value = self._raw_get(key)
             if value is None:
-                return self.__mhm.get(store.mas_weather.PRECIP_TYPE_DEF)
+                return self._raw_get(store.mas_weather.PRECIP_TYPE_DEF)
 
             return value
 
@@ -715,6 +715,17 @@ init -10 python:
             RETURNS: MASHighlightMap object
             """
             return self.__mhm
+
+        def _raw_get(self, precip_type):
+            """
+            Gets value with given precip_type. this does Not do defaulting.
+
+            IN:
+                precip_type - precip type to get value for
+
+            RETURNS: value
+            """
+            return self.__mhm.get(precip_type)
 
 
     class MASFilterWeatherMap(object):
@@ -728,7 +739,9 @@ init -10 python:
         NOTE: this does NOT verify filters.
 
         PROPERTIES:
-            None
+            use_fb - if True, this will default to using fallback-based
+                getting when using fw_get.
+                Defaults to False and must be set after creation.
         """
 
         def __init__(self, **filter_pairs):
@@ -755,6 +768,7 @@ init -10 python:
                 cache=False,
                 **filter_pairs
             )
+            self.use_fb = False
 
         def flts(self):
             """
@@ -764,16 +778,57 @@ init -10 python:
             """
             return self.__mfm.map.keys()
 
+        def fw_get(self, flt, weather=None):
+            """
+            Gets value from map based on filter and current weather.
+            May do fallback-based getting if configured to do so.
+
+            fallback-baesd getting uses the FLT_FB dict to find the NEXT
+            available value for a given precip_type. This overrides the
+            MASWeatherMap's handling of using PRECIP_TYPE_DEF as a fallback
+            until the final MASWeatherMap in the chain. 
+            For more, see MASFilterWeatherDisplayable in sprite-chart-matrix.
+
+            IN:
+                flt - filter to lookup
+                weather - weather to lookup. If None, we use the current
+                    weather.
+                    (Default: None)
+
+            RETURNS: value for the given filter and weather
+            """
+            return self._raw_fw_get(flt, MASWeather.getPrecipTypeFrom(weather))
+
         def get(self, flt):
             """
-            Gets value from map based on filter
+            Gets value from map based on filter.
 
             IN:
                 flt - filter to lookup
 
             RETURNS: value for the given filter
             """
-            return self.__mfm.get(flt)
+            return self._raw_get(flt)
+
+        def has_def(self, flt):
+            """
+            Checks if the given flt has a MASWeatherMap that contains a 
+            non-None value for the default precip type.
+
+            IN:
+                flt - filter to check
+
+            RETURNS: True if the filter has a non-None default precip type,
+                False otherwise.
+            """
+            wmap = self._raw_get(flt)
+            if wmap is not None:
+                return (
+                    wmap._raw_get(store.mas_weather.PRECIP_TYPE_DEF)
+                    is not None
+                )
+
+            return False
 
         def _mfm(self):
             """
@@ -783,6 +838,76 @@ init -10 python:
             RETURNS: MASFilterMap
             """
             return self.__mfm
+
+        def _raw_fw_get(self, flt, precip_type):
+            """
+            Gets the actual value from a filter and precip type. This may
+            do fallback-based getting if configured to do so.
+
+            NOTE: if the given filter doesn't have an associated MASWeatherMap,
+            we ALWAYS use the fallback-based system, but find the next
+            available default. See MASFilterWeatherDisplayable in
+            sprite-chart-matrix.
+
+            IN:
+                flt - filter to lookup
+                precip_type - precip type to lookup
+
+            RETURNS: value for a given filter and precip type
+            """
+            wmap = self._raw_get(flt)
+            if not self.use_fb and wmap is not None:
+                # if not use fallback get, then use the MASWeatherMap's
+                # default handling.
+                return wmap.get(precip_type)
+
+            # otherwise, use our special handling
+
+            # wmap could be None because of a not-defined filter. In that case
+            # set value to None so we can traverse filters until we find a 
+            # valid wmap.
+            if wmap is not None:
+                value = wmap._raw_get(precip_type)
+            else:
+                value = None
+
+            curr_flt = flt
+            while value is None:
+                nxt_flt = store.mas_sprites._rslv_flt(curr_flt)
+
+                # if the filters match, we foudn the last one. 
+                if nxt_flt == curr_flt:
+                    # in this case, use standard MASWeatherMap handling.
+                    if wmap is None:
+                        # without a wmap, we cant do anything except fail.
+                        return None
+
+                    return wmap.get(precip_type)
+
+                # otherwise, get the wmap if possible and check value
+                wmap = self._raw_get(nxt_flt)
+                if wmap is not None:
+                    if self.use_fb:
+                        value = wmap._raw_get(precip_type)
+                    else:
+                        # if not in fallback mode, use regular gets
+                        value = wmap.get(precip_type)
+
+                curr_flt = nxt_flt
+
+            # non-None value means we use this
+            return value
+
+        def _raw_get(self, flt):
+            """
+            Gets value from map based on filter.
+
+            IN:
+                flt - filter to lookup
+
+            RETURNS: value for the given filter
+            """
+            return self.__mfm.get(flt)
 
 
 ### define weather objects here

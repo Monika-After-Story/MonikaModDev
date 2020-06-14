@@ -4024,6 +4024,32 @@ init -100 python in mas_utils:
         return (_time.hour * 3600) + (_time.minute * 60) + _time.second
 
 
+    def fli_indk(lst, d):
+        """
+        Find
+        List
+        Item
+        IN
+        Dictionary
+        Keys
+
+        Finds index of an item in the list if it is a key in the given dict.
+
+        IN:
+            lst - list to cehck
+            d - dictionary to check
+
+        RETURNS: The index of the first item in the list that is a key in the
+            dict. There are no checks of if the item can be a valid key.
+            -1 is returned if no item in the list is a key in the dict.
+        """
+        for idx, item in enumerate(lst):
+            if item in d:
+                return idx
+
+        return -1
+
+
     def insert_sort(sort_list, item, key):
         """
         Performs a round of insertion sort.
