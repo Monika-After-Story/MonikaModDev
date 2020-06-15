@@ -3771,7 +3771,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_code_help",
-            conditional="persistent._mas_pm_has_code_experience = True",
+            conditional="persistent._mas_pm_has_code_experience is True",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -3792,7 +3792,7 @@ label greeting_code_help:
     menu:
         m "Oh! [player]! Sorry, I got a little caught up in something."
 
-        "I could probably help you with that, you know."
+        "I could probably help you with that, you know.":
             m 1hua "Aww, that's so sweet of you."
             m 1eua "But no, I'm gonna have to refuse here.{w=0.3}{nw}"
             extend 3kua " Figuring stuff out on your own is the fun part, right?"
