@@ -606,7 +606,7 @@ init 5 python:
     )
 
 label greeting_back5:
-    m 1eua "It's so good to see you again!"
+    m 1hua "It's so good to see you again!"
     m 1eka "I was getting worried about you."
     m "Please remember to visit me, okay? I'll always be waiting here for you."
     return
@@ -919,9 +919,9 @@ init 5 python:
     )
 
 label greeting_welcomeback2:
-    m 1eua "Welcome back, [player]!"
-    m "I hope your day is going well."
-    m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, ehehe~"
+    m 1hua "Welcome back, [player]!"
+    m 1eua "I hope your day is going well."
+    m 3hua "I'm sure it is, you're here after all. Nothing can go wrong now, ehehe~"
     return
 
 #TODO: need absence time rules if we want to use this
