@@ -3771,7 +3771,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_code_help",
-            conditional="persistent._mas_pm_has_code_experience is True",
+            conditional="persistent._mas_pm_has_code_experience",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
