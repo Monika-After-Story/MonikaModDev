@@ -533,25 +533,56 @@ init -10 python:
             """
             # slices length
             s_len = len(self._eff_slices)
+            if s_len < 2:
+                return 0
 
-            # determine current slice offsets
-            csl_data = self._eff_slices[st_index]
-            end_off = csl_data.offset
+            st_index -= 1
 
             # loop until sfco in range of current slice
             # or we reach last slice
-            while st_index < s_len-1 and end_off < sfco:
+            while (
+                    st_index < s_len-1
+                    and self._adv_slice_change(
+                        st_index + 1,
+                        sfco,
+                        run_pp,
+                        curr_time
+                    )
+            ):
                 st_index += 1
 
-                # get current and next slice
-                nsl_data = self._eff_slices[st_index]
+            return st_index
 
-                # determine the next current offset and next index
-                # NOTE: we can assume we never loop
-                # NOTE: we can also assume there is index + 1
-                end_off = nsl_data.offset
+        def _adv_slice_change(self, slidx, sfco, run_pp, curr_time):
+            """
+            Checks if a slice offset at the given index is smaller than
+            sfco, and runs pps if so. This is mainly to combine a condition 
+            check and work together so we don't need extra if statements.
 
-                # run prog if needed
+            IN:
+                slidx - index of the NEXT slice to check
+                    Assumes will not go past eff_slices length
+                sfco - seconds from chunk offset
+                run_pp - True will run progpoints, False will not
+                curr_time - passed to progpoints, should be current time as
+                    datetime.time object
+
+            RETURNS: True if we should continue looping index, False if we 
+                have found the slice sfco belongs in.
+            """
+            if self._eff_slices[slidx].offset > sfco:
+                return False
+
+            # determine current and next slice data for a movement
+            if slidx > 0:
+                csl_data = self._eff_slices[slidx-1]
+            else:
+                csl_data = None
+
+            if csl_data is not None:
+                nsl_data = self._eff_slices[slidx]
+
+                # run progs
                 if run_pp:
                     self._pp_exec(
                         csl_data.flt_slice.name,
@@ -559,16 +590,14 @@ init -10 python:
                         curr_time
                     )
 
-                # but always run the global prog
+                # always run global
                 store.mas_background.run_gbl_flt_change(
                     csl_data.flt_slice.name,
                     nsl_data.flt_slice.name,
                     curr_time
                 )
 
-                csl_data = nsl_data
-
-            return st_index
+            return True
 
         def build(self, length):
             """
@@ -610,6 +639,8 @@ init -10 python:
 
             # lastly, expand to fill voids
             self._expand(length)
+
+            self.reset_index()
 
         def current(self):
             """
@@ -992,15 +1023,19 @@ init -10 python:
                     slice is in.
             """
             s_len = len(self._eff_slices)
+            if s_len < 2:
+                self._index = 0
+                return
 
             # determine current slice offsets
-            sidx = 0
-            boff = 0
+            sidx = -1
 
-            while sidx < s_len-1 and boff < ct_off:
+            while (
+                    sidx < s_len-1
+                    and self._eff_slices[sidx+1].offset <= ct_off
+            ):
                 # deteremine next current offset and next index
                 sidx += 1
-                boff = self._eff_slices[sidx].offset
 
             # now we should have the correct index probably
             self._index = sidx
@@ -1311,6 +1346,7 @@ init -10 python:
             self._mn_sr.build(sunrise)
             self._sr_ss.build(sunset - sunrise)
             self._ss_mn.build((store.mas_utils.secInDay()) - sunset)
+            self._index = 0
 
         def _calc_off(self, index):
             """
@@ -1570,9 +1606,8 @@ init -10 python:
             cindex = 0
             while cindex < len(self._chunks)-1 and (sfmn < boff or eoff <= sfmn):
                 # determine next offsets
-                boff = eoff
                 cindex += 1
-                eoff = boff + len(self._chunks[cindex])
+                boff, eoff = self._calc_off(cindex)
 
             # we should now be in the correct index probably
             self._chunks[self._index].reset_index()

@@ -447,6 +447,26 @@ python early:
         return DynamicDisplayable(mas_fwm_select, new_map)
 
 
+init -2 python:
+    
+    def mas_fwm_select(st, at, mfwm):
+        """
+        Selects an image based on current filter and weather.
+
+        IN:
+            st - renpy related
+            at - renpy related
+            mfwm - MASFilterWeatherMap to select image wtih
+        """
+        return (
+            mfwm.fw_get(
+                store.mas_sprites.get_filter(),
+                store.mas_current_weather
+            ),
+            None
+        )
+
+
 init 1 python in mas_sprites:
 
     def _verify_fwm_db():
@@ -621,7 +641,7 @@ init 1 python in mas_sprites:
 
         for flt in FLT_FB:
             memo = {}
-            if _find_circ_fb(flt, memo)
+            if _find_circ_fb(flt, memo):
                 raise Exception("filter '{0}' has a circular fallback".format(
                     flt
                 ))
