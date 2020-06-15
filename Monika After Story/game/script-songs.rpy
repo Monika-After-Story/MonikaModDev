@@ -1121,10 +1121,10 @@ label mas_song_shelter_analysis(from_song=False):
     m 7hub "Just look at me!"
     m 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside...{w=0.5}{nw}"
     extend 3hubfb "I found you!"
-    m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one."
+    m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one.{w=0.3} {nw}"
 
     if persistent._mas_pm_have_fam and not persistent._mas_pm_have_fam_mess:
-        m 3hubsb "I'm sure your family must care a lot about you as well!"
+        extend 3hubsb "I'm sure your family must care a lot about you as well!"
 
         if not persistent._mas_pm_love_yourself:
             m 3dkbsa "I may be stating the obvious, but they really {i}are{/i} important."
