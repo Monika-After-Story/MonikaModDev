@@ -3779,11 +3779,13 @@ init 5 python:
     )
 
 label greeting_code_help:
-    m "Ah! That's not supposed to happen!"
+    m 1wud "Ah!{w=0.3}{nw}"
+    extend 1efc " That's not supposed to happen!"
     play sound "sfx/glitch3.ogg"
-    m "Why does this loop end so fast? No matter how you look at it, that dictionary is {i}not{/i} empty."
-    m "Oh! [player]!{w=0.5}{nw}"
-    extend " Sorry, I got a little caught up in something."
+    m 2rsc "Why does this loop end so fast?"
+    extend 2esc " No matter how you look at it, that dictionary is {i}not{/i} empty."
+    m 6wud "Oh! [player]!{w=0.5}{nw}"
+    extend 2rksdlb " Sorry, I got a little caught up in something."
     $ _history_list.pop()
 
     show screen mas_background_timed_jump(5, "greeting_code_help_outro")
@@ -3791,12 +3793,13 @@ label greeting_code_help:
         m "Oh! [player]! Sorry, I got a little caught up in something."
 
         "I could probably help you with that, you know."
-            m "Aww, that's so sweet of you."
-            m "But no, I'm gonna have to refuse here. Figuring stuff out on your own is the fun part, right?"
-            m "Ahaha~"
+            m 1hua "Aww, that's so sweet of you."
+            m 1eua "But no, I'm gonna have to refuse here.{w=0.3}{nw}"
+            extend 3kua " Figuring stuff out on your own is the fun part, right?"
+            m 1hub "Ahaha~"
 
     label greeting_code_help_outro:
-        m "Anyway, what would you like to do today?"
+        m 1eua "Anyway, what would you like to do today?"
 
     $ mas_lockEVL("greeting_code_help", "GRE")
     return
