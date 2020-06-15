@@ -434,6 +434,22 @@ python early:
 
         RETURNS: DynamicDisplayable that respects Filters and weather.
         """
+        return MASFilterWeatherDisplayableCustom(
+            mas_fwm_select,
+            use_fb,
+            **filter_pairs
+        )
+
+
+    def MASFilterWeatherDisplayableCustom(dyn_func, use_fb, **filter_pairs):
+        """
+        Version of MASFilterWeatherDisplayable that accepts a custom function
+        to use instead of the default mas_fwm_select.
+
+        See MASFilterWeatherDisplayable for explanations of this kind of disp.
+
+        NOTE: in general, you should use MASFilterWeatherDisplayable.
+        """
         # build new MASFilterWeatherMap
         new_map = MASFilterWeatherMap(**filter_pairs)
         new_map.use_fb = use_fb
@@ -444,7 +460,7 @@ python early:
         store.mas_sprites.FW_ID += 1
 
         # return DynDisp
-        return DynamicDisplayable(mas_fwm_select, new_map)
+        return DynamicDisplayable(dyn_func, new_map)
 
 
 init -2 python:
@@ -860,22 +876,6 @@ init -98 python:
         RETURNS: True if flt is the current filter, false if not
         """
         return store.mas_sprites.get_filter() == flt
-
-
-    def mas_fwm_select(fwm):
-        """
-        Generates image to use based on a filter and weather. This is meant
-        for use in MASFilterWeatherDisplaybles.
-
-        IN:
-            fwm - MASFilterWeatherMap object to select image for
-
-        RETURNS: appropriate data for dynamic displayable.
-        """
-        # NOTE: how this works:
-        #   1. determine the current filter and weather
-        #   2. determine the filter to select from this fwm
-
 
 
 # this should be after sprite-chart's initialization
