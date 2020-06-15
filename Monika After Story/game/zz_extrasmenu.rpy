@@ -361,6 +361,7 @@ screen mas_extramenu_area():
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"
+                    selected False
                     xsize 72
                     ysize 35
                     xalign 0.3
