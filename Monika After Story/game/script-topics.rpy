@@ -5540,7 +5540,7 @@ init 5 python:
 
 label monika_vocaloid:
     m 1eua "Hey, [player]?"
-    m "You like listening to music right?"
+    m "You like listening to music, right?"
 
     m 3eub "Do you by chance like 'virtual idols?'{nw}"
     $ _history_list.pop()
