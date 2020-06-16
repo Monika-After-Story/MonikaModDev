@@ -5421,6 +5421,26 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    def mas_get_player_nickname(capitalize=False):
+        """
+        Picks a nickname for the player at random based on accepted nicknames
+
+        IN:
+            capitalize - Whether or not we should capitalize the first character
+
+        NOTE: If affection is below affectionate or player has no nicknames set, we just use the player name
+        """
+        #If we're at or below happy, we just use playername
+        if mas_isMoniHappy(lower=True) or not persistent._mas_player_nicknames:
+            return player
+
+        nickname_pool = persistent._mas_player_nicknames + [player]
+        selected_nickname = random.choice(nickname_pool)
+
+        if capitalize:
+            return selected_nickname.capitalize()
+        return selected_nickname
+
 #EXTRA TEXT TAGS
 init python:
     def a_an_tag(tag, argument, contents):
@@ -5444,21 +5464,6 @@ init python:
         return contents
 
     config.custom_text_tags["a_an"] = a_an_tag
-
-    def mas_get_player_nickname(capitalize=False):
-        """
-        Picks a nickname for the player at random based on accepted nicknames
-
-        IN:
-            capitalize - Whether or not we should capitalize the first character
-
-        NOTE: If affection is below affectionate or player has no nicknames set, we just use the player name
-        """
-        #If we're at or below happy, we just use playername
-        if mas_isMoniHappy(lower=True) or not persistent._mas_player_nicknames:
-            return player
-
-        return random.choice(persistent._mas_player_nicknames).capitalize()
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

@@ -920,10 +920,10 @@ init 15 python in mas_affection:
         ## AFFECTIONATE quips
         quips = [
             _("What would you like to talk about? <3"),
-            _("What would you like to talk about, [player]?"),  #TODO: Nickname here
-            _("Yes, [player]?"),  #TODO: Nickname here
-            _("What's on your mind, [player]?"),  #TODO: Nickname here
-            _("What would you like to talk about, [player]?")  #TODO: Nickname here
+            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
+            _("What would you like to talk about, [mas_get_player_nickname()]?")
         ]
         save_quips(AFFECTIONATE, quips)
 
@@ -936,10 +936,10 @@ init 15 python in mas_affection:
             _("Yes, dear?"),
             _("What's on your mind, darling?"),
             _("What would you like to talk about, sweetie?"),
-            _("What would you like to talk about, [player]?"),  #TODO: Nickname here
-            _("Yes, [player]?"),  #TODO: Nickname here
-            _("What's on your mind, [player]?"),  #TODO: Nickname here
-            _("What would you like to talk about, [player]?")  #TODO: Nickname here
+            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
+            _("What would you like to talk about, [mas_get_player_nickname()]?")
         ]
         save_quips(ENAMORED, quips)
 
@@ -947,23 +947,16 @@ init 15 python in mas_affection:
         quips = [
 #            "Hey, what's up?",
             _("What's on your mind?"),
-            _("What's on your mind, darling?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
             _("Anything on your mind?"),
-            _("Anything on your mind, hun?"),
-            _("What's up, darling?"),
-            _("What's up, honey?"),
-            _("What's up, dear?"),
-            _("What's up, sweetie?"),
-            _("What's up, [player]?"),  #TODO: Nickname here (can simplify the others)
+            _("Anything on your mind, [mas_get_player_nickname()]?"),
+            _("What's up, [mas_get_player_nickname()]?"),
 #            "What's up?",
-            _("Yes, sweetheart?"),
-            _("Yes, honey?"),
-            _("Yes, dear?"),
-            _("Yes, love?"),
+            _("Yes, [mas_get_player_nickname()]?"),
             _("^_^"),
             _("<3"),
             _("Anything you'd like to talk about?"),
-            _("We can talk about anything you like, [player].")  #TODO: Nickname here
+            _("We can talk about anything you like, [player].")
         ]
         save_quips(LOVE, quips)
 
@@ -1026,32 +1019,29 @@ init 15 python in mas_affection:
         ## AFFECTIONATE quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, [player]."),  #TODO: Nickname here
-            _("Pick anything you like, [player].")  #TODO: Nickname here
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()].")
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, [player]."), #TODO: Nickname here
-            _("Pick anything you like, [player]."), #TODO: Nickname here (simplify others)
-            _("Choose anything you like, honey."),
-            _("Pick anything you like, sweetheart."),
-            _("Pick anything you like, sweetie.")
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()]."),
         ]
         save_quips(ENAMORED, quips)
 
         ## LOVE quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, honey."),
-            _("Pick anything you like, sweetie."),
-            _("Pick anything you like, sweetheart."),
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()]."),
             _("Yay! Let's play together!"),
             _("I'd love to play something with you!"),
             _("I'd love to play with you!")
         ]
+
         save_quips(LOVE, quips)
 
     _init_talk_quips()
@@ -1971,7 +1961,7 @@ label monika_affection_nickname:
                 pass
 
             $ done = False
-            m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]." #TODO: Nickname here
+            m 1eua "Okay! Just type 'Nevermind' if you change your mind, [mas_get_player_nickname()]."
             while not done:
                 python:
                     inputname = renpy.input(
@@ -1997,7 +1987,7 @@ label monika_affection_nickname:
 
                 elif lowername != "monika" and lowername == player.lower():
                     m 1euc "..."
-                    m 1lksdlb "That's your name, [player]! Give me my own!" #TODO: Nickname here
+                    m 1lksdlb "That's your name, [player]! Give me my own!"
                     m 1eka "Try again~"
 
                 elif lowername == m_name.lower():
@@ -2195,6 +2185,7 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
     $ acceptable_nicknames = _return.keys()
     $ done = False
 
+    show monika at t11
     while not done:
         m 1eua "Is there anything else you'd like me to call you?{nw}"
         $ _history_list.pop()

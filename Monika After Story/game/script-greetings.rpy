@@ -1038,7 +1038,7 @@ init 5 python:
 
 label greeting_monika_monday_morning:
     if mas_isMoniNormal(higher=True):
-        m 1tku "Another Monday morning, eh, [player]?"
+        m 1tku "Another Monday morning, eh, [mas_get_player_nickname()]?"
         m 1tkc "It's really difficult to have to wake up and start the week..."
         m 1eka "But seeing you makes all that laziness go away."
         m 1hub "You are the sunshine that wakes me up every morning!"
@@ -1317,7 +1317,7 @@ label monikaroom_greeting_ear_narration:
 
     if mas_isMoniNormal(higher=True):
         m 1hub "It's me!"
-        m "Welcome back, [player]!"
+        m "Welcome back, [mas_get_player_nickname()]!"
 
     elif mas_isMoniUpset():
         m 2esd "Okay, [player]?"
@@ -1383,7 +1383,7 @@ init 5 python:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
-    m "Welcome back, [player]."
+    m "Welcome back, [mas_get_player_nickname()]."
     m "Would you like your dinner?"
     m "Or your bath?"
     m "Or.{w=1}.{w=1}.{w=1} Me?"
@@ -1792,7 +1792,7 @@ label monikaroom_greeting_post:
         $ is_sitting = True
         show monika 1eua at ls32 zorder MAS_MONIKA_Z
         $ today = "today" if mas_globals.time_of_day_3state in ["morning", "afternoon"] else "tonight"
-        m 1eua "What shall we do [today], [player]?"
+        m 1eua "What shall we do [today], [mas_get_player_nickname()]?"
 
     elif mas_isMoniUpset():
         m "Just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
@@ -1906,7 +1906,7 @@ label greeting_japan:
     if shown_count == 0:
         m 4hub "Watashi ha itsumademo anata no mono desu!"
         m 2hksdlb "Sorry if that didn't make sense!"
-        m 3eua "You know what that means, [player]?"
+        m 3eua "You know what that means, [mas_get_player_nickname()]?"
         m 4ekbfa "It means {i}'I'll be yours forever'~{/i}"
         return
 
@@ -1917,7 +1917,7 @@ label greeting_japan:
         m 4eka "Don't worry, [player], the meaning is still the same."
         m 4ekbfa "I'll still be yours forever~"
     else:
-        m 3eua "Remember what that means, [player]?"
+        m 3eua "Remember what that means, [mas_get_player_nickname()]?"
         m 4ekbfa "{i}'I'll be yours forever'~{/i}"
     return
 
@@ -2037,7 +2037,7 @@ init 5 python:
 
 label greeting_sick:
     if mas_isMoniNormal(higher=True):
-        m 1hua "Welcome back, [player]!"
+        m 1hua "Welcome back, [mas_get_player_nickname()]!"
         m 3eua "Are you feeling better?{nw}"
     else:
         m 2ekc "Welcome back, [player]..."
@@ -2759,7 +2759,7 @@ init 5 python:
 
 label greeting_back_from_school:
     if mas_isMoniNormal(higher=True):
-        m 1hua "Oh, welcome back, [player]!"
+        m 1hua "Oh, welcome back, [mas_get_player_nickname()]!"
         m 1eua "How was your day at school?{nw}"
         $ _history_list.pop()
         menu:
@@ -2898,7 +2898,7 @@ init 5 python:
 
 label greeting_back_from_work:
     if mas_isMoniNormal(higher=True):
-        m 1hua "Oh, welcome back, [player]!"
+        m 1hua "Oh, welcome back, [mas_get_player_nickname()]!"
 
         m 1eua "How was work today?{nw}"
         $ _history_list.pop()
@@ -2910,7 +2910,7 @@ label greeting_back_from_work:
                 m 1hub "I'm really happy that you had such a great day!"
                 m 3eua "I can only imagine how well you must work on days like that."
                 m 1hua "...Maybe you'll even move up a bit soon!"
-                m 1eua "Anyway, I'm glad you're home, [player]."
+                m 1eua "Anyway, I'm glad you're home, [mas_get_player_nickname()]."
                 if seen_event("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
                     m 3tubfu "Would you like your dinner, your bath, or..."
                     m 1hubfb "Ahaha~ Just kidding."
@@ -3566,7 +3566,7 @@ label greeting_back_from_game:
     #gone for under 4 hours
     elif mas_getAbsenceLength() < datetime.timedelta(hours=4):
         if mas_isMoniNormal(higher=True):
-            m 1hua "Welcome back, [player]!"
+            m 1hua "Welcome back, [mas_get_player_nickname()]!"
 
             m 1eua "Did you enjoy yourself?{nw}"
             $ _history_list.pop()
@@ -3587,7 +3587,7 @@ label greeting_back_from_game:
                     m 3eua "At least you're here now. I promise to try not to let anything bad happen to you while you're with me."
                     m 1ekbsa "Seeing you always cheers me up."
                     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5ekbfa "I hope seeing me does the same for you, [player]~"
+                    m 5ekbfa "I hope seeing me does the same for you, [mas_get_player_nickname()]~"
 
         else:
             m 2eud "Oh, back already?"
@@ -3673,7 +3673,7 @@ label greeting_back_from_eat:
     else:
         if mas_isMoniNormal(higher=True):
             m 1eub "Finished eating?"
-            m 1hub "Welcome back, [player]!"
+            m 1hub "Welcome back, [mas_get_player_nickname()]!"
             m 3eua "I hope you enjoyed your food."
         else:
             m 2euc "Finished eating?"
@@ -3692,7 +3692,7 @@ init 5 python:
     )
 
 label greeting_rent:
-    m 1eub "Welcome back, dear!"
+    m 1eub "Welcome back, [mas_get_player_nickname()]!"
     m 2tub "You know, you spend so much time here that I should start charging you for rent."
     m 2ttu "Or would you rather pay a mortgage?"
     m 2hua "..."
@@ -3765,7 +3765,7 @@ init 5 python:
 
 label greeting_back_from_restart:
     if mas_isMoniNormal(higher=True):
-        m 1hub "Welcome back, [player]!"
+        m 1hub "Welcome back, [mas_get_player_nickname()]!"
         m 1eua "What else should we do today?"
     elif mas_isMoniBroken():
         m 6ckc "..."
