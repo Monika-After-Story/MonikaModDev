@@ -13696,7 +13696,7 @@ label monika_brave_new_world:
     extend 1eub "and you would be given a body and mind fitting of your predetermined purpose."
     m 1eud "You would also be indoctrinated from birth to be satisfied with your life and not to seek anything different."
     m 3euc "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
-    m 1euc "Books were associated to negative stimuli so when people became adults, they would naturally tend to avoid reading."
+    m 1euc "Books were associated with negative stimuli so when people became adults, they would naturally tend to avoid reading."
     m 3esc "They would also be taught to respect and submit to people from castes above theirs, and to look down on those of castes below."
     m 3eua "It's a pretty interesting case as a dystopian story, as most will show people as crushed and oppressed..."
     m 3wuo "But in this one, everyone is actually happy and genuinely supportive of the system!"
