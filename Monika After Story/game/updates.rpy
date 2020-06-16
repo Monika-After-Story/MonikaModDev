@@ -501,6 +501,13 @@ label v0_11_3(version="v0_11_3"):
             #If the gender topic has not been seen, then it needs its start_date set up
             else:
                 gender_ev.start_date = mas_getFirstSesh() + datetime.timedelta(minutes=30)
+
+        #Unlock the leaving already fare
+        leaving_already_ev = mas_getEV("bye_leaving_already")
+        if leaving_already_ev:
+            leaving_already_ev.random = True
+            leaving_already_ev.conditional = "mas_getSessionLength() <= datetime.timedelta(minutes=20)"
+
     return
 
 #0.11.1

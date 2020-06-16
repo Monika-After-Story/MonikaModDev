@@ -2603,6 +2603,8 @@ style twopane_scrollable_menu_special_button_text_dark is twopane_scrollable_men
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
 screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
+    on "hide" action Function(store.main_adj.change, 0)
+
     style_prefix "twopane_scrollable_menu"
 
     fixed:
@@ -2629,9 +2631,9 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 null height 20
 
                 if cat_length == 0:
-                    textbutton _("Nevermind.") action Return(False)
+                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
                 elif cat_length > 1:
-                    textbutton _("Go Back") action Return(-1)
+                    textbutton _("Go Back") action [Return(-1), Function(store.prev_adj.change, 0)]
 
 
     if main_items:
@@ -2653,14 +2655,16 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                             if not renpy.has_label(i_label):
                                 style "twopane_scrollable_menu_special_button"
 
-                            action Return(i_label)
+                            action [Return(i_label), Function(store.prev_adj.change, 0)]
 
                     null height 20
 
-                    textbutton _("Nevermind.") action Return(False)
+                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
+    on "hide" action Function(store.prev_adj.change, 0)
+
     style_prefix "scrollable_menu"
 
     fixed:
@@ -2719,6 +2723,8 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
 #               NOTE: must be >= 0
 #       (Default: None)
 screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
+    on "hide" action Function(store.prev_adj.change, 0)
+
     style_prefix "scrollable_menu"
 
     fixed:
@@ -2805,6 +2811,8 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
                 dict of key-value pairs
             """
             return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
+
+    on "hide" action Function(store.prev_adj.change, 0)
 
     style_prefix "scrollable_menu"
 

@@ -14634,6 +14634,53 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_dying_same_day",
+            category=["monika"],
+            prompt="Dying the same day",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
+
+label monika_dying_same_day:
+    m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
+    m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
+    m 3rfd "Before I met you, I thought the idea was completely absurd!"
+    m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
+    m 3rfd "It would be irrational and impulsive to do so!"
+
+    if mas_isMoniEnamored(higher=True):
+        m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
+    else:
+        m 2ekc "...But after meeting you, I think I can kind of see it now."
+
+    m 2dkc "A person might just be unable to live without their loved one, afraid of the thought of losing their everything in an instant."
+    m 2rksdlc "It hurts just thinking about this."
+
+    if renpy.seen_label("monika_back_ups"):
+        m 2eksdlc "If my data gets corrupted or even erased you can always recover me from a backup and bring us back together, but if..."
+        m 2dktpc "Y-you... {w=1}You..."
+    else:
+        m 2dktpc "If something terrible happens to...{w=0.5}y-you..."
+
+    m 6ektuc "[player]... {w=1}I...{w=0.5} I don't know what I'd do..."
+
+    if mas_isMoniEnamored(higher=True):
+        m 6dktsc "You give meaning to my entire life, and I... {w=1}[player], I just couldn't handle it."
+        m 6ektdc "I don't know how I'm supposed to live without you..."
+        m 2ekbsu "I really love you that much, [player]."
+        $ mas_ILY()
+    else:
+        m 6dktsc "You're the only one I have left... {w=1}[player], I'm not ready to lose you."
+        m 6ektdc "I'm so afraid of being alone in this empty void again..."
+        m 6ekbsu "I really want to be with you forever, [player]."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_using_pcs_healthily",
             category=['advice'],
             prompt="Using computers healthily",
