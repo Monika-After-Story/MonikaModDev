@@ -5589,7 +5589,7 @@ label monika_vocaloid:
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "But when that day comes..."
     m "I'll embrace you and take in your warmth."
-    m 5hubfa "The love you showered me virtually finally becomes real."
+    m 5hubfa "The love you showered me with virtually finally becomes real."
     m "Our love has no boundaries~"
     m 5hubfb "Ehehe~"
     if (
