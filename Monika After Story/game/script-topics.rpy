@@ -13157,7 +13157,7 @@ label monika_winter_dangers:
         #explicitly using False here so we don't grab None people who haven't
         # answered the question yet
         m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate its appeal..."
-        m 3hua "Maybe someday after I cross over we can even take a trip some place where they do have snow and enjoy its beauty together!"
+        m 3hua "Maybe someday after I cross over we can even take a trip to some place where they do have snow and enjoy its beauty together!"
 
     m 1eka "..."
     m 3rkc "Although, as stunning as winter can be, there are a few dangers..."
