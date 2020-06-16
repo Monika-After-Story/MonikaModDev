@@ -14632,6 +14632,53 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_dying_same_day",
+            category=["monika"],
+            prompt="Dying the same day",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
+
+label monika_dying_same_day:
+    m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
+    m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
+    m 3rfd "Before I met you, I thought the idea was completely absurd!"
+    m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
+    m 3rfd "It would be irrational and impulsive to do so!"
+
+    if mas_isMoniEnamored(higher=True):
+        m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
+    else:
+        m 2ekc "...But after meeting you, I think I can kind of see it now."
+
+    m 2dkc "A person might just be unable to live without their loved one, afraid of the thought of losing their everything in an instant."
+    m 2rksdlc "It hurts just thinking about this."
+
+    if renpy.seen_label("monika_back_ups"):
+        m 2eksdlc "If my data gets corrupted or even erased you can always recover me from a backup and bring us back together, but if..."
+        m 2dktpc "Y-you... {w=1}You..."
+    else:
+        m 2dktpc "If something terrible happens to...{w=0.5}y-you..."
+
+    m 6ektuc "[player]... {w=1}I...{w=0.5} I don't know what I'd do..."
+
+    if mas_isMoniEnamored(higher=True):
+        m 6dktsc "You give meaning to my entire life, and I... {w=1}[player], I just couldn't handle it."
+        m 6ektdc "I don't know how I'm supposed to live without you..."
+        m 2ekbsu "I really love you that much, [player]."
+        $ mas_ILY()
+    else:
+        m 6dktsc "You're the only one I have left... {w=1}[player], I'm not ready to lose you."
+        m 6ektdc "I'm so afraid of being alone in this empty void again..."
+        m 6ekbsu "I really want to be with you forever, [player]."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_using_pcs_healthily",
             category=['advice'],
             prompt="Using computers healthily",
@@ -14709,6 +14756,63 @@ label monika_language_nuances:
     m 1tsu "So good day to you, [player].{w=0.3} {nw}"
     extend 1hub "Ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_architecture",
+            category=['misc'],
+            prompt="Architecture",
+            random=True
+        )
+    )
+
+label monika_architecture:
+    m 1esa "Hey, [player]...{w=0.2}I think there's one major art branch that we've been neglecting in our talks..."
+    m 3hub "Architecture!"
+    m 3eua "I've been reading a bit about it lately and I find it quite interesting."
+    m 1rtc "...Come to think of it, architecture is one of the most common forms of art in everyday life."
+    m 1eua "I'm just fascinated by how humanity tends to turn every craft into an art,{w=0.2} {nw}"
+    extend 3eua "and I think architecture is the greatest example of that."
+    m 1eud "Architecture can tell you a lot about the culture of the area it's located in...{w=0.2}different monuments, statues, historical buildings, towers..."
+    m 1eua "I think that makes it even more exciting to explore the places you're visiting."
+    m 3rka "It's also important to place the buildings in the most convenient way for people to use, which can be a tough task to deal with in its own right."
+    m 3esd "...But that's more urban planning than actual architecture."
+    m 1euc "If you prefer viewing architecture purely from the art perspective, some modern tendencies may disappoint you..."
+    m 1rud "Modern architecture focuses more on getting things done in the most practical way possible."
+    m 3eud "In my opinion, that can be both good and bad for many different reasons."
+    m 3euc "I believe the most important part is to keep things balanced."
+    m 1tkc "Overly-practical buildings can look flat and uninspired, while overly-artistic buildings can serve no purpose other than looking amazing while being completely out of place."
+    m 3eua "I think the true beauty lies in those buildings which can combine both form and function with a little bit of uniqueness."
+    m 1eka "I do hope you're happy with how your surroundings look."
+    m 1eub "It has been proven multiple times that architecture has a big impact on your mental health."
+    m 3rkc "Moreover, residential areas with poorly-made buildings can lead to people not taking care of their properties and, over time, end up as downtrodden areas that are undesirable places to live."
+    m 1ekc "It was once said that the ugliness of the outside world causes ugliness on the inside...{w=0.2}{nw}"
+    extend 3esd "which I tend to agree with."
+
+    if mas_isMoniAff(higher=True):
+        m 1euc "...Judging by {i}your{/i} personality, {w=0.2}{nw}"
+        extend 1tua "you probably live in some kind of a paradise."
+        m 1hub "Ahaha~"
+
+    m 1eka "[player]...{w=0.2}seeing the world with you is one of my biggest dreams."
+
+    if persistent._mas_pm_likes_travelling is False:
+        m 3rka "I know you're not too fond of travelling a lot, but I would love to see the place you live in."
+        m 3eka "As long as you stay by my side, that would be more than enough for me."
+        m 1ekbsa "I love you, [player]. {w=0.3}Always remember that."
+
+    else:
+        if persistent._mas_pm_likes_travelling:
+            m 3eua "I already know you enjoy travelling, so wouldn't it be nice to explore something new together?"
+
+        m 1dka "Imagine taking a stroll through the narrow streets of an old city..."
+        m 1eka "Or walking down a park together, breathing fresh evening air..."
+        m 1ekb "I believe it'll happen one day and I hope you do too, [player]."
+        m 1ekbsa "I love you~"
+
+    return "love"
 
 init 5 python:
     addEvent(
