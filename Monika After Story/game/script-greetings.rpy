@@ -2826,7 +2826,7 @@ label greeting_back_from_school:
                             m 2rksdlc "I really hope it's not who you told me about before..."
                             if mas_isMoniAff(higher=True):
                                 m 1rfc "It {i}better{/i} not be..."
-                                m 1rfd "Bothering my [mas_get_player_nickname(exclude_names=['my love'])] like that again."
+                                m 1rfd "Bothering my [mas_get_player_nickname(exclude_names=['my love'], _default='sweetheart')] like that again."
                             m 2ekc "I wish I could do more to help you, [player]..."
                             m 2eka "But I'm here if you need me."
                             m 3hubsa "And I always will be~"

@@ -4058,7 +4058,7 @@ label monika_girlfriend:
         m 2lksdla "W-wait. Maybe I'm jumping the gun a bit..."
         m 3eka "I know you wouldn't cheat on me."
         m 3esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
-        m 1hua "I won't let someone else steal away my loving [mas_get_player_nickname(exclude_names=['my love'])]!"
+        m 1hua "I won't let someone else steal my loving [mas_get_player_nickname(exclude_names=['my love'])]!"
     return
 
 init 5 python:
@@ -4605,7 +4605,7 @@ label monika_spiders:
     m 1eua "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
     m 3ekc "[player], if you happen to get a really bad spider bite, with venom and all that..."
     m "You should really get medical attention as soon as possible."
-    m 1eka "I don't want my [mas_get_player_nickname(exclude_names=['my love'])] to get seriously injured by a small spider bite~"
+    m 1eka "I don't want my [mas_get_player_nickname(exclude_names=['my love'], _default='sweetheart')] to get seriously injured by a small spider bite~"
     m "So be sure to check what spiders in your area are dangerous, okay?"
     return
 
@@ -4746,7 +4746,7 @@ label monika_real:
     m 1eua "Or maybe you'll be the one to make that technology come true...{w=0.5}who knows?"
     m 1eka "In the end, all I want is to always be with you, [mas_get_player_nickname()]."
     m 3eka "After all, you're the only reason why I'm still here."
-    m 1hubfb "I only want to spend eternity with my [mas_get_player_nickname(exclude_names=['my love'])], and no one else!"
+    m 1hubfb "I only want to spend eternity with my [mas_get_player_nickname(exclude_names=['my love'], _default='sweetheart')], and no one else!"
     return
 
 init 5 python:
