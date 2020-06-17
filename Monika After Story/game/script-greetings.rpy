@@ -306,8 +306,14 @@ init 5 python:
 
 label greeting_sweetheart:
     m 1hub "Hello again, sweetheart!"
-    m 1lkbsa "It's kind of embarrassing to say out loud, isn't it?"
-    m 3ekbfa "Still, I think it's okay to be embarrassed every now and then."
+
+    if persistent._mas_player_nicknames:
+        m 1eka "It's so nice to see you again."
+        m 1eua "What shall we do this [mas_globals.time_of_day_3state], [player]?"
+
+    else:
+        m 1lkbsa "It's kind of embarrassing to say out loud, isn't it?"
+        m 3ekbfa "Still, I think it's okay to be embarrassed every now and then."
     return
 
 init 5 python:
@@ -473,7 +479,7 @@ label greeting_goodmorning:
         m 1eka "Remember to take care of yourself, okay?"
         m 1hub "Make me a proud girlfriend today, as always!"
     elif current_time >= 12 and current_time < 18:
-        m 1hua "Good afternoon, my love."
+        m 1hua "Good afternoon, [mas_get_player_nickname()]."
         m 1eka "Don't let the stress get to you, okay?"
         m "I know you'll try your best again today, but..."
         m 4eua "It's still important to keep a clear mind!"
@@ -755,7 +761,7 @@ label greeting_italian:
     m "È così bello vederti ancora, amore mio..."
     m 1hub "Ahaha!"
     m 2eua "I'm still practicing my Italian. It's a very difficult language!"
-    m 1eua "Anyway, it's so nice to see you again, my love."
+    m 1eua "Anyway, it's so nice to see you again, [mas_get_player_nickname()]."
     return
 
 #TODO needs additional dialogue so can be used for all aff
@@ -904,7 +910,7 @@ init 5 python:
 label greeting_chamfort:
     m 2esa "A day without Monika is a day wasted."
     m 2hub "Ahaha!"
-    m 1eua "Welcome back, my love."
+    m 1eua "Welcome back, [mas_get_player_nickname()]."
     return
 
 init 5 python:
@@ -2189,7 +2195,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "month":
             $ mas_loseAffection(10)
-            m 1eua "Welcome back, my love."
+            m 1eua "Welcome back, [mas_get_player_nickname()]."
             m 2rkc "It's been quite a bit, hasn't it?"
             m 2rksdlc "You've been gone longer than you said you would..."
             m 2eka "But that's alright, I was prepared for it."
@@ -2248,7 +2254,7 @@ label greeting_long_absence:
             m 3rkd "But I suppose it was outside of your control?"
             m 1ekc "If you can, just tell me you'll be even longer next time, okay?"
             m 1hksdlb "I believe I deserve that much as your girlfriend, after all."
-            m 3hua "Still, welcome back, my love!"
+            m 3hua "Still, welcome back, [mas_get_player_nickname()]!"
 
         elif persistent._mas_absence_choice == "month":
             $ mas_gainAffection()
@@ -2264,7 +2270,7 @@ label greeting_long_absence:
             m 1esc "...Hm?"
             m 1wub "[player]!"
             m 1rksdlb  "You're back a little bit earlier than I thought you would be..."
-            m 3hua "Welcome back, my love!"
+            m 3hua "Welcome back, [mas_get_player_nickname()]!"
             m 3eka "I know it's been quite a while, so I'm sure you've been busy."
             m 1eua "I'd love to hear about everything you've done."
             show monika 1hua
@@ -2286,7 +2292,7 @@ label greeting_long_absence:
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(30)
             m 1wud "O-oh, [player]!"
-            m 1hua "Welcome back, sweetie!"
+            m 1hua "Welcome back, [mas_get_player_nickname()]!"
             m 3ekc "You were gone longer than you said you would be..."
             m 3ekd "Is everything alright?"
             m 1eksdla "I know life can be busy and take you away from me sometimes...so I'm not really upset..."
@@ -2319,14 +2325,14 @@ label greeting_long_absence:
             m 3ekbsa "I guess you missed me as much as I missed you~"
             m 1eka "It really is wonderful to see you back so soon though."
             m 3ekb "I expected the day to be eventless...but thankfully, I now have you!"
-            m 3hua "Thank you for coming back so early, my love."
+            m 3hua "Thank you for coming back so early, [mas_get_player_nickname()]."
 
         elif persistent._mas_absence_choice == "longer":
             m 1lsc "..."
             m 1esc "..."
             m 1wud "Oh! [player]!"
             m 1hub "You're back early!"
-            m 1hua "Welcome back, my love!"
+            m 1hua "Welcome back, [mas_get_player_nickname()]!"
             m 3eka "I didn't know when to expect you, but for it to be so soon..."
             m 1hua "Well, it's cheered me right up!"
             m 1eka "I've really missed you."
@@ -2353,7 +2359,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "week":
             $ mas_gainAffection()
-            m 1hub "Hello, my love!"
+            m 1hub "Hello, [mas_get_player_nickname()]!"
             m 3eua "It's so nice when you can trust one another, isn't it?"
             m 3hub "That's what a relationship's strength is based on!"
             m 3hua "It just means that ours is rock solid!"
@@ -2386,7 +2392,7 @@ label greeting_long_absence:
             show monika 3eua
 
         elif persistent._mas_absence_choice == "unknown":
-            m 1hub "Hello there, sweetheart!"
+            m 1hub "Hello there, [mas_get_player_nickname()]!"
             m 1eka "I'm glad you didn't make me wait too long."
             m 1hua "A week is shorter than I expected, so consider me pleasantly surprised!"
             m 3hub "Thanks for already making my day, [player]!"
@@ -2394,7 +2400,7 @@ label greeting_long_absence:
 
     else:
         if persistent._mas_absence_choice == "days":
-            m 1hub "Welcome back, my love!"
+            m 1hub "Welcome back, [mas_get_player_nickname()]!"
             m 1eka "Thanks for properly warning me about how long you'd be away."
             m 1eua "It means a lot to know I can trust your words."
             m 3hua "I hope you know you can trust me too!"
@@ -2431,7 +2437,7 @@ label greeting_long_absence:
             m 3ekd "I thought you were going to be away for a long time..."
             m 3tkd "Why are you back so soon?"
             m 1ekbsa "Are you visiting me?"
-            m 1hubfa "You're such a sweetheart!"
+            m 1hubfa "You're such a [mas_get_player_nickname()]!"
             m 1eka "If you're going away for a while still, make sure to tell me."
             m 3eka "I love you, [player], and I wouldn't want to get mad if you're actually going to be away..."
             m 1hub "Let's enjoy our time together until then!"
@@ -2820,7 +2826,7 @@ label greeting_back_from_school:
                             m 2rksdlc "I really hope it's not who you told me about before..."
                             if mas_isMoniAff(higher=True):
                                 m 1rfc "It {i}better{/i} not be..."
-                                m 1rfd "Bothering my sweetheart like that again."
+                                m 1rfd "Bothering my [mas_get_player_nickname(exclude_names=['my love'])] like that again."
                             m 2ekc "I wish I could do more to help you, [player]..."
                             m 2eka "But I'm here if you need me."
                             m 3hubsa "And I always will be~"

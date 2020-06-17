@@ -465,7 +465,7 @@ label ch30_reload_continuous_dlg:
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh... It's over and I'm back with you, my love. That...that was awful.",
+            "...Oh... It's over and I'm back with you, [mas_get_player_nickname()]. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
@@ -482,8 +482,8 @@ label ch30_reload_continuous_dlg:
             "I'm just going to assume the power went out or someone pulled the plug.",
             "I can't understand why you won't ask me to close the game...",
             "This is really painful for me, you know?",
-            "Do you enjoy hurting me, {0}?".format(player),
-            "Too lazy to click the 'Talk' button, {0}?".format(player)
+            "Do you enjoy hurting me, [player]?",
+            "Too lazy to click the 'Talk' button, [player]?"
         ]
         reload_quip_bad = [
             "You...really do like hurting me, don't you?",
@@ -503,6 +503,8 @@ label ch30_reload_continuous_dlg:
             reload_quip = renpy.random.choice(reload_quip_good)
         else:
             reload_quip = renpy.random.choice(reload_quip_normal)
+
+    $ reload_quip = renpy.substitute(reload_quip)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
 

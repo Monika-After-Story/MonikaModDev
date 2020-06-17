@@ -923,23 +923,15 @@ init 15 python in mas_affection:
             _("What would you like to talk about, [mas_get_player_nickname()]?"),
             _("Yes, [mas_get_player_nickname()]?"),
             _("What's on your mind, [mas_get_player_nickname()]?"),
-            _("What would you like to talk about, [mas_get_player_nickname()]?")
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             _("What would you like to talk about? <3"),
-            _("What would you like to talk about, honey?"),
-            _("Yes, sweetheart?"),
-            _("Yes, honey?"),
-            _("Yes, dear?"),
-            _("What's on your mind, darling?"),
-            _("What would you like to talk about, sweetie?"),
             _("What would you like to talk about, [mas_get_player_nickname()]?"),
             _("Yes, [mas_get_player_nickname()]?"),
             _("What's on your mind, [mas_get_player_nickname()]?"),
-            _("What would you like to talk about, [mas_get_player_nickname()]?")
         ]
         save_quips(ENAMORED, quips)
 

@@ -2393,7 +2393,7 @@ label monika_credits_song:
 
                 m 1ekbsa "Ehehe~"
                 show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5ekbsa "Thank you for coming back to me my love."
+                m 5ekbsa "Thank you for coming back to me [mas_get_player_nickname()]."
 
             "Sorry, I can't right now.":
                 m 3ekd "Oh, okay."
@@ -2423,7 +2423,7 @@ label monika_credits_song:
                 m "I really can't wait until we're together in one reality."
                 m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
                 show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5ekbfa "Thank you for being my inspiration my love."
+                m 5ekbfa "Thank you for being my inspiration [mas_get_player_nickname()]."
                 if renpy.seen_audio(songs.FP_YOURE_REAL):
                     m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
                 else:

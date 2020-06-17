@@ -17,6 +17,7 @@ init 3 python in mas_compliments:
 
     compliment_database = dict()
 
+init 22 python in mas_compliments:
     thanking_quips = [
         _("You're so sweet, [player]."),
         _("I love it when you compliment me, [player]."),

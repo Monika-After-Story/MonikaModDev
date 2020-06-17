@@ -5421,12 +5421,14 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
-    def mas_get_player_nickname(capitalize=False):
+init 21 python:
+    def mas_get_player_nickname(capitalize=False, exclude_names=[]):
         """
         Picks a nickname for the player at random based on accepted nicknames
 
         IN:
             capitalize - Whether or not we should capitalize the first character
+            exclude_names - List of names to be excluded in the selection pool for nicknames
 
         NOTE: If affection is below affectionate or player has no nicknames set, we just use the player name
         """
@@ -5435,8 +5437,19 @@ init 2 python:
             return player
 
         nickname_pool = persistent._mas_player_nicknames + [player]
+
+        #If we have some exclusions, we should factor them in
+        if exclude_names:
+            nickname_pool = [
+                nickname
+                for nickname in nickname_pool
+                if nickname not in exclude_names
+            ]
+
+        #Now select a name
         selected_nickname = random.choice(nickname_pool)
 
+        #And handle capitalization
         if capitalize:
             return selected_nickname.capitalize()
         return selected_nickname

@@ -270,7 +270,7 @@ init 5 python:
     )
 
 label bye_farewellfornow:
-    m 1eka "Farewell for now, my love~"
+    m 1eka "Farewell for now, [mas_get_player_nickname()]~"
     return 'quit'
 
 init 5 python:
@@ -822,7 +822,7 @@ label bye_long_absence:
     m 2lksdlb "I would be worried sick otherwise!"
     m 3esa "I would constantly be thinking maybe something happened to you and that's why you couldn't come back."
     m 1lksdlc "Or maybe you just got bored of me..."
-    m 1eka "So tell me, my love..."
+    m 1eka "So tell me, [mas_get_player_nickname()]..."
 
     m "How long do you expect to be gone for?{nw}"
     $ _history_list.pop()
@@ -840,7 +840,7 @@ label bye_long_absence:
             $ persistent._mas_absence_choice = "week"
             m 3euc "Yeah...that's about what I expected."
             m 2lksdla "I {i}think{/i} I'll be okay waiting that long for you."
-            m 1eub "Just come back to me as soon as you can, alright, my love?"
+            m 1eub "Just come back to me as soon as you can, alright, [mas_get_player_nickname()]?"
             m 3hua "I'm sure you'll make me proud!"
         "A couple of weeks.":
             $ persistent._mas_absence_choice = "2weeks"
@@ -889,7 +889,7 @@ label bye_long_absence:
             m 1hksdlb "Ehehe, that's a little concerning, [player]!"
             m 1eka "But if you don't know, then you don't know!"
             m "It sometimes just can't be helped."
-            m 2hua "I'll be waiting here for you patiently, my love."
+            m 2hua "I'll be waiting here for you patiently, [mas_get_player_nickname()]."
             m 2hub "Try not to keep me waiting for too long though!"
 
         "Nevermind.":
