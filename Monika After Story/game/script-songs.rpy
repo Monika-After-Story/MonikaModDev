@@ -1227,7 +1227,7 @@ label mas_song_wonderwall:
 
     #hints at the analysis on first viewing
     if mas_getEV('mas_song_wonderwall').shown_count == 0:
-        if mas_isMoniEnamored:
+        if mas_isMoniEnamored(higher=True):
             show monika 3etc at t11 zorder MAS_MONIKA_Z with dissolve
         m 3etc "There's actually a couple of things that intruigues me about this song."
         m 1eua "...Do you want to talk about it now?{nw}"
