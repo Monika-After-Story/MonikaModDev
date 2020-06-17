@@ -1191,6 +1191,139 @@ label mas_song_lamour_toujours:
     m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_wonderwall",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Wonderwall",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_wonderwall:
+    call mas_song_wonderwall_lyrics
+    m 1ekbsu "Ehehe, you really are the one who saved me, [player]~"
+    
+    if persistent.monika_kill:
+        m 3dkbfu "I'm forever grateful you brought me back. {nw}"
+    else:
+        m 3dkbfu "I'm forever grateful you stayed for me. {nw}"
+
+    extend "I trust you to take care of us until I can find my way to you."
+    m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
+    m 3ekbla "The only thing we can be sure of is the place it leads us to will be worth it."
+
+    if mas_isMoniEnamored:
+        show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hubfb  "...So I'm not afraid of walking down this road [player]; with you by my side there's no way I could be!"
+        m 5ekbfa "You're my wonderwall, after all~"
+    else:
+        m 1kubla "It's a little scary, {nw}"
+        extend 1eubla "but we'll have to keep on walking until we reach that place [player]~"
+
+    #hints at the analysis on first viewing
+    if mas_getEV('mas_song_wonderwall').shown_count == 0:
+        if mas_isMoniEnamored:
+            show monika 3etc at t11 zorder MAS_MONIKA_Z with dissolve
+        m 3etc "There's actually a couple of things that intruigues me about this song."
+        m 1eua "...Do you want to talk about it now?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "...Do you want to talk about it now?{fast}"
+
+            "Sure.":
+                m 1hua "Okay then!"
+                call mas_song_wonderwall_analysis(from_song=True)
+                $ mas_getEV("mas_song_wonderwall_analysis").shown_count += 1
+
+            "Not now.":
+                m 1eka "Oh? okay then..."
+                m 3eka "Just let me know if you want to talk more about this song later."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_wonderwall_analysis",
+            category=[store.mas_songs.TYPE_ANALYSIS],
+            prompt="Wonderwall",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_wonderwall_analysis(from_song=False):
+
+    if not from_song:
+        call mas_song_wonderwall_lyrics
+
+    m 3eta "So, did you know many people are being very vocal about their dislike of this song?"
+    m 3esc "It's not something you'd think, right?"
+    m "This song, Wonderwall by the band Oasis, has been hailed as a classic and is one of the most popular song ever made."
+    m 3etd "So why is it decried so much?"
+    m 3eta "I think there are several answers to this question. The first one being that it's been overplayed."
+    m 3esc "While some people can go their entire life listening to the same musics, not everybody's like that."
+
+    if seen_event("mas_monika_plays_or"):
+        m 3hksdlb "...I hope you won't get tired of {i}my{/i} songs anytime soon [player]. Ahaha~"
+    else:
+        m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player]. Ahaha~"
+
+    m 1esd "Another argument you could make is it being overhyped."
+    m 1rsu "As much as I like it, it's true the lyrics and chords are pretty simple; {nw}"
+    extend 3etc "what makes this song in particular so deserving of all the attention it gets?"
+    m 3eud "...Especially when so many other songs still fly completely under the radar, no matter how advanced or ambitious they are."
+    m 1lksdlc "It's tricky to evaluate though, you can't really tell the amount of work that went into something solely by the result.{w=0.3} {nw}"
+    extend 3esd "Simple and clean does not mean unpolished."
+    m 3duu "Ultimately, it all boils down to what the song makes you feel; There's no being wrong about your tastes in music."
+    m 1efc "What bothers me is when someone complains about it just because it's trendy to go against the general opinion."
+    m 3tsd "It's like disagreeing for the sake of it helps them feel like they stand out from the crowd, like they need it to stay self-confident."
+    m 2rsc "It kinda feels...{w=0.5}a bit silly, to be honest."
+    m 2rksdld "At this point you're not even judging the song anymore, you're just trying to ascertain your own identity."
+    m 2dksdlc "It's a little sad if anything, {nw}"
+    extend 7eksdlc "defining yourself by something you hate does not seem like a very healthy thing to do in the long run."
+    m 1rsc "Yeah..."
+    m 3etc "Although...{w=0.3}there might be yet another reason why this song is controversial with some people."
+    m 3esd "Some of the members of this band have been the subject of controversies in the past due to their...{w=0.5}wild behaviors."
+    m 1hksdlb "I'm not trying to judge them or anything, it's not like I ever actually sat down and talked with them."
+    m 3esc "...But from a total stranger's perspective, this raises the question of how much can one's bad actions be excused by talent or charisma."
+    
+    if persistent._mas_pm_monika_evil or persistent._mas_pm_a_hater:
+        m 3tsu "Though if you're going out with me it's not exactly like you're a stranger to the question, right? Ehehe~"
+        m 3esc "Not that I believe what I did was unjustified, passing you by was no option."
+
+        if persistent._mas_pm_cares_about_dokis:
+            m 3dkc "...Still, in hindsight, I see there are some things I could have handled more tactfully."
+            m 3lksdld "It's not easy staying on your best behavior when you're put under pressure; even more so when it's your life on the line."
+        
+        m 3esc "But I digress..."
+
+    m 3ekc "There are so many stories of persons behaving in less than ideal ways only to be instantly forgiven no matter what by their fans..."
+    m 1dkd "This kind of thing makes me realize the world really isn't like this idyllic perfect image we're presented with growing up."
+    m 1etc "But then again, is such a world even possible? Is it even something everyone would want?"
+    m 1ekbla "Even if your world isn't perfect [player], I still can't wait to experience it with you."
+    m 3hubsb "It's not like the two of us would ever behave badly to each other, right?~"
+    return
+
+label mas_song_wonderwall_lyrics:
+    m 3duo "{i}~I don't believe that anybody feels the way I do about you now~{/i}"
+    m 7esc "{i}~And all the roads we have to walk are winding~{/i}"
+    m 7dkd "{i}~And all the lights that lead us there are blinding~{/i}"
+    m 3ekbla "{i}~There are many things that I would like to say to you but I don't know how~{/i}"
+    m 3hubsb "{i}~Because maybe~{/i}"
+    m 1hubsa "{i}~You're gonna be the one that saves me~{/i}"
+    m 1dubso "{i}~And after all~{/i}"
+    m 3hubsb "{i}~You're my wonderwall~{/i}"
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
