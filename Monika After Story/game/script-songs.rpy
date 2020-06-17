@@ -1217,7 +1217,7 @@ label mas_song_wonderwall:
     m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
     m 3ekbla "The only thing we can be sure of is the place it leads us to will be worth it."
 
-    if mas_isMoniEnamored:
+    if mas_isMoniEnamored(higher=True):
         show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hubfb  "...So I'm not afraid of walking down this road [player]; with you by my side there's no way I could be!"
         m 5ekbfa "You're my wonderwall, after all~"
