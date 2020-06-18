@@ -501,6 +501,13 @@ label v0_11_3(version="v0_11_3"):
                 smoking_quit_ev = mas_getEV("monika_smoking_quit")
                 if smoking_quit_ev:
                     smoking_quit_ev.start_date = store.mas_utils.add_months(smoking_ev.last_seen, 1)
+
+        #Unlock the leaving already fare
+        leaving_already_ev = mas_getEV("bye_leaving_already")
+        if leaving_already_ev:
+            leaving_already_ev.random = True
+            leaving_already_ev.conditional = "mas_getSessionLength() <= datetime.timedelta(minutes=20)"
+
     return
 
 #0.11.1
