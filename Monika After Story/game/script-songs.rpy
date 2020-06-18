@@ -1264,7 +1264,7 @@ label mas_song_wonderwall_analysis(from_song=False):
     if not from_song:
         call mas_song_wonderwall_lyrics
 
-    m 3eta "So, did you know many people are being very vocal about their dislike of this song?"
+    m 3eta "There's a lot of people who are very vocal about their dislike for this song..."
     m 3etc "You wouldn't expect that, would you?"
     m "This song, Wonderwall by the band Oasis, has been hailed as a classic and is one of the most popular song ever made."
     m 3etd "So why is it decried so much?"
