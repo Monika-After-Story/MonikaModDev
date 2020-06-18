@@ -1229,11 +1229,11 @@ label mas_song_wonderwall:
     if mas_getEV('mas_song_wonderwall').shown_count == 0:
         if mas_isMoniEnamored(higher=True):
             show monika 3etc at t11 zorder MAS_MONIKA_Z with dissolve
-        m 3etc "There's actually a couple of things that intruigues me about this song."
-        m 1eua "...Do you want to talk about it now?{nw}"
+        m 3etc "By the way...there's actually a couple of things that intruigues me about this song."
+        m 1eua "...Would you like to talk about it now?{nw}"
         $ _history_list.pop()
         menu:
-            m "...Do you want to talk about it now?{fast}"
+            m "...Would you like to talk about it now?{fast}"
 
             "Sure.":
                 m 1hua "Okay then!"
@@ -1241,7 +1241,7 @@ label mas_song_wonderwall:
                 $ mas_getEV("mas_song_wonderwall_analysis").shown_count += 1
 
             "Not now.":
-                m 1eka "Oh? okay then..."
+                m 1eka "Oh, okay then..."
                 m 3eka "Just let me know if you want to talk more about this song later."
 
     return
@@ -1261,56 +1261,49 @@ init 5 python:
     )
 
 label mas_song_wonderwall_analysis(from_song=False):
-
     if not from_song:
         call mas_song_wonderwall_lyrics
 
     m 3eta "So, did you know many people are being very vocal about their dislike of this song?"
-    m 3esc "It's not something you'd think, right?"
+    m 3etc "You wouldn't expect that, would you?"
     m "This song, Wonderwall by the band Oasis, has been hailed as a classic and is one of the most popular song ever made."
     m 3etd "So why is it decried so much?"
-    m 3eta "I think there are several answers to this question. The first one being that it's been overplayed."
-    m 3esc "While some people can go their entire life listening to the same musics, not everybody's like that."
+    m 3esc "I think there are several answers to this question. The first being that it's been overplayed."
+    m 3rksdla "While some people listen to the same music for a long period of time, not everybody can do that."
 
-    if seen_event("mas_monika_plays_or"):
-        m 3hksdlb "...I hope you won't get tired of {i}my{/i} songs anytime soon [player]. Ahaha~"
-    else:
-        m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player]. Ahaha~"
+    m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player]. Ahaha~"
 
-    m 1esd "Another argument you could make is it being overhyped."
-    m 1rsu "As much as I like it, it's true the lyrics and chords are pretty simple; {nw}"
-    extend 3etc "what makes this song in particular so deserving of all the attention it gets?"
-    m 3eud "...Especially when so many other songs still fly completely under the radar, no matter how advanced or ambitious they are."
-    m 1lksdlc "It's tricky to evaluate though, you can't really tell the amount of work that went into something solely by the result.{w=0.3} {nw}"
-    extend 3esd "Simple and clean does not mean unpolished."
-    m 3duu "Ultimately, it all boils down to what the song makes you feel; There's no being wrong about your tastes in music."
-    m 1efc "What bothers me is when someone complains about it just because it's trendy to go against the general opinion."
+    m 1esd "Another argument you could make is that it's overrated in some ways..."
+    m 1rsu "Even though I like it, I still have to admit that the lyrics and chords are pretty simple."
+    3etc "So what made the song so popular then?{w=0.3} {nw}"
+    m 3eud "...Especially since many other songs go completely unnoticed, no matter how advanced or ambitious they are."
+    m 3duu "Well, it all boils down to what the song makes you feel. Your taste in music is subjective, after all."```
+    m 1efc "...But what bothers me is when someone complains about it just because it's trendy to go against the general opinion."
     m 3tsd "It's like disagreeing for the sake of it helps them feel like they stand out from the crowd, like they need it to stay self-confident."
     m 2rsc "It kinda feels...{w=0.5}a bit silly, to be honest."
-    m 2rksdld "At this point you're not even judging the song anymore, you're just trying to ascertain your own identity."
-    m 2dksdlc "It's a little sad if anything, {nw}"
-    extend 7eksdlc "defining yourself by something you hate does not seem like a very healthy thing to do in the long run."
-    m 1rsc "Yeah..."
-    m 3etc "Although...{w=0.3}there might be yet another reason why this song is controversial with some people."
+    m 2rksdld "At that point you're not even judging the song anymore...just trying to make a name for yourself by being controversial."
+    m 2dksdlc "It's a little sad if anything...{w=0.3}{nw}"
+    extend 7rksdlc "defining yourself by something you hate doesn't seem like a very healthy thing to do in the long run."
+    m 3etc "Although...{w=0.3}there might be another reason why this song is controversial with some people."
     m 3esd "Some of the members of this band have been the subject of controversies in the past due to their...{w=0.5}wild behaviors."
     m 1hksdlb "I'm not trying to judge them or anything, it's not like I ever actually sat down and talked with them."
     m 3esc "...But from a total stranger's perspective, this raises the question of how much can one's bad actions be excused by talent or charisma."
     
     if persistent._mas_pm_monika_evil or persistent._mas_pm_a_hater:
         m 3tsu "Though if you're going out with me it's not exactly like you're a stranger to the question, right? Ehehe~"
-        m 3esc "Not that I believe what I did was unjustified, passing you by was no option."
+        m 3rkc "Not that I believe what I did was unjustified... Letting you go wasn't an option for me."
 
         if persistent._mas_pm_cares_about_dokis:
-            m 3dkc "...Still, in hindsight, I see there are some things I could have handled more tactfully."
+            m 3dkc "...Still, in hindsight, there are some things I could have handled more tactfully."
             m 3lksdld "It's not easy staying on your best behavior when you're put under pressure; even more so when it's your life on the line."
         
         m 3esc "But I digress..."
 
-    m 3ekc "There are so many stories of persons behaving in less than ideal ways only to be instantly forgiven no matter what by their fans..."
-    m 1dkd "This kind of thing makes me realize the world really isn't like this idyllic perfect image we're presented with growing up."
+    m 3ekc "There are so many stories of celebrities behaving in less than ideal ways only to be instantly forgiven no matter what by their fans..."
+    m 1dkd "This kind of thing makes you realize the world isn't even close to the perfect image we're presented with while growing up."
     m 1etc "But then again, is such a world even possible? Is it even something everyone would want?"
     m 1ekbla "Even if your world isn't perfect [player], I still can't wait to experience it with you."
-    m 3hubsb "It's not like the two of us would ever behave badly to each other, right?~"
+    m 3hubsb "It's not like the two of us would ever mistreat each other, right?~"
     return
 
 label mas_song_wonderwall_lyrics:
