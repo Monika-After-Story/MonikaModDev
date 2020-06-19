@@ -2276,18 +2276,19 @@ label prompt_menu:
             unlocked=True,
             aff=mas_curr_affection
         )
-        sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
+        sorted_event_labels = Event.getSortedKeys(unlocked_events,include_none=True)
 
-        unseen_events = []
-        for ev_label in sorted_event_keys:
-            # we exclude 'mas_show_unseen' from the unseen list since it's only unlocked when the unseen menu is hidden
-            # having it added to the unseen list just messes up the counter in the 'mas_show_unseen' prompt
-            if not seen_event(ev_label) and ev_label != "mas_show_unseen":
-                unseen_events.append(ev_label)
+        # we exclude 'mas_show_unseen' from the unseen list since it's only unlocked when the unseen menu is hidden
+        # having it added to the unseen list just messes up the counter in the 'mas_show_unseen' prompt
+        unseen_event_labels = [
+            ev_label
+            for ev_label in sorted_event_labels
+            if not seen_event(ev_label) and ev_label != "mas_show_unseen"
+        ]
 
-        if len(unseen_events) > 0 and persistent._mas_unsee_unseen:
+        if len(unseen_event_labels) > 0 and persistent._mas_unsee_unseen:
             mas_showEVL('mas_show_unseen','EVE',unlock=True)
-            unseen_num = len(unseen_events)
+            unseen_num = len(unseen_event_labels)
             mas_getEV('mas_show_unseen').prompt = "I would like to see 'Unseen' ([unseen_num]) again"
         else:
             mas_hideEVL('mas_show_unseen','EVE',lock=True)
@@ -2307,7 +2308,7 @@ label prompt_menu:
     #To make the menu line up right we have to build it up manually
     python:
         talk_menu = []
-        if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
+        if len(unseen_event_labels)>0 and not persistent._mas_unsee_unseen:
             # show unseen if we have unseen events and the player hasn't chosen to hide it
             talk_menu.append((_("{b}Unseen{/b}"), "unseen"))
         if mas_hasBookmarks():
@@ -2328,7 +2329,7 @@ label prompt_menu:
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
-        call show_prompt_list(unseen_events) from _call_show_prompt_list
+        call show_prompt_list(unseen_event_labels) from _call_show_prompt_list
 
     elif madechoice == "bookmarks":
         call mas_bookmarks
@@ -2366,20 +2367,24 @@ label prompt_menu_end:
     $ mas_DropShield_dlg()
     jump ch30_loop
 
-label show_prompt_list(sorted_event_keys):
+label show_prompt_list(sorted_event_labels):
     $ import store.evhand as evhand
 
     #Get list of unlocked prompts, sorted by unlock date
     python:
-        prompt_menu_items = []
-        for event in sorted_event_keys:
-            prompt_menu_items.append([unlocked_events[event].prompt,event])
+        prompt_menu_items = [
+            (unlocked_events[event_label].prompt, event_label, True, False)
+            for event_label in sorted_event_labels
+        ]
 
-    $ nvm_text = "Nevermind."
+        hide_unseen_event = mas_getEV("mas_hide_unseen")
 
-    $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
+        final_items = (
+            (hide_unseen_event.prompt, hide_unseen_event.eventlabel, False, False, 20),
+            ("Nevermind.", False, False, False, 0)
+        )
 
-    call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
+    call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
         $ pushEvent(_return)
