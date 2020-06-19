@@ -477,7 +477,7 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=True, return_button_prompt="Nevermind.", return_button_value=""):
+screen input(prompt, use_return_button=False, return_button_prompt="Nevermind.", return_button_value="cancel_input"):
     style_prefix "input"
 
     window:

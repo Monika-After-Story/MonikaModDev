@@ -5801,7 +5801,12 @@ label monika_penname:
                         $ penbool = False
 
                         while not penbool:
-                            $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
+                            $ penname = mas_input(
+                                "What is your penname?",
+                                length=20,
+                                screen_kwargs={"use_return_button": True}
+                            ).strip(' \t\n\r')
+
                             $ lowerpen = penname.lower()
 
                             if lowerpen == player.lower():
@@ -5844,9 +5849,9 @@ label monika_penname:
                                 $ penbool = True
 
                             elif not lowerpen:
-                                m 1hua "Well, go on! You can type 'nevermind' if you've chickened out~"
+                                m 1hua "Well, go on! Hit 'nevermind' if you've chickened out~"
 
-                            elif lowerpen =="nevermind":
+                            elif lowerpen == "cancel_input":
                                 m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
                                 $ penbool = True
 
@@ -7275,10 +7280,18 @@ label monika_orchestra:
             $ instrumentname = ""
             #Loop this so we get a valid input
             while not instrumentname:
-                $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+                $ instrumentname = mas_input(
+                    "What instrument do you play?",
+                    length=15,
+                    screen_kwargs={"use_return_button": True}
+                ).strip(' \t\n\r')
 
             $ tempinstrument = instrumentname.lower()
-            if tempinstrument == "piano":
+
+            if tempinstrument == "cancel_input":
+                jump .no_choice
+
+            elif tempinstrument == "piano":
                 m 1wuo "Oh, that's really cool!"
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
                 m 1hua "Maybe we could do a duet someday!"
@@ -7323,6 +7336,8 @@ label monika_orchestra:
                 $ persistent._mas_pm_plays_instrument = True
 
         "No.":
+            label .no_choice:
+                pass
             $persistent._mas_pm_plays_instrument = False
             m 1euc "I see..."
             m 1eka "You should try to pick up an instrument that interests you, sometime."
