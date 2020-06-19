@@ -909,13 +909,13 @@ label monika_change_weather:
         weathers.extend(other_weathers)
 
         #Add the auto option
-        weathers.append(("Progressive","auto",False,False))
+        weathers.append(("Progressive", "auto", False, False))
 
         # now add final quit item
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(weathers, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(weathers, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     $ sel_weather = _return
 

@@ -650,7 +650,7 @@ label mas_rerandom:
     else:
         $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_one, interact=False)
 
-    call screen mas_gen_scrollable_menu(derandomlist, (evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    call screen mas_gen_scrollable_menu(derandomlist, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_prompt_back)
 
     $ topic_choice = _return
 
@@ -11338,7 +11338,7 @@ label monika_vehicle:
                 #Display our scrollable
                 show monika at t21
 
-                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
+                call screen mas_gen_scrollable_menu(option_list, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
                 show monika at t11
 
                 $ selection = _return

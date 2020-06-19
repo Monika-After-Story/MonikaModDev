@@ -522,7 +522,7 @@ label monika_change_background_loop:
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(backgrounds, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(backgrounds, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     $ sel_background = _return
 
