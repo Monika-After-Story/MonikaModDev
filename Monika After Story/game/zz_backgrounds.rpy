@@ -1,6 +1,10 @@
 #Here's where we store our background data
 default persistent._mas_background_MBGdata = {}
 
+#Store the persistent background
+#Defaults to def (spaceroom)
+default persistent._mas_current_background = "def"
+
 #START: Class definition
 init -10 python:
 
@@ -312,7 +316,6 @@ init -20 python in mas_background:
 
 #START: BG change functions
 init 800 python:
-
     def mas_setBackground(_background):
         """
         Sets the initial bg
@@ -328,7 +331,7 @@ init 800 python:
         mas_current_background = _background
         mas_current_background.entry(old_background)
 
-    def mas_changeBackground(new_background, by_user=None):
+    def mas_changeBackground(new_background, by_user=None, set_persistent=False):
         """
         changes the background w/o any scene changes
 
@@ -337,21 +340,56 @@ init 800 python:
                 The background we're changing to
 
             by_user:
-                If the user switched the background themselves
+                True if the user switched the background themselves
+
+            set_persistent:
+                True if we want this to be persistent
         """
         if by_user is not None:
             mas_background.force_background = bool(by_user)
 
+        if set_persistent:
+            persistent._mas_current_background = new_background.background_id
+
         mas_current_background.exit(new_background)
         mas_setBackground(new_background)
+
+    def mas_startupBackground():
+        """
+        Sets up the spaceroom to start up in the background you left in if it is unlocked and still exists
+        """
+        if (
+            mas_isMoniEnamored(higher=True)
+            and persistent._mas_current_background in store.mas_background.BACKGROUND_MAP
+            and store.mas_background.BACKGROUND_MAP[persistent._mas_current_background].unlocked
+        ):
+            background_to_set = store.mas_background.BACKGROUND_MAP[persistent._mas_current_background]
+            mas_changeBackground(background_to_set)
+
+            if background_to_set.disable_progressive:
+                store.skip_setting_weather = True
+
+        #If for whatever reason, we are no longer able to use the persistent background now, we reset to spaceroom
+        else:
+            persistent._mas_current_background = "spaceroom"
+
+    def mas_checkBackgroundChangeDelegate():
+        """
+        Checks to see if the background change delegate should be locked or unlocked and changes its state accordingly
+
+        Key rule: at least 2 available backgrounds
+        """
+        if mas_background.getUnlockedBGCount() < 2:
+            mas_lockEVL("monika_change_background","EVE")
+        else:
+            mas_unlockEVL("monika_change_background", "EVE")
+
 
     #Just set us to the normal room here
     mas_current_background = None
     mas_setBackground(mas_background_def)
 
-    #Make sure the bg selector is only available with at least 2 bgs unlocked
-    if mas_background.getUnlockedBGCount() < 2:
-        mas_lockEVL("monika_change_background","EVE")
+
 
 #START: Programming points
 init -2 python in mas_background:
@@ -364,11 +402,28 @@ init -2 python in mas_background:
         if store.seen_event("mas_monika_islands"):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
 
+        #NOTE: We check if _old here because it acts as a check for whether or not we're in the init phase
+        if _old:
+            #Since these holidays demand a specific weather, we'll set them here
+            if store.mas_isO31():
+                store.mas_changeWeather(store.mas_weather_thunder, by_user=True)
+
+            elif store.mas_isD25():
+                store.mas_changeWeather(store.mas_weather_snow, by_user=True)
+
+        #Weather should always be unlocked for spaceroom
+        #This catches the potential of a deleted background which does not support weather
+        store.mas_unlockEVL("monika_change_weather", "EVE")
+
     def _def_background_exit(_new):
         """
         Exit programming point for befault background
         """
         store.mas_lockEVL("mas_monika_islands", "EVE")
+
+        #Lock the weather is the background we are changing to does not support it
+        if _new.disable_progressive:
+            store.mas_lockEVL("monika_change_weather", "EVE")
 
 
 #START: bg defs
@@ -399,6 +454,8 @@ init -1 python:
         exit_pp=store.mas_background._def_background_exit
     )
 
+    #Now load data
+    store.mas_background.loadMBGData()
 
 #START: Image definitions
 #Spaceroom
@@ -412,24 +469,26 @@ image monika_snow_room_night = "mod_assets/location/spaceroom/spaceroom_snow-n.p
 
 #TODO: locking/unlocking of this based on other backgrounds
 #START: Location Selector
-#init 5 python:
-#    # available only if moni affection is affectionate+
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_change_background",
-#            category=["location"],
-#            prompt="Can we go somewhere else?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None},
-#            aff_range=(mas_aff.AFFECTIONATE, None)
-#        )
-#    )
+init 5 python:
+    # available only if moni affection is affectionate+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_change_background",
+            category=["location"],
+            prompt="Can we go somewhere else?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        restartBlacklist=True
+    )
 
 label monika_change_background:
-
     m 1hua "Sure!"
+
+    #FALL THROUGH
 
 label monika_change_background_loop:
 
@@ -471,20 +530,18 @@ label monika_change_background_loop:
 
     # return value False? then return
     if sel_background is False:
-        m 1eka "Oh, alright."
-        m "If you want to go somewhere, just ask, okay?"
-        return
+        return "prompt"
 
     if sel_background == mas_current_background:
         m 1hua "We're here right now, silly."
         m "Try again~"
         jump monika_change_background_loop
 
-    call mas_background_change(sel_background)
+    call mas_background_change(sel_background, set_persistent=True)
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
-label mas_background_change(new_bg, skip_leadin=False, skip_outro=False):
+label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_persistent=False):
     # otherwise, we can change the background now
     if not skip_leadin:
         m 1eua "Alright!"
@@ -496,29 +553,35 @@ label mas_background_change(new_bg, skip_leadin=False, skip_outro=False):
     with dissolve
     pause 2.0
 
-    # finally change the background
-    $ mas_changeBackground(new_bg)
+    python:
+        #Set persistent
+        if set_persistent:
+            persistent._mas_current_background = new_bg.background_id
 
-    #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
-    if new_bg.disable_progressive and new_bg.hide_masks:
-        $ mas_weather.temp_weather_storage = mas_current_weather
-        $ mas_changeWeather(mas_weather_def)
-        $ mas_lockEVL("monika_change_weather", "EVE")
+        #Store the old bg for use later
+        old_bg = mas_current_background
 
-    else:
-        if mas_weather.temp_weather_storage is not None:
-            $ mas_changeWeather(mas_weather.temp_weather_storage)
+        #Finally, change the background
+        mas_changeBackground(new_bg)
+
+        #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
+        if new_bg.disable_progressive and new_bg.hide_masks:
+            mas_weather.temp_weather_storage = mas_current_weather
+            mas_changeWeather(mas_weather_def)
+            mas_lockEVL("monika_change_weather", "EVE")
 
         else:
-            #If we don't have tempstor, run the startup weather
-            $ set_to_weather = mas_shouldRain()
-            if set_to_weather is not None:
-                $ mas_changeWeather(set_to_weather)
-            else:
-                $ mas_changeWeather(mas_weather_def)
+            if mas_weather.temp_weather_storage is not None:
+                mas_changeWeather(mas_weather.temp_weather_storage)
+                #Now reset the temp storage for weather
+                mas_weather.temp_weather_storage = None
 
-        #Then we unlock the weather sel here
-        $ mas_unlockEVL("monika_change_weather", "EVE")
+            else:
+                #If we don't have tempstor, run the startup weather
+                mas_startupWeather()
+
+            #Then we unlock the weather sel here
+            mas_unlockEVL("monika_change_weather", "EVE")
 
     call spaceroom(scene_change=True, dissolve_all=True)
 
