@@ -19,6 +19,7 @@ python early:
     import traceback
     _dev_tb_list = []
 
+    ### Overrides of core renpy things
     def dummy(*args, **kwargs):
         """
         Dummy function that does nothing
@@ -27,6 +28,105 @@ python early:
 
     # clear this so no more traceback. We expect node loops anyway
     renpy.execution.check_infinite_loop = dummy
+
+    class MASFormatter(renpy.substitutions.Formatter):
+        """
+        Our string formatter that uses more
+        advanced formatting rules compared to the RenPy one
+        """
+        def get_field(self, field_name, args, kwargs):
+            """
+            Originally this method returns objects by references
+            Our variant allows us to eval functions, e.g. "Text [my_func(arg1)]."
+            and use negative indexes for iterables, e.g. "Text [my_iterable[-2]]."
+
+            IN:
+                field_name - the reference to the object
+                args - not sure, but renpy doesn't use it (passes in an empty tuple)
+                kwargs - the store modules where renpy will look for the object
+
+            OUT:
+                tuple of the object and its key
+            """
+            def _getStoreNameForObject(object_name, *scopes):
+                """
+                Returns the name of the store where the given object
+                was defined or imported to
+
+                IN:
+                    object_name - the name of the object to look for (string)
+                    scopes - the scopes where we look for the object (storemodule.__dict__)
+
+                OUT:
+                    name of the store module where the object was defined
+                    or empty string if we couldn't find it
+                """
+                for scope in scopes:
+                    if object_name in scope:
+                        stores_names_list = [
+                            store_module_name
+                            for store_module_name, store_module in sys.modules.iteritems()
+                            if store_module and store_module.__dict__ is scope
+                        ]
+                        if stores_names_list:
+                            return stores_names_list[0]
+
+                return ""
+
+            # if it's a function call, we eval it
+            if "(" in field_name:
+                # split the string into its components
+                func_name, paren, args = field_name.partition("(")
+
+                # it still may include store modules, try to split it
+                func_store_name, dot, func_name = func_name.partition(".")
+
+                # with partition we'll always get the right bit in the first position
+                # be it store module or function
+                first = func_store_name
+
+                # now we find the store's name to use in eval
+                if isinstance(kwargs, renpy.substitutions.MultipleDict):
+                    scope_store_name = _getStoreNameForObject(first, *kwargs.dicts)
+
+                else:
+                    scope_store_name = _getStoreNameForObject(first, kwargs)
+
+                # apply formatting if appropriate
+                if scope_store_name:
+                    scope_store_name = "renpy.{0}.".format(scope_store_name)
+
+                # finally get the value from the function
+                obj = eval(
+                    "{0}{1}{2}{3}{4}{5}".format(
+                        scope_store_name,
+                        func_store_name,
+                        dot,
+                        func_name,
+                        paren,
+                        args
+                    )
+                )
+
+            # otherwise just get the reference
+            else:
+                first, rest = field_name._formatter_field_name_split()
+
+                obj = self.get_value(first, args, kwargs)
+
+                for is_attr, i in rest:
+                    if is_attr:
+                        obj = getattr(obj, i)
+
+                    else:
+                        if not isinstance(i, long):
+                            i = long(i)
+                        obj = obj[i]
+
+            return obj, first
+
+    # allows us to use a more advanced string formatting
+    renpy.substitutions.formatter = MASFormatter()
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -3287,6 +3387,7 @@ init -991 python in mas_utils:
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
+    from bisect import bisect
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
@@ -3741,7 +3842,45 @@ init -991 python in mas_utils:
     mas_log.raw_write = True
     mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
+    def weightedChoice(choice_weight_tuple_list):
+        """
+        Returns a random item based on weighting.
+        NOTE: That weight essentially corresponds to the equivalent of how many times to duplicate the choice
 
+        IN:
+            choice_weight_tuple_list - List of tuples with the form (choice, weighting)
+
+        OUT:
+            random choice value picked using choice weights
+        """
+        #No items? Just return None
+        if not choice_weight_tuple_list:
+            return None
+
+        #Firstly, sort the choice_weight_tuple_list
+        choice_weight_tuple_list.sort(key=lambda x: x[1])
+
+        #Now split our tuples into individual lists for choices and weights
+        choices, weights = zip(*choice_weight_tuple_list)
+
+        #Some var setup
+        total_weight = 0
+        cumulative_weights = list()
+
+        #Now we collect all the weights and geneate a cumulative and total weight amount
+        for weight in weights:
+            total_weight += weight
+            cumulative_weights.append(total_weight)
+
+        #NOTE: At first glance this useage of bisect seems incorrect, however it is used to find the closest weight
+        #To the randomly selected weight. This is used to return the appropriate choice.
+        r_index = bisect(
+            cumulative_weights,
+            renpy.random.random() * total_weight
+        )
+
+        #And return the weighted choice
+        return choices[r_index]
 
 init -100 python in mas_utils:
     # utility functions for other stores.
