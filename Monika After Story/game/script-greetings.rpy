@@ -3771,7 +3771,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_code_help",
-            conditional="store.persistent._mas_pm_has_code_experience",
+            conditional="store.seen_event('monika_coding_experience')",
             unlocked=True,
             aff_range=(mas_aff.NORMAL, None),
         ),
@@ -3794,21 +3794,27 @@ label greeting_code_help:
     m 2rtc "Why does this loop end so fast?{w=0.5}{nw}"
     extend 2efc " No matter how you look at it, that dictionary is {i}not{/i} empty."
     m 2rfc "Gosh, coding can be {i}so{/i} frustrating sometimes..."
-    m 3rkc "Oh well, I guess I'll try it again later.{nw}"
-    $ _history_list.pop()
 
-    show screen mas_background_timed_jump(5, "greeting_code_help_outro")
-    menu:
-        m "Oh well, I guess I'll try it again later.{fast}"
+    if persistent._mas_pm_has_code_experience:
+        m 3rkc "Oh well, I guess I'll try it again later.{nw}"
+        $ _history_list.pop()
 
-        "I could help you with that...":
-            hide screen mas_background_timed_jump
-            m 7hua "Aww, that's so sweet of you, [player]. {w=0.3}{nw}"
-            extend 3eua "But no, I'm gonna have to refuse here."
-            m "Figuring stuff out on your own is the fun part, {w=0.2}{nw}"
-            extend 3kua "right?"
-            m 1hub "Ahaha!"
-            # Fallthru
+        show screen mas_background_timed_jump(5, "greeting_code_help_outro")
+        menu:
+            m "Oh well, I guess I'll try it again later.{fast}"
+
+            "I could help you with that...":
+                hide screen mas_background_timed_jump
+                m 7hua "Aww, that's so sweet of you, [player]. {w=0.3}{nw}"
+                extend 3eua "But no, I'm gonna have to refuse here."
+                m "Figuring stuff out on your own is the fun part, {w=0.2}{nw}"
+                extend 3kua "right?"
+                m 1hub "Ahaha!"
+
+    else:
+        3rkc "Oh well, I guess I'll try it again later."
+
+    #FALL THROUGH
 
 label greeting_code_help_outro:
     m 1eua "Anyway, what would you like to do today?"
