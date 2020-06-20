@@ -2381,7 +2381,7 @@ label show_prompt_list(sorted_event_labels):
 
         final_items = (
             (hide_unseen_event.prompt, hide_unseen_event.eventlabel, False, False, 20),
-            ("Nevermind.", False, False, False, 0)
+            (_("Nevermind."), False, False, False, 0)
         )
 
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
@@ -2554,7 +2554,7 @@ init 5 python:
     # NOTE: do not use this as an ev.
 
 label mas_bookmarks:
-    show monika idle
+    # show monika idle
     python:
         #Map for label prefixes: label_suffix_get_function
         #NOTE: The function MUST take in the event object as a parameter
@@ -2562,15 +2562,8 @@ label mas_bookmarks:
             "mas_song_": store.mas_songs.getPromptSuffix
         }
 
-        # local function that generats indexed based list for bookmarks
-        def gen_bk_disp(bkpl):
-            return [
-                (bkpl[index][0], index, False, False)
-                for index in range(len(bkpl))
-            ]
-
         # generate list of propmt/label tuples of bookmarks
-        bookmarks_pl = []
+        bookmarks_items = []
         for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
             label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
 
@@ -2581,129 +2574,99 @@ label mas_bookmarks:
             prompt_suffix = suffix_func(ev) if suffix_func else ""
 
             #Now append based on the delegate
-            bookmarks_pl.append((renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel))
+            bookmarks_items.append(
+                (renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel, False, False)
+            )
 
-        bookmarks_pl.sort()
-        bookmarks_disp = gen_bk_disp(bookmarks_pl)
+        bookmarks_items.sort(key=lambda _tuple: _tuple[0])
 
-        remove_bookmark = (
-            "I'd like to remove a bookmark.",
-            -1,
-            False,
-            False,
-            20
+        final_items = (
+            (_("I'd like to remove a bookmark."), "remove_bookmark", False, False, 20),
+            (_("Nevermind."), "nevermind", False, False, 0)
         )
-        return_prompt_back = ("Nevermind.", -2, False, False, 0)
-
-
-label mas_bookmarks_loop:
-
-    # sanity check for bookmark data
-    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
-        # ensure that we have at least 1 bookmark to deal with and the evs and
-        # display lists are the same size
-        return False
 
     show monika at t21
-    call screen mas_gen_scrollable_menu(bookmarks_disp,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
+    call screen mas_gen_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     $ topic_choice = _return
 
-    if topic_choice < -1:
+    if topic_choice == "nevermind":
         # nevermind was selected
         return False
 
-    elif topic_choice < 0:
+    elif topic_choice == "remove_bookmark":
         # prompt for bookmarks to remove
-        # no need to regen since we know we have the list already
-        call mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, gen_bk_disp)
+        call mas_bookmarks_unbookmark(bookmarks_items)
         show monika idle
 
-        # the disp list might have been regenerated
-        $ bookmarks_disp = _return
-
-    elif 0 <= topic_choice < len(bookmarks_pl):
-        # get selected label and push
-        $ sel_evl = bookmarks_pl[topic_choice][1]
+    else:
+        # got label, let's push
         show monika at t11
-        $ pushEvent(sel_evl, skipeval=True)
+        $ pushEvent(topic_choice, skipeval=True)
         return True
 
-    jump mas_bookmarks_loop
-
+    jump mas_bookmarks
 
 # unbookmark flow
+# Removes bookmarks from _mas_player_bookmarked
+#
 # IN:
-#   bookmarks_disp - list of displayable menu bookmarks.
-#   regen - function used to regenerate bookmarks_disp
-#
-# IN/OUT:
-#   bookmarks_pl - list of available bookmark prompt/label tuples
-#       items are removed as they are unbookmarked
-#
-# RETURNS: list of displayable menu bookmarks. migtht be regenerated.
-label mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, regen):
-    pass
+#   bookmarks_items - list of displayable menu bookmarks
+label mas_bookmarks_unbookmark(bookmarks_items):
+    python:
+        def _gen_items_into_check_items(items):
+            """
+            A local func to convert items from
+            gen scrollable menu format into check scrollable one
 
-label mas_bookmarks_unbookmark_loop:
+            IN: items - list of items to convert
 
-    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
-        # ensure that we have at least 1 bookmark to deal with and the evs and
-        # display lists are the same size
-        return []
+            OUT:
+                list of converted items
+            """
+            new_items = list()
 
-    $ unbookmark_back = ("Nevermind.", -1, False, False, 20)
+            for prompt, value, is_italic, is_bold in items:
+                if is_italic:
+                    prompt = "{0}{1}{2}".format("{i}", prompt, "{/i}")
+
+                if is_bold:
+                    prompt = "{0}{1}{2}".format("{b}", prompt, "{/b}")
+
+                new_items.append(
+                    (prompt, value, False, True, False)
+                )
+
+            return new_items
+
+        bookmarks_to_derandom = _gen_items_into_check_items(bookmarks_items)
 
     show monika 1eua at t21
 
     # decicde which prompt
-    if len(bookmarks_disp) > 1:
-        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
+    if len(bookmarks_to_derandom) > 1:
+        $ renpy.say(m, "Which bookmarks do you want to remove?", interact=False)
+
     else:
-        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
+        $ renpy.say(m, "Just select the bookmark if you're sure you want to remove it.", interact=False)
 
-    call screen mas_gen_scrollable_menu(bookmarks_disp, (evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, unbookmark_back)
+    call screen mas_check_scrollable_menu(bookmarks_to_derandom, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Remove selected.")
 
-    $ topic_choice = _return
+    $ derandom_items = _return
 
-    if topic_choice < 0:
-        # -1 is nevermind
-        return bookmarks_disp
+    if not derandom_items:
+        # nothing was selected
+        return
 
-    # sanity check the selected topic choice
-    if topic_choice < len(bookmarks_pl):
-        # a topic was selected
-
-        python:
-            # get the label that was selected
-            sel_evl = bookmarks_pl[topic_choice][1]
-
+    # the user selected something
+    python:
+        for ev_label in derandom_items.iterkeys():
             # remove the bookmark from persist (if in it)
-            if sel_evl in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked.remove(sel_evl)
+            if ev_label in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked.remove(ev_label)
 
-            # remove from teh ev list
-            bookmarks_pl.pop(topic_choice)
+    show monika at t11
+    m 1eua "Okay, [player]..."
+    m 3hua "All done!"
 
-            # re-generate bookmarks disp
-            bookmarks_disp = regen(bookmarks_pl)
-
-        show monika at t11
-        m 1eua "Okay, [player]..."
-
-        # prompt for more unbookmarks if we have any left
-        if len(bookmarks_disp) > 0:
-            m 1eka "Are there any other bookmarks you want to remove?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Are there any other bookmarks you want to remove?{fast}"
-                "Yes.":
-                    pass # returns to start of loop
-                "No.":
-                    m 3eua "Okay."
-                    return bookmarks_disp
-        else:
-            m 3hua "All done!"
-            return bookmarks_disp
-
-    jump mas_bookmarks_unbookmark_loop
+    return

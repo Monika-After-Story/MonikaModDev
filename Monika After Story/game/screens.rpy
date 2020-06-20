@@ -2697,7 +2697,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
                 mousewheel True
 
                 vbox:
-                    for i_caption,i_label in items:
+                    for i_caption, i_label in items:
                         textbutton i_caption:
                             if renpy.has_label(i_label) and not seen_event(i_label):
                                 style "scrollable_menu_new_button"
