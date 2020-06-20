@@ -1067,14 +1067,14 @@ init -1 python in evhand:
     RIGHT_Y = 40
 #    PREV_W = 300
     RIGHT_W = 250
-    RIGHT_H = 640
+    RIGHT_H = 572
 #    PREV_XALIGN = -0.08
     RIGHT_XALIGN = -0.10
     RIGHT_AREA = (RIGHT_X, RIGHT_Y, RIGHT_W, RIGHT_H)
 
     # LEFT PANE
 #    MAIN_X = 360
-    LEFT_X = 735
+    LEFT_X = 740
 #    MAIN_Y = 10
     LEFT_Y = RIGHT_Y
 #    MAIN_W = 300
@@ -1083,6 +1083,7 @@ init -1 python in evhand:
 #    MAIN_XALIGN = -0.08
     LEFT_XALIGN = -0.10
     LEFT_AREA = (LEFT_X, LEFT_Y, LEFT_W, LEFT_H)
+    LEFT_SHIFT = 68
 
     UNSE_X = 680
     UNSE_Y = 40
@@ -2554,7 +2555,7 @@ init 5 python:
     # NOTE: do not use this as an ev.
 
 label mas_bookmarks:
-    # show monika idle
+    show monika idle
     python:
         #Map for label prefixes: label_suffix_get_function
         #NOTE: The function MUST take in the event object as a parameter

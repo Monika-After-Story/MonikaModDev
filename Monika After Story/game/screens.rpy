@@ -2609,7 +2609,15 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
     style_prefix "twopane_scrollable_menu"
 
     fixed:
-        area left_area
+        anchor (0, 0)
+        xpos left_area[0]
+        ypos left_area[1]
+        xsize left_area[2]
+
+        if cat_length != 1:
+            ysize left_area[3]
+        else:
+            ysize left_area[3] + evhand.LEFT_SHIFT
 
         bar:
             adjustment prev_adj
@@ -2813,7 +2821,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 #
 # OUT:
 #     dict of buttons keys and new values
-screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done", return_all=False):
+screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done.", return_all=False):
     default buttons_data = {
         _tuple[1]: {
             "return_value": _tuple[3] if _tuple[2] else _tuple[4],
@@ -2836,6 +2844,24 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
                 dict of key-value pairs
             """
             return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
+
+        def _choose_prompt(buttons_data, selected_prompt):
+            """
+            A method to choose a prompt for the return button.
+            "Nevermind." by default,
+            or selected_prompt if the user has selected something
+
+            IN:
+                buttons_data - the screen buttons data
+                selected_prompt - the prompt for the return button
+
+            OUT:
+                string with prompt
+            """
+            for data in buttons_data.itervalues():
+                if data["return_value"] == data["true_value"]:
+                    return selected_prompt
+            return "Nevermind."
 
     style_prefix "scrollable_menu"
 
@@ -2860,7 +2886,7 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
 
             null height 20
 
-            textbutton return_button_prompt:
+            textbutton _choose_prompt(buttons_data, return_button_prompt):
                 xsize display_area[2]
                 action Function(_return_values, buttons_data, return_all)
 
