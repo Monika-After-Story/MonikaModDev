@@ -289,6 +289,8 @@ label bye_prompt_sleep_idle:
     return "idle"
 
 label monika_idle_going_to_sleep_callback:
+    #NOTE: This does NOT use `mas_brbs.was_idle_for_at_least` because it does not have an event object associated with it
+    #Which means no last_seen property
     python:
         elapsed_time = datetime.datetime.now() - start_dt
         start_time = start_dt.time()
@@ -303,47 +305,52 @@ label monika_idle_going_to_sleep_callback:
         m 2euc "Uh, [player]?"
         m 1hksdlb "Back already?"
         m 3rksdlb "Did you really go to sleep and wake up that quickly?"
-        m 1eka "I'm happy to see you back, but if you're feeling tired, you should go back to bed."
-        m 1hub "Or maybe I'm enough to fill you with energy as is, ahaha!"
+        m 3rka "I'm happy to see you back so soon...{w=0.1}{nw}"
+        extend 1euc "but if you're feeling tired, you really should go back to bed."
+        m 3eka "Your health is important to me after all, so I want to make sure you're getting your rest."
+        m 3hua "I'll always wait for you to come back when you're rested."
 
     else:
         $ _now = datetime.datetime.now().time()
         if mas_isMNtoSR(_now):
             m 1eub "Morning, [player]!"
-            m 2rksdla "It's a bit early, isn't it?"
-            m 1hua "Still, I'm not complaining about having you back so early~"
+            m 2rksdla "You're up pretty early, aren't you?"
+            m 1hua "Still, I'm not complaining about having you back so soon~"
 
         elif mas_isSRtoN(_now):
-            m 1eub "Good morning, [player]~"
-            m 1hua "It's nice to see you up nice and early."
-            m 3eub "Don't forget to get breakfast if you haven't already."
+            label .sr_n:
+            m 1hua "Good morning, [player]~"
+            m 1eua "It's nice to see you up nice and early."
+            m 3eub "Don't forget to grab some breakfast if you haven't already."
+            m 3hua "It's the most important meal of the day, after all~"
 
         elif mas_isNtoSS(_now):
             if renpy.random.randint(1,2) == 1:
                 m 1eub "Good morn-{nw}"
                 $ _history_list.pop()
-                m 3rksdlb "Good {fast}{i}afternoon{/i}, [player]."
+                m 3rksdla "Good {fast}{i}afternoon{/i}, [player]."
                 m 1hub "Ahaha!"
 
             else:
                 m 1eua "Good afternoon, [player]."
 
             m 1eka "I was starting to miss you."
-            m 3tubfu "Maybe you would have woken up earlier if I had given you a kiss?"
-            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5tubfu "Ehehe~"
-            show monika 1hubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 1hubfu "Well, I guess I don't have to anymore, now that you're finally here."
-            m 1eub "Now you can finally start the day with me."
+            m 3rubsu "Maybe you'd have woken up earlier if I gave you a kiss?"
+            m 3tubsu "Well...{w=0.3} {nw}"
+            extend 3tubsb "I guess I don't have to anymore now that you're finally here."
+            m 1eua "You can finally start the day with me."
+            m 1hua "Ehehe~"
 
         #SStoMN
         else:
-            m 1eua "..."
-            m 1wuo "Oh, hello, [player]!"
-            m 3hksdlb "I was really starting to miss you, but now you're finally back!"
-            m 1rksdla "There's no way you actually slept all the way up until now, is there?"
-            m 3eka "Did you just forget to stop by and say hi when you woke up?"
-            m 1hua "Anyway, now that you're here with me, we can spend the rest of the day together~"
+            #NOTE: Intentionally without a spritecode. This is intended to use the idle sprite for the first line
+            m "..."
+            m 1wuo "Oh, hello [player]!"
+            m 3eka "I'm so glad you're back, I was really starting to miss you..."
+            m 1rksdla "There's no way you actually slept until now, is there?"
+            m 3eka "I guess you were just busy with something."
+            m 1eua "But now that you're here with me,{w=0.2} {nw}"
+            extend 1hua "we can spend the rest of the day together~"
     return
 
 init 5 python:
