@@ -4132,6 +4132,20 @@ image monika 2rsc:
         0.06
         repeat
 
+image monika 2rtc:
+    block:
+        "monika 2rtc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dtc_static"
+        0.06
+        repeat
+
 image monika 2rubfu:
     block:
         "monika 2rubfu_static"
@@ -6963,20 +6977,6 @@ image monika 4efb:
             choice:
                 7
         "monika 4dfb_static"
-        0.06
-        repeat
-
-image monika 4efc:
-    block:
-        "monika 4efc_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfc_static"
         0.06
         repeat
 
