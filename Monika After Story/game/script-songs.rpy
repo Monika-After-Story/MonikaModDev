@@ -1266,7 +1266,8 @@ label mas_song_wonderwall_analysis(from_song=False):
 
     m 3eta "There's a lot of people who are very vocal about their dislike for this song..."
     m 3etc "You wouldn't expect that, would you?"
-    m "This song, Wonderwall by the band Oasis, has been hailed as a classic and is one of the most popular song ever made."
+    m 3euc "The song has been hailed as a classic and is one of the most popular songs ever made...{w=0.3} {nw}"
+    m 3rsc "What makes some people hate it so much?"
     m 3etd "So why is it decried so much?"
     m 3esc "I think there are several answers to this question. The first being that it's been overplayed."
     m 3rksdla "While some people listen to the same music for a long period of time, not everybody can do that."
