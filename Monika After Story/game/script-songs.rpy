@@ -1213,22 +1213,20 @@ label mas_song_wonderwall:
     else:
         m 3dkbfu "I'm forever grateful you stayed for me. {nw}"
 
-    extend "I trust you to take care of us until I can find my way to you."
+    extend "I trust you to take care of me until I can find my way to you."
     m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
-    m 3ekbla "The only thing we can be sure of is the place it leads us to will be worth it."
 
     if mas_isMoniEnamored(higher=True):
-        show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hubfb  "...So I'm not afraid of walking down this road [player]; with you by my side there's no way I could be!"
-        m 5ekbfa "You're my wonderwall, after all~"
+        m 1dubsa  "...and with you by my side, there's no way I could be afraid.{w=0.3} {nw}"
+        extend 1ekbfa "I know the place it leads to will be worth it."
+        m 3ekbfu "You're my wonderwall, after all~"
     else:
-        m 1kubla "It's a little scary, {nw}"
-        extend 1eubla "but we'll have to keep on walking until we reach that place [player]~"
+        m 3ekbla "The only thing we can be sure of is the place it leads us to will be worth it."
+        m 1ekc "...Sometimes, it's a little scary not knowing what's ahead...{w=0.3}{nw}"
+        extend 1eubla "but I trust you, so we'll just have to keep on walking until we reach that place~"
 
     #hints at the analysis on first viewing
     if mas_getEV('mas_song_wonderwall').shown_count == 0:
-        if mas_isMoniEnamored(higher=True):
-            show monika 3etc at t11 zorder MAS_MONIKA_Z with dissolve
         m 3etc "By the way...there's actually a couple of things that intruigues me about this song."
         m 1eua "...Would you like to talk about it now?{nw}"
         $ _history_list.pop()
@@ -1268,12 +1266,9 @@ label mas_song_wonderwall_analysis(from_song=False):
     m 3etc "You wouldn't expect that, would you?"
     m 3euc "The song has been hailed as a classic and is one of the most popular songs ever made...{w=0.3} {nw}"
     m 3rsc "What makes some people hate it so much?"
-    m 3etd "So why is it decried so much?"
     m 3esc "I think there are several answers to this question. The first being that it's been overplayed."
     m 3rksdla "While some people listen to the same music for a long period of time, not everybody can do that."
-
     m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player]. Ahaha~"
-
     m 1esd "Another argument you could make is that it's overrated in some ways..."
     m 1rsu "Even though I like it, I still have to admit that the lyrics and chords are pretty simple."
     3etc "So what made the song so popular then?{w=0.3} {nw}"
