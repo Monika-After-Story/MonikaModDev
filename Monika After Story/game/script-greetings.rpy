@@ -3817,6 +3817,7 @@ label greeting_code_help:
     #FALL THROUGH
 
 label greeting_code_help_outro:
+    hide screen mas_background_timed_jump
     m 1eua "Anyway, what would you like to do today?"
 
     $ mas_lockEVL("greeting_code_help", "GRE")
