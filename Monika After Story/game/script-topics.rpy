@@ -12970,7 +12970,7 @@ init 5 python:
             prompt="Have you ever had a snowball fight?",
             pool=True,
             unlocked=mas_isWinter(),
-            rules={"no_unlock":None}
+            rules={"no unlock":None}
         )
     )
 

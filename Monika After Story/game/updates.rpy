@@ -508,6 +508,8 @@ label v0_11_3(version="v0_11_3"):
             leaving_already_ev.random = True
             leaving_already_ev.conditional = "mas_getSessionLength() <= datetime.timedelta(minutes=20)"
 
+        if not mas_isWinter():
+            mas_lockEVL("monika_snowballfight", "EVE")
     return
 
 #0.11.1
