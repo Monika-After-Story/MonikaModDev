@@ -3812,7 +3812,7 @@ label greeting_code_help:
                 m 1hub "Ahaha!"
 
     else:
-        3rkc "Oh well, I guess I'll try it again later."
+        m 3rkc "Oh well, I guess I'll try it again later."
 
     #FALL THROUGH
 
