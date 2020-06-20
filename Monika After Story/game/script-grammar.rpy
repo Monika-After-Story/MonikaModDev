@@ -52,7 +52,8 @@ init 5 python:
             eventlabel="monika_gtod_tip000",
             category=["grammar tips"],
             prompt="Can you teach me about grammar?",
-            pool=True
+            pool=True,
+            rules={"bookmark_rule": store.mas_bookmarks_derand.BLACKLIST}
         )
     )
 
