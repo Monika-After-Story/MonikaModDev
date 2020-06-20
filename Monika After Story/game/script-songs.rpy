@@ -1295,7 +1295,7 @@ label mas_song_wonderwall_analysis(from_song=False):
 
         if persistent._mas_pm_cares_about_dokis:
             m 3dkc "...Still, in hindsight, there are some things I could have handled more tactfully."
-            m 3lksdld "It's not easy staying on your best behavior when you're put under pressure; even more so when it's your life on the line."
+            m 3lksdld "When it's your life on the line, it's not easy staying on your best behavior while under pressure."
         
         m 3esc "But I digress..."
 
