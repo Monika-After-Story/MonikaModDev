@@ -19,6 +19,114 @@ python early:
     import traceback
     _dev_tb_list = []
 
+    ### Overrides of core renpy things
+    def dummy(*args, **kwargs):
+        """
+        Dummy function that does nothing
+        """
+        return
+
+    # clear this so no more traceback. We expect node loops anyway
+    renpy.execution.check_infinite_loop = dummy
+
+    class MASFormatter(renpy.substitutions.Formatter):
+        """
+        Our string formatter that uses more
+        advanced formatting rules compared to the RenPy one
+        """
+        def get_field(self, field_name, args, kwargs):
+            """
+            Originally this method returns objects by references
+            Our variant allows us to eval functions, e.g. "Text [my_func(arg1)]."
+            and use negative indexes for iterables, e.g. "Text [my_iterable[-2]]."
+
+            IN:
+                field_name - the reference to the object
+                args - not sure, but renpy doesn't use it (passes in an empty tuple)
+                kwargs - the store modules where renpy will look for the object
+
+            OUT:
+                tuple of the object and its key
+            """
+            def _getStoreNameForObject(object_name, *scopes):
+                """
+                Returns the name of the store where the given object
+                was defined or imported to
+
+                IN:
+                    object_name - the name of the object to look for (string)
+                    scopes - the scopes where we look for the object (storemodule.__dict__)
+
+                OUT:
+                    name of the store module where the object was defined
+                    or empty string if we couldn't find it
+                """
+                for scope in scopes:
+                    if object_name in scope:
+                        stores_names_list = [
+                            store_module_name
+                            for store_module_name, store_module in sys.modules.iteritems()
+                            if store_module and store_module.__dict__ is scope
+                        ]
+                        if stores_names_list:
+                            return stores_names_list[0]
+
+                return ""
+
+            # if it's a function call, we eval it
+            if "(" in field_name:
+                # split the string into its components
+                func_name, paren, args = field_name.partition("(")
+
+                # it still may include store modules, try to split it
+                func_store_name, dot, func_name = func_name.partition(".")
+
+                # with partition we'll always get the right bit in the first position
+                # be it store module or function
+                first = func_store_name
+
+                # now we find the store's name to use in eval
+                if isinstance(kwargs, renpy.substitutions.MultipleDict):
+                    scope_store_name = _getStoreNameForObject(first, *kwargs.dicts)
+
+                else:
+                    scope_store_name = _getStoreNameForObject(first, kwargs)
+
+                # apply formatting if appropriate
+                if scope_store_name:
+                    scope_store_name = "renpy.{0}.".format(scope_store_name)
+
+                # finally get the value from the function
+                obj = eval(
+                    "{0}{1}{2}{3}{4}{5}".format(
+                        scope_store_name,
+                        func_store_name,
+                        dot,
+                        func_name,
+                        paren,
+                        args
+                    )
+                )
+
+            # otherwise just get the reference
+            else:
+                first, rest = field_name._formatter_field_name_split()
+
+                obj = self.get_value(first, args, kwargs)
+
+                for is_attr, i in rest:
+                    if is_attr:
+                        obj = getattr(obj, i)
+
+                    else:
+                        if not isinstance(i, long):
+                            i = long(i)
+                        obj = obj[i]
+
+            return obj, first
+
+    # allows us to use a more advanced string formatting
+    renpy.substitutions.formatter = MASFormatter()
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -1334,8 +1442,9 @@ python early:
 
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
-            """
-            DEPRECATED (remove when farewells is updated)
+            """DEPRECATED
+
+            (remove when farewells is updated)
 
             Checks a single event against its repeat rules, which are evaled
             to a time.
@@ -1369,8 +1478,9 @@ python early:
 
         @staticmethod
         def checkRepeatRules(events, check_time=None):
-            """
-            DEPRECATED (remove when farewells is updated)
+            """DEPRECATED
+
+            (remove when farewells is updated)
 
             checks the event dict against repeat rules, which are evaluated
             to a time.
@@ -1686,7 +1796,6 @@ python early:
             # current state
             self._state = self._STATE_IDLE
 
-
         def _isOverMe(self, x, y):
             """
             Checks if the given x and y coodrinates are over this button.
@@ -1698,14 +1807,12 @@ python early:
                 and 0 <= (y - self.ypos) <= self.height
             )
 
-
         def _playActivateSound(self):
             """
             Plays the activate sound if we are allowed to.
             """
             if not self.disabled or self.sound_when_disabled:
                 renpy.play(self.activate_sound, channel="sound")
-
 
         def _playHoverSound(self):
             """
@@ -1714,6 +1821,152 @@ python early:
             if not self.disabled or self.sound_when_disabled:
                 renpy.play(self.hover_sound, channel="sound")
 
+        @staticmethod
+        def create_st(
+                text_str,
+                incl_disb_text,
+                *args,
+                **kwargs
+        ):
+            """
+            Creates a MASButtonDisplyable using a single text string.
+
+            Default font/textsize/colors/outlines are used here.
+
+            IN:
+                text_str - the text to use for the button
+                incl_disb_text - True if we may have a disabled state for
+                    this button, False if not
+                *args - positional args to pass into constructor.
+                    do NOT include:
+                        - idle_text
+                        - hover_text
+                        - disable_text
+                **kwargs - keyword args to pass into constructor
+
+            RETURNS: created MASButtondisplayable
+            """
+            if incl_disb_text:
+                disb_button = Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                )
+            else:
+                disb_button = Null()
+
+            return MASButtonDisplayable(
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[],
+                ),
+                disb_button,
+                *args,
+                **kwargs
+            )
+
+        @staticmethod
+        def create_stb(
+                text_str,
+                incl_disb_text,
+                *args,
+                **kwargs
+        ):
+            """
+            Creates a MASButtonDisplayable using a snigle text string and
+            standard button images.
+
+            IN:
+                text_str - the text to use for the button
+                incl_disb_text - True if we may have a disabled state for this
+                    button, False if not
+                *args - positional args to pass into constructor.
+                    do NOT include:
+                        - idle_text
+                        - hover_text
+                        - disable_text
+                        - idle_back
+                        - hover_back
+                        - disable_back
+                **kwargs - keyword args to pass into constructor
+            """
+            # determine disabled stuff
+            if incl_disb_text:
+                disb_button = Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_insensitive_color,
+                    outlines=[]
+                )
+                disb_back = MASButtonDisplayable._gen_bg("insensitive")
+            else:
+                disb_button = Null()
+                disb_back = Null()
+
+            return MASButtonDisplayable(
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_idle_color,
+                    outlines=[]
+                ),
+                Text(
+                    text_str,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color=mas_globals.button_text_hover_color,
+                    outlines=[],
+                ),
+                disb_button,
+                MASButtonDisplayable._gen_bg("idle"),
+                MASButtonDisplayable._gen_bg("hover"),
+                disb_back,
+                *args,
+                **kwargs
+            )
+
+        @staticmethod
+        def _gen_bg(prefix):
+            """
+            Attempts to pull choice button's Frame and build an appropraite
+                image with it using the given prefix.
+                This is specifically for MASButtonDisplayables.
+
+            IN:
+                prefix - prefix to use in the frame
+                    do NOT append "_"
+
+            RETURNS: Frame object to use
+            """
+            gen_frame = mas_prefixFrame(
+                mas_getPropFromStyle("choice_button", "background"),
+                prefix
+            )
+
+            if gen_frame is None:
+                # backup frame in case cannot find choice
+                return Frame(
+                    mas_getTimeFile(
+                        "mod_assets/buttons/generic/{0}_bg.png".format(prefix)
+                    ),
+                    Borders(5, 5, 5, 5)
+                )
+
+            return gen_frame
 
         def disable(self):
             """
@@ -1724,7 +1977,6 @@ python early:
             self.disabled = True
             self._state = self._STATE_DISABLED
 
-
         def enable(self):
             """
             Enables this button. This changes the internal state, so its
@@ -1733,7 +1985,6 @@ python early:
             """
             self.disabled = False
             self._state = self._STATE_IDLE
-
 
         def getSize(self):
             """
@@ -1745,7 +1996,6 @@ python early:
                     [1]: height
             """
             return (self.width, self.height)
-
 
         def ground(self):
             """
@@ -1764,7 +2014,6 @@ python early:
                 else:
                     self._state = self._STATE_IDLE
 
-
         def hover(self):
             """
             Hovers this button. This changes the internal state, so its
@@ -1777,13 +2026,12 @@ python early:
                 self.hovered = True
                 self._state = self._STATE_HOVER
 
-
         def render(self, width, height, st, at):
 
             # pull out the current button back and text and render them
             render_text, render_back = self._button_states[self._state]
             render_text = renpy.render(render_text, width, height, st, at)
-            render_back = renpy.render(render_back, width, height, st, at)
+            render_back = renpy.render(render_back, self.width, self.height, st, at)
 
             # what is the text's with and height
             rt_w, rt_h = render_text.get_size()
@@ -1800,7 +2048,6 @@ python early:
 
             # return rendere
             return r
-
 
         def event(self, ev, x, y, st):
 
@@ -1853,7 +2100,7 @@ python early:
             IN:
                 xdiff - difference in x coords (used in M)
                 ydiff - difference in y coords (used in M)
-                yint - y intercept 
+                yint - y intercept
             """
             self.xdiff = xdiff
             self.ydiff = ydiff
@@ -1936,7 +2183,7 @@ python early:
             Generates a MASLinearForm object using slope
 
             IN:
-                slope - the slope of the line 
+                slope - the slope of the line
                 yint - the yintercept of the line
 
             RETURNS: MASLinearForm object
@@ -1949,11 +2196,11 @@ python early:
             Returns the two points as an ordered tuple
 
             IN:
-                p1 - (x, y) point 
+                p1 - (x, y) point
                 p2 - (x, y) point
 
             RETURNS: tuple of the following format:
-                [0] - left most point 
+                [0] - left most point
                 [1] - right most point
             """
             if p1[0] < p2[0]:
@@ -2024,7 +2271,7 @@ python early:
     class MASEdge(object):
         """
         Representation of an edge (line with 2 points)
-        Has functions related to determining if a point will intersect with 
+        Has functions related to determining if a point will intersect with
         this edge (aka for point in polygon calculations)
         """
 
@@ -2092,14 +2339,14 @@ python early:
             if x < self.__bb_x_min:
                 return True
 
-            # otherwise, we are for sure within the bounding box. 
+            # otherwise, we are for sure within the bounding box.
 
             # vertical lines means we only have to check x
             if self._vertical:
                 # in this case, we treat on the line as passing
                 return x <= self.__bb_x_min
 
-            # now just run the inverse of the linear formula, and if 
+            # now just run the inverse of the linear formula, and if
             # our x is less than that, then the point is for sure before the
             # edge
             x, y = self._normalize((x, y))
@@ -2384,7 +2631,7 @@ python early:
 
             IN:
                 zones - dict of the following format:
-                    key: key of the zone, this is returned if the zone is 
+                    key: key of the zone, this is returned if the zone is
                         clicked
                     value: list of vertexes that make teh zone
                 button_down - button_down item to use for each clickzone
@@ -3008,12 +3255,6 @@ init -1 python in _mas_root:
             'hangman':False,
             'piano':False
         }
-        renpy.game.persistent.game_unlocks = {
-            'pong':True,
-            'chess':False,
-            'hangman':False,
-            'piano':False
-        }
         renpy.game.persistent.sessions={
             'last_session_end':datetime.datetime.now(),
             'current_session_start':datetime.datetime.now(),
@@ -3021,8 +3262,7 @@ init -1 python in _mas_root:
             'total_sessions':0,
             'first_session':datetime.datetime.now()
         }
-        renpy.game.persistent.playerxp = 0
-        renpy.game.persistent.idlexp_total = 0
+        renpy.game.persistent._mas_xp_lvl = 0
         renpy.game.persistent.rejected_monika = True
         renpy.game.persistent.current_track = None
 
@@ -3073,9 +3313,6 @@ init -1 python in _mas_root:
 init -999 python:
     import os
 
-    # this is initially set to 60 seconds
-    renpy.not_infinite_loop(120)
-
     # create the log folder if not exist
     if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
         try:
@@ -3083,8 +3320,62 @@ init -999 python:
         except:
             pass
 
+init -995 python in mas_utils:
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
 
-init -990 python in mas_utils:
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+
+        #Now, let's do some work.
+        #First, we check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #The lists are not the same, which means we need to do a bit of work.
+        #Before we do that, let's verify that the lists are the same length
+        if len(comparative_vers) > len(curr_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #We've found a number which was greater, let's return 1 as we know this version is greater
+                return 1
+
+        #If we're here, we never found something greater. Let's return -1
+        return -1
+
+init -991 python in mas_utils:
     import store
     import os
     import stat
@@ -3096,6 +3387,7 @@ init -990 python in mas_utils:
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
+    from bisect import bisect
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
@@ -3125,10 +3417,45 @@ init -990 python in mas_utils:
         return text
 
 
+    def eqfloat(left, right, places=6):
+        """
+        Float comparisons thatcan handle accuracy errors.
+        This uses checks equivalence within a given amount of decimal places
+
+        IN:
+            left - value to compare
+            right - other value to compare
+
+        RETURNS: True if values are equal, False if not
+        """
+        acc = 0.1
+        if places > 1:
+            for x in range(places):
+                acc /= 10.0
+
+        return abs(left-right) < acc
+
+
+    def floatsplit(value):
+        """
+        Splits a float into int and float parts (unlike _splitfloat which
+        returns two ints)
+
+        IN:
+            value - float to split
+
+        RETURNS: tuple of the following format:
+            [0] - integer portion of float (int)
+            [1] - float portion of float (float)
+        """
+        int_part = int(value)
+        return int_part, value - int_part
+
+
     def pdget(key, table, validator=None, defval=None):
         """
         Protected Dict GET
-        Gets an item from a dict, using protections to ensure this item is 
+        Gets an item from a dict, using protections to ensure this item is
         valid
 
         IN:
@@ -3150,6 +3477,18 @@ init -990 python in mas_utils:
                 return item
 
         return defval
+
+
+    def td2hr(duration):
+        """
+        Converts a timedetla to hours (fractional)
+
+        IN:
+            duration - timedelta to convert
+
+        RETURNS: hours as float
+        """
+        return (duration.days * 24) + (duration.seconds / 3600.0)
 
 
     def tryparseint(value, default=0):
@@ -3242,6 +3581,34 @@ init -990 python in mas_utils:
         finally:
             if outfile is not None:
                 outfile.close()
+
+
+    def logcreate(filepath, append=False, flush=False, addversion=False):
+        """
+        Creates a log at the given filepath.
+        This also opens the log and sets raw_write to True.
+        This also adds per version number if desired
+
+        IN:
+            filepath - filepath of the log to create (extension is added)
+            append - True will append to the log. False will overwrite
+                (Default: False)
+            flush - True will flush every operation, False will not
+                (Default: False)
+            addversion - True will add the version, False will not
+                You dont need this if you create the log in runtime,
+                (Default: False)
+
+        RETURNS: created log object.
+        """
+        new_log = getMASLog(filepath, append=append, flush=flush)
+        new_log.open()
+        new_log.raw_write = True
+        if addversion:
+            new_log.write("VERSION: {0}\n".format(
+                store.persistent.version_number
+            ))
+        return new_log
 
 
     def logrotate(logpath, filename):
@@ -3451,6 +3818,19 @@ init -990 python in mas_utils:
             return macLogOpen(name, append=append, developer=developer, flush=flush)
         return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
 
+    def is_file_present(filename):
+        """
+        Checks if a file is present
+        """
+        if not filename.startswith("/"):
+            filename = "/" + filename
+
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
 
     # unstable should never delete logs
     if store.persistent._mas_unstable_mode:
@@ -3460,7 +3840,47 @@ init -990 python in mas_utils:
 
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
+    mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
+    def weightedChoice(choice_weight_tuple_list):
+        """
+        Returns a random item based on weighting.
+        NOTE: That weight essentially corresponds to the equivalent of how many times to duplicate the choice
+
+        IN:
+            choice_weight_tuple_list - List of tuples with the form (choice, weighting)
+
+        OUT:
+            random choice value picked using choice weights
+        """
+        #No items? Just return None
+        if not choice_weight_tuple_list:
+            return None
+
+        #Firstly, sort the choice_weight_tuple_list
+        choice_weight_tuple_list.sort(key=lambda x: x[1])
+
+        #Now split our tuples into individual lists for choices and weights
+        choices, weights = zip(*choice_weight_tuple_list)
+
+        #Some var setup
+        total_weight = 0
+        cumulative_weights = list()
+
+        #Now we collect all the weights and geneate a cumulative and total weight amount
+        for weight in weights:
+            total_weight += weight
+            cumulative_weights.append(total_weight)
+
+        #NOTE: At first glance this useage of bisect seems incorrect, however it is used to find the closest weight
+        #To the randomly selected weight. This is used to return the appropriate choice.
+        r_index = bisect(
+            cumulative_weights,
+            renpy.random.random() * total_weight
+        )
+
+        #And return the weighted choice
+        return choices[r_index]
 
 init -100 python in mas_utils:
     # utility functions for other stores.
@@ -3982,6 +4402,35 @@ init -985 python:
         )
 
 
+    def mas_getTotalPlaytime():
+        """
+        Gets total playtime.
+
+        RETURNS: total playtime as a timedelta. If not found, we return a
+            time delta of 0
+        """
+        return store.mas_utils.pdget(
+            "total_playtime",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_td_nn,
+            defval=datetime.timedelta(0)
+        )
+
+
+    def mas_getTotalSessions():
+        """
+        Gets total sessions
+
+        REUTRNS: total number of sessions. If not found, we return 1
+        """
+        return store.mas_utils.pdget(
+            "total_sessions",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_int_nn,
+            defval=1
+        )
+
+
     def mas_TTDetected():
         """
         Checks if time travel was detected
@@ -3989,10 +4438,17 @@ init -985 python:
         """
         return store.mas_globals.tt_detected
 
+init -101 python:
+    def is_file_present(filename):
+        """DEPRECIATED
+
+        Use mas_utils.is_file_present instead
+        """
+        return store.mas_utils.is_file_present(filename)
 
 init -1 python:
     import datetime # for mac issues i guess.
-    import os
+
     if "mouseup_3" in config.keymap['game_menu']:
         config.keymap['game_menu'].remove('mouseup_3')
     if "mouseup_3" not in config.keymap["hide_windows"]:
@@ -4044,20 +4500,15 @@ init -1 python:
         # otherwise, not found
         return False
 
-    def is_file_present(filename):
-        if not filename.startswith("/"):
-            filename = "/" + filename
 
-        filepath = renpy.config.basedir + filename
-
-        try:
-            return os.access(os.path.normcase(filepath), os.F_OK)
-        except:
-            return False
-
-
+    # TODO: Remove the basedir file checks before the next full release
     def is_apology_present():
-        return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
+        return (
+            store.mas_utils.is_file_present('/characters/imsorry')
+            or store.mas_utils.is_file_present('/characters/imsorry.txt')
+            or store.mas_utils.is_file_present('imsorry')
+            or store.mas_utils.is_file_present('/imsorry.txt')
+        )
 
 
     def mas_cvToHM(mins):
@@ -4341,17 +4792,33 @@ init -1 python:
 
 
     def mas_isSunny(_time):
+        """DEPRECATED
+        Use mas_isDay instead
         """
-        Checks if the sun is up during the given time
+        return mas_isDay(_time)
+
+
+    def mas_isDay(_time):
+        """
+        Checks if the sun would be up during the given time
 
         IN:
             _time - current time to check
                 NOTE: datetime.time object
 
-        RETURNS: True if it is sunny during the given time
+        RETURNS: True if it is day time during the given time
         """
-        _curr_minutes = (_time.hour * 60) + _time.minute
-        return persistent._mas_sunrise <= _curr_minutes < persistent._mas_sunset
+        _curr_mins = (_time.hour * 60) + _time.minute
+        return persistent._mas_sunrise <= _curr_mins < persistent._mas_sunset
+
+
+    def mas_isDayNow():
+        """
+        Checks if the sun would be up right now
+
+        RETURNS: True if the sun would be up now, False if not
+        """
+        return mas_isDay(datetime.datetime.now().time())
 
 
     def mas_isNight(_time):
@@ -4364,7 +4831,16 @@ init -1 python:
 
         RETURNS: True if it the sun is down during the given time
         """
-        return not mas_isSunny(_time)
+        return not mas_isDay(_time)
+
+
+    def mas_isNightNow():
+        """
+        Checks if the sun is down right now
+
+        RETURNS: True if it is night now, False if not
+        """
+        return not mas_isDayNow()
 
 
     def mas_cvToDHM(mins):
@@ -4466,8 +4942,6 @@ init -1 python:
         )
 
 
-
-
     def mas_isSpecialDay():
         """
         Checks if today is a special day(birthday, anniversary or holiday)
@@ -4484,6 +4958,7 @@ init -1 python:
             or mas_isNYE()
             or mas_isF14()
         )
+
 
     def mas_maxPlaytime():
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
@@ -4538,63 +5013,125 @@ init -1 python:
 
 
     def get_pos(channel='music'):
+        """
+        Gets the current position in what's playing on the provided channel
+
+        IN:
+            channel - The channel to get the sound position for
+                (Default: 'music')
+        """
         pos = renpy.music.get_pos(channel=channel)
-        if pos: return pos
+        if pos:
+            return pos
         return 0
+
+
     def delete_all_saves():
+        """
+        Deletes all saved states
+        """
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
+
+
     def delete_character(name):
-        if persistent.do_not_delete: return
-        import os
-        try: os.remove(config.basedir + "/characters/" + name + ".chr")
-        except: pass
+        """
+        Deletes a .chr file for a character
+
+        IN:
+            name of the character who's chr file we want to delete
+        """
+        if persistent.do_not_delete:
+            return
+
+        try:
+            os.remove(config.basedir + "/characters/" + name + ".chr")
+
+        except:
+            pass
+
+
     def pause(time=None):
+        """
+        Pauses for the given amount of time
+
+        IN:
+            time - The time to pause for. If None, a pause until the user progresses is assumed
+                (Default: None)
+        """
         if not time:
             renpy.ui.saybehavior(afm=" ")
             renpy.ui.interact(mouse='pause', type='pause', roll_forward=None)
             return
-        if time <= 0: return
+
+        #Verify valid time
+        if time <= 0:
+            return
+
         renpy.pause(time)
+
 
         # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
+        """
+        Gets installed steam application IDs from the main steam install directory
+
+        OUT:
+            List of application IDs
+
+        NOTE: Does NOT work if the user has edited their game install directory for windows at all
+        """
         installPath=""
         if renpy.windows:
             import _winreg    # mod specific
             # Grab first steam installation directory
             # If you're like me, it will miss libraries installed on another drive
             aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
+
             try:
                 # Check 32 bit
                 keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam")
+
             except:
                 # Check 64 bit
                 try:
                    keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
+
                 except:
                    # No Steam
                    return None
+
             for i in range(4):
                 # Value Name, Value Data, Value Type
                 n,installPath,t = _winreg.EnumValue(keyVal, i)
-                if n=="InstallPath": break
+                if n=="InstallPath":
+                    break
+
             installPath+="/steamapps"
+
         elif renpy.mac:
             installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
+
         elif renpy.linux:
             installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
             # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program?
+
+        #Ideally we should never end up here, but in the case we do, we should prevent any work from being done
+        #That's not necessary
         else:
             return None
+
         try:
             appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
+
         except:
             appIds = None
         return appIds
 
+
 init 2 python:
-    # global functions that should be defined after level 0a
+    import re
+    #Global functions that should be defined after level 0
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.
@@ -4608,7 +5145,7 @@ init 2 python:
 
         #1. Do we even have plushie enabled?
         #2. Is it f14? (heartchoc gift interferes)
-        #3. Are we currently eatding something?
+        #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
@@ -4789,6 +5326,124 @@ init 2 python:
             _now - time to check against (Default: None)
         """
         return mas_timePastSince(timekeeper, datetime.timedelta(days=1), _now)
+
+    def mas_setTODVars():
+        """
+        Sets the mas_globals.time_of_day variable
+
+        NOTE: Ignores Suntime values
+
+        RULES:
+            4:00 AM - 11:59:59 AM == 'morning'
+            12:00 PM - 4:59:59 PM == 'afternoon'
+            5:00 PM - 8:59:59 PM == 'evening'
+            9:00 PM - 3:59:59 AM == 'night'
+        """
+        curr_hour = datetime.datetime.now().time().hour
+
+        #Set morning
+        if 4 <= curr_hour <= 11:
+            store.mas_globals.time_of_day_4state = "morning"
+            store.mas_globals.time_of_day_3state = "morning"
+
+        elif 12 <= curr_hour <= 16:
+            store.mas_globals.time_of_day_4state = "afternoon"
+            store.mas_globals.time_of_day_3state = "afternoon"
+
+        elif 17 <= curr_hour <= 20:
+            store.mas_globals.time_of_day_4state = "evening"
+            store.mas_globals.time_of_day_3state = "evening"
+
+        else:
+            store.mas_globals.time_of_day_4state = "night"
+            store.mas_globals.time_of_day_3state = "evening"
+
+    def mas_seenLabels(label_list, seen_all=False):
+        """
+        List format for renpy.seen_label. Allows checking if we've seen multiple labels at once
+
+        IN:
+            label_list - list of labels we want to check if we've seen
+            seen_all - True if all labels in label_list must have been seen in order for this function to return True.
+            False otherwise
+                (Default: False)
+                (NOTE: If seen_all is False, seeing ANY of the labels will let this function return True)
+
+        OUT:
+            boolean:
+                - True if we have seen the inputted labels and met the seen_all criteria
+                - False otherwise
+        """
+        for _label in label_list:
+            seen = renpy.seen_label(_label)
+
+            #First, filter out if we have an unseen label and we must have seen all
+            if not seen and seen_all:
+                return False
+
+            #As well, if it's a seen label and we don't need to see all
+            elif seen and not seen_all:
+                return True
+
+        #If we're here, that means we need to do some returns based on the values we put in
+        return seen_all
+
+    def mas_a_an_str(ref_str, ignore_case=False):
+        """
+        Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
+
+        IN:
+            ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and not adjust the capitalization of ref_str
+
+        OUT:
+            string prefixed with a/an
+        """
+        return ("{0} {1}".format(
+            mas_a_an(ref_str, ignore_case),
+            ref_str.lower() if not ignore_case and (ref_str[0].isupper() and not ref_str.isupper()) else ref_str
+        ))
+
+    def mas_a_an(ref_str, ignore_case=False):
+        """
+        Takes in a reference string and returns either a/an based on the first letter of the word
+
+        IN:
+            ref_str - string in question to prefix
+            ignore_case - whether or not we should ignore capitalization of a/an and just use lowercase
+
+        OUT:
+            a/an based on the ref string
+        """
+        should_capitalize = not ignore_case and ref_str[0].isupper()
+
+        if ref_str[0] in "aeiouAEIOU":
+            return "An" if should_capitalize else "an"
+        return "A" if should_capitalize else "a"
+
+#EXTRA TEXT TAGS
+init python:
+    def a_an_tag(tag, argument, contents):
+        """
+        Handles a/an mid-string
+
+        NOTE: This should ONLY surround the exact word needing to be prefixed with a/an
+        All text tags should be kept OUTSIDE of the opening and closing tags for this function
+
+        Usage: I bought [player] {a_an}[tempvar]{/a_an}.
+
+        If tempvar was 'item,' the output is: I bought [player] an item.
+        If tempvar was 'coffee,' the output is: I bought [player] a coffee.
+        """
+        for _id, _tuple in enumerate(contents):
+            #We want to modify only text
+            if _tuple[0] == renpy.TEXT_TEXT:
+                contents[_id] = (_tuple[0], mas_a_an_str(_tuple[1]))
+                return contents
+
+        return contents
+
+    config.custom_text_tags["a_an"] = a_an_tag
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -6011,10 +6666,7 @@ default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
-default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
-default persistent.playerxp = 0
-default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default seen_random_limit = False
@@ -6075,12 +6727,7 @@ define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
-define xp.NEW_GAME = 30
-define xp.WIN_GAME = 30
-define xp.AWAY_PER_HOUR = 10
-define xp.IDLE_PER_MINUTE = 1
-define xp.IDLE_XP_MAX = 120
-define xp.NEW_EVENT = 15
+
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define mas_monika_twitter_handle = "lilmonix3"
 
@@ -6263,40 +6910,59 @@ return
 #"It is their pen." (if player's gender is not declared)
 #Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
 #Please remember to update the list if you add more gender exclusive words. ^
-label set_gender:
-    if persistent.gender == "M":
-        $his = "his"
-        $he = "he"
-        $hes = "he's"
-        $heis = "he is"
-        $bf = "boyfriend"
-        $man = "man"
-        $boy = "boy"
-        $guy = "guy"
-        $ him = "him"
-        $ himself = "himself"
-    elif persistent.gender == "F":
-        $his = "her"
-        $he = "she"
-        $hes = "she's"
-        $heis = "she is"
-        $bf = "girlfriend"
-        $man = "woman"
-        $boy = "girl"
-        $guy = "girl"
-        $ him = "her"
-        $ himself = "herself"
-    else:
-        $his = "their"
-        $he = "they"
-        $hes = "they're"
-        $heis = "they are"
-        $bf = "partner"
-        $man = "person"
-        $boy = "person"
-        $guy = "person"
-        $ him = "them"
-        $ himself = "themselves"
+label mas_set_gender:
+    python:
+        pronoun_gender_map = {
+            "M": {
+                "his": "his",
+                "he": "he",
+                "hes": "he's",
+                "heis": "he is",
+                "bf": "boyfriend",
+                "man": "man",
+                "boy": "boy",
+                "guy": "guy",
+                "him": "him",
+                "himself": "himself"
+            },
+            "F": {
+                "his": "her",
+                "he": "she",
+                "hes": "she's",
+                "heis": "she is",
+                "bf": "girlfriend",
+                "man": "woman",
+                "boy": "girl",
+                "guy": "girl",
+                "him": "her",
+                "himself": "herself"
+            },
+            "X": {
+                "his": "their",
+                "he": "they",
+                "hes": "they're",
+                "heis": "they are",
+                "bf": "partner",
+                "man": "person",
+                "boy": "person",
+                "guy": "person",
+                "him": "them",
+                "himself": "themselves"
+            }
+        }
+
+        pronouns = pronoun_gender_map[persistent.gender]
+
+        his = pronouns["his"]
+        he = pronouns["he"]
+        hes = pronouns["hes"]
+        heis = pronouns["heis"]
+        bf = pronouns["bf"]
+        man = pronouns["man"]
+        boy = pronouns["boy"]
+        guy = pronouns["guy"]
+        him = pronouns["him"]
+        himself = pronouns["himself"]
     return
 
 style jpn_text:
@@ -6304,21 +6970,24 @@ style jpn_text:
 
 # functions related to ily2
 init python:
-    def mas_passedILY(pass_time, check_time=None):
+    def mas_passedILY(pass_time):
         """
         Checks whether we are within the appropriate time since the last time
         Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
         IN:
             pass_time - a timedelta corresponding to the time limit we want to check against
-            check_time - the time at which we want to check, will typically be datetime.datetime.now()
-                which is the default
 
         RETURNS:
             boolean indicating if we are within the time limit
         """
-        if check_time is None:
-            check_time = datetime.datetime.now()
-        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+        check_time = datetime.datetime.now()
+
+        # if a backward TT is detected here, return False and reset persistent._mas_last_monika_ily
+        if persistent._mas_last_monika_ily is None or persistent._mas_last_monika_ily > check_time:
+            persistent._mas_last_monika_ily = None
+            return False
+
+        return (check_time - persistent._mas_last_monika_ily) <= pass_time
 
     def mas_ILY(set_time=None):
         """

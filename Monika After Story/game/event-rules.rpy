@@ -14,6 +14,7 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
+    EV_RULE_PROBABILITY = "rule_probability"
 
 
     # special constants for numerical repeat rules
@@ -714,8 +715,66 @@ init -1 python:
             return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
 
 
+    class MASProbabilityRule(object):
+        """
+        Static class used to create probability rules.
+
+        Probability rules are just integers that determine the probability of something being selected.
+
+
+        Probabilities must be greater than 1
+
+        This value is designed to be used with mas_utils.weightedChoice, and acts essentially akin to duplicating
+        the choice `probability` times in the list
+        """
+        DEF_PROBABILITY = 1
+
+        @staticmethod
+        def create_rule(probability, ev=None):
+            """
+            IN:
+                probability - the probability to set.
+                    If None is passed in, we use the default probability value.
+                    NOTE: If it is below 1 probability, is is set to 1
+
+                ev - Event to add this rule to. This will replace existing
+                    rules of the same key.
+                    (Default: None)
+            """
+            if probability is None:
+                probability = MASProbabilityRule.DEF_PROBABILITY
+
+            elif probability < 1:
+                probability = 1
+
+            if not store.mas_ev_data_ver._verify_int(probability, allow_none=False):
+                raise Exception(
+                    "'{0}' is not a valid in probability".format(probability)
+                )
+
+            rule = {EV_RULE_PROBABILITY: probability}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
+
+        @staticmethod
+        def get_probability(ev):
+            """
+            Gets the probability of the given event.
+
+            IN:
+                ev - event to get probability of
+
+            OUT:
+                The probability of the given event, or def if no ProbilityRule is found
+            """
+            return ev.rules.get(EV_RULE_PROBABILITY, MASProbabilityRule.DEF_PROBABILITY)
+
 init python:
-    # these rules are NOT actually event rules since they don't create rule 
+    # these rules are NOT actually event rules since they don't create rule
     # data in Event.
 
 
@@ -835,12 +894,16 @@ init python:
             OUT:
                 True if we are past the stored end date and we need to
             """
+            #If the ev doesn't exist, we cannot do any work. This should be removed
+            if not ev:
+                return None
+
             #NOTE: This should be used AFTER init 7
             _start_date, _end_date = persistent._mas_undo_action_rules.get(ev.eventlabel, (None, None))
 
             #Check for invalid data
-            if not ev or not _start_date or not _end_date:
-                #This ev doesn't exist and/or it doesn't exist in the rules dict. We should set this to be removed
+            if not _start_date or not _end_date:
+                #No start or end date? That can't be right. We should remove this
                 return None
 
             #Need to turn
@@ -974,5 +1037,3 @@ init python:
                 ev = mas_getEV(ev_label)
                 if ev is not None and MASStripDatesRule.evaluate_rule(ev):
                     ev.stripDates()
-                
-

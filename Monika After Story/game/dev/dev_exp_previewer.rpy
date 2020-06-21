@@ -19,12 +19,12 @@ label dev_exp_previewer:
     window hide
 
     $ HKBHideButtons()
-    $ prev_mflag = morning_flag
+    $ prev_flt = store.mas_sprites.get_filter()
+    $ store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
     $ prev_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
     $ prev_moni_state = monika_chr.save_state(True, True, True)
     $ monika_chr.reset_outfit()
-    $ morning_flag = True
 
     $ ui.add(MASExpPreviewer())
     $ result = ui.interact()
@@ -33,7 +33,7 @@ label dev_exp_previewer:
     $ monika_chr.load_state(prev_moni_state)
     $ store.mas_sprites.zoom_level = prev_zoom
     $ store.mas_sprites.adjust_zoom()
-    $ morning_flag = prev_mflag
+    $ store.mas_sprites.set_filter(prev_flt)
     $ HKBShowButtons()
 
     show monika at i11
@@ -97,7 +97,7 @@ init 999 python:
         SPR_MISS = "#ff0000"
 
         MONI_X = -240
-        MONI_Y = -107
+        MONI_Y = 20
 
         # STATES for which monika to show
 
@@ -199,7 +199,7 @@ init 999 python:
                 "def": "School Uniform",
                 "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
-                "rin": "Neko Costume",
+#                "rin": "Neko Costume",
                 "santa": "Santa Monika",
                 "sundress_white": "Sundress (White)",
                 "blackdress": "Formal Dress (Black)",
@@ -281,8 +281,8 @@ init 999 python:
 #                "g": "Disgust",
             },
             "time": {
-                0: "Day",
-                1: "Night"
+                "day": "Day",
+                "night": "Night"
             }
         }
 
@@ -301,7 +301,7 @@ init 999 python:
             "Sweat: ",
             "Emote: ",
             "Mouth: ",
-            "Time: "
+            "Filter: "
         ]
 
     
@@ -330,7 +330,7 @@ init 999 python:
                 "def",
                 "blazerless",
                 "marisa",
-                "rin",
+                #"rin",
                 "santa",
                 "sundress_white",
                 "blackdress",
@@ -416,9 +416,9 @@ init 999 python:
                 "t",
 #                "g",
             ],
-            "time": [
-                0,
-                1
+            "time": [ # actually means Filter now
+                "day",
+                "night",
             ]
         }
 
@@ -495,6 +495,15 @@ init 999 python:
             Creates the Expression previewer displayable
             """
             super(renpy.Displayable, self).__init__()
+
+            # update torsos with spritepacked sprites
+            torso_map = self.SEL_TX_MAP["torso"]
+            torso_list = self.SC_MAP["torso"]
+            for sel in store.mas_selspr.CLOTH_SEL_MAP.itervalues():
+                spr = sel.get_sprobj()
+                if spr.is_custom and spr.name not in torso_map:
+                    torso_map[spr.name] = sel.display_name
+                    torso_list.append(spr.name)
 
             # background tile
             self.background = Solid(
@@ -779,7 +788,7 @@ init 999 python:
             img_eyes = self._get_img_name("eyes")
 
             try:
-                trn, rfr = mas_drawmonika(0, 0, monika_chr,
+                trn, rfr = mas_drawmonika_rk(0, 0, monika_chr,
                     self._get_img_name("eyebrows"),
                     img_eyes,
                     self._get_img_name("nose"),
@@ -983,9 +992,7 @@ init 999 python:
         def _sel_time(self, direct):
             self._adj_sel(direct, "time")
             self._update_sel_tx("time")
-            global morning_flag
-            morning_flag = self.curr_sel["time"] == 0
-
+            self.mas_sprites.set_filter(self._get_spr_code("time"))
 
         def _sel_torso(self, direct):
             self._adj_sel(direct, "torso")

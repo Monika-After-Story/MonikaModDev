@@ -28,6 +28,7 @@ SAVE_PATH_IO = GDIR.REL_PATH_GAME + "zzzz_sprite_opt.rpy"
 
 IMG_START = "image monika"
 IMG_OUT = '"monika {0}"'
+IMG_OUT_L = '\n        "monika {0}",'
 
 DYN_DIS = "DynamicDisplayable"
 
@@ -201,13 +202,26 @@ def write_zz_sprite_opt(sprites):
     with open(os.path.normcase(SAVE_PATH_IO), "w") as outfile:
         outfile.write(__ZZ_SP_OPT_HEADER)
 
-        # make a list of the "monika code" so we can join them later
-        code_list = [
-            IMG_OUT.format(code)
-            for code in sprites
-        ]
+        open_list = False
 
-        outfile.write(",\n        ".join(code_list))
+        # we must write in pieces beause a giant list is too long
+        for index in range(len(sprites)):
+            # write header every 100
+            if index % 100 == 0:
+                open_list = True
+                outfile.write(__ZZ_SP_OPT_LINE_START)
+
+            # now actual line
+            outfile.write(IMG_OUT_L.format(sprites[index]))
+
+            # on the 100th item, write footer
+            if index % 100 == 99:
+                open_list = False
+                outfile.write(__ZZ_SP_OPT_LINE_END)
+
+        # 1 last footer needed
+        if open_list:
+            outfile.write(__ZZ_SP_OPT_LINE_END)
         
         outfile.write(__ZZ_SP_OPT_FOOTER)
 
@@ -295,11 +309,17 @@ __ZZ_SP_OPT_HEADER = """\
 #
 
 init 2020 python:
-    image_list = [
-        """
+    image_list = []
+"""
+
+__ZZ_SP_OPT_LINE_START = """\
+    image_list.extend(["""
+
+__ZZ_SP_OPT_LINE_END = """
+    ])
+"""
 
 __ZZ_SP_OPT_FOOTER = """
-    ]
     renpy.start_predict(*image_list)
 """
 

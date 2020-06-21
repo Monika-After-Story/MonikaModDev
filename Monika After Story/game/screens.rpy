@@ -33,7 +33,12 @@ init -1 python:
         "and offer some comments based on what you're doing."
     )
 
-
+    _TXT_FINISHED_UPDATING = (
+        "The updates have been installed. Please reopen Monika After Story.\n\n"
+        "Get spritepacks {a=http://monikaafterstory.com/releases.html}{i}{u}from our website{/u}{/i}{/a}.\n"
+        "See the patch notes {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}here{/u}{/i}{/a}.\n"
+        "Confused about some features? Take a look at our {a=https://github.com/Monika-After-Story/MonikaModDev/wiki}{i}{u}wiki page{/u}{/i}{/a}."
+    )
 
 
 init python in mas_layout:
@@ -163,19 +168,26 @@ style edited is default:
     font "gui/font/VerilySerifMono.otf"
     kerning 8
     outlines [(10, "#000", 0, 0)]
-    xpos gui.text_xpos
+    pos (gui.text_xpos, gui.text_ypos)
     xanchor gui.text_xalign
     xsize gui.text_width
-    ypos gui.text_ypos
+    text_align gui.text_xalign
+    layout ("subtitle" if gui.text_xalign else "tex")
+
+style edited_dark is default:
+    font "gui/font/VerilySerifMono.otf"
+    kerning 8
+    outlines [] # FIXME: why there's no outlines?
+    pos (gui.text_xpos, gui.text_ypos)
+    xanchor gui.text_xalign
+    xsize gui.text_width
     text_align gui.text_xalign
     layout ("subtitle" if gui.text_xalign else "tex")
 
 style normal is default:
-    xpos gui.text_xpos
+    pos (gui.text_xpos, gui.text_ypos)
     xanchor gui.text_xalign
     xsize gui.text_width
-    ypos gui.text_ypos
-
     text_align gui.text_xalign
     layout ("subtitle" if gui.text_xalign else "tex")
 
@@ -188,9 +200,9 @@ style hyperlink_text:
     hover_underline True
 
 style splash_text:
+    font gui.default_font
     size 24
     color "#000"
-    font gui.default_font
     text_align 0.5
     outlines []
 
@@ -200,31 +212,65 @@ style poemgame_text:
     size 30
     color "#000"
     outlines []
+    hover_xoffset -3
+    hover_outlines [(3, "#fef", 0, 0), (2, "#fcf", 0, 0), (1, "#faf", 0, 0)]
 
+style poemgame_text_dark:
+    yalign 0.5
+    font "gui/font/Halogen.ttf"
+    size 30
+    color "#000"
+    outlines []
     hover_xoffset -3
     hover_outlines [(3, "#fef", 0, 0), (2, "#fcf", 0, 0), (1, "#faf", 0, 0)]
 
 style gui_text:
     font gui.interface_font
-    color gui.interface_text_color
     size gui.interface_text_size
+    color gui.interface_text_color
 
 
 style button:
     properties gui.button_properties("button")
+    xysize (None, 36)
+    padding (4, 4, 4, 4)
+
+style button_dark:
+    properties gui.button_properties("button_dark")
+    xysize (None, 36)
+    padding (4, 4, 4, 4)
 
 style button_text is gui_text:
     properties gui.button_text_properties("button")
-    yalign 0.5
+    font gui.interface_font
+    size gui.interface_text_size
+    idle_color gui.idle_color
+    hover_color gui.hover_color
+    selected_color gui.selected_color
+    insensitive_color gui.insensitive_color
+    align (0.0, 0.5)
 
+style button_text_dark is gui_text:
+    properties gui.button_text_properties("button_dark")
+    font gui.interface_font
+    size gui.interface_text_size
+    idle_color gui.idle_color
+    hover_color gui.hover_color
+    selected_color gui.selected_color
+    insensitive_color gui.insensitive_color
+    align (0.0, 0.5)
 
 style label_text is gui_text:
-    color gui.accent_color
     size gui.label_text_size
+    color gui.accent_color
+
+style label_text_dark is gui_text:
+    size gui.label_text_size
+    color gui.accent_color
 
 style prompt_text is gui_text:
-    color gui.text_color
     size gui.interface_text_size
+    color gui.text_color
 
 
 #style bar:
@@ -249,11 +295,10 @@ style scrollbar:
     unscrollable "hide"
     bar_invert True
 
-
-style vscrollbar:
-    xsize 18
-    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
-    thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
+style scrollbar_dark:
+    ysize 18
+    base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
+    thumb Frame("gui/scrollbar/horizontal_poem_thumb.png", top=6, right=6, tile=True)
     unscrollable "hide"
     bar_invert True
 
@@ -262,9 +307,30 @@ style vscrollbar:
 #    base_bar Frame("gui/scrollbar/vertical_[prefix_]bar.png", gui.vscrollbar_borders, tile=gui.scrollbar_tile)
 #    thumb Frame("gui/scrollbar/vertical_[prefix_]thumb.png", gui.vscrollbar_borders, tile=gui.scrollbar_tile)
 
+style vscrollbar:
+    xsize 18
+    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
+    thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
+    unscrollable "hide"
+    bar_vertical True
+    bar_invert True
+
+style vscrollbar_dark:
+    xsize 18
+    base_bar Frame("gui/scrollbar/vertical_poem_bar_d.png", tile=False)
+    thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
+    unscrollable "hide"
+    bar_vertical True
+    bar_invert True
+
 style slider:
     ysize 18
     base_bar Frame("gui/scrollbar/horizontal_poem_bar.png", tile=False)
+    thumb "gui/slider/horizontal_hover_thumb.png"
+
+style slider_dark:
+    ysize 18
+    base_bar Frame("gui/scrollbar/horizontal_poem_bar_d.png", tile=False)
     thumb "gui/slider/horizontal_hover_thumb.png"
 
 style vslider:
@@ -272,11 +338,13 @@ style vslider:
     base_bar Frame("gui/slider/vertical_[prefix_]bar.png", gui.vslider_borders, tile=gui.slider_tile)
     thumb "gui/slider/vertical_[prefix_]thumb.png"
 
-
 style frame:
     padding gui.frame_borders.padding
     background Frame("gui/frame.png", gui.frame_borders, tile=gui.frame_tile)
 
+style frame_dark:
+    padding gui.frame_borders.padding
+    background Frame("gui/frame_d.png", gui.frame_borders, tile=gui.frame_tile)
 
 
 ################################################################################
@@ -319,52 +387,69 @@ screen say(who, what):
     use quick_menu
 
 
-style window is default
-style say_label is default
-style say_dialogue is default
-style say_thought is say_dialogue
-
-style namebox is default
-style namebox_label is say_label
-
-
-style window:
+style window is default:
     xalign 0.5
     xfill True
     yalign gui.textbox_yalign
     ysize gui.textbox_height
-
     background Image("gui/textbox.png", xalign=0.5, yalign=1.0)
+
+style window_dark is default:
+    xalign 0.5
+    xfill True
+    yalign gui.textbox_yalign
+    ysize gui.textbox_height
+    background Image("gui/textbox_d.png", xalign=0.5, yalign=1.0)
 
 style window_monika is window:
     background Image("gui/textbox_monika.png", xalign=0.5, yalign=1.0)
 
-style namebox:
+style window_monika_dark is window:
+    background Image("gui/textbox_monika_d.png", xalign=0.5, yalign=1.0)
+
+style namebox is default:
     xpos gui.name_xpos
     xanchor gui.name_xalign
     xsize gui.namebox_width
     ypos gui.name_ypos
     ysize gui.namebox_height
-
     background Frame("gui/namebox.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
     padding gui.namebox_borders.padding
 
-style say_label:
-    color gui.accent_color
+style namebox_dark is default:
+    xpos gui.name_xpos
+    xanchor gui.name_xalign
+    xsize gui.namebox_width
+    ypos gui.name_ypos
+    ysize gui.namebox_height
+    background Frame("gui/namebox_d.png", gui.namebox_borders, tile=gui.namebox_tile, xalign=gui.name_xalign)
+    padding gui.namebox_borders.padding
+
+style say_label is default:
     font gui.name_font
     size gui.name_text_size
     xalign gui.name_xalign
     yalign 0.5
+    color gui.accent_color
     outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
 
-style say_dialogue:
+style say_label_dark is default:
+    font gui.name_font
+    size gui.name_text_size
+    xalign gui.name_xalign
+    yalign 0.5
+    color "#FFD9E8"
+    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+
+style say_dialogue is default:
     xpos gui.text_xpos
     xanchor gui.text_xalign
     xsize gui.text_width
     ypos gui.text_ypos
-
     text_align gui.text_xalign
     layout ("subtitle" if gui.text_xalign else "tex")
+
+style say_thought is say_dialogue
 
 image ctc:
     xalign 0.81 yalign 0.98 xoffset -5 alpha 0.0 subpixel True
@@ -426,7 +511,7 @@ style input:
 ## http://www.renpy.org/doc/html/screen_special.html#choice
 
 screen choice(items):
-    style_prefix mas_ui.cb_style_prefix
+    style_prefix "choice"
 
     vbox:
         for i in items:
@@ -438,26 +523,27 @@ screen choice(items):
 define config.narrator_menu = True
 
 
-style choice_vbox is vbox
-style choice_button is button
-style choice_button_text is button_text
-
-style choice_vbox:
+style choice_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
-
     spacing gui.choice_spacing
 
-style choice_button is default:
-    properties gui.button_properties("choice_button")
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style choice_button is generic_button_light:
+    xysize (420, None)
+    padding (100, 5, 100, 5)
 
-style choice_button_text is default:
-    properties gui.button_text_properties("choice_button")
-    outlines []
+style choice_button_dark is generic_button_dark:
+    xysize (420, None)
+    padding (100, 5, 100, 5)
 
+style choice_button_text is generic_button_text_light:
+    text_align 0.5
+    layout "subtitle"
+
+style choice_button_text_dark is generic_button_text_dark:
+    text_align 0.5
+    layout "subtitle"
 
 init python:
     def RigMouse():
@@ -467,7 +553,7 @@ init python:
             renpy.display.draw.set_mouse_pos((currentpos[0] * 9 + targetpos[0]) / 10.0, (currentpos[1] * 9 + targetpos[1]) / 10.0)
 
 screen rigged_choice(items):
-    style_prefix mas_ui.cb_style_prefix
+    style_prefix "choice"
 
     vbox:
         for i in items:
@@ -479,12 +565,17 @@ style talk_choice_vbox is choice_vbox:
     xcenter 960
 
 style talk_choice_button is choice_button
+
+style talk_choice_button_dark is choice_button_dark
+
 style talk_choice_button_text is choice_button_text
+
+style talk_choice_button_text_dark is choice_button_text_dark
 
 
 ## This screen is used for the talk menu
 screen talk_choice(items):
-    style_prefix mas_ui.tcb_style_prefix
+    style_prefix "talk_choice"
 
     vbox:
         for i in items:
@@ -494,27 +585,6 @@ screen talk_choice(items):
 ## When this is true, menu captions will be spoken by the narrator. When false,
 ## menu captions will be displayed as empty buttons.
 define config.narrator_menu = True
-
-
-style choice_vbox is vbox
-style choice_button is button
-style choice_button_text is button_text
-
-style choice_vbox:
-    xalign 0.5
-    ypos 270
-    yanchor 0.5
-
-    spacing gui.choice_spacing
-
-style choice_button is default:
-    properties gui.button_properties("choice_button")
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
-
-style choice_button_text is default:
-    properties gui.button_text_properties("choice_button")
-    outlines []
 
 
 ## Quick Menu screen ###########################################################
@@ -531,7 +601,7 @@ screen quick_menu():
 
         # Add an in-game quick menu.
         hbox:
-            style_prefix mas_ui.qm_style_prefix
+            style_prefix "quick"
 
             xalign 0.5
             yalign 0.995
@@ -563,17 +633,29 @@ screen quick_menu():
 
 default quick_menu = True
 
-#style quick_button is default
-#style quick_button_text is button_text
-
+# START: quick menu styles
 style quick_button:
     properties gui.button_properties("quick_button")
+    activate_sound gui.activate_sound
+
+style quick_button_dark:
+    properties gui.button_properties("quick_button_dark")
     activate_sound gui.activate_sound
 
 style quick_button_text:
     properties gui.button_text_properties("quick_button")
     outlines []
 
+style quick_button_text_dark:
+    properties gui.button_text_properties("quick_button_dark")
+    xysize (205, None)
+    font gui.default_font
+    size 14
+    idle_color "#FFAA99"
+    selected_color "#FFEEEB"
+    hover_color "#FFD4CC"
+    kerning 0.2
+    outlines []
 
 ################################################################################
 # Main and Game Menu Screens
@@ -584,16 +666,130 @@ style quick_button_text:
 ## This screen is included in the main and game menus, and provides navigation
 ## to other menus, and to start the game.
 
-init python:
+init 4 python:
     def FinishEnterName():
-        if not player: return
+        global player
+
+        if not player:
+            return
+
+        if (
+            mas_bad_name_comp.search(player)
+            or mas_awk_name_comp.search(player)
+        ):
+            renpy.call_in_new_context("mas_bad_name_input")
+            player = ""
+            renpy.show(
+                "chibika smile",
+                at_list=[mas_chflip(-1), mas_chmove(x=130, y=552, travel_time=0)],
+                layer="screens",
+                zorder=10
+            )
+            return
+
+        # if the name is correct, set it
         persistent.playername = player
         renpy.hide_screen("name_input")
         renpy.jump_out_of_context("start")
 
+label mas_bad_name_input:
+    show screen fake_main_menu
+    $ disable_esc()
+
+    if not renpy.seen_label("mas_bad_name_input.first_time_bad_name"):
+        label .first_time_bad_name:
+            play sound "sfx/glitch3.ogg"
+            window show
+
+            show chibika smile at mas_chflip(-1), mas_chriseup(x=700, y=552, travel_time=0.5) onlayer screens zorder 10
+            pause 1
+
+            show chibika at  mas_chflip_s(1) onlayer screens zorder 10
+            "Hey there!"
+
+            show chibika at mas_chlongjump(x=650, y=405, ymax=375, travel_time=0.8) onlayer screens zorder 10
+            "I'm glad you decided to come back!"
+            "I'm sure that you and Monika will be a great couple."
+
+            show chibika sad at mas_chflip_s(-1) onlayer screens zorder 10
+            "But if you call yourself names like that...{w=0.5}{nw}"
+
+            show chibika at sticker_hop onlayer screens zorder 10
+            extend "you won't win her heart!"
+
+            show chibika smile at mas_chmove(x=300, y=405, travel_time=1) onlayer screens zorder 10
+            "...But just embarrass her instead."
+
+            show chibika at mas_chlongjump(x=190, y=552, ymax=375, travel_time=0.8) onlayer screens zorder 10
+            "Why don't you choose something more appropriate."
+            window auto
+
+    else:
+        show chibika smile at mas_chflip(-1), mas_chmove(x=130, y=552, travel_time=0), sticker_hop onlayer screens zorder 10
+        "I don't think she would be comfortable calling you that..."
+        "Why don't you choose something more appropriate instead."
+
+    $ enable_esc()
+    hide screen fake_main_menu
+    return
+
+# like main_menu, but w/o animations and w/ inactive buttons
+screen fake_main_menu():
+    style_prefix "main_menu"
+
+    add "game_menu_bg"
+
+    frame:
+        pass
+
+    vbox:
+        style_prefix "navigation"
+
+        xpos gui.navigation_xpos
+        yalign 0.8
+
+        spacing gui.navigation_spacing
+
+        textbutton _("Just Monika")
+
+        textbutton _("Load Game")
+
+        textbutton _("Settings")
+
+        if mas_ui.has_submod_settings:
+            textbutton _("Submods")
+
+        textbutton _("Hotkeys")
+
+        if renpy.variant("pc"):
+
+            textbutton _("Help")
+
+            textbutton _("Quit")
+
+    if gui.show_name:
+
+        vbox:
+            text "[config.name!t]":
+                style "main_menu_title"
+
+            text "[config.version]":
+                style "main_menu_version"
+
+    # add "fake_menu_logo"
+    add Image(
+        "mod_assets/menu_new.png"
+    ) subpixel True xcenter 240 ycenter 120 zoom 0.60
+    # add "fake_menu_art_m"
+    add Image(
+        "gui/menu_art_m.png"
+    ) subpixel True xcenter 1000 ycenter 640 zoom 1.00
+
+    key "K_ESCAPE" action Quit(confirm=False)
+
 screen navigation():
     vbox:
-        style_prefix mas_ui.nm_style_prefix
+        style_prefix "navigation"
 
         xpos gui.navigation_xpos
         yalign 0.8
@@ -622,8 +818,13 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
+        if store.mas_submod_utils.submod_map:
+            textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
+
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
+
+        textbutton _("Hotkeys") action [ShowMenu("hot_keys")]
 
         #textbutton _("About") action ShowMenu("about")
 
@@ -633,20 +834,25 @@ screen navigation():
             textbutton _("Help") action Help("README.html")
 
             ## The quit button is banned on iOS and unnecessary on Android.
-            textbutton _("Quit") action Quit(confirm=_confirm_quit)
+            #If we're on the main menu, we don't want to confirm quit as Monika isn't back yet
+            textbutton _("Quit") action Quit(confirm=(None if main_menu else _confirm_quit))
 
+        if not main_menu:
+            textbutton _("Return") action Return()
 
-
-style navigation_button is gui_button
-style navigation_button_text is gui_button_text
-
-style navigation_button:
+style navigation_button is gui_button:
     size_group "navigation"
     properties gui.button_properties("navigation_button")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-style navigation_button_text:
+style navigation_button_dark is gui_button:
+    size_group "navigation"
+    properties gui.button_properties("navigation_button_dark")
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style navigation_button_text is gui_button_text:
     properties gui.button_text_properties("navigation_button")
     font "gui/font/RifficFree-Bold.ttf"
     color "#fff"
@@ -654,6 +860,13 @@ style navigation_button_text:
     hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
     insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
 
+style navigation_button_text_dark is gui_button_text_dark:
+    properties gui.button_text_properties("navigation_button_dark")
+    font "gui/font/RifficFree-Bold.ttf"
+    color "#FFD9E8"
+    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
+    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
+    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
 ## Main Menu screen ############################################################
 ##
@@ -714,36 +927,40 @@ screen main_menu():
 
     key "K_ESCAPE" action Quit(confirm=False)
 
-style main_menu_frame is empty
-style main_menu_vbox is vbox
-style main_menu_text is gui_text
-style main_menu_title is main_menu_text
 style main_menu_version is main_menu_text:
     color "#000000"
     size 16
     outlines []
 
-style main_menu_frame:
+style main_menu_version_dark is main_menu_text:
+    color mas_ui.dark_button_text_idle_color
+    size 16
+    outlines []
+
+style main_menu_frame is empty:
     xsize 310
     yfill True
-
     background "menu_nav"
 
-style main_menu_vbox:
+style main_menu_frame_dark is empty:
+    xsize 310
+    yfill True
+    background "menu_nav"
+
+style main_menu_vbox is vbox:
     xalign 1.0
     xoffset -20
     xmaximum 800
     yalign 1.0
     yoffset -20
 
-style main_menu_text:
+style main_menu_text is gui_text:
     xalign 1.0
-
     layout "subtitle"
     text_align 1.0
     color gui.accent_color
 
-style main_menu_title:
+style main_menu_title is main_menu_text:
     size gui.title_text_size
 
 
@@ -828,70 +1045,77 @@ screen game_menu(title, scroll=None):
     # if not main_menu and not persistent.menu_bg_m and renpy.random.randint(0, 49) == 0:
     #     on "show" action Show("game_menu_m")
 
-    textbutton _("Return"):
-        style mas_ui.rb_button_style
-
-        action Return()
-
-    label title style mas_ui.gm_label_style
+    label title style "game_menu_label"
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
 
 
-style game_menu_outer_frame is empty
-style game_menu_navigation_frame is empty
-style game_menu_content_frame is empty
-style game_menu_viewport is gui_viewport
-style game_menu_side is gui_side
-style game_menu_scrollbar is gui_vscrollbar
-
-style game_menu_label is gui_label
-style game_menu_label_text is gui_label_text
-
-style return_button is navigation_button
-style return_button_text is navigation_button_text
-
-style game_menu_outer_frame:
+style game_menu_outer_frame is empty:
     bottom_padding 30
     top_padding 120
-
     background "gui/overlay/game_menu.png"
 
-style game_menu_navigation_frame:
+style game_menu_outer_frame_dark is empty:
+    bottom_padding 30
+    top_padding 120
+    background "gui/overlay/game_menu_d.png"
+
+style game_menu_navigation_frame is empty:
     xsize 280
     yfill True
 
-style game_menu_content_frame:
+style game_menu_content_frame is empty:
     left_margin 40
     right_margin 20
-    top_margin 10
+    top_margin -40
 
-style game_menu_viewport:
+style game_menu_viewport is gui_viewport:
     xsize 920
+
+style game_menu_scrollbar is gui_vscrollbar
 
 style game_menu_vscrollbar:
     unscrollable gui.unscrollable
 
-style game_menu_side:
+style game_menu_side is gui_side:
     spacing 10
 
-style game_menu_label:
+style game_menu_label is gui_label:
     xpos 50
     ysize 120
 
-style game_menu_label_text:
+style game_menu_label_dark is gui_label:
+    xpos 50
+    ysize 120
+
+style game_menu_label_text is gui_label_text:
     font "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
     color "#fff"
     outlines [(6, "#b59", 0, 0), (3, "#b59", 2, 2)]
     yalign 0.5
 
-style return_button:
+style game_menu_label_text_dark is gui_label_text:
+    font "gui/font/RifficFree-Bold.ttf"
+    size gui.title_text_size
+    color "#FFD9E8"
+    outlines [(6, "#DE367E", 0, 0), (3, "#DE367E", 2, 2)]
+    yalign 0.5
+
+style return_button is navigation_button:
     xpos gui.navigation_xpos
     yalign 1.0
     yoffset -30
 
+style return_button_dark is navigation_button:
+    xpos gui.navigation_xpos
+    yalign 1.0
+    yoffset -30
+
+style return_button_text is navigation_button_text
+
+style return_button_text_dark is navigation_button_text_dark
 
 ## About screen ################################################################
 ##
@@ -928,11 +1152,11 @@ define gui.about = ""
 
 
 style about_label is gui_label
-style about_label_text is gui_label_text
-style about_text is gui_text
 
-style about_label_text:
+style about_label_text is gui_label_text:
     size gui.label_text_size
+
+style about_text is gui_text
 
 
 ## Load and Save screens #######################################################
@@ -1038,42 +1262,54 @@ screen file_slots(title):
                 #textbutton _(">") action FilePageNext(max=9, wrap=True)
 
 
-style page_label is gui_label
-style page_label_text is gui_label_text
-style page_button is gui_button
-style page_button_text is gui_button_text
-
-style slot_button is gui_button
-style slot_button_text is gui_button_text
-style slot_time_text is slot_button_text
-style slot_name_text is slot_button_text
-
-style page_label:
+style page_label is gui_label:
     xpadding 50
     ypadding 3
 
-style page_label_text:
+style page_label_dark is gui_label:
+    xpadding 50
+    ypadding 3
+
+style page_label_text is gui_label_text:
     color "#000"
     outlines []
     text_align 0.5
     layout "subtitle"
     hover_color gui.hover_color
 
-style page_button:
+style page_label_text_dark is gui_label_text:
+    color "#FFD9E8"
+    outlines []
+    text_align 0.5
+    layout "subtitle"
+    hover_color gui.hover_color
+
+style page_button is gui_button:
     properties gui.button_properties("page_button")
 
-style page_button_text:
+style page_button_text is gui_button_text:
     properties gui.button_text_properties("page_button")
     outlines []
 
-style slot_button:
+style slot_button is gui_button:
     properties gui.button_properties("slot_button")
 
-style slot_button_text:
+style slot_button_dark is gui_button:
+    properties gui.button_properties("slot_button")
+
+style slot_button_text is gui_button_text:
     properties gui.button_text_properties("slot_button")
     color "#666"
     outlines []
 
+style slot_button_text_dark is gui_button_text:
+    properties gui.button_text_properties("slot_button")
+    color "#8C8C8C"
+    outlines []
+
+style slot_time_text is slot_button_text
+
+style slot_name_text is slot_button_text
 
 ## Preferences screen ##########################################################
 ##
@@ -1104,7 +1340,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix mas_ui.rab_style_prefix
+                        style_prefix "radio"
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1118,7 +1354,7 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix mas_ui.cbx_style_prefix
+                    style_prefix "check"
                     label _("Graphics")
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
@@ -1128,23 +1364,24 @@ screen preferences():
                         action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
                         selected persistent._mas_dark_mode_enabled
                     textbutton _("UI: D/N Cycle"):
-                        action [Function(mas_darkMode, morning_flag), Function(mas_settings._auto_mode_toggle)]
+                        action [Function(mas_darkMode, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
                         selected persistent._mas_auto_mode_enabled
 
 
                 vbox:
-                    style_prefix mas_ui.cbx_style_prefix
+                    style_prefix "check"
                     label _("Gameplay")
-                    if persistent._mas_unstable_mode:
-                        textbutton _("Unstable"):
-                            action SetField(persistent, "_mas_unstable_mode", False)
-                            selected persistent._mas_unstable_mode
+                    if not main_menu:
+                        if persistent._mas_unstable_mode:
+                            textbutton _("Unstable"):
+                                action SetField(persistent, "_mas_unstable_mode", False)
+                                selected persistent._mas_unstable_mode
 
-                    else:
-                        textbutton _("Unstable"):
-                            action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
-                            selected persistent._mas_unstable_mode
-                            hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
+                        else:
+                            textbutton _("Unstable"):
+                                action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
+                                selected persistent._mas_unstable_mode
+                                hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
 
                     textbutton _("Repeat Topics"):
                         action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
@@ -1153,7 +1390,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix mas_ui.cbx_style_prefix
+                    style_prefix "check"
                     label _(" ")
                     textbutton _("Sensitive Mode"):
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
@@ -1167,7 +1404,7 @@ screen preferences():
             null height (4 * gui.pref_spacing)
 
             hbox:
-                style_prefix mas_ui.sld_style_prefix
+                style_prefix "slider"
                 box_wrap True
 
                 python:
@@ -1319,19 +1556,22 @@ screen preferences():
 
 
             hbox:
-                textbutton _("Update Version"):
-                    action Function(renpy.call_in_new_context, 'forced_update_now')
-                    style mas_ui.nm_button_style
+                #We disable updating on the main menu because it causes graphical issues
+                #due to the spaceroom not being loaded in
+                if not main_menu:
+                    textbutton _("Update Version"):
+                        action Function(renpy.call_in_new_context, 'forced_update_now')
+                        style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
-                    style mas_ui.nm_button_style
+                    style "navigation_button"
 
 
     text tooltip.value:
         xalign 0.0 yalign 1.0
         xoffset 300 yoffset -10
-        style mas_ui.mm_tt_style
+        style "main_menu_version"
 #        layout "greedy"
 #        text_align 0.5
 #        xmaximum 650
@@ -1339,98 +1579,172 @@ screen preferences():
     text "v[config.version]":
         xalign 1.0 yalign 0.0
         xoffset -10
-        style mas_ui.mm_tt_style
+        style "main_menu_version"
 
-style pref_label is gui_label
-style pref_label_text is gui_label_text
-style pref_vbox is vbox
-
-style radio_label is pref_label
-style radio_label_text is pref_label_text
-style radio_button is gui_button
-style radio_button_text is gui_button_text
-style radio_vbox is pref_vbox
-
-style check_label is pref_label
-style check_label_text is pref_label_text
-style check_button is gui_button
-style check_button_text is gui_button_text
-style check_vbox is pref_vbox
-
-style slider_label is pref_label
-style slider_label_text is pref_label_text
-style slider_slider is gui_slider
-style slider_button is gui_button
-style slider_button_text is gui_button_text
-style slider_pref_vbox is pref_vbox
-
-style mute_all_button is check_button
-style mute_all_button_text is check_button_text
-
-style outfit_check_button_text is gui_button_text
-
-style pref_label:
+# Preference
+style pref_label is gui_label:
     top_margin gui.pref_spacing
     bottom_margin 2
 
-style pref_label_text:
+style pref_label_dark is gui_label:
+    top_margin gui.pref_spacing
+    bottom_margin 2
+
+style pref_label_text is gui_label_text:
     font "gui/font/RifficFree-Bold.ttf"
     size 24
     color "#fff"
     outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
     yalign 1.0
 
-style pref_vbox:
+style pref_label_text_dark is gui_label_text:
+    font "gui/font/RifficFree-Bold.ttf"
+    size 24
+    color "#FFD9E8"
+    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+    yalign 1.0
+
+style pref_vbox is vbox:
     xsize 225
 
-style radio_vbox:
+# Radio
+style radio_label is pref_label
+
+style radio_label_dark is pref_label
+
+style radio_label_text is pref_label_text
+
+style radio_label_text_dark is pref_label_text
+
+style radio_vbox is pref_vbox:
     spacing gui.pref_button_spacing
 
-style radio_button:
+style radio_button is gui_button:
     properties gui.button_properties("radio_button")
     foreground "gui/button/check_[prefix_]foreground.png"
+    padding (28, 4, 4, 4)
 
-style radio_button_text:
+style radio_button_dark is gui_button_dark:
+    properties gui.button_properties("radio_button_dark")
+    foreground "gui/button/check_[prefix_]foreground_d.png"
+    padding (28, 4, 4, 4)
+
+style radio_button_text is gui_button_text:
     properties gui.button_text_properties("radio_button")
     font "gui/font/Halogen.ttf"
     outlines []
 
-style check_vbox:
+style radio_button_text_dark is gui_button_text_dark:
+    properties gui.button_text_properties("radio_button_dark")
+    font "gui/font/Halogen.ttf"
+    color "#8C8C8C"
+    hover_color "#FF80B7"
+    selected_color "#DE367E"
+    outlines []
+
+# Check
+style check_label is pref_label
+
+style check_label_dark is pref_label
+
+style check_label_text is pref_label_text
+
+style check_label_text_dark is pref_label_text
+
+style check_vbox is pref_vbox:
     spacing gui.pref_button_spacing
 
-style check_button:
+style check_button is gui_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
+    padding (28, 4, 4, 4)
 
-style check_button_text:
+style check_button_dark is gui_button_dark:
+    properties gui.button_properties("check_button_dark")
+    foreground "gui/button/check_[prefix_]foreground_d.png"
+    padding (28, 4, 4, 4)
+
+style check_button_text is gui_button_text:
     properties gui.button_text_properties("check_button")
     font "gui/font/Halogen.ttf"
     outlines []
 
-style slider_slider:
+style check_button_text_dark is gui_button_text_dark:
+    properties gui.button_text_properties("check_button_dark")
+    font "gui/font/Halogen.ttf"
+    color "#8C8C8C"
+    hover_color "#FF80B7"
+    selected_color "#DE367E"
+    outlines []
+
+# Mute all
+style mute_all_button is check_button
+
+style mute_all_button_dark is check_button_dark
+
+style mute_all_button_text is check_button_text
+
+style mute_all_button_text_dark is check_button_text_dark
+
+# Slider
+style slider_label is pref_label
+
+style slider_label_dark is pref_label
+
+style slider_label_text is pref_label_text
+
+style slider_label_text_dark is pref_label_text
+
+style slider_slider is gui_slider:
     xsize 350
 
-style slider_button:
+style slider_slider_dark is gui_slider_dark:
+    xsize 350
+
+style slider_button is gui_button:
     properties gui.button_properties("slider_button")
     yalign 0.5
     left_margin 10
 
-style slider_button_text:
+style slider_button_dark is gui_button:
+    properties gui.button_properties("slider_button_dark")
+    yalign 0.5
+    left_margin 10
+
+style slider_button_text is gui_button_text:
     properties gui.button_text_properties("slider_button")
+
+style slider_button_text_dark is gui_button_text:
+    properties gui.button_text_properties("slider_button_dark")
 
 style slider_vbox:
     xsize 450
 
+style slider_pref_vbox is pref_vbox
+
+# Outfit check
 style outfit_check_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
 
-style outfit_check_button_text:
+style outfit_check_button_dark:
+    properties gui.button_properties("check_button_dark")
+    foreground "gui/button/check_[prefix_]foreground_d.png"
+
+style outfit_check_button_text is gui_button_text:
     properties gui.button_text_properties("outfit_check_button")
     font "gui/font/Halogen.ttf"
     color "#BFBFBF"
-    selected_color "#FFEEEB"
     hover_color "#FFAA99"
+    selected_color "#FFEEEB"
+    outlines []
+
+style outfit_check_button_text_dark is gui_button_text_dark:
+    properties gui.button_text_properties("outfit_check_button_dark")
+    font "gui/font/Halogen.ttf"
+    color "#BFBFBF"
+    hover_color "#FFAA99"
+    selected_color "#FFEEEB"
     outlines []
 
 ##Notifications Settings Screen
@@ -1442,7 +1756,7 @@ screen notif_settings():
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix mas_ui.cbx_style_prefix
+            style_prefix "check"
             hbox:
                 spacing 25
                 textbutton _("Use Notifications"):
@@ -1458,7 +1772,7 @@ screen notif_settings():
             label _("Alert Filters")
 
         hbox:
-            style_prefix mas_ui.cbx_style_prefix
+            style_prefix "check"
             box_wrap True
             spacing 25
 
@@ -1475,6 +1789,67 @@ screen notif_settings():
         xalign 0 yalign 1.0
         xoffset 300 yoffset -10
         style "main_menu_version"
+
+## hotkeys helper screen
+screen hot_keys():
+    tag menu
+
+    use game_menu(("Hotkeys"), scroll="viewport"):
+
+        default tooltip = Tooltip("")
+
+        # making each indivual list a vbox essentially lets us auto-align
+        vbox:
+            spacing 25
+
+            hbox:
+                style_prefix "check"
+                vbox:
+                    label _("General")
+                    spacing 10
+                    text _("Music")
+                    text _("Play")
+                    text _("Talk")
+                    text _("Bookmark")
+                    text _("Derandom")
+                    text _("Fullscreen")
+                    text _("Screenshot")
+                    text _("Settings")
+
+                vbox:
+                    label _("")
+                    spacing 10
+                    text _("M")
+                    text _("P")
+                    text _("T")
+                    text _("B")
+                    text _("X")
+                    text _("F")
+                    text _("S")
+                    text _("Esc")
+
+            hbox:
+                style_prefix "check"
+                vbox:
+                    label _("Music")
+                    spacing 10
+                    text _("Volume Up")
+                    text _("Volume Down")
+                    text _("Mute")
+
+                vbox:
+                    label _("")
+                    spacing 10
+                    text _("+")
+                    text _("-")
+                    text _("Shift-M")
+
+    # there are lesser used hotkeys in Help that aren't needed here
+    text "Click 'Help' for the complete list.":
+        xalign 1.0 yalign 0.0
+        xoffset -10
+        style "main_menu_version"
+
 
 ## History screen ##############################################################
 ##
@@ -1513,38 +1888,27 @@ screen history():
                         if "color" in h.who_args:
                             text_color h.who_args["color"]
 
-                text h.what.replace("[","[[")
+                text h.what.replace("[","[[")  # ]" fix syntax highlight issue
 
         if not _history_list:
             label _("The dialogue history is empty.")
 
 
-style history_window is empty
-
-style history_name is gui_label
-style history_name_text is gui_label_text
-style history_text is gui_text
-
-style history_text is gui_text
-
-style history_label is gui_label
-style history_label_text is gui_label_text
-
-style history_window:
+style history_window is empty:
     xfill True
     ysize gui.history_height
 
-style history_name:
+style history_name is gui_label:
     xpos gui.history_name_xpos
     xanchor gui.history_name_xalign
     ypos gui.history_name_ypos
     xsize gui.history_name_width
 
-style history_name_text:
+style history_name_text is gui_label_text:
     min_width gui.history_name_width
     text_align gui.history_name_xalign
 
-style history_text:
+style history_text is gui_text:
     xpos gui.history_text_xpos
     ypos gui.history_text_ypos
     xanchor gui.history_text_xalign
@@ -1553,10 +1917,10 @@ style history_text:
     text_align gui.history_text_xalign
     layout ("subtitle" if gui.history_text_xalign else "tex")
 
-style history_label:
+style history_label is gui_label:
     xfill True
 
-style history_label_text:
+style history_label_text is gui_label_text:
     xalign 0.5
 
 
@@ -1694,27 +2058,23 @@ style history_label_text:
 #    textbutton _("Calibrate") action GamepadCalibrate()
 #
 #
-#style help_button is gui_button
-#style help_button_text is gui_button_text
-#style help_label is gui_label
-#style help_label_text is gui_label_text
-#style help_text is gui_text
-#
-#style help_button:
+#style help_button is gui_button:
 #    properties gui.button_properties("help_button")
 #    xmargin 8
 #
-#style help_button_text:
+#style help_button_text is gui_button_text:
 #    properties gui.button_text_properties("help_button")
 #
-#style help_label:
+#style help_label is gui_label:
 #    xsize 250
 #    right_padding 20
 #
-#style help_label_text:
+#style help_label_text is gui_label_text:
 #    size gui.text_size
 #    xalign 1.0
 #    text_align 1.0
+#
+#style help_text is gui_text
 
 
 
@@ -1854,25 +2214,31 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
-style confirm_frame is gui_frame
-style confirm_prompt is gui_prompt
-style confirm_prompt_text is gui_prompt_text
-style confirm_button is gui_medium_button
-style confirm_button_text is gui_medium_button_text
-
-style confirm_frame:
-    background Frame([ "gui/confirm_frame.png", "gui/frame.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
+style confirm_frame is gui_frame:
+    background Frame(["gui/confirm_frame.png", "gui/frame.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
     padding gui.confirm_frame_borders.padding
-    xalign .5
-    yalign .5
+    align (0.5, 0.5)
 
-style confirm_prompt_text:
+style confirm_frame_dark is gui_frame:
+    background Frame(["gui/confirm_frame.png", "gui/frame_d.png"], gui.confirm_frame_borders, tile=gui.frame_tile)
+    padding gui.confirm_frame_borders.padding
+    align (0.5, 0.5)
+
+style confirm_prompt is gui_prompt
+
+style confirm_prompt_text is gui_prompt_text:
     color "#000"
     outlines []
     text_align 0.5
     layout "subtitle"
 
-style confirm_button:
+style confirm_prompt_text_dark is gui_prompt_text:
+    color "#FD5BA2"
+    outlines []
+    text_align 0.5
+    layout "subtitle"
+
+style confirm_button is gui_medium_button:
     properties gui.button_properties("confirm_button")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
@@ -1974,7 +2340,7 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    text _("The updates have been installed. Please reopen Monika After Story.")
+                    text _(_TXT_FINISHED_UPDATING)
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
                 elif u.state == u.CANCELLED:
@@ -1998,8 +2364,8 @@ screen updater:
                 textbutton _("Cancel") action Return()
 
 
-style updater_button_text is navigation_button_text
 style updater_button is confirm_button
+style updater_button_text is navigation_button_text
 style updater_label is gui_label
 style updater_label_text is game_menu_label_text
 style updater_text is gui_text
@@ -2044,19 +2410,15 @@ transform delayed_blink(delay, cycle):
         repeat
 
 
-style skip_frame is empty
-style skip_text is gui_text
-style skip_triangle is skip_text
-
-style skip_frame:
+style skip_frame is empty:
     ypos gui.skip_ypos
     background Frame("gui/skip.png", gui.skip_frame_borders, tile=gui.frame_tile)
     padding gui.skip_frame_borders.padding
 
-style skip_text:
+style skip_text is gui_text:
     size gui.notify_text_size
 
-style skip_triangle:
+style skip_triangle is skip_text:
     # We have to use a font that has the BLACK RIGHT-POINTING SMALL TRIANGLE
     # glyph in it.
     font "DejaVuSans.ttf"
@@ -2088,16 +2450,13 @@ transform notify_appear:
         linear .5 alpha 0.0
 
 
-style notify_frame is empty
-style notify_text is gui_text
-
-style notify_frame:
+style notify_frame is empty:
     ypos gui.notify_ypos
 
     background Frame("gui/notify.png", gui.notify_frame_borders, tile=gui.frame_tile)
     padding gui.notify_frame_borders.padding
 
-style notify_text:
+style notify_text is gui_text:
     size gui.notify_text_size
 
 ## This part of the code is used to create the tutorial selection screen.
@@ -2130,97 +2489,128 @@ init python:
 
 define prev_adj = ui.adjustment()
 define main_adj = ui.adjustment()
-define gui.scrollable_menu_button_width = 560
-define gui.scrollable_menu_button_height = None
-define gui.scrollable_menu_button_tile = False
-define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
 
-define gui.scrollable_menu_button_text_font = gui.default_font
-define gui.scrollable_menu_button_text_size = gui.text_size
-define gui.scrollable_menu_button_text_xalign = 0.0
-define gui.scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
-define gui.scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
+# Overrides for the UI elements which are placed on top of the classroom BG
+# FIXME: there might be a better way, but for now it does its job
+style classroom_vscrollbar is vscrollbar:
+    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
 
-# twopane_scrollabe is now a prefix
-define gui.twopane_scrollable_menu_button_width = 250
-define gui.twopane_scrollable_menu_button_height = None
-define gui.twopane_scrollable_menu_button_tile = False
-define gui.twopane_scrollable_menu_button_borders = Borders(25, 5, 25, 5)
-
-define gui.twopane_scrollable_menu_button_text_font = gui.default_font
-define gui.twopane_scrollable_menu_button_text_size = gui.text_size
-define gui.twopane_scrollable_menu_button_text_xalign = 0.0
-define gui.twopane_scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
-define gui.twopane_scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
+style classroom_vscrollbar_dark is vscrollbar_dark:
+    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
 
 #Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
-# The line properties gui.button_properties("scrollable_menu_button") assigns all
-# attributes of gui.scrollable_menu_button to the style scrollable_menu_button
-# and the style scrollable_menu_button_text
 
-style scrollable_menu_vbox:
+# Scrollable
+style scrollable_menu_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
-
     spacing 5
 
 style scrollable_menu_button is choice_button:
-    properties gui.button_properties("scrollable_menu_button")
+    selected_background Frame("mod_assets/buttons/generic/selected_bg.png", Borders(20, 20, 20, 20), tile=False)
+    xysize (560, None)
+    padding (25, 5, 25, 5)
+
+style scrollable_menu_button_dark is choice_button_dark:
+    selected_background Frame("mod_assets/buttons/generic/selected_bg_d.png", Borders(20, 20, 20, 20), tile=False)
+    xysize (560, None)
+    padding (25, 5, 25, 5)
 
 style scrollable_menu_button_text is choice_button_text:
-    properties gui.button_text_properties("scrollable_menu_button")
+    text_align 0.0
+    align (0.0, 0.0)
+
+style scrollable_menu_button_text_dark is choice_button_text_dark:
+    text_align 0.0
+    align (0.0, 0.0)
 
 style scrollable_menu_new_button is scrollable_menu_button
+
+style scrollable_menu_new_button_dark is scrollable_menu_button_dark
 
 style scrollable_menu_new_button_text is scrollable_menu_button_text:
     italic True
 
+style scrollable_menu_new_button_text_dark is scrollable_menu_button_text_dark:
+    italic True
+
 style scrollable_menu_special_button is scrollable_menu_button
+
+style scrollable_menu_special_button_dark is scrollable_menu_button_dark
 
 style scrollable_menu_special_button_text is scrollable_menu_button_text:
     bold True
 
+style scrollable_menu_special_button_text_dark is scrollable_menu_button_text_dark:
+    bold True
+
 style scrollable_menu_crazy_button is scrollable_menu_button
+
+style scrollable_menu_crazy_button_dark is scrollable_menu_button_dark
 
 style scrollable_menu_crazy_button_text is scrollable_menu_button_text:
     italic True
     bold True
 
-# two pane stuff
-style twopane_scrollable_menu_vbox:
+style scrollable_menu_crazy_button_text_dark is scrollable_menu_button_text_dark:
+    italic True
+    bold True
+
+# Two-pane scrollable
+style twopane_scrollable_menu_vbox is vbox:
     xalign 0.5
     ypos 270
     yanchor 0.5
-
     spacing 5
 
 style twopane_scrollable_menu_button is choice_button:
-    properties gui.button_properties("twopane_scrollable_menu_button")
+    xysize (250, None)
+    padding (25, 5, 25, 5)
+
+style twopane_scrollable_menu_button_dark is choice_button_dark:
+    xysize (250, None)
+    padding (25, 5, 25, 5)
 
 style twopane_scrollable_menu_button_text is choice_button_text:
-    properties gui.button_text_properties("twopane_scrollable_menu_button")
+    align (0.0, 0.0)
+    text_align 0.0
+
+style twopane_scrollable_menu_button_text_dark is choice_button_text_dark:
+    align (0.0, 0.0)
+    text_align 0.0
 
 style twopane_scrollable_menu_new_button is twopane_scrollable_menu_button
+
+style twopane_scrollable_menu_new_button_dark is twopane_scrollable_menu_button_dark
 
 style twopane_scrollable_menu_new_button_text is twopane_scrollable_menu_button_text:
     italic True
 
+style twopane_scrollable_menu_new_button_text_dark is twopane_scrollable_menu_button_text_dark:
+    italic True
+
 style twopane_scrollable_menu_special_button is twopane_scrollable_menu_button
+
+style twopane_scrollable_menu_special_button_dark is twopane_scrollable_menu_button_dark
 
 style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_button_text:
     bold True
 
+style twopane_scrollable_menu_special_button_text_dark is twopane_scrollable_menu_button_text_dark:
+    bold True
 
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
 screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
-    style_prefix mas_ui.tpsm_style_prefix
+    on "hide" action Function(store.main_adj.change, 0)
+
+    style_prefix "twopane_scrollable_menu"
 
     fixed:
         area left_area
 
-        bar adjustment prev_adj style "vscrollbar" xalign left_align
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign left_align
 
         viewport:
             yadjustment prev_adj
@@ -2232,25 +2622,25 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 for i_caption,i_label in prev_items:
                     textbutton i_caption:
                         if renpy.has_label(i_label) and not seen_event(i_label):
-                            style mas_ui.tpsm_button_new_style
+                            style "twopane_scrollable_menu_new_button"
                         if not renpy.has_label(i_label):
-                            style mas_ui.tpsm_button_special_style
+                            style "twopane_scrollable_menu_special_button"
 
                         action Return(i_label)
 
                 null height 20
 
                 if cat_length == 0:
-                    textbutton _("Nevermind.") action Return(False)
+                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
                 elif cat_length > 1:
-                    textbutton _("Go Back") action Return(-1)
+                    textbutton _("Go Back") action [Return(-1), Function(store.prev_adj.change, 0)]
 
 
     if main_items:
         fixed:
             area right_area
 
-            bar adjustment main_adj style "vscrollbar" xalign right_align
+            bar adjustment main_adj style "classroom_vscrollbar" xalign right_align
 
             viewport:
                 yadjustment main_adj
@@ -2261,24 +2651,26 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                     for i_caption,i_label in main_items:
                         textbutton i_caption:
                             if renpy.has_label(i_label) and not seen_event(i_label):
-                                style mas_ui.tpsm_button_new_style
+                                style "twopane_scrollable_menu_new_button"
                             if not renpy.has_label(i_label):
-                                style mas_ui.tpsm_button_special_style
+                                style "twopane_scrollable_menu_special_button"
 
-                            action Return(i_label)
+                            action [Return(i_label), Function(store.prev_adj.change, 0)]
 
                     null height 20
 
-                    textbutton _("Nevermind.") action Return(False)
+                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
-    style_prefix mas_ui.sm_style_prefix
+    on "hide" action Function(store.prev_adj.change, 0)
+
+    style_prefix "scrollable_menu"
 
     fixed:
         area display_area
 
-        bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign scroll_align
 
         viewport:
             yadjustment prev_adj
@@ -2291,9 +2683,9 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
                 for i_caption,i_label in items:
                     textbutton i_caption:
                         if renpy.has_label(i_label) and not seen_event(i_label):
-                            style mas_ui.sm_button_new_style
+                            style "scrollable_menu_new_button"
                         if not renpy.has_label(i_label):
-                            style mas_ui.sm_button_special_style
+                            style "scrollable_menu_special_button"
                         action Return(i_label)
 
 
@@ -2331,12 +2723,14 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
 #               NOTE: must be >= 0
 #       (Default: None)
 screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
-    style_prefix mas_ui.sm_style_prefix
+    on "hide" action Function(store.prev_adj.change, 0)
+
+    style_prefix "scrollable_menu"
 
     fixed:
         area display_area
 
-        bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign scroll_align
 
         viewport:
             yadjustment prev_adj
@@ -2349,11 +2743,15 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
                 for item_prompt,item_value,is_italic,is_bold in items:
                     textbutton item_prompt:
                         if is_italic and is_bold:
-                            style mas_ui.sm_button_crazy_style
+                            style "scrollable_menu_crazy_button"
+
                         elif is_italic:
-                            style mas_ui.sm_button_new_style
+                            style "scrollable_menu_new_button"
+
                         elif is_bold:
-                            style mas_ui.sm_button_special_style
+                            style "scrollable_menu_special_button"
+
+                        xsize display_area[2]
                         action Return(item_value)
 
                 for final_items in args:
@@ -2362,12 +2760,83 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 
                     textbutton _(final_items[0]):
                         if final_items[2] and final_items[3]:
-                            style mas_ui.sm_button_crazy_style
+                            style "scrollable_menu_crazy_button"
+
                         elif final_items[2]:
-                            style mas_ui.sm_button_new_style
+                            style "scrollable_menu_new_button"
+
                         elif final_items[3]:
-                            style mas_ui.sm_button_special_style
+                            style "scrollable_menu_special_button"
+
+                        xsize display_area[2]
                         action Return(final_items[1])
+
+# Scrollable menu with checkboxes. Toggles values between True/False
+# Won't close itself until the user clicks on the return button
+#
+# IN:
+#     items - list of tuples of the following format:
+#         (prompt, key, start_selected, true_value, false_value)
+#         NOTE: keys must be unique
+#     display_area - area to display the menu in of the following format:
+#         (x, y, width, height)
+#     scroll_align - alignment of the scroll bar for the menu
+#     return_button_prompt - prompt for the return button
+#         (Default: 'Done')
+#     return_all - whether or not we return all items or only the items with True in their values
+#         (Default: False)
+#
+# OUT:
+#     dict of buttons keys and new values
+screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done", return_all=False):
+    default buttons_data = {
+        _tuple[1]: {
+            "return_value": _tuple[3] if _tuple[2] else _tuple[4],
+            "true_value": _tuple[3],
+            "false_value": _tuple[4]
+        }
+        for _tuple in items
+    }
+
+    python:
+        def _return_values(buttons_data, return_all):
+            """
+            A method to return buttons keys and values
+
+            IN:
+                buttons_data - the screen buttons data
+                return_all - whether or not we return all items
+
+            OUT:
+                dict of key-value pairs
+            """
+            return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
+
+    on "hide" action Function(store.prev_adj.change, 0)
+
+    style_prefix "scrollable_menu"
+
+    fixed:
+        area display_area
+
+        bar adjustment prev_adj style "classroom_vscrollbar" xalign scroll_align
+
+        viewport:
+            yadjustment prev_adj
+            mousewheel True
+
+            vbox:
+                for button_prompt, button_key, start_selected, true_value, false_value in items:
+                    textbutton button_prompt:
+                        selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
+                        xsize display_area[2]
+                        action ToggleDict(buttons_data[button_key], "return_value", true_value, false_value)
+
+                null height 20
+
+                textbutton return_button_prompt:
+                    xsize display_area[2]
+                    action Function(_return_values, buttons_data, return_all)
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
@@ -2459,3 +2928,46 @@ style chibika_note_text:
     size 28
     color "#000"
     outlines []
+
+#Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
+screen submods():
+    tag menu
+
+    use game_menu(("Submods")):
+
+        default tooltip = Tooltip("")
+
+        viewport id "scrollme":
+            scrollbars "vertical"
+            mousewheel True
+            draggable True
+
+            vbox:
+                style_prefix "check"
+                xfill True
+                xmaximum 1000
+
+                for submod in sorted(store.mas_submod_utils.submod_map.values(), key=lambda x: x.name):
+                    vbox:
+                        xfill True
+                        xmaximum 1000
+
+                        label submod.name yanchor 0 xalign 0
+
+                        hbox:
+                            spacing 20
+                            xmaximum 1000
+
+                            text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
+                            text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
+
+                        if submod.description:
+                            text submod.description
+
+                    if submod.settings_pane:
+                        $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
+
+    text tooltip.value:
+        xalign 0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"

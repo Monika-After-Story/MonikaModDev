@@ -1,8 +1,8 @@
-## new weather module to handle weather changing
-#
+#Stores the last weather the player had chosen
+#Default: "auto"
+default persistent._mas_current_weather = "auto"
 
 ### spaceroom weather art
-
 #Big thanks to Legendkiller21/Orca/Velius for helping out with these
 image def_weather_day = Movie(
     channel="window_1",
@@ -141,7 +141,7 @@ init python in mas_weather:
             rolled_chance=None
         ):
         """
-        Determines if weather should be rainiy/thunder/overcase, or none of 
+        Determines if weather should be rainiy/thunder/overcase, or none of
         those.
 
         IN:
@@ -208,9 +208,6 @@ init -20 python in mas_weather:
     PRECIP_TYPE_OVERCAST = "overcast"
     PRECIP_TYPE_SNOW = "snow"
 
-    #Whether or not we should scene change
-    should_scene_change = False
-
     #Keep a temp store of weather here for if we're changing backgrounds
     temp_weather_storage = None
 
@@ -239,7 +236,6 @@ init -20 python in mas_weather:
 
         #Otherwise we do stuff
         global weather_change_time
-        global should_scene_change
         #Set a time for startup
         if not weather_change_time:
             # TODO: make this a function so init can set the weather_change _time and prevent double weather setting
@@ -253,7 +249,11 @@ init -20 python in mas_weather:
             new_weather = store.mas_shouldRain()
             if new_weather is not None and new_weather != store.mas_current_weather:
                 #Let's see if we need to scene change
-                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, new_weather)
+                if store.mas_current_background.isChangingRoom(
+                        store.mas_current_weather,
+                        new_weather
+                ):
+                    store.mas_idle_mailbox.send_scene_change()
 
                 #Now we change weather
                 store.mas_changeWeather(new_weather)
@@ -265,7 +265,11 @@ init -20 python in mas_weather:
 
             elif store.mas_current_weather != store.mas_weather_def:
                 #Let's see if we need to scene change
-                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, store.mas_weather_def)
+                if store.mas_current_background.isChangingRoom(
+                        store.mas_current_weather,
+                        store.mas_weather_def
+                ):
+                    store.mas_idle_mailbox.send_scene_change()
 
                 store.mas_changeWeather(store.mas_weather_def)
                 return True
@@ -357,7 +361,7 @@ init -20 python in mas_weather:
         #We want this topic seen for the first time with aurora visible outside her window
         #But we also don't want it to machine gun other topics too
         if (
-            not store.morning_flag
+            store.mas_current_background.isFltNight()
             and not store.persistent.event_list
             and store.mas_getEV("monika_auroras").shown_count == 0
         ):
@@ -429,7 +433,7 @@ init -10 python:
             isbg_wf_night - image PATH for island bg nighttime with frame
             isbg_wof_night - image PATH for island bg nighttime without framme
 
-            entry_pp - programming point to execute when switching to this 
+            entry_pp - programming point to execute when switching to this
                 weather
             exit_pp - programming point to execute when leaving this weather
 
@@ -438,7 +442,7 @@ init -10 python:
         import store.mas_weather as mas_weather
 
         def __init__(
-                self, 
+                self,
                 weather_id,
                 prompt,
                 sp_day,
@@ -475,11 +479,11 @@ init -10 python:
                 isbg_wf_night - image PATH for island bg nighttime with frame
                     If None, we use isbg_wf_day
                     (Default: None)
-                isbg_wof_night - image PATH for island bg nighttime without 
+                isbg_wof_night - image PATH for island bg nighttime without
                     framme
                     If None, we use isbg_wof_day
                     (Default: None)
-                entry_pp - programming point to execute after switching to 
+                entry_pp - programming point to execute after switching to
                     this weather
                     (Default: None)
                 exit_pp - programming point to execute before leaving this
@@ -531,7 +535,7 @@ init -10 python:
                 return result
             return not result
 
-        
+
         def entry(self, old_weather):
             """
             Runs entry programming point
@@ -569,6 +573,7 @@ init -10 python:
             RETURNS:
                 image tag for the corresponding mask to use
             """
+            # TODO: swap to filter-based
             if day:
                 return self.sp_day
 
@@ -609,11 +614,11 @@ init -10 python:
 ### define weather objects here
 
 init -1 python:
-   
+
     # default weather (day + night)
     mas_weather_def = MASWeather(
         "def",
-        "Default",
+        "Clear",
 
         # sp day
         "def_weather_day",
@@ -748,8 +753,8 @@ init -1 python:
     store.mas_weather.loadMWData()
 
 # sets up weather
-init 800 python:
-
+#NOTE: MUST be before BGs
+init 799 python:
     def mas_setWeather(_weather):
         """
         Sets the initial weather.
@@ -758,7 +763,7 @@ init 800 python:
         NOTE: this does NOt call exit programming points
 
         IN:
-            _weather - weather to set to. 
+            _weather - weather to set to.
         """
         global mas_current_weather
         old_weather = mas_current_weather
@@ -766,7 +771,7 @@ init 800 python:
         mas_current_weather.entry(old_weather)
 
 
-    def mas_changeWeather(new_weather, by_user=None):
+    def mas_changeWeather(new_weather, by_user=None, set_persistent=False):
         """
         Changes weather without doing scene changes
 
@@ -775,14 +780,53 @@ init 800 python:
         IN:
             new_weather - weather to change to
             by_user - flag for if user changes weather or not
+            set_persistent - whether or not we want to make this weather persistent
         """
+        #If the current background doesn't support weather, we set to def weather instead
+        #Since it has no sfx or anything
+        if store.mas_current_background.disable_progressive:
+            new_weather = store.mas_weather_def
 
         if by_user is not None:
             mas_weather.force_weather = bool(by_user)
 
+        if set_persistent:
+            persistent._mas_current_weather = new_weather.weather_id
+
         mas_current_weather.exit(new_weather)
         mas_setWeather(new_weather)
 
+    def mas_startupWeather():
+        """
+        Runs a weather startup alg, checking whether or not persistent weather should be used
+        Sets weather accordingly
+        """
+        #If the current bg doesn't support weather, we don't do anything
+        #Same if we forced weather or we're to skip setting weather
+        if (
+            not store.mas_current_background.disable_progressive
+            and not store.mas_weather.force_weather
+            and not store.skip_setting_weather
+        ):
+            #Let's check for persistent weather. If persistent is auto or no longer a thing, we revert to standard progressive
+            if (
+                persistent._mas_current_weather == "auto"
+                or persistent._mas_current_weather not in mas_weather.WEATHER_MAP
+                or store.mas_isMoniHappy(lower=True)
+            ):
+                set_to_weather = mas_shouldRain()
+                #In the case that the weather object no longer exists, we'll set current weather to auto
+                persistent._mas_current_weather = "auto"
+
+            #Otherwise, we'll set to the persistent weather
+            else:
+                set_to_weather = mas_weather.WEATHER_MAP.get(persistent._mas_current_weather)
+                #And since we have persistent weather, we know weather is forced
+                store.mas_weather.force_weather = True
+
+            #Now set weather accordingly
+            if set_to_weather is not None:
+                mas_changeWeather(set_to_weather)
 
     # set weather to default
     mas_current_weather = None
@@ -792,31 +836,34 @@ init 800 python:
 ## Changes weather if given a proper weather object
 # NOTE: we always scene change here
 # NOTE: if you need to change weather without chanign scene, use the
-#   set 
+#   set
 #
 # IN:
 #   new_weather - weather object to change to
 #   by_user - whether or not user forced weather
-label mas_change_weather(new_weather, by_user=None):
+#   set_persistent - whether or not we should load with this weather
+label mas_change_weather(new_weather, by_user=None, set_persistent=False):
+    python:
+        if by_user is not None:
+            mas_weather.force_weather = bool(by_user)
 
-    if by_user is not None:
-        $ mas_weather.force_weather = bool(by_user)
+        if set_persistent:
+            persistent._mas_current_weather = new_weather.weather_id
 
-    # call exit programming points
-    $ mas_current_weather.exit(new_weather)
+        #Call exit programming points
+        mas_current_weather.exit(new_weather)
 
-    # set new weather and force change
-    $ old_weather = mas_current_weather
-    $ mas_current_weather = new_weather
+        #Set new weather and force change
+        old_weather = mas_current_weather
+        mas_current_weather = new_weather
 
-    #NOTE: We do this before the spaceroom call because of vars which need to be set
-    #Prior to the drawing of the spaceroom (so we can pick the right room to use)
+        #NOTE: We do this before the spaceroom call because of vars which need to be set
+        #Prior to the drawing of the spaceroom (so we can pick the right room to use)
 
-    # call entry programming point
-    $ mas_current_weather.entry(old_weather)
+        #Call entry programming point
+        mas_current_weather.entry(old_weather)
 
     call spaceroom(scene_change=True, dissolve_all=True, force_exp="monika 1dsc_static")
-
     return
 
 init 5 python:
@@ -884,6 +931,7 @@ label monika_change_weather:
 
             #Set to false and return since nothing more needs to be done
             $ mas_weather.force_weather = False
+            $ persistent._mas_current_weather = "auto"
             m 1eua "There we go!"
         else:
             m 1hua "That's the current weather, silly."
@@ -893,7 +941,7 @@ label monika_change_weather:
 
     if sel_weather == mas_current_weather and mas_weather.force_weather:
         m 1hua "That's the current weather, silly."
-        m "Try again~" 
+        m "Try again~"
         jump monika_change_weather
 
     $ skip_outro = False
@@ -911,7 +959,7 @@ label monika_change_weather:
             m 2etc "Maybe you changed your mind?"
             m 1dsc "..."
             $ skip_leadin = True
-            
+
     # TODO: maybe react to snow?
 
     if not skip_leadin:
@@ -920,7 +968,7 @@ label monika_change_weather:
         m 1dsc "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
 
     # finally change the weather
-    call mas_change_weather(sel_weather,by_user=True)
+    call mas_change_weather(sel_weather, by_user=True, set_persistent=True)
 
     if not skip_outro:
         m 1eua "There we go!"

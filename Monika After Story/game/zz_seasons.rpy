@@ -116,13 +116,13 @@ init 10 python in mas_seasons:
         """
 
         # show spring topics
-        store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
-        store.mas_showEVL("monika_outdoors", "EVE", _random=True)
-        store.mas_showEVL("monika_backpacking", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_enjoyingspring", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_outdoors", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_backpacking", "EVE", _random=True)
 
         #Since this is a player model topic, we only rerandom if we need to
         if store.persistent._mas_pm_would_like_mt_peak is None:
-            store.mas_showEVL("monika_mountain", "EVE", _random=True)
+            store.mas_protectedShowEVL("monika_mountain", "EVE", _random=True)
 
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
@@ -145,7 +145,7 @@ init 10 python in mas_seasons:
         """
         Programming point for summer
         """
-        
+
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
 
@@ -164,17 +164,17 @@ init 10 python in mas_seasons:
 
         # show winter topics
         if not renpy.seen_label("monika_snow"):
-            store.mas_showEVL("monika_snow", "EVE", _random=True)
-        store.mas_showEVL("monika_sledding", "EVE", _random=True)
-        store.mas_showEVL("monika_snowcanvas", "EVE", _random=True)
-        store.mas_showEVL("monika_cozy", "EVE", _random=True)
-        store.mas_showEVL("monika_winter", "EVE", _random=True)
-        store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
+            store.mas_protectedShowEVL("monika_snow", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_sledding", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_snowcanvas", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_cozy", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_winter", "EVE", _random=True)
+        store.mas_protectedShowEVL("monika_winter_dangers", "EVE", _random=True)
         store.mas_unlockEVL("monika_snowballfight", "EVE")
 
         #For if you get snow (or we don't know if you get snow or not)
         if store.persistent._mas_pm_gets_snow is not False:
-            store.mas_showEVL("monika_snowmen", "EVE", _random=True)
+            store.mas_protectedShowEVL("monika_snowmen", "EVE", _random=True)
 
         # hide non-winter topics
         store.mas_hideEVL("monika_outdoors", "EVE", derandom=True)
@@ -188,7 +188,7 @@ init 10 python in mas_seasons:
         # want to ensure first time we see the islands they are dead and covered in snow
         store.mas_lockEVL("greeting_ourreality", "GRE")
 
-    
+
     # seaonal pp id:
     # maps season IDs to the programming point
     _season_pp_map = {
@@ -251,7 +251,7 @@ init 10 python in mas_seasons:
         # otherwise, we need to step up
         while prev_season != curr_season:
             prev_season = _progression_map.get(prev_season, curr_season)
-            
+
             if prev_season in _season_pp_map:
                 _season_pp_map[prev_season]()
 
@@ -263,4 +263,3 @@ init 900 python:
     persistent._mas_current_season = store.mas_seasons._seasonalCatchup(
         persistent._mas_current_season
     )
-    

@@ -692,7 +692,6 @@ label mas_hangman_game_loop:
         m "Good job, [player]!"
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
-            $ grant_xp(xp.WIN_GAME)
         #TODO: grant a really tiny amount of affection?
 
     # try again?
@@ -701,9 +700,14 @@ label mas_hangman_game_loop:
     menu:
         m "Would you like to play again?{fast}"
         "Yes.":
+            $ hang_ev = mas_getEV("mas_hang")
+            if hang_ev:
+                # each game counts as a game played
+                $ hang_ev.shown_count += 1
+
             jump mas_hangman_game_loop
         "No.":
-            jump mas_hangman_game_end
+            pass
 
     # RETURN AT END
 

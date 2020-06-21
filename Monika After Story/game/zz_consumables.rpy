@@ -27,6 +27,40 @@ init python in mas_consumables:
     TYPE_DRINK = 0
     TYPE_FOOD = 1
 
+    #Consumable dialogue prop constants
+    #We'll store some shorthand constants for ways to route/say dialogue for consumables here
+    CONTAINER_NONE = None
+    CONTAINER_PLATE = "plate"
+    CONTAINER_CUP = "cup"
+
+    #Dlg property names
+    # key: marks the string to use when referencing the object's container
+    # value: string - container name
+    PROP_CONTAINER = "container"
+    # key: marks the reference for the object
+    # value: string - reference name to use (slice, batch, etc.) (Used if no container found)
+    PROP_OBJ_REF = "obj_ref"
+    # key: marks whether the consumable should be referred to in plural or not
+    # value: boolean, True if plural, False if not.
+    PROP_PLUR = "plural"
+
+    #Some templates for consumable dialogue
+    DLG_PREP_HOT_DRINK = {
+        PROP_CONTAINER: CONTAINER_CUP,
+        PROP_PLUR: False
+    }
+
+    DLG_NON_PREP_PASTRY = {
+        PROP_CONTAINER: CONTAINER_NONE,
+        PROP_PLUR: False
+    }
+
+    DLG_NON_PREP_CAKE = {
+        PROP_CONTAINER: CONTAINER_PLATE,
+        PROP_OBJ_REF: "slice",
+        PROP_PLUR: False
+    }
+
     #Dict of dicts:
     #consumable_map = {
     #   0: {"consumable_id": MASConsumable},
@@ -48,7 +82,7 @@ init 5 python:
             consumable_id - id of the consumable
             consumable_type - Type of consumable this is
             disp_name - friendly name for this consumable
-            container - the container of this consumable (cup, mug, glass, bottle, etc)
+            dlg_props - dialogue properties for flows for this consumable
             start_end_tuple_list - list of (start_hour, end_hour) tuples
             acs - MASAccessory to display for the consumable
             split_list - list of split hours
@@ -56,6 +90,7 @@ init 5 python:
             should_restock_warn - whether or not Monika should warn the player that she's running out of this consumable
             late_entry_list - list of integers storing the hour which would be considered a late entry
             max_re_serve - amount of times Monika can get a re-serving of this consumable
+            max_stock_amount - maximum stock amount of this consumable to hold
             cons_chance - likelihood of Monika to keep having this consumable
             prep_low - bottom bracket of preparation time (NOTE: Should be passed in as number of seconds)
             prep_high - top bracket of preparation time (NOTE: Should be passed in as number of seconds)
@@ -88,14 +123,15 @@ init 5 python:
             consumable_id,
             consumable_type,
             disp_name,
-            container,
             start_end_tuple_list,
             acs,
             split_list,
+            dlg_props=None,
             portable=False,
             should_restock_warn=True,
             late_entry_list=None,
             max_re_serve=None,
+            max_stock_amount=150,
             cons_chance=80,
             cons_low=10*60,
             cons_high=2*3600,
@@ -118,8 +154,6 @@ init 5 python:
 
                 disp_name - Friendly diaply name (for use in dialogue)
 
-                container - containment for this consumable (cup/mug/bottle/etc)
-
                 start_end_tuple_list - list of tuples storing (start_hour, end_hour)
                     NOTE: Does NOT support midnight crossover times. If needed, requires a separate entry
                     NOTE: end_hour is exclusive
@@ -127,6 +161,14 @@ init 5 python:
                 acs - MASAccessory object for this consumable
 
                 split_list - list of split hours for prepping
+
+                dlg_props - dialogue properties for use in generic labels. If None, an empty dict is used, and fallback text will be shown
+                    AVAILABLE PROPERTIES:
+                        - mas_consumables.PROP_CONTAINER - Container for this consumable
+                        - mas_consumables.PROP_OBJ_REF - Object reference for this consumable (use if container is not applicable)
+                        - mas_consumables.PROP_PLUR - Whether or not this should be referenced as plural in text
+
+                    (Default: None)
 
                 portable - NOTE: for drinks only. True if Monika can take this with her when going out
                     (Default: False)
@@ -141,6 +183,9 @@ init 5 python:
 
                 max_re_serve - amount of times Monika can get a refill of this consumable
                     (Default: None)
+
+                max_stock_amount - maximum amount of this consumable we can stock
+                    (Default: 150)
 
                 cons_chance - chance for Monika to continue having this consumable
                     (Default: 80/100)
@@ -197,9 +242,10 @@ init 5 python:
                 self.late_entry_list=late_entry_list
 
             self.max_re_serve=max_re_serve
+            self.max_stock_amount=max_stock_amount
             self.re_serves_had=0
 
-            self.container=container
+            self.dlg_props = dlg_props if dlg_props else dict()
             self.split_list=split_list
             self.should_restock_warn=should_restock_warn
             self.prep_low=prep_low
@@ -229,7 +275,8 @@ init 5 python:
                 persistent._mas_consumable_map[consumable_id] = {
                     "enabled": False,
                     "times_had": 0,
-                    "servings_left": 0
+                    "servings_left": 0,
+                    "has_restock_warned": False
                 }
 
         def enabled(self):
@@ -307,15 +354,25 @@ init 5 python:
             """
             return persistent._mas_consumable_map[self.consumable_id]["servings_left"] > 0
 
-        def restock(self, servings=100):
+        def restock(self, servings=100, clear_flag=True):
             """
-            Adds more servings of the consumable
+            Adds more servings of the consumable, protected by max_stock_amount
 
             IN:
                 servings - amount of servings to add
                 (Default: 100)
+                clear_flag - whether or not we should clear the has_restock_warned flag
+                (Default: True)
             """
+            max_to_add = self.max_stock_amount - self.getStock()
+
+            #Verify we're not going to go over the max
+            servings = max_to_add if servings > max_to_add else servings
+
             persistent._mas_consumable_map[self.consumable_id]["servings_left"] += servings
+
+            if clear_flag:
+                self.resetRestockWarnFlag()
 
         def getStock(self):
             """
@@ -326,6 +383,17 @@ init 5 python:
                     - The amount of servings left for the consumable
             """
             return persistent._mas_consumable_map[self.consumable_id]["servings_left"]
+
+        def isMaxedStock(self):
+            """
+            Checks if the current stock of the consumable is the max
+
+            OUT:
+                boolean:
+                    - True if stock is maxed
+                    - False otherwise
+            """
+            return self.getStock() == self.max_stock_amount
 
         def getAmountHad(self):
             """
@@ -358,6 +426,24 @@ init 5 python:
                     - False otherwise
             """
             return self.getStock() <= MASConsumable.LOW_CRITICAL_STOCK_AMT
+
+        def flagRestockWarn(self):
+            """
+            Flags a consumable as having been restock warned
+            """
+            persistent._mas_consumable_map[self.consumable_id]["has_restock_warned"] = True
+
+        def resetRestockWarnFlag(self):
+            """
+            Resets the restock warn flag
+            """
+            persistent._mas_consumable_map[self.consumable_id]["has_restock_warned"] = False
+
+        def hasRestockWarned(self):
+            """
+            Return the has restock warned flag
+            """
+            return persistent._mas_consumable_map[self.consumable_id]["has_restock_warned"]
 
         def use(self, amount=1):
             """
@@ -477,25 +563,6 @@ init 5 python:
 
             #Increment cup count
             self.increment()
-
-        def isStillPrep(self, _now):
-            """
-            Checks if we're still prepping something of this type
-
-            IN:
-                _now - datetime.datetime object representing current time
-
-            OUT:
-                boolean:
-                    - True if we're still prepping something
-                    - False otherwise
-            """
-            _time = persistent._mas_current_consumable[self.consumable_type]["prep_time"]
-            return (
-                _time is not None
-                and _time.date() == _now.date()
-                and self.isDrinkTime(_time)
-            )
 
         def isConsTime(self, _now=None):
             """
@@ -631,7 +698,25 @@ init 5 python:
             return low_cons
 
         @staticmethod
-        def _getLowConsType(_type, critical=False):
+        def _getLowConsNotWarned(critical=False):
+            """
+            Gets a list of all consumables which Monika is low on that she's not restock warned
+
+            IN:
+                - critical - Whether this list should only be populated by items Monika is critically low on or not
+                    (Default: False)
+
+            OUT:
+                list of all consumables Monika
+            """
+            low_cons = []
+            for _type in store.mas_consumables.consumable_map.iterkeys():
+                low_cons += MASConsumable._getLowConsType(_type, critical, exclude_restock_warned=True)
+
+            return low_cons
+
+        @staticmethod
+        def _getLowConsType(_type, critical=False, exclude_restock_warned=False):
             """
             Gets a list of all consumables (of the provided type) which Monika is low on (and should warn about)
 
@@ -639,26 +724,44 @@ init 5 python:
                 _type - Type of consumables to get a low list for
                 critical - Whether the list should be only those Monika is critically low on
                     (Default: False)
+                exclude_restock_warned - Whether or not we want to exclude consumables we've restock warned already
+                    (Default: False)
 
             OUT:
-                list of all consumables of the provided type Monika is low on (or critical on)
+                list of all consumables of the provided type Monika is low on (or critical on), matching the entered criteria
             """
             if _type not in store.mas_consumables.consumable_map:
                 return []
 
             if critical:
-                return [
-                    cons
-                    for cons in store.mas_consumables.consumable_map[_type].itervalues()
-                    if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow()
-                ]
+                if exclude_restock_warned:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow() and not cons.hasRestockWarned()
+                    ]
+
+                else:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow()
+                    ]
 
             else:
-                return [
-                    cons
-                    for cons in store.mas_consumables.consumable_map[_type].itervalues()
-                    if cons.enabled() and cons.should_restock_warn and cons.isLow()
-                ]
+                if exclude_restock_warned:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isLow() and not cons.hasRestockWarned()
+                    ]
+
+                else:
+                    return [
+                        cons
+                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        if cons.enabled() and cons.should_restock_warn and cons.isLow()
+                    ]
 
         @staticmethod
         def _reset(_type=None):
@@ -713,6 +816,53 @@ init 5 python:
 
             if _type ==1 or _type is None:
                 cons_reset(MASConsumable._getCurrentFood())
+
+        @staticmethod
+        def __shouldReset(_type, curr_cons, available_cons):
+            """
+            Checks if we should reset the current consumable type
+
+            CONDITIONS:
+                1. We're having a consumable we shouldn't be having now and we opened the game after its consume time or
+                2. We're still prepping something but
+                    - The consumable's finish prepping event doesn't have conditionals or
+                    - It's no longer time for this consumable
+
+            IN:
+                _type - type of consumable to reset
+                curr_cons - current_consumable (of _type)
+                available_cons - available consumables for the current time
+
+            OUT:
+                boolean:
+                    - True if we should reset the current consumable type
+                    - False otherwise
+            """
+            #If we have no consumable, then there's no point in doing anything
+            if not curr_cons:
+                return False
+
+            prep_ev = mas_getEV(curr_cons.finish_prep_evl)
+
+            return (
+                (
+                    MASConsumable._isHaving(_type)
+                    and (
+                        not MASConsumable._isStillCons(_type)
+                        and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
+                    )
+                )
+                or (
+                    persistent._mas_current_consumable[_type]["prep_time"] is not None
+                    and (
+                            (
+                                prep_ev
+                                and prep_ev.conditional is None
+                            )
+                        or curr_cons not in available_cons
+                    )
+                )
+            )
 
         @staticmethod
         def _getCurrentDrink():
@@ -814,7 +964,7 @@ init 5 python:
                 startup=startup
             )
 
-            if startup:
+            if startup and not store.mas_globals.returned_home_this_sesh:
                 MASConsumable._absentUse()
 
                 #Now we'll check if we've got sprites out in case we've crashed
@@ -827,6 +977,10 @@ init 5 python:
 
                 if not MASConsumable._isHaving(store.mas_consumables.TYPE_FOOD) and food_acs:
                     store.monika_chr.remove_acs(food_acs)
+
+                #We should warn if there's something to warn about
+                if MASConsumable._getLowConsNotWarned():
+                    store.queueEvent("mas_consumables_generic_running_out_absentuse")
 
         @staticmethod
         def _absentUse():
@@ -916,14 +1070,8 @@ init 5 python:
             #Verify persist data
             MASConsumable._validatePersistentData(_type)
 
-            #Reset if we're having a consumable we shouldn't be having now and we opened the game after its consume time
-            if (
-                MASConsumable._isHaving(_type)
-                and (
-                    not MASConsumable._isStillCons(_type)
-                    and mas_getCurrSeshStart() > persistent._mas_current_consumable[_type]["consume_time"]
-                )
-            ):
+            #Check if we should reset the current consumable type
+            if MASConsumable.__shouldReset(_type, curr_cons, available_cons):
                 MASConsumable._reset(_type)
 
             #If we're currently prepping/having anything, we don't need to do anything else
@@ -1001,7 +1149,7 @@ init 5 python:
             "Thanks, [player]~"
         )
 
-        for cons in low_cons:
+        for cons in low_cons_list:
             MID_TEXT += "- {0}\n".format(cons.disp_name.capitalize())
 
         MID_TEXT += "\n"
@@ -1030,7 +1178,7 @@ init 5 python:
 
     def mas_useThermos():
         """
-        Gets Monika to put her drink into a thermos when taking her somewhere if it is eligible 
+        Gets Monika to put her drink into a thermos when taking her somewhere if it is eligible
         """
         #Firstly, if we're already wearing a thermos, we should do nothing
         if monika_chr.is_wearing_acs_type("thermos-mug"):
@@ -1053,7 +1201,7 @@ init 6 python:
         consumable_id="coffee",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="coffee",
-        container="cup",
+        dlg_props=mas_consumables.DLG_PREP_HOT_DRINK,
         start_end_tuple_list=[(5, 12)],
         acs=mas_acs_mug,
         portable=True,
@@ -1065,7 +1213,7 @@ init 6 python:
         consumable_id="hotchoc",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="hot chocolate",
-        container="cup",
+        dlg_props=mas_consumables.DLG_PREP_HOT_DRINK,
         start_end_tuple_list=[(16,23)],
         acs=mas_acs_hotchoc_mug,
         portable=True,
@@ -1190,11 +1338,32 @@ label mas_get_food:
 
 #START: Generic consumable labels
 label mas_consumables_generic_get(consumable):
+    #Get our dlg_props
+    python:
+        dlg_props = consumable.dlg_props
+
+        container = dlg_props.get(mas_consumables.PROP_CONTAINER)
+        obj_ref = dlg_props.get(mas_consumables.PROP_OBJ_REF)
+        plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
+
+        #We need to parse the dialogue depending on the given dlg_props
+        if container:
+            line_starter = renpy.substitute("I'm going to get {a_an}[container]{/a_an} of [consumable.disp_name][plur].")
+
+        #Otherwise we use the object reference for this
+        elif obj_ref:
+            line_starter = renpy.substitute("I'm going to get {a_an}[obj_ref]{/a_an} of [consumable.disp_name][plur].")
+
+        #No valid dlg props
+        else:
+            a_an = "some" if plur else mas_a_an(consumable.disp_name, ignore_case=True)
+            line_starter = renpy.substitute("I'm going to get [a_an] [consumable.disp_name][plur].")
+
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1eua "I'm going to get a [consumable.container] of [consumable.disp_name]. I'll be right back.{w=1}{nw}"
+        m 1eua "[line_starter] I'll be right back.{w=1}{nw}"
 
     else:
-        m 1eua "I'm going to get a [consumable.container] of [consumable.disp_name]."
+        m 1eua "[line_starter]"
         m 1eua "Hold on a moment."
 
     #We want to take plush with
@@ -1225,28 +1394,55 @@ label mas_consumables_generic_get(consumable):
         m 1eua "Okay, what else should we do today?"
     return
 
+
 label mas_consumables_generic_finish_having(consumable):
-    $ get_more = (
-        consumable.shouldHave()
-        and (consumable.prepable() or (not consumable.prepable() and consumable.hasServing()))
-    )
+    #Some prep
+    python:
+        get_more = (
+            consumable.shouldHave()
+            and (consumable.prepable() or (not consumable.prepable() and consumable.hasServing()))
+        )
+
+        dlg_props = consumable.dlg_props
+
+        container = dlg_props.get(mas_consumables.PROP_CONTAINER)
+        obj_ref = dlg_props.get(mas_consumables.PROP_OBJ_REF)
+        plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
+
+        dlg_map = {
+            mas_consumables.PROP_CONTAINER: {
+                0: "I'm going to put this [container] away.",
+                1: "I'm going to get another [container] of [consumable.disp_name][plur]."
+            },
+            mas_consumables.PROP_OBJ_REF: {
+                0: "I'm going to put this away.",
+                1: "I'm going to get another [obj_ref] of [consumable.disp_name][plur]."
+            },
+            "else": {
+                0: "I'm going to put this away.",
+                1: "I'm going to get another one."
+            }
+        }
+
+        #We need to parse the dialogue depending on the given dlg_props
+        if container:
+            line_starter = renpy.substitute(dlg_map[mas_consumables.PROP_CONTAINER][get_more])
+
+        #Otherwise we use the object reference for this
+        elif obj_ref:
+            line_starter = renpy.substitute(dlg_map[mas_consumables.PROP_OBJ_REF][get_more])
+
+        #No valid dlg props
+        else:
+            line_starter = renpy.substitute(dlg_map["else"][get_more])
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, I've finished my [consumable.disp_name]."
+        m 1eua "[line_starter]"
+        m "Hold on a moment."
 
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        if get_more:
-            #It's drinking time
-            m 1eua "I'm going to get some more [consumable.disp_name]. I'll be right back.{w=1}{nw}"
-
-        else:
-            m 1eua "I'm going to put this [consumable.container] away. I'll be right back.{w=1}{nw}"
-
-    else:
-        if get_more:
-            m 1eua "I'm going to get another [consumable.container]."
-
-        m 1eua "Hold on a moment."
+    elif store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1esd "Oh, I've finished my [consumable.disp_name][plur].{w=1}{nw}"
+        m 1eua "[line_starter] I'll be right back.{w=1}{nw}"
 
     #Monika is off screen
     $ consumable.acs.keep_on_desk = False
@@ -1298,16 +1494,22 @@ label mas_consumables_generic_finish_having(consumable):
         m 1eua "Okay, what else should we do today?"
     return
 
-label mas_consumables_generic_finished_prepping(consumable):
-    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1esd "Oh, my [consumable.disp_name] is ready."
 
-    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        #Idle pauses and then progresses on its own
-        m 1eua "I'm going to grab some [consumable.disp_name]. I'll be right back.{w=1}{nw}"
+label mas_consumables_generic_finished_prepping(consumable):
+    python:
+        dlg_props = consumable.dlg_props
+
+        plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
+
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
+        $ is_are = "are" if plur else "is"
+        m 1esd "Oh, my [consumable.disp_name][plur] [is_are] ready."
+        m 1eua "Hold on a moment."
 
     else:
-        m 1eua "Hold on a moment."
+        #Idle pauses and then progresses on its own
+        m 1eua "I'm going to get my [consumable.disp_name][plur]. I'll be right back.{w=1}{nw}"
+
 
     #Monika goes offscreen
     call mas_transition_to_emptydesk
@@ -1339,21 +1541,77 @@ label mas_consumables_generic_finished_prepping(consumable):
         m 1eua "Okay, what else should we do today?"
     return
 
+label mas_consumables_refill_explain:
+    # provide in-universe explanation why Monika can't just dupe stuff, only shown once
+    m 3rksdla "I'd duplicate what I have now...but when I tried before, it just wasn't the same..."
+    m 1eksdla "I guess I must be missing something because I just can't seem to replicate the taste."
+    if mas_isMoniHappy(higher=True):
+        m 1ekbsu "...Or maybe it's your everlasting love that makes it special~"
+    return
+
 label mas_consumables_generic_running_out(consumable):
     $ amt_left = consumable.getStock()
+
     m 1euc "By the way, [player]..."
 
     if amt_left > 0:
-        m 3eud "I just wanted to let you know I only have [amt_left] [consumable.container]s of [consumable.disp_name] left."
+        python:
+            dlg_props = consumable.dlg_props
+
+            container = dlg_props.get(mas_consumables.PROP_CONTAINER)
+            obj_ref = dlg_props.get(mas_consumables.PROP_OBJ_REF)
+            plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
+
+            #We need to parse the dialogue depending on the given dlg_props
+            if container:
+                line_ender = renpy.substitute("[container]s of [consumable.disp_name][plur] left.")
+
+            #Otherwise we use the object reference for this
+            elif obj_ref:
+                line_ender = renpy.substitute("[obj_ref]s of [consumable.disp_name][plur] left.")
+
+            #No valid dlg props
+            else:
+                line_ender = renpy.substitute("[consumable.disp_name][plur] left.")
+
+        m 3eud "I just wanted to let you know I only have [amt_left] [line_ender]"
+
+        if not renpy.seen_label("mas_consumables_refill_explain"):
+            call mas_consumables_refill_explain
+
     else:
-        m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name]."
+        m 3eud "I just wanted to let you know that I'm out of [consumable.disp_name][plur]."
 
     m 1eka "You wouldn't mind getting some more for me, would you?"
     return
 
 label mas_consumables_generic_critical_low(consumable):
+    python:
+        dlg_props = consumable.dlg_props
+
+
+        container = dlg_props.get(mas_consumables.PROP_CONTAINER)
+        obj_ref = dlg_props.get(mas_consumables.PROP_OBJ_REF)
+        plur = "s" if dlg_props.get(mas_consumables.PROP_PLUR, False) else ""
+
+        #We need to parse the dialogue depending on the given dlg_props
+        if container:
+            line_ender = renpy.substitute("[container] of [consumable.disp_name] left.")
+
+        #Otherwise we use the object reference for this
+        elif obj_ref:
+            line_ender = renpy.substitute("[obj_ref] of [consumable.disp_name] left.")
+
+        #No valid dlg props
+        else:
+            line_ender = renpy.substitute("serving of [consumable.disp_name] left.")
+
     m 1euc "Hey, [player]..."
-    m 3eua "I only have one [consumable.container] of [consumable.disp_name] left."
+    m 3eua "I only have one [line_ender]"
+
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
+
     m 3eka "Would you mind getting me some more sometime?"
     m 1hua "Thanks~"
     return
@@ -1367,8 +1625,28 @@ init 5 python:
     )
 
 label mas_consumables_generic_queued_running_out:
-    #Firstly, let's get what we're low on.
     $ low_cons = MASConsumable._getLowCons()
+    call mas_consumables_generic_queued_running_out_dlg(low_cons)
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_consumables_generic_running_out_absentuse"
+        )
+    )
+
+label mas_consumables_generic_running_out_absentuse:
+    $ low_cons = MASConsumable._getLowConsNotWarned()
+    call mas_consumables_generic_queued_running_out_dlg(low_cons)
+    return "no_unlock"
+
+
+label mas_consumables_generic_queued_running_out_dlg(low_cons):
+    # sanity check for non-empty list
+    if not low_cons:
+        return
 
     m 1esc "By the way, [player]..."
     if len(low_cons) > 2:
@@ -1376,6 +1654,7 @@ label mas_consumables_generic_queued_running_out:
         m 3rksdla "I've been running out of a few things in here..."
         m 3eua "So I hope you don't mind, but I left you a list of things in the characters folder."
         $ them = "them"
+
     else:
         python:
             items_running_out_of = ""
@@ -1387,7 +1666,15 @@ label mas_consumables_generic_queued_running_out:
         m 3rksdla "I'm running out of [items_running_out_of]."
         $ them = "some more"
 
+    if not renpy.seen_label("mas_consumables_refill_explain"):
+        call mas_consumables_refill_explain
+
     m 1eka "You wouldn't mind getting [them] for me, would you?"
+
+    #Flag these as needing to be restocked
+    python:
+        for cons in low_cons:
+            cons.flagRestockWarn()
     return
 
 label mas_consumables_remove_thermos:
@@ -1402,6 +1689,7 @@ label mas_consumables_remove_thermos:
         m 1eua "Give me a second [player], I'm going to put this thermos away."
 
     $ thermos = monika_chr.get_acs_of_type("thermos-mug")
+    window hide
     call mas_transition_to_emptydesk
 
     python:
@@ -1411,6 +1699,7 @@ label mas_consumables_remove_thermos:
         renpy.pause(2.0, hard=True)
 
     call mas_transition_from_emptydesk("monika 1eua")
+    window auto
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"

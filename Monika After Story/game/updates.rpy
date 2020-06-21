@@ -372,9 +372,240 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-#0.10.8
-label v0_10_8(version="v0_10_8"):
+#0.11.3
+label v0_11_3(version="v0_11_3"):
     python:
+        #Rerandom all songs which aren't d25 exclusive
+        for song_ev in mas_songs.song_db.itervalues():
+            if (
+                song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
+                and mas_songs.TYPE_LONG not in song_ev.category
+            ):
+                song_ev.random=True
+
+        # give extra pool unlocks for recent players
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only 0.11.0 + week ago
+
+            # NOTE: multiply by 4 becaue everyone should already have level
+            #   number of pool unlocks given
+            persistent._mas_pool_unlocks += store.mas_xp.level() * 4
+
+        #Adjust consumables to be at their max stock amount
+        for consumable_id in persistent._mas_consumable_map.iterkeys():
+            cons = mas_getConsumable(consumable_id)
+
+            if cons and cons.getStock() > cons.max_stock_amount:
+                persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
+
+        # unlock monika_kiss
+        mas_unlockEVL("monika_kiss", "EVE")
+
+        # unlock currently pooled tod topics and pool the ones that aren't
+        tod_list = [
+            "monika_gtod_tip002",
+            "monika_gtod_tip003",
+            "monika_gtod_tip004",
+            "monika_gtod_tip005",
+            "monika_gtod_tip006",
+            "monika_gtod_tip007",
+            "monika_gtod_tip008",
+            "monika_gtod_tip009",
+            "monika_gtod_tip010",
+            "monika_ptod_tip002",
+            "monika_ptod_tip003",
+            "monika_ptod_tip005",
+            "monika_ptod_tip006",
+            "monika_ptod_tip008",
+            "monika_ptod_tip009"
+        ]
+
+        for tod_label in tod_list:
+            tod_ev = mas_getEV(tod_label)
+
+            if tod_ev is not None:
+                if tod_ev.pool:
+                    tod_ev.unlocked = True
+
+                else:
+                    tod_ev.pool = True
+                    tod_ev.action = EV_ACT_UNLOCK
+
+        #Store all the files we need to rename
+        filenames_to_rename = [
+            "imsorry",
+            "imsorry.txt",
+            "forgive me.txt",
+            "can you hear me.txt",
+            "please listen.txt",
+            "surprise.txt",
+            "ehehe.txt",
+            "secret.txt",
+            "for you.txt",
+            "My one and only love.txt"
+        ]
+
+        for fn in filenames_to_rename:
+            try:
+                os.rename(
+                    renpy.config.basedir + "/{0}".format(fn),
+                    renpy.config.basedir + "/characters/{0}".format(fn)
+                )
+            except:
+                pass
+
+        # add to the default unlocked pool topics
+        pool_unlock_list = [
+            "monika_meta",
+            "monika_difficulty",
+            "monika_ddlc",
+            "monika_justification",
+            "monika_girlfriend",
+            "monika_herself",
+            "monika_birthday",
+            "monika_sayhappybirthday"
+        ]
+
+        for pool_label in pool_unlock_list:
+            mas_unlockEVL(pool_label,"EVE")
+
+        #Fix the islands event
+        if not mas_isWinter() and not seen_event("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
+
+        #Handle the preferred name and gender change topics again
+        gender_ev = mas_getEV("mas_gender")
+        if gender_ev:
+            #Remove the gender ev's conditional
+            gender_ev.conditional = None
+
+            preferredname_ev = mas_getEV("mas_preferredname")
+            if preferredname_ev:
+                #If we have the preferredname ev, we need to remove the conditional anyway
+                preferredname_ev.conditional = None
+
+            #If the gender topic has a last seen and the preferredname ev hasn't been seen yet
+            #We need to set up its start date
+            if gender_ev.last_seen:
+                if preferredname_ev and not preferredname_ev.last_seen:
+                    preferredname_ev.start_date = gender_ev.last_seen + datetime.timedelta(hours=2)
+
+            #If the gender topic has not been seen, then it needs its start_date set up
+            else:
+                gender_ev.start_date = mas_getFirstSesh() + datetime.timedelta(minutes=30)
+
+        #Unlock the leaving already fare
+        leaving_already_ev = mas_getEV("bye_leaving_already")
+        if leaving_already_ev:
+            leaving_already_ev.random = True
+            leaving_already_ev.conditional = "mas_getSessionLength() <= datetime.timedelta(minutes=20)"
+
+    return
+
+#0.11.1
+label v0_11_1(version="v0_11_1"):
+    python:
+        #Remove this topic
+        mas_eraseTopic("monika_careful")
+
+        #We no longer need this var
+        safeDel("game_unlocks")
+
+        chess_unlock_ev = mas_getEV("mas_unlock_chess")
+        if chess_unlock_ev and chess_unlock_ev.action:
+            chess_unlock_ev.conditional = (
+                "store.mas_xp.level() >= 8 "
+                "or store.mas_games._total_games_played() > 99"
+            )
+
+        hangman_unlock_ev = mas_getEV("mas_unlock_hangman")
+        if hangman_unlock_ev and hangman_unlock_ev.action:
+            hangman_unlock_ev.conditional = (
+                "store.mas_xp.level() >= 4 "
+                "or store.mas_games._total_games_played() > 49"
+            )
+
+        piano_unlock_ev = mas_getEV("mas_unlock_piano")
+        if piano_unlock_ev and piano_unlock_ev.action:
+            piano_unlock_ev.conditional="store.mas_xp.level() >= 12"
+
+        #Patch up existing users who were around when chess didn't have an actual formal unlock
+        if (
+            persistent._mas_chess_stats["wins"]
+            or persistent._mas_chess_stats["losses"]
+            or persistent._mas_chess_stats["draws"]
+        ):
+            mas_unlockGame("chess")
+            mas_stripEVL("mas_unlock_chess", list_pop=True)
+            persistent._seen_ever["mas_unlock_chess"] = True
+            chess_unlock_ev = mas_getEV("mas_unlock_chess")
+            if chess_unlock_ev:
+                chess_unlock_ev.shown_count = 1
+
+        # add missing xp for new users
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only care about users who basically started with 0.11.0 + week
+            # ago
+
+            # calc avg hr per session
+            ahs = (
+                store.mas_utils.td2hr(mas_getTotalPlaytime())
+                / float(mas_getTotalSessions())
+            )
+
+            # only care about users with under 2 hour session time avg
+            if ahs < 2:
+                lvls_gained, xptnl = store.mas_xp._grant_on_pt()
+
+                # only give users levels if they didn't earn what we
+                # expected. If they have more levels gained then we expected,
+                # we won't change anything.
+                if persistent._mas_xp_lvl < lvls_gained or lvls_gained == 0:
+
+                    # give them the difference in levels as pool unlocks
+                    persistent._mas_pool_unlocks += (
+                        lvls_gained - persistent._mas_xp_lvl
+                    )
+
+                    # and set with averages
+                    persistent._mas_xp_tnl = xptnl
+                    persistent._mas_xp_lvl = lvls_gained
+
+        credits_song_ev = mas_getEV('monika_credits_song')
+        if credits_song_ev and credits_song_ev.action:
+            credits_song_ev.conditional = (
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            )
+
+        if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
+            persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        #Prep the grandfathering of Moni nickname
+        #If the current name is considered awkward now,
+        #we should keep that stored so the user can always come back to it
+        if persistent._mas_monika_nickname != "Monika" and mas_awk_name_comp.search(persistent._mas_monika_nickname):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        #Make this a pm var
+        persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+
+        #Delete some excess stuff
+        safeDel("_mas_called_moni_a_bad_name")
+
+        #Penname should default to None
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
+    return
+
+#0.11.0
+label v0_11_0(version="v0_11_0"):
+    python:
+        #First, we're fixing the consumables map
+        for cons_id in persistent._mas_consumable_map.iterkeys():
+            persistent._mas_consumable_map[cons_id]["has_restock_warned"] = False
+
         #Let's stock current users on some consumables (assuming they've gifted before)
         #We'll keep it somewhat random.
         coffee_cons = mas_getConsumable("coffee")
@@ -388,7 +619,8 @@ label v0_10_8(version="v0_10_8"):
 
 
             #Transfer the amount of cups had
-            persistent._mas_consumable_map["coffee"]["times_had"] = persistent._mas_coffee_cups_drank
+            if persistent._mas_coffee_cups_drank:
+                persistent._mas_consumable_map["coffee"]["times_had"] += persistent._mas_coffee_cups_drank
 
             #Delete the old vars
             safeDel("_mas_coffee_cups_drank")
@@ -396,14 +628,12 @@ label v0_10_8(version="v0_10_8"):
             safeDel("_mas_coffee_been_given")
 
         hotchoc_cons = mas_getConsumable("hotchoc")
-        if hotchoc_cons and persistent._mas_acs_enable_hotchoc:
-            if not hotchoc_cons.enabled():
-                hotchoc_cons.restock(renpy.random.randint(40, 60))
+        if hotchoc_cons and seen_event("mas_reaction_hotchocolate"):
+            hotchoc_cons.restock(renpy.random.randint(40, 60))
+            #NOTE: This will re-enable itself automatically in winter
 
-                #Enable
-                hotchoc_cons.enable()
-
-            persistent._mas_consumable_map["hotchoc"]["times_had"] = persistent._mas_c_hotchoc_cups_drank
+            if persistent._mas_c_hotchoc_cups_drank:
+                persistent._mas_consumable_map["hotchoc"]["times_had"] += persistent._mas_c_hotchoc_cups_drank
 
             #Delete uneeded vars
             safeDel("_mas_c_hotchoc_cups_drank")
@@ -417,11 +647,14 @@ label v0_10_8(version="v0_10_8"):
             song_pool_ev.action = None
             song_pool_ev.unlocked = mas_songs.hasUnlockedSongs()
 
+        # clear out the bab list as its been replaced
+        persistent._mas_acs_bab_list = None
+
         # ensure marisa + ACS is unlocked
         if mas_o31CostumeWorn(mas_clothes_marisa):
-            store.mas_selspr.unlock_clothes(mas_clothes_marisa)
-            store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
-            store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
+            persistent._mas_selspr_clothes_db["marisa"] = (True, False)
+            persistent._mas_selspr_acs_db["marisa_witchhat"] = (True, False)
+            persistent._mas_selspr_hair_db["downtiedstrand"] = (True, True)
 
         #Update conditions for the greetings
         new_greetings_conditions = {
@@ -435,11 +668,125 @@ label v0_10_8(version="v0_10_8"):
             "greeting_visit9": "store.mas_getAbsenceLength() >= datetime.timedelta(hours=1)",
             "greeting_hamlet": "store.mas_getAbsenceLength() >= datetime.timedelta(days=7)"
         }
+
         for gr_label, conditional in new_greetings_conditions.iteritems():
             gr_ev = mas_getEV(gr_label)
             if gr_ev:
                 gr_ev.conditional = conditional
 
+        #Fix some intro topics
+        changename_ev = mas_getEV("monika_changename")
+        if changename_ev:
+            changename_ev.pool=True
+
+
+        #Remove some old topics
+        mas_eraseTopic("monika_morning")
+        mas_eraseTopic("monika_evening")
+
+        #Transfer some topics
+        #new_topic_evl: old_topic_evl
+        topic_transfer_map = {
+            "monika_gender_redo": "gender_redo",
+            "mas_gender": "gender",
+            "mas_preferredname": "preferredname",
+            "mas_unlock_hangman": "unlock_hangman",
+            "mas_unlock_chess": "unlock_chess",
+            "mas_unlock_piano": "unlock_piano"
+        }
+
+        #game_unlock_evl: game
+        game_evl_map = {
+            "mas_unlock_hangman": "hangman",
+            "mas_unlock_chess": "chess",
+            "mas_unlock_piano": "piano"
+        }
+
+        #redo_label: unlocking_label
+        intro_topic_map = {
+            "monika_gender_redo": "mas_gender",
+            "monika_changename": "mas_preferredname"
+        }
+
+        for new_evl, old_evl in topic_transfer_map.iteritems():
+            mas_transferTopicData(new_evl, old_evl, persistent.event_database)
+
+            #If we've seen this event before, then we shouldn't allow its conditions to be true again
+            #So we'll remove its conditional and action
+            if seen_event(new_evl) or mas_isGameUnlocked(game_evl_map.get(new_evl, "")):
+                mas_stripEVL(new_evl, list_pop=True)
+
+                #Fix the persistent data for the games
+                persistent._seen_ever[new_evl] = True
+
+                #Adjust the shown count for the game
+                if mas_isGameUnlocked(game_evl_map.get(new_evl, "")):
+                    mas_getEV(new_evl).shown_count = 1
+
+            #In the case of the intro topics, being gender and preferredname
+            #We need to make sure these aren't shown again.
+            if new_evl in intro_topic_map and mas_getEV(new_evl).unlocked:
+                prereq_evl = intro_topic_map[new_evl]
+                #Add seen ever
+                persistent._seen_ever[prereq_evl] = True
+                #Fix shown count
+                mas_getEV(prereq_evl).shown_count = 1
+                #Lock the ev
+                mas_stripEVL(prereq_evl, list_pop=True)
+
+        #Now handle changename and preferredname because those don't change otherwise
+        if mas_getEV("monika_changename").unlocked:
+            persistent._seen_ever[intro_topic_map["monika_changename"]] = True
+            mas_getEV(intro_topic_map["monika_changename"]).shown_count = 1
+            mas_stripEVL(intro_topic_map["monika_changename"], list_pop=True)
+
+        #Make multi-perspective approach random for people who've seen the allegory of the cave topic
+        cave_ev = mas_getEV("monika_allegory_of_the_cave")
+        if cave_ev and cave_ev.shown_count > 0:
+            perspective_ev = mas_getEV("monika_multi_perspective_approach")
+            if perspective_ev:
+                perspective_ev.random = True
+
+        credits_ev = mas_getEV("monika_credits_song")
+        if credits_ev:
+            credits_ev.random = False
+            credits_ev.prompt = None
+            credits_ev.conditional = "store.mas_anni.pastOneMonth()"
+            credits_ev.action = EV_ACT_QUEUE
+            credits_ev.unlocked = False
+
+        #Setup the being virtual ev for those who have seen greeting_tears
+        if renpy.seen_label("greeting_tears"):
+            beingvirtual_ev = mas_getEV("monika_being_virtual")
+
+            if beingvirtual_ev:
+                beingvirtual_ev.start_date = datetime.datetime.now() + datetime.timedelta(days=2)
+
+        #Clean up this conditional
+        concert_ev = mas_getEV("monika_concerts")
+        if concert_ev and concert_ev.action is not None:
+            concert_ev.conditional = "mas_seenLabels(['monika_jazz', 'monika_orchestra', 'monika_rock', 'monika_vocaloid', 'monika_rap'], seen_all=True)"
+
+        # adjust XP
+        if persistent.playerxp is not None:
+            lvls_gained, xptnl = store.mas_xp._grant_on_pt()
+
+            # setup starting xp values
+            persistent._mas_xp_tnl = xptnl
+            persistent._mas_xp_lvl = lvls_gained
+            persistent._mas_pool_unlocks = lvls_gained
+
+            persistent.playerxp = None
+
+        #Fix for unstable users
+        mas_unlockEVL("monika_good_tod", "EVE")
+
+        dystopias_ev = mas_getEV("monika_dystopias")
+        if dystopias_ev and dystopias_ev.action is not None:
+            dystopias_ev.conditional= "mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world'], seen_all=True)"
+
+        if persistent._mas_pm_have_fam is None:
+            mas_hideEVL("monika_familygathering","EVE",derandom=True)
     return
 
 #0.10.7
@@ -1075,7 +1422,7 @@ label v0_10_0(version="v0_10_0"):
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
-                mhs_922 is not None 
+                mhs_922 is not None
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
@@ -1118,7 +1465,7 @@ label v0_10_0(version="v0_10_0"):
         clothes_sel_ev = mas_getEV("monika_clothes_select")
         if clothes_sel_ev is not None:
             clothes_sel_ev.unlocked = True
-            
+
     return
 
 # 0.9.5
@@ -1154,7 +1501,7 @@ label v0_9_4(version="v0_9_4"):
         if outfit_ev is not None and renpy.seen_label(outfit_ev.eventlabel):
             outfit_ev.unlocked = True
 
-    return 
+    return
 
 # 0.9.2
 label v0_9_2(version="v0_9_2"):
@@ -1676,7 +2023,7 @@ label v0_8_3(version="v0_8_3"):
             kiz_ev.conditional = "seen_event('greeting_hai_domo')"
 
         # give players pool unlocks if they've been here for some time
-        curr_level = get_level()
+        curr_level = store.mas_xp.level()
         if curr_level > 25:
             persistent._mas_pool_unlocks = int(curr_level / 2)
 
@@ -2027,15 +2374,12 @@ label v0_7_0(version="v0_7_0"):
                 event.unlocked = True
                 event.conditional = None
 
-                #Grant some XP so existing players don't start at square 1
-                grant_xp(xp.NEW_EVENT)
-
         #Clear the "Add prompt" events that this adds to the stack
         persistent.event_list = temp_event_list
 
         #Unlock chess if they've already played it
         if seen_event('game_chess'):
-            persistent.game_unlocks['chess']=True
+            mas_unlockGame("chess")
 
         #Unlock the name change topic if the name change topic has been seen
         if seen_event('preferredname'):
@@ -2136,8 +2480,8 @@ label mas_lupd_v0_8_10:
         if persistent._mas_o31_seen_costumes is not None:
             if persistent._mas_o31_seen_costumes.get("marisa", False):
                 mas_selspr.unlock_clothes(mas_clothes_marisa)
-            if persistent._mas_o31_seen_costumes.get("rin", False):
-                mas_selspr.unlock_clothes(mas_clothes_rin)
+            #if persistent._mas_o31_seen_costumes.get("rin", False):
+            #    mas_selspr.unlock_clothes(mas_clothes_rin)
 
         # save the selectables we just unlocked
         mas_selspr.save_selectables()
