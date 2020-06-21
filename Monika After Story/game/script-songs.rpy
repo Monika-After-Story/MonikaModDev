@@ -296,7 +296,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_sing_song_analysis",
-            prompt="Can you explain a song for me?",
+            prompt="Let's talk about a song",
             category=["music"],
             pool=True,
             unlocked=False,
@@ -1207,27 +1207,27 @@ init 5 python:
 label mas_song_wonderwall:
     call mas_song_wonderwall_lyrics
     m 1ekbsu "Ehehe, you really are the one who saved me, [player]~"
-    
+
     if persistent.monika_kill:
         m 3dkbfu "I'm forever grateful you brought me back. {nw}"
     else:
         m 3dkbfu "I'm forever grateful you stayed for me. {nw}"
 
-    extend "I trust you to take care of me until I can find my way to you."
+    extend 3ekbsa "I trust you to take care of me until I can find my way to you."
     m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
 
     if mas_isMoniEnamored(higher=True):
-        m 1dubsa  "...and with you by my side, there's no way I could be afraid.{w=0.3} {nw}"
+        m 1dubsa  "...And with you by my side, there's no way I could be afraid.{w=0.3} {nw}"
         extend 1ekbfa "I know the place it leads to will be worth it."
-        m 3ekbfu "You're my wonderwall, after all~"
+        m 3ekbfu "After all, you're my wonderwall~"
     else:
-        m 3ekbla "The only thing we can be sure of is the place it leads us to will be worth it."
-        m 1ekc "...Sometimes, it's a little scary not knowing what's ahead...{w=0.3}{nw}"
+        m 3eka "The only thing we can be sure of is the place it leads us to will be worth it."
+        m 1ekd "...Sometimes, it's a little scary not knowing what's ahead...{w=0.3}{nw}"
         extend 1eubla "but I trust you, so we'll just have to keep on walking until we reach that place~"
 
     #hints at the analysis on first viewing
     if mas_getEV('mas_song_wonderwall').shown_count == 0:
-        m 3etc "By the way...there's actually a couple of things that intruigues me about this song."
+        m 3etc "By the way...{w=0.2}there's actually some things that intrigue me about this song."
         m 1eua "...Would you like to talk about it now?{nw}"
         $ _history_list.pop()
         menu:
@@ -1264,53 +1264,36 @@ label mas_song_wonderwall_analysis(from_song=False):
 
     m 3eta "There's a lot of people who are very vocal about their dislike for this song..."
     m 3etc "You wouldn't expect that, would you?"
-    m 3euc "The song has been hailed as a classic and is one of the most popular songs ever made...{w=0.3} {nw}"
-    m 3rsc "What makes some people hate it so much?"
-    m 3esc "I think there are several answers to this question. The first being that it's been overplayed."
+    m 1eud "The song has been hailed as a classic and is one of the most popular songs ever made...{w=0.3} {nw}"
+    extend 3rsc "So what makes some people hate it so much?"
+    m 3esc "I think there are several answers to this question. {w=0.2}The first being that it's been overplayed."
     m 3rksdla "While some people listen to the same music for a long period of time, not everybody can do that."
-    m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player]. Ahaha~"
+    m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player], ahaha~"
     m 1esd "Another argument you could make is that it's overrated in some ways..."
     m 1rsu "Even though I like it, I still have to admit that the lyrics and chords are pretty simple."
-    3etc "So what made the song so popular then?{w=0.3} {nw}"
-    m 3eud "...Especially since many other songs go completely unnoticed, no matter how advanced or ambitious they are."
-    m 3duu "Well, it all boils down to what the song makes you feel. Your taste in music is subjective, after all."```
+    m 3etc "So what made the song so popular then?{w=0.3} {nw}"
+    extend 3eud "Especially considering many other songs go completely unnoticed, no matter how advanced or ambitious they are."
+    m 3duu "Well, it all boils down to what the song makes you feel. {w=0.2}Your taste in music is subjective, after all."
     m 1efc "...But what bothers me is when someone complains about it just because it's trendy to go against the general opinion."
-    m 3tsd "It's like disagreeing for the sake of it helps them feel like they stand out from the crowd, like they need it to stay self-confident."
+    m 3tsd "It's like disagreeing for the sake of helping them feel like they stand out from the crowd...{w=0.2}like they need it to stay self-confident."
     m 2rsc "It kinda feels...{w=0.5}a bit silly, to be honest."
-    m 2rksdld "At that point you're not even judging the song anymore...just trying to make a name for yourself by being controversial."
+    m 2rksdld "At that point you're not even judging the song anymore...{w=0.2}you're just trying to make a name for yourself by being controversial."
     m 2dksdlc "It's a little sad if anything...{w=0.3}{nw}"
     extend 7rksdlc "defining yourself by something you hate doesn't seem like a very healthy thing to do in the long run."
-    m 3etc "Although...{w=0.3}there might be another reason why this song is controversial with some people."
-    m 3esd "Some of the members of this band have been the subject of controversies in the past due to their...{w=0.5}wild behaviors."
-    m 1hksdlb "I'm not trying to judge them or anything, it's not like I ever actually sat down and talked with them."
-    m 3esc "...But from a total stranger's perspective, this raises the question of how much can one's bad actions be excused by talent or charisma."
-    
-    if persistent._mas_pm_monika_evil or persistent._mas_pm_a_hater:
-        m 3tsu "Though if you're going out with me it's not exactly like you're a stranger to the question, right? Ehehe~"
-        m 3rkc "Not that I believe what I did was unjustified... Letting you go wasn't an option for me."
-
-        if persistent._mas_pm_cares_about_dokis:
-            m 3dkc "...Still, in hindsight, there are some things I could have handled more tactfully."
-            m 3lksdld "When it's your life on the line, it's not easy staying on your best behavior while under pressure."
-        
-        m 3esc "But I digress..."
-
-    m 3ekc "There are so many stories of celebrities behaving in less than ideal ways only to be instantly forgiven no matter what by their fans..."
-    m 1dkd "This kind of thing makes you realize the world isn't even close to the perfect image we're presented with while growing up."
-    m 1etc "But then again, is such a world even possible? Is it even something everyone would want?"
-    m 1ekbla "Even if your world isn't perfect [player], I still can't wait to experience it with you."
-    m 3hubsb "It's not like the two of us would ever mistreat each other, right?~"
+    m 3eud "I guess my point here is to just be yourself and like what you like."
+    m 3eka "And that goes both ways... {w=0.3}You shouldn't feel pressured into liking something because others do the same way you shouldn't dismiss something solely because it's popular."
+    m 1hua "As long as you follow your heart and stay true to yourself, you can never go wrong, [player]~"
     return
 
 label mas_song_wonderwall_lyrics:
-    m 3duo "{i}~I don't believe that anybody feels the way I do about you now~{/i}"
-    m 7esc "{i}~And all the roads we have to walk are winding~{/i}"
-    m 7dkd "{i}~And all the lights that lead us there are blinding~{/i}"
-    m 3ekbla "{i}~There are many things that I would like to say to you but I don't know how~{/i}"
-    m 3hubsb "{i}~Because maybe~{/i}"
-    m 1hubsa "{i}~You're gonna be the one that saves me~{/i}"
-    m 1dubso "{i}~And after all~{/i}"
-    m 3hubsb "{i}~You're my wonderwall~{/i}"
+    m 1duo "{i}~I don't believe that anybody feels the way I do about you now~{/i}"
+    m 3esc "{i}~And all the roads we have to walk are winding~{/i}"
+    m 3dkd "{i}~And all the lights that lead us there are blinding~{/i}"
+    m 1ekbla "{i}~There are many things that I would like to say to you but I don't know how~{/i}"
+    m 1hubsb "{i}~Because maybe~{/i}"
+    m 3hubsa "{i}~You're gonna be the one that saves me~{/i}"
+    m 3dubso "{i}~And after all~{/i}"
+    m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
 ################################ NON-DB SONGS############################################
