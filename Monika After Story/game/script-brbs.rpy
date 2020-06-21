@@ -552,7 +552,7 @@ label monika_idle_nap_callback:
     elif mas_isMoniUpset():
         m 2euc "Done with your nap, [player]?"
     elif mas_isMoniDis():
-        m 6ekc "Oh, you're' back."
+        m 6ekc "Oh, you're back."
     else:
         m 6ckc "..."
     return
