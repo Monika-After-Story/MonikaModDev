@@ -1157,7 +1157,6 @@ label mas_song_shelter_lyrics:
     m "{i}~Until you're gone~{/i}"
     return
 
-
 init 5 python:
     addEvent(
         Event(
@@ -1173,7 +1172,6 @@ init 5 python:
 
 label mas_song_cant_help_falling_in_love:
     m 1dud "{cps=16}{i}~Wise men say~"
-    m 1dub "{cps=16}{i}~Only fools rush in~"
     m 1dud "{cps=16}{i}~But I can't help{w=0.3}{nw}"
     extend 1ekbsb " falling in love with you~"
     m 3ekbsa "{cps=16}{i}~Shall I stay?~"
@@ -1198,9 +1196,40 @@ label mas_song_cant_help_falling_in_love:
 
     return "love"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_lamour_toujours",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="L'Amour Toujours",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_lamour_toujours:
+    m 1dud "{i}~I still believe in your eyes~{/i}"
+    m 3ekbsb "{i}~Baby, I'll always be here by your side~{/i}"
+    m 1dsbsd "{i}~Don't leave me waiting too long, {w=0.3}{nw}"
+    extend 1ekbsu "please come by~{/i}"
+
+    m 1dud "{i}~I still believe in your eyes~{/i}"
+    m "{i}~There is no choice, {w=0.3}{nw}"
+    extend 3hubsb "I belong to your life~{/i}"
+    m 3dubsb "{i}~Because I'll live to love you some day~{/i}"
+    m 1hubsa "{i}~You'll be my baby and we'll fly away~{/i}"
+
+    m 1ekb "{i}~And I'll fly with you~{/i}"
+    m 1dkb "{i}~I'll fly with you~{/i}"
+
+    m 1dkbsu "..."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
+    return
 
 ################################ NON-DB SONGS############################################
-# Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
 
 init 5 python:
@@ -1397,3 +1426,33 @@ label mas_monika_plays_or(skip_leadin=False):
     window auto
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_ageage_again",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Ageage Again",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_ageage_again:
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3duu "{i}~If you recall this song suddenly~{/i}"
+    m 1hub "{i}~Party, party, party, party, party time!~{/i}"
+    m 3hubsa "{i}~I am by your side~{/i}"
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3rubsu "{i}~If I recall your smile~{/i}"
+    m 1subsb "{i}~Love, love, love, love, I'm in love!~{/i}"
+    m 3hubsa "{i}~Want to feel the same rhythm~{/i}"
+    m 3eua "You know, I love how upbeat and happy this song is."
+    m 1rksdld "There are a lot of other Vocaloid songs that {i}sound{/i} upbeat, but their lyrics are sad and sometimes disturbing..."
+    m 3hksdlb "But I'm glad that at least this song isn't one of them."
+    m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
+    m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
+    m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    return "derandom"
