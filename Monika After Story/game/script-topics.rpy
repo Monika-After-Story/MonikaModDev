@@ -14283,7 +14283,7 @@ init 5 python:
         )
     )
 
-label Wabi_sabi:
+label monika_wabi_sabi:
     m 1eud "Say [player], have you ever heard of wabi-sabi?"
     m 3hub "It's a traditional Japanese concept relating to an aspect of beauty."
     m 3dub "It states that beyond everything, beauty is found in what's impermanent and imperfect."
