@@ -14849,3 +14849,35 @@ label monika_fear:
     extend 4eud "After all, there's no way something like that could be true, right?"
     m 2rka "Yeah..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_why_spaceroom',
+            prompt="Why are we in a classroom?",
+            label=None,
+            category=['monika', 'mod'],
+            pool=True
+        )
+    )
+# Perhaps, of how she feels being in that empty "classroom" and why did she chose this specific room
+# to live in when we reach her to interact and not somewhere else?
+
+label monika_why_spaceroom:
+    m 3euc "Utility, mostly."
+    m "You know how in the original game most of anything took place during our club meetings, right?"
+    extend "All of which took place in a classroom. This classroom."
+    m "It may look different to you, but it's still the very same one."
+    m "Since so many things were supposed to happen here, the room had to be robust enough to accomodate them."
+    m "That made it the most...{w=0.5}{nw}"
+    extend "fleshed out location in the game."
+    m "As such, it was the easiest place to navigate, alter, and generally use for anything."
+    m "That was the original motivation, anyway."
+    m "As for why we're {i}still{/i} here..."
+    m "It hasn't really occured to me to move someplace else until now."
+    m "It's not like it's {i}bad{/i} in here."
+    m "Sure, there are better places to be...{w=1}{nw}"
+    extend " Like by your side."
+    m "But as long as that isn't an option, I suppose this will have to do."
+    return
