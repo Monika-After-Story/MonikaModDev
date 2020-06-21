@@ -14271,3 +14271,28 @@ label monika_hot_springs:
     m 5dkbfb "Ahhh,{w=0.2} {nw}"
     extend 5dkbfa "just the thought of it makes me feel all tingly, [player]~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="wabi_sabi",
+            category=['philosophy'],
+            prompt="philosophy",
+            random=True
+        )
+    )
+
+label Wabi_sabi:
+    m 1eud "Say [player], have you ever heard of wabi-sabi?"
+    m 3hub "It's a traditional Japanese concept relating to an aspect of beauty."
+    m 3dub "It states that beyond everything, beauty is found in what's impermanent and imperfect."
+    m 3wub "Like a scar on a rugged face, or a discolored hand, or even asymmetric features."
+    m 1tsu "Don't you find that concept rather romantic?"
+    m 1hubsb "Ahaha~"
+    m "..."
+    m 6ekd "Anyway, [player], I hope you are not too self conscious about your looks."
+    m 6dkd "After all, no matter how your face looks, or how your body looks..."
+    m 1subfb "You'll still be the most beautiful person in the whole world to me!"
+    m 4subfb "And that's my wabi-sabi promise!"
+    return
