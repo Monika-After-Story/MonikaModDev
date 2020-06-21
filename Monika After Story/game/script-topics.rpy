@@ -14276,7 +14276,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="wabi_sabi",
+            eventlabel="monika_wabi_sabi",
             category=['philosophy'],
             prompt="philosophy",
             random=True
