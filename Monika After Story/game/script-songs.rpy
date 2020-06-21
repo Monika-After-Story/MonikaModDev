@@ -1191,6 +1191,37 @@ label mas_song_lamour_toujours:
     m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_god_knows",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="God Knows",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_god_knows:
+    m 1hua "{i}~You know that{w=0.2}{nw}"
+    extend 1eub " I would follow you, no matter what we go through~"
+    m 1efb "{i}~Bring all the darkness the world can offer~"
+    m 1eua "{i}~Because you’ll shine{w=0.2} no matter if the future is bleak~"
+
+    m 3tub "{i}~We’ll aim out{w=0.2} just beyond the boundary~"
+    m 3hka "{i}~And even if it scares me~"
+    m 1hub "{i}~Nothing can shatter my soul because your way is my way~"
+    m 1eub "{i}~Forever on this railway~"
+    m 1fubla "{i}~As if we were God blessed~"
+
+    m 1dubla "..."
+    show monika 5ruc at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ruc "I'm still skeptical about whether some sort of a god exists or not..."
+    m 5eubfb "but having you here really does feel like a blessing from the heavens."
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
