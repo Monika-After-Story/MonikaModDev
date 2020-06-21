@@ -799,6 +799,37 @@ label mas_song_amaranthine:
     m 5ekbsu "My life feels so complete with you in it, [player]."
     m 5hubfu "I love you so much~"
     return "derandom|love"
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_fallinginloveatacoffeeshop",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Falling in Love at a Coffee Shop",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_fallinginloveatacoffeeshop:
+    m 1tub "{i}~I think that possibly, maybe I'm falling for you~{/i}"
+    m 1dubsb "{i}~Yes, there's a chance that I've fallen quite hard over you~{/i}"
+    m 1ekbsb "{i}~I've seen the waters that make your eyes shine, now I'm shining too~{/i}"
+    m 1dkbsu "{i}~Because, oh, because I've fallen quite hard over you~{/i}"
+    m 1ekb "{i}~If I didn't know you, I'd rather not know~{/i}"
+    m 2dkd "{i}~If I couldn't have you, I'd rather be alone~{/i}"
+    m 2hkb "{i}~I never knew just what it was~{/i}"
+    m 1hubsb "{i}~About this old coffee shop I love so much~{/i}"
+    m 5hubsa "{i}~All of the while, I never knew~{/i}"
+    m 5lubsa "..."
+    m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
+    m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
+    extend 1rtc "or a particularly unremarkable protagonist."
+    m 3hubsa "Then when you have time to think, you realize it wasn't the coffee shop, it was the person you meet there each day."
+    m 1tkbfu "Or in my case, it wasn't the protagonist at all--it was the beautiful person who was really looking through those eyes."
+    return "derandom"
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
