@@ -14889,7 +14889,7 @@ label monika_why_spaceroom:
             m "Ehehe~"
         m "..."
 
-    elsif (getUnlockedBGCount() > 1):
+    elif (getUnlockedBGCount() > 1):
         m "As for why I'm still using it..."
 
     m "It's not like it's {i}bad{/i} in here."
