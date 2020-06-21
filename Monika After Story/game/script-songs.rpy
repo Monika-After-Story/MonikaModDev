@@ -1211,6 +1211,7 @@ init 5 python:
 
 label mas_song_lamour_toujours:
     m 1dud "{i}~I still believe in your eyes~{/i}"
+    m 1dub "{i}~I just don't care what you've done in your life~{/i}"
     m 3ekbsb "{i}~Baby, I'll always be here by your side~{/i}"
     m 1dsbsd "{i}~Don't leave me waiting too long, {w=0.3}{nw}"
     extend 1ekbsu "please come by~{/i}"
@@ -1230,6 +1231,7 @@ label mas_song_lamour_toujours:
     return
 
 ################################ NON-DB SONGS############################################
+# Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
 
 init 5 python:
