@@ -788,3 +788,67 @@ label mas_fun_fact_coffee_origin:
     m 3hub "...And I for one can certainly attest that the love of coffee has remained strong to this day!"
     call mas_fun_facts_end
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_synesthesia",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_synesthesia:
+    m 1esa "Ok, this one's pretty interesting."
+    m 3eua "Some people experience a phenomenom known as {i}synesthesia{/i},{w=0.1} which is where something that stimulates one of our senses also triggers another sense simultaneously."
+    m 1hua "That's kind of a wordy explanation hehe...{w=0.2} Let's find an example!"
+    m 1eua "It says here a common form of synesthesia is {i}grapheme–color synesthesia{/i},{w=0.1} which is where people 'experience' letters and numbers as colours."
+    m 3eua "Another kind is {i}spatial sequence synesthesia{/i},{w=0.1} which is where numbers and figures are 'seen' at specific locations in space."
+    m "Like, one number appears 'closer' or 'further' away than another number. {w=0.2}{nw}"
+    extend 3eub "It's kinda like a map!"
+    m 1eua "And there's a whole bunch of other kinds of synesthesia too."
+    m 1esa "Researchers aren't really sure how prevalent it is -{w=0.1} some have suggested as much as 25 percent of the population experiences it, but I seriously doubt that since I'd never heard of it until now."
+    m 3eub "Probably the most accurate estimate so far is that just over 4 percent of people experience it, so that's what I'll go with!"
+    m 1eua "Experiencing synesthesia sounds like it'd be pretty neat,{w=0.2} don't you think so [player]?"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_dream_faces",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_dream_faces:
+    m 3eub "Ok, got one!"
+    m 1eua "Supposedly, our minds don't invent new faces when we dream;{w=0.2} every person that's appeared in your dream is someone you've seen in real life at some point."
+    m 3esa "Even if you've just walked past them briefly while shopping or something, their face gets registered in your brain and they can appear in your dreams."
+    m 3eub "I think it's incredible how much info the brain can store!"
+    m 1ekbla "I wonder...{w=0.2}do you ever dream about me, [player]?"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_monochrome_dreams",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_monochrome_dreams:
+    m 3eua "Did you know that from 1915 to the 1950s, most people were dreaming in black and white?"
+    m 1esa "In modern times, though, it's a relatively rare phenomenom for people with unimpaired vision."
+    m 3eua "Researchers have linked this to the fact that movies and shows were almost exclusively black and white back then."
+    m 3eud "Though I think that's kinda weird, because people at the time still saw everything else in color, right?"
+    m 1esd "It just goes to show how the brain absorbs even trivial content,{w=0.1} and it can have all kinds of effects on your mind that you don't realize."
+    m 3eua "I think that if there's a lesson to be learned here, it's that we have to be very careful about the kind of media we consume,{w=0.1} ok [player]?"
+    #Call the end
+    call mas_fun_facts_end
+    return
