@@ -188,6 +188,7 @@ init -99 python in mas_weather:
     import random
     import datetime
     import store
+    import renpy
 
     #NOTE: Not persistent since weather changes on startup
     force_weather = False
@@ -217,6 +218,30 @@ init -99 python in mas_weather:
 
     #Keep a temp store of weather here for if we're changing backgrounds
     temp_weather_storage = None
+
+    old_weather_tag = "mas_old_style_weather_{0}"
+    old_weather_id = 1
+
+    OLD_WEATHER_OBJ = {}
+    # key: generated ID
+    # value: assocaited displayable
+
+    def _generate_old_image(disp):
+        """
+        Generates an image for the old-style weather.
+
+        IN:
+            disp - displayable to pass to renpy.image
+
+        RETURNS: the created image tag
+        """
+        tag = old_weather_tag.format(old_weather_id)
+        renpy.image(tag, disp)
+        OLD_WEATHER_OBJ[old_weather_id] = tag
+        old_weather_id += 1 
+
+        return tag
+
 
 init -20 python in mas_weather:
 
@@ -432,7 +457,87 @@ init -10 python:
     #   using the FilterWeatherMap. Well actually it should be like a special
     #   type of image because it needs to be decoded. Probably using some 
     #   sort of dyndisp similar to ConditionSwitch but not quite.
-    class MASWeather(object):
+    def MASWeather(
+            weather_id,
+            prompt,
+            sp_day,
+            sp_night=None,
+            precip_type=store.mas_weather.PRECIP_TYPE_DEF,
+            isbg_wf_day=None,
+            isbg_wof_day=None,
+            isbg_wf_night=None,
+            isbg_wof_night=None,
+            entry_pp=None,
+            exit_pp=None,
+            unlocked=False
+    ):
+        """DEPRECATED
+        Old-style MASWeather objects.
+        This is mapped to a MASFilterableWeather with day/night filter settings
+        NOTE: for all image tags, `_fb` is appeneded for fallbacks
+
+        IN:
+            weather_id - id that defines this weather object
+                NOTE: must be unique
+            prompt - button label for this weathe robject
+            sp_day - image tag for spaceroom's left window in daytime
+            sp_night - image tag for spaceroom's left window in night
+                (Default: None)
+            precip_type - type of precipitation, def, rain, overcast, or snow
+                (Default: def)
+            isbg_wf_day - ignored
+            isbg_wof_day - ignored
+            isbg_wf_night - ignored
+            isbg_wof_night - ignored
+            entry_pp - programming point to execute after switching to
+                this weather
+                (Default: None)
+            exit_pp - programming point to execute before leaving this
+                weather
+                (Default: None)
+            unlocked - True if this weather object starts unlocked,
+                False otherwise
+                (Default: False)
+        
+        RETURNS: MASFitlerableWeather object
+        """
+        if sp_night is None:
+            sp_night = sp_day
+
+        sp_day_fb = sp_day + "_fb"
+        sp_night_fb = sp_night + "_fb"
+
+        # create weather images
+        dyn_tag = store.mas_weather._generate_old_image(
+            MASLiteralFilterSwitch(
+                sp_day,
+                False,
+                day=sp_day,
+                night=sp_night
+            )
+        )
+        stt_tag = store.mas_weather._generate_old_image(
+            MASLiteralFilterSwitch(
+                sp_day_fb,
+                False,
+                day=sp_day_fb,
+                night=sp_night_fb
+            )
+        )
+
+        return MASFilterableWeather(
+            weather_id,
+            prompt,
+            stt_tag,
+            ani_img_tag=dyn_tag,
+            precip_type=precip_type,
+            unlocked=unlocked,
+            entry_pp=entry_pp,
+            exit_pp=exit_pp
+        )
+
+
+    class MASFilterableWeather(object):
         """
         Weather class to determine some props for weather
 
@@ -440,75 +545,47 @@ init -10 python:
             weather_id - Id that defines this weather object
             prompt - button label for this weater
             unlocked - determines if this weather is unlocked/selectable
-            sp_day - image tag for windows in day time
-            sp_night - image tag for windows in nighttime
             precip_type - type of precipitation (to use for the room type)
-            isbg_wf_day - image PATH for islands bg daytime with frame
-            isbg_wof_day = image PATH for islands bg daytime without frame
-            isbg_wf_night - image PATH for island bg nighttime with frame
-            isbg_wof_night - image PATH for island bg nighttime without framme
-
+            img_tag - image tag to use for the static version of weather
+            ani_img_tag - image tag to use for the animated version of weather
             entry_pp - programming point to execute when switching to this
                 weather
             exit_pp - programming point to execute when leaving this weather
-
-        NOTE: for all image tags, `_fb` is appeneded for fallbacks
         """
         import store.mas_weather as mas_weather
 
-        def __init__(
-                self,
+        def __init__(self,
                 weather_id,
                 prompt,
-                sp_day,
-                sp_night=None,
+                img_tag,
+                ani_img_tag=None,
                 precip_type=store.mas_weather.PRECIP_TYPE_DEF,
-                # NOTE: consider moving island images to bg? 
-                #   with filters, we kind of need everything to be in one
-                #   spot. Might be hard to do atm.
-                isbg_wf_day=None,
-                isbg_wof_day=None,
-                isbg_wf_night=None,
-                isbg_wof_night=None,
+                unlocked=False,
                 entry_pp=None,
-                exit_pp=None,
-                unlocked=False
-            ):
+                exit_pp=None
+        ):
             """
-            Constructor for a MASWeather object
+            Constructor for a MASFilterableWeather object
 
             IN:
                 weather_id - id that defines this weather object
                     NOTE: must be unique
                 prompt - button label for this weathe robject
-                sp_day - image tag for spaceroom's left window in daytime
-                unlocked - True if this weather object starts unlocked,
-                    False otherwise
-                    (Default: False)
-                sp_night - image tag for spaceroom's left window in night
-                    If None, we use sp_day for this
+                img_tag - image tag to use for the static version of weather
+                ani_img_tag - image tag to use for the animated version of
+                    weather. If None, we always use the static version.
                     (Default: None)
                 precip_type - type of precipitation, def, rain, overcast, or snow
                     (Default: def)
-                isbg_wf_day - image PATH for islands bg daytime with frame
-                    (Default: None)
-                isbg_wof_day = image PATH for islands bg daytime without frame
-                    (Default: None)
-                isbg_wf_night - image PATH for island bg nighttime with frame
-                    If None, we use isbg_wf_day
-                    (Default: None)
-                isbg_wof_night - image PATH for island bg nighttime without
-                    framme
-                    If None, we use isbg_wof_day
-                    (Default: None)
+                unlocked - True if this weather object starts unlocked,
+                    False otherwise
+                    (Default: False)
                 entry_pp - programming point to execute after switching to
                     this weather
                     (Default: None)
                 exit_pp - programming point to execute before leaving this
                     weather
                     (Default: None)
-
-                #NOTE: Defaulting to the day frame stuff to avoid tracebacks
             """
             if weather_id in self.mas_weather.WEATHER_MAP:
                 raise Exception("duplicate weather ID")
@@ -728,13 +805,11 @@ init -10 python:
             return self.__mhm.get(precip_type)
 
 
-    class MASFilterWeatherMap(object):
+    class MASFilterWeatherMap(MASFilterMapSimple):
         """
         Extension of MASFilterMap.
 
         Use this to map weather maps to filters.
-
-        NOTE: actual implementation is by wrapping around MASFilterMap.
 
         NOTE: this does NOT verify filters.
 
@@ -763,20 +838,11 @@ init -10 python:
                         )
                     )
 
-            self.__mfm = MASFilterMap(
+            super(MASFilterWeatherMap, self).__init__(
                 default=None,
-                cache=False,
                 **filter_pairs
             )
             self.use_fb = False
-
-        def flts(self):
-            """
-            Gets all filter names in this filter map
-
-            RETURNS: list of all filter names in this map
-            """
-            return self.__mfm.map.keys()
 
         def fw_get(self, flt, weather=None):
             """
@@ -829,15 +895,6 @@ init -10 python:
                 )
 
             return False
-
-        def _mfm(self):
-            """
-            Returns the intenral MASFilterMap. Only use if you know what you
-            are doing.
-
-            RETURNS: MASFilterMap
-            """
-            return self.__mfm
 
         def _raw_fw_get(self, flt, precip_type):
             """
@@ -907,7 +964,7 @@ init -10 python:
 
             RETURNS: value for the given filter
             """
-            return self.__mfm.get(flt)
+            return super(MASFilterWeatherMap, self).get(flt)
 
 
 ### define weather objects here

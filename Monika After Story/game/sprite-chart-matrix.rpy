@@ -282,9 +282,7 @@ python early:
         for flt in flt_pairs:
             if flt in store.mas_sprites.FILTERS:
                 # condition
-                args.append(
-                    "store.mas_sprites.get_filter() == '{0}'".format(flt)
-                )
+                args.append("mas_isCurrentFlt('{0}')".format(flt))
 
                 # image
                 args.append(flt_pairs[flt])
@@ -298,9 +296,7 @@ python early:
                 # only use the filtesr we have not already added
                 if flt not in flt_pairs:
                     # condition
-                    args.append(
-                        "store.mas_sprites.get_filter() == '{0}'".format(flt)
-                    )
+                    args.append("mas_isCurrentFlt('{0}')".format(flt))
 
                     # image
                     args.append(store.mas_sprites._gen_im(flt, def_img))
@@ -711,7 +707,9 @@ init -99 python in mas_sprites:
     # filter fallback dict
     # key: filter
     # value: filter that should be considered "base" filter
-    FLT_FB = {}
+    FLT_FB = {
+        FLT_SUNSET: FLT_DAY
+    }
 
     # contains all base filters. These are filtesr without a fallback.
     # this is populated during filter fallback verification and is availabe
@@ -777,7 +775,7 @@ init -99 python in mas_sprites:
             if not _test_filter(base):
                 return
 
-            FLT_DEP[flt_enum] = base
+            FLT_FB[flt_enum] = base
 
         FILTERS[flt_enum] = imx
 
@@ -2883,6 +2881,62 @@ init -10 python:
                     vals.append(value)
 
             return vals
+
+
+    class MASFilterMapSimple(object):
+        """
+        MASFilterMap for simple implementations, aka filter - value pairs 
+        without type checks.
+
+        Classes that need MASFilterMap should just extend this one as a base.
+
+        This will NOT cache filter maps.
+
+        PROPERTIES:
+            None
+        """
+
+        def __init__(self, default=None, **filter_pairs):
+            """
+            Constructor
+
+            Passes values directly to the internal MFM
+
+            IN:
+                default - default value to apply for all filters, if 
+                    desired. 
+                    (Default: None)
+                **filter_pairs - filter=val args to use. invalid filters
+                    are ignored.
+            """
+            self.__mfm = MASFilterMap(
+                default=None,
+                cache=False,
+                **filter_pairs
+            )
+
+        def flts(self):
+            """
+            Gets all filter names in this filter map
+
+            RETURNS: list of all filter names in this map
+            """
+            return self.__mfm.map.keys()
+
+        def get(self, flt, defval=None):
+            """
+            See MASFilterMap.get
+            """
+            return self.__mfm.get(flt, defval)
+
+        def _mfm(self):
+            """
+            Returns the intenral MASFilterMap. Only use if you know what you
+            are doing.
+
+            RETURNS: MASFilterMap
+            """
+            return self.__mfm
 
 
 init -2 python:
