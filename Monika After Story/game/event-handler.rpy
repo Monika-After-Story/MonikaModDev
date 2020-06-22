@@ -2574,13 +2574,20 @@ label mas_bookmarks:
 
         bookmarks_items.sort(key=lambda _tuple: _tuple[0])
 
-        final_items = (
+        bk_menu_final_items = (
             (_("I'd like to remove a bookmark."), "remove_bookmark", False, False, 20),
             (_("Nevermind."), "nevermind", False, False, 0)
         )
 
+    # FALL THROUGH
+
+label mas_bookmarks_loop:
+    if not bookmarks_items:
+        show monika idle
+        return True
+
     show monika at t21
-    call screen mas_gen_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
+    call screen mas_gen_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *bk_menu_final_items)
 
     $ topic_choice = _return
 
@@ -2592,6 +2599,8 @@ label mas_bookmarks:
         # prompt for bookmarks to remove
         call mas_bookmarks_unbookmark(bookmarks_items)
         show monika idle
+        # the list might have been regenerated
+        $ bookmarks_items = _return
 
     else:
         # got label, let's push
@@ -2599,41 +2608,59 @@ label mas_bookmarks:
         $ pushEvent(topic_choice, skipeval=True)
         return True
 
-    jump mas_bookmarks
+    jump mas_bookmarks_loop
 
 # unbookmark flow
 # Removes bookmarks from _mas_player_bookmarked
 #
 # IN:
 #   bookmarks_items - list of displayable menu bookmarks
+#
+# RETURNS:
+#   list of displayable menu bookmarks. migtht be regenerated.
 label mas_bookmarks_unbookmark(bookmarks_items):
     python:
-        def _gen_items_into_check_items(items):
+        def _convert_items(items, convert_into):
             """
             A local func to convert items from
             gen scrollable menu format into check scrollable one
+            and vice versa
 
-            IN: items - list of items to convert
+            IN:
+                items - list of items to convert
+                convert_into - type of conversion
+                    either "CHECK_ITEMS"
+                    or "GEN_ITEMS"
 
             OUT:
                 list of converted items
             """
-            new_items = list()
+            if convert_into == "CHECK_ITEMS":
+                new_items = []
 
-            for prompt, value, is_italic, is_bold in items:
-                if is_italic:
-                    prompt = "{0}{1}{2}".format("{i}", prompt, "{/i}")
+                for item in items:
+                    prompt = item[0]
+                    # italic
+                    if item[2]:
+                        prompt = "{0}{1}{2}".format("{i}", prompt, "{/i}")
 
-                if is_bold:
-                    prompt = "{0}{1}{2}".format("{b}", prompt, "{/b}")
+                    # bold
+                    if item[3]:
+                        prompt = "{0}{1}{2}".format("{b}", prompt, "{/b}")
 
-                new_items.append(
-                    (prompt, value, False, True, False)
-                )
+                    new_items.append(
+                        (prompt, item[1], False, True, False)
+                    )
+
+            else:
+                new_items = [
+                    (item[0], item[1], False, False)
+                    for item in items
+                ]
 
             return new_items
 
-        bookmarks_items = _gen_items_into_check_items(bookmarks_items)
+        bookmarks_items = _convert_items(bookmarks_items, "CHECK_ITEMS")
 
     show monika 1eua at t21
 
@@ -2647,20 +2674,21 @@ label mas_bookmarks_unbookmark(bookmarks_items):
     call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Remove selected.")
 
     $ bookmarks_to_remove = _return
+    $ bookmarks_items = _convert_items(bookmarks_items, "GEN_ITEMS")
 
-    if not bookmarks_to_remove:
-        # nothing was selected
-        return False
+    # sanity check that the user selected something
+    if bookmarks_to_remove:
+        python:
+            for ev_label in bookmarks_to_remove.iterkeys():
+                # remove the bookmark from persist (if in it)
+                if ev_label in persistent._mas_player_bookmarked:
+                    persistent._mas_player_bookmarked.remove(ev_label)
 
-    # the user selected something
-    python:
-        for ev_label in bookmarks_to_remove.iterkeys():
-            # remove the bookmark from persist (if in it)
-            if ev_label in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked.remove(ev_label)
+            # filter the removed items to show the menu again
+            bookmarks_items = filter(lambda item: item[1] not in bookmarks_to_remove, bookmarks_items)
 
-    show monika at t11
-    m 1dsa "Okay, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
-    m 3hua "All done!"
+        show monika at t11
+        m 1dsa "Okay, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+        m 3hua "All done!"
 
-    return
+    return bookmarks_items
