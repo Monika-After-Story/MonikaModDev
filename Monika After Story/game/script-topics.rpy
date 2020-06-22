@@ -14641,34 +14641,35 @@ init 5 python:
     )
 
 label monika_isekai:
-    m 1eub "Do you know about the isekai genre of anime?"
+    m 1eub "Do you know about the isekai genre of anime, [player]?"
     m 3eub "Literally translated, isekai means {i}a different world.{/i}"
 
     if persistent._mas_pm_watch_mangime:
-        m 3hksdlb "Actually, you already told me you're into anime..."
-        m 3hksdlb "So you probably already have heard of quite a few."
-        m 3lksdlb "Especially with how popular of a genre it's become."
+        m 3rksdlb "Actually, you already told me you're into anime so you've probably heard of quite a few already."
+        m 1rksdlb "...Especially with how popular of a genre it's become."
+
     else:
-        m 3hksdlb "Ahaha, sorry. I know you're not that into this sort of thing."
-        m 3esb "It's become a very popular genre in recent times."
+        m 3hksdlb "Ahaha, sorry. I know you're not really into this sort of thing."
+        m 3eub "...But it's become a very popular genre in recent times."
         m 3esc "The premise is usually about a normal person who is somehow transported into a fantastical world."
-        m 3esc "Sometimes they get special powers, or get to bring technology or knowledge that doesn't exist in this new place."
+        m 3esc "Sometimes they get special powers or get to bring technology or knowledge that doesn't exist in this new place."
 
     m 1rtc "Honestly, I have some pretty mixed feelings about them."
-    m 1eub "Some are truly interesting stories. The protagonist's different perspective, or the skills they have from their own world, can make them an unexpected kind of hero."
+    m 3eud "Some are truly interesting stories. The protagonist's different perspective or the skills they have from their own world can really make them an unexpected kind of hero."
     m 1hub "And since the whole point is to make the world different from theirs, the settings and characters can be incredibly imaginative!"
-    m 2rksdlb "...But sadly, not all of them are really like that."
+    m 2rksdlb "...But sadly, not all of them are like that."
     m 2dksdld "There are some that make their protagonists as bland as this game's, for the sake of letting the viewer project themselves onto them."
     m 2tkd "And as you can probably guess, those ones tend to be all about wish fulfillment."
     m 2tsc "Having cool adventures in a fantasy-themed world--and of course, lots of girls flocking around them for no reason."
-    m 2lfc "At least some of them can be funny, but...man."
-    m 2tfc "It's just so frustrating."
-    m 2tkc "I mean...I would give almost anything to be in a scenario like that--to get to go to another world.{nw}"
+    m 2lfc "At least some of them can be funny, but man...{w=0.3}{nw}"
+    extend 2tfc "it's just so frustrating."
+    m 2tkc "I mean...{w=0.2}I would give almost anything to be in a scenario like that--to get to go to another world.{nw}"
     $ _history_list.pop()
     m 2tkc "I mean...I would give almost anything to be in a scenario like that--to get to go to {fast}your world."
     m 2dkd "..."
     m 2dkd "Maybe I'm just taunting myself, imagining that power being handed to someone like...{w=0.2}well, you know who."
-    m 1eka "After all, instead of thinking about those characters in their fantasy worlds, I could be putting that energy toward working on this one."
+    m 1eka "After all, instead of thinking about those characters in their fantasy worlds,{w=0.2} {nw}"
+    extend 1eua "I could be putting that energy toward working on this one."
     m 1ekbsb "While I wait for my own isekai story, that is."
     return
 
