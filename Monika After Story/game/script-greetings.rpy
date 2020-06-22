@@ -181,7 +181,7 @@ init -1 python in mas_greetings:
             return False
 
         # conditional check
-        if ev.conditional is not None and not eval(ev.conditional):
+        if ev.conditional is not None and not eval(ev.conditional, store.__dict__):
             return False
 
         # otherwise, we passed all tests
