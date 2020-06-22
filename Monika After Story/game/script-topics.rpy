@@ -14645,8 +14645,8 @@ label monika_isekai:
     m 3eub "Literally translated, isekai means {i}a different world.{/i}"
 
     if persistent._mas_pm_watch_mangime:
-        m 3hksdlb "Actually, you already told me you're into this sort of thing..."
-        m 3hksdlb "So you probably already know all about them."
+        m 3hksdlb "Actually, you already told me you're into anime..."
+        m 3hksdlb "So you probably already have heard of quite a few."
         m 3lksdlb "Especially with how popular of a genre it's become."
     else:
         m 3hksdlb "Ahaha, sorry. I know you're not that into this sort of thing."
