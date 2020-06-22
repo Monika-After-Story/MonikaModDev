@@ -2288,15 +2288,12 @@ label mas_birthdate_year_redux:
 
 label mas_birthdate_year_redux_select:
     python:
-        end_year = datetime.date.today().year - 5
+        end_year = datetime.date.today().year - 6
         beg_year = end_year - 95
 
-        yearrange = range(beg_year, end_year)
-        yearrange.reverse()
+        yearrange = range(end_year, beg_year, -1)
 
-        yearmenu=[]
-        for y in yearrange:
-            yearmenu.append((str(y), y, False, False))
+        yearmenu = [(str(y), y, False, False) for y in yearrange]
 
     show monika 2eua at t21
     $ renpy.say(m, "What year were you born?", interact=False)

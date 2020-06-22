@@ -1083,14 +1083,7 @@ init -1 python in evhand:
 #    MAIN_XALIGN = -0.08
     LEFT_XALIGN = -0.10
     LEFT_AREA = (LEFT_X, LEFT_Y, LEFT_W, LEFT_H)
-    LEFT_SHIFT = 68
-
-    UNSE_X = 680
-    UNSE_Y = 40
-    UNSE_W = 560
-    UNSE_H = 640
-    UNSE_XALIGN = -0.05
-    UNSE_AREA = (UNSE_X, UNSE_Y, UNSE_W, UNSE_H)
+    LEFT_EXTRA_SPACE = 68
 
     # time stuff
     import datetime
@@ -2640,34 +2633,34 @@ label mas_bookmarks_unbookmark(bookmarks_items):
 
             return new_items
 
-        bookmarks_to_derandom = _gen_items_into_check_items(bookmarks_items)
+        bookmarks_items = _gen_items_into_check_items(bookmarks_items)
 
     show monika 1eua at t21
 
     # decicde which prompt
-    if len(bookmarks_to_derandom) > 1:
+    if len(bookmarks_items) > 1:
         $ renpy.say(m, "Which bookmarks do you want to remove?", interact=False)
 
     else:
         $ renpy.say(m, "Just select the bookmark if you're sure you want to remove it.", interact=False)
 
-    call screen mas_check_scrollable_menu(bookmarks_to_derandom, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Remove selected.")
+    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Remove selected.")
 
-    $ derandom_items = _return
+    $ bookmarks_to_remove = _return
 
-    if not derandom_items:
+    if not bookmarks_to_remove:
         # nothing was selected
-        return
+        return False
 
     # the user selected something
     python:
-        for ev_label in derandom_items.iterkeys():
+        for ev_label in bookmarks_to_remove.iterkeys():
             # remove the bookmark from persist (if in it)
             if ev_label in persistent._mas_player_bookmarked:
                 persistent._mas_player_bookmarked.remove(ev_label)
 
     show monika at t11
-    m 1eua "Okay, [player]..."
+    m 1dsa "Okay, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
     m 3hua "All done!"
 
     return

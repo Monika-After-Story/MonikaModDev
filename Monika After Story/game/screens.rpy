@@ -2610,14 +2610,13 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
     fixed:
         anchor (0, 0)
-        xpos left_area[0]
-        ypos left_area[1]
+        pos (left_area[0], left_area[1])
         xsize left_area[2]
 
         if cat_length != 1:
             ysize left_area[3]
         else:
-            ysize left_area[3] + evhand.LEFT_SHIFT
+            ysize left_area[3] + evhand.LEFT_EXTRA_SPACE
 
         bar:
             adjustment prev_adj
@@ -2814,7 +2813,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 #     display_area - area to display the menu in of the following format:
 #         (x, y, width, height)
 #     scroll_align - alignment of the scroll bar for the menu
-#     return_button_prompt - prompt for the return button
+#     return_button_prompt - prompt for the return button (is only used when the user's selected a button)
 #         (Default: 'Done')
 #     return_all - whether or not we return all items or only the items with True in their values
 #         (Default: False)

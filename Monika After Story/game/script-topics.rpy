@@ -510,7 +510,7 @@ label mas_topic_rerandom:
         mas_bookmarks_derand.ev_db_code = "EVE"
 
     call mas_rerandom
-    return
+    return _return
 
 init python in mas_bookmarks_derand:
     import store
@@ -646,16 +646,17 @@ label mas_rerandom:
     else:
         $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_one, interact=False)
 
-    call screen mas_check_scrollable_menu(derandomlist, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Rerandom Selected.")
+    call screen mas_check_scrollable_menu(derandomlist, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Allow selected.")
 
-    $ rerandom_items = _return
+    $ topics_to_rerandom = _return
 
-    if not rerandom_items:
-        return
+    if not topics_to_rerandom:
+        # selected nevermind
+        return "prompt"
 
     show monika at t11
     python:
-        for ev_label in rerandom_items.iterkeys():
+        for ev_label in topics_to_rerandom.iterkeys():
             mas_showEVL(ev_label, mas_bookmarks_derand.ev_db_code, _random=True)
             #Pop the derandom
             if ev_label in mas_bookmarks_derand.persist_var:
@@ -664,7 +665,7 @@ label mas_rerandom:
         if len(mas_bookmarks_derand.persist_var) == 0:
             mas_lockEVL(mas_bookmarks_derand.caller_label, "EVE")
 
-    m 1eua "Okay, [player]..."
+    m 1dsa "Okay, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
     m 3hua "All done!"
 
     # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
