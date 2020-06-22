@@ -1962,6 +1962,20 @@ image monika 1tkbfu:
         0.06
         repeat
 
+image monika 1tkbsu:
+    block:
+        "monika 1tkbsu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dkbsu_static"
+        0.06
+        repeat
+
 image monika 1tkc:
     block:
         "monika 1tkc_static"
@@ -6963,20 +6977,6 @@ image monika 3wud:
             choice:
                 7
         "monika 3dud_static"
-        0.06
-        repeat
-
-image monika 3wuo:
-    block:
-        "monika 3wuo_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3duo_static"
         0.06
         repeat
 

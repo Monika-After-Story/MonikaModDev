@@ -1266,6 +1266,40 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_falling_in_love_at_a_coffee_shop",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Falling in Love at a Coffee Shop",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_falling_in_love_at_a_coffee_shop:
+    m 1tub "{i}~I think that possibly, maybe I'm falling for you~{/i}"
+    m 1dubsb "{i}~Yes, there's a chance that I've fallen quite hard over you~{/i}"
+    m 1ekbsb "{i}~I've seen the waters that make your eyes shine, now I'm shining too~{/i}"
+    m 1dkbsu "{i}~Because, oh, because I've fallen quite hard over you~{/i}"
+    m 1ekd "{i}~If I didn't know you, I'd rather not know~{/i}"
+    m 2dkd "{i}~If I couldn't have you, I'd rather be alone~{/i}"
+    m 2hku "{i}~I never knew just what it was~{/i}"
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubsb "{i}~About this old coffee shop I love so much~{/i}"
+    m 5hubsa "{i}~All of the while, I never knew~{/i}"
+    m 5lubsa "..."
+    show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
+    m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
+    extend 3rtc "or a particularly unremarkable protagonist."
+    m 3hubsa "Then when you have time to think, you realize it isn't the coffee shop, it's the person you meet there each day."
+    m 1tkbsu "Or in my case, it wasn't the protagonist at all...{w=0.2}{nw}"
+    extend 3dkbfu "it was the beautiful person who was really looking through those eyes~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_wonderwall",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Wonderwall",
