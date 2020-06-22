@@ -1161,6 +1161,77 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_cant_help_falling_in_love",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Can't Help Falling in Love",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_cant_help_falling_in_love(from_long=False):
+    m 1dud "{cps=16}{i}~Wise men say~{/i}{/cps}"
+    m 1dub "{cps=16}{i}~Only fools rush in~{/i}{/cps}"
+    m 1dud "{cps=16}{i}~But I can't help{w=0.3}{/i}{/cps}{nw}"
+    extend 1ekbsb "{cps=16}{i} falling in love with you~{/i}{/cps}"
+    m 3ekbsa "{cps=16}{i}~Shall I stay?~{/i}{/cps}"
+    m 3dkb "{cps=16}{i}~Would it be a sin~{/i}{/cps}"
+    m 1dud "{cps=16}{i}~If I can't help{w=0.3}{/i}{/cps}{nw}"
+    extend 1dubsb "{cps=16}{i} falling in love with you?~{/i}{/cps}"
+
+    if not from_long:
+        m 1dkbsa "..."
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{w=0.5}{nw}"
+        extend 5hubsb " Ahaha~"
+        m 1ekbsa "I love you, [player]~"
+        $ mas_ILY()
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_cant_help_falling_in_love_long",
+            category=[store.mas_songs.TYPE_LONG],
+            prompt="Can't Help Falling in Love",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_cant_help_falling_in_love_long:
+    call mas_song_cant_help_falling_in_love(from_long=True)
+    call .second_verse
+    call .third_verse
+    call .second_verse
+    call .third_verse
+
+    m 1ekbfb "{cps=16}{i}~For I can't help{w=0.3} falling in love{w=0.5} with{w=0.5} you~{/i}{/cps}"
+    return
+
+    label .second_verse:
+        m 1dud "{cps=24}{i}~Like a river flows~{/i}{/cps}"
+        m 1dub "{cps=24}{i}~Surely to the sea~{/i}{/cps}"
+        m 1ekbsb "{cps=24}{i}~Darling, so it goes~{/i}{/cps}"
+        m 1ekbsa "{cps=24}{i}~Some things{w=0.3}{/i}{/cps}{nw}"
+        extend 3ekbsb "{cps=24}{i} are meant to be~{/i}{/cps}"
+        return
+
+    label .third_verse:
+        m 1dud "{cps=16}{i}~Take my hand~{/i}{/cps}"
+        m 1dub "{cps=16}{i}~Take my whole life,{w=0.3} too~{/i}{/cps}"
+        m 1dud "{cps=16}{i}~For I can't help{w=0.3} falling in love with you~{/i}{/cps}"
+        return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_lamour_toujours",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="L'Amour Toujours",
