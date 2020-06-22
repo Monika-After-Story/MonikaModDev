@@ -14285,7 +14285,8 @@ init 5 python:
 
 label monika_wabi_sabi:
     m 1eud "Say [player], have you ever heard of wabi-sabi?"
-    m 3hub "It's a traditional Japanese concept relating to an aspect of beauty."
+    m 3hub "Wabi-sabi is a philosophy emphasizing the idea that we should not obsess over perfection to the point we are crushed by failure.
+    m      "It derives from traditional Japanese and Buddhistic philosophy, surrounding the acceptance of the temporary state of all things."
     m 3dub "It states that beyond everything, beauty is found in what's impermanent and imperfect."
     m 3wub "Like a scar on a rugged face, or a discolored hand, or even asymmetric features."
     m 1tsu "Don't you find that concept rather romantic?"
