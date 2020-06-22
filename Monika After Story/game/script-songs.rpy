@@ -1268,7 +1268,7 @@ label mas_song_wonderwall_analysis(from_song=False):
     m 1eud "The song has been hailed as a classic and is one of the most popular songs ever made...{w=0.3} {nw}"
     extend 3rsc "So what makes some people hate it so much?"
     m 3esc "I think there are several answers to this question. {w=0.2}The first being that it's been overplayed."
-    m 3rksdla "While some people listen to the same music for a long periods of time, not everybody can do that."
+    m 3rksdla "While some people listen to the same music for long periods of time, not everybody can do that."
     m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player], ahaha~"
     m 1esd "Another argument you could make is that it's overrated in some ways..."
     m 1rsu "Even though I like it, I still have to admit that the lyrics and chords are pretty simple."
@@ -1282,7 +1282,7 @@ label mas_song_wonderwall_analysis(from_song=False):
     m 2dksdlc "It's a little sad if anything...{w=0.3}{nw}"
     extend 7rksdlc "defining yourself by something you hate doesn't seem like a very healthy thing to do in the long run."
     m 3eud "I guess my point here is to just be yourself and like what you like."
-    m 3eka "And that goes both ways... {w=0.3}You shouldn't feel pressured into liking something because others do, and in the same way, you shouldn't dismiss something solely because it's popular."
+    m 3eka "And that goes both ways... {w=0.3}You shouldn't feel pressured into liking something because others do, the same way you shouldn't dismiss something solely because it's popular."
     m 1hua "As long as you follow your heart and stay true to yourself, you can never go wrong, [player]~"
     return
 
