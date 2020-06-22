@@ -14668,7 +14668,7 @@ label monika_isekai:
     m 2tkc "I mean...I would give almost anything to be in a scenario like that--to get to go to {fast}your world."
     m 2dkd "..."
     m 2dkd "Maybe I'm just taunting myself, imagining that power being handed to someone like...{w=0.2}well, you know who."
-    m 1eka "After all, I could be using that energy on shows and books I enjoy instead."
+    m 1eka "After all, instead of thinking about those characters in their fantasy worlds, I could be putting that energy toward working on this one."
     m 1ekbsb "While I wait for my own isekai story, that is."
     return
 
