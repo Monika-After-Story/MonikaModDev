@@ -4,62 +4,73 @@ default persistent._mas_current_weather = "auto"
 
 ### spaceroom weather art
 #Big thanks to Legendkiller21/Orca/Velius for helping out with these
-image def_weather_day = Movie(
-    channel="window_1",
-    play="mod_assets/window/def_day_mask.mp4",
-    mask=None
+image def_weather = MASFallbackFilterDisplayable(
+    day=Movie(
+        channel="window_1",
+        play="mod_assets/window/def_day_mask.mp4",
+        mask=None
+    ),
+    night=Movie(
+        channel="window_2",
+        play="mod_assets/window/def_night_mask.mp4",
+        mask=None
+    )
 )
-image def_weather_day_fb = "mod_assets/window/def_day_mask_fb.png"
-
-image def_weather_night = Movie(
-    channel="window_2",
-    play="mod_assets/window/def_night_mask.mp4",
-    mask=None
+image def_weather_fb = MASFallbackFilterDisplayable(
+    day="mod_assets/window/def_day_mask_fb.png",
+    night="mod_assets/window/def_night_mask_fb.png",
 )
-image def_weather_night_fb = "mod_assets/window/def_night_mask_fb.png"
 
-image rain_weather_day = Movie(
-    channel="window_3",
-    play="mod_assets/window/rain_day_mask.mpg",
-    mask=None
+image rain_weather = MASFallbackFilterDisplayable(
+    day=Movie(
+        channel="window_3",
+        play="mod_assets/window/rain_day_mask.mpg",
+        mask=None
+    ),
+    night=Movie(
+        channel="window_4",
+        play="mod_assets/window/rain_night_mask.mpg",
+        mask=None
+    )
 )
-image rain_weather_day_fb = "mod_assets/window/rain_day_mask_fb.png"
-
-image rain_weather_night = Movie(
-    channel="window_4",
-    play="mod_assets/window/rain_night_mask.mpg",
-    mask=None
+image rain_weather_fb = MASFallbackFilterDisplayable(
+    day="mod_assets/window/rain_day_mask_fb.png",
+    night="mod_assets/window/rain_night_mask_fb.png",
 )
-image rain_weather_night_fb = "mod_assets/window/rain_night_mask_fb.png"
 
-image overcast_weather_day = Movie(
-    channel="window_5",
-    play="mod_assets/window/overcast_day_mask.mpg",
-    mask=None
+image overcast_weather = MASFallbackFilterDisplayable(
+    day=Movie(
+        channel="window_5",
+        play="mod_assets/window/overcast_day_mask.mpg",
+        mask=None
+    ),
+    night=Movie(
+        channel="window_6",
+        play="mod_assets/window/overcast_night_mask.mpg",
+        mask=None
+    ),
 )
-image overcast_weather_day_fb = "mod_assets/window/overcast_day_mask_fb.png"
-
-image overcast_weather_night = Movie(
-    channel="window_6",
-    play="mod_assets/window/overcast_night_mask.mpg",
-    mask=None
+image overcast_weather_fb = MASFallbackFilterDisplayable(
+    day="mod_assets/window/overcast_day_mask_fb.png",
+    night="mod_assets/window/overcast_night_mask_fb.png",
 )
-image overcast_weather_night_fb = "mod_assets/window/overcast_night_mask_fb.png"
 
-image snow_weather_day = Movie(
-    channel="window_7",
-    play="mod_assets/window/snow_day_mask.mp4",
-    mask=None
+image snow_weather = MASFallbackFilterDisplayable(
+    day=Movie(
+        channel="window_7",
+        play="mod_assets/window/snow_day_mask.mp4",
+        mask=None
+    ),
+    night=Movie(
+        channel="window_8",
+        play="mod_assets/window/snow_night_mask.mp4",
+        mask=None
+    ),
 )
-image snow_weather_day_fb = "mod_assets/window/snow_day_mask_fb.png"
-
-image snow_weather_night = Movie(
-    channel="window_8",
-    play="mod_assets/window/snow_night_mask.mp4",
-    mask=None
+image snow_weather_fb = MASFallbackFilterDisplayable(
+    day="mod_assets/window/snow_day_mask_fb.png",
+    night="mod_assets/window/snow_night_mask_fb.png",
 )
-image snow_weather_night_fb = "mod_assets/window/snow_night_mask_fb.png"
-
 
 ## end spaceroom weather art
 
@@ -593,7 +604,7 @@ init -10 python:
             self.mas_weather.WEATHER_MAP[weather_id] = self
 
         def __eq__(self, other):
-            if isinstance(other, MASWeather):
+            if isinstance(other, MASFilterableWeather):
                 return self.weather_id == other.weather_id
             return NotImplemented
 
@@ -928,135 +939,61 @@ init -10 python:
 init -1 python:
 
     # default weather (day + night)
-    mas_weather_def = MASWeather(
+    mas_weather_def = MASFilterableWeather(
         "def",
         "Clear",
-
-        # sp day
-        "def_weather_day",
-
-        # sp night
-        "def_weather_night",
-
+        "def_weather_fb",
+        "def_weather",
         precip_type=store.mas_weather.PRECIP_TYPE_DEF,
-
-        # islands bg day
-        isbg_wf_day="mod_assets/location/special/with_frame.png",
-        isbg_wof_day="mod_assets/location/special/without_frame.png",
-
-        # islands bg night
-        isbg_wf_night="mod_assets/location/special/night_with_frame.png",
-        isbg_wof_night="mod_assets/location/special/night_without_frame.png",
-
         unlocked=True
     )
 
     # rain weather
-    mas_weather_rain = MASWeather(
+    mas_weather_rain = MASFilterableWeather(
         "rain",
         "Rain",
-
-        # sp day and night
-        "rain_weather_day",
-
-        # sp night
-        "rain_weather_night",
-
+        "rain_weather_fb",
+        "rain_weather",
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
-
-        # islands bg day
-        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
-
-        # islands bg night
-        isbg_wf_night="mod_assets/location/special/night_rain_with_frame.png",
-        isbg_wof_night="mod_assets/location/special/night_rain_without_frame.png",
-
+        unlocked=True,
         entry_pp=store.mas_weather._weather_rain_entry,
         exit_pp=store.mas_weather._weather_rain_exit,
-
-        unlocked=True
     )
 
     # snow weather
-    mas_weather_snow = MASWeather(
+    mas_weather_snow = MASFilterableWeather(
         "snow",
         "Snow",
-
-        # sp day
-        "snow_weather_day",
-
-        # sp night
-        "snow_weather_night",
-
+        "snow_weather_Fb",
+        "snow_weather",
         precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
-
-        # islands bg day
-        isbg_wf_day="mod_assets/location/special/snow_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/snow_without_frame.png",
-
-        # islands bg night
-        isbg_wf_night="mod_assets/location/special/night_snow_with_frame.png",
-        isbg_wof_night="mod_assets/location/special/night_snow_without_frame.png",
-
+        unlocked=True,
         entry_pp=store.mas_weather._weather_snow_entry,
         exit_pp=store.mas_weather._weather_snow_exit,
-
-        unlocked=True
     )
 
     # thunder/lightning
-    mas_weather_thunder = MASWeather(
+    mas_weather_thunder = MASFilterableWeather(
         "thunder",
         "Thunder/Lightning",
-
-        # sp day and night
-        "rain_weather_day",
-
-        # sp night
-        "rain_weather_night",
-
+        "rain_weather_fb",
+        "rain_weather",
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
-
-        # islands bg day
-        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
-
-        # islands bg night
-        isbg_wf_night="mod_assets/location/special/night_rain_with_frame.png",
-        isbg_wof_night="mod_assets/location/special/night_rain_without_frame.png",
-
+        unlocked=True,
         entry_pp=store.mas_weather._weather_thunder_entry,
         exit_pp=store.mas_weather._weather_thunder_exit,
-
-        unlocked=True
     )
 
     #overcast
-    mas_weather_overcast = MASWeather(
+    mas_weather_overcast = MASFilterableWeather(
         "overcast",
         "Overcast",
-
-        # sp day
-        "overcast_weather_day",
-
-        # sp night
-        "overcast_weather_night",
-
+        "overcast_weather_fb",
+        "overcast_weather",
         precip_type=store.mas_weather.PRECIP_TYPE_OVERCAST,
-
-        # islands bg day
-        isbg_wf_day="mod_assets/location/special/overcast_with_frame.png",
-        isbg_wof_day="mod_assets/location/special/overcast_without_frame.png",
-
-        # islands bg night
-        isbg_wf_night="mod_assets/location/special/night_overcast_with_frame.png",
-        isbg_wof_night="mod_assets/location/special/night_overcast_without_frame.png",
-
+        unlocked=True,
         entry_pp=store.mas_weather._weather_overcast_entry,
         exit_pp=store.mas_weather._weather_overcast_exit,
-
-        unlocked=True
     )
 
 ### end defining weather objects
