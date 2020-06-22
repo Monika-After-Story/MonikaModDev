@@ -3466,6 +3466,20 @@ image monika 7rksdlb:
         0.06
         repeat
 
+image monika 7rksdlc:
+    block:
+        "monika 7rksdlc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 7dksdlc_static"
+        0.06
+        repeat
+
 image monika 7tubfu:
     block:
         "monika 7tubfu_static"
