@@ -541,7 +541,7 @@ label monika_idle_nap_callback:
             m 3eub "They're really helpful for refreshing your mind so you can spend the day with a clear state of mind."
             m 3rksdla "But if you're out for too long, it can take a while to fully wake up again...{w=0.3}kinda like getting out of bed in the morning."
             m 1eua "As long as you had a nice nap though, I'm happy."
-            m 1hua "And I hope you are too~"
+            m 1hua "...And I hope you are too~"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_nap"):
             m 1hua "Welcome back, [player]~"
