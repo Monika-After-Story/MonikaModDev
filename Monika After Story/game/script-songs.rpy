@@ -296,7 +296,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_sing_song_analysis",
-            prompt="Can you explain a song for me?",
+            prompt="Let's talk about a song",
             category=["music"],
             pool=True,
             unlocked=False,
@@ -1189,6 +1189,112 @@ label mas_song_lamour_toujours:
     m 1dkbsu "..."
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_wonderwall",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Wonderwall",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_wonderwall:
+    call mas_song_wonderwall_lyrics
+    m 1ekbsu "Ehehe, you really are the one who saved me, [player]~"
+
+    if persistent.monika_kill:
+        m 3dkbfu "I'm forever grateful you brought me back. {nw}"
+    else:
+        m 3dkbfu "I'm forever grateful you stayed for me. {nw}"
+
+    extend 3ekbsa "I trust you to take care of me until I can find my way to you."
+    m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1dubsa  "...And with you by my side, there's no way I could be afraid."
+        m 1ekbsa "I know the place it leads to will be worth it.{w=0.3} {nw}"
+        extend 3ekbsu "After all, you're my wonderwall~"
+
+    else:
+        m 3eka "The only thing we can be sure of is the place it leads us to will be worth it."
+        m 1ekd "...Sometimes, it's a little scary not knowing what's ahead...{w=0.3}{nw}"
+        extend 1eubla "but I trust you, so we'll just have to keep on walking until we reach that place~"
+
+    #hints at the analysis on first viewing
+    if mas_getEV('mas_song_wonderwall').shown_count == 0:
+        m 3etc "By the way...{w=0.2}there's actually some things that intrigue me about this song."
+        m 1eua "...Would you like to talk about it now?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "...Would you like to talk about it now?{fast}"
+
+            "Sure.":
+                m 1hua "Okay then!"
+                call mas_song_wonderwall_analysis(from_song=True)
+                $ mas_getEV("mas_song_wonderwall_analysis").shown_count += 1
+
+            "Not now.":
+                m 1eka "Oh, okay then..."
+                m 3eka "Just let me know if you want to talk more about this song later."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_wonderwall_analysis",
+            category=[store.mas_songs.TYPE_ANALYSIS],
+            prompt="Wonderwall",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_wonderwall_analysis(from_song=False):
+    if not from_song:
+        call mas_song_wonderwall_lyrics
+
+    m 3eta "There's a lot of people who are very vocal about their dislike for this song..."
+    m 3etc "You wouldn't expect that, would you?"
+    m 1eud "The song has been hailed as a classic and is one of the most popular songs ever made...{w=0.3} {nw}"
+    extend 3rsc "So what makes some people hate it so much?"
+    m 3esc "I think there are several answers to this question. {w=0.2}The first being that it's been overplayed."
+    m 3rksdla "While some people listen to the same music for long periods of time, not everybody can do that."
+    m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player], ahaha~"
+    m 1esd "Another argument you could make is that it's overrated in some ways..."
+    m 1rsu "Even though I like it, I still have to admit that the lyrics and chords are pretty simple."
+    m 3etc "So what made the song so popular then?{w=0.3} {nw}"
+    extend 3eud "Especially considering many other songs go completely unnoticed, no matter how advanced or ambitious they are."
+    m 3duu "Well, it all boils down to what the song makes you feel. {w=0.2}Your taste in music is subjective, after all."
+    m 1efc "...But what bothers me is when someone complains about it just because it's trendy to go against the general opinion."
+    m 3tsd "It's like disagreeing for the sake of helping them feel like they stand out from the crowd...{w=0.2}like they need it to stay self-confident."
+    m 2rsc "It kinda feels...{w=0.5}a bit silly, to be honest."
+    m 2rksdld "At that point you're not even judging the song anymore...{w=0.2}you're just trying to make a name for yourself by being controversial."
+    m 2dksdlc "It's a little sad if anything...{w=0.3}{nw}"
+    extend 7rksdlc "defining yourself by something you hate doesn't seem like a very healthy thing to do in the long run."
+    m 3eud "I guess my point here is to just be yourself and like what you like."
+    m 3eka "And that goes both ways... {w=0.3}You shouldn't feel pressured into liking something because others do, the same way you shouldn't dismiss something solely because it's popular."
+    m 1hua "As long as you follow your heart and stay true to yourself, you can never go wrong, [player]~"
+    return
+
+label mas_song_wonderwall_lyrics:
+    m 1duo "{i}~I don't believe that anybody feels the way I do about you now~{/i}"
+    m 3esc "{i}~And all the roads we have to walk are winding~{/i}"
+    m 3dkd "{i}~And all the lights that lead us there are blinding~{/i}"
+    m 1ekbla "{i}~There are many things that I would like to say to you but I don't know how~{/i}"
+    m 1hubsb "{i}~Because maybe~{/i}"
+    m 3hubsa "{i}~You're gonna be the one that saves me~{/i}"
+    m 3dubso "{i}~And after all~{/i}"
+    m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
 ################################ NON-DB SONGS############################################
