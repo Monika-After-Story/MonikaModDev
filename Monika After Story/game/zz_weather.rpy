@@ -10,6 +10,10 @@ image def_weather = MASFallbackFilterDisplayable(
         play="mod_assets/window/def_day_mask.mp4",
         mask=None
     ),
+    sunset=Movie(
+        play="mod_assets/window/def_sunset_mask.mp4",
+        mask=None
+    ),
     night=Movie(
         channel="window_2",
         play="mod_assets/window/def_night_mask.mp4",
@@ -18,6 +22,7 @@ image def_weather = MASFallbackFilterDisplayable(
 )
 image def_weather_fb = MASFallbackFilterDisplayable(
     day="mod_assets/window/def_day_mask_fb.png",
+    sunset="mod_assets/window/def_sunset_mask_fb.png",
     night="mod_assets/window/def_night_mask_fb.png",
 )
 
@@ -61,6 +66,10 @@ image snow_weather = MASFallbackFilterDisplayable(
         play="mod_assets/window/snow_day_mask.mp4",
         mask=None
     ),
+    sunset=Movie(
+        play="mod_assets/window/snow_sunset_mask.mp4",
+        mask=None
+    ),
     night=Movie(
         channel="window_8",
         play="mod_assets/window/snow_night_mask.mp4",
@@ -69,6 +78,7 @@ image snow_weather = MASFallbackFilterDisplayable(
 )
 image snow_weather_fb = MASFallbackFilterDisplayable(
     day="mod_assets/window/snow_day_mask_fb.png",
+    sunset="mod_assets/window/snow_sunset_mask_fb.png",
     night="mod_assets/window/snow_night_mask_fb.png",
 )
 
@@ -964,7 +974,7 @@ init -1 python:
     mas_weather_snow = MASFilterableWeather(
         "snow",
         "Snow",
-        "snow_weather_Fb",
+        "snow_weather_fb",
         "snow_weather",
         precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
         unlocked=True,

@@ -3008,15 +3008,16 @@ init -10 python:
             REUTRNS: value for a given filter
             """
             value = self._raw_get(flt)
-            nxt_flt = flt
+            cur_flt = flt
             while value is None:
-                nxt_flt = store.mas_sprites._rslv_flt(nxt_flt)
+                nxt_flt = store.mas_sprites._rslv_flt(cur_flt)
 
-                if nxt_flt == nxt_flt:
+                if nxt_flt == cur_flt:
                     # if flt doesnt change, we have reached teh bottom
                     return defval
 
                 value = self._raw_get(nxt_flt)
+                cur_flt = nxt_flt
 
             return value
 
