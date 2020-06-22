@@ -1964,7 +1964,7 @@ init -10 python:
 
             RETURNS: room image, or None if not found
             """
-            precip_type = MASWeather.getPrecipTypeFrom(weather)
+            precip_type = MASFilterableWeather.getPrecipTypeFrom(weather)
 
             # get image using normal ways
             img = self._get_image(flt, precip_type)
@@ -2007,7 +2007,7 @@ init -10 python:
                 NOTE: only filters that have a room with the given weather
                     are returned. No lookback.
             """
-            precip_type = MASWeather.getPrecipTypeFrom(weather)
+            precip_type = MASFilterableWeather.getPrecipTypeFrom(weather)
 
             results = {}
             for flt in self._flt_man.filters_day():
@@ -2056,7 +2056,7 @@ init -10 python:
                 NOTE: only filters that have a room with the given weather
                     are returned. No lookback.
             """
-            precip_type = MASWeather.getPrecipTypeFrom(weather)
+            precip_type = MASFilterableWeather.getPrecipTypeFrom(weather)
 
             results = {}
             for flt in self._flt_man.filters_night():

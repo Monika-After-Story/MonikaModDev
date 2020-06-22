@@ -341,6 +341,24 @@ python early:
         return renpy.easy.displayable(store.mas_sprites._gen_im(flt, img))
 
 
+    def MASFallbackFilterDisplayable(**filter_pairs):
+        """
+        Generates a dynamic displayable for filters that applies fallback
+        mechanics. If you don't need fallback mechanics, use the filter
+        switches.
+
+        IN:
+            **filter_pairs - filter=val args to use. invalid filters are
+                ignored.
+
+        RETURNS: Dynamic displayable that handles fallback filters
+        """
+        return DynamicDisplayable(
+            mas_fbf_select,
+            MASFilterMapFallback(**filter_pairs)
+        )
+
+
     def MASFilterWeatherDisplayable(use_fb, **filter_pairs):
         """
         Generates a dynamic displayable that maps filters to weathers for
@@ -469,6 +487,8 @@ init -2 python:
             st - renpy related
             at - renpy related
             mfwm - MASFilterWeatherMap to select image wtih
+
+        RETURNS: dynamic disp output
         """
         return (
             mfwm.fw_get(
@@ -477,6 +497,21 @@ init -2 python:
             ),
             None
         )
+
+
+    def mas_fbf_select(st, at, mfmfb):
+        """
+        Selects an image based on current filter, respecting fallback
+        mechanics.
+
+        IN:
+            st - renpy related
+            at - renpy related
+            mfmfb - MASFilterMapFallback object to select image with
+
+        RETURNS: dynamic disp output
+        """
+        return mfmfb.get(store.mas_sprites.get_filter()), None
 
 
 init 1 python in mas_sprites:
@@ -2896,16 +2931,13 @@ init -10 python:
             None
         """
 
-        def __init__(self, default=None, **filter_pairs):
+        def __init__(self, **filter_pairs):
             """
             Constructor
 
             Passes values directly to the internal MFM
 
             IN:
-                default - default value to apply for all filters, if 
-                    desired. 
-                    (Default: None)
                 **filter_pairs - filter=val args to use. invalid filters
                     are ignored.
             """
@@ -2937,6 +2969,67 @@ init -10 python:
             RETURNS: MASFilterMap
             """
             return self.__mfm
+
+
+    class MASFilterMapFallback(MASFilterMapSimple):
+        """
+        MASFilterMap that respects fallback mechanics.
+
+        Classes that need fallback behavior should just extend this one as a
+        base.
+
+        This will NOT cache filter maps.
+
+        PROPERTIES:
+            None
+        """
+
+        def __init__(self, **filter_pairs):
+            """
+            Constructor
+
+            IN:
+                **filter_pairs - filter=val args to use. invalid filters are
+                    ignored.
+            """
+            super(MASFilterMapFallback, self).__init__(**filter_pairs)
+
+        def get(self, flt, defval=None):
+            """
+            Gets value from map based on filter. This follows fallback
+            mechanics until a non-None value is found.
+
+            IN:
+                flt - filter to lookup
+                defval - default value to return if no non-None value is 
+                    found after exhausting all fallbacks.
+                    (Default: None)
+
+            REUTRNS: value for a given filter
+            """
+            value = self._raw_get(flt)
+            nxt_flt = flt
+            while value is None:
+                nxt_flt = store.mas_sprites._rslv_flt(nxt_flt)
+
+                if nxt_flt == nxt_flt:
+                    # if flt doesnt change, we have reached teh bottom
+                    return defval
+
+                value = self._raw_get(nxt_flt)
+
+            return value
+
+        def _raw_get(self, flt):
+            """
+            Gets value from map based on filter
+
+            IN:
+                flt - filter to lookup
+
+            RETURNS: value for the given filter
+            """
+            return super(MASFilterMapFallback, self).get(flt)
 
 
 init -2 python:

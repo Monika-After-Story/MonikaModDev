@@ -188,7 +188,6 @@ init -99 python in mas_weather:
     import random
     import datetime
     import store
-    import renpy
 
     #NOTE: Not persistent since weather changes on startup
     force_weather = False
@@ -235,8 +234,9 @@ init -99 python in mas_weather:
 
         RETURNS: the created image tag
         """
+        global old_weather_id
         tag = old_weather_tag.format(old_weather_id)
-        renpy.image(tag, disp)
+        store.renpy.image(tag, disp)
         OLD_WEATHER_OBJ[old_weather_id] = tag
         old_weather_id += 1 
 
@@ -509,20 +509,10 @@ init -10 python:
 
         # create weather images
         dyn_tag = store.mas_weather._generate_old_image(
-            MASLiteralFilterSwitch(
-                sp_day,
-                False,
-                day=sp_day,
-                night=sp_night
-            )
+            MASFallbackFilterDisplayable(day=sp_day, night=sp_night)
         )
         stt_tag = store.mas_weather._generate_old_image(
-            MASLiteralFilterSwitch(
-                sp_day_fb,
-                False,
-                day=sp_day_fb,
-                night=sp_night_fb
-            )
+            MASFallbackFilterDisplayable(day=sp_day_fb, night=sp_night_fb)
         )
 
         return MASFilterableWeather(
@@ -592,44 +582,26 @@ init -10 python:
 
             self.weather_id = weather_id
             self.prompt = prompt
-            self.sp_day = sp_day
-            self.sp_night = sp_night
+            self.img_tag = img_tag
+            self.ani_img_tag = ani_img_tag
             self.precip_type = precip_type
-            self.isbg_wf_day = isbg_wf_day
-            self.isbg_wof_day = isbg_wof_day
-            self.isbg_wf_night = isbg_wf_night
-            self.isbg_wof_night = isbg_wof_night
             self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
 
-            # clean day/night
-            if sp_night is None:
-                self.sp_night = sp_day
-
-            # clean islands
-            if isbg_wf_night is None:
-                self.isbg_wf_night = isbg_wf_day
-
-            if isbg_wof_night is None:
-                self.isbg_wof_night = isbg_wof_day
-
             # add to weather map
             self.mas_weather.WEATHER_MAP[weather_id] = self
-
 
         def __eq__(self, other):
             if isinstance(other, MASWeather):
                 return self.weather_id == other.weather_id
             return NotImplemented
 
-
         def __ne__(self, other):
             result = self.__eq__(other)
             if result is NotImplemented:
                 return result
             return not result
-
 
         def entry(self, old_weather):
             """
@@ -638,13 +610,23 @@ init -10 python:
             if self.entry_pp is not None:
                 self.entry_pp(old_weather)
 
-
         def exit(self, new_weather):
             """
             Runs exit programming point
             """
             if self.exit_pp is not None:
                 self.exit_pp(new_weather)
+
+        def get_mask(self):
+            """
+            Returns the appropriate weathermask based on animation settings
+
+            RETURNS: image tag to use
+            """
+            if persistent._mas_disable_animations or self.ani_img_tag is None:
+                return self.img_tag
+
+            return self.ani_img_tag
 
         @staticmethod
         def getPrecipTypeFrom(weather=None):
@@ -672,44 +654,18 @@ init -10 python:
             """
             self.unlocked = data_tuple[0]
 
-
         def sp_window(self, day):
+            """DEPRECATED
+            Use get_mask instead.
+            This returns whatever get_mask returns.
             """
-            Returns spaceroom masks for window
-
-            IN:
-                day - True if we want day time masks
-
-            RETURNS:
-                image tag for the corresponding mask to use
-            """
-            # TODO: swap to filter-based
-            if day:
-                return self.sp_day
-
-            return self.sp_night
-
+            return self.get_mask()
 
         def isbg_window(self, day, no_frame):
+            """DEPRECATED
+            Islands are now separate images. See script-islands-event.
             """
-            Returns islands bg PATH for window
-
-            IN:
-                day - True if we want daytime bg
-                no_frame - True if we want no frame
-            """
-            if day:
-                if no_frame:
-                    return self.isbg_wof_day
-
-                return self.isbg_wf_day
-
-            # else night
-            if no_frame:
-                return self.isbg_wof_night
-
-            return self.isbg_wf_night
-
+            return ""
 
         def toTuple(self):
             """
@@ -838,10 +794,7 @@ init -10 python:
                         )
                     )
 
-            super(MASFilterWeatherMap, self).__init__(
-                default=None,
-                **filter_pairs
-            )
+            super(MASFilterWeatherMap, self).__init__(**filter_pairs)
             self.use_fb = False
 
         def fw_get(self, flt, weather=None):
@@ -863,7 +816,10 @@ init -10 python:
 
             RETURNS: value for the given filter and weather
             """
-            return self._raw_fw_get(flt, MASWeather.getPrecipTypeFrom(weather))
+            return self._raw_fw_get(
+                flt,
+                MASFilterableWeather.getPrecipTypeFrom(weather)
+            )
 
         def get(self, flt):
             """

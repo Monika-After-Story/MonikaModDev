@@ -376,23 +376,12 @@ init python:
         IN:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
-
-        ASSUMES:
-            mas_is_raining
-            mas_is_snowing
         """
         # hide the existing mask
         renpy.hide("rm")
 
         # get current weather masks
-        # TODO: change to pass in current filter
-        mask = mas_current_weather.sp_window(
-            mas_isCurrentFlt("day")
-        )
-
-        # should we use fallbacks instead?
-        if persistent._mas_disable_animations:
-            mask += "_fb"
+        mask = mas_current_weather.get_mask()
 
         # now show the mask
         renpy.show(mask, tag="rm")
