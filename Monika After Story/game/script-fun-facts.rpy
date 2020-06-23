@@ -802,7 +802,7 @@ label mas_fun_fact_synesthesia:
     m 1esa "Okay, this one's pretty interesting."
     m 3eua "Some people experience a phenomenon known as {i}synesthesia{/i},{w=0.1} which is where something that stimulates one of our senses also triggers another sense simultaneously."
     m 1hua "That's kind of a wordy explanation hehe...{w=0.2} Let's find an example!"
-    m 1eua "It says here that a common form of synesthesia is {i}grapheme–color synesthesia{/i},{w=0.1} which is where people 'experience' letters and numbers as colours."
+    m 1eua "It says here that a common form of synesthesia is {i}grapheme–color synesthesia{/i},{w=0.1} which is where people 'experience' letters and numbers as colors."
     m 3eua "Another kind is {i}spatial sequence synesthesia{/i},{w=0.1} which is where numbers and figures are 'seen' at specific locations in space."
     m "Like, one number appears 'closer' or 'further' away than another number. {w=0.2}{nw}"
     extend 3eub "It's kinda like a map!"
