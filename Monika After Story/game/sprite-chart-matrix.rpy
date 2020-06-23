@@ -724,8 +724,6 @@ init -99 python in mas_sprites:
     # TODO: consider making the filter dict use Curryables so custom filters
     #   can use non-Matrixcolor-based logic
     #   import renpy.curry.Curry # but do we really need this?
-    # TODO: please add some sort of filter fallback system, aka use this flt
-    #   if an image or object does not have an appropraite flt. 
 
     # filter enums
     FLT_DAY = "day"
@@ -2635,8 +2633,10 @@ init -10 python:
                         day=None
                         night="0"
             """
-            # TODO: add verify 
             self.map = MASFilterMap.clean_flt_pairs(default, filter_pairs)
+
+            if verify:
+                self.verify()
 
             if cache:
                 store.mas_sprites.MFM_CACHE[hash(self)] = self
@@ -2916,6 +2916,15 @@ init -10 python:
                     vals.append(value)
 
             return vals
+
+        def verify(self):
+            """
+            Verifies all filters in this filter map. Raises exceptions if
+            bad filtesr are found.
+            """
+            for flt in self.map:
+                if not store.mas_sprites.is_filter(flt):
+                    raise MASInvalidFilterException(flt)
 
 
     class MASFilterMapSimple(object):
