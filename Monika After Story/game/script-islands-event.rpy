@@ -150,7 +150,7 @@ init -10 python:
         RETURNS: displayable data
         """
         if mas_cannot_decode_islands:
-            return None, None
+            return "None", None
 
         # otherwise standard mechanics
         return mas_fwm_select(st, at, mfwm)
