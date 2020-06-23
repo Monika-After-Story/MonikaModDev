@@ -1962,8 +1962,7 @@ label ch30_reset:
     $ mas_checkBackgroundChangeDelegate()
 
     # build background filter data and update the current filter progression
-    $ store.mas_background.build()
-    $ store.mas_current_background.update()
+    $ store.mas_background.buildupdate()
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

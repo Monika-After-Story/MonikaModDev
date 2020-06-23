@@ -3365,6 +3365,7 @@ init -991 python in mas_utils:
     import codecs
     import platform
     import time
+    import traceback
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
@@ -3549,6 +3550,13 @@ init -991 python in mas_utils:
         """
         if mas_log_open:
             mas_log.write(msg)
+
+
+    def writestack():
+        """
+        Prints current stack to log
+        """
+        writelog("".join(traceback.format_stack()))
 
 
     def trydel(f_path, log=False):

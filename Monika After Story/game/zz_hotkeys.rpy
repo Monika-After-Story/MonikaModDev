@@ -226,8 +226,7 @@ init python:
                 scope.get("sr_time") != store.mas_suntime.sunrise
                 or scope.get("ss_time") != store.mas_suntime.sunset
         ):
-            store.mas_background.build()
-            store.mas_current_background.update()
+            store.mas_background.buildupdate()
 
 
     def _mas_game_menu():

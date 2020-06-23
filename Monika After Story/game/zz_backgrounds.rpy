@@ -800,6 +800,29 @@ init -10 python:
 
             return filters.keys()
 
+        def first_flt(self):
+            """
+            Gets the first filter in this chunk
+
+            RETURNS: first filter in this chunk, or None if no eff slices
+            """
+            if len(self._eff_slices) > 0:
+                return self._eff_slices[0].flt_slice.name
+
+            return None
+
+        def last_flt(self):
+            """
+            Gets the last filter in this chunk
+
+            RETURNS: last filter in this chunk, or None if no eff slices
+            """
+            last_idx = len(self._eff_slices)-1
+            if last_idx < 0:
+                return None
+
+            return self._eff_slices[last_idx].flt_slice.name
+
         def _min_fill(self, length):
             """
             Fills the effective slices using minlength logic.
@@ -1006,8 +1029,6 @@ init -10 python:
 
             RETURNS: current filter after progression
             """
-            # NOTE temp
-            store.mas_utils.writelog("seconds: {0}\n".format(sfco))
             # advance slices
             self._index = self.adv_slice(sfco, self._index, True, curr_time)
 
@@ -1347,6 +1368,32 @@ init -10 python:
             self._sr_ss.build(sunset - sunrise)
             self._ss_mn.build((store.mas_utils.secInDay()) - sunset)
             self._index = 0
+
+        def buildupdate(self, sunrise, sunset, curr_time):
+            """
+            Builds each chunk with given sunrise/sunset values, then runs
+            update to set the correct index.
+
+            Mostly a combination of build and update.
+
+            Properly sets prev_flt in this scenario.
+
+            IN:
+                sunrise - see build
+                sunset - see build
+                curr_time - see update
+            """
+            # save current, pre-build filter
+            prev_flt = self.current()
+
+            # build new slices
+            self.build(sunrise, sunset)
+
+            # run update
+            self.update(curr_time)
+
+            # set prev flt correctly
+            self._prev_flt = prev_flt
 
         def _calc_off(self, index):
             """
@@ -1904,8 +1951,9 @@ init -10 python:
             Builds filter slices using current suntimes.
             Also builds appropraite BG image maps.
 
-            NOTE: recommended to only call this after the suntimes change or
-            on init. Also do this after verifying.
+            NOTE: should only be called during init.
+            NOTE: IF YOU PLAN TO CALL UPDATE AFTER THIS, use buildupdate 
+                instead.
             """
             # build filter slices
             self._flt_man.build(
@@ -1915,6 +1963,45 @@ init -10 python:
 
             # now build flt image maps
             self._flt_img_map = self._flt_man.backmap(self._flt_img_anc)
+
+        def buildupdate(self, curr_time=None):
+            """
+            Builds filter slices appropriately, then runs update.
+            This will set prev_flt correctly when doing an update after a
+            build.
+
+            IN:
+                curr_time - see MASFilterableBackground.update
+            """
+            if store.mas_background.dbg_log:
+                store.mas_utils.writelog("\nCalled from - bupd\n")
+                if store.mas_background.dbg_log_st:
+                    store.mas_utils.writestack()
+
+                store.mas_utils.writelog(
+                    store.mas_background.DBG_MSG_C.format(
+                        self._flt_man.current(),
+                        str(self._flt_man.current_pos())
+                    )
+                )
+
+            # build and update slices
+            self._flt_man.buildupdate(
+                persistent._mas_sunrise * 60, 
+                persistent._mas_sunset * 60,
+                curr_time
+            )
+
+            # build flt image maps
+            self._flt_img_map = self._flt_man.backmap(self._flt_img_anc)
+
+            if store.mas_background.dbg_log:
+                store.mas_utils.writelog(
+                    store.mas_background.DBG_MSG_NU.format(
+                        self._flt_man.current(),
+                        str(self._flt_man.current_pos())
+                    )
+                )
 
         def entry(self, old_background):
             """
@@ -2144,20 +2231,65 @@ init -10 python:
 
             RETURNS: the new filter
             """
-            return self._flt_man.progress()
+            if store.mas_background.dbg_log:
+                store.mas_utils.writelog("\nCalled from - prog\n")
+                if store.mas_background.dbg_log_st:
+                    store.mas_utils.writestack()
+
+                store.mas_utils.writelog(
+                    store.mas_background.DBG_MSG_C.format(
+                        self._flt_man.current(),
+                        str(self._flt_man.current_pos())
+                    )
+                )
+
+            new_flt = self._flt_man.progress()
+
+            if store.mas_background.dbg_log:
+                store.mas_utils.writelog(
+                    store.mas_background.DBG_MSG_N.format(
+                        new_flt,
+                        self._flt_man.current(),
+                        str(self._flt_man.current_pos())
+                    )
+                )
+
+            return new_flt
 
         def update(self, curr_time=None):
             """
             Updates the internal indexes.
             NOTE: this will NOT call any progpoints. Call progress after this
                 to run (some) progpoints if needed.
+            NOTE: IF YOU PLAN TO CALL BUILD BEFORE THIS, use buildupdate
+                instead.
 
             IN:
                 curr_time - datetime.time object to update internal indexes to
                     if None, then we use current.
                     (Default: None)
             """
+            if store.mas_background.dbg_log:
+                store.mas_utils.writelog("\nCalled from - upd:\n")
+                if store.mas_background.dbg_log_st:
+                    store.mas_utils.writestack()
+
+                store.mas_utils.writelog(
+                    store.mas_background.DBG_MSG_C.format(
+                        self._flt_man.current(),
+                        str(self._flt_man.current_pos())
+                    )
+                )
+
             self._flt_man.update(curr_time)
+
+            if store.mas_background.dbg_log:
+                store.mas_utils.writelog(
+                    store.mas_background.DBG_MSG_NU.format(
+                        self._flt_man.current(),
+                        str(self._flt_man.current_pos())
+                    )
+                )
 
         def verify(self):
             """
@@ -2168,7 +2300,6 @@ init -10 python:
             self._flt_man.verify()
             self._verify_img_flts(self._flt_man._day_filters.keys())
             self._verify_img_flts(self._flt_man._night_filters.keys())
-            # TODO: anymore?
 
         def _verify_img_flts(self, flts):
             """
@@ -2199,7 +2330,11 @@ init -20 python in mas_background:
     import store
     BACKGROUND_MAP = {}
     BACKGROUND_RETURN = "Nevermind"
-
+    dbg_log = False
+    dbg_log_st = False
+    DBG_MSG_C = "\nCurrent: {0} | {1}\n"
+    DBG_MSG_N = "\nNew: ret: {0} | {1} | {2}\n"
+    DBG_MSG_NU = "\nNew: {0} | {1}\n"
 
     def build():
         """
@@ -2207,6 +2342,17 @@ init -20 python in mas_background:
         """
         for flt_bg in BACKGROUND_MAP.itervalues():
             flt_bg.build()
+
+
+    def buildupdate():
+        """
+        Builds all background objects and updates current time settings.
+        This properly saves prev_flt.
+        """
+        prev_flt = store.mas_current_background._flt_man.current()
+        build()
+        store.mas_current_background.update()
+        store.mas_current_background._flt_man._prev_flt = prev_flt
 
 
     def default_MBGFM():
@@ -2298,7 +2444,9 @@ init 800 python:
 
     def mas_changeBackground(new_background, by_user=None, set_persistent=False):
         """
-        changes the background w/o any scene changes
+        changes the background w/o any scene changes. Will not run progpoints
+        or do any actual bg changes if the current background is already set to
+        the background we are changing to.
 
         IN:
             new_background:
@@ -2316,8 +2464,9 @@ init 800 python:
         if set_persistent:
             persistent._mas_current_background = new_background.background_id
 
-        mas_current_background.exit(new_background)
-        mas_setBackground(new_background)
+        if new_background != mas_current_background:
+            mas_current_background.exit(new_background)
+            mas_setBackground(new_background)
 
     def mas_startupBackground():
         """
@@ -2370,7 +2519,7 @@ init -2 python in mas_background:
         """
         try:
             _gbl_flt_change(old_flt, new_flt, curr_time)
-        except Error as e:
+        except Exception as e:
             store.mas_utils.writelog(
                 store.MASBackgroundFilterChunk._ERR_PP_STR_G.format(
                     repr(e),
@@ -2389,12 +2538,7 @@ init -2 python in mas_background:
             new_flt - incoming filter.
             curr_time - current time as datetime.time
         """
-        # TODO: how should we deal with islands ?
-        if new_flt != mspr.FLT_DAY and new_flt != mspr.FLT_NIGHT:
-            # hide islands
-            store.mas_flagEVL("mas_monika_islands", "EVE", store.EV_FLAG_HFM)
-            store.mas_flagEVL("greeting_ourreality", "GRE", store.EV_FLAG_HFRS)
-        else:
+        if new_flt == mspr.FLT_DAY or new_flt == mspr.FLT_NIGHT:
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",
@@ -2406,6 +2550,10 @@ init -2 python in mas_background:
                 "GRE",
                 store.EV_FLAG_HFRS
             )
+        else:
+            # hide islands
+            store.mas_flagEVL("mas_monika_islands", "EVE", store.EV_FLAG_HFM)
+            store.mas_flagEVL("greeting_ourreality", "GRE", store.EV_FLAG_HFRS)
 
 
     def _gbl_chunk_change(old_chunk, new_chunk, curr_time):
@@ -2417,7 +2565,23 @@ init -2 python in mas_background:
             new_flt - incoming chunk
             curr_time - current time as datetime.time
         """
-        pass
+        first_flt = new_chunk.first_flt()
+        if first_flt == mspr.FLT_DAY or first_flt == mspr.FLT_NIGHT:
+            # allow islands to be shown
+            store.mas_unflagEVL(
+                "mas_monika_islands",
+                "EVE",
+                store.EV_FLAG_HFM
+            )
+            store.mas_unflagEVL(
+                "greeting_ourreality",
+                "GRE",
+                store.EV_FLAG_HFRS
+            )
+        else:
+            # hide islands
+            store.mas_flagEVL("mas_monika_islands", "EVE", store.EV_FLAG_HFM)
+            store.mas_flagEVL("greeting_ourreality", "GRE", store.EV_FLAG_HFRS)
 
 
     def _def_background_entry(_old):
