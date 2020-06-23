@@ -1579,16 +1579,16 @@ init -10 python:
                 1. progpoint from chunk to chunk is ran.
                 2. global progpoint from chunk to chunk is ran.
                 3. progpoints in the NEW chunk is ran for every slice change.
-                4. global progpoint in the NEW chunk is ran for every slice 
-                    change.
+                4. global progpoint is ran for every slice change in the NEW
+                    chunk.
             * progression moves through multiple chunks:
                 1. progpoint from chunk to chunk is ran for every chunk change.
                 2. global progpoint from chunk to chunk is ran for every
                     chunk change.
                 3. progpoints in the chunk we END UP IN is ran for every
                     slice change.
-                4. global progpoint in the chunk we END UP IN is ran for every
-                    slice change.
+                4. global progpoint is ran for every slice change in the chunk
+                    we END UP IN.
             * progression changes via update:
                 1. global progpoint is ran for one slice change if the filter
                     changes.
