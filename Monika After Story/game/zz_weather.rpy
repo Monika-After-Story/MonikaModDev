@@ -472,12 +472,6 @@ init -20 python in mas_weather:
 
 init -10 python:
 
-    # weather class
-    # TODO: need to establish filtering for weathers
-    # TODO: need to decouple islands out of here. Islands should be
-    #   using the FilterWeatherMap. Well actually it should be like a special
-    #   type of image because it needs to be decoded. Probably using some 
-    #   sort of dyndisp similar to ConditionSwitch but not quite.
     def MASWeather(
             weather_id,
             prompt,
