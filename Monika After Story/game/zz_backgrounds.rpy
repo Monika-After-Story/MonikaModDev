@@ -1574,13 +1574,24 @@ init -10 python:
             Progpoint execution rules:
             * progression remains in the same chunk:
                 1. progpoint in that chunk is ran for every slice change.
+                2. global progpoint is ran for every slice change.
             * progression moves to next chunk:
                 1. progpoint from chunk to chunk is ran.
-                2. progpoints in the NEW chunk is ran for every slice change.
+                2. global progpoint from chunk to chunk is ran.
+                3. progpoints in the NEW chunk is ran for every slice change.
+                4. global progpoint in the NEW chunk is ran for every slice 
+                    change.
             * progression moves through multiple chunks:
                 1. progpoint from chunk to chunk is ran for every chunk change.
-                2. progpoints in the chunk we END UP IN is ran for every
+                2. global progpoint from chunk to chunk is ran for every
+                    chunk change.
+                3. progpoints in the chunk we END UP IN is ran for every
                     slice change.
+                4. global progpoint in the chunk we END UP IN is ran for every
+                    slice change.
+            * progression changes via update:
+                1. global progpoint is ran for one slice change if the filter
+                    changes.
 
             RETURNS: the current filter after progression
             """
