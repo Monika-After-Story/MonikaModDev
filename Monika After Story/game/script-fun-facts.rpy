@@ -846,7 +846,8 @@ label mas_fun_fact_monochrome_dreams:
     m 3eua "Did you know that from 1915 to the 1950s, most people's dreams were in black and white?"
     m 1esa "Nowadays, it's a relatively rare phenomenon for people with unimpaired vision."
     m 3eua "Researchers have linked this to the fact that movies and shows were almost exclusively black and white back then."
-    m 3eud "Though I think that's kinda weird, because people at the time still saw everything else in color, right?"
+    m 3eud "...But I think that's kinda weird, because people still saw everything in color."{w=0.3} {nw}
+    extend 3hksdlb "It's not like the world went black and white!"
     m 1esd "It just goes to show that the content your brain absorbs can have all kinds of effects on your mind, even if it is trivial."
     m 3eua "I think that if there's a lesson to be learned here, it's that we should be very careful about the kind of media we consume, okay [player]?"
     #Call the end
