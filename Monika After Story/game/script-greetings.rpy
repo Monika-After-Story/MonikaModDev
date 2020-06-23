@@ -186,7 +186,7 @@ init -1 python in mas_greetings:
             return False
 
         # conditional check
-        if ev.conditional is not None and not eval(ev.conditional):
+        if ev.conditional is not None and not eval(ev.conditional, store.__dict__):
             return False
 
         # otherwise, we passed all tests
@@ -3759,7 +3759,7 @@ init 5 python:
         code="GRE"
     )
 
-    del[ev_rules]
+    del ev_rules
 
 label greeting_back_from_restart:
     if mas_isMoniNormal(higher=True):
@@ -3769,4 +3769,61 @@ label greeting_back_from_restart:
         m 6ckc "..."
     else:
         m 1eud "Oh, you're back."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_code_help",
+            conditional="store.seen_event('monika_coding_experience')",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_code_help:
+    m 2eka "Oh, hi [player]..."
+    m 4eka "Give me a second, I've just finished trying to code something, and I want to see if it works.{w=0.5}.{w=0.5}.{nw}"
+
+    scene black
+    show noise
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.1
+    hide noise
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 2wud_static')
+
+    m 2wud "Ah!{w=0.3}{nw}"
+    extend 2efc " That's not supposed to happen!"
+    m 2rtc "Why does this loop end so fast?{w=0.5}{nw}"
+    extend 2efc " No matter how you look at it, that dictionary is {i}not{/i} empty."
+    m 2rfc "Gosh, coding can be {i}so{/i} frustrating sometimes..."
+
+    if persistent._mas_pm_has_code_experience:
+        m 3rkc "Oh well, I guess I'll try it again later.{nw}"
+        $ _history_list.pop()
+
+        show screen mas_background_timed_jump(5, "greeting_code_help_outro")
+        menu:
+            m "Oh well, I guess I'll try it again later.{fast}"
+
+            "I could help you with that...":
+                hide screen mas_background_timed_jump
+                m 7hua "Aww, that's so sweet of you, [player]. {w=0.3}{nw}"
+                extend 3eua "But no, I'm gonna have to refuse here."
+                m "Figuring stuff out on your own is the fun part, {w=0.2}{nw}"
+                extend 3kua "right?"
+                m 1hub "Ahaha!"
+
+    else:
+        m 3rkc "Oh well, I guess I'll try it again later."
+
+    #FALL THROUGH
+
+label greeting_code_help_outro:
+    hide screen mas_background_timed_jump
+    m 1eua "Anyway, what would you like to do today?"
+
+    $ mas_lockEVL("greeting_code_help", "GRE")
     return
