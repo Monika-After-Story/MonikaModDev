@@ -1962,6 +1962,20 @@ image monika 1tkbfu:
         0.06
         repeat
 
+image monika 1tkbsu:
+    block:
+        "monika 1tkbsu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dkbsu_static"
+        0.06
+        repeat
+
 image monika 1tkc:
     block:
         "monika 1tkc_static"
@@ -3068,6 +3082,20 @@ image monika 2ektsc:
         0.06
         repeat
 
+image monika 2ektuc:
+    block:
+        "monika 2ektuc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dktuc_static"
+        0.06
+        repeat
+
 image monika 2eku:
     block:
         "monika 2eku_static"
@@ -4129,6 +4157,20 @@ image monika 2rsc:
             choice:
                 7
         "monika 2dsc_static"
+        0.06
+        repeat
+
+image monika 2rtc:
+    block:
+        "monika 2rtc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dtc_static"
         0.06
         repeat
 
@@ -5532,6 +5574,12 @@ image monika 3euo:
         0.06
         repeat
 
+image monika 3kua:
+    block:
+        "monika 3kua_static"
+        1
+        "monika 3eua"
+
 image monika 3lfb:
     block:
         "monika 3lfb_static"
@@ -6246,6 +6294,20 @@ image monika 3rubssdla:
         0.06
         repeat
 
+image monika 3rubsu:
+    block:
+        "monika 3rubsu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dubsu_static"
+        0.06
+        repeat
+
 image monika 3rud:
     block:
         "monika 3rud_static"
@@ -6915,76 +6977,6 @@ image monika 3wud:
             choice:
                 7
         "monika 3dud_static"
-        0.06
-        repeat
-
-image monika 3wuo:
-    block:
-        "monika 3wuo_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3duo_static"
-        0.06
-        repeat
-
-image monika 3wuw:
-    block:
-        "monika 3wuw_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3duw_static"
-        0.06
-        repeat
-
-image monika 4efb:
-    block:
-        "monika 4efb_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfb_static"
-        0.06
-        repeat
-
-image monika 4efc:
-    block:
-        "monika 4efc_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfc_static"
-        0.06
-        repeat
-
-image monika 4efd:
-    block:
-        "monika 4efd_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dfd_static"
         0.06
         repeat
 

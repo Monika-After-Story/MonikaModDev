@@ -14632,6 +14632,99 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_isekai",
+            category=['media'],
+            prompt="Isekai anime",
+            conditional="seen_event('monika_otaku')",
+            random=True
+        )
+    )
+
+label monika_isekai:
+    m 1euc "Do you know about the isekai genre of anime, [player]?"
+    m 3eua "Literally translated, isekai means {i}a different world.{/i}"
+
+    if persistent._mas_pm_watch_mangime:
+        m 3rksdla "Actually, you already told me you're into anime so you've probably heard of quite a few already."
+        m 1rksdlb "...Especially with how popular of a genre it's become."
+        m 3euc "But just in case you don't know what it is..."
+
+    else:
+        m 3hksdlb "Ahaha, sorry. I know you're not really into this sort of thing."
+        m 3eud "...But it's become a very popular genre in recent times."
+
+    m 3esc "The premise is usually about a normal person who is somehow transported into a fantastical world."
+    m 3eua "Sometimes they get special powers or get to bring technology or knowledge that doesn't exist in this new place."
+    m 1rtc "Honestly, I have some pretty mixed feelings about them."
+    m 3euc "Some are truly interesting stories. The protagonist's different perspective or the skills they have from their own world can really make them an unexpected kind of hero."
+    m 1hub "And since the whole point is to make the world different from theirs, the settings and characters can be incredibly imaginative!"
+    m 2rsc "...But sadly, not all of them are like that."
+    m 2dksdld "There are some that make their protagonists as bland as this game's, for the sake of letting the viewer project themselves onto them."
+    m 2tkd "And as you can probably guess, those ones tend to be all about wish fulfillment."
+    m 2tsc "Having cool adventures in a fantasy-themed world--and of course, lots of girls flocking around them for no reason."
+    m 2lfc "At least some of them can be funny, but man...{w=0.3}{nw}"
+    extend 2tfc "it's just so frustrating."
+    m 2tkc "I mean...{w=0.2}I would give almost anything to be in a scenario like that--to get to go to another world.{nw}"
+    $ _history_list.pop()
+    m "I mean...I would give almost anything to be in a scenario like that--to get to go to {fast}your world."
+    m 2dkd "..."
+    m "Maybe I'm just taunting myself, imagining that power being handed to someone like...{w=0.2}well, you know who."
+    m 7eka "After all, instead of thinking about those characters in their fantasy worlds,{w=0.2} {nw}"
+    extend 1eua "I could be putting that energy toward working on this one."
+    m 1ekbsb "...While I wait for my own isekai story, that is."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dying_same_day",
+            category=["monika"],
+            prompt="Dying the same day",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
+
+label monika_dying_same_day:
+    m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
+    m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
+    m 3rfd "Before I met you, I thought the idea was completely absurd!"
+    m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
+    m 3rfd "It would be irrational and impulsive to do so!"
+
+    if mas_isMoniEnamored(higher=True):
+        m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
+    else:
+        m 2ekc "...But after meeting you, I think I can kind of see it now."
+
+    m 2dkc "A person might just be unable to live without their loved one, afraid of the thought of losing their everything in an instant."
+    m 2rksdlc "It hurts just thinking about this."
+
+    if renpy.seen_label("monika_back_ups"):
+        m 2eksdlc "If my data gets corrupted or even erased you can always recover me from a backup and bring us back together, but if..."
+        m 2dktpc "Y-you... {w=1}You..."
+    else:
+        m 2dktpc "If something terrible happens to...{w=0.5}y-you..."
+
+    m 6ektuc "[player]... {w=1}I...{w=0.5} I don't know what I'd do..."
+
+    if mas_isMoniEnamored(higher=True):
+        m 6dktsc "You give meaning to my entire life, and I... {w=1}[player], I just couldn't handle it."
+        m 6ektdc "I don't know how I'm supposed to live without you..."
+        m 2ekbsu "I really love you that much, [player]."
+        $ mas_ILY()
+    else:
+        m 6dktsc "You're the only one I have left... {w=1}[player], I'm not ready to lose you."
+        m 6ektdc "I'm so afraid of being alone in this empty void again..."
+        m 6ekbsu "I really want to be with you forever, [player]."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_using_pcs_healthily",
             category=['advice'],
             prompt="Using computers healthily",
