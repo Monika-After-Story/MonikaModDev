@@ -2648,6 +2648,7 @@ init -1 python:
             }),
             sunset=MASWeatherMap({
                 store.mas_weather.PRECIP_TYPE_DEF: "monika_ss_room",
+                store.mas_weather.PRECIP_TYPE_SNOW: "monika_snow_room_ss",
             }),
         ),
 
@@ -2665,13 +2666,19 @@ init -1 python:
                 True,
                 None,
                 MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_SUNSET,
+                    60,
+                    30*60,
+                    10,
+                ),
+                MASBackgroundFilterSlice.cachecreate(
                     store.mas_sprites.FLT_DAY,
                     60
                 ),
                 MASBackgroundFilterSlice.cachecreate(
                     store.mas_sprites.FLT_SUNSET,
                     60,
-                    5*60,
+                    30*60,
                     10,
                 ),
             ),
@@ -2713,6 +2720,7 @@ image monika_rain_room = "mod_assets/location/spaceroom/spaceroom_rain.png"
 #Thanks Velius/Orca
 image monika_snow_room_day = "mod_assets/location/spaceroom/spaceroom_snow.png"
 image monika_snow_room_night = "mod_assets/location/spaceroom/spaceroom_snow-n.png"
+image monika_snow_room_ss = "mod_assets/location/spaceroom/spaceroom_ss_snow.png"
 
 #TODO: locking/unlocking of this based on other backgrounds
 #START: Location Selector
