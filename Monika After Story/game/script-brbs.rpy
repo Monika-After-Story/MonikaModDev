@@ -604,14 +604,14 @@ label monika_idle_homework_callback:
         m 2esa "All done, [player]?"
 
         if mas_isMoniNormal(higher=True):
-            m 2eka "I wish I could've been there to help you, but there isn't much I can do about that just yet, sadly."
-            m 2eub "I'm sure we could both be a lot more efficient while doing homework if we were able to do it together." 
+            m 2ekc "I wish I could've been there to help you, but there isn't much I can do about that just yet, sadly."
+            m 7eua "I'm sure we could both be a lot more efficient doing homework if we could work together." 
 
             if mas_isMoniAff(higher=True) and random.randint(1,5) == 1:
                 m 3rkbla "...Although, that's assuming we don't get {i}too{/i} distracted, ehehe..."
 
-            m 1eka "But anyway..."
-            m 1hua "Now that you're done with that, let's enjoy some more time together."
+            m 1eua "But anyway...{w=0.2}{nw}"
+            m 3hua "now that you're done with that, let's enjoy some more time together."
 
     else:
         m 6ckc "..."
@@ -633,10 +633,10 @@ init 5 python:
 label monika_idle_working:
     if mas_isMoniNormal(higher=True):
         m 1eua "Alright, [player]."
-        m 1eub "Make sure to take a break every now and then!"
+        m 1eub "Don't forget to take a break every now and then!"
 
         if mas_isMoniAff(higher=True):
-            m 3ekb "I wouldn't want my sweetheart to spend more time on [his] work than with me~"
+            m 3rkb "I wouldn't want my sweetheart to spend more time on [his] work than with me~"
     
         m 1hub "Good luck with your work!"
 
