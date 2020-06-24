@@ -118,25 +118,48 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
-    m 3hub "If you're hungry, go get something to eat, silly."
-    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
-        m 1hksdlb "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
-        # natsuki hungers easter egg
-        call natsuki_name_scare_hungry from _mas_nnsh
-    else:
-        m 1hua "It'd be bad for you to get all grumpy when you're hungry."
+#50% chance of either conversation happening.
+    if renpy.random.randint(1,2) == 1:
+        m 3hub "If you're hungry, go get something to eat, silly."
+        if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
+            m 1hksdlb "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
+            # natsuki hungers easter egg
+            call natsuki_name_scare_hungry from _mas_nnsh
+        else:
+            m 1hua "It'd be bad for you to get all grumpy when you're hungry."
 
-    m 3tku "That wouldn't be any fun, would it, [player]?"
-    m 1eua "If I were there with you, I'd make a salad for us to share."
-    m "But since I'm not, go pick something healthy to eat."
-    m 3eub "They say you are what you eat, and I definitely think that's true."
-    m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
-    m 1euc "Over time, you'd encounter a lot of health problems when you get older."
-    m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
-    m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
-    m 4esa "After all, the healthier you are, the better the chances of you living quite long."
-    m 1hua "Which means more time for us to spend together!~"
-    return
+        m 3tku "That wouldn't be any fun, would it, [player]?"
+        m 1eua "If I were there with you, I'd make a salad for us to share."
+        m "But since I'm not, go pick something healthy to eat."
+        m 3eub "They say you are what you eat, and I definitely think that's true."
+        m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
+        m 1euc "Over time, you'd encounter a lot of health problems when you get older."
+        m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
+        m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
+        m 4esa "After all, the healthier you are, the better the chances of you living quite long."
+        m 1hua "Which means more time for us to spend together!~"
+        return
+    else:
+        m 3eub "[player], I think a good way to address this is to just eat something!"
+        m 1eka "You've got something to eat, right?"
+        m 1eua "Or is this one of those times where you check the fridge but see nothing you like...{w=0.2}{nw}"
+        extend 1tsa "and then you check it again, only to be disappointed that nothing's changed! hehe~"
+        m 3eua "In those cases I think it boils down to 'how hungry are you, exactly?'"
+        m 1rsb "I mean, if you're {i}really{/i} hungry, I suppose even the not-so-tasty things would start to look {i}pretty{/i} appetizing..."
+        m 1esa "Well...{w=0.2}are you gonna eat or...?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Well...are you gonna eat or...?{fast}"
+            "Yes.":
+                m 3eub "Enjoy your food, [player]!" 
+                m 1hua "And please try to make it healthy~"
+                return
+            "No.":
+                m 1eua "Well, even if you don't want to enjoy some food right now...{w=0.2}{nw}"
+                extend 1eub "we {i}can{/i} enjoy each other's company!" 
+                m 1ekc "But I think it can be kinda hard to enjoy oneself if we're too distracted by our hunger."
+                m 1eua "Well, it's up to you!"
+                return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="...sad.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
