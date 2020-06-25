@@ -500,12 +500,19 @@ label mas_player_name_enter_name_loop(input_prompt):
         ]
 
     #Now we prompt user
-    m 1eua "Just type 'nevermind' if you change your mind."
+    show monika 1eua at t11 zorder MAS_MONIKA_Z
+
     $ done = False
     while not done:
-        $ tempname = renpy.input("[input_prompt]", length=20).strip(' \t\n\r')
+        $ tempname = mas_input(
+            "[input_prompt]",
+            length=20,
+            screen_kwargs={"use_return_button": True}
+        ).strip(' \t\n\r')
+
         $ lowername = tempname.lower()
-        if lowername == "nevermind":
+
+        if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
             m 3eua "Just let me know if you change your mind."
             $ done = True

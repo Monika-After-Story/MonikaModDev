@@ -5421,6 +5421,102 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    def mas_input(prompt, default="", allow=None, exclude="{}", length=None, with_none=None, pixel_width=None, screen="input", screen_kwargs={}):
+        """
+        Calling this function pops up a window asking the player to enter some
+        text.
+
+        IN:
+            prompt - a string giving a prompt to display to the player
+
+            default - a string giving the initial text that will be edited by the player
+                (Default: "")
+
+            allow - a string giving a list of characters that will
+                be allowed in the text
+                (Default: None)
+
+            exclude - if a character is present in this string, it is not
+                allowed in the text
+                (Default: "{}")
+
+            length - an integer giving the maximum length of the input string
+                (Default: None)
+
+            with_none - the transition to use
+                (Default: None)
+
+            pixel_width - if not None, the input is limited to being this many pixels wide,
+                in the font used by the input to display text
+                (Default: None)
+
+            screen - the name of the screen that takes input. If not given, the 'input'
+                screen is used
+                (Default: "input")
+
+            screen_kwargs - the keyword arguments to pass in to the screen
+                NOTE: passing in the prompt argument is not mandatory here
+                (Default: {})
+
+        OUT:
+            entered string
+        """
+        renpy.exports.mode("input")
+
+        roll_forward = renpy.exports.roll_forward_info()
+        if not isinstance(roll_forward, basestring):
+            roll_forward = None
+
+        # use previous data in rollback
+        if roll_forward is not None:
+            default = roll_forward
+
+        fixed = renpy.in_fixed_rollback()
+
+        if renpy.has_screen(screen):
+            widget_properties = { }
+            widget_properties["input"] = dict(default=default, length=length, allow=allow, exclude=exclude, editable=not fixed, pixel_width=pixel_width)
+
+            screen_kwargs["prompt"] = prompt
+
+            renpy.show_screen(screen, _transient=True, _widget_properties=widget_properties, **screen_kwargs)
+
+        else:
+
+            if screen != "input":
+                raise Exception("The '{}' screen does not exist.".format(screen))
+
+            renpy.ui.window(style="input_window")
+            renpy.ui.vbox()
+            renpy.ui.text(prompt, style="input_prompt")
+            inputwidget = renpy.ui.input(default, length=length, style="input_text", allow=allow, exclude=exclude)
+
+            # disable input in fixed rollback
+            if fixed:
+                inputwidget.disable()
+
+            renpy.ui.close()
+
+        renpy.exports.shown_window()
+
+        if not renpy.game.after_rollback:
+            renpy.loadsave.force_autosave(True)
+
+        # use normal "say" click behavior if input can't be changed
+        if fixed:
+            renpy.ui.saybehavior()
+
+        rv = renpy.ui.interact(mouse="prompt", type="input", roll_forward=roll_forward)
+        renpy.exports.checkpoint(rv)
+
+        if with_none is None:
+            with_none = renpy.config.implicit_with_none
+
+        if with_none:
+            renpy.game.interface.do_with(None, None)
+
+        return rv
+
 #EXTRA TEXT TAGS
 init python:
     def a_an_tag(tag, argument, contents):
