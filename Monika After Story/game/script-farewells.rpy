@@ -850,7 +850,7 @@ label bye_long_absence:
             m 2eka "Try to come back as soon as possible... I'll be waiting for you."
         "A month.":
             $ persistent._mas_absence_choice = "month"
-            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
+            if mas_isMoniHappy(higher=True):
                 m 3euc "Oh wow, that's a long time."
                 m 3rksdla "A bit too long for my liking really..."
                 m 2esa "But it's okay [player]."
@@ -868,7 +868,7 @@ label bye_long_absence:
                 m 1dsd "I'll still wait for you...but please come back the moment it's possible for you to do so."
         "Longer than a month.":
             $ persistent._mas_absence_choice = "longer"
-            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
+            if mas_isMoniHappy(higher=True):
                 m 3rksdlb "That's...{w=0.5}well that's a little scary, [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
                 m 1eka "But I know you wouldn't leave me by myself if you could help it."

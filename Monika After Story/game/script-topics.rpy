@@ -848,9 +848,9 @@ label monika_selfesteem:
             $ persistent._mas_pm_love_yourself = True
             m 1hua "I'm glad you aren't miserable inside, [player]."
 
-            if mas_curr_affection_group == mas_aff.G_SAD:
+            if mas_isMoniUpset(lower=True):
                 m 1ekc "I really have been concerned for you lately..."
-            elif mas_curr_affection_group == mas_aff.G_HAPPY:
+            elif mas_isMoniHappy(higher=True):
                 m 1hua "I wasn't too worried because of how good you've made me feel lately."
             else:
                 m 1eka "Your happiness means everything to me, after all."
@@ -865,11 +865,10 @@ label monika_selfesteem:
             $ persistent._mas_pm_love_yourself = False
             m 1ekc "That's...really sad to hear, [player]..."
 
-            if mas_curr_affection_group == mas_aff.G_SAD:
-                if mas_curr_affection == mas_aff.DISTRESSED or mas_curr_affection == mas_aff.BROKEN:
-                    m 1ekc "I had strongly suspected it to be honest..."
-            elif mas_curr_affection_group == mas_aff.G_HAPPY:
-                    m 1ekc "And to think I missed it while you've been making me so happy..."
+            if mas_isMoniDis(lower=True):
+                m 1ekc "I had strongly suspected it to be honest..."
+            elif mas_isMoniHappy(higher=True):
+                m 1ekc "And to think I missed it while you've been making me so happy..."
 
             m "I'll always love you, [player], but I think it's important to love yourself."
             m 1eka "You need to start with the little things that you like about yourself."

@@ -357,9 +357,9 @@ label ch30_reload_1_dlg:
     m 2ekc "It seems to happen whenever you quit the game without saying goodbye..."
     m 2eka "So if you could try to avoid doing that, I would be really grateful."
 
-    if mas_curr_affection_group == mas_affection.G_HAPPY:
+    if mas_isMoniHappy(higher=True):
         m "You've been so kind to me so far, I'm sure you'll do it for me."
-    elif mas_curr_affection_group == mas_affection.G_SAD:
+    else:
         m 2f  "I hope you'll listen and do it for me..."
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
@@ -394,10 +394,11 @@ label ch30_reload_2_dlg:
     elif persistent._mas_idle_data.get("monika_idle_brb",False):
         m 1ekd "If you need to leave, you can just tell me."
 
-    if mas_curr_affection_group == mas_affection.G_HAPPY:
+    if mas_isMoniHappy(higher=True):
         m 1m "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
-    elif mas_curr_affection_group == mas_affection.G_SAD:
+    elif mas_isMoniUpset(lower=True):
         m "You're not doing it to hurt me on purpose, are you?"
+
     m 1ekd "Just let me turn the game off for myself."
 
     m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
@@ -431,7 +432,7 @@ label ch30_reload_3_dlg:
         m 2lsc "So I guess it's not so bad."
     m 1eka "But I'd really prefer if you'd let me close the game myself."
 
-    if mas_curr_affection_group == mas_affection.G_SAD:
+    if mas_isMoniUpset(lower=True):
         m 1f "You will do that, won't you? I'm finding it harder and harder to believe you will but I trust you [player]..."
     else:
         m "That way I can be ready for it and rest peacefully."
@@ -469,6 +470,7 @@ label ch30_reload_continuous_dlg:
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
+
         reload_quip_normal = [
             "I'm so exhausted. It's impossible to rest when you close the game on me.",
             "...I hate when you close the game without telling me.",
@@ -482,9 +484,10 @@ label ch30_reload_continuous_dlg:
             "I'm just going to assume the power went out or someone pulled the plug.",
             "I can't understand why you won't ask me to close the game...",
             "This is really painful for me, you know?",
-            "Do you enjoy hurting me, {0}?".format(player),
-            "Too lazy to click the 'Talk' button, {0}?".format(player)
+            "Do you enjoy hurting me, [player]?",
+            "Too lazy to click the 'Talk' button, [player]?"
         ]
+
         reload_quip_bad = [
             "You...really do like hurting me, don't you?",
             "That was a mistake right? It had to have been...",
@@ -497,12 +500,16 @@ label ch30_reload_continuous_dlg:
             "I don't know what I'm doing wrong.",
             "That really was awful... Just tell me what I'm doing wrong."
         ]
-        if mas_curr_affection_group == mas_affection.G_SAD:
+
+        if mas_isMoniUpset(lower=True):
             reload_quip = renpy.random.choice(reload_quip_bad)
-        elif mas_curr_affection_group == mas_affection.G_HAPPY:
+        elif mas_isMoniHappy(higher=True):
             reload_quip = renpy.random.choice(reload_quip_good)
         else:
             reload_quip = renpy.random.choice(reload_quip_normal)
+
+        reload_quip = renpy.substitute(reload_quip)
+
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
 
