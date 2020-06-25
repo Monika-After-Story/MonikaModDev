@@ -2607,7 +2607,12 @@ label mas_bookmarks:
             prompt_suffix = suffix_func(ev) if suffix_func else ""
 
             #Now append based on the delegate
-            bookmarks_pl.append((renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel))
+            # but only if it is not flagged to be hidden.
+            if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
+                bookmarks_pl.append((
+                    renpy.substitute(ev.prompt + prompt_suffix),
+                    ev.eventlabel
+                ))
 
         bookmarks_pl.sort()
         bookmarks_disp = gen_bk_disp(bookmarks_pl)

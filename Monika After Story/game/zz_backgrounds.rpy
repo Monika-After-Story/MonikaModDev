@@ -3,7 +3,7 @@ default persistent._mas_background_MBGdata = {}
 
 #Store the persistent background
 #Defaults to def (spaceroom)
-default persistent._mas_current_background = "def"
+default persistent._mas_current_background = "spaceroom"
 
 #START: Class definition
 init -10 python:
@@ -2648,6 +2648,8 @@ init -1 python:
             }),
             sunset=MASWeatherMap({
                 store.mas_weather.PRECIP_TYPE_DEF: "monika_ss_room",
+                store.mas_weather.PRECIP_TYPE_RAIN: "monika_rain_room_ss",
+                store.mas_weather.PRECIP_TYPE_OVERCAST: "monika_rain_room_ss",
                 store.mas_weather.PRECIP_TYPE_SNOW: "monika_snow_room_ss",
             }),
         ),
@@ -2717,6 +2719,10 @@ image monika_ss_room = MASFilteredSprite(
 )
 #Thanks Orca
 image monika_rain_room = "mod_assets/location/spaceroom/spaceroom_rain.png"
+image monika_rain_room_ss = MASFilteredSprite(
+    store.mas_sprites.FLT_SUNSET,
+    "mod_assets/location/spaceroom/spaceroom_rain.png"
+)
 #Thanks Velius/Orca
 image monika_snow_room_day = "mod_assets/location/spaceroom/spaceroom_snow.png"
 image monika_snow_room_night = "mod_assets/location/spaceroom/spaceroom_snow-n.png"
