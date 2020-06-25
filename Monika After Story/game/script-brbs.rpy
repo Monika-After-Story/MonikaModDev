@@ -493,6 +493,79 @@ label monika_idle_workout_callback:
         m 6ckc "..."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_nap",
+            prompt="I'm going to take a nap",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_nap:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Going to take a nap, [player]?"
+        m 3eua "They're a healthy way to rest during the day if you're feeling tired."
+        m 3hua "I'll watch over you, don't worry~"
+        m 1hub "Sweet dreams!"
+
+    elif mas_isMoniUpset():
+        m 2eud "Alright, I hope you feel rested afterwards."
+        m 2euc "I hear naps are good for you, [player]."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_nap_callback")
+    $ persistent._mas_idle_data["monika_idle_nap"] = True
+    return "idle"
+
+label monika_idle_nap_callback:
+    if mas_isMoniNormal(higher=True):
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=5), "monika_idle_nap"):
+            m 2hksdlb "Oh, [player]! You're finally awake!"
+            m 7rksdlb "When you said you were going to take a nap, I was expecting you take maybe an hour or two..."
+            m 1hksdlb "I guess you must have been really tired, ahaha..."
+            m 3eua "But at least after sleeping for so long, you'll be here with me for a while, right?"
+            m 1hua "Ehehe~"
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=1), "monika_idle_nap"):
+            m 1hua "Welcome back, [player]!"
+            m 1eua "Did you have a nice nap?"
+            m 3eub "They're really helpful for refreshing your mind so you can spend the day with a clear state of mind."
+            m 3rksdla "But if you're out for too long, it can take a while to fully wake up again...{w=0.3}kinda like getting out of bed in the morning."
+            m 1eua "As long as you had a nice nap though, I'm happy."
+            m 1hua "...And I hope you are too~"
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_nap"):
+            m 1hua "Welcome back, [player]~"
+            m 1eub "I hope you had a nice little nap."
+            m 3eua "Short periods of rest throughout the day are perfect for quickly refreshing your brain and getting back to work with a fresh mind."
+            m 1eub "If you don't already, taking regular power naps between work should boost your productivity."
+            m 1eua "But now that you're back, you should be feeling a lot more energized, right?"
+
+        else:
+            m 1eud "Oh, back already?"
+            m 1euc "Did you change your mind?"
+            m 3eka "Well, I'm not complaining, but you should take a nap if you feel like it later."
+            m 1eua "I wouldn't want you to be too tired, after all."
+
+    elif mas_isMoniUpset():
+        m 2euc "Done with your nap, [player]?"
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh, you're back."
+
+    else:
+        m 6ckc "..."
+    return
 
 #Rai's og game idle
 #label monika_idle_game:
