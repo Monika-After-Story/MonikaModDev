@@ -875,15 +875,6 @@ def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
         if not menutils.ask_continue():
             return
 
-    #Refresh this so we make all invalid sprites
-    for sprobj in sprite_db.values():
-        atl_sprite = sprobj.make_atl()
-        if atl_sprite is not None:
-            sprite_db[atl_sprite.spcode] = atl_sprite
-
-    #Now regen sprite_db_keys
-    sprite_db_keys = sorted(sprite_db.keys())
-
     # generate static sprites
     if not gen_sprite_files(
             list(SortedKeySpriteDBIter(sprite_db, sprite_db_keys)),
@@ -1117,5 +1108,10 @@ def _load_sprites():
 
         # otherwise add
         sprite_db[sprite_code] = sprite_obj
+
+        # make as atl if possible
+        atl_sprite = sprite_obj.make_atl()
+        if atl_sprite is not None:
+            sprite_db[atl_sprite.spcode] = atl_sprite
 
     return sprite_db
