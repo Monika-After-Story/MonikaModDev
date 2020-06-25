@@ -6028,6 +6028,20 @@ image monika 3rka:
         0.06
         repeat
 
+image monika 3rkb:
+    block:
+        "monika 3rkb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dkb_static"
+        0.06
+        repeat
+
 image monika 3rkbfsdla:
     block:
         "monika 3rkbfsdla_static"
@@ -6963,20 +6977,6 @@ image monika 3wubsw:
             choice:
                 7
         "monika 3dubsw_static"
-        0.06
-        repeat
-
-image monika 3wud:
-    block:
-        "monika 3wud_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dud_static"
         0.06
         repeat
 
