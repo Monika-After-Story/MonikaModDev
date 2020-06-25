@@ -571,7 +571,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_homework",
-            prompt="I'm going to do some homework.",
+            prompt="I'm going to do some homework",
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -610,8 +610,8 @@ label monika_idle_homework_callback:
             if mas_isMoniAff(higher=True) and random.randint(1,5) == 1:
                 m 3rkbla "...Although, that's assuming we don't get {i}too{/i} distracted, ehehe..."
 
-            m 1eua "But anyway...{w=0.2}{nw}"
-            m 3hua "now that you're done with that, let's enjoy some more time together."
+            m 1eua "But anyway,{w=0.2} {nw}"
+            m 3hua "now that you're done, let's enjoy some more time together."
 
     else:
         m 6ckc "..."
@@ -622,7 +622,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_working",
-            prompt="I'm going to work on something.",
+            prompt="I'm going to work on something",
             category=['be right back'],
             pool=True,
             unlocked=True
