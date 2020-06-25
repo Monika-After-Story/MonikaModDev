@@ -3615,7 +3615,7 @@ label monika_love:
                 _("And that love grows every single day!"),
                 _("And nobody else will ever make me feel this way!"),
                 _("Just thinking of you makes my heart flutter!"),
-                _("I don't think words can do justice to how deeply I love you..."),
+                _("I don't think words can do justice to how deeply I love you!"),
                 _("You make my life feel so complete!"),
                 _("You've saved me in so many ways, how could I not fall for you?"),
                 _("More than I can ever express!"),
