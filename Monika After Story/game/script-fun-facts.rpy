@@ -330,7 +330,7 @@ init 5 python:
 
 label mas_fun_fact_strength:
     m 1hub "This fact might motivate you a bit!"
-    m 3eub "The longest word in English that only contains a single vowel is 'strength'."
+    m 3eub "The longest word in English that only contains a single vowel is 'strength.'"
     m 1eua "It's funny how out of every word in the language, it's such a meaningful word that had that little detail."
     m 1hua "Little details like this really make language so fascinating to me!"
     m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"
