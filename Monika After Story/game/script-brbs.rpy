@@ -605,13 +605,13 @@ label monika_idle_homework_callback:
 
         if mas_isMoniNormal(higher=True):
             m 2ekc "I wish I could've been there to help you, but there isn't much I can do about that just yet, sadly."
-            m 7eua "I'm sure we could both be a lot more efficient doing homework if we could work together." 
+            m 7eua "I'm sure we could both be a lot more efficient doing homework if we could work together."
 
             if mas_isMoniAff(higher=True) and random.randint(1,5) == 1:
                 m 3rkbla "...Although, that's assuming we don't get {i}too{/i} distracted, ehehe..."
 
             m 1eua "But anyway,{w=0.2} {nw}"
-            m 3hua "now that you're done, let's enjoy some more time together."
+            extend 3hua "now that you're done, let's enjoy some more time together."
 
     else:
         m 6ckc "..."
@@ -637,8 +637,8 @@ label monika_idle_working:
 
         if mas_isMoniAff(higher=True):
             m 3rkb "I wouldn't want my sweetheart to spend more time on [his] work than with me~"
-    
-        m 1hub "Good luck with your work!"
+
+        m 1hua "Good luck with your work!"
 
     elif mas_isMoniDis(higher=True):
         m 1euc "Okay, [player]."
@@ -659,7 +659,7 @@ label monika_idle_working_callback:
     if mas_isMoniNormal(higher=True):
         m 1eub "Finished with your work, [player]?"
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "Let's relax together now."
+        m 5hua "Let's relax together then~"
 
     elif mas_isMoniDis(higher=True):
         m 2euc "Oh, you're back..."
