@@ -799,16 +799,16 @@ init 5 python:
     )
 
 label mas_fun_fact_synesthesia:
-    m 1esa "Okay, this one's pretty interesting."
+    m 1esa "Okay, this one's pretty interesting..."
     m 3eua "Some people experience a phenomenon known as {i}synesthesia{/i},{w=0.1} which is where something that stimulates one of our senses also triggers another sense simultaneously."
-    m 1hua "That's kind of a wordy explanation hehe...{w=0.2} Let's find an example!"
+    m 1hua "That's kind of a wordy explanation, ehehe...{w=0.2} Let's find an example!"
     m 1eua "It says here that a common form of synesthesia is {i}grapheme–color synesthesia{/i},{w=0.1} which is where people 'experience' letters and numbers as colors."
     m 3eua "Another kind is {i}spatial sequence synesthesia{/i},{w=0.1} which is where numbers and figures are 'seen' at specific locations in space."
     m "Like, one number appears 'closer' or 'further' away than another number. {w=0.2}{nw}"
     extend 3eub "It's kinda like a map!"
-    m 1eua "And there's a whole bunch of other kinds of synesthesia too."
-    m 1esa "Researchers aren't really sure how prevalent it is -{w=0.1} some have suggested as much as 25 percent of the population experiences it, but I seriously doubt that since I'd never heard of it until now."
-    m 3eub "Probably the most accurate estimate so far is that just over 4 percent of people experience it, so that's what I'll go with!"
+    m 1eua "...And there's a whole bunch of other kinds of synesthesia too."
+    m 1esa "Researchers aren't really sure how prevalent it is--{w=0.1}some have suggested as much as 25 percent of the population experiences it, but I seriously doubt that since I'd never heard of it until now."
+    m 3eub "Probably the most accurate estimate so far is that it's just over 4 percent of people, so that's what I'll go with!"
     m 1eua "Experiencing synesthesia sounds like it'd be pretty neat,{w=0.2} don't you think so [player]?"
     #Call the end
     call mas_fun_facts_end
@@ -849,8 +849,8 @@ label mas_fun_fact_monochrome_dreams:
     m 3eua "Researchers have linked this to the fact that movies and shows were almost exclusively black and white back then."
     m 3eud "...But I think that's kinda weird, because people still saw everything in color.{w=0.3} {nw}"
     extend 3hksdlb "It's not like the world went black and white!"
-    m 1esd "It just goes to show that the content your mind absorbs can have all kinds of effects on your mind, even if it is trivial."
-    m 3eua "I think that if there's a lesson to be learned here, we should be very careful about the kind of media we consume, okay [player]?"
+    m 1esd "It just goes to show that the content you absorb can have all kinds of effects on your mind, even if it's trivial."
+    m 3eua "I think if there's a lesson to be learned here, it's that we should be very careful about the kind of media we consume, okay [player]?"
     #Call the end
     call mas_fun_facts_end
     return
