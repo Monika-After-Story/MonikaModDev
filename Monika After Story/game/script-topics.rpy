@@ -14910,3 +14910,29 @@ label monika_fear:
     extend 4eud "After all, there's no way something like that could be true, right?"
     m 2rka "Yeah..."
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_powernaps",prompt="Power naps",category=['you','life'],random=True))
+
+label monika_powernaps:
+    m 1eua "Hey, [player]..."
+    m 3eub "Do you ever take naps throughout the day?"
+    m 1eka "A lot of people don't know the benefits of taking naps."
+    m 1rksdla "There's actually more to it than just going to sleep for a bit."
+    m 3eud "The length of time you nap for is an important factor."
+    m 1hksdlb "If you nap for too long, it'll end up being difficult to get up, just like waking up the morning, ahaha..."
+    m 1eub "It's actually best to wake up in intervals of 90 minutes, since that's around how long a full sleep cycle takes."
+    m 1eua "There are these things called power naps where you just rest your eyes for about 10-20 minutes."
+    m 3eub "Power naps are really great for taking a short break from your work."
+    m 3eua "It's a nice, short rest, but not so long that it's hard to get back to work."
+    m 1hua "They're really good at refreshing your mind so you can get back to work with a fresh mindset."
+    m 1eub "If you don't already, maybe you could try taking some naps from time to time."
+    if mas_isMoniAff(higher=True):
+        if renpy.random.randint(1,4) == 1:
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "Maybe I could let you rest on my lap one day, ehehe~"
+        else:
+            show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfa "Just let me know if you need to go for a nap, and I'll watch over you~"
+    return
+    
