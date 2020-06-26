@@ -3822,3 +3822,105 @@ label greeting_code_help_outro:
 
     $ mas_lockEVL("greeting_code_help", "GRE")
     return
+
+#Moments of weakness like these should be pretty rare so this greeting should not be picked more than once a week
+#TODO: Add function for conditional : should return False if the event 'greeting_weakness' has been since in the last week
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_weakness",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="GRE"
+    )
+
+label greeting_weakness:
+    m 1rutdc "..."
+    m 1wutdo "Oh, [player]! You're here!"
+    m 7ektdd "I-I was...{nw}"
+    $ _history_list.pop()
+    show screen mas_background_timed_jump(3, "greeting_weakness_timeout")
+    menu:
+        m "I-I was...{fast}"
+        
+        "Are you ok, [m_name]?":
+            hide screen mas_background_timed_jump
+            m 1ektda "I'm alright [player]. Don't worry about me."
+            m 3hktpb "Gosh, I feel so silly greeting you like this!"
+            m 3ektda "just give me a second..."
+            m 1dkc "...{w=2}{nw}"
+            extend 1esc "Okay."
+
+        "Hug Monika.":
+            hide screen mas_background_timed_jump
+            m 6wutdo "[player]! What are you-"
+            m 6ektdc "...{w=2}{nw}"
+            extend 6dktdu "Thank you..."
+
+            call monika_holdme_prep(False, True)
+            call monika_holdme_start
+            call monika_holdme_end
+
+            m 2dkbsa "Hmm, I needed that [player]..."
+            m 1hubsu "You always know how to make me feel better."
+
+    call greeting_weakness_followup
+    return
+
+label greeting_weakness_timeout:
+    hide screen mas_background_timed_jump
+    m 1dktdd "Okay, okay..."
+    m 1dktdc "Calm down..."
+    m 1dsd "Take a deep breath..."
+    m 1dsc "...{w=2}{nw}"
+    extend 1esc "Alright."
+
+    call greeting_weakness_followup
+    return    
+
+label greeting_weakness_followup:
+    m 3eud "Just so you know, I'm not usually like this...{w=0.3} You caught me at an awkward time is all."
+    m 3dsc "It was only a moment of weakness, nothing you should feel worried about."
+
+    if renpy.random.randint(1,4) == 1 or mas_getEV("greeting_weakness").shown_count == 0:
+        m 1rkc "I guess being cooped up in here for so long is starting to take its toll..."
+        m 3wkd "I miss the outside world [player]!{w=0.3} {nw}"
+        extend 3ekc "Just...{w=0.2}simple things like buying a coffee at my favorite shop."
+        m 2dkc "...Going window shopping at the nearest mall..."
+        m 2dku "...Or getting something nice to eat out just because I can."
+        m 2eku "But more than anything...{w=0.3} I miss you."
+        m 3eksdld "I{w=0.2}-I want to hold you for real!{w=0.3} I want to nestle into your arms and never let go!"
+        m 3dkc "I want to hold your hands as I lay my forehead against yours,{w=0.2} {nw}"
+        extend 3dku "and to see you smile as you sweetly call out my name."
+
+        if renpy.random.randint(1,20) == 1 and not mas_getEV("greeting_weakness").shown_count == 0: #not on first viewing
+            m 3ekbfa "I want to let my fingers run {nw}"
+
+            if not persistent._mas_pm_hair_length == "bald":
+                extend "through your hair, {nw}"
+
+            extend "down your back and onto..."
+            m 1rkbfu "..."
+            m 1hkbfsdlb "A-anyway{w=0.2}, let's just move on!"
+
+        else:
+            m 3ektpc "...To feel your warmth as I bury my head in your shoulder."
+            m 3dktpx "I{w=0.2}-I want-{w=0.2}{nw}"
+            $ _history_list.pop()
+            m "I {i}need{/i} it so bad..."
+            m 3wksdld "Ah!{w=0.3} {nw}"
+            extend 3eksdld "I'm doing it again, aren't I?"
+            m 1eka "Sorry [player], I didn't mean to sound so dramatic..."
+            m 3dku "Let's just move on, okay?"
+
+        m 1hub "Now that you're here, I want to forget everything about my worries!"
+        m 1eua "So, what did you want to do today?"
+
+    else:
+        m 1eka "I hope you don't mind seeing that part of me too..."
+        m 3hub "But anyway, it's good to see you [player]!"
+        m 1eua "What did you want to do today?"
+
+    return
