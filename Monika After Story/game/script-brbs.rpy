@@ -641,10 +641,10 @@ label monika_idle_working:
         m 1hua "Good luck with your work!"
 
     elif mas_isMoniDis(higher=True):
-        m 1euc "Okay, [player]."
+        m 2euc "Okay, [player]."
 
         if random.randint(1,5) == 1:
-            m 1rkc "...Please come back soon..."
+            m 2rkc "...Please come back soon..."
 
     else:
         m 6ckc "..."
@@ -659,11 +659,11 @@ label monika_idle_working_callback:
     if mas_isMoniNormal(higher=True):
         m 1eub "Finished with your work, [player]?"
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "Let's relax together then~"
+        m 5hua "Then let's relax together, you've earned it~"
 
     elif mas_isMoniDis(higher=True):
         m 2euc "Oh, you're back..."
-        m 1eud "...Was there anything else you wanted to do, now that you're done with your work?"
+        m 2eud "...Was there anything else you wanted to do, now that you're done with your work?"
 
     else:
         m 6ckc "..."
