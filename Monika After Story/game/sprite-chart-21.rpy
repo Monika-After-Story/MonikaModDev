@@ -3424,6 +3424,20 @@ image monika 7eub:
         0.06
         repeat
 
+image monika 7euc:
+    block:
+        "monika 7euc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 7duc_static"
+        0.06
+        repeat
+
 image monika 7eud:
     block:
         "monika 7eud_static"
