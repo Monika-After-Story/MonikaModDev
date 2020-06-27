@@ -14863,13 +14863,7 @@ init 5 python:
         )
     )
 
-# reference how in vanilla Moni only really appears here - not sure where to put this
-
 label monika_why_spaceroom:
-    if (persistent._mas_current_background != "spaceroom"):
-        m 1hkb "We aren't in a classroom, silly."
-        # I don't know what to put here
-
     m 3euc "Utility, mostly."
     m "You know how in the original game most of anything took place during our club meetings, right?"
     m 3eua " All of which took place in a classroom.{w=0.5} This classroom."
