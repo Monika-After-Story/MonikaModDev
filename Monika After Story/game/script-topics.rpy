@@ -14867,7 +14867,7 @@ label monika_wabi_sabi:
     m "It derives from traditional Japanese and Buddhistic philosophy, surrounding the acceptance of the temporary state of all things."
     m 3dub "It states that beyond everything, beauty is found in what's impermanent and imperfect."
     m 3wub "Like a scar on a rugged face, or a discolored hand, or even the mistakes we make."
-    m      "The imperfections can become beautiful stories that reminds us of our past..." 
+    m "The imperfections can become beautiful stories that reminds us of our past..." 
     m 3hub "...and our mistakes turn into lessons that shape us and make us stronger and more defined."
     m 4wub "Like a sculptor revealing the magnificence inside a marble block, except the sculpture is you, and the sculptor is your past."
     m 1tsu "Don't you find that concept rather romantic?"
