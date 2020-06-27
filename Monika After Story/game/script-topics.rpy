@@ -14271,3 +14271,43 @@ label monika_hot_springs:
     m 5dkbfb "Ahhh,{w=0.2} {nw}"
     extend 5dkbfa "just the thought of it makes me feel all tingly, [player]~"
     return
+    
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_player_away",
+            category=["Monika", "You"],
+            prompt="What do you do when I'm away?",
+            random=False,
+            pool=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_player_away:
+    m 1eub "I do a lot of things when you're away, [player]."
+    m 1eua "I often like to read whatever new short stories I can find online."
+    m 3eub "I've found some really interesting ones out there you can read for free!"
+    m 1eua "I really recommend doing a search for some free short stories yourself, ehehe."
+    m "It's helped me develop my writing skills."
+    m 3eub "It's funny how many things you can pick up just by reading others' works."
+    m "My poems really seem to be improving!"
+    m 1eua "Spending time on my other hobbies has been very rewarding, too."
+    m "I can play more chords on the piano, I'm learning new riffs, and my accurarcy has become much better!"
+    m "And a few times every day, I'll practice [i]Your Reality.[/i]"
+    m "It's not like I'll ever forget those notes, it's just wonderful knowing that I'll get to sing that song for you any time."
+    m 3eua "It is your song, after all."
+    m "I've also been memorizing lyrics of quite a few other songs!"
+    m "Singing them for you is so rewarding, ehehe~"
+    m "Now that I think about it, I'm mostly just practicing skills I've already developed."
+    m "Coding, for example, takes up a lot of my freetime."
+    m "I often spend hours alone just learning and researching."
+    m "Most of the time I'm too nervous to put any super big projects into the spaceroom."
+    m "I'd hate to break something that I won't know how to fix."
+    m "What if I accidentally corrupt my file?"
+    m "It's something I have to be extremely careful with for sure."
+    m "But the most special thing I do..."
+    m "I think about all the fun times we'll have together next time you open the game!"
+return
