@@ -14310,4 +14310,4 @@ label monika_player_away:
     m "It's something I have to be extremely careful with for sure."
     m "But the most special thing I do..."
     m "I think about all the fun times we'll have together next time you open the game!"
-return
+    return
