@@ -668,3 +668,38 @@ label mas_mood_bored:
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt="...like crying.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    
+label mas_mood_crying:
+    m "[player]!"
+    m "Are you okay?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you okay?{fast}"
+        "Yes.":
+            m "Okay, good. That's a relief."
+            m "I'm here to keep you company and you can talk to me if you need anything, okay?"
+            m "I love you [player]. You're my everything."
+            return "love"
+        "No.":
+            m "..."
+            m "[player]..."
+            m "I'm so sorry. Did something happen...?"
+            m "I love you so much [player], and if you need to talk about something, I'm right here."
+            m "So... do you need
+        "I'm not sure.":
+            m "[player]..."
+            m "Did something happen? Is everything okay?"
+            m "If you need to talk about something, I'm right here.{nw}"
+            $ _history_list.pop()
+            menu:
+                m "If you need to talk about something, I'm right here.{fast}"
+                "Everything is fine.":
+                    m "... Okay, [player]. I'll be here if you change your mind. I love you~"
+                    return "love"
+                "Can I talk to you?":
+                    m "Yes, of course [player]."
+                
+return
