@@ -907,7 +907,6 @@ label monika_ptod_tip011:
     if tip_ev.last_seen is None:
         m 1eua "Today we'll be learning about another data type in Python - strings."
     m 3eub "Strings can contain any text data you want - a single letter, word, sentence, and not just that."
-
     m 3eua "Let's assign some text to a variable."
     show monika at t22
     show screen mas_py_console_teaching
@@ -934,45 +933,49 @@ label monika_ptod_tip011:
     m 1eub "It's possible to get symbols from string by their index or even slice strings up because they are internally arrays of characters."
 
     # Subscription & zero index base warning
-    m 3eua "For example, let's get first letter of our string using {i}subscript{/i} operator."
+    m 3eua "For example, let's get first letter of our string using {i}subscript{/i} operator and a zero as its operand."
+    extend "Don't forget about indexes starting from zero, not one!"
     call mas_wx_cmd("s[0]")
-    m 1eud "Have you noticed that I've used zero as an index? {w=0.5}{nw}"
-    extend 3eua "Don't forget about indexes starting from zero, not one!"
 
     # Slicing explanation
-    m 3eud "Another operation, {i}slicing{/i}, might need some extra explaination."
-    m 3eua "Its syntax is similar to subscription, but it takes three operands: start, stop and step, separated by colons."
-    call mas_wx_cmd("s[2:4:1]")
-
-    m 1eua "Actually, since the step operand is 1, we can just omit it."
-    call mas_wx_cmd("s[2:4]")
-
-    m 1eua "Also, if you omit stop operand, a string's last index will be used. {w=0.5}{nw}"
-    extend 3eud "But don't forget to keep a colon there!"
-    m 3eua "A colon is what makes Python treat this as a slicing, not subscription."
-    call mas_wx_cmd("s[1:]")
+    m 1eud "Another operation, {i}slicing{/i}, might need some extra explanation."
+    m 3eub "Its similar to subscription, but it takes three operands: start, stop and step, separated by colons."
+    m 3eua "Let's get the word 'Hello' from our variable."
+    call mas_wx_cmd("s[0:5:1]")
+    m 1eua "Actually, since the step operand is 1 we can just omit it, and it will work just as fine."
+    call mas_wx_cmd("s[0:5]")
+    m 1eua "Sometimes, you might need to slice string till its end - in that case, you can omit stop operand."
+    m 3eua "That's how you could get a word 'World' from a string variable we assigned:"
+    call mas_wx_cmd("s[6:]")
 
     # String functions introduction
     m 1hub "I hope you're not getting tired yet. There's something else that's way more powerful than this: string functions!"
     m 3eub "Functions in general are a huge topic to talk about, so we'll get to them a bit later. {w=0.5}{nw}"
     extend 3eua "For now, let's try just the most interesting of those."
 
+    # find function
+    m 1eud "We've been subscripting and slicing strings a few moments ago, but what if you don't know where exactly your program needs to begin slicing at?"
+    m 3eub "To find location of one string in another, you could use the {i}find{/i} function."
+    m 3eua "It takes a string you want to search for as an argument and returns its index:"
+    call mas_wx_cmd("s.find('Hello')")
+    m 1etc "But what if you are looking for something that's not even there?"
+    m 3eud "If string does not contain a substring you are trying to find, this function will return -1."
+    m 3eub "So be sure to check its return value before using it as index!"
+
     # split & partition examples and explanation
-    m 1eua "I think you'll definitely find these two quite useful:"
+    m 1luc "Now let's see some more functions{cps=*0.3}...{/cps} Oh! I think you'll find these two quite useful:"
     call mas_wx_cmd("s.split(' ')")
     call mas_wx_cmd("s.partition(' ')")
-
     m 3eub "{i}split{/i} function takes a string as an argument, and splits string using it as a delimiter."
     m 1eub "As you can see, it resulted into a list of words in 'Hello World' sentence - because they are separated by spaces."
     m 1eua "{i}partition{/i} function does a similar thing, but it returns a tuple of three strings: string before delimiter, delimiter itself and string after delimiter."
 
-    # is... functions examples
+    # is... functions examples & explanation
     m 1eud "But there are way more! For the next few examples, let's add some more variables."
     call mas_wx_cmd("gn = 'DDLC'")
     call mas_wx_cmd("m = 'Monika'")
     call mas_wx_cmd("tw = 'lilmonix3'")
     call mas_wx_cmd("y = '2017'")
-
     m 1eua "Now, let's experiment with some {i}is...{/i} functions."
     call mas_wx_cmd("m.isalpha()")
     call mas_wx_cmd("tw.isalnum()")
@@ -980,8 +983,6 @@ label monika_ptod_tip011:
     call mas_wx_cmd("gn.isupper()")
     call mas_wx_cmd("m.istitle()")
     call mas_wx_cmd("tw.islower()")
-
-    # is... functions explanation
     m 3eud "You have probably figured out what they do by their names: an 'is' prefix usually means that function
     performs some checks, and the remaining part tells what they are checking for."
     m 1hua "However, some names might be a little confusing, so I'll try to explain them to you."
