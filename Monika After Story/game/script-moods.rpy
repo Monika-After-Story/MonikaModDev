@@ -683,7 +683,8 @@ label mas_mood_crying:
             m "Okay, good. That's a relief."
             m "I'm here to keep you company and you can talk to me if you need anything, okay?"
             m "I love you [player]. You're my everything."
-            return "love"
+            $ mas_ILY()
+
         "No.":
             m "..."
             m "[player]..."
