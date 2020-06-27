@@ -14856,7 +14856,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_wabi_sabi",
             category=['philosophy'],
-            prompt="philosophy",
+            prompt="Wabi-sabi",
             random=True
         )
     )
@@ -14867,11 +14867,16 @@ label monika_wabi_sabi:
     m "It derives from traditional Japanese and Buddhistic philosophy, surrounding the acceptance of the temporary state of all things."
     m 3dub "It states that beyond everything, beauty is found in what's impermanent and imperfect."
     m 3wub "Like a scar on a rugged face, or a discolored hand, or even the mistakes we make."
+    m      "The imperfections can become beautiful stories that reminds us of our past..." 
+    m 3hub "...and our mistakes turn into lessons that shape us and make us stronger and more defined."
+    m 4wub "Like a sculptor revealing the magnificence inside a marble block, except that scultor is you, and your past."
     m 1tsu "Don't you find that concept rather romantic?"
     m 1hubsb "Ahaha~"
     m "..."
     m 6ekd "Anyway, [player], I hope you are not too self conscious about your looks."
     m 6dkd "After all, no matter how your face looks, or how your body looks..."
-    m 1subfb "You'll still be the most beautiful person in the whole world to me!"
-    m 4subfb "And that's my wabi-sabi promise!"
+    m 6dku "I'm sure there's a valuable story behind every scar, and every imperfection about you."
+    m 2eku "So please, [player], no matter what, don't beat yourself up about how you look."
+    m 5tsu "I promise that in the end, I'll be your Belle even if you are the Beast."
+    m 4subfb "And that's my Wabi-sabi promise!"
     return
