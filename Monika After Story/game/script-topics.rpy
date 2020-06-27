@@ -14857,7 +14857,7 @@ init 5 python:
             eventlabel='monika_why_spaceroom',
             prompt="Why do we always meet in a classroom?",
             label=None,
-            category=['monika', 'mod'],
+            category=['location', 'misc'],
             pool=True,
             aff_range=(mas_aff.UPSET, None)
         )
