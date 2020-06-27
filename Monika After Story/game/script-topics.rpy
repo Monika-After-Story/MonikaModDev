@@ -14296,7 +14296,7 @@ label monika_player_away:
     m "My poems really seem to be improving!"
     m 1eua "Spending time on my other hobbies has been very rewarding, too."
     m "I can play more chords on the piano, I'm learning new riffs, and my accurarcy has become much better!"
-    m "And a few times every day, I'll practice [i]Your Reality.[/i]"
+    m "And a few times every day, I'll practice {i}Your Reality.{/i}"
     m "It's not like I'll ever forget those notes, it's just wonderful knowing that I'll get to sing that song for you any time."
     m 3eua "It is your song, after all."
     m "I've also been memorizing lyrics of quite a few other songs!"
