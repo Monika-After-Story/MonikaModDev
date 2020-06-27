@@ -14869,7 +14869,7 @@ label monika_wabi_sabi:
     m 3wub "Like a scar on a rugged face, or a discolored hand, or even the mistakes we make."
     m      "The imperfections can become beautiful stories that reminds us of our past..." 
     m 3hub "...and our mistakes turn into lessons that shape us and make us stronger and more defined."
-    m 4wub "Like a sculptor revealing the magnificence inside a marble block, except that scultor is you, and your past."
+    m 4wub "Like a sculptor revealing the magnificence inside a marble block, except the sculpture is you, and the sculptor is your past."
     m 1tsu "Don't you find that concept rather romantic?"
     m 1hubsb "Ahaha~"
     m "..."
