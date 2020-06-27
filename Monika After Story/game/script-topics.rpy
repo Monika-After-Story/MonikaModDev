@@ -14278,7 +14278,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_player_away",
-            category=["Monika", "You"],
+            category=["Monika"],
             prompt="What do you do when I'm away?",
             random=False,
             pool=True,
