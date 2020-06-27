@@ -709,7 +709,7 @@ label mas_mood_uok:
             menu:
                 m "...{fast}"
                 "I'm done."
-                    m "I hope that helped, [player].
+                    m "I hope that helped, [player]."
         "I don't want to talk about it.":
             m "..."
             m "Alright [player]..."
