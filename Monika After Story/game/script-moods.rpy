@@ -678,6 +678,7 @@ label mas_mood_crying:
     $ _history_list.pop()
     menu:
         m "Are you okay?{fast}"
+
         "Yes.":
             m "Okay, good. That's a relief."
             m "I'm here to keep you company and you can talk to me if you need anything, okay?"
