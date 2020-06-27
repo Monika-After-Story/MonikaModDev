@@ -687,19 +687,32 @@ label mas_mood_crying:
             m "..."
             m "[player]..."
             m "I'm so sorry. Did something happen...?"
-            m "I love you so much [player], and if you need to talk about something, I'm right here."
-            m "So... do you need
+            call mas_mood_uok
         "I'm not sure.":
             m "[player]..."
             m "Did something happen? Is everything okay?"
-            m "If you need to talk about something, I'm right here.{nw}"
+            call mas_mood_uok
+    return
+            
+label mas_mood_uok:
+    m "I love you so much [player]."
+    m "If you need to talk about something, I'm right here.{nw}"
+    $ _history_list.pop()
+    menu:
+        m "If you need to talk about something, I'm right here.{fast}"
+        "I'd like to talk with you.":
+            m "Go ahead, [player]."
+            m "...{nw}"
             $ _history_list.pop()
             menu:
-                m "If you need to talk about something, I'm right here.{fast}"
-                "Everything is fine.":
-                    m "... Okay, [player]. I'll be here if you change your mind. I love you~"
-                    return "love"
-                "Can I talk to you?":
-                    m "Yes, of course [player]."
-                
-return
+                m "...{fast}"
+                "I'm done."
+                    m "I hope that helped, [player].
+        "I don't want to talk about it.":
+            m "..."
+            m "Alright [player]..."
+            m "I'll be here if you change your mind."
+        "Everything's fine.":
+            m "..."
+            m "Okay [player], if you say so..."
+    return
