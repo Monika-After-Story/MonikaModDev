@@ -14875,7 +14875,7 @@ label monika_wabi_sabi:
     m "..."
     m 6ekd "Anyway, [player], I hope you are not too self conscious about your looks."
     m 6dkd "After all, no matter how your face looks, or how your body looks..."
-    m 6dku "I'm sure there's a valuable story behind every scar, and every imperfection about you."
+    m 6dku "I'm sure there's a story behind every scar and every imperfection about you."
     m 2eku "So please, [player], no matter what, don't beat yourself up about how you look."
     m 5tsu "I promise that in the end, I'll be your Belle even if you are the Beast."
     m 4subfb "And that's my Wabi-sabi promise!"
