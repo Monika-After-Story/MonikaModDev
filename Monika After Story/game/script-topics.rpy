@@ -8176,10 +8176,10 @@ init 5 python:
 label monika_smoking:
     m 2esc "You know, [player]...{w=0.3} Lately I've realized that people can really like a lot of things that are terrible for them."
     m 2euc "One particular vice that intrigues me the most is cigarettes."
-    m 7eud "It's amazing how they're heavily consumed every day...even though they're so damaging not only to themselves, but to others as well."
-    m 2rkc "Not to mention how harmful it is to the environment... All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
-    m 2tkc "Even in moderation, it would never be a good thing since those who use it get addicted to its taste too easily."
-    m 4tkd "It's  quite a big hole in your pockets since you'll be buying yourself cartons of it once your supply is out."
+    m 7eud "It's amazing how heavily they're consumed every day...{w=0.2}even though they're so damaging not only to themselves, but to others as well."
+    m 2rkc "Not to mention how harmful they are to the environment...{w=0.2} All the smoke and trash they leave behind is ridiculous for few sticks of carcinogens."
+    m 2tkc "Even in moderation, they would never be a good thing since those who use them get addicted to their taste too easily."
+    m 4tkd "They're also quite a big hole in your pockets since you'll be buying yourself cartons of them once your supply is out."
     m 1tfc "I really do despise them..."
 
     $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke cigarettes, right"
@@ -8340,9 +8340,6 @@ label monika_smoking_quit:
         m 4wud "You can't give in, not even once! {w=0.2}That's how you fall into relapse!"
         m 2hubfa "But knowing you, you won't let that happen, right?"
         m 2ekbfa "Considering what you've already done, I know you're stronger than this~"
-
-    $ persistent._mas_pm_do_smoke_quit_succeeded_before = True
-    return "no_unlock"
 
     #Set this here because dialogue uses it
     $ persistent._mas_pm_do_smoke_quit_succeeded_before = True
