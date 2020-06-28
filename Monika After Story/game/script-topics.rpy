@@ -8315,7 +8315,6 @@ label monika_smoking_quit:
         mas_lockEVL("monika_smoking_quit","EVE")
         tod = "tonight" if mas_globals.time_of_day_3state == "evening" else "tomorrow"
 
-
     if persistent._mas_pm_do_smoke_quit_succeeded_before:
         m 1sub "I'm so proud that you managed to quit smoking again!"
         m 3eua "A lot of people can't quit even once, so to be able to go through something so difficult again is quite the achievement."
@@ -8346,7 +8345,7 @@ label monika_smoking_quit:
     return "no_unlock"
 
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
 
 label monika_cartravel:
     m 1euc "[player], something has been on my mind lately..."
