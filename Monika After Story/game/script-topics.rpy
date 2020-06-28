@@ -8174,23 +8174,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True))
 
 label monika_smoking:
-    m 2euc "You know, [player]..."
-    m "I realized that people really like a lot of things that are very bad for them."
+    m 2esc "You know, [player]...{w=0.3} Lately I've realized that people can really like a lot of things that are terrible for them."
     m 2euc "One particular vice that intrigues me the most is cigarettes."
-    m "It's amazing how they're heavily consumed every day even though it's so damaging not only to themselves, but to others as well."
-    m 2ekc "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
-    m 2tkc "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
+    m 7eud "It's amazing how they're heavily consumed every day...even though they're so damaging not only to themselves, but to others as well."
+    m 2rkc "Not to mention how harmful it is to the environment... All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
+    m 2tkc "Even in moderation, it would ever be a good thing since those who use it get addicted to its taste too easily."
     m 4tkd "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
-    m 1lsc "I really do despise them..."
+    m 1tfc "I really do despise them..."
 
-    python:
-        if not persistent._mas_pm_do_smoke:
-            menu_question = "You don't smoke cigarettes, right"
-
-        else:
-            menu_question = "Do you still smoke"
-
-    m "[menu_question]?{nw}"
+    $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke cigarettes, right"
+    m 1eka "[menu_question]?{nw}"
     $ _history_list.pop()
     menu:
         m "[menu_question]?{fast}"
@@ -8321,9 +8314,7 @@ label monika_smoking_quit:
         persistent._mas_pm_do_smoke_quit = False
         persistent._mas_pm_do_smoke = False
         mas_lockEVL("monika_smoking_quit","EVE")
-        tod = "tonight"
-        if mas_globals.time_of_day_3state == "evening":
-            tod = "tomorrow"
+        tod = "tonight" if mas_globals.time_of_day_3state == "evening" else "tomorrow"
 
     m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
     m 3ekbsa "It's such a relief to know you quit smoking! {w=0.2}{nw}"
