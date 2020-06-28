@@ -8180,7 +8180,7 @@ label monika_smoking:
     m 2rkc "Not to mention how harmful it is to the environment...{w=0.2} All the pollution and trash smoking leaves behind is ridiculous for a bunch of carcinogens."
     m 2tkc "Even in moderation, smoking is never a good thing since it's so addicting."
     m 4tkd "It's also quite a big hole in your pockets since you'll be buying more and more once your supply is out."
-    m 1tfc "I really do despise them..."
+    m 1tfc "I really do despise it..."
 
     $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke, do you"
     m 1eka "[menu_question]?{nw}"
