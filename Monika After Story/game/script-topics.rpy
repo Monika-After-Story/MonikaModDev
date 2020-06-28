@@ -8178,8 +8178,8 @@ label monika_smoking:
     m 2euc "One particular vice that intrigues me the most is cigarettes."
     m 7eud "It's amazing how they're heavily consumed every day...even though they're so damaging not only to themselves, but to others as well."
     m 2rkc "Not to mention how harmful it is to the environment... All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
-    m 2tkc "Even in moderation, it would ever be a good thing since those who use it get addicted to its taste too easily."
-    m 4tkd "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
+    m 2tkc "Even in moderation, it would never be a good thing since those who use it get addicted to its taste too easily."
+    m 4tkd "It's  quite a big hole in your pockets since you'll be buying yourself cartons of it once your supply is out."
     m 1tfc "I really do despise them..."
 
     $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke cigarettes, right"
@@ -8261,7 +8261,7 @@ label monika_smoking:
 
                 m 1eka "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
                 m 1eua "Keeping your mind busy on other things will definitely help kick any bad habits."
-                m 3eua "How about you think about me whenever you get a strong urge?"
+                m 3eua "Maybe you could think about me whenever you get a strong urge?"
                 m 1hua "I'll be here to support you every step of the way."
                 m 1hub "I believe in you [player], I know you can do it!"
 
@@ -8275,7 +8275,7 @@ label monika_smoking:
 label monika_smoking_just_started(trying_quit=False):
     m 2dfc "..."
     m 2tfc "[player]..."
-    m 2tfd "Does that you mean you've started smoking since we've met?"
+    m 2tfd "Does that mean you've started smoking since we've met?"
     m 2dkc "That's really disappointing, [player]."
     m 4ekd "You know how I feel about smoking and you know how bad it is for your health."
 
@@ -8310,25 +8310,42 @@ init 5 python:
 
 label monika_smoking_quit:
     python:
-        persistent._mas_pm_do_smoke_quit_succeeded_before = True
         persistent._mas_pm_do_smoke_quit = False
         persistent._mas_pm_do_smoke = False
         mas_lockEVL("monika_smoking_quit","EVE")
         tod = "tonight" if mas_globals.time_of_day_3state == "evening" else "tomorrow"
 
-    m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
-    m 3ekbsa "It's such a relief to know you quit smoking! {w=0.2}{nw}"
-    extend 3dkbsu "I'll sleep much better at night knowing you're as far away as possible from that nightmare."
-    m 1rkbfu "Ehehe, if I was there with you I'd treat you to your favorite dish [tod]."
-    m 3hubfb "It's an impressive feat after all! {w=0.2}We need to celebrate!"
-    m 3eubsb "Not everyone who wants to quit manages to pull it off."
-    m 1dubfu "You truly are an inspiration, [player]."
-    m 2eua "...Now, I don't want to undermine your victory or anything, {nw}"
-    extend 2euc "but I need you to be careful from now on."
-    m 4rsc "Many former smokers feel urges to smoke again at some point or another."
-    m 4wud "You can't give in, not even once! {w=0.2}That's how you fall into relapse!"
-    m 2hubfa "But knowing you, you won't let that happen, right?"
-    m 2ekbfa "Considering what you've already done, I know you're stronger than this~"
+
+    if persistent._mas_pm_do_smoke_quit_succeeded_before:
+        m 1sub "I'm so proud that you managed to quit smoking again!"
+        m 3eua "A lot of people can't quit even once, so to be able to go through something so difficult again is quite the achievement."
+        m 1eud "That said, let's try not to let this become a pattern, [player]..."
+        m 1ekc "You don't want to keep going through this over and over, so I hope this time it sticks."
+        m 3eka "I know you have the inner strength to stay away for good this time.{w=0.2} {nw}"
+        extend 3eua "If you ever need any help, just come to me and I'll take your mind off of smoking anytime you need me."
+        m 1hua "We can do this together, [player]~"
+
+    # first time quitting
+    else:
+        m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
+        m 3ekbsa "It's such a relief to know you quit smoking! {w=0.2}{nw}"
+        extend 3dkbsu "I'll sleep much better at night knowing you're as far away as possible from that nightmare."
+        m 1rkbfu "Ehehe, if I was there with you I'd treat you to your favorite dish [tod]."
+        m 3hubfb "It's an impressive feat after all! {w=0.2}We need to celebrate!"
+        m 3eubsb "Not everyone who wants to quit manages to pull it off."
+        m 1dubfu "You truly are an inspiration, [player]."
+        m 2eua "...Now, I don't want to undermine your victory or anything, {nw}"
+        extend 2euc "but I need you to be careful from now on."
+        m 4rsc "Many former smokers feel urges to smoke again at some point or another."
+        m 4wud "You can't give in, not even once! {w=0.2}That's how you fall into relapse!"
+        m 2hubfa "But knowing you, you won't let that happen, right?"
+        m 2ekbfa "Considering what you've already done, I know you're stronger than this~"
+
+    $ persistent._mas_pm_do_smoke_quit_succeeded_before = True
+    return "no_unlock"
+
+    #Set this here because dialogue uses it
+    $ persistent._mas_pm_do_smoke_quit_succeeded_before = True
     return "no_unlock"
 
 init 5 python:
