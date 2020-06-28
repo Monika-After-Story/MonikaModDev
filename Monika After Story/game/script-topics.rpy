@@ -15041,6 +15041,45 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_wabi_sabi",
+            category=['philosophy'],
+            prompt="Wabi-sabi",
+            random=True
+        )
+    )
+
+label monika_wabi_sabi:
+    m 1eua "Say [player], have you ever heard of wabi-sabi?"
+    m 3eud "It emphasizes the idea that we shouldn't obsess over perfection to the point that we're crushed by the failure of not achieving it."
+    m 3eub "Derived from traditional Japanese and Buddhistic philosophies surrounding the acceptance of the temporary state of all things..."
+    m 1esa "...it states that beyond everything, beauty is found in what's impermanent and imperfect."
+    m 1eua "Which means we shouldn't worry about things like a scar, a discolored hand, or even the mistakes we make."
+    m 3eka "Our looks are things we can't easily change, but despite that, they make us more unique and special."
+    m 3hua "...And our mistakes turn into lessons that help us become stronger and more defined as people."
+    m 3eub "Like a sculptor revealing the magnificence in a marble block, except the sculpture is you, and the sculptor, your past."
+    m 1rksdla "Of course, this idea doesn't apply to looks and mistakes alone..."
+    m 3eud "After all, the way you think and your attitude toward problems and people are also derived from your own personal experiences."
+    m 1dkc "...But I know for some people, how these experiences changed who they are can really scare them."
+    m 7ekc "Maybe they grew into something that they're just not proud of."
+    m 2dkd "It can be crushing to be worried about both looks and personality..."
+
+    if persistent._mas_pm_love_yourself:
+        m 2eka "I hope you don't feel too insecure about yourself, [player]."
+        m 2dkc "It'd break my heart to know that you're constantly worrying about these things."
+        m 7ekbsa "But I hope you know that despite your flaws, I will always love you."
+
+    else:
+        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
+        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
+
+    m 3hua "We'll overcome any problems you feel you have together."
+    m 1hub "That's my wabi-sabi promise!"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_being_herself",
             category=['monika'],
             prompt="Faked personality",
