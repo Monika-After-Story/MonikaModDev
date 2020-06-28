@@ -8177,7 +8177,7 @@ label monika_smoking:
     m 2esc "You know, [player]...{w=0.3} Lately I've realized that people can really like a lot of things that are terrible for them."
     m 2euc "One particular vice that intrigues me the most is smoking cigarettes."
     m 7eud "It's amazing how heavily they're consumed every day...{w=0.2}even though they're so damaging not only to themselves, but to others as well."
-    m 2rkc "Not to mention how harmful they are to the environment...{w=0.2} All the smoke and trash they leave behind is ridiculous for few sticks of carcinogens."
+    m 2rkc "Not to mention how harmful they are to the environment...{w=0.2} All the smoke and trash they leave behind is ridiculous for a few sticks of carcinogens."
     m 2tkc "Even in moderation, they would never be a good thing since those who use them get addicted to their taste too easily."
     m 4tkd "They're also quite a big hole in your pockets since you'll be buying yourself cartons of them once your supply is out."
     m 1tfc "I really do despise them..."
