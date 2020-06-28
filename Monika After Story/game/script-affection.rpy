@@ -1970,20 +1970,22 @@ label monika_affection_nickname:
             label monika_affection_nickname_yes:
                 pass
 
+            show monika 1eua at t11 zorder MAS_MONIKA_Z
+
             $ done = False
-            m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 python:
-                    inputname = renpy.input(
+                    inputname = mas_input(
                         _("So what do you want to call me?"),
                         allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
-                        length=10
+                        length=10,
+                        screen_kwargs={"use_return_button": True}
                     ).strip(' \t\n\r')
 
                     lowername = inputname.lower()
 
                 # lowername isn't detecting player or m_name?
-                if lowername == "nevermind":
+                if lowername == "cancel_input":
                     m 1euc "Oh, I see."
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."

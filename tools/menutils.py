@@ -4,13 +4,13 @@
 # to run a menu, prepare a list of menu entries. Each entry should consist of
 # a tuple of the following format:
 # [0]: Text to display for this entry
-# [1]: return value 
+# [1]: return value
 #
 # NOTE: the first item of the list should be a tuple of thef ollowing format:
 # [0]: Title / header to display
 # [1]: Prompt text
 #
-# the menu generator function (menu) will add an exit / back option 
+# the menu generator function (menu) will add an exit / back option
 # automatically. this option always returns None
 
 import os
@@ -142,7 +142,7 @@ def paginate(title, items, per_page=20, str_func=str):
     IN:
         title - title to show at the top of each page
         items - list of items to show
-        per_page - number of items to show per page 
+        per_page - number of items to show per page
             Only accepts values between 10 - 50
             (Default: 20)
         str_func - function to use to convert an item into a string
@@ -222,7 +222,7 @@ def paginate(title, items, per_page=20, str_func=str):
             if page < last_page:
                 # default to next page
                 page += 1
-            
+
             else:
                 # otherwise, quit
                 return
@@ -232,7 +232,7 @@ def ask(question, def_no=True):
     Ask user something. Only allows for yes/no selections.
 
     IN:
-        question - question to ask. a ? and the (y/n) will be applied 
+        question - question to ask. a ? and the (y/n) will be applied
             automatically.
         def_no - True will default No, False will default yes
 

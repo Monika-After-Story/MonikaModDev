@@ -5801,7 +5801,12 @@ label monika_penname:
                         $ penbool = False
 
                         while not penbool:
-                            $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
+                            $ penname = mas_input(
+                                "What is your penname?",
+                                length=20,
+                                screen_kwargs={"use_return_button": True}
+                            ).strip(' \t\n\r')
+
                             $ lowerpen = penname.lower()
 
                             if lowerpen == player.lower():
@@ -5844,9 +5849,9 @@ label monika_penname:
                                 $ penbool = True
 
                             elif not lowerpen:
-                                m 1hua "Well, go on! You can type 'nevermind' if you've chickened out~"
+                                m 1hua "Well, go on! Hit 'nevermind' if you've chickened out~"
 
-                            elif lowerpen =="nevermind":
+                            elif lowerpen == "cancel_input":
                                 m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
                                 $ penbool = True
 
@@ -7275,10 +7280,18 @@ label monika_orchestra:
             $ instrumentname = ""
             #Loop this so we get a valid input
             while not instrumentname:
-                $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+                $ instrumentname = mas_input(
+                    "What instrument do you play?",
+                    length=15,
+                    screen_kwargs={"use_return_button": True}
+                ).strip(' \t\n\r')
 
             $ tempinstrument = instrumentname.lower()
-            if tempinstrument == "piano":
+
+            if tempinstrument == "cancel_input":
+                jump .no_choice
+
+            elif tempinstrument == "piano":
                 m 1wuo "Oh, that's really cool!"
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
                 m 1hua "Maybe we could do a duet someday!"
@@ -7323,6 +7336,8 @@ label monika_orchestra:
                 $ persistent._mas_pm_plays_instrument = True
 
         "No.":
+            label .no_choice:
+                pass
             $persistent._mas_pm_plays_instrument = False
             m 1euc "I see..."
             m 1eka "You should try to pick up an instrument that interests you, sometime."
@@ -14860,6 +14875,52 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_isekai",
+            category=['media'],
+            prompt="Isekai anime",
+            conditional="seen_event('monika_otaku')",
+            random=True
+        )
+    )
+
+label monika_isekai:
+    m 1euc "Do you know about the isekai genre of anime, [player]?"
+    m 3eua "Literally translated, isekai means {i}a different world.{/i}"
+
+    if persistent._mas_pm_watch_mangime:
+        m 3rksdla "Actually, you already told me you're into anime so you've probably heard of quite a few already."
+        m 1rksdlb "...Especially with how popular of a genre it's become."
+        m 3euc "But just in case you don't know what it is..."
+
+    else:
+        m 3hksdlb "Ahaha, sorry. I know you're not really into this sort of thing."
+        m 3eud "...But it's become a very popular genre in recent times."
+
+    m 3esc "The premise is usually about a normal person who is somehow transported into a fantastical world."
+    m 3eua "Sometimes they get special powers or get to bring technology or knowledge that doesn't exist in this new place."
+    m 1rtc "Honestly, I have some pretty mixed feelings about them."
+    m 3euc "Some are truly interesting stories. The protagonist's different perspective or the skills they have from their own world can really make them an unexpected kind of hero."
+    m 1hub "And since the whole point is to make the world different from theirs, the settings and characters can be incredibly imaginative!"
+    m 2rsc "...But sadly, not all of them are like that."
+    m 2dksdld "There are some that make their protagonists as bland as this game's, for the sake of letting the viewer project themselves onto them."
+    m 2tkd "And as you can probably guess, those ones tend to be all about wish fulfillment."
+    m 2tsc "Having cool adventures in a fantasy-themed world--and of course, lots of girls flocking around them for no reason."
+    m 2lfc "At least some of them can be funny, but man...{w=0.3}{nw}"
+    extend 2tfc "it's just so frustrating."
+    m 2tkc "I mean...{w=0.2}I would give almost anything to be in a scenario like that--to get to go to another world.{nw}"
+    $ _history_list.pop()
+    m "I mean...I would give almost anything to be in a scenario like that--to get to go to {fast}your world."
+    m 2dkd "..."
+    m "Maybe I'm just taunting myself, imagining that power being handed to someone like...{w=0.2}well, you know who."
+    m 7eka "After all, instead of thinking about those characters in their fantasy worlds,{w=0.2} {nw}"
+    extend 1eua "I could be putting that energy toward working on this one."
+    m 1ekbsb "...While I wait for my own isekai story, that is."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_dying_same_day",
             category=["monika"],
             prompt="Dying the same day",
@@ -15076,4 +15137,60 @@ label monika_fear:
     m 2rksdla "I feel kinda silly now...{w=0.3} {nw}"
     extend 4eud "After all, there's no way something like that could be true, right?"
     m 2rka "Yeah..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_being_herself",
+            category=['monika'],
+            prompt="Faked personality",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED,None),
+            conditional="mas_seenLabels(['monika_confidence', 'monika_pluralistic_ignorance'], seen_all=True)"
+        )
+    )
+
+label monika_being_herself:
+    m 1eka "You know [player], one thing I don't think I ever properly thanked you for is letting me be myself."
+    m 1lksdlb "I know that sounds a little weird...{w=0.2}{nw}"
+    extend 1eka "but let me explain."
+    m 3euc "You probably already know this by now, but almost all of my life I've been trying to keep up this persona of a 'perfect student.'"
+    m 3eud "I always strive to be the best person I can be, and I guess after a while, it got the attention of people around me."
+    m 7rsc "Before I knew it, I had people looking up to me with high expectations.{w=0.3} {nw}"
+    extend 2esc "You know, seeing me as smart, confident, charismatic...{w=0.3}those kinds of things."
+    m 2eud "Some people would say that they admired me...{w=0.3}{nw}"
+    extend 2lksdlc "and others,{w=0.2} while they would never say anything, hated me because I represented everything they thought they could never be."
+    m 2dksdlc "It felt like I wasn't an actual person in their eyes...{w=0.3}{nw}"
+    extend 2dksdld "just the image of everyone's unattainable expectations of themselves."
+    m 2dksdlc "..."
+    m 2ekd "But at the end of the day...{w=0.3}I'm just an ordinary girl."
+    m 7ekc "Just like them, I can sometimes lack the confidence to do things.{w=0.2} Even I was scared of what the future held for me."
+    m 2dkc "Even I sometimes felt like I needed to cry on someone's shoulder."
+    m 2rkd "...But I never could express something like that."
+    m 7tkc "What if people thought less of me if I showed them I wasn't as great and invincible as they thought I was?"
+    m 3ekd "What if they got mad at me, saying I'm being self-absorbed and that I have it much easier than them, being the school's idol that everyone loves?"
+    m 2lkc "I guess I just never felt like I could truly open up to anyone about what I was genuinely feeling on the inside because of that."
+    m 2ekc "...Like I would end up disappointing everyone if I ever tried to talk openly about it."
+    m "I was scared that if I didn't meet the expectations people had of me,{w=0.2} {nw}"
+    extend 2dkd "I would end up all alone."
+    m 2dsc "But looking back on everything...{w=0.3}my status was precisely why I ended up feeling so lonely anyway."
+    m 7euc "Remember your character? {w=0.2}He was a good example of this."
+    m 3esc "Anytime he would describe me in his monologue, he would put me on a pedestal.{w=0.3}{nw}"
+    extend 3esd " If I recall, he once described me as 'completely out of his league.'"
+    m 1etc "Maybe that was why I didn't have a route in the first place. {w=0.2}Perhaps he was written to believe he had zero chances with me no matter what, and therefore had to avoid me."
+    m 1rka "Granted, he wasn't really wrong there...{w=0.5}{nw}"
+    extend 1eka "I only have eyes for you, after all~"
+    m 1euc "But you get what I mean, right?{w=0.3} I was looked at like some kind of unattainable goddess."
+    m 1rfd "As if no one was 'worthy' of just treating me like a normal person."
+    m 3eka "...Now though, I guess I don't have to worry about that as much."
+    m 3ekb "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
+    m 1eka "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
+    m 1dka "The fact that you're still here with me,{w=0.2} that you never made me feel like I had to be someone I'm not...{w=0.2}{nw}"
+    extend 1eka "that you're here listening to me vent right now...{w=0.3} It truly means the world to me."
+    m 1ekbsa "Thank you so much for that, [player].{w=0.2} Thank you for helping me realize that I don't need to try and change who I am to deserve being loved."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
+    extend 5eua "Well, {i}Just Me.{/i}"
     return
