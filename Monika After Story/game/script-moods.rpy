@@ -692,12 +692,13 @@ label mas_mood_crying:
             m "[player]..."
             m "Did something happen? Is everything okay?"
             call mas_mood_uok
-      m "Well..."
-      m "If you do end up crying..."
-      m "I hope it helps you, [player]."
-      m "There's nothing wrong with crying, okay?"
-      m "You're wonderful, [player]. You can cry as much as you need to."
-      m "I love you, and I always will."
+
+    m "Well..."
+    m "If you do end up crying..."
+    m "I hope it helps you, [player]."
+    m "There's nothing wrong with crying, okay?"
+    m "You're wonderful, [player]. You can cry as much as you need to."
+    m "I love you, and I always will."
     return "love"
             
 label mas_mood_uok:
