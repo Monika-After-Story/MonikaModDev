@@ -8175,20 +8175,20 @@ init 5 python:
 
 label monika_smoking:
     m 2esc "You know, [player]...{w=0.3} Lately I've realized that people can really like a lot of things that are terrible for them."
-    m 2euc "One particular vice that intrigues me the most is smoking cigarettes."
-    m 7eud "It's amazing how heavily they're consumed every day...{w=0.2}even though they're so damaging not only to themselves, but to others as well."
-    m 2rkc "Not to mention how harmful they are to the environment...{w=0.2} All the smoke and trash they leave behind is ridiculous for a few sticks of carcinogens."
-    m 2tkc "Even in moderation, they would never be a good thing since those who use them get addicted to their taste too easily."
-    m 4tkd "They're also quite a big hole in your pockets since you'll be buying yourself cartons of them once your supply is out."
+    m 2euc "One particular vice that intrigues me the most is smoking."
+    m 7eud "It's amazing how many people do it every day...{w=0.2}even though it's so damaging not only to themselves, but to others as well."
+    m 2rkc "Not to mention how harmful it is to the environment...{w=0.2} All the pollution and trash smoking leaves behind is ridiculous for a bunch of carcinogens."
+    m 2tkc "Even in moderation, it would never be a good thing since those who use them get addicted to them too easily."
+    m 4tkd "It's also quite a big hole in your pockets since you'll be buying more and more once your supply is out."
     m 1tfc "I really do despise them..."
 
-    $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke cigarettes, right"
+    $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke, do you"
     m 1eka "[menu_question]?{nw}"
     $ _history_list.pop()
     menu:
         m "[menu_question]?{fast}"
 
-        "Yes I do.":
+        "Yes, I do.":
             if persistent._mas_pm_do_smoke_quit:
                 m 1ekd "Haven't been able to shake the habit yet, [player]?"
                 m 3eka "That's okay, I know it can be a daunting task to try and quit..."
@@ -8199,7 +8199,7 @@ label monika_smoking:
                 m 1ekc "It's a shame you fell back into this bad habit...{w=0.2}{nw}"
                 extend 1ekd "after all the trouble you went through to quit and everything..."
                 m 3dkc "It really pains my heart, [player]."
-                m 1dkd "I really thought you were done for good with cigarettes."
+                m 1dkd "I really thought you were done for good..."
                 m 1dkc "But I guess it's just not that simple, right?"
                 m 3ekd "I really hope you'll consider trying to quit again, [player]."
                 m 3eka "You'll do that, right? {w=0.2}For me?"
@@ -8259,7 +8259,7 @@ label monika_smoking:
                 else:
                     m 1eka "I know the entire process of quitting can be really difficult, especially in the beginning."
 
-                m 1eka "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
+                m 1eka "If you ever feel like you need to smoke, just try to distract yourself with anything else."
                 m 1eua "Keeping your mind busy on other things will definitely help kick any bad habits."
                 m 3eua "Maybe you could think about me whenever you get a strong urge?"
                 m 1hua "I'll be here to support you every step of the way."
@@ -8313,7 +8313,6 @@ label monika_smoking_quit:
         persistent._mas_pm_do_smoke_quit = False
         persistent._mas_pm_do_smoke = False
         mas_lockEVL("monika_smoking_quit","EVE")
-        tod = "tonight" if mas_globals.time_of_day_3state == "evening" else "tomorrow"
 
     if persistent._mas_pm_do_smoke_quit_succeeded_before:
         m 1sub "I'm so proud that you managed to quit smoking again!"
@@ -8326,10 +8325,11 @@ label monika_smoking_quit:
 
     # first time quitting
     else:
+        $ tod = "tonight" if mas_globals.time_of_day_3state == "evening" else "tomorrow"
         m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
         m 3ekbsa "It's such a relief to know you quit smoking! {w=0.2}{nw}"
         extend 3dkbsu "I'll sleep much better at night knowing you're as far away as possible from that nightmare."
-        m 1rkbfu "Ehehe, if I was there with you I'd treat you to your favorite dish [tod]."
+        m 1rkbfu "Ehehe, if I were there with you, I'd treat you to your favorite dish [tod]."
         m 3hubfb "It's an impressive feat after all! {w=0.2}We need to celebrate!"
         m 3eubsb "Not everyone who wants to quit manages to pull it off."
         m 1dubfu "You truly are an inspiration, [player]."
