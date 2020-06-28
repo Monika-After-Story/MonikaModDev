@@ -8319,8 +8319,8 @@ label monika_smoking_quit:
         m 3eua "A lot of people can't quit even once, so to be able to go through something so difficult again is quite the achievement."
         m 1eud "That said, let's try not to let this become a pattern, [player]..."
         m 1ekc "You don't want to keep going through this over and over, so I hope this time it sticks."
-        m 3eka "I know you have the inner strength to stay away for good this time.{w=0.2} {nw}"
-        extend 3eua "If you ever need any help, just come to me and I'll take your mind off of smoking anytime you need me."
+        m 3eka "I know you have the inner strength to stay away for good.{w=0.2} {nw}"
+        extend 3eua "Just remember you can come to me and I'll take your mind off of smoking at any time."
         m 1hua "We can do this together, [player]~"
 
     # first time quitting
