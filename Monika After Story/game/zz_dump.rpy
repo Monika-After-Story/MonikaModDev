@@ -78,7 +78,7 @@ init 999 python:
             def calcAvgs(self):
                 """
                 Calculates averages
-                
+
                 Returns tuple:
                     [0]: show count avg
                     [1]: pool show count avg
@@ -103,7 +103,7 @@ init 999 python:
                 elif self.most_seen_ev.shown_count < ev.shown_count:
                     self.most_seen_ev = ev
 
-        
+
             def inDB(self, ev):
                 """
                 returns true if the given ev is in this db
@@ -141,7 +141,7 @@ init 999 python:
 
                 return _seen
 
-        
+
             def __str__(self):
                 """
                 to String
@@ -231,7 +231,7 @@ init 999 python:
         """
         This is a function called on startup and performs data dumps.
 
-        Please add your data dump to a different file than dumps.log if its 
+        Please add your data dump to a different file than dumps.log if its
         a large dump.
 
         Thank you.
@@ -283,7 +283,7 @@ init 999 python:
         outstr = (
             "First session: {0}\n" +
             "Total sessions: {1}\n" +
-            "Total playtime: {2}\n" + 
+            "Total playtime: {2}\n" +
             "Avg playtime per session: {3}\n" +
             "Last session start: {4}\n" +
             "Last session end: {5}\n\n"
@@ -291,7 +291,7 @@ init 999 python:
 
         return outstr.format(*output)
 
-    
+
     def mas_varDataDump():
         """
         Dumps other kinds of data.
@@ -305,6 +305,15 @@ init 999 python:
         with open(_var_data_fp, "w") as _var_data_file:
             _var_data_file.write(config.version + "\n\n")
 
+            # xp and levels
+            _var_data_file.write(
+                "LEVELS: {0}\nXPTNL: {1}\nUNLOCKS: {2}\n\n".format(
+                    persistent._mas_xp_lvl,
+                    persistent._mas_xp_tnl,
+                    persistent._mas_pool_unlocks
+                )
+            )
+
             # add data lines here
             #Consumables stuff
             for consumable_id in persistent._mas_consumable_map.keys():
@@ -312,15 +321,28 @@ init 999 python:
 
                 #Need to account for consumables which were removed
                 if consumable:
-                    _var_data_file.write(
-                        "{0}S OF {1} {2}: {3}\n".format(
-                        consumable.container.upper(),
-                        consumable.disp_name.upper(),
-                        "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
-                        consumable.getAmountHad()
-                        )
-                    )
+                    #Some prep
+                    dlg_props = consumable.dlg_props
 
+                    ref = dlg_props.get(mas_consumables.PROP_CONTAINER, dlg_props.get(mas_consumables.PROP_OBJ_REF))
+                    if ref:
+                        _var_data_file.write(
+                            "{0}S OF {1} {2}: {3}\n".format(
+                                ref.upper(),
+                                consumable.disp_name.upper(),
+                                "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
+                                consumable.getAmountHad()
+                            )
+                        )
+
+                    else:
+                        _var_data_file.write(
+                            "{0}S {1}: {2}\n".format(
+                                consumable.disp_name.upper(),
+                                "EATEN" if consumable.consumable_type == store.mas_consumables.TYPE_FOOD else "DRANK",
+                                consumable.getAmountHad()
+                            )
+                        )
 
     def mas_dataDumpFlag():
         """
@@ -336,4 +358,3 @@ init 999 python:
 
     if persistent._mas_unstable_mode or mas_dataDumpFlag():
         mas_unstableDataDump()
-

@@ -83,7 +83,7 @@ init 5 python:
                 prompt="Can you show me the floating islands?",
                 pool=True,
                 unlocked=False,
-                rules={"no unlock": None},
+                rules={"no unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
                 aff_range=(mas_aff.ENAMORED, None)
             )
         )

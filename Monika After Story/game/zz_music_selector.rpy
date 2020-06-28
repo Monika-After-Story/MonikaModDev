@@ -40,8 +40,8 @@ init -1 python in songs:
     FP_JUST_MONIKA = "bgm/m1.ogg"
     FP_YOURE_REAL = "bgm/credits.ogg"
     FP_STILL_LOVE = "bgm/monika-end.ogg"
-    FP_MY_FEELS = "<loop 3.172>bgm/9.ogg" 
-    FP_MY_CONF =  "<loop 5.861>bgm/10.ogg" 
+    FP_MY_FEELS = "<loop 3.172>bgm/9.ogg"
+    FP_MY_CONF =  "<loop 5.861>bgm/10.ogg"
     FP_OKAY_EV_MON = "<loop 4.444>bgm/5_monika.ogg"
     FP_DDLC_MT_80 = (
         "<loop 17.451 to 119.999>mod_assets/bgm/ddlc_maintheme_80s.ogg"
@@ -89,7 +89,7 @@ init -1 python in songs:
     def getUserVolume(channel):
         """
         Gets user-defined slider volume of the given channel.
-        NOTE: this is indepenent of the actual channel volume. 
+        NOTE: this is indepenent of the actual channel volume.
             Using set_volume will NOT affect this.
 
         IN:
@@ -205,13 +205,13 @@ init -1 python in songs:
 
     def setUserVolume(value, channel):
         """
-        Sets user volume to the given value. 
+        Sets user volume to the given value.
         NOTE: this does a preference edit, so there's no delay options.
         NOTE: this changes mixer volume, so it may affect other channels.
 
         IN:
             value - value to set volume to. Should be between 0.0 and 1.0.
-            channel - channel to set.  
+            channel - channel to set.
         """
         chan = renpy.audio.audio.get_channel(channel)
         if chan.mixer in renpy.game.preferences.volumes:
@@ -259,7 +259,7 @@ init -1 python in songs:
 
         return pages_dict
 
-        
+
     def __genPage(music_list):
         """
         Generates the a page of music choices
@@ -413,7 +413,7 @@ init -1 python in songs:
 
         return ""
 
-    
+
     def _getMP3(filepath):
         """
         Attempts to retrieve the MP3 object from the given audio file
@@ -422,7 +422,7 @@ init -1 python in songs:
             filepath - full filepath to the mp3 file want tags from
 
         RETURNS:
-            mutagen.mp3.EasyMP3 object, or None if we coudlnt do it 
+            mutagen.mp3.EasyMP3 object, or None if we coudlnt do it
         """
         try:
             return muta3.EasyMP3(filepath)
@@ -444,7 +444,7 @@ init -1 python in songs:
         #   does
         return _getOggName(_audio_file)
 
-    
+
     def _getOgg(filepath):
         """
         Attempts to retreive the Ogg object from the given audio file
@@ -454,7 +454,7 @@ init -1 python in songs:
 
         RETURNS:
             mutagen.ogg.OggVorbis or None if we coudlnt get the info
-        """        
+        """
         try:
             return mutaogg.OggVorbis(filepath)
         except:
@@ -564,7 +564,7 @@ init -1 python in songs:
         # now we can build the tag
         _tag_elems = [RPY_START]
 
-        if loopstart is not None: 
+        if loopstart is not None:
             _tag_elems.append(RPY_FROM)
             _tag_elems.append(str(loopstart))
 
@@ -647,7 +647,7 @@ init -1 python in songs:
         Attempts to retrieve the Opus object from the given audio file
 
         IN:
-            filepath - full filepath to the opus file 
+            filepath - full filepath to the opus file
 
         RETURNS:
             mutagen.ogg.OggOpus or None if we couldnt get the info
@@ -673,7 +673,7 @@ init -1 python in songs:
                 return True
 
         return False
-    
+
 
     def cleanGUIText(unclean):
         """
@@ -905,7 +905,7 @@ style music_menu_button_text_dark is navigation_button_text:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
-# Music menu 
+# Music menu
 #
 # IN:
 #   music_page - current page of music
@@ -977,7 +977,7 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 #                if more_pages:
 #                    textbutton _(" | "):
 #                        xsize 50
-#                        text_font "gui/font/Halogen.ttf" 
+#                        text_font "gui/font/Halogen.ttf"
 #                        text_align 0.5
 #                        sensitive False
 
@@ -986,7 +986,7 @@ screen music_menu(music_page, page_num=0, more_pages=False):
                     style "music_menu_return_button"
                     action Return(page_num + 1)
 
-        textbutton _(songs.NO_SONG): 
+        textbutton _(songs.NO_SONG):
             style "music_menu_return_button"
             action Return(songs.NO_SONG)
 
@@ -1010,7 +1010,7 @@ label display_music_menu:
 
         # setup pages
         $ music_page = songs.music_pages.get(curr_page, None)
-            
+
         if music_page is None:
             # this should never happen. Immediately quit with None
             return songs.NO_SONG
@@ -1034,26 +1034,24 @@ init python:
 
 
     def dec_musicvol():
-        #
-        # decreases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        # ASSUMES:
-        #   persistent.playername
+        """
+        Decreases the volume of the music channel by the value defined in songs.vol_bump
 
+        ASSUMES:
+            persistent.playername
+        """
         # sayori cannot make the volume quieter
         if (
-                persistent.playername.lower() != "sayori"
-                or persistent._mas_sensitive_mode
-            ):
+            persistent.playername.lower() != "sayori"
+            or persistent._mas_sensitive_mode
+        ):
             songs.adjustVolume(up=False)
 
 
     def inc_musicvol():
-        #
-        # increases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
+        """
+        increases the volume of the music channel by the value defined in songs.vol_bump
+        """
         songs.adjustVolume()
 
 
@@ -1068,7 +1066,7 @@ init python:
         curr_volume = songs.getUserVolume("music")
         # sayori cannot mute
         if (
-                curr_volume > 0.0 
+                curr_volume > 0.0
                 and (
                     persistent.playername.lower() != "sayori"
                     or persistent._mas_sensitive_mode
@@ -1081,20 +1079,29 @@ init python:
             songs.setUserVolume(songs.music_volume, "music")
 
 
-    def play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0):
-        #
-        # literally just plays a song onto the music channel
-        # Also sets the currentt track
-        #
-        # IN:
-        #   song - song to play. If None, the channel is stopped
-        #   fadein - number of seconds to fade in the song
-        #   loop - True if we should loop the song if possible, False to not
-        #       loop.
-        #   set_per - True if we should set persistent track, False if not
+    def play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0, if_changed=False):
+        """
+        literally just plays a song onto the music channel
+        Also sets the currentt track
+
+        IN:
+            song - Song to play. If None, the channel is stopped
+            fadein - Number of seconds to fade the song in
+                (Default: 0.0)
+            loop - True if we should loop the song if possible, False to not loop.
+                (Default: True)
+            set_per - True if we should set persistent track, False if not
+                (Default: False)
+            fadeout - Number of seconds to fade the song out
+                (Default: 0.0)
+            if_changed - Whether or not to only set the song if it's changing
+                (Use to play the same song again without it being restarted)
+                (Default: False)
+        """
         if song is None:
             song = songs.FP_NO_SONG
             renpy.music.stop(channel="music", fadeout=fadeout)
+
         else:
             renpy.music.play(
                 song,
@@ -1102,7 +1109,8 @@ init python:
                 loop=loop,
                 synchro_start=True,
                 fadein=fadein,
-                fadeout=fadeout
+                fadeout=fadeout,
+                if_changed=if_changed
             )
 
         songs.current_track = song
@@ -1119,7 +1127,7 @@ init python:
         Meant for usage in startup processes.
         """
         if persistent.current_track is not None:
-            play_song(persistent.current_track)
+            play_song(persistent.current_track, if_changed=True)
 
 
     def select_music():
@@ -1146,7 +1154,7 @@ init python:
 
             elif store.mas_globals.in_idle_mode:
                 # to idle
-                mas_mumuToIdleShield() 
+                mas_mumuToIdleShield()
 
             else:
                 # otherwise we can enable interactions normally

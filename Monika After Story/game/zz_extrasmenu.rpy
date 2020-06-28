@@ -115,7 +115,6 @@ label mas_extra_menu_close:
 
 label mas_idle_loop:
     pause 10.0
-    $ renpy.not_infinite_loop(60)
     jump mas_idle_loop
 
 default persistent._mas_opened_extra_menu = False
@@ -362,6 +361,7 @@ screen mas_extramenu_area():
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"
+                    selected False
                     xsize 72
                     ysize 35
                     xalign 0.3
@@ -374,7 +374,7 @@ screen mas_extramenu_area():
                 $ store.mas_sprites.adjust_zoom()
 
         # TODO: frame for nose boop control
-        # TODO: only have available if certain affection + 
+        # TODO: only have available if certain affection +
         #   (Definitely not below normal)
 #        frame:
 #            area (280, 450, 80, 120)
@@ -382,6 +382,6 @@ screen mas_extramenu_area():
 #
 #            vbox:
 #                spacing 2
-#                
+#
 #                label "Boop":
 #                    style "hkb_button_text"

@@ -16,7 +16,7 @@ python early:
             flt - filter we last used
         """
 
-        def __init__(self, 
+        def __init__(self,
                 focus=None,
                 default=False,
                 style='default',
@@ -127,7 +127,7 @@ python early:
             # then highlight
             hl_img = self.__gen_hl()
 
-            # NOTE: branching this for efficiency. 
+            # NOTE: branching this for efficiency.
             #   we woudl still need to branch once to check of hl is valid,
             #   so we don't lose anything in branching the render into two
             #   separate paths. Non-highlights get a slightly faster render.
@@ -141,7 +141,7 @@ python early:
                 rv.blit(render, (0, 0))
 
             else:
-                # loop render 
+                # loop render
                 render_list = [
                     renpy.render(img, width, height, st, at)
                     for img in (new_img, hl_img)
@@ -150,7 +150,7 @@ python early:
                 # size is determined by the image render
                 rw, rh = render_list[0].get_size()
                 rv = renpy.Render(rw, rh)
-                
+
                 # loop blit
                 for render in render_list:
                     rv.blit(render, (0, 0))
@@ -212,7 +212,7 @@ python early:
         IN:
             def_img - the default image to use for any filter not defined.
             filterize_def - True will apply filters to the default image
-                as appropraite, False will NOT apply filters. 
+                as appropraite, False will NOT apply filters.
                 Setting this as False may result in a sprite that looks shit
                 in certain settings.
             **flt_pairs - name=value args for specific filters:
@@ -234,7 +234,7 @@ python early:
         IN:
             def_img - the default image to use for any filter not defined.
             filterize_def - True will apply filters to the default image
-                as appropraite, False will NOT apply filters. 
+                as appropraite, False will NOT apply filters.
                 Setting this as False may result in a sprite that looks shit
                 in certain settings.
             flt_pairs - dict mapping filtesr to images
@@ -306,7 +306,7 @@ init -1 python in mas_sprites:
 init -99 python in mas_sprites:
     import store
     import store.mas_utils as mas_utils
-    
+
     # Filtering Framework
     # TODO: consider making the filter dict use Curryables so custom filters
     #   can use non-Matrixcolor-based logic
@@ -339,7 +339,7 @@ init -99 python in mas_sprites:
         Filters beyond this level will be ignored.
 
         IN:
-            flt_enum - enum key to use as a filter. 
+            flt_enum - enum key to use as a filter.
             imx - image matrix to use as filter
         """
         if __ignore_filters:
@@ -383,9 +383,9 @@ init -99 python in mas_sprites:
 
 
 init -98 python:
-    
+
     # global filter-based functions
-    # NOTE: only put the most used filter checks. 
+    # NOTE: only put the most used filter checks.
 
     def mas_isCurrentFlt(flt):
         """
@@ -421,12 +421,12 @@ init -4 python in mas_sprites:
     CACHE_TABLE = {
         CID_FACE: {},
         # the facial expression cache. Facial expressions are the most likely
-        # things to overlap across clothing, hair, and ACS, so we should cache 
+        # things to overlap across clothing, hair, and ACS, so we should cache
         # them together to maximize performance
         # key:
         #   tuple containing all sprite strings that may be used. None is fine
-        #   here. 
-        #   [0] - should be the filter code. 
+        #   here.
+        #   [0] - should be the filter code.
         #   [1] - should be pre/post (0 or 1)
         #   [2] - type of lean
         #   [3+] remaining values dependent on type:
@@ -449,7 +449,7 @@ init -4 python in mas_sprites:
         CID_BODY: {},
         # the body cache. This includes clothes and base sprites.
         # key:
-        #   tuple containing strings. 
+        #   tuple containing strings.
         #   [0] - should be the filter code.
         #   [1] - shoud be image path
         # value:
@@ -458,16 +458,16 @@ init -4 python in mas_sprites:
         CID_HAIR: {},
         # the hair cache
         # key:
-        #   tuple containing strings. 
+        #   tuple containing strings.
         #   [0] - should be the filter code.
         #   [1] - should be image path
         # value:
         #   image manip containing render, or None if should not be rendered
-   
+
         CID_ACS: {},
         # the ACS cache
         # key:
-        #   tuple containing strings. 
+        #   tuple containing strings.
         #   [0] - should be the filter code.
         #   [1] - acs name (id)
         #   [3] - poseid
@@ -553,7 +553,7 @@ init -4 python in mas_sprites:
             Constructor for a MASMOnikaRender object
 
             IN:
-                render_keys - image keys and ImageBase if needed. 
+                render_keys - image keys and ImageBase if needed.
                     See props.
                 flt - filter we are using (string)
                 xpos - xposition to blit objects with
@@ -674,7 +674,7 @@ init -4 python in mas_sprites:
 
 
     def _add_arms_rk(
-            rk_list, 
+            rk_list,
             arms,
             pfx,
             flt,
@@ -783,14 +783,14 @@ init -4 python in mas_sprites:
 
     def _bhli(img_list, hlcode):
         """
-        Builds a 
+        Builds a
         High-
         Light
         Image using the base image path
 
         IN:
             img_list - list of strings that form the base image string
-                NOTE: we assume that the last item in this string is the 
+                NOTE: we assume that the last item in this string is the
                 FILE_EXT. This also assumes highlight codes are always inserted
                 right before the file extension.
             hlcode - highlight code to use. Can be None.
@@ -808,7 +808,7 @@ init -4 python in mas_sprites:
 
     def _bhlifp(img_path, hlcode):
         """
-        Builds a 
+        Builds a
         High-
         Light
         Image using an image's
@@ -831,7 +831,7 @@ init -4 python in mas_sprites:
 
     def _cgen_im(flt, key, cid, img_base):
         """
-        Checks cache for an im, 
+        Checks cache for an im,
         GENerates the im if not found
 
         IN:
@@ -991,7 +991,7 @@ init -4 python in mas_sprites:
         IN:
             acs - MASAccessory object
             flt - filter to apply
-            arm_split - see MASAccessory.arm_split for codes. None for no 
+            arm_split - see MASAccessory.arm_split for codes. None for no
                 codes at all.
             leanpose - current pose
                 (Default: None)
@@ -1005,7 +1005,7 @@ init -4 python in mas_sprites:
         poseid = acs.pose_map.get(leanpose, None)
 
         # get arm code if needed
-        # NOTE: we can be sure that a nonsplit acs will not be used in 
+        # NOTE: we can be sure that a nonsplit acs will not be used in
         #   a split context.
         if arm_split is None:
             arm_code = ""
@@ -1053,7 +1053,7 @@ init -4 python in mas_sprites:
             arm_code,
             FILE_EXT,
         ]
-      
+
         # finally add the render key
         rk_list.append((
             img_key,
@@ -1290,7 +1290,7 @@ init -4 python in mas_sprites:
             bcode- base code to use
 
         OUT:
-            rk_list - list to add render keys to 
+            rk_list - list to add render keys to
         """
         img_str = "".join((
             B_MAIN,
@@ -1306,7 +1306,7 @@ init -4 python in mas_sprites:
             return
 
         rk_list.append((img_key, CID_BODY, store.Image(img_str), None))
-    
+
 
     def _rk_base_body_lean_nh(rk_list, lean, flt, bcode):
         """
@@ -1680,7 +1680,7 @@ init -4 python in mas_sprites:
         # otherwise, time to generate the im
         if blush:
             rk_list.append((
-                img_key, 
+                img_key,
                 CID_FACE,
                 store.Image("".join((
                     F_T_MAIN,
@@ -1697,7 +1697,7 @@ init -4 python in mas_sprites:
         cache_face[img_key] = None
         cache_face[day_key] = None
 
-   
+
     def _rk_hair(rk_list, hair, flt, hair_key, lean):
         """
         Adds hair render key
@@ -1823,7 +1823,7 @@ init -4 python in mas_sprites:
             store.Image("".join(table_list)),
             hl_img
         ))
-        
+
 
 # main sprite compilation
 
@@ -1878,7 +1878,7 @@ init -4 python in mas_sprites:
                 hair and body
             acs_bse_list - sorted list of MASAccessories to draw between base
                 body and outfit
-            acs_bba_list - sorted list of MASAccessories to draw between 
+            acs_bba_list - sorted list of MASAccessories to draw between
                 body and back arms
             acs_ase_list - sorted list of MASAccessories to draw between base
                 arms and outfit
@@ -2219,7 +2219,7 @@ init -2 python:
             RETURNS: dict with cleaned filter pairs
             """
             output = {}
-            
+
             # cehck existing filter keys and apply defaults
             for flt in store.mas_sprites.FILTERS:
                 output[flt] = filter_pairs.get(flt, default)
@@ -2237,7 +2237,7 @@ init -2 python:
                     value: code to use as string
                     NOTE: default is assumed to already been set
 
-            RETURNS: hash that would be generated by a MASFilterMAp created 
+            RETURNS: hash that would be generated by a MASFilterMAp created
                 with the given filter pairs
             """
             # hash a tuple of this filtermap's map's values, using None for
@@ -2257,7 +2257,7 @@ init -2 python:
                 ind_lvl - indent lvl
                     NOTE: this handles loading/success log, so do not
                         increase indent level
-                prop_name - name of the prop this MASFilterMap object is 
+                prop_name - name of the prop this MASFilterMap object is
                     being created from
 
             OUT:
@@ -2526,7 +2526,7 @@ init -2 python:
             store.mas_sprites.LOC_H
         )
 
-        # finally apply zoom 
+        # finally apply zoom
         return Transform(sprite, zoom=store.mas_sprites.value_zoom), None
 
 
@@ -2554,7 +2554,7 @@ init -2 python:
 
         # decide the filter
         flt = store.mas_sprites.get_filter()
-        
+
         # now build the chair
         store.mas_sprites._rk_chair(rk_list, character.tablechair, flt)
 
@@ -2585,7 +2585,4 @@ init -2 python:
         )
 
         # finally appyl zoom and return
-        return Transform(sprite, zoom=store.mas_sprites.value_zoom), None 
-
-
-
+        return Transform(sprite, zoom=store.mas_sprites.value_zoom), None

@@ -65,6 +65,8 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_11_3 = "v0_11_3"
+        vv0_11_2 = "v0_11_2"
         vv0_11_1 = "v0_11_1"
         vv0_11_0 = "v0_11_0"
         vv0_10_7 = "v0_10_7"
@@ -117,7 +119,12 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
-        #updates.version_updates[vv0_11_0] = vv0_11_1
+        #NOTE: If a version does not have and update script, its version still must be documented and point to the next update
+        #script available
+
+        #updates.version_updates[vv0_11_2] = vv0_11_3
+        #updates.version_updates[vv0_11_1] = vv0_11_3
+        updates.version_updates[vv0_11_0] = vv0_11_1
         updates.version_updates[vv0_10_7] = vv0_11_0
         updates.version_updates[vv0_10_6] = vv0_10_7
         updates.version_updates[vv0_10_5] = vv0_10_6
@@ -221,7 +228,7 @@ label vv_updates_topics:
             "monika_goodbye": None,
             "monika_night": None
         }
-        updates.topics[vv0_7_0] = changedIDs 
+        updates.topics[vv0_7_0] = changedIDs
 
         # (0.5.1 - 0.6.0) -> 0.6.1
         changedIDs = {
@@ -326,7 +333,7 @@ label vv_updates_topics:
             # handled via new topic generation.
             # monika_credits_song
             # monika_whatever (special topic launcher)
-            
+
             # here is a list of IDS present in v0.2.2, again for reference
             # monika_imouto
             # monika_oneesan

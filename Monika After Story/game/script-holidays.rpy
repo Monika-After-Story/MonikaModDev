@@ -192,7 +192,7 @@ init -810 python:
         start_dt=datetime.datetime(2019, 10, 31),
 
         # end is 1 day out in case of an overnight trick or treat
-        end_dt=datetime.datetime(2019, 11, 2) 
+        end_dt=datetime.datetime(2019, 11, 2)
     ))
 
 # Images
@@ -293,7 +293,7 @@ init -10 python:
             manually later.
 
         IN:
-            selection_pool - pool to select clothes from. If NOne, we get a 
+            selection_pool - pool to select clothes from. If NOne, we get a
                 default list of clothes with costume exprop
 
         RETURNS: a single MASClothes object of what to wear. None if cannot
@@ -325,7 +325,7 @@ init -10 python:
                     filt_sel_pool.append(cloth)
                 else:
                     wearing_costume = True
-                
+
 
         selection_pool = filt_sel_pool
 
@@ -1597,7 +1597,7 @@ init -10 python in mas_d25_utils:
             "mas_reaction_end",
             mas_frs._pick_starter_label()
         )
-    
+
 
 ####START: d25 arts
 
@@ -1873,7 +1873,7 @@ label mas_d25_gift_end:
             extend 3dku "Just having you here with me was more than enough."
         else:
             extend 3dku "Just being with you was all I wanted."
-        m 1eka "But the fact you took the time to get me something...{w=0.5}{nw}" 
+        m 1eka "But the fact you took the time to get me something...{w=0.5}{nw}"
         extend 3ekbsa "well I can't thank you enough."
         m 3ekbfa "It really makes me feel loved."
 
@@ -2666,9 +2666,6 @@ label monika_aiwfc:
             m 3hub "Make sure you have your volume up!"
             m 1huu ".{w=0.5}.{w=0.5}.{nw}"
 
-    #Get current song
-    $ curr_song = songs.current_track
-
     call monika_aiwfc_song
 
     #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
@@ -2684,10 +2681,6 @@ label monika_aiwfc:
         m 1ekbsa "You'll always be the only gift I'll ever need."
         m 1ekbfa "I love you~"
 
-    #Since the lullaby can slip in here because of the queue, we need to make sure we don't play that
-    if curr_song != store.songs.FP_MONIKA_LULLABY:
-        $ play_song(curr_song, fadein=1.0)
-
     #Unlock the song
     $ mas_unlockEVL("mas_song_aiwfc", "SNG")
     return "no_unlock|love"
@@ -2695,22 +2688,7 @@ label monika_aiwfc:
 
 label monika_aiwfc_song:
 
-    #Disable text speed, escape button and music button for this
-    $ mas_disableTextSpeed()
-    $ disable_esc()
-    $ mas_MUMURaiseShield()
-
-    # always unmute the music channel (or at least attempt to)
-    # TODO: there should probably be handling for sayori name case.
-    if songs.getVolume("music") == 0.0:
-        $ renpy.music.set_volume(1.0, channel="music")
-
-    # save background sound for later
-    $ amb_vol = songs.getVolume("backsound")
-
-    $ play_song(None, 1.0)
-    $ renpy.music.set_volume(0.0, 1.0, "background")
-    $ renpy.music.set_volume(0.0, 1.0, "backsound")
+    call mas_timed_text_events_prep
 
     $ play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
@@ -2745,15 +2723,8 @@ label monika_aiwfc_song:
     m 4hksdlb "{i}{cps=10}What more{/cps}{cps=15} can I{/cps}{cps=8} doooo?{w=0.3}{/cps}{/i}{nw}"
     m 4ekbfb "{i}{cps=20}Cause baby{/cps}{cps=12} all I want for Christmas{w=0.3} is yoooooooou~{w=2.3}{/cps}{/i}{nw}"
     m "{i}{cps=9}Yoooooooou, baaaaby~{w=2.5}{/cps}{/i}{nw}"
-    stop music fadeout 0.5
 
-    #Now we re-enable text speed, escape button and music button
-    $ mas_resetTextSpeed()
-    $ enable_esc()
-    $ mas_MUMUDropShield()
-
-    $ renpy.music.set_volume(amb_vol, 1.0, "background")
-    $ renpy.music.set_volume(amb_vol, 1.0, "backsound")
+    call mas_timed_text_events_wrapup
     return
 
 init 5 python:
@@ -5116,7 +5087,7 @@ init 20 python:
  One where I{i}'{/i}m free,
  One where all my troubles are gone,
  One where all of my dreams come true.
- 
+
  But today is not any day,
  Today is special; today is your day.
  A day I can appreciate you even more for what you do.
@@ -5250,7 +5221,7 @@ label mas_pf14_monika_lovey_dovey:
 
     if mas_HistVerifyAll_k(True, "f14.actions.spent_f14"):
         m 3ekbsa "Valentine's Day is coming soon, and it just makes me so overwhelmingly happy knowing you're still by my side."
-        
+
     else:
         m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
 
@@ -6117,7 +6088,7 @@ init -1 python:
             _date = datetime.date.today()
 
         return (
-            _date.month == mas_monika_birthday.month 
+            _date.month == mas_monika_birthday.month
             and _date.day == mas_monika_birthday.day
         )
 
@@ -6346,7 +6317,8 @@ init 5 python:
             years=[]
         ),
         code="CMP",
-        skipCalendar=True
+        skipCalendar=True,
+        markSeen=True
     )
 
     #Create the undo action rule
@@ -6400,7 +6372,8 @@ init 5 python:
             years=[]
         ),
         code="CMP",
-        skipCalendar=True
+        skipCalendar=True,
+        markSeen=True
     )
 
 label mas_bday_pool_happy_belated_bday:
@@ -7045,7 +7018,7 @@ label greeting_returned_home_bday:
         mas_isMonikaBirthday()
         and mas_isplayer_bday()
         and mas_isMoniNormal(higher=True)
-        and not persistent._mas_player_bday_in_player_bday_mode 
+        and not persistent._mas_player_bday_in_player_bday_mode
         and not persistent._mas_bday_sbp_reacted
         and checkout_time.date() < mas_monika_birthday
 

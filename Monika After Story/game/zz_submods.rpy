@@ -9,15 +9,8 @@ init -989 python:
     #Run dependency checks
     store.mas_submod_utils.Submod._checkDependencies()
 
-init -990 python in mas_ui:
-    import store
-    has_submod_settings = len([
-        submod
-        for submod in store.mas_submod_utils.submod_map.values()
-        if submod.settings_pane is not None
-    ]) > 0
-
 init -991 python in mas_submod_utils:
+    import re
     import store
     import sys
     import traceback
@@ -47,6 +40,9 @@ init -991 python in mas_submod_utils:
         """
         #The fallback version string, used in case we don't have valid data
         FB_VERS_STR = "0.0.0"
+
+        #Regular expression representing a valid author and name
+        AN_REGEXP = re.compile(ur'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
 
         def __init__(
             self,
@@ -100,6 +96,12 @@ init -991 python in mas_submod_utils:
                 map(int, version.split('.'))
             except:
                 raise SubmodError("Version number '{0}' is invalid.".format(version))
+
+            #Make sure author and name are proper label names
+            if not Submod.AN_REGEXP.match(author):
+                raise SubmodError("Author '{0}' is invalid.".format(author))
+            if not Submod.AN_REGEXP.match(name):
+                raise SubmodError("Name '{0}' is invalid.".format(name))
 
             #With verification done, let's make the object
             self.author = author

@@ -3,50 +3,70 @@
 #An event is crated by only adding a label and adding a requirement (see comment below).
 #Requirements must be created/added in script-ch30.rpy under label ch30_autoload.
 
+# pm var for transgender players
+default persistent._mas_pm_is_trans = False
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="mas_gender",
-            conditional="store.mas_xp.level() >= 1",
+            start_date=mas_getFirstSesh() + datetime.timedelta(minutes=30),
             action=EV_ACT_QUEUE
-        )
+        ),
+        skipCalendar=True
     )
     #NOTE: This unlocks the monika_gender_redo event
 
 label mas_gender:
     m 2eud "...[player]? So I've been thinking a bit."
     m 2euc "I've mentioned before that the 'you' in the game might not reflect the real you."
-    m 3lksdla "But I guess I just assumed that you were probably a guy."
-    m "...The main character was, after all."
+    m 7rksdla "But I guess I just assumed that you were probably a guy."
+    m 3eksdla "...The main character was, after all."
     m 3eua "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
-    m "So, are you male or female?{nw}"
+    m 1eua "So, what's your gender?{nw}"
     $ _history_list.pop()
     menu:
-        m "So, are you male or female?{fast}"
+        m "So, what's your gender?{fast}"
 
         "Male.":
+            $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "M"
-            call mas_set_gender
-            call mas_gender_male
+            m 3eua "Okay [player], thanks for confirming that for me."
+            m 1hksdlb "Not that I would have been bothered if you answered differently, mind you!"
 
         "Female.":
+            $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "F"
-            call mas_set_gender
-            call mas_gender_female
+            m 2eud "Oh? So you're a girl?"
+            m 2hksdlb "I hope I didn't say anything to offend you before!"
+            m 7rksdlb "...I guess that's why they say you shouldn't make assumptions, ahaha!"
+            m 3eka "But honestly, it doesn't matter to me at all..."
 
         "Neither.":
+            $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "X"
-            call mas_set_gender
             call mas_gender_neither
 
-    m 1hub "Remember that I'll always love you unconditionally, [player]."
+        "I'm transgender.":
+            call mas_gender_trans
+
+            if persistent.gender != "X":
+                m 1eka "Thanks for telling me, and just remember..."
+
+    m 1ekbsa "I'll always love you for who you are, [player]~"
 
     #Unlock the gender redo event
     $ mas_unlockEVL("monika_gender_redo","EVE")
-    $ persistent._seen_ever["monika_gender_redo"] = True # dont want this in unseen
+    # set pronouns
+    call mas_set_gender
 
+    #Set up the preferredname topic
+    python:
+        preferredname_ev = mas_getEV("mas_preferredname")
+        if preferredname_ev:
+            preferredname_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
     return "love"
 
 init 5 python:
@@ -54,129 +74,169 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_gender_redo",
-            category=['you','misc'],
-            prompt="Can you change my gender?",
+            category=['you'],
+            prompt="Could you call me by different pronouns?",
             unlocked=False,
             pool=True,
             rules={"no unlock": None}
-        )
+        ),
+        markSeen=True
     )
 
 label monika_gender_redo:
-    m 1wud "You want to change your gender? Why?"
-    m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
+    m 1eka "Of course, [player]!"
 
-    m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "I mean, were you just too shy to tell me the truth before? Or did something...happen?{fast}"
+    if mas_getEV('monika_gender_redo').shown_count == 0:
+        m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Have you made some personal discoveries since the last time we talked about this?{fast}"
 
-        "I was too shy.":
-            if persistent.gender == "M":
-                m 2ekd "I guess I understand. I started off assuming you were a guy, after all."
-            elif persistent.gender == "F":
-                m 2ekd "I guess I understand. You might have thought I'd be more comfortable spending time alone with another girl."
-            else:
-                m 2ekd "I guess I understand. I might not have given you the most accurate options to pick from."
+            "Yes.":
+                m 1eka "I see. I know I've been there."
+                m 3hua "I'm so proud of you for going on that journey of self-discovery."
+                m 1eub "...And even prouder of you for being courageous enough to tell me!"
 
-            m 2dkd "And I probably didn't make it easy for you to tell me otherwise..."
-            m 1eub "But whatever your gender, I love you for who you are."
+            "I was just too shy.":
+                if persistent.gender == "M":
+                    m 2ekd "I understand, I started off assuming you were a guy, after all."
+                elif persistent.gender == "F":
+                    m 2ekd "I understand, you might have thought I'd be more comfortable spending time alone with another girl."
+                else:
+                    m 2ekd "I understand, I might not have given you the most accurate options to pick from."
 
-        "I've made some personal discoveries.":
-            m 1eka "I see. I know I've been there."
-            m 1hua "I'm so proud of you for going on that journey of self discovery."
-            m 1eub "And even prouder of you for being courageous enough to tell me!"
+                m 2dkd "...And I probably didn't make it easy for you to tell me otherwise..."
+                m 7eua "But whatever your gender, I love you for who you are."
 
-        "I didn't know if you'd accept me as I am...":
-            m 2wkd "[player]..."
-            m 1dkd "I hate that I didn't reassure you enough before."
-            m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
+            "I didn't know if you'd accept me as I am...":
+                m 2wkd "[player]..."
+                m 2dkd "I hate that I didn't reassure you enough before."
+                m 7eka "But I hope that you're telling me now because you know I'll love you no matter what."
+
+            "I'm genderfluid.":
+                m 1eub "Oh, okay!"
+                m 3hub "Feel free to let me know as often as you'd like when you want me to use different pronouns!"
 
     $ gender_var = None
-    m "So, what is your gender?{nw}"
+    m "So, what's your gender?{nw}"
     $ _history_list.pop()
     menu:
-        m "So, what is your gender?{fast}"
+        m "So, what's your gender?{fast}"
 
         "I'm a boy.":
-            if persistent.gender == "M":
+            if persistent.gender == "M" and not persistent._mas_pm_is_trans:
                 $ gender_var = "boy"
                 call mas_gender_redo_same
             else:
                 $ persistent.gender = "M"
-                call mas_set_gender
-                call mas_gender_male
-                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+                call mas_gender_redo_react
+            $ persistent._mas_pm_is_trans = False
 
         "I'm a girl.":
-            if persistent.gender == "F":
+            if persistent.gender == "F" and not persistent._mas_pm_is_trans:
                 $ gender_var = "girl"
                 call mas_gender_redo_same
             else:
                 $ persistent.gender = "F"
-                call mas_set_gender
-                call mas_gender_female
-                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+                call mas_gender_redo_react
+            $ persistent._mas_pm_is_trans = False
 
         "I'm neither.":
+            $ persistent._mas_pm_is_trans = False
             if persistent.gender == "X":
-                m 1hksdlb "...That's the same as before, [player]...I'm sorry if that's not really the best way for you to describe it."
-                m 1eka "But just know that it doesn't matter what you are to me."
+                call mas_gender_redo_neither_same
             else:
                 $ persistent.gender = "X"
-                call mas_set_gender
-                call mas_gender_neither
-            show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+                if renpy.seen_label("mas_gender_neither"):
+                    call mas_gender_redo_react
+                else:
+                    call mas_gender_neither
 
-    m 5hubsa "Remember that I'll always love you unconditionally, [player]~"
+        "I'm transgender.":
+            call mas_gender_trans
+            if persistent.gender != "X":
+                call mas_gender_redo_react
+
+    show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubsa "I'll always love you for who you are~"
+
+    # set pronouns
+    call mas_set_gender
     return "love"
-
-label mas_gender_female:
-    m 2eud "Oh? So you're actually a [guy]?"
-    m 2hksdlb "I hope I didn't say anything to offend you before!"
-    m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
-    m 3eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
-    m 1hua "It's very attractive, to tell you the truth!"
-    m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
-    return
-
-label mas_gender_male:
-    m 2eud "Oh? So you {i}are{/i} a [guy]?"
-    m 1hub "Ehehe, I suppose that makes sense!"
-    m 1eua "Not a lot of girls would play a game like this."
-    m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
-    m 2hksdlb "Even I can be curious sometimes, you know?"
-    return
 
 label mas_gender_neither:
     m 1euc "You don't see yourself as a guy or a girl?"
-    m 2eua "That's very interesting, but I can sort of relate."
-    m 1esc "Like, I am a girl, but I'm also a character in a computer game..."
-    m 2esd "So in some ways I'm not really a girl at all."
+    m 1eua "That's very interesting, but I can sort of relate."
+    m 3esc "Like, I am a girl, but I'm also a character in a computer game..."
+    m 3esd "So in some ways I'm not really a girl at all."
     m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
-    m "So I'll treat you however you want to be treated."
-    m 1ekbsa "Because your happiness is the most important thing to me."
+    m 3eua "...So I'll treat you however you want to be treated."
+    m 1ekbsa "Your happiness is the most important thing to me, after all."
     return
 
 label mas_gender_redo_same:
-    m 1hksdlb "...That's the same as before, [player]."
+    m 1hksdlb "...That's the same as before, [player]!"
     m 3eua "If you're confused about how to answer, just pick whatever makes you happiest."
-    m 3eka "It doesn't matter what your body looks like..."
-    m "So as long as you say you're a [gender_var], you're a [gender_var] to me, all right?"
-    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hua "I want you to be who you want to be while you're in this room."
+    m 3eka "It doesn't matter what your body looks like, so as long as you say you're a [gender_var], you're a [gender_var] to me, all right?"
+    m 1eua "I want you to be who you want to be while you're in this room."
+    return
+
+label mas_gender_redo_react:
+    m 1eka "Okay, [player]..."
+    m 3ekbsa "Just as long as you're happy, that's all that matters to me."
+    return
+
+label mas_gender_redo_neither_same:
+    m 1hksdlb "...That's the same as before, [player]...{w=0.3}I'm sorry if that's not really the best way for you to describe it."
+    m 1eka "But just know that it doesn't matter to me..."
+    return
+
+label mas_gender_trans:
+    if persistent._mas_pm_is_trans:
+        $ menu_question = "And what gender do you identify as?"
+    else:
+        $ menu_question = "Oh, okay! {w=0.3}And what gender do you identify as?"
+
+    m 3eub "[menu_question]{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[menu_question]{fast}"
+
+        "Male":
+            $ persistent.gender = "M"
+
+        "Female":
+            $ persistent.gender = "F"
+
+        "Neither":
+            if persistent.gender == "X":
+                call mas_gender_redo_neither_same
+
+            else:
+                $ persistent.gender = "X"
+                call mas_gender_neither
+
+    $ persistent._mas_pm_is_trans = True
     return
 
 # good, bad, awkward name stuff
 init 3 python:
-    bad_nickname_list = [
+    #Bad nicknames. All of the items in this will trigger bad reactions
+    mas_bad_nickname_list = [
+        "^fag$",
+        "^ho$",
+        "^hoe$",
+        "^tit$",
+        "abortion",
+        "anal",
         "annoying",
         "anus",
-        "anal",
         "arrogant",
+        "ass",
         "atrocious",
         "awful",
-        "ass",
+        "bastard",
+        "beast",
         "bitch",
         "blood",
         "boob",
@@ -185,27 +245,32 @@ init 3 python:
         "bully",
         "bung",
         "butt",
+        "cheater",
+        "cock",
         "conceited",
+        "condom",
         "corrupt",
         "cougar",
         "crap",
+        "crazy",
         "creepy",
         "criminal",
         "cruel",
-        "cunt",
         "cum",
-        "crazy",
-        "cheater",
+        "cunt",
         "damn",
         "demon",
         "dick",
+        "dilf",
         "dirt",
         "disgusting",
         "douche",
         "dumb",
-        "egotistical",
         "egoist",
+        "egotistical",
         "evil",
+        "faggot",
+        "failure",
         "fake",
         "fetus",
         "filth",
@@ -214,40 +279,38 @@ init 3 python:
         "garbage",
         "gay",
         "gey",
+        "gilf",
         "gross",
         "gruesome",
         "hate",
         "heartless",
         "hideous",
-        "^ho$",
-        "^hoe$",
+        "hitler",
         "hore",
         "horrible",
         "horrid",
         "hypocrite",
         "idiot",
-        "insane",
         "imbecile",
         "immoral",
+        "insane",
         "irritating",
         "jerk",
+        "jigolo",
         "jizz",
         "junk",
         "kill",
         "kunt",
-        "lesbo",
         "lesbian",
-        "lezbo",
+        "lesbo",
         "lezbian",
+        "lezbo",
         "liar",
         "loser",
-        "maniac",
         "mad",
+        "maniac",
         "masochist",
         "milf",
-        "moron",
-        "dilf",
-        "gilf",
         "monster",
         "moron",
         "murder",
@@ -258,8 +321,8 @@ init 3 python:
         "nigger",
         "nuts",
         "pad",
-        "pantsu",
         "panti",
+        "pantsu",
         "panty",
         "pedo",
         "penis",
@@ -273,28 +336,27 @@ init 3 python:
         "rape",
         "repulsive",
         "retard",
-        "rump",
         "rogue",
+        "rump",
         "sadist",
         "scum",
         "selfish",
+        "semen",
         "shit",
         "sick",
-        "suck",
         "slaughter",
         "slave",
         "slut",
         "sociopath",
         "soil",
+        "sperm",
         "stink",
         "stupid",
-        "sperm",
-        "semen",
+        "suck",
         "tampon",
         "teabag",
         "terrible",
         "thot",
-        "^tit$",
         "tits",
         "titt",
         "tool",
@@ -308,91 +370,112 @@ init 3 python:
         "useless",
         "vain",
         "vile",
+        "vomit",
         "waste",
         "whore",
         "wicked",
         "witch",
         "worthless",
-        "wrong",
-        "jigolo",
-        "failure",
-        "abortion",
-        "loser",
-        "cock",
-        "^fag$",
-        "faggot",
+        "wrong"
     ]
 
-    good_nickname_list = [
+    #Base list for good nicknames. Apply modifiers for specifying the use
+    #These trigger a good response
+    mas_good_nickname_list_base = [
         "angel",
         "beautiful",
+        "beauty",
         "best",
         "cuddl",
         "cute",
-        "可愛い",
         "cutie",
         "darling",
-        "great"
-        "heart",
-        "honey",
-        "love",
-        "princess",
-        "prince",
-        "sunshine",
-        "sweet",
-        "senpai",
-        "beauty",
-        "queen",
-        "king",
-        "pretty",
-        "hero",
-        "beauty",
         "gorgeous",
+        "greatheart",
+        "hero",
+        "honey",
         "kind",
+        "love",
+        "pretty",
+        "princess",
+        "queen",
+        "senpai",
+        "sunshine",
+        "sweet"
     ]
 
-    #awkward names which Moni wouldn't be comfortable calling the player
-    awkward_nickname_list = [
-        "daddy",
-        "mommy",
-        "master",
-        "mistress",
-        "naughty",
-        "sexy",
-        "hard",
-        "wet",
-        "horny",
+    #Modifier for the player's name choice
+    mas_good_nickname_list_player_modifiers = [
+        "king",
+        "prince",
+    ]
+
+    #Modifier for Monika's nickname choice
+    mas_good_nickname_list_monika_modifiers = [
+        "moni",
+    ]
+
+    mas_good_player_nickname_list = mas_good_nickname_list_base + mas_good_nickname_list_player_modifiers
+    mas_good_monika_nickname_list = mas_good_nickname_list_base + mas_good_nickname_list_monika_modifiers
+
+    #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
+    mas_awkward_nickname_list = [
+        "^(step(-|\\s)*)?bro(ther|tha(h)?)?$",
+        "^(step(-|\\s)*)?sis(ter|ta(h)?)?$",
+        "^dad$",
+        "^loli$",
+        "^mama$",
+        "^mom$",
+        "^mum$",
+        "^papa$",
+        "^wet$",
         "aroused",
-        "lick",
-        "erection",
-        "beast",
-        "penetrator",
-        "virgin",
-        "overlord",
-        "penetrate",
-        "step-bro",
-        "step-brother",
-        "step-sister",
-        "step-sis",
-        "deflowerer",
-        "breeder",
-        "masturbate",
-        "masturbator",
-        "finger",
-        "orgasm",
+        "aunt",
         "batman",
+        "breeder",
+        "bobba",
+        "boss",
         "catwoman",
+        "cousin",
+        "daddy",
+        "deflowerer",
+        "erection",
+        "finger",
+        "horny",
+        "kaasan",
+        "kasan",
+        "lick",
+        "master",
+        "masturbat",
+        "mistress",
+        "moani",
+        "momika",
+        "momma",
+        "mommy",
+        "mother",
+        "naughty",
+        "okaasan",
+        "okasan",
+        "orgasm",
+        "overlord",
+        "owner",
+        "penetrat",
+        "pillow",
+        "sex",
         "spank",
         "superman",
         "superwoman",
-        "bobba",
+        "thicc",
+        "thighs",
+        "uncle",
+        "virgin"
     ]
 
-    good_comp = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
-    bad_comp = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-    awk_comp = re.compile('|'.join(awkward_nickname_list), re.IGNORECASE)
+    mas_good_player_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
+    mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
+    mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
 
-label mas_player_name_enter_name_loop(menu_str, input_prompt):
+label mas_player_name_enter_name_loop(input_prompt):
     python:
         awkward_quips = [
             "I don't really feel...{w=0.5}comfortable calling you that all the time.",
@@ -417,93 +500,91 @@ label mas_player_name_enter_name_loop(menu_str, input_prompt):
         ]
 
     #Now we prompt user
-    m 1eua "[menu_str]{nw}"
-    $ _history_list.pop()
-    menu:
-        m "[menu_str]{fast}"
-        "Yes.":
-            m 1eua "Just type 'nevermind' if you change your mind."
-            $ done = False
-            while not done:
-                $ tempname = renpy.input("[input_prompt]", length=20).strip(' \t\n\r')
-                $ lowername = tempname.lower()
-                if lowername == "nevermind":
-                    m 1ekc "Oh I see."
-                    m 1eka "Well, just tell me whenever you want to be called something else, [player]."
-                    $ done = True
+    show monika 1eua at t11 zorder MAS_MONIKA_Z
 
-                elif lowername == "":
-                    m 1eksdla "..."
-                    m 3rksdlb "You have to give me a name to call you, [player]..."
-                    m 1eua "Try again!"
+    $ done = False
+    while not done:
+        $ tempname = mas_input(
+            "[input_prompt]",
+            length=20,
+            screen_kwargs={"use_return_button": True}
+        ).strip(' \t\n\r')
 
-                elif lowername == player.lower():
-                    m 2hua "..."
-                    m 4hksdlb "That's the same name you have right now, silly!"
-                    m 1eua "Try again~"
+        $ lowername = tempname.lower()
 
-                elif awk_comp.search(tempname):
-                    $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
-                    m 1rksdlb "[awkward_quip]"
-                    m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
-
-                elif bad_comp.search(tempname):
-                    $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
-                    m 1ekd "[bad_quip]"
-                    m 3eka "Please pick a nicer name for yourself, okay?"
-
-                else:
-                    #Sayori name check
-                    if tempname.lower() == "sayori":
-                        call sayori_name_scare
-
-                    elif (
-                            persistent.playername.lower() == "sayori"
-                            and not persistent._mas_sensitive_mode
-                        ):
-                        $ songs.initMusicChoices()
-
-                    python:
-                        def adjustNames(new_name):
-                            """
-                            Adjusts the names to the new names
-                            """
-                            global player
-
-                            persistent.mcname = player
-                            mcname = player
-                            persistent.playername = new_name
-                            player = new_name
-
-                    if lowername == "monika":
-                        $ adjustNames(tempname)
-                        m 1tkc "Really?"
-                        m "That's the same as mine!"
-                        m 1tku "Well..."
-                        m "Either it really is your name or you're playing a joke on me."
-                        m 1hua "But it's fine by me if that's what you want me to call you~"
-
-                    elif good_comp.search(tempname):
-                        $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
-                        m 1sub "[good_quip]"
-                        $ adjustNames(tempname)
-                        m 3esa "Ok then! From now on, I'll call you '{i}[player]{/i}'."
-                        m 1hua "Ehehe~"
-                        $ done = True
-
-                    else:
-                        $ adjustNames(tempname)
-                        m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you '{i}[player]{/i}'."
-                        $ done = True
-
-                if not done:
-                    show monika 1eua
-
-        "No.":
+        if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
             m 3eua "Just let me know if you change your mind."
+            $ done = True
 
+        elif lowername == "":
+            m 1eksdla "..."
+            m 3rksdlb "You have to give me a name to call you, [player]..."
+            m 1eua "Try again!"
+
+        elif lowername == player.lower():
+            m 2hua "..."
+            m 4hksdlb "That's the same name you have right now, silly!"
+            m 1eua "Try again~"
+
+        elif mas_awk_name_comp.search(tempname):
+            $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
+            m 1rksdlb "[awkward_quip]"
+            m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+
+        elif mas_bad_name_comp.search(tempname):
+            $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
+            m 1ekd "[bad_quip]"
+            m 3eka "Please pick a nicer name for yourself, okay?"
+
+        else:
+            #Sayori name check
+            if tempname.lower() == "sayori":
+                call sayori_name_scare
+
+            elif (
+                    persistent.playername.lower() == "sayori"
+                    and not persistent._mas_sensitive_mode
+                ):
+                $ songs.initMusicChoices()
+
+            python:
+                def adjustNames(new_name):
+                    """
+                    Adjusts the names to the new names
+                    """
+                    global player
+
+                    persistent.mcname = player
+                    mcname = player
+                    persistent.playername = new_name
+                    player = new_name
+
+            if lowername == "monika":
+                $ adjustNames(tempname)
+                m 1tkc "Really?"
+                m "That's the same as mine!"
+                m 1tku "Well..."
+                m "Either it really is your name or you're playing a joke on me."
+                m 1hua "But it's fine by me if that's what you want me to call you~"
+                $ done = True
+
+            elif mas_good_player_name_comp.search(tempname):
+                $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
+                m 1sub "[good_quip]"
+                $ adjustNames(tempname)
+                m 3esa "Ok then! From now on, I'll call you '[player].'"
+                m 1hua "Ehehe~"
+                $ done = True
+
+            else:
+                $ adjustNames(tempname)
+                m 1eub "Ok then!"
+                m 3eub "From now on, I'll call you '[player].'"
+                $ done = True
+
+        if not done:
+            show monika 1eua
     return
 
 init 5 python:
@@ -511,26 +592,36 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_preferredname",
-            conditional="store.mas_xp.level() >= 2",
             action=EV_ACT_QUEUE
-        )
+        ),
+        skipCalendar=True
     )
     #NOTE: This unlocks the player name change event
+    #NOTE: This gets its start_date from mas_gender
 
 label mas_preferredname:
     m 1euc "I've been wondering about your name."
     m 1esa "Is '[player]' really your name?"
+
     if renpy.windows and currentuser.lower() == player.lower():
         m 3esa "I mean, it's the same as your computer's name..."
         m 1eua "You're using '[currentuser]' and '[player].'"
         m "Either that or you must really like that pseudonym."
 
-    #Let's call the changename loop
-    call mas_player_name_enter_name_loop("Do you want me to call you something else?", "Tell me, what is it?")
+    m 1eua "Would you like me to call you something else?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like me to call you something else?{fast}"
+
+        "Yes.":
+            #Let's call the changename loop
+            call mas_player_name_enter_name_loop("Tell me, what is it?")
+
+        "No.":
+            m 3eua "Okay, just let me know if you change your mind."
 
     #Unlock the name change event
     $ mas_unlockEVL("monika_changename","EVE")
-    $ persistent._seen_ever["monika_changename"] = True
     return
 
 
@@ -544,12 +635,13 @@ init 5 python:
             unlocked=False,
             pool=True,
             rules={"no unlock": None}
-        )
+        ),
+        markSeen=True
     )
     #NOTE: This needs to be unlocked by the random name change event
 
 label monika_changename:
-    call mas_player_name_enter_name_loop("You want to change your name?", "What do you want me to call you?")
+    call mas_player_name_enter_name_loop("What do you want me to call you?")
     return
 
 default persistent._mas_player_bday = None
@@ -1078,9 +1170,7 @@ default persistent._mas_crashed_trynot = False
 
 # start of crash flow
 label mas_crashed_start:
-
     if persistent._mas_crashed_before:
-
         # preshort setup
         call mas_crashed_preshort
 
@@ -1091,7 +1181,6 @@ label mas_crashed_start:
         call mas_crashed_post
 
     else:
-
         # long setup (includes scene black)
         call mas_crashed_prelong
 
@@ -1119,8 +1208,11 @@ label mas_crashed_start:
     return
 
 label mas_crashed_prelong:
+    #Setup weather
+    #Since we're in the room but the lights are off, if it's raining we want it to be audible here
+    $ mas_startupWeather()
 
-    # otherwise continue to long flow
+    #Setup the rest of the scene
     $ persistent._mas_crashed_before = True
     scene black
     $ HKBHideButtons()
@@ -1331,12 +1423,14 @@ label mas_crashed_long_fluster:
 
 
 label mas_crashed_preshort:
+    #Setup weather
+    $ mas_startupWeather()
+
     # we can call spaceroom appropriately here
     call spaceroom(scene_change=True)
     return
 
 label mas_crashed_short:
-
     python:
         # generate a quiplist
         q_list = MASQuipList()
@@ -1370,7 +1464,7 @@ label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
-    
+
         m 3ekc "Do you think it had something to do with your game?{nw}"
         $ _history_list.pop()
         menu:
@@ -1666,7 +1760,7 @@ label monika_rpy_files:
         m 2etc "Unless..."
         m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
         m 2eka "But in case you didn't, I figured I'd ask..."
-    
+
         m "Are you sure you installed the right version, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -1805,7 +1899,7 @@ label mas_bday_player_bday_select_select:
         m 2eksdlc "[player]..."
         m 2rksdlc "You know I'm asking for your exact date of birth, right?"
         m 2hksdlb "It's just I'm having a hard time believing you're {i}that{/i} young."
- 
+
     else:
         m 1eua "Alright, [player]."
 
@@ -1848,7 +1942,7 @@ label mas_bday_player_bday_select_select:
                 selected_date,
                 range(selected_date.year,MASCalendar.MAX_VIEWABLE_YEAR)
             )
- 
+
     else:
         python:
             store.mas_calendar.addRepeatable_d(
@@ -1990,37 +2084,55 @@ label mas_notification_windowreact:
         m 1rkc "Well, almost..."
         m 3ekd "I can't send notifications on your computer because you're missing the notify-send command..."
         m 3eua "If you could install that for me, I'll be able to send you notifications."
+
+        $ dlg_line = "And"
+        #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
+        if not store.mas_windowreacts.can_do_windowreacts:
+            m 3rksdla "And maybe if you install that, you could install the xdotool command too...{w=0.3}{nw}"
+            extend 3eub "which would allow me to see your active window!"
+            $ dlg_line = "Of course, you don't have to install the second one, but"
+
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eka "...And I'd really appreciate it, [player]."
-        return
+        m 5eka "...[dlg_line] I'd really appreciate it, [player]."
 
-    m 3eub "Would you like to see how they work?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Would you like to see how they work?{fast}"
+    else:
+        m 3eub "Would you like to see how they work?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Would you like to see how they work?{fast}"
 
-        "Sure!":
-            m 1hua "Okay, [player]!"
-            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-            $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
-            m 1hub "There it is!"
+            "Sure!":
+                m 1hua "Okay, [player]!"
+                m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
+                $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
+                m 1hub "There it is!"
 
-        "No thanks.":
-            m 2eka "Alright, [player]."
+            "No thanks.":
+                m 2eka "Alright, [player]."
 
-    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
+        m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
 
-    if renpy.windows:
-        m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
-        m 3eub "So if I have something to talk about while I'm in the background, I can let you know!"
-        m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
-        m 3eua "So I'll only look at what you're doing if you're okay with it."
-        m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+        if renpy.windows:
+            m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is."
 
-        if mas_isMoniNormal(higher=True):
-            m 1tuu "It's not like you have anything to hide from your girlfriend..."
-            show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5ttu "...right?"
+
+        elif renpy.linux:
+            if mas_windowreacts.can_do_windowreacts:
+                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
+            else:
+                m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
+                extend 3hua "I'll be able to know what your active window is!"
+
+        if not renpy.macintosh:
+            m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
+            m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
+            m 3eua "So I'll only look at what you're doing if you're okay with it."
+            m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+
+            if mas_isMoniNormal(higher=True):
+                m 1tuu "It's not like you have anything to hide from your girlfriend..."
+                show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ttu "...right?"
     return
 
 init 5 python:
@@ -2104,7 +2216,7 @@ label mas_change_to_def:
     elif mas_isMoniNormal(lower=True) and monika_chr.clothes != mas_clothes_def:
         m 1eka "Hey [player], I miss my old school uniform..."
         m 3eka "I'm just going to go change, be right back..."
-        
+
         call mas_clothes_change()
 
         m "Okay, what else should we do today?"
