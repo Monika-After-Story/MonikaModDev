@@ -8167,59 +8167,185 @@ default persistent._mas_pm_do_smoke = None
 # try to quit?
 default persistent._mas_pm_do_smoke_quit = None
 
+# succesfully quit at least once?
+default persistent._mas_pm_do_smoke_quit_succeeded_before = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True))
 
 label monika_smoking:
-    m 2euc "You know, [player]..."
-    m "I realized that people really like a lot of things that are very bad for them."
-    m 2euc "One particular vice that intrigues me the most is cigarettes."
-    m "It's amazing how they're heavily consumed every day even though it's so damaging not only to themselves, but to others as well."
-    m 2ekc "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
-    m 2tkc "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
-    m 4tkd "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
-    m 1lsc "I really do despise them..."
-    m 1euc "But..."
+    m 2esc "You know, [player]...{w=0.3} Lately I've realized that people can really like a lot of things that are terrible for them."
+    m 2euc "One particular vice that intrigues me the most is smoking."
+    m 7eud "It's amazing how many people do it every day...{w=0.2}even though it's so damaging not only to themselves, but to others as well."
+    m 2rkc "Not to mention how harmful it is to the environment...{w=0.2} All the pollution and trash smoking leaves behind is ridiculous for a bunch of carcinogens."
+    m 2tkc "Even in moderation, smoking is never a good thing since it's so addicting."
+    m 4tkd "It's also quite a big hole in your pockets since you'll be buying more and more once your supply is out."
+    m 1tfc "I really do despise it..."
 
-    m "You don't smoke cigarettes, right, [player]?{nw}"
+    $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke, do you"
+    m 1eka "[menu_question]?{nw}"
     $ _history_list.pop()
     menu:
-        m "You don't smoke cigarettes, right, [player]?{fast}"
+        m "[menu_question]?{fast}"
+
         "Yes, I do.":
-            $ persistent._mas_pm_do_smoke = True
-            $ persistent._mas_pm_do_smoke_quit = False
-            m 1wud "..."
-            m 1eka "Thank you for being honest with me, [player]..."
-            m 1ekc "It's quite disheartening to hear that, though."
-            m 1ekc "Could you...promise me that you'll stop?"
-            m "I don't want you to deteriorate your health like that..."
-            m 3rksdlc "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
-            m 1esc "But if you don't try..."
-            m 2euc "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
-            m 2ekc "Please take care of your body. I want to always be with you."
-            m 1ekbfa "I love you so much."
-            return "derandom|love"
+            if persistent._mas_pm_do_smoke_quit:
+                m 1ekd "Haven't been able to shake the habit yet, [player]?"
+                m 3eka "That's okay, I know it can be a daunting task to try and quit..."
+                m 3eksdld "I just hope you haven't given up yet."
+                m 1hua "I know you can do it if you just give it your all~"
+
+            elif persistent._mas_pm_do_smoke_quit_succeeded_before:
+                m 1ekc "It's a shame you fell back into this bad habit...{w=0.2}{nw}"
+                extend 1ekd "after all the trouble you went through to quit and everything..."
+                m 3dkc "It really pains my heart, [player]."
+                m 1dkd "I really thought you were done for good..."
+                m 1dkc "But I guess it's just not that simple, right?"
+                m 3ekd "I really hope you'll consider trying to quit again, [player]."
+                m 3eka "You'll do that, right? {w=0.2}For me?"
+
+            elif persistent._mas_pm_do_smoke is False:
+                call monika_smoking_just_started
+
+            else:
+                m 1wud "..."
+                m 1eka "Thank you for being honest with me, [player]..."
+                m 1ekc "It's quite disheartening to hear that, though."
+                m 1ekc "Could you...promise me that you'll stop?"
+                m 3rksdlc "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
+                m 1esc "But if you don't try..."
+                m 2euc "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
+                m 2ekc "Please take care of your body. I want to always be with you."
+                m 1ekbfa "I love you so much."
+                $ mas_ILY()
+
+            python:
+                persistent._mas_pm_do_smoke = True
+                persistent._mas_pm_do_smoke_quit = False
+                mas_unlockEVL("monika_smoking_quit","EVE")
+
         "No, I don't.":
-            $ persistent._mas_pm_do_smoke = False
-            m 1hub "Ah, I'm relieved to hear that, [player]!"
-            m 3eua "Just stay away from it as much as you can."
-            m 1eka "It's an awful habit and won't do much more than slowly kill you."
-            m 1hua "Thank you, [player], for not smoking~"
+            if persistent._mas_pm_do_smoke:
+                call monika_smoking_quit
+
+            else:
+                m 1hub "Ah, I'm relieved to hear that, [player]!"
+                m 3eua "Just stay away from it as much as you can."
+                m 1eka "It's an awful habit and won't do much more than slowly kill you."
+                m 1hua "Thank you, [player], for not smoking~"
+
+            python:
+                persistent._mas_pm_do_smoke = False
+                persistent._mas_pm_do_smoke_quit = False
+                mas_lockEVL("monika_smoking_quit","EVE")
+
         "I'm trying to quit.":
-            $ persistent._mas_pm_do_smoke = True
-            $ persistent._mas_pm_do_smoke_quit = True
-            m 3eua "That's a really good decision."
-            m 1eka "I know the entire process of quitting can be really difficult, especially in the beginning."
-            m "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
-            m 1eua "Keeping your mind busy on other things will definitely help kick any bad habits."
-            m 3eua "How about you think about me whenever you get a strong urge?"
-            m 1hua "I'll be here to support you every step of the way."
-            m 1hub "I believe in you [player], I know you can do it!"
+            if persistent._mas_pm_do_smoke is False and not persistent._mas_pm_do_smoke_quit_succeeded_before:
+                call monika_smoking_just_started(trying_quit=True)
+
+            else:
+                if not persistent._mas_pm_do_smoke and persistent._mas_pm_do_smoke_quit_succeeded_before:
+                    m 1esc "Oh?"
+                    m 1ekc "Does that mean you fell back into it?"
+                    m 1dkd "That's too bad, [player]...{w=0.3}{nw}"
+                    extend 3rkd "but not entirely unexpected."
+                    m 3esc "Most people fall into relapse several times before they manage to quit smoking for good."
+                    m 3eua "In any case, trying to quit again is a really good decision."
+                else:
+                    m 3eua "That's a really good decision."
+
+                if persistent._mas_pm_do_smoke_quit_succeeded_before:
+                    m 3eka "You probably already know since you've been through this before, but try to remember this..."
+                else:
+                    m 1eka "I know the entire process of quitting can be really difficult, especially in the beginning."
+
+                m 1eka "If you ever feel like you need to smoke, just try to distract yourself with anything else."
+                m 1eua "Keeping your mind busy on other things will definitely help kick any bad habits."
+                m 3eua "Maybe you could think about me whenever you get a strong urge?"
+                m 1hua "I'll be here to support you every step of the way."
+                m 1hub "I believe in you [player], I know you can do it!"
+
+            python:
+                persistent._mas_pm_do_smoke = True
+                persistent._mas_pm_do_smoke_quit = True
+                mas_unlockEVL("monika_smoking_quit","EVE")
 
     return "derandom"
 
+label monika_smoking_just_started(trying_quit=False):
+    m 2dfc "..."
+    m 2tfc "[player]..."
+    m 2tfd "Does that mean you've started smoking since we've met?"
+    m 2dkc "That's really disappointing, [player]."
+    m 4ekd "You know how I feel about smoking and you know how bad it is for your health."
+
+    if not trying_quit:
+        m 2rfd "I don't know what could possibly possess you to start now, {w=0.2}{nw}"
+        extend 2ekc "but promise me you'll quit."
+
+    else:
+        m 4eka "But at least you're trying to quit..."
+
+    m 2rksdld "I just hope you haven't been smoking for too long so maybe it'll be easier to shake the habit."
+
+    if not trying_quit:
+        m 4eka "Please quit smoking, [player]. {w=0.2}Both for your health and for me."
+
+    return
+
+
+#NOTE: This event gets its initial start-date from monika_smoking, then set its date again on the appropriate path.
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_smoking_quit",
+            category=['you'],
+            prompt="I quit smoking!",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_smoking_quit:
+    python:
+        persistent._mas_pm_do_smoke_quit = False
+        persistent._mas_pm_do_smoke = False
+        mas_lockEVL("monika_smoking_quit","EVE")
+
+    if persistent._mas_pm_do_smoke_quit_succeeded_before:
+        m 1sub "I'm so proud that you managed to quit smoking again!"
+        m 3eua "A lot of people can't quit even once, so to be able to go through something so difficult again is quite the achievement."
+        m 1eud "That said, let's try not to let this become a pattern, [player]..."
+        m 1ekc "You don't want to keep going through this over and over, so I hope this time it sticks."
+        m 3eka "I know you have the inner strength to stay away for good.{w=0.2} {nw}"
+        extend 3eua "Just remember you can come to me and I'll take your mind off of smoking at any time."
+        m 1hua "We can do this together, [player]~"
+
+    # first time quitting
+    else:
+        $ tod = "tonight" if mas_globals.time_of_day_3state == "evening" else "tomorrow"
+        m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
+        m 3ekbsa "It's such a relief to know you quit smoking! {w=0.2}{nw}"
+        extend 3dkbsu "I'll sleep much better at night knowing you're as far away as possible from that nightmare."
+        m 1rkbfu "Ehehe, if I were there with you, I'd treat you to your favorite dish [tod]."
+        m 3hubfb "It's an impressive feat after all! {w=0.2}We need to celebrate!"
+        m 3eubsb "Not everyone who wants to quit manages to pull it off."
+        m 1dubfu "You truly are an inspiration, [player]."
+        m 2eua "...Now, I don't want to undermine your victory or anything, {nw}"
+        extend 2euc "but I need you to be careful from now on."
+        m 4rsc "Many former smokers feel urges to smoke again at some point or another."
+        m 4wud "You can't give in, not even once! {w=0.2}That's how you fall into relapse!"
+        m 2hubfa "But knowing you, you won't let that happen, right?"
+        m 2ekbfa "Considering what you've already done, I know you're stronger than this~"
+
+    #Set this here because dialogue uses it
+    $ persistent._mas_pm_do_smoke_quit_succeeded_before = True
+    return "no_unlock"
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
 
 label monika_cartravel:
     m 1euc "[player], something has been on my mind lately..."
