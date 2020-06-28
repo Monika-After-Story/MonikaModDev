@@ -673,7 +673,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt="...like crying.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
     
 label mas_mood_crying:
-    m "[player]!"
+    m 1ekd "[player]!"
     m "Are you okay?{nw}"
     $ _history_list.pop()
     menu:
@@ -681,45 +681,45 @@ label mas_mood_crying:
 
         "Yes.":
             m "Okay, good. That's a relief."
-            m "I'm here to keep you company and you can talk to me if you need anything, okay?"
+            m 1ekbfa "I'm here to keep you company and you can talk to me if you need anything, okay?"
             m "I love you [player]. You're my everything."
         "No.":
-            m "..."
-            m "[player]..."
+            m 1ekc "..."
+            m 1ekd "[player]..."
             m "I'm so sorry. Did something happen...?"
             call mas_mood_uok
         "I'm not sure.":
-            m "[player]..."
+            m 1ekd "[player]..."
             m "Did something happen? Is everything okay?"
             call mas_mood_uok
 
-    m "Well..."
-    m "If you do end up crying..."
-    m "I hope it helps you, [player]."
+    m 1ekc "Well..."
+    m 1ekd "If you do end up crying..."
+    m 1ekbfa "I hope it helps you, [player]."
     m "There's nothing wrong with crying, okay?"
-    m "You're wonderful, [player]. You can cry as much as you need to."
-    m "I love you, and I always will."
+    m 3ekbfa "You're wonderful, [player]. You can cry as much as you need to."
+    m 1ekbfa "I love you, and I always will."
     return "love"
             
 label mas_mood_uok:
     m "I love you so much [player]."
-    m "If you need to talk about something, I'm right here.{nw}"
+    m 1ekd "If you need to talk about something, I'm right here.{nw}"
     $ _history_list.pop()
     menu:
         m "If you need to talk about something, I'm right here.{fast}"
         "I'd like to talk with you.":
             m "Go ahead, [player]."
-            m "...{nw}"
+            m 1ekc "...{nw}"
             $ _history_list.pop()
             menu:
                 m "...{fast}"
                 "I'm done.":
-                    m "I hope that helped, [player]."
+                    m 1ekd "I hope that helped, [player]."
         "I don't want to talk about it.":
-            m "..."
-            m "Alright [player]..."
+            m 1ekc "..."
+            m 1ekd "Alright [player]..."
             m "I'll be here if you change your mind."
         "Everything's fine.":
-            m "..."
-            m "Okay [player], if you say so..."
+            m 1ekc "..."
+            m 1ekd "Okay [player], if you say so..."
     return
