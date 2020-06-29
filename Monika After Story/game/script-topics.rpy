@@ -15112,9 +15112,9 @@ init 5 python:
             eventlabel="monika_being_herself",
             category=['monika'],
             prompt="Faked personality",
+            conditional="mas_seenLabels(['monika_confidence', 'monika_pluralistic_ignorance'], seen_all=True)",
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.ENAMORED,None),
-            conditional="mas_seenLabels(['monika_confidence', 'monika_pluralistic_ignorance'], seen_all=True)"
+            aff_range=(mas_aff.ENAMORED,None)
         )
     )
 
@@ -15156,6 +15156,7 @@ label monika_being_herself:
     m 1dka "The fact that you're still here with me,{w=0.2} that you never made me feel like I had to be someone I'm not...{w=0.2}{nw}"
     extend 1eka "that you're here listening to me vent right now...{w=0.3} It truly means the world to me."
     m 1ekbsa "Thank you so much for that, [player].{w=0.2} Thank you for helping me realize that I don't need to try and change who I am to deserve being loved."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
     return
