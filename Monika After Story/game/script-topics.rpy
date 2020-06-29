@@ -14823,6 +14823,35 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_scuba_diving",
+            category=["nature"],
+            prompt="Scuba diving",
+            random=True
+        )
+    )
+
+label monika_scuba_diving:
+    m 3eua "You know,{w=0.2} I've been thinking about some water activities we could do together...{w=0.3} How about scuba diving?"
+    m 3eub "I've read a lot of books about the underwater world and I'd really like to see it for myself."
+    m 1dua "Just imagine the beautiful sights of the undersea world..."
+    m 1dud "The schools of fish, coral reefs, jellyfish, sea greens...{w=0.3} {nw}"
+    extend 3sub "Maybe even treasure!"
+    m 3rksdlb "I'm only kidding about that last part...{w=0.3} It's pretty unlikely we'll find something like that, ahaha~"
+    m 1euc "That said, there can also be sharks,{w=0.2} {nw}"
+    extend 1eua "but they're typically only in specific areas, so you {i}shouldn't{/i} see any."
+    m 3eua "Designated diving locations are places sharks don't usually visit."
+    m 3euc "...But even though they don't normally visit these areas, it's still possible to come across one."
+    m 1eua "The good thing is that shark attacks rarely ever happen anyway, so it's not too much of a risk."
+    m 3euc "If you meet one though, here's one important rule for you..."
+    m 3esc "Stay calm."
+    m 1eua "Although coming face to face with a shark can be scary, they usually approach people out of curiosity rather than to feed, so they're not too much to worry about."
+    m 3hub "But if you're afraid to dive alone, I'll be sure to keep you company when I cross over~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_dying_same_day",
             category=["monika"],
             prompt="Dying the same day",
@@ -15087,9 +15116,9 @@ init 5 python:
             eventlabel="monika_being_herself",
             category=['monika'],
             prompt="Faked personality",
+            conditional="mas_seenLabels(['monika_confidence', 'monika_pluralistic_ignorance'], seen_all=True)",
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.ENAMORED,None),
-            conditional="mas_seenLabels(['monika_confidence', 'monika_pluralistic_ignorance'], seen_all=True)"
+            aff_range=(mas_aff.ENAMORED,None)
         )
     )
 
