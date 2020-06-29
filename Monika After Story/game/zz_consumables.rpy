@@ -1409,11 +1409,11 @@ label mas_consumables_generic_finish_having(consumable):
         dlg_map = {
             mas_consumables.PROP_CONTAINER: {
                 0: "I'm going to put this [container] away.",
-                1: "I'm going to get another [container] of [consumable.disp_name][plur]."
+                1: "I'm going to get another [container]."
             },
             mas_consumables.PROP_OBJ_REF: {
                 0: "I'm going to put this away.",
-                1: "I'm going to get another [obj_ref] of [consumable.disp_name][plur]."
+                1: "I'm going to get another [obj_ref]."
             },
             "else": {
                 0: "I'm going to put this away.",
