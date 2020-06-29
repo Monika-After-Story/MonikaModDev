@@ -55,7 +55,8 @@ label monika_compliments:
         filtered_comps = Event.filterEvents(
             mas_compliments.compliment_database,
             unlocked=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # build menu list

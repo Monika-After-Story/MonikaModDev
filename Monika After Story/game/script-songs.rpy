@@ -1206,27 +1206,27 @@ init 5 python:
 
 label mas_song_cant_help_falling_in_love_long:
     call mas_song_cant_help_falling_in_love(from_long=True)
-    call .second_verse
-    call .third_verse
-    call .second_verse
-    call .third_verse
+    call mas_song_cant_help_falling_in_love_second_verse
+    call mas_song_cant_help_falling_in_love_third_verse
+    call mas_song_cant_help_falling_in_love_second_verse
+    call mas_song_cant_help_falling_in_love_third_verse
 
     m 1ekbfb "{cps=16}{i}~For I can't help{w=0.3} falling in love{w=0.5} with{w=0.5} you~{/i}{/cps}"
     return
 
-    label .second_verse:
-        m 1dud "{cps=24}{i}~Like a river flows~{/i}{/cps}"
-        m 1dub "{cps=24}{i}~Surely to the sea~{/i}{/cps}"
-        m 1ekbsb "{cps=24}{i}~Darling, so it goes~{/i}{/cps}"
-        m 1ekbsa "{cps=24}{i}~Some things{w=0.3}{/i}{/cps}{nw}"
-        extend 3ekbsb "{cps=24}{i} are meant to be~{/i}{/cps}"
-        return
+label mas_song_cant_help_falling_in_love_second_verse:
+    m 1dud "{cps=24}{i}~Like a river flows~{/i}{/cps}"
+    m 1dub "{cps=24}{i}~Surely to the sea~{/i}{/cps}"
+    m 1ekbsb "{cps=24}{i}~Darling, so it goes~{/i}{/cps}"
+    m 1ekbsa "{cps=24}{i}~Some things{w=0.3}{/i}{/cps}{nw}"
+    extend 3ekbsb "{cps=24}{i} are meant to be~{/i}{/cps}"
+    return
 
-    label .third_verse:
-        m 1dud "{cps=16}{i}~Take my hand~{/i}{/cps}"
-        m 1dub "{cps=16}{i}~Take my whole life,{w=0.3} too~{/i}{/cps}"
-        m 1dud "{cps=16}{i}~For I can't help{w=0.3} falling in love with you~{/i}{/cps}"
-        return
+label mas_song_cant_help_falling_in_love_third_verse:
+    m 1dud "{cps=16}{i}~Take my hand~{/i}{/cps}"
+    m 1dub "{cps=16}{i}~Take my whole life,{w=0.3} too~{/i}{/cps}"
+    m 1dud "{cps=16}{i}~For I can't help{w=0.3} falling in love with you~{/i}{/cps}"
+    return
 
 init 5 python:
     addEvent(

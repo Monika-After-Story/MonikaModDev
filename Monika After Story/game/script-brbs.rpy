@@ -567,6 +567,109 @@ label monika_idle_nap_callback:
         m 6ckc "..."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_homework",
+            prompt="I'm going to do some homework",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_homework:
+    if mas_isMoniNormal(higher=True):
+        m 1eub "Oh, okay!"
+        m 1hua "I'm proud of you for taking your studies seriously."
+        m 1eka "Don't forget to come back to me when you're done~"
+
+    elif mas_isMoniDis(higher=True):
+        m 2euc "Alright...{w=0.5}"
+        if random.randint(1,5) == 1:
+            m 2rkc "...Good luck with your homework, [player]."
+
+    else:
+        m 6ckc "..."
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_homework_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_homework"] = True
+    return "idle"
+
+label monika_idle_homework_callback:
+    if mas_isMoniDis(higher=True):
+        m 2esa "All done, [player]?"
+
+        if mas_isMoniNormal(higher=True):
+            m 2ekc "I wish I could've been there to help you, but there isn't much I can do about that just yet, sadly."
+            m 7eua "I'm sure we could both be a lot more efficient doing homework if we could work together."
+
+            if mas_isMoniAff(higher=True) and random.randint(1,5) == 1:
+                m 3rkbla "...Although, that's assuming we don't get {i}too{/i} distracted, ehehe..."
+
+            m 1eua "But anyway,{w=0.2} {nw}"
+            extend 3hua "now that you're done, let's enjoy some more time together."
+
+    else:
+        m 6ckc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_working",
+            prompt="I'm going to work on something",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_working:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Alright, [player]."
+        m 1eub "Don't forget to take a break every now and then!"
+
+        if mas_isMoniAff(higher=True):
+            m 3rkb "I wouldn't want my sweetheart to spend more time on [his] work than with me~"
+
+        m 1hua "Good luck with your work!"
+
+    elif mas_isMoniDis(higher=True):
+        m 2euc "Okay, [player]."
+
+        if random.randint(1,5) == 1:
+            m 2rkc "...Please come back soon..."
+
+    else:
+        m 6ckc "..."
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_working_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_working"] = True
+    return "idle"
+
+label monika_idle_working_callback:
+    if mas_isMoniNormal(higher=True):
+        m 1eub "Finished with your work, [player]?"
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "Then let's relax together, you've earned it~"
+
+    elif mas_isMoniDis(higher=True):
+        m 2euc "Oh, you're back..."
+        m 2eud "...Was there anything else you wanted to do, now that you're done with your work?"
+
+    else:
+        m 6ckc "..."
+    return
+
 #Rai's og game idle
 #label monika_idle_game:
 #    m 1eub "That sounds fun!"
