@@ -4471,7 +4471,7 @@ label monika_outdoors:
         m 1eub "But, on the bright side..."
         m 1rkbsa "Once I cross over, if you remember to bring the sunscreen..."
         m 1tubsa "I might need a little help putting it on."
-        m 1hubfb "Ahaha!"
+        m 1hubsb "Ahaha!"
         m 1efu "I'm only teasing you, [player]."
         m 1tsu "Well, at least a little. Ehehe~"
 
@@ -13570,7 +13570,8 @@ label monika_relationship_comfort:
     m 2eka "Just because a relationship has slowed down, doesn't mean it's worse for it..."
     m 2hua "It just means that the people involved are truly comfortable with one another."
     m 2hubsb "...And I think that's really sweet."
-    m 1kua "Let's try not to fall into the same trap, [player]. Ahaha!"
+    m 1kua "Let's try not to fall into the same trap, [player]. {nw}"
+    extend 1hub "Ahaha!"
     return
 
 #NOTE: This was mas_d25_monika_sleigh, but it seems more like a general topic
