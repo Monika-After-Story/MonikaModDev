@@ -14823,6 +14823,7 @@ init 5 python:
             category=["nature"],
             prompt="Scuba diving",
             random=True
+        )
     )
 
 label monika_scuba_diving:
@@ -14833,14 +14834,13 @@ label monika_scuba_diving:
     extend 3sub "Maybe even treasure!"
     m 3rksdlb "I'm only kidding about that last part...{w=0.3} It's pretty unlikely we'll find something like that, ahaha~"
     m 1euc "That said, there can also be sharks,{w=0.2} {nw}"
-    extend 1eua "but they're typically only in specific areas, so you shouldn't normally see any."
+    extend 1eua "but they're typically only in specific areas, so you {i}shouldn't{/i} see any."
     m 3eua "Designated diving locations are places sharks don't usually visit."
     m 3euc "...But even though they don't normally visit these areas, it's still possible to come across one."
     m 1eua "The good thing is that shark attacks rarely ever happen anyway, so it's not too much of a risk."
-    m 3euc "If you meet one though, here's one important rule for you."
+    m 3euc "If you meet one though, here's one important rule for you..."
     m 3esc "Stay calm."
-    m 1eua "Although coming face to face with a shark can be scary, they usually approach people out of curiosity rather than to feed."
-    m 1eua "So they're not too much to worry about."
+    m 1eua "Although coming face to face with a shark can be scary, they usually approach people out of curiosity rather than to feed, so they're not too much to worry about."
     m 3hub "But if you're afraid to dive alone, I'll be sure to keep you company when I cross over~"
     return
 
