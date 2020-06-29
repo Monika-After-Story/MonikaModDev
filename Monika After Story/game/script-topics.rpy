@@ -14936,10 +14936,10 @@ label monika_using_pcs_healthily:
     m 2eka "As for me?"
 
     if mas_isMoniLove():
-        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "You're the only comfort I need, my love."
     elif mas_isMoniEnamored():
-        show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbsa "I'm as comfortable as can be when you're here, [player]."
     else:
         show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
