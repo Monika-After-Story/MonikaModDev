@@ -621,11 +621,11 @@ init 500 python in mas_island_event:
         """
         if store.mas_isWinter():
             if store._mas_island_window_open:
-                return mas_islands_snow_wof_mfwm.fw_get(
+                return store.mas_islands_snow_wof_mfwm.fw_get(
                     store.mas_sprites.get_filter()
                 )
 
-            return mas_islands_snow_wf_mfwm.fw_get(
+            return store.mas_islands_snow_wf_mfwm.fw_get(
                 store.mas_sprites.get_filter()
             )
 
@@ -634,7 +634,7 @@ init 500 python in mas_island_event:
 
         return "mas_islands_wf"
 
-            
+
 screen mas_islands_background:
 
     add mas_island_event.getBackground()
