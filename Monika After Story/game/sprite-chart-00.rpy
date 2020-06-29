@@ -3039,6 +3039,17 @@ image monika 1tkbfu_static = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1tkbsu_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    arms="steepling",
+    blush="shade"
+)
+
 image monika 1tkc_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -4992,6 +5003,20 @@ image monika 2ektsc_static = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 2ektuc_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    arms="crossed",
+    head="f",
+    left="1l",
+    right="2r",
+    tears="up"
+)
+
 image monika 2eku_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -5322,6 +5347,16 @@ image monika 2hksdrb_static = DynamicDisplayable(
     sweat="right"
 )
 
+image monika 2hku_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smug",
+    arms="crossed"
+)
+
 image monika 2hua_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -5616,42 +5651,5 @@ image monika 2lksdrb_static = DynamicDisplayable(
     left="1l",
     right="2r",
     sweat="right"
-)
-
-image monika 2lktsc_static = DynamicDisplayable(
-    mas_drawmonika_rk,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="left",
-    nose="def",
-    mouth="smirk",
-    arms="crossed",
-    head="o",
-    left="1l",
-    right="2r",
-    tears="streaming"
-)
-
-image monika 2lsbsa_static = DynamicDisplayable(
-    mas_drawmonika_rk,
-    character=monika_chr,
-    eyebrows="mid",
-    eyes="left",
-    nose="def",
-    mouth="smile",
-    arms="crossed",
-    blush="shade"
-)
-
-image monika 2lsbssdlb_static = DynamicDisplayable(
-    mas_drawmonika_rk,
-    character=monika_chr,
-    eyebrows="mid",
-    eyes="left",
-    nose="def",
-    mouth="big",
-    arms="crossed",
-    blush="shade",
-    sweat="def"
 )
 

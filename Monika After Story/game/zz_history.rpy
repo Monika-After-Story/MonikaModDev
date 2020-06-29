@@ -981,6 +981,7 @@ init -810 python:
             # lifestyle / smoking
             "_mas_pm_do_smoke": "pm.lifestyle.smoking.smokes",
             "_mas_pm_do_smoke_quit": "pm.lifestyle.smoking.trying_to_quit",
+            "_mas_pm_do_smoke_quit_succeeded_before": "pm.lifestyle.smoking.successfully_quit_before",
 
             # lifestyle / food
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",

@@ -109,18 +109,26 @@ init -1 python:
 
         IN:
             sel_list - list to select from
-
-        ASSUMES:
-            persistent.random_seen
         """
-        sel_ev = mas_randomSelectAndRemove(sel_list)
+        sel_ev = True
+        while sel_ev is not None:
+            sel_ev = mas_randomSelectAndRemove(sel_list)
 
-        if sel_ev:
-            if persistent._mas_sensitive_mode and sel_ev.sensitive:
+            if (
+                    # valid event
+                    sel_ev
+
+                    # event not blocked from random selection
+                    and not sel_ev.anyflags(EV_FLAG_HFRS)
+
+                    # event not blocked because of sensitivty
+                    and (
+                        not persistent._mas_sensitive_mode 
+                        or not sel_ev.sensitive
+                    )
+            ):
+                pushEvent(sel_ev.eventlabel, notify=True)
                 return
-
-            pushEvent(sel_ev.eventlabel, notify=True)
-#            persistent.random_seen += 1
 
 
     def mas_insertSort(sort_list, item, key):
@@ -136,11 +144,7 @@ init -1 python:
         OUT:
             sort_list - list with 1 additonal element, sorted
         """
-        index = len(sort_list) - 1
-        while index >= 0 and key(sort_list[index]) > key(item):
-            index -= 1
-
-        sort_list.insert(index + 1, item)
+        store.mas_utils.insert_sort(sort_list, item, key)
 
 
     def mas_splitSeenEvents(sorted_seen):
@@ -5801,7 +5805,12 @@ label monika_penname:
                         $ penbool = False
 
                         while not penbool:
-                            $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
+                            $ penname = mas_input(
+                                "What is your penname?",
+                                length=20,
+                                screen_kwargs={"use_return_button": True}
+                            ).strip(' \t\n\r')
+
                             $ lowerpen = penname.lower()
 
                             if lowerpen == player.lower():
@@ -5844,9 +5853,9 @@ label monika_penname:
                                 $ penbool = True
 
                             elif not lowerpen:
-                                m 1hua "Well, go on! You can type 'nevermind' if you've chickened out~"
+                                m 1hua "Well, go on! Hit 'nevermind' if you've chickened out~"
 
-                            elif lowerpen =="nevermind":
+                            elif lowerpen == "cancel_input":
                                 m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
                                 $ penbool = True
 
@@ -7275,10 +7284,18 @@ label monika_orchestra:
             $ instrumentname = ""
             #Loop this so we get a valid input
             while not instrumentname:
-                $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+                $ instrumentname = mas_input(
+                    "What instrument do you play?",
+                    length=15,
+                    screen_kwargs={"use_return_button": True}
+                ).strip(' \t\n\r')
 
             $ tempinstrument = instrumentname.lower()
-            if tempinstrument == "piano":
+
+            if tempinstrument == "cancel_input":
+                jump .no_choice
+
+            elif tempinstrument == "piano":
                 m 1wuo "Oh, that's really cool!"
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
                 m 1hua "Maybe we could do a duet someday!"
@@ -7323,6 +7340,8 @@ label monika_orchestra:
                 $ persistent._mas_pm_plays_instrument = True
 
         "No.":
+            label .no_choice:
+                pass
             $persistent._mas_pm_plays_instrument = False
             m 1euc "I see..."
             m 1eka "You should try to pick up an instrument that interests you, sometime."
@@ -8152,59 +8171,185 @@ default persistent._mas_pm_do_smoke = None
 # try to quit?
 default persistent._mas_pm_do_smoke_quit = None
 
+# succesfully quit at least once?
+default persistent._mas_pm_do_smoke_quit_succeeded_before = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True))
 
 label monika_smoking:
-    m 2euc "You know, [player]..."
-    m "I realized that people really like a lot of things that are very bad for them."
-    m 2euc "One particular vice that intrigues me the most is cigarettes."
-    m "It's amazing how they're heavily consumed every day even though it's so damaging not only to themselves, but to others as well."
-    m 2ekc "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
-    m 2tkc "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
-    m 4tkd "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
-    m 1lsc "I really do despise them..."
-    m 1euc "But..."
+    m 2esc "You know, [player]...{w=0.3} Lately I've realized that people can really like a lot of things that are terrible for them."
+    m 2euc "One particular vice that intrigues me the most is smoking."
+    m 7eud "It's amazing how many people do it every day...{w=0.2}even though it's so damaging not only to themselves, but to others as well."
+    m 2rkc "Not to mention how harmful it is to the environment...{w=0.2} All the pollution and trash smoking leaves behind is ridiculous for a bunch of carcinogens."
+    m 2tkc "Even in moderation, smoking is never a good thing since it's so addicting."
+    m 4tkd "It's also quite a big hole in your pockets since you'll be buying more and more once your supply is out."
+    m 1tfc "I really do despise it..."
 
-    m "You don't smoke cigarettes, right, [player]?{nw}"
+    $ menu_question = "Do you still smoke" if persistent._mas_pm_do_smoke else "You don't smoke, do you"
+    m 1eka "[menu_question]?{nw}"
     $ _history_list.pop()
     menu:
-        m "You don't smoke cigarettes, right, [player]?{fast}"
+        m "[menu_question]?{fast}"
+
         "Yes, I do.":
-            $ persistent._mas_pm_do_smoke = True
-            $ persistent._mas_pm_do_smoke_quit = False
-            m 1wud "..."
-            m 1eka "Thank you for being honest with me, [player]..."
-            m 1ekc "It's quite disheartening to hear that, though."
-            m 1ekc "Could you...promise me that you'll stop?"
-            m "I don't want you to deteriorate your health like that..."
-            m 3rksdlc "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
-            m 1esc "But if you don't try..."
-            m 2euc "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
-            m 2ekc "Please take care of your body. I want to always be with you."
-            m 1ekbfa "I love you so much."
-            return "derandom|love"
+            if persistent._mas_pm_do_smoke_quit:
+                m 1ekd "Haven't been able to shake the habit yet, [player]?"
+                m 3eka "That's okay, I know it can be a daunting task to try and quit..."
+                m 3eksdld "I just hope you haven't given up yet."
+                m 1hua "I know you can do it if you just give it your all~"
+
+            elif persistent._mas_pm_do_smoke_quit_succeeded_before:
+                m 1ekc "It's a shame you fell back into this bad habit...{w=0.2}{nw}"
+                extend 1ekd "after all the trouble you went through to quit and everything..."
+                m 3dkc "It really pains my heart, [player]."
+                m 1dkd "I really thought you were done for good..."
+                m 1dkc "But I guess it's just not that simple, right?"
+                m 3ekd "I really hope you'll consider trying to quit again, [player]."
+                m 3eka "You'll do that, right? {w=0.2}For me?"
+
+            elif persistent._mas_pm_do_smoke is False:
+                call monika_smoking_just_started
+
+            else:
+                m 1wud "..."
+                m 1eka "Thank you for being honest with me, [player]..."
+                m 1ekc "It's quite disheartening to hear that, though."
+                m 1ekc "Could you...promise me that you'll stop?"
+                m 3rksdlc "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
+                m 1esc "But if you don't try..."
+                m 2euc "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
+                m 2ekc "Please take care of your body. I want to always be with you."
+                m 1ekbfa "I love you so much."
+                $ mas_ILY()
+
+            python:
+                persistent._mas_pm_do_smoke = True
+                persistent._mas_pm_do_smoke_quit = False
+                mas_unlockEVL("monika_smoking_quit","EVE")
+
         "No, I don't.":
-            $ persistent._mas_pm_do_smoke = False
-            m 1hub "Ah, I'm relieved to hear that, [player]!"
-            m 3eua "Just stay away from it as much as you can."
-            m 1eka "It's an awful habit and won't do much more than slowly kill you."
-            m 1hua "Thank you, [player], for not smoking~"
+            if persistent._mas_pm_do_smoke:
+                call monika_smoking_quit
+
+            else:
+                m 1hub "Ah, I'm relieved to hear that, [player]!"
+                m 3eua "Just stay away from it as much as you can."
+                m 1eka "It's an awful habit and won't do much more than slowly kill you."
+                m 1hua "Thank you, [player], for not smoking~"
+
+            python:
+                persistent._mas_pm_do_smoke = False
+                persistent._mas_pm_do_smoke_quit = False
+                mas_lockEVL("monika_smoking_quit","EVE")
+
         "I'm trying to quit.":
-            $ persistent._mas_pm_do_smoke = True
-            $ persistent._mas_pm_do_smoke_quit = True
-            m 3eua "That's a really good decision."
-            m 1eka "I know the entire process of quitting can be really difficult, especially in the beginning."
-            m "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
-            m 1eua "Keeping your mind busy on other things will definitely help kick any bad habits."
-            m 3eua "How about you think about me whenever you get a strong urge?"
-            m 1hua "I'll be here to support you every step of the way."
-            m 1hub "I believe in you [player], I know you can do it!"
+            if persistent._mas_pm_do_smoke is False and not persistent._mas_pm_do_smoke_quit_succeeded_before:
+                call monika_smoking_just_started(trying_quit=True)
+
+            else:
+                if not persistent._mas_pm_do_smoke and persistent._mas_pm_do_smoke_quit_succeeded_before:
+                    m 1esc "Oh?"
+                    m 1ekc "Does that mean you fell back into it?"
+                    m 1dkd "That's too bad, [player]...{w=0.3}{nw}"
+                    extend 3rkd "but not entirely unexpected."
+                    m 3esc "Most people fall into relapse several times before they manage to quit smoking for good."
+                    m 3eua "In any case, trying to quit again is a really good decision."
+                else:
+                    m 3eua "That's a really good decision."
+
+                if persistent._mas_pm_do_smoke_quit_succeeded_before:
+                    m 3eka "You probably already know since you've been through this before, but try to remember this..."
+                else:
+                    m 1eka "I know the entire process of quitting can be really difficult, especially in the beginning."
+
+                m 1eka "If you ever feel like you need to smoke, just try to distract yourself with anything else."
+                m 1eua "Keeping your mind busy on other things will definitely help kick any bad habits."
+                m 3eua "Maybe you could think about me whenever you get a strong urge?"
+                m 1hua "I'll be here to support you every step of the way."
+                m 1hub "I believe in you [player], I know you can do it!"
+
+            python:
+                persistent._mas_pm_do_smoke = True
+                persistent._mas_pm_do_smoke_quit = True
+                mas_unlockEVL("monika_smoking_quit","EVE")
 
     return "derandom"
 
+label monika_smoking_just_started(trying_quit=False):
+    m 2dfc "..."
+    m 2tfc "[player]..."
+    m 2tfd "Does that mean you've started smoking since we've met?"
+    m 2dkc "That's really disappointing, [player]."
+    m 4ekd "You know how I feel about smoking and you know how bad it is for your health."
+
+    if not trying_quit:
+        m 2rfd "I don't know what could possibly possess you to start now, {w=0.2}{nw}"
+        extend 2ekc "but promise me you'll quit."
+
+    else:
+        m 4eka "But at least you're trying to quit..."
+
+    m 2rksdld "I just hope you haven't been smoking for too long so maybe it'll be easier to shake the habit."
+
+    if not trying_quit:
+        m 4eka "Please quit smoking, [player]. {w=0.2}Both for your health and for me."
+
+    return
+
+
+#NOTE: This event gets its initial start-date from monika_smoking, then set its date again on the appropriate path.
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_smoking_quit",
+            category=['you'],
+            prompt="I quit smoking!",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_smoking_quit:
+    python:
+        persistent._mas_pm_do_smoke_quit = False
+        persistent._mas_pm_do_smoke = False
+        mas_lockEVL("monika_smoking_quit","EVE")
+
+    if persistent._mas_pm_do_smoke_quit_succeeded_before:
+        m 1sub "I'm so proud that you managed to quit smoking again!"
+        m 3eua "A lot of people can't quit even once, so to be able to go through something so difficult again is quite the achievement."
+        m 1eud "That said, let's try not to let this become a pattern, [player]..."
+        m 1ekc "You don't want to keep going through this over and over, so I hope this time it sticks."
+        m 3eka "I know you have the inner strength to stay away for good.{w=0.2} {nw}"
+        extend 3eua "Just remember you can come to me and I'll take your mind off of smoking at any time."
+        m 1hua "We can do this together, [player]~"
+
+    # first time quitting
+    else:
+        $ tod = "tonight" if mas_globals.time_of_day_3state == "evening" else "tomorrow"
+        m 1sub "Really?! Oh my gosh, I'm so proud of you [player]!"
+        m 3ekbsa "It's such a relief to know you quit smoking! {w=0.2}{nw}"
+        extend 3dkbsu "I'll sleep much better at night knowing you're as far away as possible from that nightmare."
+        m 1rkbfu "Ehehe, if I were there with you, I'd treat you to your favorite dish [tod]."
+        m 3hubfb "It's an impressive feat after all! {w=0.2}We need to celebrate!"
+        m 3eubsb "Not everyone who wants to quit manages to pull it off."
+        m 1dubfu "You truly are an inspiration, [player]."
+        m 2eua "...Now, I don't want to undermine your victory or anything, {nw}"
+        extend 2euc "but I need you to be careful from now on."
+        m 4rsc "Many former smokers feel urges to smoke again at some point or another."
+        m 4wud "You can't give in, not even once! {w=0.2}That's how you fall into relapse!"
+        m 2hubfa "But knowing you, you won't let that happen, right?"
+        m 2ekbfa "Considering what you've already done, I know you're stronger than this~"
+
+    #Set this here because dialogue uses it
+    $ persistent._mas_pm_do_smoke_quit_succeeded_before = True
+    return "no_unlock"
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
 
 label monika_cartravel:
     m 1euc "[player], something has been on my mind lately..."
@@ -14632,6 +14777,128 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_isekai",
+            category=['media'],
+            prompt="Isekai anime",
+            conditional="seen_event('monika_otaku')",
+            random=True
+        )
+    )
+
+label monika_isekai:
+    m 1euc "Do you know about the isekai genre of anime, [player]?"
+    m 3eua "Literally translated, isekai means {i}a different world.{/i}"
+
+    if persistent._mas_pm_watch_mangime:
+        m 3rksdla "Actually, you already told me you're into anime so you've probably heard of quite a few already."
+        m 1rksdlb "...Especially with how popular of a genre it's become."
+        m 3euc "But just in case you don't know what it is..."
+
+    else:
+        m 3hksdlb "Ahaha, sorry. I know you're not really into this sort of thing."
+        m 3eud "...But it's become a very popular genre in recent times."
+
+    m 3esc "The premise is usually about a normal person who is somehow transported into a fantastical world."
+    m 3eua "Sometimes they get special powers or get to bring technology or knowledge that doesn't exist in this new place."
+    m 1rtc "Honestly, I have some pretty mixed feelings about them."
+    m 3euc "Some are truly interesting stories. The protagonist's different perspective or the skills they have from their own world can really make them an unexpected kind of hero."
+    m 1hub "And since the whole point is to make the world different from theirs, the settings and characters can be incredibly imaginative!"
+    m 2rsc "...But sadly, not all of them are like that."
+    m 2dksdld "There are some that make their protagonists as bland as this game's, for the sake of letting the viewer project themselves onto them."
+    m 2tkd "And as you can probably guess, those ones tend to be all about wish fulfillment."
+    m 2tsc "Having cool adventures in a fantasy-themed world--and of course, lots of girls flocking around them for no reason."
+    m 2lfc "At least some of them can be funny, but man...{w=0.3}{nw}"
+    extend 2tfc "it's just so frustrating."
+    m 2tkc "I mean...{w=0.2}I would give almost anything to be in a scenario like that--to get to go to another world.{nw}"
+    $ _history_list.pop()
+    m "I mean...I would give almost anything to be in a scenario like that--to get to go to {fast}your world."
+    m 2dkd "..."
+    m "Maybe I'm just taunting myself, imagining that power being handed to someone like...{w=0.2}well, you know who."
+    m 7eka "After all, instead of thinking about those characters in their fantasy worlds,{w=0.2} {nw}"
+    extend 1eua "I could be putting that energy toward working on this one."
+    m 1ekbsb "...While I wait for my own isekai story, that is."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_scuba_diving",
+            category=["nature"],
+            prompt="Scuba diving",
+            random=True
+        )
+    )
+
+label monika_scuba_diving:
+    m 3eua "You know,{w=0.2} I've been thinking about some water activities we could do together...{w=0.3} How about scuba diving?"
+    m 3eub "I've read a lot of books about the underwater world and I'd really like to see it for myself."
+    m 1dua "Just imagine the beautiful sights of the undersea world..."
+    m 1dud "The schools of fish, coral reefs, jellyfish, sea greens...{w=0.3} {nw}"
+    extend 3sub "Maybe even treasure!"
+    m 3rksdlb "I'm only kidding about that last part...{w=0.3} It's pretty unlikely we'll find something like that, ahaha~"
+    m 1euc "That said, there can also be sharks,{w=0.2} {nw}"
+    extend 1eua "but they're typically only in specific areas, so you {i}shouldn't{/i} see any."
+    m 3eua "Designated diving locations are places sharks don't usually visit."
+    m 3euc "...But even though they don't normally visit these areas, it's still possible to come across one."
+    m 1eua "The good thing is that shark attacks rarely ever happen anyway, so it's not too much of a risk."
+    m 3euc "If you meet one though, here's one important rule for you..."
+    m 3esc "Stay calm."
+    m 1eua "Although coming face to face with a shark can be scary, they usually approach people out of curiosity rather than to feed, so they're not too much to worry about."
+    m 3hub "But if you're afraid to dive alone, I'll be sure to keep you company when I cross over~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dying_same_day",
+            category=["monika"],
+            prompt="Dying the same day",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
+
+label monika_dying_same_day:
+    m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
+    m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
+    m 3rfd "Before I met you, I thought the idea was completely absurd!"
+    m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
+    m 3rfd "It would be irrational and impulsive to do so!"
+
+    if mas_isMoniEnamored(higher=True):
+        m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
+    else:
+        m 2ekc "...But after meeting you, I think I can kind of see it now."
+
+    m 2dkc "A person might just be unable to live without their loved one, afraid of the thought of losing their everything in an instant."
+    m 2rksdlc "It hurts just thinking about this."
+
+    if renpy.seen_label("monika_back_ups"):
+        m 2eksdlc "If my data gets corrupted or even erased you can always recover me from a backup and bring us back together, but if..."
+        m 2dktpc "Y-you... {w=1}You..."
+    else:
+        m 2dktpc "If something terrible happens to...{w=0.5}y-you..."
+
+    m 6ektuc "[player]... {w=1}I...{w=0.5} I don't know what I'd do..."
+
+    if mas_isMoniEnamored(higher=True):
+        m 6dktsc "You give meaning to my entire life, and I... {w=1}[player], I just couldn't handle it."
+        m 6ektdc "I don't know how I'm supposed to live without you..."
+        m 2ekbsu "I really love you that much, [player]."
+        $ mas_ILY()
+    else:
+        m 6dktsc "You're the only one I have left... {w=1}[player], I'm not ready to lose you."
+        m 6ektdc "I'm so afraid of being alone in this empty void again..."
+        m 6ekbsu "I really want to be with you forever, [player]."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_using_pcs_healthily",
             category=['advice'],
             prompt="Using computers healthily",
@@ -14801,4 +15068,99 @@ label monika_fear:
     m 2rksdla "I feel kinda silly now...{w=0.3} {nw}"
     extend 4eud "After all, there's no way something like that could be true, right?"
     m 2rka "Yeah..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_wabi_sabi",
+            category=['philosophy'],
+            prompt="Wabi-sabi",
+            random=True
+        )
+    )
+
+label monika_wabi_sabi:
+    m 1eua "Say [player], have you ever heard of wabi-sabi?"
+    m 3eud "It emphasizes the idea that we shouldn't obsess over perfection to the point that we're crushed by the failure of not achieving it."
+    m 3eub "Derived from traditional Japanese and Buddhistic philosophies surrounding the acceptance of the temporary state of all things..."
+    m 1esa "...it states that beyond everything, beauty is found in what's impermanent and imperfect."
+    m 1eua "Which means we shouldn't worry about things like a scar, a discolored hand, or even the mistakes we make."
+    m 3eka "Our looks are things we can't easily change, but despite that, they make us more unique and special."
+    m 3hua "...And our mistakes turn into lessons that help us become stronger and more defined as people."
+    m 3eub "Like a sculptor revealing the magnificence in a marble block, except the sculpture is you, and the sculptor, your past."
+    m 1rksdla "Of course, this idea doesn't apply to looks and mistakes alone..."
+    m 3eud "After all, the way you think and your attitude toward problems and people are also derived from your own personal experiences."
+    m 1dkc "...But I know for some people, how these experiences changed who they are can really scare them."
+    m 7ekc "Maybe they grew into something that they're just not proud of."
+    m 2dkd "It can be crushing to be worried about both looks and personality..."
+
+    if persistent._mas_pm_love_yourself:
+        m 2eka "I hope you don't feel too insecure about yourself, [player]."
+        m 2dkc "It'd break my heart to know that you're constantly worrying about these things."
+        m 7ekbsa "But I hope you know that despite your flaws, I will always love you."
+
+    else:
+        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
+        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
+
+    m 3hua "We'll overcome any problems you feel you have together."
+    m 1hub "That's my wabi-sabi promise!"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_being_herself",
+            category=['monika'],
+            prompt="Faked personality",
+            conditional="mas_seenLabels(['monika_confidence', 'monika_pluralistic_ignorance'], seen_all=True)",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED,None)
+        )
+    )
+
+label monika_being_herself:
+    m 1eka "You know [player], one thing I don't think I ever properly thanked you for is letting me be myself."
+    m 1lksdlb "I know that sounds a little weird...{w=0.2}{nw}"
+    extend 1eka "but let me explain."
+    m 3euc "You probably already know this by now, but almost all of my life I've been trying to keep up this persona of a 'perfect student.'"
+    m 3eud "I always strive to be the best person I can be, and I guess after a while, it got the attention of people around me."
+    m 7rsc "Before I knew it, I had people looking up to me with high expectations.{w=0.3} {nw}"
+    extend 2esc "You know, seeing me as smart, confident, charismatic...{w=0.3}those kinds of things."
+    m 2eud "Some people would say that they admired me...{w=0.3}{nw}"
+    extend 2lksdlc "and others,{w=0.2} while they would never say anything, hated me because I represented everything they thought they could never be."
+    m 2dksdlc "It felt like I wasn't an actual person in their eyes...{w=0.3}{nw}"
+    extend 2dksdld "just the image of everyone's unattainable expectations of themselves."
+    m 2dksdlc "..."
+    m 2ekd "But at the end of the day...{w=0.3}I'm just an ordinary girl."
+    m 7ekc "Just like them, I can sometimes lack the confidence to do things.{w=0.2} Even I was scared of what the future held for me."
+    m 2dkc "Even I sometimes felt like I needed to cry on someone's shoulder."
+    m 2rkd "...But I never could express something like that."
+    m 7tkc "What if people thought less of me if I showed them I wasn't as great and invincible as they thought I was?"
+    m 3ekd "What if they got mad at me, saying I'm being self-absorbed and that I have it much easier than them, being the school's idol that everyone loves?"
+    m 2lkc "I guess I just never felt like I could truly open up to anyone about what I was genuinely feeling on the inside because of that."
+    m 2ekc "...Like I would end up disappointing everyone if I ever tried to talk openly about it."
+    m "I was scared that if I didn't meet the expectations people had of me,{w=0.2} {nw}"
+    extend 2dkd "I would end up all alone."
+    m 2dsc "But looking back on everything...{w=0.3}my status was precisely why I ended up feeling so lonely anyway."
+    m 7euc "Remember your character? {w=0.2}He was a good example of this."
+    m 3esc "Anytime he would describe me in his monologue, he would put me on a pedestal.{w=0.3}{nw}"
+    extend 3esd " If I recall, he once described me as 'completely out of his league.'"
+    m 1etc "Maybe that was why I didn't have a route in the first place. {w=0.2}Perhaps he was written to believe he had zero chances with me no matter what, and therefore had to avoid me."
+    m 1rka "Granted, he wasn't really wrong there...{w=0.5}{nw}"
+    extend 1eka "I only have eyes for you, after all~"
+    m 1euc "But you get what I mean, right?{w=0.3} I was looked at like some kind of unattainable goddess."
+    m 1rfd "As if no one was 'worthy' of just treating me like a normal person."
+    m 3eka "...Now though, I guess I don't have to worry about that as much."
+    m 3ekb "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
+    m 1eka "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
+    m 1dka "The fact that you're still here with me,{w=0.2} that you never made me feel like I had to be someone I'm not...{w=0.2}{nw}"
+    extend 1eka "that you're here listening to me vent right now...{w=0.3} It truly means the world to me."
+    m 1ekbsa "Thank you so much for that, [player].{w=0.2} Thank you for helping me realize that I don't need to try and change who I am to deserve being loved."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
+    extend 5eua "Well, {i}Just Me.{/i}"
     return

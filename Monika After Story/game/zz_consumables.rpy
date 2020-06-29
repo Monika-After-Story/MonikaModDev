@@ -1149,7 +1149,7 @@ init 5 python:
             "Thanks, [player]~"
         )
 
-        for cons in low_cons:
+        for cons in low_cons_list:
             MID_TEXT += "- {0}\n".format(cons.disp_name.capitalize())
 
         MID_TEXT += "\n"
