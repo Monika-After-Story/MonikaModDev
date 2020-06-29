@@ -36,15 +36,20 @@ init -1 python in mas_farewells:
         """
         # NOTE: new rules:
         #   eval in this order:
-        #   1. unlocked
-        #   2. not pooled
-        #   3. aff_range
-        #   4. priority (lower or same is True)
-        #   5. all rules
-        #   6. conditional
+        #   1. hidden via bitmask
+        #   2. unlocked
+        #   3. not pooled
+        #   4. aff_range
+        #   5. priority (lower or same is True)
+        #   6. all rules
+        #   7. conditional
         #       NOTE: this is never cleared. Please limit use of this
         #           property as we should aim to use lock/unlock as primary way
         #           to enable or disable greetings.
+
+        # check if hidden from random select
+        if ev.anyflags(store.EV_FLAG_HFRS):
+            return False
 
         #Make sure the ev is unlocked
         if not ev.unlocked:
@@ -148,7 +153,8 @@ label mas_farewell_start:
             evhand.farewell_database,
             unlocked=True,
             pool=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
     if len(bye_pool_events) > 0:

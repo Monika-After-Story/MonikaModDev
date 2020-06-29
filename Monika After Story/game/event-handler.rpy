@@ -557,6 +557,35 @@ init 6 python:
             if list_pop:
                 mas_rmEVL(ev_label)
 
+
+    def mas_flagEVL(ev_label, code, flags):
+        """
+        Applies flags to the given event
+
+        IN:
+            ev_label - label of the event to flag
+            code - string code of the db this ev_label belongs to
+            flags - flags to apply
+        """
+        ev = mas_all_ev_db_map.get(code, {}).get(ev_label, None)
+        if ev is not None:
+            ev.flag(flags)
+
+
+    def mas_unflagEVL(ev_label, code, flags):
+        """
+        Unflags flags from the given event
+
+        IN:
+            ev_label - label of the event to unflag
+            code - string code of the db this ev_label belongs to
+            flags - flags to unset
+        """
+        ev = mas_all_ev_db_map.get(code, {}).get(ev_label, None)
+        if ev is not None:
+            ev.unflag(flags)
+
+
 init 4 python:
     def mas_lastSeenInYear(ev_label, year=None):
         """
@@ -2411,7 +2440,8 @@ label prompts_categories(pool=True):
 #                category=[False,current_category],
             unlocked=True,
             pool=pool,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # add all categories the master category list
@@ -2463,7 +2493,8 @@ label prompts_categories(pool=True):
                     category=(False,current_category),
                     unlocked=True,
                     pool=pool,
-                    aff=mas_curr_affection
+                    aff=mas_curr_affection,
+                    flag_ban=EV_FLAG_HFM
                 )
 
                 # add deeper categories to a list
@@ -2583,7 +2614,12 @@ label mas_bookmarks:
             prompt_suffix = suffix_func(ev) if suffix_func else ""
 
             #Now append based on the delegate
-            bookmarks_pl.append((renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel))
+            # but only if it is not flagged to be hidden.
+            if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
+                bookmarks_pl.append((
+                    renpy.substitute(ev.prompt + prompt_suffix),
+                    ev.eventlabel
+                ))
 
         bookmarks_pl.sort()
         bookmarks_disp = gen_bk_disp(bookmarks_pl)

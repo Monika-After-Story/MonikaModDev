@@ -109,18 +109,26 @@ init -1 python:
 
         IN:
             sel_list - list to select from
-
-        ASSUMES:
-            persistent.random_seen
         """
-        sel_ev = mas_randomSelectAndRemove(sel_list)
+        sel_ev = True
+        while sel_ev is not None:
+            sel_ev = mas_randomSelectAndRemove(sel_list)
 
-        if sel_ev:
-            if persistent._mas_sensitive_mode and sel_ev.sensitive:
+            if (
+                    # valid event
+                    sel_ev
+
+                    # event not blocked from random selection
+                    and not sel_ev.anyflags(EV_FLAG_HFRS)
+
+                    # event not blocked because of sensitivty
+                    and (
+                        not persistent._mas_sensitive_mode 
+                        or not sel_ev.sensitive
+                    )
+            ):
+                pushEvent(sel_ev.eventlabel, notify=True)
                 return
-
-            pushEvent(sel_ev.eventlabel, notify=True)
-#            persistent.random_seen += 1
 
 
     def mas_insertSort(sort_list, item, key):
@@ -136,11 +144,7 @@ init -1 python:
         OUT:
             sort_list - list with 1 additonal element, sorted
         """
-        index = len(sort_list) - 1
-        while index >= 0 and key(sort_list[index]) > key(item):
-            index -= 1
-
-        sort_list.insert(index + 1, item)
+        store.mas_utils.insert_sort(sort_list, item, key)
 
 
     def mas_splitSeenEvents(sorted_seen):
