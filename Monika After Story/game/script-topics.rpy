@@ -14622,7 +14622,7 @@ label monika_translating_poetry:
     m 3esc "'He who lost everything and he who had everything.'"
     m 3ekbsa "'Last hawser, in you creaks my last longing.'"
     m 1dubsa "'In my barren land you are the final rose.'"
-    m 3eka "Had you ever heard this poem before, [player]? It's from a Chilean poet named Pablo Neruda."
+    m 3eka "Have you ever heard this poem before, [player]? It's from a Chilean poet named Pablo Neruda."
     m 1rusdla "That's one translation I found for it, anyway..."
     m 1eua "Isn't it funny how you can come up with all kinds of interpretations from the same original text?"
     m 3hub "It's like each person translating it added their own little tweak!"
