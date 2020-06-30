@@ -5656,7 +5656,7 @@ label monika_good_tod:
             m "But the morning is a time of day that presents possibilities!"
             m 1esb "An entire day where anything and everything could happen, for better or worse."
             m 1hsb "That kind of opportunity and freedom just makes me giddy!"
-            m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
+            m 1tsb "Though I only feel that way until I fully wake up, ehehe~"
 
     elif mas_globals.time_of_day_4state == "afternoon":
         m 1eua "Good afternoon to you too, [player]."
