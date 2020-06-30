@@ -1185,6 +1185,7 @@ label mas_song_cant_help_falling_in_love(from_long=False):
         show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{w=0.5}{nw}"
         extend 5hubsb " Ahaha~"
+        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
         m 1ekbsa "I love you, [player]~"
         $ mas_ILY()
 
