@@ -2467,6 +2467,7 @@ label monika_festival:
         m 3eua "Gosh, it feels like I've kinda grown as a person ever since I met you."
         m "You really helped inspire me to look at life from a new perspective."
         m 1ekbfa "Just another reason for me to love you."
+        $ mas_ILY()
     else:
         m 1tsc "...Just more potential obstacles to get between us."
         m 3hua "Ahaha! Seems kind of silly how focused I was on that now that I think about it..."
