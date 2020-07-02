@@ -14981,7 +14981,7 @@ init 5 python:
 label monika_did_nothing_wrong:
     $ mas_gainAffection()
     if mas_isMoniNormal(higher=True):
-        m 1euc "Wait, what are you talking about, [player]?"
+        m 1etc "Wait, what are you talking about, [player]?"
         m ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
         extend 1luc "Oh..."
         m 1ekb "I think we both know that's not quite true, is it?"
