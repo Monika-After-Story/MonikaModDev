@@ -10007,27 +10007,66 @@ label monika_beingevil:
     menu:
         m "I just hope nobody starts thinking you're evil by being here with me.{fast}"
         "You haven't done anything wrong":
+            # variable setting at the end because they're used to determine if player has seen this path before
+            # TODO aff branching in other paths
             if (persistent._mas_pm_monika_innocent is None):
                 # some extra aff if this is the first choice
                 $ mas_gainAffection(amount=3, bypass=True)
             else:
                 $ mas_gainAffection()
 
+            if (
+                (
+                    not persistent.monika_kill and mas_isMoniNormal(higher=True)
+                )
+                or (
+                    store.mas_anni.pastOneMonth() and mas_isMoniHappy(higher=True)
+                )
+            ):
+                # no regrets
+                if (renpy.random.randint(1,10) == 1) and (persistent._mas_pm_monika_innocent is not None):
+                    # joke path - not on first viewing
+                    m 3euc "Of course I haven't, weren't you listening?"
+                    m 1euc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                    m 1hub "Ahaha~"
+                    m 1eua "I'm just kidding, [player]."
+
+                else:
+                    m 1ekb "I'm glad you think that, [player]."
+                    m 3euc "You know, I don't have any regrets about what I did."
+                    extend 3tua " After all, it got me where I am today, didn't it?"
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "Besides, the past is in the past."
+
+                    if persistent._mas_pm_cares_about_dokis:
+                        m 5eub "It's not healthy to dwell on it too much."
+                    else:
+                        m 5eub "There's no point in getting too hung up about it."
+                        m 5hub "Ahaha~"
+
+            elif mas_isMoniNormal():
+                # may doubt a little
+                m 1ekb "I think we both know that's not quite true, is it?"
+                m 1eka "I could have handled the whole situation a bit more...{w=0.3}{nw}"
+                extend 3eka "delicately, to say the least."
+                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eub "But putting that aside, it really puts me at ease that you think that."
+
+            else:
+                # might blame herself since you do not love her
+                m 2euc "..."
+                m 2dsc "Honestly, I'm having trouble believing that."
+                m 2tud "I'm having trouble believing that {i}you{/i} believe that, [player]."
+                m 2efc"I must have done {i}something{/i} that upset you."
+                m 2ekc "You wouldn't treat me like this just{w=0.3}{nw}"
+                extend 2fkc " {i}because{/i},{w=0.3} right?"
+                m 2rkc "..."
+                m 2dkd "I'm sorry."
+                m 2eua "It makes me happy to hear you say that,{w=0.3}{nw}"
+                extend 2eka " but words can only go so far, you know?"
+
             $ persistent._mas_pm_monika_evil = False
             $ persistent._mas_pm_monika_innocent = True
-
-            m 1eka "Do you really think so?"
-            m 1rkc "I find it kind of hard to believe myself, but...{w=0.3}{nw}"
-            extend 1hua " You believing that really means the world to me, [player]."
-            if persistent._mas_pm_cares_about_dokis is False:
-                m 2rsc "I know none of it was real, but..."
-            m 2rkd "I guess I'm just not ready to...{w=0.3}{nw}"
-            extend 2dkd "move on from what I was forced to do."
-            m 2ekc "It's just...{w=0.3} it messed with my mind so much."
-            m 1hksdlb "Sorry if I'm a little insecure about this sometimes."
-            m 1dka "Still, thank you for saying that to me."
-            m 1ekb "I love you, [player]~"
-            $ mas_ILY()
 
         "I don't think you're evil.":
             $ persistent._mas_pm_monika_evil = False
