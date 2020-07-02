@@ -14966,3 +14966,38 @@ label monika_being_herself:
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_did_nothing_wrong",
+            category=['monika'],
+            prompt="You did nothing wrong",
+            pool=True
+        )
+    )
+
+label monika_did_nothing_wrong:
+    $ mas_gainAffection()
+    if mas_isMoniNormal(higher=True):
+        m 1luc "..."
+        m 1ekb "I think we both know that's not quite true, is it?"
+        m 1eka "I could have handled the whole situation a bit more...{w=0.5}{nw}"
+        extend 3eka "delicately, to say the least."
+        show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eub "But putting that aside, it really makes me happy that you think that."
+        if persistent._mas_pm_monika_evil:
+            m 5ruc "I wonder what made you change your mind."
+            $ persistent._mas_pm_monika_evil = False
+            $ persistent._mas_pm_monika_evil_but_ok = None
+    elif mas_isMoniUpset():
+        m 2euc "It makes me happy that you think so{cps*=2}, as hard as it is to believe.{nw}"
+        $ _history_list.pop()
+        m 2eua "{fast}It makes me happy that you think so{/fast}. Thank you, [player]."
+    elif mas_isMoniDis():
+        m 2euc "..."
+        m 2ekc "You shouldn't lie to people."
+    else:
+        m 6ckc "..."
+    return
