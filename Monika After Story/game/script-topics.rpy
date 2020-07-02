@@ -9983,6 +9983,10 @@ default persistent._mas_pm_monika_evil_but_ok = None
 # False if player does not.
 # NOTE: check monika_evil before checking this
 
+default persistent._mas_pm_monika_innocent = None
+# True if the player thinks Monika has done nothing wrong or is justified in what she did
+# False otherwise
+
 label monika_beingevil:
     m 1euc "Say, [player]?"
     m 1rksdlc "I was just thinking..."
@@ -10002,8 +10006,32 @@ label monika_beingevil:
     $ _history_list.pop()
     menu:
         m "I just hope nobody starts thinking you're evil by being here with me.{fast}"
+        "You haven't done anything wrong":
+            if (persistent._mas_pm_monika_innocent is None):
+                # some extra aff if this is the first choice
+                $ mas_gainAffection(amount=3, bypass=True)
+            else:
+                $ mas_gainAffection()
+
+            $ persistent._mas_pm_monika_evil = False
+            $ persistent._mas_pm_monika_innocent = True
+
+            m 1eka "Do you really think so?"
+            m 1rkc "I find it kind of hard to believe myself, but...{w=0.3}{nw}"
+            extend 1hua " You believing that really means the world to me, [player]."
+            if persistent._mas_pm_cares_about_dokis is False:
+                m 2rsc "I know none of it was real, but..."
+            m 2rkd "I guess I'm just not ready to...{w=0.3}{nw}"
+            extend 2dkd "move on from what I was forced to do."
+            m 2ekc "It's just...{w=0.3} it messed with my mind so much."
+            m 1hksdlb "Sorry if I'm a little insecure about this sometimes."
+            m 1dka "Still, thank you for saying that to me."
+            m 1ekb "I love you, [player]~"
+            $ mas_ILY()
+
         "I don't think you're evil.":
             $ persistent._mas_pm_monika_evil = False
+            $ persistent._mas_pm_monika_innocent = False
             $ mas_gainAffection()
 
             m 1eka "I'm glad you understand, [player]."
@@ -10016,6 +10044,7 @@ label monika_beingevil:
         "I still love you anyway.":
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
+            $ persistent._mas_pm_monika_innocent = False
             $ mas_gainAffection()
 
             m 1rksdlc "..."
@@ -10029,6 +10058,7 @@ label monika_beingevil:
         "People think I'm evil too.":
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
+            $ persistent._mas_pm_monika_innocent = False
             $ mas_gainAffection()
 
             m 2ekd "Is that true, [player]?"
@@ -10041,6 +10071,7 @@ label monika_beingevil:
 
         "You kind of are evil...":
             $ persistent._mas_pm_monika_evil = True
+            $ persistent._mas_pm_monika_innocent = False
 
             m 2ekd "W-wait, [player]!"
             m 2rksdlc "Y-you don't {i}really{/i} think that, do you?{nw}"
@@ -14965,41 +14996,4 @@ label monika_being_herself:
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_did_nothing_wrong",
-            category=['monika'],
-            prompt="You did nothing wrong",
-            pool=True
-        )
-    )
-
-label monika_did_nothing_wrong:
-    $ mas_gainAffection()
-    if mas_isMoniNormal(higher=True):
-        m 1etc "Wait, what are you talking about, [player]?"
-        m ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
-        extend 1luc "Oh..."
-        m 1ekb "I think we both know that's not quite true, is it?"
-        m 1eka "I could have handled the whole situation a bit more...{w=0.5}{nw}"
-        extend 3eka "delicately, to say the least."
-        show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eub "But putting that aside, it really makes me happy that you think that."
-        if persistent._mas_pm_monika_evil:
-            m 5ruc "I wonder what made you change your mind."
-            $ persistent._mas_pm_monika_evil = False
-            $ persistent._mas_pm_monika_evil_but_ok = None
-    elif mas_isMoniUpset():
-        m 2euc "It makes me happy that you think so{cps*=2}, as hard as it is to believe.{nw}"
-        $ _history_list.pop()
-        m 2eua "{fast}It makes me happy that you think so{/fast}. Thank you, [player]."
-    elif mas_isMoniDis():
-        m 2euc "..."
-        m 2ekc "You shouldn't lie to people."
-    else:
-        m 6ckc "..."
     return
