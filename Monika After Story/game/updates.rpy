@@ -454,6 +454,15 @@ label v0_11_3(version="v0_11_3"):
             except:
                 pass
 
+        #We'll also get rid of hehehe.txt if it's still here
+        try:
+            os.rename(
+                renpy.config.basedir + "/hehehe.txt",
+                renpy.config.basedir + "/characters/ehehe.txt"
+            )
+        except:
+            mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
         # add to the default unlocked pool topics
         pool_unlock_list = [
             "monika_meta",
