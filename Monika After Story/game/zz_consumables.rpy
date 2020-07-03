@@ -1434,7 +1434,7 @@ label mas_consumables_generic_finish_having(consumable):
             line_starter = renpy.substitute(dlg_map["else"][get_more])
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1eud "I finished my [consumable.disp_name].{w=0.2}{nw}"
+        m 1eud "I finished my [consumable.disp_name].{w=0.2} {nw}"
         extend 1eua "[line_starter]"
         m 3eua "Hold on a moment."
 
