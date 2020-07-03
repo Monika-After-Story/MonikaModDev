@@ -3485,6 +3485,19 @@ image monika 7eksdld_static = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 7esd_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    arms="downleftpointright",
+    head="i",
+    left="1l",
+    right="2r"
+)
+
 image monika 7eua_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
