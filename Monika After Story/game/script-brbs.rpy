@@ -539,17 +539,13 @@ label monika_idle_nap_callback:
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=1), "monika_idle_nap"):
             m 1hua "Welcome back, [player]!"
             m 1eua "Did you have a nice nap?"
-            m 3eub "They're really helpful for refreshing your mind so you can spend the day with a clear state of mind."
-            m 3rksdla "But if you're out for too long, it can take a while to fully wake up again...{w=0.3}kinda like getting out of bed in the morning."
-            m 1eua "As long as you had a nice nap though, I'm happy."
-            m 1hua "...And I hope you are too~"
+            m 3hua "You were out for some time, so I hope you're feeling rested~"
+            m 1eua "Is there anything else you wanted to do today?"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_nap"):
             m 1hua "Welcome back, [player]~"
             m 1eub "I hope you had a nice little nap."
-            m 3eua "Short periods of rest throughout the day are perfect for quickly refreshing your brain and getting back to work with a fresh mind."
-            m 1eub "If you don't already, taking regular power naps between work should boost your productivity."
-            m 1eua "But now that you're back, you should be feeling a lot more energized, right?"
+            m 3eua "What else would you like to do today?"
 
         else:
             m 1eud "Oh, back already?"
