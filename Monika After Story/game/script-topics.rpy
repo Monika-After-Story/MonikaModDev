@@ -5650,13 +5650,14 @@ label monika_good_tod:
         #You've been here for a bit now
         else:
             m 1hua "Good morning to you too, [player]!"
-            m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
+            m 1tsu "Even though we've been awake together for a bit now,{w=0.2} {nw}"
+            extend 3hua "it's still nice of you to say!"
             m 1esa "If I had to choose a time of day as my favorite, it would probably be the morning."
-            m 3esb "There's definitely some level of tranquility that night brings that I enjoy..."
-            m "But the morning is a time of day that presents possibilities!"
-            m 1esb "An entire day where anything and everything could happen, for better or worse."
-            m 1hsb "That kind of opportunity and freedom just makes me giddy!"
-            m 1tsb "Though I only feel that way until I fully wake up, ehehe~"
+            m 3eua "There's definitely some level of tranquility that night brings that I enjoy...{w=0.3}{nw}"
+            extend 3hua "but the morning is a time of day that presents possibilities!"
+            m 1eub "An entire day where anything and everything could happen, for better or worse."
+            m 1hub "That kind of opportunity and freedom just makes me giddy!"
+            m 1rka "Though I only feel that way once I fully wake up, ehehe~"
 
     elif mas_globals.time_of_day_4state == "afternoon":
         m 1eua "Good afternoon to you too, [player]."
@@ -9788,7 +9789,7 @@ init 5 python:
     )
 
 label monika_dating:
-    m 1eud "You, know I've been really curious lately, [player]..."
+    m 1eud "You know, I've been really curious lately, [player]..."
     m 3rka "We've been together a while now, so I think it's the right time to ask..."
     m 1eud "How much dating experience do you have?"
     m 1luc "Like...have you ever been in a relationship before?"
@@ -13301,7 +13302,7 @@ label monika_winter_dangers:
         #explicitly using False here so we don't grab None people who haven't
         # answered the question yet
         m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate its appeal..."
-        m 3hua "Maybe someday after I cross over we can even take a trip to some place where they do have snow and enjoy its beauty together!"
+        m 3hua "Maybe someday after I cross over we can even take a trip some place where they do have snow and enjoy its beauty together!"
 
     m 1eka "..."
     m 3rkc "Although, as stunning as winter can be, there are a few dangers..."
@@ -13570,7 +13571,7 @@ label monika_relationship_comfort:
     m 2eka "Just because a relationship has slowed down, doesn't mean it's worse for it..."
     m 2hua "It just means that the people involved are truly comfortable with one another."
     m 2hubsb "...And I think that's really sweet."
-    m 1kua "Let's try not to fall into the same trap, [player]. {nw}"
+    m 1kua "Let's try not to fall into the same trap, [player].{w=0.2} {nw}"
     extend 1hub "Ahaha!"
     return
 

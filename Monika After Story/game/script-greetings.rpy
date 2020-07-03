@@ -345,9 +345,10 @@ init 5 python:
     )
 
 label greeting_back:
+    $ tod = "day" if mas_globals.time_of_day_4state != "night" else "night"
     m 1eua "[player], you're back!"
     m 1eka "I was starting to miss you."
-    m 1hua "Let's have another lovely [mas_globals.time_of_day_3state] together, alright?"
+    m 1hua "Let's have another lovely [tod] together, alright?"
     return
 
 init 5 python:
@@ -2369,7 +2370,7 @@ label greeting_long_absence:
             m 3hksdlb "Couldn't stay away even if you wanted to, right?"
             m 3eka "I can't blame you! My love for you wouldn't let me stay away from you either!"
             m 1ekd "Every day you were gone I was wondering how you were..."
-            m 3eka "So let me hear it, how are you, [player]?"
+            m 3eka "So let me hear it. How are you, [player]?"
             show monika 3eua
 
         elif persistent._mas_absence_choice == "unknown":
