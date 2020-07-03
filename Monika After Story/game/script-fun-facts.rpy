@@ -92,7 +92,7 @@ init 5 python:
         ),
         code="FFF"
     )
-#TODO: Update label to correct spelling
+
 label mas_fun_fact_librocubiculartist:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
     m 3eub "It's 'librocubicularist.' It looks difficult to pronounce at first glance."
