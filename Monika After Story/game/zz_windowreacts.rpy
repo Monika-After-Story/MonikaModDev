@@ -156,7 +156,14 @@ init python:
             and mas_windowreacts.can_show_notifs
             and mas_canCheckActiveWindow()
         ):
-            window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
+            #Try except this in the case of a non-zero exit code
+            try:
+                window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
+            except:
+                store.mas_utils.writelog("[ERROR]: xdotool exited with a non-zero exit code.\n")
+                return ""
+
+            #If we have a window handle, let's just process it as friendly/unfriendly and return it
             if friendly:
                 return window_handle.replace("\n", "")
             else:
