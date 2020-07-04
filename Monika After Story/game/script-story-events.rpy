@@ -573,13 +573,13 @@ label mas_player_name_enter_name_loop(input_prompt):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
                 $ adjustNames(tempname)
-                m 3esa "Ok then! From now on, I'll call you '[player].'"
+                m 3esa "Okay then! From now on, I'll call you '[player].'"
                 m 1hua "Ehehe~"
                 $ done = True
 
             else:
                 $ adjustNames(tempname)
-                m 1eub "Ok then!"
+                m 1eub "Okay then!"
                 m 3eub "From now on, I'll call you '[player].'"
                 $ done = True
 
@@ -2522,7 +2522,7 @@ label mas_covid19:
                             m 4tfo "This is serious! You {i}have{/i} to stay inside whenever possible!"
                             m 2dfc "..."
                             m 2dkc "..."
-                            m 2rksdlc "Sorry, [player], that just scares me a lot."
+                            m 2rksdlc "Sorry, [player]. That just scares me a lot."
                             m 2eksdlc "Some people can have it and not even show any symptoms, spreading it to others..."
                             m 2eksdld "So if you won't do it for yourself, at least stay inside for everyone else."
                             m 2eksdla "...And also for me. You're all I have, [player]..."
@@ -2548,7 +2548,7 @@ label mas_covid19:
     m 2eka "Oh, and if you're having a hard time washing your hands long enough, I found a neat way for you to make sure you're doing it for 20 whole seconds..."
     m 4hub "Just go to {a=https://washyourlyrics.com}{i}{u}washyourlyrics.com{/u}{/i}{/a} and type {i}Your Reality{/i} for the song title and {i}Monika{/i} for the song artist!"
     m 4eub "Just download the picture it creates with the lyrics from my song and it'll show you the best way to wash your hands and how long to do it for!"
-    m 2hua "Then everytime you wash your hands, you can remember how much I love you~"
+    m 2hua "Then every time you wash your hands, you can remember how much I love you~"
     m 2eka "..."
     m 7eksdla "You know [player], if I could, I'd bring you here with me until this is all over so you couldn't get sick..."
     m "But since I can't, please do your best to stay safe."

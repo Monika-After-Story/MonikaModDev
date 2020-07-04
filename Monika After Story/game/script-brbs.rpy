@@ -249,8 +249,9 @@ label monika_idle_shower_callback:
 
         else:
             m 1hua "I hope you had a nice shower."
-            m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
-            m 1hub "Ahaha!"
+            if mas_getEV("monika_idle_shower").shown_count == 1:
+                m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
+                m 1hub "Ahaha!"
 
     elif mas_isMoniUpset():
         m 2esc "I hope you enjoyed your shower. Welcome back, [player]."
@@ -451,7 +452,7 @@ label monika_idle_workout_callback:
             # TODO: In the future add another topic which would
             # unlock once the player has seen this specific path some number of times.
 
-            m 2esa "You sure took your time, [player].{w=0.3}"
+            m 2esa "You sure took your time, [player].{w=0.3}{nw}"
             extend 2eub " That must've been one heck of a workout."
             m 2eka "It's good to push your limits, but you shouldn't overdo it."
 

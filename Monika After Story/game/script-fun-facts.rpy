@@ -95,7 +95,7 @@ init 5 python:
 
 label mas_fun_fact_librocubiculartist:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
-    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
+    m 3eub "It's 'librocubicularist.' It looks difficult to pronounce at first glance."
     m 3rksdld "It's a real shame some words just never get used in general."
     m 3eud "But if you say that word, most people wouldn't really know what you're talking about."
     m 3euc "You'd probably have to explain what it means, but that kind of defeats the point of using the word."
@@ -330,7 +330,7 @@ init 5 python:
 
 label mas_fun_fact_strength:
     m 1hub "This fact might motivate you a bit!"
-    m 3eub "The longest word in English that only contains a single vowel is 'strength'."
+    m 3eub "The longest word in English that only contains a single vowel is 'strength.'"
     m 1eua "It's funny how out of every word in the language, it's such a meaningful word that had that little detail."
     m 1hua "Little details like this really make language so fascinating to me!"
     m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"

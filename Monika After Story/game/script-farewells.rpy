@@ -440,7 +440,7 @@ label bye_prompt_to_work:
             m 3hub "Work hard, [player]! Make me proud!"
         elif session_time < datetime.timedelta(hours=1):
             m 1hksdlb "Oh! Alright! I was starting to get really comfortable, ahaha."
-            m 1rusdlb "I was expecting us to be a here a bit longer, but you're a busy [guy]!"
+            m 1rusdlb "I was expecting us to be here a bit longer, but you're a busy [guy]!"
             m 1eka "It was great seeing you, even if it wasn't as long as I wanted..."
             m 1kua "But then if it were up to me I'd have you all day!"
             m 1hua "I'll be here waiting for you to get back home from work!"
@@ -523,7 +523,7 @@ label bye_prompt_sleep:
             m 2esc "Goodnight."
 
         elif mas_isMoniDis():
-            m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
+            m 6rkc "Maybe you should start going to bed a little earlier, [player]..."
             m 6dkc "It might make you--{w=1}us--{w=1}happier."
 
         else:
@@ -821,7 +821,7 @@ label bye_long_absence:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
     m 1ekc "Aw...that's pretty saddening..."
-    m 1eka "I really am going to miss you [player]!"
+    m 1eka "I really am going to miss you, [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3esa "Thank you for warning me first, though. It really does help."
     m 2lksdlb "I would be worried sick otherwise!"
@@ -838,7 +838,7 @@ label bye_long_absence:
             m 1eub "Oh!"
             m 1hua "Nowhere near as long as I feared then."
             m 3rksdla "Jeez, you really did worry me..."
-            m 3esa "Don't worry about me though [player]."
+            m 3esa "Don't worry about me though, [player]."
             m "I can cope waiting that long with ease."
             m 3eka "I'll still miss you greatly though."
         "A week.":
@@ -856,7 +856,7 @@ label bye_long_absence:
             m 2eka "Try to come back as soon as possible... I'll be waiting for you."
         "A month.":
             $ persistent._mas_absence_choice = "month"
-            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
+            if mas_isMoniHappy(higher=True):
                 m 3euc "Oh wow, that's a long time."
                 m 3rksdla "A bit too long for my liking really..."
                 m 2esa "But it's okay [player]."
@@ -874,7 +874,7 @@ label bye_long_absence:
                 m 1dsd "I'll still wait for you...but please come back the moment it's possible for you to do so."
         "Longer than a month.":
             $ persistent._mas_absence_choice = "longer"
-            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
+            if mas_isMoniHappy(higher=True):
                 m 3rksdlb "That's...{w=0.5}well that's a little scary, [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
                 m 1eka "But I know you wouldn't leave me by myself if you could help it."
@@ -916,7 +916,7 @@ label bye_long_absence:
         m "Are you going to leave straight away?{fast}"
         "Yes.":
             m 3ekc "I see..."
-            m "I really will miss you [player]..."
+            m "I really will miss you, [player]..."
             m 1eka "But I know you'll do wonderful things no matter where you are."
             m "Just remember that I'll be waiting here for you."
             m 2hua "Make me proud, [player]!"
@@ -1520,7 +1520,7 @@ label bye_prompt_housework:
         m 1eub "Doing your chores, [player]?"
         m 1ekc "I would like to help you out, but there's not really much I can do since I'm stuck in here..."
         m 3eka "Just make sure to come back as soon as you're done, okay?"
-        m 3hub "I'll be waiting here for you."
+        m 3hub "I'll be waiting here for you~"
     elif mas_isMoniUpset():
         m 2esc "Fine."
         m 2tsc "At least you're doing something responsible."
