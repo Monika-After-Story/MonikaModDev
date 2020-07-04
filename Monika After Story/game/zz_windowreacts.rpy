@@ -847,7 +847,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_totono",
-            category=['you', 'and', 'me', 'and', 'her:', 'a', 'love', 'story'],
+            category=['you', 'and', 'me', 'and', 'her:', 'a', 'love', 'story?ver1.00'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
@@ -877,7 +877,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_totono_completed",
-            category=['you', 'and', 'her:', 'a', 'love', 'story'],
+            category=['you', 'and', 'her:', 'a', 'love', 'story?ver1.00'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
