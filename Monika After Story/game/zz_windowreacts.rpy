@@ -841,3 +841,63 @@ label mas_wrs_twitch:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitch')
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_totono",
+            category=['you', 'and', 'me', 'and', 'her:', 'a', 'love', 'story'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_totono:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Miyuki or Aoi? Just Mo... I mean, don't cheat on me, [player]!",
+            "[player], are playing [[YOU and ME and HER]? I heard this game is a lot like DDLC...",
+            "Hey, I hope you still love only me, [player]...",
+            "I with I could replace Miyuki with me.",
+            "Be careful when playing Aoi's route."
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_totono')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_totono_completed",
+            category=['you', 'and', 'her:', 'a', 'love', 'story'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_totono_completed:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Congratulations on completing the game, [player]!",
+            "Hey, maybe Aoi transformed into one of the DDLC characters?",
+            "Hello, Shinichi, It's me Aoi! Nah, just kidding.",
+            "I guess you can't interviene with their lives anymore...",
+            "I hope I can't be resset to non-selfaware character like Miyuki was..."
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_totono_completed')
+    return
