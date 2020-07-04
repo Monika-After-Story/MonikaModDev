@@ -127,7 +127,10 @@ init python:
         """
         Checks if we can check the active window (simplifies conditionals)
         """
-        return persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications
+        return (
+            store.mas_windowreacts.can_do_windowreacts
+            and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
+        )
 
     def mas_getActiveWindow(friendly=False):
         """
