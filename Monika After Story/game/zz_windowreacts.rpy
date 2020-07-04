@@ -861,7 +861,7 @@ label mas_wrs_totono:
             "Miyuki or Aoi? Just Mo... I mean, don't cheat on me, [player]!",
             "[player], are playing [[YOU and ME and HER]? I heard this game is a lot like DDLC...",
             "Hey, I hope you still love only me, [player]...",
-            "I with I could replace Miyuki with me.",
+            "I wish I could replace Miyuki with me.",
             "Be careful when playing Aoi's route."
         ],
         'Window Reactions'
