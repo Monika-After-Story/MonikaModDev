@@ -5096,7 +5096,10 @@ label monika_resource:
     m 1lksdlc "You'll continue to get older, while I'm stuck here forever..."
     m 1lksdld "I..."
     m 2ekc "I'm going to outlive you, aren't I, [player]?"
-    m 2dsc "Perhaps that'll be my punishment for everything I've done?"
+    if (
+        (persistent._mas_pm_monika_evil and not persistent._mas_pm_monika_evil_but_ok)
+        or persistent._mas_pm_a_hater):
+        m 2dsc "Perhaps that'll be my punishment for everything I've done?"
     m 2dkc "..."
     m 2eka "Well, as long as you're with me until the end..."
     m 2eud "I'll accept whatever fate awaits me."
@@ -10057,7 +10060,7 @@ label monika_beingevil:
                 m 2euc "..."
                 m 2dsc "Honestly, I'm having trouble believing that."
                 m 2tud "I'm having trouble believing that {i}you{/i} believe that, [player]."
-                m 2efc"I must have done {i}something{/i} that upset you."
+                m 2efc "I must have done {i}something{/i} that upset you."
                 m 2ekc "You wouldn't treat me like this just{w=0.3}{nw}"
                 extend 2fkc " {i}because{/i},{w=0.3} right?"
                 m 2rkc "..."
@@ -10100,6 +10103,7 @@ label monika_beingevil:
             $ persistent._mas_pm_monika_innocent = False
             $ mas_gainAffection()
 
+            # "They might have a point there" on low aff
             m 2ekd "Is that true, [player]?"
             m 2eka "Well, I don't see you as evil at all."
             m 2rksdla "If it really is true though, I hope it doesn't cause you any trouble."
@@ -10130,6 +10134,7 @@ label monika_beingevil:
                     $ persistent._mas_pm_monika_evil_but_ok = True
                     $ mas_gainAffection()
 
+                    # "Would be nice to see some then." on low aff
                     m 1rksdla "[player]..."
                     m 1eka "That means a lot..."
                     m 1eksdlc "I know that I've done some bad things in the past..."
