@@ -155,11 +155,11 @@ python early:
     EV_FLAG_HFM = 2
     # Hidden From Menus
     # this flag marks an event as temporarily hidden from all menus
-    
+
     EV_FLAG_HFRS = 4
     # Hidden From Random Selection
     # this flag marks an event as temporarily hidden from all random-based
-    # selection 
+    # selection
     # Random-based selection consists of:
     #   - startup greetings
     #   - randomly selected farewells
@@ -170,7 +170,7 @@ python early:
     # combines hidden from menu and random select
 
     # TODO: when needed:
-    # Hidden From Check Events - ignored in Event.checkEvents 
+    # Hidden From Check Events - ignored in Event.checkEvents
     #   NOTE: this is potentially dangerous, so maybe we dont need
     # Hidden From Active Selection - like blacklisting queue/push actions
 
@@ -1191,7 +1191,7 @@ python early:
                     (Default: None)
                 aff - affection level to match aff_range
                     (Default: None)
-                flag_req - flags that the event must match 
+                flag_req - flags that the event must match
                     (Default: None)
                 flag_ban - flags that the event must NOT have
                     (Default: None)
@@ -4305,7 +4305,7 @@ init -100 python in mas_utils:
 
         return count
 
-    
+
     def ev_distribute(value_list, amt, nz=False):
         """
         EVen Distribute
@@ -4395,7 +4395,7 @@ init -100 python in mas_utils:
             amt_list - list of amounts to distribute
 
         OUT:
-            value_list - each corresponding index in amt_list added to 
+            value_list - each corresponding index in amt_list added to
                 corresponding index in value_list
         """
         vindex = 0
@@ -4407,7 +4407,7 @@ init -100 python in mas_utils:
     def lo_distribute(value_list, leftovers, reverse=False, nz=False):
         """
         LeftOver Distribute
-        Applies leftovers to the given value list. 
+        Applies leftovers to the given value list.
 
         If leftovers are larger than the value list, we do ev_distribute first
 
@@ -4889,14 +4889,16 @@ init -1 python:
         # otherwise, not found
         return False
 
-
-    # TODO: Remove the basedir file checks before the next full release
     def is_apology_present():
+        """
+        Checks if the 'imsorry' file is in the characters folder.
+
+        OUT:
+            True is apology is present, False otherwise
+        """
         return (
             store.mas_utils.is_file_present('/characters/imsorry')
             or store.mas_utils.is_file_present('/characters/imsorry.txt')
-            or store.mas_utils.is_file_present('imsorry')
-            or store.mas_utils.is_file_present('/imsorry.txt')
         )
 
 
@@ -5777,13 +5779,14 @@ init 2 python:
         #If we're here, that means we need to do some returns based on the values we put in
         return seen_all
 
-    def mas_a_an_str(ref_str, ignore_case=False):
+    def mas_a_an_str(ref_str, ignore_case=True):
         """
         Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
 
         IN:
             ref_str - string in question to prefix
             ignore_case - whether or not we should ignore capitalization of a/an and not adjust the capitalization of ref_str
+                (Default: True)
 
         OUT:
             string prefixed with a/an
@@ -5793,13 +5796,14 @@ init 2 python:
             ref_str.lower() if not ignore_case and (ref_str[0].isupper() and not ref_str.isupper()) else ref_str
         ))
 
-    def mas_a_an(ref_str, ignore_case=False):
+    def mas_a_an(ref_str, ignore_case=True):
         """
         Takes in a reference string and returns either a/an based on the first letter of the word
 
         IN:
             ref_str - string in question to prefix
             ignore_case - whether or not we should ignore capitalization of a/an and just use lowercase
+                (Default: True)
 
         OUT:
             a/an based on the ref string
@@ -5905,30 +5909,6 @@ init 2 python:
             renpy.game.interface.do_with(None, None)
 
         return rv
-
-#EXTRA TEXT TAGS
-init python:
-    def a_an_tag(tag, argument, contents):
-        """
-        Handles a/an mid-string
-
-        NOTE: This should ONLY surround the exact word needing to be prefixed with a/an
-        All text tags should be kept OUTSIDE of the opening and closing tags for this function
-
-        Usage: I bought [player] {a_an}[tempvar]{/a_an}.
-
-        If tempvar was 'item,' the output is: I bought [player] an item.
-        If tempvar was 'coffee,' the output is: I bought [player] a coffee.
-        """
-        for _id, _tuple in enumerate(contents):
-            #We want to modify only text
-            if _tuple[0] == renpy.TEXT_TEXT:
-                contents[_id] = (_tuple[0], mas_a_an_str(_tuple[1]))
-                return contents
-
-        return contents
-
-    config.custom_text_tags["a_an"] = a_an_tag
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

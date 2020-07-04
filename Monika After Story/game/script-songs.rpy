@@ -1121,10 +1121,10 @@ label mas_song_shelter_analysis(from_song=False):
     m 7hub "Just look at me!"
     m 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside...{w=0.5}{nw}"
     extend 3hubfb "I found you!"
-    m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one."
+    m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one.{w=0.3} {nw}"
 
     if persistent._mas_pm_have_fam and not persistent._mas_pm_have_fam_mess:
-        m 3hubsb "I'm sure your family must care a lot about you as well!"
+        extend 3hubsb "I'm sure your family must care a lot about you as well!"
 
         if not persistent._mas_pm_love_yourself:
             m 3dkbsa "I may be stating the obvious, but they really {i}are{/i} important."
@@ -1185,6 +1185,7 @@ label mas_song_cant_help_falling_in_love(from_long=False):
         show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{w=0.5}{nw}"
         extend 5hubsb " Ahaha~"
+        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
         m 1ekbsa "I love you, [player]~"
         $ mas_ILY()
 
@@ -1266,13 +1267,42 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="mas_song_falling_in_love_at_a_coffee_shop",
+            eventlabel="mas_song_ageage_again",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="Falling in Love at a Coffee Shop",
+            prompt="Ageage Again",
             random=True,
             aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
+    )
+
+label mas_song_ageage_again:
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3duu "{i}~If you recall this song suddenly~{/i}"
+    m 1hub "{i}~Party, party, party, party, party time!~{/i}"
+    m 3hubsa "{i}~I am by your side~{/i}"
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3rubsu "{i}~If I recall your smile~{/i}"
+    m 1subsb "{i}~Love, love, love, love, I'm in love!~{/i}"
+    m 3hubsa "{i}~Want to feel the same rhythm~{/i}"
+    m 3eua "You know, I love how upbeat and happy this song is."
+    m 1rksdld "There are a lot of other Vocaloid songs that {i}sound{/i} upbeat, but their lyrics are sad and sometimes disturbing..."
+    m 3hksdlb "But I'm glad that at least this song isn't one of them."
+    m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
+    m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
+    m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_falling_in_love_at_a_coffee_shop",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Falling in Love at a Coffee Shop",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
     )
 
 label mas_song_falling_in_love_at_a_coffee_shop:
@@ -1600,33 +1630,3 @@ label mas_monika_plays_or(skip_leadin=False):
     window auto
 
     return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_songs_database,
-            eventlabel="mas_song_ageage_again",
-            category=[store.mas_songs.TYPE_SHORT],
-            prompt="Ageage Again",
-            random=True,
-            aff_range=(mas_aff.NORMAL,None)
-        ),
-        code="SNG"
-    )
-
-label mas_song_ageage_again:
-    m 1hub "{i}~Ageage, ageage, again!~{/i}"
-    m 3duu "{i}~If you recall this song suddenly~{/i}"
-    m 1hub "{i}~Party, party, party, party, party time!~{/i}"
-    m 3hubsa "{i}~I am by your side~{/i}"
-    m 1hub "{i}~Ageage, ageage, again!~{/i}"
-    m 3rubsu "{i}~If I recall your smile~{/i}"
-    m 1subsb "{i}~Love, love, love, love, I'm in love!~{/i}"
-    m 3hubsa "{i}~Want to feel the same rhythm~{/i}"
-    m 3eua "You know, I love how upbeat and happy this song is."
-    m 1rksdld "There are a lot of other Vocaloid songs that {i}sound{/i} upbeat, but their lyrics are sad and sometimes disturbing..."
-    m 3hksdlb "But I'm glad that at least this song isn't one of them."
-    m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
-    m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
-    m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
-    return "derandom"
