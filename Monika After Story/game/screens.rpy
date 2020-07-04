@@ -477,14 +477,19 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt):
+screen input(prompt, use_return_button=False, return_button_prompt="Nevermind.", return_button_value="cancel_input"):
     style_prefix "input"
 
-
     window:
+        if use_return_button:
+            textbutton return_button_prompt:
+                style "choice_button"
+                align (0.5, 0.5)
+                ypos -263
+                action Return(return_button_value)
+
         vbox:
-            xalign .5
-            yalign .5
+            align (0.5, 0.5)
             spacing 30
 
             text prompt style "input_prompt"
@@ -1396,7 +1401,7 @@ screen preferences():
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
                         hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
-                    if renpy.windows and store.mas_windowreacts.can_show_notifs:
+                    if store.mas_windowreacts.can_do_windowreacts:
                         textbutton _("Window Reacts"):
                             action ToggleField(persistent, "_mas_windowreacts_windowreacts_enabled", True, False)
                             hovered tooltip.Action(layout.MAS_TT_ACTV_WND)
