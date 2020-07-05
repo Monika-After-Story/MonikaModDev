@@ -402,6 +402,41 @@ init 6 python:
         """
         return mas_all_ev_db.get(ev_label, None)
 
+    def mas_checkEV(ev_label, predicate):
+        """
+        Checks event properties using a lambda
+
+        IN:
+            ev_label - ev_label representing the event to check properties for
+            predicate - predicate function (accepting an ev as the argument) for the test(s)
+
+        OUT:
+            True if predicate function returns True, False otherwise
+
+        NOTE: Does nothing if the ev does not exist
+        """
+        ev = mas_getEV(ev_label)
+
+        if ev is None:
+            return False
+
+        return predicate(ev)
+
+    def mas_setEVPropValues(ev_label, **kwargs):
+        """
+        Sets ev prop values in bulk if the ev exists
+
+        IN:
+            ev_label - ev_label representing the event to set properties for
+            kwargs - propname=new_value. Represents the value to set to the property
+        """
+        ev = mas_getEV(ev_label)
+
+        if ev is None:
+            return False
+
+        for attr, new_value in kwargs.iteritems():
+            setattr(ev, attr, new_value)
 
     def mas_getEVCL(ev_label):
         """
