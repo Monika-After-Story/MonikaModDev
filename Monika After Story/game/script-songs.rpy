@@ -1433,7 +1433,7 @@ label mas_song_wonderwall_lyrics:
     m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
-    -init 5 python:
+-init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
@@ -1442,7 +1442,7 @@ label mas_song_wonderwall_lyrics:
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
             aff_range=(mas_aff.AFFECTIONATE,None)
-        ),
+         ),
         code="SNG"
     )
 
