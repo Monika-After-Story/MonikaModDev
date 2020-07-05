@@ -377,6 +377,14 @@ init 4 python:
 
 
 init 6 python:
+    #EV CHECK CONSTANTS
+    EV_IS_POOL = lambda x: x.pool
+    EV_IS_RANDOM = lambda x: x.random
+    EV_IS_UNLOCKED = lambda x: x.unlocked
+    EV_IS_SEEN = lambda x: seen_event(x.eventlabel)
+    EV_SHOWN_COUNT_GREATER_THAN = lambda x, y=0: x.shown_count > y
+    EV_SHOWN_COUNT_LESS_THAN = lambda x, y=0: x.shown_count < y
+
     # here we combine the data from teh databases so we can have easy lookups.
 
     # mainly to create centralized database for calendar lookup
