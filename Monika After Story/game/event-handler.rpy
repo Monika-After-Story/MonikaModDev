@@ -377,13 +377,27 @@ init 4 python:
 
 
 init 6 python:
-    #EV CHECK CONSTANTS
-    EV_IS_POOL = lambda x: x.pool
-    EV_IS_RANDOM = lambda x: x.random
-    EV_IS_UNLOCKED = lambda x: x.unlocked
-    EV_IS_SEEN = lambda x: seen_event(x.eventlabel)
-    EV_SHOWN_COUNT_GREATER_THAN = lambda x, y=0: x.shown_count > y
-    EV_SHOWN_COUNT_LESS_THAN = lambda x, y=0: x.shown_count < y
+    ##EV CHECK CONSTANTS
+    #Checks if ev is pooled
+    EV_IS_POOL = lambda ev: ev.pool
+    #Checks if ev is random
+    EV_IS_RANDOM = lambda ev: ev.random
+    #Checks if ev is unlocked
+    EV_IS_UNLOCKED = lambda ev: ev.unlocked
+    #Checks if ev is seen
+    EV_IS_SEEN = lambda ev: seen_event(ev.eventlabel)
+    #Checks if ev has a last_seen
+    EV_HAS_LAST_SEEN = lambda ev: ev.last_seen is not None
+    #Checks if ev's shown count is greater than the provided value
+    EV_SHOWN_COUNT_GREATER_THAN = lambda ev, sc=0: ev.shown_count > sc
+    #Checks if ev's shown count is less than the provided value
+    EV_SHOWN_COUNT_LESS_THAN = lambda ev, sc=0: ev.shown_count < sc
+    #Checks if ev's shown count is equal to the provided value
+    EV_SHOWN_COUNT_EQUAL_TO = lambda ev, sc=0: ev.shown_count == sc
+    #Checks if ev's shown count is 0
+    EV_SHOWN_COUNT_IS_0 = lambda ev: ev.shown_count == 0
+    #Checks if provided value is in ev rules
+    EV_HAS_IN_RULES = lambda ev, rule_key="": rule_key in ev.rules
 
     # here we combine the data from teh databases so we can have easy lookups.
 
@@ -429,6 +443,26 @@ init 6 python:
             return False
 
         return predicate(ev)
+
+    def mas_getEVPropValue(ev_label, prop, default=None):
+        """
+        Safely gets an ev prop value
+
+        IN:
+            ev_label - eventlabel corresponding to the event object to get the property from
+            prop - property name to get
+            default - default value to return if ev not found/prop not found
+                (Default: None)
+
+        OUT:
+            Value of the given property name, or default if not found/no ev exists
+        """
+        ev = mas_getEV(ev_label)
+
+        if ev is None:
+            return default
+
+        return getattr(ev, prop, default)
 
     def mas_setEVPropValues(ev_label, **kwargs):
         """

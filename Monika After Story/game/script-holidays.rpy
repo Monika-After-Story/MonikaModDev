@@ -2008,11 +2008,11 @@ init 5 python:
 label mas_d25_monika_holiday_intro_upset:
     # sanity check with reset of start/end dates in case somehow we drop back below normal before this is seen
     if mas_isMoniUpset(lower=True):
-        python:
-            upset_ev = mas_getEV('mas_d25_monika_holiday_intro_upset')
-            if upset_ev is not None:
-                upset_ev.start_date = mas_d25c_start
-                upset_ev.end_date = mas_d25p
+        $ mas_setEVPropValues(
+            "mas_d25_monika_holiday_intro_upset",
+            start_date=mas_d25c_start,
+            end_date=mas_d25p
+        )
         return
 
     m 2rksdlc "So [player]...{w=1} I hadn't really been feeling very festive this year..."
@@ -2636,14 +2636,19 @@ init 5 python:
 
 label monika_aiwfc:
     # set dates for the other song to start a day after this one
-    $ d25_baby = mas_getEV('monika_merry_christmas_baby')
-    if d25_baby:
-        if not mas_isD25():
-            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(days=1)
-            $ d25_baby.end_date = mas_d25p
-        else:
-            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
-            $ d25_baby.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
+    if not mas_isD25():
+        $ mas_setEVPropValues(
+            "monika_merry_christmas_baby",
+            start_date=datetime.datetime.now() + datetime.timedelta(days=1),
+            end_date=mas_d25p
+        )
+
+    else:
+        $ mas_setEVPropValues(
+            "monika_merry_christmas_baby",
+            start_date=datetime.datetime.now() + datetime.timedelta(hours=1),
+            end_date=datetime.datetime.now() + datetime.timedelta(hours=5)
+        )
 
     if not renpy.seen_label('monika_aiwfc_song'):
         m 1rksdla "Hey, [player]?"
@@ -2669,7 +2674,7 @@ label monika_aiwfc:
     call monika_aiwfc_song
 
     #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
-    if not mas_getEV("monika_aiwfc").shown_count:
+    if not mas_getEVPropValue("monika_aiwfc", "shown_count", 0):
         m 1eka "I hope you liked that, [player]."
         m 1ekbsa "I really meant it too."
         m 1ekbfa "You're the only gift I could ever want."
@@ -4299,10 +4304,11 @@ init -10 python:
         """
         strips mas_birthdate of its conditional and action to prevent double birthday sets
         """
-        mas_birthdate_ev = mas_getEV('mas_birthdate')
-        if mas_birthdate_ev is not None:
-            mas_birthdate_ev.conditional = None
-            mas_birthdate_ev.action = None
+        mas_setEVPropValues(
+            "mas_birthdate",
+            conditional=None,
+            action=None
+        )
 
     def mas_pbdayCapGainAff(amount):
         mas_capGainAff(amount, "_mas_player_bday_date_aff_gain", 25)
@@ -6683,7 +6689,10 @@ init 5 python:
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
     if mas_isFirstSeshPast(mas_monika_birthday):
-        $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
+        $ mas_setEVPropValues(
+            "mas_bday_postbday_notimespent",
+            shown_count=mas_getEVPropValue("mas_bday_postbday_notimespent", "shown_count", 1) - 1
+        )
         return
 
 

@@ -39,10 +39,11 @@ init -1 python in mas_stories:
 
 
     def unlock_pooled_story(event_label):
-        _story = store.mas_getEV(event_label)
-        if _story is not None:
-            _story.unlocked = True
-            _story.pool = False
+        store.mas_setEVPropValues(
+            event_label,
+            unlocked=True,
+            pool=False
+        )
 
 
 init 5 python:
@@ -1528,13 +1529,14 @@ init 5 python:
 
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
-    $ _story = mas_getEV('mas_scary_story_flowered_lantern')
-    if _story is not None and _story.shown_count == 0:
+
+    if mas_checkEVL("mas_scary_story_flowered_lantern", EV_SHOWN_COUNT_IS_0):
         m 3eub "Before we start, I need to tell you that my next story is going to be a bit long."
         m 3eua "So, I'll split it in parts."
         m "Once I finish this part I'll ask you if you want to continue it or not."
         m 1eub "If you say no, you can ask me later to tell you the next part, so don't worry about it."
         m 4hua "Alright, let's begin now."
+
     m 4eua "There was once a beautiful, young maiden named Tsuyu, whose father was a high-ranking samurai."
     m 4eud "Tsuyu's mother had been dead and her father eventually remarried."
     m 2euc "Although it became obvious to Tsuyu's father that she and her step mother couldn't get along."

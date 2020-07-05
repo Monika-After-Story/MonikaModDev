@@ -564,10 +564,10 @@ label demo_minigame_pong:
         m "Would you like to play again?{fast}"
 
         "Yes.":
-            $ pong_ev = mas_getEV("mas_pong")
-            if pong_ev:
-                # each game counts as a game played
-                $ pong_ev.shown_count += 1
+            $ mas_setEVPropValues(
+                "mas_pong",
+                mas_getEVPropValue("mas_pong", "shown_count", 0) + 1
+            )
 
             jump demo_minigame_pong
 

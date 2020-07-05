@@ -63,10 +63,11 @@ label mas_gender:
     call mas_set_gender
 
     #Set up the preferredname topic
-    python:
-        preferredname_ev = mas_getEV("mas_preferredname")
-        if preferredname_ev:
-            preferredname_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
+    $ mas_setEVPropValues(
+        "mas_preferredname",
+        start_date=datetime.datetime.now() + datetime.timedelta(hours=2)
+    )
+
     return "love"
 
 init 5 python:
@@ -86,7 +87,7 @@ init 5 python:
 label monika_gender_redo:
     m 1eka "Of course, [player]!"
 
-    if mas_getEV('monika_gender_redo').shown_count == 0:
+    if mas_checkEV("monika_gender_redo", EV_SHOWN_COUNT_IS_0):
         m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
         $ _history_list.pop()
         menu:
@@ -703,7 +704,7 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isMonikaBirthday()"
-                )
+            )
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
@@ -1752,7 +1753,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    if mas_getEV("monika_rpy_files").shown_count == 0:
+    if mas_checkEV("monika_rpy_files", EV_SHOWN_COUNT_IS_0):
         m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
         m 1ekc "I noticed some \".rpy\" files in there."
         m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
@@ -2154,10 +2155,11 @@ label mas_gift_giving_instructs:
     #we'll handle the scenario by catching it here
     if persistent._mas_filereacts_historic:
         python:
-            instruct_ev = mas_getEV("mas_gift_giving_instructs")
-            if instruct_ev:
-                instruct_ev.last_seen = None
-                instruct_ev.shown_count -= 1
+            mas_setEVPropValues(
+                "mas_gift_giving_instructs",
+                last_seen=None,
+                shown_count=mas_getEVPropValue("mas_gift_giving_instructs", "shown_count", 0) - 1
+            )
 
             persistent._seen_ever.pop("mas_gift_giving_instructs")
         return

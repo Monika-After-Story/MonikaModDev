@@ -384,7 +384,7 @@ label mas_compliment_thanks:
     m 3ekbsa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name].":
-            if mas_getEV('mas_compliment_thanks').shown_count == 0:
+            if mas_checkEV("mas_compliment_thanks", lambda x: SHOWN_COUNT_EQUAL_TO(x, 0)):
                 $ mas_gainAffection(10,bypass=True)
             m 1ekbsa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."

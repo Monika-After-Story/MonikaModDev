@@ -165,12 +165,13 @@ init -100 python in mas_selspr:
             return
 
         prompt_data = PROMPT_MAP.get(key, {})
-
-        ev = store.mas_getEV(prompt_data.get("_ev", None))
         prompt = prompt_data.get(prompt_key, None)
 
-        if ev is not None and prompt is not None:
-            ev.prompt = prompt
+        if prompt is not None:
+            store.mas_setEVPropValues(
+                prompt_data.get("_ev", None),
+                prompt=prompt
+            )
 
 
     def unlock_prompt(key):
