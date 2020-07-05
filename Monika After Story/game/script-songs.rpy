@@ -1433,6 +1433,36 @@ label mas_song_wonderwall_lyrics:
     m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
+    -init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_when_youre_gone",
+            prompt="When you're gone",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_when_youre_gone:
+    m 1dso "{i}~When you're gone{w=0.2}{nw}{/i}"
+    extend 1duw " The pieces of my heart are missing you~"
+    m 4duw "{i}~When you're gone~{/i}"
+    m "{i}~The face I came to know is missing too~{/i}"
+    m 4ekc "{i}~When you're gone~{/i}"
+    m 6ekd "{i}~The words I need to hear to always get me through the day{w=0.2}{nw}{/i}"
+    m extend 2ektpc "{i} And make it OK~{/i}"
+    m 2ektpa "{i}I miss you{/i}"
+    m 1dktpa "..."
+    m 6eka "Avril Lavigne wrote this song for her grandfather that passed away, because they were like best friends when she was younger."
+    m 6rkc "I haven't really had anyone in my life actually die before, but thinking about not being able to talk to someone ever again..."
+    m 6eka "[player], I really need you, and your words of encouragement.{w=0.5}{nw}" 
+    extend 6hua" I'll be OK as long as you're here to brighten up my day~"
+    m 7eub "You're my best friend, don't ever underestimate how important you are to me."
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
