@@ -701,7 +701,6 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_hide_unseen",
-            prompt="I don't want to see this menu anymore.",
             unlocked=False,
             rules={"no unlock":None}
         )

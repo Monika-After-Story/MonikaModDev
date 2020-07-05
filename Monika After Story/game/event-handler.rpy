@@ -622,17 +622,24 @@ init 6 python:
             remove_dates - True if we want to remove start/end_dates from the event
                 (Default: True)
         """
-        ev = mas_getEV(ev_label)
-        if ev is not None:
-            ev.conditional = None
-            ev.action = None
+        if remove_dates:
+            mas_setEVPropValues(
+                ev_label,
+                conditional=None,
+                action=None,
+                start_date=None,
+                end_date=None
+            )
 
-            if remove_dates:
-                ev.start_date = None
-                ev.end_date = None
+        else:
+            mas_setEVPropValues(
+                ev_label,
+                conditional=None,
+                action=None
+            )
 
-            if list_pop:
-                mas_rmEVL(ev_label)
+        if list_pop:
+            mas_rmEVL(ev_label)
 
 
     def mas_flagEVL(ev_label, code, flags):
@@ -2261,9 +2268,9 @@ label call_next_event:
         $ ev = mas_getEV(event_label)
 
         if (
-                notify
-                and ((ev is not None and "skip alert" not in ev.rules) or ev is None)
-            ):
+            notify
+            and (ev is None or ("skip alert" not in ev.rules))
+        ):
             #Create a new notif
             if renpy.windows:
                 $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
@@ -2401,7 +2408,10 @@ label prompt_menu:
         if len(unseen_events) > 0 and persistent._mas_unsee_unseen:
             mas_showEVL('mas_show_unseen','EVE',unlock=True)
             unseen_num = len(unseen_events)
-            mas_getEV('mas_show_unseen').prompt = "I would like to see 'Unseen' ([unseen_num]) again"
+            mas_setEVPropValues(
+                "mas_show_unseen",
+                prompt="I would like to see 'Unseen' ([unseen_num]) again"
+            )
         else:
             mas_hideEVL('mas_show_unseen','EVE',lock=True)
 
@@ -2484,13 +2494,14 @@ label show_prompt_list(sorted_event_keys):
 
     #Get list of unlocked prompts, sorted by unlock date
     python:
-        prompt_menu_items = []
-        for event in sorted_event_keys:
-            prompt_menu_items.append([unlocked_events[event].prompt,event])
+        prompt_menu_items = [
+            (mas_getEVPropValue(ev_label, "prompt"), ev_label)
+            for ev_label in sorted_event_keys
+        ]
 
     $ nvm_text = "Nevermind."
 
-    $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
+    $ remove = ("I don't want to see this menu anymore.", "mas_hide_unseen")
 
     call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
 
