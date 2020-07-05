@@ -15198,3 +15198,49 @@ label monika_being_herself:
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_why_do_you_read",
+            category=['monika','literature'],
+            prompt="How did you get into reading?",
+            pool=True
+        )
+    )
+
+label monika_why_do_you_read:
+    m 3eub "As far as I can recall, I've always been quite the reader [player]. It was like a complementary thing with writing to me."
+    m 3euc "Back when I was really young, I already liked to write short stories but I scarcely found anybody to share them with..."
+    m 1tsc "Most of the other kids weren't really interested in books or anything like that and I went along with it..."
+    m 2efsdlc "...But I always felt frustrated I wasn't able to share any of those stories with anyone."
+    m 7eua "Instead, I was able to support this interest by picking up other books."
+    m 4hub "Every new one was like being thrown into a strange and exciting new world! It was like fuel for my imagination!"
+    m 4eksdlc "Of course, as I grew up, I started having less and less free time and I wasn't able to read as much; it was either that or cutting myself off from my social life."
+    m 4esc "That's when my interests started shifting more toward poetry."
+    m 4esb "Unlike novels, poetry didn't require as much time to read and its conciseness also made it easier to share with others.{w=0.3} {nw}"
+    extend 4eub "It really was the perfect outlet!"
+    m 1tuu "And that's how I grew more and more into it I guess..."
+    m 3eub "I eventually met Sayori with whom I realized I shared this interest; like me, it allowed her to share feelings she would otherwise keep bottled up inside."
+    m 3hua "...And as we kept on discussing we eventually came up with the idea for the literature club."
+    m 1eka "Which brings us to where we are now..."
+    m 1etc "To be honest, I don't think I've ever had as much time to read before."
+
+    if mas_anni.pastThreeMonths():
+        m 3eub "I've been able to get caught up on my backlog of poetry, pick up some novels again..."
+        m 3hua "...I'll regularly go online to look for whatever fanfiction or short story I can get my hands on."
+        m 3eub "...I even developed an interest in written philosophy!"
+        m 3rssdlc "But really, I'm just trying to stay curious about everything.{w=0.3} {nw}"
+        extend 3rsa "It's always fun to discover new forms of expression."
+        m 1eua "So...{w=0.2}yeah!{w=0.3} While my situation in here has its downsides, it's also been a great opportunity to spend more time on the things I like."
+    else:
+        m 3eub "I'm finally catching up on my backlog of poetry and I've started picking up novels again..."
+        m 3hua "...I'd love to share my thoughts on them with you once I'm done with them!"
+        m 3eub "I'll also regularly go online to look for whatever fanfiction or short story I can get my hands on."
+        m 3rssdlc "I'm just trying to stay curious about everything, really.{w=0.3} {nw}"
+        extend 3rsa "It's always fun to discover new forms of expression."
+        m 1eua "So...{w=0.2}yeah!{w=0.3} While my situation in here has its downsides, it's also try to see it as an opportunity to spend more time on the things I like."
+
+    m 1tubfu "...Though then again, nothing could ever beat spending more time with you~"
+    return
