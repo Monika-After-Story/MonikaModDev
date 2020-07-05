@@ -1454,7 +1454,7 @@ label mas_song_when_youre_gone:
     m 4ekc "{i}~When you're gone~{/i}"
     m 6ekd "{i}~The words I need to hear to always get me through the day{w=0.2}{nw}{/i}"
     extend 2ektpc "{i} and make it OK~{/i}"
-    m 2ektpa "{i}I miss you{/i}"
+    m 2ektpa "{i}~I miss you~{/i}"
     m 1dktpa "..."
     m 6eka "Avril Lavigne wrote this song for her grandfather that passed away, because they were like best friends when she was younger."
     m 6rkc "I haven't really had anyone in my life actually die before, but thinking about not being able to talk to someone ever again..."
