@@ -1302,7 +1302,8 @@ init 5 python:
             prompt="Falling in Love at a Coffee Shop",
             random=True,
             aff_range=(mas_aff.NORMAL, None)
-        )
+        ),
+        code="SNG"
     )
 
 label mas_song_falling_in_love_at_a_coffee_shop:
