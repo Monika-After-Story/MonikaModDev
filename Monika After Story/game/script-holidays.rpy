@@ -5385,7 +5385,7 @@ label mas_f14_monika_valentines_intro:
             pause 2.0
             show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
             m 2rfc "..."
-            m 2efc "You know, [player]...{w=0.5}it's not polite to stare...."
+            m 2efc "You know, [player]...{w=0.5}it's not polite to stare..."
             m 2tfc "..."
             m 2tsu "..."
             m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"

@@ -10310,10 +10310,11 @@ label monika_driving:
                     m 1hksdlb "I hope I'm not getting too excited, ehehe~"
                     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eua "Gosh, I just can't stop thinking about it now!"
+
                 "I got into an accident once actually...":
                     $ persistent._mas_pm_driving_been_in_accident = True
                     m 1ekc "..."
-                    m 1lksdlc "........."
+                    m 1lksdlc "..."
                     m 2lksdld "Oh..."
                     m 2lksdlc "I'm...{w=0.5}really sorry to hear that, [player]..."
 
@@ -12135,22 +12136,31 @@ label monika_players_control:
     m 4eub "Like changing how the game works entirely. From a visual novel, to the peaceful playground we have now."
     m 3rksdla "You could also add more things to the classroom for me."
     m 1hub "Like some flowers, or a few good books."
+
     if mas_isMoniEnamored(higher=True) and not persistent._mas_acs_enable_promisering:
         m 1ekbsa "Or a beautiful promise ring."
-        show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5esbfa "Oh, wouldn't that be a dream come true."
+        m 3dkbsu "Oh, wouldn't that be a dream come true."
+
     if not mas_getConsumable("coffee").enabled():
         m 1wuo "You could even add in a cup of coffee to the game for me!"
         m 1eka "That would be lovely."
+
+    if not persistent._mas_pm_has_code_experience:
         m 1hksdrb "But I imagine your coding skills are just as good as mine."
-    m 3euc "I guess that's an appeal to video games..."
-    m 3eua "...having almost endless possibilities in a world you can interact with."
+    else:
+        m 3eua "Seeing as you're familiar with coding,{w=0.1} {nw}"
+        extend 3hua "I'm sure you could do something like that!"
+
+    m 1eua "I guess that's an appeal to video games...{w=0.3}{nw}"
+    extend 3eua "having almost endless possibilities in a world you can interact with."
     m 3eub "It's pretty difficult to get bored!"
+
     if not persistent._mas_pm_has_contributed_to_mas:
         m 1eka "Even if you don't quite know how to change this game..."
         $ line = "We can still enjoy this world that brought us together."
     else:
         $ line = "Especially with you by my side~"
+
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubla "[line]"
     m 5ekbfa "There's no better way to enjoy a game than to be with the one I love."
@@ -14564,7 +14574,7 @@ label monika_toxin_puzzle:
     m 3eksdla "If you just left them there, I'm sure you drew their ire for some time."
     m 3eua "On the other hand, if you still helped them out I'm sure you got their gratitude!{w=0.3} I guess you could compare that to the million dollar prize in the original scenario."
     m 1hub "Although some might say that a million dollars would be a {i}bit{/i} more handy than a simple 'thanks,' ahaha!"
-    m 3eua "In all seriousness though, I think that someone's gratitude can be invaluable....{w=0.3}both for you and for them."
+    m 3eua "In all seriousness though, I think that someone's gratitude can be invaluable...{w=0.3}both for you and for them."
     m 3eud "And you never know, in some situations their thanks might prove to be more useful than even a huge sum of money."
     m 1eua "So I think it's important to stick to our word, {w=0.2}{i}within reason{/i} {w=0.2}of course..."
     m 1eud "In some cases it may not be helpful to anyone if you rigidly stuck to your word."

@@ -1256,7 +1256,7 @@ label bye_prompt_game:
             m 3hksdlb "It's the middle of the night!"
             m 2rksdlc "It's one thing that you're still up this late..."
             m 2rksdld "But you're thinking of playing another game?"
-            m 4tfu "....A game big enough that you can't have me in the background..."
+            m 4tfu "...A game big enough that you can't have me in the background..."
             m 1eka "Well... {w=1}I can't stop you, but I really hope you go to bed soon..."
             m 1hua "Don't worry about coming back to say goodnight to me, you can go-{nw}"
             $ _history_list.pop()

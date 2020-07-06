@@ -716,7 +716,7 @@ label mas_compliment_thinking_of_you_2:
             $ mas_loseAffection()
             m 2esc "..."
             m 2etc "..."
-            m 2rksdlc "Oh, umm...."
+            m 2rksdlc "Oh, umm..."
             m 2rksdld "I'm sorry?"
     return
 
