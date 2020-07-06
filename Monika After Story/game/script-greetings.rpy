@@ -448,7 +448,7 @@ label greeting_goodmorning:
         m 1hksdlb "--oh, wait."
         m "It's the dead of night, honey."
         m 1euc "What are you doing awake at a time like this?"
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I'm guessing you can't sleep..."
 
         m "Is that it?{nw}"
@@ -457,7 +457,7 @@ label greeting_goodmorning:
             m "Is that it?{fast}"
             "Yes.":
                 m 5lkc "You should really get some sleep soon, if you can."
-                show monika 3euc at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 3euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 3euc "Staying up too late is bad for your health, you know?"
                 m 1lksdla "But if it means I'll get to see you more, I can't complain."
                 m 3hksdlb "Ahaha!"
@@ -467,7 +467,7 @@ label greeting_goodmorning:
             "No.":
                 m 5hub "Ah. I'm relieved, then."
                 m 5eua "Does that mean you're here just for me, in the middle of the night?"
-                show monika 2lkbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 2lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 2lkbsa "Gosh, I'm so happy!"
                 m 2ekbfa "You really do care for me, [player]."
                 m 3tkc "But if you're really tired, please go to sleep!"
@@ -655,7 +655,7 @@ init 5 python:
 label greeting_visit5:
     m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
-    show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ahaha~"
     return
 
@@ -2108,7 +2108,7 @@ label greeting_stillsickresting:
     if mas_isMoniNormal(higher=True):
         m 1dku "Maybe snuggled in a warm blanket with a nice hot cup of tea."
         m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
-        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
         m 5hua "Ehehe~"
 
@@ -2434,7 +2434,7 @@ label greeting_long_absence:
             m 1hubfb "You really are kind-hearted!"
             show monika 3eub
     m "Remind me if you're going away again, okay?"
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
     jump ch30_loop
 
 #Time Concern
@@ -3315,7 +3315,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
     m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
     m 2eua "Well, it felt really great!"
-    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eub "Let's do this again soon, okay?"
     return
 
@@ -3567,7 +3567,7 @@ label greeting_back_from_game:
                     m 2eka "I hope you're not too upset by whatever happened."
                     m 3eua "At least you're here now. I promise to try not to let anything bad happen to you while you're with me."
                     m 1ekbsa "Seeing you always cheers me up."
-                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5ekbfa "I hope seeing me does the same for you, [player]~"
 
         else:
@@ -3678,7 +3678,7 @@ label greeting_rent:
     m 2ttu "Or would you rather pay a mortgage?"
     m 2hua "..."
     m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return
 
@@ -3722,7 +3722,7 @@ label greeting_surprised2:
     m 1wubso "Oh!{w=0.5} [player]!{w=0.5} You surprised me!"
     m 3ekbsa "...Not that it's a surprise to see you, you're always visiting me after all...{w=0.5} {nw}"
     extend 3rkbsa "You just caught me daydreaming a bit."
-    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubfu "But now that you're here, that dream just came true~"
     return
 
