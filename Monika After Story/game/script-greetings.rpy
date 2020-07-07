@@ -2982,6 +2982,9 @@ label greeting_back_from_work:
                 m 3eka "But even still, I know how draining they can be and I hope you feel better soon."
                 m 1ekbsa "I'll be here as long as you need me to comfort you, alright, [player]?"
 
+            "I'm feeling sick today.":
+                jump label mas_mood_sick    
+
             "I don't want to talk about it.":
                 m 1dsc "I understand, [player]."
                 m 3eka "Hopefully spending time with me helps you feel little better~"
