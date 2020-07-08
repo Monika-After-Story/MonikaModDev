@@ -9674,14 +9674,14 @@ label monika_hydration:
     m 1eua "Do you drink enough water?"
     m 1eka "I just want to make sure you don't neglect your health, especially when it comes to hydration."
     m 1esc "Sometimes, people tend to underestimate how important it actually is."
-    m 1eka "I bet you've had those days when you felt really tired and nothing seemed to motivate you."
+    m 3rka "I bet you've had those days when you felt really tired and nothing seemed to motivate you."
     m 1eua "I just usually grab a glass of water right away."
-    m "It might not work all the time, but it does help."
-    m 3rksdla "But I guess you don't want to go to the bathroom so much, huh?"
-    m 1eka "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
-    m 1eua "Anyway, make sure you always stay hydrated, okay?"
-    m "So..."
-    m 4huu "Why not get a glass of water right now, hmm?"
+    m 1eka "It might not work all the time, but it does help."
+    m 3rksdlb "But I guess you don't want to go to the bathroom so much, huh?"
+    m 1hua "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
+    m 3eua "Anyway, make sure you always stay hydrated, okay?"
+    m 1tuu "So..."
+    m 3huu "Why not get a glass of water right now, hmm?"
     return
 
 #If player has been to an amusement park or not
