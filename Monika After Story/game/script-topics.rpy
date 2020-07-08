@@ -9681,7 +9681,7 @@ label monika_hydration:
     m 1hua "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
     m 3eua "Anyway, make sure you always stay hydrated, okay?"
     m 1tuu "So..."
-    m 3huu "Why not get a glass of water right now, hmm?"
+    m 4huu "Why not get a glass of water right now, hmm?"
     return
 
 #If player has been to an amusement park or not
