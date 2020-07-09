@@ -1277,18 +1277,18 @@ init 5 python:
     )
 
 label mas_song_god_knows:
-    m 1hua "{i}~You know that{w=0.2}{nw}{/i}"
+    m 1eua "{i}~You know that{w=0.2}{/i}{nw}"
     extend 1eub "{i} I would follow you, no matter what we go through~{/i}"
     m 1efb "{i}~Bring all the darkness the world can offer~{/i}"
-    m 1eua "{i}~Because you’ll shine{w=0.2} no matter if the future is bleak~{/i}"
+    m 1hua "{i}~Because you’ll shine{w=0.2} no matter if the future is bleak~{/i}"
     m 3tub "{i}~We’ll aim out{w=0.2} just beyond the boundary~{/i}"
     m 3eksdla "{i}~And even if it scares me~{/i}"
     m 1hub "{i}~Nothing can shatter my soul because your way is my way~{/i}"
     m 1eub "{i}~Forever on this railway~{/i}"
-    m 1fubsa "{i}~As if we were God blessed~{/i}"
+    m 1eubsa "{i}~As if we were God blessed~{/i}"
     m 1dubsu "..."
-    show monika 5ruc at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ruc "You know, I'm still skeptical about whether some sort of a god exists or not..."
+    m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubsu "But having you here really does feel like a blessing from the heavens."
     return
 
