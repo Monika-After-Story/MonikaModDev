@@ -5500,7 +5500,7 @@ init -1 python:
 
             installPath+="/steamapps"
 
-        elif renpy.mac:
+        elif renpy.macintosh:
             installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
 
         elif renpy.linux:
