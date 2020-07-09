@@ -81,7 +81,8 @@ label mas_mood_start:
         filtered_moods = Event.filterEvents(
             mas_moods.mood_db,
             unlocked=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # build menu list

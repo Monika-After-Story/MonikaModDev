@@ -55,7 +55,8 @@ label monika_compliments:
         filtered_comps = Event.filterEvents(
             mas_compliments.compliment_database,
             unlocked=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # build menu list
@@ -336,7 +337,7 @@ label mas_compliment_fit:
     return
 
 label mas_compliment_fit_2:
-    m 1hub "Thanks [player]! You're so sweet!"
+    m 1hub "Thanks, [player]! You're so sweet!"
     m 3eub "I love keeping fit and eating healthy. It keeps me feeling energetic and confident."
     m 1efb "I hope you're watching out for your health."
     m 1lubfb "We can always work out together when I'm there..."

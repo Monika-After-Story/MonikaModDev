@@ -1970,20 +1970,22 @@ label monika_affection_nickname:
             label monika_affection_nickname_yes:
                 pass
 
+            show monika 1eua at t11 zorder MAS_MONIKA_Z
+
             $ done = False
-            m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 python:
-                    inputname = renpy.input(
+                    inputname = mas_input(
                         _("So what do you want to call me?"),
                         allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
-                        length=10
+                        length=10,
+                        screen_kwargs={"use_return_button": True}
                     ).strip(' \t\n\r')
 
                     lowername = inputname.lower()
 
                 # lowername isn't detecting player or m_name?
-                if lowername == "nevermind":
+                if lowername == "cancel_input":
                     m 1euc "Oh, I see."
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."
@@ -2025,7 +2027,7 @@ label monika_affection_nickname:
 
                         elif good_monika_nickname_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
+                            m 3ekbsa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
                             label .neutral_accept:
@@ -2171,7 +2173,7 @@ label monika_every_rose:
     m 2rktpc "..."
     m 2ektpa "Ahaha...{w=0.3}maybe I'm jumping the gun a bit on this one."
     m 4ektdc "It's...{w=0.5}I keep having this nasty thought in the back of my mind...{w=0.5}{nw}"
-    extend 2dktdd "that you don't want anymore."
+    extend 2dktdd "that you don't want to be with me anymore."
     m 2dkx "It's like some kind of poison, slowly seeping in..."
     m 2ekc "So [player], I always want you to remember one thing..."
     m 4ekd "You truly {i}are{/i} everything to me!"
