@@ -914,7 +914,7 @@ label monika_ptod_tip011:
     m 1hua "Great, we can play around with it a bit to understand things better."
 
     # Concatenation
-    m 3eua "Strings can be joined to each other with plus operator."
+    m 3eua "Strings can be joined to each other with the plus operator."
     call mas_wx_cmd("'Monika says \"' + s + '!\"'")
     m 3eub "We have just {i}concatenated{/i} them - that's what this action is called!"
 
@@ -934,7 +934,7 @@ label monika_ptod_tip011:
 
     # Subscription & zero index base warning
     m 3eua "For example, let's get first letter of our string using {i}subscript{/i} operator and a zero as its operand."
-    extend "Don't forget about indexes starting from zero, not one!"
+    extend "Don't forget that indexes star from zero, not one!"
     call mas_wx_cmd("s[0]")
 
     # Slicing explanation
