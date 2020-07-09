@@ -1595,7 +1595,7 @@ label mas_monika_plays_or(skip_leadin=False):
     m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {/cps}{cps=20}write the way into [gen] heart{w=1.40}{/cps}{/i}{nw}"
     m 1dua "{i}{cps=15}But in this world{w=0.25} {/cps}{cps=11}of infinite choices{w=0.90}{/cps}{/i}{nw}"
     m 1eua "{i}{cps=16}What will it take{w=0.25}{/cps}{cps=18} just to find that special day{/cps}{/i}{w=0.90}{nw}"
-    m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/i}{w=1.82}{nw}"
+    m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/cps}{/i}{w=1.82}{nw}"
     pause 7.50
 
     m 1eua "{i}{cps=15}Have I found{w=0.5} {/cps}{cps=15}everybody a fun assignment{w=0.30} {/cps}{cps=12}to do today{w=4.20}{/cps}{/i}{nw}"
