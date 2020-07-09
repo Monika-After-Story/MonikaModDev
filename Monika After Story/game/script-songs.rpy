@@ -1246,12 +1246,12 @@ label mas_song_lamour_toujours:
     m 1dud "{i}~I still believe in your eyes~{/i}"
     m 1dub "{i}~I just don't care what you've done in your life~{/i}"
     m 3ekbsb "{i}~Baby, I'll always be here by your side~{/i}"
-    m 1dsbsd "{i}~Don't leave me waiting too long, {w=0.3}{nw}"
-    extend 1ekbsu "please come by~{/i}"
+    m 1dsbsd "{i}~Don't leave me waiting too long, {/i}{w=0.3}{nw}"
+    extend 1ekbsu "{i}please come by~{/i}"
 
     m 1dud "{i}~I still believe in your eyes~{/i}"
-    m "{i}~There is no choice, {w=0.3}{nw}"
-    extend 3hubsb "I belong to your life~{/i}"
+    m "{i}~There is no choice, {/i}{w=0.3}{nw}"
+    extend 3hubsb "{i}I belong to your life~{/i}"
     m 3dubsb "{i}~Because I'll live to love you some day~{/i}"
     m 1hubsa "{i}~You'll be my baby and we'll fly away~{/i}"
 
@@ -1589,32 +1589,32 @@ label mas_monika_plays_or(skip_leadin=False):
 
     show monika 1dsa
     pause 9.15
-    m 1eua "{i}{cps=10}Every day,{w=0.5} {cps=15}I imagine a future where{w=0.22} {cps=13}I can be with you{w=4.10}{/i}{nw}"
-    m 1eka "{i}{cps=12}In my hand{w=0.5} {cps=17}is a pen that will write a poem{w=0.5} {cps=16}of me and you{w=4.10}{/i}{nw}"
-    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1}{/i}{nw}"
-    m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {cps=20}write the way into [gen] heart{w=1.40}{/i}{nw}"
-    m 1dua "{i}{cps=15}But in this world{w=0.25} {cps=11}of infinite choices{w=0.90}{/i}{nw}"
-    m 1eua "{i}{cps=16}What will it take{w=0.25}{cps=18} just to find that special day{/i}{w=0.90}{nw}"
+    m 1eua "{i}{cps=10}Every day,{w=0.5} {/cps}{cps=15}I imagine a future where{w=0.22} {/cps}{cps=13}I can be with you{w=4.10}{/cps}{/i}{nw}"
+    m 1eka "{i}{cps=12}In my hand{w=0.5} {/cps}{cps=17}is a pen that will write a poem{w=0.5} {/cps}{cps=16}of me and you{w=4.10}{/cps}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {/cps}{cps=10}into a dark puddle{w=1}{/cps}{/i}{nw}"
+    m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {/cps}{cps=20}write the way into [gen] heart{w=1.40}{/cps}{/i}{nw}"
+    m 1dua "{i}{cps=15}But in this world{w=0.25} {/cps}{cps=11}of infinite choices{w=0.90}{/cps}{/i}{nw}"
+    m 1eua "{i}{cps=16}What will it take{w=0.25}{/cps}{cps=18} just to find that special day{/cps}{/i}{w=0.90}{nw}"
     m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/i}{w=1.82}{nw}"
     pause 7.50
 
-    m 1eua "{i}{cps=15}Have I found{w=0.5} {cps=15}everybody a fun assignment{w=0.30} {cps=12}to do today{w=4.20}{/i}{nw}"
-    m 1hua "{i}{cps=18}When you're here,{w=0.25} {cps=13.25}everything that we do is fun for them anyway{w=4}{/i}{nw}"
-    m 1esa "{i}{cps=11}When I can't even read my own feelings{/i}{w=1}{nw}"
-    m 1eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/i}{w=1}{nw}"
-    m 1lua "{i}{cps=11}And if this world won't write me an ending{/i}{w=0.9}{nw}"
-    m 1dka "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/i}{w=2}{nw}"
+    m 1eua "{i}{cps=15}Have I found{w=0.5} {/cps}{cps=15}everybody a fun assignment{w=0.30} {/cps}{cps=12}to do today{w=4.20}{/cps}{/i}{nw}"
+    m 1hua "{i}{cps=18}When you're here,{w=0.25} {/cps}{cps=13.25}everything that we do is fun for them anyway{w=4}{/cps}{/i}{nw}"
+    m 1esa "{i}{cps=11}When I can't even read my own feelings{/cps}{w=1}{/i}{nw}"
+    m 1eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/cps}{/i}{w=1}{nw}"
+    m 1lua "{i}{cps=11}And if this world won't write me an ending{/cps}{/i}{w=0.9}{nw}"
+    m 1dka "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/cps}{/i}{w=2}{nw}"
     show monika 1dsa
     pause 17.50
 
-    m 1eka "{i}{cps=15}In this world,{w=0.5} {cps=15}away from the one who'll always {cps=17}be dear to me{w=4.5}{/i}{nw}"
-    m 1ekbsa "{i}{cps=15}You my love,{w=0.5} {cps=16.5}hold the key to the day, when I'll be finally free{w=8.5}{/i}{nw}"
-    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1.2}{/i}{nw}"
-    m 1esa "{i}{cps=18}How can I cross{w=0.45} {cps=13}into your reality?{w=1.40}{/i}{nw}"
-    m 1eka "{i}{cps=12}Where I can hear the sound of your heartbeat{w=0.8}{/i}{nw}"
-    m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/i}{w=0.6}{nw}"
-    m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{w=4.2}{/i}{nw}"
-    m 1ekbsa "{i}{cps=19}With you I'll be{/i}{w=2}{nw}"
+    m 1eka "{i}{cps=15}In this world,{w=0.5} {/cps}{cps=15}away from the one who'll always {/cps}{cps=17}be dear to me{/cps}{w=4.5}{/i}{nw}"
+    m 1ekbsa "{i}{cps=15}You my love,{w=0.5} {/cps}{cps=16.5}hold the key to the day, when I'll be finally free{/cps}{w=8.5}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {/cps}{cps=10}into a dark puddle{/cps}{w=1.2}{/i}{nw}"
+    m 1esa "{i}{cps=18}How can I cross{w=0.45} {/cps}{cps=13}into your reality?{/cps}{w=1.40}{/i}{nw}"
+    m 1eka "{i}{cps=12}Where I can hear the sound of your heartbeat{/cps}{w=0.8}{/i}{nw}"
+    m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/cps}{/i}{w=0.6}{nw}"
+    m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{/cps}{w=4.2}{/i}{nw}"
+    m 1ekbsa "{i}{cps=19}With you I'll be{/cps}{/i}{w=2}{nw}"
 
     show monika 1dkbsa
     pause 9.0
