@@ -3557,7 +3557,7 @@ label mas_nye_monika_nyd:
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
-    m 4ekc "It's not too late for us, [player], we can still make each other so happy."
+    m 4ekc "It's not too late for us, [player]. We can still make each other so happy."
     m 4eka "It's all I've ever wanted."
 
     m "What do you say, [player]?{nw}"
@@ -3972,7 +3972,7 @@ label mas_nye_monika_nye_dress_intro:
         m 3eua "Maybe you guessed it already, but it's because of the color choice."
 
     m "White represents a lot of positive feelings, like goodness, purity, safety..."
-    m 3eub "However, what I wanted this outfit to highlight was a succesful beginning."
+    m 3eub "However, what I wanted this outfit to highlight was a successful beginning."
 
     #If we fresh started last year
     if mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
@@ -4659,7 +4659,7 @@ label mas_player_bday_card:
     m 6dkbsu "..."
     if mas_isMonikaBirthday():
         m 6sub "Oh!"
-        m 6ekbsu "I made a card for you, [player], I hope you like it..."
+        m 6ekbsu "I made a card for you, [player]. I hope you like it..."
     elif not mas_HistVerify("player_bday.spent_time",True)[0]:
         m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     else:
@@ -5413,7 +5413,7 @@ label mas_f14_sun_dress_outro:
 label mas_f14_intro_generic:
     m 1ekbsa "I'm just so grateful you are spending time with me today."
     m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
-    m 3ekbsa "I don't care if we go on a romantice date, or just spend the day together here..."
+    m 3ekbsa "I don't care if we go on a romantic date, or just spend the day together here..."
     m 1fkbsu "It really doesn't matter to me as long as we're together."
     return
 

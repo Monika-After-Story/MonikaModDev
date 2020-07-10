@@ -147,7 +147,34 @@ python early:
         EV_ACT_POOL
     ]
 
+    #### bitmask flags
+    # all bitmask flags apply until next restart or the flag is unset.
+    # NOTE: do NOT add a bitmask flag if you want to save its value.
+    #   if you need saved data, add a new prop or use an existing one.
 
+    EV_FLAG_HFM = 2
+    # Hidden From Menus
+    # this flag marks an event as temporarily hidden from all menus
+
+    EV_FLAG_HFRS = 4
+    # Hidden From Random Selection
+    # this flag marks an event as temporarily hidden from all random-based
+    # selection
+    # Random-based selection consists of:
+    #   - startup greetings
+    #   - randomly selected farewells
+    #   - random topics
+
+    EV_FLAG_HFNAS = EV_FLAG_HFM | EV_FLAG_HFRS
+    # Hidden from Non-Active Selection
+    # combines hidden from menu and random select
+
+    # TODO: when needed:
+    # Hidden From Check Events - ignored in Event.checkEvents
+    #   NOTE: this is potentially dangerous, so maybe we dont need
+    # Hidden From Active Selection - like blacklisting queue/push actions
+
+    #### End bitmask flags
 
     # custom event exceptions
     class EventException(Exception):
@@ -236,7 +263,7 @@ python early:
     #   show_in_idle - True if this Event can be shown during idle
     #       False if not
     #       (Default: False)
-    #   flags - bitmask system that acts as unchanging flags.
+    #   flags - bitmask system that acts as unchanging or temporary flags.
     #       (Default: 0)
     class Event(object):
 
@@ -271,6 +298,22 @@ python early:
             "rules",
             "diary_entry",
             "flags"
+        )
+
+        # filterables
+        FLT = (
+            "category", # 0
+            "unlocked", # 1
+            "random", # 2
+            "pool", # 3
+            "action", # 4
+            "seen", # 5
+            "excl_cat", # 6
+            "moni_wants", # 7
+            "sensitive", # 8
+            "aff", # 9
+            "flag_req", # 10
+            "flag_ban", # 11
         )
 
         # other constants
@@ -572,6 +615,27 @@ python early:
                 and "monika wants this first" in self.rules
             )
 
+        def allflags(self, flags):
+            """
+            Checks if this event has ALL flags from flags
+
+            IN:
+                flags - flags to check
+
+            RETURNS: True if all flags from flags is in this event's flags
+            """
+            return (flags & ~self.flags) == 0
+
+        def anyflags(self, flags):
+            """
+            Checks if this event has ANY flag from flags
+
+            IN:
+                flags - flags to check
+
+            RETURNS: True if any flag from flags is in this event's flag
+            """
+            return (self.flags & flags) != 0
 
         def checkAffection(self, aff_level):
             """
@@ -591,7 +655,6 @@ python early:
             low, high = self.aff_range
             return store.mas_affection._betweenAff(low, aff_level, high)
 
-
         def canRepeat(self):
             """
             Checks if this event has the vars to enable repeat
@@ -604,6 +667,14 @@ python early:
                 and self.years is not None
             )
 
+        def flag(self, flags):
+            """
+            Adds flags from the given flags to this event's flags
+
+            IN:
+                flags - flags to add to this event
+            """
+            self.flags |= flags
 
         def prepareRepeat(self, force=False):
             """
@@ -696,6 +767,15 @@ python early:
             NOTE: This can only be used after init 2 as mas_timePastSince() doesn't exist otherwise
             """
             return mas_timePastSince(self.last_seen, time_passed, _now)
+
+        def unflag(self, flags):
+            """
+            Removes given flags from this event's flags
+
+            IN:
+                flags - flags to remove from this event
+            """
+            self.flags &= ~flags
 
         @staticmethod
         def getSortPrompt(ev):
@@ -991,22 +1071,30 @@ python early:
                 moni_wants=None,
                 sensitive=None,
                 aff=None,
-            ):
-            #
-            # Filters the given event object accoridng to the given filters
-            # NOTE: NO SANITY CHECKS
-            #
-            # For variable explanations, please see the static method
-            #   filterEvents
-            #
-            # RETURNS:
-            #   True if this event passes the filter, False if not
+                flag_req=None,
+                flag_ban=None
+        ):
+            """
+            Filters the given event object accoridng to the given filters
+            NOTE: NO SANITY CHECKS
+
+            For variable explanations, please see the static method
+            filterEvents
+
+            RETURNS:
+                True if this event passes the filter, False if not
+            """
 
             # collections allow us to match all
             from collections import Counter
 
+            # NOTE: this is done in an order to minimize branching.
+
             # now lets filter
             if unlocked is not None and event.unlocked != unlocked:
+                return False
+
+            if aff is not None and not event.checkAffection(aff):
                 return False
 
             if random is not None and event.random != random:
@@ -1015,7 +1103,10 @@ python early:
             if pool is not None and event.pool != pool:
                 return False
 
-            if aff is not None and not event.checkAffection(aff):
+            if flag_ban is not None and event.anyflags(flag_ban):
+                return False
+
+            if flag_req is not None and event.allflags(flag_req):
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:
@@ -1055,108 +1146,101 @@ python early:
             return True
 
         @staticmethod
-        def filterEvents(
-                events,
-#                full_copy=False,
-                category=None,
-                unlocked=None,
-                random=None,
-                pool=None,
-                action=None,
-                seen=None,
-                excl_cat=None,
-                moni_wants=None,
-                sensitive=None,
-                aff=None
-            ):
-            #
-            # Filters the given events dict according to the given filters.
-            # HOW TO USE: Use ** to pass in a dict of filters. they must match
-            # the names we use here.
-            #
-            # IN:
-            #   events - the dict of events we want to filter
-            #   full_copy - True means we create a new dict with deepcopies of
-            #       the events. False will only copy references
-            #       (Default: False)
-            #       DEPRECATEDE
-            #
-            #   FILTERING RULES: (recommend to use **kwargs)
-            #   NOTE: None means we ignore that filtering rule
-            #   category - Tuple of the following format:
-            #       [0]: True means we use OR logic. False means AND logic.
-            #       [1]: Tuple/list of strings that to match category.
-            #       (Default: None)
-            #       NOTE: If either element is None, we ignore this filteirng
-            #           rule.
-            #   unlocked - boolean value to match unlocked attribute.
-            #       (Default: None)
-            #   random - boolean value to match random attribute
-            #       (Default: None)
-            #   pool - boolean value to match pool attribute
-            #       (Default: None)
-            #   action - Tuple/list of strings/EV_ACTIONS to match action
-            #       NOTE: OR logic is applied
-            #       (Default: None)
-            #   seen - boolean value to match renpy.seen_label
-            #       (True means include seen, False means dont include seen)
-            #       (Default: None)
-            #   excl_cat - list of categories to exclude, if given an empty
-            #       list it filters out events that have a non-None category
-            #       (Default: None)
-            #   moni_wants - boolean value to match if the event has the monika
-            #       wants this first.
-            #       (Default: None )
-            #   sensitive - boolean value to match if the event is sensitive
-            #       or not
-            #       NOTE: if None, we use inverse of _mas_sensitive_mode, only
-            #           if sensitive mode is True.
-            #           AKA: we only filter sensitve topics if sensitve mode is
-            #           enabled.
-            #       (Default: None)
-            #   aff - affection level to match aff_range
-            #       (Default: None)
-            #
-            # RETURNS:
-            #   if full_copy is True, we return a completely separate copy of
-            #   Events (in a new dict) with the given filters applied
-            #   If full_copy is False, we return a copy of references of the
-            #   Events (in a new dict) with the given filters applied
-            #   if the given events is None, empty, or no filters are given,
-            #   events is returned
+        def filterEvents(events, **flt_args):
+            """
+            Filters the given events dict according to the given filters.
+            HOW TO USE: Use ** to pass in a dict of filters. they must match
+            the names we use here.
 
+            IN:
+                events - the dict of events we want to filter
+                **flt_args - see FILTERING RULES below for name=value rules
+
+            FILTERING RULES: (recommend to use **kwargs)
+            NOTE: None means we ignore that filtering rule
+                category - Tuple of the following format:
+                    [0]: True means we use OR logic. False means AND logic.
+                    [1]: Tuple/list of strings that to match category.
+                    (Default: None)
+                    NOTE: If either element is None, we ignore this
+                        filtering rule.
+                unlocked - boolean value to match unlocked attribute.
+                    (Default: None)
+                random - boolean value to match random attribute
+                    (Default: None)
+                pool - boolean value to match pool attribute
+                    (Default: None)
+                action - Tuple/list of strings/EV_ACTIONS to match action
+                    NOTE: OR logic is applied
+                    (Default: None)
+                seen - boolean value to match renpy.seen_label
+                    (True means include seen, False means dont include seen)
+                    (Default: None)
+                excl_cat - list of categories to exclude, if given an empty
+                    list it filters out events that have a non-None category
+                    (Default: None)
+                moni_wants - boolean value to match if the event has the monika
+                    wants this first.
+                    (Default: None )
+                sensitive - boolean value to match if the event is sensitive
+                    or not
+                    NOTE: if None, we use inverse of _mas_sensitive_mode, only
+                        if sensitive mode is True.
+                        AKA: we only filter sensitve topics if sensitve mode is
+                        enabled.
+                    (Default: None)
+                aff - affection level to match aff_range
+                    (Default: None)
+                flag_req - flags that the event must match
+                    (Default: None)
+                flag_ban - flags that the event must NOT have
+                    (Default: None)
+
+            RETURNS: copy of references of the Events in a new dict with
+                the given filters applied.
+                if the given events is None, empty, or no filters are given,
+                events is returned
+            """
             # sanity check
-            if (not events or len(events) == 0 or (
-                    category is None
-                    and unlocked is None
-                    and random is None
-                    and pool is None
-                    and action is None
-                    and seen is None
-                    and excl_cat is None
-                    and moni_wants is None
-                    and sensitive is None
-                    and aff is None)):
+            if (
+                    not events
+                    or len(events) == 0
+                    or store.mas_utils.all_none(data=flt_args)
+            ):
                 return events
 
             # copy check
 #            if full_copy:
 #                from copy import deepcopy
 
-            # setting up rules
-            if (category and (
-                    len(category) < 2
-                    or category[0] is None
-                    or category[1] is None
-                    or len(category[1]) == 0)):
-                category = None
+            # setup keys
+            cat_key = Event.FLT[0]
+            act_key = Event.FLT[4]
+            sns_key = Event.FLT[8]
+
+            # validate filter rules
+            category = flt_args.get(cat_key)
+            if (
+                    category
+                    and (
+                        len(category) < 2
+                        or category[0] is None
+                        or category[1] is None
+                        or len(category[1]) == 0
+                    )
+            ):
+                flt_args[cat_key] = None
+
+            action = flt_args.get(act_key)
             if action and len(action) == 0:
-                action = None
+                flt_args[act_key] = None
+
+            sensitive = flt_args.get(sns_key)
             if sensitive is None:
                 try:
                     # i have no idea if this is reachable from here
                     if persistent._mas_sensitive_mode:
-                        sensitive = False
+                        flt_args[sns_key] = False
                 except:
                     pass
 
@@ -1165,11 +1249,7 @@ python early:
             # python 2
             for k,v in events.iteritems():
                 # time to apply filtering rules
-                if Event._filterEvent(v,category=category, unlocked=unlocked,
-                        random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat,moni_wants=moni_wants,
-                        sensitive=sensitive, aff=aff):
-
+                if Event._filterEvent(v, **flt_args):
                     filt_ev_dict[k] = v
 
             return filt_ev_dict
@@ -3384,6 +3464,7 @@ init -991 python in mas_utils:
     import codecs
     import platform
     import time
+    import traceback
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
@@ -3399,6 +3480,32 @@ init -991 python in mas_utils:
         "{": "{{",
         "[": "[["
     }
+
+    def all_none(data=None, lata=None):
+        """
+        Checks if a dict and/or list is all None
+
+        IN:
+            data - Dict of data. values are checked for None-ness
+                (Default: None)
+            lata - List of data. values are checked for None-ness
+                (Default: None)
+
+        RETURNS: True if all data is None, False otherwise
+        """
+        # check dicts
+        if data is not None:
+            for value in data.itervalues():
+                if value is not None:
+                    return False
+
+        # now lists
+        if lata is not None:
+            for value in lata:
+                if value is not None:
+                    return False
+
+        return True
 
 
     def clean_gui_text(text):
@@ -3542,6 +3649,13 @@ init -991 python in mas_utils:
         """
         if mas_log_open:
             mas_log.write(msg)
+
+
+    def writestack():
+        """
+        Prints current stack to log
+        """
+        writelog("".join(traceback.format_stack()))
 
 
     def trydel(f_path, log=False):
@@ -3891,6 +4005,8 @@ init -100 python in mas_utils:
     import math
     from cStringIO import StringIO as fastIO
 
+    __secInDay = 24 * 60 * 60
+
     __FLIMIT = 1000000
 
     def tryparsefloat(value, default=0):
@@ -4035,6 +4151,113 @@ init -100 python in mas_utils:
         )
 
 
+    def secInDay():
+        """
+        RETURNS: number of seconds in a day
+        """
+        return __secInDay
+
+
+    def time2sec(_time):
+        """
+        Converts a time value to seconds
+
+        IN:
+            time - datetime.time object to convert
+
+        RETURNS: number of seconds
+        """
+        return (_time.hour * 3600) + (_time.minute * 60) + _time.second
+
+
+    def fli_indk(lst, d):
+        """
+        Find
+        List
+        Item
+        IN
+        Dictionary
+        Keys
+
+        Finds index of an item in the list if it is a key in the given dict.
+
+        IN:
+            lst - list to cehck
+            d - dictionary to check
+
+        RETURNS: The index of the first item in the list that is a key in the
+            dict. There are no checks of if the item can be a valid key.
+            -1 is returned if no item in the list is a key in the dict.
+        """
+        for idx, item in enumerate(lst):
+            if item in d:
+                return idx
+
+        return -1
+
+
+    def insert_sort(sort_list, item, key):
+        """
+        Performs a round of insertion sort.
+        This does least to greatest sorting
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+            key - function to call using the given item to retrieve sort key
+
+        OUT:
+            sort_list - list with 1 additonal element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and key(sort_list[index]) > key(item):
+            index -= 1
+
+        sort_list.insert(index + 1, item)
+
+
+    def insert_sort_compare(sort_list, item, cmp_func):
+        """
+        Performs a round of insertion sort using comparison function
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+            cmp_func - function to compare items with.
+                first arg will be item in the list
+                second arg will always be the item being inserted
+                This should return True if the item is not in the correct place
+                False when the item is in the correct place
+
+        OUT:
+            sort_list - list with 1 additional element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and cmp_func(sort_list[index], item):
+            index -= 1
+
+        sort_list.insert(index + 1, item)
+
+
+    def insert_sort_keyless(sort_list, item):
+        """
+        Performs a round of insertion sort for natural comparison objects.
+        This does least to greatest sorting.
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+
+        OUT:
+            sort_list - list with 1 additional element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and sort_list[index] > item:
+            index -= 1
+
+        sort_list.insert(index + 1, item)
+
+
     def normalize_points(points, offsets, add=True):
         """
         normalizes a list of points using the given offsets
@@ -4063,6 +4286,172 @@ init -100 python in mas_utils:
             ))
 
         return normal_pts
+
+
+    def nz_count(value_list):
+        """
+        NonZero Count
+
+        Counts all non-zero values in the given list
+
+        IN:
+            value_list - list to count nonzero values for
+
+        RETURNS: number of nonzero values in list
+        """
+        count = 0
+        for value in value_list:
+            count += int(value != 0)
+
+        return count
+
+
+    def ev_distribute(value_list, amt, nz=False):
+        """
+        EVen Distribute
+
+        Evenly distributes the given value to a given value list.
+        NOTE: only for ints
+
+        IN:
+            value_list - list of numbers to distribute to
+            amt - amount to evenly distribute
+            nz - True will make distribution only apply to non-zero values,
+                False will distribute to all
+                (Default: False)
+
+        OUT:
+            value_list - even distribution amount added to each appropriate
+                item in this list
+
+        RETURNS: leftover amount
+        """
+        # determine effective size
+        size = len(value_list)
+        if nz:
+            size -= nz_count(value_list)
+
+        # deteremine distribution amount
+        d_amt = amt / size
+
+        # now distribute
+        for index in range(len(value_list)):
+            if not nz or value_list[index] > 0:
+                value_list[index] += d_amt
+
+        # leftovers
+        return amt % size
+
+
+    def fz_distribute(value_list):
+        """
+        Flipped Zero Distribute
+
+        Redistributes values in the given list such that:
+        1. any index with a value larger than 0 is set to 0
+        2. any index with a value of 0 now has a nonzero value
+        3. the nonzero is evenly divided among the appropriate indexes
+
+        IN:
+            value_list - list of numbers to flip zero distribute
+
+        OUT:
+            value_list - flip-zero distributed list of numbers
+
+        RETURNS: any leftover amount
+        """
+        # determine amt to distribute
+        amt = sum(value_list)
+
+        # dont do anything if nothing to distribute
+        if amt < 1:
+            return 0
+
+        # determine distribution amount
+        size = len(value_list) - nz_count(value_list)
+        d_amt = amt / size
+
+        # now apply the amount to zero and clear non-zero values
+        for index in range(len(value_list)):
+            if value_list[index] > 0:
+                value_list[index] = 0
+            else:
+                value_list[index] = d_amt
+
+        # and return leftovers
+        return amt % size
+
+
+    def ip_distribute(value_list, amt_list):
+        """
+        In Place Distribute
+
+        Distributes values from one list to the other list, based on index.
+        Mismatched list sizes are allowed. There is no concept of leftovers
+        here.
+
+        IN:
+            value_list - list of numbers to distribute to
+            amt_list - list of amounts to distribute
+
+        OUT:
+            value_list - each corresponding index in amt_list added to
+                corresponding index in value_list
+        """
+        vindex = 0
+        amtindex = 0
+        while vindex < len(value_list) and amtindex < len(amt_list):
+            value_list[vindex] += amt_list[amtindex]
+
+
+    def lo_distribute(value_list, leftovers, reverse=False, nz=False):
+        """
+        LeftOver Distribute
+        Applies leftovers to the given value list.
+
+        If leftovers are larger than the value list, we do ev_distribute first
+
+        IN:
+            value_list - list of numbers to distribute to
+            leftovers - amount of leftover to distribute
+            reverse - True will add in reverse order, false will not
+                (Default: False)
+            nz - True will only apply leftovers to non-zero values
+                False will not
+                (Default: False)
+
+        OUT:
+            value_list - some items will have leftovers added to them
+        """
+        # determine effective size
+        if nz:
+            size = nz_count(value_list)
+        else:
+            size = len(value_list)
+
+        # apply ev distribute if leftovesr is too large
+        if leftovers >= size:
+            leftovers = ev_distribute(value_list, leftovers, nz=nz)
+
+        # dont add leftovers if none leftover
+        if leftovers < 1:
+            return
+
+        # determine direction
+        if reverse:
+            indexes = range(len(value_list)-1, -1, -1)
+        else:
+            indexes = range(len(value_list))
+
+        # apply leftovers
+        index = 0
+        while leftovers > 0 and index < len(indexes):
+            real_index = indexes[index]
+            if not nz or value_list[real_index] > 0:
+                value_list[real_index] += 1
+                leftovers -= 1
+
+            index += 1
 
 
     def _EVgenY(_start, _end, current, for_start):
@@ -4500,14 +4889,16 @@ init -1 python:
         # otherwise, not found
         return False
 
-
-    # TODO: Remove the basedir file checks before the next full release
     def is_apology_present():
+        """
+        Checks if the 'imsorry' file is in the characters folder.
+
+        OUT:
+            True is apology is present, False otherwise
+        """
         return (
             store.mas_utils.is_file_present('/characters/imsorry')
             or store.mas_utils.is_file_present('/characters/imsorry.txt')
-            or store.mas_utils.is_file_present('imsorry')
-            or store.mas_utils.is_file_present('/imsorry.txt')
         )
 
 
@@ -5388,13 +5779,14 @@ init 2 python:
         #If we're here, that means we need to do some returns based on the values we put in
         return seen_all
 
-    def mas_a_an_str(ref_str, ignore_case=False):
+    def mas_a_an_str(ref_str, ignore_case=True):
         """
         Takes in a reference string and returns it back with an 'a' prefix or 'an' prefix depending on starting letter
 
         IN:
             ref_str - string in question to prefix
             ignore_case - whether or not we should ignore capitalization of a/an and not adjust the capitalization of ref_str
+                (Default: True)
 
         OUT:
             string prefixed with a/an
@@ -5404,13 +5796,14 @@ init 2 python:
             ref_str.lower() if not ignore_case and (ref_str[0].isupper() and not ref_str.isupper()) else ref_str
         ))
 
-    def mas_a_an(ref_str, ignore_case=False):
+    def mas_a_an(ref_str, ignore_case=True):
         """
         Takes in a reference string and returns either a/an based on the first letter of the word
 
         IN:
             ref_str - string in question to prefix
             ignore_case - whether or not we should ignore capitalization of a/an and just use lowercase
+                (Default: True)
 
         OUT:
             a/an based on the ref string
@@ -5421,29 +5814,101 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
-#EXTRA TEXT TAGS
-init python:
-    def a_an_tag(tag, argument, contents):
+    def mas_input(prompt, default="", allow=None, exclude="{}", length=None, with_none=None, pixel_width=None, screen="input", screen_kwargs={}):
         """
-        Handles a/an mid-string
+        Calling this function pops up a window asking the player to enter some
+        text.
 
-        NOTE: This should ONLY surround the exact word needing to be prefixed with a/an
-        All text tags should be kept OUTSIDE of the opening and closing tags for this function
+        IN:
+            prompt - a string giving a prompt to display to the player
 
-        Usage: I bought [player] {a_an}[tempvar]{/a_an}.
+            default - a string giving the initial text that will be edited by the player
+                (Default: "")
 
-        If tempvar was 'item,' the output is: I bought [player] an item.
-        If tempvar was 'coffee,' the output is: I bought [player] a coffee.
+            allow - a string giving a list of characters that will
+                be allowed in the text
+                (Default: None)
+
+            exclude - if a character is present in this string, it is not
+                allowed in the text
+                (Default: "{}")
+
+            length - an integer giving the maximum length of the input string
+                (Default: None)
+
+            with_none - the transition to use
+                (Default: None)
+
+            pixel_width - if not None, the input is limited to being this many pixels wide,
+                in the font used by the input to display text
+                (Default: None)
+
+            screen - the name of the screen that takes input. If not given, the 'input'
+                screen is used
+                (Default: "input")
+
+            screen_kwargs - the keyword arguments to pass in to the screen
+                NOTE: passing in the prompt argument is not mandatory here
+                (Default: {})
+
+        OUT:
+            entered string
         """
-        for _id, _tuple in enumerate(contents):
-            #We want to modify only text
-            if _tuple[0] == renpy.TEXT_TEXT:
-                contents[_id] = (_tuple[0], mas_a_an_str(_tuple[1]))
-                return contents
+        renpy.exports.mode("input")
 
-        return contents
+        roll_forward = renpy.exports.roll_forward_info()
+        if not isinstance(roll_forward, basestring):
+            roll_forward = None
 
-    config.custom_text_tags["a_an"] = a_an_tag
+        # use previous data in rollback
+        if roll_forward is not None:
+            default = roll_forward
+
+        fixed = renpy.in_fixed_rollback()
+
+        if renpy.has_screen(screen):
+            widget_properties = { }
+            widget_properties["input"] = dict(default=default, length=length, allow=allow, exclude=exclude, editable=not fixed, pixel_width=pixel_width)
+
+            screen_kwargs["prompt"] = prompt
+
+            renpy.show_screen(screen, _transient=True, _widget_properties=widget_properties, **screen_kwargs)
+
+        else:
+
+            if screen != "input":
+                raise Exception("The '{}' screen does not exist.".format(screen))
+
+            renpy.ui.window(style="input_window")
+            renpy.ui.vbox()
+            renpy.ui.text(prompt, style="input_prompt")
+            inputwidget = renpy.ui.input(default, length=length, style="input_text", allow=allow, exclude=exclude)
+
+            # disable input in fixed rollback
+            if fixed:
+                inputwidget.disable()
+
+            renpy.ui.close()
+
+        renpy.exports.shown_window()
+
+        if not renpy.game.after_rollback:
+            renpy.loadsave.force_autosave(True)
+
+        # use normal "say" click behavior if input can't be changed
+        if fixed:
+            renpy.ui.saybehavior()
+
+        rv = renpy.ui.interact(mouse="prompt", type="input", roll_forward=roll_forward)
+        renpy.exports.checkpoint(rv)
+
+        if with_none is None:
+            with_none = renpy.config.implicit_with_none
+
+        if with_none:
+            renpy.game.interface.do_with(None, None)
+
+        return rv
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
