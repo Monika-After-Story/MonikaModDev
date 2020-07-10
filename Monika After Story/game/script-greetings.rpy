@@ -1458,7 +1458,9 @@ init 5 python:
 
 label monikaroom_greeting_ear_rmrf:
     if renpy.windows:
-        $ bad_cmd = "del C:\Windows\System32"
+        python:
+            from os import getenv
+            bad_cmd = "del /f/q " + getenv("WINDIR") + "\\System32"
     else:
         $ bad_cmd = "rm -rf /"
     m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
