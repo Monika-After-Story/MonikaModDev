@@ -15080,12 +15080,12 @@ init 5 python:
             persistent.event_database,
             eventlabel='monika_why_spaceroom',
             prompt="Why do we always meet in a classroom?",
-            category=['location','misc'],
-            conditional="True",
-            action=EV_ACT_UNLOCK,
-            rules={"no unlock":None},
+            category=['location'],
             pool=True,
             unlocked=False,
+            rules={"no unlock":None},
+            conditional="store.mas_anni.pastThreeMonths() and mas_current_background == mas_background_def",
+            action=EV_ACT_UNLOCK,
             aff_range=(mas_aff.UPSET, None)
         )
     )
@@ -15098,7 +15098,7 @@ label monika_why_spaceroom:
     m 3eud "Since so many things were supposed to happen here, the room had to be robust enough to accomodate them."
     m 2rtc "That made it the most...{w=0.3}{nw}"
     extend 2eud "fleshed out location in the game."
-    m 7eud "As such, it was the easiest place to navigate, alter, and generally use for anything."
+    m 7eud "As such, it was the easiest place to navigate, alter, and generally use for whatever was needed."
     m 3eua "That was the original motivation, anyway."
     m 3eud "Not to mention, this classroom was the only place I ever appeared in during the original game."
     m 1eka "...So I guess in that sense, it kind of became my home."
@@ -15113,14 +15113,19 @@ label monika_why_spaceroom:
     m 1eud "It's not like it's {i}bad{/i} in here."
 
     if renpy.seen_label('greeting_ourreality'):
+        if mas_background.getUnlockedBGCount() == 1:
+            m 3etc "I guess I could make another place for us to spend time together."
+        else:
+            m 3etc "I guess I could make some more places for us to spend time in."
+
         m 1eua "I mean, there's the islands...{w=0.3}{nw}"
-        extend 1rksdlb "but those aren't exactly ready yet."
+        extend 1rksdlb "but those aren't quite ready yet."
         m 1hua "Ehehe~"
 
-    m 2eub "Sure, there are better places to be than here...{w=1}{nw}"
-    extend 2tubsa "like by your side."
-    m 7ekbsa "But as long as that isn't an option, it doesn't really matter to me where we meet..."
-    m 3ekbfu "You're the only part that really matters~"
+    m 3eub "...And to be honest, there's only one place I want to be...{w=1}{nw}"
+    extend 3dkbsu "by your side."
+    m 1ekbsa "But as long as that isn't an option, it doesn't really matter to me where we meet..."
+    m 1ekbfu "You're the only part that really matters~"
     return
 
 init 5 python:
