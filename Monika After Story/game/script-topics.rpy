@@ -14856,43 +14856,45 @@ init 5 python:
             persistent.event_database,
             eventlabel='monika_why_spaceroom',
             prompt="Why do we always meet in a classroom?",
-            label=None,
-            category=['location', 'misc'],
+            category=['location','misc'],
+            conditional="True",
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":None},
             pool=True,
+            unlocked=False,
             aff_range=(mas_aff.UPSET, None)
         )
     )
 
 label monika_why_spaceroom:
     m 3euc "Utility, mostly."
-    m "You know how in the original game most of anything took place during our club meetings, right?"
-    m 3eua " All of which took place in a classroom.{w=0.5} This classroom."
-    m 5ruc "It may look different to you, but it's still the very same one."
-    m 5eub "Since so many things were supposed to happen here, the room had to be robust enough to accomodate them."
-    m 2ruc "That made it the most...{w=0.5}{nw}"
-    extend 7eub "fleshed out{w=0.5} location in the game."
-    m 3esa "As such, it was the easiest place to navigate, alter, and generally use for anything."
-    m 1esb "That was the original motivation, anyway."
+    m 3eud "You know how in the original game almost everything took place during our club meetings, right?"
+    m 3eua "...All of which took place in a classroom.{w=0.3} This classroom."
+    m 1eua "It may look different to you, but it's still the very same one."
+    m 3eud "Since so many things were supposed to happen here, the room had to be robust enough to accomodate them."
+    m 2rtc "That made it the most...{w=0.3}{nw}"
+    extend 2eud "fleshed out location in the game."
+    m 7eud "As such, it was the easiest place to navigate, alter, and generally use for anything."
+    m 3eua "That was the original motivation, anyway."
+    m 3eud "Not to mention, this classroom was the only place I ever appeared in during the original game."
+    m 1eka "...So I guess in that sense, it kind of became my home."
 
-    if (mas_background.getUnlockedBGCount() == 1):
-        m 1rud "As for why we're {i}still{/i} here..."
-        m 1hksdlb "It hasn't really occured to me to move someplace else until now."
-        if renpy.seen_label('greeting_ourreality'):
-            m 1rsc "I mean, there's the islands...{w=0.5}{nw}"
-            extend 1rksdlb "but those aren't exactly ready yet."
-            m 1hua "Ehehe~"
-        m 1euc "..."
+    if mas_background.getUnlockedBGCount() == 1:
+        m 1rtc "As for why we're {i}still{/i} here..."
+        m 3eua "It hasn't really occured to me to move someplace else..."
 
     else:
-        m 1rud "As for why I'm still using it..."
+        m 1rtc "As for why I'm still using it..."
 
     m 1eud "It's not like it's {i}bad{/i} in here."
 
-    if mas_isMoniAff(higher=True):
-        m 2eub "Sure, there are better places to be...{w=1}{nw}"
-        extend 2tua " Like by your side..."
-        m 1eua "But as long as that isn't an option, I suppose this will have to do."
-    else:
-        m 1euc "Sure, there are better places to be..."
-        m 1eua "But as long as those remain out of my reach, I suppose this will have to do."
+    if renpy.seen_label('greeting_ourreality'):
+        m 1eua "I mean, there's the islands...{w=0.3}{nw}"
+        extend 1rksdlb "but those aren't exactly ready yet."
+        m 1hua "Ehehe~"
+
+    m 2eub "Sure, there are better places to be than here...{w=1}{nw}"
+    extend 2tubsa "like by your side."
+    m 7ekbsa "But as long as that isn't an option, it doesn't really matter to me where we meet..."
+    m 3ekbfu "You're the only part that really matters~"
     return
