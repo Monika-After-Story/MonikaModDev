@@ -15198,3 +15198,28 @@ label monika_being_herself:
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_eatingmeat",category=['life'],prompt="Would you ever eat meat?",conditional="seen_event('monika_veggies')",pool=True))
+
+label monika_eatingmeat:
+    m 1rksdlb "Well, that's kind of a complicated question."
+    m 3esc "If you're asking if I would do so for {i}survival,{/i} I wouldn't hesitate."
+    m 3rud "It's not that eating meat is distressing for me or anything."
+    m 3eud "I told you before, I'm vegetarian because of the impact of the mass-production of meat on the environment. {w=0.2}That also includes fish farming--so I'm not a pescatarian."
+    m 2eud "That said, I don't think I'd consider myself vegan. {w=0.3}{nw}"
+    extend 2lud "Sure, the consumption of animal products does contribute to environmental damage..."
+    m 2ekc "But a lot of vegan alternatives involve importing perishable products across great distances, and mass farming in conditions that are both cruel for workers and a strain on the local ecosystem."
+    m 2esc "Take avocados, for example. Many of their farms take up a massive amount of water resources--to the point where some companies have resorted to illegally extracting too much water from rivers, leaving little for drinking."
+    m 1esc "At that point, which is the lesser of two evils becomes a more complicated question. And I still want to have a varied and balanced diet."
+    m 1eka "So I'm not against eating animal products like milk and eggs, but I think it's important to buy food locally when it's possible."
+    m 3eub "Farmer's markets are great places to buy food--even meat--that's produced with less of an environmental impact."
+    m 3hksdlb "But that can get expensive, dependent on location, and leaves you with fewer options. So I'm okay with buying from a plain old store if need be."
+    m 1euc "As for meat that comes from local hunting and fishing..."
+    m 1eud "I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
+    m 4rksdlb "That said...I don't know that I'd {i}prefer{/i} to eat meat, given the option."
+    m 4eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
+    m 4ekb "I don't completely hate the taste of meat, but I don't think I'd want it to be a major part of my meal."
+    m 2hubsb "But if you prepared something like that, I could try a little bit as a side dish!"
+    m 2eubsb "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
+    return
