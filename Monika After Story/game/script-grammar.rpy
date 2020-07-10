@@ -111,7 +111,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(1)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -143,7 +143,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(2)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -186,7 +186,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(3)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -221,7 +221,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(4)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -252,7 +252,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(5)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -282,7 +282,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(6)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -313,7 +313,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(7)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -347,7 +347,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(8)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -387,7 +387,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_gtod.has_day_past_tip(9)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 

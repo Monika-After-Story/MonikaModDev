@@ -298,7 +298,7 @@ init 5 python:
             pool=True,
             unlocked=True,
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED,None)
         )
     )

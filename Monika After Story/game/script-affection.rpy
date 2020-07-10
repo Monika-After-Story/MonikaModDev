@@ -1919,7 +1919,7 @@ init 5 python:
             random=False,
             pool=True,
             unlocked=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         restartBlacklist=True

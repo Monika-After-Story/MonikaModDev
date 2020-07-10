@@ -469,7 +469,7 @@ init python:
 
 #START: UTILITY TOPICS (bookmarks/derand, show/hide unseen)
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no_unlock":None}))
 
 label mas_topic_derandom:
     #NOTE: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
@@ -501,7 +501,7 @@ init 5 python:
             prompt="I'm okay with talking about...",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -703,7 +703,7 @@ init 5 python:
             eventlabel="mas_hide_unseen",
             prompt="I don't want to see this menu anymore.",
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -727,7 +727,7 @@ init 5 python:
             prompt="I would like to see 'Unseen' again",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -2183,7 +2183,7 @@ init 5 python:
             prompt="Can I hold you?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None},
+            rules={"no_unlock":None},
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True
@@ -3741,7 +3741,7 @@ label monika_ilym_fight_loop:
 
 default persistent._mas_last_monika_ily = None
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no unlock": None}))
+    addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no_unlock": None}))
 
 label monika_love_too:
     window hide
@@ -7990,7 +7990,7 @@ init 5 python:
             prompt="I'm breaking up with you",
             unlocked=True,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -8309,7 +8309,7 @@ init 5 python:
             prompt="I quit smoking!",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -10795,7 +10795,7 @@ init 5 python:
             prompt="Can I hear your graduation speech now?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -11428,7 +11428,7 @@ init 5 python:
             prompt="What's your favorite car?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -12217,7 +12217,7 @@ init 5 python:
             unlocked=False,
 
             # this will be unlockable via the action
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
 
             # we'll pool this event after a month of the relationship
             conditional=(
@@ -12693,7 +12693,7 @@ init 5 python:
             conditional="persistent._mas_pm_added_custom_bgm",
             action=EV_ACT_UNLOCK,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -12728,7 +12728,7 @@ init 5 python:
             conditional="persistent._mas_pm_added_custom_bgm",
             action=EV_ACT_UNLOCK,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -13126,7 +13126,7 @@ init 5 python:
             prompt="Have you ever had a snowball fight?",
             pool=True,
             unlocked=mas_isWinter(),
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 

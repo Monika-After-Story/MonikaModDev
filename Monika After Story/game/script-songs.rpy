@@ -218,7 +218,7 @@ init 5 python:
             category=["music"],
             pool=True,
             aff_range=(mas_aff.NORMAL,None),
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -301,7 +301,7 @@ init 5 python:
             pool=True,
             unlocked=False,
             aff_range=(mas_aff.NORMAL, None),
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -343,7 +343,7 @@ init 5 python:
             pool=True,
             unlocked=False,
             aff_range=(mas_aff.NORMAL, None),
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -1446,7 +1446,7 @@ init 5 python:
             prompt="Can you play 'Your Reality' for me?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
+            rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
         )
     )
 
@@ -1552,7 +1552,7 @@ init 5 python:
             prompt="Can you play 'Our Reality' for me?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
+            rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
         )
     )
 

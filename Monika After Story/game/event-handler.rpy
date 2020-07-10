@@ -2064,7 +2064,7 @@ init python:
             for ev in evhand.event_database.itervalues()
             if (
                 Event._filterEvent(ev, unlocked=False, pool=True)
-                and "no unlock" not in ev.rules
+                and "no_unlock" not in ev.rules
             )
         ]
         u_count = count
@@ -2583,7 +2583,7 @@ label prompts_categories(pool=True):
 
 # sets up the bookmarks menu
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no_unlock":None}))
     # NOTE: do not use this as an ev.
 
 label mas_bookmarks:

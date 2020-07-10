@@ -78,7 +78,7 @@ init 5 python:
             prompt="Could you call me by different pronouns?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         markSeen=True
     )
@@ -634,7 +634,7 @@ init 5 python:
             prompt="Can you call me by a different name?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         markSeen=True
     )

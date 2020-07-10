@@ -376,7 +376,7 @@ python early:
             flt B - pt 1, 3     - fb: A
             flt C - pt 2        - fb: B
 
-            flt B is a fallback for flt D, but flt D is NOT defined in this 
+            flt B is a fallback for flt D, but flt D is NOT defined in this
             MASFilterWeatherDisp.
 
             This is what would happen for combinations of filter, precip_type,
@@ -397,12 +397,12 @@ python early:
 
             Current flt: B - Current pt: 2 - use_fb: False
             This is the same case as above except we are NOT using fallback
-            mode. In this case, the image at flt B, pt 1 is selected since it 
+            mode. In this case, the image at flt B, pt 1 is selected since it
             is the default precip type.
 
             Current flt: C - Current pt: 3 - use_fb: True
             In this case, flt C does not have a pt of 3. Since we are using
-            fallback mode and flt B is a fallback of C, the image at flt B, 
+            fallback mode and flt B is a fallback of C, the image at flt B,
             pt 3 is selected.
 
             Current flt: C - Current pt: 3 - use_fb: False
@@ -416,7 +416,7 @@ python early:
             the image at flt B, pt 3 is selected.
 
             Current flt: D - Current pt: 3 - use_fb: False
-            In thise, flt D is not defined. Even though we are NOT using 
+            In thise, flt D is not defined. Even though we are NOT using
             fallback mode, since flt B is a fallback of flt D, the image at
             flt B, pt 3 is selected.
 
@@ -443,7 +443,7 @@ python early:
                 for a precip_type if a selected filter does not have a value
                 for a precip_type. See above for an example.
                 False will use standard value getting.
-            **filter_pairs - fitler pairs to pass directly to 
+            **filter_pairs - fitler pairs to pass directly to
                 MASFilterWeatherMap
 
         RETURNS: DynamicDisplayable that respects Filters and weather.
@@ -478,7 +478,7 @@ python early:
 
 
 init -2 python:
-    
+
     def mas_fwm_select(st, at, mfwm):
         """
         Selects an image based on current filter and weather.
@@ -662,7 +662,7 @@ init 1 python in mas_sprites:
 
         IN:
             flt - filter to find next filter for
-            
+
         OUT:
             memo - dict to add the next filter as a key if not None
             ordered memo - list to append the next filter if not None
@@ -774,7 +774,7 @@ init -99 python in mas_sprites:
             imx - image matrix to use as filter
             base - filter to use as a backup for this filter. Any images
                 that are unable to be shown for flt_enum will be revert to
-                the base filter. 
+                the base filter.
                 This should also be a FLT_ENUM.
                 This is checked to make sure it is a valid, preexisting enum,
                 so if chaining multiple bases, add them in order.
@@ -2929,7 +2929,7 @@ init -10 python:
 
     class MASFilterMapSimple(object):
         """
-        MASFilterMap for simple implementations, aka filter - value pairs 
+        MASFilterMap for simple implementations, aka filter - value pairs
         without type checks.
 
         Classes that need MASFilterMap should just extend this one as a base.
@@ -3010,7 +3010,7 @@ init -10 python:
 
             IN:
                 flt - filter to lookup
-                defval - default value to return if no non-None value is 
+                defval - default value to return if no non-None value is
                     found after exhausting all fallbacks.
                     (Default: None)
 

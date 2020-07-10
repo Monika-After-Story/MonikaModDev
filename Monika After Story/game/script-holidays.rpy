@@ -3997,7 +3997,7 @@ init 5 python:
             end_date=mas_d25c_end,
             action=EV_ACT_UNLOCK,
             pool=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             years=[]
         ),
         skipCalendar=True
@@ -4882,7 +4882,7 @@ init 5 python:
             unlocked=False,
             prompt="Let's go out for my birthday!",
             pool=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL,None),
         ),
         code="BYE"
@@ -5553,7 +5553,7 @@ init 5 python:
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
             years=[],
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         skipCalendar=True
     )
@@ -6311,7 +6311,7 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_bday",
             prompt="Happy birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             start_date=mas_monika_birthday,
             end_date=mas_monika_birthday + datetime.timedelta(days=1),
             years=[]
@@ -6368,7 +6368,7 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_belated_bday",
             prompt="Happy belated birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             years=[]
         ),
         code="CMP",
