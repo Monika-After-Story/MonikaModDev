@@ -2864,17 +2864,7 @@ label greeting_back_from_school:
 
         label .sick:
             m 2dkd "Being sick at school can be awful. It makes it so much harder to get anything done or pay attention to the lessons."
-            m 7ekc "I should ask though..."
-            m 1ekc "Are you still feeling sick?{nw}"
-            menu:
-                m "Are you still feeling sick?{fast}"
-
-                "Yes.":
-                    jump mas_mood_sick
-
-                "No.":
-                    m 1eua "I'm glad to hear you're feeling better, [player]."
-                    m 1eka "But if you start feeling sick again, be sure to get some rest, alright?"
+            jump greeting_back_from_work_school_still_sick_ask
             return
 
     elif mas_isMoniUpset():
@@ -3058,18 +3048,7 @@ label greeting_back_from_work:
 
         label .sick:
             m 2dkd "Being sick at work can be awful. It makes it so much harder to get anything done."
-            m 7ekc "I should ask though..."
-            m 1ekc "Are you still feeling sick?{nw}"
-            menu:
-                m "Are you still feeling sick?{fast}"
-
-                "Yes.":
-                    jump mas_mood_sick
-
-                "No.":
-                    m 1eua "I'm glad to hear you're feeling better, [player]."
-                    m 1eka "But if you start feeling sick again, be sure to get some rest, alright?"
-
+            jump greeting_back_from_work_school_still_sick_ask
 
     elif mas_isMoniUpset():
         m 2esc "You're back from work I see, [player]..."
@@ -3105,7 +3084,22 @@ label greeting_back_from_work:
 
     else:
         m 6ckc "..."
+    return
 
+label greeting_back_from_work_school_still_sick_ask:
+    m 7ekc "I should ask though..."
+    m 1ekc "Are you still feeling sick?{nw}"
+    menu:
+        m "Are you still feeling sick?{fast}"
+
+        "Yes.":
+            m 1ekc "I'm sorry to hear that, [player]..."
+            m 3eka "Maybe you should take a nap.{w=0.2} I'm sure you'll feel better once you've gotten some rest."
+            jump mas_mood_sick.ask_will_rest
+
+        "No.":
+            m 1eua "I'm glad to hear you're feeling better, [player]."
+            m 1eka "But if you start feeling sick again, be sure to get some rest, alright?"
     return
 
 init 5 python:
