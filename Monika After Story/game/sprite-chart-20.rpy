@@ -774,6 +774,20 @@ image monika 1fkbsu:
         0.06
         repeat
 
+image monika 1fubsa:
+    block:
+        "monika 1fubsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsa_static"
+        0.06
+        repeat
+
 image monika 1kua:
     block:
         "monika 1kua_static"
@@ -6963,20 +6977,6 @@ image monika 3wubso:
             choice:
                 7
         "monika 3dubso_static"
-        0.06
-        repeat
-
-image monika 3wubsw:
-    block:
-        "monika 3wubsw_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubsw_static"
         0.06
         repeat
 
