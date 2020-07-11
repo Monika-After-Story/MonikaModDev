@@ -2432,6 +2432,25 @@ init -20 python in mas_background:
 
         return unlocked_count
 
+    def hasXUnlockedBGs(min_amt_unlocked):
+        """
+        Checks if we have at least min_amt_unlocked bgs unlocked
+
+        IN:
+            min_amt_unlocked - minimum number of BGs which should be unlocked to return true
+        OUT:
+            True if we have at least min_amt_unlocked BGs unlocked, False otherwise
+        """
+        unlocked_count = 0
+        for mbg_obj in BACKGROUND_MAP.itervalues():
+            unlocked_count += int(mbg_obj.unlocked)
+
+            #Now check if we've surpassed the minimum
+            if unlocked_count >= min_amt_unlocked:
+                return True
+
+        return False
+
 #START: BG change functions
 init 800 python:
     def mas_setBackground(_background):

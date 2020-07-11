@@ -15103,7 +15103,7 @@ label monika_why_spaceroom:
     m 3eud "Not to mention, this classroom was the only place I ever appeared in during the original game."
     m 1eka "...So I guess in that sense, it kind of became my home."
 
-    $ has_one_bg_unlocked = mas_background.getUnlockedBGCount() == 1
+    $ has_one_bg_unlocked = mas_background.hasXUnlockedBGs(1)
     if has_one_bg_unlocked:
         m 1rtc "As for why we're {i}still{/i} here..."
         m 3eua "It hasn't really occured to me to move someplace else..."
