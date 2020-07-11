@@ -1440,9 +1440,9 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_nameerror")
 
 label monikaroom_greeting_ear_nameerror:
-    m "Wait, what? A NameError? How could this..."
-    m "...I thought I defined this one just a moment ago."
-    m "It should be... E-eh? Oh gosh, did I forget about it?"
+    m "Wait, a NameError? How could this..."
+    m "...I thought I defined that variable just a moment ago."
+    m "It should be right here...did I forget about it?"
     m "There! Now focus, Monika, you got this."
 
     if mas_isMoniUpset():
