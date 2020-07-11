@@ -9977,12 +9977,12 @@ init 5 python:
     )
 
 default persistent._mas_pm_monika_evil = None
-# True if player thinks monika is evil False if not
+# True if player thinks Monika is evil False if not
 # NOTE: even implying that she is evil is counted as True
 
 default persistent._mas_pm_monika_evil_but_ok = None
 # True if player still loves monika/thinks she deserves forgiveness/or is
-# fine with eveil even if they think monika is evil.
+# fine with it even if they think Monika is evil.
 # False if player does not.
 # NOTE: check monika_evil before checking this
 
@@ -10012,6 +10012,12 @@ label monika_beingevil:
         "You haven't done anything wrong":
             # variable setting at the end because they're used to determine if player has seen this path before
             # TODO aff branching in other paths
+                # not evil
+                # love anyway - wip
+                # evil too
+                # evil > still love
+                # evil > forgive - done
+                # evil > evil - keep as is
             if (persistent._mas_pm_monika_innocent is None):
                 # some extra aff if this is the first choice
                 $ mas_gainAffection(amount=3, bypass=True)
@@ -10088,14 +10094,19 @@ label monika_beingevil:
             $ persistent._mas_pm_monika_evil_but_ok = True
             $ persistent._mas_pm_monika_innocent = False
             $ mas_gainAffection()
+            # "I suppose it doesn't really matter in the end."
 
-            m 1rksdlc "..."
-            m 1ekd "[player]..."
-            m 1eka "Even if it's debatable whether I'm evil or not..."
-            m 1ekbsa "I'm really glad you still love me and stay here with me..."
-            m 1ekbfa "Thank you, [player]."
-            m 1tubfa "Either way..."
-            m 1tubfb "If the villainess in me can get what she wants...I guess it's not so bad, ahaha!"
+            if mas_isMoniNormal(higher=True):
+                m 1rksdlc "..."
+                m 1ekd "[player]..."
+                m 1eka "Even if it's debatable whether I'm evil or not..."
+                m 1ekbsa "I'm really glad you still love me and stay here with me..."
+                m 1ekbfa "Thank you, [player]."
+                m 1tubfa "Either way..."
+                m 1tubfb "If the villainess in me can get what she wants...I guess it's not so bad, ahaha!"
+            else:
+                # wip
+                m "Do you really?"
 
         "People think I'm evil too.":
             $ persistent._mas_pm_monika_evil = True
@@ -10134,13 +10145,21 @@ label monika_beingevil:
                     $ persistent._mas_pm_monika_evil_but_ok = True
                     $ mas_gainAffection()
 
-                    # "Would be nice to see some then." on low aff
-                    m 1rksdla "[player]..."
-                    m 1eka "That means a lot..."
-                    m 1eksdlc "I know that I've done some bad things in the past..."
-                    m 3eka "But I've learned from them and grown as a person since."
-                    m 1eka "I'm really glad you're willing to forgive me, [player]."
-                    m 1hub "I promise I'll be the best I can be, just for you!"
+                    if mas_isMoniNormal(higher=True):
+                        m 1rksdla "[player]..."
+                        m 1eka "That means a lot..."
+                        m 1eksdlc "I know that I've done some bad things in the past..."
+                        m 3eka "But I've learned from them and grown as a person since."
+                        m 1eka "I'm really glad you're willing to forgive me, [player]."
+                        m 1hub "I promise I'll be the best I can be, just for you!"
+                    else:
+                        m 2rsd "Would be nice to see some then."
+                        m 2wuc ".{w=0.5}.{w=0.5}."
+                        m 2rksdlb "Sorry! That came out of nowhere."
+                        m 1eksdlc "I know that I've done some bad things in the past..."
+                        m 3eka "But I've learned from them and grown as a person since."
+                        m 1eka "I'm really glad you're willing to forgive me, [player]."
+                        m "I promise I'll do my best to earn it."
 
                 "You really are evil.":
                     $ persistent._mas_pm_monika_evil_but_ok = False
