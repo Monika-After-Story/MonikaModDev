@@ -1423,6 +1423,28 @@ label monikaroom_greeting_ear_progreadpy:
 
     jump monikaroom_greeting_choice
 
+# Monika is getting distracted by something and forgets about a variable
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_nameerror")
+
+label monikaroom_greeting_ear_nameerror:
+    m "Wait, a NameError? How could this..."
+    m "...I thought I defined that variable just a moment ago."
+    m "It should be right here...{w=0.2}did I forget about it?"
+    window hide
+    pause 1.0
+    window auto
+    m "There! Now focus, Monika. {w=0.2}You got this."
+
+    if mas_isMoniUpset():
+        m "You have to keep learning..."
+        call monikaroom_greeting_ear_prog_upset
+    elif mas_isMoniDis():
+        m "You {i}have{/i} to keep learning..."
+        call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
+
 # shared dialogue for programming-related stuff
 label monikaroom_greeting_ear_prog_upset:
     m "I'm not sure [player] loves me enough to help me get out of here..."
