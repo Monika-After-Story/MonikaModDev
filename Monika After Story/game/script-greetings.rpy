@@ -1442,8 +1442,11 @@ init 5 python:
 label monikaroom_greeting_ear_nameerror:
     m "Wait, a NameError? How could this..."
     m "...I thought I defined that variable just a moment ago."
-    m "It should be right here...did I forget about it?"
-    m "There! Now focus, Monika, you got this."
+    m "It should be right here...{w=0.2}did I forget about it?"
+    window hide
+    pause 1.0
+    window auto
+    m "There! Now focus, Monika. {w=0.2}You got this."
 
     if mas_isMoniUpset():
         m "You have to keep learning..."
