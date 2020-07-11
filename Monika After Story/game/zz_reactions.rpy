@@ -1770,9 +1770,9 @@ label mas_reaction_cupcake:
     m 3hub "Wow, thanks [player]!"
     m 3euc "Come to think of it, I've been meaning to make some cupcakes myself."
     m 1eua "I wanted to learn how to bake good pastries like Natsuki did."
-    m 1rksdlb "Buuut I've yet to make a kitchen to use!"
+    m 1rksdlb "Buuut I still haven't made a kitchen to use!"
     m 3eub "Maybe in the future once I get better at programming, I'll be able to make one here."
-    m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
+    m 3hua "Would be nice to have another hobby other than writing, ehehe~"
     $ mas_receivedGift("mas_reaction_cupcake")
     $ gift_ev = mas_getEV("mas_reaction_cupcake")
     $ store.mas_filereacts.delete_file(gift_ev.category)

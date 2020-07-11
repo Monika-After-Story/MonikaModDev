@@ -5372,8 +5372,8 @@ label monika_cupcake:
     m 1esa "How about you, [player]?"
     m 1eua "Do you know how to bake?"
     m 1hua "I'm sure your cupcakes would taste just as good."
-    m 1lsbsa "Maybe someday I'll get to try them but for now..."
-    m 1hubfb "I'll just settle for the sweetness of your love~"
+    m 1rua "Maybe someday I'll get to try them but for now..."
+    m 1hubsb "I'll just settle for the sweetness of your love~"
     return
 
 # You're not a hater right?

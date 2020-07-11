@@ -1570,6 +1570,20 @@ image monika 1rtc:
         0.06
         repeat
 
+image monika 1rua:
+    block:
+        "monika 1rua_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dua_static"
+        0.06
+        repeat
+
 image monika 1ruc:
     block:
         "monika 1ruc_static"
@@ -6963,20 +6977,6 @@ image monika 3wubso:
             choice:
                 7
         "monika 3dubso_static"
-        0.06
-        repeat
-
-image monika 3wubsw:
-    block:
-        "monika 3wubsw_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubsw_static"
         0.06
         repeat
 
