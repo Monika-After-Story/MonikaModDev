@@ -1575,7 +1575,7 @@ init 5 python:
         code="BYE"
     )
 
-label bye_going_store
+label bye_going_store:
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh, going to do some shopping [player]?"
         m 1lua "I'd love if we could go to the mall together sometimes."
