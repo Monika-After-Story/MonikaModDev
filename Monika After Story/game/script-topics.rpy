@@ -15093,7 +15093,7 @@ init 5 python:
             category=['location'],
             pool=True,
             unlocked=False,
-            rules={"no unlock":None},
+            rules={"no_unlock":None},
             conditional="store.mas_anni.pastThreeMonths() and mas_current_background == mas_background_def",
             action=EV_ACT_UNLOCK,
             aff_range=(mas_aff.UPSET, None)
