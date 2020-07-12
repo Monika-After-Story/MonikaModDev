@@ -53,6 +53,7 @@ init -1 python in mas_greetings:
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
+    TYPE_STORE = "store"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -3868,3 +3869,4 @@ label greeting_back_from_store:
         m 6ckc "..."
 
     return
+    
