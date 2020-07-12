@@ -2116,6 +2116,7 @@ label greeting_stillsickresting:
         m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
         m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
 
+    #TODO: Have this use the nap brb potentially. Expand this
     # setting greet type here even tho we aren't quitting so she remembers you're sick next load
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return
