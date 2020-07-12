@@ -2193,8 +2193,10 @@ label call_next_event:
             else:
                 $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
+        $ mas_globals.this_ev = ev
         call expression event_label from _call_expression
-        $ persistent.current_monikatopic=0
+        $ persistent.current_monikatopic = 0
+        $ mas_globals.this_ev = None
 
         #if this is a random topic, make sure it's unlocked for prompts
         $ ev = evhand.event_database.get(event_label, None)

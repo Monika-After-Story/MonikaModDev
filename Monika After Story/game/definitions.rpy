@@ -3465,10 +3465,12 @@ init -991 python in mas_utils:
     import platform
     import time
     import traceback
+    import sys
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
     from bisect import bisect
+    from contextlib import contextmanager
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
@@ -3638,6 +3640,23 @@ init -991 python in mas_utils:
         except Exception as e:
             writelog(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
+
+
+    @contextmanager
+    def stdout_as(outstream):
+        """
+        Context manager that can replace stdout temporarily. Use with the
+        with statement (python).
+
+        IN:
+            outstream - the stream to temporarily replace sys.stdout with
+        """
+        oldout = sys.stdout
+        sys.stdout = outstream
+        try:
+            yield
+        finally:
+            sys.stdout = oldout
 
 
     def writelog(msg):

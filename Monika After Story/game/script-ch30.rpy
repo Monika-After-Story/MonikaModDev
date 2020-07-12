@@ -77,6 +77,9 @@ init -1 python in mas_globals:
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
 
+    this_ev = None
+    # the current topic, but as event object. may be None.
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
