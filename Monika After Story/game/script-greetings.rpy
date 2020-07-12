@@ -3811,7 +3811,7 @@ label greeting_code_help_outro:
     $ mas_lockEVL("greeting_code_help", "GRE")
     return
 
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
