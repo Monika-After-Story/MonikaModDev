@@ -2136,6 +2136,20 @@ image monika 5rubfu:
         0.06
         repeat
 
+image monika 5ruc:
+    block:
+        "monika 5ruc_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 5duc_static"
+        0.06
+        repeat
+
 image monika 5rusdrb:
     block:
         "monika 5rusdrb_static"

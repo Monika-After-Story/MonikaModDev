@@ -260,6 +260,9 @@ label mas_mood_sick:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
 
+    label .ask_will_rest:
+        pass
+
     $ persistent._mas_mood_sick = True
 
     m 2ekc "Will you do that for me?{nw}"

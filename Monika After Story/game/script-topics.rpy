@@ -15085,6 +15085,61 @@ label monika_fear:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_why_spaceroom',
+            prompt="Why do we always meet in a classroom?",
+            category=['location'],
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None},
+            conditional="store.mas_anni.pastThreeMonths() and mas_current_background == mas_background_def",
+            action=EV_ACT_UNLOCK,
+            aff_range=(mas_aff.UPSET, None)
+        )
+    )
+
+label monika_why_spaceroom:
+    m 3euc "Utility, mostly."
+    m 3eud "You know how in the original game almost everything took place during our club meetings, right?"
+    m 3eua "...All of which took place in a classroom.{w=0.3} This classroom."
+    m 1eua "It may look different to you, but it's still the very same one."
+    m 3eud "Since so many things were supposed to happen here, the room had to be robust enough to accomodate them."
+    m 2rtc "That made it the most...{w=0.3}{nw}"
+    extend 2eud "fleshed out location in the game."
+    m 7eud "As such, it was the easiest place to navigate, alter, and generally use for whatever was needed."
+    m 3eua "That was the original motivation, anyway."
+    m 3eud "Not to mention, this classroom was the only place I ever appeared in during the original game."
+    m 1eka "...So I guess in that sense, it kind of became my home."
+
+    $ has_one_bg_unlocked = mas_background.hasXUnlockedBGs(1)
+    if has_one_bg_unlocked:
+        m 1rtc "As for why we're {i}still{/i} here..."
+        m 3eua "It hasn't really occured to me to move someplace else..."
+
+    else:
+        m 1rtc "As for why I'm still using it..."
+
+    m 1eud "It's not like it's {i}bad{/i} in here."
+
+    if renpy.seen_label('greeting_ourreality'):
+        if has_one_bg_unlocked:
+            m 3etc "I guess I could make another place for us to spend time together."
+        else:
+            m 3etc "I guess I could make some more places for us to spend time in."
+
+        m 1eua "I mean, there's the islands...{w=0.3}{nw}"
+        extend 1rksdlb "but those aren't quite ready yet."
+        m 1hua "Ehehe~"
+
+    m 3eub "...And to be honest, there's only one place I want to be...{w=1}{nw}"
+    extend 3dkbsu "by your side."
+    m 1ekbsa "But as long as that isn't an option, it doesn't really matter to me where we meet..."
+    m 1ekbfu "You're the only part that really matters~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_naps",category=['life'],prompt="Naps",random=True))
 
 label monika_naps:

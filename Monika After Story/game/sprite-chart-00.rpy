@@ -1764,6 +1764,17 @@ image monika 1fkbsu_static = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1fubsa_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="soft",
+    nose="def",
+    mouth="smile",
+    arms="steepling",
+    blush="shade"
+)
+
 image monika 1hfb_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,

@@ -2432,6 +2432,25 @@ init -20 python in mas_background:
 
         return unlocked_count
 
+    def hasXUnlockedBGs(min_amt_unlocked):
+        """
+        Checks if we have at least min_amt_unlocked bgs unlocked
+
+        IN:
+            min_amt_unlocked - minimum number of BGs which should be unlocked to return true
+        OUT:
+            True if we have at least min_amt_unlocked BGs unlocked, False otherwise
+        """
+        unlocked_count = 0
+        for mbg_obj in BACKGROUND_MAP.itervalues():
+            unlocked_count += int(mbg_obj.unlocked)
+
+            #Now check if we've surpassed the minimum
+            if unlocked_count >= min_amt_unlocked:
+                return True
+
+        return False
+
 #START: BG change functions
 init 800 python:
     def mas_setBackground(_background):
@@ -2511,7 +2530,6 @@ init 800 python:
 
 
     #Just set us to the normal room here
-    mas_current_background = None
     mas_setBackground(mas_background_def)
 
 
@@ -2597,7 +2615,7 @@ init -2 python in mas_background:
 
     def _def_background_entry(_old):
         """
-        Entry programming point for befault background
+        Entry programming point for default background
         """
         if store.seen_event("mas_monika_islands"):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
@@ -2615,9 +2633,14 @@ init -2 python in mas_background:
         #This catches the potential of a deleted background which does not support weather
         store.mas_unlockEVL("monika_change_weather", "EVE")
 
+        #TODO: update with new EV funcs once merged
+        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
+        if spaceroom_ev and spaceroom_ev.unlock_date:
+            spaceroom_ev.unlocked = True
+
     def _def_background_exit(_new):
         """
-        Exit programming point for befault background
+        Exit programming point for default background
         """
         store.mas_lockEVL("mas_monika_islands", "EVE")
 
@@ -2625,9 +2648,17 @@ init -2 python in mas_background:
         if _new.disable_progressive:
             store.mas_lockEVL("monika_change_weather", "EVE")
 
+        #TODO: update with new EV funcs once merged
+        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
+        if spaceroom_ev and spaceroom_ev.unlock_date:
+            spaceroom_ev.unlocked = False
+
+
 
 #START: bg defs
 init -1 python:
+    mas_current_background = None
+
     #Default spaceroom
     mas_background_def = MASFilterableBackground(
         # ID
