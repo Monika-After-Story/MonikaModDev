@@ -13,6 +13,9 @@
 default persistent.mas_late_farewell = False
 
 init -1 python in mas_farewells:
+    import datetime
+    import store
+
     #The label used for the "let me get ready" phase of the io generation
     #(Used by the iostart label)
     dockstat_iowait_label = None
@@ -36,6 +39,17 @@ init -1 python in mas_farewells:
     #The label used which contains the menu where Monika asks the player if they're still going to go
     #(Used in the generic rtg label if we failed to generate a file)
     dockstat_failed_io_still_going_ask_label = None
+
+    def resetDockstatFlowVars():
+        """
+        Resets all the dockstat flow vars back to the original states (None)
+        """
+        store.mas_farewells.dockstat_iowait_label = None
+        store.mas_farewells.dockstat_rtg_label = None
+        store.mas_farewells.dockstat_cancel_dlg_label = None
+        store.mas_farewells.dockstat_wait_menu_label = None
+        store.mas_farewells.dockstat_cancelled_still_going_ask_label = None
+        store.mas_farewells.dockstat_failed_io_still_going_ask_label = None
 
     def _filterFarewell(
             ev,

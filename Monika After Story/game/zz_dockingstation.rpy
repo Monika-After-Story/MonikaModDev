@@ -410,7 +410,7 @@ init -45 python:
                     mas_utils.writelog(msg)
                 else:
                     log.write(msg)
-                    
+
                 if package is not None:
                     package.close()
                 return None
@@ -659,7 +659,7 @@ init -45 python:
                     (Default: True)
                 bs - blocksize to use. By default, we use B64_READ_SIZE
                     (Default: None)
-                log - log to write messages to, if needed. 
+                log - log to write messages to, if needed.
                     If None, we use mas_log
                     (Default: None)
 
@@ -2554,13 +2554,7 @@ label mas_dockstat_generic_iowait:
     #If we returned True, that means we cancelled
     if _return:
         #We need to clear all the vars in case we go dockstat again
-        python:
-            mas_farewells.dockstat_iowait_label = None
-            mas_farewells.dockstat_rtg_label = None
-            mas_farewells.dockstat_cancel_dlg_label = None
-            mas_farewells.dockstat_wait_menu_label = None
-            mas_farewells.dockstat_cancelled_still_going_ask_label = None
-            mas_farewells.dockstat_failed_io_still_going_ask_label = None
+        $ mas_farewells.resetDockstatFlowVars()
 
         #And now, we return what the generic label would have returned, that is if it's a string.
         if isinstance(_return, unicode):
