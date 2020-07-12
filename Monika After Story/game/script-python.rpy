@@ -190,7 +190,7 @@ init 5 python:
 # PREREQS:
 #   interpreted language (tip 3)
 label monika_ptod_tip002:
-    $ last_seen_is_none = not mas_checkEVL("monika_ptod_tip002", EV_HAS_LAST_SEEN)
+    $ last_seen_is_none = mas_getEV_last_seen("monika_ptod_tip002") is None
     if last_seen_is_none:
         m 1eua "In most programming languages, data that can be changed or modified by the program has a {i}type{/i} associated with it."
         m 3eua "For example, if some data should be treated as a number, then it will have a numeric type. If some data should be treated as text, then it will have a string type."
@@ -302,7 +302,7 @@ label monika_ptod_tip003:
     call mas_wx_cmd("121 / 11", local_ctx)
     # NOTE: add more commands as the user goes thru the tips
 
-    if not mas_checkEVL("monika_ptod_tip003", EV_HAS_LAST_SEEN):
+    if mas_getEV_last_seen("monika_ptod_tip003") is None:
         m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
 
         m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
@@ -389,7 +389,7 @@ label monika_ptod_tip005:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ last_seen_is_none = not mas_checkEVL("monika_ptod_tip005", EV_HAS_LAST_SEEN)
+    $ last_seen_is_none = mas_getEV_last_seen("monika_ptod_tip005") is None
 
     if last_seen_is_none:
         m 1eua "Remember when I was describing different Python types and mentioned booleans?"
@@ -564,7 +564,7 @@ label monika_ptod_tip006:
     $ local_ctx = dict()
     $ num_store = "922"
     $ b_num_store = "323"
-    $ last_seen_is_none = not mas_checkEVL("monika_ptod_tip006", EV_HAS_LAST_SEEN)
+    $ last_seen_is_none = mas_getEV_last_seen("monika_ptod_tip006") is None
 
     if last_seen_is_none:
         m 1eub "Now that you know about types, I can teach you about variables."
@@ -645,7 +645,7 @@ label monika_ptod_tip006:
     hide screen mas_py_console_teaching
     show monika at t11
 
-    if last_seenis_none:
+    if last_seen_is_none:
         m 1eua "I think that's enough Python for today."
 
     m 1hua "Thanks for listening!"
@@ -709,7 +709,7 @@ label monika_ptod_tip008:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ last_seen_is_none = not mas_checkEVL("monika_ptod_tip008", EV_HAS_LAST_SEEN)
+    $ last_seen_is_none = mas_getEV_last_seen("monika_ptod_tip008") is None
 
     m 1eua "Remember when I showed you how to make variables and assign them values?"
     m 1dsa "Imagine if we dropped the notion of variables and focused on using the values directly in code."
@@ -749,7 +749,7 @@ label monika_ptod_tip008:
 
     # TODO: lists, dicts
 
-    if last_seenis_none:
+    if last_seen_is_none:
         m 1eua "There are more literals for other types, but I'll mention them when I talk about those types."
 
     m 1eua "Literals can be used in place of variables when writing code. For example:"
@@ -795,7 +795,7 @@ label monika_ptod_tip009:
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
 
-    if not mas_checkEVL("monika_ptod_tip009", EV_HAS_LAST_SEEN):
+    if mas_getEV_last_seen("monika_ptod_tip009") is None:
         m 1eua "When we talked about comparisons and booleans, we used integers as the basis for our comparisons."
         m 1dsa "But..."
         m 3eua "Did you know that every type has its own truth value associated with it?"

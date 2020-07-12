@@ -2066,7 +2066,7 @@ label monika_affection_nickname:
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
 
-                            if mas_checkEV("mas_apology_bad_nickname", lambda x: EV_SHOWN_COUNT_EQUAL_TO(x, 2)):
+                            if mas_getEV_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
 
                             show monika 1efc
@@ -2080,7 +2080,7 @@ label monika_affection_nickname:
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
 
-                            if mas_checkEV("mas_apology_bad_nickname", lambda x: EV_SHOWN_COUNT_EQUAL_TO(x, 2)):
+                            if mas_getEV_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."

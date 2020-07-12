@@ -564,11 +564,7 @@ label demo_minigame_pong:
         m "Would you like to play again?{fast}"
 
         "Yes.":
-            $ mas_setEVPropValues(
-                "mas_pong",
-                mas_getEVPropValue("mas_pong", "shown_count", 0) + 1
-            )
-
+            $ mas_assignModifyEVPropValue("mas_pong", "shown_count", "+=", 1)
             jump demo_minigame_pong
 
         "No.":

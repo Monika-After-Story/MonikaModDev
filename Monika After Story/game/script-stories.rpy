@@ -1530,7 +1530,7 @@ init 5 python:
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
 
-    if mas_checkEVL("mas_scary_story_flowered_lantern", EV_SHOWN_COUNT_IS_0):
+    if not mas_getEV_shown_count("mas_scary_story_flowered_lantern"):
         m 3eub "Before we start, I need to tell you that my next story is going to be a bit long."
         m 3eua "So, I'll split it in parts."
         m "Once I finish this part I'll ask you if you want to continue it or not."

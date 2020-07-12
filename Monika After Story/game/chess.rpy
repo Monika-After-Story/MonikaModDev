@@ -1545,11 +1545,7 @@ label mas_chess_playagain:
         m "Do you want to play again?{fast}"
 
         "Yes.":
-            $ mas_setEVPropValues(
-                "mas_chess",
-                shown_count=mas_getEVPropValue("mas_chess", "shown_count", 0) + 1
-            )
-
+            $ mas_assignModifyEVPropValue("mas_chess", "shown_count", "+=", 1)
             jump mas_chess_new_game_start
 
         "No.":

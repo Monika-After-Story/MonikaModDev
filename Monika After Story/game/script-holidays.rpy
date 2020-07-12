@@ -6689,10 +6689,7 @@ init 5 python:
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
     if mas_isFirstSeshPast(mas_monika_birthday):
-        $ mas_setEVPropValues(
-            "mas_bday_postbday_notimespent",
-            shown_count=mas_getEVPropValue("mas_bday_postbday_notimespent", "shown_count", 1) - 1
-        )
+        $ mas_assignModifyEVPropValue("mas_bday_postbday_notimespent", "shown_count", "-=", 1)
         return
 
 

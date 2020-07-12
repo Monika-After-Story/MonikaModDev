@@ -377,28 +377,6 @@ init 4 python:
 
 
 init 6 python:
-    ##EV CHECK CONSTANTS
-    #Checks if ev is pooled
-    EV_IS_POOL = lambda ev: ev.pool
-    #Checks if ev is random
-    EV_IS_RANDOM = lambda ev: ev.random
-    #Checks if ev is unlocked
-    EV_IS_UNLOCKED = lambda ev: ev.unlocked
-    #Checks if ev is seen
-    EV_IS_SEEN = lambda ev: seen_event(ev.eventlabel)
-    #Checks if ev has a last_seen
-    EV_HAS_LAST_SEEN = lambda ev: ev.last_seen is not None
-    #Checks if ev's shown count is greater than the provided value
-    EV_SHOWN_COUNT_GREATER_THAN = lambda ev, sc=0: ev.shown_count > sc
-    #Checks if ev's shown count is less than the provided value
-    EV_SHOWN_COUNT_LESS_THAN = lambda ev, sc=0: ev.shown_count < sc
-    #Checks if ev's shown count is equal to the provided value
-    EV_SHOWN_COUNT_EQUAL_TO = lambda ev, sc=0: ev.shown_count == sc
-    #Checks if ev's shown count is 0
-    EV_SHOWN_COUNT_IS_0 = lambda ev: ev.shown_count == 0
-    #Checks if provided value is in ev rules
-    EV_HAS_IN_RULES = lambda ev, rule_key="": rule_key in ev.rules
-
     # here we combine the data from teh databases so we can have easy lookups.
 
     # mainly to create centralized database for calendar lookup
@@ -459,9 +437,6 @@ init 6 python:
         """
         ev = mas_getEV(ev_label)
 
-        if ev is None:
-            return default
-
         return getattr(ev, prop, default)
 
     def mas_setEVPropValues(ev_label, **kwargs):
@@ -471,6 +446,10 @@ init 6 python:
         IN:
             ev_label - ev_label representing the event to set properties for
             kwargs - propname=new_value. Represents the value to set to the property
+
+        OUT:
+            True if the property/ies was/were set
+            False if not (ev does not exist)
         """
         ev = mas_getEV(ev_label)
 
@@ -479,6 +458,121 @@ init 6 python:
 
         for attr, new_value in kwargs.iteritems():
             setattr(ev, attr, new_value)
+
+        return True
+
+    def mas_isPoolEV(ev_label):
+        """
+        Checks if the event for the given event label is pool
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is pooled
+
+        OUT:
+            True if the ev is pooled, False if not, or the ev doesn't exist
+        """
+        return mas_getEVPropValue(ev_label, "pool", False)
+
+    def mas_isRandomEV(ev_label):
+        """
+        Checks if the event for the given event label is random
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is random
+
+        OUT:
+            True if the ev is random, False if not, or the ev doesn't exist
+        """
+        return mas_getEVPropValue(ev_label, "random", False)
+
+    def mas_isUnlockedEV(ev_label):
+        """
+        Checks if the event for the given event label is unlocked
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is unlocked
+
+        OUT:
+            True if the ev is unlocked, False if not, or the ev doesn't exist
+        """
+        return mas_getEVPropValue(ev_label, "unlocked", False)
+
+    def mas_getEV_last_seen(ev_label, default=None):
+        """
+        Gets the last_seen from the event corresponding to the given eventlabel
+
+        If the event doesn't exist, the default is returned
+
+        IN:
+            ev_label - eventlabel for the event we wish to get last_seen from
+            default - value to return if the event object doesn't exist
+
+        OUT:
+            The last_seen of the ev, or the default if the event doesn't exist
+        """
+        return mas_getEVPropValue(ev_label, "last_seen", default)
+
+    def mas_getEV_shown_count(ev_label, default=0):
+        """
+        Gets the shown_count from the event corresponding to the given eventlabel
+
+        If the event doesn't exist, the default is returned
+
+        IN:
+            ev_label - eventlabel for the event we wish to get shown_count from
+            default - value to return if the event object doesn't exist
+
+        OUT:
+            The shown_count of the ev, or the default if the event doesn't exist
+        """
+        return mas_getEVPropValue(ev_label, "shown_count", default)
+
+    def mas_inRulesEV(ev_label, *args):
+        """
+        Checks if keys are in the event's rules dict
+
+        IN:
+            ev_label - eventlabel for the event we wish to check rule keys for
+            *args - rule keys
+
+        OUT:
+            True if all rule keys provided are in an event object's rules dict
+            False if the event doesn't exist or any provided keys aren't present in the rules dict
+        """
+        ev_rules = mas_getEVPropValue(ev_label, "rules", dict())
+
+        if not ev_rules:
+            return False
+
+        for rule_key in args:
+            if rule_key not in ev_rules:
+                return False
+        return True
+
+    def mas_assignModifyEVPropValue(ev_label, propname, operation, value):
+        """
+        Does an assign-modify operation
+
+        IN:
+            ev_label - eventlabel representing the event that will have a property assign/modified
+            propname - property name to do the assign-modify operation on
+            operation - operator to assign/modify with. (Any of the following: +=, -=, *=, /= (as a string))
+            value - value to use in the operation
+
+        OUT:
+            True if event values were assign/modified successfully
+            False otherwise
+        """
+        ev = mas_getEV(ev_label)
+        if not ev:
+            return False
+
+        else:
+            try:
+                exec("ev.{0} {1} {2}".format(propname, operation, value))
+            except:
+                return False
+        return True
 
     def mas_getEVCL(ev_label):
         """

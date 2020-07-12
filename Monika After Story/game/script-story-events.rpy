@@ -87,7 +87,7 @@ init 5 python:
 label monika_gender_redo:
     m 1eka "Of course, [player]!"
 
-    if mas_checkEV("monika_gender_redo", EV_SHOWN_COUNT_IS_0):
+    if not mas_getEV_shown_count("monika_gender_redo"):
         m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
         $ _history_list.pop()
         menu:
@@ -1753,7 +1753,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    if mas_checkEV("monika_rpy_files", EV_SHOWN_COUNT_IS_0):
+    if not mas_getEV_shown_count("monika_rpy_files"):
         m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
         m 1ekc "I noticed some \".rpy\" files in there."
         m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
@@ -2155,11 +2155,8 @@ label mas_gift_giving_instructs:
     #we'll handle the scenario by catching it here
     if persistent._mas_filereacts_historic:
         python:
-            mas_setEVPropValues(
-                "mas_gift_giving_instructs",
-                last_seen=None,
-                shown_count=mas_getEVPropValue("mas_gift_giving_instructs", "shown_count", 0) - 1
-            )
+            mas_assignModifyEVPropValue("mas_gift_giving_instructs", "shown_count", "-=", 1)
+            mas_setEVPropValues("mas_gift_giving_instructs", last_seen=None)
 
             persistent._seen_ever.pop("mas_gift_giving_instructs")
         return
