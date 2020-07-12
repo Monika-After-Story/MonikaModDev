@@ -532,23 +532,59 @@ init 6 python:
         mas_showEVL(ev_label, code, unlock=True)
 
 
-    def mas_stripEVL(ev_label, list_pop=False):
+    def mas_stripEVL(ev_label, list_pop=False, remove_dates=True):
         """
-        Strips the conditional and action from an event given the label
+        Strips the conditional and action properties from an event given its label
+        start_date and end_date will be removed if remove_dates is True
         Also removes the event from the event list if present (optional)
 
         IN:
             ev_label - label of event to strip
             list_pop - True if we want to remove the event from the event list
                 (Default: False)
+            remove_dates - True if we want to remove start/end_dates from the event
+                (Default: True)
         """
         ev = mas_getEV(ev_label)
         if ev is not None:
             ev.conditional = None
             ev.action = None
 
+            if remove_dates:
+                ev.start_date = None
+                ev.end_date = None
+
             if list_pop:
                 mas_rmEVL(ev_label)
+
+
+    def mas_flagEVL(ev_label, code, flags):
+        """
+        Applies flags to the given event
+
+        IN:
+            ev_label - label of the event to flag
+            code - string code of the db this ev_label belongs to
+            flags - flags to apply
+        """
+        ev = mas_all_ev_db_map.get(code, {}).get(ev_label, None)
+        if ev is not None:
+            ev.flag(flags)
+
+
+    def mas_unflagEVL(ev_label, code, flags):
+        """
+        Unflags flags from the given event
+
+        IN:
+            ev_label - label of the event to unflag
+            code - string code of the db this ev_label belongs to
+            flags - flags to unset
+        """
+        ev = mas_all_ev_db_map.get(code, {}).get(ev_label, None)
+        if ev is not None:
+            ev.unflag(flags)
+
 
 init 4 python:
     def mas_lastSeenInYear(ev_label, year=None):
@@ -2404,7 +2440,8 @@ label prompts_categories(pool=True):
 #                category=[False,current_category],
             unlocked=True,
             pool=pool,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # add all categories the master category list
@@ -2456,7 +2493,8 @@ label prompts_categories(pool=True):
                     category=(False,current_category),
                     unlocked=True,
                     pool=pool,
-                    aff=mas_curr_affection
+                    aff=mas_curr_affection,
+                    flag_ban=EV_FLAG_HFM
                 )
 
                 # add deeper categories to a list
@@ -2576,7 +2614,12 @@ label mas_bookmarks:
             prompt_suffix = suffix_func(ev) if suffix_func else ""
 
             #Now append based on the delegate
-            bookmarks_pl.append((renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel))
+            # but only if it is not flagged to be hidden.
+            if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
+                bookmarks_pl.append((
+                    renpy.substitute(ev.prompt + prompt_suffix),
+                    ev.eventlabel
+                ))
 
         bookmarks_pl.sort()
         bookmarks_disp = gen_bk_disp(bookmarks_pl)

@@ -95,7 +95,7 @@ init 5 python:
 
 label mas_fun_fact_librocubiculartist:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
-    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
+    m 3eub "It's 'librocubicularist.' It looks difficult to pronounce at first glance."
     m 3rksdld "It's a real shame some words just never get used in general."
     m 3eud "But if you say that word, most people wouldn't really know what you're talking about."
     m 3euc "You'd probably have to explain what it means, but that kind of defeats the point of using the word."
@@ -330,7 +330,7 @@ init 5 python:
 
 label mas_fun_fact_strength:
     m 1hub "This fact might motivate you a bit!"
-    m 3eub "The longest word in English that only contains a single vowel is 'strength'."
+    m 3eub "The longest word in English that only contains a single vowel is 'strength.'"
     m 1eua "It's funny how out of every word in the language, it's such a meaningful word that had that little detail."
     m 1hua "Little details like this really make language so fascinating to me!"
     m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"
@@ -786,5 +786,71 @@ label mas_fun_fact_coffee_origin:
     m 3eud "For example, during fasting periods it was used to ease hunger and help people remain energized."
     m 3eua "When its use spread to Europe, many countries initially used it for medicinal purposes. {w=0.3}By the 17th century, coffeehouses were becoming plentiful and popular."
     m 3hub "...And I for one can certainly attest that the love of coffee has remained strong to this day!"
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_synesthesia",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_synesthesia:
+    m 1esa "Okay, this one's pretty interesting..."
+    m 3eua "Some people experience a phenomenon known as {i}synesthesia{/i},{w=0.1} which is where something that stimulates one of our senses also triggers another sense simultaneously."
+    m 1hua "That's kind of a wordy explanation, ehehe...{w=0.2} Let's find an example!"
+    m 1eua "It says here that a common form of synesthesia is {i}grapheme–color synesthesia{/i},{w=0.1} which is where people 'experience' letters and numbers as colors."
+    m 3eua "Another kind is {i}spatial sequence synesthesia{/i},{w=0.1} which is where numbers and figures are 'seen' at specific locations in space."
+    m "Like, one number appears 'closer' or 'further' away than another number. {w=0.2}{nw}"
+    extend 3eub "It's kinda like a map!"
+    m 1eua "...And there's a whole bunch of other kinds of synesthesia too."
+    m 1esa "Researchers aren't really sure how prevalent it is--{w=0.1}some have suggested as much as 25 percent of the population experiences it, but I seriously doubt that since I'd never heard of it until now."
+    m 3eub "Probably the most accurate estimate so far is that it's just over 4 percent of people, so that's what I'll go with!"
+    m 1eua "Experiencing synesthesia sounds like it'd be pretty neat,{w=0.2} don't you think so [player]?"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_dream_faces",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_dream_faces:
+    m 3eub "Okay, got one!"
+    m 1eua "Supposedly, our minds don't invent new faces when we dream.{w=0.2} Every person you've met in your dreams is someone you've seen in real life at some point."
+    m 3wud "You don't even have to talk to them in real life!"
+    m 3eud "If you just walked past them while shopping or something, their face gets registered in your mind and they can appear in your dreams."
+    m 1hua "I think it's incredible how much info the brain can store!"
+    m 1ekbla "I wonder...{w=0.2}do you ever dream about me, [player]?"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_monochrome_dreams",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_monochrome_dreams:
+    m 3eua "Did you know that from 1915 to the 1950s, most people's dreams were in black and white?"
+    m 1esa "Nowadays, it's a relatively rare phenomenon for people with unimpaired vision."
+    m 3eua "Researchers have linked this to the fact that movies and shows were almost exclusively black and white back then."
+    m 3eud "...But I think that's kinda weird, because people still saw everything in color.{w=0.3} {nw}"
+    extend 3hksdlb "It's not like the world went black and white!"
+    m 1esd "It just goes to show that the content you absorb can have all kinds of effects on your mind, even if it's trivial."
+    m 3eua "I think if there's a lesson to be learned here, it's that we should be very careful about the kind of media we consume, okay [player]?"
+    #Call the end
     call mas_fun_facts_end
     return

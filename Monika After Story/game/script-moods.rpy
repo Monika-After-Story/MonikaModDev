@@ -81,7 +81,8 @@ label mas_mood_start:
         filtered_moods = Event.filterEvents(
             mas_moods.mood_db,
             unlocked=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # build menu list
@@ -258,6 +259,9 @@ label mas_mood_sick:
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
+
+    label .ask_will_rest:
+        pass
 
     $ persistent._mas_mood_sick = True
 
