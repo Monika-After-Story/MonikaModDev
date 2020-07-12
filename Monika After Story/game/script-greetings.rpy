@@ -3832,3 +3832,39 @@ label greeting_code_help_outro:
 
     $ mas_lockEVL("greeting_code_help", "GRE")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_store",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_STORE],
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_store:
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Welcome back, [player]!"
+        m 1hub "Did you get what you needed from the store?"
+        m 2eua "I hope you chose healthy food if you bought any."
+        m 2hua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh, you're back?"
+        m 2tud "Did you forget your wallet?"
+        m 2wud "{cps=*2}Or are you ready to spend some time with me now?{/cps}{nw}"
+        $ _history_list.pop()
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh...{w=1}you're back. Hi."
+        m 6ekc "I hope you had a good time shopping. Did you buy some food?"
+        m 6dkc "Have you considered if your eating habits may be keeping your mood down lately?"
+        m 5lkc "I'd hate if that was the reason you..."
+        m 6ekc "You know what? Nevermind. I'm just tired..."
+
+    else:
+        m 6ckc "..."
+
+    return

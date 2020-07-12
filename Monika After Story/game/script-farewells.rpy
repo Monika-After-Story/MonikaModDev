@@ -1562,3 +1562,30 @@ label bye_prompt_restart:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_going_store",
+            unlocked=True,
+            prompt="I'm going to the store.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label mas:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Oh, going to do some shopping [player]?"
+        m 1lua "I'd love if we could go to the mall together sometimes."
+        m 3tua "You could help me try out all kinds of different outfits, and I may need some help with the zippers..."
+        m 5hub "Ahaha! See you soon~"
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+    else:
+        m 2euc "Aw, see you soon."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=4)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_STORE
+    return 'quit'
