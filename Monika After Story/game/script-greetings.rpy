@@ -1459,8 +1459,18 @@ init 5 python:
 label monikaroom_greeting_ear_rmrf:
     if renpy.windows:
         python:
-            from os import getenv
-            bad_cmd = "del /f/q " + getenv("WINDIR") + "\\System32"
+            from os import environ
+            # https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables
+            if "SYSTEM32" in environ:
+                system_dir = environ["SYSTEM32"]
+            elif "SYSTEMROOT" in environ:
+                system_dir = environ["SYSTEMROOT"] + "\\System32"
+            elif "WINDIR" in environ:
+                system_dir = environ["WINDIR"] + "\\System32"
+            else:
+                # There's no way that none of the above evaluate, but still
+                system_dir = "C:\\Windows\\System32"
+            bad_cmd = "del /f/q " + system_dir
     else:
         $ bad_cmd = "rm -rf /"
     m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
