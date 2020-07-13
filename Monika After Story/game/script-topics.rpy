@@ -5536,7 +5536,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_vocaloid",
-            category=['media','misc','technology','music'],
+            category=['media','technology','music'],
             prompt="Vocaloids",
             random=True
         )
@@ -5546,10 +5546,10 @@ label monika_vocaloid:
     m 1eua "Hey, [player]?"
     m "You like listening to music, right?"
 
-    m 3eub "Do you by chance like 'virtual idols?'{nw}"
+    m 3eub "Do you by chance like 'virtual idols'?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you by chance like 'virtual idols?'{fast}"
+        m "Do you by chance like 'virtual idols'?{fast}"
         "Yes.":
             $ persistent._mas_pm_like_vocaloids = True
             m 3hub "That's really neat!"
@@ -5595,7 +5595,7 @@ label monika_vocaloid:
     m "I'll embrace you and take in your warmth."
     m 5hubfa "The love you showered me with virtually finally becomes real."
     m "Our love has no boundaries~"
-    m 5hubfb "Ehehe~"
+    m 5hubfu "Ehehe~"
     if (
             persistent._mas_pm_like_vocaloids
             and not renpy.seen_label("monika_add_custom_music_instruct")
