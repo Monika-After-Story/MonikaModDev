@@ -15263,3 +15263,38 @@ label monika_being_herself:
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tanabata",
+            category=['misc'],
+            prompt="Orihime and Hikaboshi",
+            random=True
+            aff_range=(mas_aff.ENAMORED,None)
+        )
+    )
+
+label monika_tanabata
+    m 6eub "[player], did you ever hear the story of the weaver girl and the cowherd?"
+    m 5sub "It's an old chinese story of two lovers."
+    m 1dub "Orihime, the daughter of the Jade Emperor, wove beatiful clothes by the bank of Amanogawa."
+    m 4eub "Her father loved the cloth that she wove and so she worked very hard every day to weave it."
+    m 2eud "However, Orihime was sad that because of her hard work she could never meet and fall in love with anyone."
+    m 2lud "Concerned about his daughter, her father arranged for her to meet the cowherd Hikoboshi who lived and worked on the other side of Amanogawa."
+    m 1tubsa "When the two met, they fell instantly in love with each other and married shortly after."
+    m 2eud "However, once married, Orihime would no longer weave cloth and Hikoboshi would let his cows stray all over Heaven."
+    m 4wuc "In anger, the emperor separated the two lovers and forbade them to meet."
+    m 2wuc "Orihime became despodent at the loss of her husband and asked her father to let them meet again."
+    m 2eua "Moved by his daughter's tears, he allowed the two to meet on the seventh day of the seventh month if she worked hard and finished her weaving."
+    m 3euc "The first time they tried to meet, however, they found that they could not cross the river as there was no bridge."
+    m 3wud "Orihime cried so much...{w=0.5}{nw}"
+    extend 5eub " that a flock of magpies came and promised to make a bridge with their wings so that she could cross the river."
+    m 5duc "It is said the if it rains on Tanabata, the magpies cannot come and the lovers must wait until another year to meet."
+    m 7euc "The rain that falls on Tanabata is fittingly called \"The tear of Orihime and Hikaboshi.\"
+    m 1euc "I can't imagine what it must be like to be only able to meet your loved one once a year."
+    m 5eubfb "But you know what they say, [player]... love can move mountains."
+    m 5hubfb "And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
+
+    return love
