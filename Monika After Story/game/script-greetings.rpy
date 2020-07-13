@@ -3862,7 +3862,8 @@ label greeting_back_from_store:
         m 6rkc "Oh...{w=1}you're back. Hi."
         m 6ekc "I hope you had a good time shopping. Did you buy some food?"
         m 6dkc "Have you considered if your eating habits may be keeping your mood down lately?"
-        m 5lkc "I'd hate if that was the reason you..."
+        m 6lkc "I'd hate if that was the reason you--{nw}"
+        $ _history_list.pop()
         m 6ekc "You know what? Nevermind. I'm just tired..."
 
     else:
