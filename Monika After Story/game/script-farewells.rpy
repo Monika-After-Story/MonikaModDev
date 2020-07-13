@@ -1586,6 +1586,7 @@ label bye_going_store:
     else:
         m 2euc "Aw, see you soon."
 
+    #TODO: Moni comes shopping with you(?)
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=4)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_STORE
     return 'quit'
