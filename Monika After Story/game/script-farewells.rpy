@@ -1579,8 +1579,10 @@ label bye_going_store:
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh, going to do some shopping [player]?"
         m 1lua "I'd love if we could go to the mall together sometimes."
-        m 3tua "You could help me try out all kinds of different outfits, and I may need some help with the zippers..."
-        m 5hub "Ahaha! See you soon~"
+        m 3tua "You could help me try out all kinds of different outfits{w=0.5}{nw},"
+        show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+        extend 5hubfb"and I may need some help with the zippers..."
+        m "Ahaha! See you soon~"
     elif mas_isMoniBroken():
         m 6ckc "..."
     else:
