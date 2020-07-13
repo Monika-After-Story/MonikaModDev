@@ -15143,9 +15143,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_naps",category=['life'],prompt="Naps",random=True))
 
 label monika_naps:
+    $ has_napped = mas_getEV('monika_idle_nap').shown_count > 0
+
     m 1eua "Hey, [player]..."
 
-    if seen_event("monika_idle_nap"):
+    if has_napped:
         m 3eua "I noticed that sometimes you like to take naps..."
     else:
         m 3eua "Do you ever take naps?"
@@ -15158,7 +15160,11 @@ label monika_naps:
     m 1eud "Power naps are another form of resting.{w=0.2} For these, you just rest your eyes for about 10-20 minutes."
     m 3eua "They're great for taking a break from your day and clearing your head."
     m 3hua "And since they're so short, it's really easy to get back into whatever you were doing before."
-    m 1eua "If you don't already, maybe you could try taking some naps from time to time."
+
+    if has_napped:
+        m 1eua "So don't be shy about taking naps whenever you think you need to, [player]."
+    else:
+        m 1eua "If you don't already, maybe you could try taking some naps from time to time."
 
     if mas_isMoniEnamored(higher=True):
         show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
