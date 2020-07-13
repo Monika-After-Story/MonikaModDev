@@ -15292,7 +15292,7 @@ label monika_tanabata
     m 3wud "Orihime cried so much...{w=0.5}{nw}"
     extend 5eub " that a flock of magpies came and promised to make a bridge with their wings so that she could cross the river."
     m 5duc "It is said the if it rains on Tanabata, the magpies cannot come and the lovers must wait until another year to meet."
-    m 7euc "The rain that falls on Tanabata is fittingly called \"The tear of Orihime and Hikaboshi.\"
+    m 7euc "The rain that falls on Tanabata is fittingly called \"The tear of Orihime and Hikaboshi.\""
     m 1euc "I can't imagine what it must be like to be only able to meet your loved one once a year."
     m 5eubfb "But you know what they say, [player]... love can move mountains."
     m 5hubfb "And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
