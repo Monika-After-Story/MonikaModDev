@@ -3855,7 +3855,7 @@ label greeting_back_from_store:
     elif mas_isMoniUpset():
         m 2esc "Oh,{w=0.2} you're back."
         m 2rsc "I hope you got everything you needed."
-        m 2wud "{cps=*2}Maybe might be in a better mood too{/cps}{nw}"
+        m 2rud "{cps=*2}Hopefully you're in a better mood now too.{/cps}{nw}"
         $ _history_list.pop()
 
     elif mas_isMoniDis():
