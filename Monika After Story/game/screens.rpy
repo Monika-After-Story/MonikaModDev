@@ -2835,38 +2835,6 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
         for _tuple in items
     }
 
-    python:
-        def _return_values(buttons_data, return_all):
-            """
-            A method to return buttons keys and values
-
-            IN:
-                buttons_data - the screen buttons data
-                return_all - whether or not we return all items
-
-            OUT:
-                dict of key-value pairs
-            """
-            return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
-
-        def _choose_prompt(buttons_data, selected_prompt):
-            """
-            A method to choose a prompt for the return button.
-            "Nevermind." by default,
-            or selected_prompt if the user has selected something
-
-            IN:
-                buttons_data - the screen buttons data
-                selected_prompt - the prompt for the return button
-
-            OUT:
-                string with prompt
-            """
-            for data in buttons_data.itervalues():
-                if data["return_value"] == data["true_value"]:
-                    return selected_prompt
-            return "Nevermind."
-
     style_prefix "scrollable_menu"
 
     fixed:
@@ -2886,13 +2854,22 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
                         textbutton button_prompt:
                             selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
                             xsize display_area[2]
-                            action ToggleDict(buttons_data[button_key], "return_value", true_value, false_value)
+                            action ToggleDict(
+                                buttons_data[button_key],
+                                "return_value",
+                                true_value,
+                                false_value
+                            )
 
             null height 20
 
-            textbutton _choose_prompt(buttons_data, return_button_prompt):
+            textbutton store.mas_ui.check_scr_menu_choose_prompt(buttons_data, return_button_prompt):
                 xsize display_area[2]
-                action Function(_return_values, buttons_data, return_all)
+                action Function(
+                    store.mas_ui.check_scr_menu_return_values,
+                    buttons_data,
+                    return_all
+                )
 
         bar:
             style "classroom_vscrollbar"

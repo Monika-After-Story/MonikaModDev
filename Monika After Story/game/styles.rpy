@@ -323,3 +323,37 @@ init -1 python in mas_ui:
     ).add(
         "mod_assets/font/mplus-2p-regular.ttf", 0x0000, 0xffff  # jp
     )
+
+# START: Helper methods that we use inside screens
+init -10 python in mas_ui:
+    # Methods for mas_check_scrollable_menu
+    def check_scr_menu_return_values(buttons_data, return_all):
+        """
+        A method to return buttons keys and values
+
+        IN:
+            buttons_data - the screen buttons data
+            return_all - whether or not we return all items
+
+        OUT:
+            dict of key-value pairs
+        """
+        return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
+
+    def check_scr_menu_choose_prompt(buttons_data, selected_prompt):
+        """
+        A method to choose a prompt for the return button.
+        "Nevermind." by default,
+        or selected_prompt if the user has selected something
+
+        IN:
+            buttons_data - the screen buttons data
+            selected_prompt - the prompt for the return button
+
+        OUT:
+            string with prompt
+        """
+        for data in buttons_data.itervalues():
+            if data["return_value"] == data["true_value"]:
+                return selected_prompt
+        return "Nevermind."
