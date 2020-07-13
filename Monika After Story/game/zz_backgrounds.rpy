@@ -53,7 +53,7 @@ init -10 python:
         """
         Represntation of a filter for a MASBackground.
         this is related to the sprite filters, but gives each filter extra
-        oomph. 
+        oomph.
 
         BG filters are designed to be flexible to work with BGs.
         See the MASBackgroundFilterChunk for more info on how this works.
@@ -103,8 +103,8 @@ init -10 python:
                     Must be between 1 and 10, inclusive.
                     Defaults to 10 if invalid.
                     (Default: 10)
-                flt - imagemanip/matrix compatible filter to use. 
-                    only pass in if you wish to use the `add_to_filters` 
+                flt - imagemanip/matrix compatible filter to use.
+                    only pass in if you wish to use the `add_to_filters`
                     function
                     (Default: None)
                 cache - pass False to not cache this object.
@@ -367,7 +367,7 @@ init -10 python:
                 sl_data_list - list containing MASBackgroundFilterSliceData
                     objects to check
 
-            RETURNS: index of the MASBackgroundFilterSliceData with the 
+            RETURNS: index of the MASBackgroundFilterSliceData with the
                 lowest priority
             """
             l_priority = 10
@@ -410,10 +410,10 @@ init -10 python:
         try to keep every slice we can. Minlength is also used to determine
         when to swap filters.
 
-        Slices are organized by an order. The order value determines the 
+        Slices are organized by an order. The order value determines the
         desired order of slices.
 
-        Code can be ran during a filter change by passing in function to 
+        Code can be ran during a filter change by passing in function to
         appropriate param. Any exceptions are caught and loggged.
 
         PROPERTIES:
@@ -446,7 +446,7 @@ init -10 python:
                         flt_new - the incoming filter (string)
                         curr_time - the current time
                     pass None to not use a progpoint
-                *slices - slice arguments. Each item should be a 
+                *slices - slice arguments. Each item should be a
                     MASBackgroundFilterSlice object.
                     This should be in the desired order.
                     NOTE: there must be at least one slice with unbounded time
@@ -556,7 +556,7 @@ init -10 python:
         def _adv_slice_change(self, slidx, sfco, run_pp, curr_time):
             """
             Checks if a slice offset at the given index is smaller than
-            sfco, and runs pps if so. This is mainly to combine a condition 
+            sfco, and runs pps if so. This is mainly to combine a condition
             check and work together so we don't need extra if statements.
 
             IN:
@@ -567,7 +567,7 @@ init -10 python:
                 curr_time - passed to progpoints, should be current time as
                     datetime.time object
 
-            RETURNS: True if we should continue looping index, False if we 
+            RETURNS: True if we should continue looping index, False if we
                 have found the slice sfco belongs in.
             """
             if self._eff_slices[slidx].offset > sfco:
@@ -673,7 +673,7 @@ init -10 python:
             """
             Gets current slice data
 
-            RETURNS: current slice data 
+            RETURNS: current slice data
             """
             return self._eff_slices[self._index]
 
@@ -687,7 +687,7 @@ init -10 python:
 
         def _expand(self, length):
             """
-            Expands all slices in effective slices until it fills the given 
+            Expands all slices in effective slices until it fills the given
             length
 
             IN:
@@ -728,7 +728,7 @@ init -10 python:
             from the given corresponding position in value list.
 
             IN:
-                value_list - list of amounts to add to individual items in 
+                value_list - list of amounts to add to individual items in
                     eff_slices
 
             OUT:
@@ -746,7 +746,7 @@ init -10 python:
 
             IN:
                 index - position to expand slice data and value list
-                value_list - list of amounts to add to individual items in 
+                value_list - list of amounts to add to individual items in
                     eff_slices
                 c_off - current offset value
 
@@ -777,7 +777,7 @@ init -10 python:
 
             # calculate next offset
             return c_off + sl_len
-            
+
         def filters(self, ordered=False):
             """
             Gets list of filters
@@ -829,8 +829,8 @@ init -10 python:
 
             IN:
                 length - the length we are filling
-            
-            RETURNS: leftovers - contains slices that we could not fit. Could 
+
+            RETURNS: leftovers - contains slices that we could not fit. Could
                 be empty if we managed to fit all slices.
             """
             built_length = 0
@@ -855,7 +855,7 @@ init -10 python:
                 index += 1
 
             if built_length < length:
-                # we managed to fit every slice! 
+                # we managed to fit every slice!
                 return []
 
             # otherwise, we have a leftover slice in some way
@@ -901,7 +901,7 @@ init -10 python:
 
         def _pf_insert(self, index, sl_data):
             """
-            Inserts a filter slice offset into the effective slices list 
+            Inserts a filter slice offset into the effective slices list
             based on a starting index.
 
             IN:
@@ -969,7 +969,7 @@ init -10 python:
             )
 
             for es_index in range(len(self._eff_slices)-1, -1, -1):
-               
+
                 # get current slice
                 csl_data = self._eff_slices[es_index]
 
@@ -1091,7 +1091,7 @@ init -10 python:
         SunRise to SunSet (SR - SS)
         SunSet to MidNignt (SS - MN)
 
-        Each chunk is marked day/night, and is used when determining if a 
+        Each chunk is marked day/night, and is used when determining if a
         filter is day or night. This means two separate chunks with different
         day/night settings can NOT contain same filters. If you need the same
         filter content to be considerd day AND night, make two separate filter
@@ -1121,8 +1121,8 @@ init -10 python:
                 sr_ss - MASBackgroundFilterChunk for sunrise to sunset
                 ss_mn - MASBackgroundFilterChunk for sunset to midnight
                 pp - progpoint to run on a chunk change.
-                    This may run multiple times if multiple chunk changes 
-                    have occurred. 
+                    This may run multiple times if multiple chunk changes
+                    have occurred.
                     This is NOT guaranteed to run if more than a day of time
                     passes between progressions.
                     the following args are passed to the progpoint:
@@ -1184,7 +1184,7 @@ init -10 python:
             Shows chunks and curr chunk information
             """
             output = []
-            
+
             # mn to sr chunk
             chunk_name = "Midnight to Sunrise"
             if self._index == 0:
@@ -1245,7 +1245,7 @@ init -10 python:
                 # determine the next current offset and next index
 
                 # next offset or 0 if 86400
-                cb_off = nb_off % (store.mas_utils.secInDay()) 
+                cb_off = nb_off % (store.mas_utils.secInDay())
                 st_index = (st_index + 1) % c_len # next index or 0 if max len
 
                 # now calc next offset
@@ -1296,7 +1296,7 @@ init -10 python:
                     flt_0: flt_3 - (because we loop to flt_5 when looking back
                                     from flt_0)
                     flt_1: flt_1
-                    flt_2: flt_1 - (flt_1 is the closest previous anchor from 
+                    flt_2: flt_1 - (flt_1 is the closest previous anchor from
                                     flt_2)
                     flt_3: flt_3
                     flt_4: flt_3
@@ -1569,7 +1569,7 @@ init -10 python:
 
             NOTE: we do NOT do full loop arounds. This means that even if
             there was a literal day between progressions, this will only run
-            as if it were same day progression. 
+            as if it were same day progression.
 
             Progpoint execution rules:
             * progression remains in the same chunk:
@@ -1681,7 +1681,7 @@ init -10 python:
             Assumed to be called at least at init level 0
             Filters cannot be in both day and night chunks. If this happens,
             an exception will be raised.
-           
+
             We also verify filters in each chunk here.
             """
             # first organize filters into day and night
@@ -1718,7 +1718,7 @@ init -10 python:
     ):
         """DEPRECATED
         Old-style MASBackground objects.
-        This is mapped to a MASFilterableBackground with default 
+        This is mapped to a MASFilterableBackground with default
         (aka pre0.11.3 filters) slice management
 
         IN:
@@ -1963,7 +1963,7 @@ init -10 python:
             Also builds appropraite BG image maps.
 
             NOTE: should only be called during init.
-            NOTE: IF YOU PLAN TO CALL UPDATE AFTER THIS, use buildupdate 
+            NOTE: IF YOU PLAN TO CALL UPDATE AFTER THIS, use buildupdate
                 instead.
             """
             # build filter slices
@@ -1998,7 +1998,7 @@ init -10 python:
 
             # build and update slices
             self._flt_man.buildupdate(
-                persistent._mas_sunrise * 60, 
+                persistent._mas_sunrise * 60,
                 persistent._mas_sunset * 60,
                 curr_time
             )
@@ -2095,7 +2095,7 @@ init -10 python:
             Gets all day images for a weather.
 
             IN:
-                weather - weather to check. If None, we use the current 
+                weather - weather to check. If None, we use the current
                     weather.
                     (Default: None)
 
@@ -2368,7 +2368,7 @@ init -20 python in mas_background:
 
     def default_MBGFM():
         """
-        Generates a MASBackgroundFilterManager using the default 
+        Generates a MASBackgroundFilterManager using the default
         (aka pre0.11.3) settings.
 
         RETURNS: MASBackgroundFilterManager object
@@ -2432,6 +2432,25 @@ init -20 python in mas_background:
 
         return unlocked_count
 
+    def hasXUnlockedBGs(min_amt_unlocked):
+        """
+        Checks if we have at least min_amt_unlocked bgs unlocked
+
+        IN:
+            min_amt_unlocked - minimum number of BGs which should be unlocked to return true
+        OUT:
+            True if we have at least min_amt_unlocked BGs unlocked, False otherwise
+        """
+        unlocked_count = 0
+        for mbg_obj in BACKGROUND_MAP.itervalues():
+            unlocked_count += int(mbg_obj.unlocked)
+
+            #Now check if we've surpassed the minimum
+            if unlocked_count >= min_amt_unlocked:
+                return True
+
+        return False
+
 #START: BG change functions
 init 800 python:
     def mas_setBackground(_background):
@@ -2444,7 +2463,7 @@ init 800 python:
 
         IN:
             _background:
-                The background we're changing to. 
+                The background we're changing to.
                 Assumes this is already built.
         """
         if _background != mas_current_background:
@@ -2511,7 +2530,6 @@ init 800 python:
 
 
     #Just set us to the normal room here
-    mas_current_background = None
     mas_setBackground(mas_background_def)
 
 
@@ -2534,7 +2552,7 @@ init -2 python in mas_background:
             store.mas_utils.writelog(
                 store.MASBackgroundFilterChunk._ERR_PP_STR_G.format(
                     repr(e),
-                    old_flt, 
+                    old_flt,
                     new_flt
                 )
             )
@@ -2597,7 +2615,7 @@ init -2 python in mas_background:
 
     def _def_background_entry(_old):
         """
-        Entry programming point for befault background
+        Entry programming point for default background
         """
         if store.seen_event("mas_monika_islands"):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
@@ -2615,9 +2633,14 @@ init -2 python in mas_background:
         #This catches the potential of a deleted background which does not support weather
         store.mas_unlockEVL("monika_change_weather", "EVE")
 
+        #TODO: update with new EV funcs once merged
+        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
+        if spaceroom_ev and spaceroom_ev.unlock_date:
+            spaceroom_ev.unlocked = True
+
     def _def_background_exit(_new):
         """
-        Exit programming point for befault background
+        Exit programming point for default background
         """
         store.mas_lockEVL("mas_monika_islands", "EVE")
 
@@ -2625,9 +2648,17 @@ init -2 python in mas_background:
         if _new.disable_progressive:
             store.mas_lockEVL("monika_change_weather", "EVE")
 
+        #TODO: update with new EV funcs once merged
+        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
+        if spaceroom_ev and spaceroom_ev.unlock_date:
+            spaceroom_ev.unlocked = False
+
+
 
 #START: bg defs
 init -1 python:
+    mas_current_background = None
+
     #Default spaceroom
     mas_background_def = MASFilterableBackground(
         # ID

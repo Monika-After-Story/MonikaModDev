@@ -2193,8 +2193,10 @@ label call_next_event:
             else:
                 $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
+        $ mas_globals.this_ev = ev
         call expression event_label from _call_expression
-        $ persistent.current_monikatopic=0
+        $ persistent.current_monikatopic = 0
+        $ mas_globals.this_ev = None
 
         #if this is a random topic, make sure it's unlocked for prompts
         $ ev = evhand.event_database.get(event_label, None)
@@ -2257,7 +2259,7 @@ label call_next_event:
 
     # return to normal pose
     if not renpy.showing("monika idle"):
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
     return False
 
@@ -2287,7 +2289,7 @@ label prompt_menu:
             call expression cb_label
 
         #Show idle exp here so we dissolve like other topics
-        show monika idle with dissolve
+        show monika idle with dissolve_monika
 
         # clean up idle stuff
         $ persistent._mas_greeting_type = None
