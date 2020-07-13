@@ -2612,7 +2612,7 @@ label mas_bookmarks:
                     (renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel, False, False)
                 )
 
-        bookmarks_items.sort(key=lambda _tuple: _tuple[0])
+        bookmarks_items.sort()
 
         bk_menu_final_items = (
             (_("I'd like to remove a bookmark."), "remove_bookmark", False, False, 20),

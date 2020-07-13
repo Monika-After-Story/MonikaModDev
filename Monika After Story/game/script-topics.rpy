@@ -641,7 +641,7 @@ label mas_rerandom:
     python:
         derandomlist = mas_get_player_derandoms(mas_bookmarks_derand.persist_var)
 
-        derandomlist.sort(key=lambda _tuple: _tuple[0])
+        derandomlist.sort()
 
     show monika 1eua at t21
     if len(derandomlist) > 1:
