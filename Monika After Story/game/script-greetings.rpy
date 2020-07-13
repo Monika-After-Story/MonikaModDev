@@ -3853,9 +3853,9 @@ label greeting_back_from_store:
         m 2hua "Let's spend some more time together~"
 
     elif mas_isMoniUpset():
-        m 2esc "Oh, you're back?"
-        m 2tud "Did you forget your wallet?"
-        m 2wud "{cps=*2}Or are you ready to spend some time with me now?{/cps}{nw}"
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "I hope you got everything you needed."
+        m 2wud "{cps=*2}Maybe might be in a better mood too{/cps}{nw}"
         $ _history_list.pop()
 
     elif mas_isMoniDis():
