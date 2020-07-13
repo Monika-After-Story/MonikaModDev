@@ -1581,7 +1581,7 @@ label bye_going_store:
         m 1lua "I'd love if we could go to the mall together sometimes."
         m 3tua "You could help me try out all kinds of different outfits...but I might need help with the zippers."
         show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-        m "Ahaha! See you soon~"
+        m 5hubfb "Ahaha! See you soon~"
     elif mas_isMoniBroken():
         m 6ckc "..."
     else:
