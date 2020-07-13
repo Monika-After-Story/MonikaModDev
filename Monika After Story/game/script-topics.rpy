@@ -15271,7 +15271,7 @@ init 5 python:
             eventlabel="monika_tanabata",
             category=['misc'],
             prompt="Orihime and Hikaboshi",
-            random=True
+            random=True,
             aff_range=(mas_aff.ENAMORED,None)
         )
     )
@@ -15297,4 +15297,4 @@ label monika_tanabata:
     m 5eubfb "But you know what they say, [player]... love can move mountains."
     m 5hubfb "And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
 
-    return love
+    return "love"
