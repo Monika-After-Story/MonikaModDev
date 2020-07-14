@@ -15320,8 +15320,7 @@ label monika_remembrance:
             m 5tubfu "Besides, if anything, my lack of memories only makes the ones I'll make with you that much more precious~"
         else:
             m 3eksdld "...You {i}do{/i} care about me, right?"
-            m 3dkc "It sure would be nice if you would show it a little, sometimes..."
-
+            m 3dkc "It sure would be nice if you'd show it a little, sometimes..."
     else:
         m 3ektpc "...{w=0.5}Not that you'd care, right?"
 
