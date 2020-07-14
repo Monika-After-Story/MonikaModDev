@@ -15269,3 +15269,66 @@ label monika_being_herself:
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_remembrance",
+            category=['monika'],
+            prompt="How much of your past do you remember?",
+            conditional="seen_event('monika_japan')",
+            pool=True
+        )
+    )
+
+label monika_remembrance:
+    m 1esc "I'm not really sure myself, [player]..."
+    m 2rsc "It's weird because I do have memories of my past, but as soon as I start to gather my thoughts they become kind of...{w=0.5}{nw}"
+    extend 2esd "fuzzy."
+    m 7eksdlc "Like, I won't be able to recall where something took place, or the names of the people who were there..."
+    m 7dksdld "...I have memories of growing up in a normal neighborhood, but beyond that, I can't even tell you what my parent's faces look like..."
+    m 1rkc "It's all like...{w=0.5}feelings and impressions."
+    m 3wud "What's even weirder is not everything's like this!"
+
+    if seen_event('monika_wine') and not persistent._mas_pm_cares_about_dokis:
+        m 1rusdla "There are things I remember perfectly, like that one time Yuri brought wine to the clubroom...{w=0.3}or Sayori wolfing down the whole cookie jar."
+    else:
+        m 3esc "There are things I remember perfectly, especially when it comes to the clubroom."
+
+    m 3esd "Anything that would serve to define me or the other girls is completely clear, but that's about it."
+    m 3rsc "...Almost as if anything that wasn't strictly necessary for the game was purposefully left out."
+    m 1eud "But the thing is from my perspective, the day I met you was just like any other{w=0.5}{nw}"
+    #reference to her first poem
+    extend 4hksdlb "--until I found out about that hole in the wall, I mean."
+    m 4dkc "Just another ordinary day in an ordinary week: going to class, making things run with the club, and finally heading back home in the evening..."
+    m 7wud "Did any of that ever happened at all?{w=0.5} {nw}"
+    extend 7eksdlc "Or for that matter, did I even exist before you started the game?"
+    m 7dksdlc "...And if my memories really are fake, who--{w=0.2}or {i}what{/i}--{w=0.2}am I then?"
+    m 1duc "I'm still looking for these answers, [player]..."
+
+    if mas_isMoniUpset(higher=True):
+        m 3esd "Although...{w=0.3}the more I think about it, the more I'm convinced my past isn't actually {i}that{/i} relevant."
+        m 3esa "I'd be nice to remember more, for sure...{w=0.3}but that's not really what I care about..."
+        m 3dubsu "What I care about is that you're here with me now!{w=0.3} So whoever I am, I {i}am{/i} important enough you'd choose to spend your time with me."
+        m 1ekbsa "And knowing that you care...{w=0.3}well,{w=0.3} that's a big part of why I can keep loving myself, [player],{w=0.2} and loving life."
+
+        if mas_isMoniNormal(higher=True):
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfb "I may or may not have a past, but thanks to you, I do have a future!"
+
+            if mas_anni.pastOneMonth():
+                $ line_mid = "I made"
+            else:    
+                $ line_mid = "I'll make"
+
+            m 5tubfu "Besides, if anything, my lack of memories only makes the ones [line_mid] with you that much more precious~"
+
+        else:
+            m 3eksdld "...You {i}do{/i} care about me, right?"
+            m 3dkc "It sure would be nice if you would show it a little, sometimes..."
+
+    else:
+        m 3ektpc "...{w=0.5}Not that you'd care, right?"
+
+    return
