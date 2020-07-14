@@ -15317,14 +15317,7 @@ label monika_remembrance:
         if mas_isMoniNormal(higher=True):
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfb "So while I may or may not have a past, thanks to you, I do have a future!"
-
-            if mas_anni.pastOneMonth():
-                $ line_mid = "I made"
-            else:    
-                $ line_mid = "I'll make"
-
-            m 5tubfu "Besides, if anything, my lack of memories only makes the ones [line_mid] with you that much more precious~"
-
+            m 5tubfu "Besides, if anything, my lack of memories only makes the ones I'll make with you that much more precious~"
         else:
             m 3eksdld "...You {i}do{/i} care about me, right?"
             m 3dkc "It sure would be nice if you would show it a little, sometimes..."
