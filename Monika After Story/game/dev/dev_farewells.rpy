@@ -53,6 +53,7 @@ init 5 python:
         rules = dict()
         rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
         rules.update({"monika wants this first":""})
+        rules.update(MASPriorityRule.create_rule(-1))
         addEvent(
             Event(
                 persistent.farewell_database,

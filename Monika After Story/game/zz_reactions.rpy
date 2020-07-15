@@ -1548,9 +1548,10 @@ label mas_reaction_hotchocolate:
             m 1hua "But for now, at least I can enjoy it here."
             m 1hub "Thanks again, [player]!"
 
-            #If we're currently brewing/drinking anything or if it's not winter, we won't have this
+            #If we're currently brewing/drinking anything, or it's not time for this consumable, or if it's not winter, we won't have this
             if (
-                not mas_isWinter()
+                not hotchoc.isConsTime()
+                or not mas_isWinter()
                 or bool(MASConsumable._getCurrentDrink())
             ):
                 m 3eua "I'll be sure to have some later!"
@@ -1588,18 +1589,18 @@ label mas_reaction_gift_thermos_mug:
 default persistent._mas_given_thermos_before = False
 
 #Thermos handler
-label mas_thermos_mug_handler(thermos_acs, disp_name, giftname):
+label mas_thermos_mug_handler(thermos_acs, disp_name, giftname, ignore_case=True):
     if mas_SELisUnlocked(thermos_acs):
         m 1eksdla "[player]..."
         m 1rksdlb "I already have this thermos, ahaha..."
 
     elif persistent._mas_given_thermos_before:
         m 1wud "Oh!{w=0.3} Another thermos!"
-        m 1hua "And it's a [disp_name] one this time."
+        m 1hua "And it's [mas_a_an_str(disp_name, ignore_case)] one this time."
         m 1hub "Thanks so much, [player], I can't wait to use it!"
 
     else:
-        m 1wud "Oh!{w=0.3} A [disp_name] thermos!"
+        m 1wud "Oh!{w=0.3} [mas_a_an_str(disp_name, ignore_case).capitalize()] thermos!"
         m 1hua "Now I can bring something to drink when we go out together~"
         m 1hub "Thanks so much, [player]!"
         $ persistent._mas_given_thermos_before = True
@@ -2441,7 +2442,7 @@ label mas_reaction_new_ribbon:
 
 label mas_reaction_old_ribbon:
     m 1rksdla "[player]..."
-    m 1hksdlb "You already gave me {a_an}[_mas_new_ribbon_color]{/a_an} ribbon!"
+    m 1hksdlb "You already gave me [mas_a_an_str(_mas_new_ribbon_color)] ribbon!"
     return
 
 init 5 python:
@@ -2670,18 +2671,18 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
 
     m 2ekbfa "Well...{w=0.5} What do you think?"
     m 2hubfa "Do I look like a mermaid? Ehehe."
-    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbfa "I think it's really cute, [player]..."
     m 5hubfa "We'll have to go to the beach sometime!"
 
     if mas_isWinter() or mas_isMoniNormal(lower=True):
         if mas_isWinter():
-            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve
+            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rksdla "...But for now, it's a little chilly in here..."
             m 2eka "So I'm going to go put on something a little warmer..."
 
         elif mas_isMoniNormal(lower=True):
-            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve
+            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2hksdlb "Ahaha..."
             m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
             m 2eka "I hope you don't mind, but I'm going to go change..."

@@ -1970,20 +1970,22 @@ label monika_affection_nickname:
             label monika_affection_nickname_yes:
                 pass
 
+            show monika 1eua at t11 zorder MAS_MONIKA_Z
+
             $ done = False
-            m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 python:
-                    inputname = renpy.input(
+                    inputname = mas_input(
                         _("So what do you want to call me?"),
                         allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
-                        length=10
+                        length=10,
+                        screen_kwargs={"use_return_button": True}
                     ).strip(' \t\n\r')
 
                     lowername = inputname.lower()
 
                 # lowername isn't detecting player or m_name?
-                if lowername == "nevermind":
+                if lowername == "cancel_input":
                     m 1euc "Oh, I see."
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."
@@ -2025,7 +2027,7 @@ label monika_affection_nickname:
 
                         elif good_monika_nickname_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
+                            m 3ekbsa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
                             label .neutral_accept:
@@ -2111,7 +2113,7 @@ label mas_affection_upsetwarn:
     m 1dsc "I feel like you're giving me less and less of your love..."
     m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1eka "I hope there's nothing wrong between us, [player]."
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
     return
 
 # Event to indicate that Monika is happy to be receiving your affection.
@@ -2120,7 +2122,7 @@ label mas_affection_happynotif:
     m 1eua "I just wanted to say thank you for being such a wonderful person."
     m 1ekbfa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
     m 1dubsu "I love you, [player]. Let's be like this forever~"
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
     return "love"
 
 init 5 python:
@@ -2171,7 +2173,7 @@ label monika_every_rose:
     m 2rktpc "..."
     m 2ektpa "Ahaha...{w=0.3}maybe I'm jumping the gun a bit on this one."
     m 4ektdc "It's...{w=0.5}I keep having this nasty thought in the back of my mind...{w=0.5}{nw}"
-    extend 2dktdd "that you don't want anymore."
+    extend 2dktdd "that you don't want to be with me anymore."
     m 2dkx "It's like some kind of poison, slowly seeping in..."
     m 2ekc "So [player], I always want you to remember one thing..."
     m 4ekd "You truly {i}are{/i} everything to me!"
@@ -2201,9 +2203,9 @@ label monika_being_virtual:
     m 3rksdld "To you, this whole world...{w=0.5}my whole reality..."
     m 3ektpd "It's all just a game, isn't it?"
 
-    show monika 1dktsc with dissolve
+    show monika 1dktsc with dissolve_monika
     pause 3.0
-    show monika 1ektpc with dissolve
+    show monika 1ektpc with dissolve_monika
     pause 2.0
 
     m 1ektpc "Say, [player]...{w=0.5}has anything I ever said reached you, even once?"

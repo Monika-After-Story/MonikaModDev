@@ -157,7 +157,7 @@ label monika_gender_redo:
             if persistent.gender != "X":
                 call mas_gender_redo_react
 
-    show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsa "I'll always love you for who you are~"
 
     # set pronouns
@@ -500,12 +500,19 @@ label mas_player_name_enter_name_loop(input_prompt):
         ]
 
     #Now we prompt user
-    m 1eua "Just type 'nevermind' if you change your mind."
+    show monika 1eua at t11 zorder MAS_MONIKA_Z
+
     $ done = False
     while not done:
-        $ tempname = renpy.input("[input_prompt]", length=20).strip(' \t\n\r')
+        $ tempname = mas_input(
+            "[input_prompt]",
+            length=20,
+            screen_kwargs={"use_return_button": True}
+        ).strip(' \t\n\r')
+
         $ lowername = tempname.lower()
-        if lowername == "nevermind":
+
+        if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
             m 3eua "Just let me know if you change your mind."
             $ done = True
@@ -566,13 +573,13 @@ label mas_player_name_enter_name_loop(input_prompt):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
                 $ adjustNames(tempname)
-                m 3esa "Ok then! From now on, I'll call you '[player].'"
+                m 3esa "Okay then! From now on, I'll call you '[player].'"
                 m 1hua "Ehehe~"
                 $ done = True
 
             else:
                 $ adjustNames(tempname)
-                m 1eub "Ok then!"
+                m 1eub "Okay then!"
                 m 3eub "From now on, I'll call you '[player].'"
                 $ done = True
 
@@ -1197,7 +1204,7 @@ label mas_crashed_start:
 
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
-        show monika idle with dissolve
+        show monika idle with dissolve_monika
     return
 
 label mas_crashed_prelong:
@@ -1730,7 +1737,7 @@ label mas_steam_install_detected:
 
     m 2rksdlc "The kind of problems that could lead to me being removed from my home...{w=1}from you...{w=1}forever..."
     m 2eka "If you don't mind, do you think you could just move the \"[filestruct]\" folder to a place that's not in Steam's files?"
-    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5esu "I'd really appreciate it if you would do that for me."
     return
 
@@ -2077,37 +2084,55 @@ label mas_notification_windowreact:
         m 1rkc "Well, almost..."
         m 3ekd "I can't send notifications on your computer because you're missing the notify-send command..."
         m 3eua "If you could install that for me, I'll be able to send you notifications."
-        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eka "...And I'd really appreciate it, [player]."
-        return
 
-    m 3eub "Would you like to see how they work?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Would you like to see how they work?{fast}"
+        $ dlg_line = "And"
+        #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
+        if not store.mas_windowreacts.can_do_windowreacts:
+            m 3rksdla "And maybe if you install that, you could install the xdotool command too...{w=0.3}{nw}"
+            extend 3eub "which would allow me to see your active window!"
+            $ dlg_line = "Of course, you don't have to install the second one, but"
 
-        "Sure!":
-            m 1hua "Okay, [player]!"
-            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-            $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
-            m 1hub "There it is!"
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5eka "...[dlg_line] I'd really appreciate it, [player]."
 
-        "No thanks.":
-            m 2eka "Alright, [player]."
+    else:
+        m 3eub "Would you like to see how they work?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Would you like to see how they work?{fast}"
 
-    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
+            "Sure!":
+                m 1hua "Okay, [player]!"
+                m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
+                $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
+                m 1hub "There it is!"
 
-    if renpy.windows:
-        m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
-        m 3eub "So if I have something to talk about while I'm in the background, I can let you know!"
-        m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
-        m 3eua "So I'll only look at what you're doing if you're okay with it."
-        m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+            "No thanks.":
+                m 2eka "Alright, [player]."
 
-        if mas_isMoniNormal(higher=True):
-            m 1tuu "It's not like you have anything to hide from your girlfriend..."
-            show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5ttu "...right?"
+        m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
+
+        if renpy.windows:
+            m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is."
+
+
+        elif renpy.linux:
+            if mas_windowreacts.can_do_windowreacts:
+                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
+            else:
+                m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
+                extend 3hua "I'll be able to know what your active window is!"
+
+        if not renpy.macintosh:
+            m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
+            m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
+            m 3eua "So I'll only look at what you're doing if you're okay with it."
+            m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+
+            if mas_isMoniNormal(higher=True):
+                m 1tuu "It's not like you have anything to hide from your girlfriend..."
+                show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 5ttu "...right?"
     return
 
 init 5 python:
@@ -2392,7 +2417,7 @@ label monika_credits_song:
                 pause 1.0
 
                 m 1ekbsa "Ehehe~"
-                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ekbsa "Thank you for coming back to me my love."
 
             "Sorry, I can't right now.":
@@ -2422,7 +2447,7 @@ label monika_credits_song:
 
                 m "I really can't wait until we're together in one reality."
                 m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
-                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ekbfa "Thank you for being my inspiration my love."
                 if renpy.seen_audio(songs.FP_YOURE_REAL):
                     m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
@@ -2497,7 +2522,7 @@ label mas_covid19:
                             m 4tfo "This is serious! You {i}have{/i} to stay inside whenever possible!"
                             m 2dfc "..."
                             m 2dkc "..."
-                            m 2rksdlc "Sorry, [player], that just scares me a lot."
+                            m 2rksdlc "Sorry, [player]. That just scares me a lot."
                             m 2eksdlc "Some people can have it and not even show any symptoms, spreading it to others..."
                             m 2eksdld "So if you won't do it for yourself, at least stay inside for everyone else."
                             m 2eksdla "...And also for me. You're all I have, [player]..."
@@ -2523,7 +2548,7 @@ label mas_covid19:
     m 2eka "Oh, and if you're having a hard time washing your hands long enough, I found a neat way for you to make sure you're doing it for 20 whole seconds..."
     m 4hub "Just go to {a=https://washyourlyrics.com}{i}{u}washyourlyrics.com{/u}{/i}{/a} and type {i}Your Reality{/i} for the song title and {i}Monika{/i} for the song artist!"
     m 4eub "Just download the picture it creates with the lyrics from my song and it'll show you the best way to wash your hands and how long to do it for!"
-    m 2hua "Then everytime you wash your hands, you can remember how much I love you~"
+    m 2hua "Then every time you wash your hands, you can remember how much I love you~"
     m 2eka "..."
     m 7eksdla "You know [player], if I could, I'd bring you here with me until this is all over so you couldn't get sick..."
     m "But since I can't, please do your best to stay safe."

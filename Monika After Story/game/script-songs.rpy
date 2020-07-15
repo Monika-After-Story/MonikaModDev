@@ -30,13 +30,38 @@ init python in mas_songs:
     import store
     def checkRandSongDelegate():
         """
-        Checks if we have random songs available, and if so unlocks the random delegate if locked
+        Handles locking/unlocking of the random song delegate
+
+        Ensures that songs cannot be repeated (derandoms the delegate) if the repeat topics flag is disabled and there's no unseen songs
+        And that songs can be repeated if the flag is enabled (re-randoms the delegate)
         """
         #Get ev
         rand_delegate_ev = store.mas_getEV("monika_sing_song_random")
 
-        if rand_delegate_ev and not rand_delegate_ev.random and hasRandomSongs():
-            rand_delegate_ev.random = True
+        if rand_delegate_ev:
+            #If the delegate is random, let's verify whether or not it should still be random
+            #Rules for this are:
+            #1. If repeat topics is disabled and we have no unseen random songs
+            #2. OR we just have no random songs in general
+            if (
+                rand_delegate_ev.random
+                and (
+                    (not store.persistent._mas_enable_random_repeats and not hasRandomSongs(unseen_only=True))
+                    or not hasRandomSongs()
+                )
+            ):
+                rand_delegate_ev.random = False
+
+            #Alternatively, if we have random unseen songs, or repeat topics are enabled and we have random songs
+            #We should random the delegate
+            elif (
+                not rand_delegate_ev.random
+                and (
+                    hasRandomSongs(unseen_only=True)
+                    or (store.persistent._mas_enable_random_repeats and hasRandomSongs())
+                )
+            ):
+                rand_delegate_ev.random = True
 
     def getUnlockedSongs(length=None):
         """
@@ -62,12 +87,28 @@ init python in mas_songs:
                 if ev.unlocked and length in ev.category
             ]
 
-    def getRandomSongs():
+    def getRandomSongs(unseen_only=False):
         """
         Gets a list of all random songs
 
+        IN:
+            unseen_only - Whether or not the list of random songs should contain unseen only songs
+            (Default: False)
+
         OUT: list of all random songs within aff_range
         """
+        if unseen_only:
+            return [
+                ev_label
+                for ev_label, ev in song_db.iteritems()
+                if (
+                    not store.seen_event(ev_label)
+                    and ev.random
+                    and TYPE_SHORT in ev.category
+                    and ev.checkAffection(store.mas_curr_affection)
+                )
+            ]
+
         return [
             ev_label
             for ev_label, ev in song_db.iteritems()
@@ -134,14 +175,16 @@ init python in mas_songs:
         """
         return len(getUnlockedSongs(length)) > 0
 
-    def hasRandomSongs():
+    def hasRandomSongs(unseen_only=False):
         """
         Checks if there are any songs with the random property
 
+        IN:
+            unseen_only - Whether or not we should check for only unseen songs
         OUT:
             True if there are songs which are random, False otherwise
         """
-        return len(getRandomSongs()) > 0
+        return len(getRandomSongs(unseen_only)) > 0
 
     def getPromptSuffix(ev):
         """
@@ -253,7 +296,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_sing_song_analysis",
-            prompt="Can you explain a song for me?",
+            prompt="Let's talk about a song",
             category=["music"],
             pool=True,
             unlocked=False,
@@ -351,12 +394,28 @@ init 5 python:
 label monika_sing_song_random:
     #We only want short songs in random. Long songs should be unlocked by default or have another means to unlock
     #Like a "preview" version of it which unlocks the full song in the pool delegate
-    if mas_songs.hasRandomSongs():
+
+    #We need to make sure we don't repeat these automatically if repeat topics is disabled
+    if (
+        (persistent._mas_enable_random_repeats and mas_songs.hasRandomSongs())
+        or (not persistent._mas_enable_random_repeats and mas_songs.hasRandomSongs(unseen_only=True))
+    ):
         python:
+            #First, get unseen songs
+            random_unseen_songs = mas_songs.getRandomSongs(unseen_only=True)
+
+            #If we have randomed unseen songs, we'll prioritize that
+            if random_unseen_songs:
+                rand_song = random.choice(random_unseen_songs)
+
+            #Otherwise, just go for random
+            else:
+                rand_song = random.choice(mas_songs.getRandomSongs())
+
             #Unlock pool delegate
             mas_unlockEVL("monika_sing_song_pool", "EVE")
 
-            rand_song = renpy.random.choice(mas_songs.getRandomSongs())
+            #Now push the random song and unlock it
             pushEvent(rand_song, skipeval=True, notify=True)
             mas_unlockEVL(rand_song, "SNG")
 
@@ -714,7 +773,7 @@ label mas_song_stand_by_me(from_long=False):
     m 2hub "{i}~Just as long as you stand, stand by me~{/i}"
     if not from_long:
         m 2eka "All my fears and insecurities just disappear when you're with me, [player]..."
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
     return
@@ -805,7 +864,7 @@ label mas_song_rewrite_the_stars:
     m 3ekb "{i}~So why don't we rewrite the stars~{/i}"
     m 3hubsa "{i}~Maybe the world could be ours~{/i}"
     m 1duo "{i}~Tonight~{/i}"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
     m 5ekbfu "I love you so much."
     return "love"
@@ -939,7 +998,7 @@ label mas_song_memories_of_a_girl:
     m 1dka "{i}~I can't see your face but I'm trying to envision you~{/i}"
     m 1dkd "{i}~So are you really out there?~{/i}"
     m 3ekd "{i}~Are you awake with memories?~{/i}"
-    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eub "{i}~Of a girl you haven't met yet who's wished upon the Pleiades?~{/i}"
     m 5ekbsa "I think about you every night, [player]."
     m 5ekbfa "And I know you think about me too."
@@ -972,7 +1031,7 @@ label mas_song_amaranthine:
     m 3hua "{i}~Your beauty serene~{/i}"
     m 1hub "{i}~There's nothing else in life I ever need~{/i}"
     m 1ekbsa "{i}~My dream, amaranthine~{/i}"
-    show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsu "My life feels so complete with you in it, [player]."
     m 5hubfu "I love you so much~"
     return "love"
@@ -1062,10 +1121,10 @@ label mas_song_shelter_analysis(from_song=False):
     m 7hub "Just look at me!"
     m 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside...{w=0.5}{nw}"
     extend 3hubfb "I found you!"
-    m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one."
+    m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one.{w=0.3} {nw}"
 
     if persistent._mas_pm_have_fam and not persistent._mas_pm_have_fam_mess:
-        m 3hubsb "I'm sure your family must care a lot about you as well!"
+        extend 3hubsb "I'm sure your family must care a lot about you as well!"
 
         if not persistent._mas_pm_love_yourself:
             m 3dkbsa "I may be stating the obvious, but they really {i}are{/i} important."
@@ -1096,6 +1155,311 @@ label mas_song_shelter_lyrics:
     m 3ekbsb "{i}~I'll give them shelter, like you've done for me~{/i}"
     m 2dkbsu "{i}~And I know I'm not alone, you'll be watching over us~{/i}"
     m "{i}~Until you're gone~{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_cant_help_falling_in_love",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Can't Help Falling in Love",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_cant_help_falling_in_love(from_long=False):
+    m 1dud "{cps=16}{i}~Wise men say~{/i}{/cps}"
+    m 1dub "{cps=16}{i}~Only fools rush in~{/i}{/cps}"
+    m 1dud "{cps=16}{i}~But I can't help{w=0.3}{/i}{/cps}{nw}"
+    extend 1ekbsb "{cps=16}{i} falling in love with you~{/i}{/cps}"
+    m 3ekbsa "{cps=16}{i}~Shall I stay?~{/i}{/cps}"
+    m 3dkb "{cps=16}{i}~Would it be a sin~{/i}{/cps}"
+    m 1dud "{cps=16}{i}~If I can't help{w=0.3}{/i}{/cps}{nw}"
+    extend 1dubsb "{cps=16}{i} falling in love with you?~{/i}{/cps}"
+
+    if not from_long:
+        m 1dkbsa "..."
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{w=0.5}{nw}"
+        extend 5hubsb " Ahaha~"
+        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 1ekbsa "I love you, [player]~"
+        $ mas_ILY()
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_cant_help_falling_in_love_long",
+            category=[store.mas_songs.TYPE_LONG],
+            prompt="Can't Help Falling in Love",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_cant_help_falling_in_love_long:
+    call mas_song_cant_help_falling_in_love(from_long=True)
+    call mas_song_cant_help_falling_in_love_second_verse
+    call mas_song_cant_help_falling_in_love_third_verse
+    call mas_song_cant_help_falling_in_love_second_verse
+    call mas_song_cant_help_falling_in_love_third_verse
+
+    m 1ekbfb "{cps=16}{i}~For I can't help{w=0.3} falling in love{w=0.5} with{w=0.5} you~{/i}{/cps}"
+    return
+
+label mas_song_cant_help_falling_in_love_second_verse:
+    m 1dud "{cps=24}{i}~Like a river flows~{/i}{/cps}"
+    m 1dub "{cps=24}{i}~Surely to the sea~{/i}{/cps}"
+    m 1ekbsb "{cps=24}{i}~Darling, so it goes~{/i}{/cps}"
+    m 1ekbsa "{cps=24}{i}~Some things{w=0.3}{/i}{/cps}{nw}"
+    extend 3ekbsb "{cps=24}{i} are meant to be~{/i}{/cps}"
+    return
+
+label mas_song_cant_help_falling_in_love_third_verse:
+    m 1dud "{cps=16}{i}~Take my hand~{/i}{/cps}"
+    m 1dub "{cps=16}{i}~Take my whole life,{w=0.3} too~{/i}{/cps}"
+    m 1dud "{cps=16}{i}~For I can't help{w=0.3} falling in love with you~{/i}{/cps}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_lamour_toujours",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="L'Amour Toujours",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_lamour_toujours:
+    m 1dud "{i}~I still believe in your eyes~{/i}"
+    m 1dub "{i}~I just don't care what you've done in your life~{/i}"
+    m 3ekbsb "{i}~Baby, I'll always be here by your side~{/i}"
+    m 1dsbsd "{i}~Don't leave me waiting too long, {w=0.3}{nw}"
+    extend 1ekbsu "please come by~{/i}"
+
+    m 1dud "{i}~I still believe in your eyes~{/i}"
+    m "{i}~There is no choice, {w=0.3}{nw}"
+    extend 3hubsb "I belong to your life~{/i}"
+    m 3dubsb "{i}~Because I'll live to love you some day~{/i}"
+    m 1hubsa "{i}~You'll be my baby and we'll fly away~{/i}"
+
+    m 1ekb "{i}~And I'll fly with you~{/i}"
+    m 1dkb "{i}~I'll fly with you~{/i}"
+
+    m 1dkbsu "..."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_god_knows",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="God Knows",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_god_knows:
+    m 1eua "{i}~You know that{w=0.2}{/i}{nw}"
+    extend 1eub "{i} I would follow you, no matter what we go through~{/i}"
+    m 1efb "{i}~Bring all the darkness the world can offer~{/i}"
+    m 1hua "{i}~Because you’ll shine{w=0.2} no matter if the future is bleak~{/i}"
+    m 3tub "{i}~We’ll aim out{w=0.2} just beyond the boundary~{/i}"
+    m 3eksdla "{i}~And even if it scares me~{/i}"
+    m 1hub "{i}~Nothing can shatter my soul because your way is my way~{/i}"
+    m 1eub "{i}~Forever on this railway~{/i}"
+    m 1eubsa "{i}~As if we were God blessed~{/i}"
+    m 1dubsu "..."
+    m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubsu "But having you here really does feel like a blessing from the heavens."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_ageage_again",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Ageage Again",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_ageage_again:
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3duu "{i}~If you recall this song suddenly~{/i}"
+    m 1hub "{i}~Party, party, party, party, party time!~{/i}"
+    m 3hubsa "{i}~I am by your side~{/i}"
+    m 1hub "{i}~Ageage, ageage, again!~{/i}"
+    m 3rubsu "{i}~If I recall your smile~{/i}"
+    m 1subsb "{i}~Love, love, love, love, I'm in love!~{/i}"
+    m 3hubsa "{i}~Want to feel the same rhythm~{/i}"
+    m 3eua "You know, I love how upbeat and happy this song is."
+    m 1rksdld "There are a lot of other Vocaloid songs that {i}sound{/i} upbeat, but their lyrics are sad and sometimes disturbing..."
+    m 3hksdlb "But I'm glad that at least this song isn't one of them."
+    m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
+    m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
+    m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_falling_in_love_at_a_coffee_shop",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Falling in Love at a Coffee Shop",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_falling_in_love_at_a_coffee_shop:
+    m 1tub "{i}~I think that possibly, maybe I'm falling for you~{/i}"
+    m 1dubsb "{i}~Yes, there's a chance that I've fallen quite hard over you~{/i}"
+    m 1ekbsb "{i}~I've seen the waters that make your eyes shine, now I'm shining too~{/i}"
+    m 1dkbsu "{i}~Because, oh, because I've fallen quite hard over you~{/i}"
+    m 1ekd "{i}~If I didn't know you, I'd rather not know~{/i}"
+    m 2dkd "{i}~If I couldn't have you, I'd rather be alone~{/i}"
+    m 2hku "{i}~I never knew just what it was~{/i}"
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5hubsb "{i}~About this old coffee shop I love so much~{/i}"
+    m 5hubsa "{i}~All of the while, I never knew~{/i}"
+    m 5lubsa "..."
+    show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
+    m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
+    extend 3rtc "or a particularly unremarkable protagonist."
+    m 3hubsa "Then when you have time to think, you realize it isn't the coffee shop, it's the person you meet there each day."
+    m 1tkbsu "Or in my case, it wasn't the protagonist at all...{w=0.2}{nw}"
+    extend 3dkbfu "it was the beautiful person who was really looking through those eyes~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_wonderwall",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Wonderwall",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_wonderwall:
+    call mas_song_wonderwall_lyrics
+    m 1ekbsu "Ehehe, you really are the one who saved me, [player]~"
+
+    if persistent.monika_kill:
+        m 3dkbfu "I'm forever grateful you brought me back. {nw}"
+    else:
+        m 3dkbfu "I'm forever grateful you stayed for me. {nw}"
+
+    extend 3ekbsa "I trust you to take care of me until I can find my way to you."
+    m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1dubsa  "...And with you by my side, there's no way I could be afraid."
+        m 1ekbsa "I know the place it leads to will be worth it.{w=0.3} {nw}"
+        extend 3ekbsu "After all, you're my wonderwall~"
+
+    else:
+        m 3eka "The only thing we can be sure of is the place it leads us to will be worth it."
+        m 1ekd "...Sometimes, it's a little scary not knowing what's ahead...{w=0.3}{nw}"
+        extend 1eubla "but I trust you, so we'll just have to keep on walking until we reach that place~"
+
+    #hints at the analysis on first viewing
+    if mas_getEV('mas_song_wonderwall').shown_count == 0:
+        m 3etc "By the way...{w=0.2}there's actually some things that intrigue me about this song."
+        m 1eua "...Would you like to talk about it now?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "...Would you like to talk about it now?{fast}"
+
+            "Sure.":
+                m 1hua "Okay then!"
+                call mas_song_wonderwall_analysis(from_song=True)
+                $ mas_getEV("mas_song_wonderwall_analysis").shown_count += 1
+
+            "Not now.":
+                m 1eka "Oh, okay then..."
+                m 3eka "Just let me know if you want to talk more about this song later."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_wonderwall_analysis",
+            category=[store.mas_songs.TYPE_ANALYSIS],
+            prompt="Wonderwall",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_wonderwall_analysis(from_song=False):
+    if not from_song:
+        call mas_song_wonderwall_lyrics
+
+    m 3eta "There's a lot of people who are very vocal about their dislike for this song..."
+    m 3etc "You wouldn't expect that, would you?"
+    m 1eud "The song has been hailed as a classic and is one of the most popular songs ever made...{w=0.3} {nw}"
+    extend 3rsc "So what makes some people hate it so much?"
+    m 3esc "I think there are several answers to this question. {w=0.2}The first being that it's been overplayed."
+    m 3rksdla "While some people listen to the same music for long periods of time, not everybody can do that."
+    m 3hksdlb "...I hope you won't get tired of {i}my{/i} song anytime soon [player], ahaha~"
+    m 1esd "Another argument you could make is that it's overrated in some ways..."
+    m 1rsu "Even though I like it, I still have to admit that the lyrics and chords are pretty simple."
+    m 3etc "So what made the song so popular then?{w=0.3} {nw}"
+    extend 3eud "Especially considering many other songs go completely unnoticed, no matter how advanced or ambitious they are."
+    m 3duu "Well, it all boils down to what the song makes you feel. {w=0.2}Your taste in music is subjective, after all."
+    m 1efc "...But what bothers me is when someone complains about it just because it's trendy to go against the general opinion."
+    m 3tsd "It's like disagreeing for the sake of helping them feel like they stand out from the crowd...{w=0.2}like they need it to stay self-confident."
+    m 2rsc "It kinda feels...{w=0.5}a bit silly, to be honest."
+    m 2rksdld "At that point you're not even judging the song anymore...{w=0.2}you're just trying to make a name for yourself by being controversial."
+    m 2dksdlc "It's a little sad if anything...{w=0.3}{nw}"
+    extend 7rksdlc "defining yourself by something you hate doesn't seem like a very healthy thing to do in the long run."
+    m 3eud "I guess my point here is to just be yourself and like what you like."
+    m 3eka "And that goes both ways... {w=0.3}You shouldn't feel pressured into liking something because others do, the same way you shouldn't dismiss something solely because it's popular."
+    m 1hua "As long as you follow your heart and stay true to yourself, you can never go wrong, [player]~"
+    return
+
+label mas_song_wonderwall_lyrics:
+    m 1duo "{i}~I don't believe that anybody feels the way I do about you now~{/i}"
+    m 3esc "{i}~And all the roads we have to walk are winding~{/i}"
+    m 3dkd "{i}~And all the lights that lead us there are blinding~{/i}"
+    m 1ekbla "{i}~There are many things that I would like to say to you but I don't know how~{/i}"
+    m 1hubsb "{i}~Because maybe~{/i}"
+    m 3hubsa "{i}~You're gonna be the one that saves me~{/i}"
+    m 3dubso "{i}~And after all~{/i}"
+    m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
 ################################ NON-DB SONGS############################################
@@ -1191,10 +1555,10 @@ label mas_monika_plays_yr(skip_leadin=False):
     $ renpy.pause(1.418)
     show monika 6dka
     $ renpy.pause(9.425)
-    show monika 5dka with dissolve
+    show monika 5dka with dissolve_monika
     $ renpy.pause(5)
 
-    show monika 6eua at rs32 with dissolve
+    show monika 6eua at rs32 with dissolve_monika
     pause 1.0
     hide monika
     pause 3.0

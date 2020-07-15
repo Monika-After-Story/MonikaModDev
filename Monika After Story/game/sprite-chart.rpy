@@ -1806,6 +1806,321 @@ init -5 python in mas_sprites:
 # retrieved from a Dress Up Renpy Cookbook
 # https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
 
+
+init -10 python:
+
+    class MASHighlightMap(object):
+        """SEALED
+        Maps arbitrary keys to <MASFilterMap> objects
+
+        DO NOT EXTEND THIS CLASS. If you need similar functionality, make a 
+        wrapper around this. This class contains functions that may crash
+        when used in an unexpected context.
+        
+        NOTE: values dont have to be MASFilterMAP objects, but certain
+            functions will fail if not.
+
+        NOTE: this can iterated over to retrieve all objects in here
+            EXCEPT for the default.
+
+        PROPERTIES:
+            None. Use provided functions to manipulate the map.
+        """
+        __KEY_ALL = "*"
+
+        def __init__(self, keys, default=None):
+            """
+            Constructor
+
+            IN:
+                keys - iterable of keys that we are allowed to use.
+                    NOTE: the default catch all key of "*" (KEY_ALL) does NOt
+                    need to be in here.
+                default - value to use as the default/catch all object. This
+                    is assigned to the KEY_ALL key.
+            """
+            self.__map = { self.__KEY_ALL: default }
+
+            # remove keyall
+            key_list = list(keys)
+            if self.__KEY_ALL in key_list:
+                key_list.remove(self.__KEY_ALL)
+
+            # remove duplicate
+            self.__valid_keys = tuple(set(key_list))
+
+        def __iter__(self):
+            """
+            Iterator object (generator)
+            """
+            for key in self.__valid_keys:
+                item = self.get(key)
+                if item is not None:
+                    yield item
+
+        def _add_key(self, new_key, new_value=None):
+            """
+            Adds a key to the valid keys list. Also adds a value if desired
+            NOTE: this is not intended to be done wildly. Please do not
+            make a habit of adding keys after construction. 
+            NOTE: do not use this to add values. if the given key already 
+            exists, the value is ignored.
+
+            IN:
+                new_key - new key to add
+                new_value - new value to associate with this key 
+                    (Default: None)
+            """
+            if new_key not in self.__valid_keys and new_key != self.__KEY_ALL:
+                key_list = list(self.__valid_keys)
+                key_list.append(new_key)
+                self.__valid_keys = tuple(key_list)
+                self.add(new_key, new_value)
+
+        def add(self, key, value):
+            """
+            Adds value to map.
+            NOTE: type is enforced here. If the given item is None
+            it is ignored.
+            NOTE: this will NOT set the default even if KEY_ALL is passed in
+
+            IN:
+                key - key to store item to
+                value - value to add
+                    if None is passed, this is equivalent to clear
+            """
+            if value is None:
+                self.clear(key)
+                return
+
+            if key == self.__KEY_ALL or key not in self.__valid_keys:
+                return
+
+            # otherwise valid to add
+            self.__map[key] = value
+
+        def apply(self, mapping):
+            """
+            Applies the given dict mapping to this MASHighlightMap.
+            NOTE: will not add invalid keys.
+
+            IN:
+                mapping - dict of the following format:
+                    key: valid key for this map
+                    value: value to add
+            """
+            for key in mapping:
+                self.add(key, mapping[key])
+
+        def clear(self, key):
+            """
+            Clears value with the given key.
+            NOTE: will NOT clear the default even if KEY_ALL is passed in
+
+            IN:
+                key - key to clear with
+            """
+            if key != self.__KEY_ALL and key in self.__map:
+                self.__map.pop(key)
+
+        @staticmethod
+        def clear_hl_mapping(hl_mpm_data):
+            """
+            Clears hl mapping in the given hl data object. AKA: Sets the
+            hl mapping portion of a pre-MHM MPM to {}.
+
+            NOTE: this should only be used with  the MASPoseMap._transform
+            function with MASAccessory
+
+            IN:
+                hl_mpm_data - hl data set in a MASPoseMap.
+
+            RETURNS: hl data to set in a MASPoseMap.
+            """
+            if hl_mpm_data is None:
+                return None
+            return (hl_mpm_data[0], {})
+
+        @staticmethod
+        def convert_mpm(hl_keys, mpm):
+            """
+            Converts hl mappings in a MASPoseMap to MASHighlightMAp objects
+
+            IN:
+                hl_keys - highlight keys to use
+                mpm - MASPoseMap object to convert
+            """
+            if mpm is None:
+                return
+
+            # first, build modify pargs map
+            pargs = {}
+            for param in MASPoseMap.P_PARAM_NAMES:
+                hl_data = mpm.get(MASPoseMap.pn2lp(param), None)
+                if hl_data is None:
+                    pargs[param] = None
+                else:
+                    pargs[param] = MASHighlightMap.create_from_mapping(
+                        hl_keys,
+                        hl_data[0],
+                        hl_data[1]
+                    )
+
+            # then modify the mpm
+            mpm._modify(**pargs)
+
+        @staticmethod
+        def create_from_mapping(hl_keys, hl_def, hl_mapping):
+            """
+            Creates a MASHighlightMap using keys/default/mapping
+
+            IN:
+                hl_keys - list of keys to use
+                hl_def - default highlight to use. Can be None
+                hl_mapping - mapping to use.
+
+            RETURNS: created MASHighlightMap
+            """
+            mhm = MASHighlightMap(hl_keys, default=hl_def)
+            mhm.apply(hl_mapping)
+            return mhm
+
+        def fltget(self, key, flt, defval=None):
+            """
+            Combines getting from here and getting the resulting MASFilterMap
+            object.
+
+            IN:
+                key - key to get from this map
+                flt - filter to get from associated MASFilterMap, if found
+                defval - default value to return if no flt value could be
+                    found.
+                    (Default: None)
+
+            RETURNS: value in the MASFilterMap associated with the given
+                flt, using the MASFilterMap associated with the given key.
+                or defval if no valid MASfilterMap or value found.
+            """
+            mfm = self.get(key)
+            if mfm is None:
+                return defval
+
+            return mfm.get(flt, defval=defval)
+
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl, hl_keys):
+            """
+            Builds hl data from JSON data
+
+            IN:
+                json_obj - JSON object to parse
+                ind_lvl - indentation level
+                    NOTE: this function handles loading/success log so
+                    do NOT increment indent when passing in
+                hl_keys - expected keys of this highlight map
+
+            OUT:
+                msg_log - list to add messagse to
+
+            RETURNS: hl_data, ready to passed split and passed into
+                create_from_mapping. Tuple:
+                [0] - default MASFilterMap object
+                [1] - dict:
+                    key: hl_key
+                    value: MASFilterMap object
+                or None if no data, False if failure in parsing occured
+            """
+            # first log loading
+            msg_log.append((
+                store.mas_sprites_json.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprites_json.MHM_LOADING
+            ))
+
+            # parse the data
+            hl_data = MASHighlightMap._fromJSON_hl_data(
+                json_obj,
+                msg_log,
+                ind_lvl + 1,
+                hl_keys
+            )
+
+            # check fai/succ
+            if hl_data is False:
+                # loggin should take care of this already
+                return False
+
+            # log success
+            msg_log.append((
+                store.mas_sprites_json.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprites_json.MHM_SUCCESS
+            ))
+
+            return hl_data
+
+        def get(self, key):
+            """
+            Gets value wth the given key.
+
+            IN:
+                key - key of item to get
+
+            RETURNS: MASFilterMap object, or None if not found
+            """
+            if key in self.__map:
+                return self.__map[key]
+
+            # otherwise return default
+            return self.getdef()
+
+        def getdef(self):
+            """
+            Gets the default value
+
+            RETURNS: MASFilterMap object, or NOne if not found
+            """
+            return self.__map.get(self.__KEY_ALL, None)
+
+        def keys(self):
+            """
+            gets keys in this map
+
+            RETURNS: tuple of keys
+            """
+            return self.__valid_keys
+
+        @staticmethod
+        def o_fltget(mhm, key, flt, defval=None):
+            """
+            Similar to fltget, but on a MASHighlightMap object.
+            NOTE: does None checks of mhm and flt.
+
+            IN:
+                mhm - MASHighlightMap object to run fltget on
+                key - key to get MASFilterMap from mhm
+                flt - filter to get from associated MASFilterMap
+                defval - default value to return if no flt value could be found
+                    (Default: None)
+
+            RETURNS: See fltget
+            """
+            if mhm is None or flt is None:
+                return defval
+
+            return mhm.fltget(key, flt, defval=defval)
+
+        def setdefault(self, value):
+            """
+            Sets the default value
+
+            IN:
+                value - value to use as default
+            """
+            if value is None or isinstance(value, MASFilterMap):
+                self.__map[self.__KEY_ALL] = value
+
+
 init -3 python:
 #    import renpy.store as store
 #    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
@@ -4031,313 +4346,6 @@ init -3 python:
             # otherwse return None because no arms
             return None
 
-
-    class MASHighlightMap(object):
-        """
-        Maps arbitrary keys to <MASFilterMap> objects
-        
-        NOTE: values dont have to be MASFilterMAP objects, but certain
-            functions will fail if not.
-
-        NOTE: this can iterated over to retrieve all objects in here
-            EXCEPT for the default.
-
-        PROPERTIES:
-            None. Use provided functions to manipulate the map.
-        """
-        __KEY_ALL = "*"
-
-        def __init__(self, keys, default=None):
-            """
-            Constructor
-
-            IN:
-                keys - iterable of keys that we are allowed to use.
-                    NOTE: the default catch all key of "*" (KEY_ALL) does NOt
-                    need to be in here.
-                default - value to use as the default/catch all object. This
-                    is assigned to the KEY_ALL key.
-            """
-            self.__map = { self.__KEY_ALL: default }
-
-            # remove keyall
-            key_list = list(keys)
-            if self.__KEY_ALL in key_list:
-                key_list.remove(self.__KEY_ALL)
-
-            # remove duplicate
-            self.__valid_keys = tuple(set(key_list))
-
-        def __iter__(self):
-            """
-            Iterator object (generator)
-            """
-            for key in self.__valid_keys:
-                item = self.get(key)
-                if item is not None:
-                    yield item
-
-        def _add_key(self, new_key, new_value=None):
-            """
-            Adds a key to the valid keys list. Also adds a value if desired
-            NOTE: this is not intended to be done wildly. Please do not
-            make a habit of adding keys after construction. 
-            NOTE: do not use this to add values. if the given key already 
-            exists, the value is ignored.
-
-            IN:
-                new_key - new key to add
-                new_value - new value to associate with this key 
-                    (Default: None)
-            """
-            if new_key not in self.__valid_keys and new_key != self.__KEY_ALL:
-                key_list = list(self.__valid_keys)
-                key_list.append(new_key)
-                self.__valid_keys = tuple(key_list)
-                self.add(new_key, new_value)
-
-        def add(self, key, value):
-            """
-            Adds value to map.
-            NOTE: type is enforced here. If the given item is NOT a 
-            MASFilterMap or None, it is ignored.
-            NOTE: this will NOT set the default even if KEY_ALL is passed in
-
-            IN:
-                key - key to store item to
-                value - value to add
-                    if None is passed, this is equivalent to clear
-            """
-            if value is None:
-                self.clear(key)
-                return
-
-            if key == self.__KEY_ALL or key not in self.__valid_keys:
-                return
-
-            # otherwise valid to add
-            self.__map[key] = value
-
-        def apply(self, mapping):
-            """
-            Applies the given dict mapping to this MASHighlightMap.
-            NOTE: will not add invalid keys.
-
-            IN:
-                mapping - dict of the following format:
-                    key: valid key for this map
-                    value: MASFilterMap object or None
-            """
-            for key in mapping:
-                self.add(key, mapping[key])
-
-        def clear(self, key):
-            """
-            Clears value with the given key.
-            NOTE: will NOT clear the default even if KEY_ALL is passed in
-
-            IN:
-                key - key to clear with
-            """
-            if key != self.__KEY_ALL and key in self.__map:
-                self.__map.pop(key)
-
-        @staticmethod
-        def clear_hl_mapping(hl_mpm_data):
-            """
-            Clears hl mapping in the given hl data object. AKA: Sets the
-            hl mapping portion of a pre-MHM MPM to {}.
-
-            NOTE: this should only be used with  the MASPoseMap._transform
-            function with MASAccessory
-
-            IN:
-                hl_mpm_data - hl data set in a MASPoseMap.
-
-            RETURNS: hl data to set in a MASPoseMap.
-            """
-            if hl_mpm_data is None:
-                return None
-            return (hl_mpm_data[0], {})
-
-        @staticmethod
-        def convert_mpm(hl_keys, mpm):
-            """
-            Converts hl mappings in a MASPoseMap to MASHighlightMAp objects
-
-            IN:
-                hl_keys - highlight keys to use
-                mpm - MASPoseMap object to convert
-            """
-            if mpm is None:
-                return
-
-            # first, build modify pargs map
-            pargs = {}
-            for param in MASPoseMap.P_PARAM_NAMES:
-                hl_data = mpm.get(MASPoseMap.pn2lp(param), None)
-                if hl_data is None:
-                    pargs[param] = None
-                else:
-                    pargs[param] = MASHighlightMap.create_from_mapping(
-                        hl_keys,
-                        hl_data[0],
-                        hl_data[1]
-                    )
-
-            # then modify the mpm
-            mpm._modify(**pargs)
-
-        @staticmethod
-        def create_from_mapping(hl_keys, hl_def, hl_mapping):
-            """
-            Creates a MASHighlightMap using keys/default/mapping
-
-            IN:
-                hl_keys - list of keys to use
-                hl_def - default highlight to use. Can be None
-                hl_mapping - mapping to use.
-
-            RETURNS: created MASHighlightMap
-            """
-            mhm = MASHighlightMap(hl_keys, default=hl_def)
-            mhm.apply(hl_mapping)
-            return mhm
-
-        def fltget(self, key, flt, defval=None):
-            """
-            Combines getting from here and getting the resulting MASFilterMap
-            object.
-
-            IN:
-                key - key to get from this map
-                flt - filter to get from associated MASFilterMap, if found
-                defval - default value to return if no flt value could be
-                    found.
-                    (Default: None)
-
-            RETURNS: value in the MASFilterMap associated with the given
-                flt, using the MASFilterMap associated with the given key.
-                or defval if no valid MASfilterMap or value found.
-            """
-            mfm = self.get(key)
-            if mfm is None:
-                return defval
-
-            return mfm.get(flt, defval=defval)
-
-        @staticmethod
-        def fromJSON(json_obj, msg_log, ind_lvl, hl_keys):
-            """
-            Builds hl data from JSON data
-
-            IN:
-                json_obj - JSON object to parse
-                ind_lvl - indentation level
-                    NOTE: this function handles loading/success log so
-                    do NOT increment indent when passing in
-                hl_keys - expected keys of this highlight map
-
-            OUT:
-                msg_log - list to add messagse to
-
-            RETURNS: hl_data, ready to passed split and passed into
-                create_from_mapping. Tuple:
-                [0] - default MASFilterMap object
-                [1] - dict:
-                    key: hl_key
-                    value: MASFilterMap object
-                or None if no data, False if failure in parsing occured
-            """
-            # first log loading
-            msg_log.append((
-                store.mas_sprites_json.MSG_INFO_T,
-                ind_lvl,
-                store.mas_sprites_json.MHM_LOADING
-            ))
-
-            # parse the data
-            hl_data = MASHighlightMap._fromJSON_hl_data(
-                json_obj,
-                msg_log,
-                ind_lvl + 1,
-                hl_keys
-            )
-
-            # check fai/succ
-            if hl_data is False:
-                # loggin should take care of this already
-                return False
-
-            # log success
-            msg_log.append((
-                store.mas_sprites_json.MSG_INFO_T,
-                ind_lvl,
-                store.mas_sprites_json.MHM_SUCCESS
-            ))
-
-            return hl_data
-
-        def get(self, key):
-            """
-            Gets value wth the given key.
-
-            IN:
-                key - key of item to get
-
-            RETURNS: MASFilterMap object, or None if not found
-            """
-            if key in self.__map:
-                return self.__map[key]
-
-            # otherwise return default
-            return self.getdef()
-
-        def getdef(self):
-            """
-            Gets the default value
-
-            RETURNS: MASFilterMap object, or NOne if not found
-            """
-            return self.__map.get(self.__KEY_ALL, None)
-
-        def keys(self):
-            """
-            gets keys in this map
-
-            RETURNS: tuple of keys
-            """
-            return self.__valid_keys
-
-        @staticmethod
-        def o_fltget(mhm, key, flt, defval=None):
-            """
-            Similar to fltget, but on a MASHighlightMap object.
-            NOTE: does None checks of mhm and flt.
-
-            IN:
-                mhm - MASHighlightMap object to run fltget on
-                key - key to get MASFilterMap from mhm
-                flt - filter to get from associated MASFilterMap
-                defval - default value to return if no flt value could be found
-                    (Default: None)
-
-            RETURNS: See fltget
-            """
-            if mhm is None or flt is None:
-                return defval
-
-            return mhm.fltget(key, flt, defval=defval)
-
-        def setdefault(self, value):
-            """
-            Sets the default value
-
-            IN:
-                value - value to use as default
-            """
-            if value is None or isinstance(value, MASFilterMap):
-                self.__map[self.__KEY_ALL] = value
 
     # pose map helps map poses to an image
     class MASPoseMap(renpy.store.object):
@@ -7547,7 +7555,7 @@ image ghost_monika:
 # NOTE: to hide a desk ACS, set that ACS to not keep on desk b4 calling this
 label mas_transition_to_emptydesk:
     $ store.mas_sprites.show_empty_desk()
-    hide monika with dissolve
+    hide monika with dissolve_monika
     return
 
 # transition from empty desk

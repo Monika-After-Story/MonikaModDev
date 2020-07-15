@@ -81,7 +81,8 @@ label mas_mood_start:
         filtered_moods = Event.filterEvents(
             mas_moods.mood_db,
             unlocked=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # build menu list
@@ -198,7 +199,7 @@ label mas_mood_proud:
             m 1lsbsa "My heart is fluttering just thinking about it!"
             m 1lksdla "Gosh, I'm getting awfully excited about this..."
             m 3hub "It'll be reality someday..."
-            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hubfb "But until then, just know that I'm very proud of you, my love!"
             return
         "Minor.":
@@ -209,7 +210,7 @@ label mas_mood_proud:
             m 2rksdla "They can be challenging to reach on their own."
             m 4eub "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
             m 4hub "So keep hitting those small goals, [player]!"
-            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hubfb "And remember, I love you, and I'm always cheering you on!"
             return "love"
 
@@ -258,6 +259,9 @@ label mas_mood_sick:
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
+
+    label .ask_will_rest:
+        pass
 
     $ persistent._mas_mood_sick = True
 
@@ -652,11 +656,11 @@ label mas_mood_bored:
             if mas_isMoniAff(higher=True):
                 m 1eka "Okay..."
                 if mas_isMoniEnamored(higher=True):
-                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5tsu "We could just stare into each other's eyes a little longer..."
                     m "We'll never get bored of that~"
                 else:
-                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5eua "We could just stare into each other's eyes a little longer..."
                     m "That will never get boring~"
 

@@ -232,7 +232,7 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
     $ renpy.show("monika {}".format(mid_exp),[mas_back_from_kissing(transition,_mas_kiss_y2)])
     pause transition
     $ renpy.show("monika {}".format(final_exp),[i11()])
-    show monika with dissolve
+    show monika with dissolve_monika
     if hide_ui:
         if store.mas_globals.dlg_workflow:
             $ mas_MUMUDropShield()
@@ -463,10 +463,11 @@ label mas_timed_text_events_wrapup:
         mas_DropShield_timedtext()
 
         # restart song/sounds that were playing before event
-        if curr_song != store.songs.FP_MONIKA_LULLABY:
+        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
             play_song(curr_song, 1.0)
         else:
             play_song(None, 1.0)
+
         renpy.music.set_volume(amb_vol, 1.0, "background")
         renpy.music.set_volume(amb_vol, 1.0, "backsound")
 

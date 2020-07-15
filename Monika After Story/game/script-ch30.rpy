@@ -77,6 +77,9 @@ init -1 python in mas_globals:
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
 
+    this_ev = None
+    # the current topic, but as event object. may be None.
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
@@ -118,7 +121,6 @@ init -10 python:
         # TRue if want the scene to change
 
         # end keys
-
 
         def __init__(self):
             """
@@ -377,23 +379,12 @@ init python:
         IN:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
-
-        ASSUMES:
-            mas_is_raining
-            mas_is_snowing
         """
         # hide the existing mask
         renpy.hide("rm")
 
         # get current weather masks
-        # TODO: change to pass in current filter
-        mask = mas_current_weather.sp_window(
-            mas_isCurrentFlt("day")
-        )
-
-        # should we use fallbacks instead?
-        if persistent._mas_disable_animations:
-            mask += "_fb"
+        mask = mas_current_weather.get_mask()
 
         # now show the mask
         renpy.show(mask, tag="rm")
@@ -479,16 +470,8 @@ init python:
 
         RETURNS: True upon a filter change, False if not
         """
-        # TODO: this should be deferred to the BG
         curr_flt = store.mas_sprites.get_filter()
-
-        now_time = datetime.datetime.now().time()
-        if mas_isDay(now_time):
-            new_flt = store.mas_sprites.FLT_DAY
-
-        else: # mas_isNight(now_time):
-            new_flt = store.mas_sprites.FLT_NIGHT
-
+        new_flt = mas_current_background.progress()
         store.mas_sprites.set_filter(new_flt)
 
         return curr_flt != new_flt
@@ -796,10 +779,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ hide_mask = store.mas_current_background.hide_masks
     if hide_calendar is None:
         $ hide_calendar = store.mas_current_background.hide_calendar
-    if day_bg is None:
-        $ day_bg = store.mas_current_background.getDayRoom()
-    if night_bg is None:
-        $ night_bg = store.mas_current_background.getNightRoom()
 
     # progress filter
     # NOTE: filter progression MUST happen here because othrewise we many have
@@ -819,15 +798,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     python:
         monika_room = None
 
-        # TODO: this will need some rework to work nicely with filter
-        #   progression. For now its just going to be customized for
-        #   our two filters.
         if scene_change:
-            if day_mode:
-                monika_room = day_bg
-
-            else:
-                monika_room = night_bg
+            monika_room = mas_current_background.getCurrentRoom()
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
@@ -1657,6 +1629,9 @@ label ch30_minute(time_since_check):
         # split affection values prior to saving
         _mas_AffSave()
 
+        #Check if we need to lock/unlock the songs rand delegate
+        mas_songs.checkRandSongDelegate()
+
         # save the persistent
         renpy.save_persistent()
 
@@ -1924,21 +1899,6 @@ label ch30_reset:
     # set any prompt variants for acs that can be removed here
     $ store.mas_selspr.startup_prompt_check()
 
-
-    ## certain things may need to be reset if we took monika out
-    # NOTE: this should be at the end of this label, much of this code might
-    # undo stuff from above
-    python:
-        if store.mas_dockstat.retmoni_status is not None:
-            monika_chr.remove_acs(mas_acs_quetzalplushie)
-
-            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
-            MASConsumable._reset()
-
-            #Let's also push the event to get rid of the thermos too
-            if not mas_inEVL("mas_consumables_remove_thermos"):
-                queueEvent("mas_consumables_remove_thermos")
-
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
 
@@ -1974,7 +1934,7 @@ label ch30_reset:
         $ persistent._mas_filereacts_gift_aff_gained = 0
         $ persistent._mas_filereacts_last_aff_gained_reset_date = today
 
-    #Check if we need to unlock the songs rand delegate
+    #Check if we need to lock/unlock the songs rand delegate
     $ mas_songs.checkRandSongDelegate()
 
     #Now check the analysis ev
@@ -2003,4 +1963,22 @@ label ch30_reset:
 
     #Check BGSel topic unlocked state
     $ mas_checkBackgroundChangeDelegate()
+
+    # build background filter data and update the current filter progression
+    $ store.mas_background.buildupdate()
+
+    ## certain things may need to be reset if we took monika out
+    # NOTE: this should be at the end of this label, much of this code might
+    # undo stuff from above
+    python:
+        if store.mas_dockstat.retmoni_status is not None:
+            monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
+
     return
