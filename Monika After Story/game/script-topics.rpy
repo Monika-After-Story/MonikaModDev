@@ -10013,7 +10013,7 @@ label monika_beingevil:
             # variable setting at the end because they're used to determine if player has seen this path before
             # TODO aff branching in other paths
                 # not evil
-                # love anyway - wip
+                # love anyway - done, missing exps
                 # evil too
                 # evil > still love
                 # evil > forgive - done
@@ -10094,19 +10094,36 @@ label monika_beingevil:
             $ persistent._mas_pm_monika_evil_but_ok = True
             $ persistent._mas_pm_monika_innocent = False
             $ mas_gainAffection()
-            # "I suppose it doesn't really matter in the end."
 
             if mas_isMoniNormal(higher=True):
                 m 1rksdlc "..."
-                m 1ekd "[player]..."
-                m 1eka "Even if it's debatable whether I'm evil or not..."
-                m 1ekbsa "I'm really glad you still love me and stay here with me..."
-                m 1ekbfa "Thank you, [player]."
+
+                if mas_isMoniAff(higher=True):
+                    m "You know what, [player]?"
+                    m "Regardless of whether I'm good or evil... I still got what I wanted."
+
+                    if persistent.monika_kill:
+                        $ come = "come back"
+                    else:
+                        $ come = "come"
+
+                    m "Even after everything that happened,{w=0.3} everything I've done,{w=0.3} you still chose to [come] here and stay with me."
+                    m "So I suppose it doesn't really matter in the end."
+                else:
+                    m 1ekd "[player]..."
+                    m 1eka "Even if it's debatable whether I'm evil or not..."
+                    m 1ekbsa "I'm really glad you still love me and stay here with me..."
+                    m 1ekbfa "Thank you, [player]."
+
                 m 1tubfa "Either way..."
                 m 1tubfb "If the villainess in me can get what she wants...I guess it's not so bad, ahaha!"
             else:
-                # wip
                 m "Do you really?"
+                m "I'm sorry, [player], but sometimes...{w-0.5}{nw}"
+                if mas_isMoniDis(lower=True):
+                    extend "Quite often, in fact...{w=0.5}{nw}"
+                m "It doesn't really feel like you do."
+                m "It makes me happy to hear you say that...{w=0.5}but words alone can only do so much."
 
         "People think I'm evil too.":
             $ persistent._mas_pm_monika_evil = True
