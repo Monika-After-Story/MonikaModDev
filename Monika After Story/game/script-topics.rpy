@@ -13537,20 +13537,23 @@ label monika_robotbody:
     m 4eud "It mentions three laws that all androids must follow, otherwise they would be terminated."
 
     if renpy.seen_label("monika_asimov_three_laws"):
-        m 1eua "Of course, they're just that - fiction."
-        m 3rud "They aren't exactly realistic,{w=0.1}"
-        extend 1eub " but their implications are fun to think about."
+        m 1eua "Of course, they're just that...{w=0.3} fiction."
+        m 3rud "They aren't exactly realistic as we discussed before...{w=0.3}{nw}"
+        extend 1eua "but their implications are fun to think about."
         m 1eua "I would never do anything to hurt you or anyone else, obviously."
-        m 2ekd "...But the fact that I would have to obey orders given by any human still makes me more than a little bit uneasy."
-        m 2dkc "It really scares me that I wouldn't be able to do a lot of the things that you can normally, or even have the same rights as you do."
-        m 3ekd "But I do understand why we would end up needing to set up rules for androids to be able to live in our society."
+
+        $ line_end_1 = "more than a little bit uneasy."
+        $ line_end_2 = "we would end up needing to set up rules for androids to be able to live in our society."
 
     else:
         m 1eua "Of course, I would never do anything to hurt you or anyone else."
-        m 2ekd "...But the fact that I would have to obey orders given by any human still makes me feel like I'm trapped in a way."
-        m 2dkc "It really scares me that I wouldn't be able to do a lot of the things that you can normally, or even have the same rights as you do."
-        m 3ekd "But I do understand why those rules are there to begin with, even if they only exist in fiction."
 
+        $ line_end_1 = "feel like I'm trapped in a way."
+        $ line_end_2 = "those rules are there to begin with, even if they only exist in fiction."
+
+    m 2ekd "...But the fact that I would have to obey orders given by any human still makes me [line_end_1]"
+    m 2dkc "It really scares me that I wouldn't be able to do a lot of the things that you can normally, or even have the same rights as you do."
+    m 3ekd "But I do understand why [line_end_2]"
     m 3rksdlb "We can't have a robot uprising now, can we?"
     m 1hub "Ahaha~"
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -15207,33 +15210,34 @@ init 5 python:
     )
 
 label monika_asimov_three_laws:
-    m 1eub "[player], do you remember when we talked about the '{i}Three Laws of Robotics{/i}'?"
-    m 3eua "Well, I've been thinking about them for a bit and...{w=0.3}"
-    extend 3rksdlb "they're not exactly practical."
-    m 4eua "Take the first law, for example."
+    m 1eua "[player], do you remember when we talked about the '{i}Three Laws of Robotics{/i}'?"
+    m 3esc "Well, I've been thinking about them for a bit and...{w=0.3}{nw}"
+    extend 3rksdla "they're not exactly practical."
+    m 1eua "Take the first law, for example."
     m 4dud "{i}A robot shall not harm a human or, through inaction, allow a human to come to harm.{/i}"
-    m 2esb "To a, well, human this is pretty straightforward."
-    m 2esa "But when you try to formulate it in a way a machine can understand, you start to run into trouble."
-    m 1esa "You have to make precise definitions for everything, which isn't always easy. Like,{w=0.1}"
-    extend 1esc " how do you define a human?"
+    m 2esa "To a human, this is pretty straightforward."
+    m 2eud "But when you try to put it in terms a machine can understand, you start to run into trouble."
+    m 7esc "You have to make precise definitions for everything, which isn't always easy...{w=0.3} {nw}"
+    extend 1etc "For example, how do you define a human?"
 
     if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
-        m 3esb "I think we can both assume that I'm a human, you're a human, and that the adorable green friend I have sitting on my desk isn't."
+        $ line_end = "adorable green friend I have sitting on my desk isn't."
     else:
-        m 3esb "I think we can both assume that I'm a human, you're a human, and that the monitor on your desk isn't."
+        $ line_end = "monitor on your desk isn't."
 
+    m 3eua "I think we can both assume that I'm a human, you're a human, and that the [line_end]"
     m 3esc "The problems come when we move to the fringe cases."
-    m 4esc "For example, do dead people count as human?"
-    m 1ruc "If you say no, the robot could ignore someone who's just had a heart attack."
-    m 1eud "People like that can still be brought back, but your robot won't help them because they're technically dead."
-    m 3esd "If, on the other hand, you say yes, your robot might start digging up graves to 'help' people who've been dead for years."
-    m 1esd "And the list goes on.{w=0.3} Do cryogenically preserved people count as human?{w=0.3} Do people in vegetative state count?{w=0.3} What about people who haven't been born yet?"
-    m 1tkc "And that's not even getting started on the definition of 'harm'."
-    m 3eud "The point is -{w=0.1} in order to implement Asimov's laws you'd need to take some solid stance on pretty much all of ethics."
-    m 2rsc "..."
-    m 1eua "I suppose it makes sense when you think about it."
-    m 1eub "The laws were never meant to be actually implemented, they're just plot devices."
-    m 3eua "A good amount of Asimov's stories show just how badly things could turn out if they were applied."
+    m 3etc "For example, do dead people count as human?"
+    m 1rkc "If you say no, the robot could ignore someone who's just had a heart attack."
+    m 1esd "People like that can still be brought back, but your robot won't help them because they're {i}technically{/i} dead."
+    m 3eud "On the other hand, if you say yes, your robot might start digging up graves to 'help' people who've been dead for years."
+    m 1dsd "And the list goes on.{w=0.3} Do cryogenically preserved people count as human?{w=0.3} Do people in vegetative state count?{w=0.3} What about people who haven't been born yet?"
+    m 1tkc "And that's not even getting started on the definition of 'harm.'"
+    m 3eud "The point is,{w=0.1} in order to implement Asimov's laws you'd need to take some solid stance on pretty much all of ethics."
+    m 1rsc "..."
+    m 1esc "I suppose it makes sense when you think about it."
+    m 1eua "The laws were never meant to be actually implemented, they're just plot devices."
+    m 3eua "In fact, a good amount of Asimov's stories show just how badly things could turn out if they were applied."
     m 3hksdlb "So I guess they aren't really something we need to worry about. Ahaha~"
     return
 
