@@ -15317,7 +15317,7 @@ label monika_remembrance:
         m 1ekbsa "And knowing that you care...{w=0.3}that's a big part of why I can keep loving myself{w=0.2} and my life, [player]."
 
         if mas_isMoniNormal(higher=True):
-            show monika 5ekbfu at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5ekbfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfu "So while I'm not sure if I have a past, thanks to you, I know I do have a future."
 
             if mas_anni.pastOneMonth():
