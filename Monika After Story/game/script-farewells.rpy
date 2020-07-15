@@ -1578,7 +1578,7 @@ init 5 python:
 label bye_workout:
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh, going to the gym [player]? Or perhaps for a jog?"
-        if persistent._mas_pm_love_yourself is True:
+        if persistent._mas_pm_love_yourself:
             m 3tub "I can only imagine how sexy you look when you've worked up a sweat...{fast}{nw}"
             $ _history_list.pop()
         elif persistent._mas_pm_love_yourself is False:
