@@ -1562,3 +1562,35 @@ label bye_prompt_restart:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=20)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RESTART
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_workout",
+            unlocked=True,
+            prompt="I'm going to work out.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_workout:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Oh, going to the gym [player]? Or perhaps for a jog?"
+        if persistent._mas_pm_love_yourself is True:
+            m 3tub "I can only imagine how sexy you look when you've worked up a sweat...{fast}{nw}"
+            $ _history_list.pop()
+        elif persistent._mas_pm_love_yourself is False:
+            m 1hub "I'm so glad you're taking care of your body! A healthy body leads to a healthy mind~"
+        else:
+            m 1kua "I'm so glad you're taking care of your body! Your health is very important to me~"
+        m 1eub "See you soon!"
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+    else:
+        m 2euc "Good. See you later."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=4)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORKOUT
+    return 'quit'

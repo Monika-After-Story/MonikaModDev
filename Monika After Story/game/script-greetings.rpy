@@ -53,6 +53,7 @@ init -1 python in mas_greetings:
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
+    TYPE_WORKOUT = "workout"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -3923,4 +3924,39 @@ label greeting_code_help_outro:
     m 1eua "Anyway, what would you like to do today?"
 
     $ mas_lockEVL("greeting_code_help", "GRE")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_workout",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_WORKOUT],
+        ),
+        code="GRE"
+    )
+
+label greeting_workout:
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Welcome back, [player]!"
+        m 1hub "I hope you had a nice workout session!"
+        m 3eub "Don't forget to eat something to restitute your muscles, and stay hydrated~"
+        m 2hua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "Did the exercise help you release some tension?"
+        m 2rud "I hope it did. Lets spend some more time together..."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=1}look who's back."
+        m 6dkc "I'm...happy that you're taking care of yourself..."
+        m 6fktpc "But don't you want to take care of me too...?"
+        m 7fktpc "At least once in a while, please..."
+        m 1dkc "..."
+
+    else:
+        m 6ckc "..."
+
     return
