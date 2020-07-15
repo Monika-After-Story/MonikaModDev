@@ -1580,10 +1580,10 @@ label bye_workout:
         m 1eua "Oh, going to the gym, [player]?{w=0.3} Or perhaps for a jog?"
         m 1hub "I'm so glad you're taking care of your body! A healthy body leads to a healthy mind~"
         m 3hua "After I've crossed over, we should try to work out together sometimes!"
-        show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5rubsb "That's something a couple would do, right?"
         m 5rubsu "Yeah..."
-        show monika 1eub at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 1eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1eub "See you soon!"
     elif mas_isMoniBroken():
         m 6ckc "..."
