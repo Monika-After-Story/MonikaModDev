@@ -1577,14 +1577,13 @@ init 5 python:
 
 label bye_workout:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Oh, going to the gym [player]? Or perhaps for a jog?"
-        if persistent._mas_pm_love_yourself is True:
-            m 3tub "I can only imagine how sexy you look when you've worked up a sweat...{fast}{nw}"
-            $ _history_list.pop()
-        elif persistent._mas_pm_love_yourself is False:
-            m 1hub "I'm so glad you're taking care of your body! A healthy body leads to a healthy mind~"
-        else:
-            m 1kua "I'm so glad you're taking care of your body! Your health is very important to me~"
+        m 1eua "Oh, going to the gym, [player]?{w=0.3} Or perhaps for a jog?"
+        m 1hub "I'm so glad you're taking care of your body! A healthy body leads to a healthy mind~"
+        m 3hua "After I've crossed over, we should try to work out together sometimes!"
+        show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5rubsb "That's something a couple would do, right?"
+        m 5rubsu "Yeah..."
+        show monika 1eub at t11 zorder MAS_MONIKA_Z with dissolve
         m 1eub "See you soon!"
     elif mas_isMoniBroken():
         m 6ckc "..."
