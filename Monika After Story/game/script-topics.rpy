@@ -10044,7 +10044,7 @@ label monika_beingevil:
                     m 1ekb "I'm glad you think that, [player]."
                     m 3euc "You know, I don't have any regrets about what I did."
                     extend 3tua " After all, it got me where I am today, didn't it?"
-                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5eua "Besides, the past is in the past."
 
                     if persistent._mas_pm_cares_about_dokis:
@@ -10058,7 +10058,7 @@ label monika_beingevil:
                 m 1ekb "I think we both know that's not quite true, is it?"
                 m 1eka "I could have handled the whole situation a bit more...{w=0.3}{nw}"
                 extend 3eka "delicately, to say the least."
-                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5eub "But putting that aside, it really puts me at ease that you think that."
 
             else:
