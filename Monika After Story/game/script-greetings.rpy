@@ -3018,7 +3018,7 @@ label greeting_back_from_work:
             m 2dsc "You're just there trying your best, and somehow it's not good enough for someone..."
             m 2eka "If it's still really bothering you, I think it would do you some good to try and relax a little."
             m 3eka "Maybe talking about something else or even playing a game will help get your mind off of it."
-            m 1hua "I'm sure you'll feel better after we spend some together."
+            m 1hua "I'm sure you'll feel better after we spend some time together."
             return
 
         label .passed_over:
