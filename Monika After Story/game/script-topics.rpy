@@ -13964,7 +13964,7 @@ label monika_dystopias:
     $ line_ending = "" if persistent._mas_pm_cares_about_dokis else " with everyone in it just an empty shell"
 
     m 3wud "Like, imagine waking up one day, only to find out your whole reality is just a simulation[line_ending]!"
-    m 3tfc "How is that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
+    m 3tfc "How's that for a dystopian world? It's no wonder somebody would try to stand up in this situation!"
 
     if persistent.monika_kill and not persistent.clearall and not persistent._mas_pm_cares_about_dokis:
         m 1tfc "Even Sayori might have ended up taking the same path I did, after she became president...{w=1} She was already well on the way when I..."
