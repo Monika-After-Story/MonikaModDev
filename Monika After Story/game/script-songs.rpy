@@ -1462,6 +1462,37 @@ label mas_song_wonderwall_lyrics:
     m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_blood_teller",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Blood Teller",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_blood_teller:
+    m "{i}~I don't want to cry~{/i}"
+    m "{i}~I think it's time that we said goodbye~{/i}"
+    m "{i}~But it's love, that leads me down this path straight to you~{/i}"
+    m "{i}~Don't you want this too?~{/i}"
+    m "{i}~I want to cry and chase after you~{/i}"
+    m "{i}~And you know that{/i}{w=0.3}{nw}"
+    extend "{i} no one could hold us back~{/i}"
+
+    m "{i}~Could this be the future?{/i}{w=0.3}{nw}"
+    extend "{i} Or is it just a dream?~{/i}"
+    m "{i}~I need the answer from your lips~{/i}"
+    m "{i}~This door can't be opened{/i}{w=0.3}{nw}"
+    extend "{i}, defying what's ahead~{/i}"
+    m "{i}~Should I just wait, or break it down?~{/i}"
+    m "{i}~Tell me now~{/i}"
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
