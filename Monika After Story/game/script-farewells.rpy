@@ -1567,7 +1567,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
-            eventlabel="bye_workout",
+            eventlabel="bye_prompt_workout",
             unlocked=True,
             prompt="I'm going to work out.",
             pool=True
@@ -1575,20 +1575,27 @@ init 5 python:
         code="BYE"
     )
 
-label bye_workout:
+label bye_prompt_workout:
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh, going to the gym, [player]?{w=0.3} Or perhaps for a jog?"
-        m 1hub "I'm so glad you're taking care of your body! A healthy body leads to a healthy mind~"
-        m 3hua "After I've crossed over, we should try to work out together sometimes!"
-        show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5rubsb "That's something a couple would do, right?"
+        m 3hub "I'm so glad you're taking care of your body! A healthy body leads to a healthy mind~"
+
+        if mas_isMoniEnamored(higher=True):
+            m 3hua "After I cross over, we should try to do our workouts together!"
+        else:
+            m 3eua "Maybe if I cross over, we could try to do our workouts together!"
+
+        show monika 5rubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rubsb "That's something a couple would do, right?~"
         m 5rubsu "Yeah..."
         show monika 1eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1eub "See you soon!"
-    elif mas_isMoniBroken():
-        m 6ckc "..."
-    else:
+
+    elif mas_isMoniDis(higher=True):
         m 2euc "Good. See you later."
+
+    else:
+        m 6ckc "..."
 
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=4)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORKOUT
