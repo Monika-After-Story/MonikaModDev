@@ -311,8 +311,13 @@ init 5 python:
 
 label greeting_sweetheart:
     m 1hub "Hello again, sweetheart!"
-    m 1lkbsa "It's kind of embarrassing to say out loud, isn't it?"
-    m 3ekbfa "Still, I think it's okay to be embarrassed every now and then."
+
+    if mas_isMoniAff(higher=True):
+        m 1eua "What shall we do today?"
+
+    else:
+        m 1lkbsa "It's kind of embarrassing to say out loud, isn't it?"
+        m 3ekbfa "Still, I think it's okay to be embarrassed every now and then."
     return
 
 init 5 python:
@@ -968,7 +973,9 @@ init 5 python:
 label greeting_sweetpea:
     m 1hua "Look who's back."
     m 2hub "It's you, my sweetpea!"
-    m 1lkbsa "My goodness...that surely was embarrassing to say, ehehe~"
+
+    if mas_isMoniHappy(lower=True):
+        m 1lkbsa "Oh gosh...that was kinda embarrassing, ehehe~"
     return
 
 init 5 python:
