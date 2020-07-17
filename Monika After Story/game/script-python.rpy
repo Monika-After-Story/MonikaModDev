@@ -22,6 +22,7 @@
 #   6 - Variables and assignment
 #   8 - Literals
 #   9 - Truth Values
+#  11 - String Functions and Operations
 #
 # TODO:
 #   4 - Python sytnax ?
@@ -38,7 +39,6 @@
 #   11 - dict
 #   12 - tuples
 #   13 - py2 vs py3
-#   14 - String operations
 #   15 - start talking about renpy
 #
 #   Implement advanced python tips for users who have some experience (persistent._mas_advanced_py_tips)
@@ -57,7 +57,7 @@
 # 2 -> 6
 # 3 -> 2
 # 5 -> 9
-# 6 -> 5, 8
+# 6 -> 5, 8, 11
 ##############################################
 
 init 4 python in mas_ptod:
@@ -888,7 +888,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip011",
             category=["python tips"],
-            prompt="Strings",
+            prompt="String Functions and Operations",
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
             action=EV_ACT_UNLOCK,
@@ -904,24 +904,61 @@ label monika_ptod_tip011:
     $ store.mas_ptod.set_local_context(local_ctx)
     $ tip_ev = mas_getEV("monika_ptod_tip011")
 
+    # NOTE: strings have already been introduced as a type
     if tip_ev.last_seen is None:
-        m 1eua "Today we'll be learning about another data type in Python - strings."
-    m 3eub "Strings can contain any text data you want - a single letter, word, sentence, and not just that."
-    m 3eua "Let's assign some text to a variable."
+        m 1eua "Today we'll be learning about some common functions and operations that can be applied to strings."
+
+    # NOTE: consider agenda-style introduction?
+
+    # intro to concat
+    m 3eua "First, we'll learn about {i}concatenation{/i}."
+    m 1eua "As you may remember, strings are used to represent text."
+    m 3eua "In the same way that text can be built out of letters and words, strings can be built out of smaller strings.{w} In a programming context, this is known as {i}concatenation{/i}."
+
+    # concat via + 
+    m 6eub "Let me show you an example."
     show monika at t22
     show screen mas_py_console_teaching
-    call mas_wx_cmd("s = 'Hello World'")
-    m 1hua "Great, we can play around with it a bit to understand things better."
+    call mas_wx_cmd('a = "My name is "')
+    call mas_wx_cmd('b = "Monika!"')
+    m 3eua "Here I created two variables containing strings.{w} If I add them together with a plus sign..."
+    call mas_wx_cmd("c = a + b")
+    call mas_wx_cmd("c")
+    m 3eub "The two strings have been put together, or {i}concatenated{/i}!"
+    m 3eua "The concept of {i}concatenation{/i} is not Python-specific. Many other programming languages also allow strings to be concatenated."
 
-    # Concatenation
-    m 3eua "Strings can be joined to each other with the plus operator."
-    call mas_wx_cmd("'Monika says \"' + s + '!\"'")
-    m 3eub "We have just {i}concatenated{/i} them - that's what this action is called!"
+    # concat via *
+    m 1eua "A concatenation operation that {i}is{/i} Python-specific is the ability to multiply strings. This may seem weird at first, but it's actually pretty straightforward. For example, if I take the string we made earlier and multiply it by 4..."
+    call mas_wx_cmd("m = b * 4")
+    call mas_wx_cmd("m")
+    m 3eub "We get the string concatenated 4 times. In other words, multiplying a string by a {b}number{/b} will concatenate the string to itself a {b}number{/b} amount of times." 
+    m 1efa "However, you can't actually multiply strings by other strings.{w} That will cause an error."
+    call mas_wx_cmd("m * m")
+
+    # TODO: after lists have been learned, add something here about .join([])
+
+    # transition to finding things in strings
+    m 1eua "Now that we've covered how to create larger strings, let's move on to checking the contents of a string."
 
     # 'in' operator
-    m 1eub "In some cases you might need to check if a string is contained in another. {w=0.5}{nw}"
-    extend 3eua "That's where {i}in{/i} operator comes in handy!"
-    call mas_wx_cmd("'World' in s")
+    m "The simplest way to check if something is in a string is to use {b}in{/b}."
+    m "For example..."
+    call mas_wx_cmd('"Mon" in "Monika"')
+    m 3eub "This checks if the string 'Mon' is in the string 'Monika'. Since 'Monika' clearly contains the string 'Mon', this expression evaluated to True."
+    m 6eua "If we tried this with a string that isn't in 'Monika'..."
+    call mas_wx_cmd('"Yuri" in "Monika"')
+    m 3eub "then the expression evaluates to False as expected!"
+
+    # in with variables
+    m 1eua "Variables can also be used with {b}in{/b}, like so:"
+    call mas_wx_cmd('big_string = "Monika is my name"')
+    call mas_wx_cmd('my_name = "Monika"')
+    call mas_wx_cmd('s_name = "Sayori"')
+    call mas_wx_cmd("my_name in big_string")
+    call mas_wx_cmd("s_name in big_string")
+
+    # case-sensitive in
+    # TODO
 
     # A brief explanation of case sensitivity
     m 3eud "However, this operator does a {i}case-sensitive{/i} check, and you need to be aware of that."
