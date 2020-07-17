@@ -96,6 +96,9 @@ init -10 python:
         except:
             return None
 
+# A transition of the new type
+# which only works with mas_with_statement or Ren'Py 7.0+
+define dissolve_monika = {"master": Dissolve(0.25)}
 
 # user defined trasnforms
 transform leftin_slow(x=640, z=0.80, t=1.00):

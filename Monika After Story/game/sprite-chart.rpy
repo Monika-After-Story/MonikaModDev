@@ -7555,7 +7555,7 @@ image ghost_monika:
 # NOTE: to hide a desk ACS, set that ACS to not keep on desk b4 calling this
 label mas_transition_to_emptydesk:
     $ store.mas_sprites.show_empty_desk()
-    hide monika with dissolve
+    hide monika with dissolve_monika
     return
 
 # transition from empty desk
