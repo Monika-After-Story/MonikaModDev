@@ -203,7 +203,7 @@ label monika_idle_shower:
                     m 2rkbfa "Well..."
                     m 7tubfu "I'm afraid you'll just have to go without me while I'm stuck here."
                     m 7hubfb "Sorry, [player], ahaha!"
-                    show monika 5kubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5kubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5kubfu "Maybe another time~"
 
                 "No.":
@@ -211,7 +211,7 @@ label monika_idle_shower:
                     m 2eka "Aw, you rejected me so fast."
                     m 3tubfb "Are you shy, [player]?"
                     m 1hubfb "Ahaha!"
-                    show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5tubfu "Alright, I won't follow you this time, ehehe~"
 
         else:
@@ -655,7 +655,7 @@ label monika_idle_working:
 label monika_idle_working_callback:
     if mas_isMoniNormal(higher=True):
         m 1eub "Finished with your work, [player]?"
-        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hua "Then let's relax together, you've earned it~"
 
     elif mas_isMoniDis(higher=True):
