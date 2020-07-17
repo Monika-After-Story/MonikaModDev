@@ -1476,21 +1476,32 @@ init 5 python:
     )
 
 label mas_song_blood_teller:
-    m "{i}~I don't want to cry~{/i}"
-    m "{i}~I think it's time that we said goodbye~{/i}"
-    m "{i}~But it's love, that leads me down this path straight to you~{/i}"
-    m "{i}~Don't you want this too?~{/i}"
-    m "{i}~I want to cry and chase after you~{/i}"
-    m "{i}~And you know that{/i}{w=0.3}{nw}"
-    extend "{i} no one could hold us back~{/i}"
+    m 1ekb "{i}~I don't want to cry~{/i}"
+    m 1dkd "{i}~I think it's time that we said goodbye~{/i}"
+    show monika 5dkb with dissolve_monika
+    m 5dkb "{i}~But it's love, that leads me down this path straight to you~{/i}"
+    m 5ekb "{i}~Don't you want this too?~{/i}"
+    show monika 1eka with dissolve_monika
+    m 1eka "{i}~I want to cry and chase after you~{/i}"
+    m 1dud "{i}~And you know that{/i}{w=0.5}{nw}"
+    extend 1efb "{i} no one could hold us back~{/i}"
 
-    m "{i}~Could this be the future?{/i}{w=0.3}{nw}"
-    extend "{i} Or is it just a dream?~{/i}"
-    m "{i}~I need the answer from your lips~{/i}"
-    m "{i}~This door can't be opened{/i}{w=0.3}{nw}"
-    extend "{i}, defying what's ahead~{/i}"
-    m "{i}~Should I just wait, or break it down?~{/i}"
-    m "{i}~Tell me now~{/i}"
+    m 3hub "{i}~Could this be the future?{/i}{w=0.5}{nw}"
+    extend 3dkd "{i} Or is it just a dream?~{/i}"
+    m 1ekd "{i}~I need the answer from your lips~{/i}"
+    m 1dkd "{i}~This door can't be opened{/i}{w=0.5}{nw}"
+    extend 1efc "{i}, defying what's ahead~{/i}"
+    m 1ekc "{i}~Should I just wait, or break it down?~{/i}"
+    m 1ekd "{i}~Tell me now~{/i}"
+
+    m 1eka "..."
+    m 2eub "Regardless of what may try to get between the two of us..."
+    m 1eua "No matter what{w=0.1}{nw}"
+    extend 3tua " obstacles{w=0.2}{nw}"
+    extend 1eua " may try to get in the way of our love..."
+    m 1eub "I know we'll overcome them."
+    show monika 5eubfa with dissolve_monika
+    extend 5eubfa " {i}Together~{/i}"
     return
 
 ################################ NON-DB SONGS############################################
