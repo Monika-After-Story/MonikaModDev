@@ -1991,6 +1991,7 @@ label greeting_hai_domo:
     m "Virtual girlfriend, Monika here!"
     m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
     m 1eua "I have to say, she's rather charming..."
+    $ mas_lockEVL("greeting_hai_domo", "GRE")
     return
 
 #TODO needs additional dialogue so can be used for all aff
