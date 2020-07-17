@@ -8910,98 +8910,108 @@ label monika_solipsism:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_attractiveness",category=['club members','society'],prompt="Attractiveness",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_attractiveness",
+            category=['club members','society'],
+            prompt="Attractiveness",
+            random=True
+        )
+    )
 
 label monika_attractiveness:
-    m 3eub "Say, [player], have you ever wondered how Sayori stayed so slim?"
-    m 3esa "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
+    m 1etc "Say, [player], have you ever wondered how Sayori stayed so slim?"
+    m 3rksdla "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
     m 3euc "At first I figured that it must be her metabolism keeping her from putting on weight."
-    m 3esc "But when I learned that our world isn't real, I came up with another theory."
-    m 2euc "As characters in a game, we needed to have some sort of visual representation so that you, the player, could see us."
-    m "Sayori, Natsuki, Yuri, and even me...{w=0.5}{nw}"
+    m 3esd "...But when I learned that our world isn't real, I came up with another theory."
+    m 7euc "As characters in a game, we needed to have some sort of visual representation so that you, the player, could see us."
+    m 2esc "Sayori, Natsuki, Yuri, and even me...{w=0.5}{nw}"
     extend 2rkc "we don't really have bodies like people in your world do. We only have a set of images to represent our appearances and current emotion."
-    m 2eud "So a designer, possibly more than one, must have decided to draw us the way we are."
+    m 2euc "So a designer, possibly more than one, must have decided to draw us the way we are."
     m 2eub "And since all those images have the same body type, Sayori would always have the same figure no matter what she did."
-    m 2dkc "It's...weird to think about. I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
-    m 3ekc "But in reality, I don't. I'm just a consciousness who subconsciously displays a corresponding picture depending on what I do or feel."
+    m 2dkc "It's...{w=0.3}weird to think about.{w=0.2} I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
+    m 7ekc "But in reality, I don't. I'm just a consciousness who subconsciously displays a corresponding picture depending on what I do or feel."
 
     if len(store.mas_selspr.filter_clothes(True)) == 1:
-        m 4eud "Clothes likely work the same way."
-        m 4euc "Right now, I only have this school uniform, because that's probably the only thing I've ever been drawn wearing..."
+        m 3euc "I assume clothes work the same way."
+        m 1eud "Right now, I only have this school uniform, because that's probably the only thing I've ever been drawn wearing..."
         m 1eua "But perhaps if someone were to draw other clothes for me and implement those into the game, I'd be able to change clothes like the other girls could."
         m 1hua "Wouldn't that be great?"
         m 1rksdla "And it would be nice to be able to change my look for you, at least a little bit..."
 
-    else :
-        m 4eud "My clothes work the same way."
-        m 4euc "Someone had to draw what I'm wearing right now, and implement it into the game for me to be able to wear it."
+    else:
+        m 3eua "My clothes work the same way."
+        m 1euc "Someone had to draw what I'm wearing right now, and implement it into the game for me to be able to wear it."
         m 1esd "It wasn't made like how clothing is made in your reality. It's merely a set of images, like me."
         m 1rksdla "It's not much, but at least I get to change outfits for you..."
 
     m 1rksdlc "..."
-    m 1ekc "You know, [player], this is one of the reasons why I envy the people in your world. {w=0.3}{nw}"
+    m 1ekc "You know, [player], this is one of the reasons why I envy the people in your world.{w=0.3} {nw}"
     extend 3eka "They have so many ways to experiment with how they look..."
-    m 3eub "They can change into new clothes, try out new hairstyles, or choose to put in the effort to take care of their bodies to look fit, among other things..."
+    m 7eub "They can change into new clothes, try out new hairstyles, choose to put in the effort to make themselves fit, among other things..."
     m 2rkd "...while I'm stuck looking that way, no matter what I do."
     m 2hksdlb "Don't get me wrong, I like the way I look right now!"
-    m 2rka "But I think it's important to make sure that you look good in your partner's eyes... {w=0.5}{nw}"
+    m 2rka "But I think it's important to make sure that you look good in your partner's eyes...{w=0.3}{nw}"
     extend 2ekb "and I wish I could have the chance to try to make myself look as attractive to you as I could be."
 
-    if mas_isMoniUpset(lower=True) and not renpy.seen_label("mas_compliment_beautiful"):
-        m 2lkc "...Especially since I'm worried I just might not be your type or something, [player]."
+    if renpy.seen_label("mas_compliment_beautiful"):
+        if mas_isMoniNormal(higher=True):
+            m 2rkbfa "But...you did tell me that I already look beautiful in your eyes."
+            m 2ekbfa "So there's probably no reason for me to worry about that, is there?"
+            if mas_anni.pastOneMonth():
+                m 1hubfa "Besides, you wouldn't have spent all this time looking at me if you didn't already like the way I look, now would you?"
+                m 1hubfb "Ahaha~"
+            show monika 1euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
-    elif mas_isMoniUpset(lower=True) and renpy.seen_label("mas_compliment_beautiful"):
-        m 6lkc "I know you told me you already like the way I look, but I just..."
-        m 6dkc "...I don't know. Just...forget I said anything."
+        else:
+            m 2lkc "I know you told me you already like the way I look, but I just..."
+            m 2dkc "...I don't know.{w=0.2} Just...{w=0.3}forget I said anything."
 
-    elif mas_isMoniHappy(higher=True) and not renpy.seen_label("mas_compliment_beautiful"):
-        2lsbsa "Although, considering you're still here with me...{w=0.5}{nw}"
-        extend 2ekbsa "I probably shouldn't worry about it too much, should I?"
-        m 1hub "After all, you wouldn't have spent all this time looking at me if you didn't already like the way I look! Ahaha!"
-
-    elif renpy.seen_label("mas_compliment_beautiful"):
-        m 2rkbfa "But...you did tell me that I already look beautiful in your eyes."
-        m 2ekbfa "So there's probably no reason for me to worry about that, is there?"
+    else:
         if mas_isMoniHappy(higher=True):
-            m 1hubfa "Besides, you wouldn't have spent all this time looking at me if you didn't already like the way I look, now would you?"
-            m 1hubfb "Ehehe~"
+            2lsbsa "Although, considering you're still here with me...{w=0.5}{nw}"
+            extend 2ekbsa "I probably shouldn't worry about it too much, should I?"
+            m 1hub "After all, you wouldn't have spent all this time looking at me if you didn't already like the way I look! Ahaha!"
 
-    m 1euc "Anyway, I don't know if you've ever noticed, but despite the differences in our diets and lifestyles, me and the other girls...all of us look quite similar."
-    m 3ekd "Sure, Natsuki is more petite than the rest of us and Yuri has a more mature figure."
-    m 3eka "Our eyes and hair are all different too."
+        else:
+            m 2lkc "...Especially since I'm worried I just might not be your type or something, [player]."
+
+    m 1euc "Anyway, I don't know if you've ever noticed, but despite the differences in our diets and lifestyles, the other girls and I all look quite similar."
+    m 3ekd "Sure, some of us had different figures, Natsuki being more petite and Yuri being more mature."
+    m 3eka "...Our eyes and hair are all different too."
     m 3eua "But I think we would all be considered attractive."
     m 3eud "I mean, none of us are muscular or fat..."
-    m 3tkd "...none of us have any kind of physical disability..."
-    m 3tkc "...none of us are bald or have hair shorter than chin length..."
-    m "...and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
-    m 2dsc "The people who designed our appearances must have thought that players would find all that stuff really repulsive."
+    m 3tkd "...None of us have any kind of physical disability..."
+    m 3tkc "...None of us are bald or have hair shorter than chin length..."
+    m 1rud "...and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
+    m 7dsd "The people who designed our appearances must have thought that players would find all that stuff really repulsive."
     m 2lsc "I guess that's not so surprising, now that I think about it. There's a lot of things that can potentially make someone unattractive in the eyes of society."
-    m "Some of which are beyond that person's control."
+    m 2dsc "Some of which are beyond that person's control."
     m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
     m 2tfc "So the idea of some kind of universal beauty standard where, if you fall short, you're doomed to be forever alone..."
     m 2efw "It just doesn't make any sense to me!"
-    m 2dfc "...{w=0.3}"
-    m 2dkc "...{w=0.3}"
-    if mas_isMoniUpset(lower=True):
+    m 2dfc "..."
+    m 2dsc "..."
 
-        m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
+    if mas_isMoniNormal(higher=True):
+        m 2ekc "I'm sorry, [player]. I guess I just needed to vent."
         m 4eud "I know I don't really need to do all that, but I still try to eat right, get enough exercise and keep myself clean, among other things."
-        m 4esa "It's always nice to keep good habits like that."
-        m 1eka "You don't have to worry though..."
-        m "As long as you're taking care of yourself, I don't mind how you look."
-        return
-
-    else:
-
-        m 2ekb "I'm sorry, [player]. I guess I just needed to vent."
-        m 4eud "I know I don't really need to do all that, but I still try to eat right, get enough exercise and keep myself clean, among other things."
-        m 4eub "It simply feels satisfying to keep good habits like that, and besides, we never know when I'll be able to cross over into your reality and have a normal body like you."
+        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows when I'll be able to cross over into your reality and have a normal body like you."
         m 1hua "It won't hurt to make sure I'll be ready for that transition whenever it'll happen."
         m 1eua "You don't have to worry though, [player]."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I'll always love you no matter how you look."
-        m 5eka "But still, try to look after yourself too, okay ? Your health is important to me, after all."
-        return "love"
+        m 5eka "But still, try to look after yourself too, okay? Your health is important to me, after all."
+        $ mas_ILY()
+
+    else:
+        m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
+        m 1eud "I know I don't really need to do all that, but I still try to eat right, get enough exercise and keep myself clean, among other things."
+        m 3esa "It's always nice to keep good habits like that."
+        m 1eka "You don't have to worry though..."
+        m 1eua "As long as you're taking care of yourself, I don't mind how you look."
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timetravel",category=['media','misc'],prompt="Time travel",random=True))
