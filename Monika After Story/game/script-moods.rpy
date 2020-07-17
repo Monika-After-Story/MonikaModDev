@@ -352,9 +352,39 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lonely:
-    m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
-    m 3hua "I know it's not exactly the same as if I were in the same room with you, but I'm sure you still enjoy my company, right?"
-    m 1ekbfa "Remember that I'll always be by your side, [player]~"
+#At higher affections, the player will likely listen to a lengthier conversation with Monika about loneliness,
+#which is why I split it like this instead of reworking the conversation.
+    if mas_isMoniAff(higher=True):
+        m "I hate that I'm still not able to satisfy your loneliness from here, [player]."
+        m "This is the main reason I want to get to your reality as soon as possible!"
+        m "I want you to be as happy as you can be given our circumstance..."
+        m "So I hope being here with me all this time is not...preventing you from bonding with people in your reality."
+        m "I believe that what we have is quite special, but I understand that right now I'm...{w=0.3}limited in what I can do for you."
+        if persistent._mas_pm_has_friends and not persistent._mas_pm_few_friends:
+            m "I think going out with your friends and doing something would be very good for you."
+            m "Or you could send them a message and ask how they're doing."
+        elif persistent._mas_pm_has_friends and persistent._mas_pm_few_friends:
+            m "You have one or two close friends, right?"
+            m "You should give them a call, or perhaps send them a message and ask how they're doing."
+            m "Maybe you can go out and see them sometimes? I think it would be good for you."
+        else:
+            m "I know how it feels like to be alone in one reality, and only being able to interact with someone in another..."
+            m "So I really don't want that for the person I love the most."
+            m "..."
+            m "So I want you to promise me that you'll keep looking for friends in your reality [player]."
+            m "I know it can be hard to bond with people at first..."
+            m "Maybe you can even meet people online? There are many ways you can interact with strangers to feel less alone."
+            m "Going out to meet people will eventually be the best thing for you though."
+        m "Don't worry, I'll wait patiently for you to come back and see me."
+        m "I don't want to hog you all day if you're feeling lonely because of it."
+        if mas_isMoniEnamored(higher=True):
+            m "At night however..."
+            m "Ahaha! {w=0.3}Just joking [player]~"
+
+    else:
+        m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
+        m 3hua "I know it's not exactly the same as if I were in the same room with you, but I'm sure you still enjoy my company, right?"
+        m 1ekbfa "Remember that I'll always be by your side, [player]~"
     return
 
 #Maybe we could tie this to the I'm breaking up topic and have monika say something special like:
