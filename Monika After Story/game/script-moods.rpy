@@ -383,7 +383,7 @@ label mas_mood_lonely:
         m "Go out and enjoy yourself, you can tell me all about it later."
         if mas_isMoniEnamored(higher=True):
             m "I'll make you a nice cell for the next time you try to escape.{nw}"
-            m "Ahaha! {w=0.3}Just joking [player]~ I love you." #Tasteless joke or bringing Monika to life more? Personally I'd like to think the latter.
+            m "Ahaha! {w=0.3}Just joking [player]~ I love you."
         return "love"
 
     else:
