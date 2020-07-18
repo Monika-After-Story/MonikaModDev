@@ -1476,15 +1476,15 @@ init 5 python:
     )
 
 label mas_song_tanabata_song:
-    m 1dua "{i}The bamboo leaves rustle,{/i}"
-    m 3dua "{i}and sway under the eaves.{/i}"
-    m 3hub "{i}The stars twinkle{/i}"
-    m 1dud "{i}Like gold and silver grains of sand.{/i}"
-    m 4dud "{i}The five-color paper strips{/i}"
-    m 4duo "{i}I have written them.{/i}"
-    m 1kua "{i}The stars twinkle,{/i}"
-    m 1sua "{i}watching from above.{/i}"
-    m 1lua "Mmm, I really like this song [player]."
+    m 1dua "{i}The bamboo leaves rustle,{/i}{w=0.5}{nw}"
+    extend 3dua "{i} and sway under the eaves.{/i}"
+    m 3hub "{i}The stars twinkle{/i}{w=0.5}{nw}"
+    extend 1dud "{i} like gold and silver grains of sand.{/i}"
+    m 4dud "{i}The five-color paper strips{/i}{w=0.5}{nw}"
+    extend 4duo "{i} I have written them.{/i}"
+    m 1kua "{i}The stars twinkle,{/i}{w=0.5}{nw}"
+    extend 1sua "{i} watching from above.{/i}"
+    m 1lua "Mmm, I really like this song, [player]."
     m 1wua "I would love to visit Japan during Tanabata with you sometime~"
 
 ################################ NON-DB SONGS############################################
