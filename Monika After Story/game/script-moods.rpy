@@ -355,8 +355,8 @@ label mas_mood_lonely:
 #At higher affections, the player will likely listen to a lengthier conversation with Monika about loneliness,
 #which is why I split it like this instead of reworking the conversation.
     if mas_isMoniAff(higher=True):
-        m "I hate that I'm still not able to satisfy your loneliness from here, [player]."
-        m "This is the main reason I want to get to your reality as soon as possible!"
+        m "I hate that I'm not yet able to fully satisfy your loneliness from here, [player]."
+        m "If there was any way I could reach out and just hug you right now, I would."
         m "I want you to be as happy as you can be given our circumstance..."
         m "So I hope being here with me all this time is not...preventing you from bonding with people in your reality."
         m "I believe that what we have is quite special, but I understand that right now I'm...{w=0.3}limited in what I can do for you."
@@ -376,10 +376,11 @@ label mas_mood_lonely:
             m "Maybe you can even meet people online? There are many ways you can interact with strangers to feel less alone."
             m "Going out to meet people will eventually be the best thing for you though."
         m "Don't worry, I'll wait patiently for you to come back and see me."
-        m "I don't want to hog you all day if you're feeling lonely because of it."
+        m "Go out and enjoy yourself, you can tell me all about it later."
         if mas_isMoniEnamored(higher=True):
-            m "At night however..."
-            m "Ahaha! {w=0.3}Just joking [player]~"
+            m "I'll make you a nice cell for the next time you try to escape.{nw}"
+            m "Ahaha! {w=0.3}Just joking [player]~ I love you." #Tasteless joke or bringing Monika to life more? Personally I'd like to think the latter.
+        return "love"
 
     else:
         m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
