@@ -1462,6 +1462,31 @@ label mas_song_wonderwall_lyrics:
     m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_tanabata_song",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt=('Tanabata song'),
+            random=False,
+            conditional="seen_event('monika_tanabata')"
+        ),
+        code="SNG"
+    )
+
+label mas_song_tanabata_song:
+    m "{i}The bamboo leaves rustle,{/i}"
+    m "{i}and sway under the eaves.{/i}"
+    m "{i}The stars twinkle{/i}"
+    m "{i}Like gold and silver grains of sand.{/i}"
+    m "{i}The five-color paper strips{/i}"
+    m "{i}I have written them.{/i}"
+    m "{i}The stars twinkle,{/i}"
+    m "{i}watching from above.{/i}"
+    m "Mmm, I really like this song [player]"
+    m "I would love to visit Japan during Tanabata with you sometime~"
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)

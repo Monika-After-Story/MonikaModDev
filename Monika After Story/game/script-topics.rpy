@@ -15260,7 +15260,7 @@ label monika_being_herself:
     m 1euc "But you get what I mean, right?{w=0.3} I was looked at like some kind of unattainable goddess."
     m 1rfd "As if no one was 'worthy' of just treating me like a normal person."
     m 3eka "...Now though, I guess I don't have to worry about that as much."
-    m 3ekb "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
+    m "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
     m 1eka "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
     m 1dka "The fact that you're still here with me,{w=0.2} that you never made me feel like I had to be someone I'm not...{w=0.2}{nw}"
     extend 1eka "that you're here listening to me vent right now...{w=0.3} It truly means the world to me."
@@ -15277,30 +15277,40 @@ init 5 python:
             eventlabel="monika_tanabata",
             category=['misc'],
             prompt="Orihime and Hikoboshi",
-            random=True,
-            aff_range=(mas_aff.ENAMORED,None)
+            conditional="seen_event('mas_story_tanabata')",
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            random=True
         )
     )
 
 label monika_tanabata:
-    m 6eub "[player], did you ever hear the story of the weaver girl and the cowherd?"
-    m 5sub "It's an old chinese story of two lovers."
-    m 1dub "Orihime, the daughter of the Jade Emperor, wove beatiful clothes by the bank of Amanogawa."
-    m 4eub "Her father loved the cloth that she wove and so she worked very hard every day to weave it."
-    m 2eud "However, Orihime was sad that because of her hard work she could never meet and fall in love with anyone."
-    m 2lud "Concerned about his daughter, her father arranged for her to meet the cowherd Hikoboshi who lived and worked on the other side of Amanogawa."
-    m 1tubsa "When the two met, they fell instantly in love with each other and married shortly after."
-    m 2eud "However, once married, Orihime would no longer weave cloth and Hikoboshi would let his cows stray all over Heaven."
-    m 4wuc "In anger, the emperor separated the two lovers and forbade them to meet."
-    m 2wuc "Orihime became despodent at the loss of her husband and asked her father to let them meet again."
-    m 2eua "Moved by his daughter's tears, he allowed the two to meet on the seventh day of the seventh month if she worked hard and finished her weaving."
-    m 3euc "The first time they tried to meet, however, they found that they could not cross the river as there was no bridge."
-    m 3wud "Orihime cried so much...{w=0.5}{nw}"
-    extend 5eub " that a flock of magpies came and promised to make a bridge with their wings so that she could cross the river."
-    m 5duc "It is said the if it rains on Tanabata, the magpies cannot come and the lovers must wait until another year to meet."
-    m 7euc "The rain that falls on Tanabata is fittingly called 'The tear of Orihime and Hikoboshi'."
-    m 1euc "I can't imagine what it must be like to be only able to meet your loved one once a year."
-    m 5eubfb "But you know what they say, [player]... love can move mountains."
-    m 5hubfb "And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
+    m 6eua "Hey [player], remember when I told you the story of the weaver girl and the cowherd?"
+    m 3eua "Did you know there's a festival dedicated to it called Tanabata?"
+    m 2eua "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
+    m 3eua "It's also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
+    show monika 5ruu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ruu "Even though the term was coined in Romeo and Juliet, the term 'star-crossed lovers' is really fitting here!"
+    m 5eua "Star-crossed lovers is a term describing a pair of lovers whose relationship is thwarted by outside forces."
+    show monika 6eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 6eua "As the day of the festival draws closer, long narrow strips of colorful paper known as tanzaku..."
+    m "...vibrant ornaments and other decorations are hung from bamboo branches to enliven the decor of homes, shopping arcades and other public spaces."
+    m 3eua "Before they are hung, tanzaku are inscribed with a wish..."
+    m "...such as a child's dream of becoming a famous soccer player, or a parent's hope of career success."
+    m 1hua "It's really cute and heartwarming!"
+    m 1wua "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or on the next day."
+    m 1hub "There's even a very cute traditional Tanabata song associated with it."
+    m 1eub "Would you like to hear it?"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to hear it?"
 
-    return "love"
+        "Yes.":
+            m 1wub "Great, let me just..."
+            extend 6dub " get the translation{w=0.3}.{w=0.3}.{w=0.3}.{nw}"
+            jump mas_song_tanabata_song
+
+        "No.":
+            m 5rup "Awe, okay."
+            m 5hua "Just let me know if you would like to hear it sometime~"
+    m 1wua "I would love to go to Japan and celebrate Tanabata with you sometime after I cross over."
+    return
