@@ -14741,7 +14741,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_player_away",
-            category=["Monika"],
+            category=["monika"],
             prompt="What do you do when I'm away?",
             pool=True,
             aff_range=(mas_aff.NORMAL, None)
