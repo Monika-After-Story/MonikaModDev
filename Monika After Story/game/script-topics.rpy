@@ -15287,7 +15287,10 @@ label monika_tanabata:
     m 6eua "Hey [player], remember when I told you the story of the weaver girl and the cowherd?"
     m 3eua "Did you know there's a festival dedicated to it called Tanabata?"
     m 2eua "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
-    m 3eua "It's also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
+    m 4eua "The original Qixi festival, while being much older, is much more unknown to the western world than Tanabata."
+    m 7euc "After the Second World War, Japan opened up its borders, while China remained largely closed due to the Cold War."
+    m 1euc "Therefore, most of the world knows about Tanabata over the older Chinese tradition."
+    m 3eua "Tanabata is also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
     show monika 5ruu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ruu "Even though the term was coined in Romeo and Juliet, the term 'star-crossed lovers' is really fitting here!"
     m 5eua "Star-crossed lovers is a term describing a pair of lovers whose relationship is thwarted by outside forces."

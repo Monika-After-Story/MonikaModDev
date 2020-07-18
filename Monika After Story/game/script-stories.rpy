@@ -855,8 +855,8 @@ init 5 python:
 label mas_story_tanabata:
     call mas_story_begin
     m 6eub "[player], did you ever hear the story of the weaver girl and the cowherd?"
-    m 5sub "It's an old chinese story of two lovers."
-    m 1dub "Orihime, the daughter of the Jade Emperor, wove beatiful clothes by the bank of Amanogawa."
+    m 5sub "It's an old chinese story of two divine lovers."
+    m 1dub "Orihime, the daughter of the Jade Emperor, Ruler of Heaven, wove beautiful clothes by the bank of Amanogawa."
     m 4eub "Her father loved the cloth that she wove and so she worked very hard every day to weave it."
     m 2eud "However, Orihime was sad that because of her hard work she could never meet and fall in love with anyone."
     m 2lud "Concerned about his daughter, her father arranged for her to meet the cowherd Hikoboshi who lived and worked on the other side of Amanogawa."
