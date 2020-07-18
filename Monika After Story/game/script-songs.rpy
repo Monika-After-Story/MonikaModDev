@@ -1476,16 +1476,16 @@ init 5 python:
     )
 
 label mas_song_tanabata_song:
-    m "{i}The bamboo leaves rustle,{/i}"
-    m "{i}and sway under the eaves.{/i}"
-    m "{i}The stars twinkle{/i}"
-    m "{i}Like gold and silver grains of sand.{/i}"
-    m "{i}The five-color paper strips{/i}"
-    m "{i}I have written them.{/i}"
-    m "{i}The stars twinkle,{/i}"
-    m "{i}watching from above.{/i}"
-    m "Mmm, I really like this song [player]"
-    m "I would love to visit Japan during Tanabata with you sometime~"
+    m 1dua "{i}The bamboo leaves rustle,{/i}"
+    m 3dua "{i}and sway under the eaves.{/i}"
+    m 3hub "{i}The stars twinkle{/i}"
+    m 1dud "{i}Like gold and silver grains of sand.{/i}"
+    m 4dud "{i}The five-color paper strips{/i}"
+    m 4duo "{i}I have written them.{/i}"
+    m 1kua "{i}The stars twinkle,{/i}"
+    m 1sua "{i}watching from above.{/i}"
+    m 1lua "Mmm, I really like this song [player]."
+    m 1wua "I would love to visit Japan during Tanabata with you sometime~"
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
