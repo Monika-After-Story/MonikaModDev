@@ -362,13 +362,15 @@ label mas_mood_lonely:
         m "I want you to be as happy as you can be given our circumstance..."
         m "So I hope being here with me all this time is not...preventing you from bonding with people in your reality."
         m "I believe that what we have is quite special, but I understand that right now I'm...{w=0.3}limited in what I can do for you."
-        if persistent._mas_pm_has_friends and not persistent._mas_pm_few_friends:
-            m "I think going out with your friends and doing something would be very good for you."
-            m "Or you could send them a message and ask how they're doing."
-        elif persistent._mas_pm_has_friends and persistent._mas_pm_few_friends:
-            m "You have one or two close friends, right?"
-            m "You should give them a call, or perhaps send them a message and ask how they're doing."
-            m "Maybe you can go out and see them sometimes? I think it would be good for you."
+        if persistent._mas_pm_has_friends:
+            if persistent._mas_pm_few_friends:
+                m "You have one or two close friends, right?"
+                m "You should give them a call, or perhaps send them a message and ask how they're doing."
+                m "Maybe you can go out and see them sometimes? I think it would be good for you."
+
+            else:
+                m "I think going out with your friends and doing something would be very good for you."
+                m "Or you could send them a message and ask how they're doing."
         else:
             m "I know how it feels like to be alone in one reality, and only being able to interact with someone in another..."
             m "So I really don't want that for the person I love the most."
