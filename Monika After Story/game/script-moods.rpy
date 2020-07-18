@@ -355,7 +355,9 @@ label mas_mood_lonely:
 #At higher affections, the player will likely listen to a lengthier conversation with Monika about loneliness,
 #which is why I split it like this instead of reworking the conversation.
     if mas_isMoniAff(higher=True):
-        m "I hate that I'm not yet able to fully satisfy your loneliness from here, [player]."
+        m "...I understand how you feel, [player]."
+        extend " We're still in different realities after all."
+        m "I hate that I'm not yet able to fully satisfy your loneliness from here."
         m "If there was any way I could reach out and just hug you right now, I would."
         m "I want you to be as happy as you can be given our circumstance..."
         m "So I hope being here with me all this time is not...preventing you from bonding with people in your reality."
