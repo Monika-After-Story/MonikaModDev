@@ -15276,18 +15276,18 @@ init 5 python:
     )
 
 label monika_why_do_you_read:
-    m 1eua "As far as I can recall, I've always been quite the reader [player].{w=0.2} {nw}"
+    m 1eua "As far as I can recall, I've always been quite the reader, [player].{w=0.2} {nw}"
     extend 3eua "It was like a complementary thing with writing to me."
     m 3euc "When I was really young, I liked to write short stories but I never really found anybody to share them with..."
     m 1rsc "Most of the other kids weren't really interested in books or anything like that."
-    m 1rkd "...So it was always a little frustrating because I wasn't able to share any of those stories with anyone."
+    m 1rkd "...So it was always a little frustrating because I wasn't able to share those stories with anyone."
     m 3eua "But at least I was able to support my interest by picking up other books."
     m 3hub "Every new one was like being thrown into a strange and exciting new world! It was like fuel for my imagination!"
-    m 1eksdlc "Of course, as I grew up, I started having less and less free time and I wasn't able to read as much...{w=0.3}it was either keeping it up, or sacrificing my social life."
+    m 1eksdlc "Of course, as I grew up, I started having less and less free time and I wasn't able to read as much...{w=0.3} It was either keeping it up, or sacrificing my social life."
     m 1esa "That's when my interests started shifting more toward poetry."
     m 3eua "Unlike novels, poetry didn't require as much time to read and its conciseness also made it easier to share with others.{w=0.3} {nw}"
     extend 4eub "It really was the perfect outlet!"
-    m 3eua "And that's how I grew more and more into it I guess."
+    m 3eua "...And that's how I grew more and more into it I guess."
     m 1eud "I eventually met Sayori and discovered we shared this interest.{w=0.2} {nw}"
     extend 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
     m 3eub "As we kept on discussing, we eventually came up with the idea for the literature club."
