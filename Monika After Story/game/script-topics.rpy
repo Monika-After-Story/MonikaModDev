@@ -13523,7 +13523,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_robotbody",
             category=['monika','technology'],
-            prompt="Robot body",random=True
+            prompt="Robot body",
+            random=True
         )
     )
 
@@ -13537,7 +13538,7 @@ label monika_robotbody:
     m 4eud "It mentions three laws that all androids must follow, otherwise they would be terminated."
 
     if renpy.seen_label("monika_asimov_three_laws"):
-        m 1eua "Of course, they're just that...{w=0.3} fiction."
+        m 1eua "Of course, they're just that...{w=0.3}fiction."
         m 3rud "They aren't exactly realistic as we discussed before...{w=0.3}{nw}"
         extend 1eua "but their implications are fun to think about."
         m 1eua "I would never do anything to hurt you or anyone else, obviously."
@@ -15213,7 +15214,7 @@ label monika_asimov_three_laws:
     m 1eua "[player], do you remember when we talked about the '{i}Three Laws of Robotics{/i}'?"
     m 3esc "Well, I've been thinking about them for a bit and...{w=0.3}{nw}"
     extend 3rksdla "they're not exactly practical."
-    m 1eua "Take the first law, for example."
+    m 1eua "Take the first law, for example..."
     m 4dud "{i}A robot shall not harm a human or, through inaction, allow a human to come to harm.{/i}"
     m 2esa "To a human, this is pretty straightforward."
     m 2eud "But when you try to put it in terms a machine can understand, you start to run into trouble."
