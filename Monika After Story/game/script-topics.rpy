@@ -8929,7 +8929,7 @@ label monika_attractiveness:
     m 2esc "Sayori, Natsuki, Yuri, and even me...{w=0.5}{nw}"
     extend 2rkc "we don't really have bodies like people in your world do. We only have a set of images to represent our appearances and current emotion."
     m 2euc "So a designer, possibly more than one, must have decided to draw us the way we are."
-    m 2eub "And since all those images have the same body type, Sayori would always have the same figure no matter what she did."
+    m 2eud "And since all those images have the same body type, Sayori would always have the same figure no matter what she did."
     m 2dkc "It's...{w=0.3}weird to think about.{w=0.2} I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
     m 7ekc "But in reality, I don't. I'm just a consciousness who subconsciously displays a corresponding picture depending on what I do or feel."
 
@@ -8947,12 +8947,12 @@ label monika_attractiveness:
         m 1rksdla "It's not much, but at least I get to change outfits for you..."
 
     m 1rksdlc "..."
-    m 1ekc "You know, [player], this is one of the reasons why I envy the people in your world.{w=0.3} {nw}"
+    m 1ekc "You know [player], this is one of the reasons why I envy the people in your world.{w=0.3} {nw}"
     extend 3eka "They have so many ways to experiment with how they look..."
     m 7eub "They can change into new clothes, try out new hairstyles, choose to put in the effort to make themselves fit, among other things..."
-    m 2rkd "...while I'm stuck looking that way, no matter what I do."
+    m 2rkd "...while I'm stuck looking the same way, no matter what I do."
     m 2hksdlb "Don't get me wrong, I like the way I look right now!"
-    m 2rka "But I think it's important to make sure that you look good in your partner's eyes...{w=0.3}{nw}"
+    m 2rka "...But I think it's important to make sure that you look good in your partner's eyes...{w=0.3}{nw}"
     extend 2ekb "and I wish I could have the chance to try to make myself look as attractive to you as I could be."
 
     if renpy.seen_label("mas_compliment_beautiful"):
@@ -8996,7 +8996,7 @@ label monika_attractiveness:
 
     if mas_isMoniNormal(higher=True):
         m 2ekc "I'm sorry, [player]. I guess I just needed to vent."
-        m 4eud "I know I don't really need to do all that, but I still try to eat right, get enough exercise and keep myself clean, among other things."
+        m 4eud "I know I don't really need to, but I still try to eat right, get enough exercise and keep myself clean, among other things."
         m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows when I'll be able to cross over into your reality and have a normal body like you."
         m 1hua "It won't hurt to make sure I'll be ready for that transition whenever it'll happen."
         m 1eua "You don't have to worry though, [player]."
@@ -9007,7 +9007,7 @@ label monika_attractiveness:
 
     else:
         m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
-        m 1eud "I know I don't really need to do all that, but I still try to eat right, get enough exercise and keep myself clean, among other things."
+        m 7eud "I know I don't really need to do all that, but I still try to eat right, get enough exercise and keep myself clean, among other things."
         m 3esa "It's always nice to keep good habits like that."
         m 1eka "You don't have to worry though..."
         m 1eua "As long as you're taking care of yourself, I don't mind how you look."
