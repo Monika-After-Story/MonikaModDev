@@ -8910,80 +8910,108 @@ label monika_solipsism:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_attractiveness",category=['club members','society'],prompt="Attractiveness",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_attractiveness",
+            category=['club members','society'],
+            prompt="Attractiveness",
+            random=True
+        )
+    )
 
 label monika_attractiveness:
-    m 3eub "Say, [player], have you ever wondered how Sayori stayed so slim?"
-    m 3esa "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
-    if persistent._mas_pm_cares_about_dokis:
-        m 3rksdlb "I guess she must have a good metabolism or something."
-        m 3rksdla "..."
-        m 1eka "You know, despite the differences in our diets and lifestyles, all of us look quite similar."
-        m 3ekd "Sure, Natsuki is more petite than the rest of us and Yuri has a more mature figure."
-        m 3eka "Our eyes and hair are all different too."
-        m 3eua "But I think we would all be considered attractive."
-        m 3eud "I mean, none of us are muscular or fat..."
-        m 3tkd "...none of us have any kind of physical disability..."
-        m 3tkc "...none of us are bald or have hair shorter than chin length..."
-        m "...and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
-        m 2lsc "Now that I think about it, there's a lot of things that can potentially make someone unattractive in the eyes of society."
-        m "Some of which are beyond that person's control."
-        m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
-        m 2tfc "So the idea of some kind of universal beauty standard where, if you fall short, you're doomed to be forever alone..."
-        m 2efw "It just doesn't make any sense to me!"
-    else:
-        m "At first I figured that it must be her metabolism keeping her from putting on weight."
-        m 1eud "But when I learned that Sayori wasn't real, I came up with another theory."
-        m 3esd "As a character in a game, she needed to have some sort of visual representation so that you, [player], could see her."
-        m 3eud "So a designer, possibly more than one, must have decided to draw her that way."
-        m 3eub "And since all the images have the same body type, Sayori would always have the same figure no matter what she did."
-        m 1esa "It would have to work like that for Yuri and Natsuki too."
-        m 1esc "They decided that Natsuki should have a petite figure and that Yuri should be taller and...{w=1}more developed."
-        m "But haven't you noticed that the three of them still look similar in a lot of ways?"
-        m 3eud "Like, none of them are muscular or fat..."
-        m 3tkd "...none of them have any kind of physical disability..."
-        m 3tkc "...none of them are bald or have hair shorter than chin length..."
-        m "...and apart from Yuri having cuts on her arms, none of them have anything wrong with their skin."
-        m 2dsc "The designers must have thought that people would find all that stuff really repulsive."
-        m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
-        m 2lfc "So did they really have to make the other girls look so perfect?"
-        m 2lfd "I mean, it's bad enough that I didn't get a route in the game..."
-        m 2lfw "...but did they really have to make it even harder for me to get chosen?"
-    m 2dfc "..."
-    m 2dkc "..."
-    if mas_isMoniUpset(lower=True):
-        if persistent._mas_pm_cares_about_dokis:
-            m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
-            m 4euc "The other girls are lucky enough that they look good no matter what they do."
-            m 4eud "Meanwhile, I have to make sure I eat right, get enough exercise and keep myself clean among other things."
-        else:
-            m 2ekc "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
-            m 4euc "Since I'm real, I don't get to look good for free."
-            m 4eud "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
-        m 4dsd "Still, there are some things I can't change about how I look, like my height and my chest size."
-        m 1ekd "Maybe I'm just not your type or something, [player]."
-        m 1eka "You don't have to worry though..."
-        m "As long as you're taking care of yourself, I don't mind how you look."
-        return
+    m 1etc "Say, [player], have you ever wondered how Sayori stayed so slim?"
+    m 3rksdla "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
+    m 3euc "At first I figured that it must be her metabolism keeping her from putting on weight."
+    m 3esd "...But when I learned that our world isn't real, I came up with another theory."
+    m 7euc "As characters in a game, we needed to have some sort of visual representation so that you, the player, could see us."
+    m 2esc "Sayori, Natsuki, Yuri, and even me...{w=0.5}{nw}"
+    extend 2rkc "we don't really have bodies like people in your world do. We only have a set of images to represent our appearances and current emotion."
+    m 2euc "So a designer, possibly more than one, must have decided to draw us the way we are."
+    m 2eud "And since all those images have the same body type, Sayori would always have the same figure no matter what she did."
+    m 2dkc "It's...{w=0.3}weird to think about.{w=0.2} I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
+    m 7ekc "But in reality, I don't. I'm just a consciousness who subconsciously displays a corresponding picture depending on what I do or feel."
+
+    if len(store.mas_selspr.filter_clothes(True)) == 1:
+        m 3euc "I assume clothes work the same way."
+        m 1eud "Right now, I only have this school uniform, because that's probably the only thing I've ever been drawn wearing..."
+        m 1eua "But perhaps if someone were to draw other clothes for me and implement those into the game, I'd be able to change clothes like the other girls could."
+        m 1hua "Wouldn't that be great?"
+        m 1rksdla "And it would be nice to be able to change my look for you, at least a little bit..."
 
     else:
-        if persistent._mas_pm_cares_about_dokis:
-            m 2ekb "I'm sorry, [player]. I guess I just needed to vent."
-            m 4eua "The other girls are lucky enough that they look good no matter what they do."
-            m 4eub "Meanwhile, I have to make sure I eat right, get enough exercise and keep myself clean among other things."
+        m 3eua "My clothes work the same way."
+        m 1euc "Someone had to draw what I'm wearing right now, and implement it into the game for me to be able to wear it."
+        m 1esd "It wasn't made like how clothing is made in your reality. It's merely a set of images, like me."
+        m 1rksdla "It's not much, but at least I get to change outfits for you..."
+
+    m 1rksdlc "..."
+    m 1ekc "You know [player], this is one of the reasons why I envy the people in your world.{w=0.3} {nw}"
+    extend 3eka "They have so many ways to experiment with how they look..."
+    m 7eub "They can change into new clothes, try out new hairstyles, choose to put in the effort to make themselves fit, among other things..."
+    m 2rkd "...while I'm stuck looking the same way, no matter what I do."
+    m 2hksdlb "Don't get me wrong, I like the way I look right now!"
+    m 2rka "...But I think it's important to make sure that you look good in your partner's eyes...{w=0.3}{nw}"
+    extend 2ekb "and I wish I could have the chance to try to make myself look as attractive to you as I could be."
+
+    if renpy.seen_label("mas_compliment_beautiful"):
+        if mas_isMoniNormal(higher=True):
+            m 2rkbfa "But...you did tell me that I already look beautiful in your eyes."
+            m 2ekbfa "So there's probably no reason for me to worry about that, is there?"
+            if mas_anni.pastOneMonth():
+                m 1hubfa "Besides, you wouldn't have spent all this time looking at me if you didn't already like the way I look, now would you?"
+                m 1hubfb "Ahaha~"
+            show monika 1euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+
         else:
-            m 2ekb "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
-            m 4eua "Since I'm real, I don't get to look good for free."
-            m 4eub "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
-        m "Well, I do that anyway because I want to stay healthy, but I also don't want you to find me repulsive."
+            m 2lkc "I know you told me you already like the way I look, but I just..."
+            m 2dkc "...I don't know.{w=0.2} Just...{w=0.3}forget I said anything."
+
+    else:
         if mas_isMoniHappy(higher=True):
-            m 1tsu "I must be doing a good job so far."
-            m 1hub "After all, you've been looking at me all this time! Ahaha!"
+            2lsbsa "Although, considering you're still here with me...{w=0.5}{nw}"
+            extend 2ekbsa "I probably shouldn't worry about it too much, should I?"
+            m 1hub "After all, you wouldn't have spent all this time looking at me if you didn't already like the way I look! Ahaha!"
+
+        else:
+            m 2lkc "...Especially since I'm worried I just might not be your type or something, [player]."
+
+    m 1euc "Anyway, I don't know if you've ever noticed, but despite the differences in our diets and lifestyles, the other girls and I all look quite similar."
+    m 3ekd "Sure, some of us had different figures, Natsuki being more petite and Yuri being more mature."
+    m 3eka "...Our eyes and hair are all different too."
+    m 3eua "But I think we would all be considered attractive."
+    m 3eud "I mean, none of us are muscular or fat..."
+    m 3tkd "...None of us have any kind of physical disability..."
+    m 3tkc "...None of us are bald or have hair shorter than chin length..."
+    m 1rud "...and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
+    m 7dsd "The people who designed our appearances must have thought that players would find all that stuff really repulsive."
+    m 2lsc "I guess that's not so surprising, now that I think about it. There's a lot of things that can potentially make someone unattractive in the eyes of society."
+    m 2dsc "Some of which are beyond that person's control."
+    m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
+    m 2tfc "So the idea of some kind of universal beauty standard where, if you fall short, you're doomed to be forever alone..."
+    m 2efw "It just doesn't make any sense to me!"
+    m 2dfc "..."
+    m 2dsc "..."
+
+    if mas_isMoniNormal(higher=True):
+        m 2ekc "I'm sorry, [player]. I guess I just needed to vent."
+        m 4eud "I know I don't really need to, but I still try to eat right, get enough exercise, and keep myself clean...among other things."
+        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows when I'll be able to cross over into your reality and have a normal body like you."
+        m 1hua "It won't hurt to make sure I'll be ready for that transition whenever it'll happen."
         m 1eua "You don't have to worry though, [player]."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I'll always love you no matter how you look."
-        m "It's more important to me that you're looking after yourself anyway."
-        return "love"
+        m 5eka "But still, try to look after yourself too, okay? Your health is important to me, after all."
+        $ mas_ILY()
+
+    else:
+        m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
+        m 7eud "I know I don't really need to do all that, but I still try to eat right, get enough exercise and keep myself clean, among other things."
+        m 3esa "It's always nice to keep good habits like that."
+        m 1eka "You don't have to worry though..."
+        m 1eua "As long as you're taking care of yourself, I don't mind how you look."
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timetravel",category=['media','misc'],prompt="Time travel",random=True))
