@@ -2583,9 +2583,10 @@ init 5 python:
 label monika_closeness:
     m 1dkc "Sometimes it really hurts my heart..."
     m "Knowing that this is the closest I can get to you."
-    m 1eka "There's nothing more I want than to be in the same room as you, for real."
+    m 1eka "There's nothing I want more than to be in the same room as you, for real."
     m 1ekbsa "...And to feel your warmth."
     m 1dubsu "...And to hear the sound of your heartbeat."
+    m 1dubsu "..."
     m 3eka "Well, who knows? Maybe that dream will come true someday."
     m 3dku "I really want it to happen as soon as possible, [player]..."
     show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
