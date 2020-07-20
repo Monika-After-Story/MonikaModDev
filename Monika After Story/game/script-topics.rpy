@@ -8996,7 +8996,7 @@ label monika_attractiveness:
 
     if mas_isMoniNormal(higher=True):
         m 2ekc "I'm sorry, [player]. I guess I just needed to vent."
-        m 4eud "I know I don't really need to, but I still try to eat right, get enough exercise and keep myself clean, among other things."
+        m 4eud "I know I don't really need to, but I still try to eat right, get enough exercise, and keep myself clean...among other things."
         m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows when I'll be able to cross over into your reality and have a normal body like you."
         m 1hua "It won't hurt to make sure I'll be ready for that transition whenever it'll happen."
         m 1eua "You don't have to worry though, [player]."
