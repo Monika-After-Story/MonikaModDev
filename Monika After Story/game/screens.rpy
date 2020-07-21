@@ -1479,7 +1479,7 @@ screen preferences():
                 vbox:
 
                     hbox:
-                        label _("Sunrise   ")
+                        label _("Sunrise  ")
 
                         # display time
                         label _("[[ " + sr_display + " ]")
@@ -1488,7 +1488,7 @@ screen preferences():
 
 
                     hbox:
-                        label _("Sunset   ")
+                        label _("Sunset  ")
 
                         # display time
                         label _("[[ " + ss_display + " ]")
@@ -1499,7 +1499,7 @@ screen preferences():
                 vbox:
 
                     hbox:
-                        label _("Random Chatter   ")
+                        label _("Random Chatter  ")
 
                         # display str
                         label _("[[ " + rc_display + " ]")
