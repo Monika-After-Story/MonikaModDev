@@ -7297,7 +7297,7 @@ default him = "him"
 default himself = "himself"
 
 
-# default is LESS OFTEN
+#Default is NORMAL
 default persistent._mas_randchat_freq = mas_randchat.NORMAL
 define mas_randchat_prev = persistent._mas_randchat_freq
 init -1 python in mas_randchat:
