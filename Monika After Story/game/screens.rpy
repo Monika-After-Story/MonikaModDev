@@ -1504,8 +1504,12 @@ screen preferences():
                         # display str
                         label _("[[ " + rc_display + " ]")
 
-                    bar value FieldValue(persistent, "_mas_randchat_freq",
-                    range=6, style="slider")
+                    bar value FieldValue(
+                        persistent,
+                        "_mas_randchat_freq",
+                        range=store.mas_affection.RANDCHAT_RANGE_MAP[mas_curr_affection],
+                        style="slider"
+                    )
 
                     hbox:
                         label _("Ambient Volume")

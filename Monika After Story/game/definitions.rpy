@@ -7297,21 +7297,29 @@ default him = "him"
 default himself = "himself"
 
 
-# default is OFTEN
-default persistent._mas_randchat_freq = 0
+# default is LESS OFTEN
+default persistent._mas_randchat_freq = 2
 define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies
 
-    # these numbers are the lower end of how many seconds to wait between
-    # random topics
-    OFTEN         = 5 # end 15
-    NORMAL        = 15 # end 45
-    LESS_OFTEN    = 40 # end 120 (2 min)
-    OCCASIONALLY  = 2*60 # end 360 (6 min)
-    RARELY        = 390 # end 1170 (19.5 min)
-    VERY_RARELY   = 20*60 # end 3600 (60 mins)
-    NEVER         = 0
+    #Name - value constants
+    VERY_OFTEN = 6
+    OFTEN = 5
+    NORMAL = 4
+    LESS_OFTEN = 3
+    OCCASIONALLY = 2
+    RARELY = 1
+    NEVER = 0
+
+    # these numbers are the lower end of how many seconds to wait between random topics
+    VERY_OFTEN_WAIT = 5 # end 15
+    OFTEN_WAIT = 15 # end 45
+    NORMAL_WAIT = 40 # end 120 (2 min)
+    LESS_OFTEN_WAIT = 2*60 # end 360 (6 min)
+    OCCASIONALLY_WAIT = 390 # end 1170 (19.5 min)
+    RARELY_WAIT = 20*60 # end 3600 (60 mins)
+    NEVER_WAIT = 0
 
     # this is multiplied to the low end to get the upper end of seconds
     SPAN_MULTIPLIER = 3
@@ -7320,24 +7328,24 @@ init 1 python in mas_randchat:
     # (inclusive)
     # these values will be utilized in script-ch30 as well as screens
     SLIDER_MAP = {
-        0: OFTEN,
-        1: NORMAL,
-        2: LESS_OFTEN,
-        3: OCCASIONALLY,
-        4: RARELY,
-        5: VERY_RARELY,
-        6: NEVER
+        NEVER: NEVER_WAIT,
+        RARELY: RARELY_WAIT,
+        OCCASIONALLY: OCCASIONALLY_WAIT,
+        LESS_OFTEN: LESS_OFTEN_WAIT,
+        NORMAL: NORMAL_WAIT,
+        OFTEN: OFTEN_WAIT,
+        VERY_OFTEN: VERY_OFTEN_WAIT
     }
 
     ## slider map for displaying
     SLIDER_MAP_DISP = {
-        0: "Often",
-        1: "Normal",
-        2: "Less Often",
-        3: "Occasionally",
-        4: "Rarely",
-        5: "Very Rarely",
-        6: "Never"
+        NEVER: "Never",
+        RARELY: "Rarely",
+        OCCASIONALLY: "Occasionally",
+        LESS_OFTEN: "Less Often",
+        NORMAL: "Normal",
+        OFTEN: "Often",
+        VERY_OFTEN: "Very Often"
     }
 
     # current frequency times
@@ -7352,9 +7360,9 @@ init 1 python in mas_randchat:
 
         IN:
             slider_value - slider value given from the slider
-                Should be between 0 - 5
+                Should be between 0 - 6
         """
-        slider_setting = SLIDER_MAP.get(slider_value, 1)
+        slider_setting = SLIDER_MAP.get(slider_value, 4)
 
         # otherwise set up the times
         # globalize

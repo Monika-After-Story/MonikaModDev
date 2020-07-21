@@ -120,6 +120,16 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
+    RANDCHAT_RANGE_MAP = {
+        BROKEN: 1,
+        DISTRESSED: 2,
+        UPSET: 3,
+        NORMAL: 4,
+        HAPPY: 4,
+        AFFECTIONATE: 5,
+        ENAMORED: 6,
+        LOVE: 6
+    }
 
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
@@ -451,6 +461,10 @@ init 15 python in mas_affection:
         layout.QUIT_NO = mas_layout.QUIT_NO_BROKEN
         layout.QUIT = mas_layout.QUIT_BROKEN
 
+        #Change randchat
+        if store.persistent._mas_randchat_freq <= store.mas_randchat.OCCASIONALLY:
+            store.mas_randchat.adjustRandFreq(store.mas_randchat.RARELY)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -475,6 +489,10 @@ init 15 python in mas_affection:
         if persistent._mas_acs_enable_promisering:
             renpy.store.monika_chr.remove_acs(renpy.store.mas_acs_promisering)
             persistent._mas_acs_enable_promisering = False
+
+        #Change randchat
+        if store.persistent._mas_randchat_freq <= store.mas_randchat.LESS_OFTEN:
+            store.mas_randchat.adjustRandFreq(store.mas_randchat.OCCASIONALLY)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -504,6 +522,10 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
+
+        #Change randchat
+        if store.persistent._mas_randchat_freq <= store.mas_randchat.NORMAL:
+            store.mas_randchat.adjustRandFreq(store.mas_randchat.LESS_OFTEN)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -595,6 +617,10 @@ init 15 python in mas_affection:
         persistent._mas_monika_nickname = "Monika"
         m_name = persistent._mas_monika_nickname
 
+        #Change randchat
+        if store.persistent._mas_randchat_freq <= store.mas_randchat.OFTEN:
+            store.mas_randchat.adjustRandFreq(store.mas_randchat.NORMAL)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -631,6 +657,10 @@ init 15 python in mas_affection:
 
         # remove island event delayed actions
         store.mas_removeDelayedActions(1, 2)
+
+        #Change randchat
+        if store.persistent._mas_randchat_freq <= store.mas_randchat.VERY_OFTEN:
+            store.mas_randchat.adjustRandFreq(store.mas_randchat.OFTEN)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()

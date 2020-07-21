@@ -377,6 +377,19 @@ label v0_11_4(version="v0_11_4"):
     python:
         #Remove lucky mood
         mas_eraseTopic("mas_mood_lucky", persistent._mas_mood_database)
+
+        #Modify randchat settings
+        OLD_NEW_RANDCHAT_MAP = {
+            0: 6,
+            1: 5,
+            2: 4,
+            3: 3,
+            4: 2,
+            5: 1,
+            6: 0
+        }
+
+        persistent._mas_randchat_freq = OLD_NEW_RANDCHAT_MAP[persistent._mas_randchat_freq]
     return
 
 #0.11.3
