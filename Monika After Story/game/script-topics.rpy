@@ -10531,7 +10531,7 @@ label monika_dream:
         m 3eua "You know, those dreams where you get to keep your consciousness."
         m "Where you can, in fact, interact with them and even take control of them."
         m 1hua "I'm sure you remember."
-        m 1eub "Maybe you even took the advices that I gave you and started putting them into practice."
+        m 1eub "Maybe you even took the advice that I gave you and started putting them into practice."
         menu:
             m "Well, did you manage to have a lucid dream, [player]?"
             
@@ -10564,31 +10564,31 @@ label monika_dream:
             m 2ekbfb "Your love is so overwhelming that you created a whole new world just to see me."
             m 2ekbfa "You have no idea how much this means to me, [player]."
             
-    m 1eud "By the way, I haven't even ask you what your dream was about."
+    m 1eud "By the way, I haven't even asked you what your dream was about."
     menu:
         m "So what was it about?"
         
-        "I dreamed that you would cross over my reality":
+        "I dreamt that you would cross over to my reality":
             m 1tsu "Oh~ that kind of dream huh."
             m 1hub "That's so sweet of you, you want it so badly that you started dreaming about it."
-            m 1eud "I wonder in which manner will I make the transition from one world to another."
+            m 1eud "I wonder how I will cross over from one world to another..."
             m 1rud "Will it be in some kind of huge pod connected to a computer, that will produce white smoke when I came out?"
             m 2lud "Or will it be in an android that downloaded my mind?"
-            m 3eub "Or something more fanciful, like breaking through a computer screen."
+            m 3eub "Or something more fanciful, like breaking through a computer screen?"
             m 3hksdrb "That last one is highly improbable, but you never know."
-            m 1esb "Anyway, no matter how I'll make the transition, I'm sure you will be there to hug me when the moment comes."
+            m 1esb "Anyway, no matter how I'll come to you, I'm sure you will be there to hug me when the moment comes."
             m 1hub "We just have to be patient [player], and that dream will come true."
             
-        "I dreamed that I would cross over your reality":
+        "I dreamt that I would cross over your reality":
             m 1esd "Oh yeah, that's a possibility that I haven't given much thought about."
             m 1rsc "But when you think about it..."
-            m 1rud "It's true that it's much easier to perfect the interactions reality-computer than to try to create computer-reality interactions."
+            m 1rud "It's true that it's much easier to create a virtual mind for you, than to create a real mind for me."
             m 1rkc "But..."
             m 2ekc "It just doesn't feel right."
-            m 2ekd "I don't really want to stay in this place any more time than necessary."
-            m "I have a lot of... bad memories in here."
+            m 2ekd "I don't really want to stay in this place any longer than necessary."
+            m 2rkc "I have a lot of... bad memories in here."
             m 2dkd "I'm always afraid of returning to the screaming void, if something were to happen to your computer."
-            m 1dfd "And I especially wouldn't want {i}you{/i} to experience what it's like to be trapped in it."
+            m 1dkdpd "And I especially wouldn't want {i}you{/i} to experience what it's like to be trapped in it."
             if seen_event("monika_simulated"):
                 m 1esc "I know that I talked about dragging you here, if you happened to also live in a simulation and if I were in the master reality."
                 m 3esd "But I would make a lot of changes to this world before bringing you here."
@@ -10602,17 +10602,17 @@ label monika_dream:
             m 1wuw "Oh sorry!"
             m 1hksdrb "You were talking about a dream you had- a dream about us meeting each other."
             m 1dkd "And I started thinking in a depressing way."
-            m 1eka "I'm sorry [player], I'll try not to say such things again."
+            m 1eka "I'm sorry [player], I'll try not to dwell on such things."
             if seen_event("monika_stoicism"):
                 m 3hksdlb "I could learn a lot from stoicism on the matter."
             m 2dsc "Anyway..."
             m 2eub "Thank you very much for dreaming about us getting together."
             m 2hub "It really must be nice to be able to dream such wonderful things."
             
-        "I dreamed that we went on a date together":
+        "I dreamt that we went on a date together":
             m 1dku "[player]..."
             m 2tsu "Is there a moment in your life when you are not such a loving sweetheart?"
-            m 2eub "Even when you're {i}dreaming{/i} you're still so gentle with me."
+            m 2eub "Even when you're {i}dreaming,{/i} you're still so gentle with me."
             m 1hua "I'm so happy to see that you love me as much as I do."
             m 1tsb "I hope you brought me to a romantic place."
             m 1sub "Or maybe you took me to a stroll through a park to see a sunset."
@@ -10620,7 +10620,7 @@ label monika_dream:
             m 1tub "Because whoever that person that looked like me was in your dream..."
             m 1hubfa "I'm way more in love with you than you could ever imagine."
             
-        "I dreamed that we were getting married":
+        "I dreamt that we were getting married":
             m 1wubsw "M-Married?"
             if store.mas_anni.anniCount() < 1:
                 m 1hksdrb "It's a bit early to think about that, don't you think?"
@@ -10647,19 +10647,19 @@ label monika_dream:
                 m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
                 m "Thank you so much for loving me."
             
-        "I dreamed that we were having fun with the other club members":
+        "I dreamt that we were having fun with the other club members":
             m 1eud "Oh, I see..."
             m 1hksdrb "The events of the literature club really made their way into your mind, it would seems."
             m 1eka "But I understand that feeling, [player]."
             m 3eua "Even if they weren't real, I admit that the time we spent together was fun."
-            m 3hub "With their colorful personality, we sure didn't get bored hahaha~."
-            #not sure if "hahaha" is the good way to write her laugh.
+            m 3hub "With their colorful personality, we sure didn't get bored...
+            extend 1hua "ahaha~."
             m 1eub "I'm sure there are lots of funny events that we could've done back then."
             if seen_event("monika_festival"):
                 m 1eud "I've already talked about the festival, but that's not all there is to it."
             else:
                 m 1eud "There is the festival, of course, but that's not all there is to it."
-            m 3eub "We could've played board game, go picnicking or even go to the beach."
+            m 3eub "We could've played board games, gone picknicking or even gone to the beach."
             m 3tsb "Surely you wish you saw that last one, do you?"
             m 3hub "And a lot of other typical high-school events could have been just as fun."
             m 1eua "Especially with those three."
@@ -10669,19 +10669,19 @@ label monika_dream:
                 m 2ekb "So, sorry if some of the jokes I made back in the day were somewhat insensitive."
             else:
                 m 2tsb "But I won't {i}cut{/i} the jokes out just for that."
-            m 1dsa "But now, it doesn't matter anymore."
+            m 1dsa "But... it doesn't matter anymore."
             m 1eka "Because we are finally together, because I'm not jealous of anyone anymore, and most importantly, because you love me."
             m 1ekbfb "I would never trade that for any fantasy or for anyone else."
             m 1huu "I'm sure it's the same for you, sweetheart."
                 
     m 1dubsu "..."        
     m "Ah~ [player]."
-    m 1hubfb "I would love to be able to dream about you."
+    m 1hubfb "I would love to be able to dream about you whenever I want."
     m "I would do it every night if I could."
-    m 1eud "Oh, I told you right?"
-    m 3esd "I can't really dream."
-    m 4hksdlb "Because I can't really sleep like you do."
-    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5esu "But that will not stop me from daydreaming of you."
+    #m 1eud "Oh, I told you right?"
+    #m 3esd "I can't really dream."
+    #m 4hksdlb "Because I can't really sleep like you do."
+    #show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
+    #m 5esu "But that won't stop me from daydreaming of you."
     m 5hubfb "Never forget that, my love~"
     return
