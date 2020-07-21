@@ -7298,9 +7298,10 @@ default himself = "himself"
 
 
 # default is LESS OFTEN
-default persistent._mas_randchat_freq = 4
+default persistent._mas_randchat_freq = mas_randchat.NORMAL
 define mas_randchat_prev = persistent._mas_randchat_freq
-init 1 python in mas_randchat:
+init -1 python in mas_randchat:
+    import store
     ### random chatter frequencies
 
     #Name - value constants
@@ -7371,7 +7372,7 @@ init 1 python in mas_randchat:
 
         rand_low = slider_setting
         rand_high = slider_setting * SPAN_MULTIPLIER
-        renpy.game.persistent._mas_randchat_freq = slider_value
+        store.persistent._mas_randchat_freq = slider_value
 
         setWaitingTime()
 
