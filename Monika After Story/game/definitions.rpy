@@ -7298,7 +7298,7 @@ default himself = "himself"
 
 
 # default is LESS OFTEN
-default persistent._mas_randchat_freq = 2
+default persistent._mas_randchat_freq = 4
 define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies
@@ -7324,7 +7324,7 @@ init 1 python in mas_randchat:
     # this is multiplied to the low end to get the upper end of seconds
     SPAN_MULTIPLIER = 3
 
-    ## to better work with the sliders, we will create a range from 0 to 5
+    ## to better work with the sliders, we will create a range from 0 to 6
     # (inclusive)
     # these values will be utilized in script-ch30 as well as screens
     SLIDER_MAP = {
