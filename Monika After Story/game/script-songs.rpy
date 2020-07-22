@@ -354,7 +354,6 @@ label mas_sing_song_rerandom:
         mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
         mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
-        mas_bookmarks_derand.ev_db_code = "SNG"
 
     call mas_rerandom
     return

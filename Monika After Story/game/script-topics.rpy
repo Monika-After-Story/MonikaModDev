@@ -526,7 +526,7 @@ label mas_bad_derand_topic:
             "Yes please.":
                 m 2dkc "Alright..."
                 #Lose affection (we lose more than lower aff because there's an expectation that you'd care)
-                $ mas_loseAffection(10)
+                $ mas_loseAffection(5)
                 $ derand_flagged_topic()
 
             "It's alright.":
@@ -578,7 +578,6 @@ label mas_topic_rerandom:
         mas_bookmarks_derand.talk_about_more_text = "Are there any other topics you are okay with talking about?"
         mas_bookmarks_derand.caller_label = "mas_topic_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed
-        mas_bookmarks_derand.ev_db_code = "EVE"
 
     call mas_rerandom
     return
@@ -626,21 +625,19 @@ init python in mas_bookmarks_derand:
     talk_about_more_text = None
     caller_label = None
     persist_var = None
-    ev_db_code = "EVE"
 
     def resetDefaultValues():
         """
         Resets the globals to their default values
         """
         global initial_ask_text_multiple, initial_ask_text_one, talk_about_more_text
-        global caller_label, persist_var, ev_db_code
+        global caller_label, persist_var
 
         initial_ask_text_multiple = None
         initial_ask_text_one = None
         talk_about_more_text = None
         caller_label = None
         persist_var = None
-        ev_db_code = "EVE"
         return
 
     def getLabelPrefix(test_str, list_prefixes):
@@ -699,6 +696,15 @@ init python in mas_bookmarks_derand:
         """
         return eventlabel not in getDerandomedEVLs()
 
+    def wrappedGainAffection(amount=None, modifier=1, bypass=False):
+        """
+        Wrapper function for mas_gainAffection which allows it to be used in event rules at init 5
+
+        See mas_gainAffection for documentation
+        """
+        store.mas_gainAffection(amount, modifier, bypass)
+
+
 ##Generic rerandom work label
 #IN:
 #   initial_ask_text_multiple - Initial question Monika asks if there's multiple items to rerandom
@@ -706,7 +712,6 @@ init python in mas_bookmarks_derand:
 #   talk_about_more_text - Question Monika asks if there's more things you'd like to rerandom
 #   caller_label - The label that called this label
 #   persist_var - The persistent variable which stores the derandomed eventlabels
-#   ev_db_code - The event database code for the topics we're rerandoming (Default: "EVE")
 label mas_rerandom:
     python:
         derandomlist = mas_get_player_derandoms(mas_bookmarks_derand.persist_var)
@@ -729,11 +734,32 @@ label mas_rerandom:
 
     else:
         show monika at t11
-        $ mas_showEVL(topic_choice, mas_bookmarks_derand.ev_db_code, _random=True)
-        #Pop the derandom
-        $ mas_bookmarks_derand.persist_var.pop(mas_bookmarks_derand.persist_var.index(topic_choice))
-        #Prep the renpy substitution
-        $ talk_about_more_text = renpy.substitute(mas_bookmarks_derand.talk_about_more_text)
+        python:
+            rerand_ev = mas_getEV(topic_choice)
+
+            if rerand_ev:
+                #Rerandom the ev
+                rerand_ev.random = True
+
+                #Run the rerandom callback function
+                rerandom_callback_data = rerand_ev.rules.get("rerandom_callback", None)
+                if isinstance(rerandom_callback_data, dict) and callable(rerandom_callback_data["function"]):
+                    try:
+                        rerandom_callback_data["function"](
+                            *rerandom_callback_data.get("args", list()),
+                            **rerandom_callback_data.get("kwargs", dict())
+                        )
+
+                    except Exception as ex:
+                        mas_utils.writelog(
+                            "[ERROR]: Failed to call rerandom callback function. Trace message: {0}\n".format(ex.message)
+                        )
+
+            #Pop the derandom
+            mas_bookmarks_derand.persist_var.pop(mas_bookmarks_derand.persist_var.index(topic_choice))
+
+            #Prep the renpy substitution
+            talk_about_more_text = renpy.substitute(mas_bookmarks_derand.talk_about_more_text)
         m 1eua "Okay, [player]..."
 
         if len(mas_bookmarks_derand.persist_var) > 0:
@@ -4868,7 +4894,13 @@ init 5 python:
             category=['philosophy','monika'],
             prompt="Mortality",
             random=True,
-            rules={"derandom_override_label": "mas_bad_derand_topic"}
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": {
+                    "function": mas_bookmarks_derand.wrappedGainAffection,
+                    "args": [2.5]
+                }
+            }
         )
     )
 
@@ -14828,7 +14860,14 @@ init 5 python:
             category=['literature'],
             prompt="There Will Come Soft Rains",
             random=True,
-            aff_range=(mas_aff.AFFECTIONATE, None)
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": {
+                    "function": mas_bookmarks_derand.wrappedGainAffection,
+                    "args": [2.5]
+                }
+            }
         )
     )
 
@@ -14996,7 +15035,14 @@ init 5 python:
             category=["monika"],
             prompt="Dying the same day",
             aff_range=(mas_aff.NORMAL, None),
-            random=True
+            random=True,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": {
+                    "function": mas_bookmarks_derand.wrappedGainAffection,
+                    "args": [2.5]
+                }
+            }
         )
     )
 
@@ -15182,7 +15228,14 @@ init 5 python:
             prompt="Fear",
             category=['monika'],
             conditional="renpy.seen_label('monika_soft_rains')",
-            action=EV_ACT_RANDOM
+            action=EV_ACT_RANDOM,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": {
+                    "function": mas_bookmarks_derand.wrappedGainAffection,
+                    "args": [2.5]
+                }
+            }
         )
     )
 
