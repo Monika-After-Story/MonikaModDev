@@ -508,6 +508,7 @@ label mas_song_this_christmas_kiss:
     m 1wuu "{i}Something like this,{w=02}{nw}{/i}"
     extend 1sub "{i} I can't resist this Christmas kiss~{/i}"
     m 4hub "{i}'Cause I'm falling{w=0.2} buried on your lips~{/i}"
+    show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hub "{i}Something like this,{w=02}{nw}{/i}"
     extend 5wubsb "{i} I can't resist this Christmas kiss~{/i}"
     return
