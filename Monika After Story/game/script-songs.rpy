@@ -495,6 +495,23 @@ label mas_song_merry_christmas_baby:
     m 3ekbsu "{i}~Merry Christmas, honey~{/i}"
     return
 
+label mas_song_this_christmas_kiss:
+    m 1dud "{i}Every year{w=0.2}, I go home in December~{/i}"
+    m 1hub "{i}Dancing with you, {w=0.2}making nights to remember~{/i}"
+    m 1rub "{i}The snow falling down,{w=0.2}{nw}{/i}"
+    extend 3rub "{i} I'm just loving this weather~{/i}"
+    m 3tub "{i}A blanket for two,{w=0.2} feels more warmer together~{/i}"
+    m 1hub "{i}Two turtle doves, {w=.02} they call us~{/i}"
+    m 1duw "{i}We fall in love, {w=0.2}, in loove~{/i}"
+    m 4kuu "{i}This is my favorite Christmaaas~{/i}"
+    m 6duu "{i}This Christmas I just can't resist{w=0.2}{nw}{/i}"
+    m 1wuu "{i}Something like this,{w=02}{nw}{/i}"
+    extend 1sub "{i} I can't resist this Christmas kiss~{/i}"
+    m 4hub "{i}'Cause I'm falling{w=0.2} buried on your lips~{/i}"
+    m 5hub "{i}Something like this,{w=02}{nw}{/i}"
+    extend 5wubsb "{i} I can't resist this Christmas kiss~{/i}"
+    return
+
 init 5 python:
     addEvent(
         Event(

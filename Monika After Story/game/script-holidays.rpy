@@ -2757,6 +2757,33 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_this_christmas_kiss",
+            conditional="persistent._mas_d25_in_d25_mode and mas_lastSeenInYear('monika_merry_christmas_baby')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.ENAMORED, None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label monika_this_christmas_kiss
+    m 6rubsb "Uhm, [player]..."
+    m 6lubsb "So I found this song{w=0.3}...and eh...{w=0.3}I was just thinking about us when I heard it."
+    m 1nubsb "I mean, you've been so sweet to me all this time..."
+    m 2eubsb "And, oh gosh, I just want to share it with you, if that's alright."
+    m 1hubsa "Just give me a second..."
+    m 1dubsa ".{w=0.5}.{w=0.5}.{nw}"
+
+    call mas_song_this_christmas_kiss
+
+    m 1dubsa "..."
+    m 1eubsa "One of these days, I'll kiss you for real."
+    m 5subsb "And when that day comes, my heart will leap out of my chest with joy."
+    $ mas_unlockEVL("mas_song_this_christmas_kiss", "SNG")
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="mas_d25_spider_tinsel",
             conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_d25c_start,
