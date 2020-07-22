@@ -525,7 +525,7 @@ label mas_bad_derand_topic:
 
             "Yes please.":
                 m 2dkc "Alright..."
-                #Lose affection (we lose more than lower aff because there's an expectation that you'd care)
+                #Lose affection
                 $ mas_loseAffection(5)
                 $ derand_flagged_topic()
 
@@ -552,6 +552,7 @@ label mas_bad_derand_topic:
                 m "I appreciate that you're still willing to hear me out."
 
     else:
+        #No ask here. You're this low, you probably did it on purpose
         $ mas_loseAffection(5)
         m 2rsc "I guess I shouldn't be surprised..."
         m 2tsc "You've made it pretty clear already that you don't care about my feelings."
@@ -1465,7 +1466,14 @@ init 5 python:
                 eventlabel="monika_whispers",
                 category=['ddlc','club members'],
                 prompt="Others still lingering",
-                random=True
+                random=True,
+                rules={
+                    "derandom_override_label": "mas_bad_derand_topic",
+                    "rerandom_callback": {
+                        "function": mas_bookmarks_derand.wrappedGainAffection,
+                        "args": [2.5]
+                    }
+                }
             )
         )
 
