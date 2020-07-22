@@ -556,7 +556,8 @@ label mas_bad_derand_topic:
         $ mas_loseAffection(5)
         m 2rsc "I guess I shouldn't be surprised..."
         m 2tsc "You've made it pretty clear already that you don't care about my feelings."
-        m "Fine, [player]. I won't talk about that anymore."
+        m 2dsc "Fine, [player]. I won't talk about that anymore."
+        $ derand_flagged_topic()
     return
 
 init 5 python:
@@ -744,11 +745,11 @@ label mas_rerandom:
 
                 #Run the rerandom callback function
                 rerandom_callback_data = rerand_ev.rules.get("rerandom_callback", None)
-                if isinstance(rerandom_callback_data, dict) and callable(rerandom_callback_data["function"]):
+                if rerandom_callback_data is not None:
                     try:
-                        rerandom_callback_data["function"](
-                            *rerandom_callback_data.get("args", list()),
-                            **rerandom_callback_data.get("kwargs", dict())
+                        rerandom_callback_data.callable(
+                            *rerandom_callback_data.args,
+                            **rerandom_callback_data.kwargs
                         )
 
                     except Exception as ex:
@@ -761,8 +762,8 @@ label mas_rerandom:
 
             #Prep the renpy substitution
             talk_about_more_text = renpy.substitute(mas_bookmarks_derand.talk_about_more_text)
-        m 1eua "Okay, [player]..."
 
+        m 1eua "Okay, [player]..."
         if len(mas_bookmarks_derand.persist_var) > 0:
             m 1eka "[talk_about_more_text]{nw}"
             $ _history_list.pop()
@@ -1469,10 +1470,7 @@ init 5 python:
                 random=True,
                 rules={
                     "derandom_override_label": "mas_bad_derand_topic",
-                    "rerandom_callback": {
-                        "function": mas_bookmarks_derand.wrappedGainAffection,
-                        "args": [2.5]
-                    }
+                    "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
                 }
             )
         )
@@ -4904,10 +4902,7 @@ init 5 python:
             random=True,
             rules={
                 "derandom_override_label": "mas_bad_derand_topic",
-                "rerandom_callback": {
-                    "function": mas_bookmarks_derand.wrappedGainAffection,
-                    "args": [2.5]
-                }
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
             }
         )
     )
@@ -14871,10 +14866,7 @@ init 5 python:
             aff_range=(mas_aff.AFFECTIONATE, None),
             rules={
                 "derandom_override_label": "mas_bad_derand_topic",
-                "rerandom_callback": {
-                    "function": mas_bookmarks_derand.wrappedGainAffection,
-                    "args": [2.5]
-                }
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
             }
         )
     )
@@ -15046,10 +15038,7 @@ init 5 python:
             random=True,
             rules={
                 "derandom_override_label": "mas_bad_derand_topic",
-                "rerandom_callback": {
-                    "function": mas_bookmarks_derand.wrappedGainAffection,
-                    "args": [2.5]
-                }
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
             }
         )
     )
@@ -15239,10 +15228,7 @@ init 5 python:
             action=EV_ACT_RANDOM,
             rules={
                 "derandom_override_label": "mas_bad_derand_topic",
-                "rerandom_callback": {
-                    "function": mas_bookmarks_derand.wrappedGainAffection,
-                    "args": [2.5]
-                }
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
             }
         )
     )
