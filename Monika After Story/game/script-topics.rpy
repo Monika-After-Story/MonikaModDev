@@ -367,7 +367,13 @@ init python:
             #Now we do a bit of var setup to clean up the following work
             derand_flag_add_text = label_prefix_map[label_prefix].get("derand_text", _("Flagged for removal."))
             derand_flag_remove_text = label_prefix_map[label_prefix].get("underand_text", _("Flag removed."))
-            push_label = label_prefix_map[label_prefix].get("push_label", "mas_topic_derandom")
+
+            #Handle custom override derand labels
+            push_label = ev.rules.get("derandom_override_label", None)
+
+            #If we still have nothing, then we'll use the default, the one for the label prefix
+            if not renpy.has_label(push_label):
+                push_label = label_prefix_map[label_prefix].get("push_label", "mas_topic_derandom")
 
             if mas_findEVL(push_label) < 0:
                 persistent.flagged_monikatopic = ev_label
@@ -492,6 +498,66 @@ label mas_topic_derandom:
             m 1eka "Alright, [player]."
     return
 
+label mas_bad_derand_topic:
+    python:
+        prev_topic = persistent.flagged_monikatopic
+
+        def derand_flagged_topic():
+            """
+            Derands the flagged topic
+            """
+            mas_hideEVL(prev_topic, "EVE", derandom=True)
+            persistent._mas_player_derandomed.append(prev_topic)
+            mas_unlockEVL('mas_topic_rerandom', 'EVE')
+
+    m 2ekc "...{w=0.3}{nw}"
+    extend 2ekd "[player]..."
+
+    if mas_isMoniAff(higher=True):
+        m 2efd "Is it not okay that I talk to you about my fears?"
+        m 2ekc "I mean, if you want me to stop, I'll stop...{w=0.3}{nw}"
+        extend 2rkd "but I thought you'd be willing to hear me out."
+
+        m 2esc "Do you want me to stop, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you want me to stop, [player]?{fast}"
+
+            "Yes please.":
+                m 2dkc "Alright..."
+                #Lose affection (we lose more than lower aff because there's an expectation that you'd care)
+                $ mas_loseAffection(10)
+                $ derand_flagged_topic()
+
+            "It's alright.":
+                m 2duu "Thank you, [player]."
+                m 2eua "It means a lot that you're willing to hear me out."
+
+    elif mas_isMoniUpset(higher=True):
+        m 2ekd "Do you just...{w=0.2}not care about how I feel or something?"
+        m 2tsc "If you want me to stop talking about this, I will...but I'm not that happy you don't want to hear me out."
+
+        m 2etc "Well [player], should I stop?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Well [player], should I stop?{fast}"
+
+            "Yes please.":
+                m 2dsc "Alright."
+                $ mas_loseAffection(5)
+                $ derand_flagged_topic()
+
+            "It's alright.":
+                m 2eka "Thank you, [player]."
+                m "I appreciate that you're still willing to hear me out."
+
+    else:
+        $ mas_loseAffection(5)
+        m 2rsc "I guess I shouldn't be surprised..."
+        m 2tsc "You've made it pretty clear already that you don't care about my feelings."
+        m "Fine, [player]. I won't talk about that anymore."
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -532,7 +598,7 @@ init python in mas_bookmarks_derand:
     #  - unbookmark_text: "Bookmark removed."
     #  - derand_text: "Flagged for removal."
     #  - underand_text: "Flag removed."
-    #  - push_label: "mas_topic_derandom"
+    #  - push_label: "mas_topic_derandom" (This is overriden on a per event basis by the 'derandom_push_label' rule)
     #  - bookmark_persist_key: "_mas_player_bookmarked"
     #  - derand_persist_key: "_mas_player_derandomed"
     label_prefix_map = {
@@ -4795,7 +4861,16 @@ label monika_fanfiction:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_eternity",category=['philosophy','monika'],prompt="Mortality",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_eternity",
+            category=['philosophy','monika'],
+            prompt="Mortality",
+            random=True,
+            rules={"derandom_override_label": "mas_bad_derand_topic"}
+        )
+    )
 
 label monika_eternity:
     m 1ekc "[player]..."
