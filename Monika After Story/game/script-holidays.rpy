@@ -2766,7 +2766,7 @@ init 5 python:
         skipCalendar=True
     )
 
-label monika_this_christmas_kiss
+label monika_this_christmas_kiss:
     m 6rubsb "Uhm, [player]..."
     m 6lubsb "So I found this song{w=0.3}...and eh...{w=0.3}I was just thinking about us when I heard it."
     m 1nubsb "I mean, you've been so sweet to me all this time..."
@@ -2780,6 +2780,8 @@ label monika_this_christmas_kiss
     m 1eubsa "One of these days, I'll kiss you for real."
     m 5subsb "And when that day comes, my heart will leap out of my chest with joy."
     $ mas_unlockEVL("mas_song_this_christmas_kiss", "SNG")
+    return
+
 init 5 python:
     addEvent(
         Event(
