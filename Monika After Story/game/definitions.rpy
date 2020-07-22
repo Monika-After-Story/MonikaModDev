@@ -7355,6 +7355,15 @@ init -1 python in mas_randchat:
     rand_high = NORMAL * SPAN_MULTIPLIER
     rand_chat_waittime_left = 0
 
+    def reduceRandchatForAff(aff_level):
+        """
+        Reduces the randchat setting if we're too high for the current affection level
+        """
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+
+        if store.persistent._mas_randchat_freq > max_setting_for_level:
+            adjustRandFreq(max_setting_for_level)
+
     def adjustRandFreq(slider_value):
         """
         Properly adjusts the random limits given the slider value

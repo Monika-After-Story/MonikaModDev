@@ -1426,7 +1426,7 @@ screen preferences():
                     )
 
                     # setup previous values
-                    mas_randchat_prev = persistent._mas_randchat_freq
+                    store.mas_randchat_prev = persistent._mas_randchat_freq
 
 
                     ### sunrise / sunset preprocessing

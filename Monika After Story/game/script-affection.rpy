@@ -462,8 +462,7 @@ init 15 python in mas_affection:
         layout.QUIT = mas_layout.QUIT_BROKEN
 
         #Change randchat
-        if store.persistent._mas_randchat_freq <= store.mas_randchat.OCCASIONALLY:
-            store.mas_randchat.adjustRandFreq(store.mas_randchat.RARELY)
+        store.mas_randchat.reduceRandchatForAff(BROKEN)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -491,8 +490,7 @@ init 15 python in mas_affection:
             persistent._mas_acs_enable_promisering = False
 
         #Change randchat
-        if store.persistent._mas_randchat_freq <= store.mas_randchat.LESS_OFTEN:
-            store.mas_randchat.adjustRandFreq(store.mas_randchat.OCCASIONALLY)
+        store.mas_randchat.reduceRandchatForAff(DIS)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -524,8 +522,7 @@ init 15 python in mas_affection:
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
 
         #Change randchat
-        if store.persistent._mas_randchat_freq <= store.mas_randchat.NORMAL:
-            store.mas_randchat.adjustRandFreq(store.mas_randchat.LESS_OFTEN)
+        store.mas_randchat.reduceRandchatForAff(UPSET)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -618,8 +615,7 @@ init 15 python in mas_affection:
         m_name = persistent._mas_monika_nickname
 
         #Change randchat
-        if store.persistent._mas_randchat_freq <= store.mas_randchat.OFTEN:
-            store.mas_randchat.adjustRandFreq(store.mas_randchat.NORMAL)
+        store.mas_randchat.reduceRandchatForAff(HAPPY)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -659,8 +655,7 @@ init 15 python in mas_affection:
         store.mas_removeDelayedActions(1, 2)
 
         #Change randchat
-        if store.persistent._mas_randchat_freq <= store.mas_randchat.VERY_OFTEN:
-            store.mas_randchat.adjustRandFreq(store.mas_randchat.OFTEN)
+        store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
