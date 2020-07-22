@@ -2779,9 +2779,10 @@ label monika_this_christmas_kiss:
 show monika 1dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1dubsa "..."
     m 1eubsa "One of these days, I'll kiss you for real."
+    show monika 5subsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5subsb "And when that day comes, my heart will leap out of my chest with joy."
     $ mas_unlockEVL("mas_song_this_christmas_kiss", "SNG")
-    return
+    return "no_unlock"
 
 init 5 python:
     addEvent(
