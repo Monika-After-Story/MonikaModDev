@@ -490,7 +490,7 @@ init 15 python in mas_affection:
             persistent._mas_acs_enable_promisering = False
 
         #Change randchat
-        store.mas_randchat.reduceRandchatForAff(DIS)
+        store.mas_randchat.reduceRandchatForAff(DISTRESSED)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
