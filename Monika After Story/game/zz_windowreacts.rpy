@@ -22,6 +22,9 @@ init -10 python in mas_windowreacts:
     #We need this in case we cannot get access to the libs, so everything can still run
     can_show_notifs = True
 
+    #If we don't have access to the required libs to do windowreact related things
+    can_do_windowreacts = True
+
     #The windowreacts db
     windowreact_db = {}
 
@@ -53,6 +56,7 @@ init python:
         except ImportError:
             #If we fail to import, then we're going to have to make sure nothing can run.
             store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
 
             #Log this
             store.mas_utils.writelog(
@@ -71,15 +75,29 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
+        import subprocess
         try:
-            import subprocess
             subprocess.call(['notify-send', '--version'])
+
         except OSError as e:
             #Command wasn't found
             store.mas_windowreacts.can_show_notifs = False
             store.mas_utils.writelog(
                 "[WARNING]: notify-send not found, disabling notifications.\n"
             )
+
+        try:
+            subprocess.call(["xdotool", "--version"])
+
+        except OSError:
+            #Command not found
+            persistent._mas_windowreacts_windowreacts_enabled = False
+            store.mas_windowreacts.can_do_windowreacts = False
+            store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts.\n")
+
+    else:
+        store.mas_windowreacts.can_do_windowreacts = False
+
 
     #List of notif quips (used for topic alerts)
     #Windows
@@ -109,7 +127,10 @@ init python:
         """
         Checks if we can check the active window (simplifies conditionals)
         """
-        return persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications
+        return (
+            store.mas_windowreacts.can_do_windowreacts
+            and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
+        )
 
     def mas_getActiveWindow(friendly=False):
         """
@@ -118,16 +139,36 @@ init python:
             friendly: whether or not the active window name is returned in a state usable by the user
         """
         if (
-                renpy.windows
-                and mas_windowreacts.can_show_notifs
-                and mas_canCheckActiveWindow()
-            ):
+            renpy.windows
+            and mas_windowreacts.can_show_notifs
+            and mas_canCheckActiveWindow()
+        ):
             from win32gui import GetWindowText, GetForegroundWindow
 
-            if not friendly:
-                return GetWindowText(GetForegroundWindow()).lower().replace(" ","")
+            window_handle = GetWindowText(GetForegroundWindow())
+            if friendly:
+                return window_handle
             else:
-                return GetWindowText(GetForegroundWindow())
+                return window_handle.lower().replace(" ","")
+
+        elif (
+            renpy.linux
+            and mas_windowreacts.can_show_notifs
+            and mas_canCheckActiveWindow()
+        ):
+            #Try except this in the case of a non-zero exit code
+            try:
+                window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
+            except:
+                store.mas_utils.writelog("[ERROR]: xdotool exited with a non-zero exit code.\n")
+                return ""
+
+            #If we have a window handle, let's just process it as friendly/unfriendly and return it
+            if friendly:
+                return window_handle.replace("\n", "")
+            else:
+                return window_handle.lower().replace(" ","").replace("\n", "")
+
         else:
             #TODO: Mac vers (if possible)
             #NOTE: We return "" so this doesn't rule out notifications
@@ -183,10 +224,10 @@ init python:
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
-                    (mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules) and ev.unlocked and ev.checkAffection(mas_curr_affection))
-                    and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
-                    and ("notif-group" not in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
-                ):
+                (mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules) and ev.unlocked and ev.checkAffection(mas_curr_affection))
+                and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
+                and ("notif-group" not in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
+            ):
                 #If we have a conditional, eval it and queue if true
                 if ev.conditional and eval(ev.conditional):
                     queueEvent(ev_label)
@@ -253,10 +294,10 @@ init python:
             ev_label: eventlabel of the wrs
         """
         if (
-                ev_label
-                and renpy.has_label(ev_label)
-                and ev_label not in persistent._mas_windowreacts_no_unlock_list
-            ):
+            ev_label
+            and renpy.has_label(ev_label)
+            and ev_label not in persistent._mas_windowreacts_no_unlock_list
+        ):
             mas_unlockEVL(ev_label,"WRS")
 
     def mas_tryShowNotificationOSX(title, body):

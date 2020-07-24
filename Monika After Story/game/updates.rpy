@@ -372,6 +372,13 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.4
+label v0_11_4(version="v0_11_4"):
+    python:
+        #Remove lucky mood
+        mas_eraseTopic("mas_mood_lucky", persistent._mas_mood_database)
+    return
+
 #0.11.3
 label v0_11_3(version="v0_11_3"):
     python:
@@ -454,6 +461,15 @@ label v0_11_3(version="v0_11_3"):
             except:
                 pass
 
+        #We'll also get rid of hehehe.txt if it's still here
+        try:
+            os.rename(
+                renpy.config.basedir + "/hehehe.txt",
+                renpy.config.basedir + "/characters/ehehe.txt"
+            )
+        except:
+            mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
         # add to the default unlocked pool topics
         pool_unlock_list = [
             "monika_meta",
@@ -468,6 +484,14 @@ label v0_11_3(version="v0_11_3"):
 
         for pool_label in pool_unlock_list:
             mas_unlockEVL(pool_label,"EVE")
+
+        #Add conditional to player appearance if not seen
+        if not seen_event("monika_player_appearance"):
+            player_appearance_ev = mas_getEV("monika_player_appearance")
+            if player_appearance_ev:
+                player_appearance_ev.random = False
+                player_appearance_ev.conditional = "seen_event('mas_gender')"
+                player_appearance_ev.action = EV_ACT_RANDOM
 
         #Fix the islands event
         if not mas_isWinter() and not seen_event("greeting_ourreality"):
@@ -494,12 +518,18 @@ label v0_11_3(version="v0_11_3"):
             else:
                 gender_ev.start_date = mas_getFirstSesh() + datetime.timedelta(minutes=30)
 
+        # Unlock quit smoking pool topic if we smoke
+        if persistent._mas_pm_do_smoke:
+            mas_unlockEVL("monika_smoking_quit","EVE")
+
         #Unlock the leaving already fare
         leaving_already_ev = mas_getEV("bye_leaving_already")
         if leaving_already_ev:
             leaving_already_ev.random = True
             leaving_already_ev.conditional = "mas_getSessionLength() <= datetime.timedelta(minutes=20)"
 
+        if not mas_isWinter():
+            mas_lockEVL("monika_snowballfight", "EVE")
     return
 
 #0.11.1
