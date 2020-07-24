@@ -15413,3 +15413,49 @@ label monika_why_do_you_read:
     extend 3eua "While my situation in here has its downsides, [line_mid] opportunity to spend more time on the things I like."
     m 1ekbsu "...Though then again, nothing could ever beat spending more time with you~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tabletop_rping",
+            category=['monika','literature'],
+            prompt="Tabletop Roleplaying",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_tabletop_rping:
+    m "Say, [player], there's this literature genre that I've been meaning to bring up lately."
+    m "To be honest, I've been intrigued by it for quite some time, but never got the chance to participate."
+    m "Just like Doki Doki Literature Club, it's kind of a mix between a game and a form of literature."
+    m "It's called tabletop roleplaying! Have you heard of it?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "It's called tabletop roleplaying! Have you heard of it?"
+        "Yes.":
+            m "That's great!"
+
+        "No.":
+            m "Oh really? It's really quite interesting you know."
+
+    m "You may have played 'pretend' when you were a kid growing up, right?"
+    m "It's a game where you assume the role of a different person, maybe in another world, and act and speak as them to form a narrative."
+    m "When you're doing it with friends, it becomes much more fun, as you are also met with other people's character, and you interact with each other."
+    m "But 'pretend' always had one big problem{w=0.3}...What do you do when you can't agree on the story's plot?"
+    m "It could often devolve into a 'my character is invulnerable and always wins' kind of situation, you know?"
+    m "To counteract this problem, tabletop roleplaying was invented."
+    m "The most useful tool for this game is actually dice, and many cool forms of dice were invented to go with the game."
+    m "You see, when you can't agree, letting chance decide is your best bet!"
+    m "Unlike other types of roleplaying games, tabletop RPGs are often conducted sort of like a radio drama...{w=0.3}{nw}"
+    extend " only the spoken component of a role is acted."
+    m "Depending on the level of immersion you want, you can either describe your characters speech and actions 'out of character'..."
+    m "Or you can fully immerse yourself and use special dialects and mannerisms to act out your character{w=0.3}, this is called 'in character'."
+    m "Forgive me if you already knew this, I just read about this a bit when you were gone and...it's really interesting to me."
+    m "I'd love to pretend to be someone else for a few hours occasionally..."
+    extend " maybe someone from your world, that could find you and surprise hug you from behind~"
+    m "Eheheh..."
+    m "Don't get me wrong, I love being myself too. I have the best sweetheart who loves me after all..."
+    m "But there's something enticing about immersing yourself into a limitless world, and creating your own adventures in good company."
+    m "Would you do that with me sometime, player?{w=0.3} I would really like that..."
