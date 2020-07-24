@@ -2557,7 +2557,7 @@ label mas_dockstat_generic_iowait:
         $ mas_farewells.resetDockstatFlowVars()
 
         #And now, we return what the generic label would have returned, that is if it's a string.
-        if isinstance(_return, unicode):
+        if isinstance(_return, basestring):
             return _return
         #This means we got a boolean and we can't return it because the event handler requires strings
         return
