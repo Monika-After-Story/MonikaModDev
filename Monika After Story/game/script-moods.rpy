@@ -209,7 +209,7 @@ label mas_mood_proud:
             m 2esd "It can be very easy to become discouraged if you only focus on the bigger goals you have."
             m 2rksdla "They can be challenging to reach on their own."
             m 4eub "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
-            m 4hub "So keep hitting those small goals, [player]!"
+            m 4hub "So keep hitting those small goals, [mas_get_player_nickname()]!"
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hubfb "And remember, I love you, and I'm always cheering you on!"
             return "love"
@@ -219,7 +219,7 @@ init 5 python:
 
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
-    m "Know that you can always come up to me and I'll cheer you up, [player]."
+    m "Know that you can always come up to me and I'll cheer you up, [mas_get_player_nickname()]."
     m 3eka "I love you and I'll always be here for you, so don't ever forget that~"
     return "love"
 
@@ -628,10 +628,11 @@ label mas_mood_bored:
         else:
             m 2rkc "Maybe we could play a game of [display_picked]..."
 
-    m "What do you say, [player]?{nw}"
+    $ chosen_nickname = mas_get_player_nickname()
+    m "What do you say, [chosen_nickname]?{nw}"
     $ _history_list.pop()
     menu:
-        m "What do you say, [player]?{fast}"
+        m "What do you say, [chosen_nickname]?{fast}"
         "Yes.":
             if gamepicked == "pong":
                 call game_pong

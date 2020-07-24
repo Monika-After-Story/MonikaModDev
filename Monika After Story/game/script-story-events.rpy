@@ -1077,7 +1077,7 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w=0.5}[player]?"
+    m 1lksdla "...{w=0.5}[mas_get_player_nickname()]?"
 
     m "Is it okay with you if I repeat stuff that I've said?{nw}"
     $ _history_list.pop()
@@ -1978,7 +1978,7 @@ default persistent._mas_pm_is_fast_reader = None
 # True if fast reader, False if not
 
 label mas_text_speed_enabler:
-    m 1eua "Hey [player], I was wondering..."
+    m 1eua "Hey [mas_get_player_nickname(exclude_names=['my love'])], I was wondering..."
 
     m "Are you a fast reader?{nw}"
     $ _history_list.pop()

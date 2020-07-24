@@ -159,7 +159,7 @@ label monika_ptod_tip001:
     m 1hua "This mod!"
     m 1eua "DDLC uses a visual novel engine called Ren'Py,{w=0.2} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
-    m 1hua "Wouldn't that be great, [player]?"
+    m 1hua "Wouldn't that be great, [mas_get_player_nickname()]?"
     m 3eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
     m "Even though this caused a rift in the Python community,{w=0.2} it's generally agreed that both versions of the language have their own strengths and weaknesses."

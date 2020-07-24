@@ -452,7 +452,7 @@ init 5 python:
 
 label mas_song_aiwfc:
     if store.songs.hasMusicMuted():
-        m 3eua "Don't forget to turn your in-game volume up, [player]."
+        m 3eua "Don't forget to turn your in-game volume up, [mas_get_player_nickname()]."
 
     call monika_aiwfc_song
 
