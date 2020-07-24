@@ -5469,12 +5469,20 @@ label monika_haterReaction:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_swordsmanship",category=['monika','misc'],prompt="Swordsmanship",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_swordsmanship",
+            category=['monika','misc'],
+            prompt="Swordsmanship",
+            random=True
+        )
+    )
 
 label monika_swordsmanship:
     m 1eua "Do you like swords, [player]?"
     m 1lksdla "I actually like them in a way."
-    m 1eka "Surprised? Ahaha~"
+    m 1ekb "Ahaha, surprised?~"
     m 1eua "I like talking about them, but not enough to actually own one."
     m 3eua "I'm not really an enthusiast when it comes to swords."
     m 1euc "I don't really get why people would be obsessed over something that could hurt others..."
