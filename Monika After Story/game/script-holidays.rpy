@@ -531,16 +531,16 @@ label greeting_o31_marisa:
     $ store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
     $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
-    # decoded CG means that we start with monika offscreen
-    if store.mas_o31_event.o31_cg_decoded:
-        # ASSUMING:
-        #   vignette should be enabled.
-        call spaceroom(hide_monika=True, scene_change=True)
+    ## decoded CG means that we start with monika offscreen
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    # ASSUMING:
+    #    #   vignette should be enabled.
+    #    call spaceroom(hide_monika=True, scene_change=True)
 
-    else:
-        # ASSUMING:
-        #   vignette should be enabled
-        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
+    #else:
+    # ASSUMING:
+    #   vignette should be enabled
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -549,23 +549,23 @@ label greeting_o31_marisa:
     m 1hub "Ahaha!"
 
     # decoded CG means we display CG
-    if store.mas_o31_event.o31_cg_decoded:
-        $ cg_delay = datetime.timedelta(seconds=20)
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    $ cg_delay = datetime.timedelta(seconds=20)
 
-        # got cg
-        m "I'm over here, [player]~"
-        window hide
+    #    # got cg
+    #    m "I'm over here, [player]~"
+    #    window hide
 
-        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
-        $ start_time = datetime.datetime.now()
+    #    show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
+    #    $ start_time = datetime.datetime.now()
 
-        while datetime.datetime.now() - start_time < cg_delay:
-            pause 1.0
+    #    while datetime.datetime.now() - start_time < cg_delay:
+    #        pause 1.0
 
-        hide emptydesk
-        show monika 1hua at i11 zorder MAS_MONIKA_Z
-        window auto
-        m "Tadaa!~"
+    #    hide emptydesk
+    #    show monika 1hua at i11 zorder MAS_MONIKA_Z
+    #    window auto
+    #    m "Tadaa!~"
 
     #Post scroll dialogue
     m 1hua "Well..."
@@ -614,33 +614,33 @@ label greeting_o31_rin:
     window hide
     pause 3.0
 
-    if store.mas_o31_event.o31_cg_decoded:
-        $ cg_delay = datetime.timedelta(seconds=20)
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    $ cg_delay = datetime.timedelta(seconds=20)
 
-        # got cg
-        window auto
-        m "Say, [player]..."
-        window hide
+    #    # got cg
+    #    window auto
+    #    m "Say, [player]..."
+    #    window hide
 
-        show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
-        $ start_time = datetime.datetime.now()
+    #    show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
+    #    $ start_time = datetime.datetime.now()
 
-        while datetime.datetime.now() - start_time < cg_delay:
-            pause 1.0
+    #    while datetime.datetime.now() - start_time < cg_delay:
+    #        pause 1.0
 
-        hide emptydesk
-        window auto
-        m "What do {i}nya{/i} think?"
+    #    hide emptydesk
+    #    window auto
+    #    m "What do {i}nya{/i} think?"
 
-        scene black
-        pause 2.0
-        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
-        m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
+    #    scene black
+    #    pause 2.0
+    #    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
+    #    m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
-    else:
-        call mas_transition_from_emptydesk("monika 1eua")
-        m 1hub "Hi, [player]!"
-        m 3hub "Do you like my costume?"
+    #else:
+    call mas_transition_from_emptydesk("monika 1eua")
+    m 1hub "Hi, [player]!"
+    m 3hub "Do you like my costume?"
 
     # regular dialogue
     m 3etc "Honestly, I don't even know who this is supposed to be."
@@ -883,11 +883,11 @@ label bye_trick_or_treat:
 
 label bye_trick_or_treat_wait_wait:
     # wait wait flow
-    show monika 1ekc
     menu:
         m "What is it?"
         "You're right, it's too early." if too_early_to_go:
             call mas_dockstat_abort_gen
+            call mas_transition_from_emptydesk(exp="monika 3hub")
 
             m 3hub "Ahaha, I told you!"
             m 1eka "Let's wait 'til evening, okay?"
@@ -897,11 +897,13 @@ label bye_trick_or_treat_wait_wait:
             call mas_dockstat_abort_gen
 
             if persistent._mas_o31_tt_count:
+                call mas_transition_from_emptydesk(exp="monika 1hua")
                 m 1hua "Ahaha~"
                 m "I told you."
                 m 1eua "We'll have to wait until next year to go again."
 
             else:
+                call mas_transition_from_emptydesk(exp="monika 2dkc")
                 m 2dkc "..."
                 m 2ekc "Alright, [player]."
                 m "It sucks that we couldn't go trick or treating this year."
@@ -911,6 +913,7 @@ label bye_trick_or_treat_wait_wait:
 
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
+            call mas_transition_from_emptydesk(exp="monika 1euc")
 
             m 1euc "Oh, okay then, [player]."
 
@@ -923,7 +926,7 @@ label bye_trick_or_treat_wait_wait:
             return True
 
         "Nothing.":
-            m 2eua "Okay, let me finish getting ready."
+            m "Okay, let me finish getting ready."
             return
 
 label bye_trick_or_treat_rtg:
@@ -931,7 +934,9 @@ label bye_trick_or_treat_rtg:
     $ moni_chksum = promise.get()
     $ promise = None # always clear the promise
     call mas_dockstat_ready_to_go(moni_chksum)
+
     if _return:
+        call mas_transition_from_emptydesk(exp="monika 1hub")
         m 1hub "Let's go trick or treating!"
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HOL_O31_TT
 
@@ -941,6 +946,7 @@ label bye_trick_or_treat_rtg:
 
     # otherwise, failure in generation
     #Fix tt count
+    call mas_transition_from_emptydesk(exp="monika 1ekc")
     $ persistent._mas_o31_tt_count -= 1
     m 1ekc "Oh no..."
     m 1rksdlb "I wasn't able to turn myself into a file."
