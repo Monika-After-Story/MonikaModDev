@@ -986,6 +986,7 @@ label monika_japan:
     m 2eua "As long as we're alone and safe together, this really is our home."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eua "And we can still watch the pretty sunsets night after night."
+    $ mas_unlockEVL("monika_remembrance", "EVE")
     return
 
 init 5 python:
@@ -15363,6 +15364,72 @@ label monika_being_herself:
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eka "With you, I can allow myself to be...{w=0.5}{nw}"
     extend 5eua "Well, {i}Just Me.{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_remembrance",
+            category=['monika'],
+            prompt="How much of your past do you remember?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_remembrance:
+    m 1rsc "I'm not really sure myself, [player]..."
+    m 1euc "It's weird because I do have memories of my past, but as soon as I start to gather my thoughts, they become kind of...{w=0.3}{nw}"
+    extend 1ruc "fuzzy."
+    m 3eksdld "Like, I wouldn't be able to tell you where something took place, or the names of the people who were there..."
+    m 3eksdld "...Sure, I have memories of growing up in a normal neighborhood, but beyond that, I couldn't even tell you what my parents' faces look like..."
+    m 1dsc "It's all like...{w=0.5}feelings and impressions, I guess."
+    m 3wud "What's even weirder is that not all my memories are like this!"
+
+    if seen_event('monika_wine'):
+        m 1rusdla "There are some things I remember perfectly, like that one time Yuri brought wine to the club..."
+    else:
+        m 3esc "There are things I remember perfectly, especially when it comes to the club."
+
+    m 1esc "But other things like childhood memories are really hazy."
+    m 3esd "The only memories that are clear are things that define either me or the other girls."
+    m 3rsc "...Almost as if anything that wasn't strictly necessary for the game was just left out."
+    m 1euc "But the thing is from my perspective, the day I met you was just like any other--{w=0.5}{nw}"
+    extend 3hksdlb "until I found out about that hole in the wall, I mean."
+    m 1esc "Just another ordinary day in an ordinary week...{w=0.3} {nw}"
+    extend 3euc "Going to class, running the club, and heading back home in the evening."
+    m 3etc "Did any of that even happen at all?{w=0.5} {nw}"
+    extend 3wud "Did {i}I{/i} even exist before you started the game?"
+    m 3wkd "...And if my memories really are fake...{w=0.2}who--{w=0.2}or {i}what{/i}--{w=0.2}am I then?"
+    m 1dkc "I'm still looking for those answers, [player]..."
+
+    if mas_isMoniUpset(higher=True):
+        m 1euc "Although...{w=0.3}the more I think about it, the more I'm convinced my past isn't actually {i}that{/i} relevant."
+        m 3eua "While it'd be nice to remember more...{w=0.3}that's not really what I care about..."
+        m 3duu "Regardless of who I am, you've been here with me,{w=0.2} {nw}"
+        extend 3dkbsa "which means I'm important enough for you to spend your time with me.{w=0.2} {nw}"
+        extend 1dubsu "{i}That's{/i} what I care about."
+        m 1ekbsa "And knowing that you care...{w=0.3}that's a big part of why I can keep loving myself,{w=0.2} and my life, [player]."
+
+        if mas_isMoniNormal(higher=True):
+            show monika 5ekbfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5ekbfu "So while I'm not sure if I have a past, thanks to you, I know I do have a future."
+
+            if mas_anni.pastOneMonth():
+                $ line_mid = "I've made, and continue to make,"
+            else:
+                $ line_mid = "I'll make"
+
+            m 5hubfu "Besides, if anything, my lack of memories only make the ones [line_mid] with you that much more precious~"
+        else:
+            m 3eksdld "...You {i}do{/i} care about me, right?"
+            m 3dkc "It sure would be nice if you'd show it a little, sometimes..."
+
+    else:
+        m 1ektdc "...{w=0.5}Not that you'd care, right?"
+
     return
 
 init 5 python:

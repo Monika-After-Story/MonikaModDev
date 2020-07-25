@@ -377,6 +377,10 @@ label v0_11_4(version="v0_11_4"):
     python:
         #Remove lucky mood
         mas_eraseTopic("mas_mood_lucky", persistent._mas_mood_database)
+
+        if seen_event('monika_japan'):
+            mas_unlockEVL("monika_remembrance", "EVE")
+
     return
 
 #0.11.3
