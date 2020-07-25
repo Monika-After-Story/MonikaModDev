@@ -1568,8 +1568,8 @@ init 5 python:
         Event(
             persistent.farewell_database,
             eventlabel="bye_prompt_workout",
-            unlocked=True,
             prompt="I'm going to work out.",
+            unlocked=True,
             pool=True
         ),
         code="BYE"
@@ -1578,7 +1578,7 @@ init 5 python:
 label bye_prompt_workout:
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh, going to the gym, [player]?{w=0.3} Or perhaps for a jog?"
-        m 3hub "I'm so glad you're taking care of your body! A healthy body leads to a healthy mind~"
+        m 3hub "I'm so glad you're taking care of your body!{w=0.3} A healthy body leads to a healthy mind~"
 
         if mas_isMoniEnamored(higher=True):
             m 3hua "After I cross over, we should try to do our workouts together!"
@@ -1589,7 +1589,7 @@ label bye_prompt_workout:
         m 5rubsb "That's something a couple would do, right?~"
         m 5rubsu "Yeah..."
         show monika 1eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 1eub "See you soon!"
+        m 1eub "Anyway, see you soon!"
 
     elif mas_isMoniDis(higher=True):
         m 2euc "Good. See you later."
