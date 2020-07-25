@@ -15413,3 +15413,41 @@ label monika_why_do_you_read:
     extend 3eua "While my situation in here has its downsides, [line_mid] opportunity to spend more time on the things I like."
     m 1ekbsu "...Though then again, nothing could ever beat spending more time with you~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_discworld",
+            category=['literature'],
+            prompt="Discworld",
+            random=True
+        )
+    )
+
+label monika_discworld:
+    m 1esc "Say [player], have you ever heard of a world drifting through space on top of four elephants, themselves standing on the shell of a giant turtle?"
+    m 3hub "If you have, you're probably already familiar with Sir Terry Pratchett's Discworld!"
+    m 3hksdlb "Ahaha, it sounds kinda weird when I put it like this, doesn't it?"
+    m 1eua "Discworld is a comic fantasy book series of forty-one volumes written over the span of three decades."
+    m 3esc "The series started out as a parody making fun of common fantasy tropes, but soon turned into something much deeper."
+    m 3eub "In fact, later books are clearly satires rather than parodies; using a clever mix of slapstick, puns, and light-hearted humor to comment on any kind of issues."
+    m 1duu "But while the satire may be the soul of the series, what makes its heart beat is the way it's written."
+    m 3hua "This author really had a knack for writing funny situations, [player]!"
+    m 1rsc "I can't really pinpoint what makes his prose work so well, but he's definitely got a very distinctive writing style..."
+    # the author on his writing : https://youtu.be/9yWN55Ltgv8?t=1110
+    m 1etc "Maybe it's the way he writes in a way that suggests rather than tells."
+    m 3eua "Like, when describing something, he'll give you just enough details so you can picture what's going on, and let your imagination fill in the gaps."
+    m 1duu "...Knowing full well whatever you'll come up with will be far more evocative than anything he could write."
+    m 1hua "It's a pretty neat way to keep your audience invested. Ehehe~"
+    m 3esa "...Or maybe what makes it work is the way he doesn't use chapters, letting him freely jump between his characters' point of view."
+    # this is the impression I get, but I'm not enough of a writer to confirm this
+    m 1rusdla "Interweaving storylines can quickly become a mess if you're not careful,{w=0.2} {nw}"
+    extend 3eua "but they're also a good way to keep your pacing dynamic."
+    m 1hua "In any case, this series is an easy recommendation, [player]!"
+    m 1eub "It's surprisingly easy to pick up too, with each book being thought of as a standalone story."
+    m 1eua "You can pretty much pick any volume you find and you'll be good to go."
+    m 1rsc "...Though I'd argue {i}Guards! Guards!{/i} or {i}Mort{/i} would probably make for the best entry points."
+    m 3hua "Anyhow, give it a try sometimes if you haven't already, [player]."
+    m 1hua "Thanks for listening~"
+    return
