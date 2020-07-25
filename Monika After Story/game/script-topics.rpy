@@ -15421,7 +15421,7 @@ init 5 python:
             eventlabel="monika_staring",
             category=['monika, romance'],
             prompt="Staring contest",
-            random=True
+            random=True,
             aff_range=(mas_aff.ENAMORED, None)
 
         )
