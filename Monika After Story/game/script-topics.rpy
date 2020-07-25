@@ -15432,7 +15432,6 @@ label monika_remembrance:
 
     return
 
-
 init 5 python:
     addEvent(
         Event(
