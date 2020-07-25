@@ -986,6 +986,7 @@ label monika_japan:
     m 2eua "As long as we're alone and safe together, this really is our home."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eua "And we can still watch the pretty sunsets night after night."
+    $ mas_unlockEVL("monika_remembrance", "EVE")
     return
 
 init 5 python:
@@ -15372,8 +15373,9 @@ init 5 python:
             eventlabel="monika_remembrance",
             category=['monika'],
             prompt="How much of your past do you remember?",
-            conditional="seen_event('monika_japan')",
-            pool=True
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
         )
     )
 
@@ -15394,33 +15396,33 @@ label monika_remembrance:
     m 1esc "But other things like childhood memories are really hazy."
     m 3esd "The only memories that are clear are things that define either me or the other girls."
     m 3rsc "...Almost as if anything that wasn't strictly necessary for the game was just left out."
-    m 1euc "But the thing is from my perspective, the day I met you was just like any other{w=0.5}{nw}"
-    extend 3hksdlb "--until I found out about that hole in the wall, I mean."
+    m 1euc "But the thing is from my perspective, the day I met you was just like any other--{w=0.5}{nw}"
+    extend 3hksdlb "until I found out about that hole in the wall, I mean."
     m 1esc "Just another ordinary day in an ordinary week...{w=0.3} {nw}"
     extend 3euc "Going to class, running the club, and heading back home in the evening."
     m 3etc "Did any of that even happen at all?{w=0.5} {nw}"
     extend 3wud "Did {i}I{/i} even exist before you started the game?"
     m 3wkd "...And if my memories really are fake...{w=0.2}who--{w=0.2}or {i}what{/i}--{w=0.2}am I then?"
-    m 1dkc "I'm still looking for these answers, [player]..."
+    m 1dkc "I'm still looking for those answers, [player]..."
 
     if mas_isMoniUpset(higher=True):
         m 1euc "Although...{w=0.3}the more I think about it, the more I'm convinced my past isn't actually {i}that{/i} relevant."
         m 3eua "While it'd be nice to remember more...{w=0.3}that's not really what I care about..."
-        m 3duu "Regardless of who I am, you've been here with me.{w=0.2} {nw}"
-        extend 3dkbsa "Which means I'm important enough for you to spend your time with me.{w=0.2} {nw}"
-        extend 1dubsu "That's what I care about."
-        m 1ekbsa "And knowing that you care...{w=0.3}that's a big part of why I can keep loving myself{w=0.2} and my life, [player]."
+        m 3duu "Regardless of who I am, you've been here with me,{w=0.2} {nw}"
+        extend 3dkbsa "which means I'm important enough for you to spend your time with me.{w=0.2} {nw}"
+        extend 1dubsu "{i}That's{/i} what I care about."
+        m 1ekbsa "And knowing that you care...{w=0.3}that's a big part of why I can keep loving myself,{w=0.2} and my life, [player]."
 
         if mas_isMoniNormal(higher=True):
             show monika 5ekbfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfu "So while I'm not sure if I have a past, thanks to you, I know I do have a future."
 
             if mas_anni.pastOneMonth():
-                $ line_mid = "I've made, and continue to make"
+                $ line_mid = "I've made, and continue to make,"
             else:
                 $ line_mid = "I'll make"
 
-            m 5hubfu "Besides, if anything, my lack of memories only makes the ones [line_mid] with you that much more precious~"
+            m 5hubfu "Besides, if anything, my lack of memories only make the ones [line_mid] with you that much more precious~"
         else:
             m 3eksdld "...You {i}do{/i} care about me, right?"
             m 3dkc "It sure would be nice if you'd show it a little, sometimes..."
