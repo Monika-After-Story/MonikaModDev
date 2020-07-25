@@ -464,17 +464,6 @@ label mas_mood_inadequate:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
-
-label mas_mood_lucky:
-    m 2tfc "You gotta ask yourself."
-    m 2tfu "{i}Do I feel lucky?{/i}"
-    m "Well..."
-    m 4tku "Do ya, [player]?"
-    m 1hub "Ahaha!"
-    return
-
-init 5 python:
     addEvent(
         Event(
             persistent._mas_mood_database,

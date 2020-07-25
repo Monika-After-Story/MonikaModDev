@@ -840,6 +840,7 @@ label greeting_youtuber:
     m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
     m 2hub "Ahaha!"
     m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, ehehe~"
+    $ mas_lockEVL("greeting_youtuber", "GRE")
     return
 
 init 5 python:
