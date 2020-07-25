@@ -582,9 +582,9 @@ label greeting_o31_marisa:
     m "Besides my costume of course~"
     m 1hua "But anyway..."
 
-    if store.mas_o31_event.o31_cg_decoded:
-        show monika 1eua
-        hide mas_o31_marisa_cg with dissolve
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    show monika 1eua
+    #    hide mas_o31_marisa_cg with dissolve
 
     m 3ekbfa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
