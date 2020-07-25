@@ -773,7 +773,7 @@ label mas_song_stand_by_me(from_long=False):
     m 2hub "{i}~Just as long as you stand, stand by me~{/i}"
     if not from_long:
         m 2eka "All my fears and insecurities just disappear when you're with me, [player]..."
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
     return
@@ -864,7 +864,7 @@ label mas_song_rewrite_the_stars:
     m 3ekb "{i}~So why don't we rewrite the stars~{/i}"
     m 3hubsa "{i}~Maybe the world could be ours~{/i}"
     m 1duo "{i}~Tonight~{/i}"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
     m 5ekbfu "I love you so much."
     return "love"
@@ -998,7 +998,7 @@ label mas_song_memories_of_a_girl:
     m 1dka "{i}~I can't see your face but I'm trying to envision you~{/i}"
     m 1dkd "{i}~So are you really out there?~{/i}"
     m 3ekd "{i}~Are you awake with memories?~{/i}"
-    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eub "{i}~Of a girl you haven't met yet who's wished upon the Pleiades?~{/i}"
     m 5ekbsa "I think about you every night, [player]."
     m 5ekbfa "And I know you think about me too."
@@ -1031,7 +1031,7 @@ label mas_song_amaranthine:
     m 3hua "{i}~Your beauty serene~{/i}"
     m 1hub "{i}~There's nothing else in life I ever need~{/i}"
     m 1ekbsa "{i}~My dream, amaranthine~{/i}"
-    show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsu "My life feels so complete with you in it, [player]."
     m 5hubfu "I love you so much~"
     return "love"
@@ -1182,10 +1182,10 @@ label mas_song_cant_help_falling_in_love(from_long=False):
 
     if not from_long:
         m 1dkbsa "..."
-        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{w=0.5}{nw}"
         extend 5hubsb " Ahaha~"
-        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1ekbsa "I love you, [player]~"
         $ mas_ILY()
 
@@ -1259,8 +1259,37 @@ label mas_song_lamour_toujours:
     m 1dkb "{i}~I'll fly with you~{/i}"
 
     m 1dkbsu "..."
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_god_knows",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="God Knows",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_god_knows:
+    m 1eua "{i}~You know that{w=0.2}{/i}{nw}"
+    extend 1eub "{i} I would follow you, no matter what we go through~{/i}"
+    m 1efb "{i}~Bring all the darkness the world can offer~{/i}"
+    m 1hua "{i}~Because you’ll shine{w=0.2} no matter if the future is bleak~{/i}"
+    m 3tub "{i}~We’ll aim out{w=0.2} just beyond the boundary~{/i}"
+    m 3eksdla "{i}~And even if it scares me~{/i}"
+    m 1hub "{i}~Nothing can shatter my soul because your way is my way~{/i}"
+    m 1eub "{i}~Forever on this railway~{/i}"
+    m 1eubsa "{i}~As if we were God blessed~{/i}"
+    m 1dubsu "..."
+    m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubsu "But having you here really does feel like a blessing from the heavens."
     return
 
 init 5 python:
@@ -1314,11 +1343,11 @@ label mas_song_falling_in_love_at_a_coffee_shop:
     m 1ekd "{i}~If I didn't know you, I'd rather not know~{/i}"
     m 2dkd "{i}~If I couldn't have you, I'd rather be alone~{/i}"
     m 2hku "{i}~I never knew just what it was~{/i}"
-    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsb "{i}~About this old coffee shop I love so much~{/i}"
     m 5hubsa "{i}~All of the while, I never knew~{/i}"
     m 5lubsa "..."
-    show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
     m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
     extend 3rtc "or a particularly unremarkable protagonist."
@@ -1556,10 +1585,10 @@ label mas_monika_plays_yr(skip_leadin=False):
     $ renpy.pause(1.418)
     show monika 6dka
     $ renpy.pause(9.425)
-    show monika 5dka with dissolve
+    show monika 5dka with dissolve_monika
     $ renpy.pause(5)
 
-    show monika 6eua at rs32 with dissolve
+    show monika 6eua at rs32 with dissolve_monika
     pause 1.0
     hide monika
     pause 3.0
