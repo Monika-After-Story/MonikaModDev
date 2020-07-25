@@ -588,7 +588,7 @@ init 5 python:
 
 label mas_wrs_twitter:
     python:
-        temp_line = renpy.substitute("I love you, [mas_get_player_nickname(exclude_names=['my love'])].")
+        temp_line = renpy.substitute("I love you, [mas_get_player_nickname(exclude_names=['love', 'my love'])].")
         temp_len = len(temp_line)
 
         # quip: is_ily
