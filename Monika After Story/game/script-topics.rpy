@@ -15413,3 +15413,30 @@ label monika_why_do_you_read:
     extend 3eua "While my situation in here has its downsides, [line_mid] opportunity to spend more time on the things I like."
     m 1ekbsu "...Though then again, nothing could ever beat spending more time with you~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_staring",
+            category=['monika, romance'],
+            prompt="Staring contest",
+            random=True
+            aff_range=(mas_aff.ENAMORED, None)
+
+        )
+    )
+
+label monika_staring:
+    m 6eub "Hey player, look me in the eyes for a second, I just want to see something."
+    m 1eua "..."
+    m 2eua"..."
+    m 1wua"..."
+    m 1subsa "..."
+    show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5subsa "{w=0.3}.{w=0.3}.{w=0.3}."
+    m 5tubsb "I knew it. They're so pretty."
+    m 5hubfb "Ahaha! Don't worry, I can't see them~"
+    show monika 6hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 6hubfb "..."
+    m 6tubfa "Or can I?"
