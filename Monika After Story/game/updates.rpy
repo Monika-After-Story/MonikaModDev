@@ -372,6 +372,166 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.4
+label v0_11_4(version="v0_11_4"):
+    python:
+        #Remove lucky mood
+        mas_eraseTopic("mas_mood_lucky", persistent._mas_mood_database)
+    return
+
+#0.11.3
+label v0_11_3(version="v0_11_3"):
+    python:
+        #Rerandom all songs which aren't d25 exclusive
+        for song_ev in mas_songs.song_db.itervalues():
+            if (
+                song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
+                and mas_songs.TYPE_LONG not in song_ev.category
+            ):
+                song_ev.random=True
+
+        # give extra pool unlocks for recent players
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+            # only 0.11.0 + week ago
+
+            # NOTE: multiply by 4 becaue everyone should already have level
+            #   number of pool unlocks given
+            persistent._mas_pool_unlocks += store.mas_xp.level() * 4
+
+        #Adjust consumables to be at their max stock amount
+        for consumable_id in persistent._mas_consumable_map.iterkeys():
+            cons = mas_getConsumable(consumable_id)
+
+            if cons and cons.getStock() > cons.max_stock_amount:
+                persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
+
+        # unlock monika_kiss
+        mas_unlockEVL("monika_kiss", "EVE")
+
+        # unlock currently pooled tod topics and pool the ones that aren't
+        tod_list = [
+            "monika_gtod_tip002",
+            "monika_gtod_tip003",
+            "monika_gtod_tip004",
+            "monika_gtod_tip005",
+            "monika_gtod_tip006",
+            "monika_gtod_tip007",
+            "monika_gtod_tip008",
+            "monika_gtod_tip009",
+            "monika_gtod_tip010",
+            "monika_ptod_tip002",
+            "monika_ptod_tip003",
+            "monika_ptod_tip005",
+            "monika_ptod_tip006",
+            "monika_ptod_tip008",
+            "monika_ptod_tip009"
+        ]
+
+        for tod_label in tod_list:
+            tod_ev = mas_getEV(tod_label)
+
+            if tod_ev is not None:
+                if tod_ev.pool:
+                    tod_ev.unlocked = True
+
+                else:
+                    tod_ev.pool = True
+                    tod_ev.action = EV_ACT_UNLOCK
+
+        #Store all the files we need to rename
+        filenames_to_rename = [
+            "imsorry",
+            "imsorry.txt",
+            "forgive me.txt",
+            "can you hear me.txt",
+            "please listen.txt",
+            "surprise.txt",
+            "ehehe.txt",
+            "secret.txt",
+            "for you.txt",
+            "My one and only love.txt"
+        ]
+
+        for fn in filenames_to_rename:
+            try:
+                os.rename(
+                    renpy.config.basedir + "/{0}".format(fn),
+                    renpy.config.basedir + "/characters/{0}".format(fn)
+                )
+            except:
+                pass
+
+        #We'll also get rid of hehehe.txt if it's still here
+        try:
+            os.rename(
+                renpy.config.basedir + "/hehehe.txt",
+                renpy.config.basedir + "/characters/ehehe.txt"
+            )
+        except:
+            mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
+        # add to the default unlocked pool topics
+        pool_unlock_list = [
+            "monika_meta",
+            "monika_difficulty",
+            "monika_ddlc",
+            "monika_justification",
+            "monika_girlfriend",
+            "monika_herself",
+            "monika_birthday",
+            "monika_sayhappybirthday"
+        ]
+
+        for pool_label in pool_unlock_list:
+            mas_unlockEVL(pool_label,"EVE")
+
+        #Add conditional to player appearance if not seen
+        if not seen_event("monika_player_appearance"):
+            player_appearance_ev = mas_getEV("monika_player_appearance")
+            if player_appearance_ev:
+                player_appearance_ev.random = False
+                player_appearance_ev.conditional = "seen_event('mas_gender')"
+                player_appearance_ev.action = EV_ACT_RANDOM
+
+        #Fix the islands event
+        if not mas_isWinter() and not seen_event("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
+
+        #Handle the preferred name and gender change topics again
+        gender_ev = mas_getEV("mas_gender")
+        if gender_ev:
+            #Remove the gender ev's conditional
+            gender_ev.conditional = None
+
+            preferredname_ev = mas_getEV("mas_preferredname")
+            if preferredname_ev:
+                #If we have the preferredname ev, we need to remove the conditional anyway
+                preferredname_ev.conditional = None
+
+            #If the gender topic has a last seen and the preferredname ev hasn't been seen yet
+            #We need to set up its start date
+            if gender_ev.last_seen:
+                if preferredname_ev and not preferredname_ev.last_seen:
+                    preferredname_ev.start_date = gender_ev.last_seen + datetime.timedelta(hours=2)
+
+            #If the gender topic has not been seen, then it needs its start_date set up
+            else:
+                gender_ev.start_date = mas_getFirstSesh() + datetime.timedelta(minutes=30)
+
+        # Unlock quit smoking pool topic if we smoke
+        if persistent._mas_pm_do_smoke:
+            mas_unlockEVL("monika_smoking_quit","EVE")
+
+        #Unlock the leaving already fare
+        leaving_already_ev = mas_getEV("bye_leaving_already")
+        if leaving_already_ev:
+            leaving_already_ev.random = True
+            leaving_already_ev.conditional = "mas_getSessionLength() <= datetime.timedelta(minutes=20)"
+
+        if not mas_isWinter():
+            mas_lockEVL("monika_snowballfight", "EVE")
+    return
+
 #0.11.1
 label v0_11_1(version="v0_11_1"):
     python:

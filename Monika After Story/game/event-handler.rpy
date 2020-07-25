@@ -3,6 +3,9 @@
 #   persistent.event_list
 #   persistent.current_monikatopic
 
+# keep track of number of pool unlocks
+default persistent._mas_pool_unlocks = 0
+
 # NOTE: proof oc concept
 # transform to have monika just chill
 image monika_waiting_img:
@@ -155,6 +158,41 @@ init -999 python in mas_ev_data_ver:
             """
             return self.verifier(value, self.allow_none)
 
+
+init -998 python in mas_ev_data_ver:
+    import time
+    import renpy
+    import store
+
+    def _verify_per_mtime():
+        """
+        verifies persistent data and ensure mod times are not in the future
+        """
+        curr_time = time.time()
+
+        # check renpy persistent mtime
+        if renpy.persistent.persistent_mtime > curr_time:
+            renpy.persistent.persistent_mtime = curr_time
+
+        # then save location mtime
+        if renpy.loadsave.location is not None:
+            locs = renpy.loadsave.location.locations
+            if locs is not None and len(locs) > 0 and locs[0] is not None:
+                if locs[0].persistent_mtime > curr_time:
+                    locs[0].persistent_mtime = curr_time
+
+        # then individual mtimes
+        for varkey in store.persistent._changed:
+            if store.persistent._changed[varkey] > curr_time:
+                store.persistent._changed[varkey] = curr_time
+
+    # verify
+    try:
+        _verify_per_mtime()
+        valid_times = True
+    except:
+        valid_times = False
+        renpy.log("failed to verify mtimes")
 
 init -950 python in mas_ev_data_ver:
     import store
@@ -443,6 +481,34 @@ init 6 python:
             _pool=_pool
         )
 
+    def mas_protectedShowEVL(
+            ev_label,
+            code,
+            unlock=False,
+            _random=False,
+            _pool=False,
+        ):
+        """
+        Shows an event given label and code.
+
+        Does checking if the actions should happen
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+            unlock - True if we want to unlock this Event
+                (Default: False)
+            _random - True if we want to random this event
+                (Default: False)
+            _pool - True if we want to random thsi event
+                (Default: False)
+        """
+        mas_showEVL(
+            ev_label=ev_label,
+            code=code,
+            unlock=unlock,
+            _random=_random and store.mas_bookmarks_derand.shouldRandom(ev_label),
+            _pool=_pool
+        )
 
     def mas_lockEVL(ev_label, code):
         """
@@ -466,23 +532,59 @@ init 6 python:
         mas_showEVL(ev_label, code, unlock=True)
 
 
-    def mas_stripEVL(ev_label, list_pop=False):
+    def mas_stripEVL(ev_label, list_pop=False, remove_dates=True):
         """
-        Strips the conditional and action from an event given the label
+        Strips the conditional and action properties from an event given its label
+        start_date and end_date will be removed if remove_dates is True
         Also removes the event from the event list if present (optional)
 
         IN:
             ev_label - label of event to strip
             list_pop - True if we want to remove the event from the event list
                 (Default: False)
+            remove_dates - True if we want to remove start/end_dates from the event
+                (Default: True)
         """
         ev = mas_getEV(ev_label)
         if ev is not None:
             ev.conditional = None
             ev.action = None
 
+            if remove_dates:
+                ev.start_date = None
+                ev.end_date = None
+
             if list_pop:
                 mas_rmEVL(ev_label)
+
+
+    def mas_flagEVL(ev_label, code, flags):
+        """
+        Applies flags to the given event
+
+        IN:
+            ev_label - label of the event to flag
+            code - string code of the db this ev_label belongs to
+            flags - flags to apply
+        """
+        ev = mas_all_ev_db_map.get(code, {}).get(ev_label, None)
+        if ev is not None:
+            ev.flag(flags)
+
+
+    def mas_unflagEVL(ev_label, code, flags):
+        """
+        Unflags flags from the given event
+
+        IN:
+            ev_label - label of the event to unflag
+            code - string code of the db this ev_label belongs to
+            flags - flags to unset
+        """
+        ev = mas_all_ev_db_map.get(code, {}).get(ev_label, None)
+        if ev is not None:
+            ev.unflag(flags)
+
 
 init 4 python:
     def mas_lastSeenInYear(ev_label, year=None):
@@ -1496,7 +1598,6 @@ init python:
                 (Default: False)
         """
         if ev:
-
             if unlock:
                 ev.unlocked = True
 
@@ -1946,34 +2047,43 @@ init python:
         return cleaned_list
 
 
-    def mas_unlockPrompt():
+    def mas_unlockPrompt(count=1):
         """
         Unlocks a pool event
+
+        IN:
+            count - number of pool events to unlock
+                (Default: 1)
 
         RETURNS:
             True if an event was unlocked. False otherwise
         """
-        pool_events = Event.filterEvents(
-            evhand.event_database,
-            unlocked=False,
-            pool=True
-        )
-        pool_event_keys = [
-            evlabel
-            for evlabel in pool_events
-            if "no unlock" not in pool_events[evlabel].rules
+        # get locked pool topics that are not banned from unlocking
+        pool_evs = [
+            ev
+            for ev in evhand.event_database.itervalues()
+            if (
+                Event._filterEvent(ev, unlocked=False, pool=True)
+                and "no unlock" not in ev.rules
+            )
         ]
+        u_count = count
 
-        if len(pool_event_keys)>0:
-            sel_evlabel = renpy.random.choice(pool_event_keys)
+        # unlock until we out of available ones or unlock credits
+        while len(pool_evs) > 0 and u_count > 0:
+            ev_index = renpy.random.randint(0, len(pool_evs)-1)
+            ev = pool_evs.pop(ev_index)
+            mas_unlockEvent(ev)
+            ev.unlock_date = datetime.datetime.now()
+            u_count -= 1
 
-            evhand.event_database[sel_evlabel].unlocked = True
-            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
+        # save remaining to pool unlocks
+        if u_count > 0:
+            persistent._mas_pool_unlocks += u_count
 
-            return True
-
-        # otherwise we didnt unlock anything because nothing available
-        return False
+        # determine return value
+        # if these are different, then we unlocked something
+        return u_count != count
 
 
 init 1 python in evhand:
@@ -2083,8 +2193,10 @@ label call_next_event:
             else:
                 $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
+        $ mas_globals.this_ev = ev
         call expression event_label from _call_expression
-        $ persistent.current_monikatopic=0
+        $ persistent.current_monikatopic = 0
+        $ mas_globals.this_ev = None
 
         #if this is a random topic, make sure it's unlocked for prompts
         $ ev = evhand.event_database.get(event_label, None)
@@ -2147,23 +2259,9 @@ label call_next_event:
 
     # return to normal pose
     if not renpy.showing("monika idle"):
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
     return False
-
-# keep track of number of pool unlocks
-default persistent._mas_pool_unlocks = 0
-
-# This either picks an event from the pool or events or, sometimes offers a set
-# of three topics to get an event from.
-label unlock_prompt:
-    python:
-        if not mas_unlockPrompt():
-            # we dont have any unlockable pool topics?
-            # lets count this so we can use it later
-            persistent._mas_pool_unlocks += 1
-
-    return
 
 #The prompt menu is what pops up when hitting the "Talk" button, it shows a list
 #of options for talking to Monika, including the ability to ask her questions
@@ -2191,7 +2289,7 @@ label prompt_menu:
             call expression cb_label
 
         #Show idle exp here so we dissolve like other topics
-        show monika idle with dissolve
+        show monika idle with dissolve_monika
 
         # clean up idle stuff
         $ persistent._mas_greeting_type = None
@@ -2344,7 +2442,8 @@ label prompts_categories(pool=True):
 #                category=[False,current_category],
             unlocked=True,
             pool=pool,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # add all categories the master category list
@@ -2396,7 +2495,8 @@ label prompts_categories(pool=True):
                     category=(False,current_category),
                     unlocked=True,
                     pool=pool,
-                    aff=mas_curr_affection
+                    aff=mas_curr_affection,
+                    flag_ban=EV_FLAG_HFM
                 )
 
                 # add deeper categories to a list
@@ -2491,6 +2591,12 @@ init 5 python:
 label mas_bookmarks:
     show monika idle
     python:
+        #Map for label prefixes: label_suffix_get_function
+        #NOTE: The function MUST take in the event object as a parameter
+        prompt_suffix_map = {
+            "mas_song_": store.mas_songs.getPromptSuffix
+        }
+
         # local function that generats indexed based list for bookmarks
         def gen_bk_disp(bkpl):
             return [
@@ -2499,10 +2605,24 @@ label mas_bookmarks:
             ]
 
         # generate list of propmt/label tuples of bookmarks
-        bookmarks_pl = [
-            (renpy.substitute(ev.prompt), ev.eventlabel)
-            for ev in mas_get_player_bookmarks()
-        ]
+        bookmarks_pl = []
+        for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
+            label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
+
+            #Get the suffix function
+            suffix_func = prompt_suffix_map.get(label_prefix)
+
+            #Now call it if it exists to get the suffix
+            prompt_suffix = suffix_func(ev) if suffix_func else ""
+
+            #Now append based on the delegate
+            # but only if it is not flagged to be hidden.
+            if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
+                bookmarks_pl.append((
+                    renpy.substitute(ev.prompt + prompt_suffix),
+                    ev.eventlabel
+                ))
+
         bookmarks_pl.sort()
         bookmarks_disp = gen_bk_disp(bookmarks_pl)
 

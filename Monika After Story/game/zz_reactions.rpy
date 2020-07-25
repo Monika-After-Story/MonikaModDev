@@ -996,14 +996,14 @@ init python:
                 None
             )
             if giftname is None:
-                return (None, None, None, None)
+                return (None, None, None, None, None)
 
         elif len(persistent._mas_filereacts_sprite_reacted) > 0:
             sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
             giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
 
         else:
-            return (None, None, None, None)
+            return (None, None, None, None, None)
 
         # check if this gift has already been gifted
         gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
@@ -1437,56 +1437,65 @@ init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_gift_coffee:
-    m 1wub "Oh!{w=0.2} {nw}"
-    extend 3hub "Coffee!"
+    #Even if we don't "accept" it, we still register it was given
     $ mas_receivedGift("mas_reaction_gift_coffee")
-
     $ coffee = mas_getConsumable("coffee")
 
-    if coffee.enabled() and coffee.hasServing():
-        $ mas_giftCapGainAff(0.5)
-        m 1wuo "It's a flavor I haven't had before."
-        m 1hua "I can't wait to try it!"
-        m "Thank you so much, [player]!"
-
-    elif coffee.enabled() and not coffee.hasServing():
-        $ mas_giftCapGainAff(0.5)
-        m 3eub "I actually ran out of coffee, so getting more from you now is amazing!"
-        m 1hua "Thanks again, [player]~"
+    #Check if we accept this
+    if coffee.isMaxedStock():
+        m 1euc "More coffee, [player]?"
+        m 3rksdla "Don't get me wrong, I appreciate it, but I think I've got enough coffee to last me a while already..."
+        m 1eka "I'll let you know when I'm running low, alright?"
 
     else:
-        $ mas_giftCapGainAff(5)
+        m 1wub "Oh!{w=0.2} {nw}"
+        extend 3hub "Coffee!"
 
-        m 1hua "Now I can finally make some!"
-        m 1hub "Thank you so much, [player]!"
+        if coffee.enabled() and coffee.hasServing():
+            $ mas_giftCapGainAff(0.5)
+            m 1wuo "It's a flavor I haven't had before."
+            m 1hua "I can't wait to try it!"
+            m "Thank you so much, [player]!"
 
-        #If we're currently brewing/drinking anything, or it's not time for this consumable, we'll just not have it now
-        if (
-            not coffee.isConsTime()
-            or bool(MASConsumable._getCurrentDrink())
-        ):
-            m 3eua "I'll be sure to have some later!"
+        elif coffee.enabled() and not coffee.hasServing():
+            $ mas_giftCapGainAff(0.5)
+            m 3eub "I actually ran out of coffee, so getting more from you now is amazing!"
+            m 1hua "Thanks again, [player]~"
 
         else:
-            m 3eua "Why don't I go ahead and make a cup right now?"
-            m 1eua "I'd like to share the first with you, after all."
+            $ mas_giftCapGainAff(5)
 
-            #Monika is off screen
-            call mas_transition_to_emptydesk
-            pause 2.0
-            m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
-            m "Ah, there it is!{w=2}{nw}"
-            pause 5.0
-            m "And there we go!{w=2}{nw}"
-            call mas_transition_from_emptydesk()
+            m 1hua "Now I can finally make some!"
+            m 1hub "Thank you so much, [player]!"
 
-            #Monika back on screen
-            m 1eua "I'll let that brew for a few minutes."
+            #If we're currently brewing/drinking anything, or it's not time for this consumable, we'll just not have it now
+            if (
+                not coffee.isConsTime()
+                or bool(MASConsumable._getCurrentDrink())
+            ):
+                m 3eua "I'll be sure to have some later!"
 
-            $ coffee.prepare()
-        $ coffee.enable()
+            else:
+                m 3eua "Why don't I go ahead and make a cup right now?"
+                m 1eua "I'd like to share the first with you, after all."
+
+                #Monika is off screen
+                call mas_transition_to_emptydesk
+                pause 2.0
+                m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
+                m "Ah, there it is!{w=2}{nw}"
+                pause 5.0
+                m "And there we go!{w=2}{nw}"
+                call mas_transition_from_emptydesk()
+
+                #Monika back on screen
+                m 1eua "I'll let that brew for a few minutes."
+
+                $ coffee.prepare()
+            $ coffee.enable()
 
     #Stock some coffee
+    #NOTE: This function already checks if we're maxed. So restocking while maxed is okay as it adds nothing
     $ coffee.restock()
 
     $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
@@ -1497,62 +1506,72 @@ init 5 python:
     addReaction("mas_reaction_hotchocolate", "hotchocolate", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_hotchocolate:
-    m 3hub "Hot chocolate!"
-    m 3hua "Thank you, [player]!"
+    #Even though we may not "accept" this, we'll still mark it was given
     $ mas_receivedGift("mas_reaction_hotchocolate")
 
     $ hotchoc = mas_getConsumable("hotchoc")
 
-    if hotchoc.enabled() and hotchoc.hasServing():
-        $ mas_giftCapGainAff(0.5)
-        m 1wuo "It's a flavor I haven't had before."
-        m 1hua "I can't wait to try it!"
-        m "Thank you so much, [player]!"
-
-    elif hotchoc.enabled() and not hotchoc.hasServing():
-        $ mas_giftCapGainAff(0.5)
-        m 3rksdla "I'm actually out of hot chocolate, ahaha...{w=0.5} {nw}"
-        extend 3eub "So getting more from you now is amazing!"
-        m 1hua "Thanks again, [player]~"
+    #Check if we should accept this or not
+    if hotchoc.isMaxedStock():
+        m 1euc "More hot chocolate, [player]?"
+        m 3rksdla "Don't get me wrong, I appreciate it, but I think I've got enough to last me a while already..."
+        m 1eka "I'll let you know when I'm running out, alright?"
 
     else:
-        python:
-            mas_giftCapGainAff(3)
-            those = "these" if mas_current_background.isFltNight() and mas_isWinter() else "those"
+        m 3hub "Hot chocolate!"
+        m 3hua "Thank you, [player]!"
 
-        m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
+        if hotchoc.enabled() and hotchoc.hasServing():
+            $ mas_giftCapGainAff(0.5)
+            m 1wuo "It's a flavor I haven't had before."
+            m 1hua "I can't wait to try it!"
+            m "Thank you so much, [player]!"
 
-
-        m 2rksdla "...Especially on [those] cold, winter nights."
-        m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
-        m 3ekbfa "...Doesn't that sound so romantic?"
-        m 1dkbfa "..."
-        m 1hua "But for now, at least I can enjoy it here."
-        m 1hub "Thanks again, [player]!"
-
-        #If we're currently brewing/drinking anything, we don't do this now
-        if (
-            hotchoc.isConsTime()
-            and not mas_isWinter()
-            or bool(MASConsumable._getCurrentDrink())
-        ):
-            m 3eua "I'll be sure to have some later!"
+        elif hotchoc.enabled() and not hotchoc.hasServing():
+            $ mas_giftCapGainAff(0.5)
+            m 3rksdla "I'm actually out of hot chocolate, ahaha...{w=0.5} {nw}"
+            extend 3eub "So getting more from you now is amazing!"
+            m 1hua "Thanks again, [player]~"
 
         else:
-            m 3eua "In fact, I think I'll make some right now!"
+            python:
+                mas_giftCapGainAff(3)
+                those = "these" if mas_current_background.isFltNight() and mas_isWinter() else "those"
 
-            call mas_transition_to_emptydesk
-            pause 5.0
-            call mas_transition_from_emptydesk("monika 1eua")
+            m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
 
-            m 1hua "There, it'll be ready in a few minutes."
 
-            $ hotchoc.prepare()
+            m 2rksdla "...Especially on [those] cold, winter nights."
+            m 2ekbfa "Someday I hope to be able to drink hot chocolate with you, sharing a blanket by the fireplace..."
+            m 3ekbfa "...Doesn't that sound so romantic?"
+            m 1dkbfa "..."
+            m 1hua "But for now, at least I can enjoy it here."
+            m 1hub "Thanks again, [player]!"
 
-        if mas_isWinter():
-            $ hotchoc.enable()
+            #If we're currently brewing/drinking anything, or it's not time for this consumable, or if it's not winter, we won't have this
+            if (
+                not hotchoc.isConsTime()
+                or not mas_isWinter()
+                or bool(MASConsumable._getCurrentDrink())
+            ):
+                m 3eua "I'll be sure to have some later!"
+
+            else:
+                m 3eua "In fact, I think I'll make some right now!"
+
+                call mas_transition_to_emptydesk
+                pause 5.0
+                call mas_transition_from_emptydesk("monika 1eua")
+
+                m 1hua "There, it'll be ready in a few minutes."
+
+                $ hotchoc.prepare()
+
+            if mas_isWinter():
+                $ hotchoc.enable()
 
     #Stock up some hotchocolate
+    #NOTE: Like coffee, this runs checks to see if we should actually stock
     $ hotchoc.restock()
 
     $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
@@ -1570,18 +1589,18 @@ label mas_reaction_gift_thermos_mug:
 default persistent._mas_given_thermos_before = False
 
 #Thermos handler
-label mas_thermos_mug_handler(thermos_acs, disp_name, giftname):
+label mas_thermos_mug_handler(thermos_acs, disp_name, giftname, ignore_case=True):
     if mas_SELisUnlocked(thermos_acs):
         m 1eksdla "[player]..."
         m 1rksdlb "I already have this thermos, ahaha..."
 
     elif persistent._mas_given_thermos_before:
         m 1wud "Oh!{w=0.3} Another thermos!"
-        m 1hua "And it's a [disp_name] one this time."
+        m 1hua "And it's [mas_a_an_str(disp_name, ignore_case)] one this time."
         m 1hub "Thanks so much, [player], I can't wait to use it!"
 
     else:
-        m 1wud "Oh!{w=0.3} A [disp_name] thermos!"
+        m 1wud "Oh!{w=0.3} [mas_a_an_str(disp_name, ignore_case).capitalize()] thermos!"
         m 1hua "Now I can bring something to drink when we go out together~"
         m 1hub "Thanks so much, [player]!"
         $ persistent._mas_given_thermos_before = True
@@ -2422,10 +2441,8 @@ label mas_reaction_new_ribbon:
     return
 
 label mas_reaction_old_ribbon:
-    m 1rksdlb "[player]..."
-    #Need to handle vowels lol
-    show monika 1rusdlb
-    $ renpy.say(m, "You already gave me {0} ribbon!".format(mas_a_an_str(_mas_new_ribbon_color)))
+    m 1rksdla "[player]..."
+    m 1hksdlb "You already gave me [mas_a_an_str(_mas_new_ribbon_color)] ribbon!"
     return
 
 init 5 python:
@@ -2654,18 +2671,18 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
 
     m 2ekbfa "Well...{w=0.5} What do you think?"
     m 2hubfa "Do I look like a mermaid? Ehehe."
-    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbfa "I think it's really cute, [player]..."
     m 5hubfa "We'll have to go to the beach sometime!"
 
     if mas_isWinter() or mas_isMoniNormal(lower=True):
         if mas_isWinter():
-            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve
+            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rksdla "...But for now, it's a little chilly in here..."
             m 2eka "So I'm going to go put on something a little warmer..."
 
         elif mas_isMoniNormal(lower=True):
-            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve
+            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2hksdlb "Ahaha..."
             m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
             m 2eka "I hope you don't mind, but I'm going to go change..."

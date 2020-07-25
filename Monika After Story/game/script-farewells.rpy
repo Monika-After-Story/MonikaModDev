@@ -13,101 +13,123 @@
 default persistent.mas_late_farewell = False
 
 init -1 python in mas_farewells:
+    import datetime
+    import store
+
+    def _filterFarewell(
+            ev,
+            curr_pri,
+            aff,
+            check_time,
+        ):
+        """
+        Filters a farewell for the given type, among other things.
+
+        IN:
+            ev - ev to filter
+            curr_pri - current loweset priority to compare to
+            aff - affection to use in aff_range comparisons
+            check_time - datetime to check against timed rules
+
+        RETURNS:
+            True if this ev passes the filter, False otherwise
+        """
+        # NOTE: new rules:
+        #   eval in this order:
+        #   1. hidden via bitmask
+        #   2. unlocked
+        #   3. not pooled
+        #   4. aff_range
+        #   5. priority (lower or same is True)
+        #   6. all rules
+        #   7. conditional
+        #       NOTE: this is never cleared. Please limit use of this
+        #           property as we should aim to use lock/unlock as primary way
+        #           to enable or disable greetings.
+
+        # check if hidden from random select
+        if ev.anyflags(store.EV_FLAG_HFRS):
+            return False
+
+        #Make sure the ev is unlocked
+        if not ev.unlocked:
+            return False
+
+        #If the event is pooled, then we cannot have this in the selection
+        if ev.pool:
+            return False
+
+        #Verify we're within the aff bounds
+        if not ev.checkAffection(aff):
+            return False
+
+        #Priority check
+        if store.MASPriorityRule.get_priority(ev) > curr_pri:
+            return False
+
+        #Since this event checks out in the other areas, finally we'll evaluate the rules
+        if not (
+            store.MASSelectiveRepeatRule.evaluate_rule(check_time, ev, defval=True)
+            and store.MASNumericalRepeatRule.evaluate_rule(check_time, ev, defval=True)
+            and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+        ):
+            return False
+
+        #Conditional check (Since it's ideally least likely to be used)
+        if ev.conditional is not None and not eval(ev.conditional, store.__dict__):
+            return False
+
+        # otherwise, we passed all tests
+        return True
 
     # custom farewell functions
-    def selectFarewell():
+    def selectFarewell(check_time=None):
         """
-        Selects a farewell to be used. This evaluates rules and stuff
-        appropriately.
+        Selects a farewell to be used. This evaluates rules and stuff appropriately.
+
+        IN:
+            check_time - time to use when doing date checks
+                If None, we use current datetime
+                (Default: None)
 
         RETURNS:
             a single farewell (as an Event) that we want to use
         """
+        # local reference of the gre database
+        fare_db = store.evhand.farewell_database
 
-        # check if we have moni_wants farewells
-        moni_wants_farewells = renpy.store.Event.filterEvents(
-            renpy.store.evhand.farewell_database,
-            unlocked=True,
-            pool=False, # may as well not filter these
-            moni_wants=True
-        )
+        # setup some initial values
+        fare_pool = []
+        curr_priority = 1000
+        aff = store.mas_curr_affection
 
+        if check_time is None:
+            check_time = datetime.datetime.now()
 
-        if moni_wants_farewells is not None and len(moni_wants_farewells) > 0:
+        # now filter
+        for ev_label, ev in fare_db.iteritems():
+            if _filterFarewell(
+                ev,
+                curr_priority,
+                aff,
+                check_time
+            ):
+                # change priority levels and stuff if needed
+                ev_priority = store.MASPriorityRule.get_priority(ev)
+                if ev_priority < curr_priority:
+                    curr_priority = ev_priority
+                    fare_pool = []
 
-            # select one label randomly
-            return moni_wants_farewells[
-                renpy.random.choice(moni_wants_farewells.keys())
-            ]
+                # add to pool
+                fare_pool.append((
+                    ev, store.MASProbabilityRule.get_probability(ev)
+                ))
 
-        # now filter events by their unlocked property
-        unlocked_farewells = renpy.store.Event.filterEvents(
-            renpy.store.evhand.farewell_database,
-            unlocked=True,
-            pool=False
-        )
+        # not having a greeting to show means no greeting.
+        if len(fare_pool) == 0:
+            return None
 
-        # filter farewells using the affection rules dict
-        unlocked_farewells = renpy.store.Event.checkAffectionRules(
-            unlocked_farewells,
-            keepNoRule=True
-        )
-
-        # filter farewells using the special rules dict
-        random_farewells_dict = renpy.store.Event.checkRepeatRules(
-            unlocked_farewells
-        )
-
-        # check if we have a farewell that actually should be shown now
-        if len(random_farewells_dict) > 0:
-
-            # select one label randomly
-            return random_farewells_dict[
-                renpy.random.choice(random_farewells_dict.keys())
-            ]
-
-        # since we don't have special farewells for this time we now check for special random chance
-        # pick a farewell filtering by special random chance rule
-        random_farewells_dict = renpy.store.Event.checkFarewellRules(
-            unlocked_farewells
-        )
-
-        # check if we have a farewell that actually should be shown now
-        if len(random_farewells_dict) > 0:
-
-            # select on label randomly
-            return random_farewells_dict[
-                renpy.random.choice(random_farewells_dict.keys())
-            ]
-
-        # We couldn't find a suitable farewell we have to default to normal random selection
-        # filter random events normally
-        random_unlocked_farewells = renpy.store.Event.filterEvents(
-            unlocked_farewells,
-            random=True
-        )
-
-        # check if we have farewell available to display with current filter
-        if len(random_unlocked_farewells) > 0:
-            # select one randomly
-            return random_unlocked_farewells[
-               renpy.random.choice(random_unlocked_farewells.keys())
-            ]
-
-        # We couldn't find a suitable farewell we have to default to normal random selection
-        # filter random events normally
-        renpy.log("rip we need update script")
-        random_farewells_dict = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database,
-            unlocked=True,
-            random=True,
-            excl_cat=list()
-        )
-
-        # select one randomly
-        return random_farewells_dict[
-            renpy.random.choice(random_farewells_dict.keys())
-        ]
+        return store.mas_utils.weightedChoice(fare_pool)
 
 # farewells selection label
 label mas_farewell_start:
@@ -131,7 +153,8 @@ label mas_farewell_start:
             evhand.farewell_database,
             unlocked=True,
             pool=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
     if len(bye_pool_events) > 0:
@@ -178,27 +201,23 @@ label mas_farewell_start:
 ###
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_leaving_already",
             unlocked=True,
-            random=True,#TODO update script
-            rules=rules
+            random=True,
+            conditional="mas_getSessionLength() <= datetime.timedelta(minutes=20)",
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_leaving_already:
-    m 1tkc "Aw, leaving already?"
+    m 1ekc "Aw, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3eua "Just be sure to come back as soon as you can, okay?"
-    m "I love you so much, [player]. Stay safe!"
-    #Don't show this farewell again
-    $evhand.farewell_database["bye_leaving_already"].random=False
+    m 3hua "I love you so much, [player]. Stay safe!"
     return 'quit'
 
 init 5 python:
@@ -229,57 +248,48 @@ label bye_goodbye:
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_sayanora",#sayanora? yes
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_sayanora:
     m 1hua "Sayonara, [player]~"
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_farewellfornow",
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_farewellfornow:
     m 1eka "Farewell for now, my love~"
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_untilwemeetagain",
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_untilwemeetagain:
     m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, Until we meet again.{/i}'"
@@ -287,19 +297,16 @@ label bye_untilwemeetagain:
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_take_care",
             unlocked=True,
             random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
     )
-    del rules
 
 
 label bye_take_care:
@@ -310,21 +317,31 @@ label bye_take_care:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
+    rules.update(MASPriorityRule.create_rule(50))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_going_to_sleep",
             unlocked=True,
-            rules = rules
+            rules=rules
         ),
         code="BYE"
     )
     del rules
 
 label bye_going_to_sleep:
+    #TODO: TC-O things
     if mas_isMoniNormal(higher=True):
-        m 1esa "Are you going to sleep, [player]?"
-        m 1eka "I'll be seeing you in your dreams."
+        m 1esa "Are you going to sleep, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Are you going to sleep, [player]?{fast}"
+
+            "Yeah.":
+                m 1eka "I'll be seeing you in your dreams."
+
+            "Not yet.":
+                m 1eka "Okay. {w=0.3}Have a good evening~"
 
     elif mas_isMoniUpset():
         m 2esc "Going to sleep, [player]?"
@@ -423,7 +440,7 @@ label bye_prompt_to_work:
             m 3hub "Work hard, [player]! Make me proud!"
         elif session_time < datetime.timedelta(hours=1):
             m 1hksdlb "Oh! Alright! I was starting to get really comfortable, ahaha."
-            m 1rusdlb "I was expecting us to be a here a bit longer, but you're a busy [guy]!"
+            m 1rusdlb "I was expecting us to be here a bit longer, but you're a busy [guy]!"
             m 1eka "It was great seeing you, even if it wasn't as long as I wanted..."
             m 1kua "But then if it were up to me I'd have you all day!"
             m 1hua "I'll be here waiting for you to get back home from work!"
@@ -506,7 +523,7 @@ label bye_prompt_sleep:
             m 2esc "Goodnight."
 
         elif mas_isMoniDis():
-            m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
+            m 6rkc "Maybe you should start going to bed a little earlier, [player]..."
             m 6dkc "It might make you--{w=1}us--{w=1}happier."
 
         else:
@@ -640,6 +657,7 @@ label bye_illseeyou:
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -672,6 +690,7 @@ label bye_haveagoodday:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(12,16)))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -706,6 +725,7 @@ label bye_enjoyyourafternoon:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(17,19)))
+    rules.update(MASProbabilityRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -740,23 +760,36 @@ label bye_goodevening:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=[0,20,21,22,23]))
+    rules.update(MASPriorityRule.create_rule(50))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_goodnight",
             unlocked=True,
-            rules = rules
+            rules=rules
         ),
         code="BYE"
     )
     del rules
 
 label bye_goodnight:
+    #TODO: Dlg flow for TC-O things
     if mas_isMoniNormal(higher=True):
-        m 1eua "Goodnight, [player]."
-        m 1eka "I'll see you tomorrow, okay?"
-        m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
-        m 1ekbfa "I love you~"
+        m 3eka "Going to sleep?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Going to sleep?{fast}"
+
+            "Yeah.":
+                m 1eua "Goodnight, [player]."
+                m 1eka "I'll see you tomorrow, okay?"
+                m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
+                m 1ekbfa "I love you~"
+
+            "Not yet.":
+                m 1eka "Okay, [player]..."
+                m 3hub "Enjoy your evening!"
+                m 3rksdlb "Try not to stay up too late, ehehe~"
 
     elif mas_isMoniUpset():
         m 2esc "Goodnight."
@@ -788,7 +821,7 @@ label bye_long_absence:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
     m 1ekc "Aw...that's pretty saddening..."
-    m 1eka "I really am going to miss you [player]!"
+    m 1eka "I really am going to miss you, [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3esa "Thank you for warning me first, though. It really does help."
     m 2lksdlb "I would be worried sick otherwise!"
@@ -805,7 +838,7 @@ label bye_long_absence:
             m 1eub "Oh!"
             m 1hua "Nowhere near as long as I feared then."
             m 3rksdla "Jeez, you really did worry me..."
-            m 3esa "Don't worry about me though [player]."
+            m 3esa "Don't worry about me though, [player]."
             m "I can cope waiting that long with ease."
             m 3eka "I'll still miss you greatly though."
         "A week.":
@@ -823,7 +856,7 @@ label bye_long_absence:
             m 2eka "Try to come back as soon as possible... I'll be waiting for you."
         "A month.":
             $ persistent._mas_absence_choice = "month"
-            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
+            if mas_isMoniHappy(higher=True):
                 m 3euc "Oh wow, that's a long time."
                 m 3rksdla "A bit too long for my liking really..."
                 m 2esa "But it's okay [player]."
@@ -841,7 +874,7 @@ label bye_long_absence:
                 m 1dsd "I'll still wait for you...but please come back the moment it's possible for you to do so."
         "Longer than a month.":
             $ persistent._mas_absence_choice = "longer"
-            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
+            if mas_isMoniHappy(higher=True):
                 m 3rksdlb "That's...{w=0.5}well that's a little scary, [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
                 m 1eka "But I know you wouldn't leave me by myself if you could help it."
@@ -883,7 +916,7 @@ label bye_long_absence:
         m "Are you going to leave straight away?{fast}"
         "Yes.":
             m 3ekc "I see..."
-            m "I really will miss you [player]..."
+            m "I really will miss you, [player]..."
             m 1eka "But I know you'll do wonderful things no matter where you are."
             m "Just remember that I'll be waiting here for you."
             m 2hua "Make me proud, [player]!"
@@ -1310,7 +1343,7 @@ label bye_prompt_eat:
             m 3rksdla "Of course...{w=1}I'd also try to be in bed by now..."
             if mas_is18Over() and mas_isMoniLove(higher=True) and renpy.random.randint(1,25) == 1:
                 m 2tubfu "You know, if I were there, maybe we could have a bit of both..."
-                show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."
                 m 5hubfb "Ehehe~"
             else:
@@ -1487,7 +1520,7 @@ label bye_prompt_housework:
         m 1eub "Doing your chores, [player]?"
         m 1ekc "I would like to help you out, but there's not really much I can do since I'm stuck in here..."
         m 3eka "Just make sure to come back as soon as you're done, okay?"
-        m 3hub "I'll be waiting here for you."
+        m 3hub "I'll be waiting here for you~"
     elif mas_isMoniUpset():
         m 2esc "Fine."
         m 2tsc "At least you're doing something responsible."

@@ -96,6 +96,9 @@ init -10 python:
         except:
             return None
 
+# A transition of the new type
+# which only works with mas_with_statement or Ren'Py 7.0+
+define dissolve_monika = {"master": Dissolve(0.25)}
 
 # user defined trasnforms
 transform leftin_slow(x=640, z=0.80, t=1.00):
@@ -154,3 +157,11 @@ transform mas_chmove(x, y, travel_time=1.0):
 transform mas_chriseup(x=300, y=405, travel_time=1.00):
     ypos 800 xcenter x
     easein travel_time ypos y
+
+# parabola jump
+transform mas_chlongjump(x, y, ymax, travel_time=1.0):
+    parallel:
+        linear travel_time xpos x
+    parallel:
+        easeout travel_time*0.6 ypos ymax
+        easein travel_time*0.4 ypos y
