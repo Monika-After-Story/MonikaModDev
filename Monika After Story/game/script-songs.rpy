@@ -1489,7 +1489,7 @@ label mas_song_when_youre_gone:
     m 6rkc "I haven't really had anyone in my life actually die before, but thinking about not being able to talk to someone ever again..."
     m 6eka "[player], I really need you and your words of encouragement.{w=0.5}{nw}"
     extend 6hua " I'll be okay as long as you're here to brighten up my day~"
-    m 6ekbsa "You're my best friend, don't ever underestimate how important you are to me."
+    m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
     return
 
 ################################ NON-DB SONGS############################################
