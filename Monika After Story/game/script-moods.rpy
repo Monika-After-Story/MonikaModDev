@@ -686,7 +686,7 @@ label mas_mood_crying:
 
         "I'm not sure.":
             m 1dkc "[player]...{w=0.3}{nw}"
-            extend 3eksdld "Did something happen?"
+            extend 3eksdld "did something happen?"
             call mas_mood_uok
 
     m 3ekd "[line_start] if you do end up crying..."
