@@ -664,54 +664,60 @@ label mas_mood_bored:
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt="...like crying.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
-    
+
 label mas_mood_crying:
-    m 1ekd "[player]!"
-    m "Are you okay?{nw}"
+    m 1eksdld "[player]!"
+
+    m 3eksdlc "Are you okay?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you okay?{fast}"
 
         "Yes.":
-            m "Okay, good. That's a relief."
-            m 1ekbfa "I'm here to keep you company and you can talk to me if you need anything, okay?"
-            m "I love you [player]. You're my everything."
+            m 3eka "Okay, good. That's a relief."
+            m 1ekbsa "I'm here to keep you company and you can talk to me if you need anything, okay?"
+
         "No.":
             m 1ekc "..."
-            m 1ekd "[player]..."
-            m "I'm so sorry. Did something happen...?"
-            call mas_mood_uok
-        "I'm not sure.":
-            m 1ekd "[player]..."
-            m "Did something happen? Is everything okay?"
+            m 3ekd "[player]..."
+            m 3eksdld "I'm so sorry. Did something happen?"
             call mas_mood_uok
 
-    m 1ekc "Well..."
-    m 1ekd "If you do end up crying..."
-    m 1ekbfa "I hope it helps you, [player]."
-    m "There's nothing wrong with crying, okay?"
-    m 3ekbfa "You're wonderful, [player]. You can cry as much as you need to."
-    m 1ekbfa "I love you, and I always will."
+        "I'm not sure.":
+            m 1dkc "[player]..."
+            m 3eksdld "Did something happen? Is everything okay?"
+            call mas_mood_uok
+
+    m 3ekd "And if you do end up crying..."
+    m 1eka "I hope it helps."
+    m 3ekd "There's nothing wrong with crying, okay? {w=0.2}You can cry as much as you need to."
+    m 3ekbsu "I love you, [player]. {w=0.2}You're my everything."
     return "love"
-            
+
 label mas_mood_uok:
-    m "I love you so much [player]."
-    m 1ekd "If you need to talk about something, I'm right here.{nw}"
+    m 1rksdld "I know I can't really hear what you say to me..."
+    m 3eka "But sometimes, just vocalizing your pain or frustrations can really help."
+
+    m 1ekd "So if you need to talk about something, I'm right here.{nw}"
     $ _history_list.pop()
     menu:
-        m "If you need to talk about something, I'm right here.{fast}"
-        "I'd like to talk with you.":
-            m "Go ahead, [player]."
-            m 1ekc "...{nw}"
+        m "So If you need to talk about something, I'm right here.{fast}"
+
+        "I'd like to vent.":
+            m 3eka "Go ahead, [player]."
+
+            m 1ekc "I'm here for you.{nw}"
             $ _history_list.pop()
             menu:
-                m "...{fast}"
+                m "I'm here for you.{fast}"
+
                 "I'm done.":
-                    m 1ekd "I hope that helped, [player]."
+                    m 1eka "I'm glad you were able to get what you wanted off your chest, [player]."
+
         "I don't want to talk about it.":
             m 1ekc "..."
-            m 1ekd "Alright [player]..."
-            m "I'll be here if you change your mind."
+            m 3ekd "Alright [player], I'll be here if you change your mind."
+
         "Everything's fine.":
             m 1ekc "..."
             m 1ekd "Okay [player], if you say so..."

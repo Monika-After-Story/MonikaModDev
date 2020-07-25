@@ -2358,7 +2358,7 @@ label prompt_menu:
                 talk_menu.append((_("I love you too!"),"love_too"))
             else:
                 talk_menu.append((_("I love you!"), "love"))
-        talk_menu.append((_("I'm feeling..."), "moods"))
+        talk_menu.append((_("I feel..."), "moods"))
         talk_menu.append((_("Goodbye"), "goodbye"))
         talk_menu.append((_("Nevermind"),"nevermind"))
 
