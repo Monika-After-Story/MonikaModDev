@@ -15435,8 +15435,6 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_remembrance",
-            category=['monika'],
             eventlabel="monika_why_do_you_read",
             category=['monika','literature'],
             prompt="How did you get into reading?",
