@@ -666,6 +666,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt="...like crying.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_crying:
+    $ line_start = "And"
     m 1eksdld "[player]!"
 
     m 3eksdlc "Are you okay?{nw}"
@@ -684,11 +685,11 @@ label mas_mood_crying:
             call mas_mood_uok
 
         "I'm not sure.":
-            m 1dkc "[player]..."
-            m 3eksdld "Did something happen? Is everything okay?"
+            m 1dkc "[player]...{w=0.3}{nw}"
+            extend 3eksdld "Did something happen?"
             call mas_mood_uok
 
-    m 3ekd "And if you do end up crying..."
+    m 3ekd "[line_start] if you do end up crying..."
     m 1eka "I hope it helps."
     m 3ekd "There's nothing wrong with crying, okay? {w=0.2}You can cry as much as you need to."
     m 3ekbsu "I love you, [player]. {w=0.2}You're my everything."
@@ -721,4 +722,5 @@ label mas_mood_uok:
         "Everything's fine.":
             m 1ekc "..."
             m 1ekd "Okay [player], if you say so..."
+            $ line_start = "But"
     return
