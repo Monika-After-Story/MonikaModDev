@@ -744,13 +744,10 @@ label mas_rerandom:
                 rerand_ev.random = True
 
                 #Run the rerandom callback function
-                rerandom_callback_data = rerand_ev.rules.get("rerandom_callback", None)
-                if rerandom_callback_data is not None:
+                rerandom_callback = rerand_ev.rules.get("rerandom_callback", None)
+                if rerandom_callback is not None:
                     try:
-                        rerandom_callback_data.callable(
-                            *rerandom_callback_data.args,
-                            **rerandom_callback_data.kwargs
-                        )
+                        rerandom_callback()
 
                     except Exception as ex:
                         mas_utils.writelog(
