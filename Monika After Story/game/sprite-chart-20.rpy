@@ -4202,6 +4202,20 @@ image monika 2rubfu:
         0.06
         repeat
 
+image monika 2rud:
+    block:
+        "monika 2rud_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dud_static"
+        0.06
+        repeat
+
 image monika 2sub:
     block:
         "monika 2sub_static"
@@ -6963,20 +6977,6 @@ image monika 3wubfsdlo:
             choice:
                 7
         "monika 3dubfsdlo_static"
-        0.06
-        repeat
-
-image monika 3wubso:
-    block:
-        "monika 3wubso_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubso_static"
         0.06
         repeat
 
