@@ -15454,14 +15454,14 @@ label monika_tabletop_rping:
     m "The Dungeon Master is the one who makes the setting of the story and controls the monsters and other obstacles."
     m "So in a story with two adventurers, you need three people to make it work, as the Dungeon Master cannot be one."
 
-    m "Other Tabletop RPGs are a lot like theatre in the sense that everyone plays a character in the story, aside from the fact that the story itself is being improvised as it goes."
+    m "Other Tabletop RPGs are a lot like theatre in the sense that everyone plays a character in the story, with the story itself is being improvised as it goes."
     m "Everyone participating is taking turns, writing a story by reacting to the others' actions and acting on it."
     m "I guess that makes it a good writing exercise..."
-    m "You don't need to think of the entire story by yourself, but at the same time, your character will end up in situations you probably never could anticipate..."
+    m "You don't need to think of the entire story by yourself, as your character will end up in situations you probably never could have anticipated..."
     m "...So you have to improvise at all times by choosing what you think would be the best course of action in every situation, while still staying in-character."
 
     m "Unlike most other forms of literature, it's not an author expressing their own thoughts and opinions through written text."
-    m "The best way I can explain it, is that tabletop roleplaying is kind of like the multiplayer experience of literature."
+    m "The best way I can explain it is that tabletop roleplaying is kind of like the multiplayer experience of literature."
     m "Just a little video game reference for you~"
     m "The only problem with that though, is that once you reach the end of the story, if you even manage to get to a point in the story that you can call an ending..."
     m "You'll often end up with a big, almost unreadable mess."
@@ -15472,20 +15472,18 @@ label monika_tabletop_rping:
     m "I will always prefer the beauty and wonder that real life can bring people when they do something fun together, after all."
 
     if persistent._mas_pm_likes_board_games:
-        m "Maybe at some point we could make a little duo adventure or something...That would really make my day."
-        m "I'm happy just talking about it~"
+        m "Maybe at some point we could make a little duo adventure or something... That would really make my day."
+        m "I'm excited just talking about it~"
     else:
         m "I know you don't play too many board games, so I don't expect you to join me in an adventure sometime, but that's okay!"
         m "I'm happy just talking about it~"
     if seen_event('monika_tabletop_rping'):
         m 2eka "..."
         m "You know..."
-        m 2rkd "I just realized, but it's a bit of a shame that I never thought of doing activities like that back in the club."
+        extend 2rkd " I just realized, but it's a bit of a shame that I never thought of doing activities like that back in the club."
         m 2ekb "We probably could've had a lot of fun together."
         m 2eua "And who knows, maybe it would have made the club look more interesting to potential new members."
-        m 1ruc "Though, if I'm being honest... {w=0.8}{nw}"
+        m 1ruc "Though, if I'm being honest...{w=0.3}{nw}"
         extend 1rksdla "the idea of a {i}Doki Doki Role-Play Club{/i} does sound pretty silly."
         m 1hksdlb "Ahaha~"
-    else:
-        return #Not sure if else is redundant here.
     return
