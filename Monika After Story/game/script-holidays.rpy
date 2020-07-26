@@ -2008,11 +2008,11 @@ init 5 python:
 label mas_d25_monika_holiday_intro_upset:
     # sanity check with reset of start/end dates in case somehow we drop back below normal before this is seen
     if mas_isMoniUpset(lower=True):
-        $ mas_setEVLPropValues(
-            "mas_d25_monika_holiday_intro_upset",
-            start_date=mas_d25c_start,
-            end_date=mas_d25p
-        )
+        python:
+            upset_ev = mas_getEV('mas_d25_monika_holiday_intro_upset')
+            if upset_ev is not None:
+                upset_ev.start_date = mas_d25c_start
+                upset_ev.end_date = mas_d25p
         return
 
     m 2rksdlc "So [player]...{w=1} I hadn't really been feeling very festive this year..."
@@ -2636,19 +2636,15 @@ init 5 python:
 
 label monika_aiwfc:
     # set dates for the other song to start a day after this one
-    if not mas_isD25():
-        $ mas_setEVLPropValues(
-            "monika_merry_christmas_baby",
-            start_date=datetime.datetime.now() + datetime.timedelta(days=1),
-            end_date=mas_d25p
-        )
-
-    else:
-        $ mas_setEVLPropValues(
-            "monika_merry_christmas_baby",
-            start_date=datetime.datetime.now() + datetime.timedelta(hours=1),
-            end_date=datetime.datetime.now() + datetime.timedelta(hours=5)
-        )
+    # set dates for the other song to start a day after this one
+    $ d25_baby = mas_getEV('monika_merry_christmas_baby')
+    if d25_baby:
+        if not mas_isD25():
+            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(days=1)
+            $ d25_baby.end_date = mas_d25p
+        else:
+            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
+            $ d25_baby.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
 
     if not renpy.seen_label('monika_aiwfc_song'):
         m 1rksdla "Hey, [player]?"
@@ -4304,11 +4300,10 @@ init -10 python:
         """
         strips mas_birthdate of its conditional and action to prevent double birthday sets
         """
-        mas_setEVLPropValues(
-            "mas_birthdate",
-            conditional=None,
-            action=None
-        )
+        mas_birthdate_ev = mas_getEV('mas_birthdate')
+        if mas_birthdate_ev is not None:
+            mas_birthdate_ev.conditional = None
+            mas_birthdate_ev.action = None
 
     def mas_pbdayCapGainAff(amount):
         mas_capGainAff(amount, "_mas_player_bday_date_aff_gain", 25)
