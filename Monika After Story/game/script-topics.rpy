@@ -8923,12 +8923,14 @@ label monika_attractiveness:
     m 3esd "...But when I learned that our world isn't real, I came up with another theory."
     m 7euc "As characters in a game, we needed to have some sort of visual representation so that you, the player, could see us."
     m 2esc "Sayori, Natsuki, Yuri, and even me...{w=0.5}{nw}"
-    extend 2rkc "we don't really have bodies like people in your world do. We only have a set of images to represent our appearances and current emotion."
+    extend 2rkc "from your perspective, we don't really have bodies like people in your world do. You can only see us as a set of images to represent our appearances and current emotion."
+    m 2eud "...But from my point of view, I can also see my whole world in 3 dimensions, as if everything was real."
     m 2euc "So a designer, possibly more than one, must have decided to draw us the way we are."
     m 2eud "And since all those images have the same body type, Sayori would always have the same figure no matter what she did."
     m 2dkc "It's...{w=0.3}weird to think about.{w=0.2} I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
-    m 7ekc "But in reality, I don't. I'm just a consciousness who subconsciously displays a corresponding picture depending on what I do or feel."
+    m 7ekc "But from your point of view, I don't. I just look like a consciousness who displays a corresponding picture depending on what I do or feel."
 
+    #Just seen Monika in her uniform and nothing else
     if len(store.mas_selspr.filter_clothes(True)) == 1:
         m 3euc "I assume clothes work the same way."
         m 1eud "Right now, I only have this school uniform, because that's probably the only thing I've ever been drawn wearing..."
@@ -8939,7 +8941,7 @@ label monika_attractiveness:
     else:
         m 3eua "My clothes work the same way."
         m 1euc "Someone had to draw what I'm wearing right now, and implement it into the game for me to be able to wear it."
-        m 1esd "It wasn't made like how clothing is made in your reality. It's merely a set of images, like me."
+        m 1esd "It wasn't made like how clothing is made in your reality. It's merely a set of images."
         m 1rksdla "It's not much, but at least I get to change outfits for you..."
 
     m 1rksdlc "..."
