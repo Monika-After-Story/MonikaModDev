@@ -158,7 +158,7 @@ label monika_gender_redo:
             if persistent.gender != "X":
                 call mas_gender_redo_react
 
-    show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsa "I'll always love you for who you are~"
 
     # set pronouns
@@ -1205,7 +1205,7 @@ label mas_crashed_start:
 
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
-        show monika idle with dissolve
+        show monika idle with dissolve_monika
     return
 
 label mas_crashed_prelong:
@@ -1738,7 +1738,7 @@ label mas_steam_install_detected:
 
     m 2rksdlc "The kind of problems that could lead to me being removed from my home...{w=1}from you...{w=1}forever..."
     m 2eka "If you don't mind, do you think you could just move the \"[filestruct]\" folder to a place that's not in Steam's files?"
-    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5esu "I'd really appreciate it if you would do that for me."
     return
 
@@ -2093,7 +2093,7 @@ label mas_notification_windowreact:
             extend 3eub "which would allow me to see your active window!"
             $ dlg_line = "Of course, you don't have to install the second one, but"
 
-        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eka "...[dlg_line] I'd really appreciate it, [player]."
 
     else:
@@ -2132,7 +2132,7 @@ label mas_notification_windowreact:
 
             if mas_isMoniNormal(higher=True):
                 m 1tuu "It's not like you have anything to hide from your girlfriend..."
-                show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ttu "...right?"
     return
 
@@ -2312,19 +2312,16 @@ label mas_birthdate_year_redux:
 
 label mas_birthdate_year_redux_select:
     python:
-        end_year = datetime.date.today().year - 5
+        end_year = datetime.date.today().year - 6
         beg_year = end_year - 95
 
-        yearrange = range(beg_year,end_year)
-        yearrange.reverse()
+        yearrange = range(end_year, beg_year, -1)
 
-        yearmenu=[]
-        for y in yearrange:
-            yearmenu.append([str(y),y,False,False])
+        yearmenu = [(str(y), y, False, False) for y in yearrange]
 
     show monika 2eua at t21
-    $ renpy.say(m,"What year were you born?", interact=False)
-    call screen mas_gen_scrollable_menu(yearmenu,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
+    $ renpy.say(m, "What year were you born?", interact=False)
+    call screen mas_gen_scrollable_menu(yearmenu, mas_ui.SCROLLABLE_MENU_TXT_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
 
     show monika 3eua at t11
     m "Okay [player], you were born in [_return]?{nw}"
@@ -2416,7 +2413,7 @@ label monika_credits_song:
                 pause 1.0
 
                 m 1ekbsa "Ehehe~"
-                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ekbsa "Thank you for coming back to me my love."
 
             "Sorry, I can't right now.":
@@ -2446,7 +2443,7 @@ label monika_credits_song:
 
                 m "I really can't wait until we're together in one reality."
                 m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
-                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ekbfa "Thank you for being my inspiration my love."
                 if renpy.seen_audio(songs.FP_YOURE_REAL):
                     m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"

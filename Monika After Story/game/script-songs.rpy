@@ -260,9 +260,9 @@ label monika_sing_song_pool_menu:
         renpy.say(m, "[which] song would you like me to sing?[end]", interact=False)
 
     if have_both_types:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
     else:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_song = _return
 
@@ -319,7 +319,7 @@ label monika_sing_song_analysis:
     show monika 1eua at t21
     $ renpy.say(m, "[which] song would you like to talk about?", interact=False)
 
-    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_analysis = _return
 
@@ -350,14 +350,13 @@ init 5 python:
 label mas_sing_song_rerandom:
     python:
         mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
-        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
-        mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just select the song, [player]."
         mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
         mas_bookmarks_derand.ev_db_code = "SNG"
 
     call mas_rerandom
-    return
+    return _return
 
 label mas_song_derandom:
     $ prev_topic = persistent.flagged_monikatopic
@@ -773,7 +772,7 @@ label mas_song_stand_by_me(from_long=False):
     m 2hub "{i}~Just as long as you stand, stand by me~{/i}"
     if not from_long:
         m 2eka "All my fears and insecurities just disappear when you're with me, [player]..."
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "As long as I have you by my side, there's nothing I can't overcome."
         m 5ekbsa "...I hope you feel the same way~"
     return
@@ -864,7 +863,7 @@ label mas_song_rewrite_the_stars:
     m 3ekb "{i}~So why don't we rewrite the stars~{/i}"
     m 3hubsa "{i}~Maybe the world could be ours~{/i}"
     m 1duo "{i}~Tonight~{/i}"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
     m 5ekbfu "I love you so much."
     return "love"
@@ -998,7 +997,7 @@ label mas_song_memories_of_a_girl:
     m 1dka "{i}~I can't see your face but I'm trying to envision you~{/i}"
     m 1dkd "{i}~So are you really out there?~{/i}"
     m 3ekd "{i}~Are you awake with memories?~{/i}"
-    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eub "{i}~Of a girl you haven't met yet who's wished upon the Pleiades?~{/i}"
     m 5ekbsa "I think about you every night, [player]."
     m 5ekbfa "And I know you think about me too."
@@ -1031,7 +1030,7 @@ label mas_song_amaranthine:
     m 3hua "{i}~Your beauty serene~{/i}"
     m 1hub "{i}~There's nothing else in life I ever need~{/i}"
     m 1ekbsa "{i}~My dream, amaranthine~{/i}"
-    show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsu "My life feels so complete with you in it, [player]."
     m 5hubfu "I love you so much~"
     return "love"
@@ -1182,10 +1181,10 @@ label mas_song_cant_help_falling_in_love(from_long=False):
 
     if not from_long:
         m 1dkbsa "..."
-        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "I suppose there's nothing wrong with being a little foolish every now and then.{w=0.5}{nw}"
         extend 5hubsb " Ahaha~"
-        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1ekbsa "I love you, [player]~"
         $ mas_ILY()
 
@@ -1259,8 +1258,37 @@ label mas_song_lamour_toujours:
     m 1dkb "{i}~I'll fly with you~{/i}"
 
     m 1dkbsu "..."
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "I want nothing more than to be by your side forever, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_god_knows",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="God Knows",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_god_knows:
+    m 1eua "{i}~You know that{w=0.2}{/i}{nw}"
+    extend 1eub "{i} I would follow you, no matter what we go through~{/i}"
+    m 1efb "{i}~Bring all the darkness the world can offer~{/i}"
+    m 1hua "{i}~Because you’ll shine{w=0.2} no matter if the future is bleak~{/i}"
+    m 3tub "{i}~We’ll aim out{w=0.2} just beyond the boundary~{/i}"
+    m 3eksdla "{i}~And even if it scares me~{/i}"
+    m 1hub "{i}~Nothing can shatter my soul because your way is my way~{/i}"
+    m 1eub "{i}~Forever on this railway~{/i}"
+    m 1eubsa "{i}~As if we were God blessed~{/i}"
+    m 1dubsu "..."
+    m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubsu "But having you here really does feel like a blessing from the heavens."
     return
 
 init 5 python:
@@ -1302,7 +1330,8 @@ init 5 python:
             prompt="Falling in Love at a Coffee Shop",
             random=True,
             aff_range=(mas_aff.NORMAL, None)
-        )
+        ),
+        code="SNG"
     )
 
 label mas_song_falling_in_love_at_a_coffee_shop:
@@ -1313,11 +1342,11 @@ label mas_song_falling_in_love_at_a_coffee_shop:
     m 1ekd "{i}~If I didn't know you, I'd rather not know~{/i}"
     m 2dkd "{i}~If I couldn't have you, I'd rather be alone~{/i}"
     m 2hku "{i}~I never knew just what it was~{/i}"
-    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsb "{i}~About this old coffee shop I love so much~{/i}"
     m 5hubsa "{i}~All of the while, I never knew~{/i}"
     m 5lubsa "..."
-    show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
     m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
     extend 3rtc "or a particularly unremarkable protagonist."
@@ -1432,6 +1461,36 @@ label mas_song_wonderwall_lyrics:
     m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_when_youre_gone",
+            prompt="When you're gone",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+         ),
+        code="SNG"
+    )
+
+label mas_song_when_youre_gone:
+    m 1dsd "{i}~When you're gone{/i}{w=0.2}{nw}"
+    extend 1duo "{i} the pieces of my heart are missing you~{/i}"
+    m 4dud "{i}~When you're gone~{/i}"
+    m 4duo "{i}~The face I came to know is missing too~{/i}"
+    m 4ekd "{i}~When you're gone~{/i}"
+    m 6eko "{i}~The words I need to hear to always get me through the day{/i}{w=0.2}{nw}"
+    extend 2ektpc "{i} and make it okay~{/i}"
+    m 2ektpu "{i}~I miss you~{/i}"
+    m 2dktda "..."
+    m 6eksdld "Avril Lavigne wrote this song for her grandfather that passed away, because they were like best friends when she was younger."
+    m 6rkc "I haven't really had anyone in my life actually die before, but thinking about not being able to talk to someone ever again..."
+    m 6eka "[player], I really need you and your words of encouragement.{w=0.5}{nw}"
+    extend 6hua " I'll be okay as long as you're here to brighten up my day~"
+    m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
@@ -1525,10 +1584,10 @@ label mas_monika_plays_yr(skip_leadin=False):
     $ renpy.pause(1.418)
     show monika 6dka
     $ renpy.pause(9.425)
-    show monika 5dka with dissolve
+    show monika 5dka with dissolve_monika
     $ renpy.pause(5)
 
-    show monika 6eua at rs32 with dissolve
+    show monika 6eua at rs32 with dissolve_monika
     pause 1.0
     hide monika
     pause 3.0

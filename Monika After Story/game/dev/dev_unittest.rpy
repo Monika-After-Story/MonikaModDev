@@ -350,7 +350,7 @@ init -1 python in mas_dev_unit_tests:
             self.tests = []
 
 init 10 python in mas_dev_unit_tests:
-    from store.mas_ui import SCROLLABLE_MENU_AREA, SCROLLABLE_MENU_XALIGN
+    from store.mas_ui import SCROLLABLE_MENU_TALL_AREA, SCROLLABLE_MENU_XALIGN
 
 
 label dev_unit_tests_show_pass:
