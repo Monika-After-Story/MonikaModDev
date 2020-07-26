@@ -15428,7 +15428,7 @@ init 5 python:
     )
 
 label monika_staring:
-    if not seen_event("monika_staring"):
+    if not renpy.seen_label("monika_staring"):
         m 6eub "Hey [player], look me in the eyes for a second, I just want to see something."
 
     window hide
