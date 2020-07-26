@@ -15420,9 +15420,10 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_staring",
             category=['monika, romance'],
-            prompt="Staring contest",
             random=True,
+            unlocked=False,
             aff_range=(mas_aff.ENAMORED, None)
+
 
         )
     )
@@ -15457,3 +15458,4 @@ label monika_staring:
     m 6hubfb "..."
     m 6tubfa "Well it's enough to make a girl all giddy~"
     m 6kubfb "Thank you, [player]."
+    return "derandom"
