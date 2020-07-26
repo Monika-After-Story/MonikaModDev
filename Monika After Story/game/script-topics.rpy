@@ -15448,8 +15448,11 @@ label monika_tabletop_rping:
     m "It could often devolve into a 'my character is invulnerable and always wins' kind of situation, you know?"
     m "To counteract this problem, tabletop roleplaying was invented."
     #Not sure if I should include this part about Dungeons and Dragons, since it's a pop culture reference, kind of. Though I think a topic about TRPGs isn't really complete without it either.
-    m "The most popular tabletop roleplaying game is called 'Dungeons & Dragons', or D&D, but that's far from the only one that exists, and its narrative form kind of always assumes a medieval fantasy setting."
-    m "In D&D, not all players are equal, since there necessarily always needs to be a 'Dungeon Master', basically someone who makes the setting of the story and controls the monsters and other obstacles."
+    m "The most popular tabletop roleplaying game is called 'Dungeons & Dragons', or D&D, but that's far from the only one that exist...
+    m "And its narrative form kind of always assumes a medieval fantasy setting, which not everyone wants."
+    m "In D&D, not all players are equal, since there necessarily always needs to be a 'Dungeon Master'.
+    m "The Dungeon Master is the one who makes the setting of the story and controls the monsters and other obstacles."
+    m "So in a story with two adventurers, you need three people to make it work, as the Dungeon Master cannot be one."
 
     m "Other Tabletop RPGs are a lot like theatre in the sense that everyone plays a character in the story, aside from the fact that the story itself is being improvised as it goes."
     m "Everyone participating is taking turns, writing a story by reacting to the others' actions and acting on it."
