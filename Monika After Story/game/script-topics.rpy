@@ -15466,7 +15466,7 @@ label monika_tabletop_rping:
     m "Unlike most other forms of literature, it's not an author expressing their own thoughts and opinions through written text."
     m "The best way I can explain it is that tabletop roleplaying is kind of like the multiplayer experience of literature."
     m "Just a little video game reference for you~"
-    m "The problem with that though is that once you reach the end of the story--{w=0.2} if you even manage to reach that point,{w=0.3} you'll often end up with a big, almost unreadable mess."
+    m "The problem with that though is that once you reach the end of the story--{w=0.2}if you even manage to reach that point,{w=0.3} you'll often end up with a big, almost unreadable mess."
     m "...Which makes it harder to share this piece of literature with the world, and that's one of my favorite parts about literature."
     m "It kind of becomes a 'you need to have been there to get it' kind of story."
     m "But the metafictional story of how a group of people came together to have a good time with a roleplaying game, may in fact inspire people around the world too."
