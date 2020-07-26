@@ -15435,10 +15435,10 @@ label monika_tabletop_rping:
     menu:
         m "It's called tabletop roleplaying! Are you familiar with it?"
         "Yes.":
-        $ persistent._mas_pm_knows_TRPGs = True
+            $ persistent._mas_pm_knows_TRPGs = True
             m "Right, just please indulge me for a second then."
         "No.":
-        $ persistent._mas_pm_knows_TRPGs = False
+            $ persistent._mas_pm_knows_TRPGs = False
             m "Oh really? Then please indulge me while I tell you about it."
 
     m "You may have played 'pretend' when you were a kid growing up, right?"
