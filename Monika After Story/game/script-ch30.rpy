@@ -1520,7 +1520,7 @@ label ch30_post_mid_loop_eval:
             jump mas_ch30_select_mostseen
 
 #        elif not seen_random_limit:
-#            $pushEvent('random_limit_reached')
+#            $pushEvent('mas_random_limit_reached')
 
 label post_pick_random_topic:
 
@@ -1535,10 +1535,9 @@ label mas_ch30_select_unseen:
     if len(mas_rev_unseen) == 0:
 
         if not persistent._mas_enable_random_repeats:
-            # no repeats means we should push randomlimit if appropriate,
-            # otherwise stay slient
-            if not seen_random_limit:
-                $ pushEvent("random_limit_reached")
+            # no repeats means we should push randomlimit if appropriate, otherwise stay slient
+            if mas_getEV("mas_random_limit_reached").timePassedSinceLastSeen_d(datetime.timedelta(weeks=2)):
+                $ pushEvent("mas_random_limit_reached")
 
             jump post_pick_random_topic
 
@@ -1562,10 +1561,12 @@ label mas_ch30_select_seen:
                 # jump to most seen if we have any left
                 jump mas_ch30_select_mostseen
 
-            if len(mas_rev_mostseen) == 0 and not seen_random_limit:
-                # all topics seen within last seen delta, push random seen
-                # limit if not already.
-                $ pushEvent("random_limit_reached")
+            #As a way of indicating you're out of topics because of the last seen delta, we'll use a shorter check here
+            if (
+                len(mas_rev_mostseen) == 0
+                and mas_getEV("mas_random_limit_reached").timePassedSinceLastSeen_d(datetime.timedelta(days=1))
+            ):
+                $ pushEvent("mas_random_limit_reached")
                 jump post_pick_random_topic
 
             # if still no events, just jump to idle loop

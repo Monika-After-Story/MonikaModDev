@@ -1045,9 +1045,15 @@ label mas_unlock_piano:
     return
 
 # NOTE: this has been partially disabled
-label random_limit_reached:
-    $ seen_random_limit=True
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_random_limit_reached"
+        )
+    )
 
+label mas_random_limit_reached:
     #Notif so people don't get stuck here
     $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
@@ -1064,7 +1070,7 @@ label random_limit_reached:
         limit_quip=renpy.random.choice(limit_quips)
 
     m 1eka "[limit_quip]"
-    if len(mas_rev_unseen)>0 or persistent._mas_enable_random_repeats:
+    if len(mas_rev_unseen) > 0 or persistent._mas_enable_random_repeats:
         m 1ekc "I'm sure I'll have something to talk about after a little rest."
 
     else:
@@ -1074,7 +1080,7 @@ label random_limit_reached:
                 m "Now let me think of something to talk about."
                 return
         m 1ekc "Hopefully I'll think of something fun to talk about soon."
-    return
+    return "no_unlock"
 
 label mas_random_ask:
     m 1lksdla "...{w=0.5}[player]?"

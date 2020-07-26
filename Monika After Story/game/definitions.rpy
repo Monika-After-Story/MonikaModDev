@@ -7206,7 +7206,6 @@ default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
-default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
