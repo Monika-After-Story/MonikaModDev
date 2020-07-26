@@ -15428,7 +15428,7 @@ init 5 python:
     )
 
 label monika_staring:
-    m 6eub "Hey player, look me in the eyes for a second, I just want to see something."
+    m 6eub "Hey [player], look me in the eyes for a second, I just want to see something."
     m 1eua "..."
     m 2eua"..."
     m 1wua"..."
