@@ -15419,7 +15419,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_tabletop_rping",
-            category=['monika','literature'],
+            category=['monika','games','literature'],
             prompt="Tabletop Roleplaying",
             random=True,
             aff_range=(mas_aff.NORMAL, None)
@@ -15427,23 +15427,24 @@ init 5 python:
     )
 
 label monika_tabletop_rping:
-    m "Say, [player], there's this literature genre that I've been meaning to bring up lately."
+    m "Say, [player], there's this literary genre that I've been meaning to bring up lately."
     m "To be honest, I've been reading up on it while you've been gone, and it seems somewhat intriguing."
     m "The genre is kind of unfamiliar territory to me though, but I thought I'd hear if you were interested in it."
-    m "It's called tabletop roleplaying! Have you heard of it?{nw}"
+    m "It's called tabletop roleplaying! Are you familiar with it?{w=0.3}{nw}"
     $ _history_list.pop()
     menu:
-        m "It's called tabletop roleplaying! Have you heard of it?"
+        m "It's called tabletop roleplaying! Are you familiar with it?"
         "Yes.":
+        $ persistent._mas_pm_knows_TRPGs = True
             m "Right, just please indulge me for a second then."
-
         "No.":
+        $ persistent._mas_pm_knows_TRPGs = False
             m "Oh really? Then please indulge me while I tell you about it."
 
     m "You may have played 'pretend' when you were a kid growing up, right?"
     m "It's a game where you assume the role of a different person, maybe in another world, and act and speak as them to form a narrative."
-    m "When you're doing it with friends, it becomes much more fun, as you are also met with other people's character, and you interact with each other."
-    m "But 'pretend' always had one big problem{w=0.3}...What do you do when you can't agree on the story's plot?"
+    m "When you're doing it with friends it becomes much more fun, as you are also met with other people's character and interacting with each other."
+    m "But 'pretend' always had one big problem{w=0.3}... What do you do when you can't agree on the story's plot?"
     m "It could often devolve into a 'my character is invulnerable and always wins' kind of situation, you know?"
     m "To counteract this problem, tabletop roleplaying was invented."
     #Not sure if I should include this part about Dungeons and Dragons, since it's a pop culture reference, kind of. Though I think a topic about TRPGs isn't really complete without it either.
