@@ -15435,8 +15435,10 @@ label monika_staring:
     m 1subsa "..."
     show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5subsa "{w=0.3}.{w=0.3}.{w=0.3}."
-    m 5tubsb "I knew it. They're so pretty."
-    m 5hubfb "Ahaha! Don't worry, I can't see them~"
+    m 5lubsa "Ahaha, guess not."
+    m 5tubsa "I was wondering if it would feel any different if I looked hard enough."
+    m 5dubsa "But just imagining your eyes, so full of life, dancing around my own..."
     show monika 6hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 6hubfb "..."
-    m 6tubfa "Or can I?"
+    m 6tubfa "Well it's enough to make a girl all giddy~"
+    m 6kubfb "Thank you, [player]."
