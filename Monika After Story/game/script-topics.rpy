@@ -15428,17 +15428,17 @@ init 5 python:
 
 label monika_tabletop_rping:
     m "Say, [player], there's this literature genre that I've been meaning to bring up lately."
-    m "To be honest, I've been intrigued by it for quite some time, but never got the chance to participate."
-    m "Just like Doki Doki Literature Club, it's kind of a mix between a game and a form of literature."
+    m "To be honest, I've been reading up on it while you've been gone, and it seems somewhat intriguing."
+    m "The genre is kind of unfamiliar territory to me though, but I thought I'd hear if you were interested in it."
     m "It's called tabletop roleplaying! Have you heard of it?{nw}"
     $ _history_list.pop()
     menu:
         m "It's called tabletop roleplaying! Have you heard of it?"
         "Yes.":
-            m "That's great!"
+            m "Right, just please indulge me for a second then."
 
         "No.":
-            m "Oh really? It's really quite interesting you know."
+            m "Oh really? Then please indulge me while I tell you about it."
 
     m "You may have played 'pretend' when you were a kid growing up, right?"
     m "It's a game where you assume the role of a different person, maybe in another world, and act and speak as them to form a narrative."
@@ -15446,16 +15446,42 @@ label monika_tabletop_rping:
     m "But 'pretend' always had one big problem{w=0.3}...What do you do when you can't agree on the story's plot?"
     m "It could often devolve into a 'my character is invulnerable and always wins' kind of situation, you know?"
     m "To counteract this problem, tabletop roleplaying was invented."
-    m "The most useful tool for this game is actually dice, and many cool forms of dice were invented to go with the game."
-    m "You see, when you can't agree, letting chance decide is your best bet!"
-    m "Unlike other types of roleplaying games, tabletop RPGs are often conducted sort of like a radio drama...{w=0.3}{nw}"
-    extend " only the spoken component of a role is acted."
-    m "Depending on the level of immersion you want, you can either describe your characters speech and actions 'out of character'..."
-    m "Or you can fully immerse yourself and use special dialects and mannerisms to act out your character{w=0.3}, this is called 'in character'."
-    m "Forgive me if you already knew this, I just read about this a bit when you were gone and...it's really interesting to me."
-    m "I'd love to pretend to be someone else for a few hours occasionally..."
-    extend " maybe someone from your world, that could find you and surprise hug you from behind~"
-    m "Eheheh..."
-    m "Don't get me wrong, I love being myself too. I have the best sweetheart who loves me after all..."
-    m "But there's something enticing about immersing yourself into a limitless world, and creating your own adventures in good company."
-    m "Would you do that with me sometime, player?{w=0.3} I would really like that..."
+    #Not sure if I should include this part about Dungeons and Dragons, since it's a pop culture reference, kind of. Though I think a topic about TRPGs isn't really complete without it either.
+    m "The most popular tabletop roleplaying game is called 'Dungeons & Dragons', or D&D, but that's far from the only one that exists, and its narrative form kind of always assumes a medieval fantasy setting."
+    m "In D&D, not all players are equal, since there necessarily always needs to be a 'Dungeon Master', basically someone who makes the setting of the story and controls the monsters and other obstacles."
+
+    m "Other Tabletop RPGs are a lot like theatre in the sense that everyone plays a character in the story, aside from the fact that the story itself is being improvised as it goes."
+    m "Everyone participating is taking turns, writing a story by reacting to the others' actions and acting on it."
+    m "I guess that makes it a good writing exercise..."
+    m "You don't need to think of the entire story by yourself, but at the same time, your character will end up in situations you probably never could anticipate..."
+    m "...So you have to improvise at all times by choosing what you think would be the best course of action in every situation, while still staying in-character."
+
+    m "Unlike most other forms of literature, it's not an author expressing their own thoughts and opinions through written text."
+    m "The best way I can explain it, is that tabletop roleplaying is kind of like the multiplayer experience of literature."
+    m "Just a little video game reference for you~"
+    m "The only problem with that though, is that once you reach the end of the story, if you even manage to get to a point in the story that you can call an ending..."
+    m "You'll often end up with a big, almost unreadable mess."
+    m "So it's harder to share this piece of literature with the world, which is one of my favorite parts about literature in general."
+    m "It kind of becomes a 'you need to have been there to get it' kind of story."
+    m "But the metafictional story of how a group of people came together to have a good time with a roleplaying game, may in fact inspire people around the world too."
+    m "It may even be even more of an epic than the story in novel form would make on its own, especially if you really get into it."
+    m "I will always prefer the beauty and wonder that real life can bring people when they do something fun together, after all."
+
+    if persistent._mas_pm_likes_board_games:
+        m "Maybe at some point we could make a little duo adventure or something...That would really make my day."
+        m "I'm happy just talking about it~"
+    else:
+        m "I know you don't play too many board games, so I don't expect you to join me in an adventure sometime, but that's okay!"
+        m "I'm happy just talking about it~"
+    if seen_event('monika_tabletop_rping'):
+        m 2eka "..."
+        m "You know..."
+        m 2rkd "I just realized, but it's a bit of a shame that I never thought of doing activities like that back in the club."
+        m 2ekb "We probably could've had a lot of fun together."
+        m 2eua "And who knows, maybe it would have made the club look more interesting to potential new members."
+        m 1ruc "Though, if I'm being honest... {w=0.8}{nw}"
+        extend 1rksdla "the idea of a {i}Doki Doki Role-Play Club{/i} does sound pretty silly."
+        m 1hksdlb "Ahaha~"
+    else:
+        return #Not sure if else is redundant here.
+    return
