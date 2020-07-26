@@ -260,9 +260,9 @@ label monika_sing_song_pool_menu:
         renpy.say(m, "[which] song would you like me to sing?[end]", interact=False)
 
     if have_both_types:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
     else:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_song = _return
 
@@ -319,7 +319,7 @@ label monika_sing_song_analysis:
     show monika 1eua at t21
     $ renpy.say(m, "[which] song would you like to talk about?", interact=False)
 
-    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_analysis = _return
 
@@ -350,13 +350,12 @@ init 5 python:
 label mas_sing_song_rerandom:
     python:
         mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
-        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
-        mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just select the song, [player]."
         mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
 
     call mas_rerandom
-    return
+    return _return
 
 label mas_song_derandom:
     $ prev_topic = persistent.flagged_monikatopic
@@ -1459,6 +1458,36 @@ label mas_song_wonderwall_lyrics:
     m 3hubsa "{i}~You're gonna be the one that saves me~{/i}"
     m 3dubso "{i}~And after all~{/i}"
     m 1hubsb "{i}~You're my wonderwall~{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_when_youre_gone",
+            prompt="When you're gone",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+         ),
+        code="SNG"
+    )
+
+label mas_song_when_youre_gone:
+    m 1dsd "{i}~When you're gone{/i}{w=0.2}{nw}"
+    extend 1duo "{i} the pieces of my heart are missing you~{/i}"
+    m 4dud "{i}~When you're gone~{/i}"
+    m 4duo "{i}~The face I came to know is missing too~{/i}"
+    m 4ekd "{i}~When you're gone~{/i}"
+    m 6eko "{i}~The words I need to hear to always get me through the day{/i}{w=0.2}{nw}"
+    extend 2ektpc "{i} and make it okay~{/i}"
+    m 2ektpu "{i}~I miss you~{/i}"
+    m 2dktda "..."
+    m 6eksdld "Avril Lavigne wrote this song for her grandfather that passed away, because they were like best friends when she was younger."
+    m 6rkc "I haven't really had anyone in my life actually die before, but thinking about not being able to talk to someone ever again..."
+    m 6eka "[player], I really need you and your words of encouragement.{w=0.5}{nw}"
+    extend 6hua " I'll be okay as long as you're here to brighten up my day~"
+    m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
     return
 
 ################################ NON-DB SONGS############################################
