@@ -2553,16 +2553,15 @@ label monika_holdme_end:
     # set the last time held at the end of the hold to prevent a possible
     # hold request right after a hold that ends after midnight
     $ persistent._mas_last_hold = datetime.date.today()
-    $ mas_setEVLPropValues(
-        "monika_holdrequest",
-        random=False,
-        conditional=(
+    $ holdme_ev = mas_getEV('monika_holdrequest')
+    if holdme_ev is not None:
+        $ holdme_ev.random = False
+        $ holdme_ev.conditional = (
             "renpy.seen_label('monika_holdme_prep') "
             "and persistent._mas_last_hold != datetime.date.today()"
-        ),
-        action=EV_ACT_RANDOM
-    )
-    $ mas_rebuildEventLists()
+        )
+        $ holdme_ev.action = EV_ACT_RANDOM
+        $ mas_rebuildEventLists()
     return
 
 init 5 python:
