@@ -15428,16 +15428,30 @@ init 5 python:
     )
 
 label monika_staring:
-    m 6eub "Hey [player], look me in the eyes for a second, I just want to see something."
-    m 1eua "..."
-    m 2eua"..."
-    m 1wua"..."
-    m 1subsa "..."
-    show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5subsa "{w=0.3}.{w=0.3}.{w=0.3}."
-    m 5lubsa "Ahaha, guess not."
-    m 5tubsa "I was wondering if it would feel any different if I looked hard enough."
-    m 5dubsa "But just imagining your eyes, so full of life, dancing around my own..."
+    if seen_event("monika_staring"):
+        jump monika_staring_begin #Skipping the first line on 2nd viewing of topic.
+    else:
+        m 6eub "Hey [player], look me in the eyes for a second, I just want to see something."
+    label monika_staring_begin:
+        show monika 1eua_static with dissolve_monika
+        pause 2.0
+        show monika 1etu_static with dissolve_monika
+        pause 2.0
+        show monika 2tubsa with dissolve_monika
+        pause 2.0
+        show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5subsa "{w=0.3}.{w=0.3}.{w=0.3}."
+        show monika 3hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 3hua "Ehehe~"
+        m 3rksdla "Sorry [player], I was just having a little staring contest with you."
+
+    if persistent._mas_pm_eye_color is not None:
+        m "Gosh, once I finally get to your world, I'd love to stare into your [persistent._mas_pm_eye_color] eyes..."
+
+    else:
+        m "Gosh, When I finally cross over to your world, I'd love to stare into your eyes..."
+    show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5dubsa "Just imagining your eyes, so full of life, dancing around my own..."
     show monika 6hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 6hubfb "..."
     m 6tubfa "Well it's enough to make a girl all giddy~"
