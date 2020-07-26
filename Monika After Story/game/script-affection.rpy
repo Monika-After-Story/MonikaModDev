@@ -2158,12 +2158,7 @@ label monika_change_player_nicknames:
 
     python:
         #Generate a list of names we're using now so we can set things
-        current_nicknames = [
-            (nickname.capitalize(), nickname, True, True, False)
-            for nickname in persistent._mas_player_nicknames
-        ]
-
-        if not current_nicknames:
+        if not persistent._mas_player_nicknames:
             current_nicknames = [
                 ("Darling", "darling", False, True, False),
                 ("Honey", "honey", False, True, False),
@@ -2172,24 +2167,39 @@ label monika_change_player_nicknames:
                 ("Sweetheart", "sweetheart", False, True, False),
                 ("Sweetie", "sweetie", False, True, False),
             ]
+            dlg_line = "Pick the names you'd like me to call you."
 
-    call mas_player_nickname_loop("Deselect the names you don't want me to call you anymore.", current_nicknames)
+        else:
+            current_nicknames = [
+                (nickname.capitalize(), nickname, True, True, False)
+                for nickname in persistent._mas_player_nicknames
+            ]
+            dlg_line = "Deselect the names you don't want me to call you anymore."
+
+    call mas_player_nickname_loop("[dlg_line]", current_nicknames)
     return
 
 label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
-    show monika 1eua at t21 zorder MAS_MONIKA_Z with dissolve
+    show monika 1eua at t21 zorder MAS_MONIKA_Z with dissolve_monika
     $ renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
     call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
 
-    $ acceptable_nicknames = _return.keys()
-    $ done = False
+    python:
+        done = False
+        acceptable_nicknames = _return.keys()
+
+        if acceptable_nicknames:
+            dlg_line = "Is there anything else you'd like me to call you?"
+
+        else:
+            dlg_line = "Is there something else you'd like me to call you instead?"
 
     show monika at t11
     while not done:
-        m 1eua "Is there anything else you'd like me to call you?{nw}"
+        m 1eua "[dlg_line]{nw}"
         $ _history_list.pop()
         menu:
-            m "Is there anything else you'd like me to call you?{fast}"
+            m "[dlg_line]{fast}"
 
             "Yes.":
                 label .name_enter_skip_loop:
@@ -2242,8 +2252,14 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
             "No.":
                 $ done = True
 
+    if acceptable_nicknames:
+        $ dlg_line = "Just let me know if you ever want me to call you some other names, okay?"
+
+    else:
+        $ dlg_line = "Just let me know if you ever change your mind, okay?"
+
     m 1hua "Alright, [player]."
-    m 3eub "Just let me know if you ever want me to call you some other names, okay?"
+    m 3eub "[dlg_line]"
 
     #Now set persistent
     $ persistent._mas_player_nicknames = acceptable_nicknames
