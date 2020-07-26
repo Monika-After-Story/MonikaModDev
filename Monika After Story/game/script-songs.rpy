@@ -1568,7 +1568,7 @@ label mas_song_cant_take_my_eyes_long:
     m 2dkbfu "{i}~Now that I've found you, stay~{/i}"
     m 2dkbfb "{i}~And let me love you, baby,{/i}{w=0.3}{nw}"
     extend 2ekbfa "{i} Let me love you~{/i}"
-    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbfu "{i}~You're just too good to be true~{/i}"
     m 5eubfb "{i}~Can't take my eyes off of you~{/i}"
     m 5dubsb "{i}~You'd be like Heaven to touch~{/i}"
@@ -1597,7 +1597,7 @@ label mas_song_cant_take_my_eyes_long:
     extend 2dkbsa "{i} Let me love you~{/i}{w=0.3}"
     window hide
     pause 2.0
-    show monika 2fkbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 2fkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     pause 3.0
     window auto
     return
