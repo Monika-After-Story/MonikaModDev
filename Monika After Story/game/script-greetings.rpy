@@ -3252,9 +3252,15 @@ label greeting_ourreality:
     m 1hua "Ehehe~"
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
-    m 3hksdrb "Just give me a second to get it ready..."
-    m 1dsc "..."
-    m 1dsd "Almost done..."
+    if persistent._mas_current_background != "spaceroom":
+        m 4eub "...But we need to go back to the spaceroom for the best view."
+        m 1hua "Let's head over, [player]."
+        call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True, set_persistent=True)
+        m 1eua "Here we are!"
+        m 3eub "Now give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    else:
+        m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
     m 1hua "Ahaha!"
     m 1eka "Sorry about that."
