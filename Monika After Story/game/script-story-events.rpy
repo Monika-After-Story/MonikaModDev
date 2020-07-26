@@ -63,11 +63,10 @@ label mas_gender:
     call mas_set_gender
 
     #Set up the preferredname topic
-    $ mas_setEVLPropValues(
-        "mas_preferredname",
-        start_date=datetime.datetime.now() + datetime.timedelta(hours=2)
-    )
-
+    python:
+        preferredname_ev = mas_getEV("mas_preferredname")
+        if preferredname_ev:
+            preferredname_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
     return "love"
 
 init 5 python:
@@ -2155,8 +2154,10 @@ label mas_gift_giving_instructs:
     #we'll handle the scenario by catching it here
     if persistent._mas_filereacts_historic:
         python:
-            mas_assignModifyEVLPropValue("mas_gift_giving_instructs", "shown_count", "-=", 1)
-            mas_setEVLPropValues("mas_gift_giving_instructs", last_seen=None)
+            instruct_ev = mas_getEV("mas_gift_giving_instructs")
+            if instruct_ev:
+                instruct_ev.last_seen = None
+                instruct_ev.shown_count -= 1
 
             persistent._seen_ever.pop("mas_gift_giving_instructs")
         return
