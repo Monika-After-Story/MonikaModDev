@@ -168,7 +168,7 @@ init -100 python in mas_selspr:
         prompt = prompt_data.get(prompt_key, None)
 
         if prompt is not None:
-            store.mas_setEVPropValues(
+            store.mas_setEVLPropValues(
                 prompt_data.get("_ev", None),
                 prompt=prompt
             )

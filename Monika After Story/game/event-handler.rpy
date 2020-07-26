@@ -402,7 +402,7 @@ init 6 python:
         """
         return mas_all_ev_db.get(ev_label, None)
 
-    def mas_checkEV(ev_label, predicate):
+    def mas_checkEVL(ev_label, predicate):
         """
         Checks event properties using a lambda
 
@@ -422,7 +422,7 @@ init 6 python:
 
         return predicate(ev)
 
-    def mas_getEVPropValue(ev_label, prop, default=None):
+    def mas_getEVLPropValue(ev_label, prop, default=None):
         """
         Safely gets an ev prop value
 
@@ -439,7 +439,7 @@ init 6 python:
 
         return getattr(ev, prop, default)
 
-    def mas_setEVPropValues(ev_label, **kwargs):
+    def mas_setEVLPropValues(ev_label, **kwargs):
         """
         Sets ev prop values in bulk if the ev exists
 
@@ -461,7 +461,7 @@ init 6 python:
 
         return True
 
-    def mas_isPoolEV(ev_label):
+    def mas_isPoolEVL(ev_label):
         """
         Checks if the event for the given event label is pool
 
@@ -471,9 +471,9 @@ init 6 python:
         OUT:
             True if the ev is pooled, False if not, or the ev doesn't exist
         """
-        return mas_getEVPropValue(ev_label, "pool", False)
+        return mas_getEVLPropValue(ev_label, "pool", False)
 
-    def mas_isRandomEV(ev_label):
+    def mas_isRandomEVL(ev_label):
         """
         Checks if the event for the given event label is random
 
@@ -483,9 +483,9 @@ init 6 python:
         OUT:
             True if the ev is random, False if not, or the ev doesn't exist
         """
-        return mas_getEVPropValue(ev_label, "random", False)
+        return mas_getEVLPropValue(ev_label, "random", False)
 
-    def mas_isUnlockedEV(ev_label):
+    def mas_isUnlockedEVL(ev_label):
         """
         Checks if the event for the given event label is unlocked
 
@@ -495,9 +495,9 @@ init 6 python:
         OUT:
             True if the ev is unlocked, False if not, or the ev doesn't exist
         """
-        return mas_getEVPropValue(ev_label, "unlocked", False)
+        return mas_getEVLPropValue(ev_label, "unlocked", False)
 
-    def mas_getEV_last_seen(ev_label, default=None):
+    def mas_getEVL_last_seen(ev_label, default=None):
         """
         Gets the last_seen from the event corresponding to the given eventlabel
 
@@ -510,9 +510,9 @@ init 6 python:
         OUT:
             The last_seen of the ev, or the default if the event doesn't exist
         """
-        return mas_getEVPropValue(ev_label, "last_seen", default)
+        return mas_getEVLPropValue(ev_label, "last_seen", default)
 
-    def mas_getEV_shown_count(ev_label, default=0):
+    def mas_getEVL_shown_count(ev_label, default=0):
         """
         Gets the shown_count from the event corresponding to the given eventlabel
 
@@ -525,9 +525,9 @@ init 6 python:
         OUT:
             The shown_count of the ev, or the default if the event doesn't exist
         """
-        return mas_getEVPropValue(ev_label, "shown_count", default)
+        return mas_getEVLPropValue(ev_label, "shown_count", default)
 
-    def mas_inRulesEV(ev_label, *args):
+    def mas_inRulesEVL(ev_label, *args):
         """
         Checks if keys are in the event's rules dict
 
@@ -539,7 +539,7 @@ init 6 python:
             True if all rule keys provided are in an event object's rules dict
             False if the event doesn't exist or any provided keys aren't present in the rules dict
         """
-        ev_rules = mas_getEVPropValue(ev_label, "rules", dict())
+        ev_rules = mas_getEVLPropValue(ev_label, "rules", dict())
 
         if not ev_rules:
             return False
@@ -549,7 +549,7 @@ init 6 python:
                 return False
         return True
 
-    def mas_assignModifyEVPropValue(ev_label, propname, operation, value):
+    def mas_assignModifyEVLPropValue(ev_label, propname, operation, value):
         """
         Does an assign-modify operation
 
@@ -717,7 +717,7 @@ init 6 python:
                 (Default: True)
         """
         if remove_dates:
-            mas_setEVPropValues(
+            mas_setEVLPropValues(
                 ev_label,
                 conditional=None,
                 action=None,
@@ -726,7 +726,7 @@ init 6 python:
             )
 
         else:
-            mas_setEVPropValues(
+            mas_setEVLPropValues(
                 ev_label,
                 conditional=None,
                 action=None
@@ -2502,7 +2502,7 @@ label prompt_menu:
         if len(unseen_events) > 0 and persistent._mas_unsee_unseen:
             mas_showEVL('mas_show_unseen','EVE',unlock=True)
             unseen_num = len(unseen_events)
-            mas_setEVPropValues(
+            mas_setEVLPropValues(
                 "mas_show_unseen",
                 prompt="I would like to see 'Unseen' ([unseen_num]) again"
             )
@@ -2589,7 +2589,7 @@ label show_prompt_list(sorted_event_keys):
     #Get list of unlocked prompts, sorted by unlock date
     python:
         prompt_menu_items = [
-            (mas_getEVPropValue(ev_label, "prompt"), ev_label)
+            (mas_getEVLPropValue(ev_label, "prompt"), ev_label)
             for ev_label in sorted_event_keys
         ]
 

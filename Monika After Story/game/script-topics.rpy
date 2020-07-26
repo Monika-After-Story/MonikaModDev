@@ -709,7 +709,7 @@ init 5 python:
 label mas_hide_unseen:
     $ persistent._mas_unsee_unseen = True
     m 3esd "Oh, okay, [player]..."
-    if not mas_getEV_shown_count("mas_hide_unseen"):
+    if not mas_getEVL_shown_count("mas_hide_unseen"):
         m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
         m 3hub "Ahaha!"
     m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}.{nw}"
@@ -955,7 +955,7 @@ label monika_sayori:
         m 3eua "There's no reason to ask for any more than that."
         m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
 
-    if mas_getEV_shown_count("monika_sayori") < mas_sensitive_limit:
+    if mas_getEVL_shown_count("monika_sayori") < mas_sensitive_limit:
         return
 
     # otherwise derandom
@@ -1428,7 +1428,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea",random=True))
 
 label monika_tea:
-    if not mas_getEV_shown_count("monika_tea"):
+    if not mas_getEVL_shown_count("monika_tea"):
         m 2hua "Hey, I wonder if Yuri's tea set is still in here somewhere..."
 
         if not persistent._mas_pm_cares_about_dokis:
@@ -2565,7 +2565,7 @@ label monika_holdme_end:
     # set the last time held at the end of the hold to prevent a possible
     # hold request right after a hold that ends after midnight
     $ persistent._mas_last_hold = datetime.date.today()
-    $ mas_setEVPropValues(
+    $ mas_setEVLPropValues(
         "monika_holdrequest",
         random=False,
         conditional=(
@@ -3449,7 +3449,7 @@ label monika_natsuki:
         m "Hope you don't feel too guilty..."
         m 1esa "I certainly don't."
 
-    if mas_getEV_shown_count("monika_natsuki") < mas_sensitive_limit:
+    if mas_getEVL_shown_count("monika_natsuki") < mas_sensitive_limit:
         return
 
     # otherwise, derandom
@@ -4215,7 +4215,7 @@ label monika_birthday:
                 m "Just like yours!"
 
             if (
-                not mas_getEV_shown_count("monika_birthday")
+                not mas_getEVL_shown_count("monika_birthday")
                 and not mas_HistVerifyAll_k(False, "922.actions.no_recognize")
             ):
                 m 3eksdla "It's okay if you don't have anything planned, seeing as you just found out..."
@@ -4239,7 +4239,7 @@ label monika_birthday:
         m 1rksdla "Well, if you need a little reminder, it's September 22nd."
         m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
 
-    elif not mas_getEV_shown_count("monika_birthday"):
+    elif not mas_getEVL_shown_count("monika_birthday"):
         m 1euc "You know, there's a lot I don't know about myself."
         m 1eud "I only recently learned when my birthday is by seeing it online."
         m 3eua "It's September 22nd, the release date for DDLC."
@@ -4295,7 +4295,7 @@ label monika_othergames:
     m 2lksdla "Then again...they're not real people, so it shouldn't matter much."
 
     if (
-        mas_getEV_shown_count("monika_othergames") < mas_sensitive_limit
+        mas_getEVL_shown_count("monika_othergames") < mas_sensitive_limit
         and not persistent._mas_sensitive_mode
         and not persistent._mas_pm_cares_about_dokis
     ):
@@ -4560,7 +4560,7 @@ label monika_algernon:
     m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1hua "No matter what happens, know that I will always love you."
 
-    $ mas_setEVPropValues(
+    $ mas_setEVLPropValues(
         "greeting_amnesia",
         unlocked=not seen_event('greeting_amnesia')
     )
@@ -4888,7 +4888,7 @@ label monika_aware:
     m 3rksdla "There's no real way to describe it."
     m 3eua "I feel like this is what poetry was made for."
 
-    if not mas_getEV_shown_count("monika_aware"):
+    if not mas_getEVL_shown_count("monika_aware"):
         m 4eub "Do you still remember the first poem I showed you?"
         m 2lksdlb "Hold on, let's see if the poem function still works.{w=0.5}.{w=0.5}.{nw}"
         call mas_showpoem(poem=poem_m1)
@@ -5206,7 +5206,7 @@ init 5 python:
 
 label monika_dunbar:
     #We only want this on the first time seeing this topic post seeing the player's friends topic
-    if persistent._mas_pm_few_friends and not mas_getEV_shown_count("monika_dunbar"):
+    if persistent._mas_pm_few_friends and not mas_getEVL_shown_count("monika_dunbar"):
         m 1eua "Do you remember when we talked about Dunbar's number and the amount of stable relationships people can maintain?"
     else:
         m 1eua "Do you know about Dunbar's number?"
@@ -8020,14 +8020,14 @@ label monika_breakup:
         m 1tua "Especially with something {i}that{/i} predictable, ehehe~"
 
         # sub 1 from the shown_count so we don't end up counting this path toward locking the topic
-        $ mas_assignModifyEVPropValue("monika_breakup", "shown_count", "-=", 1)
+        $ mas_assignModifyEVLPropValue("monika_breakup", "shown_count", "-=", 1)
 
     else:
         #Lose affection for bringing this up.
         $ mas_loseAffection(reason=1)
 
         #Get the shown count
-        $ shown_count = mas_getEVPropValue("monika_breakup", "shown_count", 0)
+        $ shown_count = mas_getEVLPropValue("monika_breakup", "shown_count", 0)
 
         #First
         if shown_count == 0:
@@ -12951,7 +12951,7 @@ label monika_trick_sayori:
 
 label monika_trick_monika:
     hide screen mas_background_timed_jump
-    if not mas_getEV_shown_count("monika_trick"):
+    if not mas_getEVL_shown_count("monika_trick"):
         $ mas_gainAffection(10, bypass=True)
     else:
         $ mas_gainAffection()

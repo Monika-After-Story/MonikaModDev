@@ -700,7 +700,7 @@ label mas_hangman_game_loop:
     menu:
         m "Would you like to play again?{fast}"
         "Yes.":
-            $ mas_assignModifyEVPropValue("mas_hangman", "shown_count", "-=", 1)
+            $ mas_assignModifyEVLPropValue("mas_hangman", "shown_count", "-=", 1)
             jump mas_hangman_game_loop
 
         "No.":

@@ -139,7 +139,7 @@ label mas_extra_menu_firsttime:
     if not persistent._mas_opened_extra_menu:
         m 1hua "Look forward to some neat things in this menu!"
 
-    $ mas_setEVPropValues(
+    $ mas_setEVLPropValues(
         "mas_extra_menu_firsttime",
         unlocked=True,
         pool=True

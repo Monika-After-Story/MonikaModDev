@@ -514,7 +514,7 @@ init 5 python:
             end_prep = random.randint(self.prep_low, self.prep_high)
 
             #Setup the event conditional
-            mas_setEVPropValues(
+            mas_setEVLPropValues(
                 self.finish_prep_evl,
                 conditional=(
                     "persistent._mas_current_consumable[{0}]['prep_time'] is not None "
@@ -547,7 +547,7 @@ init 5 python:
             persistent._mas_current_consumable[self.consumable_type]["consume_time"] = _start_time + consumable_time
 
             #Setup the event conditional
-            mas_setEVPropValues(
+            mas_setEVLPropValues(
                 self.finish_cons_evl,
                 conditional=(
                     "persistent._mas_current_consumable[{0}]['consume_time'] is not None "
@@ -845,7 +845,7 @@ init 5 python:
                 or (
                     persistent._mas_current_consumable[_type]["prep_time"] is not None
                     and (
-                        mas_checkEV(curr_cons.finish_prep_evl, lambda x: x.conditional is None)
+                        mas_checkEVL(curr_cons.finish_prep_evl, lambda x: x.conditional is None)
                         or curr_cons not in available_cons
                     )
                 )

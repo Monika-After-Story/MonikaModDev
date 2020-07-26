@@ -39,7 +39,7 @@ init -1 python in mas_stories:
 
 
     def unlock_pooled_story(event_label):
-        store.mas_setEVPropValues(
+        store.mas_setEVLPropValues(
             event_label,
             unlocked=True,
             pool=False
@@ -1530,7 +1530,7 @@ init 5 python:
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
 
-    if not mas_getEV_shown_count("mas_scary_story_flowered_lantern"):
+    if not mas_getEVL_shown_count("mas_scary_story_flowered_lantern"):
         m 3eub "Before we start, I need to tell you that my next story is going to be a bit long."
         m 3eua "So, I'll split it in parts."
         m "Once I finish this part I'll ask you if you want to continue it or not."

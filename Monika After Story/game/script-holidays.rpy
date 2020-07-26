@@ -2008,7 +2008,7 @@ init 5 python:
 label mas_d25_monika_holiday_intro_upset:
     # sanity check with reset of start/end dates in case somehow we drop back below normal before this is seen
     if mas_isMoniUpset(lower=True):
-        $ mas_setEVPropValues(
+        $ mas_setEVLPropValues(
             "mas_d25_monika_holiday_intro_upset",
             start_date=mas_d25c_start,
             end_date=mas_d25p
@@ -2637,14 +2637,14 @@ init 5 python:
 label monika_aiwfc:
     # set dates for the other song to start a day after this one
     if not mas_isD25():
-        $ mas_setEVPropValues(
+        $ mas_setEVLPropValues(
             "monika_merry_christmas_baby",
             start_date=datetime.datetime.now() + datetime.timedelta(days=1),
             end_date=mas_d25p
         )
 
     else:
-        $ mas_setEVPropValues(
+        $ mas_setEVLPropValues(
             "monika_merry_christmas_baby",
             start_date=datetime.datetime.now() + datetime.timedelta(hours=1),
             end_date=datetime.datetime.now() + datetime.timedelta(hours=5)
@@ -2674,7 +2674,7 @@ label monika_aiwfc:
     call monika_aiwfc_song
 
     #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
-    if not mas_getEVPropValue("monika_aiwfc", "shown_count", 0):
+    if not mas_getEVLPropValue("monika_aiwfc", "shown_count", 0):
         m 1eka "I hope you liked that, [player]."
         m 1ekbsa "I really meant it too."
         m 1ekbfa "You're the only gift I could ever want."
@@ -4304,7 +4304,7 @@ init -10 python:
         """
         strips mas_birthdate of its conditional and action to prevent double birthday sets
         """
-        mas_setEVPropValues(
+        mas_setEVLPropValues(
             "mas_birthdate",
             conditional=None,
             action=None
@@ -6689,7 +6689,7 @@ init 5 python:
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
     if mas_isFirstSeshPast(mas_monika_birthday):
-        $ mas_assignModifyEVPropValue("mas_bday_postbday_notimespent", "shown_count", "-=", 1)
+        $ mas_assignModifyEVLPropValue("mas_bday_postbday_notimespent", "shown_count", "-=", 1)
         return
 
 

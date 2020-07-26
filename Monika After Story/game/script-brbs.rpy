@@ -249,7 +249,7 @@ label monika_idle_shower_callback:
 
         else:
             m 1hua "I hope you had a nice shower."
-            if mas_getEV_shown_count("monika_idle_shower") == 1:
+            if mas_getEVL_shown_count("monika_idle_shower") == 1:
                 m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
                 m 1hub "Ahaha!"
 

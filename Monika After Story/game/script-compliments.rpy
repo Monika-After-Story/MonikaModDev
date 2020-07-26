@@ -384,7 +384,7 @@ label mas_compliment_thanks:
     m 3ekbsa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name].":
-            if mas_getEV_shown_count("mas_compliment_thanks") == 0:
+            if mas_getEVL_shown_count("mas_compliment_thanks") == 0:
                 $ mas_gainAffection(10,bypass=True)
 
             m 1ekbsa "[player]..."

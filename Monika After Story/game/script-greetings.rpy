@@ -1889,7 +1889,7 @@ label greeting_japan:
     m 2eub "Hello, [player]!"
     m 1eua "I'm just practicing Japanese."
     m 3eua "Let's see..."
-    $ shown_count = mas_getEVPropValue("greeting_japan", "shown_count")
+    $ shown_count = mas_getEVLPropValue("greeting_japan", "shown_count")
     if shown_count == 0:
         m 4hub "Watashi ha itsumademo anata no mono desu!"
         m 2hksdlb "Sorry if that didn't make sense!"
@@ -2628,7 +2628,7 @@ label greeting_tears:
 
     $ mas_lockEVL("greeting_tears", "GRE")
     #Setup the being virtual ev
-    $ mas_setEVPropValues("monika_being_virtual", start_date=datetime.datetime.now() + datetime.timedelta(days=2))
+    $ mas_setEVLPropValues("monika_being_virtual", start_date=datetime.datetime.now() + datetime.timedelta(days=2))
 
     return
 
