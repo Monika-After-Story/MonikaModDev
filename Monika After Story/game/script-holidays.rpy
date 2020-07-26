@@ -2636,7 +2636,6 @@ init 5 python:
 
 label monika_aiwfc:
     # set dates for the other song to start a day after this one
-    # set dates for the other song to start a day after this one
     $ d25_baby = mas_getEV('monika_merry_christmas_baby')
     if d25_baby:
         if not mas_isD25():
