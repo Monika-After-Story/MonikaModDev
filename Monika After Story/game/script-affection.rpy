@@ -1942,6 +1942,11 @@ label monika_affection_nickname:
             Event.lockInit("prompt", ev=aff_nickname_ev)
             persistent._mas_offered_nickname = True
 
+            #Also give the player nickname event a start_date so it doesn't queue instantly
+            pnick_ev = mas_getEV("mas_affection_playernickname")
+            if pnick_ev:
+                pnick_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
+
     else:
         jump monika_affection_nickname_yes
 
