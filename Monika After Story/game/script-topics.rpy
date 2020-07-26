@@ -15450,10 +15450,10 @@ label monika_tabletop_rping:
     m "It could often devolve into a 'my character is invulnerable and always wins' kind of situation, you know?"
     m "To counteract this problem, tabletop roleplaying was invented."
 
-    m "The most popular tabletop roleplaying game is called 'Dungeons and Dragons', but that's far from the only one that exist...
+    m "The most popular tabletop roleplaying game is called 'Dungeons and Dragons', but that's far from the only one that exist..."
     m "And its narrative form kind of always assumes a medieval fantasy setting, which not everyone wants."
     m "It was one of the first popular tabletop roleplaying games, and it put almost all of the major rules in place."
-    m "In that game, not all players are equal, since there necessarily always needs to be a 'Dungeon Master'.
+    m "In that game, not all players are equal, since there necessarily always needs to be a 'Dungeon Master'."
     m "The Dungeon Master is the one who makes the setting of the story and controls the monsters and other obstacles."
     m "So in a story with two adventurers, you need three people to make it work, as the Dungeon Master cannot be one."
 
