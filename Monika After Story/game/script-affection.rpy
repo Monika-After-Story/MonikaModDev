@@ -2187,17 +2187,16 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
             m "Is there anything else you'd like me to call you?{fast}"
 
             "Yes.":
-                m 3eua "Sure, just type 'nevermind' if you change your mind."
-
                 label .name_enter_skip_loop:
                     pass
 
                 #Now parse this
                 python:
-                    lowername = renpy.input(
+                    lowername = mas_input(
                         _("So what do you want me to call you?"),
                         allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
-                        length=10
+                        length=10,
+                        screen_kwargs={"use_return_button": True}
                     ).strip(' \t\n\r').lower()
 
                 #Now validate
