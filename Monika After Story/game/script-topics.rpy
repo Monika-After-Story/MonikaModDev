@@ -523,7 +523,7 @@ label mas_bad_derand_topic:
         menu:
             m "Do you want me to stop, [player]?{fast}"
 
-            "Yes please.":
+            "Yes, please.":
                 m 2dkc "Alright..."
                 #Lose affection
                 $ mas_loseAffection(5)
@@ -542,7 +542,7 @@ label mas_bad_derand_topic:
         menu:
             m "Well [player], should I stop?{fast}"
 
-            "Yes please.":
+            "Yes, please.":
                 m 2dsc "Alright."
                 $ mas_loseAffection(5)
                 $ derand_flagged_topic()
