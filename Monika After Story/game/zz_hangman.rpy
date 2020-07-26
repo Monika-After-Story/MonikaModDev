@@ -700,9 +700,12 @@ label mas_hangman_game_loop:
     menu:
         m "Would you like to play again?{fast}"
         "Yes.":
-            $ mas_assignModifyEVLPropValue("mas_hangman", "shown_count", "-=", 1)
-            jump mas_hangman_game_loop
+            $ hang_ev = mas_getEV("mas_hang")
+            if hang_ev:
+                # each game counts as a game played
+                $ hang_ev.shown_count += 1
 
+            jump mas_hangman_game_loop
         "No.":
             pass
 
