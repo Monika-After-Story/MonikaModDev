@@ -15414,6 +15414,8 @@ label monika_why_do_you_read:
     m 1ekbsu "...Though then again, nothing could ever beat spending more time with you~"
     return
 
+# Are you familiar with tabletop-RPGs
+default persistent._mas_pm_knows_TRPGs = None
 init 5 python:
     addEvent(
         Event(
@@ -15447,10 +15449,11 @@ label monika_tabletop_rping:
     m "But 'pretend' always had one big problem{w=0.3}... What do you do when you can't agree on the story's plot?"
     m "It could often devolve into a 'my character is invulnerable and always wins' kind of situation, you know?"
     m "To counteract this problem, tabletop roleplaying was invented."
-    #Not sure if I should include this part about Dungeons and Dragons, since it's a pop culture reference, kind of. Though I think a topic about TRPGs isn't really complete without it either.
-    m "The most popular tabletop roleplaying game is called 'Dungeons & Dragons', or D&D, but that's far from the only one that exist...
+
+    m "The most popular tabletop roleplaying game is called 'Dungeons and Dragons', but that's far from the only one that exist...
     m "And its narrative form kind of always assumes a medieval fantasy setting, which not everyone wants."
-    m "In D&D, not all players are equal, since there necessarily always needs to be a 'Dungeon Master'.
+    m "It was one of the first popular tabletop roleplaying games, and it put almost all of the major rules in place."
+    m "In that game, not all players are equal, since there necessarily always needs to be a 'Dungeon Master'.
     m "The Dungeon Master is the one who makes the setting of the story and controls the monsters and other obstacles."
     m "So in a story with two adventurers, you need three people to make it work, as the Dungeon Master cannot be one."
 
@@ -15463,9 +15466,9 @@ label monika_tabletop_rping:
     m "Unlike most other forms of literature, it's not an author expressing their own thoughts and opinions through written text."
     m "The best way I can explain it is that tabletop roleplaying is kind of like the multiplayer experience of literature."
     m "Just a little video game reference for you~"
-    m "The only problem with that though, is that once you reach the end of the story, if you even manage to get to a point in the story that you can call an ending..."
+    m "The only problem with that though, is that once you reach the end of the story{w=0.2}, if you even manage to reach that point..."
     m "You'll often end up with a big, almost unreadable mess."
-    m "So it's harder to share this piece of literature with the world, which is one of my favorite parts about literature in general."
+    m "...Which makes it harder to share this piece of literature with the world, and that's one of my favorite parts about literature."
     m "It kind of becomes a 'you need to have been there to get it' kind of story."
     m "But the metafictional story of how a group of people came together to have a good time with a roleplaying game, may in fact inspire people around the world too."
     m "It may even be even more of an epic than the story in novel form would make on its own, especially if you really get into it."
@@ -15486,4 +15489,4 @@ label monika_tabletop_rping:
         m 1ruc "Though, if I'm being honest...{w=0.3}{nw}"
         extend 1rksdla "the idea of a {i}Doki Doki Role-Play Club{/i} does sound pretty silly."
         m 1hksdlb "Ahaha~"
-    return
+    return "derandom"
