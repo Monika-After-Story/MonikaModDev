@@ -2160,12 +2160,12 @@ label monika_change_player_nicknames:
 
         if not current_nicknames:
             current_nicknames = [
-                ("Darling", "darling", True, True, False),
-                ("Honey", "honey", True, True, False),
-                ("Love", "love", True, True, False),
-                ("My love", "my love", True, True, False),
-                ("Sweetheart", "sweetheart", True, True, False),
-                ("Sweetie", "sweetie", True, True, False),
+                ("Darling", "darling", False, True, False),
+                ("Honey", "honey", False, True, False),
+                ("Love", "love", False, True, False),
+                ("My love", "my love", False, True, False),
+                ("Sweetheart", "sweetheart", False, True, False),
+                ("Sweetie", "sweetie", False, True, False),
             ]
 
     call mas_player_nickname_loop("Deselect the names you don't want me to call you anymore.", current_nicknames)
@@ -2174,7 +2174,7 @@ label monika_change_player_nicknames:
 label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
     show monika 1eua at t21 zorder MAS_MONIKA_Z with dissolve
     $ renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
-    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
+    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
 
     $ acceptable_nicknames = _return.keys()
     $ done = False
