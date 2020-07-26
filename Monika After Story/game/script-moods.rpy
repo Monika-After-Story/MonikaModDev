@@ -98,7 +98,7 @@ label mas_mood_start:
         final_item = (mas_moods.MOOD_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(mood_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(mood_menu_items, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -464,17 +464,6 @@ label mas_mood_inadequate:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
-
-label mas_mood_lucky:
-    m 2tfc "You gotta ask yourself."
-    m 2tfu "{i}Do I feel lucky?{/i}"
-    m "Well..."
-    m 4tku "Do ya, [player]?"
-    m 1hub "Ahaha!"
-    return
-
-init 5 python:
     addEvent(
         Event(
             persistent._mas_mood_database,
@@ -671,4 +660,67 @@ label mas_mood_bored:
             else:
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt="...like crying.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+
+label mas_mood_crying:
+    $ line_start = "And"
+    m 1eksdld "[player]!"
+
+    m 3eksdlc "Are you okay?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you okay?{fast}"
+
+        "Yes.":
+            m 3eka "Okay, good. That's a relief."
+            m 1ekbsa "I'm here to keep you company and you can talk to me if you need anything, okay?"
+
+        "No.":
+            m 1ekc "..."
+            m 3ekd "[player]..."
+            m 3eksdld "I'm so sorry. Did something happen?"
+            call mas_mood_uok
+
+        "I'm not sure.":
+            m 1dkc "[player]...{w=0.3}{nw}"
+            extend 3eksdld "did something happen?"
+            call mas_mood_uok
+
+    m 3ekd "[line_start] if you do end up crying..."
+    m 1eka "I hope it helps."
+    m 3ekd "There's nothing wrong with crying, okay? {w=0.2}You can cry as much as you need to."
+    m 3ekbsu "I love you, [player]. {w=0.2}You're my everything."
+    return "love"
+
+label mas_mood_uok:
+    m 1rksdld "I know I can't really hear what you say to me..."
+    m 3eka "But sometimes, just vocalizing your pain or frustrations can really help."
+
+    m 1ekd "So if you need to talk about something, I'm right here.{nw}"
+    $ _history_list.pop()
+    menu:
+        m "So If you need to talk about something, I'm right here.{fast}"
+
+        "I'd like to vent.":
+            m 3eka "Go ahead, [player]."
+
+            m 1ekc "I'm here for you.{nw}"
+            $ _history_list.pop()
+            menu:
+                m "I'm here for you.{fast}"
+
+                "I'm done.":
+                    m 1eka "I'm glad you were able to get what you wanted off your chest, [player]."
+
+        "I don't want to talk about it.":
+            m 1ekc "..."
+            m 3ekd "Alright [player], I'll be here if you change your mind."
+
+        "Everything's fine.":
+            m 1ekc "..."
+            m 1ekd "Okay [player], if you say so..."
+            $ line_start = "But"
     return

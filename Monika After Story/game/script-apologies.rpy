@@ -103,7 +103,7 @@ label monika_playerapologizes:
 
     #Display our scrollable
     show monika at t21
-    call screen mas_gen_scrollable_menu(apologylist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    call screen mas_gen_scrollable_menu(apologylist, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_prompt_back)
 
     #Make sure we don't lose this value
     $ apology =_return

@@ -372,6 +372,17 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.4
+label v0_11_4(version="v0_11_4"):
+    python:
+        #Remove lucky mood
+        mas_eraseTopic("mas_mood_lucky", persistent._mas_mood_database)
+
+        if seen_event('monika_japan'):
+            mas_unlockEVL("monika_remembrance", "EVE")
+
+    return
+
 #0.11.3
 label v0_11_3(version="v0_11_3"):
     python:

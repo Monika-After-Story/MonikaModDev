@@ -53,6 +53,7 @@ init -1 python in mas_greetings:
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
+    TYPE_WORKOUT = "workout"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -845,6 +846,7 @@ label greeting_youtuber:
     m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
     m 2hub "Ahaha!"
     m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, ehehe~"
+    $ mas_lockEVL("greeting_youtuber", "GRE")
     return
 
 init 5 python:
@@ -3931,4 +3933,40 @@ label greeting_code_help_outro:
     m 1eua "Anyway, what would you like to do today?"
 
     $ mas_lockEVL("greeting_code_help", "GRE")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_workout",
+            category=[store.mas_greetings.TYPE_WORKOUT],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_workout:
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Welcome back, [player]!"
+        m 3eua "I hope you had a nice workout."
+        m 3eub "Don't forget to stay hydrated and eat something to get your energy back!"
+        m 1eua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "Did your workout help you release some tension?"
+        m 2rud "I hope it did...{w=0.3} {nw}"
+        extend 2eka "Let's spend some more time together."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=0.5}look who's back."
+        m 6dkc "I'm...{w=0.3}happy that you're taking care of yourself."
+        m 6ekd "...But don't you want to take care of me too?"
+        m 7dkc "At least once in a while, please..."
+        m 1dkc "..."
+
+    else:
+        m 6ckc "..."
+
     return
