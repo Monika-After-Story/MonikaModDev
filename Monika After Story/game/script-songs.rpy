@@ -260,9 +260,9 @@ label monika_sing_song_pool_menu:
         renpy.say(m, "[which] song would you like me to sing?[end]", interact=False)
 
     if have_both_types:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
     else:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_song = _return
 
@@ -319,7 +319,7 @@ label monika_sing_song_analysis:
     show monika 1eua at t21
     $ renpy.say(m, "[which] song would you like to talk about?", interact=False)
 
-    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_analysis = _return
 
@@ -350,14 +350,13 @@ init 5 python:
 label mas_sing_song_rerandom:
     python:
         mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
-        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
-        mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just select the song, [player]."
         mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
         mas_bookmarks_derand.ev_db_code = "SNG"
 
     call mas_rerandom
-    return
+    return _return
 
 label mas_song_derandom:
     $ prev_topic = persistent.flagged_monikatopic

@@ -700,14 +700,14 @@ init python:
 
     def mas_get_player_derandoms(derandomed_evls):
         """
-        Gets topics which are derandomed by the player (in gen-scrollable-menu format)
+        Gets topics which are derandomed by the player (in check-scrollable-menu format)
         Also cleans out events which no longer exist
 
         IN:
             derandomed_evls - appropriate variable holding the derandomed eventlabels
 
         OUT:
-            List of player derandomed topics in mas_gen_scrollable_menu form
+            List of player derandomed topics in mas_check_scrollable_menu form
         """
         derandlist = []
 
@@ -722,7 +722,7 @@ init python:
 
             #Ev exists. Add it to the menu item list
             elif ev.unlocked:
-                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, True, False))
 
         return derandlist
 

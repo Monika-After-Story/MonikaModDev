@@ -173,7 +173,7 @@ label mas_farewell_start:
             bye_prompt_back = (_("Nevermind."), False, False, False, 20)
 
         # call the menu
-        call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)
+        call screen mas_gen_scrollable_menu(bye_prompt_list, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, bye_prompt_back)
 
         if not _return:
             # nevermind
