@@ -1,23 +1,12 @@
-"""
-TODOs in no particular order:
-    put this in the game menu
-    unlock condition - the staring topic
-    stalemate - when the screen is clicked short time (eg 0.2s) before moni loses
-    glitch path - monika gets frustrated after losing a few times and tries to spook the player
-    fix monika's position in staring_loop
-    add dialogue
-        how to lose
-        randomized quips on win/loss
-"""
 
 screen staring_loop(sprcode,dur):
     """
     Shows Monika with a non-blinking expression for a given period.
     Interrupted by clicking.
-    
+
     IN:
         sprcode - expression sprite code
-        dur - duration for which the expression is shown
+        dur - duration in seconds for which the expression is shown
 
     OUT:
         string
@@ -30,6 +19,7 @@ screen staring_loop(sprcode,dur):
         ground "monika "+ sprcode +"_static"
         hotspot (640,360,1280,720) action Return("player_loss") # should cover the whole screen - check this
 
+# entry point
 label game_staring:
 
     m "You'd like to have a staring contest with me?"
