@@ -12586,7 +12586,7 @@ label monika_anime_art:
     m 1eua "It's freeform, like my poems, which makes a lot of the art really unique..."
     m 3eua "From the beautiful scenery, to the amazing characters..."
     m 1hub "It's just really impressive to look at!"
-    m 2esc "Though being a freefrom art style...{w=0.5}a lot of details tend to look a little unrealistic."
+    m 2esc "Though being a freeform art style...{w=0.5}a lot of details tend to look a little unrealistic."
     m 3rsc "While it lets a lot of artworks explore new possibilities, it can also make some details look weird..."
     m 3rssdlc "Like how a character's eyes can be so big, how small their noses are, or how their hair can be in strange lengths, shapes, and sizes..."
     m 2rksdlc "Not to mention...{w=1}large chests."
