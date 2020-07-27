@@ -390,6 +390,24 @@ label v0_11_4(version="v0_11_4"):
         }
 
         persistent._mas_randchat_freq = OLD_NEW_RANDCHAT_MAP[persistent._mas_randchat_freq]
+
+        # unlock _remembrance based on _japan pre-req
+        if seen_event('monika_japan'):
+            mas_unlockEVL("monika_remembrance", "EVE")
+
+        #Remove aff for bad derands
+        bad_topic_derand_list = [
+            "monika_fear",
+            "monika_soft_rains",
+            "monika_whispers",
+            "monika_eternity",
+            "monika_dying_same_day"
+        ]
+
+        for bad_evl in bad_topic_derand_list:
+            if bad_evl in persistent._mas_player_derandomed:
+                mas_loseAffection(5)
+
     return
 
 #0.11.3

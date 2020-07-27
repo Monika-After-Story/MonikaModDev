@@ -393,6 +393,19 @@ init python:
             renpy.with_statement(Dissolve(1.0))
 
 
+    def mas_validate_suntimes():
+        """
+        Validates both persistent and store suntimes are in a valid state.
+        Sunrise is always used as the lead if a reset is needed.
+        """
+        if (
+            mas_suntime.sunrise > mas_suntime.sunset
+            or persistent._mas_sunrise > persistent._mas_sunset
+        ):
+            mas_suntime.sunset = mas_suntime.sunrise
+            persistent._mas_sunset = persistent._mas_sunrise
+
+
     def show_calendar():
         """RUNTIME ONLY
         Opens the calendar if we can
@@ -700,14 +713,14 @@ init python:
 
     def mas_get_player_derandoms(derandomed_evls):
         """
-        Gets topics which are derandomed by the player (in gen-scrollable-menu format)
+        Gets topics which are derandomed by the player (in check-scrollable-menu format)
         Also cleans out events which no longer exist
 
         IN:
             derandomed_evls - appropriate variable holding the derandomed eventlabels
 
         OUT:
-            List of player derandomed topics in mas_gen_scrollable_menu form
+            List of player derandomed topics in mas_check_scrollable_menu form
         """
         derandlist = []
 
@@ -722,7 +735,7 @@ init python:
 
             #Ev exists. Add it to the menu item list
             elif ev.unlocked:
-                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, True, False))
 
         return derandlist
 
@@ -1963,6 +1976,10 @@ label ch30_reset:
 
     #Check BGSel topic unlocked state
     $ mas_checkBackgroundChangeDelegate()
+
+    # verify suntimes are correct
+    # NOTE: must be before background build update
+    $ store.mas_validate_suntimes()
 
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
