@@ -2614,6 +2614,9 @@ label mas_dockstat_generic_rtg:
         m 1eua "I'm ready to go."
         return "quit"
 
+    #We need to clear all the vars in case we go dockstat again
+    $ mas_farewells.resetDockstatFlowVars()
+
     call mas_transition_from_emptydesk("monika 1ekc")
     call mas_dockstat_abort_post_show
     # otherwise, we failed, so monika should tell player
