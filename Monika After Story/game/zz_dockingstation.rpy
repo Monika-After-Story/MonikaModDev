@@ -2524,14 +2524,10 @@ label mas_dockstat_generic_iowait:
             if current_drink and current_drink.portable:
                 current_drink.acs.keep_on_desk = False
 
-        #Hide window here
-        window hide
-
         #Get Moni off screen
         call mas_transition_to_emptydesk
 
     elif promise.done():
-        window auto
         # i/o thread is done!
         #We're ready to go. Let's jump to the rtg label
         if renpy.has_label(mas_farewells.dockstat_rtg_label):
@@ -2539,8 +2535,6 @@ label mas_dockstat_generic_iowait:
         #Otherwise, we don't have a valid label and need to jump to a generic ready to go
         jump mas_dockstat_generic_rtg
 
-    #Hide window again just in case we were going to cancel but didn't
-    window hide
 
     #Pop hist so we don't have more than one 'give me a second to get ready' in hist.
     $ _history_list.pop()
@@ -2549,9 +2543,7 @@ label mas_dockstat_generic_iowait:
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "mas_dockstat_generic_iowait")
     menu:
-        m "Give me a second to get ready.{fast}"
         "Hold on a second!":
-            window auto
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
 
