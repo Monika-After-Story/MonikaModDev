@@ -2613,10 +2613,6 @@ label mas_dockstat_generic_rtg:
         #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
-
-    #We need to clear all the vars in case we go dockstat again
-    $ mas_farewells.resetDockstatFlowVars()
-
     call mas_transition_from_emptydesk("monika 1ekc")
     call mas_dockstat_abort_post_show
     # otherwise, we failed, so monika should tell player
@@ -2626,6 +2622,7 @@ label mas_dockstat_generic_rtg:
     m 1ekc "Sorry, [player]."
 
     if renpy.has_label(mas_farewells.dockstat_failed_io_still_going_ask_label):
+        # NOTE: we assume that this label will reset the docstat vars
         jump expression mas_farewells.dockstat_failed_io_still_going_ask_label
     #Use generic to fallback
     jump mas_dockstat_generic_failed_io_still_going_ask
@@ -2687,6 +2684,8 @@ label mas_dockstat_generic_cancelled_still_going_ask:
 #GENERIC FAILED IO STILL GOING ASK
 #Used when Monika fails to turn herself into a file. This is where Monika asks you if you're still going
 label mas_dockstat_generic_failed_io_still_going_ask:
+    #We need to clear all the vars in case we go dockstat again
+    $ mas_farewells.resetDockstatFlowVars()
     m "Are you still going to go?{nw}"
     $ _history_list.pop()
     menu:
