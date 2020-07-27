@@ -393,6 +393,19 @@ init python:
             renpy.with_statement(Dissolve(1.0))
 
 
+    def mas_validate_suntimes():
+        """
+        Validates both persistent and store suntimes are in a valid state.
+        Sunrise is always used as the lead if a reset is needed.
+        """
+        if (
+            mas_suntime.sunrise > mas_suntime.sunset
+            or persistent._mas_sunrise > persistent._mas_sunset
+        ):
+            mas_suntime.sunset = mas_suntime.sunrise
+            persistent._mas_sunset = persistent._mas_sunrise
+
+
     def show_calendar():
         """RUNTIME ONLY
         Opens the calendar if we can
@@ -1963,6 +1976,10 @@ label ch30_reset:
 
     #Check BGSel topic unlocked state
     $ mas_checkBackgroundChangeDelegate()
+
+    # verify suntimes are correct
+    # NOTE: must be before background build update
+    $ store.mas_validate_suntimes()
 
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
