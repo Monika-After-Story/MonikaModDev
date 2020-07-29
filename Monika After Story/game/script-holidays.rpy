@@ -3034,7 +3034,7 @@ label bye_d25e_delegate:
 #    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25_EVE)
 
     # jump back to going somewhere file gen
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 #first time you take her out on d25e
 label bye_d25e_first_time_out:
@@ -3065,7 +3065,7 @@ label bye_d25_delegate:
     # NOTE: generic return
 #    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25)
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 #first time out on d25
 label bye_d25_first_time_out:
@@ -4063,7 +4063,7 @@ label bye_nye_delegate:
         call bye_nye_late_out
 
     # finally jump back to iostart
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label bye_nye_first_time_out:
     #first time out (morning-about maybe, 7-8:00 [evening]):
@@ -4140,7 +4140,7 @@ label bye_nyd_delegate:
     else:
         call bye_nyd_first_time_out
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label bye_nyd_first_time_out:
     #first time out
@@ -5886,7 +5886,7 @@ label bye_f14:
     else:
         m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
         m 1ekbfa "You're the best partner I could ever hope for~"
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 ########################[HOL050] dockstat greet################################
 label greeting_returned_home_f14:
@@ -6876,7 +6876,7 @@ label bye_922_delegate:
         m 3hua "I actually have an outfit prepared just for this..."
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label mas_bday_bd_outro:
     $ monika_chr.change_clothes(mas_clothes_blackdress)
