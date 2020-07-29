@@ -15492,7 +15492,7 @@ init 5 python:
             prompt="How much of your past do you remember?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
