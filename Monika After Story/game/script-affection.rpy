@@ -2211,7 +2211,7 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
                         _("So what do you want me to call you?"),
                         allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
                         length=10,
-                        screen_kwargs={"use_return_button": True}
+                        screen_kwargs={"use_return_button": True, "return_button_value": "nevermind"}
                     ).strip(' \t\n\r').lower()
 
                 #Now validate
