@@ -219,9 +219,15 @@ init python:
             scope - temp space used in `_mas_game_menu_start`
         """
         # call backs for the game menu
+
+        # if we are changing animation state, re-draw spaceroom masks
         if scope.get("disb_ani") != persistent._mas_disable_animations:
             mas_drawSpaceroomMasks(dissolve_masks=False)
 
+        # always clean current suntimes so they are not invalid
+        store.mas_validate_suntimes()
+
+        # rebuild backgrounds if the suntime has changed
         if (
                 scope.get("sr_time") != store.mas_suntime.sunrise
                 or scope.get("ss_time") != store.mas_suntime.sunset

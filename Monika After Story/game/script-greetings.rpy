@@ -2841,7 +2841,7 @@ label greeting_back_from_school:
 
         show monika 2ekc at t21
         $ renpy.say(m, "If you don't mind me asking, was there something in particular that happened?{fast}", interact=False)
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
 
@@ -3016,7 +3016,7 @@ label greeting_back_from_work:
 
         show monika 2ekc at t21
         $ renpy.say(m, "If you don't mind talking about it, what happened today?{fast}", interact=False)
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
 
