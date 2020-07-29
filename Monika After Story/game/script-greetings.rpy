@@ -1532,24 +1532,24 @@ init 5 python:
         renpy.seen_label("monikaroom_greeting_ear_progreadpy")
         and renpy.seen_label("monikaroom_greeting_ear_progbrokepy")
         and renpy.seen_label("monikaroom_greeting_ear_nameerror")
+        and store.mas_anni.pastThreeMonths()
     ):
         gmr.eardoor.append("monikaroom_greeting_ear_renpy_docs")
 
 label monikaroom_greeting_ear_renpy_docs:
     m "Hmm, looks like I might need to override this function to give me a little more flexibility..."
-    m "Wait...what's this 'st' variable?"
+    m "Wait...{w=0.3}what's this 'st' variable?"
     m "...Let me check the documentation for the function."
-    m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
-    extend "Wait what?"
-    m "Half the variables this function accepts aren't even documented?"
+    m ".{w=0.3}.{w=0.3}.{w=0.3} Wait what?"
+    m "Half the variables this function accepts aren't even documented!"
     m "Who wrote this?"
 
     if mas_isMoniUpset():
-        m "But I have to keep learning."
+        m "...I have to figure this out."
         call monikaroom_greeting_ear_prog_upset
 
     elif mas_isMoniDis():
-        m "But I {i}have{/i} to keep learning."
+        m "...I {i}have{/i} to figure this out."
         call monikaroom_greeting_ear_prog_dis
 
     jump monikaroom_greeting_choice
