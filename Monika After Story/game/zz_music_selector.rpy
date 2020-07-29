@@ -905,6 +905,23 @@ style music_menu_button_text_dark is navigation_button_text:
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
     insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
 
+# Helper screen for the music menu screen
+# Basically works as its background
+screen music_menu_background():
+    zorder 50
+
+    frame:
+        area (0, 0, 1280, 720)
+
+        if mas_globals.dark_mode:
+            background mas_ui.dark_background
+
+        else:
+            background mas_ui.light_background
+
+        if not persistent._mas_disable_animations:
+            at music_menu_dissolve
+
 # Music menu
 #
 # IN:
@@ -913,16 +930,17 @@ style music_menu_button_text_dark is navigation_button_text:
 #   more_pages - true if there are more pages left
 #
 screen music_menu(music_page, page_num=0, more_pages=False):
-    modal True
+    if mas_ui.animate_music_menu:
+        on "show" action Show("music_menu_background")
+        on "hide" action Hide("music_menu_background")
 
-    $ import store.songs as songs
+    modal True
 
     # logic to ensure Return works
     if songs.current_track is None:
         $ return_value = songs.NO_SONG
     else:
         $ return_value = songs.current_track
-
 
     # allows the music menu to quit using hotkey
     key "noshift_M" action Return(return_value)
@@ -932,69 +950,72 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     style_prefix "music_menu"
 
-    frame:
-        style "music_menu_outer_frame"
+    fixed:
+        if (
+            not persistent._mas_disable_animations
+            and mas_ui.animate_music_menu
+        ):
+            at music_menu_slide
 
-        hbox:
+        frame:
+            style "music_menu_outer_frame"
 
-            frame:
-                style "music_menu_navigation_frame"
+            # this part copied from navigation menu
+            vbox:
+                style_prefix "music_menu"
 
-            frame:
-                style "music_menu_content_frame"
+                xpos gui.navigation_xpos
+                spacing gui.navigation_spacing
 
-                transclude
+                # wonderful loop so we can dynamically add songs
+                for name, song in music_page:
+                    textbutton _(name):
+                        action [
+                            SetField(mas_ui, "animate_music_menu", True),
+                            Return(song)
+                        ]
 
-        # this part copied from navigation menu
+        label "Music Menu"
+
         vbox:
-            style_prefix "music_menu"
+            yalign 1.0
 
-            xpos gui.navigation_xpos
-    #        yalign 0.4
-            spacing gui.navigation_spacing
+            hbox:
+                # dynamic prevous text, so we can keep button size alignments
+                if page_num > 0:
+                    textbutton _("<<<< Prev"):
+                        style "music_menu_prev_button"
+                        action [
+                            SetField(mas_ui, "animate_music_menu", False),
+                            Return(page_num - 1)
+                        ]
 
-            # wonderful loop so we can dynamically add songs
-            for name,song in music_page:
-                textbutton _(name) action Return(song)
+                else:
+                    textbutton _(" "):
+                        style "music_menu_prev_button"
+                        sensitive False
 
-    vbox:
+                if more_pages:
+                    textbutton _("Next >>>>"):
+                        style "music_menu_return_button"
+                        action [
+                            SetField(mas_ui, "animate_music_menu", False),
+                            Return(page_num + 1)
+                        ]
 
-        yalign 1.0
+            textbutton _(songs.NO_SONG):
+                style "music_menu_return_button"
+                action [
+                    SetField(mas_ui, "animate_music_menu", True),
+                    Return(songs.NO_SONG)
+                ]
 
-        hbox:
-
-            # dynamic prevous text, so we can keep button size alignments
-            if page_num > 0:
-                textbutton _("<<<< Prev"):
-                    style "music_menu_prev_button"
-                    action Return(page_num - 1)
-
-            else:
-                textbutton _( " "):
-                    style "music_menu_prev_button"
-                    sensitive False
-
-#                if more_pages:
-#                    textbutton _(" | "):
-#                        xsize 50
-#                        text_font "gui/font/Halogen.ttf"
-#                        text_align 0.5
-#                        sensitive False
-
-            if more_pages:
-                textbutton _("Next >>>>"):
-                    style "music_menu_return_button"
-                    action Return(page_num + 1)
-
-        textbutton _(songs.NO_SONG):
-            style "music_menu_return_button"
-            action Return(songs.NO_SONG)
-
-        textbutton _("Return"):
-            style "music_menu_return_button"
-            action Return(return_value)
-
-    label "Music Menu"
+            textbutton _("Return"):
+                style "music_menu_return_button"
+                action [
+                    SetField(mas_ui, "animate_music_menu", True),
+                    Return(return_value)
+                ]
 
 # sets locks and calls hte appropriate screen
 label display_music_menu:
@@ -1004,27 +1025,37 @@ label display_music_menu:
         songs.menu_open = True
         song_selected = False
         curr_page = 0
+        # reset this var
+        mas_ui.animate_music_menu = True
 
-    # loop until we've selected a song
-    while not song_selected:
+        # loop until we've selected a song
+        while not song_selected:
 
-        # setup pages
-        $ music_page = songs.music_pages.get(curr_page, None)
+            # setup pages
+            music_page = songs.music_pages.get(curr_page, None)
 
-        if music_page is None:
-            # this should never happen. Immediately quit with None
-            return songs.NO_SONG
+            if music_page is None:
+                # this should never happen. Immediately quit with None
+                _return = songs.NO_SONG
+                break
 
-        # otherwise, continue formatting args
-        $ next_page = (curr_page + 1) in songs.music_pages
+            # otherwise, continue formatting args
+            next_page = (curr_page + 1) in songs.music_pages
 
-        call screen music_menu(music_page, page_num=curr_page, more_pages=next_page)
+            # call screen music_menu(music_page, page_num=curr_page, more_pages=next_page)
+            _return = renpy.call_screen("music_menu", music_page, page_num=curr_page, more_pages=next_page)
 
-        # obtain result
-        $ curr_page = _return
-        $ song_selected = _return not in songs.music_pages
+            # obtain result
+            curr_page = _return
+            song_selected = _return not in songs.music_pages
 
-    $ songs.menu_open = False
+        # reset this var
+        mas_ui.animate_music_menu = True
+        songs.menu_open = False
+        if not persistent._mas_disable_animations:
+            # exact pause to finish the transition animation
+            renpy.pause(0.3)
+
     return _return
 
 

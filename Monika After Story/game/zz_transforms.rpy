@@ -165,3 +165,73 @@ transform mas_chlongjump(x, y, ymax, travel_time=1.0):
     parallel:
         easeout travel_time*0.6 ypos ymax
         easein travel_time*0.4 ypos y
+
+# # # Screens transforms
+# transform for the music menu
+transform music_menu_slide:
+    crop_relative True
+    yanchor 0
+    on show:
+        alpha 0.0
+        crop (0.5, 0.0, 1.0, 1.0)
+        easein 0.4 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
+
+    on hide:
+        alpha 1.0
+        crop (0.0, 0.0, 1.0, 1.0)
+        easeout 0.4 crop (0.5, 0.0, 1.0, 1.0) alpha 0.0
+
+# transform for the music menu background
+transform music_menu_dissolve:
+    on show:
+        alpha 0.0
+        easein 0.4 alpha 1.0
+
+    on hide:
+        alpha 1.0
+        easeout 0.4 alpha 0.0
+
+# slide transform for the talk menu
+transform talk_menu_slide:
+    crop_relative True
+    yanchor 0
+    on show:
+        alpha 0.0
+        crop (-1.0, 0.0, 1.0, 1.0)
+        easein 0.4 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
+
+    on hide:
+        alpha 1.0
+        crop (0.0, 0.0, 1.0, 1.0)
+        easeout 0.4 crop (-1.0, 0.0, 1.0, 1.0) alpha 0.0
+
+# dissolve transform for the talk menu
+transform talk_menu_dissolve:
+    crop_relative True
+    yanchor 0
+    on show:
+        alpha 0.0
+        easein 0.2 alpha 1.0
+
+    on hide:
+        alpha 1.0
+        easeout 0.2 alpha 0.0
+
+# slide transform for the scrollable menu
+transform scrollable_menu_slide:
+    crop_relative True
+    yanchor 0
+    on show:
+        alpha 0.0
+        crop (-0.5, 0.0, 1.0, 1.0)
+        easein 0.4 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
+
+    on hide:
+        alpha 1.0
+        crop (0.0, 0.0, 1.0, 1.0)
+        easeout 0.4 crop (-0.5, 0.0, 1.0, 1.0) alpha 0.0
+
+# we can reuse some of those transforms here
+define scrollable_menu_dissolve = talk_menu_dissolve
+define choice_menu_dissolve = talk_menu_dissolve
+define calendar_screen_dissolve = talk_menu_dissolve

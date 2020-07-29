@@ -29,6 +29,7 @@ init -201 python in mas_ui:
     SEL_SB_FRAME = "mod_assets/frames/black70_pinkborder100_5px.png"
 
 init -200 python in mas_ui:
+    import store
 
     style_stash = {}
 
@@ -39,6 +40,11 @@ init -200 python in mas_ui:
     light_button_text_idle_color = "#000"
     light_button_text_hover_color = "#fa9"
     light_button_text_insensitive_color = "#8C8C8C"
+
+    # renpy.display.imagelike
+    # these are used for the music menu background
+    dark_background = store.Solid("#0000007F")
+    light_background = store.Solid("FFE6F47F")
 
     # ---- files ----
 
@@ -323,6 +329,19 @@ init -1 python in mas_ui:
     ).add(
         "mod_assets/font/mplus-2p-regular.ttf", 0x0000, 0xffff  # jp
     )
+
+# START: pseudo global screen variables
+# These are outside of the screens scope because we need to keep their values between showing/hiding those screens
+init -10 python in mas_ui:
+    # whether or not we use transition for the music_menu screen
+    animate_music_menu = True
+
+    # transition to use for the talk menu
+    # either "slide" or "dissolve"
+    talk_choice_transition_type = "slide"
+
+    # whether or not we use transition for the twopane screen
+    animate_twopane_menu = True
 
 # START: Helper methods that we use inside screens
 init -10 python in mas_ui:

@@ -518,9 +518,13 @@ style input:
 screen choice(items):
     style_prefix "choice"
 
-    vbox:
-        for i in items:
-            textbutton i.caption action i.action
+    fixed:
+        if not persistent._mas_disable_animations:
+            at choice_menu_dissolve
+
+        vbox:
+            for i in items:
+                textbutton i.caption action i.action
 
 
 ## When this is true, menu captions will be spoken by the narrator. When false,
@@ -577,15 +581,39 @@ style talk_choice_button_text is choice_button_text
 
 style talk_choice_button_text_dark is choice_button_text_dark
 
-
 ## This screen is used for the talk menu
 screen talk_choice(items):
+    # allows the talk menu to quit using hotkey
+    key "noshift_T" action Return("nevermind")
+    key "noshift_t" action Return("nevermind")
+
+    # clicking on these prompts will lead to using
+    # the slide transition on this screen instead of the dissolve one
+    default items_applying_slide_transition = ("love", "love_too", "nevermind")
+
     style_prefix "talk_choice"
 
-    vbox:
-        for i in items:
-            textbutton i.caption action i.action
+    fixed:
+        if not persistent._mas_disable_animations:
+            if mas_ui.talk_choice_transition_type == "slide":
+                at talk_menu_slide
 
+            # "dissolve"
+            else:
+                at talk_menu_dissolve
+
+        vbox:
+            for i in items:
+                textbutton i[0]:
+                    selected False
+                    action [
+                        If(
+                            (i[1] in items_applying_slide_transition),
+                            true=SetField(mas_ui, "talk_choice_transition_type", "slide"),
+                            false=SetField(mas_ui, "talk_choice_transition_type", "dissolve")
+                        ),
+                        Return(i[1])
+                    ]
 
 ## When this is true, menu captions will be spoken by the narrator. When false,
 ## menu captions will be displayed as empty buttons.
@@ -986,12 +1014,15 @@ screen game_menu_m():
 screen game_menu(title, scroll=None):
 
     # when teh game menu is open, we should disable the hotkeys
+    # FIXME: this should be done using the hotkey framework
     key "noshift_T" action NullAction()
     key "noshift_t" action NullAction()
     key "noshift_M" action NullAction()
     key "noshift_m" action NullAction()
     key "noshift_P" action NullAction()
     key "noshift_p" action NullAction()
+    key "noshift_E" action NullAction()
+    key "noshift_e" action NullAction()
 
     # Add the backgrounds.
     if main_menu:
@@ -2614,71 +2645,39 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
     style_prefix "twopane_scrollable_menu"
 
     fixed:
-        anchor (0, 0)
-        pos (left_area[0], left_area[1])
-        xsize left_area[2]
+        if (
+            not persistent._mas_disable_animations
+            and mas_ui.animate_twopane_menu
+        ):
+            at scrollable_menu_dissolve
 
-        if cat_length != 1:
-            ysize left_area[3]
-        else:
-            ysize left_area[3] + evhand.LEFT_EXTRA_SPACE
-
-        bar:
-            adjustment prev_adj
-            style "classroom_vscrollbar"
-            xalign left_align
-
-        vbox:
-            ypos 0
-            yanchor 0
-
-            viewport:
-                yadjustment prev_adj
-                yfill False
-                mousewheel True
-                arrowkeys True
-
-                vbox:
-                    for i_caption, i_label in prev_items:
-                        textbutton i_caption:
-                            if renpy.has_label(i_label) and not seen_event(i_label):
-                                style "twopane_scrollable_menu_new_button"
-
-                            elif not renpy.has_label(i_label):
-                                style "twopane_scrollable_menu_special_button"
-
-                            action Return(i_label)
+        fixed:
+            anchor (0, 0)
+            pos (left_area[0], left_area[1])
+            xsize left_area[2]
 
             if cat_length != 1:
-                null height 20
-
-                if cat_length == 0:
-                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
-
-                elif cat_length > 1:
-                    textbutton _("Go Back") action [Return(-1), Function(store.prev_adj.change, 0)]
-
-    if main_items:
-        fixed:
-            area right_area
+                ysize left_area[3]
+            else:
+                ysize left_area[3] + evhand.LEFT_EXTRA_SPACE
 
             bar:
-                adjustment main_adj
+                adjustment prev_adj
                 style "classroom_vscrollbar"
-                xalign right_align
+                xalign left_align
 
             vbox:
                 ypos 0
                 yanchor 0
 
                 viewport:
-                    yadjustment main_adj
+                    yadjustment prev_adj
                     yfill False
                     mousewheel True
                     arrowkeys True
 
                     vbox:
-                        for i_caption, i_label in main_items:
+                        for i_caption, i_label in prev_items:
                             textbutton i_caption:
                                 if renpy.has_label(i_label) and not seen_event(i_label):
                                     style "twopane_scrollable_menu_new_button"
@@ -2686,13 +2685,80 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                                 elif not renpy.has_label(i_label):
                                     style "twopane_scrollable_menu_special_button"
 
-                                action [Return(i_label), Function(store.prev_adj.change, 0)]
+                                selected False
+                                action [
+                                    SetField(mas_ui, "animate_twopane_menu", False),
+                                    Return(i_label)
+                                ]
 
-                null height 20
+                if cat_length != 1:
+                    null height 20
 
-                textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
+                    if cat_length == 0:
+                        textbutton _("Nevermind."):
+                            selected False
+                            action [
+                                SetField(mas_ui, "animate_twopane_menu", True),
+                                Return(False),
+                                Function(store.prev_adj.change, 0)
+                            ]
+
+                    elif cat_length > 1:
+                        textbutton _("Go Back"):
+                            selected False
+                            action [
+                                SetField(mas_ui, "animate_twopane_menu", False),
+                                Return(-1),
+                                Function(store.prev_adj.change, 0)
+                            ]
+
+        if main_items:
+            fixed:
+                area right_area
+
+                bar:
+                    adjustment main_adj
+                    style "classroom_vscrollbar"
+                    xalign right_align
+
+                vbox:
+                    ypos 0
+                    yanchor 0
+
+                    viewport:
+                        yadjustment main_adj
+                        yfill False
+                        mousewheel True
+                        arrowkeys True
+
+                        vbox:
+                            for i_caption, i_label in main_items:
+                                textbutton i_caption:
+                                    if renpy.has_label(i_label) and not seen_event(i_label):
+                                        style "twopane_scrollable_menu_new_button"
+
+                                    elif not renpy.has_label(i_label):
+                                        style "twopane_scrollable_menu_special_button"
+
+                                    selected False
+                                    action [
+                                        SetField(mas_ui, "animate_twopane_menu", True),
+                                        Return(i_label),
+                                        Function(store.prev_adj.change, 0)
+                                    ]
+
+                    null height 20
+
+                    textbutton _("Nevermind."):
+                        selected False
+                        action [
+                            SetField(mas_ui, "animate_twopane_menu", True),
+                            Return(False),
+                            Function(store.prev_adj.change, 0)
+                        ]
 
 # the regular scrollabe menu
+# DEPRECATED
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
     style_prefix "scrollable_menu"
 
@@ -2755,12 +2821,19 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None)
 #           [3]: True if we want the button bold, False if not
 #           [4]: integer spacing between this button and the regular buttons
 #               NOTE: must be >= 0
-#       (Default: None)
-screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
+#   transition - transition (read transform) to use on this screen during events
+#       (Default: scrollable_menu_dissolve)
+screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args, transition=scrollable_menu_dissolve):
     style_prefix "scrollable_menu"
 
     fixed:
         area display_area
+
+        if (
+            not persistent._mas_disable_animations
+            and transition is not None
+        ):
+            at transition
 
         vbox:
             ypos 0
@@ -2820,12 +2893,14 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 #     scroll_align - alignment of the scroll bar for the menu
 #     return_button_prompt - prompt for the return button (is only used when the user's selected a button)
 #         (Default: 'Done')
-#     return_all - whether or not we return all items or only the items with True in their values
+#     return_all - whether we return all items or only the items with True in their values
 #         (Default: False)
+#     transition - transition (read transform) to use on this screen during events
+#         (Default: scrollable_menu_dissolve)
 #
 # OUT:
 #     dict of buttons keys and new values
-screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done.", return_all=False):
+screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done.", return_all=False, transition=scrollable_menu_dissolve):
     default buttons_data = {
         _tuple[1]: {
             "return_value": _tuple[3] if _tuple[2] else _tuple[4],
@@ -2839,6 +2914,12 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
 
     fixed:
         area display_area
+
+        if (
+            not persistent._mas_disable_animations
+            and transition is not None
+        ):
+            at transition
 
         vbox:
             ypos 0

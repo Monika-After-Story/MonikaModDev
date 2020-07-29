@@ -2333,32 +2333,39 @@ label prompt_menu:
         )
 
     #Top level menu
-    # NOTE: should we force this to a particualr exp considering that
-    # monika now rotates
-    # NOTE: actually we could use boredom setup in here.
-    show monika at t21
+
     #To make the menu line up right we have to build it up manually
     python:
         talk_menu = []
-        if len(unseen_event_labels)>0 and not persistent._mas_unsee_unseen:
+        if len(unseen_event_labels) > 0 and not persistent._mas_unsee_unseen:
             # show unseen if we have unseen events and the player hasn't chosen to hide it
             talk_menu.append((_("{b}Unseen{/b}"), "unseen"))
+
         if mas_hasBookmarks():
             talk_menu.append((_("Bookmarks"),"bookmarks"))
+
         talk_menu.append((_("Hey, [m_name]..."), "prompt"))
-        if len(repeatable_events)>0:
+
+        if len(repeatable_events) > 0:
             talk_menu.append((_("Repeat conversation"), "repeat"))
+
         if _mas_getAffection() > -50:
             if mas_passedILY(pass_time=datetime.timedelta(0,10)):
                 talk_menu.append((_("I love you too!"),"love_too"))
+
             else:
                 talk_menu.append((_("I love you!"), "love"))
+
         talk_menu.append((_("I feel..."), "moods"))
         talk_menu.append((_("Goodbye"), "goodbye"))
         talk_menu.append((_("Nevermind"),"nevermind"))
 
         renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
-        madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
+        # NOTE: should we force this to a particualr exp considering that
+        # monika now rotates
+        # NOTE: actually we could use boredom setup in here.
+        renpy.show("monika", at_list=[t21])
+        madechoice = renpy.call_screen("talk_choice", talk_menu)
 
     if madechoice == "unseen":
         call show_prompt_list(unseen_event_labels) from _call_show_prompt_list
@@ -2373,11 +2380,11 @@ label prompt_menu:
         call prompts_categories(False) from _call_prompts_categories_1
 
     elif madechoice == "love":
-        $ pushEvent("monika_love",skipeval=True)
+        $ pushEvent("monika_love", skipeval=True)
         $ _return = True
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too",skipeval=True)
+        $ pushEvent("monika_love_too", skipeval=True)
         $ _return = True
 
     elif madechoice == "moods":
@@ -2387,16 +2394,26 @@ label prompt_menu:
         call mas_farewell_start from _call_select_farewell
 
     else: #nevermind
-        $_return = None
+        $ _return = None
 
     # check explicitly for False here due to how farewells return
     if _return is False:
         jump prompt_menu
 
-label prompt_menu_end:
+    # FALL THROUGH
 
+label prompt_menu_end:
     show monika at t11
-    $ mas_DropShield_dlg()
+    python:
+        # the exact pause to finish the transition animation
+        if (
+            not persistent._mas_disable_animations
+            and madechoice not in ("unseen", "bookmarks")
+        ):
+            renpy.pause(0.3)
+        # set this to slide for the next use of the menu
+        mas_ui.talk_choice_transition_type = "slide"
+        mas_DropShield_dlg()
     jump ch30_loop
 
 label show_prompt_list(sorted_event_labels):

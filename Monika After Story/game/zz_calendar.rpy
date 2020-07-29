@@ -1987,9 +1987,13 @@ screen mas_calendar_screen(select_date=False):
 
     zorder 51
 
-    add MASCalendar(select_date)
-        #xalign 0.5
-        #yalign 0.5
+    fixed:
+        if not persistent._mas_disable_animations:
+            at calendar_screen_dissolve
+
+        add MASCalendar(select_date)
+            #xalign 0.5
+            #yalign 0.5
 
 label mas_show_calendar_detail(items,area,align,first_item,final_item):
     call screen mas_calendar_events_scrollable_list(items, area, align, first_item=first_item, final_item=final_item)
@@ -2179,6 +2183,9 @@ label _mas_start_calendar(select_date=True):
     call screen mas_calendar_screen(select_date)
 
     python:
+        if not persistent._mas_disable_animations:
+            # the exact pause to finish hiding the screen
+            renpy.pause(0.2)
         HKBShowButtons()
 
     return _return
