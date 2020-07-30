@@ -1529,9 +1529,14 @@ init 5 python:
     # overriding methods is an advanced thing,
     # she does it when she gets more experienced with python
     if (
-        renpy.seen_label("monikaroom_greeting_ear_progreadpy")
-        and renpy.seen_label("monikaroom_greeting_ear_progbrokepy")
-        and renpy.seen_label("monikaroom_greeting_ear_nameerror")
+        mas_seenLabels(
+            (
+                "monikaroom_greeting_ear_progreadpy",
+                "monikaroom_greeting_ear_progbrokepy",
+                "monikaroom_greeting_ear_nameerror"
+            ),
+            seen_all=True
+        )
         and store.mas_anni.pastThreeMonths()
     ):
         gmr.eardoor.append("monikaroom_greeting_ear_renpy_docs")
