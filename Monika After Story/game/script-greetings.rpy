@@ -1545,7 +1545,7 @@ label monikaroom_greeting_ear_renpy_docs:
     m "Hmm, looks like I might need to override this function to give me a little more flexibility..."
     m "Wait...{w=0.3}what's this 'st' variable?"
     m "...Let me check the documentation for the function."
-    m ".{w=0.3}.{w=0.3}.{w=0.3} Wait what?"
+    m ".{w=0.3}.{w=0.3}.{w=0.3}Wait, what?"
     m "Half the variables this function accepts aren't even documented!"
     m "Who wrote this?"
 
