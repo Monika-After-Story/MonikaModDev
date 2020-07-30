@@ -174,22 +174,22 @@ transform music_menu_slide:
     on show:
         alpha 0.0
         crop (0.5, 0.0, 1.0, 1.0)
-        easein 0.4 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
+        easein 0.2 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
 
     on hide:
         alpha 1.0
         crop (0.0, 0.0, 1.0, 1.0)
-        easeout 0.4 crop (0.5, 0.0, 1.0, 1.0) alpha 0.0
+        easeout 0.2 crop (0.5, 0.0, 1.0, 1.0) alpha 0.0
 
 # transform for the music menu background
 transform music_menu_dissolve:
     on show:
         alpha 0.0
-        easein 0.4 alpha 1.0
+        easein 0.2 alpha 1.0
 
     on hide:
         alpha 1.0
-        easeout 0.4 alpha 0.0
+        easeout 0.2 alpha 0.0
 
 # slide transform for the talk menu
 transform talk_menu_slide:
@@ -198,12 +198,12 @@ transform talk_menu_slide:
     on show:
         alpha 0.0
         crop (-1.0, 0.0, 1.0, 1.0)
-        easein 0.4 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
+        easein 0.2 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
 
     on hide:
         alpha 1.0
         crop (0.0, 0.0, 1.0, 1.0)
-        easeout 0.4 crop (-1.0, 0.0, 1.0, 1.0) alpha 0.0
+        easeout 0.2 crop (-1.0, 0.0, 1.0, 1.0) alpha 0.0
 
 # dissolve transform for the talk menu
 transform talk_menu_dissolve:
@@ -224,12 +224,12 @@ transform scrollable_menu_slide:
     on show:
         alpha 0.0
         crop (-0.5, 0.0, 1.0, 1.0)
-        easein 0.4 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
+        easein 0.2 crop (0.0, 0.0, 1.0, 1.0) alpha 1.0
 
     on hide:
         alpha 1.0
         crop (0.0, 0.0, 1.0, 1.0)
-        easeout 0.4 crop (-0.5, 0.0, 1.0, 1.0) alpha 0.0
+        easeout 0.2 crop (-0.5, 0.0, 1.0, 1.0) alpha 0.0
 
 # we can reuse some of those transforms here
 define scrollable_menu_dissolve = talk_menu_dissolve

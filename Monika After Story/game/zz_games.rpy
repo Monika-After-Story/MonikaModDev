@@ -214,6 +214,6 @@ label mas_pick_a_game:
         mas_DropShield_dlg()
         if not persistent._mas_disable_animations:
             # the exact pause to finish hiding the screen
-            renpy.pause(0.4)
+            renpy.pause(0.25)
 
     jump ch30_loop

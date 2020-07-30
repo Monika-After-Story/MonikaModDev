@@ -2410,7 +2410,7 @@ label prompt_menu_end:
             not persistent._mas_disable_animations
             and madechoice not in ("unseen", "bookmarks")
         ):
-            renpy.pause(0.3)
+            renpy.pause(0.25)
         # set this to slide for the next use of the menu
         mas_ui.talk_choice_transition_type = "slide"
         mas_DropShield_dlg()

@@ -1053,8 +1053,8 @@ label display_music_menu:
         mas_ui.animate_music_menu = True
         songs.menu_open = False
         if not persistent._mas_disable_animations:
-            # exact pause to finish the transition animation
-            renpy.pause(0.3)
+            # the exact pause to finish the transition animation
+            renpy.pause(0.2)
 
     return _return
 
