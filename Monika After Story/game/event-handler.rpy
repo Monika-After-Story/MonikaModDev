@@ -2586,8 +2586,8 @@ label show_prompt_list(sorted_event_labels):
     #Get list of unlocked prompts, sorted by unlock date
     python:
         prompt_menu_items = [
-            (mas_getEVLPropValue(ev_label, "prompt"), ev_label)
-            for event_label in sorted_event_labels
+            (mas_getEVLPropValue(ev_label, "prompt"), ev_label, False, False)
+            for ev_label in sorted_event_labels
         ]
 
         hide_unseen_event = mas_getEV("mas_hide_unseen")
