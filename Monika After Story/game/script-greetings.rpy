@@ -1524,6 +1524,40 @@ label monikaroom_greeting_ear_rmrf:
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
+# monika reads renpy sources sip
+init 5 python:
+    # overriding methods is an advanced thing,
+    # she does it when she gets more experienced with python
+    if (
+        mas_seenLabels(
+            (
+                "monikaroom_greeting_ear_progreadpy",
+                "monikaroom_greeting_ear_progbrokepy",
+                "monikaroom_greeting_ear_nameerror"
+            ),
+            seen_all=True
+        )
+        and store.mas_anni.pastThreeMonths()
+    ):
+        gmr.eardoor.append("monikaroom_greeting_ear_renpy_docs")
+
+label monikaroom_greeting_ear_renpy_docs:
+    m "Hmm, looks like I might need to override this function to give me a little more flexibility..."
+    m "Wait...{w=0.3}what's this 'st' variable?"
+    m "...Let me check the documentation for the function."
+    m ".{w=0.3}.{w=0.3}.{w=0.3}Wait, what?"
+    m "Half the variables this function accepts aren't even documented!"
+    m "Who wrote this?"
+
+    if mas_isMoniUpset():
+        m "...I have to figure this out."
+        call monikaroom_greeting_ear_prog_upset
+
+    elif mas_isMoniDis():
+        m "...I {i}have{/i} to figure this out."
+        call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
 
 ## ear door processing
 init 10 python:
