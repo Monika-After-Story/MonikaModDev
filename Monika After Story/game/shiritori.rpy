@@ -1,7 +1,7 @@
 """TODOs:
     Difficulty scaling
         Time limit
-        Monika's turn limit
+        Monika's turn limit - better to set explicitly than to count the dict cardinality every time
     Write proper dlg
     Get, sanitize and format dictionaries
     Option to add missing words to dictionary - exploitable, but worth it imo
@@ -30,33 +30,25 @@ label monika_shiritori_rules:
     m "Trying to use something that isn't a word."
     m "Using a word that's already been used."
     m "And failing to answer within a given time limit."
+    m "Note: also add allowed word types here once we're clear on that - no proper nouns, no abrreviations, no one-letters, etc."
     return
 
-label player_loss_letter:
-    m "That's the wrong letter, you know."
-    call player_loss_final
-    return
-
-label player_loss_used:
-    m "Wait a second, [last_word_p_raw]?"
-    if last_word_p in recent_words:
-        m "That one was played just a second ago!"
+label player_loss(reason=""):
+    if reason == "letter":
+        m "That's the wrong letter, you know."
+    elif reason == "invalid":
+        m "I don't think that's a real word."
+    elif reason == "used":
+        m "Wait a second, [last_word_p_raw]?"
+        if last_word_p in recent_words:
+            m "That one was played just a second ago!"
+        else:
+            m "I'm pretty sure one of us already used that one."
+    elif reason == "timeout":
+        m "...And you're out of time."
     else:
-        m "I'm pretty sure one of us already used that one."
-    call player_loss_final
-    return
+        m "This isn't supposed to happen."
 
-label player_loss_invalid:
-    m "I don't think that's a real word."
-    call player_loss_final
-    return
-
-label player_loss_timeout:
-    m "...And you're out of time."
-    call player_loss_final
-    return
-
-label player_loss_final:
     $ loss_quips = [
     "Sorry, but it's your loss.",
     "Your loss, [player].",
@@ -67,12 +59,17 @@ label player_loss_final:
     m "[loss_quip]" # smug expression
     return
 
-label monika_loss_used:
-    m "Wait, that one already got used, didn't it?"
-    call monika_loss_final
-    return
 
-label monika_loss_final:
+label monika_loss(reason = ""):
+    # Monika can only lose via word repetition or turn exhaustion (ie time limit rule), the other two are silly
+    if reason == "used":
+        m "Wait, that one already got used, didn't it?"
+    elif reason == "timeout":
+        m "I...can't think of anything."
+        m "This is embarrassing, ahaha~"
+    else:
+        m "This isn't supposed to happen either."
+
     $ win_quips = [
     "Guess it's my loss then.",
     "Looks like you win, [player].",
@@ -117,9 +114,9 @@ label game_shiritori:
 
         shiritori_loop = True
         # all the words used in current game
-        used_words = []
+        used_words = set()
         # last 10 words - serves as Monika's short-term memory to avoid immediately repeating a word
-        recent_words = []
+        recent_words = set()
 
     # if Monika has the first turn
     if monika_first:
@@ -128,8 +125,8 @@ label game_shiritori:
             first_letter = renpy.random.choice("abcdefghijklmnopqrstuvwxyz")
             last_word_m = renpy.random.choice(dictionary_monika[first_letter])
             # add first word to used and recent
-            used_words.append(last_word_m)
-            recent_words.append(last_word_m)
+            used_words.add(last_word_m)
+            recent_words.add(last_word_m)
         m "[last_word_m]"
 
     # main loop
@@ -145,30 +142,34 @@ label game_shiritori:
 
         # check if starting with correct letter
         if last_word_p[0] != last_word_m[-1]:
-            call player_loss_letter
-            shiritori_loop = False
+            call player_loss(reason = "letter")
+            $ shiritori_loop = False
 
         # check against dictionary
         elif last_word_p not in dictionary_full[last_word_p[0]]:
-            call player_loss_invalid
-            shiritori_loop = False
+            call player_loss(reason = "invalid")
+            $ shiritori_loop = False
 
         # check against used words
         elif last_word_p in used_words:
-            call player_loss_used
-            shiritori_loop = False
+            call player_loss(reason = "used")
+            $ shiritori_loop = False
 
         else:
-            # add last word to used
-            used_words.append(last_word_p)
-            # update recent words
-            recent_words.append(last_word_p)
-            if len(recent_words) > 10:
-                del recent_words[0]
+            # update used word sets
+            python:
+                used_words.add(last_word_p)
+                recent_words.add(last_word_p)
+                if len(recent_words) > 10:
+                    recent_words.pop()
 
             # Monika's turn
             m "Hmm..."
             $ last_word_m_invalid = True
+
+            # TODO Monika's loss via turn exhaustion here
+
+            # getting Monika's next word
             while last_word_m_invalid:
                 if renpy.random.randint(1,10) == 1:
                     # small chance to have Monika pull from the full vocab
@@ -183,7 +184,15 @@ label game_shiritori:
             m "[last_word_m]"
             # checking if used
             if last_word_m in used_words:
-                call monika_loss_used
-                shiritori_loop = False
+                call monika_loss(reason = "used")
+                $ shiritori_loop = False
+
+            else:
+                # update used word sets
+                python:
+                    used_words.add(last_word_m)
+                    recent_words.add(last_word_m)
+                    if len(recent_words) > 10:
+                        recent_words.pop()
 
     return
