@@ -15212,7 +15212,8 @@ label monika_eatingmeat:
     m 2ekc "But a lot of vegan alternatives involve importing perishable products across great distances, and mass farming in conditions that are both cruel for workers and a strain on the local ecosystem."
     m 2esc "Take avocados, for example. Many of their farms take up a massive amount of water resources--to the point where some companies have resorted to illegally extracting too much water from rivers, leaving little for drinking."
     m 1esc "At that point, which is the lesser of two evils becomes a more complicated question. And I still want to have a varied and balanced diet."
-    m 1eka "So I'm not against eating animal products like milk and eggs, but I think it's important to buy food locally when it's possible."
+    m "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc. Vitamin B12 in particular can only be found in animal products."
+    m 1eka "So I'm not against eating things like milk and eggs. I think I'd prefer to buy locally when possible, though."
     m 3eub "Farmer's markets are great places to buy food--even meat--that's produced with less of an environmental impact."
     m 3hksdlb "But that can get expensive, dependent on location, and leaves you with fewer options. So I'm okay with buying from a plain old store if need be."
     m 1euc "As for meat that comes from local hunting and fishing..."
@@ -15220,6 +15221,6 @@ label monika_eatingmeat:
     m 4rksdlb "That said...I don't know that I'd {i}prefer{/i} to eat meat, given the option."
     m 4eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
     m 4ekb "I don't completely hate the taste of meat, but I don't think I'd want it to be a major part of my meal."
-    m 2hubsb "But if you prepared something like that, I could try a little bit as a side dish!"
+    m 2hubsb "But if you prepared something like that, I could try a little bit as a side dish! That way I can still enjoy your cooking."
     m 2eubsb "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
