@@ -71,14 +71,20 @@ label monika_playerapologizes:
     #Set the prompt for this...
     if len(persistent._mas_apology_time_db) > 0:
         #If there's a non-generic apology reason pending we use "for something else."
-        $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0])
+        $ mas_setEVLPropValues(
+            "mas_apology_generic",
+            prompt="...for {0}".format(player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0]))
+        )
     else:
         #Otherwise, we use "for something." if reason isn't 0
         if mas_apology_reason == 0:
-            $ mas_getEV('mas_apology_generic').prompt = "...for something."
+            $ mas_setEVLPropValues("mas_apology_generic", prompt="...for something.")
         else:
             #We set this to an apology reason if it's valid
-            $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,"something.")
+            $ mas_setEVLPropValues(
+                "mas_apology_generic",
+                prompt="...for {0}".format(player_apology_reasons.get(mas_apology_reason,"something."))
+            )
 
     #Then we delete this since we're not going to need it again until we come back here, where it's created again.
     #No need to store excess memory

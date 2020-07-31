@@ -2669,7 +2669,7 @@ label monika_aiwfc:
     call monika_aiwfc_song
 
     #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
-    if not mas_getEV("monika_aiwfc").shown_count:
+    if not mas_getEVLPropValue("monika_aiwfc", "shown_count", 0):
         m 1eka "I hope you liked that, [player]."
         m 1ekbsa "I really meant it too."
         m 1ekbfa "You're the only gift I could ever want."
@@ -6683,7 +6683,7 @@ init 5 python:
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
     if mas_isFirstSeshPast(mas_monika_birthday):
-        $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
+        $ mas_assignModifyEVLPropValue("mas_bday_postbday_notimespent", "shown_count", "-=", 1)
         return
 
 

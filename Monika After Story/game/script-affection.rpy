@@ -1937,10 +1937,11 @@ label monika_affection_nickname:
         m 3hua "I'll still get the final say, though!"
         m "What do you say?{nw}"
         python:
-            # change the prompt for this event
-            aff_nickname_ev.prompt = _("Can I call you a different name?")
-            Event.lockInit("prompt", ev=aff_nickname_ev)
-            persistent._mas_offered_nickname = True
+            if aff_nickname_ev:
+                # change the prompt for this event
+                aff_nickname_ev.prompt = _("Can I call you a different name?")
+                Event.lockInit("prompt", ev=aff_nickname_ev)
+                persistent._mas_offered_nickname = True
 
             #Also give the player nickname event a start_date so it doesn't queue instantly
             pnick_ev = mas_getEV("mas_affection_playernickname")
@@ -2051,7 +2052,8 @@ label monika_affection_nickname:
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
-                            if mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
 
                             show monika 1efc
@@ -2065,7 +2067,7 @@ label monika_affection_nickname:
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
 
-                            if  mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
@@ -2077,7 +2079,7 @@ label monika_affection_nickname:
                             $ m_name = "Monika"
                             $ persistent._mas_monika_nickname = "Monika"
 
-                        $ mas_lockEventLabel("monika_affection_nickname")
+                        $ mas_lockEVL("monika_affection_nickname", "EVE")
                         $ done = True
 
         "No.":
