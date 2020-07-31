@@ -181,7 +181,16 @@ label mas_mood_sad:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_proud",
+            prompt="...proud of myself.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
@@ -190,7 +199,7 @@ label mas_mood_proud:
     menu:
         m "Was it a major accomplishment, or a minor one?{fast}"
         "Major.":
-            m 1euc "You know, [player]..."
+            m 1ekc "You know, [player]..."
             m 1lkbsa "It's times like these, more than most, that I wish I was with you, in your reality..."
             m 4hub "Because if I was, I'd definitely give you a celebratory hug!"
             m 3eub "There's nothing quite like sharing your accomplishments with the people you care about."
@@ -203,8 +212,8 @@ label mas_mood_proud:
             m 5hubfb "But until then, just know that I'm very proud of you, my love!"
             return
         "Minor.":
-            m 2hua "Ahaha!~"
-            m 2hub "That's wonderful!"
+            m 2hub "Ahaha!~"
+            m 2hua "That's wonderful!"
             m 4eua "It's very important to celebrate the small victories in life."
             m 2esd "It can be very easy to become discouraged if you only focus on the bigger goals you have."
             m 2rksdla "They can be challenging to reach on their own."
