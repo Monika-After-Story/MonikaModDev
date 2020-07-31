@@ -81,6 +81,27 @@ label monika_loss(reason = ""):
     m "[win_quip]"
     return
 
+screen shiritori_input(prompt, timeout, use_return_button=False, return_button_prompt="Nevermind.", return_button_value="cancel_input"):
+    # this is literally just the input screen with a timer slapped on it
+    style_prefix "input"
+
+    window:
+        if use_return_button:
+            textbutton return_button_prompt:
+                style "choice_button"
+                align (0.5, 0.5)
+                ypos -263
+                action Return(return_button_value)
+
+        vbox:
+            align (0.5, 0.5)
+            spacing 30
+
+            text prompt style "input_prompt"
+            input id "input"
+
+    timer timeout action Return("timeout")
+
 # entry point
 label game_shiritori:
     m "You wanna play shiritori?"
@@ -136,9 +157,16 @@ label game_shiritori:
             last_word_p_raw = mas_input(
                 "Input your next word",
                 allow = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-                length=20
+                length=20,
+                screen = "shiritori_input",
+                screen_kwargs = {timeout:timelimit}
                 ).strip(' \t\n\r').lower()
             last_word_p = last_word_p_raw.lower()
+
+        # check for timeout
+        if _return == "timeout":
+            call player_loss(reason = "timeout")
+            $ shiritori_loop = False
 
         # check if starting with correct letter
         if last_word_p[0] != last_word_m[-1]:
@@ -168,6 +196,10 @@ label game_shiritori:
             $ last_word_m_invalid = True
 
             # TODO Monika's loss via turn exhaustion here
+            # if [exhaustion]:
+            #   pause timelimit
+            #   call monika_loss(reason = "timeout")
+            #   $ shiritori_loop = False
 
             # getting Monika's next word
             while last_word_m_invalid:
