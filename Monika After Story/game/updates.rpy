@@ -389,7 +389,7 @@ label v0_11_4(version="v0_11_4"):
             6: 0
         }
 
-        persistent._mas_randchat_freq = OLD_NEW_RANDCHAT_MAP[persistent._mas_randchat_freq]
+        persistent._mas_randchat_freq = OLD_NEW_RANDCHAT_MAP.get(persistent._mas_randchat_freq, mas_randchat.NORMAL)
 
         # unlock _remembrance based on _japan pre-req
         if seen_event('monika_japan'):
