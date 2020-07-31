@@ -2603,7 +2603,7 @@ label mas_reaction_gift_chocolates:
             if not MASConsumable._getCurrentFood():
                 $ monika_chr.wear_acs(mas_acs_heartchoc)
 
-            m 1eka "More chocolates, [mas_get_player_nickname()]?"
+            m 1eka "More chocolates, [player]?"
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
             m 1hub "...but I'm not complaining!"

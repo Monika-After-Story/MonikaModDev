@@ -768,7 +768,7 @@ label greeting_italian:
     m "È così bello vederti ancora, amore mio..."
     m 1hub "Ahaha!"
     m 2eua "I'm still practicing my Italian. It's a very difficult language!"
-    m 1eua "Anyway, it's so nice to see you again, [mas_get_player_nickname()]."
+    m 1eua "Anyway, it's so nice to see you again, my love."
     return
 
 #TODO needs additional dialogue so can be used for all aff
@@ -1379,7 +1379,7 @@ init 5 python:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
-    m "Welcome back, [mas_get_player_nickname()]."
+    m "Welcome back, [player]."
     m "Would you like your dinner?"
     m "Or your bath?"
     m "Or.{w=1}.{w=1}.{w=1}me?"
@@ -2914,7 +2914,7 @@ label greeting_back_from_school:
 
                 if mas_isMoniAff(higher=True):
                     m 1rfc "It {i}better{/i} not be..."
-                    m 1rfd "Bothering my [mas_get_player_nickname(exclude_names=['my love'], _default='sweetheart')] like that again."
+                    m 1rfd "Bothering my [mas_get_player_nickname(exclude_names=['my love', player], _default='sweetheart')] like that again."
 
                 m 2ekc "I wish I could do more to help you, [player]..."
                 m 2eka "But I'm here if you need me."
