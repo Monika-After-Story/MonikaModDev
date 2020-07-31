@@ -429,7 +429,7 @@ label monika_sing_song_random:
 
     #We have no songs! let's pull back the shown count for this and derandom
     else:
-        $ mas_getEV("monika_sing_song_random").shown_count -= 1
+        $ mas_assignModifyEVLPropValue("monika_sing_song_random", "shown_count", "-=", 1)
         return "derandom|no_unlock"
     return "no_unlock"
 
@@ -1058,7 +1058,7 @@ label mas_song_shelter:
     m 1hub "There always will be someone out there rooting for us!"
 
     #hints at the analysis on first viewing
-    if mas_getEV('mas_song_shelter').shown_count == 0:
+    if not mas_getEVL_shown_count("mas_song_shelter"):
         m 3rksdla "I actually have more I'd like to say about this song, but only if you have the time of course..."
 
         m 1eka "Would you like to hear more about it right now?{nw}"
@@ -1069,7 +1069,7 @@ label mas_song_shelter:
             "Sure!":
                 m 3hub "Okay, great!"
                 call mas_song_shelter_analysis(from_song=True)
-                $ mas_getEV("mas_song_shelter_analysis").shown_count += 1
+                $ mas_assignModifyEVLPropValue("mas_song_shelter_analysis", "shown_count", "+=", 1)
 
             "Not right now.":
                 m 1eka "Okay, [player]..."
@@ -1390,7 +1390,7 @@ label mas_song_wonderwall:
         extend 1eubla "but I trust you, so we'll just have to keep on walking until we reach that place~"
 
     #hints at the analysis on first viewing
-    if mas_getEV('mas_song_wonderwall').shown_count == 0:
+    if not mas_getEVL_shown_count("mas_song_wonderwall"):
         m 3etc "By the way...{w=0.2}there's actually some things that intrigue me about this song."
         m 1eua "...Would you like to talk about it now?{nw}"
         $ _history_list.pop()
@@ -1400,7 +1400,7 @@ label mas_song_wonderwall:
             "Sure.":
                 m 1hua "Okay then!"
                 call mas_song_wonderwall_analysis(from_song=True)
-                $ mas_getEV("mas_song_wonderwall_analysis").shown_count += 1
+                $ mas_assignModifyEVLPropValue("mas_song_wonderwall_analysis", "shown_count", "+=", 1)
 
             "Not now.":
                 m 1eka "Oh, okay then..."
