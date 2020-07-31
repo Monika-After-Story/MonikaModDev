@@ -1549,7 +1549,7 @@ label mas_ch30_select_unseen:
 
         if not persistent._mas_enable_random_repeats:
             # no repeats means we should push randomlimit if appropriate, otherwise stay slient
-            if mas_getEV("mas_random_limit_reached").timePassedSinceLastSeen_d(datetime.timedelta(weeks=2)):
+            if mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(weeks=2)):
                 $ pushEvent("mas_random_limit_reached")
 
             jump post_pick_random_topic
@@ -1577,7 +1577,7 @@ label mas_ch30_select_seen:
             #As a way of indicating you're out of topics because of the last seen delta, we'll use a shorter check here
             if (
                 len(mas_rev_mostseen) == 0
-                and mas_getEV("mas_random_limit_reached").timePassedSinceLastSeen_d(datetime.timedelta(days=1))
+                and mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(days=1))
             ):
                 $ pushEvent("mas_random_limit_reached")
                 jump post_pick_random_topic
