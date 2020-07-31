@@ -30,6 +30,7 @@ define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
 init 1 python in mas_chess:
     import os
     import chess.pgn
+    import store.mas_ui as mas_ui
 
     # if this is true, we quit game (workaround for confirm screen)
     quit_game = False
@@ -38,11 +39,11 @@ init 1 python in mas_chess:
     REL_DIR = "chess_games/"
 
     # other mas constants (menu related)
-    CHESS_MENU_X = 680
-    CHESS_MENU_Y = 40
-    CHESS_MENU_W = 560
-    CHESS_MENU_H = 640
-    CHESS_MENU_XALIGN = -0.05
+    CHESS_MENU_X = mas_ui.SCROLLABLE_MENU_X
+    CHESS_MENU_Y = mas_ui.SCROLLABLE_MENU_Y
+    CHESS_MENU_W = mas_ui.SCROLLABLE_MENU_W
+    CHESS_MENU_H = mas_ui.SCROLLABLE_MENU_MEDIUM_H
+    CHESS_MENU_XALIGN = mas_ui.SCROLLABLE_MENU_XALIGN
     CHESS_MENU_AREA = (CHESS_MENU_X, CHESS_MENU_Y, CHESS_MENU_W, CHESS_MENU_H)
 
     CHESS_MENU_NEW_GAME_VALUE = "NEWGAME"

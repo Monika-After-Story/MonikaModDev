@@ -53,6 +53,7 @@ init -1 python in mas_greetings:
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
+    TYPE_WORKOUT = "workout"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -1529,6 +1530,40 @@ label monikaroom_greeting_ear_rmrf:
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
+# monika reads renpy sources sip
+init 5 python:
+    # overriding methods is an advanced thing,
+    # she does it when she gets more experienced with python
+    if (
+        mas_seenLabels(
+            (
+                "monikaroom_greeting_ear_progreadpy",
+                "monikaroom_greeting_ear_progbrokepy",
+                "monikaroom_greeting_ear_nameerror"
+            ),
+            seen_all=True
+        )
+        and store.mas_anni.pastThreeMonths()
+    ):
+        gmr.eardoor.append("monikaroom_greeting_ear_renpy_docs")
+
+label monikaroom_greeting_ear_renpy_docs:
+    m "Hmm, looks like I might need to override this function to give me a little more flexibility..."
+    m "Wait...{w=0.3}what's this 'st' variable?"
+    m "...Let me check the documentation for the function."
+    m ".{w=0.3}.{w=0.3}.{w=0.3}Wait, what?"
+    m "Half the variables this function accepts aren't even documented!"
+    m "Who wrote this?"
+
+    if mas_isMoniUpset():
+        m "...I have to figure this out."
+        call monikaroom_greeting_ear_prog_upset
+
+    elif mas_isMoniDis():
+        m "...I {i}have{/i} to figure this out."
+        call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
 
 ## ear door processing
 init 10 python:
@@ -2838,7 +2873,7 @@ label greeting_back_from_school:
 
         show monika 2ekc at t21
         $ renpy.say(m, "If you don't mind me asking, was there something in particular that happened?{fast}", interact=False)
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
 
@@ -3013,7 +3048,7 @@ label greeting_back_from_work:
 
         show monika 2ekc at t21
         $ renpy.say(m, "If you don't mind talking about it, what happened today?{fast}", interact=False)
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
 
@@ -3930,4 +3965,40 @@ label greeting_code_help_outro:
     m 1eua "Anyway, what would you like to do today?"
 
     $ mas_lockEVL("greeting_code_help", "GRE")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_workout",
+            category=[store.mas_greetings.TYPE_WORKOUT],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_workout:
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Welcome back, [player]!"
+        m 3eua "I hope you had a nice workout."
+        m 3eub "Don't forget to stay hydrated and eat something to get your energy back!"
+        m 1eua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "Did your workout help you release some tension?"
+        m 2rud "I hope it did...{w=0.3} {nw}"
+        extend 2eka "Let's spend some more time together."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=0.5}look who's back."
+        m 6dkc "I'm...{w=0.3}happy that you're taking care of yourself."
+        m 6ekd "...But don't you want to take care of me too?"
+        m 7dkc "At least once in a while, please..."
+        m 1dkc "..."
+
+    else:
+        m 6ckc "..."
+
     return
