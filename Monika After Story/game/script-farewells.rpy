@@ -1225,7 +1225,7 @@ init 5 python:
 
 label bye_prompt_game:
     $ _now = datetime.datetime.now().time()
-    if mas_getEV('bye_prompt_game').shown_count == 0:
+    if mas_getEVL_shown_count("bye_prompt_game") == 0:
         m 2ekc "You're going to play another game?"
         m 4ekd "Do you really have to leave me to go do that?"
         m 2eud "Can't you just leave me here in the background while you play?{nw}"

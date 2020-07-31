@@ -86,7 +86,7 @@ init 5 python:
 label monika_gender_redo:
     m 1eka "Of course, [player]!"
 
-    if mas_getEV('monika_gender_redo').shown_count == 0:
+    if not mas_getEVL_shown_count("monika_gender_redo"):
         m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
         $ _history_list.pop()
         menu:
@@ -703,7 +703,7 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isMonikaBirthday()"
-                )
+            )
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
@@ -1758,7 +1758,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    if mas_getEV("monika_rpy_files").shown_count == 0:
+    if not mas_getEVL_shown_count("monika_rpy_files"):
         m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
         m 1ekc "I noticed some \".rpy\" files in there."
         m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."

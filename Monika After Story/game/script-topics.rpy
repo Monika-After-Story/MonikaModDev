@@ -367,7 +367,13 @@ init python:
             #Now we do a bit of var setup to clean up the following work
             derand_flag_add_text = label_prefix_map[label_prefix].get("derand_text", _("Flagged for removal."))
             derand_flag_remove_text = label_prefix_map[label_prefix].get("underand_text", _("Flag removed."))
-            push_label = label_prefix_map[label_prefix].get("push_label", "mas_topic_derandom")
+
+            #Handle custom override derand labels
+            push_label = ev.rules.get("derandom_override_label", None)
+
+            #If we still have nothing, then we'll use the default, the one for the label prefix
+            if not renpy.has_label(push_label):
+                push_label = label_prefix_map[label_prefix].get("push_label", "mas_topic_derandom")
 
             if mas_findEVL(push_label) < 0:
                 persistent.flagged_monikatopic = ev_label
@@ -492,6 +498,68 @@ label mas_topic_derandom:
             m 1eka "Alright, [player]."
     return
 
+label mas_bad_derand_topic:
+    python:
+        prev_topic = persistent.flagged_monikatopic
+
+        def derand_flagged_topic():
+            """
+            Derands the flagged topic
+            """
+            mas_hideEVL(prev_topic, "EVE", derandom=True)
+            persistent._mas_player_derandomed.append(prev_topic)
+            mas_unlockEVL('mas_topic_rerandom', 'EVE')
+
+    m 2ekc "...{w=0.3}{nw}"
+    extend 2ekd "[player]..."
+
+    if mas_isMoniAff(higher=True):
+        m 2efd "Is it not okay that I talk to you about my fears?"
+        m 2ekc "I mean, if you want me to stop, I'll stop...{w=0.3}{nw}"
+        extend 2rkd "but I thought you'd be willing to hear me out."
+
+        m 2esc "Do you want me to stop, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you want me to stop, [player]?{fast}"
+
+            "Yes, please.":
+                m 2dkc "Alright..."
+                #Lose affection
+                $ mas_loseAffection(5)
+                $ derand_flagged_topic()
+
+            "It's alright.":
+                m 2duu "Thank you, [player]."
+                m 2eua "It means a lot that you're willing to hear me out."
+
+    elif mas_isMoniUpset(higher=True):
+        m 2ekd "Do you just...{w=0.2}not care about how I feel or something?"
+        m 2tsc "If you want me to stop talking about this, I will...but I'm not that happy you don't want to hear me out."
+
+        m 2etc "Well [player], should I stop?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Well [player], should I stop?{fast}"
+
+            "Yes, please.":
+                m 2dsc "Alright."
+                $ mas_loseAffection(5)
+                $ derand_flagged_topic()
+
+            "It's alright.":
+                m 2eka "Thank you, [player]."
+                m "I appreciate that you're still willing to hear me out."
+
+    else:
+        #No ask here. You're this low, you probably did it on purpose
+        $ mas_loseAffection(5)
+        m 2rsc "I guess I shouldn't be surprised..."
+        m 2tsc "You've made it pretty clear already that you don't care about my feelings."
+        m 2dsc "Fine, [player]. I won't talk about that anymore."
+        $ derand_flagged_topic()
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -511,7 +579,6 @@ label mas_topic_rerandom:
         mas_bookmarks_derand.initial_ask_text_one = "If you're sure it's alright to talk about this again, just select the topic, [player]."
         mas_bookmarks_derand.caller_label = "mas_topic_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed
-        mas_bookmarks_derand.ev_db_code = "EVE"
 
     call mas_rerandom
     return _return
@@ -531,7 +598,7 @@ init python in mas_bookmarks_derand:
     #  - unbookmark_text: "Bookmark removed."
     #  - derand_text: "Flagged for removal."
     #  - underand_text: "Flag removed."
-    #  - push_label: "mas_topic_derandom"
+    #  - push_label: "mas_topic_derandom" (This is overriden on a per event basis by the 'derandom_push_label' rule)
     #  - bookmark_persist_key: "_mas_player_bookmarked"
     #  - derand_persist_key: "_mas_player_derandomed"
     label_prefix_map = {
@@ -558,20 +625,18 @@ init python in mas_bookmarks_derand:
     initial_ask_text_one = None
     caller_label = None
     persist_var = None
-    ev_db_code = "EVE"
 
     def resetDefaultValues():
         """
         Resets the globals to their default values
         """
         global initial_ask_text_multiple, initial_ask_text_one
-        global caller_label, persist_var, ev_db_code
+        global caller_label, persist_var
 
         initial_ask_text_multiple = None
         initial_ask_text_one = None
         caller_label = None
         persist_var = None
-        ev_db_code = "EVE"
         return
 
     def getLabelPrefix(test_str, list_prefixes):
@@ -630,13 +695,21 @@ init python in mas_bookmarks_derand:
         """
         return eventlabel not in getDerandomedEVLs()
 
+    def wrappedGainAffection(amount=None, modifier=1, bypass=False):
+        """
+        Wrapper function for mas_gainAffection which allows it to be used in event rules at init 5
+
+        See mas_gainAffection for documentation
+        """
+        store.mas_gainAffection(amount, modifier, bypass)
+
+
 ##Generic rerandom work label
 #IN:
 #   initial_ask_text_multiple - Initial question Monika asks if there's multiple items to rerandom
 #   initial_ask_text_one - Initial text Monika says if there's only one item to rerandom
 #   caller_label - The label that called this label
 #   persist_var - The persistent variable which stores the derandomed eventlabels
-#   ev_db_code - The event database code for the topics we're rerandoming (Default: "EVE")
 label mas_rerandom:
     python:
         derandomlist = mas_get_player_derandoms(mas_bookmarks_derand.persist_var)
@@ -661,7 +734,25 @@ label mas_rerandom:
     show monika at t11
     python:
         for ev_label in topics_to_rerandom.iterkeys():
-            mas_showEVL(ev_label, mas_bookmarks_derand.ev_db_code, _random=True)
+            #Get the ev
+            rerand_ev = mas_getEV(ev_label)
+
+            #Make sure we have it before doing work
+            if rerand_ev:
+                #Rerandom the ev
+                rerand_ev.random = True
+
+                #Run the rerandom callback function
+                rerandom_callback = rerand_ev.rules.get("rerandom_callback", None)
+                if rerandom_callback is not None:
+                    try:
+                        rerandom_callback()
+
+                    except Exception as ex:
+                        mas_utils.writelog(
+                            "[ERROR]: Failed to call rerandom callback function. Trace message: {0}\n".format(ex.message)
+                        )
+
             #Pop the derandom
             if ev_label in mas_bookmarks_derand.persist_var:
                 mas_bookmarks_derand.persist_var.remove(ev_label)
@@ -688,7 +779,6 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_hide_unseen",
-            prompt="I don't want to see this menu anymore.",
             unlocked=False,
             rules={"no unlock":None}
         )
@@ -697,7 +787,7 @@ init 5 python:
 label mas_hide_unseen:
     $ persistent._mas_unsee_unseen = True
     m 3esd "Oh, okay, [player]..."
-    if mas_getEV('mas_hide_unseen').shown_count == 0:
+    if not mas_getEVL_shown_count("mas_hide_unseen"):
         m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
         m 3hub "Ahaha!"
     m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}.{nw}"
@@ -943,7 +1033,7 @@ label monika_sayori:
         m 3eua "There's no reason to ask for any more than that."
         m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
 
-    if mas_getEV("monika_sayori").shown_count < mas_sensitive_limit:
+    if mas_getEVL_shown_count("monika_sayori") < mas_sensitive_limit:
         return
 
     # otherwise derandom
@@ -1361,7 +1451,11 @@ init 5 python:
                 eventlabel="monika_whispers",
                 category=['ddlc','club members'],
                 prompt="Others still lingering",
-                random=True
+                random=True,
+                rules={
+                    "derandom_override_label": "mas_bad_derand_topic",
+                    "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+                }
             )
         )
 
@@ -1417,7 +1511,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea",random=True))
 
 label monika_tea:
-    if mas_getEV('monika_tea').shown_count == 0:
+    if not mas_getEVL_shown_count("monika_tea"):
         m 2hua "Hey, I wonder if Yuri's tea set is still in here somewhere..."
 
         if not persistent._mas_pm_cares_about_dokis:
@@ -3437,7 +3531,7 @@ label monika_natsuki:
         m "Hope you don't feel too guilty..."
         m 1esa "I certainly don't."
 
-    if mas_getEV("monika_natsuki").shown_count < mas_sensitive_limit:
+    if mas_getEVL_shown_count("monika_natsuki") < mas_sensitive_limit:
         return
 
     # otherwise, derandom
@@ -4203,7 +4297,7 @@ label monika_birthday:
                 m "Just like yours!"
 
             if (
-                mas_getEV("monika_birthday").shown_count == 0
+                not mas_getEVL_shown_count("monika_birthday")
                 and not mas_HistVerifyAll_k(False, "922.actions.no_recognize")
             ):
                 m 3eksdla "It's okay if you don't have anything planned, seeing as you just found out..."
@@ -4227,7 +4321,7 @@ label monika_birthday:
         m 1rksdla "Well, if you need a little reminder, it's September 22nd."
         m 3hksdlb "Maybe you should put a reminder on your phone so you don't forget again!"
 
-    elif mas_getEV("monika_birthday").shown_count == 0:
+    elif not mas_getEVL_shown_count("monika_birthday"):
         m 1euc "You know, there's a lot I don't know about myself."
         m 1eud "I only recently learned when my birthday is by seeing it online."
         m 3eua "It's September 22nd, the release date for DDLC."
@@ -4281,7 +4375,12 @@ label monika_othergames:
     m 3hua "I wonder if I could go into one of your other games and see what it's like?"
     m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
     m 2lksdla "Then again...they're not real people, so it shouldn't matter much."
-    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
+
+    if (
+        mas_getEVL_shown_count("monika_othergames") < mas_sensitive_limit
+        and not persistent._mas_sensitive_mode
+        and not persistent._mas_pm_cares_about_dokis
+    ):
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
     m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
@@ -4543,7 +4642,10 @@ label monika_algernon:
     m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1hua "No matter what happens, know that I will always love you."
 
-    $ mas_getEV("greeting_amnesia").unlocked = not seen_event('greeting_amnesia')
+    $ mas_setEVLPropValues(
+        "greeting_amnesia",
+        unlocked=not seen_event('greeting_amnesia')
+    )
     return "love"
 
 init 5 python:
@@ -4783,7 +4885,19 @@ label monika_fanfiction:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_eternity",category=['philosophy','monika'],prompt="Mortality",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_eternity",
+            category=['philosophy','monika'],
+            prompt="Mortality",
+            random=True,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+            }
+        )
+    )
 
 label monika_eternity:
     m 1ekc "[player]..."
@@ -4868,7 +4982,7 @@ label monika_aware:
     m 3rksdla "There's no real way to describe it."
     m 3eua "I feel like this is what poetry was made for."
 
-    if mas_getEV("monika_aware").shown_count == 0:
+    if not mas_getEVL_shown_count("monika_aware"):
         m 4eub "Do you still remember the first poem I showed you?"
         m 2lksdlb "Hold on, let's see if the poem function still works.{w=0.5}.{w=0.5}.{nw}"
         call mas_showpoem(poem=poem_m1)
@@ -5186,7 +5300,7 @@ init 5 python:
 
 label monika_dunbar:
     #We only want this on the first time seeing this topic post seeing the player's friends topic
-    if mas_getEV("monika_dunbar").shown_count == 0 and persistent._mas_pm_few_friends:
+    if persistent._mas_pm_few_friends and not mas_getEVL_shown_count("monika_dunbar"):
         m 1eua "Do you remember when we talked about Dunbar's number and the amount of stable relationships people can maintain?"
     else:
         m 1eua "Do you know about Dunbar's number?"
@@ -7993,14 +8107,14 @@ label monika_breakup:
         m 1tua "Especially with something {i}that{/i} predictable, ehehe~"
 
         # sub 1 from the shown_count so we don't end up counting this path toward locking the topic
-        $ mas_getEV("monika_breakup").shown_count -= 1
+        $ mas_assignModifyEVLPropValue("monika_breakup", "shown_count", "-=", 1)
 
     else:
         #Lose affection for bringing this up.
         $ mas_loseAffection(reason=1)
 
         #Get the shown count
-        $ shown_count = mas_getEV("monika_breakup").shown_count
+        $ shown_count = mas_getEVLPropValue("monika_breakup", "shown_count", 0)
 
         #First
         if shown_count == 0:
@@ -12969,10 +13083,11 @@ label monika_trick_sayori:
 
 label monika_trick_monika:
     hide screen mas_background_timed_jump
-    if mas_getEV("monika_trick").shown_count == 0:
+    if not mas_getEVL_shown_count("monika_trick"):
         $ mas_gainAffection(10, bypass=True)
     else:
         $ mas_gainAffection()
+
     m 1tkbfu "That wasn't supposed to be an option, silly!"
     m 1tubfb "But it really does make me happy that you only have eyes for me..."
     m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
@@ -14741,7 +14856,11 @@ init 5 python:
             category=['literature'],
             prompt="There Will Come Soft Rains",
             random=True,
-            aff_range=(mas_aff.AFFECTIONATE, None)
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+            }
         )
     )
 
@@ -14909,7 +15028,11 @@ init 5 python:
             category=["monika"],
             prompt="Dying the same day",
             aff_range=(mas_aff.NORMAL, None),
-            random=True
+            random=True,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+            }
         )
     )
 
@@ -15095,7 +15218,11 @@ init 5 python:
             prompt="Fear",
             category=['monika'],
             conditional="renpy.seen_label('monika_soft_rains')",
-            action=EV_ACT_RANDOM
+            action=EV_ACT_RANDOM,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+            }
         )
     )
 
