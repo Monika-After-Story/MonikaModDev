@@ -717,7 +717,7 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
         m "Oh!{w=0.5} It's you, [player]!"
 
     else:
-        m ".{w=0.3}.{w=0.3}."
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
         m "Welcome{w=0.3}, to the Scarlet Devil Spaceroom..."
         m "[player]."
         m "Please, let me offer you our hospitality."
@@ -1067,7 +1067,7 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     else:
         m 1esc "Anyway..."
 
-    m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
+    m 1eua "I'll just take these decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     #Hide vis
     $ mas_o31HideVisuals()
@@ -3992,7 +3992,7 @@ label mas_d25_monika_d25_mode_exit:
     m 3eua "I wouldn't mind getting right into the new year."
     m 1hua "As long as it's with you, of course~"
     m 3hub "Ahaha!"
-    m 2dsa "Just give me a second to take the decorations down.{w=1}.{w=1}.{nw}"
+    m 2dsa "Just give me a second to take the decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     call mas_d25_season_exit
 
@@ -5009,7 +5009,7 @@ label return_home_post_player_bday:
             else:
                 m 3rksdla "Oh...it's not your birthday anymore..."
             m 3hksdlb "We should probably take these decorations down now, ahaha!"
-            m 3eka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
+            m 3eka "Just give me one second.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
             $ mas_surpriseBdayHideVisuals()
 
             #If we returned from a date post pbday but have O31 deco

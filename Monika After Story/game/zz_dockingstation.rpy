@@ -2516,7 +2516,7 @@ label mas_dockstat_generic_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
-        m 1eua "Give me a second to get ready."
+        m 1eua "Give me a second to get ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
         #Prepare the current drink to be removed if needed
         python:
@@ -2534,10 +2534,6 @@ label mas_dockstat_generic_iowait:
             jump expression mas_farewells.dockstat_rtg_label
         #Otherwise, we don't have a valid label and need to jump to a generic ready to go
         jump mas_dockstat_generic_rtg
-
-
-    #Pop hist so we don't have more than one 'give me a second to get ready' in hist.
-    $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting.
