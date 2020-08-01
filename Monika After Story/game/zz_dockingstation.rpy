@@ -2535,10 +2535,6 @@ label mas_dockstat_generic_iowait:
         #Otherwise, we don't have a valid label and need to jump to a generic ready to go
         jump mas_dockstat_generic_rtg
 
-
-    #Pop hist so we don't have more than one 'give me a second to get ready' in hist.
-    $ _history_list.pop()
-
     # display menu options
     # 4 seconds seems decent enough for waiting.
     show screen mas_background_timed_jump(4, "mas_dockstat_generic_iowait")
