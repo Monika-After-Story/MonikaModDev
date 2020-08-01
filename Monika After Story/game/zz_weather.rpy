@@ -418,7 +418,7 @@ init -20 python in mas_weather:
         if (
             store.mas_current_background.isFltNight()
             and not store.persistent.event_list
-            and store.mas_getEV("monika_auroras").shown_count == 0
+            and not mas_getEVL_shown_count("monika_auroras")
         ):
             store.queueEvent("monika_auroras", notify=True)
 

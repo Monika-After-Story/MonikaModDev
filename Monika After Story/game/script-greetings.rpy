@@ -1266,7 +1266,6 @@ label monikaroom_greeting_ear_narration:
 
     else:
         # grab monikaroom greeting because we need it
-        $ willchange_ev = mas_getEV("monikaroom_will_change")
 
         if persistent._mas_pm_will_change is not False:
             m "Oh, so you {i}are{/i} willing to listen to me..."
@@ -1288,14 +1287,14 @@ label monikaroom_greeting_ear_narration:
                 m "You'll change, right? For me?{fast}"
                 "I will.":
                     $ persistent._mas_pm_will_change = True
-                    $ mas_lockEvent(willchange_ev)
+                    $ mas_lockEVL("monikaroom_will_change", "GRE")
                     m "Thank you, [player]."
                     m "Please, I want us both to be happy."
 
                 "I won't.":
                     #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
                     $ persistent._mas_pm_will_change = False
-                    $ mas_unlockEvent(willchange_ev)
+                    $ mas_unlockEVL("monikaroom_will_change", "GRE")
                     $ mas_loseAffection()
                     m "Then I'm not talking to you until you decide to change."
                     m "Goodbye, [player]."
@@ -1531,6 +1530,40 @@ label monikaroom_greeting_ear_rmrf:
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
+# monika reads renpy sources sip
+init 5 python:
+    # overriding methods is an advanced thing,
+    # she does it when she gets more experienced with python
+    if (
+        mas_seenLabels(
+            (
+                "monikaroom_greeting_ear_progreadpy",
+                "monikaroom_greeting_ear_progbrokepy",
+                "monikaroom_greeting_ear_nameerror"
+            ),
+            seen_all=True
+        )
+        and store.mas_anni.pastThreeMonths()
+    ):
+        gmr.eardoor.append("monikaroom_greeting_ear_renpy_docs")
+
+label monikaroom_greeting_ear_renpy_docs:
+    m "Hmm, looks like I might need to override this function to give me a little more flexibility..."
+    m "Wait...{w=0.3}what's this 'st' variable?"
+    m "...Let me check the documentation for the function."
+    m ".{w=0.3}.{w=0.3}.{w=0.3}Wait, what?"
+    m "Half the variables this function accepts aren't even documented!"
+    m "Who wrote this?"
+
+    if mas_isMoniUpset():
+        m "...I have to figure this out."
+        call monikaroom_greeting_ear_prog_upset
+
+    elif mas_isMoniDis():
+        m "...I {i}have{/i} to figure this out."
+        call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
 
 ## ear door processing
 init 10 python:
@@ -1933,7 +1966,7 @@ label greeting_japan:
     m 2eub "Hello, [player]!"
     m 1eua "I'm just practicing Japanese."
     m 3eua "Let's see..."
-    $ shown_count = mas_getEV("greeting_japan").shown_count
+    $ shown_count = mas_getEVLPropValue("greeting_japan", "shown_count")
     if shown_count == 0:
         m 4hub "Watashi ha itsumademo anata no mono desu!"
         m 2hksdlb "Sorry if that didn't make sense!"
@@ -2050,7 +2083,7 @@ label greeting_amnesia:
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
     m 1hksdlb "Hope you can forgive my little prank, ehehe~"
 
-    $ mas_lockEvent(mas_getEV("greeting_amnesia"))
+    $ mas_lockEVL("greeting_amnesia", "GRE")
     return
 
 init 5 python:
@@ -2598,7 +2631,7 @@ label greeting_hairdown:
     $ mas_unlockEventLabel("monika_hair_select")
 
     # lock this greeting
-    $ mas_lockEvent(mas_getEV("greeting_hairdown"))
+    $ mas_lockEVL("greeting_hairdown", "GRE")
 
     # cleanup
     # enable music menu

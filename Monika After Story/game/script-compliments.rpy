@@ -384,12 +384,14 @@ label mas_compliment_thanks:
     m 3ekbsa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name].":
-            if mas_getEV('mas_compliment_thanks').shown_count == 0:
+            if mas_getEVL_shown_count("mas_compliment_thanks") == 0:
                 $ mas_gainAffection(10,bypass=True)
+
             m 1ekbsa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both...{w=0.5}{nw}"
             extend 1dkbfa "know that I'll always love you and be here for you."
+
         "Yeah.":
             m 1hub "Ehehe~"
             m 1eub "I love you, [player]."

@@ -190,8 +190,8 @@ init 5 python:
 # PREREQS:
 #   interpreted language (tip 3)
 label monika_ptod_tip002:
-    $ tip_ev = mas_getEV("monika_ptod_tip002")
-    if tip_ev.last_seen is None:
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip002") is None
+    if last_seen_is_none:
         m 1eua "In most programming languages, data that can be changed or modified by the program has a {i}type{/i} associated with it."
         m 3eua "For example, if some data should be treated as a number, then it will have a numeric type. If some data should be treated as text, then it will have a string type."
         m "There are many types in Python, but today we'll talk about the more basic, or primitive ones."
@@ -249,7 +249,7 @@ label monika_ptod_tip002:
 
     m 1eua "All the types I mentioned here are known as {i}primitive{/i} data types."
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m "Python uses a variety of other types as well, but I think these ones are enough for today."
 
     $ store.mas_ptod.ex_cn()
@@ -277,8 +277,6 @@ init 5 python:
 # PREREQS:
 #   What is python (tip 1)
 label monika_ptod_tip003:
-    $ tip_ev = mas_getEV("monika_ptod_tip003")
-
     m 1eua "Programming languages are usually either compiled or interpreted."
     m "Compiled languages require their code to be converted to a machine-readable format before being executed."
     m 3eub "C and Java are two very popular compiled languages."
@@ -304,7 +302,7 @@ label monika_ptod_tip003:
     call mas_wx_cmd("121 / 11", local_ctx)
     # NOTE: add more commands as the user goes thru the tips
 
-    if tip_ev.last_seen is None:
+    if mas_getEVL_last_seen("monika_ptod_tip003") is None:
         m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
 
         m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
@@ -391,16 +389,16 @@ label monika_ptod_tip005:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ tip_ev = mas_getEV("monika_ptod_tip005")
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip005") is None
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "Remember when I was describing different Python types and mentioned booleans?"
         m 1eub "Well, today I'm going into more detail about booleans and how they relate to making comparisons between values."
 
     m 1eua "Booleans are commonly used in deciding what code to run or setting a flag to note if something happened or not."
     m "When we do comparisons, each expression is evaluated to a boolean."
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eksdlb "This probably makes no sense right now, so I'll pull up the console and show you some examples."
 
     show monika at t22
@@ -431,7 +429,7 @@ label monika_ptod_tip005:
     call mas_wx_cmd("a >= c")
     call mas_wx_cmd("a <= c")
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "You may have noticed that every comparison returned {b}True{/b} or {b}False{/b}."
         m 1eksdlb "{i}That{/i} is what I meant when I said that comparison expressions evaluate to booleans."
 
@@ -535,7 +533,7 @@ label monika_ptod_tip005:
     m 1hua "If you ever decide to do programming for a living, you'll find that a lot of your code is just checking if some comparisons are true so you can make your programs do the {i}right{/i} thing."
     m 1eksdla "And even if coding isn't part of your career path, we'll be doing lots of comparisons in future lessons, so be prepared!"
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "I think that's enough for today."
 
     $ store.mas_ptod.ex_cn()
@@ -566,9 +564,9 @@ label monika_ptod_tip006:
     $ local_ctx = dict()
     $ num_store = "922"
     $ b_num_store = "323"
-    $ tip_ev = mas_getEV("monika_ptod_tip006")
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip006") is None
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eub "Now that you know about types, I can teach you about variables."
 
     # variable intro
@@ -627,7 +625,7 @@ label monika_ptod_tip006:
     m "Dynamic typing enables variables in Python to change types during execution,"
     m 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eud "Whew!{w=0.2} That was a mouthful!"
 
     m "Did you understand all that?{nw}"
@@ -647,7 +645,7 @@ label monika_ptod_tip006:
     hide screen mas_py_console_teaching
     show monika at t11
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "I think that's enough Python for today."
 
     m 1hua "Thanks for listening!"
@@ -711,7 +709,7 @@ label monika_ptod_tip008:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ tip_ev = mas_getEV("monika_ptod_tip008")
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip008") is None
 
     m 1eua "Remember when I showed you how to make variables and assign them values?"
     m 1dsa "Imagine if we dropped the notion of variables and focused on using the values directly in code."
@@ -751,7 +749,7 @@ label monika_ptod_tip008:
 
     # TODO: lists, dicts
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "There are more literals for other types, but I'll mention them when I talk about those types."
 
     m 1eua "Literals can be used in place of variables when writing code. For example:"
@@ -765,7 +763,7 @@ label monika_ptod_tip008:
     m "We can also use literals alongside variables."
     m 1eub "Additionally, literals are great for creating and using data on-the-fly without the overhead of creating unnecessary variables."
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1kua "Alright, that's about all I can {i}literally{/i} say about literals."
 
     $ store.mas_ptod.ex_cn()
@@ -796,9 +794,8 @@ label monika_ptod_tip009:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ tip_ev = mas_getEV("monika_ptod_tip009")
 
-    if tip_ev.last_seen is None:
+    if mas_getEVL_last_seen("monika_ptod_tip009") is None:
         m 1eua "When we talked about comparisons and booleans, we used integers as the basis for our comparisons."
         m 1dsa "But..."
         m 3eua "Did you know that every type has its own truth value associated with it?"

@@ -402,6 +402,177 @@ init 6 python:
         """
         return mas_all_ev_db.get(ev_label, None)
 
+    def mas_checkEVL(ev_label, predicate):
+        """
+        Checks event properties using a lambda
+
+        IN:
+            ev_label - ev_label representing the event to check properties for
+            predicate - predicate function (accepting an ev as the argument) for the test(s)
+
+        OUT:
+            True if predicate function returns True, False otherwise
+
+        NOTE: Does nothing if the ev does not exist
+        """
+        ev = mas_getEV(ev_label)
+
+        if ev is None:
+            return False
+
+        return predicate(ev)
+
+    def mas_getEVLPropValue(ev_label, prop, default=None):
+        """
+        Safely gets an ev prop value
+
+        IN:
+            ev_label - eventlabel corresponding to the event object to get the property from
+            prop - property name to get
+            default - default value to return if ev not found/prop not found
+                (Default: None)
+
+        OUT:
+            Value of the given property name, or default if not found/no ev exists
+        """
+        ev = mas_getEV(ev_label)
+
+        return getattr(ev, prop, default)
+
+    def mas_setEVLPropValues(ev_label, **kwargs):
+        """
+        Sets ev prop values in bulk if the ev exists
+
+        IN:
+            ev_label - ev_label representing the event to set properties for
+            kwargs - propname=new_value. Represents the value to set to the property
+
+        OUT:
+            True if the property/ies was/were set
+            False if not (ev does not exist)
+        """
+        ev = mas_getEV(ev_label)
+
+        if ev is None:
+            return False
+
+        for attr, new_value in kwargs.iteritems():
+            setattr(ev, attr, new_value)
+
+        return True
+
+    def mas_isPoolEVL(ev_label):
+        """
+        Checks if the event for the given event label is pool
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is pooled
+
+        OUT:
+            True if the ev is pooled, False if not, or the ev doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "pool", False)
+
+    def mas_isRandomEVL(ev_label):
+        """
+        Checks if the event for the given event label is random
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is random
+
+        OUT:
+            True if the ev is random, False if not, or the ev doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "random", False)
+
+    def mas_isUnlockedEVL(ev_label):
+        """
+        Checks if the event for the given event label is unlocked
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is unlocked
+
+        OUT:
+            True if the ev is unlocked, False if not, or the ev doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "unlocked", False)
+
+    def mas_getEVL_last_seen(ev_label, default=None):
+        """
+        Gets the last_seen from the event corresponding to the given eventlabel
+
+        If the event doesn't exist, the default is returned
+
+        IN:
+            ev_label - eventlabel for the event we wish to get last_seen from
+            default - value to return if the event object doesn't exist
+
+        OUT:
+            The last_seen of the ev, or the default if the event doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "last_seen", default)
+
+    def mas_getEVL_shown_count(ev_label, default=0):
+        """
+        Gets the shown_count from the event corresponding to the given eventlabel
+
+        If the event doesn't exist, the default is returned
+
+        IN:
+            ev_label - eventlabel for the event we wish to get shown_count from
+            default - value to return if the event object doesn't exist
+
+        OUT:
+            The shown_count of the ev, or the default if the event doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "shown_count", default)
+
+    def mas_inRulesEVL(ev_label, *args):
+        """
+        Checks if keys are in the event's rules dict
+
+        IN:
+            ev_label - eventlabel for the event we wish to check rule keys for
+            *args - rule keys
+
+        OUT:
+            True if all rule keys provided are in an event object's rules dict
+            False if the event doesn't exist or any provided keys aren't present in the rules dict
+        """
+        ev_rules = mas_getEVLPropValue(ev_label, "rules", dict())
+
+        if not ev_rules:
+            return False
+
+        for rule_key in args:
+            if rule_key not in ev_rules:
+                return False
+        return True
+
+    def mas_assignModifyEVLPropValue(ev_label, propname, operation, value):
+        """
+        Does an assign-modify operation
+
+        IN:
+            ev_label - eventlabel representing the event that will have a property assign/modified
+            propname - property name to do the assign-modify operation on
+            operation - operator to assign/modify with. (Any of the following: +=, -=, *=, /= (as a string))
+            value - value to use in the operation
+
+        OUT:
+            True if event values were assign/modified successfully
+            False otherwise
+        """
+        ev = mas_getEV(ev_label)
+        if not ev:
+            return False
+
+        else:
+            try:
+                exec("ev.{0} {1} {2}".format(propname, operation, value))
+            except:
+                return False
+        return True
 
     def mas_getEVCL(ev_label):
         """
@@ -545,17 +716,24 @@ init 6 python:
             remove_dates - True if we want to remove start/end_dates from the event
                 (Default: True)
         """
-        ev = mas_getEV(ev_label)
-        if ev is not None:
-            ev.conditional = None
-            ev.action = None
+        if remove_dates:
+            mas_setEVLPropValues(
+                ev_label,
+                conditional=None,
+                action=None,
+                start_date=None,
+                end_date=None
+            )
 
-            if remove_dates:
-                ev.start_date = None
-                ev.end_date = None
+        else:
+            mas_setEVLPropValues(
+                ev_label,
+                conditional=None,
+                action=None
+            )
 
-            if list_pop:
-                mas_rmEVL(ev_label)
+        if list_pop:
+            mas_rmEVL(ev_label)
 
 
     def mas_flagEVL(ev_label, code, flags):
@@ -2178,9 +2356,9 @@ label call_next_event:
         $ ev = mas_getEV(event_label)
 
         if (
-                notify
-                and ((ev is not None and "skip alert" not in ev.rules) or ev is None)
-            ):
+            notify
+            and (ev is None or ("skip alert" not in ev.rules))
+        ):
             #Create a new notif
             if renpy.windows:
                 $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
@@ -2321,7 +2499,10 @@ label prompt_menu:
         if len(unseen_event_labels) > 0 and persistent._mas_unsee_unseen:
             mas_showEVL('mas_show_unseen','EVE',unlock=True)
             unseen_num = len(unseen_event_labels)
-            mas_getEV('mas_show_unseen').prompt = "I would like to see 'Unseen' ([unseen_num]) again"
+            mas_setEVLPropValues(
+                "mas_show_unseen",
+                prompt="I would like to see 'Unseen' ([unseen_num]) again"
+            )
         else:
             mas_hideEVL('mas_show_unseen','EVE',lock=True)
 
@@ -2405,14 +2586,14 @@ label show_prompt_list(sorted_event_labels):
     #Get list of unlocked prompts, sorted by unlock date
     python:
         prompt_menu_items = [
-            (unlocked_events[event_label].prompt, event_label, True, False)
-            for event_label in sorted_event_labels
+            (mas_getEVLPropValue(ev_label, "prompt"), ev_label, False, False)
+            for ev_label in sorted_event_labels
         ]
 
         hide_unseen_event = mas_getEV("mas_hide_unseen")
 
         final_items = (
-            (hide_unseen_event.prompt, hide_unseen_event.eventlabel, False, False, 20),
+            (_("I don't want to see this menu anymore."), "mas_hide_unseen", False, False, 20),
             (_("Nevermind."), False, False, False, 0)
         )
 
