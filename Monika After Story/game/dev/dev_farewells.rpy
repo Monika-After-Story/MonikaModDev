@@ -3,7 +3,7 @@
 init python:
     if persistent._mas_fastbye is None:
         persistent._mas_fastbye = config.developer
-        
+
 
 init 5 python:
     rules = dict()
@@ -91,27 +91,6 @@ label bye_dev_temp:
     $ evhand.farewell_database["bye_dev_temp"].unlocked = False
     m 1k "All done, thanks for waiting [player]!"
     #Don't show this farewell again
-    return 'quit'
-
-init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=20,max=None))
-    addEvent(
-        Event(
-            persistent.farewell_database,
-            eventlabel="bye_dev_love",
-            unlocked=True,
-            rules=rules
-        ),
-        eventdb=evhand.farewell_database
-    )
-    del rules
-
-label bye_dev_love:
-    m 1c "Aww, leaving already?"
-    m 1e "It's really sad whenever you have to go..."
-    m 5a "I love you so much [player]!"
-    m 5a "Never forget that!"
     return 'quit'
 
 init 5 python:

@@ -230,8 +230,7 @@ label mas_farewell_start:
 ###### BEGIN FAREWELLS ########################################################
 ## FARE WELL RULES:
 # unlocked - True means this farewell is ready for selection
-# random - randoms are used in teh default farewell action
-# pool - pooled ones are selectable in the menu
+# pool - pooled ones are selectable in the menu, if non-pool, it is assumed available in random selection
 # rules - Dict containing different rules(check event-rules for more details)
 ###
 
@@ -241,7 +240,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_leaving_already",
             unlocked=True,
-            random=True,
             conditional="mas_getSessionLength() <= datetime.timedelta(minutes=20)",
             aff_range=(mas_aff.NORMAL, None)
         ),
@@ -260,8 +258,7 @@ init 5 python:
         Event(
             persistent.farewell_database,
             eventlabel="bye_goodbye",
-            unlocked=True,
-            random=True
+            unlocked=True
         ),
         code="BYE"
     )
@@ -288,7 +285,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_sayanora",#sayanora? yes
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -304,7 +300,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_farewellfornow",
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -320,7 +315,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_untilwemeetagain",
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -337,7 +331,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_take_care",
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -347,6 +340,25 @@ init 5 python:
 label bye_take_care:
     m 1eua "Don't forget that I always love you, [player]~"
     m 1hub "Take care!"
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_leaving_already_2",
+            unlocked=True,
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        code="BYE"
+    )
+
+label bye_leaving_already_2:
+    m 1ekc "Aww, leaving already?"
+    m 1eka "It's really sad whenever you have to go..."
+    m 3hubsa "I love you so much [player]!"
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5hubsb "Never forget that!"
     return 'quit'
 
 init 5 python:
@@ -681,12 +693,12 @@ label bye_prompt_sleep:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
-# init 5 python:
-#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),code="BYE")
+init 5 python:
+    addEvent(Event(persistent.farewell_database, eventlabel="bye_illseeyou", random=True), code="BYE")
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
-    m 1hua "Don't forget about me, okay?"
+    m 3kua "Don't forget about me, okay?~"
     return 'quit'
 
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
