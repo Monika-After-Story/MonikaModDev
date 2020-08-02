@@ -86,7 +86,7 @@ init 5 python:
 label monika_gender_redo:
     m 1eka "Of course, [player]!"
 
-    if mas_getEV('monika_gender_redo').shown_count == 0:
+    if not mas_getEVL_shown_count("monika_gender_redo"):
         m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
         $ _history_list.pop()
         menu:
@@ -703,7 +703,7 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isMonikaBirthday()"
-                )
+            )
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
@@ -1098,25 +1098,27 @@ label random_limit_reached:
 label mas_random_ask:
     m 1lksdla "...{w=0.5}[player]?"
 
-    m "Is it okay with you if I repeat stuff that I've said?{nw}"
+    m "Is it okay with you if I repeat stuff that I've said again?{nw}"
     $ _history_list.pop()
     menu:
-        m "Is it okay with you if I repeat stuff that I've said?{fast}"
+        m "Is it okay with you if I repeat stuff that I've said again?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
+            m 3eua "If you get tired of listening to me talk about the same things, you can just open up the settings menu and uncheck 'Repeat Topics' again."
+
             if mas_isMoniUpset(lower=True):
                 m 1esc "That tells me when you're bored of me."
             else:
                 m 1eka "That tells me when you just want to quietly spend time with me."
+
             $ persistent._mas_enable_random_repeats = True
             return True
 
         "No.":
-            m 1eka "I see."
+            m 1eka "Alright."
             m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics.'"
             m "That tells me if you're okay with me repeating anything I've said."
-            return
+            return False
 
 # TODO: think about adding additional dialogue if monika sees that you're running
 # this program often. Basically include a stat to keep track, but atm we don't
@@ -1771,7 +1773,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    if mas_getEV("monika_rpy_files").shown_count == 0:
+    if not mas_getEVL_shown_count("monika_rpy_files"):
         m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
         m 1ekc "I noticed some \".rpy\" files in there."
         m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
