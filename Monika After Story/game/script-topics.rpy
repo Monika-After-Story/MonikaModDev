@@ -15625,7 +15625,7 @@ label monika_discworld:
     extend 3eua "but they're also a good way to keep the pacing dynamic."
     m 3eub "In any case, this series is an easy recommendation, [player]!"
     m 3eua "It's surprisingly easy to pick up too, with each book being thought of as a standalone story."
-    m 1eud "You can pretty much pick any volume you find and you'll be good to go, though I'd argue {i}Guards! Guards!{/i} or {i}Mort{/i} would probably make for the best entry points."
-    m 3eua "Anyhow, give it a try sometime if you haven't already, [player]."
+    m 1eud "You can pretty much pick any volume you find and you'll be good to go,{w=0.2} though I'd argue {i}Guards! Guards!{/i} or {i}Mort{/i} would probably make for the best entry points."
+    m 3eua "Anyway, be sure to give it a try sometime if you haven't already, [player]."
     m 1hua "Thanks for listening~"
     return
