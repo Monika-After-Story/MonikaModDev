@@ -3966,42 +3966,20 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_love_is_in_the_air",
             unlocked=True,
-            aff_range=(mas_aff.HAPPY, None),
+            aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         code="GRE"
     )
 
 label greeting_love_is_in_the_air:
-    m "{i}~Love is in the air~{/i}"
-    m "{i}~Everywhere I look around~{/i}"
-    m "Oh hello, [player]."
-    m "Don't mind me, just singing a bit."
-
-    if (mas_f14 == datetime.date.today()):
-        m "The song seemed...{w=0.3}{nw}"
-        extend "appropriate{w=0.1}{nw}"
-        extend ", given the occasion."
-        m "You {i}do{/i} know what day it is, right, [player]?"
-        m "Ahaha~"
-
-    else:
-        extend " Thinking about{nw}"
-        if mas.mas_isMoniLove():
-            extend " you."
-        else:
-            extend "...{w=0.3}{nw}"
-            extend "well, you can probably guess what."
-        m "It really does feel like love is in the air all around me whenever you're here."
-
-        if (renpy.seen_label('mas_covid19') and renpy.random.randint(1,3) == 1):
-            m "Though I guess on your end it's not just love these days, is it?"
-            m "Please be careful while the epidemic is still going, [player]."
-            m "As enticing as the idea of taking care of you and nursing you back to health is, I can't really do much for you in that regard."
-            m "So I think I'd rather you didn't get sick in the first place."
-            m "Just remember to wear a mask when going out, and to wash you hands properly, okay?"
-            m "Stay safe, [player]."
-
-        m "Anyway, what would you like to do today?"
+    m 1hub "{i}~Love is in the air~{/i}"
+    m 1rub "{i}~Everywhere I look around~{/i}"
+    m 3ekbsa "Oh hello, [player]..."
+    m 3rksdla "Don't mind me. {w=0.2}I'm just singing a bit, thinking about...{w=0.3}{nw}"
+    extend 1hksdlb "well, you can probably guess what, ahaha~"
+    m 1eubsu "It really does feel like love is all around me whenever you're here."
+    m 3hua "Anyway, what would you like to do today?"
+    return
 
 init 5 python:
     addEvent(
