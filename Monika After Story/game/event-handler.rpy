@@ -402,6 +402,177 @@ init 6 python:
         """
         return mas_all_ev_db.get(ev_label, None)
 
+    def mas_checkEVL(ev_label, predicate):
+        """
+        Checks event properties using a lambda
+
+        IN:
+            ev_label - ev_label representing the event to check properties for
+            predicate - predicate function (accepting an ev as the argument) for the test(s)
+
+        OUT:
+            True if predicate function returns True, False otherwise
+
+        NOTE: Does nothing if the ev does not exist
+        """
+        ev = mas_getEV(ev_label)
+
+        if ev is None:
+            return False
+
+        return predicate(ev)
+
+    def mas_getEVLPropValue(ev_label, prop, default=None):
+        """
+        Safely gets an ev prop value
+
+        IN:
+            ev_label - eventlabel corresponding to the event object to get the property from
+            prop - property name to get
+            default - default value to return if ev not found/prop not found
+                (Default: None)
+
+        OUT:
+            Value of the given property name, or default if not found/no ev exists
+        """
+        ev = mas_getEV(ev_label)
+
+        return getattr(ev, prop, default)
+
+    def mas_setEVLPropValues(ev_label, **kwargs):
+        """
+        Sets ev prop values in bulk if the ev exists
+
+        IN:
+            ev_label - ev_label representing the event to set properties for
+            kwargs - propname=new_value. Represents the value to set to the property
+
+        OUT:
+            True if the property/ies was/were set
+            False if not (ev does not exist)
+        """
+        ev = mas_getEV(ev_label)
+
+        if ev is None:
+            return False
+
+        for attr, new_value in kwargs.iteritems():
+            setattr(ev, attr, new_value)
+
+        return True
+
+    def mas_isPoolEVL(ev_label):
+        """
+        Checks if the event for the given event label is pool
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is pooled
+
+        OUT:
+            True if the ev is pooled, False if not, or the ev doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "pool", False)
+
+    def mas_isRandomEVL(ev_label):
+        """
+        Checks if the event for the given event label is random
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is random
+
+        OUT:
+            True if the ev is random, False if not, or the ev doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "random", False)
+
+    def mas_isUnlockedEVL(ev_label):
+        """
+        Checks if the event for the given event label is unlocked
+
+        IN:
+            ev_label - eventlabel corresponding to the event we wish to check if is unlocked
+
+        OUT:
+            True if the ev is unlocked, False if not, or the ev doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "unlocked", False)
+
+    def mas_getEVL_last_seen(ev_label, default=None):
+        """
+        Gets the last_seen from the event corresponding to the given eventlabel
+
+        If the event doesn't exist, the default is returned
+
+        IN:
+            ev_label - eventlabel for the event we wish to get last_seen from
+            default - value to return if the event object doesn't exist
+
+        OUT:
+            The last_seen of the ev, or the default if the event doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "last_seen", default)
+
+    def mas_getEVL_shown_count(ev_label, default=0):
+        """
+        Gets the shown_count from the event corresponding to the given eventlabel
+
+        If the event doesn't exist, the default is returned
+
+        IN:
+            ev_label - eventlabel for the event we wish to get shown_count from
+            default - value to return if the event object doesn't exist
+
+        OUT:
+            The shown_count of the ev, or the default if the event doesn't exist
+        """
+        return mas_getEVLPropValue(ev_label, "shown_count", default)
+
+    def mas_inRulesEVL(ev_label, *args):
+        """
+        Checks if keys are in the event's rules dict
+
+        IN:
+            ev_label - eventlabel for the event we wish to check rule keys for
+            *args - rule keys
+
+        OUT:
+            True if all rule keys provided are in an event object's rules dict
+            False if the event doesn't exist or any provided keys aren't present in the rules dict
+        """
+        ev_rules = mas_getEVLPropValue(ev_label, "rules", dict())
+
+        if not ev_rules:
+            return False
+
+        for rule_key in args:
+            if rule_key not in ev_rules:
+                return False
+        return True
+
+    def mas_assignModifyEVLPropValue(ev_label, propname, operation, value):
+        """
+        Does an assign-modify operation
+
+        IN:
+            ev_label - eventlabel representing the event that will have a property assign/modified
+            propname - property name to do the assign-modify operation on
+            operation - operator to assign/modify with. (Any of the following: +=, -=, *=, /= (as a string))
+            value - value to use in the operation
+
+        OUT:
+            True if event values were assign/modified successfully
+            False otherwise
+        """
+        ev = mas_getEV(ev_label)
+        if not ev:
+            return False
+
+        else:
+            try:
+                exec("ev.{0} {1} {2}".format(propname, operation, value))
+            except:
+                return False
+        return True
 
     def mas_getEVCL(ev_label):
         """
@@ -545,17 +716,24 @@ init 6 python:
             remove_dates - True if we want to remove start/end_dates from the event
                 (Default: True)
         """
-        ev = mas_getEV(ev_label)
-        if ev is not None:
-            ev.conditional = None
-            ev.action = None
+        if remove_dates:
+            mas_setEVLPropValues(
+                ev_label,
+                conditional=None,
+                action=None,
+                start_date=None,
+                end_date=None
+            )
 
-            if remove_dates:
-                ev.start_date = None
-                ev.end_date = None
+        else:
+            mas_setEVLPropValues(
+                ev_label,
+                conditional=None,
+                action=None
+            )
 
-            if list_pop:
-                mas_rmEVL(ev_label)
+        if list_pop:
+            mas_rmEVL(ev_label)
 
 
     def mas_flagEVL(ev_label, code, flags):
@@ -1103,14 +1281,14 @@ init -1 python in evhand:
     RIGHT_Y = 40
 #    PREV_W = 300
     RIGHT_W = 250
-    RIGHT_H = 640
+    RIGHT_H = 572
 #    PREV_XALIGN = -0.08
     RIGHT_XALIGN = -0.10
     RIGHT_AREA = (RIGHT_X, RIGHT_Y, RIGHT_W, RIGHT_H)
 
     # LEFT PANE
 #    MAIN_X = 360
-    LEFT_X = 735
+    LEFT_X = 740
 #    MAIN_Y = 10
     LEFT_Y = RIGHT_Y
 #    MAIN_W = 300
@@ -1119,13 +1297,7 @@ init -1 python in evhand:
 #    MAIN_XALIGN = -0.08
     LEFT_XALIGN = -0.10
     LEFT_AREA = (LEFT_X, LEFT_Y, LEFT_W, LEFT_H)
-
-    UNSE_X = 680
-    UNSE_Y = 40
-    UNSE_W = 560
-    UNSE_H = 640
-    UNSE_XALIGN = -0.05
-    UNSE_AREA = (UNSE_X, UNSE_Y, UNSE_W, UNSE_H)
+    LEFT_EXTRA_SPACE = 68
 
     # time stuff
     import datetime
@@ -2184,9 +2356,9 @@ label call_next_event:
         $ ev = mas_getEV(event_label)
 
         if (
-                notify
-                and ((ev is not None and "skip alert" not in ev.rules) or ev is None)
-            ):
+            notify
+            and (ev is None or ("skip alert" not in ev.rules))
+        ):
             #Create a new notif
             if renpy.windows:
                 $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
@@ -2314,19 +2486,23 @@ label prompt_menu:
             unlocked=True,
             aff=mas_curr_affection
         )
-        sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
+        sorted_event_labels = Event.getSortedKeys(unlocked_events,include_none=True)
 
-        unseen_events = []
-        for ev_label in sorted_event_keys:
-            # we exclude 'mas_show_unseen' from the unseen list since it's only unlocked when the unseen menu is hidden
-            # having it added to the unseen list just messes up the counter in the 'mas_show_unseen' prompt
-            if not seen_event(ev_label) and ev_label != "mas_show_unseen":
-                unseen_events.append(ev_label)
+        # we exclude 'mas_show_unseen' from the unseen list since it's only unlocked when the unseen menu is hidden
+        # having it added to the unseen list just messes up the counter in the 'mas_show_unseen' prompt
+        unseen_event_labels = [
+            ev_label
+            for ev_label in sorted_event_labels
+            if not seen_event(ev_label) and ev_label != "mas_show_unseen"
+        ]
 
-        if len(unseen_events) > 0 and persistent._mas_unsee_unseen:
+        if len(unseen_event_labels) > 0 and persistent._mas_unsee_unseen:
             mas_showEVL('mas_show_unseen','EVE',unlock=True)
-            unseen_num = len(unseen_events)
-            mas_getEV('mas_show_unseen').prompt = "I would like to see 'Unseen' ([unseen_num]) again"
+            unseen_num = len(unseen_event_labels)
+            mas_setEVLPropValues(
+                "mas_show_unseen",
+                prompt="I would like to see 'Unseen' ([unseen_num]) again"
+            )
         else:
             mas_hideEVL('mas_show_unseen','EVE',lock=True)
 
@@ -2345,7 +2521,7 @@ label prompt_menu:
     #To make the menu line up right we have to build it up manually
     python:
         talk_menu = []
-        if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
+        if len(unseen_event_labels)>0 and not persistent._mas_unsee_unseen:
             # show unseen if we have unseen events and the player hasn't chosen to hide it
             talk_menu.append((_("{b}Unseen{/b}"), "unseen"))
         if mas_hasBookmarks():
@@ -2358,7 +2534,7 @@ label prompt_menu:
                 talk_menu.append((_("I love you too!"),"love_too"))
             else:
                 talk_menu.append((_("I love you!"), "love"))
-        talk_menu.append((_("I'm feeling..."), "moods"))
+        talk_menu.append((_("I feel..."), "moods"))
         talk_menu.append((_("Goodbye"), "goodbye"))
         talk_menu.append((_("Nevermind"),"nevermind"))
 
@@ -2366,7 +2542,7 @@ label prompt_menu:
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
-        call show_prompt_list(unseen_events) from _call_show_prompt_list
+        call show_prompt_list(unseen_event_labels) from _call_show_prompt_list
 
     elif madechoice == "bookmarks":
         call mas_bookmarks
@@ -2404,20 +2580,24 @@ label prompt_menu_end:
     $ mas_DropShield_dlg()
     jump ch30_loop
 
-label show_prompt_list(sorted_event_keys):
+label show_prompt_list(sorted_event_labels):
     $ import store.evhand as evhand
 
     #Get list of unlocked prompts, sorted by unlock date
     python:
-        prompt_menu_items = []
-        for event in sorted_event_keys:
-            prompt_menu_items.append([unlocked_events[event].prompt,event])
+        prompt_menu_items = [
+            (mas_getEVLPropValue(ev_label, "prompt"), ev_label, False, False)
+            for ev_label in sorted_event_labels
+        ]
 
-    $ nvm_text = "Nevermind."
+        hide_unseen_event = mas_getEV("mas_hide_unseen")
 
-    $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
+        final_items = (
+            (_("I don't want to see this menu anymore."), "mas_hide_unseen", False, False, 20),
+            (_("Nevermind."), False, False, False, 0)
+        )
 
-    call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
+    call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
         $ pushEvent(_return)
@@ -2597,153 +2777,141 @@ label mas_bookmarks:
             "mas_song_": store.mas_songs.getPromptSuffix
         }
 
-        # local function that generats indexed based list for bookmarks
-        def gen_bk_disp(bkpl):
-            return [
-                (bkpl[index][0], index, False, False)
-                for index in range(len(bkpl))
-            ]
-
         # generate list of propmt/label tuples of bookmarks
-        bookmarks_pl = []
+        bookmarks_items = []
         for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
-            label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
-
-            #Get the suffix function
-            suffix_func = prompt_suffix_map.get(label_prefix)
-
-            #Now call it if it exists to get the suffix
-            prompt_suffix = suffix_func(ev) if suffix_func else ""
-
-            #Now append based on the delegate
-            # but only if it is not flagged to be hidden.
+            # only if it is not flagged to be hidden
             if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
-                bookmarks_pl.append((
-                    renpy.substitute(ev.prompt + prompt_suffix),
-                    ev.eventlabel
-                ))
+                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
 
-        bookmarks_pl.sort()
-        bookmarks_disp = gen_bk_disp(bookmarks_pl)
+                #Get the suffix function
+                suffix_func = prompt_suffix_map.get(label_prefix)
 
-        remove_bookmark = (
-            "I'd like to remove a bookmark.",
-            -1,
-            False,
-            False,
-            20
+                #Now call it if it exists to get the suffix
+                prompt_suffix = suffix_func(ev) if suffix_func else ""
+
+                #Now append based on the delegate
+                bookmarks_items.append(
+                    (renpy.substitute(ev.prompt + prompt_suffix), ev.eventlabel, False, False)
+                )
+
+        bookmarks_items.sort()
+
+        bk_menu_final_items = (
+            (_("I'd like to remove a bookmark."), "remove_bookmark", False, False, 20),
+            (_("Nevermind."), "nevermind", False, False, 0)
         )
-        return_prompt_back = ("Nevermind.", -2, False, False, 0)
 
+    # FALL THROUGH
 
 label mas_bookmarks_loop:
-
-    # sanity check for bookmark data
-    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
-        # ensure that we have at least 1 bookmark to deal with and the evs and
-        # display lists are the same size
-        return False
+    if not bookmarks_items:
+        show monika idle
+        return True
 
     show monika at t21
-    call screen mas_gen_scrollable_menu(bookmarks_disp,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
+    call screen mas_gen_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *bk_menu_final_items)
 
     $ topic_choice = _return
 
-    if topic_choice < -1:
+    if topic_choice == "nevermind":
         # nevermind was selected
         return False
 
-    elif topic_choice < 0:
+    elif topic_choice == "remove_bookmark":
         # prompt for bookmarks to remove
-        # no need to regen since we know we have the list already
-        call mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, gen_bk_disp)
+        call mas_bookmarks_unbookmark(bookmarks_items)
         show monika idle
+        # the list might have been regenerated
+        $ bookmarks_items = _return
 
-        # the disp list might have been regenerated
-        $ bookmarks_disp = _return
-
-    elif 0 <= topic_choice < len(bookmarks_pl):
-        # get selected label and push
-        $ sel_evl = bookmarks_pl[topic_choice][1]
+    else:
+        # got label, let's push
         show monika at t11
-        $ pushEvent(sel_evl, skipeval=True)
+        $ pushEvent(topic_choice, skipeval=True)
         return True
 
     jump mas_bookmarks_loop
 
-
 # unbookmark flow
+# Removes bookmarks from _mas_player_bookmarked
+#
 # IN:
-#   bookmarks_disp - list of displayable menu bookmarks.
-#   regen - function used to regenerate bookmarks_disp
+#   bookmarks_items - list of displayable menu bookmarks
 #
-# IN/OUT:
-#   bookmarks_pl - list of available bookmark prompt/label tuples
-#       items are removed as they are unbookmarked
-#
-# RETURNS: list of displayable menu bookmarks. migtht be regenerated.
-label mas_bookmarks_unbookmark(bookmarks_pl, bookmarks_disp, regen):
-    pass
+# RETURNS:
+#   list of displayable menu bookmarks. migtht be regenerated.
+label mas_bookmarks_unbookmark(bookmarks_items):
+    python:
+        def _convert_items(items, convert_into):
+            """
+            A local func to convert items from
+            gen scrollable menu format into check scrollable one
+            and vice versa
 
-label mas_bookmarks_unbookmark_loop:
+            IN:
+                items - list of items to convert
+                convert_into - type of conversion
+                    either "CHECK_ITEMS"
+                    or "GEN_ITEMS"
 
-    if len(bookmarks_pl) < 1 or len(bookmarks_pl) != len(bookmarks_disp):
-        # ensure that we have at least 1 bookmark to deal with and the evs and
-        # display lists are the same size
-        return []
+            OUT:
+                list of converted items
+            """
+            if convert_into == "CHECK_ITEMS":
+                new_items = []
 
-    $ unbookmark_back = ("Nevermind.", -1, False, False, 20)
+                for item in items:
+                    prompt = item[0]
+                    # italic
+                    if item[2]:
+                        prompt = "{0}{1}{2}".format("{i}", prompt, "{/i}")
+
+                    # bold
+                    if item[3]:
+                        prompt = "{0}{1}{2}".format("{b}", prompt, "{/b}")
+
+                    new_items.append(
+                        (prompt, item[1], False, True, False)
+                    )
+
+            else:
+                new_items = [
+                    (item[0], item[1], False, False)
+                    for item in items
+                ]
+
+            return new_items
+
+        bookmarks_items = _convert_items(bookmarks_items, "CHECK_ITEMS")
 
     show monika 1eua at t21
 
     # decicde which prompt
-    if len(bookmarks_disp) > 1:
-        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False)
+    if len(bookmarks_items) > 1:
+        $ renpy.say(m, "Which bookmarks do you want to remove?", interact=False)
+
     else:
-        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False)
+        $ renpy.say(m, "Just select the bookmark if you're sure you want to remove it.", interact=False)
 
-    call screen mas_gen_scrollable_menu(bookmarks_disp, (evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, unbookmark_back)
+    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Remove selected.")
 
-    $ topic_choice = _return
+    $ bookmarks_to_remove = _return
+    $ bookmarks_items = _convert_items(bookmarks_items, "GEN_ITEMS")
 
-    if topic_choice < 0:
-        # -1 is nevermind
-        return bookmarks_disp
-
-    # sanity check the selected topic choice
-    if topic_choice < len(bookmarks_pl):
-        # a topic was selected
-
+    # sanity check that the user selected something
+    if bookmarks_to_remove:
         python:
-            # get the label that was selected
-            sel_evl = bookmarks_pl[topic_choice][1]
+            for ev_label in bookmarks_to_remove.iterkeys():
+                # remove the bookmark from persist (if in it)
+                if ev_label in persistent._mas_player_bookmarked:
+                    persistent._mas_player_bookmarked.remove(ev_label)
 
-            # remove the bookmark from persist (if in it)
-            if sel_evl in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked.remove(sel_evl)
-
-            # remove from teh ev list
-            bookmarks_pl.pop(topic_choice)
-
-            # re-generate bookmarks disp
-            bookmarks_disp = regen(bookmarks_pl)
+            # filter the removed items to show the menu again
+            bookmarks_items = filter(lambda item: item[1] not in bookmarks_to_remove, bookmarks_items)
 
         show monika at t11
-        m 1eua "Okay, [player]..."
+        m 1dsa "Okay, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+        m 3hua "All done!"
 
-        # prompt for more unbookmarks if we have any left
-        if len(bookmarks_disp) > 0:
-            m 1eka "Are there any other bookmarks you want to remove?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Are there any other bookmarks you want to remove?{fast}"
-                "Yes.":
-                    pass # returns to start of loop
-                "No.":
-                    m 3eua "Okay."
-                    return bookmarks_disp
-        else:
-            m 3hua "All done!"
-            return bookmarks_disp
-
-    jump mas_bookmarks_unbookmark_loop
+    return bookmarks_items

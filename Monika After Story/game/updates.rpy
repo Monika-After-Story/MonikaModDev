@@ -377,6 +377,37 @@ label v0_11_4(version="v0_11_4"):
     python:
         #Remove lucky mood
         mas_eraseTopic("mas_mood_lucky", persistent._mas_mood_database)
+
+        #Modify randchat settings
+        OLD_NEW_RANDCHAT_MAP = {
+            0: 6,
+            1: 5,
+            2: 4,
+            3: 3,
+            4: 2,
+            5: 1,
+            6: 0
+        }
+
+        persistent._mas_randchat_freq = OLD_NEW_RANDCHAT_MAP.get(persistent._mas_randchat_freq, mas_randchat.NORMAL)
+
+        # unlock _remembrance based on _japan pre-req
+        if seen_event('monika_japan'):
+            mas_unlockEVL("monika_remembrance", "EVE")
+
+        #Remove aff for bad derands
+        bad_topic_derand_list = [
+            "monika_fear",
+            "monika_soft_rains",
+            "monika_whispers",
+            "monika_eternity",
+            "monika_dying_same_day"
+        ]
+
+        for bad_evl in bad_topic_derand_list:
+            if bad_evl in persistent._mas_player_derandomed:
+                mas_loseAffection(5)
+
     return
 
 #0.11.3

@@ -53,6 +53,7 @@ init -1 python in mas_greetings:
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
+    TYPE_WORKOUT = "workout"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -1258,7 +1259,6 @@ label monikaroom_greeting_ear_narration:
 
     else:
         # grab monikaroom greeting because we need it
-        $ willchange_ev = mas_getEV("monikaroom_will_change")
 
         if persistent._mas_pm_will_change is not False:
             m "Oh, so you {i}are{/i} willing to listen to me..."
@@ -1280,14 +1280,14 @@ label monikaroom_greeting_ear_narration:
                 m "You'll change, right? For me?{fast}"
                 "I will.":
                     $ persistent._mas_pm_will_change = True
-                    $ mas_lockEvent(willchange_ev)
+                    $ mas_lockEVL("monikaroom_will_change", "GRE")
                     m "Thank you, [player]."
                     m "Please, I want us both to be happy."
 
                 "I won't.":
                     #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
                     $ persistent._mas_pm_will_change = False
-                    $ mas_unlockEvent(willchange_ev)
+                    $ mas_unlockEVL("monikaroom_will_change", "GRE")
                     $ mas_loseAffection()
                     m "Then I'm not talking to you until you decide to change."
                     m "Goodbye, [player]."
@@ -1523,6 +1523,40 @@ label monikaroom_greeting_ear_rmrf:
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
+# monika reads renpy sources sip
+init 5 python:
+    # overriding methods is an advanced thing,
+    # she does it when she gets more experienced with python
+    if (
+        mas_seenLabels(
+            (
+                "monikaroom_greeting_ear_progreadpy",
+                "monikaroom_greeting_ear_progbrokepy",
+                "monikaroom_greeting_ear_nameerror"
+            ),
+            seen_all=True
+        )
+        and store.mas_anni.pastThreeMonths()
+    ):
+        gmr.eardoor.append("monikaroom_greeting_ear_renpy_docs")
+
+label monikaroom_greeting_ear_renpy_docs:
+    m "Hmm, looks like I might need to override this function to give me a little more flexibility..."
+    m "Wait...{w=0.3}what's this 'st' variable?"
+    m "...Let me check the documentation for the function."
+    m ".{w=0.3}.{w=0.3}.{w=0.3}Wait, what?"
+    m "Half the variables this function accepts aren't even documented!"
+    m "Who wrote this?"
+
+    if mas_isMoniUpset():
+        m "...I have to figure this out."
+        call monikaroom_greeting_ear_prog_upset
+
+    elif mas_isMoniDis():
+        m "...I {i}have{/i} to figure this out."
+        call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
 
 ## ear door processing
 init 10 python:
@@ -1925,7 +1959,7 @@ label greeting_japan:
     m 2eub "Hello, [player]!"
     m 1eua "I'm just practicing Japanese."
     m 3eua "Let's see..."
-    $ shown_count = mas_getEV("greeting_japan").shown_count
+    $ shown_count = mas_getEVLPropValue("greeting_japan", "shown_count")
     if shown_count == 0:
         m 4hub "Watashi ha itsumademo anata no mono desu!"
         m 2hksdlb "Sorry if that didn't make sense!"
@@ -2041,7 +2075,7 @@ label greeting_amnesia:
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
     m 1hksdlb "Hope you can forgive my little prank, ehehe~"
 
-    $ mas_lockEvent(mas_getEV("greeting_amnesia"))
+    $ mas_lockEVL("greeting_amnesia", "GRE")
     return
 
 init 5 python:
@@ -2589,7 +2623,7 @@ label greeting_hairdown:
     $ mas_unlockEventLabel("monika_hair_select")
 
     # lock this greeting
-    $ mas_lockEvent(mas_getEV("greeting_hairdown"))
+    $ mas_lockEVL("greeting_hairdown", "GRE")
 
     # cleanup
     # enable music menu
@@ -2832,7 +2866,7 @@ label greeting_back_from_school:
 
         show monika 2ekc at t21
         $ renpy.say(m, "If you don't mind me asking, was there something in particular that happened?{fast}", interact=False)
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
 
@@ -3007,7 +3041,7 @@ label greeting_back_from_work:
 
         show monika 2ekc at t21
         $ renpy.say(m, "If you don't mind talking about it, what happened today?{fast}", interact=False)
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
 
@@ -3924,4 +3958,61 @@ label greeting_code_help_outro:
     m 1eua "Anyway, what would you like to do today?"
 
     $ mas_lockEVL("greeting_code_help", "GRE")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_love_is_in_the_air",
+            unlocked=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="GRE"
+    )
+
+label greeting_love_is_in_the_air:
+    m 1hub "{i}~Love is in the air~{/i}"
+    m 1rub "{i}~Everywhere I look around~{/i}"
+    m 3ekbsa "Oh hello, [player]..."
+    m 3rksdla "Don't mind me. {w=0.2}I'm just singing a bit, thinking about...{w=0.3}{nw}"
+    extend 1hksdlb "well, you can probably guess what, ahaha~"
+    m 1eubsu "It really does feel like love is all around me whenever you're here."
+    m 3hua "Anyway, what would you like to do today?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_workout",
+            category=[store.mas_greetings.TYPE_WORKOUT],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_workout:
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Welcome back, [player]!"
+        m 3eua "I hope you had a nice workout."
+        m 3eub "Don't forget to stay hydrated and eat something to get your energy back!"
+        m 1eua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "Did your workout help you release some tension?"
+        m 2rud "I hope it did...{w=0.3} {nw}"
+        extend 2eka "Let's spend some more time together."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=0.5}look who's back."
+        m 6dkc "I'm...{w=0.3}happy that you're taking care of yourself."
+        m 6ekd "...But don't you want to take care of me too?"
+        m 7dkc "At least once in a while, please..."
+        m 1dkc "..."
+
+    else:
+        m 6ckc "..."
+
     return

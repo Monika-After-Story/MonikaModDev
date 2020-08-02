@@ -380,6 +380,7 @@ init -3 python in mas_piano_keys:
     log = renpy.store.mas_utils.getMASLog("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
+    import store.mas_ui as mas_ui
 
     # directory setup
     pnml_basedir = os.path.normcase(
@@ -396,11 +397,11 @@ init -3 python in mas_piano_keys:
         no_pnml_basedir = True
 
     # menu constants
-    MENU_X = 680
-    MENU_Y = 40
-    MENU_W = 560
-    MENU_H = 640
-    MENU_XALIGN = -0.05
+    MENU_X = mas_ui.SCROLLABLE_MENU_X
+    MENU_Y = mas_ui.SCROLLABLE_MENU_Y
+    MENU_W = mas_ui.SCROLLABLE_MENU_W
+    MENU_H = mas_ui.SCROLLABLE_MENU_MEDIUM_H
+    MENU_XALIGN = mas_ui.SCROLLABLE_MENU_XALIGN
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
 
     # Log constants

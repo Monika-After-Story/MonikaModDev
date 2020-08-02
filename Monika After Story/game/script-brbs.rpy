@@ -242,14 +242,19 @@ label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
 
-        if mas_isMoniLove() and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
+        if (
+            mas_isMoniLove()
+            and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme")
+            and mas_getEVL_shown_count("monika_idle_shower") != 1 #Since the else block has a one-time only line, we force it on first use
+            and renpy.random.randint(1,20) == 1
+        ):
             m 3tubfb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
             m 1hubsa "You could just relax with me some more~"
             m 1hub "Ahaha!"
 
         else:
             m 1hua "I hope you had a nice shower."
-            if mas_getEV("monika_idle_shower").shown_count == 1:
+            if mas_getEVL_shown_count("monika_idle_shower") == 1:
                 m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
                 m 1hub "Ahaha!"
 
