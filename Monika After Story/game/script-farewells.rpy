@@ -694,7 +694,7 @@ label bye_prompt_sleep:
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database, eventlabel="bye_illseeyou", unlocked=True), code="BYE")
+    addEvent(Event(persistent.farewell_database, eventlabel="bye_illseeyou", unlocked=True, aff_range=(mas_aff.HAPPY, None)), code="BYE")
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
