@@ -1531,3 +1531,50 @@ label bye_prompt_workout:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=4)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORKOUT
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_hangout",
+            prompt="I'm going to hang out with friends.",
+            unlocked=True,
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_hangout:
+    if mas_getEVL_shown_count("bye_prompt_hangout") == 0 and mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_has_friends:
+            m 1eua "Alright, [player]."
+            m 3hub "I know, you should introduce me to them sometime!"
+            m 6eub "If they're your friends, I'm sure I'd like them!"
+        else:
+            m 3eub "I'm glad you're finding friends to go out with [player]!"
+            m 1rud "I know I'd like to spend as much time with you as possible..."
+            m 1hua "But I'd also like you to have friends you can meet face to face!"
+    if mas_getEVL_shown_count("bye_prompt_hangout") >0 and mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_has_friends:
+            m 1eua "Alright, [player]."
+            m 3hub "Have you told them about us yet?"
+            m 1hub "Ahaha!"
+        else:
+            m 1wua "Again? That's exciting!"
+            m 3eua "I hope you've made a really good friend lately."
+            m 3hua "Maybe tell them about me sometime? I hope they're nice."
+            m 1rusdla "What am I saying? Of course they're nice, they're your friend after all."
+
+    m 1eub "Anyway, see you later~"
+
+    if mas_isMoniDis():
+        m 2euc "I hope you treat them well..."
+        m 2euc "Bye."
+
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
+    label .bye_prompt_hangout_local:
+        return "quit"

@@ -54,6 +54,7 @@ init -1 python in mas_greetings:
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
     TYPE_WORKOUT = "workout"
+    TYPE_HANGOUT = "hangout"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -4016,3 +4017,50 @@ label greeting_back_from_workout:
         m 6ckc "..."
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_hangout",
+            category=[store.mas_greetings.TYPE_HANGOUT],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_hangout:
+    if mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_has_friends:
+            m 1eua "Welcome back, [player]."
+            m 3hub "Did you have fun with your friends?"
+        else:
+            m 3eub "Welcome back, [player]."
+            m 1eua "Did you make a new friend?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Did you make a new friend?{fast}"
+                "Yes.":
+                    $ persistent._mas_pm_has_friends = True
+                    m 1hub "That's amazing!"
+                    m 1eua "It makes me feel so good knowing you have someone to hang out with."
+                    m "I hope you're able to spend time with them often."
+                "No...":
+                    m 1ekc "Oh..."
+                    m 2eka "Well, don't worry, [player]. I'm always here for you."
+                    m "I'll always be your friend, no matter what."
+                "They're already my friend":
+                    $ persistent._mas_pm_has_friends = True
+                    m 1ekb "Oh, so you made a new friend without telling me."
+                    m 1eka "That's okay though, I'm just happy you have someone to hang out with."
+                    m "I hope you're able to spend time with them often."
+
+        m 6eub "Lets spend some more time together~"
+
+    elif mas_isMoniDis:
+        m 2euc "Hello again..."
+        m 2euc "I hope at least your friends don't feel you're mistreating them..."
+
+    else:
+        m 6ckc "..."
+        return
