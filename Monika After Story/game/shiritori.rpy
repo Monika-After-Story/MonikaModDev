@@ -1,11 +1,3 @@
-"""TODOs:
-    Difficulty scaling
-        Time limit
-        Monika's turn limit - better to set explicitly than to count the dict cardinality every time
-    Write proper dlg
-    Get, sanitize and format dictionaries
-    Option to add missing words to dictionary - exploitable, but worth it imo
-"""
 
 init 5 python:
     addEvent(
@@ -14,7 +6,7 @@ init 5 python:
             eventlabel="monika_shiritori_rules",
             category=["games"],
             prompt="Rules of shiritori",
-            conditional="store.mas_games.getGameEVByPrompt("shiritori").unlocked",
+            conditional="renpy.seen_label('mas_unlock_shiritori')",
             action=EV_ACT_UNLOCK,
             pool=True,
             rules={"no unlock": None}
@@ -104,7 +96,19 @@ screen shiritori_input(prompt, timeout, use_return_button=False, return_button_p
 
 # entry point
 label game_shiritori:
-    m "You wanna play shiritori?"
+    m "You wanna play shiritori? Okay~"
+    m "Cities only or full dictionary?"
+    $ _history_list.pop()
+    menu:
+        m "Cities only or full dictionary?{fast}"
+
+        "Cities only":
+            m "Cities it is."
+            $ game_variant = "cities"
+
+        "Full":
+            m "The whole vocabulary then."
+            $ game_variant = "full"
 
     # 1st turn decision
     m "Do you want to start or should I?"
@@ -128,11 +132,18 @@ label game_shiritori:
 
     python:
         # build dictionaries - do we want this here or on init?
-        with open("dictionary_full.json") as dff:
-            dictionary_full = json.load(dff)
-        with open("dictionary_monika.json") as dmf:
-            dictionary_full = json.load(dmf)
+        if game_variant == "full":
+            with open("shiritori_dictionary_full.json") as dff:
+                dictionary_full = json.load(dff)
+            with open("shiritori_dictionary_monika.json") as dmf:
+                dictionary_monika = json.load(dmf)
 
+        elif game_variant == "cities":
+            with open("shiritori_dictionary_cities.json") as dff:
+                dictionary_full = json.load(dff)
+                dictionary_monika = json.load(dff)
+
+        timelimit = 10
         shiritori_loop = True
         # all the words used in current game
         used_words = set()
@@ -156,7 +167,7 @@ label game_shiritori:
         # get player input
             last_word_p_raw = mas_input(
                 "Input your next word",
-                allow = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+                allow = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .'-",
                 length=20,
                 screen = "shiritori_input",
                 screen_kwargs = {timeout:timelimit}
